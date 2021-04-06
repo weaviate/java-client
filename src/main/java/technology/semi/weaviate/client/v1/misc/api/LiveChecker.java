@@ -12,7 +12,7 @@ public class LiveChecker extends BaseClient<String> implements Client<Boolean> {
   }
 
   @Override
-  public Boolean Do() {
+  public Boolean run() {
     Response<String> resp = sendGetRequest("/.well-known/live", String.class);
     return resp.getStatusCode() == 200;
   }

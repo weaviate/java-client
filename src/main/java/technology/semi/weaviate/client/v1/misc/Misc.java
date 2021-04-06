@@ -19,19 +19,19 @@ public class Misc {
     this.readyChecker = new ReadyChecker(config);
   }
 
-  public MetaGetter MetaGetter() {
+  public MetaGetter metaGetter() {
     return metaGetter;
   }
 
-  public OpenIDConfigGetter OpenIDConfigGetter() {
+  public OpenIDConfigGetter openIDConfigGetter() {
     return openIDConfigGetter;
   }
 
-  public LiveChecker LiveChecker() {
+  public LiveChecker liveChecker() {
     return liveChecker;
   }
 
-  public ReadyChecker ReadyChecker() {
+  public ReadyChecker readyChecker() {
     return readyChecker;
   }
 }

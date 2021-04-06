@@ -33,10 +33,10 @@ public class App {
     try {
       Config config = new Config("http", "localhost:8080");
       WeaviateClient client = new WeaviateClient(config);
-      Meta meta = client.Misc().MetaGetter().Do();
-      System.out.println("meta.hostname: " + meta.getHostname());
-      System.out.println("meta.version: " + meta.getVersion());
-      System.out.println("meta.modules: " + meta.getModules());
+      Meta meta = client.misc().metaGetter().run();
+      System.out.printf("meta.hostname: %s\n", meta.getHostname());
+      System.out.printf("meta.version: %s\n", meta.getVersion());
+      System.out.printf("meta.modules: %s\n", meta.getModules());
     } catch (IOException e) {
       e.printStackTrace();
     }
