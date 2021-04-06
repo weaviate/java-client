@@ -34,7 +34,7 @@ public class ClientMiscTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     // when
-    Boolean livenessCheck = client.Misc().LiveChecker().Do();
+    Boolean livenessCheck = client.misc().liveChecker().run();
     // then
     Assert.assertTrue(livenessCheck);
   }
@@ -45,7 +45,7 @@ public class ClientMiscTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     // when
-    Boolean readinessCheck = client.Misc().ReadyChecker().Do();
+    Boolean readinessCheck = client.misc().readyChecker().run();
     // then
     Assert.assertTrue(readinessCheck);
   }
@@ -56,7 +56,7 @@ public class ClientMiscTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     // when
-    Meta meta = client.Misc().MetaGetter().Do();
+    Meta meta = client.misc().metaGetter().run();
     // then
     Assert.assertEquals("http://[::]:8080", meta.getHostname());
     Assert.assertEquals("1.2.1", meta.getVersion());

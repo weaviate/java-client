@@ -19,7 +19,7 @@ public class WeaviateClient {
     this.misc = new Misc(config);
   }
 
-  public Misc Misc() {
+  public Misc misc() {
     return misc;
   }
 }

@@ -13,7 +13,7 @@ public class MetaGetter extends BaseClient<Meta> implements Client<Meta> {
   }
 
   @Override
-  public Meta Do() {
+  public Meta run() {
     Response<Meta> resp = sendGetRequest("/meta", Meta.class);
     return resp.getBody();
   }

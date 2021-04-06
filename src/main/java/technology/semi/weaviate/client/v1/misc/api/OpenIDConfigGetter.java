@@ -13,7 +13,7 @@ public class OpenIDConfigGetter extends BaseClient<OpenIDConfiguration> implemen
   }
 
   @Override
-  public OpenIDConfiguration Do() {
+  public OpenIDConfiguration run() {
     Response<OpenIDConfiguration> resp = sendGetRequest("/.well-known/openid-configuration", OpenIDConfiguration.class);
     return resp.getBody();
   }
