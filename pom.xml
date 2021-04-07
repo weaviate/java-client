@@ -18,7 +18,9 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <lombok.version>1.18.20</lombok.version>
     <gson.version>2.8.6</gson.version>
+    <okhttp.version>4.9.1</okhttp.version>
     <slf4j.version>1.7.30</slf4j.version>
+    <lang3.version>3.12.0</lang3.version>
     <testcontainers.version>1.15.2</testcontainers.version>
   </properties>
 
@@ -34,9 +36,19 @@
       <version>${gson.version}</version>
     </dependency>
     <dependency>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>okhttp</artifactId>
+      <version>4.9.1</version>
+    </dependency>
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>${lang3.version}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

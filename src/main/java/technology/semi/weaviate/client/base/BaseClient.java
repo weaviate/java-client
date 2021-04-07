@@ -3,9 +3,12 @@ package technology.semi.weaviate.client.base;
 import com.google.gson.Gson;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import technology.semi.weaviate.client.Config;
 
 public abstract class BaseClient<T> {
@@ -15,23 +18,45 @@ public abstract class BaseClient<T> {
     this.config = config;
   }
 
-  protected Response<T> sendGetRequest(String request, Class<T> classOfT) {
-    return sendRequest(request, "GET", classOfT);
+  protected Response<T> sendGetRequest(String endpoint, Class<T> classOfT) {
+    String address = config.getBaseURL() + endpoint;
+    Request request = new Request.Builder()
+            .url(address)
+            .addHeader("Accept", "*/*")
+            .build();
+    return sendRequest(request, classOfT);
   }
 
-  private Response<T> sendRequest(String request, String method, Class<T> classOfT) {
+  protected Response<T> sendPostRequest(String endpoint, T payload, Class<T> classOfT) {
+    String address = config.getBaseURL() + endpoint;
+    RequestBody body = RequestBody.create(toJsonString(payload), MediaType.parse("application/json"));
+    Request request = new Request.Builder()
+            .url(address)
+            .addHeader("Accept", "*/*")
+            .post(body)
+            .build();
+    return sendRequest(request, classOfT);
+  }
+
+  protected Response<T> sendDeleteRequest(String endpoint, Class<T> classOfT) {
+    String address = config.getBaseURL() + endpoint;
+    Request request = new Request.Builder()
+            .url(address)
+            .addHeader("Accept", "*/*")
+            .delete()
+            .build();
+    return sendRequest(request, classOfT);
+  }
+
+  private Response<T> sendRequest(Request request, Class<T> classOfT) {
     try {
-      URL url = getRequest(request);
-      HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
-      httpConn.setRequestMethod(method);
-      httpConn.setUseCaches(false);
+      OkHttpClient httpClient = new OkHttpClient();
 
-      httpConn.setDoInput(true); // true if we want to read server's response
-      httpConn.setDoOutput(false);
-      httpConn.setRequestProperty("Accept", "*/*");
+      okhttp3.Response response = httpClient.newCall(request).execute();
 
-      InputStream inputStream = httpConn.getInputStream();
-      int statusCode = httpConn.getResponseCode();
+      int statusCode = response.code();
+      InputStream inputStream = response.body().byteStream();
+
       T body = toResponse(inputStream, classOfT);
 
       return new Response<T>(statusCode, body);
@@ -47,5 +72,9 @@ public abstract class BaseClient<T> {
 
   private T toResponse(InputStream inputStream, Class<T> classOfT) {
     return new Gson().fromJson(new InputStreamReader(inputStream), classOfT);
+  }
+
+  private String toJsonString(T object) {
+    return new Gson().toJson(object);
   }
 }
