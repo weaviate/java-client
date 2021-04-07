@@ -1,4 +1,4 @@
-package technology.semi.weaviate.client.v1.schema.api.model;
+package technology.semi.weaviate.client.v1.schema.model;
 
 import java.util.List;
 import lombok.AccessLevel;

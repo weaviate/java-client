@@ -26,7 +26,7 @@ Connect to Weaviate on `localhost:8080` and fetch meta information
 import java.io.IOException;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.WeaviateClient;
-import technology.semi.weaviate.client.v1.misc.api.model.Meta;
+import technology.semi.weaviate.client.v1.misc.model.Meta;
 
 public class App {
   public static void main(String[] args) {

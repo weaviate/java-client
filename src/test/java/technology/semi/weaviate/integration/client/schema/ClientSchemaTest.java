@@ -11,13 +11,13 @@ import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.WeaviateClient;
-import technology.semi.weaviate.client.v1.schema.api.model.Class;
-import technology.semi.weaviate.client.v1.schema.api.model.Property;
-import technology.semi.weaviate.client.v1.schema.api.model.Schema;
+import technology.semi.weaviate.client.v1.schema.model.Class;
+import technology.semi.weaviate.client.v1.schema.model.DataType;
+import technology.semi.weaviate.client.v1.schema.model.Property;
+import technology.semi.weaviate.client.v1.schema.model.Schema;
 
 public class ClientSchemaTest {
-
-  String address;
+  private String address;
 
   @ClassRule
   public static DockerComposeContainer compose = new DockerComposeContainer(
@@ -159,7 +159,7 @@ public class ClientSchemaTest {
             .description("A soup made in part out of chicken, not for chicken.")
             .build();
     Property newProperty = Property.builder()
-            .dataType(Arrays.asList("string"))
+            .dataType(Arrays.asList(DataType.STRING))
             .description("name")
             .name("name")
             .build();

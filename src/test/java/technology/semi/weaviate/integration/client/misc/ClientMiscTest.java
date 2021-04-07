@@ -10,11 +10,10 @@ import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.WeaviateClient;
-import technology.semi.weaviate.client.v1.misc.api.model.Meta;
+import technology.semi.weaviate.client.v1.misc.model.Meta;
 
 public class ClientMiscTest {
-
-  String address;
+  private String address;
 
   @ClassRule
   public static DockerComposeContainer compose = new DockerComposeContainer(

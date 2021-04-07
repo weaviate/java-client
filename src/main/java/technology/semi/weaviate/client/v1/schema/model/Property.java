@@ -1,4 +1,4 @@
-package technology.semi.weaviate.client.v1.schema.api.model;
+package technology.semi.weaviate.client.v1.schema.model;
 
 import java.util.List;
 import lombok.AccessLevel;
@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Property {
   String name;
-  List<String> dataType;
+  List<DataType> dataType;
   String description;
   Boolean indexInverted;
   Object moduleConfig;
