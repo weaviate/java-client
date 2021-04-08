@@ -2,8 +2,8 @@ package technology.semi.weaviate.client.v1.schema.api;
 
 
 import java.util.List;
-import technology.semi.weaviate.client.v1.schema.api.model.Class;
-import technology.semi.weaviate.client.v1.schema.api.model.Schema;
+import technology.semi.weaviate.client.v1.schema.model.Class;
+import technology.semi.weaviate.client.v1.schema.model.Schema;
 
 public class SchemaDeleter {
   private SchemaGetter schemaGetter;

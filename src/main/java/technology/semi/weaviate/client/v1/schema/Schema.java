@@ -8,37 +8,29 @@ import technology.semi.weaviate.client.v1.schema.api.SchemaDeleter;
 import technology.semi.weaviate.client.v1.schema.api.SchemaGetter;
 
 public class Schema {
-  private SchemaGetter schemaGetter;
-  private ClassCreator classCreator;
-  private ClassDeleter classDeleter;
-  private PropertyCreator propertyCreator;
-  private SchemaDeleter schemaDeleter;
+  private Config config;
 
   public Schema(Config config) {
-    this.schemaGetter = new SchemaGetter(config);
-    this.classCreator = new ClassCreator(config);
-    this.classDeleter = new ClassDeleter(config);
-    this.propertyCreator = new PropertyCreator(config);
-    this.schemaDeleter = new SchemaDeleter(schemaGetter, classDeleter);
+    this.config = config;
   }
 
   public SchemaGetter getter() {
-    return schemaGetter;
+    return new SchemaGetter(config);
   }
 
   public ClassCreator classCreator() {
-    return classCreator;
+    return new ClassCreator(config);
   }
 
   public ClassDeleter classDeleter() {
-    return classDeleter;
+    return new ClassDeleter(config);
   }
 
   public PropertyCreator propertyCreator() {
-    return propertyCreator;
+    return new PropertyCreator(config);
   }
 
   public SchemaDeleter allDeleter() {
-    return schemaDeleter;
+    return new SchemaDeleter(new SchemaGetter(config), new ClassDeleter(config));
   }
 }
