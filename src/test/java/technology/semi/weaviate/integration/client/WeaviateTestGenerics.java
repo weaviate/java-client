@@ -51,6 +51,20 @@ public class WeaviateTestGenerics {
     Assert.assertTrue(soupPropertyDescritpionStatus);
   }
 
+  public void createWeaviateTestSchemaFoodWithReferenceProperty(WeaviateClient client) {
+    createWeaviateTestSchemaFood(client);
+    // reference property
+    Property referenceProperty = Property.builder()
+            .dataType(Arrays.asList("Pizza", "Soup"))
+            .description("reference to other foods")
+            .name("otherFoods")
+            .build();
+    Boolean pizzaRefAdd = client.schema().propertyCreator().withClassName("Pizza").withProperty(referenceProperty).run();
+    Assert.assertTrue(pizzaRefAdd);
+    Boolean soupRefAdd = client.schema().propertyCreator().withClassName("Soup").withProperty(referenceProperty).run();
+    Assert.assertTrue(soupRefAdd);
+  }
+
   public void cleanupWeaviate(WeaviateClient client) {
     Boolean deleteAllStatus = client.schema().allDeleter().run();
     Assert.assertTrue(deleteAllStatus);

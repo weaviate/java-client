@@ -3,21 +3,18 @@ package technology.semi.weaviate.client.v1.data.model;
 import com.google.gson.annotations.SerializedName;
 import java.util.Map;
 import lombok.AccessLevel;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
 @Getter
-@Builder
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Object {
-  String id;
+public class SingleRef {
+  String beacon;
   @SerializedName("class")
-  String className;
-  Long creationTimeUnix;
-  final Long lastUpdateTimeUnix;
-  Map<String, java.lang.Object> properties;
-  Map<String, java.lang.Object> additional;
-  Float[] vector;
-  Object vectorWeights;
+  String clazz;
+  ReferenceMetaClassification classification;
+  String href;
+  Map<String, java.lang.Object> schema;
 }

@@ -3,6 +3,7 @@ package technology.semi.weaviate.client;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
+import technology.semi.weaviate.client.v1.batch.Batch;
 import technology.semi.weaviate.client.v1.data.Data;
 import technology.semi.weaviate.client.v1.misc.Misc;
 import technology.semi.weaviate.client.v1.schema.Schema;
@@ -28,5 +29,9 @@ public class WeaviateClient {
 
   public Data data() {
     return new Data(config);
+  }
+
+  public Batch batch() {
+    return new Batch(config);
   }
 }

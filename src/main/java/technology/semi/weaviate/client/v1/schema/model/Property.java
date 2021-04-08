@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Property {
   String name;
-  List<DataType> dataType;
+  List<String> dataType;
   String description;
   Boolean indexInverted;
   Object moduleConfig;

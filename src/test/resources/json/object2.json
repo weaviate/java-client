@@ -1,0 +1,20 @@
+{
+  "class": "Soup",
+  "creationTimeUnix": 1617889812387,
+  "id": "07473b34-0ab2-4120-882d-303d9e13f7af",
+  "properties": {
+    "description": "Putting the game of letter soups to a whole new level.",
+    "name": "Beautiful",
+    "otherFoods": [
+      {
+        "beacon": "weaviate://localhost/97fa5147-bdad-4d74-9a81-f8babc811b09",
+        "href": "/v1/objects/97fa5147-bdad-4d74-9a81-f8babc811b09"
+      },
+      {
+        "beacon": "weaviate://localhost/07473b34-0ab2-4120-882d-303d9e13f7af",
+        "href": "/v1/objects/07473b34-0ab2-4120-882d-303d9e13f7af"
+      }
+    ]
+  },
+  "vectorWeights": null
+}

@@ -1,0 +1,30 @@
+[
+  {
+    "from": "weaviate://localhost/Pizza/97fa5147-bdad-4d74-9a81-f8babc811b09/otherFoods",
+    "to": "weaviate://localhost/07473b34-0ab2-4120-882d-303d9e13f7af",
+    "result": {
+      "status": "SUCCESS"
+    }
+  },
+  {
+    "from": "weaviate://localhost/Pizza/97fa5147-bdad-4d74-9a81-f8babc811b09/otherFoods",
+    "to": "weaviate://localhost/97fa5147-bdad-4d74-9a81-f8babc811b09",
+    "result": {
+      "status": "SUCCESS"
+    }
+  },
+  {
+    "from": "weaviate://localhost/Soup/07473b34-0ab2-4120-882d-303d9e13f7af/otherFoods",
+    "to": "weaviate://localhost/97fa5147-bdad-4d74-9a81-f8babc811b09",
+    "result": {
+      "status": "SUCCESS"
+    }
+  },
+  {
+    "from": "weaviate://localhost/Soup/07473b34-0ab2-4120-882d-303d9e13f7af/otherFoods",
+    "to": "weaviate://localhost/07473b34-0ab2-4120-882d-303d9e13f7af",
+    "result": {
+      "status": "SUCCESS"
+    }
+  }
+]

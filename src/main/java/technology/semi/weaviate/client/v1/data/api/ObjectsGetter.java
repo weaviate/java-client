@@ -2,7 +2,6 @@ package technology.semi.weaviate.client.v1.data.api;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
@@ -11,9 +10,9 @@ import technology.semi.weaviate.client.base.BaseClient;
 import technology.semi.weaviate.client.base.Client;
 import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.v1.data.model.Object;
-import technology.semi.weaviate.client.v1.data.model.ObjectsResponse;
+import technology.semi.weaviate.client.v1.data.model.ObjectsListResponse;
 
-public class ObjectsGetter extends BaseClient<ObjectsResponse> implements Client<List<Object>> {
+public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements Client<List<Object>> {
 
   private String id;
   private Integer limit;
@@ -84,7 +83,7 @@ public class ObjectsGetter extends BaseClient<ObjectsResponse> implements Client
     if (StringUtils.isNotBlank(id)) {
       return this.objectGetter.getObjects(getPath());
     }
-    Response<ObjectsResponse> resp = sendGetRequest(getPath(), ObjectsResponse.class);
+    Response<ObjectsListResponse> resp = sendGetRequest(getPath(), ObjectsListResponse.class);
     return Arrays.asList(resp.getBody().getObjects());
   }
 }
