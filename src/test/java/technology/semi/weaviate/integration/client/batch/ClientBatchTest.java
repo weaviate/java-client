@@ -41,7 +41,7 @@ public class ClientBatchTest {
   }
 
   @Test
-  public void testDataBatchCreate() throws IOException {
+  public void testBatchCreate() throws IOException {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -117,7 +117,7 @@ public class ClientBatchTest {
   }
 
   @Test
-  public void testDataBatchReferences() throws IOException {
+  public void testBatchReferences() throws IOException {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);

@@ -34,6 +34,7 @@ public class ObjectTest extends TestCase {
     Assert.assertNotNull(result);
   }
 
+  @Test
   public void testDeserialization() throws FileNotFoundException {
     // given
     File jsonFile = new File("src/test/resources/json/object.json");
@@ -53,6 +54,7 @@ public class ObjectTest extends TestCase {
     Assert.assertNotNull(result.getVector());
   }
 
+  @Test
   public void testDeserialization2() throws FileNotFoundException {
     // given
     File jsonFile = new File("src/test/resources/json/object2.json");
