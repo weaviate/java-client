@@ -1,4 +1,4 @@
-package technology.semi.weaviate.client.v1.data.model;
+package technology.semi.weaviate.client.v1.batch.model;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -8,8 +8,7 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ObjectsResponse {
-  Object deprecations;
-  Object[] objects;
-  int totalResults;
+public class BatchReferenceResponseAO1Result {
+  String errors;
+  String status;
 }

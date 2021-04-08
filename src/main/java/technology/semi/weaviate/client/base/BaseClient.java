@@ -11,7 +11,6 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.internal.http.HttpMethod;
 import technology.semi.weaviate.client.Config;
 
 public abstract class BaseClient<T> {
@@ -30,19 +29,19 @@ public abstract class BaseClient<T> {
     return sendRequest(request, classOfT);
   }
 
-  protected Response<T> sendPostRequest(String endpoint, T payload, Class<T> classOfT) {
+  protected Response<T> sendPostRequest(String endpoint, Object payload, Class<T> classOfT) {
     return sendPayloadRequest(endpoint, "POST", payload, classOfT);
   }
 
-  protected Response<T> sendPutRequest(String endpoint, T payload, Class<T> classOfT) {
+  protected Response<T> sendPutRequest(String endpoint, Object payload, Class<T> classOfT) {
     return sendPayloadRequest(endpoint, "PUT", payload, classOfT);
   }
 
-  protected Response<T> sendPatchRequest(String endpoint, T payload, Class<T> classOfT) {
+  protected Response<T> sendPatchRequest(String endpoint, Object payload, Class<T> classOfT) {
     return sendPayloadRequest(endpoint, "PATCH", payload, classOfT);
   }
 
-  protected Response<T> sendPayloadRequest(String endpoint, String method, T payload, Class<T> classOfT) {
+  protected Response<T> sendPayloadRequest(String endpoint, String method, Object payload, Class<T> classOfT) {
     String address = config.getBaseURL() + endpoint;
     RequestBody body = RequestBody.create(toJsonString(payload), MediaType.parse("application/json"));
     Request.Builder builder = new Request.Builder()
@@ -94,7 +93,7 @@ public abstract class BaseClient<T> {
     return new Gson().fromJson(new BufferedReader(new InputStreamReader(inputStream)), classOfT);
   }
 
-  private String toJsonString(T object) {
+  private String toJsonString(Object object) {
     return new Gson().toJson(object);
   }
 }
