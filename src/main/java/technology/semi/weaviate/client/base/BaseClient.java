@@ -46,6 +46,7 @@ public abstract class BaseClient<T> {
     RequestBody body = RequestBody.create(toJsonString(payload), MediaType.parse("application/json"));
     Request.Builder builder = new Request.Builder()
             .url(address)
+            .addHeader("Content-Type", "json")
             .addHeader("Accept", "*/*");
     if (method == "PUT") {
       builder = builder.put(body);
@@ -83,10 +84,6 @@ public abstract class BaseClient<T> {
       e.printStackTrace();
     }
     return null;
-  }
-
-  private URL getRequest(String request) throws MalformedURLException {
-    return new URL(this.config.getBaseURL() + request);
   }
 
   private T toResponse(InputStream inputStream, Class<T> classOfT) {
