@@ -23,7 +23,6 @@ import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 public class ClientBatchTest {
   private String address;
@@ -88,6 +87,7 @@ public class ClientBatchTest {
             .withObject(objA1)
             .withObject(objA2)
             .run();
+    // check if created objects exist
     List<Object> getObjT1 = client.data().objectsGetter().withID(objTID).run();
     List<Object> getObjT2 = client.data().objectsGetter().withID(objT2ID).run();
     List<Object> getObjA1 = client.data().objectsGetter().withID(objAID).run();

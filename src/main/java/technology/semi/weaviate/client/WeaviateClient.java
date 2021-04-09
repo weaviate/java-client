@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import technology.semi.weaviate.client.v1.batch.Batch;
+import technology.semi.weaviate.client.v1.classifications.Classifications;
 import technology.semi.weaviate.client.v1.contextionary.Contextionary;
 import technology.semi.weaviate.client.v1.data.Data;
 import technology.semi.weaviate.client.v1.misc.Misc;
@@ -38,5 +39,9 @@ public class WeaviateClient {
 
   public Contextionary c11y() {
     return new Contextionary(config);
+  }
+
+  public Classifications classifications() {
+    return new Classifications(config);
   }
 }
