@@ -7,6 +7,7 @@ import technology.semi.weaviate.client.v1.batch.Batch;
 import technology.semi.weaviate.client.v1.classifications.Classifications;
 import technology.semi.weaviate.client.v1.contextionary.Contextionary;
 import technology.semi.weaviate.client.v1.data.Data;
+import technology.semi.weaviate.client.v1.graphql.GraphQL;
 import technology.semi.weaviate.client.v1.misc.Misc;
 import technology.semi.weaviate.client.v1.schema.Schema;
 
@@ -43,5 +44,9 @@ public class WeaviateClient {
 
   public Classifications classifications() {
     return new Classifications(config);
+  }
+
+  public GraphQL graphQL() {
+    return new GraphQL(config);
   }
 }
