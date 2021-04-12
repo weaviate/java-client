@@ -3,6 +3,8 @@ os: linux
 language: java
 jdk:
   - oraclejdk8
+services:
+  - docker
 
 notifications:
   email:
@@ -10,7 +12,21 @@ notifications:
 
 jobs:
   include:
-    - stage: "Run Tests"
-      script:
+    - stage: "Run Build"
+      cache:
+        directories:
+          - $HOME/.m2
+      before_script:
         - jdk_switcher use oraclejdk8
+      script:
+        - mvn -DskipTests clean package
+    - stage: "Run Tests"
+      if: branch = main OR type = pull_request
+      cache:
+        directories:
+          - $HOME/.m2
+      before_script:
+        - jdk_switcher use oraclejdk8
+        - docker-compose -f src/test/resources/docker-compose-test.yaml pull
+      script:
         - mvn clean test
