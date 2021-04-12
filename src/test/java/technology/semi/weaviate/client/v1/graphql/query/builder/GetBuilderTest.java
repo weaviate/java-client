@@ -2,6 +2,7 @@ package technology.semi.weaviate.client.v1.graphql.query.builder;
 
 import junit.framework.TestCase;
 import org.junit.Test;
+import technology.semi.weaviate.client.v1.graphql.query.argument.AskArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
 
 public class GetBuilderTest extends TestCase {
@@ -138,5 +139,40 @@ public class GetBuilderTest extends TestCase {
     // then
     assertNotNull(query);
     assertEquals("{Get {Pizza (nearText: {concepts: [\"good\"] }) {name}}}", query);
+  }
+
+  @Test
+  public void testBuildGetWithAsk() {
+    // given
+    String fields = "name";
+    AskArgument ask1 = AskArgument.builder()
+            .question("Who are you?")
+            .build();
+    AskArgument ask2 = AskArgument.builder()
+            .question("Who are you?")
+            .properties(new String[]{"prop1", "prop2"})
+            .build();
+    AskArgument ask3 = AskArgument.builder()
+            .question("Who are you?")
+            .properties(new String[]{"prop1", "prop2"})
+            .certainty(0.1f)
+            .build();
+    // when
+    String query1 = GetBuilder.builder()
+            .className("Pizza").fields(fields).withAskArgument(ask1)
+            .build().buildQuery();
+    String query2 = GetBuilder.builder()
+            .className("Pizza").fields(fields).withAskArgument(ask2)
+            .build().buildQuery();
+    String query3 = GetBuilder.builder()
+            .className("Pizza").fields(fields).withAskArgument(ask3)
+            .build().buildQuery();
+    // then
+    assertNotNull(query1);
+    assertEquals("{Get {Pizza (ask: {question: \"Who are you?\"}) {name}}}", query1);
+    assertNotNull(query2);
+    assertEquals("{Get {Pizza (ask: {question: \"Who are you?\" properties: [\"prop1\", \"prop2\"]}) {name}}}", query2);
+    assertNotNull(query3);
+    assertEquals("{Get {Pizza (ask: {question: \"Who are you?\" properties: [\"prop1\", \"prop2\"] certainty: 0.1}) {name}}}", query3);
   }
 }

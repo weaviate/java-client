@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @Builder
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class NearObjectArgument implements Argument {
   String id;
   String beacon;

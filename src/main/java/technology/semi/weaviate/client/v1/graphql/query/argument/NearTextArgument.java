@@ -9,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 
 @Getter
 @Builder
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class NearTextArgument implements Argument {
   String[] concepts;
   Float certainty;
