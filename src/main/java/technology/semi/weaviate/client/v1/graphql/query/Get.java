@@ -6,6 +6,7 @@ import technology.semi.weaviate.client.base.Client;
 import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLQuery;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLResponse;
+import technology.semi.weaviate.client.v1.graphql.query.argument.AskArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
 import technology.semi.weaviate.client.v1.graphql.query.builder.GetBuilder;
@@ -40,6 +41,11 @@ public class Get extends BaseClient<GraphQLResponse> implements Client<GraphQLRe
 
   public Get withNearText(NearTextArgument nearText) {
     this.getBuilder.withNearTextFilter(nearText);
+    return this;
+  }
+
+  public Get withAsk(AskArgument ask) {
+    this.getBuilder.withAskArgument(ask);
     return this;
   }
 

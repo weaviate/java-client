@@ -10,7 +10,7 @@ notifications:
 
 jobs:
   include:
-    - stage: "Test"
+    - stage: "Run Tests"
       script:
         - jdk_switcher use oraclejdk8
-        - mvn clean install
+        - mvn clean test

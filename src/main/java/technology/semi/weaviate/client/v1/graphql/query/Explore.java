@@ -16,7 +16,6 @@ public class Explore extends BaseClient<GraphQLResponse> implements Client<Graph
   public Explore(Config config) {
     super(config);
     this.exploreBuilder = ExploreBuilder.builder();
-
   }
 
   public Explore withFields(ExploreFields[] fields) {
