@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.StringUtils;
 import technology.semi.weaviate.client.v1.graphql.query.argument.AskArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.NearImageArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
 
@@ -22,6 +23,7 @@ public class GetBuilder implements Query {
   NearTextArgument withNearTextFilter;
   NearObjectArgument withNearObjectFilter;
   AskArgument withAskArgument;
+  NearImageArgument withNearImageFilter;
   Float[] withNearVectorFilter;
   String withGroupFilter;
 
@@ -30,7 +32,7 @@ public class GetBuilder implements Query {
             || withNearTextFilter != null || withNearObjectFilter != null
             || (withNearVectorFilter != null && withNearVectorFilter.length > 0)
             || StringUtils.isNotBlank(withGroupFilter)
-            || withAskArgument != null
+            || withAskArgument != null || withNearImageFilter != null
             || limit != null;
   }
 
@@ -53,6 +55,9 @@ public class GetBuilder implements Query {
     }
     if (withAskArgument != null) {
       filters.add(withAskArgument.build());
+    }
+    if (withNearImageFilter != null) {
+      filters.add(withNearImageFilter.build());
     }
     if (limit != null) {
       filters.add(String.format("limit: %s", limit));
