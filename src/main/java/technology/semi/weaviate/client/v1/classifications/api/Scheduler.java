@@ -2,13 +2,14 @@ package technology.semi.weaviate.client.v1.classifications.api;
 
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.base.BaseClient;
-import technology.semi.weaviate.client.base.Client;
+import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
+import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.classifications.model.Classification;
 import technology.semi.weaviate.client.v1.classifications.model.ClassificationFilters;
 import technology.semi.weaviate.client.v1.classifications.model.WhereFilter;
 
-public class Scheduler extends BaseClient<Classification> implements Client<Classification> {
+public class Scheduler extends BaseClient<Classification> implements ClientResult<Classification> {
 
   private String classificationType;
   private String className;
@@ -75,10 +76,11 @@ public class Scheduler extends BaseClient<Classification> implements Client<Clas
 
   private Classification waitForCompletion(String id) throws InterruptedException {
     for (; ; ) {
-      Classification runningClassification = getter.withID(id).run();
-      if (runningClassification == null) {
+      Result<Classification> result = getter.withID(id).run();
+      if (result == null || result.getResult() == null) {
         return null;
       }
+      Classification runningClassification = result.getResult();
       if (runningClassification.getStatus() == "running") {
         Thread.sleep(2000);
       } else {
@@ -88,7 +90,7 @@ public class Scheduler extends BaseClient<Classification> implements Client<Clas
   }
 
   @Override
-  public Classification run() {
+  public Result<Classification> run() {
     Classification config = Classification.builder()
             .basedOnProperties(basedOnProperties)
             .className(className)
@@ -105,12 +107,13 @@ public class Scheduler extends BaseClient<Classification> implements Client<Clas
     if (resp.getStatusCode() == 201) {
       if (waitForCompletion) {
         try {
-          return waitForCompletion(resp.getBody().getId());
+          Classification c = waitForCompletion(resp.getBody().getId());
+          return new Result<>(resp.getStatusCode(), c, null);
         } catch (InterruptedException e) {
           return null;
         }
       }
-      return resp.getBody();
+      return new Result<>(resp);
     }
     return null;
   }

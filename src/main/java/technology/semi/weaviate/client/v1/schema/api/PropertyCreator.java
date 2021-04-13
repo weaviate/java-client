@@ -1,13 +1,18 @@
 package technology.semi.weaviate.client.v1.schema.api;
 
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.base.BaseClient;
-import technology.semi.weaviate.client.base.Client;
+import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
+import technology.semi.weaviate.client.base.Result;
+import technology.semi.weaviate.client.base.WeaviateErrorMessage;
+import technology.semi.weaviate.client.base.WeaviateErrorResponse;
 import technology.semi.weaviate.client.v1.schema.model.Property;
 
-public class PropertyCreator extends BaseClient<Property> implements Client<Boolean> {
+public class PropertyCreator extends BaseClient<Property> implements ClientResult<Boolean> {
 
   private String className;
   private Property property;
@@ -27,12 +32,16 @@ public class PropertyCreator extends BaseClient<Property> implements Client<Bool
   }
 
   @Override
-  public Boolean run() {
+  public Result<Boolean> run() {
     if (StringUtils.isEmpty(this.className)) {
-      return false;
+      WeaviateErrorMessage errorMessage = WeaviateErrorMessage.builder()
+              .message("classname cannot be empty").build();
+      WeaviateErrorResponse errors = WeaviateErrorResponse.builder()
+              .error(Stream.of(errorMessage).collect(Collectors.toList())).build();
+      return new Result<>(500, false, errors);
     }
     String path = String.format("/schema/%s/properties", this.className);
     Response<Property> resp = sendPostRequest(path, property, Property.class);
-    return resp.getStatusCode() == 200;
+    return new Result<>(resp.getStatusCode(), resp.getStatusCode() == 200, resp.getErrors());
   }
 }

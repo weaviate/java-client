@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.stream.Stream;
 import org.junit.Assert;
 import technology.semi.weaviate.client.WeaviateClient;
+import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.batch.api.ObjectsBatcher;
 import technology.semi.weaviate.client.v1.batch.model.ObjectGetResponse;
 import technology.semi.weaviate.client.v1.data.model.Object;
@@ -28,11 +29,13 @@ public class WeaviateTestGenerics {
             .description("Mostly water based brew of sustenance for humans.")
             .build();
     // create Pizza class
-    Boolean pizzaCreateStatus = client.schema().classCreator().withClass(pizza).run();
-    assertTrue(pizzaCreateStatus);
+    Result<Boolean> pizzaCreateStatus = client.schema().classCreator().withClass(pizza).run();
+    assertNotNull(pizzaCreateStatus);
+    assertTrue(pizzaCreateStatus.getResult());
     // create Soup class
-    Boolean soupCreateStatus = client.schema().classCreator().withClass(soup).run();
-    assertTrue(soupCreateStatus);
+    Result<Boolean> soupCreateStatus = client.schema().classCreator().withClass(soup).run();
+    assertNotNull(soupCreateStatus);
+    assertTrue(soupCreateStatus.getResult());
     // properties
     Property nameProperty = Property.builder()
             .dataType(Arrays.asList(DataType.STRING))
@@ -45,19 +48,23 @@ public class WeaviateTestGenerics {
             .name("description")
             .build();
     // Add name and description properties to Pizza
-    Boolean pizzaPropertyNameStatus = client.schema().propertyCreator()
+    Result<Boolean> pizzaPropertyNameStatus = client.schema().propertyCreator()
             .withProperty(nameProperty).withClassName(pizza.getClassName()).run();
-    assertTrue(pizzaPropertyNameStatus);
-    Boolean pizzaPropertyDescritpionStatus = client.schema().propertyCreator()
+    assertNotNull(pizzaPropertyNameStatus);
+    assertTrue(pizzaPropertyNameStatus.getResult());
+    Result<Boolean> pizzaPropertyDescritpionStatus = client.schema().propertyCreator()
             .withProperty(descriptionProperty).withClassName(pizza.getClassName()).run();
-    assertTrue(pizzaPropertyDescritpionStatus);
+    assertNotNull(pizzaPropertyDescritpionStatus);
+    assertTrue(pizzaPropertyDescritpionStatus.getResult());
     // Add name and description properties to Soup
-    Boolean soupPropertyNameStatus = client.schema().propertyCreator()
+    Result<Boolean> soupPropertyNameStatus = client.schema().propertyCreator()
             .withProperty(nameProperty).withClassName(soup.getClassName()).run();
-    assertTrue(soupPropertyNameStatus);
-    Boolean soupPropertyDescritpionStatus = client.schema().propertyCreator()
+    assertNotNull(soupPropertyNameStatus);
+    assertTrue(soupPropertyNameStatus.getResult());
+    Result<Boolean> soupPropertyDescritpionStatus = client.schema().propertyCreator()
             .withProperty(descriptionProperty).withClassName(soup.getClassName()).run();
-    assertTrue(soupPropertyDescritpionStatus);
+    assertNotNull(soupPropertyDescritpionStatus);
+    assertTrue(soupPropertyDescritpionStatus.getResult());
   }
 
   public void createWeaviateTestSchemaFoodWithReferenceProperty(WeaviateClient client) {
@@ -68,10 +75,12 @@ public class WeaviateTestGenerics {
             .description("reference to other foods")
             .name("otherFoods")
             .build();
-    Boolean pizzaRefAdd = client.schema().propertyCreator().withClassName("Pizza").withProperty(referenceProperty).run();
-    assertTrue(pizzaRefAdd);
-    Boolean soupRefAdd = client.schema().propertyCreator().withClassName("Soup").withProperty(referenceProperty).run();
-    assertTrue(soupRefAdd);
+    Result<Boolean> pizzaRefAdd = client.schema().propertyCreator().withClassName("Pizza").withProperty(referenceProperty).run();
+    assertNotNull(pizzaRefAdd);
+    assertTrue(pizzaRefAdd.getResult());
+    Result<Boolean> soupRefAdd = client.schema().propertyCreator().withClassName("Soup").withProperty(referenceProperty).run();
+    assertNotNull(soupRefAdd);
+    assertTrue(soupRefAdd.getResult());
   }
 
   public void createTestSchemaAndData(WeaviateClient client) {
@@ -91,9 +100,10 @@ public class WeaviateTestGenerics {
     ObjectsBatcher objectsBatcher = client.batch().objectsBatcher();
     Stream.of(menuPizza).forEach(objectsBatcher::withObject);
     Stream.of(menuSoup).forEach(objectsBatcher::withObject);
-    ObjectGetResponse[] insertStatus = objectsBatcher.run();
+    Result<ObjectGetResponse[]> insertStatus = objectsBatcher.run();
     assertNotNull(insertStatus);
-    assertEquals(6, insertStatus.length);
+    assertNotNull(insertStatus.getResult());
+    assertEquals(6, insertStatus.getResult().length);
   }
 
   private Object createObject(String className, String name, String description) {
@@ -104,7 +114,8 @@ public class WeaviateTestGenerics {
   }
 
   public void cleanupWeaviate(WeaviateClient client) {
-    Boolean deleteAllStatus = client.schema().allDeleter().run();
-    assertTrue(deleteAllStatus);
+    Result<Boolean> deleteAllStatus = client.schema().allDeleter().run();
+    assertNotNull(deleteAllStatus);
+    assertTrue(deleteAllStatus.getResult());
   }
 }

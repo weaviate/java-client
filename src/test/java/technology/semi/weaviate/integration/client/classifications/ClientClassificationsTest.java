@@ -15,6 +15,7 @@ import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.WeaviateClient;
+import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.batch.model.ObjectGetResponse;
 import technology.semi.weaviate.client.v1.classifications.model.Classification;
 import technology.semi.weaviate.client.v1.classifications.model.ClassificationType;
@@ -54,13 +55,13 @@ public class ClientClassificationsTest {
     String[] basedOnProperties = new String[]{"description"};
     // when
     createClassificationClasses(client, testGenerics);
-    Classification classification1 = client.classifications().scheduler()
+    Result<Classification> classification1 = client.classifications().scheduler()
             .withType(ClassificationType.Contextual)
             .withClassName("Pizza")
             .withClassifyProperties(classifyProperties)
             .withBasedOnProperties(basedOnProperties)
             .run();
-    Classification classificationWithComplete = client.classifications().scheduler()
+    Result<Classification> classificationWithComplete = client.classifications().scheduler()
             .withType(ClassificationType.Contextual)
             .withClassName("Pizza")
             .withClassifyProperties(classifyProperties)
@@ -70,11 +71,13 @@ public class ClientClassificationsTest {
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(classification1);
-    assertTrue(Arrays.asList(classification1.getBasedOnProperties()).contains("description"));
-    assertTrue(Arrays.asList(classification1.getClassifyProperties()).contains("tagged"));
+    assertNotNull(classification1.getResult());
+    assertTrue(Arrays.asList(classification1.getResult().getBasedOnProperties()).contains("description"));
+    assertTrue(Arrays.asList(classification1.getResult().getClassifyProperties()).contains("tagged"));
     assertNotNull(classificationWithComplete);
-    assertTrue(Arrays.asList(classificationWithComplete.getBasedOnProperties()).contains("description"));
-    assertTrue(Arrays.asList(classificationWithComplete.getClassifyProperties()).contains("tagged"));
+    assertNotNull(classificationWithComplete.getResult());
+    assertTrue(Arrays.asList(classificationWithComplete.getResult().getBasedOnProperties()).contains("description"));
+    assertTrue(Arrays.asList(classificationWithComplete.getResult().getClassifyProperties()).contains("tagged"));
   }
 
   @Test
@@ -88,21 +91,23 @@ public class ClientClassificationsTest {
     ParamsKNN paramsKNN = ParamsKNN.builder().k(3).build();
     // when
     createClassificationClasses(client, testGenerics);
-    Classification classification1 = client.classifications().scheduler()
+    Result<Classification> classification1 = client.classifications().scheduler()
             .withType(ClassificationType.KNN)
             .withClassName("Pizza")
             .withClassifyProperties(classifyProperties)
             .withBasedOnProperties(basedOnProperties)
             .withSettings(paramsKNN)
             .run();
-    Classification knnClassification = client.classifications().getter().withID(classification1.getId()).run();
+    Result<Classification> knnClassification = client.classifications().getter().withID(classification1.getResult().getId()).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(classification1);
+    assertNotNull(classification1.getResult());
     assertNotNull(knnClassification);
-    assertEquals(classification1.getId(), knnClassification.getId());
-    assertTrue(knnClassification.getSettings() instanceof Map);
-    Map settings = (Map) knnClassification.getSettings();
+    assertNotNull(knnClassification.getResult());
+    assertEquals(classification1.getResult().getId(), knnClassification.getResult().getId());
+    assertTrue(knnClassification.getResult().getSettings() instanceof Map);
+    Map settings = (Map) knnClassification.getResult().getSettings();
     assertEquals(3.0, settings.get("k"));
   }
 
@@ -119,16 +124,18 @@ public class ClientClassificationsTest {
             .description("tag for a pizza")
             .properties(Stream.of(nameProperty).collect(Collectors.toList()))
             .build();
-    Boolean classCreate = client.schema().classCreator().withClass(schemaClassTag).run();
-    Assert.assertTrue(classCreate);
+    Result<Boolean> classCreate = client.schema().classCreator().withClass(schemaClassTag).run();
+    assertNotNull(classCreate);
+    assertTrue(classCreate.getResult());
     // add tagged property
     Property tagProperty = Property.builder()
             .dataType(Arrays.asList("Tag"))
             .description("tag of pizza")
             .name("tagged")
             .build();
-    Boolean addTaggedProperty = client.schema().propertyCreator().withProperty(tagProperty).withClassName("Pizza").run();
-    assertTrue(addTaggedProperty);
+    Result<Boolean> addTaggedProperty = client.schema().propertyCreator().withProperty(tagProperty).withClassName("Pizza").run();
+    assertNotNull(addTaggedProperty);
+    assertTrue(addTaggedProperty.getResult());
     // create 2 pizzas
     String pizza1ID = "97fa5147-bdad-4d74-9a81-f8babc811b09";
     Object pizza1 = Object.builder().className("Pizza").id(pizza1ID).properties(new HashMap<String, java.lang.Object>() {{
@@ -142,9 +149,10 @@ public class ClientClassificationsTest {
       put("name", "Frutti di Mare");
       put("description", "Frutti di Mare is an Italian type of pizza that may be served with scampi, mussels or squid. It typically lacks cheese, with the seafood being served atop a tomato sauce.");
     }}).build();
-    ObjectGetResponse[] batchImport = client.batch().objectsBatcher().withObject(pizza1).withObject(pizza2).run();
+    Result<ObjectGetResponse[]> batchImport = client.batch().objectsBatcher().withObject(pizza1).withObject(pizza2).run();
     assertNotNull(batchImport);
-    Assert.assertEquals(2, batchImport.length);
+    assertNotNull(batchImport.getResult());
+    Assert.assertEquals(2, batchImport.getResult().length);
     // create 2 tags
     Object tag1 = Object.builder().className("Tag").properties(new HashMap<String, java.lang.Object>() {{
       put("name", "vegetarian");
@@ -152,8 +160,9 @@ public class ClientClassificationsTest {
     Object tag2 = Object.builder().className("Tag").properties(new HashMap<String, java.lang.Object>() {{
       put("name", "seafood");
     }}).build();
-    ObjectGetResponse[] batchImport2 = client.batch().objectsBatcher().withObject(tag1).withObject(tag2).run();
+    Result<ObjectGetResponse[]> batchImport2 = client.batch().objectsBatcher().withObject(tag1).withObject(tag2).run();
     assertNotNull(batchImport2);
-    Assert.assertEquals(2, batchImport2.length);
+    assertNotNull(batchImport2.getResult());
+    Assert.assertEquals(2, batchImport2.getResult().length);
   }
 }

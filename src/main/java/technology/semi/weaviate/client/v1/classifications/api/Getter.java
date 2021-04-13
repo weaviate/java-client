@@ -3,11 +3,12 @@ package technology.semi.weaviate.client.v1.classifications.api;
 import org.apache.commons.lang3.StringUtils;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.base.BaseClient;
-import technology.semi.weaviate.client.base.Client;
+import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
+import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.classifications.model.Classification;
 
-public class Getter extends BaseClient<Classification> implements Client<Classification> {
+public class Getter extends BaseClient<Classification> implements ClientResult<Classification> {
 
   private String id;
 
@@ -21,15 +22,12 @@ public class Getter extends BaseClient<Classification> implements Client<Classif
   }
 
   @Override
-  public Classification run() {
+  public Result<Classification> run() {
     if (StringUtils.isBlank(id)) {
       return null;
     }
     String path = String.format("/classifications/%s", id);
     Response<Classification> resp = sendGetRequest(path, Classification.class);
-    if (resp.getStatusCode() == 200) {
-      return resp.getBody();
-    }
-    return null;
+    return new Result<>(resp);
   }
 }

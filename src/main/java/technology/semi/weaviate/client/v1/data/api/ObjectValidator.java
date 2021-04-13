@@ -1,14 +1,19 @@
 package technology.semi.weaviate.client.v1.data.api;
 
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.base.BaseClient;
-import technology.semi.weaviate.client.base.Client;
+import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
+import technology.semi.weaviate.client.base.Result;
+import technology.semi.weaviate.client.base.WeaviateErrorMessage;
+import technology.semi.weaviate.client.base.WeaviateErrorResponse;
 import technology.semi.weaviate.client.v1.data.model.Object;
 
-public class ObjectValidator extends BaseClient<Object> implements Client<Boolean> {
+public class ObjectValidator extends BaseClient<Object> implements ClientResult<Boolean> {
 
   private String id;
   private String className;
@@ -34,9 +39,13 @@ public class ObjectValidator extends BaseClient<Object> implements Client<Boolea
   }
 
   @Override
-  public Boolean run() {
+  public Result<Boolean> run() {
     if (StringUtils.isEmpty(id)) {
-      return false;
+      WeaviateErrorMessage errorMessage = WeaviateErrorMessage.builder()
+              .message("id cannot be empty").build();
+      WeaviateErrorResponse errors = WeaviateErrorResponse.builder()
+              .error(Stream.of(errorMessage).collect(Collectors.toList())).build();
+      return new Result<>(500, false, errors);
     }
     Object obj = Object.builder()
             .className(className)
@@ -44,6 +53,6 @@ public class ObjectValidator extends BaseClient<Object> implements Client<Boolea
             .id(id)
             .build();
     Response<Object> resp = sendPostRequest("/objects/validate", obj, Object.class);
-    return resp.getStatusCode() == 200;
+    return new Result<>(resp.getStatusCode(), resp.getStatusCode() == 200, resp.getErrors());
   }
 }

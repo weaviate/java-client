@@ -10,6 +10,7 @@ import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.WeaviateClient;
+import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.contextionary.model.C11yWordsResponse;
 
 public class ClientContextionaryTest {
@@ -33,21 +34,24 @@ public class ClientContextionaryTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     // when
-    C11yWordsResponse pizzaHawaii = client.c11y().conceptsGetter().withConcept("pizzaHawaii").run();
+    Result<C11yWordsResponse> pizzaHawaii = client.c11y().conceptsGetter().withConcept("pizzaHawaii").run();
     // then
     Assert.assertNotNull(pizzaHawaii);
+    Assert.assertNotNull(pizzaHawaii.getResult());
+    Assert.assertNull(pizzaHawaii.getError());
   }
 
   // TODO: fix
-  // @Test
+//  @Test
   public void testContextionaryExtensionCreator() throws IOException {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     // when
-    Boolean extensionSuccess = client.c11y().extensionCreator()
+    Result<Boolean> extensionSuccess = client.c11y().extensionCreator()
             .withConcept("xoxo").withDefinition("Hugs and kisses").withWeight(1.0f).run();
     // then
-    Assert.assertTrue(extensionSuccess);
+    Assert.assertNotNull(extensionSuccess);
+    Assert.assertTrue(extensionSuccess.getResult());
   }
 }
