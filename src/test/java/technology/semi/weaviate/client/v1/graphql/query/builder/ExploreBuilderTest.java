@@ -20,7 +20,7 @@ public class ExploreBuilderTest extends TestCase {
     String query = ExploreBuilder.builder().withNearText(nearText).fields(fields).build().buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Explore(nearText: {concepts: [\"a\", \"b\"] certainty: 0.8 moveTo: {concepts: [\"a1\", \"b2\"] force: 0.1} }){certainty, beacon, className}}", query);
+    assertEquals("{Explore(nearText: {concepts: [\"a\", \"b\"] certainty: 0.8 moveTo: {concepts: [\"a1\", \"b2\"] force: 0.1}}){certainty, beacon, className}}", query);
   }
 
   @Test
@@ -33,7 +33,7 @@ public class ExploreBuilderTest extends TestCase {
     String query = ExploreBuilder.builder().withNearText(nearText).fields(fields).build().buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Explore(nearText: {concepts: [\"Cheese\", \"pineapple\"] }){certainty, beacon}}", query);
+    assertEquals("{Explore(nearText: {concepts: [\"Cheese\", \"pineapple\"]}){certainty, beacon}}", query);
   }
 
   @Test
@@ -46,7 +46,7 @@ public class ExploreBuilderTest extends TestCase {
     String query = ExploreBuilder.builder().withNearText(nearText).fields(fields).build().buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Explore(nearText: {concepts: [\"Cheese\"] certainty: 0.71 }){beacon}}", query);
+    assertEquals("{Explore(nearText: {concepts: [\"Cheese\"] certainty: 0.71}){beacon}}", query);
   }
 
   @Test
@@ -67,7 +67,7 @@ public class ExploreBuilderTest extends TestCase {
     assertNotNull(query);
     assertEquals("{Explore(nearText: {concepts: [\"Cheese\"] " +
             "moveTo: {concepts: [\"pizza\", \"pineapple\"] force: 0.2} " +
-            "moveAwayFrom: {concepts: [\"fish\"] force: 0.1} }){beacon}}", query);
+            "moveAwayFrom: {concepts: [\"fish\"] force: 0.1}}){beacon}}", query);
   }
 
   @Test
@@ -90,6 +90,6 @@ public class ExploreBuilderTest extends TestCase {
     // then
     assertNotNull(query);
     assertEquals("{Explore(nearText: {concepts: [\"New Yorker\"] moveTo: {concepts: [\"publisher\", \"articles\"] force: 0.5} moveAwayFrom: {concepts: " +
-            "[\"fashion\", \"shop\"] force: 0.2} }){certainty, beacon, className}}", query);
+            "[\"fashion\", \"shop\"] force: 0.2}}){certainty, beacon, className}}", query);
   }
 }

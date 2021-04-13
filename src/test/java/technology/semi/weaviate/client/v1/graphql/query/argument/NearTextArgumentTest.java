@@ -15,7 +15,7 @@ public class NearTextArgumentTest extends TestCase {
     // when
     String arg = nearText.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 }", arg);
+    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8}", arg);
   }
 
   @Test
@@ -41,7 +41,7 @@ public class NearTextArgumentTest extends TestCase {
     // when
     String arg = nearText.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveTo: {concepts: [\"a1\", \"b2\"] force: 0.1} }", arg);
+    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveTo: {concepts: [\"a1\", \"b2\"] force: 0.1}}", arg);
   }
 
   @Test
@@ -55,7 +55,7 @@ public class NearTextArgumentTest extends TestCase {
     // when
     String arg = nearText.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveTo: {concepts: [\"a1\", \"b2\"] } }", arg);
+    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveTo: {concepts: [\"a1\", \"b2\"]}}", arg);
   }
 
   @Test
@@ -69,7 +69,7 @@ public class NearTextArgumentTest extends TestCase {
     // when
     String arg = nearText.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveAwayFrom: {concepts: [\"a1\", \"b2\"] force: 0.1} }", arg);
+    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveAwayFrom: {concepts: [\"a1\", \"b2\"] force: 0.1}}", arg);
   }
 
   @Test
@@ -83,7 +83,7 @@ public class NearTextArgumentTest extends TestCase {
     // when
     String arg = nearText.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveAwayFrom: {concepts: [\"a1\", \"b2\"] } }", arg);
+    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveAwayFrom: {concepts: [\"a1\", \"b2\"]}}", arg);
   }
 
   @Test
@@ -102,7 +102,7 @@ public class NearTextArgumentTest extends TestCase {
     // then
     Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 " +
             "moveTo: {concepts: [\"z1\", \"y2\"] force: 0.8} " +
-            "moveAwayFrom: {concepts: [\"a1\", \"b2\"] force: 0.1} }", arg);
+            "moveAwayFrom: {concepts: [\"a1\", \"b2\"] force: 0.1}}", arg);
   }
 
   @Test
@@ -121,6 +121,6 @@ public class NearTextArgumentTest extends TestCase {
     // then
     Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 " +
             "moveTo: {concepts: [\"z1\", \"y2\"] force: 0.8} " +
-            "moveAwayFrom: {concepts: [\"a1\", \"b2\"] } }", arg);
+            "moveAwayFrom: {concepts: [\"a1\", \"b2\"]}}", arg);
   }
 }

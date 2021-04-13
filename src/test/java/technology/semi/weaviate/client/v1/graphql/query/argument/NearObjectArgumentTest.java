@@ -13,7 +13,7 @@ public class NearObjectArgumentTest extends TestCase {
     // when
     String arg = nearObject.build();
     // then
-    Assert.assertEquals("nearObject: {id: \"id\" beacon: \"beacon\" certainty: 0.8 }", arg);
+    Assert.assertEquals("nearObject: {id: \"id\" beacon: \"beacon\" certainty: 0.8}", arg);
   }
 
   public void testBuildWithoutCertainity() {
@@ -24,7 +24,7 @@ public class NearObjectArgumentTest extends TestCase {
     // when
     String arg = nearObject.build();
     // then
-    Assert.assertEquals("nearObject: {id: \"id\" beacon: \"beacon\" }", arg);
+    Assert.assertEquals("nearObject: {id: \"id\" beacon: \"beacon\"}", arg);
   }
 
   public void testBuildWithoutId() {
@@ -35,7 +35,7 @@ public class NearObjectArgumentTest extends TestCase {
     // when
     String arg = nearObject.build();
     // then
-    Assert.assertEquals("nearObject: {beacon: \"beacon\" certainty: 0.4 }", arg);
+    Assert.assertEquals("nearObject: {beacon: \"beacon\" certainty: 0.4}", arg);
   }
 
   public void testBuildWithoutBeacon() {
@@ -46,7 +46,7 @@ public class NearObjectArgumentTest extends TestCase {
     // when
     String arg = nearObject.build();
     // then
-    Assert.assertEquals("nearObject: {id: \"id\" certainty: 0.1 }", arg);
+    Assert.assertEquals("nearObject: {id: \"id\" certainty: 0.1}", arg);
   }
 
   public void testBuildWithoutAll() {
