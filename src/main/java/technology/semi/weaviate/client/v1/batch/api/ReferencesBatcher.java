@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.base.BaseClient;
-import technology.semi.weaviate.client.base.Client;
+import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
+import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.batch.model.BatchReference;
 import technology.semi.weaviate.client.v1.batch.model.BatchReferenceResponse;
 
-public class ReferencesBatcher extends BaseClient<BatchReferenceResponse[]> implements Client<BatchReferenceResponse[]> {
+public class ReferencesBatcher extends BaseClient<BatchReferenceResponse[]> implements ClientResult<BatchReferenceResponse[]> {
 
   private List<BatchReference> references;
 
@@ -24,12 +25,9 @@ public class ReferencesBatcher extends BaseClient<BatchReferenceResponse[]> impl
   }
 
   @Override
-  public BatchReferenceResponse[] run() {
+  public Result<BatchReferenceResponse[]> run() {
     BatchReference[] payload = references.stream().toArray(BatchReference[]::new);
     Response<BatchReferenceResponse[]> resp = sendPostRequest("/batch/references", payload, BatchReferenceResponse[].class);
-    if (resp.getStatusCode() == 200) {
-      return resp.getBody();
-    }
-    return null;
+    return new Result<>(resp);
   }
 }

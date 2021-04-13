@@ -15,6 +15,7 @@ import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.WeaviateClient;
+import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.batch.model.BatchReference;
 import technology.semi.weaviate.client.v1.batch.model.BatchReferenceResponse;
 import technology.semi.weaviate.client.v1.batch.model.ObjectGetResponse;
@@ -69,51 +70,58 @@ public class ClientBatchTest {
     Object objA2 = Object.builder().className("Soup").id(objA2ID).properties(propertiesSchemaA2).build();
     // when
     testGenerics.createWeaviateTestSchemaFood(client);
-    Object objT1 = client.data().creator()
+    Result<Object> objT1 = client.data().creator()
             .withClassName("Pizza")
             .withID(objTID)
             .withProperties(propertiesSchemaT)
             .run();
-    Object objA1 = client.data().creator()
+    Result<Object> objA1 = client.data().creator()
             .withClassName("Soup")
             .withID(objAID)
             .withProperties(propertiesSchemaA)
             .run();
-    ObjectGetResponse[] batchTs = client.batch().objectsBatcher()
-            .withObject(objT1)
+    Result<ObjectGetResponse[]> batchTs = client.batch().objectsBatcher()
+            .withObject(objT1.getResult())
             .withObject(objT2)
             .run();
-    ObjectGetResponse[] batchAs = client.batch().objectsBatcher()
-            .withObject(objA1)
+    Result<ObjectGetResponse[]> batchAs = client.batch().objectsBatcher()
+            .withObject(objA1.getResult())
             .withObject(objA2)
             .run();
     // check if created objects exist
-    List<Object> getObjT1 = client.data().objectsGetter().withID(objTID).run();
-    List<Object> getObjT2 = client.data().objectsGetter().withID(objT2ID).run();
-    List<Object> getObjA1 = client.data().objectsGetter().withID(objAID).run();
-    List<Object> getObjA2 = client.data().objectsGetter().withID(objA2ID).run();
+    Result<List<Object>> getObjT1 = client.data().objectsGetter().withID(objTID).run();
+    Result<List<Object>> getObjT2 = client.data().objectsGetter().withID(objT2ID).run();
+    Result<List<Object>> getObjA1 = client.data().objectsGetter().withID(objAID).run();
+    Result<List<Object>> getObjA2 = client.data().objectsGetter().withID(objA2ID).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(objT1);
-    assertEquals(objTID, objT1.getId());
+    assertNotNull(objT1.getResult());
+    assertEquals(objTID, objT1.getResult().getId());
     assertNotNull(objA1);
-    assertEquals(objAID, objA1.getId());
+    assertNotNull(objA1.getResult());
+    assertEquals(objAID, objA1.getResult().getId());
     assertNotNull(batchTs);
-    assertEquals(2, batchTs.length);
+    assertNotNull(batchTs.getResult());
+    assertEquals(2, batchTs.getResult().length);
     assertNotNull(batchAs);
-    assertEquals(2, batchAs.length);
+    assertNotNull(batchAs.getResult());
+    assertEquals(2, batchAs.getResult().length);
     assertNotNull(getObjT1);
-    assertEquals(1, getObjT1.size());
-    assertEquals(objTID, getObjT1.get(0).getId());
+    assertNotNull(getObjT1.getResult());
+    assertEquals(1, getObjT1.getResult().size());
+    assertEquals(objTID, getObjT1.getResult().get(0).getId());
     assertNotNull(getObjT2);
-    assertEquals(1, getObjT2.size());
-    assertEquals(objT2ID, getObjT2.get(0).getId());
+    assertNotNull(getObjT2.getResult());
+    assertEquals(1, getObjT2.getResult().size());
+    assertEquals(objT2ID, getObjT2.getResult().get(0).getId());
     assertNotNull(getObjA1);
-    assertEquals(1, getObjA1.size());
-    assertEquals(objAID, getObjA1.get(0).getId());
+    assertNotNull(getObjA1.getResult());
+    assertEquals(1, getObjA1.getResult().size());
+    assertEquals(objAID, getObjA1.getResult().get(0).getId());
     assertNotNull(getObjA2);
-    assertEquals(1, getObjA2.size());
-    assertEquals(objA2ID, getObjA2.get(0).getId());
+    assertEquals(1, getObjA2.getResult().size());
+    assertEquals(objA2ID, getObjA2.getResult().get(0).getId());
   }
 
   @Test
@@ -137,7 +145,7 @@ public class ClientBatchTest {
             .build();
     // when
     testGenerics.createWeaviateTestSchemaFoodWithReferenceProperty(client);
-    Object classT = client.data().creator()
+    Result<Object> classT = client.data().creator()
             .withClassName("Pizza")
             .withID(classTID)
             .withProperties(new HashMap<String, java.lang.Object>() {{
@@ -145,7 +153,7 @@ public class ClientBatchTest {
               put("description", "A innovation, some say revolution, in the pizza industry.");
             }})
             .run();
-    Object classA = client.data().creator()
+    Result<Object> classA = client.data().creator()
             .withClassName("Soup")
             .withID(classAID)
             .withProperties(new HashMap<String, java.lang.Object>() {{
@@ -153,8 +161,8 @@ public class ClientBatchTest {
               put("description", "Putting the game of letter soups to a whole new level.");
             }})
             .run();
-    ObjectGetResponse[] createClassT = client.batch().objectsBatcher().withObject(classT).run();
-    ObjectGetResponse[] createClassA = client.batch().objectsBatcher().withObject(classA).run();
+    Result<ObjectGetResponse[]> createClassT = client.batch().objectsBatcher().withObject(classT.getResult()).run();
+    Result<ObjectGetResponse[]> createClassA = client.batch().objectsBatcher().withObject(classA.getResult()).run();
     BatchReference refTtoT = client.batch().referencePayloadBuilder()
             .withFromClassName("Pizza")
             .withFromRefProp("otherFoods")
@@ -167,29 +175,33 @@ public class ClientBatchTest {
             .withFromID(classAID)
             .withToID(classAID)
             .payload();
-    BatchReferenceResponse[] refResult = client.batch().referencesBatcher()
+    Result<BatchReferenceResponse[]> refResult = client.batch().referencesBatcher()
             .withReference(refTtoA).withReference(refTtoT).withReference(refAtoT).withReference(refAtoA)
             .run();
-    List<Object> objT = client.data().objectsGetter().withID(classTID).run();
-    List<Object> objA = client.data().objectsGetter().withID(classAID).run();
+    Result<List<Object>> objT = client.data().objectsGetter().withID(classTID).run();
+    Result<List<Object>> objA = client.data().objectsGetter().withID(classAID).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(createClassT);
-    assertEquals(1, createClassT.length);
+    assertNotNull(createClassT.getResult());
+    assertEquals(1, createClassT.getResult().length);
     assertNotNull(createClassA);
-    assertEquals(1, createClassA.length);
+    assertNotNull(createClassA.getResult());
+    assertEquals(1, createClassA.getResult().length);
     assertNotNull(refTtoT);
     assertNotNull(refAtoA);
     assertNotNull(refResult);
-    assertEquals(4, refResult.length);
+    assertNotNull(refResult.getResult());
+    assertEquals(4, refResult.getResult().length);
     // assert objT
     assertNotNull(objT);
-    assertEquals(1, objT.size());
-    assertEquals(classTID, objT.get(0).getId());
-    assertNotNull(classTID, objT.get(0).getProperties());
-    assertNotNull(classTID, objT.get(0).getProperties().get("otherFoods"));
-    Assert.assertTrue(objT.get(0).getProperties().get("otherFoods") instanceof List);
-    List otherFoods = (List) objT.get(0).getProperties().get("otherFoods");
+    assertNotNull(objT.getResult());
+    assertEquals(1, objT.getResult().size());
+    assertEquals(classTID, objT.getResult().get(0).getId());
+    assertNotNull(classTID, objT.getResult().get(0).getProperties());
+    assertNotNull(classTID, objT.getResult().get(0).getProperties().get("otherFoods"));
+    Assert.assertTrue(objT.getResult().get(0).getProperties().get("otherFoods") instanceof List);
+    List otherFoods = (List) objT.getResult().get(0).getProperties().get("otherFoods");
     Assert.assertEquals(2, otherFoods.size());
     Assert.assertTrue(otherFoods.get(0) instanceof Map);
     Map otherFood0 = (Map) otherFoods.get(0);
@@ -199,12 +211,13 @@ public class ClientBatchTest {
     Assert.assertTrue(beacons.contains("weaviate://localhost/97fa5147-bdad-4d74-9a81-f8babc811b09"));
     // assert objA
     assertNotNull(objA);
-    assertEquals(1, objA.size());
-    assertEquals(classAID, objA.get(0).getId());
-    assertNotNull(classAID, objA.get(0).getProperties());
-    assertNotNull(classAID, objA.get(0).getProperties().get("otherFoods"));
-    Assert.assertTrue(objA.get(0).getProperties().get("otherFoods") instanceof List);
-    otherFoods = (List) objA.get(0).getProperties().get("otherFoods");
+    assertNotNull(objA.getResult());
+    assertEquals(1, objA.getResult().size());
+    assertEquals(classAID, objA.getResult().get(0).getId());
+    assertNotNull(classAID, objA.getResult().get(0).getProperties());
+    assertNotNull(classAID, objA.getResult().get(0).getProperties().get("otherFoods"));
+    Assert.assertTrue(objA.getResult().get(0).getProperties().get("otherFoods") instanceof List);
+    otherFoods = (List) objA.getResult().get(0).getProperties().get("otherFoods");
     Assert.assertEquals(2, otherFoods.size());
     Assert.assertTrue(otherFoods.get(0) instanceof Map);
     otherFood0 = (Map) otherFoods.get(0);

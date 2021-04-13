@@ -10,7 +10,12 @@ import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.WeaviateClient;
+import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.misc.model.Meta;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class ClientMiscTest {
   private String address;
@@ -33,9 +38,10 @@ public class ClientMiscTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     // when
-    Boolean livenessCheck = client.misc().liveChecker().run();
+    Result<Boolean> livenessCheck = client.misc().liveChecker().run();
     // then
-    Assert.assertTrue(livenessCheck);
+    assertNotNull(livenessCheck);
+    assertTrue(livenessCheck.getResult());
   }
 
   @Test
@@ -44,9 +50,10 @@ public class ClientMiscTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     // when
-    Boolean readinessCheck = client.misc().readyChecker().run();
+    Result<Boolean> readinessCheck = client.misc().readyChecker().run();
     // then
-    Assert.assertTrue(readinessCheck);
+    assertNotNull(readinessCheck);
+    assertTrue(readinessCheck.getResult());
   }
 
   @Test
@@ -55,10 +62,11 @@ public class ClientMiscTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     // when
-    Meta meta = client.misc().metaGetter().run();
+    Result<Meta> meta = client.misc().metaGetter().run();
     // then
-    Assert.assertEquals("http://[::]:8080", meta.getHostname());
-    Assert.assertEquals("1.2.1", meta.getVersion());
-    Assert.assertEquals("{text2vec-contextionary={version=en0.16.0-v1.0.2, wordCount=818072.0}}", meta.getModules().toString());
+    assertNotNull(meta);
+    assertEquals("http://[::]:8080", meta.getResult().getHostname());
+    assertEquals("1.2.1", meta.getResult().getVersion());
+    assertEquals("{text2vec-contextionary={version=en0.16.0-v1.0.2, wordCount=818072.0}}", meta.getResult().getModules().toString());
   }
 }

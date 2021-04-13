@@ -5,11 +5,12 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.base.BaseClient;
-import technology.semi.weaviate.client.base.Client;
+import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
+import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.data.model.Object;
 
-public class ObjectCreator extends BaseClient<Object> implements Client<Object> {
+public class ObjectCreator extends BaseClient<Object> implements ClientResult<Object> {
 
   private String uuid;
   private String className;
@@ -42,13 +43,13 @@ public class ObjectCreator extends BaseClient<Object> implements Client<Object> 
   }
 
   @Override
-  public Object run() {
+  public Result<Object> run() {
     Object obj = Object.builder()
             .className(className)
             .properties(properties)
             .id(getID())
             .build();
     Response<Object> resp = sendPostRequest("/objects", obj, Object.class);
-    return resp.getBody();
+    return new Result<>(resp);
   }
 }

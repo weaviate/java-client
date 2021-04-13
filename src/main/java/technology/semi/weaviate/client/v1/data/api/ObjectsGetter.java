@@ -7,28 +7,34 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.base.BaseClient;
-import technology.semi.weaviate.client.base.Client;
+import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
+import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.data.model.Object;
 import technology.semi.weaviate.client.v1.data.model.ObjectsListResponse;
 
-public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements Client<List<Object>> {
+public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements ClientResult<List<Object>> {
 
   private String id;
   private Integer limit;
   private HashSet<String> additional;
 
-  private class ObjectGetter extends BaseClient<Object> {
+  private class ObjectGetter extends BaseClient<Object> implements ClientResult<List<Object>> {
+    private String path;
+
     public ObjectGetter(Config config) {
       super(config);
     }
 
-    public List<Object> getObjects(String path) {
+    public ObjectGetter withPath(String path) {
+      this.path = path;
+      return this;
+    }
+
+    @Override
+    public Result<List<Object>> run() {
       Response<Object> resp = sendGetRequest(path, Object.class);
-      if (resp.getStatusCode() == 200) {
-        return Arrays.asList(resp.getBody());
-      }
-      return null;
+      return new Result<>(resp.getStatusCode(), Arrays.asList(resp.getBody()), resp.getErrors());
     }
   }
   private ObjectGetter objectGetter;
@@ -79,11 +85,11 @@ public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements Cl
   }
 
   @Override
-  public List<Object> run() {
+  public Result<List<Object>> run() {
     if (StringUtils.isNotBlank(id)) {
-      return this.objectGetter.getObjects(getPath());
+      return this.objectGetter.withPath(getPath()).run();
     }
     Response<ObjectsListResponse> resp = sendGetRequest(getPath(), ObjectsListResponse.class);
-    return Arrays.asList(resp.getBody().getObjects());
+    return new Result<>(resp.getStatusCode(), Arrays.asList(resp.getBody().getObjects()), resp.getErrors());
   }
 }

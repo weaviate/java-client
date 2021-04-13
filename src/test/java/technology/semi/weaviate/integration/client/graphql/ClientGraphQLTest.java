@@ -12,6 +12,7 @@ import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.WeaviateClient;
+import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.batch.model.ObjectGetResponse;
 import technology.semi.weaviate.client.v1.data.model.Object;
 import technology.semi.weaviate.client.v1.graphql.model.ExploreFields;
@@ -80,14 +81,15 @@ public class ClientGraphQLTest {
             .id(newObjID).certainty(1.0f).build();
     // when
     testGenerics.createTestSchemaAndData(client);
-    ObjectGetResponse[] insert = client.batch().objectsBatcher().withObject(soupWithID).run();
+    Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObject(soupWithID).run();
     GraphQLResponse resp = client.graphQL().get().withClassName("Soup")
             .withNearObject(nearObjectArgument)
             .withFields("name _additional{certainty}").run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(insert);
-    assertEquals(1, insert.length);
+    assertNotNull(insert.getResult());
+    assertEquals(1, insert.getResult().length);
     assertNotNull(resp);
     assertNotNull(resp.getData());
     assertTrue(resp.getData() instanceof Map);

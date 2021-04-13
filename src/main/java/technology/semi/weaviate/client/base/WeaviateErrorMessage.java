@@ -1,15 +1,15 @@
 package technology.semi.weaviate.client.base;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 @Getter
-@AllArgsConstructor
+@Builder
+@ToString
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class Response<T> {
-  int statusCode;
-  T body;
-  WeaviateErrorResponse errors;
+public class WeaviateErrorMessage {
+  String message;
 }

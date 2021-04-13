@@ -3,7 +3,6 @@ package technology.semi.weaviate.integration.client.schema;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -11,10 +10,15 @@ import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.WeaviateClient;
+import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.schema.model.Class;
 import technology.semi.weaviate.client.v1.schema.model.DataType;
 import technology.semi.weaviate.client.v1.schema.model.Property;
 import technology.semi.weaviate.client.v1.schema.model.Schema;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class ClientSchemaTest {
   private String address;
@@ -43,16 +47,19 @@ public class ClientSchemaTest {
             .vectorizer("text2vec-contextionary")
             .build();
     // when
-    Boolean createStatus = client.schema().classCreator().withClass(clazz).run();
-    Schema schema = client.schema().getter().run();
-    Boolean deleteStatus = client.schema().classDeleter().withClassName(clazz.getClassName()).run();
+    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
+    Result<Schema> schema = client.schema().getter().run();
+    Result<Boolean> deleteStatus = client.schema().classDeleter().withClassName(clazz.getClassName()).run();
     // then
-    Assert.assertTrue(createStatus);
-    Assert.assertNotNull(schema);
-    Assert.assertEquals(1, schema.getClasses().size());
-    Assert.assertEquals(clazz.getClassName(), schema.getClasses().get(0).getClassName());
-    Assert.assertEquals(clazz.getDescription(), schema.getClasses().get(0).getDescription());
-    Assert.assertTrue(deleteStatus);
+    assertNotNull(createStatus);
+    assertTrue(createStatus.getResult());
+    assertNotNull(schema);
+    assertNotNull(schema.getResult());
+    assertEquals(1, schema.getResult().getClasses().size());
+    assertEquals(clazz.getClassName(), schema.getResult().getClasses().get(0).getClassName());
+    assertEquals(clazz.getDescription(), schema.getResult().getClasses().get(0).getDescription());
+    assertNotNull(deleteStatus);
+    assertTrue(deleteStatus.getResult());
   }
 
   @Test
@@ -67,18 +74,21 @@ public class ClientSchemaTest {
             .vectorizer("text2vec-contextionary")
             .build();
     // when
-    Boolean createStatus = client.schema().classCreator().withClass(clazz).run();
-    Schema schemaAfterCreate = client.schema().getter().run();
-    Boolean deleteStatus = client.schema().allDeleter().run();
-    Schema schemaAfterDelete = client.schema().getter().run();
+    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
+    Result<Schema> schemaAfterCreate = client.schema().getter().run();
+    Result<Boolean> deleteStatus = client.schema().allDeleter().run();
+    Result<Schema> schemaAfterDelete = client.schema().getter().run();
     // then
-    Assert.assertTrue(createStatus);
-    Assert.assertNotNull(schemaAfterCreate);
-    Assert.assertEquals(1, schemaAfterCreate.getClasses().size());
-    Assert.assertEquals(clazz.getClassName(), schemaAfterCreate.getClasses().get(0).getClassName());
-    Assert.assertEquals(clazz.getDescription(), schemaAfterCreate.getClasses().get(0).getDescription());
-    Assert.assertTrue(deleteStatus);
-    Assert.assertEquals(0, schemaAfterDelete.getClasses().size());
+    assertNotNull(createStatus);
+    assertTrue(createStatus.getResult());
+    assertNotNull(schemaAfterCreate);
+    assertNotNull(schemaAfterCreate.getResult());
+    assertEquals(1, schemaAfterCreate.getResult().getClasses().size());
+    assertEquals(clazz.getClassName(), schemaAfterCreate.getResult().getClasses().get(0).getClassName());
+    assertEquals(clazz.getDescription(), schemaAfterCreate.getResult().getClasses().get(0).getDescription());
+    assertNotNull(deleteStatus);
+    assertTrue(deleteStatus.getResult());
+    assertEquals(0, schemaAfterDelete.getResult().getClasses().size());
   }
 
   @Test
@@ -95,23 +105,28 @@ public class ClientSchemaTest {
             .description("A soup made in part out of chicken, not for chicken.")
             .build();
     // when
-    Boolean pizzaCreateStatus = client.schema().classCreator().withClass(pizza).run();
-    Boolean chickenSoupCreateStatus = client.schema().classCreator().withClass(chickenSoup).run();
-    Schema schemaAfterCreate = client.schema().getter().run();
-    Boolean deletePizzaStatus = client.schema().classDeleter().withClassName(pizza.getClassName()).run();
-    Boolean deleteChickenSoupStatus = client.schema().classDeleter().withClassName(chickenSoup.getClassName()).run();
-    Schema schemaAfterDelete = client.schema().getter().run();
+    Result<Boolean> pizzaCreateStatus = client.schema().classCreator().withClass(pizza).run();
+    Result<Boolean> chickenSoupCreateStatus = client.schema().classCreator().withClass(chickenSoup).run();
+    Result<Schema> schemaAfterCreate = client.schema().getter().run();
+    Result<Boolean> deletePizzaStatus = client.schema().classDeleter().withClassName(pizza.getClassName()).run();
+    Result<Boolean> deleteChickenSoupStatus = client.schema().classDeleter().withClassName(chickenSoup.getClassName()).run();
+    Result<Schema> schemaAfterDelete = client.schema().getter().run();
     // then
-    Assert.assertTrue(pizzaCreateStatus);
-    Assert.assertTrue(chickenSoupCreateStatus);
-    Assert.assertNotNull(schemaAfterCreate);
-    Assert.assertNotNull(schemaAfterCreate.getClasses());
-    Assert.assertEquals(2, schemaAfterCreate.getClasses().size());
-    Assert.assertEquals(pizza.getClassName(), schemaAfterCreate.getClasses().get(0).getClassName());
-    Assert.assertEquals(chickenSoup.getDescription(), schemaAfterCreate.getClasses().get(1).getDescription());
-    Assert.assertTrue(deletePizzaStatus);
-    Assert.assertTrue(deleteChickenSoupStatus);
-    Assert.assertEquals(0, schemaAfterDelete.getClasses().size());
+    assertNotNull(pizzaCreateStatus);
+    assertTrue(pizzaCreateStatus.getResult());
+    assertNotNull(chickenSoupCreateStatus);
+    assertTrue(chickenSoupCreateStatus.getResult());
+    assertNotNull(schemaAfterCreate);
+    assertNotNull(schemaAfterCreate.getResult());
+    assertNotNull(schemaAfterCreate.getResult().getClasses());
+    assertEquals(2, schemaAfterCreate.getResult().getClasses().size());
+    assertEquals(pizza.getClassName(), schemaAfterCreate.getResult().getClasses().get(0).getClassName());
+    assertEquals(chickenSoup.getDescription(), schemaAfterCreate.getResult().getClasses().get(1).getDescription());
+    assertNotNull(deletePizzaStatus);
+    assertTrue(deletePizzaStatus.getResult());
+    assertNotNull(deleteChickenSoupStatus);
+    assertTrue(deleteChickenSoupStatus.getResult());
+    assertEquals(0, schemaAfterDelete.getResult().getClasses().size());
   }
 
   @Test
@@ -128,21 +143,25 @@ public class ClientSchemaTest {
             .description("A soup made in part out of chicken, not for chicken.")
             .build();
     // when
-    Boolean pizzaCreateStatus = client.schema().classCreator().withClass(pizza).run();
-    Boolean chickenSoupCreateStatus = client.schema().classCreator().withClass(chickenSoup).run();
-    Schema schemaAfterCreate = client.schema().getter().run();
-    Boolean deleteAllStatus = client.schema().allDeleter().run();
-    Schema schemaAfterDelete = client.schema().getter().run();
+    Result<Boolean> pizzaCreateStatus = client.schema().classCreator().withClass(pizza).run();
+    Result<Boolean> chickenSoupCreateStatus = client.schema().classCreator().withClass(chickenSoup).run();
+    Result<Schema> schemaAfterCreate = client.schema().getter().run();
+    Result<Boolean> deleteAllStatus = client.schema().allDeleter().run();
+    Result<Schema> schemaAfterDelete = client.schema().getter().run();
     // then
-    Assert.assertTrue(pizzaCreateStatus);
-    Assert.assertTrue(chickenSoupCreateStatus);
-    Assert.assertNotNull(schemaAfterCreate);
-    Assert.assertNotNull(schemaAfterCreate.getClasses());
-    Assert.assertEquals(2, schemaAfterCreate.getClasses().size());
-    Assert.assertEquals(pizza.getClassName(), schemaAfterCreate.getClasses().get(0).getClassName());
-    Assert.assertEquals(chickenSoup.getDescription(), schemaAfterCreate.getClasses().get(1).getDescription());
-    Assert.assertTrue(deleteAllStatus);
-    Assert.assertEquals(0, schemaAfterDelete.getClasses().size());
+    assertNotNull(pizzaCreateStatus);
+    assertTrue(pizzaCreateStatus.getResult());
+    assertNotNull(chickenSoupCreateStatus);
+    assertTrue(chickenSoupCreateStatus.getResult());
+    assertNotNull(schemaAfterCreate);
+    assertNotNull(schemaAfterCreate.getResult());
+    assertNotNull(schemaAfterCreate.getResult().getClasses());
+    assertEquals(2, schemaAfterCreate.getResult().getClasses().size());
+    assertEquals(pizza.getClassName(), schemaAfterCreate.getResult().getClasses().get(0).getClassName());
+    assertEquals(chickenSoup.getDescription(), schemaAfterCreate.getResult().getClasses().get(1).getDescription());
+    assertNotNull(deleteAllStatus);
+    assertTrue(deleteAllStatus.getResult());
+    assertEquals(0, schemaAfterDelete.getResult().getClasses().size());
   }
 
   @Test
@@ -164,34 +183,40 @@ public class ClientSchemaTest {
             .name("name")
             .build();
     // when
-    Boolean pizzaCreateStatus = client.schema().classCreator().withClass(pizza).run();
-    Boolean chickenSoupCreateStatus = client.schema().classCreator().withClass(chickenSoup).run();
-    Boolean pizzaPropertyCreateStatus = client.schema().propertyCreator()
+    Result<Boolean> pizzaCreateStatus = client.schema().classCreator().withClass(pizza).run();
+    Result<Boolean> chickenSoupCreateStatus = client.schema().classCreator().withClass(chickenSoup).run();
+    Result<Boolean> pizzaPropertyCreateStatus = client.schema().propertyCreator()
             .withProperty(newProperty).withClassName(pizza.getClassName()).run();
-    Boolean chickenSoupPropertyCreateStatus = client.schema().propertyCreator()
+    Result<Boolean> chickenSoupPropertyCreateStatus = client.schema().propertyCreator()
             .withProperty(newProperty).withClassName(chickenSoup.getClassName()).run();
-    Schema schemaAfterCreate = client.schema().getter().run();
-    Boolean deleteAllStatus = client.schema().allDeleter().run();
-    Schema schemaAfterDelete = client.schema().getter().run();
+    Result<Schema> schemaAfterCreate = client.schema().getter().run();
+    Result<Boolean> deleteAllStatus = client.schema().allDeleter().run();
+    Result<Schema> schemaAfterDelete = client.schema().getter().run();
     // then
-    Assert.assertTrue(pizzaCreateStatus);
-    Assert.assertTrue(chickenSoupCreateStatus);
-    Assert.assertTrue(pizzaPropertyCreateStatus);
-    Assert.assertTrue(chickenSoupPropertyCreateStatus);
-    Assert.assertNotNull(schemaAfterCreate);
-    Assert.assertNotNull(schemaAfterCreate.getClasses());
-    Assert.assertEquals(2, schemaAfterCreate.getClasses().size());
-    Assert.assertEquals(pizza.getClassName(), schemaAfterCreate.getClasses().get(0).getClassName());
-    Assert.assertEquals(pizza.getDescription(), schemaAfterCreate.getClasses().get(0).getDescription());
-    Assert.assertNotNull(schemaAfterCreate.getClasses().get(0).getProperties());
-    Assert.assertEquals(1, schemaAfterCreate.getClasses().get(0).getProperties().size());
-    Assert.assertEquals(newProperty.getName(), schemaAfterCreate.getClasses().get(0).getProperties().get(0).getName());
-    Assert.assertEquals(chickenSoup.getClassName(), schemaAfterCreate.getClasses().get(1).getClassName());
-    Assert.assertEquals(chickenSoup.getDescription(), schemaAfterCreate.getClasses().get(1).getDescription());
-    Assert.assertNotNull(schemaAfterCreate.getClasses().get(1).getProperties());
-    Assert.assertEquals(1, schemaAfterCreate.getClasses().get(1).getProperties().size());
-    Assert.assertEquals(newProperty.getName(), schemaAfterCreate.getClasses().get(1).getProperties().get(0).getName());
-    Assert.assertTrue(deleteAllStatus);
-    Assert.assertEquals(0, schemaAfterDelete.getClasses().size());
+    assertNotNull(pizzaCreateStatus);
+    assertTrue(pizzaCreateStatus.getResult());
+    assertNotNull(chickenSoupCreateStatus);
+    assertTrue(chickenSoupCreateStatus.getResult());
+    assertNotNull(pizzaPropertyCreateStatus);
+    assertTrue(pizzaPropertyCreateStatus.getResult());
+    assertNotNull(chickenSoupPropertyCreateStatus);
+    assertTrue(chickenSoupPropertyCreateStatus.getResult());
+    assertNotNull(schemaAfterCreate);
+    assertNotNull(schemaAfterCreate.getResult());
+    assertNotNull(schemaAfterCreate.getResult().getClasses());
+    assertEquals(2, schemaAfterCreate.getResult().getClasses().size());
+    assertEquals(pizza.getClassName(), schemaAfterCreate.getResult().getClasses().get(0).getClassName());
+    assertEquals(pizza.getDescription(), schemaAfterCreate.getResult().getClasses().get(0).getDescription());
+    assertNotNull(schemaAfterCreate.getResult().getClasses().get(0).getProperties());
+    assertEquals(1, schemaAfterCreate.getResult().getClasses().get(0).getProperties().size());
+    assertEquals(newProperty.getName(), schemaAfterCreate.getResult().getClasses().get(0).getProperties().get(0).getName());
+    assertEquals(chickenSoup.getClassName(), schemaAfterCreate.getResult().getClasses().get(1).getClassName());
+    assertEquals(chickenSoup.getDescription(), schemaAfterCreate.getResult().getClasses().get(1).getDescription());
+    assertNotNull(schemaAfterCreate.getResult().getClasses().get(1).getProperties());
+    assertEquals(1, schemaAfterCreate.getResult().getClasses().get(1).getProperties().size());
+    assertEquals(newProperty.getName(), schemaAfterCreate.getResult().getClasses().get(1).getProperties().get(0).getName());
+    assertNotNull(deleteAllStatus);
+    assertTrue(deleteAllStatus.getResult());
+    assertEquals(0, schemaAfterDelete.getResult().getClasses().size());
   }
 }

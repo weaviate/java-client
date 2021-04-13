@@ -2,19 +2,20 @@ package technology.semi.weaviate.client.v1.schema.api;
 
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.base.BaseClient;
-import technology.semi.weaviate.client.base.Client;
+import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
+import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.schema.model.Schema;
 
-public class SchemaGetter extends BaseClient<Schema> implements Client<Schema> {
+public class SchemaGetter extends BaseClient<Schema> implements ClientResult<Schema> {
 
   public SchemaGetter(Config config) {
     super(config);
   }
 
   @Override
-  public Schema run() {
+  public Result<Schema> run() {
     Response<Schema> resp = sendGetRequest("/schema", Schema.class);
-    return resp.getBody();
+    return new Result<>(resp);
   }
 }

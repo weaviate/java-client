@@ -4,9 +4,8 @@ import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -69,24 +68,30 @@ public abstract class BaseClient<T> {
   }
 
   private Response<T> sendRequest(Request request, Class<T> classOfT) {
+    int statusCode = 0;
     try {
       OkHttpClient httpClient = new OkHttpClient();
 
       okhttp3.Response response = httpClient.newCall(request).execute();
 
-      int statusCode = response.code();
+      statusCode = response.code();
       InputStream inputStream = response.body().byteStream();
 
-      T body = toResponse(inputStream, classOfT);
+      if (statusCode < 399) {
+        T body = toResponse(inputStream, classOfT);
+        return new Response<T>(statusCode, body, null);
+      }
 
-      return new Response<T>(statusCode, body);
+      WeaviateErrorResponse error = toResponse(inputStream, WeaviateErrorResponse.class);
+      return new Response<T>(statusCode, null, error);
     } catch (Exception e) {
-      e.printStackTrace();
+      WeaviateErrorMessage error = WeaviateErrorMessage.builder().message(e.getMessage()).build();
+      WeaviateErrorResponse errors = WeaviateErrorResponse.builder().error(Stream.of(error).collect(Collectors.toList())).build();
+      return new Response<T>(statusCode, null, errors);
     }
-    return null;
   }
 
-  private T toResponse(InputStream inputStream, Class<T> classOfT) {
+  private<C> C toResponse(InputStream inputStream, Class<C> classOfT) {
     return new Gson().fromJson(new BufferedReader(new InputStreamReader(inputStream)), classOfT);
   }
 
