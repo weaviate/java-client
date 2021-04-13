@@ -2,6 +2,7 @@ package technology.semi.weaviate.client.v1.graphql.query.builder;
 
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +19,7 @@ public class ExploreBuilder implements Query {
   NearTextArgument withNearText;
 
   private String createFilterClause() {
-    HashSet<String> filters = new LinkedHashSet<>();
+    Set<String> filters = new LinkedHashSet<>();
     if (withNearText != null) {
       filters.add(withNearText.build());
     }

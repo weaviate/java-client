@@ -2,6 +2,7 @@ package technology.semi.weaviate.client.v1.graphql.query.builder;
 
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,40 +38,39 @@ public class GetBuilder implements Query {
   }
 
   private String createFilterClause() {
-    HashSet<String> filters = new LinkedHashSet<>();
-    if (StringUtils.isNotBlank(withWhereFilter)) {
-      filters.add(String.format("where: %s", withWhereFilter));
+    if (includesFilterClause()) {
+      Set<String> filters = new LinkedHashSet<>();
+      if (StringUtils.isNotBlank(withWhereFilter)) {
+        filters.add(String.format("where: %s", withWhereFilter));
+      }
+      if (withNearTextFilter != null) {
+        filters.add(withNearTextFilter.build());
+      }
+      if (withNearObjectFilter != null) {
+        filters.add(withNearObjectFilter.build());
+      }
+      if (withNearVectorFilter != null && withNearVectorFilter.length > 0) {
+        filters.add(String.format("nearVector: {vector: [%s]}", StringUtils.joinWith(",", withNearVectorFilter)));
+      }
+      if (StringUtils.isNotBlank(withGroupFilter)) {
+        filters.add(String.format("group: %s", withGroupFilter));
+      }
+      if (withAskArgument != null) {
+        filters.add(withAskArgument.build());
+      }
+      if (withNearImageFilter != null) {
+        filters.add(withNearImageFilter.build());
+      }
+      if (limit != null) {
+        filters.add(String.format("limit: %s", limit));
+      }
+      return String.format("(%s)", StringUtils.joinWith(", ", filters.toArray()));
     }
-    if (withNearTextFilter != null) {
-      filters.add(withNearTextFilter.build());
-    }
-    if (withNearObjectFilter != null) {
-      filters.add(withNearObjectFilter.build());
-    }
-    if (withNearVectorFilter != null && withNearVectorFilter.length > 0) {
-      filters.add(String.format("nearVector: {vector: [%s]}", StringUtils.joinWith(",", withNearVectorFilter)));
-    }
-    if (StringUtils.isNotBlank(withGroupFilter)) {
-      filters.add(String.format("group: %s", withGroupFilter));
-    }
-    if (withAskArgument != null) {
-      filters.add(withAskArgument.build());
-    }
-    if (withNearImageFilter != null) {
-      filters.add(withNearImageFilter.build());
-    }
-    if (limit != null) {
-      filters.add(String.format("limit: %s", limit));
-    }
-    return String.format("(%s)", StringUtils.joinWith(", ", filters.toArray()));
+    return "";
   }
 
   @Override
   public String buildQuery() {
-    String filterClause = "";
-    if (includesFilterClause()) {
-      filterClause = createFilterClause();
-    }
-    return String.format("{Get {%s %s {%s}}}", className, filterClause, fields);
+    return String.format("{Get{%s%s{%s}}}", className, createFilterClause(), fields);
   }
 }

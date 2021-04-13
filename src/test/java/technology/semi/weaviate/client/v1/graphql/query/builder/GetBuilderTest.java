@@ -21,7 +21,7 @@ public class GetBuilderTest extends TestCase {
     String query = GetBuilder.builder().className("Pizza").fields("name").build().buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Get {Pizza  {name}}}", query);
+    assertEquals("{Get{Pizza{name}}}", query);
   }
 
   @Test
@@ -31,7 +31,7 @@ public class GetBuilderTest extends TestCase {
     String query = GetBuilder.builder().className("Pizza").fields("name description").build().buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Get {Pizza  {name description}}}", query);
+    assertEquals("{Get{Pizza{name description}}}", query);
   }
 
   @Test
@@ -44,10 +44,10 @@ public class GetBuilderTest extends TestCase {
     String query2 = GetBuilder.builder().className("Pizza").fields("name").withWhereFilter(where2).build().buildQuery();
     // then
     assertNotNull(query1);
-    assertEquals("{Get {Pizza (where: {path: [\"name\"] operator: Equal valueString: \"Hawaii\" }) {name}}}", query1);
+    assertEquals("{Get{Pizza(where: {path: [\"name\"] operator: Equal valueString: \"Hawaii\" }){name}}}", query1);
     assertNotNull(query2);
-    assertEquals("{Get {Pizza " +
-            "(where: {operator: Or operands: [{path: [\"name\"] operator: Equal valueString: \"Hawaii\"}, {path: [\"name\"] operator: Equal valueString: \"Doener\"}]}) " +
+    assertEquals("{Get{Pizza" +
+            "(where: {operator: Or operands: [{path: [\"name\"] operator: Equal valueString: \"Hawaii\"}, {path: [\"name\"] operator: Equal valueString: \"Doener\"}]})" +
             "{name}}}", query2);
   }
 
@@ -58,7 +58,7 @@ public class GetBuilderTest extends TestCase {
     String query = GetBuilder.builder().className("Pizza").fields("name").limit(2).build().buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Get {Pizza (limit: 2) {name}}}", query);
+    assertEquals("{Get{Pizza(limit: 2){name}}}", query);
   }
 
   @Test
@@ -69,7 +69,7 @@ public class GetBuilderTest extends TestCase {
     String query = GetBuilder.builder().className("Pizza").fields("name").withNearTextFilter(nearText).build().buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Get {Pizza (nearText: {concepts: [\"good\"] }) {name}}}", query);
+    assertEquals("{Get{Pizza(nearText: {concepts: [\"good\"]}){name}}}", query);
   }
 
   @Test
@@ -80,7 +80,7 @@ public class GetBuilderTest extends TestCase {
     String query = GetBuilder.builder().className("Pizza").fields("name").withNearVectorFilter(nearVector).build().buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Get {Pizza (nearVector: {vector: [0.0,1.0,0.8]}) {name}}}", query);
+    assertEquals("{Get{Pizza(nearVector: {vector: [0.0,1.0,0.8]}){name}}}", query);
   }
 
   @Test
@@ -91,7 +91,7 @@ public class GetBuilderTest extends TestCase {
     String query = GetBuilder.builder().className("Pizza").fields("name").withGroupFilter(group).build().buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Get {Pizza (group: {type: closest force: 0.4}) {name}}}", query);
+    assertEquals("{Get{Pizza(group: {type: closest force: 0.4}){name}}}", query);
   }
 
   @Test
@@ -109,7 +109,7 @@ public class GetBuilderTest extends TestCase {
             .build().buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Get {Pizza (where: {path: [\"name\"] operator: Equal valueString: \"Hawaii\"}, nearText: {concepts: [\"good\"] }, limit: 2) {name}}}", query);
+    assertEquals("{Get{Pizza(where: {path: [\"name\"] operator: Equal valueString: \"Hawaii\"}, nearText: {concepts: [\"good\"]}, limit: 2){name}}}", query);
   }
 
   @Test
@@ -128,8 +128,8 @@ public class GetBuilderTest extends TestCase {
             .build().buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Get {Pizza (where: {path: [\"name\"] operator: Equal valueString: \"Hawaii\"}, " +
-            "nearText: {concepts: [\"good\"] }, nearVector: {vector: [0.0,1.0,0.8]}, limit: 2) {name}}}", query);
+    assertEquals("{Get{Pizza(where: {path: [\"name\"] operator: Equal valueString: \"Hawaii\"}, " +
+            "nearText: {concepts: [\"good\"]}, nearVector: {vector: [0.0,1.0,0.8]}, limit: 2){name}}}", query);
   }
 
   @Test
@@ -145,7 +145,7 @@ public class GetBuilderTest extends TestCase {
             .build().buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Get {Pizza (nearText: {concepts: [\"good\"] }) {name}}}", query);
+    assertEquals("{Get{Pizza(nearText: {concepts: [\"good\"]}){name}}}", query);
   }
 
   @Test
@@ -176,11 +176,11 @@ public class GetBuilderTest extends TestCase {
             .build().buildQuery();
     // then
     assertNotNull(query1);
-    assertEquals("{Get {Pizza (ask: {question: \"Who are you?\"}) {name}}}", query1);
+    assertEquals("{Get{Pizza(ask: {question: \"Who are you?\"}){name}}}", query1);
     assertNotNull(query2);
-    assertEquals("{Get {Pizza (ask: {question: \"Who are you?\" properties: [\"prop1\", \"prop2\"]}) {name}}}", query2);
+    assertEquals("{Get{Pizza(ask: {question: \"Who are you?\" properties: [\"prop1\", \"prop2\"]}){name}}}", query2);
     assertNotNull(query3);
-    assertEquals("{Get {Pizza (ask: {question: \"Who are you?\" properties: [\"prop1\", \"prop2\"] certainty: 0.1}) {name}}}", query3);
+    assertEquals("{Get{Pizza(ask: {question: \"Who are you?\" properties: [\"prop1\", \"prop2\"] certainty: 0.1}){name}}}", query3);
   }
 
   @Test
@@ -205,10 +205,10 @@ public class GetBuilderTest extends TestCase {
             .className("Pizza").fields(fields).withNearImageFilter(nearImage3).limit(1)
             .build().buildQuery();
     assertNotNull(query1);
-    assertEquals(String.format("{Get {Pizza (nearImage: {image: \"%s\"}) {name}}}", base64File), query1);
+    assertEquals(String.format("{Get{Pizza(nearImage: {image: \"%s\"}){name}}}", base64File), query1);
     assertNotNull(query2);
-    assertEquals(String.format("{Get {Pizza (nearImage: {image: \"%s\" certainty: 0.4}) {name}}}", base64File), query2);
+    assertEquals(String.format("{Get{Pizza(nearImage: {image: \"%s\" certainty: 0.4}){name}}}", base64File), query2);
     assertNotNull(query3);
-    assertEquals(String.format("{Get {Pizza (nearImage: {image: \"%s\" certainty: 0.1}, limit: 1) {name}}}", image), query3);
+    assertEquals(String.format("{Get{Pizza(nearImage: {image: \"%s\" certainty: 0.1}, limit: 1){name}}}", image), query3);
   }
 }

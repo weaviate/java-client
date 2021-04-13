@@ -1,5 +1,7 @@
 package technology.semi.weaviate.client.v1.graphql.query.argument;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,18 +18,18 @@ public class NearObjectArgument implements Argument {
 
   @Override
   public String build() {
-    StringBuilder sb = new StringBuilder();
+    Set<String> arg = new LinkedHashSet<>();
     if (StringUtils.isNotBlank(id)) {
-      sb.append(String.format("id: \"%s\" ", id));
+      arg.add(String.format("id: \"%s\"", id));
     }
     if (StringUtils.isNotBlank(beacon)) {
-      sb.append(String.format("beacon: \"%s\" ", beacon));
+      arg.add(String.format("beacon: \"%s\"", beacon));
     }
     if (certainty != null) {
-      sb.append(String.format("certainty: %s ", certainty));
+      arg.add(String.format("certainty: %s", certainty));
     }
-    if (StringUtils.isNotBlank(sb)) {
-      return String.format("nearObject: {%s}", sb);
+    if (arg.size() > 0) {
+      return String.format("nearObject: {%s}", StringUtils.joinWith(" ", arg.toArray()));
     }
     return "";
   }
