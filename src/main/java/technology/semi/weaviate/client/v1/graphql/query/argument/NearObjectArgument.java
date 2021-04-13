@@ -18,13 +18,13 @@ public class NearObjectArgument implements Argument {
   public String build() {
     StringBuilder sb = new StringBuilder();
     if (StringUtils.isNotBlank(id)) {
-      sb.append("id: ").append(String.format("\"%s\" ", id));
+      sb.append(String.format("id: \"%s\" ", id));
     }
     if (StringUtils.isNotBlank(beacon)) {
-      sb.append("beacon: ").append(String.format("\"%s\" ", beacon));
+      sb.append(String.format("beacon: \"%s\" ", beacon));
     }
     if (certainty != null) {
-      sb.append("certainty: ").append(String.format("%s ", certainty));
+      sb.append(String.format("certainty: %s ", certainty));
     }
     if (StringUtils.isNotBlank(sb)) {
       return String.format("nearObject: {%s}", sb);

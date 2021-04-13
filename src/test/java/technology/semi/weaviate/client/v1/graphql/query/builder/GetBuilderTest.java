@@ -1,8 +1,15 @@
 package technology.semi.weaviate.client.v1.graphql.query.builder;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+import java.util.stream.Collectors;
 import junit.framework.TestCase;
 import org.junit.Test;
 import technology.semi.weaviate.client.v1.graphql.query.argument.AskArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.NearImageArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
 
 public class GetBuilderTest extends TestCase {
@@ -174,5 +181,34 @@ public class GetBuilderTest extends TestCase {
     assertEquals("{Get {Pizza (ask: {question: \"Who are you?\" properties: [\"prop1\", \"prop2\"]}) {name}}}", query2);
     assertNotNull(query3);
     assertEquals("{Get {Pizza (ask: {question: \"Who are you?\" properties: [\"prop1\", \"prop2\"] certainty: 0.1}) {name}}}", query3);
+  }
+
+  @Test
+  public void testBuildGetWithNearImage() throws FileNotFoundException {
+    // given
+    File imageFile = new File("src/test/resources/image/pixel.png");
+    String base64File = new BufferedReader(new InputStreamReader(new FileInputStream("src/test/resources/image/base64.txt")))
+            .lines().collect(Collectors.joining("\n"));
+    String image = "data:image/png;base64,iVBORw0KGgoAAAANS";
+    NearImageArgument nearImage1 = NearImageArgument.builder().imageFile(imageFile).build();
+    NearImageArgument nearImage2 = NearImageArgument.builder().imageFile(imageFile).certainty(0.4f).build();
+    NearImageArgument nearImage3 = NearImageArgument.builder().image(image).certainty(0.1f).build();
+    String fields = "name";
+    // when
+    String query1 = GetBuilder.builder()
+            .className("Pizza").fields(fields).withNearImageFilter(nearImage1)
+            .build().buildQuery();
+    String query2 = GetBuilder.builder()
+            .className("Pizza").fields(fields).withNearImageFilter(nearImage2)
+            .build().buildQuery();
+    String query3 = GetBuilder.builder()
+            .className("Pizza").fields(fields).withNearImageFilter(nearImage3).limit(1)
+            .build().buildQuery();
+    assertNotNull(query1);
+    assertEquals(String.format("{Get {Pizza (nearImage: {image: \"%s\"}) {name}}}", base64File), query1);
+    assertNotNull(query2);
+    assertEquals(String.format("{Get {Pizza (nearImage: {image: \"%s\" certainty: 0.4}) {name}}}", base64File), query2);
+    assertNotNull(query3);
+    assertEquals(String.format("{Get {Pizza (nearImage: {image: \"%s\" certainty: 0.1}, limit: 1) {name}}}", image), query3);
   }
 }
