@@ -2,8 +2,9 @@ package technology.semi.weaviate.client.v1.graphql.query;
 
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.base.BaseClient;
-import technology.semi.weaviate.client.base.Client;
+import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
+import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLQuery;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLResponse;
 import technology.semi.weaviate.client.v1.graphql.query.argument.AskArgument;
@@ -12,7 +13,7 @@ import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgum
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
 import technology.semi.weaviate.client.v1.graphql.query.builder.GetBuilder;
 
-public class Get extends BaseClient<GraphQLResponse> implements Client<GraphQLResponse> {
+public class Get extends BaseClient<GraphQLResponse> implements ClientResult<GraphQLResponse> {
   private GetBuilder.GetBuilderBuilder getBuilder;
 
   public Get(Config config) {
@@ -71,13 +72,10 @@ public class Get extends BaseClient<GraphQLResponse> implements Client<GraphQLRe
   }
 
   @Override
-  public GraphQLResponse run() {
+  public Result<GraphQLResponse> run() {
     String getQuery = this.getBuilder.build().buildQuery();
     GraphQLQuery query = GraphQLQuery.builder().query(getQuery).build();
     Response<GraphQLResponse> resp = sendPostRequest("/graphql", query, GraphQLResponse.class);
-    if (resp.getStatusCode() == 200) {
-      return resp.getBody();
-    }
-    return null;
+    return new Result<>(resp);
   }
 }

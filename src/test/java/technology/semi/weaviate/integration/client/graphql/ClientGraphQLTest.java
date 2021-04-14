@@ -23,6 +23,7 @@ import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextMovePar
 import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -50,9 +51,12 @@ public class ClientGraphQLTest {
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
     // when
     testGenerics.createTestSchemaAndData(client);
-    GraphQLResponse resp = client.graphQL().get().withClassName("Pizza").withFields("name").run();
+    Result<GraphQLResponse> result = client.graphQL().get().withClassName("Pizza").withFields("name").run();
     testGenerics.cleanupWeaviate(client);
     // then
+    assertNotNull(result);
+    assertFalse(result.hasErrors());
+    GraphQLResponse resp = result.getResult();
     assertNotNull(resp);
     assertNotNull(resp.getData());
     assertTrue(resp.getData() instanceof Map);
@@ -82,7 +86,7 @@ public class ClientGraphQLTest {
     // when
     testGenerics.createTestSchemaAndData(client);
     Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObject(soupWithID).run();
-    GraphQLResponse resp = client.graphQL().get().withClassName("Soup")
+    Result<GraphQLResponse> result = client.graphQL().get().withClassName("Soup")
             .withNearObject(nearObjectArgument)
             .withFields("name _additional{certainty}").run();
     testGenerics.cleanupWeaviate(client);
@@ -90,6 +94,9 @@ public class ClientGraphQLTest {
     assertNotNull(insert);
     assertNotNull(insert.getResult());
     assertEquals(1, insert.getResult().length);
+    assertNotNull(result);
+    assertFalse(result.hasErrors());
+    GraphQLResponse resp = result.getResult();
     assertNotNull(resp);
     assertNotNull(resp.getData());
     assertTrue(resp.getData() instanceof Map);
@@ -119,11 +126,14 @@ public class ClientGraphQLTest {
             .build();
     // when
     testGenerics.createTestSchemaAndData(client);
-    GraphQLResponse resp = client.graphQL().get().withClassName("Pizza")
+    Result<GraphQLResponse> result = client.graphQL().get().withClassName("Pizza")
             .withNearText(nearText)
             .withFields("name _additional{certainty}").run();
     testGenerics.cleanupWeaviate(client);
     // then
+    assertNotNull(result);
+    assertFalse(result.hasErrors());
+    GraphQLResponse resp = result.getResult();
     assertNotNull(resp);
     assertNotNull(resp.getData());
     assertTrue(resp.getData() instanceof Map);
@@ -149,12 +159,15 @@ public class ClientGraphQLTest {
             .build();
     // when
     testGenerics.createTestSchemaAndData(client);
-    GraphQLResponse resp = client.graphQL().get().withClassName("Pizza")
+    Result<GraphQLResponse> result = client.graphQL().get().withClassName("Pizza")
             .withNearText(nearText)
             .withLimit(1)
             .withFields("name _additional{certainty}").run();
     testGenerics.cleanupWeaviate(client);
     // then
+    assertNotNull(result);
+    assertFalse(result.hasErrors());
+    GraphQLResponse resp = result.getResult();
     assertNotNull(resp);
     assertNotNull(resp.getData());
     assertTrue(resp.getData() instanceof Map);
@@ -186,9 +199,12 @@ public class ClientGraphQLTest {
             .build();
     // when
     testGenerics.createTestSchemaAndData(client);
-    GraphQLResponse resp = client.graphQL().explore().withFields(fields).withNearText(withNearText).run();
+    Result<GraphQLResponse> result = client.graphQL().explore().withFields(fields).withNearText(withNearText).run();
     testGenerics.cleanupWeaviate(client);
     // then
+    assertNotNull(result);
+    assertFalse(result.hasErrors());
+    GraphQLResponse resp = result.getResult();
     assertNotNull(resp);
     assertNull(resp.getErrors());
     assertNotNull(resp.getData());
@@ -209,9 +225,12 @@ public class ClientGraphQLTest {
     String fields = "meta {count}";
     // when
     testGenerics.createTestSchemaAndData(client);
-    GraphQLResponse resp = client.graphQL().aggregrate().withFields(fields).withClassName("Pizza").run();
+    Result<GraphQLResponse> result = client.graphQL().aggregrate().withFields(fields).withClassName("Pizza").run();
     testGenerics.cleanupWeaviate(client);
     // then
+    assertNotNull(result);
+    assertFalse(result.hasErrors());
+    GraphQLResponse resp = result.getResult();
     assertNotNull(resp);
     assertNull(resp.getErrors());
     assertNotNull(resp.getData());
