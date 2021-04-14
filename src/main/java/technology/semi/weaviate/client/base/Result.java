@@ -27,4 +27,8 @@ public class Result<T> {
       this.error = null;
     }
   }
+
+  public boolean hasErrors() {
+    return this.error != null;
+  }
 }
