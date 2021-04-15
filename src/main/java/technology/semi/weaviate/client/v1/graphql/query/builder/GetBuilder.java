@@ -1,6 +1,5 @@
 package technology.semi.weaviate.client.v1.graphql.query.builder;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import lombok.AccessLevel;
@@ -50,7 +49,7 @@ public class GetBuilder implements Query {
         filters.add(withNearObjectFilter.build());
       }
       if (withNearVectorFilter != null && withNearVectorFilter.length > 0) {
-        filters.add(String.format("nearVector: {vector: [%s]}", StringUtils.joinWith(",", withNearVectorFilter)));
+        filters.add(String.format("nearVector: {vector: [%s]}", StringUtils.joinWith(",", (Object[]) withNearVectorFilter)));
       }
       if (StringUtils.isNotBlank(withGroupFilter)) {
         filters.add(String.format("group: %s", withGroupFilter));

@@ -1,6 +1,5 @@
 package technology.semi.weaviate.client.v1.graphql.query.builder;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import lombok.AccessLevel;
@@ -30,7 +29,7 @@ public class ExploreBuilder implements Query {
   public String buildQuery() {
     String fieldsClause = "";
     if (fields != null && fields.length > 0) {
-      fieldsClause = StringUtils.joinWith(", ", fields);
+      fieldsClause = StringUtils.joinWith(", ", (Object[]) fields);
     }
     String filterClause = createFilterClause();
     return String.format("{Explore(%s){%s}}", filterClause, fieldsClause);
