@@ -10,7 +10,7 @@ import technology.semi.weaviate.client.v1.misc.model.InvertedIndexConfig;
 
 @Getter
 @Builder
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class Class {
   @SerializedName("class")
   String className;
