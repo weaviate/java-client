@@ -14,7 +14,7 @@ import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.WeaviateClient;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.batch.model.ObjectGetResponse;
-import technology.semi.weaviate.client.v1.data.model.Object;
+import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
 import technology.semi.weaviate.client.v1.graphql.model.ExploreFields;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLResponse;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
@@ -77,7 +77,7 @@ public class ClientGraphQLTest {
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
     String newObjID = "6baed48e-2afe-4be4-a09d-b00a955d962b";
-    Object soupWithID = Object.builder().className("Soup").id(newObjID).properties(new HashMap<String, java.lang.Object>() {{
+    WeaviateObject soupWithID = WeaviateObject.builder().className("Soup").id(newObjID).properties(new HashMap<String, java.lang.Object>() {{
       put("name", "JustSoup");
       put("description", "soup with id");
     }}).build();

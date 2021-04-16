@@ -11,9 +11,9 @@ import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.base.WeaviateErrorMessage;
 import technology.semi.weaviate.client.base.WeaviateErrorResponse;
-import technology.semi.weaviate.client.v1.data.model.Object;
+import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
 
-public class ObjectUpdater extends BaseClient<Object> implements ClientResult<Boolean> {
+public class ObjectUpdater extends BaseClient<WeaviateObject> implements ClientResult<Boolean> {
 
   private String id;
   private String className;
@@ -53,17 +53,17 @@ public class ObjectUpdater extends BaseClient<Object> implements ClientResult<Bo
               .error(Stream.of(errorMessage).collect(Collectors.toList())).build();
       return new Result<>(500, false, errors);
     }
-    Object obj = Object.builder()
+    WeaviateObject obj = WeaviateObject.builder()
             .className(className)
             .properties(properties)
             .id(id)
             .build();
     String path = String.format("/objects/%s", id);
     if (withMerge != null && withMerge) {
-      Response<Object> resp = sendPatchRequest(path, obj, Object.class);
+      Response<WeaviateObject> resp = sendPatchRequest(path, obj, WeaviateObject.class);
       return new Result<>(resp.getStatusCode(), resp.getStatusCode() == 204, resp.getErrors());
     }
-    Response<Object> resp = sendPutRequest(path, obj, Object.class);
+    Response<WeaviateObject> resp = sendPutRequest(path, obj, WeaviateObject.class);
     return new Result<>(resp.getStatusCode(), resp.getStatusCode() == 200, resp.getErrors());
   }
 }

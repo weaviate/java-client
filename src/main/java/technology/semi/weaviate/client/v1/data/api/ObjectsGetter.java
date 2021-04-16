@@ -10,16 +10,16 @@ import technology.semi.weaviate.client.base.BaseClient;
 import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
-import technology.semi.weaviate.client.v1.data.model.Object;
+import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
 import technology.semi.weaviate.client.v1.data.model.ObjectsListResponse;
 
-public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements ClientResult<List<Object>> {
+public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements ClientResult<List<WeaviateObject>> {
 
   private String id;
   private Integer limit;
   private HashSet<String> additional;
 
-  private class ObjectGetter extends BaseClient<Object> implements ClientResult<List<Object>> {
+  private class ObjectGetter extends BaseClient<WeaviateObject> implements ClientResult<List<WeaviateObject>> {
     private String path;
 
     public ObjectGetter(Config config) {
@@ -32,8 +32,8 @@ public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements Cl
     }
 
     @Override
-    public Result<List<Object>> run() {
-      Response<Object> resp = sendGetRequest(path, Object.class);
+    public Result<List<WeaviateObject>> run() {
+      Response<WeaviateObject> resp = sendGetRequest(path, WeaviateObject.class);
       return new Result<>(resp.getStatusCode(), Arrays.asList(resp.getBody()), resp.getErrors());
     }
   }
@@ -85,7 +85,7 @@ public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements Cl
   }
 
   @Override
-  public Result<List<Object>> run() {
+  public Result<List<WeaviateObject>> run() {
     if (StringUtils.isNotBlank(id)) {
       return this.objectGetter.withPath(getPath()).run();
     }

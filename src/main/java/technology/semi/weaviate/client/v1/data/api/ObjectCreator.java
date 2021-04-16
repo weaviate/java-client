@@ -8,9 +8,9 @@ import technology.semi.weaviate.client.base.BaseClient;
 import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
-import technology.semi.weaviate.client.v1.data.model.Object;
+import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
 
-public class ObjectCreator extends BaseClient<Object> implements ClientResult<Object> {
+public class ObjectCreator extends BaseClient<WeaviateObject> implements ClientResult<WeaviateObject> {
 
   private String uuid;
   private String className;
@@ -43,13 +43,13 @@ public class ObjectCreator extends BaseClient<Object> implements ClientResult<Ob
   }
 
   @Override
-  public Result<Object> run() {
-    Object obj = Object.builder()
+  public Result<WeaviateObject> run() {
+    WeaviateObject obj = WeaviateObject.builder()
             .className(className)
             .properties(properties)
             .id(getID())
             .build();
-    Response<Object> resp = sendPostRequest("/objects", obj, Object.class);
+    Response<WeaviateObject> resp = sendPostRequest("/objects", obj, WeaviateObject.class);
     return new Result<>(resp);
   }
 }

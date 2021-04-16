@@ -11,7 +11,7 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.WeaviateClient;
 import technology.semi.weaviate.client.base.Result;
-import technology.semi.weaviate.client.v1.schema.model.Class;
+import technology.semi.weaviate.client.v1.schema.model.WeaviateClass;
 import technology.semi.weaviate.client.v1.schema.model.DataType;
 import technology.semi.weaviate.client.v1.schema.model.Property;
 import technology.semi.weaviate.client.v1.schema.model.Schema;
@@ -40,7 +40,7 @@ public class ClientSchemaTest {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
-    Class clazz = Class.builder()
+    WeaviateClass clazz = WeaviateClass.builder()
             .className("Band")
             .description("Band that plays and produces music")
             .vectorIndexType("hnsw")
@@ -67,7 +67,7 @@ public class ClientSchemaTest {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
-    Class clazz = Class.builder()
+    WeaviateClass clazz = WeaviateClass.builder()
             .className("Run")
             .description("Running from the fuzz")
             .vectorIndexType("hnsw")
@@ -96,11 +96,11 @@ public class ClientSchemaTest {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
-    Class pizza = Class.builder()
+    WeaviateClass pizza = WeaviateClass.builder()
             .className("Pizza")
             .description("A delicious religion like food and arguably the best export of Italy.")
             .build();
-    Class chickenSoup = Class.builder()
+    WeaviateClass chickenSoup = WeaviateClass.builder()
             .className("ChickenSoup")
             .description("A soup made in part out of chicken, not for chicken.")
             .build();
@@ -134,11 +134,11 @@ public class ClientSchemaTest {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
-    Class pizza = Class.builder()
+    WeaviateClass pizza = WeaviateClass.builder()
             .className("Pizza")
             .description("A delicious religion like food and arguably the best export of Italy.")
             .build();
-    Class chickenSoup = Class.builder()
+    WeaviateClass chickenSoup = WeaviateClass.builder()
             .className("ChickenSoup")
             .description("A soup made in part out of chicken, not for chicken.")
             .build();
@@ -169,11 +169,11 @@ public class ClientSchemaTest {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
-    Class pizza = Class.builder()
+    WeaviateClass pizza = WeaviateClass.builder()
             .className("Pizza")
             .description("A delicious religion like food and arguably the best export of Italy.")
             .build();
-    Class chickenSoup = Class.builder()
+    WeaviateClass chickenSoup = WeaviateClass.builder()
             .className("ChickenSoup")
             .description("A soup made in part out of chicken, not for chicken.")
             .build();

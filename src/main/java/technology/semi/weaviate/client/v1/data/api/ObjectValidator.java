@@ -11,9 +11,9 @@ import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.base.WeaviateErrorMessage;
 import technology.semi.weaviate.client.base.WeaviateErrorResponse;
-import technology.semi.weaviate.client.v1.data.model.Object;
+import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
 
-public class ObjectValidator extends BaseClient<Object> implements ClientResult<Boolean> {
+public class ObjectValidator extends BaseClient<WeaviateObject> implements ClientResult<Boolean> {
 
   private String id;
   private String className;
@@ -47,12 +47,12 @@ public class ObjectValidator extends BaseClient<Object> implements ClientResult<
               .error(Stream.of(errorMessage).collect(Collectors.toList())).build();
       return new Result<>(500, false, errors);
     }
-    Object obj = Object.builder()
+    WeaviateObject obj = WeaviateObject.builder()
             .className(className)
             .properties(properties)
             .id(id)
             .build();
-    Response<Object> resp = sendPostRequest("/objects/validate", obj, Object.class);
+    Response<WeaviateObject> resp = sendPostRequest("/objects/validate", obj, WeaviateObject.class);
     return new Result<>(resp.getStatusCode(), resp.getStatusCode() == 200, resp.getErrors());
   }
 }
