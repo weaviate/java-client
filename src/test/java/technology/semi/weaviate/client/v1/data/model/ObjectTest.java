@@ -20,7 +20,7 @@ public class ObjectTest extends TestCase {
     Map<String, java.lang.Object> properties = new HashMap<>();
     properties.put("name", "Pizza");
     properties.put("description", "Italian pizzas");
-    Object obj = Object.builder()
+    WeaviateObject obj = WeaviateObject.builder()
             .id("uuid")
             .className("class")
             .creationTimeUnix(1000l)
@@ -40,7 +40,7 @@ public class ObjectTest extends TestCase {
     File jsonFile = new File("src/test/resources/json/object.json");
     InputStreamReader reader = new InputStreamReader(new FileInputStream(jsonFile));
     // when
-    Object result = new Gson().fromJson(reader, Object.class);
+    WeaviateObject result = new Gson().fromJson(reader, WeaviateObject.class);
     // then
     Assert.assertNotNull(result);
     Assert.assertNotNull(result.getId());
@@ -60,7 +60,7 @@ public class ObjectTest extends TestCase {
     File jsonFile = new File("src/test/resources/json/object2.json");
     InputStreamReader reader = new InputStreamReader(new FileInputStream(jsonFile));
     // when
-    Object result = new Gson().fromJson(reader, Object.class);
+    WeaviateObject result = new Gson().fromJson(reader, WeaviateObject.class);
     // then
     Assert.assertNotNull(result);
     Assert.assertNotNull(result.getId());

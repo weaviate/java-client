@@ -11,7 +11,7 @@ import technology.semi.weaviate.client.v1.misc.model.InvertedIndexConfig;
 @Getter
 @Builder
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class Class {
+public class WeaviateClass {
   @SerializedName("class")
   String className;
   String description;

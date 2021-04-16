@@ -12,5 +12,5 @@ import lombok.experimental.FieldDefaults;
 public class Schema {
   String name;
   String maintainer;
-  List<Class> classes;
+  List<WeaviateClass> classes;
 }

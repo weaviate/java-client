@@ -1,13 +1,13 @@
 package technology.semi.weaviate.client.v1.data.model;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
 @Getter
-@AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@Builder
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ReferenceMetaClassification {
   Double closestLosingDistance;
   Double closestOverallDistance;

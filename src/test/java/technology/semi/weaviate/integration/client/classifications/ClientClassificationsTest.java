@@ -20,8 +20,8 @@ import technology.semi.weaviate.client.v1.batch.model.ObjectGetResponse;
 import technology.semi.weaviate.client.v1.classifications.model.Classification;
 import technology.semi.weaviate.client.v1.classifications.model.ClassificationType;
 import technology.semi.weaviate.client.v1.classifications.model.ParamsKNN;
-import technology.semi.weaviate.client.v1.data.model.Object;
-import technology.semi.weaviate.client.v1.schema.model.Class;
+import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
+import technology.semi.weaviate.client.v1.schema.model.WeaviateClass;
 import technology.semi.weaviate.client.v1.schema.model.DataType;
 import technology.semi.weaviate.client.v1.schema.model.Property;
 import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
@@ -119,7 +119,7 @@ public class ClientClassificationsTest {
             .description("name")
             .name("name")
             .build();
-    Class schemaClassTag = Class.builder()
+    WeaviateClass schemaClassTag = WeaviateClass.builder()
             .className("Tag")
             .description("tag for a pizza")
             .properties(Stream.of(nameProperty).collect(Collectors.toList()))
@@ -138,14 +138,14 @@ public class ClientClassificationsTest {
     assertTrue(addTaggedProperty.getResult());
     // create 2 pizzas
     String pizza1ID = "97fa5147-bdad-4d74-9a81-f8babc811b09";
-    Object pizza1 = Object.builder().className("Pizza").id(pizza1ID).properties(new HashMap<String, java.lang.Object>() {{
+    WeaviateObject pizza1 = WeaviateObject.builder().className("Pizza").id(pizza1ID).properties(new HashMap<String, java.lang.Object>() {{
       put("name", "Quattro Formaggi");
       put("description", "Pizza quattro formaggi Italian: [ˈkwattro forˈmaddʒi] (four cheese pizza) is a variety of pizza in Italian cuisine that is topped " +
               "with a combination of four kinds of cheese, usually melted together, with (rossa, red) or without (bianca, white) tomato sauce. It is popular " +
               "worldwide, including in Italy,[1] and is one of the iconic items from pizzerias's menus.");
     }}).build();
     String pizza2ID = "97fa5147-bdad-4d74-9a81-f8babc811b19";
-    Object pizza2 = Object.builder().className("Pizza").id(pizza2ID).properties(new HashMap<String, java.lang.Object>() {{
+    WeaviateObject pizza2 = WeaviateObject.builder().className("Pizza").id(pizza2ID).properties(new HashMap<String, java.lang.Object>() {{
       put("name", "Frutti di Mare");
       put("description", "Frutti di Mare is an Italian type of pizza that may be served with scampi, mussels or squid. It typically lacks cheese, with the seafood being served atop a tomato sauce.");
     }}).build();
@@ -154,10 +154,10 @@ public class ClientClassificationsTest {
     assertNotNull(batchImport.getResult());
     Assert.assertEquals(2, batchImport.getResult().length);
     // create 2 tags
-    Object tag1 = Object.builder().className("Tag").properties(new HashMap<String, java.lang.Object>() {{
+    WeaviateObject tag1 = WeaviateObject.builder().className("Tag").properties(new HashMap<String, java.lang.Object>() {{
       put("name", "vegetarian");
     }}).build();
-    Object tag2 = Object.builder().className("Tag").properties(new HashMap<String, java.lang.Object>() {{
+    WeaviateObject tag2 = WeaviateObject.builder().className("Tag").properties(new HashMap<String, java.lang.Object>() {{
       put("name", "seafood");
     }}).build();
     Result<ObjectGetResponse[]> batchImport2 = client.batch().objectsBatcher().withObject(tag1).withObject(tag2).run();

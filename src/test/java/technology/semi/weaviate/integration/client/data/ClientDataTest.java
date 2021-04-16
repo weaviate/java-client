@@ -12,9 +12,8 @@ import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.WeaviateClient;
-import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
-import technology.semi.weaviate.client.v1.data.model.Object;
+import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
 import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
 
 import static org.junit.Assert.assertEquals;
@@ -54,18 +53,18 @@ public class ClientDataTest {
     propertiesSchemaA.put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
     // when
     testGenerics.createWeaviateTestSchemaFood(client);
-    Result<Object> objectT = client.data().creator()
+    Result<WeaviateObject> objectT = client.data().creator()
             .withClassName("Pizza")
             .withID(objTID)
             .withProperties(propertiesSchemaT)
             .run();
-    Result<Object> objectA = client.data().creator()
+    Result<WeaviateObject> objectA = client.data().creator()
             .withClassName("Soup")
             .withID(objAID)
             .withProperties(propertiesSchemaA)
             .run();
-    Result<List<Object>> objectsT = client.data().objectsGetter().withID(objTID).run();
-    Result<List<Object>> objectsA = client.data().objectsGetter().withID(objAID).run();
+    Result<List<WeaviateObject>> objectsT = client.data().objectsGetter().withID(objTID).run();
+    Result<List<WeaviateObject>> objectsA = client.data().objectsGetter().withID(objAID).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(objectT);
@@ -100,24 +99,24 @@ public class ClientDataTest {
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
     // when
     testGenerics.createWeaviateTestSchemaFood(client);
-    Result<Object> pizzaObj1 = client.data().creator().withClassName("Pizza").withProperties(new HashMap<String, java.lang.Object>() {{
+    Result<WeaviateObject> pizzaObj1 = client.data().creator().withClassName("Pizza").withProperties(new HashMap<String, java.lang.Object>() {{
       put("name", "Margherita");
       put("description", "plain");
     }}).run();
-    Result<Object> pizzaObj2 = client.data().creator().withClassName("Pizza").withProperties(new HashMap<String, java.lang.Object>() {{
+    Result<WeaviateObject> pizzaObj2 = client.data().creator().withClassName("Pizza").withProperties(new HashMap<String, java.lang.Object>() {{
       put("name", "Pepperoni");
       put("description", "meat");
     }}).run();
-    Result<Object> soupObj1 = client.data().creator().withClassName("Soup").withProperties(new HashMap<String, java.lang.Object>() {{
+    Result<WeaviateObject> soupObj1 = client.data().creator().withClassName("Soup").withProperties(new HashMap<String, java.lang.Object>() {{
       put("name", "Chicken");
       put("description", "plain");
     }}).run();
-    Result<Object> soupObj2 = client.data().creator().withClassName("Soup").withProperties(new HashMap<String, java.lang.Object>() {{
+    Result<WeaviateObject> soupObj2 = client.data().creator().withClassName("Soup").withProperties(new HashMap<String, java.lang.Object>() {{
       put("name", "Tofu");
       put("description", "vegetarian");
     }}).run();
-    Result<List<Object>> objects = client.data().objectsGetter().run();
-    Result<List<Object>> objects1 = client.data().objectsGetter().withLimit(1).run();
+    Result<List<WeaviateObject>> objects = client.data().objectsGetter().run();
+    Result<List<WeaviateObject>> objects1 = client.data().objectsGetter().withLimit(1).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(pizzaObj1);
@@ -156,39 +155,39 @@ public class ClientDataTest {
     propertiesSchemaA.put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
     // when
     testGenerics.createWeaviateTestSchemaFood(client);
-    Result<Object> objectT = client.data().creator()
+    Result<WeaviateObject> objectT = client.data().creator()
             .withClassName("Pizza")
             .withID(objTID)
             .withProperties(propertiesSchemaT)
             .run();
-    Result<Object> objectA = client.data().creator()
+    Result<WeaviateObject> objectA = client.data().creator()
             .withClassName("Soup")
             .withID(objAID)
             .withProperties(propertiesSchemaA)
             .run();
-    Result<List<Object>> objectsT = client.data().objectsGetter().withID(objTID).run();
-    Result<List<Object>> objectsA = client.data().objectsGetter().withID(objAID).run();
-    Result<List<Object>> objsAdditionalT = client.data()
+    Result<List<WeaviateObject>> objectsT = client.data().objectsGetter().withID(objTID).run();
+    Result<List<WeaviateObject>> objectsA = client.data().objectsGetter().withID(objAID).run();
+    Result<List<WeaviateObject>> objsAdditionalT = client.data()
             .objectsGetter().withID(objTID)
             .withAdditional("classification")
             .withAdditional("nearestNeighbors")
             .withVector()
             .run();
-    Result<List<Object>> objsAdditionalA = client.data()
+    Result<List<WeaviateObject>> objsAdditionalA = client.data()
             .objectsGetter().withID(objAID)
             .withAdditional("classification")
             .withAdditional("nearestNeighbors")
             .withAdditional("interpretation")
             .withVector()
             .run();
-    Result<List<Object>> objsAdditionalA1 = client.data()
+    Result<List<WeaviateObject>> objsAdditionalA1 = client.data()
             .objectsGetter().withID(objAID)
             .run();
-    Result<List<Object>> objsAdditionalA2 = client.data()
+    Result<List<WeaviateObject>> objsAdditionalA2 = client.data()
             .objectsGetter().withID(objAID)
             .withAdditional("interpretation")
             .run();
-    Result<List<Object>> objsAdditionalAError = client.data()
+    Result<List<WeaviateObject>> objsAdditionalAError = client.data()
             .objectsGetter().withID(objAID)
             .withAdditional("featureProjection")
             .run();
@@ -253,20 +252,20 @@ public class ClientDataTest {
     propertiesSchemaA.put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
     // when
     testGenerics.createWeaviateTestSchemaFood(client);
-    Result<Object> objectT = client.data().creator()
+    Result<WeaviateObject> objectT = client.data().creator()
             .withClassName("Pizza")
             .withID(objTID)
             .withProperties(propertiesSchemaT)
             .run();
-    Result<Object> objectA = client.data().creator()
+    Result<WeaviateObject> objectA = client.data().creator()
             .withClassName("Soup")
             .withID(objAID)
             .withProperties(propertiesSchemaA)
             .run();
     Result<Boolean> deleteObjT = client.data().deleter().withID(objTID).run();
-    Result<List<Object>> objTlist = client.data().objectsGetter().withID(objTID).run();
+    Result<List<WeaviateObject>> objTlist = client.data().objectsGetter().withID(objTID).run();
     Result<Boolean> deleteObjA = client.data().deleter().withID(objAID).run();
-    Result<List<Object>> objAlist = client.data().objectsGetter().withID(objAID).run();
+    Result<List<WeaviateObject>> objAlist = client.data().objectsGetter().withID(objAID).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(objectT);
@@ -301,12 +300,12 @@ public class ClientDataTest {
     propertiesSchemaA.put("description", "missing description");
     // when
     testGenerics.createWeaviateTestSchemaFood(client);
-    Result<Object> objectT = client.data().creator()
+    Result<WeaviateObject> objectT = client.data().creator()
             .withClassName("Pizza")
             .withID(objTID)
             .withProperties(propertiesSchemaT)
             .run();
-    Result<Object> objectA = client.data().creator()
+    Result<WeaviateObject> objectA = client.data().creator()
             .withClassName("Soup")
             .withID(objAID)
             .withProperties(propertiesSchemaA)
@@ -327,8 +326,8 @@ public class ClientDataTest {
               put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
             }})
             .run();
-    Result<List<Object>> updatedObjsT = client.data().objectsGetter().withID(objTID).run();
-    Result<List<Object>> updatedObjsA = client.data().objectsGetter().withID(objAID).run();
+    Result<List<WeaviateObject>> updatedObjsT = client.data().objectsGetter().withID(objTID).run();
+    Result<List<WeaviateObject>> updatedObjsA = client.data().objectsGetter().withID(objAID).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(objectT);
@@ -369,12 +368,12 @@ public class ClientDataTest {
     propertiesSchemaA.put("description", "missing description");
     // when
     testGenerics.createWeaviateTestSchemaFood(client);
-    Result<Object> objectT = client.data().creator()
+    Result<WeaviateObject> objectT = client.data().creator()
             .withClassName("Pizza")
             .withID(objTID)
             .withProperties(propertiesSchemaT)
             .run();
-    Result<Object> objectA = client.data().creator()
+    Result<WeaviateObject> objectA = client.data().creator()
             .withClassName("Soup")
             .withID(objAID)
             .withProperties(propertiesSchemaA)
@@ -395,8 +394,8 @@ public class ClientDataTest {
             }})
             .withMerge()
             .run();
-    Result<List<Object>> mergedObjsT = client.data().objectsGetter().withID(objTID).run();
-    Result<List<Object>> mergeddObjsA = client.data().objectsGetter().withID(objAID).run();
+    Result<List<WeaviateObject>> mergedObjsT = client.data().objectsGetter().withID(objTID).run();
+    Result<List<WeaviateObject>> mergeddObjsA = client.data().objectsGetter().withID(objAID).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(objectT);
@@ -493,17 +492,17 @@ public class ClientDataTest {
     propertiesSchemaA.put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
     // when
     testGenerics.createWeaviateTestSchemaFood(client);
-    Result<Object> objectT = client.data().creator()
+    Result<WeaviateObject> objectT = client.data().creator()
             .withClassName("Pizza")
             .withID(objTID)
             .withProperties(propertiesSchemaT)
             .run();
-    Result<Object> objectA = client.data().creator()
+    Result<WeaviateObject> objectA = client.data().creator()
             .withClassName("Soup")
             .withID(objAID)
             .withProperties(propertiesSchemaA)
             .run();
-    Result<List<Object>> objsAdditionalT = client.data()
+    Result<List<WeaviateObject>> objsAdditionalT = client.data()
             .objectsGetter().withID(objTID)
             .withAdditional("featureProjection")
             .withVector()

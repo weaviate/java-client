@@ -9,15 +9,15 @@ import lombok.experimental.FieldDefaults;
 
 @Getter
 @Builder
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class Object {
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+public class WeaviateObject {
   String id;
   @SerializedName("class")
   String className;
   Long creationTimeUnix;
   final Long lastUpdateTimeUnix;
-  Map<String, java.lang.Object> properties;
-  Map<String, java.lang.Object> additional;
+  Map<String, Object> properties;
+  Map<String, Object> additional;
   Float[] vector;
   Object vectorWeights;
 }

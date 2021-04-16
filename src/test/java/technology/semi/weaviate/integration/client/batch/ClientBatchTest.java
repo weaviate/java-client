@@ -19,7 +19,7 @@ import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.batch.model.BatchReference;
 import technology.semi.weaviate.client.v1.batch.model.BatchReferenceResponse;
 import technology.semi.weaviate.client.v1.batch.model.ObjectGetResponse;
-import technology.semi.weaviate.client.v1.data.model.Object;
+import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
 import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
 
 import static org.junit.Assert.assertEquals;
@@ -56,7 +56,7 @@ public class ClientBatchTest {
     Map<String, java.lang.Object> propertiesSchemaT2 = new HashMap<>();
     propertiesSchemaT2.put("name", "Doener");
     propertiesSchemaT2.put("description", "A innovation, some say revolution, in the pizza industry.");
-    Object objT2 = Object.builder().className("Pizza").id(objT2ID).properties(propertiesSchemaT2).build();
+    WeaviateObject objT2 = WeaviateObject.builder().className("Pizza").id(objT2ID).properties(propertiesSchemaT2).build();
     // objA1
     String objAID = "565da3b6-60b3-40e5-ba21-e6bfe5dbba91";
     Map<String, java.lang.Object> propertiesSchemaA = new HashMap<>();
@@ -67,15 +67,15 @@ public class ClientBatchTest {
     Map<String, java.lang.Object> propertiesSchemaA2 = new HashMap<>();
     propertiesSchemaA2.put("name", "Beautiful");
     propertiesSchemaA2.put("description", "Putting the game of letter soups to a whole new level.");
-    Object objA2 = Object.builder().className("Soup").id(objA2ID).properties(propertiesSchemaA2).build();
+    WeaviateObject objA2 = WeaviateObject.builder().className("Soup").id(objA2ID).properties(propertiesSchemaA2).build();
     // when
     testGenerics.createWeaviateTestSchemaFood(client);
-    Result<Object> objT1 = client.data().creator()
+    Result<WeaviateObject> objT1 = client.data().creator()
             .withClassName("Pizza")
             .withID(objTID)
             .withProperties(propertiesSchemaT)
             .run();
-    Result<Object> objA1 = client.data().creator()
+    Result<WeaviateObject> objA1 = client.data().creator()
             .withClassName("Soup")
             .withID(objAID)
             .withProperties(propertiesSchemaA)
@@ -89,10 +89,10 @@ public class ClientBatchTest {
             .withObject(objA2)
             .run();
     // check if created objects exist
-    Result<List<Object>> getObjT1 = client.data().objectsGetter().withID(objTID).run();
-    Result<List<Object>> getObjT2 = client.data().objectsGetter().withID(objT2ID).run();
-    Result<List<Object>> getObjA1 = client.data().objectsGetter().withID(objAID).run();
-    Result<List<Object>> getObjA2 = client.data().objectsGetter().withID(objA2ID).run();
+    Result<List<WeaviateObject>> getObjT1 = client.data().objectsGetter().withID(objTID).run();
+    Result<List<WeaviateObject>> getObjT2 = client.data().objectsGetter().withID(objT2ID).run();
+    Result<List<WeaviateObject>> getObjA1 = client.data().objectsGetter().withID(objAID).run();
+    Result<List<WeaviateObject>> getObjA2 = client.data().objectsGetter().withID(objA2ID).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(objT1);
@@ -145,7 +145,7 @@ public class ClientBatchTest {
             .build();
     // when
     testGenerics.createWeaviateTestSchemaFoodWithReferenceProperty(client);
-    Result<Object> classT = client.data().creator()
+    Result<WeaviateObject> classT = client.data().creator()
             .withClassName("Pizza")
             .withID(classTID)
             .withProperties(new HashMap<String, java.lang.Object>() {{
@@ -153,7 +153,7 @@ public class ClientBatchTest {
               put("description", "A innovation, some say revolution, in the pizza industry.");
             }})
             .run();
-    Result<Object> classA = client.data().creator()
+    Result<WeaviateObject> classA = client.data().creator()
             .withClassName("Soup")
             .withID(classAID)
             .withProperties(new HashMap<String, java.lang.Object>() {{
@@ -178,8 +178,8 @@ public class ClientBatchTest {
     Result<BatchReferenceResponse[]> refResult = client.batch().referencesBatcher()
             .withReference(refTtoA).withReference(refTtoT).withReference(refAtoT).withReference(refAtoA)
             .run();
-    Result<List<Object>> objT = client.data().objectsGetter().withID(classTID).run();
-    Result<List<Object>> objA = client.data().objectsGetter().withID(classAID).run();
+    Result<List<WeaviateObject>> objT = client.data().objectsGetter().withID(classTID).run();
+    Result<List<WeaviateObject>> objA = client.data().objectsGetter().withID(classAID).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(createClassT);
