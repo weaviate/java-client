@@ -41,8 +41,7 @@ public class ClientContextionaryTest {
     Assert.assertNull(pizzaHawaii.getError());
   }
 
-  // TODO: fix
-//  @Test
+  @Test
   public void testContextionaryExtensionCreator() throws IOException {
     // given
     Config config = new Config("http", address);

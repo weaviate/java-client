@@ -8,7 +8,7 @@ import lombok.experimental.FieldDefaults;
 
 @Getter
 @Builder
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class Property {
   String name;
   List<String> dataType;
