@@ -1,7 +1,6 @@
 package technology.semi.weaviate.integration.client.batch;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +40,7 @@ public class ClientBatchTest {
   }
 
   @Test
-  public void testBatchCreate() throws IOException {
+  public void testBatchCreate() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -125,7 +124,7 @@ public class ClientBatchTest {
   }
 
   @Test
-  public void testBatchReferences() throws IOException {
+  public void testBatchReferences() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);

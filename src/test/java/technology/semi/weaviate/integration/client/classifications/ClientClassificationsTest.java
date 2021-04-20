@@ -1,7 +1,6 @@
 package technology.semi.weaviate.integration.client.classifications;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,9 +20,9 @@ import technology.semi.weaviate.client.v1.classifications.model.Classification;
 import technology.semi.weaviate.client.v1.classifications.model.ClassificationType;
 import technology.semi.weaviate.client.v1.classifications.model.ParamsKNN;
 import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
-import technology.semi.weaviate.client.v1.schema.model.WeaviateClass;
 import technology.semi.weaviate.client.v1.schema.model.DataType;
 import technology.semi.weaviate.client.v1.schema.model.Property;
+import technology.semi.weaviate.client.v1.schema.model.WeaviateClass;
 import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
 
 import static org.junit.Assert.assertEquals;
@@ -46,7 +45,7 @@ public class ClientClassificationsTest {
   }
 
   @Test
-  public void testClassificationScheduler() throws IOException {
+  public void testClassificationScheduler() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -81,7 +80,7 @@ public class ClientClassificationsTest {
   }
 
   @Test
-  public void testClassificationGetter() throws IOException {
+  public void testClassificationGetter() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);

@@ -1,7 +1,6 @@
 package technology.semi.weaviate.integration.client.data;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +16,6 @@ import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
 import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -38,7 +36,7 @@ public class ClientDataTest {
   }
 
   @Test
-  public void testDataCreate() throws IOException {
+  public void testDataCreate() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -92,7 +90,7 @@ public class ClientDataTest {
   }
 
   @Test
-  public void testDataGetActionsThings() throws IOException {
+  public void testDataGetActionsThings() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -140,7 +138,7 @@ public class ClientDataTest {
   }
 
   @Test
-  public void testDataGetWithAdditional() throws IOException {
+  public void testDataGetWithAdditional() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -237,7 +235,7 @@ public class ClientDataTest {
   }
 
   @Test
-  public void testDataDelete() throws IOException {
+  public void testDataDelete() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -285,7 +283,7 @@ public class ClientDataTest {
   }
 
   @Test
-  public void testDataUpdate() throws IOException {
+  public void testDataUpdate() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -349,11 +347,12 @@ public class ClientDataTest {
     assertNotNull(updatedObjsA.getResult());
     assertEquals(1, updatedObjsA.getResult().size());
     assertEquals("ChickenSoup", updatedObjsA.getResult().get(0).getProperties().get("name"));
-    assertEquals("Used by humans when their inferior genetics are attacked by microscopic organisms.", updatedObjsA.getResult().get(0).getProperties().get("description"));
+    assertEquals("Used by humans when their inferior genetics are attacked by microscopic organisms.", updatedObjsA.getResult().get(0).getProperties().get(
+            "description"));
   }
 
   @Test
-  public void testDataMerge() throws IOException {
+  public void testDataMerge() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -417,11 +416,12 @@ public class ClientDataTest {
     assertNotNull(mergeddObjsA.getResult());
     assertEquals(1, mergeddObjsA.getResult().size());
     assertEquals("ChickenSoup", mergeddObjsA.getResult().get(0).getProperties().get("name"));
-    assertEquals("Used by humans when their inferior genetics are attacked by microscopic organisms.", mergeddObjsA.getResult().get(0).getProperties().get("description"));
+    assertEquals("Used by humans when their inferior genetics are attacked by microscopic organisms.", mergeddObjsA.getResult().get(0).getProperties().get(
+            "description"));
   }
 
   @Test
-  public void testDataValidate() throws IOException {
+  public void testDataValidate() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -477,7 +477,7 @@ public class ClientDataTest {
   }
 
   @Test
-  public void testDataGetWithAdditionalError() throws IOException {
+  public void testDataGetWithAdditionalError() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);

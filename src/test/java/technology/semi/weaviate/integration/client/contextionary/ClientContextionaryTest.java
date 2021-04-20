@@ -1,7 +1,6 @@
 package technology.semi.weaviate.integration.client.contextionary;
 
 import java.io.File;
-import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -29,7 +28,7 @@ public class ClientContextionaryTest {
   }
 
   @Test
-  public void testContextionaryGetter() throws IOException {
+  public void testContextionaryGetter() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -42,7 +41,7 @@ public class ClientContextionaryTest {
   }
 
   @Test
-  public void testContextionaryExtensionCreator() throws IOException {
+  public void testContextionaryExtensionCreator() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
