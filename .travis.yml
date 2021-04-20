@@ -2,31 +2,32 @@ dist: trusty
 os: linux
 language: java
 jdk:
-  - oraclejdk8
+- oraclejdk8
 services:
-  - docker
-
+- docker
 notifications:
   email:
     on_success: change
-
 jobs:
   include:
-    - stage: "Run Build"
-      cache:
-        directories:
-          - $HOME/.m2
-      before_script:
-        - jdk_switcher use oraclejdk8
-      script:
-        - mvn -DskipTests clean package
-    - stage: "Run Tests"
-      if: branch = main OR type = pull_request
-      cache:
-        directories:
-          - $HOME/.m2
-      before_script:
-        - jdk_switcher use oraclejdk8
-        - docker-compose -f src/test/resources/docker-compose-test.yaml pull
-      script:
-        - mvn clean test
+  - stage: Run Build
+    cache:
+      directories:
+      - "$HOME/.m2"
+    before_script:
+    - jdk_switcher use oraclejdk8
+    script:
+    - mvn -DskipTests clean package
+  - stage: Run Tests
+    if: branch = main OR type = pull_request
+    cache:
+      directories:
+      - "$HOME/.m2"
+    before_script:
+    - jdk_switcher use oraclejdk8
+    - docker-compose -f src/test/resources/docker-compose-test.yaml pull
+    script:
+    - mvn clean test
+before_install:
+- openssl aes-256-cbc -K $encrypted_955c10630a82_key -iv $encrypted_955c10630a82_iv
+  -in secrets.tar.enc -out cicd/secrets.tar -d
