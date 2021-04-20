@@ -1,7 +1,6 @@
 package technology.semi.weaviate.integration.client.schema;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -11,10 +10,10 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.WeaviateClient;
 import technology.semi.weaviate.client.base.Result;
-import technology.semi.weaviate.client.v1.schema.model.WeaviateClass;
 import technology.semi.weaviate.client.v1.schema.model.DataType;
 import technology.semi.weaviate.client.v1.schema.model.Property;
 import technology.semi.weaviate.client.v1.schema.model.Schema;
+import technology.semi.weaviate.client.v1.schema.model.WeaviateClass;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -36,7 +35,7 @@ public class ClientSchemaTest {
   }
 
   @Test
-  public void testSchemaCreateBandClass() throws IOException {
+  public void testSchemaCreateBandClass() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -63,7 +62,7 @@ public class ClientSchemaTest {
   }
 
   @Test
-  public void testSchemaCreateRunClass() throws IOException {
+  public void testSchemaCreateRunClass() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -92,7 +91,7 @@ public class ClientSchemaTest {
   }
 
   @Test
-  public void testSchemaDeleteClasses() throws IOException {
+  public void testSchemaDeleteClasses() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -130,7 +129,7 @@ public class ClientSchemaTest {
   }
 
   @Test
-  public void testSchemaDeleteAllSchema() throws IOException {
+  public void testSchemaDeleteAllSchema() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -165,7 +164,7 @@ public class ClientSchemaTest {
   }
 
   @Test
-  public void testSchemaCreateClassesWithProperties() throws IOException {
+  public void testSchemaCreateClassesWithProperties() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);

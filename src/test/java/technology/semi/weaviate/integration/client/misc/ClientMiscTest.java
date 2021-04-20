@@ -1,8 +1,6 @@
 package technology.semi.weaviate.integration.client.misc;
 
 import java.io.File;
-import java.io.IOException;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -15,6 +13,7 @@ import technology.semi.weaviate.client.v1.misc.model.Meta;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class ClientMiscTest {
@@ -33,7 +32,7 @@ public class ClientMiscTest {
   }
 
   @Test
-  public void testMiscLivenessEndpoint() throws IOException {
+  public void testMiscLivenessEndpoint() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -45,7 +44,7 @@ public class ClientMiscTest {
   }
 
   @Test
-  public void testMiscReadinessEndpoint() throws IOException {
+  public void testMiscReadinessEndpoint() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -57,7 +56,7 @@ public class ClientMiscTest {
   }
 
   @Test
-  public void testMiscMetaEndpoint() throws IOException {
+  public void testMiscMetaEndpoint() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -65,6 +64,7 @@ public class ClientMiscTest {
     Result<Meta> meta = client.misc().metaGetter().run();
     // then
     assertNotNull(meta);
+    assertNull(meta.getError());
     assertEquals("http://[::]:8080", meta.getResult().getHostname());
     assertEquals("1.2.1", meta.getResult().getVersion());
     assertEquals("{text2vec-contextionary={version=en0.16.0-v1.0.2, wordCount=818072.0}}", meta.getResult().getModules().toString());

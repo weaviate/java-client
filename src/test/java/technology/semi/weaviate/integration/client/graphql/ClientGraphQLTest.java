@@ -1,7 +1,6 @@
 package technology.semi.weaviate.integration.client.graphql;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +43,7 @@ public class ClientGraphQLTest {
   }
 
   @Test
-  public void testGraphQLGet() throws IOException {
+  public void testGraphQLGet() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -71,7 +70,7 @@ public class ClientGraphQLTest {
   }
 
   @Test
-  public void testGraphQLGetWithNearObject() throws IOException {
+  public void testGraphQLGetWithNearObject() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -111,7 +110,7 @@ public class ClientGraphQLTest {
   }
 
   @Test
-  public void testGraphQLGetWithNearText() throws IOException {
+  public void testGraphQLGetWithNearText() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -148,7 +147,7 @@ public class ClientGraphQLTest {
   }
 
   @Test
-  public void testGraphQLGetWithNearTextAndLimit() throws IOException {
+  public void testGraphQLGetWithNearTextAndLimit() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -182,7 +181,7 @@ public class ClientGraphQLTest {
   }
 
   @Test
-  public void testGraphQLExplore() throws IOException {
+  public void testGraphQLExplore() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -217,7 +216,7 @@ public class ClientGraphQLTest {
   }
 
   @Test
-  public void testGraphQLAggregate() throws IOException {
+  public void testGraphQLAggregate() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
