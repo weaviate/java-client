@@ -7,31 +7,25 @@ import technology.semi.weaviate.client.v1.misc.api.OpenIDConfigGetter;
 import technology.semi.weaviate.client.v1.misc.api.ReadyChecker;
 
 public class Misc {
-  private MetaGetter metaGetter;
-  private OpenIDConfigGetter openIDConfigGetter;
-  private LiveChecker liveChecker;
-  private ReadyChecker readyChecker;
+  private final Config config;
 
   public Misc(Config config) {
-    this.metaGetter = new MetaGetter(config);
-    this.openIDConfigGetter = new OpenIDConfigGetter(config);
-    this.liveChecker = new LiveChecker(config);
-    this.readyChecker = new ReadyChecker(config);
+    this.config = config;
   }
 
   public MetaGetter metaGetter() {
-    return metaGetter;
+    return new MetaGetter(config);
   }
 
   public OpenIDConfigGetter openIDConfigGetter() {
-    return openIDConfigGetter;
+    return new OpenIDConfigGetter(config);
   }
 
   public LiveChecker liveChecker() {
-    return liveChecker;
+    return new LiveChecker(config);
   }
 
   public ReadyChecker readyChecker() {
-    return readyChecker;
+    return new ReadyChecker(config);
   }
 }

@@ -1,5 +1,7 @@
 package technology.semi.weaviate.client.base.http.impl;
 
+import java.util.Map;
+import java.util.Objects;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -16,6 +18,15 @@ import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.base.http.HttpResponse;
 
 public class CommonsHttpClientImpl implements HttpClient {
+  private final Map<String, String> headers;
+
+  public CommonsHttpClientImpl() {
+    this(null);
+  }
+
+  public CommonsHttpClientImpl(Map<String, String> headers) {
+    this.headers = headers;
+  }
 
   @Override
   public HttpResponse sendGetRequest(String url) throws Exception {
@@ -55,11 +66,18 @@ public class CommonsHttpClientImpl implements HttpClient {
     return sendRequest(httpPost);
   }
 
-
   private HttpEntityEnclosingRequestBase getRequest(String url, String method) {
-    if (method == "PUT") {
+    HttpEntityEnclosingRequestBase request = createRequest(url, method);
+    if (headers != null && headers.size() > 0) {
+      headers.forEach(request::addHeader);
+    }
+    return request;
+  }
+
+  private HttpEntityEnclosingRequestBase createRequest(String url, String method) {
+    if (Objects.equals(method, "PUT")) {
       return new HttpPut(url);
-    } else if (method == "PATCH") {
+    } else if (Objects.equals(method, "PATCH")) {
       return new HttpPatch(url);
     } else {
       return new HttpPost(url);

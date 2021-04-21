@@ -6,7 +6,7 @@ import technology.semi.weaviate.client.v1.batch.api.ReferencePayloadBuilder;
 import technology.semi.weaviate.client.v1.batch.api.ReferencesBatcher;
 
 public class Batch {
-  private Config config;
+  private final Config config;
 
   public Batch(Config config) {
     this.config = config;

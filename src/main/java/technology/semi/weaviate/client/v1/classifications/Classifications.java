@@ -5,7 +5,7 @@ import technology.semi.weaviate.client.v1.classifications.api.Getter;
 import technology.semi.weaviate.client.v1.classifications.api.Scheduler;
 
 public class Classifications {
-  private Config config;
+  private final Config config;
 
   public Classifications(Config config) {
     this.config = config;

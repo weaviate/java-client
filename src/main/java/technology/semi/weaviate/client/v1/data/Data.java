@@ -8,7 +8,7 @@ import technology.semi.weaviate.client.v1.data.api.ObjectValidator;
 import technology.semi.weaviate.client.v1.data.api.ObjectsGetter;
 
 public class Data {
-  private Config config;
+  private final Config config;
 
   public Data(Config config) {
     this.config = config;

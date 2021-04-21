@@ -14,7 +14,7 @@ public abstract class BaseClient<T> {
 
   public BaseClient(Config config) {
     this.config = config;
-    this.client = new CommonsHttpClientImpl();
+    this.client = new CommonsHttpClientImpl(config.getHeaders());
   }
 
   protected Response<T> sendGetRequest(String endpoint, Class<T> classOfT) {

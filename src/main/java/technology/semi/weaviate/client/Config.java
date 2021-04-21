@@ -1,23 +1,29 @@
 package technology.semi.weaviate.client;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.experimental.FieldDefaults;
+import java.util.Map;
 
-@Getter
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class Config {
-  String scheme;
-  String host;
-  String version;
+  private final String scheme;
+  private final String host;
+  private final String version;
+  private final Map<String, String> headers;
 
-  public Config(String scheme, String host) {
+  public Config(String scheme, String host, Map<String, String> headers) {
     this.scheme = scheme;
     this.host = host;
     this.version = "v1";
+    this.headers = headers;
+  }
+
+  public Config(String scheme, String host) {
+    this(scheme, host, null);
   }
 
   public String getBaseURL() {
     return scheme + "://" + host + "/" + version;
+  }
+
+  public Map<String, String> getHeaders() {
+    return this.headers;
   }
 }
