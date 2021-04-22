@@ -80,7 +80,7 @@ public class ClientGraphQLTest {
       put("name", "JustSoup");
       put("description", "soup with id");
     }}).build();
-    NearObjectArgument nearObjectArgument = NearObjectArgument.builder()
+    NearObjectArgument nearObjectArgument = client.graphQL().arguments().nearObjectArgBuilder()
             .id(newObjID).certainty(1.0f).build();
     // when
     testGenerics.createTestSchemaAndData(client);
@@ -118,7 +118,7 @@ public class ClientGraphQLTest {
     NearTextMoveParameters moveAway = NearTextMoveParameters.builder()
             .concepts(new String[]{"Universally"}).force(0.8f)
             .build();
-    NearTextArgument nearText = NearTextArgument.builder()
+    NearTextArgument nearText = client.graphQL().arguments().nearTextArgBuilder()
             .concepts(new String[]{"some say revolution"})
             .moveAwayFrom(moveAway)
             .certainty(0.8f)
@@ -152,7 +152,7 @@ public class ClientGraphQLTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-    NearTextArgument nearText = NearTextArgument.builder()
+    NearTextArgument nearText = client.graphQL().arguments().nearTextArgBuilder()
             .concepts(new String[]{"some say revolution"})
             .certainty(0.8f)
             .build();
@@ -188,11 +188,11 @@ public class ClientGraphQLTest {
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
     ExploreFields[] fields = new ExploreFields[]{ExploreFields.CERTAINTY, ExploreFields.BEACON, ExploreFields.CLASS_NAME};
     String[] concepts = new String[]{"pineapple slices", "ham"};
-    NearTextMoveParameters moveTo = NearTextMoveParameters.builder()
+    NearTextMoveParameters moveTo = client.graphQL().arguments().nearTextMoveParameterBuilder()
             .concepts(new String[]{"Pizza"}).force(0.3f).build();
-    NearTextMoveParameters moveAwayFrom = NearTextMoveParameters.builder()
+    NearTextMoveParameters moveAwayFrom = client.graphQL().arguments().nearTextMoveParameterBuilder()
             .concepts(new String[]{"toast", "bread"}).force(0.4f).build();
-    NearTextArgument withNearText = NearTextArgument.builder()
+    NearTextArgument withNearText = client.graphQL().arguments().nearTextArgBuilder()
             .concepts(concepts).certainty(0.71f)
             .moveTo(moveTo).moveAwayFrom(moveAwayFrom)
             .build();
@@ -224,7 +224,7 @@ public class ClientGraphQLTest {
     String fields = "meta {count}";
     // when
     testGenerics.createTestSchemaAndData(client);
-    Result<GraphQLResponse> result = client.graphQL().aggregrate().withFields(fields).withClassName("Pizza").run();
+    Result<GraphQLResponse> result = client.graphQL().aggregate().withFields(fields).withClassName("Pizza").run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(result);
