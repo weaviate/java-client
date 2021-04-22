@@ -4,9 +4,32 @@ import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.v1.graphql.query.Aggregate;
 import technology.semi.weaviate.client.v1.graphql.query.Explore;
 import technology.semi.weaviate.client.v1.graphql.query.Get;
+import technology.semi.weaviate.client.v1.graphql.query.argument.AskArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.NearImageArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextMoveParameters;
 
 public class GraphQL {
   private Config config;
+
+  public class Arguments {
+    public NearTextArgument.NearTextArgumentBuilder nearTextArgBuilder() {
+      return NearTextArgument.builder();
+    }
+    public NearTextMoveParameters.NearTextMoveParametersBuilder nearTextMoveParameterBuilder() {
+      return NearTextMoveParameters.builder();
+    }
+    public NearObjectArgument.NearObjectArgumentBuilder nearObjectArgBuilder() {
+      return NearObjectArgument.builder();
+    }
+    public AskArgument.AskArgumentBuilder askArgBuilder() {
+      return AskArgument.builder();
+    }
+    public NearImageArgument.NearImageArgumentBuilder nearImageArgBuilder() {
+      return NearImageArgument.builder();
+    }
+  }
 
   public GraphQL(Config config) {
     this.config = config;
@@ -20,7 +43,11 @@ public class GraphQL {
     return new Explore(config);
   }
 
-  public Aggregate aggregrate() {
+  public Aggregate aggregate() {
     return new Aggregate(config);
+  }
+
+  public GraphQL.Arguments arguments() {
+    return new GraphQL.Arguments();
   }
 }
