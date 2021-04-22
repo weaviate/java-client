@@ -5,7 +5,7 @@ import technology.semi.weaviate.client.v1.contextionary.api.ConceptsGetter;
 import technology.semi.weaviate.client.v1.contextionary.api.ExtensionCreator;
 
 public class Contextionary {
-  private Config config;
+  private final Config config;
 
   public Contextionary(Config config) {
     this.config = config;

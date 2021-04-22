@@ -8,7 +8,7 @@ import technology.semi.weaviate.client.v1.schema.api.SchemaDeleter;
 import technology.semi.weaviate.client.v1.schema.api.SchemaGetter;
 
 public class Schema {
-  private Config config;
+  private final Config config;
 
   public Schema(Config config) {
     this.config = config;
