@@ -41,4 +41,4 @@ jobs:
       directories:
         - "$HOME/.m2"
     script:
-      - mvn -DskipTests deploy
+      - mvn deploy
