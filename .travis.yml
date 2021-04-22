@@ -33,7 +33,7 @@ jobs:
     script:
     - mvn clean test
   - stage: Deploy Artifacts
-    if: tag IS present OR (branch = main AND type != pull_request)
+    if: tag IS present
     branches:
       only:
         - main
