@@ -9,5 +9,5 @@ public interface DataType {
   String BOOLEAN = "boolean";
   String DATE = "date";
   String GEO_COORDINATES = "geoCoordinates";
-  String PHONE_NUMBE = "phoneNumber";
+  String PHONE_NUMBER = "phoneNumber";
 }
