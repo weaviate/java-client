@@ -1,6 +1,7 @@
 package technology.semi.weaviate.integration.client.schema;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -216,6 +217,86 @@ public class ClientSchemaTest {
     assertEquals(newProperty.getName(), schemaAfterCreate.getResult().getClasses().get(1).getProperties().get(0).getName());
     assertNotNull(deleteAllStatus);
     assertTrue(deleteAllStatus.getResult());
+    assertEquals(0, schemaAfterDelete.getResult().getClasses().size());
+  }
+
+  @Test
+  public void testSchemaCreateClassWithProperties() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateClass clazz = WeaviateClass.builder()
+            .className("Article")
+            .description("A written text, for example a news article or blog post")
+            .vectorIndexType("hnsw")
+            .vectorizer("text2vec-contextionary")
+            .properties(new ArrayList() {{
+                add(Property.builder()
+                      .dataType(new ArrayList(){{ add(DataType.STRING); }})
+                      .description("Title of the article")
+                      .name("title")
+                      .build());
+                add(Property.builder()
+                      .dataType(new ArrayList(){{ add(DataType.TEXT); }})
+                      .description("The content of the article")
+                      .name("content")
+                      .build());
+            }})
+            .build();
+    // when
+    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
+    Result<Schema> schemaAfterCreate = client.schema().getter().run();
+    Result<Boolean> deleteStatus = client.schema().allDeleter().run();
+    Result<Schema> schemaAfterDelete = client.schema().getter().run();
+    // then
+    assertNotNull(createStatus);
+    assertTrue(createStatus.getResult());
+    assertNotNull(schemaAfterCreate);
+    assertNotNull(schemaAfterCreate.getResult());
+    assertEquals(1, schemaAfterCreate.getResult().getClasses().size());
+    assertEquals(clazz.getClassName(), schemaAfterCreate.getResult().getClasses().get(0).getClassName());
+    assertEquals(clazz.getDescription(), schemaAfterCreate.getResult().getClasses().get(0).getDescription());
+    assertNotNull(deleteStatus);
+    assertTrue(deleteStatus.getResult());
+    assertEquals(0, schemaAfterDelete.getResult().getClasses().size());
+  }
+
+  @Test
+  public void testSchemaCreateClassWithAllProperties() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateClass clazz = WeaviateClass.builder()
+            .className("Article")
+            .description("A written text, for example a news article or blog post")
+            .properties(new ArrayList() {{
+              add(Property.builder()
+                      .dataType(new ArrayList(){{ add(DataType.STRING); }})
+                      .description("Title of the article")
+                      .name("title")
+                      .build());
+              add(Property.builder()
+                      .dataType(new ArrayList(){{ add(DataType.TEXT); }})
+                      .description("The content of the article")
+                      .name("content")
+                      .build());
+            }})
+            .build();
+    // when
+    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
+    Result<Schema> schemaAfterCreate = client.schema().getter().run();
+    Result<Boolean> deleteStatus = client.schema().allDeleter().run();
+    Result<Schema> schemaAfterDelete = client.schema().getter().run();
+    // then
+    assertNotNull(createStatus);
+    assertTrue(createStatus.getResult());
+    assertNotNull(schemaAfterCreate);
+    assertNotNull(schemaAfterCreate.getResult());
+    assertEquals(1, schemaAfterCreate.getResult().getClasses().size());
+    assertEquals(clazz.getClassName(), schemaAfterCreate.getResult().getClasses().get(0).getClassName());
+    assertEquals(clazz.getDescription(), schemaAfterCreate.getResult().getClasses().get(0).getDescription());
+    assertNotNull(deleteStatus);
+    assertTrue(deleteStatus.getResult());
     assertEquals(0, schemaAfterDelete.getResult().getClasses().size());
   }
 }

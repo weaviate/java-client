@@ -3,7 +3,6 @@ package technology.semi.weaviate.client.base.http.impl;
 import java.util.Map;
 import java.util.Objects;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPatch;
@@ -20,12 +19,19 @@ import technology.semi.weaviate.client.base.http.HttpResponse;
 public class CommonsHttpClientImpl implements HttpClient {
   private final Map<String, String> headers;
 
-  public CommonsHttpClientImpl() {
-    this(null);
-  }
-
   public CommonsHttpClientImpl(Map<String, String> headers) {
     this.headers = headers;
+  }
+
+  private class HttpDeleteWithBody extends HttpPost {
+    public HttpDeleteWithBody(String url) {
+      super(url);
+    }
+
+    @Override
+    public String getMethod() {
+      return "DELETE";
+    }
   }
 
   @Override
@@ -51,17 +57,23 @@ public class CommonsHttpClientImpl implements HttpClient {
   }
 
   @Override
-  public HttpResponse sendDeleteRequest(String url) throws Exception {
-    HttpDelete httpDelete = new HttpDelete(url);
-    httpDelete.setHeader("Accept", "*/*");
-    return sendRequest(httpDelete);
+  public HttpResponse sendDeleteRequest(String url, String json) throws Exception {
+    if (json == null) {
+      HttpDeleteWithBody httpDelete = new HttpDeleteWithBody(url);
+      httpDelete.setHeader("Accept", "application/json");
+      if (headers != null && headers.size() > 0) {
+        headers.forEach(httpDelete::addHeader);
+      }
+      return sendRequest(httpDelete);
+    }
+    return sendPayloadRequest(url, json, "DELETE");
   }
 
   private HttpResponse sendPayloadRequest(String url, String jsonString, String method) throws Exception {
     StringEntity entity = new StringEntity(jsonString);
     HttpEntityEnclosingRequestBase httpPost = getRequest(url, method);
     httpPost.setEntity(entity);
-    httpPost.setHeader("Accept", "*/*");
+    httpPost.setHeader("Accept", "application/json");
     httpPost.setHeader("Content-type", "application/json");
     return sendRequest(httpPost);
   }
@@ -79,6 +91,8 @@ public class CommonsHttpClientImpl implements HttpClient {
       return new HttpPut(url);
     } else if (Objects.equals(method, "PATCH")) {
       return new HttpPatch(url);
+    } else if (Objects.equals(method, "DELETE")) {
+      return new HttpDeleteWithBody(url);
     } else {
       return new HttpPost(url);
     }

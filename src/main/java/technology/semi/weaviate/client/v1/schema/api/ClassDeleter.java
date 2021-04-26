@@ -34,7 +34,7 @@ public class ClassDeleter extends BaseClient<String> implements ClientResult<Boo
       return new Result<>(500, false, errors);
     }
     String path = String.format("/schema/%s", this.className);
-    Response<String> resp = sendDeleteRequest(path, String.class);
+    Response<String> resp = sendDeleteRequest(path, null, String.class);
     return new Result<>(resp.getStatusCode(), resp.getStatusCode() == 200, resp.getErrors());
   }
 }

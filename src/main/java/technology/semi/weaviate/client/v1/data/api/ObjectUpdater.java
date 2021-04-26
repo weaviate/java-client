@@ -17,7 +17,7 @@ public class ObjectUpdater extends BaseClient<WeaviateObject> implements ClientR
 
   private String id;
   private String className;
-  private Map<String, java.lang.Object> properties;
+  private Map<String, Object> properties;
   private Boolean withMerge;
 
   public ObjectUpdater(Config config) {
@@ -34,7 +34,7 @@ public class ObjectUpdater extends BaseClient<WeaviateObject> implements ClientR
     return this;
   }
 
-  public ObjectUpdater withProperties(Map<String, java.lang.Object> properties) {
+  public ObjectUpdater withProperties(Map<String, Object> properties) {
     this.properties = properties;
     return this;
   }

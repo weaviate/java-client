@@ -14,7 +14,7 @@ public class ObjectCreator extends BaseClient<WeaviateObject> implements ClientR
 
   private String uuid;
   private String className;
-  private Map<String, java.lang.Object> properties;
+  private Map<String, Object> properties;
 
   public ObjectCreator(Config config) {
     super(config);
@@ -30,7 +30,7 @@ public class ObjectCreator extends BaseClient<WeaviateObject> implements ClientR
     return this;
   }
 
-  public ObjectCreator withProperties(Map<String, java.lang.Object> properties) {
+  public ObjectCreator withProperties(Map<String, Object> properties) {
     this.properties = properties;
     return this;
   }
