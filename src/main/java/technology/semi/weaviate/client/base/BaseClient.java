@@ -33,8 +33,8 @@ public abstract class BaseClient<T> {
     return sendRequest(endpoint, payload, "PATCH", classOfT);
   }
 
-  protected Response<T> sendDeleteRequest(String endpoint, Class<T> classOfT) {
-    return sendRequest(endpoint, null, "DELETE", classOfT);
+  protected Response<T> sendDeleteRequest(String endpoint, Object payload, Class<T> classOfT) {
+    return sendRequest(endpoint, payload, "DELETE", classOfT);
   }
 
   private Response<T> sendRequest(String endpoint, Object payload, String method, Class<T> classOfT) {
@@ -69,7 +69,7 @@ public abstract class BaseClient<T> {
       return client.sendPatchRequest(address, json);
     }
     if (method.equals("DELETE")) {
-      return client.sendDeleteRequest(address);
+      return client.sendDeleteRequest(address, json);
     }
     return client.sendGetRequest(address);
   }

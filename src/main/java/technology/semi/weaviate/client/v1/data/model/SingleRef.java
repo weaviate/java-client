@@ -11,9 +11,9 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class SingleRef {
-  String beacon;
   @SerializedName("class")
   String clazz;
+  String beacon;
   ReferenceMetaClassification classification;
   String href;
   Map<String, Object> schema;

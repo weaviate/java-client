@@ -34,7 +34,7 @@ public class ObjectDeleter extends BaseClient<String> implements ClientResult<Bo
       return new Result<>(500, false, errors);
     }
     String path = String.format("/objects/%s", this.id);
-    Response<String> resp = sendDeleteRequest(path, String.class);
+    Response<String> resp = sendDeleteRequest(path, null, String.class);
     return new Result<>(resp.getStatusCode(), resp.getStatusCode() == 204, resp.getErrors());
   }
 }

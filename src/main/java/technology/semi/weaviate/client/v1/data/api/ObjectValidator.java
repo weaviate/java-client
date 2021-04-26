@@ -17,7 +17,7 @@ public class ObjectValidator extends BaseClient<WeaviateObject> implements Clien
 
   private String id;
   private String className;
-  private Map<String, java.lang.Object> properties;
+  private Map<String, Object> properties;
 
   public ObjectValidator(Config config) {
     super(config);
@@ -33,7 +33,7 @@ public class ObjectValidator extends BaseClient<WeaviateObject> implements Clien
     return this;
   }
 
-  public ObjectValidator withSchema(Map<String, java.lang.Object> properties) {
+  public ObjectValidator withProperties(Map<String, Object> properties) {
     this.properties = properties;
     return this;
   }

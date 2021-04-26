@@ -439,24 +439,24 @@ public class ClientDataTest {
     Result<Boolean> validateObjT = client.data().validator()
             .withClassName("Pizza")
             .withID(objTID)
-            .withSchema(propertiesSchemaT)
+            .withProperties(propertiesSchemaT)
             .run();
     Result<Boolean> validateObjA = client.data().validator()
             .withClassName("Soup")
             .withID(objAID)
-            .withSchema(propertiesSchemaA)
+            .withProperties(propertiesSchemaA)
             .run();
     propertiesSchemaT.put("test", "not existing property");
     Result<Boolean> validateObjT1 = client.data().validator()
             .withClassName("Pizza")
             .withID(objTID)
-            .withSchema(propertiesSchemaT)
+            .withProperties(propertiesSchemaT)
             .run();
     propertiesSchemaA.put("test", "not existing property");
     Result<Boolean> validateObjA1 = client.data().validator()
             .withClassName("Pizza")
             .withID(objTID)
-            .withSchema(propertiesSchemaT)
+            .withProperties(propertiesSchemaT)
             .run();
     testGenerics.cleanupWeaviate(client);
     // then
@@ -484,10 +484,10 @@ public class ClientDataTest {
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
     String objTID = "abefd256-8574-442b-9293-9205193737ee";
     String objAID = "565da3b6-60b3-40e5-ba21-e6bfe5dbba91";
-    Map<String, java.lang.Object> propertiesSchemaT = new HashMap<>();
+    Map<String, Object> propertiesSchemaT = new HashMap<>();
     propertiesSchemaT.put("name", "Hawaii");
     propertiesSchemaT.put("description", "Universally accepted to be the best pizza ever created.");
-    Map<String, java.lang.Object> propertiesSchemaA = new HashMap<>();
+    Map<String, Object> propertiesSchemaA = new HashMap<>();
     propertiesSchemaA.put("name", "ChickenSoup");
     propertiesSchemaA.put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
     // when
