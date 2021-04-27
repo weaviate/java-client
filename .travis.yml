@@ -40,5 +40,7 @@ jobs:
     cache:
       directories:
         - "$HOME/.m2"
+    install:
+    - docker-compose -f src/test/resources/docker-compose-test.yaml pull
     script:
-      - mvn deploy
+    - mvn deploy
