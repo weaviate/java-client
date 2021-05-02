@@ -190,6 +190,7 @@ public class GetBuilderTest extends TestCase {
     String base64File = new BufferedReader(new InputStreamReader(new FileInputStream("src/test/resources/image/base64.txt")))
             .lines().collect(Collectors.joining("\n"));
     String image = "data:image/png;base64,iVBORw0KGgoAAAANS";
+    String expectedImage = "iVBORw0KGgoAAAANS";
     NearImageArgument nearImage1 = NearImageArgument.builder().imageFile(imageFile).build();
     NearImageArgument nearImage2 = NearImageArgument.builder().imageFile(imageFile).certainty(0.4f).build();
     NearImageArgument nearImage3 = NearImageArgument.builder().image(image).certainty(0.1f).build();
@@ -209,6 +210,6 @@ public class GetBuilderTest extends TestCase {
     assertNotNull(query2);
     assertEquals(String.format("{Get{Pizza(nearImage: {image: \"%s\" certainty: 0.4}){name}}}", base64File), query2);
     assertNotNull(query3);
-    assertEquals(String.format("{Get{Pizza(nearImage: {image: \"%s\" certainty: 0.1}, limit: 1){name}}}", image), query3);
+    assertEquals(String.format("{Get{Pizza(nearImage: {image: \"%s\" certainty: 0.1}, limit: 1){name}}}", expectedImage), query3);
   }
 }
