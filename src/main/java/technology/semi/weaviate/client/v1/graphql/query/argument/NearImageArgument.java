@@ -28,8 +28,7 @@ public class NearImageArgument implements Argument {
   private String readFile(File file) {
     try {
       byte[] content = Files.readAllBytes(Paths.get(file.toURI()));
-      String base64encodedFile = Base64.getEncoder().encodeToString(content);
-      return String.format("data:image/png;base64,%s", base64encodedFile);
+      return Base64.getEncoder().encodeToString(content);
     } catch (Exception e) {
       return null;
     }
@@ -37,6 +36,10 @@ public class NearImageArgument implements Argument {
 
   private String getContent() {
     if (StringUtils.isNotBlank(image)) {
+      if (image.startsWith("data:")) {
+        String base64 = ";base64,";
+        return image.substring(image.indexOf(base64) + base64.length());
+      }
       return image;
     }
     if (imageFile != null) {

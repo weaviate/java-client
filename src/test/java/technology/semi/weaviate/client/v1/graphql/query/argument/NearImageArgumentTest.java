@@ -43,8 +43,20 @@ public class NearImageArgumentTest extends TestCase {
   @Test
   public void testBuildWithImage() throws FileNotFoundException {
     // given
-    String image = "data:image/png;base64,iVBORw0KGgoAAAANS";
+    String image = "iVBORw0KGgoAAAANS";
     String expected = String.format("nearImage: {image: \"%s\"}", image);
+    // when
+    String nearImage = NearImageArgument.builder().image(image).build().build();
+    // then
+    assertNotNull(nearImage);
+    assertEquals(expected, nearImage);
+  }
+
+  @Test
+  public void testBuildWithBase64DataImage() throws FileNotFoundException {
+    // given
+    String image = "data:image/png;base64,iVBORw0KGgoAAAANS";
+    String expected = "nearImage: {image: \"iVBORw0KGgoAAAANS\"}";
     // when
     String nearImage = NearImageArgument.builder().image(image).build().build();
     // then
@@ -55,7 +67,7 @@ public class NearImageArgumentTest extends TestCase {
   @Test
   public void testBuildWithImageAndCertainty() throws FileNotFoundException {
     // given
-    String image = "data:image/png;base64,iVBORw0KGgoAAAANS";
+    String image = "iVBORw0KGgoAAAANS";
     Float certainty = 0.5f;
     String expected = String.format("nearImage: {image: \"%s\" certainty: %s}", image, certainty);
     // when
