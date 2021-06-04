@@ -10,7 +10,7 @@ In order to get start using the java client one needs to add it's dependency:
 <dependency>
   <groupId>technology.semi.weaviate</groupId>
   <artifactId>client</artifactId>
-  <version>1.0.2</version>
+  <version>1.1.0</version>
 </dependency>
 ```
 
