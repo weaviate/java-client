@@ -6,4 +6,8 @@ public final class ClassificationType {
   // Contextual classification labels a data object with
   // the closest label based on their vector position (which describes the context)
   public static final String Contextual = "text2vec-contextionary";
+  // ZeroShot classification labels a data object with
+  // the closest label based on their vector position (which describes the context)
+  // It can be used with any vectorizer or custom vectors.
+  public static final String ZeroShot = "zeroshot";
 }
