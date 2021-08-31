@@ -18,6 +18,7 @@ public class NearTextArgument implements Argument {
   Float certainty;
   NearTextMoveParameters moveTo;
   NearTextMoveParameters moveAwayFrom;
+  Boolean autocorrect;
 
   private String getConcepts(String[] concepts) {
     return Stream.of(concepts)
@@ -50,6 +51,9 @@ public class NearTextArgument implements Argument {
       }
       if (moveAwayFrom != null) {
         arg.add(buildMoveParam("moveAwayFrom", moveAwayFrom));
+      }
+      if (autocorrect != null) {
+        arg.add(String.format("autocorrect: %s", autocorrect));
       }
       return String.format("nearText: {%s}", StringUtils.joinWith(" ", arg.toArray()));
     }
