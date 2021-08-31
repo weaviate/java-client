@@ -123,4 +123,35 @@ public class NearTextArgumentTest extends TestCase {
             "moveTo: {concepts: [\"z1\", \"y2\"] force: 0.8} " +
             "moveAwayFrom: {concepts: [\"a1\", \"b2\"]}}", arg);
   }
+
+  @Test
+  public void testBuildWithAutocorrect() {
+    // given
+    String[] concepts = new String[]{"a", "b", "c"};
+    NearTextArgument nearText = NearTextArgument.builder()
+            .concepts(concepts).certainty(0.8f).autocorrect(false).build();
+    // when
+    String arg = nearText.build();
+    // then
+    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 autocorrect: false}", arg);
+  }
+
+  @Test
+  public void testBuildMoveToAndMoveAwayFromWithoutForceAndWithAutocorrect() {
+    // given
+    String[] concepts = new String[]{"a", "b", "c"};
+    NearTextMoveParameters moveTo = NearTextMoveParameters.builder()
+            .concepts(new String[]{"z1", "y2"}).force(0.8f).build();
+    NearTextMoveParameters moveAway = NearTextMoveParameters.builder()
+            .concepts(new String[]{"a1", "b2"}).build();
+    NearTextArgument nearText = NearTextArgument.builder()
+            .concepts(concepts).certainty(0.8f).autocorrect(true)
+            .moveTo(moveTo).moveAwayFrom(moveAway).build();
+    // when
+    String arg = nearText.build();
+    // then
+    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 " +
+            "moveTo: {concepts: [\"z1\", \"y2\"] force: 0.8} " +
+            "moveAwayFrom: {concepts: [\"a1\", \"b2\"]} autocorrect: true}", arg);
+  }
 }

@@ -1,6 +1,5 @@
 package technology.semi.weaviate.client.v1.graphql.query.argument;
 
-import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -18,6 +17,7 @@ public class AskArgument implements Argument {
   String question;
   String[] properties;
   Float certainty;
+  Boolean autocorrect;
 
   @Override
   public String build() {
@@ -32,6 +32,9 @@ public class AskArgument implements Argument {
       }
       if (certainty != null) {
         arg.add(String.format("certainty: %s", certainty));
+      }
+      if (autocorrect != null) {
+        arg.add(String.format("autocorrect: %s", autocorrect));
       }
       return String.format("ask: {%s}", StringUtils.joinWith(" ", arg.toArray()));
     }
