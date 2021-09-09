@@ -1,5 +1,6 @@
 package technology.semi.weaviate.client.base.http.impl;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -70,7 +71,7 @@ public class CommonsHttpClientImpl implements HttpClient {
   }
 
   private HttpResponse sendPayloadRequest(String url, String jsonString, String method) throws Exception {
-    StringEntity entity = new StringEntity(jsonString);
+    StringEntity entity = new StringEntity(jsonString, StandardCharsets.UTF_8);
     HttpEntityEnclosingRequestBase httpPost = getRequest(url, method);
     httpPost.setEntity(entity);
     httpPost.setHeader("Accept", "application/json");
@@ -104,7 +105,7 @@ public class CommonsHttpClientImpl implements HttpClient {
     CloseableHttpResponse response = client.execute(request);
 
     statusCode = response.getStatusLine().getStatusCode();
-    String bodyAsString = (response.getEntity() != null) ? EntityUtils.toString(response.getEntity()) : "";
+    String bodyAsString = (response.getEntity() != null) ? EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8) : "";
     client.close();
 
     return new HttpResponse(statusCode, bodyAsString);
