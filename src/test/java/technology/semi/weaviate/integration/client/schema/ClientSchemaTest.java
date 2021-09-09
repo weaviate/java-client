@@ -3,6 +3,7 @@ package technology.semi.weaviate.integration.client.schema;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -256,6 +257,70 @@ public class ClientSchemaTest {
     assertEquals(1, schemaAfterCreate.getResult().getClasses().size());
     assertEquals(clazz.getClassName(), schemaAfterCreate.getResult().getClasses().get(0).getClassName());
     assertEquals(clazz.getDescription(), schemaAfterCreate.getResult().getClasses().get(0).getDescription());
+    assertNotNull(deleteStatus);
+    assertTrue(deleteStatus.getResult());
+    assertEquals(0, schemaAfterDelete.getResult().getClasses().size());
+  }
+
+  @Test
+  public void testSchemaCreateClassWithArrayProperties() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateClass clazz = WeaviateClass.builder()
+            .className("ClassArrays")
+            .description("Class which properties are all array properties")
+            .vectorIndexType("hnsw")
+            .vectorizer("text2vec-contextionary")
+            .properties(new ArrayList() {{
+              add(Property.builder()
+                      .dataType(new ArrayList(){{ add(DataType.STRING_ARRAY); }})
+                      .name("stringArray")
+                      .build());
+              add(Property.builder()
+                      .dataType(new ArrayList(){{ add(DataType.TEXT_ARRAY); }})
+                      .name("textArray")
+                      .build());
+              add(Property.builder()
+                      .dataType(new ArrayList(){{ add(DataType.INT_ARRAY); }})
+                      .name("intArray")
+                      .build());
+              add(Property.builder()
+                      .dataType(new ArrayList(){{ add(DataType.NUMBER_ARRAY); }})
+                      .name("numberArray")
+                      .build());
+            }})
+            .build();
+    // when
+    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
+    Result<Schema> schemaAfterCreate = client.schema().getter().run();
+    Result<Boolean> deleteStatus = client.schema().allDeleter().run();
+    Result<Schema> schemaAfterDelete = client.schema().getter().run();
+    // then
+    assertNotNull(createStatus);
+    assertTrue(createStatus.getResult());
+    assertNotNull(schemaAfterCreate);
+    assertNotNull(schemaAfterCreate.getResult());
+    assertEquals(1, schemaAfterCreate.getResult().getClasses().size());
+    assertEquals(clazz.getClassName(), schemaAfterCreate.getResult().getClasses().get(0).getClassName());
+    assertEquals(clazz.getDescription(), schemaAfterCreate.getResult().getClasses().get(0).getDescription());
+    assertNotNull(schemaAfterCreate.getResult().getClasses().get(0).getProperties());
+    assertEquals(4, schemaAfterCreate.getResult().getClasses().get(0).getProperties().size());
+    List<Property> properties = schemaAfterCreate.getResult().getClasses().get(0).getProperties();
+    for (Property prop: properties) {
+      if (prop.getName() == "stringArray") {
+        assertEquals(DataType.STRING_ARRAY, prop.getDataType());
+      }
+      if (prop.getName() == "textArray") {
+        assertEquals(DataType.TEXT_ARRAY, prop.getDataType());
+      }
+      if (prop.getName() == "intArray") {
+        assertEquals(DataType.INT_ARRAY, prop.getDataType());
+      }
+      if (prop.getName() == "numberArray") {
+        assertEquals(DataType.NUMBER_ARRAY, prop.getDataType());
+      }
+    }
     assertNotNull(deleteStatus);
     assertTrue(deleteStatus.getResult());
     assertEquals(0, schemaAfterDelete.getResult().getClasses().size());

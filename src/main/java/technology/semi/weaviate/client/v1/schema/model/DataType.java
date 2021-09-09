@@ -10,4 +10,8 @@ public interface DataType {
   String DATE = "date";
   String GEO_COORDINATES = "geoCoordinates";
   String PHONE_NUMBER = "phoneNumber";
+  String STRING_ARRAY = "string[]";
+  String TEXT_ARRAY = "text[]";
+  String INT_ARRAY = "int[]";
+  String NUMBER_ARRAY = "number[]";
 }
