@@ -1,6 +1,7 @@
 package technology.semi.weaviate.integration.client.data;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,10 @@ import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.WeaviateClient;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
+import technology.semi.weaviate.client.v1.schema.model.DataType;
+import technology.semi.weaviate.client.v1.schema.model.Property;
+import technology.semi.weaviate.client.v1.schema.model.Schema;
+import technology.semi.weaviate.client.v1.schema.model.WeaviateClass;
 import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
 
 import static org.junit.Assert.assertEquals;
@@ -554,4 +559,87 @@ public class ClientDataTest {
     assertNotNull(objsAdditionalT.getError().getMessages());
     assertEquals("get extend: unknown capability: featureProjection", objsAdditionalT.getError().getMessages().get(0).getMessage());
   }
+
+  @Test
+  public void testDataCreateWithArrayType() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateClass clazz = WeaviateClass.builder()
+            .className("ClassArrays")
+            .description("Class which properties are all array properties")
+            .vectorIndexType("hnsw")
+            .vectorizer("text2vec-contextionary")
+            .properties(new ArrayList() {{
+              add(Property.builder()
+                      .dataType(new ArrayList(){{ add(DataType.STRING_ARRAY); }})
+                      .name("stringArray")
+                      .build());
+              add(Property.builder()
+                      .dataType(new ArrayList(){{ add(DataType.TEXT_ARRAY); }})
+                      .name("textArray")
+                      .build());
+              add(Property.builder()
+                      .dataType(new ArrayList(){{ add(DataType.INT_ARRAY); }})
+                      .name("intArray")
+                      .build());
+              add(Property.builder()
+                      .dataType(new ArrayList(){{ add(DataType.NUMBER_ARRAY); }})
+                      .name("numberArray")
+                      .build());
+            }})
+            .build();
+    String objTID = "abefd256-8574-442b-9293-9205193737ee";
+    Map<String, java.lang.Object> propertiesSchemaT = new HashMap<>();
+    propertiesSchemaT.put("stringArray", new String[]{"a", "b"});
+    propertiesSchemaT.put("textArray", new String[]{"c", "d"});
+    propertiesSchemaT.put("intArray", new Integer[]{1, 2});
+    propertiesSchemaT.put("numberArray", new Float[]{3.3f, 4.4f});
+    // when
+    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
+    Result<Schema> schemaAfterCreate = client.schema().getter().run();
+    Result<WeaviateObject> objectT = client.data().creator()
+            .withClassName("ClassArrays")
+            .withID(objTID)
+            .withProperties(propertiesSchemaT)
+            .run();
+    Result<List<WeaviateObject>> objectsT = client.data().objectsGetter().withID(objTID).run();
+    Result<Boolean> deleteStatus = client.schema().allDeleter().run();
+    Result<Schema> schemaAfterDelete = client.schema().getter().run();
+    // then
+    assertNotNull(createStatus);
+    assertTrue(createStatus.getResult());
+    assertNotNull(schemaAfterCreate);
+    assertNotNull(schemaAfterCreate.getResult());
+    assertEquals(1, schemaAfterCreate.getResult().getClasses().size());
+    // data check
+    assertNotNull(objectT);
+    assertNotNull(objectT.getResult());
+    assertEquals(objTID, objectT.getResult().getId());
+    assertNotNull(objectsT);
+    assertNotNull(objectsT.getResult());
+    assertEquals(1, objectsT.getResult().size());
+    assertEquals(objTID, objectsT.getResult().get(0).getId());
+    assertNotNull(objectsT.getResult().get(0).getProperties());
+    assertEquals(4, objectsT.getResult().get(0).getProperties().size());
+    assertEquals("ClassArrays", objectsT.getResult().get(0).getClassName());
+    checkArrays(objectsT.getResult().get(0).getProperties().get("stringArray"), 2, "a", "b");
+    checkArrays(objectsT.getResult().get(0).getProperties().get("textArray"), 2, "c", "d");
+    checkArrays(objectsT.getResult().get(0).getProperties().get("intArray"), 2, 1.0, 2.0);
+    checkArrays(objectsT.getResult().get(0).getProperties().get("numberArray"), 2, 3.3, 4.4);
+    assertNotNull(deleteStatus);
+    assertTrue(deleteStatus.getResult());
+    assertEquals(0, schemaAfterDelete.getResult().getClasses().size());
+  }
+
+  private void checkArrays(Object property, int size, Object... contains) {
+    assertNotNull(property);
+    assertEquals(ArrayList.class, property.getClass());
+    List l = (List) property;
+    assertEquals(size, l.size());
+    for (Object c : contains) {
+      assertTrue(l.contains(c));
+    }
+  }
 }
+
