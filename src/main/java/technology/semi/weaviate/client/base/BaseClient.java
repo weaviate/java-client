@@ -1,6 +1,5 @@
 package technology.semi.weaviate.client.base;
 
-import com.google.gson.Gson;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import technology.semi.weaviate.client.Config;
@@ -11,10 +10,12 @@ import technology.semi.weaviate.client.base.http.impl.CommonsHttpClientImpl;
 public abstract class BaseClient<T> {
   private final HttpClient client;
   private final Config config;
+  private final Serializer serializer;
 
   public BaseClient(Config config) {
     this.config = config;
     this.client = new CommonsHttpClientImpl(config.getHeaders());
+    this.serializer = new Serializer();
   }
 
   protected Response<T> sendGetRequest(String endpoint, Class<T> classOfT) {
@@ -75,11 +76,11 @@ public abstract class BaseClient<T> {
   }
 
   private <C> C toResponse(String response, Class<C> classOfT) {
-    return new Gson().fromJson(response, classOfT);
+    return serializer.toResponse(response, classOfT);
   }
 
   private String toJsonString(Object object) {
-    return (object != null) ? new Gson().toJson(object) : null;
+    return serializer.toJsonString(object);
   }
 
   private WeaviateErrorResponse getWeaviateErrorResponse(Exception e) {

@@ -90,6 +90,42 @@ public class ClientDataTest {
   }
 
   @Test
+  public void testDataCreateWithSpecialCharacters() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
+    String objTID = "abefd256-8574-442b-9293-9205193737ee";
+    String name = "Zażółć gęślą jaźń";
+    String description = "test äüëö";
+    Map<String, java.lang.Object> propertiesSchemaT = new HashMap<>();
+    propertiesSchemaT.put("name", name);
+    propertiesSchemaT.put("description", description);
+    // when
+    testGenerics.createWeaviateTestSchemaFood(client);
+    Result<WeaviateObject> objectT = client.data().creator()
+            .withClassName("Pizza")
+            .withID(objTID)
+            .withProperties(propertiesSchemaT)
+            .run();
+    Result<List<WeaviateObject>> objectsT = client.data().objectsGetter().withID(objTID).run();
+    testGenerics.cleanupWeaviate(client);
+    // then
+    assertNotNull(objectT);
+    assertNotNull(objectT.getResult());
+    assertEquals(objTID, objectT.getResult().getId());
+    assertNotNull(objectsT);
+    assertNotNull(objectsT.getResult());
+    assertEquals(1, objectsT.getResult().size());
+    assertEquals(objTID, objectsT.getResult().get(0).getId());
+    assertNotNull(objectsT.getResult().get(0).getProperties());
+    assertEquals(2, objectsT.getResult().get(0).getProperties().size());
+    assertEquals("Pizza", objectsT.getResult().get(0).getClassName());
+    assertEquals(name, objectsT.getResult().get(0).getProperties().get("name"));
+    assertEquals(description, objectsT.getResult().get(0).getProperties().get("description"));
+  }
+
+  @Test
   public void testDataGetActionsThings() {
     // given
     Config config = new Config("http", address);
