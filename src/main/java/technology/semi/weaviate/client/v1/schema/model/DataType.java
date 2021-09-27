@@ -14,4 +14,6 @@ public interface DataType {
   String TEXT_ARRAY = "text[]";
   String INT_ARRAY = "int[]";
   String NUMBER_ARRAY = "number[]";
+  String BOOLEAN_ARRAY = "boolean[]";
+  String DATE_ARRAY = "date[]";
 }
