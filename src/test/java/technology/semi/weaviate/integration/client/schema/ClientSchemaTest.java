@@ -289,6 +289,14 @@ public class ClientSchemaTest {
                       .dataType(new ArrayList(){{ add(DataType.NUMBER_ARRAY); }})
                       .name("numberArray")
                       .build());
+              add(Property.builder()
+                      .dataType(new ArrayList(){{ add(DataType.BOOLEAN_ARRAY); }})
+                      .name("booleanArray")
+                      .build());
+              add(Property.builder()
+                      .dataType(new ArrayList(){{ add(DataType.DATE_ARRAY); }})
+                      .name("dateArray")
+                      .build());
             }})
             .build();
     // when
@@ -305,7 +313,7 @@ public class ClientSchemaTest {
     assertEquals(clazz.getClassName(), schemaAfterCreate.getResult().getClasses().get(0).getClassName());
     assertEquals(clazz.getDescription(), schemaAfterCreate.getResult().getClasses().get(0).getDescription());
     assertNotNull(schemaAfterCreate.getResult().getClasses().get(0).getProperties());
-    assertEquals(4, schemaAfterCreate.getResult().getClasses().get(0).getProperties().size());
+    assertEquals(6, schemaAfterCreate.getResult().getClasses().get(0).getProperties().size());
     List<Property> properties = schemaAfterCreate.getResult().getClasses().get(0).getProperties();
     for (Property prop: properties) {
       if (prop.getName() == "stringArray") {
@@ -319,6 +327,12 @@ public class ClientSchemaTest {
       }
       if (prop.getName() == "numberArray") {
         assertEquals(DataType.NUMBER_ARRAY, prop.getDataType());
+      }
+      if (prop.getName() == "booleanArray") {
+        assertEquals(DataType.BOOLEAN_ARRAY, prop.getDataType());
+      }
+      if (prop.getName() == "dateArray") {
+        assertEquals(DataType.DATE_ARRAY, prop.getDataType());
       }
     }
     assertNotNull(deleteStatus);
