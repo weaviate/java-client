@@ -12,7 +12,7 @@ import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgumen
 import technology.semi.weaviate.client.v1.graphql.query.builder.ExploreBuilder;
 
 public class Explore extends BaseClient<GraphQLResponse> implements ClientResult<GraphQLResponse> {
-  private ExploreBuilder.ExploreBuilderBuilder exploreBuilder;
+  private final ExploreBuilder.ExploreBuilderBuilder exploreBuilder;
 
   public Explore(Config config) {
     super(config);

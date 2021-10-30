@@ -8,13 +8,16 @@ import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLQuery;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLResponse;
 import technology.semi.weaviate.client.v1.graphql.query.argument.AskArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.GroupArgument;
+import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearImageArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.WhereArgument;
 import technology.semi.weaviate.client.v1.graphql.query.builder.GetBuilder;
 
 public class Get extends BaseClient<GraphQLResponse> implements ClientResult<GraphQLResponse> {
-  private GetBuilder.GetBuilderBuilder getBuilder;
+  private final GetBuilder.GetBuilderBuilder getBuilder;
 
   public Get(Config config) {
     super(config);
@@ -26,13 +29,13 @@ public class Get extends BaseClient<GraphQLResponse> implements ClientResult<Gra
     return this;
   }
 
-  public Get withFields(String fields) {
+  public Get withFields(Fields fields) {
     this.getBuilder.fields(fields);
     return this;
   }
 
-  public Get withWhere(String filter) {
-    this.getBuilder.withWhereFilter(filter);
+  public Get withWhere(WhereArgument where) {
+    this.getBuilder.withWhereArgument(where);
     return this;
   }
 
@@ -66,8 +69,8 @@ public class Get extends BaseClient<GraphQLResponse> implements ClientResult<Gra
     return this;
   }
 
-  public Get withGroup(String group) {
-    this.getBuilder.withGroupFilter(group);
+  public Get withGroup(GroupArgument group) {
+    this.getBuilder.withGroupArgument(group);
     return this;
   }
 

@@ -8,30 +8,33 @@ import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.StringUtils;
 import technology.semi.weaviate.client.v1.graphql.query.argument.AskArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.GroupArgument;
+import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearImageArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.WhereArgument;
 
 @Getter
 @Builder
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class GetBuilder implements Query {
   String className;
-  String fields;
-  String withWhereFilter;
+  Fields fields;
   Integer limit;
+  WhereArgument withWhereArgument;
   NearTextArgument withNearTextFilter;
   NearObjectArgument withNearObjectFilter;
   AskArgument withAskArgument;
   NearImageArgument withNearImageFilter;
   Float[] withNearVectorFilter;
-  String withGroupFilter;
+  GroupArgument withGroupArgument;
 
   private boolean includesFilterClause() {
-    return StringUtils.isNotBlank(withWhereFilter)
+    return withWhereArgument != null
             || withNearTextFilter != null || withNearObjectFilter != null
             || (withNearVectorFilter != null && withNearVectorFilter.length > 0)
-            || StringUtils.isNotBlank(withGroupFilter)
+            || withGroupArgument != null
             || withAskArgument != null || withNearImageFilter != null
             || limit != null;
   }
@@ -39,8 +42,8 @@ public class GetBuilder implements Query {
   private String createFilterClause() {
     if (includesFilterClause()) {
       Set<String> filters = new LinkedHashSet<>();
-      if (StringUtils.isNotBlank(withWhereFilter)) {
-        filters.add(String.format("where: %s", withWhereFilter));
+      if (withWhereArgument != null) {
+        filters.add(withWhereArgument.build());
       }
       if (withNearTextFilter != null) {
         filters.add(withNearTextFilter.build());
@@ -51,8 +54,8 @@ public class GetBuilder implements Query {
       if (withNearVectorFilter != null && withNearVectorFilter.length > 0) {
         filters.add(String.format("nearVector: {vector: [%s]}", StringUtils.joinWith(",", (Object[]) withNearVectorFilter)));
       }
-      if (StringUtils.isNotBlank(withGroupFilter)) {
-        filters.add(String.format("group: %s", withGroupFilter));
+      if (withGroupArgument != null) {
+        filters.add(withGroupArgument.build());
       }
       if (withAskArgument != null) {
         filters.add(withAskArgument.build());
@@ -68,8 +71,12 @@ public class GetBuilder implements Query {
     return "";
   }
 
+  private String createFields() {
+    return fields != null ? fields.build() : "";
+  }
+
   @Override
   public String buildQuery() {
-    return String.format("{Get{%s%s{%s}}}", className, createFilterClause(), fields);
+    return String.format("{Get{%s%s{%s}}}", className, createFilterClause(), createFields());
   }
 }

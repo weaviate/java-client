@@ -5,13 +5,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.StringUtils;
+import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
 
 @Getter
 @Builder
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class AggregateBuilder implements Query {
   String className;
-  String fields;
+  Fields fields;
   String groupByClausePropertyName;
 
   @Override
@@ -20,6 +21,7 @@ public class AggregateBuilder implements Query {
     if (StringUtils.isNotBlank(groupByClausePropertyName)) {
       filterClause = String.format("(groupBy: \"%s\")", groupByClausePropertyName);
     }
-    return String.format("{Aggregate{%s%s{%s}}}", className, filterClause, fields);
+    String fieldsClause = fields != null ? fields.build() : "";
+    return String.format("{Aggregate{%s%s{%s}}}", className, filterClause, fieldsClause);
   }
 }

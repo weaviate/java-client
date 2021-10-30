@@ -9,16 +9,24 @@ import java.util.stream.Collectors;
 import junit.framework.TestCase;
 import org.junit.Test;
 import technology.semi.weaviate.client.v1.graphql.query.argument.AskArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.GroupArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.GroupType;
+import technology.semi.weaviate.client.v1.graphql.query.fields.Field;
+import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearImageArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.WhereArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.WhereFilter;
+import technology.semi.weaviate.client.v1.graphql.query.argument.WhereOperator;
 
 public class GetBuilderTest extends TestCase {
 
   @Test
   public void testBuildSimpleGet() {
     // given
+    Field name = Field.builder().name("name").build();
     // when
-    String query = GetBuilder.builder().className("Pizza").fields("name").build().buildQuery();
+    String query = GetBuilder.builder().className("Pizza").fields(Fields.builder().fields(new Field[]{ name }).build()).build().buildQuery();
     // then
     assertNotNull(query);
     assertEquals("{Get{Pizza{name}}}", query);
@@ -27,35 +35,50 @@ public class GetBuilderTest extends TestCase {
   @Test
   public void testBuildGetMultipleFields() {
     // given
+    Field name = Field.builder().name("name").build();
+    Field description = Field.builder().name("description").build();
+    Fields fields = Fields.builder().fields(new Field[]{ name, description }).build();
     // when
-    String query = GetBuilder.builder().className("Pizza").fields("name description").build().buildQuery();
+    String query = GetBuilder.builder().className("Pizza").fields(fields).build().buildQuery();
     // then
     assertNotNull(query);
     assertEquals("{Get{Pizza{name description}}}", query);
   }
 
-  @Test
   public void testBuildGetWhereFilter() {
     // given
-    String where1 = "{path: [\"name\"] operator: Equal valueString: \"Hawaii\" }";
-    String where2 = "{operator: Or operands: [{path: [\"name\"] operator: Equal valueString: \"Hawaii\"}, {path: [\"name\"] operator: Equal valueString: \"Doener\"}]}";
+    WhereArgument where1 = WhereArgument.builder().path(new String[]{ "name" }).operator(WhereOperator.Equal).valueString("Hawaii").build();
+    Field name = Field.builder().name("name").build();
+    Fields fields = Fields.builder().fields(new Field[]{ name }).build();
+    WhereArgument where2 = WhereArgument.builder()
+            .operator(WhereOperator.Or)
+            .operands(new WhereFilter[]{
+                    WhereFilter.builder().path(new String[]{ "name" }).operator(WhereOperator.Equal).valueString("Hawaii").build(),
+                    WhereFilter.builder().path(new String[]{ "name" }).operator(WhereOperator.Equal).valueString("Doener").build(),
+            }).build();
     // when
-    String query1 = GetBuilder.builder().className("Pizza").fields("name").withWhereFilter(where1).build().buildQuery();
-    String query2 = GetBuilder.builder().className("Pizza").fields("name").withWhereFilter(where2).build().buildQuery();
+    String query1 = GetBuilder.builder().className("Pizza").fields(fields).withWhereArgument(where1).build().buildQuery();
+    String query2 = GetBuilder.builder().className("Pizza").fields(fields).withWhereArgument(where2).build().buildQuery();
     // then
     assertNotNull(query1);
-    assertEquals("{Get{Pizza(where: {path: [\"name\"] operator: Equal valueString: \"Hawaii\" }){name}}}", query1);
+    assertEquals("{Get{Pizza(where:{path:[\"name\"] valueString:\"Hawaii\" operator:Equal}){name}}}", query1);
     assertNotNull(query2);
     assertEquals("{Get{Pizza" +
-            "(where: {operator: Or operands: [{path: [\"name\"] operator: Equal valueString: \"Hawaii\"}, {path: [\"name\"] operator: Equal valueString: \"Doener\"}]})" +
+            "(where:{operator:Or operands:[{operator:Equal path:[\"name\"] valueString:\"Hawaii\"},{operator:Equal path:[\"name\"] valueString:\"Doener\"}]})" +
             "{name}}}", query2);
   }
 
   @Test
   public void testBuildGetWithLimit() {
     // given
+    Field name = Field.builder().name("name").build();
+    Fields fields = Fields.builder().fields(new Field[]{ name }).build();
     // when
-    String query = GetBuilder.builder().className("Pizza").fields("name").limit(2).build().buildQuery();
+    String query = GetBuilder.builder()
+            .className("Pizza")
+            .fields(fields)
+            .limit(2)
+            .build().buildQuery();
     // then
     assertNotNull(query);
     assertEquals("{Get{Pizza(limit: 2){name}}}", query);
@@ -64,9 +87,13 @@ public class GetBuilderTest extends TestCase {
   @Test
   public void testBuildGetWithNearText() {
     // given
-    NearTextArgument nearText = NearTextArgument.builder().concepts(new String[]{"good"}).build();
+    Field name = Field.builder().name("name").build();
+    NearTextArgument nearText = NearTextArgument.builder().concepts(new String[]{ "good" }).build();
     // when
-    String query = GetBuilder.builder().className("Pizza").fields("name").withNearTextFilter(nearText).build().buildQuery();
+    String query = GetBuilder.builder()
+            .className("Pizza")
+            .fields(Fields.builder().fields(new Field[]{ name }).build())
+            .withNearTextFilter(nearText).build().buildQuery();
     // then
     assertNotNull(query);
     assertEquals("{Get{Pizza(nearText: {concepts: [\"good\"]}){name}}}", query);
@@ -75,9 +102,12 @@ public class GetBuilderTest extends TestCase {
   @Test
   public void testBuildGetWithNearVector() {
     // given
-    Float[] nearVector = new Float[]{0f, 1f, 0.8f};
+    Field name = Field.builder().name("name").build();
+    Float[] nearVector = new Float[]{ 0f, 1f, 0.8f };
     // when
-    String query = GetBuilder.builder().className("Pizza").fields("name").withNearVectorFilter(nearVector).build().buildQuery();
+    String query = GetBuilder.builder().className("Pizza")
+            .fields(Fields.builder().fields(new Field[]{ name }).build())
+            .withNearVectorFilter(nearVector).build().buildQuery();
     // then
     assertNotNull(query);
     assertEquals("{Get{Pizza(nearVector: {vector: [0.0,1.0,0.8]}){name}}}", query);
@@ -86,58 +116,75 @@ public class GetBuilderTest extends TestCase {
   @Test
   public void testBuildGetWithGroupFilter() {
     // given
-    String group = "{type: closest force: 0.4}";
+    Field name = Field.builder().name("name").build();
+    GroupArgument group = GroupArgument.builder().type(GroupType.closest).force(0.4f).build();
     // when
-    String query = GetBuilder.builder().className("Pizza").fields("name").withGroupFilter(group).build().buildQuery();
+    String query = GetBuilder.builder().className("Pizza")
+            .fields(Fields.builder().fields(new Field[]{ name }).build())
+            .withGroupArgument(group).build().buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Get{Pizza(group: {type: closest force: 0.4}){name}}}", query);
+    assertEquals("{Get{Pizza(group:{type: closest force: 0.4}){name}}}", query);
   }
 
   @Test
   public void testBuildGetWithMultipleFilter() {
     // given
-    String fields = "name";
-    NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(new String[]{"good"})
+    Fields fields = Fields.builder()
+            .fields(new Field[]{ Field.builder().name("name").build() })
             .build();
-    String where = "{path: [\"name\"] operator: Equal valueString: \"Hawaii\"}";
+    NearTextArgument nearText = NearTextArgument.builder()
+            .concepts(new String[]{ "good" })
+            .build();
+    WhereArgument where = WhereArgument.builder()
+            .path(new String[]{ "name" })
+            .operator(WhereOperator.Equal)
+            .valueString("Hawaii")
+            .build();
     Integer limit = 2;
     // when
     String query = GetBuilder.builder()
-            .className("Pizza").fields(fields).withNearTextFilter(nearText).withWhereFilter(where).limit(limit)
+            .className("Pizza").fields(fields).withNearTextFilter(nearText).withWhereArgument(where).limit(limit)
             .build().buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Get{Pizza(where: {path: [\"name\"] operator: Equal valueString: \"Hawaii\"}, nearText: {concepts: [\"good\"]}, limit: 2){name}}}", query);
+    assertEquals("{Get{Pizza(where:{path:[\"name\"] valueString:\"Hawaii\" operator:Equal}, nearText: {concepts: [\"good\"]}, limit: 2){name}}}", query);
   }
 
   @Test
   public void testBuildGetWithMultipleFilters() {
     // given
-    String fields = "name";
-    NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(new String[]{"good"})
+    Fields fields = Fields.builder()
+            .fields(new Field[]{ Field.builder().name("name").build() })
             .build();
-    String where = "{path: [\"name\"] operator: Equal valueString: \"Hawaii\"}";
-    Float[] nearVector = new Float[]{0f, 1f, 0.8f};
+    NearTextArgument nearText = NearTextArgument.builder()
+            .concepts(new String[]{ "good" })
+            .build();
+    WhereArgument where = WhereArgument.builder()
+            .path(new String[]{ "name" })
+            .operator(WhereOperator.Equal)
+            .valueString("Hawaii")
+            .build();
+    Float[] nearVector = new Float[]{ 0f, 1f, 0.8f };
     Integer limit = 2;
     // when
     String query = GetBuilder.builder()
-            .className("Pizza").fields(fields).withNearTextFilter(nearText).withWhereFilter(where).withNearVectorFilter(nearVector).limit(limit)
+            .className("Pizza").fields(fields).withNearTextFilter(nearText).withWhereArgument(where).withNearVectorFilter(nearVector).limit(limit)
             .build().buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Get{Pizza(where: {path: [\"name\"] operator: Equal valueString: \"Hawaii\"}, " +
+    assertEquals("{Get{Pizza(where:{path:[\"name\"] valueString:\"Hawaii\" operator:Equal}, " +
             "nearText: {concepts: [\"good\"]}, nearVector: {vector: [0.0,1.0,0.8]}, limit: 2){name}}}", query);
   }
 
   @Test
   public void testBuildGetWithNearTextWithConcepts() {
     // given
-    String fields = "name";
+    Fields fields = Fields.builder()
+            .fields(new Field[]{ Field.builder().name("name").build() })
+            .build();
     NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(new String[]{"good"})
+            .concepts(new String[]{ "good" })
             .build();
     // when
     String query = GetBuilder.builder()
@@ -151,17 +198,19 @@ public class GetBuilderTest extends TestCase {
   @Test
   public void testBuildGetWithAsk() {
     // given
-    String fields = "name";
+    Fields fields = Fields.builder()
+            .fields(new Field[]{ Field.builder().name("name").build() })
+            .build();
     AskArgument ask1 = AskArgument.builder()
             .question("Who are you?")
             .build();
     AskArgument ask2 = AskArgument.builder()
             .question("Who are you?")
-            .properties(new String[]{"prop1", "prop2"})
+            .properties(new String[]{ "prop1", "prop2" })
             .build();
     AskArgument ask3 = AskArgument.builder()
             .question("Who are you?")
-            .properties(new String[]{"prop1", "prop2"})
+            .properties(new String[]{ "prop1", "prop2" })
             .certainty(0.1f)
             .build();
     // when
@@ -194,7 +243,9 @@ public class GetBuilderTest extends TestCase {
     NearImageArgument nearImage1 = NearImageArgument.builder().imageFile(imageFile).build();
     NearImageArgument nearImage2 = NearImageArgument.builder().imageFile(imageFile).certainty(0.4f).build();
     NearImageArgument nearImage3 = NearImageArgument.builder().image(image).certainty(0.1f).build();
-    String fields = "name";
+    Fields fields = Fields.builder()
+            .fields(new Field[]{ Field.builder().name("name").build() })
+            .build();
     // when
     String query1 = GetBuilder.builder()
             .className("Pizza").fields(fields).withNearImageFilter(nearImage1)
