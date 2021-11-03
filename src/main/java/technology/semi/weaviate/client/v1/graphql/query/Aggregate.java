@@ -8,9 +8,10 @@ import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLQuery;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLResponse;
 import technology.semi.weaviate.client.v1.graphql.query.builder.AggregateBuilder;
+import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
 
 public class Aggregate extends BaseClient<GraphQLResponse> implements ClientResult<GraphQLResponse> {
-  private AggregateBuilder.AggregateBuilderBuilder aggregateBuilder;
+  private final AggregateBuilder.AggregateBuilderBuilder aggregateBuilder;
 
   public Aggregate(Config config) {
     super(config);
@@ -22,7 +23,7 @@ public class Aggregate extends BaseClient<GraphQLResponse> implements ClientResu
     return this;
   }
 
-  public Aggregate withFields(String fields) {
+  public Aggregate withFields(Fields fields) {
     this.aggregateBuilder.fields(fields);
     return this;
   }

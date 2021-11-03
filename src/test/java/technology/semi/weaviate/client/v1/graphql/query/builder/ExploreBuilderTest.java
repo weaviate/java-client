@@ -11,24 +11,25 @@ public class ExploreBuilderTest extends TestCase {
   @Test
   public void testBuildQuery() {
     // given
-    ExploreFields[] fields = new ExploreFields[]{ExploreFields.CERTAINTY, ExploreFields.BEACON, ExploreFields.CLASS_NAME};
+    ExploreFields[] fields = new ExploreFields[]{ ExploreFields.CERTAINTY, ExploreFields.BEACON, ExploreFields.CLASS_NAME };
     NearTextMoveParameters moveTo = NearTextMoveParameters.builder()
-            .concepts(new String[]{"a1", "b2"}).force(0.1f).build();
+            .concepts(new String[]{ "a1", "b2" }).force(0.1f).build();
     NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(new String[]{"a", "b"}).certainty(0.8f).moveTo(moveTo).build();
+            .concepts(new String[]{ "a", "b" }).certainty(0.8f).moveTo(moveTo).build();
     // when
     String query = ExploreBuilder.builder().withNearText(nearText).fields(fields).build().buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Explore(nearText: {concepts: [\"a\", \"b\"] certainty: 0.8 moveTo: {concepts: [\"a1\", \"b2\"] force: 0.1}}){certainty, beacon, className}}", query);
+    assertEquals("{Explore(nearText: {concepts: [\"a\", \"b\"] certainty: 0.8 moveTo: {concepts: [\"a1\", \"b2\"] force: 0.1}}){certainty, beacon, " +
+            "className}}", query);
   }
 
   @Test
   public void testBuildSimpleExplore() {
     // given
-    ExploreFields[] fields = new ExploreFields[]{ExploreFields.CERTAINTY, ExploreFields.BEACON};
+    ExploreFields[] fields = new ExploreFields[]{ ExploreFields.CERTAINTY, ExploreFields.BEACON };
     NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(new String[]{"Cheese", "pineapple"}).build();
+            .concepts(new String[]{ "Cheese", "pineapple" }).build();
     // when
     String query = ExploreBuilder.builder().withNearText(nearText).fields(fields).build().buildQuery();
     // then
@@ -39,9 +40,9 @@ public class ExploreBuilderTest extends TestCase {
   @Test
   public void testBuildExploreWithLmitAndCertainty() {
     // given
-    ExploreFields[] fields = new ExploreFields[]{ExploreFields.BEACON};
+    ExploreFields[] fields = new ExploreFields[]{ ExploreFields.BEACON };
     NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(new String[]{"Cheese"}).certainty(0.71f).build();
+            .concepts(new String[]{ "Cheese" }).certainty(0.71f).build();
     // when
     String query = ExploreBuilder.builder().withNearText(nearText).fields(fields).build().buildQuery();
     // then
@@ -52,12 +53,12 @@ public class ExploreBuilderTest extends TestCase {
   @Test
   public void testBuildExploreWithMove() {
     // given
-    String[] concepts = new String[]{"Cheese"};
+    String[] concepts = new String[]{ "Cheese" };
     NearTextMoveParameters moveTo = NearTextMoveParameters.builder()
-            .concepts(new String[]{"pizza", "pineapple"}).force(0.2f).build();
+            .concepts(new String[]{ "pizza", "pineapple" }).force(0.2f).build();
     NearTextMoveParameters moveAwayFrom = NearTextMoveParameters.builder()
-            .concepts(new String[]{"fish"}).force(0.1f).build();
-    ExploreFields[] fields = new ExploreFields[]{ExploreFields.BEACON};
+            .concepts(new String[]{ "fish" }).force(0.1f).build();
+    ExploreFields[] fields = new ExploreFields[]{ ExploreFields.BEACON };
     NearTextArgument nearText = NearTextArgument.builder()
             .concepts(concepts).moveTo(moveTo).moveAwayFrom(moveAwayFrom)
             .build();
@@ -73,15 +74,15 @@ public class ExploreBuilderTest extends TestCase {
   @Test
   public void testBuildExploreWithAllParams() {
     // given
-    String[] concepts = new String[]{"New Yorker"};
+    String[] concepts = new String[]{ "New Yorker" };
     Float certainty = 0.95f;
     NearTextMoveParameters moveTo = NearTextMoveParameters.builder()
-            .concepts(new String[]{"publisher", "articles"}).force(0.5f)
+            .concepts(new String[]{ "publisher", "articles" }).force(0.5f)
             .build();
     NearTextMoveParameters moveAwayFrom = NearTextMoveParameters.builder()
-            .concepts(new String[]{"fashion", "shop"}).force(0.2f)
+            .concepts(new String[]{ "fashion", "shop" }).force(0.2f)
             .build();
-    ExploreFields[] fields = new ExploreFields[]{ExploreFields.CERTAINTY, ExploreFields.BEACON, ExploreFields.CLASS_NAME};
+    ExploreFields[] fields = new ExploreFields[]{ ExploreFields.CERTAINTY, ExploreFields.BEACON, ExploreFields.CLASS_NAME };
     NearTextArgument nearText = NearTextArgument.builder()
             .concepts(concepts).moveTo(moveTo).moveAwayFrom(moveAwayFrom)
             .build();

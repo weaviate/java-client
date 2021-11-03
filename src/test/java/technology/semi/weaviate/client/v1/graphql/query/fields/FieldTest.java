@@ -1,0 +1,64 @@
+package technology.semi.weaviate.client.v1.graphql.query.fields;
+
+import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Test;
+
+public class FieldTest extends TestCase {
+
+  @Test
+  public void testBuild() {
+    // given
+    String expected = "_additional{certainty}";
+    Field field = Field.builder()
+            .name("_additional")
+            .fields(new Field[]{ Field.builder().name("certainty").build() })
+            .build();
+    // when
+    String fieldString = field.build();
+    // then
+    Assert.assertEquals(expected, fieldString);
+  }
+
+  @Test
+  public void testBuild2() {
+    // given
+    String expected = "_additional{classification{basedOn classifiedFields completed id scope}}";
+    Field _additional = Field.builder()
+            .name("_additional")
+            .fields(new Field[]{
+                    Field.builder()
+                            .name("classification")
+                            .fields(new Field[]{
+                                    Field.builder().name("basedOn").build(),
+                                    Field.builder().name("classifiedFields").build(),
+                                    Field.builder().name("completed").build(),
+                                    Field.builder().name("id").build(),
+                                    Field.builder().name("scope").build()
+                            }).build()
+            }).build();
+    // when
+    String fieldString = _additional.build();
+    // then
+    Assert.assertEquals(expected, fieldString);
+  }
+
+  @Test
+  public void testBuild3() {
+    // given
+    String expected = "inPublication{... on Publication{name}}";
+    Field field = Field.builder()
+            .name("inPublication")
+            .fields(new Field[]{
+                    Field.builder()
+                            .name("... on Publication")
+                            .fields(new Field[]{
+                                    Field.builder().name("name").build()
+                            }).build()
+            }).build();
+    // when
+    String fieldString = field.build();
+    // then
+    Assert.assertEquals(expected, fieldString);
+  }
+}
