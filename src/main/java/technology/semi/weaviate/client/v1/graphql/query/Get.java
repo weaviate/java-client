@@ -44,6 +44,11 @@ public class Get extends BaseClient<GraphQLResponse> implements ClientResult<Gra
     return this;
   }
 
+  public Get withOffset(Integer offset) {
+    this.getBuilder.offset(offset);
+    return this;
+  }
+
   public Get withNearText(NearTextArgument nearText) {
     this.getBuilder.withNearTextFilter(nearText);
     return this;
