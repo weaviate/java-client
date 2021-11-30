@@ -85,6 +85,23 @@ public class GetBuilderTest extends TestCase {
   }
 
   @Test
+  public void testBuildGetWithLimitAndOffset() {
+    // given
+    Field name = Field.builder().name("name").build();
+    Fields fields = Fields.builder().fields(new Field[]{ name }).build();
+    // when
+    String query = GetBuilder.builder()
+            .className("Pizza")
+            .fields(fields)
+            .offset(0)
+            .limit(2)
+            .build().buildQuery();
+    // then
+    assertNotNull(query);
+    assertEquals("{Get{Pizza(limit: 2, offset: 0){name}}}", query);
+  }
+
+  @Test
   public void testBuildGetWithNearText() {
     // given
     Field name = Field.builder().name("name").build();

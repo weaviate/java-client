@@ -21,6 +21,7 @@ import technology.semi.weaviate.client.v1.graphql.query.argument.WhereArgument;
 public class GetBuilder implements Query {
   String className;
   Fields fields;
+  Integer offset;
   Integer limit;
   WhereArgument withWhereArgument;
   NearTextArgument withNearTextFilter;
@@ -65,6 +66,9 @@ public class GetBuilder implements Query {
       }
       if (limit != null) {
         filters.add(String.format("limit: %s", limit));
+      }
+      if (offset != null) {
+        filters.add(String.format("offset: %s", offset));
       }
       return String.format("(%s)", StringUtils.joinWith(", ", filters.toArray()));
     }
