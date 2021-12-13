@@ -87,7 +87,7 @@ public class ClientGraphQLTest {
       put("description", "soup with id");
     }}).build();
     NearObjectArgument nearObjectArgument = client.graphQL().arguments().nearObjectArgBuilder()
-            .id(newObjID).certainty(1.0f).build();
+            .id(newObjID).certainty(0.99f).build();
     Field name = Field.builder().name("name").build();
     Field _additional = Field.builder()
             .name("_additional")

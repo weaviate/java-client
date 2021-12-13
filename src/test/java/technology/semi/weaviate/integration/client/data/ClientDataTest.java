@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class ClientDataTest {
   private String address;
@@ -587,6 +588,10 @@ public class ClientDataTest {
                       .dataType(new ArrayList(){{ add(DataType.NUMBER_ARRAY); }})
                       .name("numberArray")
                       .build());
+              add(Property.builder()
+                      .dataType(new ArrayList(){{ add(DataType.BOOLEAN_ARRAY); }})
+                      .name("booleanArray")
+                      .build());
             }})
             .build();
     String objTID = "abefd256-8574-442b-9293-9205193737ee";
@@ -595,6 +600,7 @@ public class ClientDataTest {
     propertiesSchemaT.put("textArray", new String[]{"c", "d"});
     propertiesSchemaT.put("intArray", new Integer[]{1, 2});
     propertiesSchemaT.put("numberArray", new Float[]{3.3f, 4.4f});
+    propertiesSchemaT.put("booleanArray", new Boolean[]{true, false});
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
     Result<Schema> schemaAfterCreate = client.schema().getter().run();
@@ -621,12 +627,68 @@ public class ClientDataTest {
     assertEquals(1, objectsT.getResult().size());
     assertEquals(objTID, objectsT.getResult().get(0).getId());
     assertNotNull(objectsT.getResult().get(0).getProperties());
-    assertEquals(4, objectsT.getResult().get(0).getProperties().size());
+    assertEquals(5, objectsT.getResult().get(0).getProperties().size());
     assertEquals("ClassArrays", objectsT.getResult().get(0).getClassName());
     checkArrays(objectsT.getResult().get(0).getProperties().get("stringArray"), 2, "a", "b");
     checkArrays(objectsT.getResult().get(0).getProperties().get("textArray"), 2, "c", "d");
     checkArrays(objectsT.getResult().get(0).getProperties().get("intArray"), 2, 1.0, 2.0);
     checkArrays(objectsT.getResult().get(0).getProperties().get("numberArray"), 2, 3.3, 4.4);
+    checkArrays(objectsT.getResult().get(0).getProperties().get("booleanArray"), 2, true, false);
+    assertNotNull(deleteStatus);
+    assertTrue(deleteStatus.getResult());
+    assertEquals(0, schemaAfterDelete.getResult().getClasses().size());
+  }
+
+  @Test
+  public void testDataGetWithVector() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateClass clazz = WeaviateClass.builder()
+            .className("ClassCustomVector")
+            .description("Class with custom vector")
+            .vectorizer("none")
+            .properties(new ArrayList() {{
+              add(Property.builder()
+                      .dataType(new ArrayList(){{ add(DataType.STRING); }})
+                      .name("foo")
+                      .build());
+            }})
+            .build();
+    String objTID = "addfd256-8574-442b-9293-9205193737ee";
+    Map<String, Object> propertiesSchemaT = new HashMap<>();
+    propertiesSchemaT.put("foo", "bar");
+    Float[] vectorObjT = new Float[]{-0.26736435f, -0.112380296f, 0.29648793f, 0.39212644f, 0.0033650293f, -0.07112332f, 0.07513781f, 0.22459874f};
+    // when
+    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
+    Result<Schema> schemaAfterCreate = client.schema().getter().run();
+    Result<WeaviateObject> objectT = client.data().creator()
+            .withClassName("ClassCustomVector")
+            .withID(objTID)
+            .withVector(vectorObjT)
+            .withProperties(propertiesSchemaT)
+            .run();
+    Result<List<WeaviateObject>> objT = client.data()
+            .objectsGetter().withID(objTID)
+            .withVector()
+            .run();
+    Result<Boolean> deleteStatus = client.schema().allDeleter().run();
+    Result<Schema> schemaAfterDelete = client.schema().getter().run();
+    // then
+    assertNotNull(createStatus);
+    assertTrue(createStatus.getResult());
+    assertNotNull(schemaAfterCreate);
+    assertNotNull(schemaAfterCreate.getResult());
+    assertEquals(1, schemaAfterCreate.getResult().getClasses().size());
+    // check the object
+    assertNotNull(objectT);
+    assertNotNull(objectT.getResult());
+    assertNotNull(objT);
+    assertNull(objT.getError());
+    assertNotNull(objT.getResult());
+    assertEquals(objT.getResult().size(), 1);
+    assertArrayEquals(objT.getResult().get(0).getVector(), vectorObjT);
+    // clean up
     assertNotNull(deleteStatus);
     assertTrue(deleteStatus.getResult());
     assertEquals(0, schemaAfterDelete.getResult().getClasses().size());

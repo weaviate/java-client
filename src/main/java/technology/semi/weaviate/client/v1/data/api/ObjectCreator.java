@@ -15,6 +15,7 @@ public class ObjectCreator extends BaseClient<WeaviateObject> implements ClientR
   private String uuid;
   private String className;
   private Map<String, Object> properties;
+  private Float[] vector;
 
   public ObjectCreator(Config config) {
     super(config);
@@ -35,6 +36,11 @@ public class ObjectCreator extends BaseClient<WeaviateObject> implements ClientR
     return this;
   }
 
+  public ObjectCreator withVector(Float[] vector) {
+    this.vector = vector;
+    return this;
+  }
+
   private String getID() {
     if (StringUtils.isEmpty(uuid)) {
       return UUID.randomUUID().toString();
@@ -47,6 +53,7 @@ public class ObjectCreator extends BaseClient<WeaviateObject> implements ClientR
     WeaviateObject obj = WeaviateObject.builder()
             .className(className)
             .properties(properties)
+            .vector(vector)
             .id(getID())
             .build();
     Response<WeaviateObject> resp = sendPostRequest("/objects", obj, WeaviateObject.class);
