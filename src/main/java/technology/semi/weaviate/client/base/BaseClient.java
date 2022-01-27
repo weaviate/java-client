@@ -38,6 +38,10 @@ public abstract class BaseClient<T> {
     return sendRequest(endpoint, payload, "DELETE", classOfT);
   }
 
+  protected Response<T> sendHeadRequest(String endpoint, Class<T> classOfT) {
+    return sendRequest(endpoint, null, "HEAD", classOfT);
+  }
+
   private Response<T> sendRequest(String endpoint, Object payload, String method, Class<T> classOfT) {
     try {
       String url = config.getBaseURL() + endpoint;
@@ -71,6 +75,9 @@ public abstract class BaseClient<T> {
     }
     if (method.equals("DELETE")) {
       return client.sendDeleteRequest(address, json);
+    }
+    if (method.equals("HEAD")) {
+      return client.sendHeadRequest(address);
     }
     return client.sendGetRequest(address);
   }
