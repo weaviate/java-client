@@ -230,6 +230,12 @@ public class GetBuilderTest extends TestCase {
             .properties(new String[]{ "prop1", "prop2" })
             .certainty(0.1f)
             .build();
+    AskArgument ask4 = AskArgument.builder()
+            .question("Who are you?")
+            .properties(new String[]{ "prop1", "prop2" })
+            .certainty(0.1f)
+            .rerank(true)
+            .build();
     // when
     String query1 = GetBuilder.builder()
             .className("Pizza").fields(fields).withAskArgument(ask1)
@@ -240,6 +246,9 @@ public class GetBuilderTest extends TestCase {
     String query3 = GetBuilder.builder()
             .className("Pizza").fields(fields).withAskArgument(ask3)
             .build().buildQuery();
+    String query4 = GetBuilder.builder()
+            .className("Pizza").fields(fields).withAskArgument(ask4)
+            .build().buildQuery();
     // then
     assertNotNull(query1);
     assertEquals("{Get{Pizza(ask: {question: \"Who are you?\"}){name}}}", query1);
@@ -247,6 +256,8 @@ public class GetBuilderTest extends TestCase {
     assertEquals("{Get{Pizza(ask: {question: \"Who are you?\" properties: [\"prop1\", \"prop2\"]}){name}}}", query2);
     assertNotNull(query3);
     assertEquals("{Get{Pizza(ask: {question: \"Who are you?\" properties: [\"prop1\", \"prop2\"] certainty: 0.1}){name}}}", query3);
+    assertNotNull(query4);
+    assertEquals("{Get{Pizza(ask: {question: \"Who are you?\" properties: [\"prop1\", \"prop2\"] certainty: 0.1 rerank: true}){name}}}", query4);
   }
 
   @Test
