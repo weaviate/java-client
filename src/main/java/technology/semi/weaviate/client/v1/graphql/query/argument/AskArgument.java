@@ -18,6 +18,7 @@ public class AskArgument implements Argument {
   String[] properties;
   Float certainty;
   Boolean autocorrect;
+  Boolean rerank;
 
   @Override
   public String build() {
@@ -35,6 +36,9 @@ public class AskArgument implements Argument {
       }
       if (autocorrect != null) {
         arg.add(String.format("autocorrect: %s", autocorrect));
+      }
+      if (rerank != null) {
+        arg.add(String.format("rerank: %s", rerank));
       }
       return String.format("ask: {%s}", StringUtils.joinWith(" ", arg.toArray()));
     }
