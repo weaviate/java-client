@@ -6,4 +6,5 @@ public interface HttpClient {
   HttpResponse sendPutRequest(String url, String json) throws Exception;
   HttpResponse sendPatchRequest(String url, String json) throws Exception;
   HttpResponse sendDeleteRequest(String url, String json) throws Exception;
+  HttpResponse sendHeadRequest(String url) throws Exception;
 }

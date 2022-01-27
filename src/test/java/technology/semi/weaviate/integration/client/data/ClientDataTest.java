@@ -21,6 +21,7 @@ import technology.semi.weaviate.client.v1.schema.model.WeaviateClass;
 import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -692,6 +693,52 @@ public class ClientDataTest {
     assertNotNull(deleteStatus);
     assertTrue(deleteStatus.getResult());
     assertEquals(0, schemaAfterDelete.getResult().getClasses().size());
+  }
+
+  @Test
+  public void testObjectCheck() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
+    String objTID = "abefd256-8574-442b-9293-9205193737ee";
+    String objAID = "565da3b6-60b3-40e5-ba21-e6bfe5dbba91";
+    String nonExistentObjectID = "11111111-1111-1111-aaaa-aaaaaaaaaaaa";
+    Map<String, java.lang.Object> propertiesSchemaT = new HashMap<>();
+    propertiesSchemaT.put("name", "Hawaii");
+    propertiesSchemaT.put("description", "Universally accepted to be the best pizza ever created.");
+    Map<String, java.lang.Object> propertiesSchemaA = new HashMap<>();
+    propertiesSchemaA.put("name", "ChickenSoup");
+    propertiesSchemaA.put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
+    // when
+    testGenerics.createWeaviateTestSchemaFood(client);
+    Result<WeaviateObject> objectT = client.data().creator()
+            .withClassName("Pizza")
+            .withID(objTID)
+            .withProperties(propertiesSchemaT)
+            .run();
+    Result<WeaviateObject> objectA = client.data().creator()
+            .withClassName("Soup")
+            .withID(objAID)
+            .withProperties(propertiesSchemaA)
+            .run();
+    Result<Boolean> checkObjT = client.data().checker().withID(objTID).run();
+    Result<Boolean> checkObjA = client.data().checker().withID(objAID).run();
+    Result<Boolean> checkNonexistentObject = client.data().checker().withID(nonExistentObjectID).run();
+    testGenerics.cleanupWeaviate(client);
+    // then
+    assertNotNull(objectT);
+    assertNotNull(objectT.getResult());
+    assertEquals(objTID, objectT.getResult().getId());
+    assertNotNull(objectA);
+    assertNotNull(objectA.getResult());
+    assertEquals(objAID, objectA.getResult().getId());
+    assertNotNull(checkObjT);
+    assertTrue(checkObjT.getResult());
+    assertNotNull(checkObjA);
+    assertTrue(checkObjA.getResult());
+    assertNotNull(checkNonexistentObject);
+    assertFalse(checkNonexistentObject.getResult());
   }
 
   private void checkArrays(Object property, int size, Object... contains) {

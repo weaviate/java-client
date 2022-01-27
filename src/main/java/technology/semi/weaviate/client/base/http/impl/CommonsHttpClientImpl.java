@@ -6,6 +6,7 @@ import java.util.Objects;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
@@ -68,6 +69,13 @@ public class CommonsHttpClientImpl implements HttpClient {
       return sendRequest(httpDelete);
     }
     return sendPayloadRequest(url, json, "DELETE");
+  }
+
+  @Override
+  public HttpResponse sendHeadRequest(String url) throws Exception {
+    HttpHead httpHead = new HttpHead(url);
+    httpHead.setHeader("Accept", "*/*");
+    return sendRequest(httpHead);
   }
 
   private HttpResponse sendPayloadRequest(String url, String jsonString, String method) throws Exception {

@@ -10,6 +10,7 @@ import technology.semi.weaviate.client.v1.data.api.ReferenceCreator;
 import technology.semi.weaviate.client.v1.data.api.ReferenceDeleter;
 import technology.semi.weaviate.client.v1.data.api.ReferenceReplacer;
 import technology.semi.weaviate.client.v1.data.builder.ReferencePayloadBuilder;
+import technology.semi.weaviate.client.v1.schema.api.ObjectsChecker;
 
 public class Data {
   private final Config config;
@@ -24,6 +25,10 @@ public class Data {
 
   public ObjectsGetter objectsGetter() {
     return new ObjectsGetter(config);
+  }
+
+  public ObjectsChecker checker() {
+    return new ObjectsChecker(config);
   }
 
   public ObjectDeleter deleter() {
