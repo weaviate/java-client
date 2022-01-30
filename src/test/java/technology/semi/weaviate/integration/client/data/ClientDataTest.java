@@ -722,9 +722,23 @@ public class ClientDataTest {
             .withID(objAID)
             .withProperties(propertiesSchemaA)
             .run();
+    // check object existence
     Result<Boolean> checkObjT = client.data().checker().withID(objTID).run();
     Result<Boolean> checkObjA = client.data().checker().withID(objAID).run();
+    Result<List<WeaviateObject>> objA = client.data()
+            .objectsGetter().withID(objAID)
+            .withVector()
+            .run();
+    Result<List<WeaviateObject>> objT = client.data()
+            .objectsGetter().withID(objTID)
+            .withVector()
+            .run();
     Result<Boolean> checkNonexistentObject = client.data().checker().withID(nonExistentObjectID).run();
+    // delete all objects from Weaviate
+    Result<Boolean> deleteStatus = client.schema().allDeleter().run();
+    // check object's existence status after clean up
+    Result<Boolean> checkObjTAfterDelete = client.data().checker().withID(objTID).run();
+    Result<Boolean> checkObjAAfterDelete = client.data().checker().withID(objAID).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(objectT);
@@ -737,8 +751,22 @@ public class ClientDataTest {
     assertTrue(checkObjT.getResult());
     assertNotNull(checkObjA);
     assertTrue(checkObjA.getResult());
+    assertNotNull(objA.getResult());
+    assertEquals(objA.getResult().size(), 1);
+    assertEquals(objA.getResult().get(0).getId(), objAID);
+    assertNotNull(objT.getResult());
+    assertEquals(objT.getResult().size(), 1);
+    assertEquals(objT.getResult().get(0).getId(), objTID);
     assertNotNull(checkNonexistentObject);
     assertFalse(checkNonexistentObject.getResult());
+    assertNotNull(deleteStatus);
+    assertTrue(deleteStatus.getResult());
+    assertNotNull(checkObjTAfterDelete);
+    assertFalse(checkObjTAfterDelete.getResult());
+    assertNull(checkObjTAfterDelete.getError());
+    assertNotNull(checkObjAAfterDelete);
+    assertFalse(checkObjAAfterDelete.getResult());
+    assertNull(checkObjAAfterDelete.getError());
   }
 
   private void checkArrays(Object property, int size, Object... contains) {
