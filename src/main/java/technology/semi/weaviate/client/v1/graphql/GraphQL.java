@@ -5,6 +5,7 @@ import technology.semi.weaviate.client.v1.graphql.query.Aggregate;
 import technology.semi.weaviate.client.v1.graphql.query.Explore;
 import technology.semi.weaviate.client.v1.graphql.query.Get;
 import technology.semi.weaviate.client.v1.graphql.query.argument.AskArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.GroupArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearImageArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
@@ -28,6 +29,9 @@ public class GraphQL {
     }
     public NearImageArgument.NearImageArgumentBuilder nearImageArgBuilder() {
       return NearImageArgument.builder();
+    }
+    public GroupArgument.GroupArgumentBuilder groupArgBuilder() {
+      return GroupArgument.builder();
     }
   }
 
