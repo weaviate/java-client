@@ -16,6 +16,8 @@ import technology.semi.weaviate.client.v1.batch.model.ObjectGetResponse;
 import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
 import technology.semi.weaviate.client.v1.graphql.model.ExploreFields;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLResponse;
+import technology.semi.weaviate.client.v1.graphql.query.argument.GroupArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.GroupType;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Field;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
@@ -316,5 +318,43 @@ public class ClientGraphQLTest {
     assertTrue(count.get("meta") instanceof Map);
     Map countVal = (Map) count.get("meta");
     assertEquals(4.0d, countVal.get("count"));
+  }
+
+  @Test
+  public void testGraphQLGetWithGroup() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
+    GroupArgument group = client.graphQL().arguments().groupArgBuilder()
+            .type(GroupType.merge).force(1.0f).build();
+    Field name = Field.builder().name("name").build();
+    Fields fields = Fields.builder()
+            .fields(new Field[]{name})
+            .build();
+    // when
+    testGenerics.createTestSchemaAndData(client);
+    Result<GraphQLResponse> result = client.graphQL().get()
+            .withClassName("Soup")
+            .withFields(fields)
+            .withGroup(group)
+            .withLimit(7)
+            .run();
+    testGenerics.cleanupWeaviate(client);
+    // then
+    assertNotNull(result);
+    assertFalse(result.hasErrors());
+    GraphQLResponse resp = result.getResult();
+    assertNotNull(resp);
+    assertNotNull(resp.getData());
+    assertTrue(resp.getData() instanceof Map);
+    Map data = (Map) resp.getData();
+    assertNotNull(data.get("Get"));
+    assertTrue(data.get("Get") instanceof Map);
+    Map get = (Map) data.get("Get");
+    assertNotNull(get.get("Soup"));
+    assertTrue(get.get("Soup") instanceof List);
+    List getSoup = (List) get.get("Soup");
+    assertEquals(1, getSoup.size());
   }
 }
