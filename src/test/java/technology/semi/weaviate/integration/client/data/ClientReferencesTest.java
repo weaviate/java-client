@@ -12,6 +12,7 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.WeaviateClient;
 import technology.semi.weaviate.client.base.Result;
+import technology.semi.weaviate.client.v1.data.model.ObjectReference;
 import technology.semi.weaviate.client.v1.data.model.SingleRef;
 import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
 import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
@@ -274,5 +275,45 @@ public class ClientReferencesTest {
     checkReference(thingsAfterRefDelete, null);
     // check objA after delete, should be null
     checkReference(actionsAfterRefDelete, null);
+  }
+
+  @Test
+  public void testDataCreateWithAddReferenceUsingProperties() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
+    String objTID = "abefd256-8574-442b-9293-9205193737ee";
+    Map<String, Object> propertiesSchemaT = new HashMap() {{
+      put("name", "Hawaii");
+      put("description", "Universally accepted to be the best pizza ever created.");
+    }};
+    String objRefBeaconID = "565da3b6-60b3-40e5-ba21-e6bfe5dbba92";
+    Map<String, Object> propertiesSchemaRefBeacon = new HashMap() {{
+      put("name", "RefBeaconSoup");
+      put("description", "Used only to check if reference can be added.");
+      put("otherFoods", new ObjectReference[]{
+              ObjectReference.builder().beacon("weaviate://localhost/abefd256-8574-442b-9293-9205193737ee").build()
+      });
+    }};
+    // when
+    testGenerics.createWeaviateTestSchemaFoodWithReferenceProperty(client);
+    Result<WeaviateObject> objTCreate = client.data().creator().withClassName("Pizza").withID(objTID).withProperties(propertiesSchemaT).run();
+    // create object with a reference to objT
+    Result<WeaviateObject> objRefBeaconCreate = client.data().creator()
+            .withClassName("Soup")
+            .withID(objRefBeaconID)
+            .withProperties(propertiesSchemaRefBeacon)
+            .run();
+    // Get the object reference beacon to check if otherFoods reference has been set
+    Result<List<WeaviateObject>> objRefBeaconGet = client.data().objectsGetter().withID(objRefBeaconID).run();
+    testGenerics.cleanupWeaviate(client);
+    // then
+    assertNotNull(objTCreate);
+    assertNull(objTCreate.getError());
+    assertNotNull(objRefBeaconCreate);
+    assertNull(objRefBeaconCreate.getError());
+    // check objT
+    checkReference(objRefBeaconGet, objTID);
   }
 }
