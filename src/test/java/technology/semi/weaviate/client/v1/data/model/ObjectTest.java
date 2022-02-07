@@ -78,4 +78,34 @@ public class ObjectTest extends TestCase {
     Assert.assertEquals("weaviate://localhost/07473b34-0ab2-4120-882d-303d9e13f7af", otherFood1.get("beacon"));
     Assert.assertEquals("/v1/objects/07473b34-0ab2-4120-882d-303d9e13f7af", otherFood1.get("href"));
   }
+
+  @Test
+  public void testSerializeWithReferenceProperty() {
+    // given
+    Map<String, Object> properties = new HashMap() {{
+      put("name", "RefBeaconSoup");
+      put("description", "Used only to check if reference can be added.");
+      put("otherFoods", new ObjectReference[]{
+              ObjectReference.builder()
+                      .beacon("weaviate://localhost/abefd256-8574-442b-9293-9205193737ee")
+                      .build()
+      });
+      put("rating", "9/10");
+    }};
+    WeaviateObject obj = WeaviateObject.builder()
+            .id("uuid")
+            .className("class")
+            .properties(properties)
+            .build();
+    // when
+    String result = new GsonBuilder()
+            .setPrettyPrinting()
+            .create()
+            .toJson(obj);
+    // then
+    Assert.assertNotNull(result);
+    System.out.println(result);
+    Assert.assertTrue(result.contains("otherFoods"));
+    Assert.assertTrue(result.contains("weaviate://localhost/abefd256-8574-442b-9293-9205193737ee"));
+  }
 }
