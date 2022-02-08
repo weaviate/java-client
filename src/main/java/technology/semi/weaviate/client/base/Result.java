@@ -1,5 +1,6 @@
 package technology.semi.weaviate.client.base;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -21,6 +22,9 @@ public class Result<T> {
     if (errors != null && errors.getError() != null) {
       List<WeaviateErrorMessage> items = errors.getError().stream().filter(Objects::nonNull).collect(Collectors.toList());
       this.error = new WeaviateError(statusCode, items);
+      this.result = null;
+    } else if (errors != null && errors.getMessage() != null) {
+      this.error = new WeaviateError(statusCode, Collections.singletonList(WeaviateErrorMessage.builder().message(errors.getMessage()).build()));
       this.result = null;
     } else {
       this.result = body;

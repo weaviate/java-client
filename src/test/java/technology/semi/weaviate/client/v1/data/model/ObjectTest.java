@@ -104,7 +104,6 @@ public class ObjectTest extends TestCase {
             .toJson(obj);
     // then
     Assert.assertNotNull(result);
-    System.out.println(result);
     Assert.assertTrue(result.contains("otherFoods"));
     Assert.assertTrue(result.contains("weaviate://localhost/abefd256-8574-442b-9293-9205193737ee"));
   }
