@@ -12,5 +12,7 @@ import lombok.experimental.FieldDefaults;
 @ToString
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class WeaviateErrorResponse {
+  Integer code;
+  String message;
   List<WeaviateErrorMessage> error;
 }

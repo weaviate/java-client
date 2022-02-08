@@ -769,6 +769,39 @@ public class ClientDataTest {
     assertNull(checkObjAAfterDelete.getError());
   }
 
+  @Test
+  public void testDataCreateWithIDInNotUUIDFormat() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    String objID = "TODO_4";
+    Map<String, java.lang.Object> propertiesSchemaT = new HashMap<>();
+    propertiesSchemaT.put("name", "name");
+    propertiesSchemaT.put("description", "description");
+    // when
+    Result<WeaviateObject> objectT = client.data().creator()
+            .withID(objID)
+            .withClassName("Pizza")
+            .withProperties(propertiesSchemaT)
+            .run();
+    Result<List<WeaviateObject>> objectsT = client.data().objectsGetter().withID(objID).run();
+    Result<Boolean> deleteStatus = client.schema().allDeleter().run();
+    Result<Schema> schemaAfterDelete = client.schema().getter().run();
+    // then
+    assertNotNull(objectT);
+    assertNull(objectT.getResult());
+    assertNotNull(objectT.getError());
+    assertNotNull(objectT.getError().getMessages());
+    assertNotNull(objectT.getError().getMessages().get(0));
+    assertEquals(422, objectT.getError().getStatusCode());
+    assertEquals("id in body must be of type uuid: \"TODO_4\"", objectT.getError().getMessages().get(0).getMessage());
+    assertNotNull(objectsT);
+    assertNull(objectsT.getResult());
+    assertNotNull(deleteStatus);
+    assertTrue(deleteStatus.getResult());
+    assertEquals(0, schemaAfterDelete.getResult().getClasses().size());
+  }
+
   private void checkArrays(Object property, int size, Object... contains) {
     assertNotNull(property);
     assertEquals(ArrayList.class, property.getClass());
