@@ -7,6 +7,7 @@ import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLQuery;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLResponse;
+import technology.semi.weaviate.client.v1.graphql.query.argument.WhereArgument;
 import technology.semi.weaviate.client.v1.graphql.query.builder.AggregateBuilder;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
 
@@ -25,6 +26,11 @@ public class Aggregate extends BaseClient<GraphQLResponse> implements ClientResu
 
   public Aggregate withFields(Fields fields) {
     this.aggregateBuilder.fields(fields);
+    return this;
+  }
+
+  public Aggregate withWhere(WhereArgument where) {
+    this.aggregateBuilder.withWhereArgument(where);
     return this;
   }
 

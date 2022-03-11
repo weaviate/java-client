@@ -300,24 +300,110 @@ public class ClientGraphQLTest {
     assertNotNull(result);
     assertFalse(result.hasErrors());
     GraphQLResponse resp = result.getResult();
-    assertNotNull(resp);
-    assertNull(resp.getErrors());
-    assertNotNull(resp.getData());
-    assertTrue(resp.getData() instanceof Map);
-    Map data = (Map) resp.getData();
-    assertNotNull(data.get("Aggregate"));
-    assertTrue(data.get("Aggregate") instanceof Map);
-    Map aggregate = (Map) data.get("Aggregate");
-    assertNotNull(aggregate.get("Pizza"));
-    assertTrue(aggregate.get("Pizza") instanceof List);
-    List res = (List) aggregate.get("Pizza");
-    assertEquals(1, res.size());
-    assertTrue(res.get(0) instanceof Map);
-    Map count = (Map) res.get(0);
-    assertNotNull(count.get("meta"));
-    assertTrue(count.get("meta") instanceof Map);
-    Map countVal = (Map) count.get("meta");
-    assertEquals(4.0d, countVal.get("count"));
+    checkAggregateMetaCount(resp, 1, 4.0d);
+  }
+
+  @Test
+  public void testGraphQLAggregateWithWhereFilter() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
+    String newObjID = "6baed48e-2afe-4be4-a09d-b00a955d96ee";
+    WeaviateObject pizzaWithID = WeaviateObject.builder().className("Pizza").id(newObjID).properties(new HashMap<String, java.lang.Object>() {{
+      put("name", "JustPizza");
+      put("description", "pizza with id");
+    }}).build();
+    WhereArgument where = WhereArgument.builder()
+            .path(new String[]{ "id" })
+            .operator(WhereOperator.Equal)
+            .valueString(newObjID)
+            .build();
+    Field meta = Field.builder()
+            .name("meta")
+            .fields(new Field[]{Field.builder().name("count").build()})
+            .build();
+    Fields fields = Fields.builder().fields(new Field[]{meta}).build();
+    // when
+    testGenerics.createTestSchemaAndData(client);
+    Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObject(pizzaWithID).run();
+    Result<GraphQLResponse> result = client.graphQL().aggregate().withFields(fields).withClassName("Pizza").withWhere(where).run();
+    testGenerics.cleanupWeaviate(client);
+    // then
+    assertNotNull(insert);
+    assertNotNull(insert.getResult());
+    assertEquals(1, insert.getResult().length);
+    assertNotNull(result);
+    assertFalse(result.hasErrors());
+    GraphQLResponse resp = result.getResult();
+    checkAggregateMetaCount(resp, 1, 1.0d);
+  }
+
+  @Test
+  public void testGraphQLAggregateWithGroupedByAndWhere() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
+    String newObjID = "6baed48e-2afe-4be4-a09d-b00a955d96ee";
+    WeaviateObject pizzaWithID = WeaviateObject.builder().className("Pizza").id(newObjID).properties(new HashMap<String, java.lang.Object>() {{
+      put("name", "JustPizza");
+      put("description", "pizza with id");
+    }}).build();
+    WhereArgument where = WhereArgument.builder()
+            .path(new String[]{ "id" })
+            .operator(WhereOperator.Equal)
+            .valueString(newObjID)
+            .build();
+    Field meta = Field.builder()
+            .name("meta")
+            .fields(new Field[]{Field.builder().name("count").build()})
+            .build();
+    Fields fields = Fields.builder().fields(new Field[]{meta}).build();
+    // when
+    testGenerics.createTestSchemaAndData(client);
+    Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObject(pizzaWithID).run();
+    Result<GraphQLResponse> result = client.graphQL().aggregate().withFields(fields).withClassName("Pizza").withGroupBy("name").withWhere(where).run();
+    testGenerics.cleanupWeaviate(client);
+    // then
+    assertNotNull(insert);
+    assertNotNull(insert.getResult());
+    assertEquals(1, insert.getResult().length);
+    assertNotNull(result);
+    assertFalse(result.hasErrors());
+    GraphQLResponse resp = result.getResult();
+    checkAggregateMetaCount(resp, 1, 1.0d);
+  }
+
+  @Test
+  public void testGraphQLAggregateWithGroupedBy() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
+    String newObjID = "6baed48e-2afe-4be4-a09d-b00a955d96ee";
+    WeaviateObject pizzaWithID = WeaviateObject.builder().className("Pizza").id(newObjID).properties(new HashMap<String, java.lang.Object>() {{
+      put("name", "JustPizza");
+      put("description", "pizza with id");
+    }}).build();
+    Field meta = Field.builder()
+            .name("meta")
+            .fields(new Field[]{Field.builder().name("count").build()})
+            .build();
+    Fields fields = Fields.builder().fields(new Field[]{meta}).build();
+    // when
+    testGenerics.createTestSchemaAndData(client);
+    Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObject(pizzaWithID).run();
+    Result<GraphQLResponse> result = client.graphQL().aggregate().withFields(fields).withClassName("Pizza").withGroupBy("name").run();
+    testGenerics.cleanupWeaviate(client);
+    // then
+    assertNotNull(insert);
+    assertNotNull(insert.getResult());
+    assertEquals(1, insert.getResult().length);
+    assertNotNull(result);
+    assertFalse(result.hasErrors());
+    GraphQLResponse resp = result.getResult();
+    checkAggregateMetaCount(resp, 5, 1.0d);
   }
 
   @Test
@@ -356,5 +442,26 @@ public class ClientGraphQLTest {
     assertTrue(get.get("Soup") instanceof List);
     List getSoup = (List) get.get("Soup");
     assertEquals(1, getSoup.size());
+  }
+
+  private void checkAggregateMetaCount(GraphQLResponse resp, int expectedResultSize, Double expectedCount) {
+    assertNotNull(resp);
+    assertNull(resp.getErrors());
+    assertNotNull(resp.getData());
+    assertTrue(resp.getData() instanceof Map);
+    Map data = (Map) resp.getData();
+    assertNotNull(data.get("Aggregate"));
+    assertTrue(data.get("Aggregate") instanceof Map);
+    Map aggregate = (Map) data.get("Aggregate");
+    assertNotNull(aggregate.get("Pizza"));
+    assertTrue(aggregate.get("Pizza") instanceof List);
+    List res = (List) aggregate.get("Pizza");
+    assertEquals(expectedResultSize, res.size());
+    assertTrue(res.get(0) instanceof Map);
+    Map count = (Map) res.get(0);
+    assertNotNull(count.get("meta"));
+    assertTrue(count.get("meta") instanceof Map);
+    Map countVal = (Map) count.get("meta");
+    assertEquals(expectedCount, countVal.get("count"));
   }
 }
