@@ -19,6 +19,7 @@ import technology.semi.weaviate.client.v1.schema.model.WeaviateClass;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class ClientSchemaTest {
@@ -377,5 +378,38 @@ public class ClientSchemaTest {
     assertNotNull(deleteStatus);
     assertTrue(deleteStatus.getResult());
     assertEquals(0, schemaAfterDelete.getResult().getClasses().size());
+  }
+
+  @Test
+  public void testSchemaGetBandClass() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateClass clazz = WeaviateClass.builder()
+            .className("Band")
+            .description("Band that plays and produces music")
+            .vectorIndexType("hnsw")
+            .vectorizer("text2vec-contextionary")
+            .build();
+    // when
+    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
+    Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
+    Result<WeaviateClass> nonExistentClass = client.schema().classGetter().withClassName("nonExistentClass").run();
+    Result<Boolean> deleteStatus = client.schema().classDeleter().withClassName(clazz.getClassName()).run();
+    // then
+    assertNotNull(createStatus);
+    assertTrue(createStatus.getResult());
+    assertNotNull(bandClass);
+    assertNotNull(bandClass.getResult());
+    assertNull(bandClass.getError());
+    assertEquals(clazz.getClassName(), bandClass.getResult().getClassName());
+    assertEquals(clazz.getDescription(), bandClass.getResult().getDescription());
+    assertEquals(clazz.getVectorIndexType(), bandClass.getResult().getVectorIndexType());
+    assertEquals(clazz.getVectorizer(), bandClass.getResult().getVectorizer());
+    assertNotNull(nonExistentClass);
+    assertNull(nonExistentClass.getError());
+    assertNull(nonExistentClass.getResult());
+    assertNotNull(deleteStatus);
+    assertTrue(deleteStatus.getResult());
   }
 }

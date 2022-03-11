@@ -3,6 +3,7 @@ package technology.semi.weaviate.client.v1.schema;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.v1.schema.api.ClassCreator;
 import technology.semi.weaviate.client.v1.schema.api.ClassDeleter;
+import technology.semi.weaviate.client.v1.schema.api.ClassGetter;
 import technology.semi.weaviate.client.v1.schema.api.PropertyCreator;
 import technology.semi.weaviate.client.v1.schema.api.SchemaDeleter;
 import technology.semi.weaviate.client.v1.schema.api.SchemaGetter;
@@ -16,6 +17,10 @@ public class Schema {
 
   public SchemaGetter getter() {
     return new SchemaGetter(config);
+  }
+
+  public ClassGetter classGetter() {
+    return new ClassGetter(config);
   }
 
   public ClassCreator classCreator() {
