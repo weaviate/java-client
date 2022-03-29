@@ -10,7 +10,7 @@ services:
     - --scheme
     - http
     # TODO to be replaced with release version
-    image: semitechnologies/weaviate:latest@sha256:01b6fd3f202e77d5aae7b80a6c722bcbde08ffc51353c66aa7e0c0d0cf6d2166
+    image: semitechnologies/weaviate:1.11.0-658bee1
     links:
       - "contextionary:contextionary"
     restart: on-failure:0

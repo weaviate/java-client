@@ -40,11 +40,13 @@ public class WeaviateTestGenerics {
             .dataType(Arrays.asList(DataType.STRING))
             .description("name")
             .name("name")
+            .tokenization("field")
             .build();
     Property descriptionProperty = Property.builder()
             .dataType(Arrays.asList(DataType.TEXT))
             .description("description")
             .name("description")
+            .tokenization("word")
             .build();
     // Add name and description properties to Pizza
     Result<Boolean> pizzaPropertyNameStatus = client.schema().propertyCreator()
