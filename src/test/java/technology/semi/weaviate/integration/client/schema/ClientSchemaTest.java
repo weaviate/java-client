@@ -18,6 +18,7 @@ import technology.semi.weaviate.client.base.WeaviateErrorMessage;
 import technology.semi.weaviate.client.v1.schema.model.DataType;
 import technology.semi.weaviate.client.v1.schema.model.Property;
 import technology.semi.weaviate.client.v1.schema.model.Schema;
+import technology.semi.weaviate.client.v1.schema.model.Tokenization;
 import technology.semi.weaviate.client.v1.schema.model.WeaviateClass;
 
 import static org.junit.Assert.assertEquals;
@@ -235,13 +236,13 @@ public class ClientSchemaTest {
                       .dataType(new ArrayList(){{ add(DataType.STRING); }})
                       .description("Title of the article")
                       .name("title")
-                      .tokenization("field")
+                      .tokenization(Tokenization.FIELD)
                       .build());
                 add(Property.builder()
                       .dataType(new ArrayList(){{ add(DataType.TEXT); }})
                       .description("The content of the article")
                       .name("content")
-                      .tokenization("word")
+                      .tokenization(Tokenization.WORD)
                       .build());
             }})
             .build();
@@ -279,12 +280,12 @@ public class ClientSchemaTest {
               add(Property.builder()
                       .dataType(new ArrayList(){{ add(DataType.STRING_ARRAY); }})
                       .name("stringArray")
-                      .tokenization("field")
+                      .tokenization(Tokenization.FIELD)
                       .build());
               add(Property.builder()
                       .dataType(new ArrayList(){{ add(DataType.TEXT_ARRAY); }})
                       .name("textArray")
-                      .tokenization("word")
+                      .tokenization(Tokenization.WORD)
                       .build());
               add(Property.builder()
                       .dataType(new ArrayList(){{ add(DataType.INT_ARRAY); }})
@@ -389,13 +390,13 @@ public class ClientSchemaTest {
             .dataType(Collections.singletonList(DataType.TEXT))
             .description("someText")
             .name("someText")
-            .tokenization("field")
+            .tokenization(Tokenization.FIELD)
             .build();
     Property notSupportedTokenizationForInt = Property.builder()
             .dataType(Collections.singletonList(DataType.INT))
             .description("someInt")
             .name("someInt")
-            .tokenization("word")
+            .tokenization(Tokenization.WORD)
             .build();
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(pizza).run();

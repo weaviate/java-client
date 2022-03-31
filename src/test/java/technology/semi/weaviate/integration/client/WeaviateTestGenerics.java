@@ -8,6 +8,7 @@ import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.batch.api.ObjectsBatcher;
 import technology.semi.weaviate.client.v1.batch.model.ObjectGetResponse;
 import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
+import technology.semi.weaviate.client.v1.schema.model.Tokenization;
 import technology.semi.weaviate.client.v1.schema.model.WeaviateClass;
 import technology.semi.weaviate.client.v1.schema.model.DataType;
 import technology.semi.weaviate.client.v1.schema.model.Property;
@@ -40,13 +41,13 @@ public class WeaviateTestGenerics {
             .dataType(Arrays.asList(DataType.STRING))
             .description("name")
             .name("name")
-            .tokenization("field")
+            .tokenization(Tokenization.FIELD)
             .build();
     Property descriptionProperty = Property.builder()
             .dataType(Arrays.asList(DataType.TEXT))
             .description("description")
             .name("description")
-            .tokenization("word")
+            .tokenization(Tokenization.WORD)
             .build();
     // Add name and description properties to Pizza
     Result<Boolean> pizzaPropertyNameStatus = client.schema().propertyCreator()
