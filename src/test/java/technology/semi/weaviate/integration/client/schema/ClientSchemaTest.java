@@ -15,12 +15,16 @@ import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.WeaviateClient;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.base.WeaviateErrorMessage;
+import technology.semi.weaviate.client.v1.misc.model.BM25Config;
+import technology.semi.weaviate.client.v1.misc.model.InvertedIndexConfig;
+import technology.semi.weaviate.client.v1.misc.model.StopwordConfig;
 import technology.semi.weaviate.client.v1.schema.model.DataType;
 import technology.semi.weaviate.client.v1.schema.model.Property;
 import technology.semi.weaviate.client.v1.schema.model.Schema;
 import technology.semi.weaviate.client.v1.schema.model.Tokenization;
 import technology.semi.weaviate.client.v1.schema.model.WeaviateClass;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -419,6 +423,124 @@ public class ClientSchemaTest {
   }
 
   @Test
+  public void testCreateClassWithBM25Config() throws Exception {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateClass clazz = WeaviateClass.builder()
+            .className("Band")
+            .description("Band that plays and produces music")
+            .vectorIndexType("hnsw")
+            .vectorizer("text2vec-contextionary")
+            .invertedIndexConfig(InvertedIndexConfig.builder().build())
+            .build();
+
+    BM25Config bm25Config = BM25Config.builder()
+            .b((float) 0.777)
+            .k1((float) 1.777)
+            .build();
+
+    // when
+    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).withBM25Config(bm25Config).run();
+    Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
+    Result<Boolean> deleteStatus = client.schema().allDeleter().run();
+
+    // then
+    assertNotNull(createStatus);
+    assertTrue(createStatus.getResult());
+    assertNotNull(bandClass);
+    assertNotNull(bandClass.getResult());
+    assertNull(bandClass.getError());
+    assertNotNull(bandClass.getResult().getInvertedIndexConfig().getBm25Config());
+    assertEquals(bm25Config.getB(), bandClass.getResult().getInvertedIndexConfig().getBm25Config().getB());
+    assertEquals(bm25Config.getK1(), bandClass.getResult().getInvertedIndexConfig().getBm25Config().getK1());
+    assertResultTrue(deleteStatus);
+  }
+
+  @Test
+  public void testCreateClassWithStopwordConfig() throws Exception {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateClass clazz = WeaviateClass.builder()
+            .className("Band")
+            .description("Band that plays and produces music")
+            .vectorIndexType("hnsw")
+            .vectorizer("text2vec-contextionary")
+            .invertedIndexConfig(InvertedIndexConfig.builder().build())
+            .build();
+
+    StopwordConfig stopwordConfig = StopwordConfig.builder()
+            .preset("en")
+            .additions(new String[]{"star", "nebula"})
+            .removals(new String[]{"a", "the"})
+            .build();
+
+    // when
+    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).withStopwordConfig(stopwordConfig).run();
+    Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
+    Result<Boolean> deleteStatus = client.schema().allDeleter().run();
+
+    // then
+    assertNotNull(createStatus);
+    assertTrue(createStatus.getResult());
+    assertNotNull(bandClass);
+    assertNotNull(bandClass.getResult());
+    assertNull(bandClass.getError());
+    assertNotNull(bandClass.getResult().getInvertedIndexConfig().getStopwordConfig());
+    assertEquals(stopwordConfig.getPreset(), bandClass.getResult().getInvertedIndexConfig().getStopwordConfig().getPreset());
+    assertArrayEquals(stopwordConfig.getAdditions(), bandClass.getResult().getInvertedIndexConfig().getStopwordConfig().getAdditions());
+    assertArrayEquals(stopwordConfig.getRemovals(), bandClass.getResult().getInvertedIndexConfig().getStopwordConfig().getRemovals());
+    assertResultTrue(deleteStatus);
+  }
+
+  @Test
+  public void testCreateClassWithBM25ConfigAndWithStopwordConfig() throws Exception {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateClass clazz = WeaviateClass.builder()
+            .className("Band")
+            .description("Band that plays and produces music")
+            .vectorIndexType("hnsw")
+            .vectorizer("text2vec-contextionary")
+            .invertedIndexConfig(InvertedIndexConfig.builder().build())
+            .build();
+
+    BM25Config bm25Config = BM25Config.builder()
+            .b((float) 0.777)
+            .k1((float) 1.777)
+            .build();
+
+    StopwordConfig stopwordConfig = StopwordConfig.builder()
+            .preset("en")
+            .additions(new String[]{"star", "nebula"})
+            .removals(new String[]{"a", "the"})
+            .build();
+
+    // when
+    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz)
+            .withBM25Config(bm25Config).withStopwordConfig(stopwordConfig).run();
+    Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
+    Result<Boolean> deleteStatus = client.schema().allDeleter().run();
+
+    // then
+    assertNotNull(createStatus);
+    assertTrue(createStatus.getResult());
+    assertNotNull(bandClass);
+    assertNotNull(bandClass.getResult());
+    assertNull(bandClass.getError());
+    assertNotNull(bandClass.getResult().getInvertedIndexConfig().getBm25Config());
+    assertEquals(bm25Config.getB(), bandClass.getResult().getInvertedIndexConfig().getBm25Config().getB());
+    assertEquals(bm25Config.getK1(), bandClass.getResult().getInvertedIndexConfig().getBm25Config().getK1());
+    assertNotNull(bandClass.getResult().getInvertedIndexConfig().getStopwordConfig());
+    assertEquals(stopwordConfig.getPreset(), bandClass.getResult().getInvertedIndexConfig().getStopwordConfig().getPreset());
+    assertArrayEquals(stopwordConfig.getAdditions(), bandClass.getResult().getInvertedIndexConfig().getStopwordConfig().getAdditions());
+    assertArrayEquals(stopwordConfig.getRemovals(), bandClass.getResult().getInvertedIndexConfig().getStopwordConfig().getRemovals());
+    assertResultTrue(deleteStatus);
+  }
+
+  @Test
   public void testSchemaGetBandClass() {
     // given
     Config config = new Config("http", address);
@@ -450,7 +572,6 @@ public class ClientSchemaTest {
     assertNotNull(deleteStatus);
     assertTrue(deleteStatus.getResult());
   }
-
 
   private void assertResultTrue(Result<Boolean> result) {
     assertNotNull(result);
