@@ -7,6 +7,9 @@ import technology.semi.weaviate.client.v1.schema.api.ClassGetter;
 import technology.semi.weaviate.client.v1.schema.api.PropertyCreator;
 import technology.semi.weaviate.client.v1.schema.api.SchemaDeleter;
 import technology.semi.weaviate.client.v1.schema.api.SchemaGetter;
+import technology.semi.weaviate.client.v1.schema.api.ShardUpdater;
+import technology.semi.weaviate.client.v1.schema.api.ShardsGetter;
+import technology.semi.weaviate.client.v1.schema.api.ShardsUpdater;
 
 public class Schema {
   private final Config config;
@@ -37,5 +40,17 @@ public class Schema {
 
   public SchemaDeleter allDeleter() {
     return new SchemaDeleter(new SchemaGetter(config), new ClassDeleter(config));
+  }
+
+  public ShardsGetter shardsGetter() {
+    return new ShardsGetter(config);
+  }
+
+  public ShardUpdater shardUpdater() {
+    return new ShardUpdater(config);
+  }
+
+  public ShardsUpdater shardsUpdater() {
+    return new ShardsUpdater(config);
   }
 }
