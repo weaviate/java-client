@@ -213,37 +213,47 @@ public class ClientGraphQLTest {
   }
 
   @Test
-  public void testGraphQLGetWithWhere() {
+  public void testGraphQLGetWithWhereByFieldTokenizedProperty() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
     Field name = Field.builder().name("name").build();
     Fields fields = Fields.builder().fields(new Field[]{name}).build();
-    WhereArgument where = WhereArgument.builder()
+
+    WhereArgument whereFullString = WhereArgument.builder()
             .path(new String[]{ "name" })
             .operator(WhereOperator.Equal)
             .valueString("Frutti di Mare")
             .build();
+    WhereArgument wherePartString = WhereArgument.builder()
+            .path(new String[]{ "name" })
+            .operator(WhereOperator.Equal)
+            .valueString("Frutti")
+            .build();
+    WhereArgument whereFullText = WhereArgument.builder()
+            .path(new String[]{ "description" })
+            .operator(WhereOperator.Equal)
+            // TODO change to "Universally accepted to be the best pizza ever created."
+            .valueText("Universally accepted best pizza ever created.")
+            .build();
+    WhereArgument wherePartText = WhereArgument.builder()
+            .path(new String[]{ "description" })
+            .operator(WhereOperator.Equal)
+            .valueText("Universally")
+            .build();
     // when
     testGenerics.createTestSchemaAndData(client);
-    Result<GraphQLResponse> result = client.graphQL().get().withWhere(where).withClassName("Pizza").withFields(fields).run();
+    Result<GraphQLResponse> resultFullString = client.graphQL().get().withWhere(whereFullString).withClassName("Pizza").withFields(fields).run();
+    Result<GraphQLResponse> resultPartString = client.graphQL().get().withWhere(wherePartString).withClassName("Pizza").withFields(fields).run();
+    Result<GraphQLResponse> resultFullText = client.graphQL().get().withWhere(whereFullText).withClassName("Pizza").withFields(fields).run();
+    Result<GraphQLResponse> resultPartText = client.graphQL().get().withWhere(wherePartText).withClassName("Pizza").withFields(fields).run();
     testGenerics.cleanupWeaviate(client);
     // then
-    assertNotNull(result);
-    assertFalse(result.hasErrors());
-    GraphQLResponse resp = result.getResult();
-    assertNotNull(resp);
-    assertNotNull(resp.getData());
-    assertTrue(resp.getData() instanceof Map);
-    Map data = (Map) resp.getData();
-    assertNotNull(data.get("Get"));
-    assertTrue(data.get("Get") instanceof Map);
-    Map get = (Map) data.get("Get");
-    assertNotNull(get.get("Pizza"));
-    assertTrue(get.get("Pizza") instanceof List);
-    List getPizza = (List) get.get("Pizza");
-    assertEquals(1, getPizza.size());
+    assertWhereResultSize(1, resultFullString, "Pizza");
+    assertWhereResultSize(0, resultPartString, "Pizza");
+    assertWhereResultSize(1, resultFullText, "Pizza");
+    assertWhereResultSize(1, resultPartText, "Pizza");
   }
 
   @Test
@@ -463,5 +473,22 @@ public class ClientGraphQLTest {
     assertTrue(count.get("meta") instanceof Map);
     Map countVal = (Map) count.get("meta");
     assertEquals(expectedCount, countVal.get("count"));
+  }
+
+  private void assertWhereResultSize(int expectedSize, Result<GraphQLResponse> result, String className) {
+    assertNotNull(result);
+    assertFalse(result.hasErrors());
+    GraphQLResponse resp = result.getResult();
+    assertNotNull(resp);
+    assertNotNull(resp.getData());
+    assertTrue(resp.getData() instanceof Map);
+    Map data = (Map) resp.getData();
+    assertNotNull(data.get("Get"));
+    assertTrue(data.get("Get") instanceof Map);
+    Map get = (Map) data.get("Get");
+    assertNotNull(get.get(className));
+    assertTrue(get.get(className) instanceof List);
+    List getClass = (List) get.get(className);
+    assertEquals(expectedSize, getClass.size());
   }
 }

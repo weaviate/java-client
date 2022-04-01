@@ -13,6 +13,7 @@ public class Property {
   String name;
   List<String> dataType;
   String description;
+  String tokenization;
   Boolean indexInverted;
   Object moduleConfig;
 }

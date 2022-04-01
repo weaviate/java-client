@@ -3,7 +3,9 @@ package technology.semi.weaviate.integration.client.schema;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -12,15 +14,18 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.WeaviateClient;
 import technology.semi.weaviate.client.base.Result;
+import technology.semi.weaviate.client.base.WeaviateErrorMessage;
 import technology.semi.weaviate.client.v1.schema.model.DataType;
 import technology.semi.weaviate.client.v1.schema.model.Property;
 import technology.semi.weaviate.client.v1.schema.model.Schema;
+import technology.semi.weaviate.client.v1.schema.model.Tokenization;
 import technology.semi.weaviate.client.v1.schema.model.WeaviateClass;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
 
 public class ClientSchemaTest {
   private String address;
@@ -167,7 +172,7 @@ public class ClientSchemaTest {
   }
 
   @Test
-  public void testSchemaCreateClassesWithProperties() {
+  public void testSchemaCreateClassesAddProperties() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -194,36 +199,30 @@ public class ClientSchemaTest {
     Result<Schema> schemaAfterCreate = client.schema().getter().run();
     Result<Boolean> deleteAllStatus = client.schema().allDeleter().run();
     Result<Schema> schemaAfterDelete = client.schema().getter().run();
+
     // then
-    assertNotNull(pizzaCreateStatus);
-    assertTrue(pizzaCreateStatus.getResult());
-    assertNotNull(chickenSoupCreateStatus);
-    assertTrue(chickenSoupCreateStatus.getResult());
-    assertNotNull(pizzaPropertyCreateStatus);
-    assertTrue(pizzaPropertyCreateStatus.getResult());
-    assertNotNull(chickenSoupPropertyCreateStatus);
-    assertTrue(chickenSoupPropertyCreateStatus.getResult());
-    assertNotNull(schemaAfterCreate);
-    assertNotNull(schemaAfterCreate.getResult());
-    assertNotNull(schemaAfterCreate.getResult().getClasses());
-    assertEquals(2, schemaAfterCreate.getResult().getClasses().size());
-    assertEquals(pizza.getClassName(), schemaAfterCreate.getResult().getClasses().get(0).getClassName());
-    assertEquals(pizza.getDescription(), schemaAfterCreate.getResult().getClasses().get(0).getDescription());
-    assertNotNull(schemaAfterCreate.getResult().getClasses().get(0).getProperties());
-    assertEquals(1, schemaAfterCreate.getResult().getClasses().get(0).getProperties().size());
-    assertEquals(newProperty.getName(), schemaAfterCreate.getResult().getClasses().get(0).getProperties().get(0).getName());
-    assertEquals(chickenSoup.getClassName(), schemaAfterCreate.getResult().getClasses().get(1).getClassName());
-    assertEquals(chickenSoup.getDescription(), schemaAfterCreate.getResult().getClasses().get(1).getDescription());
-    assertNotNull(schemaAfterCreate.getResult().getClasses().get(1).getProperties());
-    assertEquals(1, schemaAfterCreate.getResult().getClasses().get(1).getProperties().size());
-    assertEquals(newProperty.getName(), schemaAfterCreate.getResult().getClasses().get(1).getProperties().get(0).getName());
-    assertNotNull(deleteAllStatus);
-    assertTrue(deleteAllStatus.getResult());
-    assertEquals(0, schemaAfterDelete.getResult().getClasses().size());
+    assertResultTrue(pizzaCreateStatus);
+    assertResultTrue(chickenSoupCreateStatus);
+    assertResultTrue(pizzaPropertyCreateStatus);
+    assertResultTrue(chickenSoupPropertyCreateStatus);
+    assertClassesSize(2, schemaAfterCreate);
+
+    WeaviateClass resultPizzaClass = schemaAfterCreate.getResult().getClasses().get(0);
+    assertClassEquals(pizza.getClassName(), pizza.getDescription(), resultPizzaClass);
+    assertPropertiesSize(1, resultPizzaClass);
+    assertPropertyEquals(newProperty.getName(), "word", resultPizzaClass.getProperties().get(0));
+
+    WeaviateClass resultChickenSoupClass = schemaAfterCreate.getResult().getClasses().get(1);
+    assertClassEquals(chickenSoup.getClassName(), chickenSoup.getDescription(), resultChickenSoupClass);
+    assertPropertiesSize(1, resultChickenSoupClass);
+    assertPropertyEquals(newProperty.getName(), "word", resultChickenSoupClass.getProperties().get(0));
+
+    assertResultTrue(deleteAllStatus);
+    assertClassesSize(0, schemaAfterDelete);
   }
 
   @Test
-  public void testSchemaCreateClassWithProperties() {
+  public void testSchemaCreateClassExplicitVectorizerWithProperties() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -237,11 +236,13 @@ public class ClientSchemaTest {
                       .dataType(new ArrayList(){{ add(DataType.STRING); }})
                       .description("Title of the article")
                       .name("title")
+                      .tokenization(Tokenization.FIELD)
                       .build());
                 add(Property.builder()
                       .dataType(new ArrayList(){{ add(DataType.TEXT); }})
                       .description("The content of the article")
                       .name("content")
+                      .tokenization(Tokenization.WORD)
                       .build());
             }})
             .build();
@@ -250,21 +251,23 @@ public class ClientSchemaTest {
     Result<Schema> schemaAfterCreate = client.schema().getter().run();
     Result<Boolean> deleteStatus = client.schema().allDeleter().run();
     Result<Schema> schemaAfterDelete = client.schema().getter().run();
+
     // then
-    assertNotNull(createStatus);
-    assertTrue(createStatus.getResult());
-    assertNotNull(schemaAfterCreate);
-    assertNotNull(schemaAfterCreate.getResult());
-    assertEquals(1, schemaAfterCreate.getResult().getClasses().size());
-    assertEquals(clazz.getClassName(), schemaAfterCreate.getResult().getClasses().get(0).getClassName());
-    assertEquals(clazz.getDescription(), schemaAfterCreate.getResult().getClasses().get(0).getDescription());
-    assertNotNull(deleteStatus);
-    assertTrue(deleteStatus.getResult());
-    assertEquals(0, schemaAfterDelete.getResult().getClasses().size());
+    assertResultTrue(createStatus);
+    assertClassesSize(1, schemaAfterCreate);
+
+    WeaviateClass resultArticleClass = schemaAfterCreate.getResult().getClasses().get(0);
+    assertClassEquals(clazz.getClassName(), clazz.getDescription(), resultArticleClass);
+    assertPropertiesSize(2, resultArticleClass);
+    assertPropertyEquals("title", "field", resultArticleClass.getProperties().get(0));
+    assertPropertyEquals("content", "word", resultArticleClass.getProperties().get(1));
+
+    assertResultTrue(deleteStatus);
+    assertClassesSize(0, schemaAfterDelete);
   }
 
   @Test
-  public void testSchemaCreateClassWithArrayProperties() {
+  public void testSchemaCreateClassExplicitVectorizerWithArrayProperties() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -277,10 +280,12 @@ public class ClientSchemaTest {
               add(Property.builder()
                       .dataType(new ArrayList(){{ add(DataType.STRING_ARRAY); }})
                       .name("stringArray")
+                      .tokenization(Tokenization.FIELD)
                       .build());
               add(Property.builder()
                       .dataType(new ArrayList(){{ add(DataType.TEXT_ARRAY); }})
                       .name("textArray")
+                      .tokenization(Tokenization.WORD)
                       .build());
               add(Property.builder()
                       .dataType(new ArrayList(){{ add(DataType.INT_ARRAY); }})
@@ -305,44 +310,27 @@ public class ClientSchemaTest {
     Result<Schema> schemaAfterCreate = client.schema().getter().run();
     Result<Boolean> deleteStatus = client.schema().allDeleter().run();
     Result<Schema> schemaAfterDelete = client.schema().getter().run();
+
     // then
-    assertNotNull(createStatus);
-    assertTrue(createStatus.getResult());
-    assertNotNull(schemaAfterCreate);
-    assertNotNull(schemaAfterCreate.getResult());
-    assertEquals(1, schemaAfterCreate.getResult().getClasses().size());
-    assertEquals(clazz.getClassName(), schemaAfterCreate.getResult().getClasses().get(0).getClassName());
-    assertEquals(clazz.getDescription(), schemaAfterCreate.getResult().getClasses().get(0).getDescription());
-    assertNotNull(schemaAfterCreate.getResult().getClasses().get(0).getProperties());
-    assertEquals(6, schemaAfterCreate.getResult().getClasses().get(0).getProperties().size());
-    List<Property> properties = schemaAfterCreate.getResult().getClasses().get(0).getProperties();
-    for (Property prop: properties) {
-      if (prop.getName() == "stringArray") {
-        assertEquals(DataType.STRING_ARRAY, prop.getDataType());
-      }
-      if (prop.getName() == "textArray") {
-        assertEquals(DataType.TEXT_ARRAY, prop.getDataType());
-      }
-      if (prop.getName() == "intArray") {
-        assertEquals(DataType.INT_ARRAY, prop.getDataType());
-      }
-      if (prop.getName() == "numberArray") {
-        assertEquals(DataType.NUMBER_ARRAY, prop.getDataType());
-      }
-      if (prop.getName() == "booleanArray") {
-        assertEquals(DataType.BOOLEAN_ARRAY, prop.getDataType());
-      }
-      if (prop.getName() == "dateArray") {
-        assertEquals(DataType.DATE_ARRAY, prop.getDataType());
-      }
-    }
-    assertNotNull(deleteStatus);
-    assertTrue(deleteStatus.getResult());
-    assertEquals(0, schemaAfterDelete.getResult().getClasses().size());
+    assertResultTrue(createStatus);
+    assertClassesSize(1, schemaAfterCreate);
+
+    WeaviateClass resultArraysClass = schemaAfterCreate.getResult().getClasses().get(0);
+    assertClassEquals(clazz.getClassName(), clazz.getDescription(), resultArraysClass);
+    assertPropertiesSize(6, resultArraysClass);
+    assertPropertyEquals("stringArray", DataType.STRING_ARRAY, "field", resultArraysClass.getProperties().get(0));
+    assertPropertyEquals("textArray", DataType.TEXT_ARRAY, "word", resultArraysClass.getProperties().get(1));
+    assertPropertyEquals("intArray", DataType.INT_ARRAY, null, resultArraysClass.getProperties().get(2));
+    assertPropertyEquals("numberArray", DataType.NUMBER_ARRAY, null, resultArraysClass.getProperties().get(3));
+    assertPropertyEquals("booleanArray", DataType.BOOLEAN_ARRAY, null, resultArraysClass.getProperties().get(4));
+    assertPropertyEquals("dateArray", DataType.DATE_ARRAY, null, resultArraysClass.getProperties().get(5));
+
+    assertResultTrue(deleteStatus);
+    assertClassesSize(0, schemaAfterDelete);
   }
 
   @Test
-  public void testSchemaCreateClassWithAllProperties() {
+  public void testSchemaCreateClassWithProperties() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -367,17 +355,67 @@ public class ClientSchemaTest {
     Result<Schema> schemaAfterCreate = client.schema().getter().run();
     Result<Boolean> deleteStatus = client.schema().allDeleter().run();
     Result<Schema> schemaAfterDelete = client.schema().getter().run();
+
     // then
-    assertNotNull(createStatus);
-    assertTrue(createStatus.getResult());
-    assertNotNull(schemaAfterCreate);
-    assertNotNull(schemaAfterCreate.getResult());
-    assertEquals(1, schemaAfterCreate.getResult().getClasses().size());
-    assertEquals(clazz.getClassName(), schemaAfterCreate.getResult().getClasses().get(0).getClassName());
-    assertEquals(clazz.getDescription(), schemaAfterCreate.getResult().getClasses().get(0).getDescription());
-    assertNotNull(deleteStatus);
-    assertTrue(deleteStatus.getResult());
-    assertEquals(0, schemaAfterDelete.getResult().getClasses().size());
+    assertResultTrue(createStatus);
+    assertClassesSize(1, schemaAfterCreate);
+
+    WeaviateClass resultArticleClass = schemaAfterCreate.getResult().getClasses().get(0);
+    assertClassEquals(clazz.getClassName(), clazz.getDescription(), resultArticleClass);
+    assertPropertiesSize(2, resultArticleClass);
+    assertPropertyEquals("title", "word", resultArticleClass.getProperties().get(0));
+    assertPropertyEquals("content", "word", resultArticleClass.getProperties().get(1));
+
+    assertResultTrue(deleteStatus);
+    assertClassesSize(0, schemaAfterDelete);
+  }
+
+  @Test
+  public void testSchemaCreateClassWithInvalidTokenizationProperty() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateClass pizza = WeaviateClass.builder()
+            .className("Pizza")
+            .description("A delicious religion like food and arguably the best export of Italy.")
+            .build();
+
+    Property notExistingTokenization = Property.builder()
+            .dataType(Collections.singletonList(DataType.STRING))
+            .description("someString")
+            .name("someString")
+            .tokenization("not-existing")
+            .build();
+    Property notSupportedTokenizationForText = Property.builder()
+            .dataType(Collections.singletonList(DataType.TEXT))
+            .description("someText")
+            .name("someText")
+            .tokenization(Tokenization.FIELD)
+            .build();
+    Property notSupportedTokenizationForInt = Property.builder()
+            .dataType(Collections.singletonList(DataType.INT))
+            .description("someInt")
+            .name("someInt")
+            .tokenization(Tokenization.WORD)
+            .build();
+    // when
+    Result<Boolean> createStatus = client.schema().classCreator().withClass(pizza).run();
+    Result<Boolean> notExistingTokenizationCreateStatus = client.schema().propertyCreator()
+            .withProperty(notExistingTokenization).withClassName(pizza.getClassName()).run();
+    Result<Boolean> notSupportedTokenizationForTextCreateStatus = client.schema().propertyCreator()
+            .withProperty(notSupportedTokenizationForText).withClassName(pizza.getClassName()).run();
+    Result<Boolean> notSupportedTokenizationForIntCreateStatus = client.schema().propertyCreator()
+            .withProperty(notSupportedTokenizationForInt).withClassName(pizza.getClassName()).run();
+    Result<Boolean> deleteAllStatus = client.schema().allDeleter().run();
+
+    //then
+    assertResultTrue(createStatus);
+
+    assertResultError("tokenization in body should be one of [word field]", notExistingTokenizationCreateStatus);
+    assertResultError("Tokenization 'field' is not allowed for data type 'text'", notSupportedTokenizationForTextCreateStatus);
+    assertResultError("Tokenization 'word' is not allowed for data type 'int'", notSupportedTokenizationForIntCreateStatus);
+
+    assertResultTrue(deleteAllStatus);
   }
 
   @Test
@@ -411,5 +449,47 @@ public class ClientSchemaTest {
     assertNull(nonExistentClass.getResult());
     assertNotNull(deleteStatus);
     assertTrue(deleteStatus.getResult());
+  }
+
+
+  private void assertResultTrue(Result<Boolean> result) {
+    assertNotNull(result);
+    assertTrue(result.getResult());
+  }
+
+  private void assertResultError(String msg, Result<Boolean> result) {
+    assertNotNull(result);
+    assertTrue(result.hasErrors());
+    List<WeaviateErrorMessage> messages = result.getError().getMessages();
+    assertEquals(1, messages.size());
+    assertEquals(msg, messages.get(0).getMessage());
+  }
+
+  private void assertClassesSize(int expectedSize, Result<Schema> schemaAfterCreate) {
+    assertNotNull(schemaAfterCreate);
+    assertNotNull(schemaAfterCreate.getResult());
+    assertNotNull(schemaAfterCreate.getResult().getClasses());
+    assertEquals(expectedSize, schemaAfterCreate.getResult().getClasses().size());
+  }
+
+  private void assertClassEquals(String expectedName, String expectedDescription, WeaviateClass schemaClass) {
+    assertEquals(expectedName, schemaClass.getClassName());
+    assertEquals(expectedDescription, schemaClass.getDescription());
+  }
+
+  private void assertPropertiesSize(int expectedSize, WeaviateClass schemaClass) {
+    assertNotNull(schemaClass.getProperties());
+    assertEquals(expectedSize, schemaClass.getProperties().size());
+  }
+
+  private void assertPropertyEquals(String expectedName, String expectedTokenization, Property property) {
+    assertEquals(expectedName, property.getName());
+    assertEquals(expectedTokenization, property.getTokenization());
+  }
+
+  private void assertPropertyEquals(String expectedName, String expectedDataType, String expectedTokenization, Property property) {
+    assertPropertyEquals(expectedName, expectedTokenization, property);
+    assertTrue(property.getDataType().size() > 0);
+    assertEquals(expectedDataType, property.getDataType().get(0));
   }
 }
