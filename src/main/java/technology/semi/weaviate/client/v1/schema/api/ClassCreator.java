@@ -5,8 +5,6 @@ import technology.semi.weaviate.client.base.BaseClient;
 import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
-import technology.semi.weaviate.client.v1.misc.model.BM25Config;
-import technology.semi.weaviate.client.v1.misc.model.StopwordConfig;
 import technology.semi.weaviate.client.v1.schema.model.WeaviateClass;
 
 public class ClassCreator extends BaseClient<WeaviateClass> implements ClientResult<Boolean> {
@@ -19,24 +17,6 @@ public class ClassCreator extends BaseClient<WeaviateClass> implements ClientRes
 
   public ClassCreator withClass(WeaviateClass clazz) {
     this.clazz = clazz;
-    return this;
-  }
-
-  public ClassCreator withBM25Config(BM25Config config) throws Exception {
-    if (this.clazz.getInvertedIndexConfig() == null) {
-      throw new Exception("cannot add bm25 to null invertedIndexConfig");
-    }
-
-    this.clazz.getInvertedIndexConfig().setBm25Config(config);
-    return this;
-  }
-
-  public ClassCreator withStopwordConfig(StopwordConfig config) throws Exception {
-    if (this.clazz.getInvertedIndexConfig() == null) {
-      throw new Exception("cannot add stopwords to null invertedIndexConfig");
-    }
-
-    this.clazz.getInvertedIndexConfig().setStopwordConfig(config);
     return this;
   }
 

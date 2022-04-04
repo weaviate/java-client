@@ -5,10 +5,16 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
-@Builder
 @Getter
+@Builder
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class BM25Config {
-  Float k1;
-  Float b;
+public class ShardingConfig {
+  Integer actualCount;
+  Integer actualVirtualCount;
+  Integer desiredCount;
+  Integer desiredVirtualCount;
+  String function;
+  String key;
+  String strategy;
+  Integer virtualPerPhysical;
 }
