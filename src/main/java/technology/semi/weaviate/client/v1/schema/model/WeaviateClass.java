@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import technology.semi.weaviate.client.v1.misc.model.InvertedIndexConfig;
+import technology.semi.weaviate.client.v1.misc.model.ShardingConfig;
+import technology.semi.weaviate.client.v1.misc.model.VectorIndexConfig;
 
 @Getter
 @Builder
@@ -18,7 +20,8 @@ public class WeaviateClass {
   InvertedIndexConfig invertedIndexConfig;
   Object ModuleConfig;
   List<Property> properties;
-  Object vectorIndexConfig;
+  VectorIndexConfig vectorIndexConfig;
+  ShardingConfig shardingConfig;
   String vectorIndexType;
   String vectorizer;
 }

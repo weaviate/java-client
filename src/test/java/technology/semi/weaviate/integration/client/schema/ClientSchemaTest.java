@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -15,12 +14,18 @@ import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.WeaviateClient;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.base.WeaviateErrorMessage;
+import technology.semi.weaviate.client.v1.misc.model.BM25Config;
+import technology.semi.weaviate.client.v1.misc.model.InvertedIndexConfig;
+import technology.semi.weaviate.client.v1.misc.model.ShardingConfig;
+import technology.semi.weaviate.client.v1.misc.model.StopwordConfig;
+import technology.semi.weaviate.client.v1.misc.model.VectorIndexConfig;
 import technology.semi.weaviate.client.v1.schema.model.DataType;
 import technology.semi.weaviate.client.v1.schema.model.Property;
 import technology.semi.weaviate.client.v1.schema.model.Schema;
 import technology.semi.weaviate.client.v1.schema.model.Tokenization;
 import technology.semi.weaviate.client.v1.schema.model.WeaviateClass;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -232,14 +237,18 @@ public class ClientSchemaTest {
             .vectorIndexType("hnsw")
             .vectorizer("text2vec-contextionary")
             .properties(new ArrayList() {{
-                add(Property.builder()
-                      .dataType(new ArrayList(){{ add(DataType.STRING); }})
+              add(Property.builder()
+                      .dataType(new ArrayList() {{
+                        add(DataType.STRING);
+                      }})
                       .description("Title of the article")
                       .name("title")
                       .tokenization(Tokenization.FIELD)
                       .build());
-                add(Property.builder()
-                      .dataType(new ArrayList(){{ add(DataType.TEXT); }})
+              add(Property.builder()
+                      .dataType(new ArrayList() {{
+                        add(DataType.TEXT);
+                      }})
                       .description("The content of the article")
                       .name("content")
                       .tokenization(Tokenization.WORD)
@@ -278,29 +287,41 @@ public class ClientSchemaTest {
             .vectorizer("text2vec-contextionary")
             .properties(new ArrayList() {{
               add(Property.builder()
-                      .dataType(new ArrayList(){{ add(DataType.STRING_ARRAY); }})
+                      .dataType(new ArrayList() {{
+                        add(DataType.STRING_ARRAY);
+                      }})
                       .name("stringArray")
                       .tokenization(Tokenization.FIELD)
                       .build());
               add(Property.builder()
-                      .dataType(new ArrayList(){{ add(DataType.TEXT_ARRAY); }})
+                      .dataType(new ArrayList() {{
+                        add(DataType.TEXT_ARRAY);
+                      }})
                       .name("textArray")
                       .tokenization(Tokenization.WORD)
                       .build());
               add(Property.builder()
-                      .dataType(new ArrayList(){{ add(DataType.INT_ARRAY); }})
+                      .dataType(new ArrayList() {{
+                        add(DataType.INT_ARRAY);
+                      }})
                       .name("intArray")
                       .build());
               add(Property.builder()
-                      .dataType(new ArrayList(){{ add(DataType.NUMBER_ARRAY); }})
+                      .dataType(new ArrayList() {{
+                        add(DataType.NUMBER_ARRAY);
+                      }})
                       .name("numberArray")
                       .build());
               add(Property.builder()
-                      .dataType(new ArrayList(){{ add(DataType.BOOLEAN_ARRAY); }})
+                      .dataType(new ArrayList() {{
+                        add(DataType.BOOLEAN_ARRAY);
+                      }})
                       .name("booleanArray")
                       .build());
               add(Property.builder()
-                      .dataType(new ArrayList(){{ add(DataType.DATE_ARRAY); }})
+                      .dataType(new ArrayList() {{
+                        add(DataType.DATE_ARRAY);
+                      }})
                       .name("dateArray")
                       .build());
             }})
@@ -339,12 +360,16 @@ public class ClientSchemaTest {
             .description("A written text, for example a news article or blog post")
             .properties(new ArrayList() {{
               add(Property.builder()
-                      .dataType(new ArrayList(){{ add(DataType.STRING); }})
+                      .dataType(new ArrayList() {{
+                        add(DataType.STRING);
+                      }})
                       .description("Title of the article")
                       .name("title")
                       .build());
               add(Property.builder()
-                      .dataType(new ArrayList(){{ add(DataType.TEXT); }})
+                      .dataType(new ArrayList() {{
+                        add(DataType.TEXT);
+                      }})
                       .description("The content of the article")
                       .name("content")
                       .build());
@@ -419,6 +444,258 @@ public class ClientSchemaTest {
   }
 
   @Test
+  public void testCreateClassWithBM25Config() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+
+    BM25Config bm25Config = BM25Config.builder()
+            .b(0.777f)
+            .k1(1.777f)
+            .build();
+
+    InvertedIndexConfig invertedIndexConfig = InvertedIndexConfig.builder()
+            .bm25(bm25Config)
+            .build();
+
+    WeaviateClass clazz = WeaviateClass.builder()
+            .className("Band")
+            .description("Band that plays and produces music")
+            .vectorIndexType("hnsw")
+            .vectorizer("text2vec-contextionary")
+            .invertedIndexConfig(invertedIndexConfig)
+            .build();
+
+    // when
+    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
+    Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
+    Result<Boolean> deleteStatus = client.schema().allDeleter().run();
+
+    // then
+    assertNotNull(createStatus);
+    assertTrue(createStatus.getResult());
+    assertNotNull(bandClass);
+    assertNotNull(bandClass.getResult());
+    assertNull(bandClass.getError());
+    assertNotNull(bandClass.getResult().getInvertedIndexConfig().getBm25());
+    assertEquals(bm25Config.getB(), bandClass.getResult().getInvertedIndexConfig().getBm25().getB());
+    assertEquals(bm25Config.getK1(), bandClass.getResult().getInvertedIndexConfig().getBm25().getK1());
+    assertResultTrue(deleteStatus);
+  }
+
+  @Test
+  public void testCreateClassWithStopwordsConfig() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+
+    StopwordConfig stopwordConfig = StopwordConfig.builder()
+            .preset("en")
+            .additions(new String[]{ "star", "nebula" })
+            .removals(new String[]{ "a", "the" })
+            .build();
+
+    InvertedIndexConfig invertedIndexConfig = InvertedIndexConfig.builder()
+            .stopwords(stopwordConfig)
+            .build();
+
+    WeaviateClass clazz = WeaviateClass.builder()
+            .className("Band")
+            .description("Band that plays and produces music")
+            .vectorIndexType("hnsw")
+            .vectorizer("text2vec-contextionary")
+            .invertedIndexConfig(invertedIndexConfig)
+            .build();
+
+    // when
+    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
+    Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
+    Result<Boolean> deleteStatus = client.schema().allDeleter().run();
+
+    // then
+    assertNotNull(createStatus);
+    assertTrue(createStatus.getResult());
+    assertNotNull(bandClass);
+    assertNotNull(bandClass.getResult());
+    assertNull(bandClass.getError());
+    assertNotNull(bandClass.getResult().getInvertedIndexConfig().getStopwords());
+    assertEquals(stopwordConfig.getPreset(), bandClass.getResult().getInvertedIndexConfig().getStopwords().getPreset());
+    assertArrayEquals(stopwordConfig.getAdditions(), bandClass.getResult().getInvertedIndexConfig().getStopwords().getAdditions());
+    assertArrayEquals(stopwordConfig.getRemovals(), bandClass.getResult().getInvertedIndexConfig().getStopwords().getRemovals());
+    assertResultTrue(deleteStatus);
+  }
+
+  @Test
+  public void testCreateClassWithBM25ConfigAndWithStopwordsConfig() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+
+    BM25Config bm25Config = BM25Config.builder()
+            .b((float) 0.777)
+            .k1((float) 1.777)
+            .build();
+
+    StopwordConfig stopwordConfig = StopwordConfig.builder()
+            .preset("en")
+            .additions(new String[]{ "star", "nebula" })
+            .removals(new String[]{ "a", "the" })
+            .build();
+
+    InvertedIndexConfig invertedIndexConfig = InvertedIndexConfig.builder()
+            .bm25(bm25Config)
+            .stopwords(stopwordConfig)
+            .build();
+
+    WeaviateClass clazz = WeaviateClass.builder()
+            .className("Band")
+            .description("Band that plays and produces music")
+            .vectorIndexType("hnsw")
+            .vectorizer("text2vec-contextionary")
+            .invertedIndexConfig(invertedIndexConfig)
+            .build();
+
+    // when
+    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
+    Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
+    Result<Boolean> deleteStatus = client.schema().allDeleter().run();
+
+    // then
+    assertNotNull(createStatus);
+    assertTrue(createStatus.getResult());
+    assertNotNull(bandClass);
+    assertNotNull(bandClass.getResult());
+    assertNull(bandClass.getError());
+    assertNotNull(bandClass.getResult().getInvertedIndexConfig().getBm25());
+    assertEquals(bm25Config.getB(), bandClass.getResult().getInvertedIndexConfig().getBm25().getB());
+    assertEquals(bm25Config.getK1(), bandClass.getResult().getInvertedIndexConfig().getBm25().getK1());
+    assertNotNull(bandClass.getResult().getInvertedIndexConfig().getStopwords());
+    assertEquals(stopwordConfig.getPreset(), bandClass.getResult().getInvertedIndexConfig().getStopwords().getPreset());
+    assertArrayEquals(stopwordConfig.getAdditions(), bandClass.getResult().getInvertedIndexConfig().getStopwords().getAdditions());
+    assertArrayEquals(stopwordConfig.getRemovals(), bandClass.getResult().getInvertedIndexConfig().getStopwords().getRemovals());
+    assertResultTrue(deleteStatus);
+  }
+
+  @Test
+  public void testCreateClassWithInvertedIndexConfigAndVectorIndexConfigAndShardConfig() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    // inverted index config
+    BM25Config bm25Config = BM25Config.builder()
+            .b((float) 0.777)
+            .k1((float) 1.777)
+            .build();
+    StopwordConfig stopwordConfig = StopwordConfig.builder()
+            .preset("en")
+            .additions(new String[]{ "star", "nebula" })
+            .removals(new String[]{ "a", "the" })
+            .build();
+    Integer cleanupIntervalSeconds = 300;
+    // vector index config
+    Integer efConstruction = 128;
+    Integer maxConnections = 64;
+    Integer vectorCacheMaxObjects = 500000;
+    Integer ef = -1;
+    Boolean skip = false;
+    Integer dynamicEfFactor = 8;
+    Integer dynamicEfMax = 500;
+    Integer dynamicEfMin = 100;
+    Integer flatSearchCutoff = 40000;
+    // shard config
+    Integer actualCount = 1;
+    Integer actualVirtualCount = 128;
+    Integer desiredCount = 1;
+    Integer desiredVirtualCount = 128;
+    String function = "murmur3";
+    String key = "_id";
+    String strategy = "hash";
+    Integer virtualPerPhysical = 128;
+
+    InvertedIndexConfig invertedIndexConfig = InvertedIndexConfig.builder()
+            .bm25(bm25Config)
+            .stopwords(stopwordConfig)
+            .cleanupIntervalSeconds(cleanupIntervalSeconds)
+            .build();
+
+    VectorIndexConfig vectorIndexConfig = VectorIndexConfig.builder()
+            .cleanupIntervalSeconds(cleanupIntervalSeconds)
+            .efConstruction(efConstruction)
+            .maxConnections(maxConnections)
+            .vectorCacheMaxObjects(vectorCacheMaxObjects)
+            .ef(ef)
+            .skip(skip)
+            .dynamicEfFactor(dynamicEfFactor)
+            .dynamicEfMax(dynamicEfMax)
+            .dynamicEfMin(dynamicEfMin)
+            .flatSearchCutoff(flatSearchCutoff)
+            .build();
+
+    ShardingConfig shardingConfig = ShardingConfig.builder()
+            .actualCount(actualCount)
+            .actualVirtualCount(actualVirtualCount)
+            .desiredCount(desiredCount)
+            .desiredVirtualCount(desiredVirtualCount)
+            .function(function)
+            .key(key)
+            .strategy(strategy)
+            .virtualPerPhysical(virtualPerPhysical)
+            .build();
+
+    WeaviateClass clazz = WeaviateClass.builder()
+            .className("Band")
+            .description("Band that plays and produces music")
+            .vectorIndexType("hnsw")
+            .vectorizer("text2vec-contextionary")
+            .invertedIndexConfig(invertedIndexConfig)
+            .vectorIndexConfig(vectorIndexConfig)
+            .shardingConfig(shardingConfig)
+            .build();
+
+    // when
+    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
+    Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
+    Result<Boolean> deleteStatus = client.schema().allDeleter().run();
+
+    // then
+    assertNotNull(createStatus);
+    assertNull(createStatus.getError());
+    assertTrue(createStatus.getResult());
+    assertNotNull(bandClass);
+    assertNotNull(bandClass.getResult());
+    assertNull(bandClass.getError());
+    InvertedIndexConfig classInvertedIndexConfig = bandClass.getResult().getInvertedIndexConfig();
+    assertNotNull(classInvertedIndexConfig.getBm25());
+    assertEquals(bm25Config.getB(), classInvertedIndexConfig.getBm25().getB());
+    assertEquals(bm25Config.getK1(), classInvertedIndexConfig.getBm25().getK1());
+    assertNotNull(classInvertedIndexConfig.getStopwords());
+    assertEquals(stopwordConfig.getPreset(), classInvertedIndexConfig.getStopwords().getPreset());
+    assertArrayEquals(stopwordConfig.getAdditions(), classInvertedIndexConfig.getStopwords().getAdditions());
+    assertArrayEquals(stopwordConfig.getRemovals(), classInvertedIndexConfig.getStopwords().getRemovals());
+    assertEquals(cleanupIntervalSeconds, classInvertedIndexConfig.getCleanupIntervalSeconds());
+    VectorIndexConfig classVectorIndexConfig = bandClass.getResult().getVectorIndexConfig();
+    assertEquals(maxConnections, classVectorIndexConfig.getMaxConnections());
+    assertEquals(efConstruction, classVectorIndexConfig.getEfConstruction());
+    assertEquals(vectorCacheMaxObjects, classVectorIndexConfig.getVectorCacheMaxObjects());
+    assertEquals(ef, classVectorIndexConfig.getEf());
+    assertEquals(skip, classVectorIndexConfig.getSkip());
+    assertEquals(dynamicEfFactor, classVectorIndexConfig.getDynamicEfFactor());
+    assertEquals(dynamicEfMax, classVectorIndexConfig.getDynamicEfMax());
+    assertEquals(dynamicEfMin, classVectorIndexConfig.getDynamicEfMin());
+    assertEquals(flatSearchCutoff, classVectorIndexConfig.getFlatSearchCutoff());
+    ShardingConfig classShardingIndexConfig = bandClass.getResult().getShardingConfig();
+    assertEquals(actualCount, classShardingIndexConfig.getActualCount());
+    assertEquals(actualVirtualCount, classShardingIndexConfig.getActualVirtualCount());
+    assertEquals(desiredCount, classShardingIndexConfig.getDesiredCount());
+    assertEquals(desiredVirtualCount, classShardingIndexConfig.getDesiredVirtualCount());
+    assertEquals(function, classShardingIndexConfig.getFunction());
+    assertEquals(key, classShardingIndexConfig.getKey());
+    assertEquals(strategy, classShardingIndexConfig.getStrategy());
+    assertEquals(virtualPerPhysical, classShardingIndexConfig.getVirtualPerPhysical());
+    assertResultTrue(deleteStatus);
+  }
+
+  @Test
   public void testSchemaGetBandClass() {
     // given
     Config config = new Config("http", address);
@@ -450,7 +727,6 @@ public class ClientSchemaTest {
     assertNotNull(deleteStatus);
     assertTrue(deleteStatus.getResult());
   }
-
 
   private void assertResultTrue(Result<Boolean> result) {
     assertNotNull(result);

@@ -8,8 +8,13 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Builder
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class InvertedIndexConfig {
-  BM25Config bm25;
-  StopwordConfig stopwords;
-  Integer cleanupIntervalSeconds;
+public class ShardingConfig {
+  Integer actualCount;
+  Integer actualVirtualCount;
+  Integer desiredCount;
+  Integer desiredVirtualCount;
+  String function;
+  String key;
+  String strategy;
+  Integer virtualPerPhysical;
 }

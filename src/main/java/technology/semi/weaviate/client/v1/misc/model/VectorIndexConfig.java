@@ -8,8 +8,15 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Builder
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class InvertedIndexConfig {
-  BM25Config bm25;
-  StopwordConfig stopwords;
+public class VectorIndexConfig {
   Integer cleanupIntervalSeconds;
+  Integer efConstruction;
+  Integer maxConnections;
+  Integer vectorCacheMaxObjects;
+  Integer ef;
+  Boolean skip;
+  Integer dynamicEfFactor;
+  Integer dynamicEfMax;
+  Integer dynamicEfMin;
+  Integer flatSearchCutoff;
 }

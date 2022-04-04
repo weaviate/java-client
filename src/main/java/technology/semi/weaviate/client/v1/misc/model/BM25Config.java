@@ -5,11 +5,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
-@Getter
 @Builder
+@Getter
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class InvertedIndexConfig {
-  BM25Config bm25;
-  StopwordConfig stopwords;
-  Integer cleanupIntervalSeconds;
+public class BM25Config {
+  Float k1;
+  Float b;
 }
