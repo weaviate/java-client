@@ -22,6 +22,9 @@ import technology.semi.weaviate.client.v1.misc.model.VectorIndexConfig;
 import technology.semi.weaviate.client.v1.schema.model.DataType;
 import technology.semi.weaviate.client.v1.schema.model.Property;
 import technology.semi.weaviate.client.v1.schema.model.Schema;
+import technology.semi.weaviate.client.v1.schema.model.Shard;
+import technology.semi.weaviate.client.v1.schema.model.ShardStatuses;
+import technology.semi.weaviate.client.v1.schema.model.ShardStatus;
 import technology.semi.weaviate.client.v1.schema.model.Tokenization;
 import technology.semi.weaviate.client.v1.schema.model.WeaviateClass;
 
@@ -532,8 +535,8 @@ public class ClientSchemaTest {
     WeaviateClient client = new WeaviateClient(config);
 
     BM25Config bm25Config = BM25Config.builder()
-            .b((float) 0.777)
-            .k1((float) 1.777)
+            .b(0.777f)
+            .k1(1.777f)
             .build();
 
     StopwordConfig stopwordConfig = StopwordConfig.builder()
@@ -583,8 +586,8 @@ public class ClientSchemaTest {
     WeaviateClient client = new WeaviateClient(config);
     // inverted index config
     BM25Config bm25Config = BM25Config.builder()
-            .b((float) 0.777)
-            .k1((float) 1.777)
+            .b(0.777f)
+            .k1(1.777f)
             .build();
     StopwordConfig stopwordConfig = StopwordConfig.builder()
             .preset("en")
@@ -728,12 +731,199 @@ public class ClientSchemaTest {
     assertTrue(deleteStatus.getResult());
   }
 
+  @Test
+  public void testSchemaGetShards() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateClass clazz = WeaviateClass.builder()
+            .className("Band")
+            .description("Band that plays and produces music")
+            .vectorIndexType("hnsw")
+            .vectorizer("text2vec-contextionary")
+            .build();
+    // when
+    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
+    Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
+
+    // then
+    assertNotNull(createStatus);
+    assertTrue(createStatus.getResult());
+    assertNotNull(bandClass);
+    assertNotNull(bandClass.getResult());
+    assertNull(bandClass.getError());
+
+    Result<Shard[]> shards = client.schema().shardsGetter()
+            .withClassName(clazz.getClassName()).run();
+    assertNotNull(shards);
+    assertNotNull(shards.getResult());
+    assertEquals(1, shards.getResult().length);
+    Shard shard = shards.getResult()[0];
+    assertNotNull(shard.getName());
+    assertNotNull(shard.getStatus());
+
+    Result<Boolean> deleteStatus = client.schema().classDeleter().withClassName(clazz.getClassName()).run();
+    assertNotNull(deleteStatus);
+    assertTrue(deleteStatus.getResult());
+  }
+
+  @Test
+  public void testSchemaUpdateShard() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    String className = "Band";
+    WeaviateClass clazz = WeaviateClass.builder()
+            .className(className)
+            .description("Band that plays and produces music")
+            .vectorIndexType("hnsw")
+            .vectorizer("text2vec-contextionary")
+            .build();
+    // when
+    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
+    assertNull(createStatus.getError());
+    assertTrue(createStatus.getResult());
+    // then
+    Result<Shard[]> shards = client.schema().shardsGetter().withClassName(className).run();
+    assertNotNull(shards);
+    assertNull(shards.getError());
+    assertNotNull(shards.getResult());
+    assertEquals(1, shards.getResult().length);
+    // check the shard status, should be READY
+    assertEquals(ShardStatuses.READY, shards.getResult()[0].getStatus());
+    // get shard's name
+    String shardName = shards.getResult()[0].getName();
+    assertNotNull(shardName);
+    // update shard status to READONLY
+    Result<ShardStatus> updateToREADONLY = client.schema().shardUpdater()
+            .withClassName(className)
+            .withShardName(shardName)
+            .withStatus(ShardStatuses.READONLY)
+            .run();
+    assertNotNull(updateToREADONLY.getResult());
+    assertEquals(ShardStatuses.READONLY,updateToREADONLY.getResult().getStatus());
+    // update shard status to READY
+    Result<ShardStatus> updateToREADY = client.schema().shardUpdater()
+            .withClassName(className)
+            .withShardName(shardName)
+            .withStatus(ShardStatuses.READY)
+            .run();
+    assertNotNull(updateToREADY.getResult());
+    assertEquals(ShardStatuses.READY,updateToREADY.getResult().getStatus());
+    // delete the class
+    Result<Boolean> deleteStatus = client.schema().classDeleter().withClassName(className).run();
+    assertNotNull(deleteStatus);
+    assertTrue(deleteStatus.getResult());
+  }
+
+  @Test
+  public void testSchemaUpdateShards() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    String className = "Band";
+    int shardCount = 3;
+    ShardingConfig shardingConfig = ShardingConfig.builder()
+            .actualCount(shardCount)
+            .actualVirtualCount(128)
+            .desiredCount(shardCount)
+            .desiredVirtualCount(128)
+            .function("murmur3")
+            .key("_id")
+            .strategy("hash")
+            .virtualPerPhysical(128)
+            .build();
+    WeaviateClass clazz = WeaviateClass.builder()
+            .className(className)
+            .description("Band that plays and produces music")
+            .vectorIndexType("hnsw")
+            .vectorizer("text2vec-contextionary")
+            .shardingConfig(shardingConfig)
+            .build();
+    // when
+    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
+    assertResultTrue(createStatus);
+    // then
+    Result<Shard[]> shards = client.schema().shardsGetter().withClassName(className).run();
+    assertNotNull(shards);
+    assertNull(shards.getError());
+    assertNotNull(shards.getResult());
+    assertEquals(3, shards.getResult().length);
+    // update shard status to READONLY
+    Result<ShardStatus[]> updateToREADONLY = client.schema().shardsUpdater()
+            .withClassName(className)
+            .withStatus(ShardStatuses.READONLY)
+            .run();
+    assertNotNull(updateToREADONLY.getResult());
+    assertEquals(3, updateToREADONLY.getResult().length);
+    for (ShardStatus s : updateToREADONLY.getResult()) {
+      assertEquals(ShardStatuses.READONLY, s.getStatus());
+    }
+    // update shard status to READY
+    Result<ShardStatus[]> updateToREADY = client.schema().shardsUpdater()
+            .withClassName(className)
+            .withStatus(ShardStatuses.READY)
+            .run();
+    assertNotNull(updateToREADY.getResult());
+    assertEquals(3, updateToREADY.getResult().length);
+    for (ShardStatus s : updateToREADY.getResult()) {
+      assertEquals(ShardStatuses.READY, s.getStatus());
+    }
+    // delete the class
+    Result<Boolean> deleteStatus = client.schema().classDeleter().withClassName(className).run();
+    assertNotNull(deleteStatus);
+    assertTrue(deleteStatus.getResult());
+  }
+
+  @Test
+  public void testSchemaUpdateShardsException() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    // when
+    Result<ShardStatus[]> res = client.schema().shardsUpdater().run();
+    Result<ShardStatus[]> res2 = client.schema().shardsUpdater().withStatus(ShardStatuses.READY).run();
+    Result<ShardStatus[]> res3 = client.schema().shardsUpdater().withClassName("class").run();
+    // then
+    assertResultError("className, status cannot be empty", res);
+    assertResultError("className cannot be empty", res2);
+    assertResultError("status cannot be empty", res3);
+  }
+
+  @Test
+  public void testSchemaUpdateShardException() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    // when
+    Result<ShardStatus> res = client.schema().shardUpdater().run();
+    Result<ShardStatus> res2 = client.schema().shardUpdater().withStatus(ShardStatuses.READY).run();
+    Result<ShardStatus> res3 = client.schema().shardUpdater().withClassName("class").run();
+    Result<ShardStatus> res4 = client.schema().shardUpdater().withShardName("shardName").run();
+    // then
+    assertResultError("className, shardName, status cannot be empty", res);
+    assertResultError("className, shardName cannot be empty", res2);
+    assertResultError("shardName, status cannot be empty", res3);
+    assertResultError("className, status cannot be empty", res4);
+  }
+
+  @Test
+  public void testSchemaGetShardsException() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    // when
+    Result<Shard[]> res = client.schema().shardsGetter().run();
+    // then
+    assertResultError("className cannot be empty", res);
+  }
+
   private void assertResultTrue(Result<Boolean> result) {
     assertNotNull(result);
     assertTrue(result.getResult());
   }
 
-  private void assertResultError(String msg, Result<Boolean> result) {
+  private void assertResultError(String msg, Result result) {
     assertNotNull(result);
     assertTrue(result.hasErrors());
     List<WeaviateErrorMessage> messages = result.getError().getMessages();
