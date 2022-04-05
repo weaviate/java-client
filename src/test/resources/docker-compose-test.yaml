@@ -9,8 +9,7 @@ services:
     - '8080'
     - --scheme
     - http
-    # TODO to be replaced with release version
-    image: semitechnologies/weaviate:1.11.0-658bee1
+    image: semitechnologies/weaviate:1.12.0
     links:
       - "contextionary:contextionary"
     restart: on-failure:0
