@@ -209,7 +209,7 @@ public class ClientGraphQLTest {
     assertNotNull(get.get("Pizza"));
     assertTrue(get.get("Pizza") instanceof List);
     List getSoup = (List) get.get("Pizza");
-    assertEquals(1, getSoup.size());
+    assertEquals(2, getSoup.size());
   }
 
   @Test
@@ -234,8 +234,7 @@ public class ClientGraphQLTest {
     WhereArgument whereFullText = WhereArgument.builder()
             .path(new String[]{ "description" })
             .operator(WhereOperator.Equal)
-            // TODO change to "Universally accepted to be the best pizza ever created."
-            .valueText("Universally accepted best pizza ever created.")
+            .valueText("Universally accepted to be the best pizza ever created.")
             .build();
     WhereArgument wherePartText = WhereArgument.builder()
             .path(new String[]{ "description" })
