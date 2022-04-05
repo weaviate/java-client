@@ -15,15 +15,14 @@ notifications:
   email:
     on_success: change
 before_install:
+  # login to docker at the very beginning, so we don't run into rate-limiting
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - java -version
   - openssl aes-256-cbc -K $encrypted_955c10630a82_key -iv $encrypted_955c10630a82_iv -in .secrets.tar.enc -out secrets.tar -d
   - tar xvf secrets.tar
   - cp settings.xml $HOME/.m2/
   - gpg --batch --import key.gpg
   - export GPG_TTY=$(tty)
-before_script:
-  # login to docker at the very beginning, so we don't run into rate-limiting
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 jobs:
   include:
