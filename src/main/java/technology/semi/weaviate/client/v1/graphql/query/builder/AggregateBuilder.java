@@ -7,6 +7,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.StringUtils;
+import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.WhereArgument;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
 
@@ -18,9 +21,16 @@ public class AggregateBuilder implements Query {
   Fields fields;
   String groupByClausePropertyName;
   WhereArgument withWhereArgument;
+  NearTextArgument withNearTextFilter;
+  NearObjectArgument withNearObjectFilter;
+  NearVectorArgument withNearVectorFilter;
 
   private boolean includesFilterClause() {
-    return withWhereArgument != null || StringUtils.isNotBlank(groupByClausePropertyName);
+    return withWhereArgument != null
+      || StringUtils.isNotBlank(groupByClausePropertyName)
+      || withNearTextFilter != null
+      || withNearObjectFilter != null
+      || withNearVectorFilter != null;
   }
 
   private String createFilterClause() {
@@ -31,6 +41,15 @@ public class AggregateBuilder implements Query {
       }
       if (withWhereArgument != null) {
         filters.add(withWhereArgument.build());
+      }
+      if (withNearTextFilter != null) {
+        filters.add(withNearTextFilter.build());
+      }
+      if (withNearObjectFilter != null) {
+        filters.add(withNearObjectFilter.build());
+      }
+      if (withNearVectorFilter != null) {
+        filters.add(withNearVectorFilter.build());
       }
       return String.format("(%s)", StringUtils.joinWith(", ", filters.toArray()));
     }
