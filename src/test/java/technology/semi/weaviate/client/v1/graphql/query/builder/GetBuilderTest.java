@@ -1,5 +1,11 @@
 package technology.semi.weaviate.client.v1.graphql.query.builder;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+import java.util.stream.Collectors;
 import junit.framework.TestCase;
 import org.junit.Test;
 import technology.semi.weaviate.client.v1.graphql.query.argument.AskArgument;
@@ -8,18 +14,14 @@ import technology.semi.weaviate.client.v1.graphql.query.argument.GroupType;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearImageArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.SortArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.SortArguments;
+import technology.semi.weaviate.client.v1.graphql.query.argument.SortOrder;
 import technology.semi.weaviate.client.v1.graphql.query.argument.WhereArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.WhereFilter;
 import technology.semi.weaviate.client.v1.graphql.query.argument.WhereOperator;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Field;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
-import java.util.stream.Collectors;
 
 public class GetBuilderTest extends TestCase {
 
@@ -291,5 +293,31 @@ public class GetBuilderTest extends TestCase {
     assertEquals(String.format("{Get{Pizza(nearImage: {image: \"%s\" certainty: 0.4}){name}}}", base64File), query2);
     assertNotNull(query3);
     assertEquals(String.format("{Get{Pizza(nearImage: {image: \"%s\" certainty: 0.1}, limit: 1){name}}}", expectedImage), query3);
+  }
+
+  @Test
+  public void testBuildGetWithSort() {
+    // given
+    Fields fields = Fields.builder()
+            .fields(new Field[]{ Field.builder().name("name").build() })
+            .build();
+    SortArgument sort1 = SortArgument.builder().path(new String[]{ "property1" }).build();
+    SortArgument sort2 = SortArgument.builder().path(new String[]{ "property2" }).order(SortOrder.desc).build();
+    SortArgument sort3 = SortArgument.builder().path(new String[]{ "property3" }).order(SortOrder.asc).build();
+    // when
+    String query1 = GetBuilder.builder().className("Pizza").fields(fields)
+            .withSortArguments(SortArguments.builder().sort(new SortArgument[]{sort1}).build())
+            .build().buildQuery();
+    String query2 = GetBuilder.builder().className("Pizza").fields(fields)
+            .withSortArguments(SortArguments.builder().sort(new SortArgument[]{sort1, sort2}).build())
+            .build().buildQuery();
+    String query3 = GetBuilder.builder().className("Pizza").fields(fields)
+            .withSortArguments(SortArguments.builder().sort(new SortArgument[]{sort1, sort2, sort3}).build())
+            .build().buildQuery();
+    // then
+    assertNotNull(query1);
+    assertEquals("{Get{Pizza(sort:[{path:[\"property1\"]}]){name}}}", query1);
+    assertEquals("{Get{Pizza(sort:[{path:[\"property1\"]}, {path:[\"property2\"] order:desc}]){name}}}", query2);
+    assertEquals("{Get{Pizza(sort:[{path:[\"property1\"]}, {path:[\"property2\"] order:desc}, {path:[\"property3\"] order:asc}]){name}}}", query3);
   }
 }
