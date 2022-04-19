@@ -443,7 +443,6 @@ public class ClientGraphQLTest {
     // then
     assertNotNull(result);
     assertNotNull(result.getResult());
-    assertNotNull(result);
     assertFalse(result.hasErrors());
     resp = result.getResult();
     checkAggregateMetaCount(resp, 1, 4.0d);
@@ -478,7 +477,6 @@ public class ClientGraphQLTest {
     // then
     assertNotNull(result);
     assertNotNull(result.getResult());
-    assertNotNull(result);
     assertFalse(result.hasErrors());
     resp = result.getResult();
     checkAggregateMetaCount(resp, 1, 4.0d);
@@ -505,7 +503,6 @@ public class ClientGraphQLTest {
     // then
     assertNotNull(result);
     assertNotNull(result.getResult());
-    assertNotNull(result);
     assertFalse(result.hasErrors());
     GraphQLResponse resp = result.getResult();
     checkAggregateMetaCount(resp, 1, 4.0d);

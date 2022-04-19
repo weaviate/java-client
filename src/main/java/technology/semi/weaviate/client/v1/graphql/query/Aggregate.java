@@ -16,7 +16,6 @@ import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
 
 public class Aggregate extends BaseClient<GraphQLResponse> implements ClientResult<GraphQLResponse> {
   private final AggregateBuilder.AggregateBuilderBuilder aggregateBuilder;
-
   public Aggregate(Config config) {
     super(config);
     this.aggregateBuilder = AggregateBuilder.builder();
