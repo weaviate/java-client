@@ -9,12 +9,13 @@ import technology.semi.weaviate.client.v1.graphql.model.GraphQLQuery;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLResponse;
 import technology.semi.weaviate.client.v1.graphql.query.argument.AskArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.GroupArgument;
-import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearImageArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.WhereArgument;
 import technology.semi.weaviate.client.v1.graphql.query.builder.GetBuilder;
+import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
 
 public class Get extends BaseClient<GraphQLResponse> implements ClientResult<GraphQLResponse> {
   private final GetBuilder.GetBuilderBuilder getBuilder;
@@ -64,7 +65,7 @@ public class Get extends BaseClient<GraphQLResponse> implements ClientResult<Gra
     return this;
   }
 
-  public Get withNearVector(Float[] nearVector) {
+  public Get withNearVector(NearVectorArgument nearVector) {
     this.getBuilder.withNearVectorFilter(nearVector);
     return this;
   }

@@ -1,23 +1,25 @@
 package technology.semi.weaviate.client.v1.graphql.query.builder;
 
+import junit.framework.TestCase;
+import org.junit.Test;
+import technology.semi.weaviate.client.v1.graphql.query.argument.AskArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.GroupArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.GroupType;
+import technology.semi.weaviate.client.v1.graphql.query.argument.NearImageArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.WhereArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.WhereFilter;
+import technology.semi.weaviate.client.v1.graphql.query.argument.WhereOperator;
+import technology.semi.weaviate.client.v1.graphql.query.fields.Field;
+import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.util.stream.Collectors;
-import junit.framework.TestCase;
-import org.junit.Test;
-import technology.semi.weaviate.client.v1.graphql.query.argument.AskArgument;
-import technology.semi.weaviate.client.v1.graphql.query.argument.GroupArgument;
-import technology.semi.weaviate.client.v1.graphql.query.argument.GroupType;
-import technology.semi.weaviate.client.v1.graphql.query.fields.Field;
-import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
-import technology.semi.weaviate.client.v1.graphql.query.argument.NearImageArgument;
-import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
-import technology.semi.weaviate.client.v1.graphql.query.argument.WhereArgument;
-import technology.semi.weaviate.client.v1.graphql.query.argument.WhereFilter;
-import technology.semi.weaviate.client.v1.graphql.query.argument.WhereOperator;
 
 public class GetBuilderTest extends TestCase {
 
@@ -120,14 +122,14 @@ public class GetBuilderTest extends TestCase {
   public void testBuildGetWithNearVector() {
     // given
     Field name = Field.builder().name("name").build();
-    Float[] nearVector = new Float[]{ 0f, 1f, 0.8f };
+    NearVectorArgument nearVector = NearVectorArgument.builder().vector(new Float[]{ 0f, 1f, 0.8f }).certainty(0.8f).build();
     // when
     String query = GetBuilder.builder().className("Pizza")
             .fields(Fields.builder().fields(new Field[]{ name }).build())
             .withNearVectorFilter(nearVector).build().buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Get{Pizza(nearVector: {vector: [0.0,1.0,0.8]}){name}}}", query);
+    assertEquals("{Get{Pizza(nearVector: {vector: [0.0, 1.0, 0.8] certainty: 0.8}){name}}}", query);
   }
 
   @Test
@@ -182,16 +184,15 @@ public class GetBuilderTest extends TestCase {
             .operator(WhereOperator.Equal)
             .valueString("Hawaii")
             .build();
-    Float[] nearVector = new Float[]{ 0f, 1f, 0.8f };
     Integer limit = 2;
     // when
     String query = GetBuilder.builder()
-            .className("Pizza").fields(fields).withNearTextFilter(nearText).withWhereArgument(where).withNearVectorFilter(nearVector).limit(limit)
+            .className("Pizza").fields(fields).withNearTextFilter(nearText).withWhereArgument(where).limit(limit)
             .build().buildQuery();
     // then
     assertNotNull(query);
     assertEquals("{Get{Pizza(where:{path:[\"name\"] valueString:\"Hawaii\" operator:Equal}, " +
-            "nearText: {concepts: [\"good\"]}, nearVector: {vector: [0.0,1.0,0.8]}, limit: 2){name}}}", query);
+            "nearText: {concepts: [\"good\"]}, limit: 2){name}}}", query);
   }
 
   @Test
