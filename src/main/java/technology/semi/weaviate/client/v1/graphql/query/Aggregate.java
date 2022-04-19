@@ -16,11 +16,9 @@ import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
 
 public class Aggregate extends BaseClient<GraphQLResponse> implements ClientResult<GraphQLResponse> {
   private final AggregateBuilder.AggregateBuilderBuilder aggregateBuilder;
-  private Boolean includesNearMediaFilter;
   public Aggregate(Config config) {
     super(config);
     this.aggregateBuilder = AggregateBuilder.builder();
-    this.includesNearMediaFilter = false;
   }
 
   public Aggregate withClassName(String className) {
@@ -43,33 +41,18 @@ public class Aggregate extends BaseClient<GraphQLResponse> implements ClientResu
     return this;
   }
 
-  public Aggregate withNearVector(NearVectorArgument withNearVectorFilter) throws Exception {
-    if (this.includesNearMediaFilter) {
-      throw new Exception("cannot use multiple near<Media> filters in a single query");
-    }
-
+  public Aggregate withNearVector(NearVectorArgument withNearVectorFilter) {
     this.aggregateBuilder.withNearVectorFilter(withNearVectorFilter);
-    this.includesNearMediaFilter = true;
     return this;
   }
 
-  public Aggregate withNearObject(NearObjectArgument withNearObjectFilter) throws Exception {
-    if (this.includesNearMediaFilter) {
-      throw new Exception("cannot use multiple near<Media> filters in a single query");
-    }
-
+  public Aggregate withNearObject(NearObjectArgument withNearObjectFilter) {
     this.aggregateBuilder.withNearObjectFilter(withNearObjectFilter);
-    this.includesNearMediaFilter = true;
     return this;
   }
 
-  public Aggregate withNearText(NearTextArgument withNearTextFilter) throws Exception {
-    if (this.includesNearMediaFilter) {
-      throw new Exception("cannot use multiple near<Media> filters in a single query");
-    }
-
+  public Aggregate withNearText(NearTextArgument withNearTextFilter) {
     this.aggregateBuilder.withNearTextFilter(withNearTextFilter);
-    this.includesNearMediaFilter = true;
     return this;
   }
 

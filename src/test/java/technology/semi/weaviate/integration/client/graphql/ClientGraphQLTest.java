@@ -415,7 +415,7 @@ public class ClientGraphQLTest {
   }
 
   @Test
-  public void testGraphQLAggregateWithNearVector() throws Exception {
+  public void testGraphQLAggregateWithNearVector() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -449,7 +449,7 @@ public class ClientGraphQLTest {
   }
 
   @Test
-  public void testGraphQLAggregateWithNearObject() throws Exception {
+  public void testGraphQLAggregateWithNearObject() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -483,7 +483,7 @@ public class ClientGraphQLTest {
   }
 
   @Test
-  public void testGraphQLAggregateWithNearText() throws Exception {
+  public void testGraphQLAggregateWithNearText() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
