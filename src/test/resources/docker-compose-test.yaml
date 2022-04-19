@@ -10,7 +10,7 @@ services:
     - --scheme
     - http
     # TODO: temporarily use this version until next release
-    image: semitechnologies/weaviate:1.12.2-0863bd3
+    image: semitechnologies/weaviate:1.12.2-2964ac6
     links:
       - "contextionary:contextionary"
     restart: on-failure:0

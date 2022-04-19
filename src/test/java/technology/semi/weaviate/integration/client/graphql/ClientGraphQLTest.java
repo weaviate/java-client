@@ -1,14 +1,10 @@
 package technology.semi.weaviate.integration.client.graphql;
 
-import java.io.File;
-import java.util.*;
-
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
-import org.testcontainers.shaded.org.apache.commons.lang.ArrayUtils;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.WeaviateClient;
 import technology.semi.weaviate.client.base.Result;
@@ -16,16 +12,25 @@ import technology.semi.weaviate.client.v1.batch.model.ObjectGetResponse;
 import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
 import technology.semi.weaviate.client.v1.graphql.model.ExploreFields;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLResponse;
-import technology.semi.weaviate.client.v1.graphql.query.argument.*;
+import technology.semi.weaviate.client.v1.graphql.query.argument.GroupArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.GroupType;
+import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextMoveParameters;
+import technology.semi.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.WhereArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.WhereOperator;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Field;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
 import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.*;
 
 public class ClientGraphQLTest {
   private String address;
@@ -410,7 +415,7 @@ public class ClientGraphQLTest {
   }
 
   @Test
-  public void testGraphQLAggregateWithNearVector() {
+  public void testGraphQLAggregateWithNearVector() throws Exception {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -438,14 +443,13 @@ public class ClientGraphQLTest {
     // then
     assertNotNull(result);
     assertNotNull(result.getResult());
-    assertNotNull(result);
     assertFalse(result.hasErrors());
     resp = result.getResult();
     checkAggregateMetaCount(resp, 1, 4.0d);
   }
 
   @Test
-  public void testGraphQLAggregateWithNearObject() {
+  public void testGraphQLAggregateWithNearObject() throws Exception {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -473,14 +477,13 @@ public class ClientGraphQLTest {
     // then
     assertNotNull(result);
     assertNotNull(result.getResult());
-    assertNotNull(result);
     assertFalse(result.hasErrors());
     resp = result.getResult();
     checkAggregateMetaCount(resp, 1, 4.0d);
   }
 
   @Test
-  public void testGraphQLAggregateWithNearText() {
+  public void testGraphQLAggregateWithNearText() throws Exception {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -500,7 +503,6 @@ public class ClientGraphQLTest {
     // then
     assertNotNull(result);
     assertNotNull(result.getResult());
-    assertNotNull(result);
     assertFalse(result.hasErrors());
     GraphQLResponse resp = result.getResult();
     checkAggregateMetaCount(resp, 1, 4.0d);
