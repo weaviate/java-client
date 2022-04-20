@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
@@ -28,12 +29,8 @@ public class AggregateBuilder implements Query {
   Integer objectLimit;
 
   private boolean includesFilterClause() {
-    return withWhereArgument != null
-      || StringUtils.isNotBlank(groupByClausePropertyName)
-      || withNearTextFilter != null
-      || withNearObjectFilter != null
-      || withNearVectorFilter != null
-      || objectLimit != null;
+    return ObjectUtils.anyNotNull(withWhereArgument, withNearTextFilter, withNearObjectFilter,
+            withNearVectorFilter, objectLimit) || StringUtils.isNotBlank(groupByClausePropertyName);
   }
 
   private String createFilterClause() {
