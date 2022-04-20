@@ -56,10 +56,15 @@ public class Aggregate extends BaseClient<GraphQLResponse> implements ClientResu
     return this;
   }
 
+  public Aggregate withObjectLimit(Integer objectLimit) {
+    this.aggregateBuilder.objectLimit(objectLimit);
+    return this;
+  }
+
   @Override
   public Result<GraphQLResponse> run() {
-    String aggregrateQuery = aggregateBuilder.build().buildQuery();
-    GraphQLQuery query = GraphQLQuery.builder().query(aggregrateQuery).build();
+    String aggregateQuery = aggregateBuilder.build().buildQuery();
+    GraphQLQuery query = GraphQLQuery.builder().query(aggregateQuery).build();
     Response<GraphQLResponse> resp = sendPostRequest("/graphql", query, GraphQLResponse.class);
     return new Result<>(resp);
   }

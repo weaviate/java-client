@@ -509,6 +509,39 @@ public class ClientGraphQLTest {
   }
 
   @Test
+  public void testGraphQLAggregateWithObjectLimit() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
+    testGenerics.createTestSchemaAndData(client);
+
+    // when
+    Integer objectLimit = 1;
+    Field meta = Field.builder()
+            .name("meta")
+            .fields(new Field[]{Field.builder().name("count").build()})
+            .build();
+    Fields fields = Fields.builder().fields(new Field[]{meta}).build();
+    NearTextArgument nearText = NearTextArgument.builder().certainty(0.7f).concepts(new String[]{"pizza"}).build();
+    Result<GraphQLResponse> result = client.graphQL()
+            .aggregate()
+            .withFields(fields)
+            .withClassName("Pizza")
+            .withNearText(nearText)
+            .withObjectLimit(objectLimit)
+            .run();
+    testGenerics.cleanupWeaviate(client);
+
+    // then
+    assertNotNull(result);
+    assertNotNull(result.getResult());
+    assertFalse(result.hasErrors());
+    GraphQLResponse resp = result.getResult();
+    checkAggregateMetaCount(resp, 1, Double.valueOf(objectLimit));
+  }
+
+  @Test
   public void testGraphQLGetWithGroup() {
     // given
     Config config = new Config("http", address);
