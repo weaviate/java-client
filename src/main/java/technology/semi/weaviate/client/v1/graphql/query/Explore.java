@@ -19,7 +19,7 @@ public class Explore extends BaseClient<GraphQLResponse> implements ClientResult
     this.exploreBuilder = ExploreBuilder.builder();
   }
 
-  public Explore withFields(ExploreFields[] fields) {
+  public Explore withFields(ExploreFields ...fields) {
     this.exploreBuilder.fields(fields);
     return this;
   }

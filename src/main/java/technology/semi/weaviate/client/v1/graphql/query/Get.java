@@ -17,6 +17,7 @@ import technology.semi.weaviate.client.v1.graphql.query.argument.SortArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.SortArguments;
 import technology.semi.weaviate.client.v1.graphql.query.argument.WhereArgument;
 import technology.semi.weaviate.client.v1.graphql.query.builder.GetBuilder;
+import technology.semi.weaviate.client.v1.graphql.query.fields.Field;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
 
 public class Get extends BaseClient<GraphQLResponse> implements ClientResult<GraphQLResponse> {
@@ -32,8 +33,14 @@ public class Get extends BaseClient<GraphQLResponse> implements ClientResult<Gra
     return this;
   }
 
+  @Deprecated
   public Get withFields(Fields fields) {
     this.getBuilder.fields(fields);
+    return this;
+  }
+
+  public Get withFields(Field ...fields) {
+    this.getBuilder.fields(Fields.builder().fields(fields).build());
     return this;
   }
 

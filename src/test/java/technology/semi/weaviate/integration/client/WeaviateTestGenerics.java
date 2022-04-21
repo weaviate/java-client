@@ -51,7 +51,7 @@ public class WeaviateTestGenerics {
             .tokenization(Tokenization.WORD)
             .build();
     Map<Object, Object> text2vecContextionary = new HashMap<>();
-    text2vecContextionary.put("vectorizePropertyName", false);
+    text2vecContextionary.put("skip", true);
     Map<Object, Object> moduleConfig = new HashMap<>();
     moduleConfig.put("text2vec-contextionary", text2vecContextionary);
     Property priceProperty = Property.builder()

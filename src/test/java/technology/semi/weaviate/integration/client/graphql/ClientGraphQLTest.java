@@ -56,10 +56,9 @@ public class ClientGraphQLTest {
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
     Field name = Field.builder().name("name").build();
-    Fields fields = Fields.builder().fields(new Field[]{name}).build();
     // when
     testGenerics.createTestSchemaAndData(client);
-    Result<GraphQLResponse> result = client.graphQL().get().withClassName("Pizza").withFields(fields).run();
+    Result<GraphQLResponse> result = client.graphQL().get().withClassName("Pizza").withFields(name).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(result);
@@ -96,15 +95,12 @@ public class ClientGraphQLTest {
             .name("_additional")
             .fields(new Field[]{Field.builder().name("certainty").build()})
             .build();
-    Fields fields = Fields.builder()
-            .fields(new Field[]{name, _additional})
-            .build();
     // when
     testGenerics.createTestSchemaAndData(client);
     Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObject(soupWithID).run();
     Result<GraphQLResponse> result = client.graphQL().get().withClassName("Soup")
             .withNearObject(nearObjectArgument)
-            .withFields(fields).run();
+            .withFields(name, _additional).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(insert);
@@ -145,14 +141,11 @@ public class ClientGraphQLTest {
             .name("_additional")
             .fields(new Field[]{Field.builder().name("certainty").build()})
             .build();
-    Fields fields = Fields.builder()
-            .fields(new Field[]{name, _additional})
-            .build();
     // when
     testGenerics.createTestSchemaAndData(client);
     Result<GraphQLResponse> result = client.graphQL().get().withClassName("Pizza")
             .withNearText(nearText)
-            .withFields(fields).run();
+            .withFields(name, _additional).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(result);
@@ -186,9 +179,47 @@ public class ClientGraphQLTest {
             .name("_additional")
             .fields(new Field[]{Field.builder().name("certainty").build()})
             .build();
-    Fields fields = Fields.builder()
-            .fields(new Field[]{name, _additional})
+    // when
+    testGenerics.createTestSchemaAndData(client);
+    Result<GraphQLResponse> result = client.graphQL().get().withClassName("Pizza")
+            .withNearText(nearText)
+            .withLimit(1)
+            .withFields(name, _additional).run();
+    testGenerics.cleanupWeaviate(client);
+    // then
+    assertNotNull(result);
+    assertFalse(result.hasErrors());
+    GraphQLResponse resp = result.getResult();
+    assertNotNull(resp);
+    assertNotNull(resp.getData());
+    assertTrue(resp.getData() instanceof Map);
+    Map data = (Map) resp.getData();
+    assertNotNull(data.get("Get"));
+    assertTrue(data.get("Get") instanceof Map);
+    Map get = (Map) data.get("Get");
+    assertNotNull(get.get("Pizza"));
+    assertTrue(get.get("Pizza") instanceof List);
+    List getSoup = (List) get.get("Pizza");
+    assertEquals(1, getSoup.size());
+  }
+
+  @Deprecated
+  @Test
+  public void testGraphQLGetWithNearTextAndLimitAndDeprecatedFields() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
+    NearTextArgument nearText = client.graphQL().arguments().nearTextArgBuilder()
+            .concepts(new String[]{"some say revolution"})
+            .certainty(0.8f)
             .build();
+    Field name = Field.builder().name("name").build();
+    Field _additional = Field.builder()
+            .name("_additional")
+            .fields(new Field[]{Field.builder().name("certainty").build()})
+            .build();
+    Fields fields = Fields.builder().fields(new Field[]{name, _additional}).build();
     // when
     testGenerics.createTestSchemaAndData(client);
     Result<GraphQLResponse> result = client.graphQL().get().withClassName("Pizza")
@@ -220,7 +251,6 @@ public class ClientGraphQLTest {
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
     Field name = Field.builder().name("name").build();
-    Fields fields = Fields.builder().fields(new Field[]{name}).build();
 
     WhereArgument whereFullString = WhereArgument.builder()
             .path(new String[]{ "name" })
@@ -244,10 +274,10 @@ public class ClientGraphQLTest {
             .build();
     // when
     testGenerics.createTestSchemaAndData(client);
-    Result<GraphQLResponse> resultFullString = client.graphQL().get().withWhere(whereFullString).withClassName("Pizza").withFields(fields).run();
-    Result<GraphQLResponse> resultPartString = client.graphQL().get().withWhere(wherePartString).withClassName("Pizza").withFields(fields).run();
-    Result<GraphQLResponse> resultFullText = client.graphQL().get().withWhere(whereFullText).withClassName("Pizza").withFields(fields).run();
-    Result<GraphQLResponse> resultPartText = client.graphQL().get().withWhere(wherePartText).withClassName("Pizza").withFields(fields).run();
+    Result<GraphQLResponse> resultFullString = client.graphQL().get().withWhere(whereFullString).withClassName("Pizza").withFields(name).run();
+    Result<GraphQLResponse> resultPartString = client.graphQL().get().withWhere(wherePartString).withClassName("Pizza").withFields(name).run();
+    Result<GraphQLResponse> resultFullText = client.graphQL().get().withWhere(whereFullText).withClassName("Pizza").withFields(name).run();
+    Result<GraphQLResponse> resultPartText = client.graphQL().get().withWhere(wherePartText).withClassName("Pizza").withFields(name).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertWhereResultSize(1, resultFullString, "Pizza");
@@ -301,10 +331,9 @@ public class ClientGraphQLTest {
             .name("meta")
             .fields(new Field[]{Field.builder().name("count").build()})
             .build();
-    Fields fields = Fields.builder().fields(new Field[]{meta}).build();
     // when
     testGenerics.createTestSchemaAndData(client);
-    Result<GraphQLResponse> result = client.graphQL().aggregate().withFields(fields).withClassName("Pizza").run();
+    Result<GraphQLResponse> result = client.graphQL().aggregate().withFields(meta).withClassName("Pizza").run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(result);
@@ -333,11 +362,10 @@ public class ClientGraphQLTest {
             .name("meta")
             .fields(new Field[]{Field.builder().name("count").build()})
             .build();
-    Fields fields = Fields.builder().fields(new Field[]{meta}).build();
     // when
     testGenerics.createTestSchemaAndData(client);
     Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObject(pizzaWithID).run();
-    Result<GraphQLResponse> result = client.graphQL().aggregate().withFields(fields).withClassName("Pizza").withWhere(where).run();
+    Result<GraphQLResponse> result = client.graphQL().aggregate().withFields(meta).withClassName("Pizza").withWhere(where).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(insert);
@@ -369,11 +397,10 @@ public class ClientGraphQLTest {
             .name("meta")
             .fields(new Field[]{Field.builder().name("count").build()})
             .build();
-    Fields fields = Fields.builder().fields(new Field[]{meta}).build();
     // when
     testGenerics.createTestSchemaAndData(client);
     Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObject(pizzaWithID).run();
-    Result<GraphQLResponse> result = client.graphQL().aggregate().withFields(fields).withClassName("Pizza").withGroupBy("name").withWhere(where).run();
+    Result<GraphQLResponse> result = client.graphQL().aggregate().withFields(meta).withClassName("Pizza").withGroupBy("name").withWhere(where).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(insert);
@@ -400,11 +427,10 @@ public class ClientGraphQLTest {
             .name("meta")
             .fields(new Field[]{Field.builder().name("count").build()})
             .build();
-    Fields fields = Fields.builder().fields(new Field[]{meta}).build();
     // when
     testGenerics.createTestSchemaAndData(client);
     Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObject(pizzaWithID).run();
-    Result<GraphQLResponse> result = client.graphQL().aggregate().withFields(fields).withClassName("Pizza").withGroupBy("name").run();
+    Result<GraphQLResponse> result = client.graphQL().aggregate().withFields(meta).withClassName("Pizza").withGroupBy("name").run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(insert);
@@ -427,8 +453,7 @@ public class ClientGraphQLTest {
             .name("_additional")
             .fields(new Field[]{Field.builder().name("vector").build()})
             .build();
-    Fields fields = Fields.builder().fields(new Field[]{additional}).build();
-    Result<GraphQLResponse> result = client.graphQL().get().withClassName("Pizza").withFields(fields).run();
+    Result<GraphQLResponse> result = client.graphQL().get().withClassName("Pizza").withFields(additional).run();
     GraphQLResponse resp = result.getResult();
     Float[] vec = getVectorFromResponse(resp);
 
@@ -437,9 +462,8 @@ public class ClientGraphQLTest {
             .name("meta")
             .fields(new Field[]{Field.builder().name("count").build()})
             .build();
-    fields = Fields.builder().fields(new Field[]{meta}).build();
     NearVectorArgument nearVector = NearVectorArgument.builder().certainty(0.7f).vector(vec).build();
-    result = client.graphQL().aggregate().withFields(fields).withClassName("Pizza").withNearVector(nearVector).run();
+    result = client.graphQL().aggregate().withFields(meta).withClassName("Pizza").withNearVector(nearVector).run();
     testGenerics.cleanupWeaviate(client);
 
     // then
@@ -461,8 +485,7 @@ public class ClientGraphQLTest {
             .name("_additional")
             .fields(new Field[]{Field.builder().name("id").build()})
             .build();
-    Fields fields = Fields.builder().fields(new Field[]{additional}).build();
-    Result<GraphQLResponse> result = client.graphQL().get().withClassName("Pizza").withFields(fields).run();
+    Result<GraphQLResponse> result = client.graphQL().get().withClassName("Pizza").withFields(additional).run();
     GraphQLResponse resp = result.getResult();
     String id = getIdFromResponse(resp);
 
@@ -471,9 +494,8 @@ public class ClientGraphQLTest {
             .name("meta")
             .fields(new Field[]{Field.builder().name("count").build()})
             .build();
-    fields = Fields.builder().fields(new Field[]{meta}).build();
     NearObjectArgument nearObject = NearObjectArgument.builder().certainty(0.7f).id(id).build();
-    result = client.graphQL().aggregate().withFields(fields).withClassName("Pizza").withNearObject(nearObject).run();
+    result = client.graphQL().aggregate().withFields(meta).withClassName("Pizza").withNearObject(nearObject).run();
     testGenerics.cleanupWeaviate(client);
 
     // then
@@ -524,6 +546,39 @@ public class ClientGraphQLTest {
             .name("meta")
             .fields(new Field[]{Field.builder().name("count").build()})
             .build();
+    NearTextArgument nearText = NearTextArgument.builder().certainty(0.7f).concepts(new String[]{"pizza"}).build();
+    Result<GraphQLResponse> result = client.graphQL()
+            .aggregate()
+            .withFields(meta)
+            .withClassName("Pizza")
+            .withNearText(nearText)
+            .withObjectLimit(objectLimit)
+            .run();
+    testGenerics.cleanupWeaviate(client);
+
+    // then
+    assertNotNull(result);
+    assertNotNull(result.getResult());
+    assertFalse(result.hasErrors());
+    GraphQLResponse resp = result.getResult();
+    checkAggregateMetaCount(resp, 1, Double.valueOf(objectLimit));
+  }
+
+  @Deprecated
+  @Test
+  public void testGraphQLAggregateWithObjectLimitAndDeprecatedFields() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
+    testGenerics.createTestSchemaAndData(client);
+
+    // when
+    Integer objectLimit = 1;
+    Field meta = Field.builder()
+            .name("meta")
+            .fields(new Field[]{Field.builder().name("count").build()})
+            .build();
     Fields fields = Fields.builder().fields(new Field[]{meta}).build();
     NearTextArgument nearText = NearTextArgument.builder().certainty(0.7f).concepts(new String[]{"pizza"}).build();
     Result<GraphQLResponse> result = client.graphQL()
@@ -552,14 +607,11 @@ public class ClientGraphQLTest {
     GroupArgument group = client.graphQL().arguments().groupArgBuilder()
             .type(GroupType.merge).force(1.0f).build();
     Field name = Field.builder().name("name").build();
-    Fields fields = Fields.builder()
-            .fields(new Field[]{name})
-            .build();
     // when
     testGenerics.createTestSchemaAndData(client);
     Result<GraphQLResponse> result = client.graphQL().get()
             .withClassName("Soup")
-            .withFields(fields)
+            .withFields(name)
             .withGroup(group)
             .withLimit(7)
             .run();
@@ -588,9 +640,6 @@ public class ClientGraphQLTest {
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
     Field name = Field.builder().name("name").build();
-    Fields fields = Fields.builder()
-            .fields(new Field[]{name})
-            .build();
     SortArgument byNameDesc = client.graphQL().arguments().sortArgBuilder()
             .path(new String[]{ "name" })
             .order(SortOrder.desc)
@@ -606,15 +655,15 @@ public class ClientGraphQLTest {
     Result<GraphQLResponse> resultByNameDesc = client.graphQL().get()
             .withClassName("Pizza")
             .withSort(byNameDesc)
-            .withFields(fields).run();
+            .withFields(name).run();
     Result<GraphQLResponse> resultByDescriptionAsc = client.graphQL().get()
             .withClassName("Pizza")
             .withSort(byPriceAsc)
-            .withFields(fields).run();
+            .withFields(name).run();
     Result<GraphQLResponse> resultByNameDescByPriceAsc = client.graphQL().get()
             .withClassName("Pizza")
             .withSort(byNameDesc, byPriceAsc)
-            .withFields(fields).run();
+            .withFields(name).run();
     testGenerics.cleanupWeaviate(client);
     // then
     expectPizzaNamesOrder(resultByNameDesc, expectedByNameDesc);

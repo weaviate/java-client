@@ -11,7 +11,6 @@ import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgum
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextMoveParameters;
 import technology.semi.weaviate.client.v1.graphql.query.argument.SortArgument;
-import technology.semi.weaviate.client.v1.graphql.query.argument.SortArguments;
 
 public class GraphQL {
   private Config config;
