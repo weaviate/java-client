@@ -96,4 +96,16 @@ public class AskArgumentTest extends TestCase {
     assertNotNull(arg);
     assertEquals("ask: {question: \"What's your name?\" rerank: false}", arg);
   }
+
+  @Test
+  public void testBuildWithoutAll() {
+    // given
+    // when
+    String arg = AskArgument.builder().build().build();
+    // then
+    // builder will return a faulty ask arg in order for Weaviate to error
+    // so that user will know that something was wrong
+    assertNotNull(arg);
+    assertEquals("ask: {}", arg);
+  }
 }

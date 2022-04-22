@@ -38,4 +38,16 @@ public class GroupArgumentTest extends TestCase {
     // then
     Assert.assertEquals(expected, result);
   }
+
+  @Test
+  public void testBuildWithoutAll() {
+    // given
+    GroupArgument groupArgument = GroupArgument.builder().build();
+    // when
+    String result = groupArgument.build();
+    // then
+    // builder will return a faulty group arg in order for Weaviate to error
+    // so that user will know that something was wrong
+    Assert.assertEquals("group:{}", result);
+  }
 }

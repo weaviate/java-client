@@ -19,6 +19,6 @@ public class SortArguments implements Argument {
     if (ArrayUtils.isNotEmpty(sort)) {
       return String.format("sort:[%s]", Arrays.stream(sort).map(SortArgument::build).collect(Collectors.joining(", ")));
     }
-    return null;
+    return "sort:[]";
   }
 }

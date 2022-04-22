@@ -150,4 +150,16 @@ public class WhereArgumentTest extends TestCase {
     // then
     Assert.assertEquals(expected, whereFilter);
   }
+
+  @Test
+  public void testWithoutAll() {
+    // given
+    WhereArgument arg = WhereArgument.builder().build();
+    // when
+    String whereFilter = arg.build();
+    // then
+    // builder will return a faulty where arg in order for Weaviate to error
+    // so that user will know that something was wrong
+    Assert.assertEquals("where:{}", whereFilter);
+  }
 }

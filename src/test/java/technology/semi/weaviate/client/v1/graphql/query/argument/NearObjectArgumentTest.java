@@ -55,6 +55,8 @@ public class NearObjectArgumentTest extends TestCase {
     // when
     String arg = nearObject.build();
     // then
-    Assert.assertEquals("", arg);
+    // builder will return a faulty nearObject arg in order for Weaviate to error
+    // so that user will know that something was wrong
+    Assert.assertEquals("nearObject: {}", arg);
   }
 }
