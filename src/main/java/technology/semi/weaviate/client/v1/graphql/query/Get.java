@@ -13,6 +13,8 @@ import technology.semi.weaviate.client.v1.graphql.query.argument.NearImageArgume
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.SortArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.SortArguments;
 import technology.semi.weaviate.client.v1.graphql.query.argument.WhereArgument;
 import technology.semi.weaviate.client.v1.graphql.query.builder.GetBuilder;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
@@ -77,6 +79,11 @@ public class Get extends BaseClient<GraphQLResponse> implements ClientResult<Gra
 
   public Get withGroup(GroupArgument group) {
     this.getBuilder.withGroupArgument(group);
+    return this;
+  }
+
+  public Get withSort(SortArgument ...sort) {
+    this.getBuilder.withSortArguments(SortArguments.builder().sort(sort).build());
     return this;
   }
 

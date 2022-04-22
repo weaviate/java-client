@@ -1,9 +1,13 @@
 package technology.semi.weaviate.client.v1.graphql.query.builder;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import technology.semi.weaviate.client.v1.graphql.query.argument.AskArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.GroupArgument;
@@ -11,11 +15,10 @@ import technology.semi.weaviate.client.v1.graphql.query.argument.NearImageArgume
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.SortArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.SortArguments;
 import technology.semi.weaviate.client.v1.graphql.query.argument.WhereArgument;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
-
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @Getter
 @Builder
@@ -32,16 +35,12 @@ public class GetBuilder implements Query {
   NearImageArgument withNearImageFilter;
   NearVectorArgument withNearVectorFilter;
   GroupArgument withGroupArgument;
+  SortArguments withSortArguments;
 
   private boolean includesFilterClause() {
-    return withWhereArgument != null
-            || withNearTextFilter != null
-            || withNearObjectFilter != null
-            || withNearVectorFilter != null
-            || withNearImageFilter != null
-            || withGroupArgument != null
-            || withAskArgument != null
-            || limit != null;
+    return ObjectUtils.anyNotNull(withWhereArgument, withNearTextFilter, withNearObjectFilter,
+            withNearVectorFilter, withNearImageFilter, withGroupArgument, withAskArgument,
+            limit, withSortArguments);
   }
 
   private String createFilterClause() {
@@ -73,6 +72,9 @@ public class GetBuilder implements Query {
       }
       if (offset != null) {
         filters.add(String.format("offset: %s", offset));
+      }
+      if (withSortArguments != null) {
+        filters.add(withSortArguments.build());
       }
       return String.format("(%s)", StringUtils.joinWith(", ", filters.toArray()));
     }

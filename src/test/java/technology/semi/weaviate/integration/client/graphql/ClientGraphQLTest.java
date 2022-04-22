@@ -18,6 +18,8 @@ import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgum
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextMoveParameters;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.SortArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.SortOrder;
 import technology.semi.weaviate.client.v1.graphql.query.argument.WhereArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.WhereOperator;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Field;
@@ -577,6 +579,74 @@ public class ClientGraphQLTest {
     assertTrue(get.get("Soup") instanceof List);
     List getSoup = (List) get.get("Soup");
     assertEquals(1, getSoup.size());
+  }
+
+  @Test
+  public void testGraphQLGetWithSort() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
+    Field name = Field.builder().name("name").build();
+    Fields fields = Fields.builder()
+            .fields(new Field[]{name})
+            .build();
+    SortArgument byNameDesc = client.graphQL().arguments().sortArgBuilder()
+            .path(new String[]{ "name" })
+            .order(SortOrder.desc)
+            .build();
+    String[] expectedByNameDesc = new String[]{"Quattro Formaggi", "Hawaii", "Frutti di Mare", "Doener"};
+    SortArgument byPriceAsc = client.graphQL().arguments().sortArgBuilder()
+            .path(new String[]{ "price" })
+            .order(SortOrder.asc)
+            .build();
+    String[] expectedByPriceAsc = new String[]{ "Hawaii", "Doener", "Quattro Formaggi", "Frutti di Mare" };
+    // when
+    testGenerics.createTestSchemaAndData(client);
+    Result<GraphQLResponse> resultByNameDesc = client.graphQL().get()
+            .withClassName("Pizza")
+            .withSort(byNameDesc)
+            .withFields(fields).run();
+    Result<GraphQLResponse> resultByDescriptionAsc = client.graphQL().get()
+            .withClassName("Pizza")
+            .withSort(byPriceAsc)
+            .withFields(fields).run();
+    Result<GraphQLResponse> resultByNameDescByPriceAsc = client.graphQL().get()
+            .withClassName("Pizza")
+            .withSort(byNameDesc, byPriceAsc)
+            .withFields(fields).run();
+    testGenerics.cleanupWeaviate(client);
+    // then
+    expectPizzaNamesOrder(resultByNameDesc, expectedByNameDesc);
+    expectPizzaNamesOrder(resultByDescriptionAsc, expectedByPriceAsc);
+    expectPizzaNamesOrder(resultByNameDescByPriceAsc, expectedByNameDesc);
+  }
+
+  private void expectPizzaNamesOrder(Result<GraphQLResponse> result, String[] expectedPizzas) {
+    assertNotNull(result);
+    assertFalse(result.hasErrors());
+    GraphQLResponse resp = result.getResult();
+    assertNotNull(resp);
+    assertNotNull(resp.getData());
+    assertTrue(resp.getData() instanceof Map);
+    Map data = (Map) resp.getData();
+    assertNotNull(data.get("Get"));
+    assertTrue(data.get("Get") instanceof Map);
+    Map get = (Map) data.get("Get");
+    assertNotNull(get.get("Pizza"));
+    assertTrue(get.get("Pizza") instanceof List);
+    List pizzas = (List) get.get("Pizza");
+    assertEquals(expectedPizzas.length, pizzas.size());
+    for (int i=0; i<pizzas.size(); i++) {
+      assertPizzaName(expectedPizzas[i], pizzas, i);
+    }
+  }
+
+  private void assertPizzaName(String name, List pizzas, int position) {
+    assertTrue(pizzas.get(position) instanceof Map);
+    Map pizza = (Map)  pizzas.get(position);
+    assertNotNull(pizza.get("name"));
+    assertEquals(name, pizza.get("name"));
   }
 
   private void checkAggregateMetaCount(GraphQLResponse resp, int expectedResultSize, Double expectedCount) {
