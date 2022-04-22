@@ -24,9 +24,6 @@ public class GroupArgument implements Argument {
     if (force != null) {
       arg.add(String.format("force: %s", force));
     }
-    if (arg.size() > 0) {
-      return String.format("group:{%s}", StringUtils.joinWith(" ", arg.toArray()));
-    }
-    return "";
+    return String.format("group:{%s}", StringUtils.joinWith(" ", arg.toArray()));
   }
 }

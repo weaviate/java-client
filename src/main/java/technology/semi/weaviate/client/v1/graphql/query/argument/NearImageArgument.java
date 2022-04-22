@@ -50,15 +50,14 @@ public class NearImageArgument implements Argument {
 
   @Override
   public String build() {
+    Set<String> fields = new LinkedHashSet<>();
     String content = getContent();
     if (StringUtils.isNotBlank(content)) {
-      Set<String> fields = new LinkedHashSet<>();
       fields.add(String.format("image: \"%s\"", content));
-      if (certainty != null) {
-        fields.add(String.format("certainty: %s", certainty));
-      }
-      return String.format("nearImage: {%s}", StringUtils.joinWith(" ", fields.toArray()));
     }
-    return "";
+    if (certainty != null) {
+      fields.add(String.format("certainty: %s", certainty));
+    }
+    return String.format("nearImage: {%s}", StringUtils.joinWith(" ", fields.toArray()));
   }
 }

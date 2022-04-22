@@ -28,4 +28,19 @@ public class SortArgumentsTest extends TestCase {
     assertNotNull(res);
     assertEquals("sort:[{path:[\"property\"] order:asc}, {path:[\"other\"] order:desc}, {path:[\"no-sort-order\"]}]", res);
   }
+
+  @Test
+  public void testBuildWithoutAll() {
+    // given
+    // when
+    String res1 = SortArguments.builder().sort(null).build().build();
+    String res2 = SortArguments.builder().sort(new SortArgument[]{SortArgument.builder().build()}).build().build();
+    // then
+    // builder will return a faulty sort arg in order for Weaviate to error
+    // so that user will know that something was wrong
+    assertNotNull(res1);
+    assertEquals("sort:[]", res1);
+    assertNotNull(res2);
+    assertEquals("sort:[{}]", res2);
+  }
 }

@@ -27,9 +27,6 @@ public class SortArgument implements Argument {
     if (order != null) {
       arg.add(String.format("order:%s", order));
     }
-    if (arg.size() > 0) {
-      return String.format("{%s}", StringUtils.joinWith(" ", arg.toArray()));
-    }
-    return "";
+    return String.format("{%s}", StringUtils.joinWith(" ", arg.toArray()));
   }
 }

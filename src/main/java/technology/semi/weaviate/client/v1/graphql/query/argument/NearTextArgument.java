@@ -27,36 +27,34 @@ public class NearTextArgument implements Argument {
   }
 
   private String buildMoveParam(String name, NearTextMoveParameters moveParam) {
+    Set<String> arg = new LinkedHashSet<>();
     if (moveParam.getConcepts() != null && moveParam.getConcepts().length > 0) {
-      Set<String> arg = new LinkedHashSet<>();
       arg.add(String.format("concepts: [%s]", getConcepts(moveParam.getConcepts())));
-      if (moveParam.getForce() != null) {
-        arg.add(String.format("force: %s", moveParam.getForce()));
-      }
-      return String.format("%s: {%s}", name, StringUtils.joinWith(" ", arg.toArray()));
     }
-    return "";
+    if (moveParam.getForce() != null) {
+      arg.add(String.format("force: %s", moveParam.getForce()));
+    }
+    return String.format("%s: {%s}", name, StringUtils.joinWith(" ", arg.toArray()));
   }
 
   @Override
   public String build() {
+    Set<String> arg = new LinkedHashSet<>();
     if (concepts != null && concepts.length > 0) {
-      Set<String> arg = new LinkedHashSet<>();
       arg.add(String.format("concepts: [%s]", getConcepts(concepts)));
-      if (certainty != null) {
-        arg.add(String.format("certainty: %s", certainty));
-      }
-      if (moveTo != null) {
-        arg.add(buildMoveParam("moveTo", moveTo));
-      }
-      if (moveAwayFrom != null) {
-        arg.add(buildMoveParam("moveAwayFrom", moveAwayFrom));
-      }
-      if (autocorrect != null) {
-        arg.add(String.format("autocorrect: %s", autocorrect));
-      }
-      return String.format("nearText: {%s}", StringUtils.joinWith(" ", arg.toArray()));
     }
-    return "";
+    if (certainty != null) {
+      arg.add(String.format("certainty: %s", certainty));
+    }
+    if (moveTo != null) {
+      arg.add(buildMoveParam("moveTo", moveTo));
+    }
+    if (moveAwayFrom != null) {
+      arg.add(buildMoveParam("moveAwayFrom", moveAwayFrom));
+    }
+    if (autocorrect != null) {
+      arg.add(String.format("autocorrect: %s", autocorrect));
+    }
+    return String.format("nearText: {%s}", StringUtils.joinWith(" ", arg.toArray()));
   }
 }

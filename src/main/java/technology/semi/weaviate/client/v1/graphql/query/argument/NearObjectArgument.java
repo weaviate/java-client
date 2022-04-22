@@ -28,9 +28,6 @@ public class NearObjectArgument implements Argument {
     if (certainty != null) {
       arg.add(String.format("certainty: %s", certainty));
     }
-    if (arg.size() > 0) {
-      return String.format("nearObject: {%s}", StringUtils.joinWith(" ", arg.toArray()));
-    }
-    return "";
+    return String.format("nearObject: {%s}", StringUtils.joinWith(" ", arg.toArray()));
   }
 }

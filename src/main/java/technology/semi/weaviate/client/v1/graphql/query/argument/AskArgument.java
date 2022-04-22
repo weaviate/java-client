@@ -22,26 +22,25 @@ public class AskArgument implements Argument {
 
   @Override
   public String build() {
+    Set<String> arg = new LinkedHashSet<>();
     if (StringUtils.isNotBlank(question)) {
-      Set<String> arg = new LinkedHashSet<>();
       arg.add(String.format("question: \"%s\"", question));
-      if (properties != null && properties.length > 0) {
-        String props = Stream.of(properties)
-                .map(f -> String.format("\"%s\"", f))
-                .collect(Collectors.joining(", "));
-        arg.add(String.format("properties: [%s]", props));
-      }
-      if (certainty != null) {
-        arg.add(String.format("certainty: %s", certainty));
-      }
-      if (autocorrect != null) {
-        arg.add(String.format("autocorrect: %s", autocorrect));
-      }
-      if (rerank != null) {
-        arg.add(String.format("rerank: %s", rerank));
-      }
-      return String.format("ask: {%s}", StringUtils.joinWith(" ", arg.toArray()));
     }
-    return "";
+    if (properties != null && properties.length > 0) {
+      String props = Stream.of(properties)
+              .map(f -> String.format("\"%s\"", f))
+              .collect(Collectors.joining(", "));
+      arg.add(String.format("properties: [%s]", props));
+    }
+    if (certainty != null) {
+      arg.add(String.format("certainty: %s", certainty));
+    }
+    if (autocorrect != null) {
+      arg.add(String.format("autocorrect: %s", autocorrect));
+    }
+    if (rerank != null) {
+      arg.add(String.format("rerank: %s", rerank));
+    }
+    return String.format("ask: {%s}", StringUtils.joinWith(" ", arg.toArray()));
   }
 }

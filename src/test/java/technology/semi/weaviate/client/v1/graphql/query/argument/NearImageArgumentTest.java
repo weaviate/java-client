@@ -85,6 +85,20 @@ public class NearImageArgumentTest extends TestCase {
     String nearImage = NearImageArgument.builder().imageFile(badImageFile).build().build();
     // then
     assertNotNull(nearImage);
-    assertEquals("", nearImage);
+    // builder will return a faulty nearImage arg in order for Weaviate to error
+    // so that user will know that something was wrong
+    assertEquals("nearImage: {}", nearImage);
+  }
+
+  @Test
+  public void testBuildWithoutAll() throws FileNotFoundException {
+    // given
+    // when
+    String nearImage = NearImageArgument.builder().build().build();
+    // then
+    assertNotNull(nearImage);
+    // builder will return a faulty nearImage arg in order for Weaviate to error
+    // so that user will know that something was wrong
+    assertEquals("nearImage: {}", nearImage);
   }
 }

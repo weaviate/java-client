@@ -24,4 +24,16 @@ public class SortArgumentTest extends TestCase {
     assertNotNull(arg);
     assertEquals("{path:[\"property\"]}", arg);
   }
+
+  @Test
+  public void testBuildWithoutAll() {
+    // given
+    // when
+    String arg = SortArgument.builder().build().build();
+    // then
+    assertNotNull(arg);
+    // builder will return a faulty nearObject arg in order for Weaviate to error
+    // so that user will know that something was wrong
+    assertEquals("{}", arg);
+  }
 }
