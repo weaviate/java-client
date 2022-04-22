@@ -12,10 +12,12 @@ import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgumen
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.WhereArgument;
 import technology.semi.weaviate.client.v1.graphql.query.builder.AggregateBuilder;
+import technology.semi.weaviate.client.v1.graphql.query.fields.Field;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
 
 public class Aggregate extends BaseClient<GraphQLResponse> implements ClientResult<GraphQLResponse> {
   private final AggregateBuilder.AggregateBuilderBuilder aggregateBuilder;
+
   public Aggregate(Config config) {
     super(config);
     this.aggregateBuilder = AggregateBuilder.builder();
@@ -26,8 +28,14 @@ public class Aggregate extends BaseClient<GraphQLResponse> implements ClientResu
     return this;
   }
 
+  @Deprecated
   public Aggregate withFields(Fields fields) {
     this.aggregateBuilder.fields(fields);
+    return this;
+  }
+
+  public Aggregate withFields(Field... fields) {
+    this.aggregateBuilder.fields(Fields.builder().fields(fields).build());
     return this;
   }
 
