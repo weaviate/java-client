@@ -7,6 +7,7 @@ import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLQuery;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLResponse;
+import technology.semi.weaviate.client.v1.graphql.query.argument.AskArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
@@ -61,6 +62,11 @@ public class Aggregate extends BaseClient<GraphQLResponse> implements ClientResu
 
   public Aggregate withNearText(NearTextArgument withNearTextFilter) {
     this.aggregateBuilder.withNearTextFilter(withNearTextFilter);
+    return this;
+  }
+
+  public Aggregate withAsk(AskArgument ask) {
+    this.aggregateBuilder.withAskArgument(ask);
     return this;
   }
 

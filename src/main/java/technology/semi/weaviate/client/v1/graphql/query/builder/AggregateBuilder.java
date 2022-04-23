@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import technology.semi.weaviate.client.v1.graphql.query.argument.AskArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.NearImageArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
@@ -26,11 +28,15 @@ public class AggregateBuilder implements Query {
   NearTextArgument withNearTextFilter;
   NearObjectArgument withNearObjectFilter;
   NearVectorArgument withNearVectorFilter;
+  AskArgument withAskArgument;
+  NearImageArgument withNearImageFilter;
   Integer objectLimit;
+  Integer limit;
 
   private boolean includesFilterClause() {
     return ObjectUtils.anyNotNull(withWhereArgument, withNearTextFilter, withNearObjectFilter,
-            withNearVectorFilter, objectLimit) || StringUtils.isNotBlank(groupByClausePropertyName);
+      withNearVectorFilter, objectLimit, withAskArgument, withNearImageFilter, limit)
+      || StringUtils.isNotBlank(groupByClausePropertyName);
   }
 
   private String createFilterClause() {
@@ -50,6 +56,15 @@ public class AggregateBuilder implements Query {
       }
       if (withNearVectorFilter != null) {
         filters.add(withNearVectorFilter.build());
+      }
+      if (withAskArgument != null) {
+        filters.add(withAskArgument.build());
+      }
+      if (withNearImageFilter != null) {
+        filters.add(withNearImageFilter.build());
+      }
+      if (limit != null) {
+        filters.add(String.format("limit: %s", limit));
       }
       if (objectLimit != null) {
         filters.add(String.format("objectLimit: %s", objectLimit));
