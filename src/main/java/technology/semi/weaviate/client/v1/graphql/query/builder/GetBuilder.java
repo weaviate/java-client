@@ -38,7 +38,7 @@ public class GetBuilder implements Query {
   private boolean includesFilterClause() {
     return ObjectUtils.anyNotNull(withWhereArgument, withNearTextFilter, withNearObjectFilter,
             withNearVectorFilter, withNearImageFilter, withGroupArgument, withAskArgument,
-            limit, withSortArguments);
+            limit, offset, withSortArguments);
   }
 
   private String createFilterClause() {

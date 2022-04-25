@@ -79,6 +79,12 @@ public class Get extends BaseClient<GraphQLResponse> implements ClientResult<Gra
     return this;
   }
 
+  @Deprecated
+  public Get withNearVector(Float[] vector) {
+    this.getBuilder.withNearVectorFilter(NearVectorArgument.builder().vector(vector).build());
+    return this;
+  }
+
   public Get withNearObject(NearObjectArgument nearObject) {
     this.getBuilder.withNearObjectFilter(nearObject);
     return this;

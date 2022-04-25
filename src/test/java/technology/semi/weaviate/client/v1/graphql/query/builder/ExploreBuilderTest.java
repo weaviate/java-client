@@ -3,8 +3,12 @@ package technology.semi.weaviate.client.v1.graphql.query.builder;
 import junit.framework.TestCase;
 import org.junit.Test;
 import technology.semi.weaviate.client.v1.graphql.model.ExploreFields;
+import technology.semi.weaviate.client.v1.graphql.query.argument.AskArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.NearImageArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextMoveParameters;
+import technology.semi.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
 
 public class ExploreBuilderTest extends TestCase {
 
@@ -92,5 +96,61 @@ public class ExploreBuilderTest extends TestCase {
     assertNotNull(query);
     assertEquals("{Explore(nearText: {concepts: [\"New Yorker\"] moveTo: {concepts: [\"publisher\", \"articles\"] force: 0.5} moveAwayFrom: {concepts: " +
             "[\"fashion\", \"shop\"] force: 0.2}}){certainty, beacon, className}}", query);
+  }
+
+  @Test
+  public void testBuildExploreWithNearVector() {
+    // given
+    NearVectorArgument nearVector = NearVectorArgument.builder().vector(new Float[]{ 0f, 1f, 0.8f }).certainty(0.8f).build();
+    ExploreFields[] fields = new ExploreFields[]{ ExploreFields.CERTAINTY, ExploreFields.BEACON, ExploreFields.CLASS_NAME };
+    // when
+    String query = ExploreBuilder.builder()
+      .fields(fields)
+      .withNearVectorFilter(nearVector).build().buildQuery();
+    // then
+    assertNotNull(query);
+    assertEquals("{Explore(nearVector: {vector: [0.0, 1.0, 0.8] certainty: 0.8}){certainty, beacon, className}}", query);
+  }
+
+  @Test
+  public void testBuildExploreWithNearObject() {
+    // given
+    NearObjectArgument nearObject = NearObjectArgument.builder().id("some-uuid").certainty(0.8f).build();
+    ExploreFields[] fields = new ExploreFields[]{ ExploreFields.CERTAINTY, ExploreFields.BEACON, ExploreFields.CLASS_NAME };
+    // when
+    String query = ExploreBuilder.builder()
+      .fields(fields)
+      .withNearObjectFilter(nearObject).build().buildQuery();
+    // then
+    assertNotNull(query);
+    assertEquals("{Explore(nearObject: {id: \"some-uuid\" certainty: 0.8}){certainty, beacon, className}}", query);
+  }
+
+  @Test
+  public void testBuildExploreWithAsk() {
+    // given
+    AskArgument ask = AskArgument.builder().question("question?").rerank(true).certainty(0.8f).build();
+    ExploreFields[] fields = new ExploreFields[]{ ExploreFields.CERTAINTY, ExploreFields.BEACON, ExploreFields.CLASS_NAME };
+    // when
+    String query = ExploreBuilder.builder()
+      .fields(fields)
+      .withAskArgument(ask).build().buildQuery();
+    // then
+    assertNotNull(query);
+    assertEquals("{Explore(ask: {question: \"question?\" certainty: 0.8 rerank: true}){certainty, beacon, className}}", query);
+  }
+
+  @Test
+  public void testBuildExploreWithNearImage() {
+    // given
+    NearImageArgument nearImage = NearImageArgument.builder().image("iVBORw0KGgoAAAANS").certainty(0.8f).build();
+    ExploreFields[] fields = new ExploreFields[]{ ExploreFields.CERTAINTY, ExploreFields.BEACON, ExploreFields.CLASS_NAME };
+    // when
+    String query = ExploreBuilder.builder()
+      .fields(fields)
+      .withNearImageFilter(nearImage).build().buildQuery();
+    // then
+    assertNotNull(query);
+    assertEquals("{Explore(nearImage: {image: \"iVBORw0KGgoAAAANS\" certainty: 0.8}){certainty, beacon, className}}", query);
   }
 }
