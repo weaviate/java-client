@@ -671,6 +671,54 @@ public class ClientGraphQLTest {
     expectPizzaNamesOrder(resultByNameDescByPriceAsc, expectedByNameDesc);
   }
 
+  @Test
+  public void testGraphQLGetWithTimestampFilters() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
+    testGenerics.createTestSchemaAndData(client);
+    Field additional = Field.builder()
+        .name("_additional")
+        .fields(new Field[]{
+            Field.builder().name("id").build(),
+            Field.builder().name("creationTimeUnix").build(),
+            Field.builder().name("lastUpdateTimeUnix").build()
+        })
+        .build();
+    Result<GraphQLResponse> expected = client.graphQL().get().withClassName("Pizza").withFields(additional).run();
+    GraphQLResponse resp = expected.getResult();
+    String expectedCreateTime = getCreationTimeUnixFromResponse(resp);
+    String expectedUpdateTime = getLastUpdateTimeUnixFromResponse(resp);
+    WhereArgument createTimeFilter = WhereArgument.builder()
+        .path(new String[]{ "_creationTimeUnix" })
+        .operator(WhereOperator.Equal)
+        .valueString(expectedCreateTime)
+        .build();
+    WhereArgument updateTimeFilter = WhereArgument.builder()
+        .path(new String[]{ "_lastUpdateTimeUnix" })
+        .operator(WhereOperator.Equal)
+        .valueString(expectedCreateTime)
+        .build();
+    // when
+    Result<GraphQLResponse> createTimeResult = client.graphQL().get()
+        .withClassName("Pizza")
+        .withWhere(createTimeFilter)
+        .withFields(additional).run();
+    Result<GraphQLResponse> updateTimeResult = client.graphQL().get()
+        .withClassName("Pizza")
+        .withWhere(updateTimeFilter)
+        .withFields(additional).run();
+    // then
+    String createTimeResultId = getIdFromResponse(createTimeResult.getResult());
+    String resultCreateTime = getCreationTimeUnixFromResponse(createTimeResult.getResult());
+    assertEquals(expectedCreateTime, resultCreateTime);
+    String updateTimeResultId = getIdFromResponse(updateTimeResult.getResult());
+    String resultUpdateTime = getCreationTimeUnixFromResponse(updateTimeResult.getResult());
+    assertEquals(expectedUpdateTime, resultUpdateTime);
+    testGenerics.cleanupWeaviate(client);
+  }
+
   private void expectPizzaNamesOrder(Result<GraphQLResponse> result, String[] expectedPizzas) {
     assertNotNull(result);
     assertFalse(result.hasErrors());
@@ -778,5 +826,43 @@ public class ClientGraphQLTest {
     Map additional = (Map) firstPizza.get("_additional");
     String id = (String) additional.get("id");
     return id;
+  }
+
+  private String getCreationTimeUnixFromResponse(GraphQLResponse resp) {
+    assertNotNull(resp);
+    assertNull(resp.getErrors());
+    assertNotNull(resp.getData());
+    assertTrue(resp.getData() instanceof Map);
+    Map data = (Map) resp.getData();
+    assertNotNull(data.get("Get"));
+    assertTrue(data.get("Get") instanceof Map);
+    Map get = (Map) data.get("Get");
+    assertNotNull(get.get("Pizza"));
+    assertTrue(get.get("Pizza") instanceof List);
+    List pizza = (List) get.get("Pizza");
+    assertTrue(pizza.get(0) instanceof Map);
+    Map firstPizza = (Map) pizza.get(0);
+    Map additional = (Map) firstPizza.get("_additional");
+    String time = (String) additional.get("creationTimeUnix");
+    return time;
+  }
+
+  private String getLastUpdateTimeUnixFromResponse(GraphQLResponse resp) {
+    assertNotNull(resp);
+    assertNull(resp.getErrors());
+    assertNotNull(resp.getData());
+    assertTrue(resp.getData() instanceof Map);
+    Map data = (Map) resp.getData();
+    assertNotNull(data.get("Get"));
+    assertTrue(data.get("Get") instanceof Map);
+    Map get = (Map) data.get("Get");
+    assertNotNull(get.get("Pizza"));
+    assertTrue(get.get("Pizza") instanceof List);
+    List pizza = (List) get.get("Pizza");
+    assertTrue(pizza.get(0) instanceof Map);
+    Map firstPizza = (Map) pizza.get(0);
+    Map additional = (Map) firstPizza.get("_additional");
+    String time = (String) additional.get("lastUpdateTimeUnix");
+    return time;
   }
 }

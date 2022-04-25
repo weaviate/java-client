@@ -1,22 +1,22 @@
 package technology.semi.weaviate.integration.client;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Stream;
 import technology.semi.weaviate.client.WeaviateClient;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.batch.api.ObjectsBatcher;
 import technology.semi.weaviate.client.v1.batch.model.ObjectGetResponse;
 import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
-import technology.semi.weaviate.client.v1.schema.model.Tokenization;
-import technology.semi.weaviate.client.v1.schema.model.WeaviateClass;
+import technology.semi.weaviate.client.v1.misc.model.InvertedIndexConfig;
 import technology.semi.weaviate.client.v1.schema.model.DataType;
 import technology.semi.weaviate.client.v1.schema.model.Property;
+import technology.semi.weaviate.client.v1.schema.model.Tokenization;
+import technology.semi.weaviate.client.v1.schema.model.WeaviateClass;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Stream;
+
+import static org.junit.Assert.*;
 
 public class WeaviateTestGenerics {
   public void createWeaviateTestSchemaFood(WeaviateClient client) {
@@ -24,6 +24,7 @@ public class WeaviateTestGenerics {
     WeaviateClass pizza = WeaviateClass.builder()
             .className("Pizza")
             .description("A delicious religion like food and arguably the best export of Italy.")
+            .invertedIndexConfig(InvertedIndexConfig.builder().indexTimestamps(true).build())
             .build();
     WeaviateClass soup = WeaviateClass.builder()
             .className("Soup")

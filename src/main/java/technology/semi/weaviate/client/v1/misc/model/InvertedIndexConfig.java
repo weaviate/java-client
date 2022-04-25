@@ -12,4 +12,5 @@ public class InvertedIndexConfig {
   BM25Config bm25;
   StopwordConfig stopwords;
   Integer cleanupIntervalSeconds;
+  Boolean indexTimestamps;
 }
