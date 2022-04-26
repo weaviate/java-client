@@ -1,5 +1,10 @@
 package technology.semi.weaviate.integration.client.graphql;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -26,13 +31,11 @@ import technology.semi.weaviate.client.v1.graphql.query.fields.Field;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
 import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class ClientGraphQLTest {
   private String address;
@@ -487,7 +490,7 @@ public class ClientGraphQLTest {
             .build();
     Result<GraphQLResponse> result = client.graphQL().get().withClassName("Pizza").withFields(additional).run();
     GraphQLResponse resp = result.getResult();
-    String id = getIdFromResponse(resp);
+    String id = getAdditionalFieldFromResponse(resp, "id");
 
     // when
     Field meta = Field.builder()
@@ -671,6 +674,52 @@ public class ClientGraphQLTest {
     expectPizzaNamesOrder(resultByNameDescByPriceAsc, expectedByNameDesc);
   }
 
+  @Test
+  public void testGraphQLGetWithTimestampFilters() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
+    testGenerics.createTestSchemaAndData(client);
+    Field additional = Field.builder()
+        .name("_additional")
+        .fields(new Field[]{
+            Field.builder().name("id").build(),
+            Field.builder().name("creationTimeUnix").build(),
+            Field.builder().name("lastUpdateTimeUnix").build()
+        })
+        .build();
+    Result<GraphQLResponse> expected = client.graphQL().get().withClassName("Pizza").withFields(additional).run();
+    GraphQLResponse resp = expected.getResult();
+    String expectedCreateTime = getAdditionalFieldFromResponse(resp, "creationTimeUnix");
+    String expectedUpdateTime = getAdditionalFieldFromResponse(resp, "lastUpdateTimeUnix");
+    WhereArgument createTimeFilter = WhereArgument.builder()
+        .path(new String[]{ "_creationTimeUnix" })
+        .operator(WhereOperator.Equal)
+        .valueString(expectedCreateTime)
+        .build();
+    WhereArgument updateTimeFilter = WhereArgument.builder()
+        .path(new String[]{ "_lastUpdateTimeUnix" })
+        .operator(WhereOperator.Equal)
+        .valueString(expectedCreateTime)
+        .build();
+    // when
+    Result<GraphQLResponse> createTimeResult = client.graphQL().get()
+        .withClassName("Pizza")
+        .withWhere(createTimeFilter)
+        .withFields(additional).run();
+    Result<GraphQLResponse> updateTimeResult = client.graphQL().get()
+        .withClassName("Pizza")
+        .withWhere(updateTimeFilter)
+        .withFields(additional).run();
+    // then
+    String resultCreateTime = getAdditionalFieldFromResponse(createTimeResult.getResult(), "creationTimeUnix");
+    assertEquals(expectedCreateTime, resultCreateTime);
+    String resultUpdateTime = getAdditionalFieldFromResponse(updateTimeResult.getResult(), "lastUpdateTimeUnix");
+    assertEquals(expectedUpdateTime, resultUpdateTime);
+    testGenerics.cleanupWeaviate(client);
+  }
+
   private void expectPizzaNamesOrder(Result<GraphQLResponse> result, String[] expectedPizzas) {
     assertNotNull(result);
     assertFalse(result.hasErrors());
@@ -761,7 +810,7 @@ public class ClientGraphQLTest {
     return res;
   }
 
-  private String getIdFromResponse(GraphQLResponse resp) {
+  private String getAdditionalFieldFromResponse(GraphQLResponse resp, String fieldName) {
     assertNotNull(resp);
     assertNull(resp.getErrors());
     assertNotNull(resp.getData());
@@ -776,7 +825,7 @@ public class ClientGraphQLTest {
     assertTrue(pizza.get(0) instanceof Map);
     Map firstPizza = (Map) pizza.get(0);
     Map additional = (Map) firstPizza.get("_additional");
-    String id = (String) additional.get("id");
-    return id;
+    String targetField = (String) additional.get(fieldName);
+    return targetField;
   }
 }
