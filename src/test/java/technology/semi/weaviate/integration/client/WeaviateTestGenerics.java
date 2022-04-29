@@ -20,6 +20,15 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class WeaviateTestGenerics {
+
+  public static final String PIZZA_QUATTRO_FORMAGGI_ID = "10523cdd-15a2-42f4-81fa-267fe92f7cd6";
+  public static final String PIZZA_FRUTTI_DI_MARE_ID = "927dd3ac-e012-4093-8007-7799cc7e81e4";
+  public static final String PIZZA_HAWAII_ID = "f824a18e-c430-4475-9bef-847673fbb54e";
+  public static final String PIZZA_DOENER_ID = "d2b393ff-4b26-48c7-b554-218d970a9e17";
+  public static final String SOUP_CHICKENSOUP_ID = "8c156d37-81aa-4ce9-a811-621e2702b825";
+  public static final String SOUP_BEAUTIFUL_ID = "27351361-2898-4d1a-aad7-1ca48253eb0b";
+
+
   public void createWeaviateTestSchemaFood(WeaviateClient client) {
     // classes
     WeaviateClass pizza = WeaviateClass.builder()
@@ -110,15 +119,21 @@ public class WeaviateTestGenerics {
     createWeaviateTestSchemaFood(client);
     // Create pizzas
     WeaviateObject[] menuPizza = new WeaviateObject[]{
-            createObject("Pizza", "Quattro Formaggi", "Pizza quattro formaggi Italian: [ˈkwattro forˈmaddʒi] (four cheese pizza) is a variety of pizza in Italian cuisine that is topped with a combination of four kinds of cheese, usually melted together, with (rossa, red) or without (bianca, white) tomato sauce. It is popular worldwide, including in Italy,[1] and is one of the iconic items from pizzerias's menus.", 1.4f),
-            createObject("Pizza", "Frutti di Mare", "Frutti di Mare is an Italian type of pizza that may be served with scampi, mussels or squid. It typically lacks cheese, with the seafood being served atop a tomato sauce.", 2.5f),
-            createObject("Pizza", "Hawaii", "Universally accepted to be the best pizza ever created.",1.1f),
-            createObject("Pizza", "Doener", "A innovation, some say revolution, in the pizza industry.", 1.2f),
+            createObject(PIZZA_QUATTRO_FORMAGGI_ID, "Pizza", "Quattro Formaggi",
+                    "Pizza quattro formaggi Italian: [ˈkwattro forˈmaddʒi] (four cheese pizza) is a variety of pizza in Italian cuisine that is topped with a combination of four kinds of cheese, usually melted together, with (rossa, red) or without (bianca, white) tomato sauce. It is popular worldwide, including in Italy,[1] and is one of the iconic items from pizzerias's menus.", 1.4f),
+            createObject(PIZZA_FRUTTI_DI_MARE_ID, "Pizza", "Frutti di Mare",
+                    "Frutti di Mare is an Italian type of pizza that may be served with scampi, mussels or squid. It typically lacks cheese, with the seafood being served atop a tomato sauce.", 2.5f),
+            createObject(PIZZA_HAWAII_ID, "Pizza", "Hawaii",
+                    "Universally accepted to be the best pizza ever created.",1.1f),
+            createObject(PIZZA_DOENER_ID, "Pizza", "Doener",
+                    "A innovation, some say revolution, in the pizza industry.", 1.2f),
     };
     // Create soups
     WeaviateObject[] menuSoup = new WeaviateObject[]{
-            createObject("Soup", "ChickenSoup", "Used by humans when their inferior genetics are attacked by microscopic organisms.", 2.0f),
-            createObject("Soup", "Beautiful", "Putting the game of letter soups to a whole new level.", 3f),
+            createObject(SOUP_CHICKENSOUP_ID, "Soup", "ChickenSoup",
+                    "Used by humans when their inferior genetics are attacked by microscopic organisms.", 2.0f),
+            createObject(SOUP_BEAUTIFUL_ID, "Soup", "Beautiful",
+                    "Putting the game of letter soups to a whole new level.", 3f),
     };
     ObjectsBatcher objectsBatcher = client.batch().objectsBatcher();
     Stream.of(menuPizza).forEach(objectsBatcher::withObject);
@@ -129,8 +144,11 @@ public class WeaviateTestGenerics {
     assertEquals(6, insertStatus.getResult().length);
   }
 
-  private WeaviateObject createObject(String className, String name, String description, Float price) {
-    return WeaviateObject.builder().className(className).properties(new HashMap<String, Object>() {{
+  private WeaviateObject createObject(String id, String className, String name, String description, Float price) {
+    return WeaviateObject.builder()
+            .id(id)
+            .className(className)
+            .properties(new HashMap<String, Object>() {{
               put("name", name);
               put("description", description);
               put("price", price);
