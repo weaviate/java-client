@@ -29,12 +29,6 @@ public class Aggregate extends BaseClient<GraphQLResponse> implements ClientResu
     return this;
   }
 
-  @Deprecated
-  public Aggregate withFields(Fields fields) {
-    this.aggregateBuilder.fields(fields);
-    return this;
-  }
-
   public Aggregate withFields(Field... fields) {
     this.aggregateBuilder.fields(Fields.builder().fields(fields).build());
     return this;

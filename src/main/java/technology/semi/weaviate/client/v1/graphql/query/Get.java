@@ -33,12 +33,6 @@ public class Get extends BaseClient<GraphQLResponse> implements ClientResult<Gra
     return this;
   }
 
-  @Deprecated
-  public Get withFields(Fields fields) {
-    this.getBuilder.fields(fields);
-    return this;
-  }
-
   public Get withFields(Field ...fields) {
     this.getBuilder.fields(Fields.builder().fields(fields).build());
     return this;
@@ -76,12 +70,6 @@ public class Get extends BaseClient<GraphQLResponse> implements ClientResult<Gra
 
   public Get withNearVector(NearVectorArgument nearVector) {
     this.getBuilder.withNearVectorFilter(nearVector);
-    return this;
-  }
-
-  @Deprecated
-  public Get withNearVector(Float[] vector) {
-    this.getBuilder.withNearVectorFilter(NearVectorArgument.builder().vector(vector).build());
     return this;
   }
 

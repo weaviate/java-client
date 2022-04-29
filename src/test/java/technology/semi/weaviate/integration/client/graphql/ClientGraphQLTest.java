@@ -206,47 +206,6 @@ public class ClientGraphQLTest {
     List getSoup = (List) get.get("Pizza");
     assertEquals(1, getSoup.size());
   }
-//
-  @Deprecated
-  @Test
-  public void testGraphQLGetWithNearTextAndLimitAndDeprecatedFields() {
-    // given
-    Config config = new Config("http", address);
-    WeaviateClient client = new WeaviateClient(config);
-    WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-    NearTextArgument nearText = client.graphQL().arguments().nearTextArgBuilder()
-            .concepts(new String[]{"some say revolution"})
-            .certainty(0.8f)
-            .build();
-    Field name = Field.builder().name("name").build();
-    Field _additional = Field.builder()
-            .name("_additional")
-            .fields(new Field[]{Field.builder().name("certainty").build()})
-            .build();
-    Fields fields = Fields.builder().fields(new Field[]{name, _additional}).build();
-    // when
-    testGenerics.createTestSchemaAndData(client);
-    Result<GraphQLResponse> result = client.graphQL().get().withClassName("Pizza")
-            .withNearText(nearText)
-            .withLimit(1)
-            .withFields(fields).run();
-    testGenerics.cleanupWeaviate(client);
-    // then
-    assertNotNull(result);
-    assertFalse(result.hasErrors());
-    GraphQLResponse resp = result.getResult();
-    assertNotNull(resp);
-    assertNotNull(resp.getData());
-    assertTrue(resp.getData() instanceof Map);
-    Map data = (Map) resp.getData();
-    assertNotNull(data.get("Get"));
-    assertTrue(data.get("Get") instanceof Map);
-    Map get = (Map) data.get("Get");
-    assertNotNull(get.get("Pizza"));
-    assertTrue(get.get("Pizza") instanceof List);
-    List getSoup = (List) get.get("Pizza");
-    assertEquals(1, getSoup.size());
-  }
 
   @Test
   public void testGraphQLGetWithWhereByFieldTokenizedProperty() {
@@ -523,9 +482,8 @@ public class ClientGraphQLTest {
             .name("meta")
             .fields(new Field[]{Field.builder().name("count").build()})
             .build();
-    Fields fields = Fields.builder().fields(new Field[]{meta}).build();
     NearTextArgument nearText = NearTextArgument.builder().certainty(0.7f).concepts(new String[]{"pizza"}).build();
-    Result<GraphQLResponse> result = client.graphQL().aggregate().withFields(fields).withClassName("Pizza").withNearText(nearText).run();
+    Result<GraphQLResponse> result = client.graphQL().aggregate().withFields(meta).withClassName("Pizza").withNearText(nearText).run();
     testGenerics.cleanupWeaviate(client);
 
     // then
@@ -554,40 +512,6 @@ public class ClientGraphQLTest {
     Result<GraphQLResponse> result = client.graphQL()
             .aggregate()
             .withFields(meta)
-            .withClassName("Pizza")
-            .withNearText(nearText)
-            .withObjectLimit(objectLimit)
-            .run();
-    testGenerics.cleanupWeaviate(client);
-
-    // then
-    assertNotNull(result);
-    assertNotNull(result.getResult());
-    assertFalse(result.hasErrors());
-    GraphQLResponse resp = result.getResult();
-    checkAggregateMetaCount(resp, 1, Double.valueOf(objectLimit));
-  }
-
-  @Deprecated
-  @Test
-  public void testGraphQLAggregateWithObjectLimitAndDeprecatedFields() {
-    // given
-    Config config = new Config("http", address);
-    WeaviateClient client = new WeaviateClient(config);
-    WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-    testGenerics.createTestSchemaAndData(client);
-
-    // when
-    Integer objectLimit = 1;
-    Field meta = Field.builder()
-            .name("meta")
-            .fields(new Field[]{Field.builder().name("count").build()})
-            .build();
-    Fields fields = Fields.builder().fields(new Field[]{meta}).build();
-    NearTextArgument nearText = NearTextArgument.builder().certainty(0.7f).concepts(new String[]{"pizza"}).build();
-    Result<GraphQLResponse> result = client.graphQL()
-            .aggregate()
-            .withFields(fields)
             .withClassName("Pizza")
             .withNearText(nearText)
             .withObjectLimit(objectLimit)
