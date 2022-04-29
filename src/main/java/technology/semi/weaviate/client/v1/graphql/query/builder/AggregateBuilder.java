@@ -6,12 +6,13 @@ import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import technology.semi.weaviate.client.v1.filters.WhereFilter;
+import technology.semi.weaviate.client.v1.filters.WhereFilterUtil;
 import technology.semi.weaviate.client.v1.graphql.query.argument.AskArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearImageArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
-import technology.semi.weaviate.client.v1.graphql.query.argument.WhereArgument;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
 
 import java.util.LinkedHashSet;
@@ -24,7 +25,7 @@ public class AggregateBuilder implements Query {
   String className;
   Fields fields;
   String groupByClausePropertyName;
-  WhereArgument withWhereArgument;
+  WhereFilter withWhereFilter;
   NearTextArgument withNearTextFilter;
   NearObjectArgument withNearObjectFilter;
   NearVectorArgument withNearVectorFilter;
@@ -34,7 +35,7 @@ public class AggregateBuilder implements Query {
   Integer limit;
 
   private boolean includesFilterClause() {
-    return ObjectUtils.anyNotNull(withWhereArgument, withNearTextFilter, withNearObjectFilter,
+    return ObjectUtils.anyNotNull(withWhereFilter, withNearTextFilter, withNearObjectFilter,
       withNearVectorFilter, objectLimit, withAskArgument, withNearImageFilter, limit)
       || StringUtils.isNotBlank(groupByClausePropertyName);
   }
@@ -45,8 +46,8 @@ public class AggregateBuilder implements Query {
       if (StringUtils.isNotBlank(groupByClausePropertyName)) {
         filters.add(String.format("groupBy: \"%s\"", groupByClausePropertyName));
       }
-      if (withWhereArgument != null) {
-        filters.add(withWhereArgument.build());
+      if (withWhereFilter != null) {
+        filters.add(WhereFilterUtil.toGraphQLString(withWhereFilter));
       }
       if (withNearTextFilter != null) {
         filters.add(withNearTextFilter.build());

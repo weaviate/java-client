@@ -1,13 +1,9 @@
 package technology.semi.weaviate.client.v1.graphql.query.builder;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
-import java.util.stream.Collectors;
 import junit.framework.TestCase;
 import org.junit.Test;
+import technology.semi.weaviate.client.v1.filters.Operator;
+import technology.semi.weaviate.client.v1.filters.WhereFilter;
 import technology.semi.weaviate.client.v1.graphql.query.argument.AskArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.GroupArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.GroupType;
@@ -17,11 +13,15 @@ import technology.semi.weaviate.client.v1.graphql.query.argument.NearVectorArgum
 import technology.semi.weaviate.client.v1.graphql.query.argument.SortArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.SortArguments;
 import technology.semi.weaviate.client.v1.graphql.query.argument.SortOrder;
-import technology.semi.weaviate.client.v1.graphql.query.argument.WhereArgument;
-import technology.semi.weaviate.client.v1.graphql.query.argument.WhereFilter;
-import technology.semi.weaviate.client.v1.graphql.query.argument.WhereOperator;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Field;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+import java.util.stream.Collectors;
 
 public class GetBuilderTest extends TestCase {
 
@@ -51,24 +51,31 @@ public class GetBuilderTest extends TestCase {
 
   public void testBuildGetWhereFilter() {
     // given
-    WhereArgument where1 = WhereArgument.builder().path(new String[]{ "name" }).operator(WhereOperator.Equal).valueString("Hawaii").build();
     Field name = Field.builder().name("name").build();
     Fields fields = Fields.builder().fields(new Field[]{ name }).build();
-    WhereArgument where2 = WhereArgument.builder()
-            .operator(WhereOperator.Or)
+    WhereFilter where1 = WhereFilter.builder()
+            .path(new String[]{ "name" }).operator(Operator.Equal).valueString("Hawaii")
+            .build();
+    WhereFilter where2 = WhereFilter.builder()
             .operands(new WhereFilter[]{
-                    WhereFilter.builder().path(new String[]{ "name" }).operator(WhereOperator.Equal).valueString("Hawaii").build(),
-                    WhereFilter.builder().path(new String[]{ "name" }).operator(WhereOperator.Equal).valueString("Doener").build(),
-            }).build();
+                    WhereFilter.builder()
+                            .path(new String[]{ "name" }).operator(Operator.Equal).valueString("Hawaii")
+                            .build(),
+                    WhereFilter.builder()
+                            .path(new String[]{ "name" }).operator(Operator.Equal).valueString("Doener")
+                            .build(),
+            })
+            .operator(Operator.Or)
+            .build();
     // when
-    String query1 = GetBuilder.builder().className("Pizza").fields(fields).withWhereArgument(where1).build().buildQuery();
-    String query2 = GetBuilder.builder().className("Pizza").fields(fields).withWhereArgument(where2).build().buildQuery();
+    String query1 = GetBuilder.builder().className("Pizza").fields(fields).withWhereFilter(where1).build().buildQuery();
+    String query2 = GetBuilder.builder().className("Pizza").fields(fields).withWhereFilter(where2).build().buildQuery();
     // then
     assertNotNull(query1);
     assertEquals("{Get{Pizza(where:{path:[\"name\"] valueString:\"Hawaii\" operator:Equal}){name}}}", query1);
     assertNotNull(query2);
     assertEquals("{Get{Pizza" +
-            "(where:{operator:Or operands:[{operator:Equal path:[\"name\"] valueString:\"Hawaii\"},{operator:Equal path:[\"name\"] valueString:\"Doener\"}]})" +
+            "(where:{operator:Or operands:[{path:[\"name\"] valueString:\"Hawaii\" operator:Equal},{path:[\"name\"] valueString:\"Doener\" operator:Equal}]})" +
             "{name}}}", query2);
   }
 
@@ -157,15 +164,15 @@ public class GetBuilderTest extends TestCase {
     NearTextArgument nearText = NearTextArgument.builder()
             .concepts(new String[]{ "good" })
             .build();
-    WhereArgument where = WhereArgument.builder()
+    WhereFilter where = WhereFilter.builder()
             .path(new String[]{ "name" })
-            .operator(WhereOperator.Equal)
+            .operator(Operator.Equal)
             .valueString("Hawaii")
             .build();
     Integer limit = 2;
     // when
     String query = GetBuilder.builder()
-            .className("Pizza").fields(fields).withNearTextFilter(nearText).withWhereArgument(where).limit(limit)
+            .className("Pizza").fields(fields).withNearTextFilter(nearText).withWhereFilter(where).limit(limit)
             .build().buildQuery();
     // then
     assertNotNull(query);
@@ -181,15 +188,15 @@ public class GetBuilderTest extends TestCase {
     NearTextArgument nearText = NearTextArgument.builder()
             .concepts(new String[]{ "good" })
             .build();
-    WhereArgument where = WhereArgument.builder()
+    WhereFilter where = WhereFilter.builder()
             .path(new String[]{ "name" })
-            .operator(WhereOperator.Equal)
+            .operator(Operator.Equal)
             .valueString("Hawaii")
             .build();
     Integer limit = 2;
     // when
     String query = GetBuilder.builder()
-            .className("Pizza").fields(fields).withNearTextFilter(nearText).withWhereArgument(where).limit(limit)
+            .className("Pizza").fields(fields).withNearTextFilter(nearText).withWhereFilter(where).limit(limit)
             .build().buildQuery();
     // then
     assertNotNull(query);

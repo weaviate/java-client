@@ -7,7 +7,7 @@ import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.classifications.model.Classification;
 import technology.semi.weaviate.client.v1.classifications.model.ClassificationFilters;
-import technology.semi.weaviate.client.v1.classifications.model.WhereFilter;
+import technology.semi.weaviate.client.v1.filters.WhereFilter;
 
 public class Scheduler extends BaseClient<Classification> implements ClientResult<Classification> {
 

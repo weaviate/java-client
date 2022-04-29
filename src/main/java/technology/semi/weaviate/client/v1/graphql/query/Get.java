@@ -5,6 +5,7 @@ import technology.semi.weaviate.client.base.BaseClient;
 import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
+import technology.semi.weaviate.client.v1.filters.WhereFilter;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLQuery;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLResponse;
 import technology.semi.weaviate.client.v1.graphql.query.argument.AskArgument;
@@ -15,7 +16,6 @@ import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgumen
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.SortArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.SortArguments;
-import technology.semi.weaviate.client.v1.graphql.query.argument.WhereArgument;
 import technology.semi.weaviate.client.v1.graphql.query.builder.GetBuilder;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Field;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
@@ -44,8 +44,8 @@ public class Get extends BaseClient<GraphQLResponse> implements ClientResult<Gra
     return this;
   }
 
-  public Get withWhere(WhereArgument where) {
-    this.getBuilder.withWhereArgument(where);
+  public Get withWhere(WhereFilter where) {
+    this.getBuilder.withWhereFilter(where);
     return this;
   }
 
