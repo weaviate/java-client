@@ -2,12 +2,12 @@ package technology.semi.weaviate.client.v1.graphql.query.builder;
 
 import junit.framework.TestCase;
 import org.junit.Test;
+import technology.semi.weaviate.client.v1.filters.Operator;
+import technology.semi.weaviate.client.v1.filters.WhereFilter;
 import technology.semi.weaviate.client.v1.graphql.query.argument.AskArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearImageArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
-import technology.semi.weaviate.client.v1.graphql.query.argument.WhereArgument;
-import technology.semi.weaviate.client.v1.graphql.query.argument.WhereOperator;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Field;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
 
@@ -71,18 +71,18 @@ public class AggregateBuilderTest extends TestCase {
   @Test
   public void testBuildAggregateWithWhere() {
     // given
-    WhereArgument where = WhereArgument.builder()
-      .path(new String[]{ "name" })
-      .operator(WhereOperator.Equal)
-      .valueString("Hawaii")
-      .build();
+    WhereFilter where = WhereFilter.builder()
+            .path(new String[]{ "name" })
+            .operator(Operator.Equal)
+            .valueString("Hawaii")
+            .build();
     Field meta = Field.builder()
       .name("meta")
       .fields(new Field[]{ Field.builder().name("count").build() })
       .build();
     Fields fields = Fields.builder().fields(new Field[]{ meta }).build();
     // when
-    String query = AggregateBuilder.builder().className("Pizza").fields(fields).withWhereArgument(where).build().buildQuery();
+    String query = AggregateBuilder.builder().className("Pizza").fields(fields).withWhereFilter(where).build().buildQuery();
     // then
     assertNotNull(query);
     assertEquals("{Aggregate{Pizza(where:{path:[\"name\"] valueString:\"Hawaii\" operator:Equal}){meta{count}}}}", query);
@@ -91,11 +91,11 @@ public class AggregateBuilderTest extends TestCase {
   @Test
   public void testBuildAggregateWithWhereAndGroupedBy() {
     // given
-    WhereArgument where = WhereArgument.builder()
-      .path(new String[]{ "name" })
-      .operator(WhereOperator.Equal)
-      .valueString("Hawaii")
-      .build();
+    WhereFilter where = WhereFilter.builder()
+            .path(new String[]{ "name" })
+            .operator(Operator.Equal)
+            .valueString("Hawaii")
+            .build();
     Field meta = Field.builder()
       .name("meta")
       .fields(new Field[]{ Field.builder().name("count").build() })
@@ -106,7 +106,7 @@ public class AggregateBuilderTest extends TestCase {
       .className("Pizza")
       .fields(fields)
       .groupByClausePropertyName("name")
-      .withWhereArgument(where)
+      .withWhereFilter(where)
       .build()
       .buildQuery();
     // then

@@ -5,13 +5,13 @@ import technology.semi.weaviate.client.base.BaseClient;
 import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
+import technology.semi.weaviate.client.v1.filters.WhereFilter;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLQuery;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLResponse;
 import technology.semi.weaviate.client.v1.graphql.query.argument.AskArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
-import technology.semi.weaviate.client.v1.graphql.query.argument.WhereArgument;
 import technology.semi.weaviate.client.v1.graphql.query.builder.AggregateBuilder;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Field;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
@@ -29,19 +29,13 @@ public class Aggregate extends BaseClient<GraphQLResponse> implements ClientResu
     return this;
   }
 
-  @Deprecated
-  public Aggregate withFields(Fields fields) {
-    this.aggregateBuilder.fields(fields);
-    return this;
-  }
-
   public Aggregate withFields(Field... fields) {
     this.aggregateBuilder.fields(Fields.builder().fields(fields).build());
     return this;
   }
 
-  public Aggregate withWhere(WhereArgument where) {
-    this.aggregateBuilder.withWhereArgument(where);
+  public Aggregate withWhere(WhereFilter where) {
+    this.aggregateBuilder.withWhereFilter(where);
     return this;
   }
 
