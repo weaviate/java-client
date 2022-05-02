@@ -24,7 +24,7 @@ import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class ClientBatchTest {
+public class ClientBatchCreateTest {
   private String address;
 
   @ClassRule
