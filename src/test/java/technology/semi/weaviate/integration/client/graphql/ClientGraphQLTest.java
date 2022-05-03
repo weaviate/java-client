@@ -28,10 +28,12 @@ import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -247,6 +249,32 @@ public class ClientGraphQLTest {
     assertWhereResultSize(0, resultPartString, "Pizza");
     assertWhereResultSize(1, resultFullText, "Pizza");
     assertWhereResultSize(1, resultPartText, "Pizza");
+  }
+
+  @Test
+  public void testGraphQLGetWithWhereByDate() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
+    Field name = Field.builder().name("name").build();
+
+    // 2022-02-01T00:00:00+0100
+    Date date = new Date(2022-1900, 2-1, 1, 0, 0, 0);
+
+    WhereFilter whereDate = WhereFilter.builder()
+            .path(new String[]{ "bestBefore" })
+            .operator(Operator.GreaterThan)
+            .valueDate(date)
+            .build();
+    // when
+    testGenerics.createTestSchemaAndData(client);
+    Result<GraphQLResponse> resultDate = client.graphQL().get().withWhere(whereDate).withClassName("Pizza").withFields(name).run();
+    testGenerics.cleanupWeaviate(client);
+    // then
+    List<Map<String, Object>> maps = extractResult(resultDate, "Pizza");
+    assertThat(maps).hasSize(3);
+    assertThat(maps).extracting(el -> (String) el.get("name")).contains("Frutti di Mare", "Hawaii", "Doener");
   }
 
   @Test
@@ -693,7 +721,7 @@ public class ClientGraphQLTest {
     assertEquals(expectedCount, countVal.get("count"));
   }
 
-  private void assertWhereResultSize(int expectedSize, Result<GraphQLResponse> result, String className) {
+  private List<Map<String, Object>> extractResult(Result<GraphQLResponse> result, String className) {
     assertNotNull(result);
     assertFalse(result.hasErrors());
     GraphQLResponse resp = result.getResult();
@@ -706,7 +734,11 @@ public class ClientGraphQLTest {
     Map get = (Map) data.get("Get");
     assertNotNull(get.get(className));
     assertTrue(get.get(className) instanceof List);
-    List getClass = (List) get.get(className);
+    return (List) get.get(className);
+  }
+
+  private void assertWhereResultSize(int expectedSize, Result<GraphQLResponse> result, String className) {
+    List getClass = extractResult(result, className);
     assertEquals(expectedSize, getClass.size());
   }
 
