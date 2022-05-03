@@ -46,7 +46,8 @@ public class WhereFilterUtil {
                 args.add(buildArg("valueText", String.format("\"%s\"", wf.getValueText())));
             }
             if (wf.getValueDate() != null) {
-                args.add(buildArg("valueDate", DateFormatUtils.format(wf.getValueDate(), "yyyy-MM-dd'T'HH:mm:ssZZZZZ")));
+                String date = DateFormatUtils.format(wf.getValueDate(), "yyyy-MM-dd'T'HH:mm:ssZZZZZ");
+                args.add(buildArg("valueDate", String.format("\"%s\"", date)));
             }
             if (wf.getValueGeoRange() != null) {
                 args.add(buildArg("valueGeoRange", buildGeoRange(wf.getValueGeoRange())));

@@ -104,7 +104,7 @@ public class WhereFilterUtilTest extends TestCase {
     // given
     Date date = new Date();
     String formatted = DateFormatUtils.format(date, "yyyy-MM-dd'T'HH:mm:ssZZZZZ");
-    String expected = String.format("where:{path:[\"add\"] valueDate:%s operator:Like}", formatted);
+    String expected = String.format("where:{path:[\"add\"] valueDate:\"%s\" operator:Like}", formatted);
     WhereFilter where = WhereFilter.builder()
             .valueDate(date).operator(Operator.Like).path(new String[]{ "add" })
             .build();
@@ -140,7 +140,7 @@ public class WhereFilterUtilTest extends TestCase {
     // given
     Date date = new Date();
     String formatted = DateFormatUtils.format(date, "yyyy-MM-dd'T'HH:mm:ssZZZZZ");
-    String expected = String.format("where:{path:[\"p1\",\"p2\",\"p3\"] valueDate:%s operator:Not}", formatted);
+    String expected = String.format("where:{path:[\"p1\",\"p2\",\"p3\"] valueDate:\"%s\" operator:Not}", formatted);
     WhereFilter where = WhereFilter.builder()
             .valueDate(date).operator(Operator.Not).path(new String[]{ "p1", "p2", "p3" })
             .build();

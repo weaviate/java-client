@@ -1,9 +1,5 @@
 package technology.semi.weaviate.integration.client;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Stream;
 import technology.semi.weaviate.client.WeaviateClient;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.batch.api.ObjectsBatcher;
@@ -14,6 +10,11 @@ import technology.semi.weaviate.client.v1.schema.model.DataType;
 import technology.semi.weaviate.client.v1.schema.model.Property;
 import technology.semi.weaviate.client.v1.schema.model.Tokenization;
 import technology.semi.weaviate.client.v1.schema.model.WeaviateClass;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -61,6 +62,11 @@ public class WeaviateTestGenerics {
             .name("description")
             .tokenization(Tokenization.WORD)
             .build();
+    Property bestBeforeProperty = Property.builder()
+            .dataType(Arrays.asList(DataType.DATE))
+            .description("best before")
+            .name("bestBefore")
+            .build();
     Map<Object, Object> text2vecContextionary = new HashMap<>();
     text2vecContextionary.put("skip", true);
     Map<Object, Object> moduleConfig = new HashMap<>();
@@ -80,6 +86,10 @@ public class WeaviateTestGenerics {
             .withProperty(descriptionProperty).withClassName(pizza.getClassName()).run();
     assertNotNull(pizzaPropertyDescriptionStatus);
     assertTrue(pizzaPropertyDescriptionStatus.getResult());
+    Result<Boolean> pizzaPropertyBestBeforeStatus = client.schema().propertyCreator()
+            .withProperty(bestBeforeProperty).withClassName(pizza.getClassName()).run();
+    assertNotNull(pizzaPropertyBestBeforeStatus);
+    assertTrue(pizzaPropertyBestBeforeStatus.getResult());
     Result<Boolean> pizzaPropertyPriceStatus = client.schema().propertyCreator()
             .withProperty(priceProperty).withClassName(pizza.getClassName()).run();
     assertNotNull(pizzaPropertyPriceStatus);
@@ -93,6 +103,10 @@ public class WeaviateTestGenerics {
             .withProperty(descriptionProperty).withClassName(soup.getClassName()).run();
     assertNotNull(soupPropertyDescriptionStatus);
     assertTrue(soupPropertyDescriptionStatus.getResult());
+    Result<Boolean> soupPropertyBestBeforeStatus = client.schema().propertyCreator()
+            .withProperty(bestBeforeProperty).withClassName(soup.getClassName()).run();
+    assertNotNull(soupPropertyBestBeforeStatus);
+    assertTrue(soupPropertyBestBeforeStatus.getResult());
     Result<Boolean> soupPropertyPriceStatus = client.schema().propertyCreator()
             .withProperty(priceProperty).withClassName(soup.getClassName()).run();
     assertNotNull(soupPropertyPriceStatus);
@@ -117,23 +131,31 @@ public class WeaviateTestGenerics {
 
   public void createTestSchemaAndData(WeaviateClient client) {
     createWeaviateTestSchemaFood(client);
+
+
     // Create pizzas
     WeaviateObject[] menuPizza = new WeaviateObject[]{
             createObject(PIZZA_QUATTRO_FORMAGGI_ID, "Pizza", "Quattro Formaggi",
-                    "Pizza quattro formaggi Italian: [ˈkwattro forˈmaddʒi] (four cheese pizza) is a variety of pizza in Italian cuisine that is topped with a combination of four kinds of cheese, usually melted together, with (rossa, red) or without (bianca, white) tomato sauce. It is popular worldwide, including in Italy,[1] and is one of the iconic items from pizzerias's menus.", 1.4f),
+                    "Pizza quattro formaggi Italian: [ˈkwattro forˈmaddʒi] (four cheese pizza) is a variety of pizza in Italian cuisine that is topped with a combination of four kinds of cheese, usually melted together, with (rossa, red) or without (bianca, white) tomato sauce. It is popular worldwide, including in Italy,[1] and is one of the iconic items from pizzerias's menus.",
+                    1.4f, "2022-01-02T03:04:05+01:00"),
             createObject(PIZZA_FRUTTI_DI_MARE_ID, "Pizza", "Frutti di Mare",
-                    "Frutti di Mare is an Italian type of pizza that may be served with scampi, mussels or squid. It typically lacks cheese, with the seafood being served atop a tomato sauce.", 2.5f),
+                    "Frutti di Mare is an Italian type of pizza that may be served with scampi, mussels or squid. It typically lacks cheese, with the seafood being served atop a tomato sauce.",
+                    2.5f, "2022-02-03T04:05:06+02:00"),
             createObject(PIZZA_HAWAII_ID, "Pizza", "Hawaii",
-                    "Universally accepted to be the best pizza ever created.",1.1f),
+                    "Universally accepted to be the best pizza ever created.",
+                    1.1f, "2022-03-04T05:06:07+03:00"),
             createObject(PIZZA_DOENER_ID, "Pizza", "Doener",
-                    "A innovation, some say revolution, in the pizza industry.", 1.2f),
+                    "A innovation, some say revolution, in the pizza industry.",
+                    1.2f, "2022-04-05T06:07:08+04:00"),
     };
     // Create soups
     WeaviateObject[] menuSoup = new WeaviateObject[]{
             createObject(SOUP_CHICKENSOUP_ID, "Soup", "ChickenSoup",
-                    "Used by humans when their inferior genetics are attacked by microscopic organisms.", 2.0f),
+                    "Used by humans when their inferior genetics are attacked by microscopic organisms.",
+                    2.0f, "2022-05-06T07:08:09+05:00"),
             createObject(SOUP_BEAUTIFUL_ID, "Soup", "Beautiful",
-                    "Putting the game of letter soups to a whole new level.", 3f),
+                    "Putting the game of letter soups to a whole new level.",
+                    3f, "2022-06-07T08:09:10+06:00"),
     };
     ObjectsBatcher objectsBatcher = client.batch().objectsBatcher();
     Stream.of(menuPizza).forEach(objectsBatcher::withObject);
@@ -144,7 +166,7 @@ public class WeaviateTestGenerics {
     assertEquals(6, insertStatus.getResult().length);
   }
 
-  private WeaviateObject createObject(String id, String className, String name, String description, Float price) {
+  private WeaviateObject createObject(String id, String className, String name, String description, Float price, String bestBeforeRfc3339) {
     return WeaviateObject.builder()
             .id(id)
             .className(className)
@@ -152,6 +174,7 @@ public class WeaviateTestGenerics {
               put("name", name);
               put("description", description);
               put("price", price);
+              put("bestBefore", bestBeforeRfc3339);
             }}).build();
   }
 
