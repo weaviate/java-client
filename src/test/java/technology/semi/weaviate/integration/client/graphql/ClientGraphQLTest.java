@@ -171,6 +171,70 @@ public class ClientGraphQLTest {
   }
 
   @Test
+  public void testGraphQLGetWithNearTextAndMoveParams() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
+    String newObjID1 = "6baed48e-2afe-4be4-a09d-b00a955d962b";
+    String newObjID2 = "6baed48e-2afe-4be4-a09d-b00a955d962a";
+    WeaviateObject pizzaWithID = WeaviateObject.builder().className("Pizza").id(newObjID1).properties(new HashMap<String, java.lang.Object>() {{
+      put("name", "JustPizza1");
+      put("description", "Universally pizza with id");
+    }}).build();
+    WeaviateObject pizzaWithID2 = WeaviateObject.builder().className("Pizza").id(newObjID2).properties(new HashMap<String, java.lang.Object>() {{
+      put("name", "JustPizza2");
+      put("description", "Universally pizza with some other id");
+    }}).build();
+    NearTextMoveParameters moveAway = NearTextMoveParameters.builder()
+      .objects(new NearTextMoveParameters.ObjectMove[]{
+        NearTextMoveParameters.ObjectMove.builder().id(newObjID1).build()
+      }).force(0.9f).build();
+    NearTextMoveParameters moveTo = NearTextMoveParameters.builder()
+      .objects(new NearTextMoveParameters.ObjectMove[]{
+        NearTextMoveParameters.ObjectMove.builder().id(newObjID2).build()
+      }).force(0.9f).build();
+    NearTextArgument nearText = client.graphQL().arguments().nearTextArgBuilder()
+      .concepts(new String[]{"Universally pizza with id"})
+      .moveAwayFrom(moveAway)
+      .moveTo(moveTo)
+      .certainty(0.4f)
+      .build();
+    Field name = Field.builder().name("name").build();
+    Field _additional = Field.builder()
+      .name("_additional")
+      .fields(new Field[]{Field.builder().name("certainty").build()})
+      .build();
+    // when
+    testGenerics.createTestSchemaAndData(client);
+    Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObject(pizzaWithID).withObject(pizzaWithID2).run();
+    Result<GraphQLResponse> result = client.graphQL().get()
+      .withClassName("Pizza")
+      .withNearText(nearText)
+      .withFields(name, _additional)
+      .run();
+    testGenerics.cleanupWeaviate(client);
+    // then
+    assertNotNull(insert);
+    assertNotNull(insert.getResult());
+    assertEquals(2, insert.getResult().length);
+    assertNotNull(result);
+    assertFalse(result.hasErrors());
+    GraphQLResponse resp = result.getResult();
+    assertNotNull(resp);
+    assertNotNull(resp.getData());
+    assertTrue(resp.getData() instanceof Map);
+    Map data = (Map) resp.getData();
+    assertNotNull(data.get("Get"));
+    assertTrue(data.get("Get") instanceof Map);
+    Map get = (Map) data.get("Get");
+    assertNotNull(get.get("Pizza"));
+    assertTrue(get.get("Pizza") instanceof List);
+    List pizzas = (List) get.get("Pizza");
+    assertEquals(6, pizzas.size());
+  }
+
+  @Test
   public void testGraphQLGetWithNearTextAndLimit() {
     // given
     Config config = new Config("http", address);
