@@ -184,4 +184,134 @@ public class NearTextArgumentTest extends TestCase {
     Assert.assertEquals("nearText: {moveAwayFrom: {}}", arg2);
     Assert.assertEquals("nearText: {moveTo: {} moveAwayFrom: {}}", arg3);
   }
+
+  @Test
+  public void testBuildMoveToWithObjects() {
+    // given
+    String[] concepts = new String[]{ "a", "b", "c" };
+    NearTextMoveParameters moveTo1 = NearTextMoveParameters
+      .builder()
+      .objects(new NearTextMoveParameters.ObjectMove[]{
+        NearTextMoveParameters.ObjectMove.builder().id("uuid").build(),
+        NearTextMoveParameters.ObjectMove.builder().beacon("beacon").build()
+      })
+      .force(0.1f)
+      .build();
+    NearTextMoveParameters moveTo2 = NearTextMoveParameters
+      .builder()
+      .objects(new NearTextMoveParameters.ObjectMove[]{
+        NearTextMoveParameters.ObjectMove.builder().id("uuid").beacon("beacon").build(),
+      })
+      .force(0.1f)
+      .build();
+    NearTextMoveParameters moveTo3 = NearTextMoveParameters
+      .builder()
+      .objects(new NearTextMoveParameters.ObjectMove[]{
+        NearTextMoveParameters.ObjectMove.builder().id("uuid").build(),
+      })
+      .build();
+    NearTextMoveParameters moveTo4 = NearTextMoveParameters
+      .builder()
+      .objects(new NearTextMoveParameters.ObjectMove[]{
+        NearTextMoveParameters.ObjectMove.builder().beacon("beacon").build(),
+      })
+      .build();
+    NearTextArgument nearText1 = NearTextArgument.builder()
+      .concepts(concepts).certainty(0.8f).moveTo(moveTo1).build();
+    NearTextArgument nearText2 = NearTextArgument.builder()
+      .concepts(concepts).certainty(0.8f).moveTo(moveTo2).build();
+    NearTextArgument nearText3 = NearTextArgument.builder()
+      .concepts(concepts).certainty(0.8f).moveTo(moveTo3).build();
+    NearTextArgument nearText4 = NearTextArgument.builder()
+      .concepts(concepts).certainty(0.8f).moveTo(moveTo4).build();
+    // when
+    String arg1 = nearText1.build();
+    String arg2 = nearText2.build();
+    String arg3 = nearText3.build();
+    String arg4 = nearText4.build();
+    // then
+    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveTo: {force: 0.1 objects: [{id: \"uuid\"},{beacon: \"beacon\"}]}}", arg1);
+    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveTo: {force: 0.1 objects: [{id: \"uuid\" beacon: \"beacon\"}]}}", arg2);
+    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveTo: {objects: [{id: \"uuid\"}]}}", arg3);
+    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveTo: {objects: [{beacon: \"beacon\"}]}}", arg4);
+  }
+
+  @Test
+  public void testBuildMoveAwayWithObjects() {
+    // given
+    String[] concepts = new String[]{ "a", "b", "c" };
+    NearTextMoveParameters moveAwayFrom1 = NearTextMoveParameters
+      .builder()
+      .objects(new NearTextMoveParameters.ObjectMove[]{
+        NearTextMoveParameters.ObjectMove.builder().id("uuid").build(),
+        NearTextMoveParameters.ObjectMove.builder().beacon("beacon").build()
+      })
+      .force(0.1f)
+      .build();
+    NearTextMoveParameters moveAwayFrom2 = NearTextMoveParameters
+      .builder()
+      .objects(new NearTextMoveParameters.ObjectMove[]{
+        NearTextMoveParameters.ObjectMove.builder().id("uuid").beacon("beacon").build(),
+      })
+      .force(0.1f)
+      .build();
+    NearTextMoveParameters moveAwayFrom3 = NearTextMoveParameters
+      .builder()
+      .objects(new NearTextMoveParameters.ObjectMove[]{
+        NearTextMoveParameters.ObjectMove.builder().id("uuid").build(),
+      })
+      .build();
+    NearTextMoveParameters moveAwayFrom4 = NearTextMoveParameters
+      .builder()
+      .objects(new NearTextMoveParameters.ObjectMove[]{
+        NearTextMoveParameters.ObjectMove.builder().beacon("beacon").build(),
+      })
+      .build();
+    NearTextArgument nearText1 = NearTextArgument.builder()
+      .concepts(concepts).certainty(0.8f).moveAwayFrom(moveAwayFrom1).build();
+    NearTextArgument nearText2 = NearTextArgument.builder()
+      .concepts(concepts).certainty(0.8f).moveAwayFrom(moveAwayFrom2).build();
+    NearTextArgument nearText3 = NearTextArgument.builder()
+      .concepts(concepts).certainty(0.8f).moveAwayFrom(moveAwayFrom3).build();
+    NearTextArgument nearText4 = NearTextArgument.builder()
+      .concepts(concepts).certainty(0.8f).moveAwayFrom(moveAwayFrom4).build();
+    // when
+    String arg1 = nearText1.build();
+    String arg2 = nearText2.build();
+    String arg3 = nearText3.build();
+    String arg4 = nearText4.build();
+    // then
+    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveAwayFrom: {force: 0.1 objects: [{id: \"uuid\"},{beacon: \"beacon\"}]}}", arg1);
+    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveAwayFrom: {force: 0.1 objects: [{id: \"uuid\" beacon: \"beacon\"}]}}", arg2);
+    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveAwayFrom: {objects: [{id: \"uuid\"}]}}", arg3);
+    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveAwayFrom: {objects: [{beacon: \"beacon\"}]}}", arg4);
+  }
+
+  @Test
+  public void testBuildMoveToAndMoveAwayFromWithObjects() {
+    // given
+    String[] concepts = new String[]{ "a", "b", "c" };
+    NearTextMoveParameters moveTo = NearTextMoveParameters
+      .builder()
+      .objects(new NearTextMoveParameters.ObjectMove[]{
+        NearTextMoveParameters.ObjectMove.builder().id("uuid").build(),
+        NearTextMoveParameters.ObjectMove.builder().beacon("beacon").build()
+      })
+      .force(0.1f)
+      .build();
+    NearTextMoveParameters moveAwayFrom = NearTextMoveParameters
+      .builder()
+      .objects(new NearTextMoveParameters.ObjectMove[]{
+        NearTextMoveParameters.ObjectMove.builder().id("uuid").beacon("beacon").build(),
+      })
+      .force(0.2f)
+      .build();
+    NearTextArgument nearText1 = NearTextArgument.builder()
+      .concepts(concepts).certainty(0.8f).moveTo(moveTo).moveAwayFrom(moveAwayFrom).build();
+    // when
+    String arg1 = nearText1.build();
+    // then
+    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveTo: {force: 0.1 objects: [{id: \"uuid\"},{beacon: \"beacon\"}]} " +
+      "moveAwayFrom: {force: 0.2 objects: [{id: \"uuid\" beacon: \"beacon\"}]}}", arg1);
+  }
 }
