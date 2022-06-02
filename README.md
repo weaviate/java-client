@@ -2,7 +2,7 @@
 
 A Java native client for weaviate.
 
-## Documentation
+## Usage
 
 In order to get start using the java client one needs to add it's dependency:
 
@@ -14,13 +14,11 @@ In order to get start using the java client one needs to add it's dependency:
 </dependency>
 ```
 
-## Example
+Here's a simple code to start up working with Java client:
 
-Here's a simple code to start up working with Java client.
+1. Add dependency to your java project.
 
-Add dependency to your java project.
-
-Connect to Weaviate on `localhost:8080` and fetch meta information
+2. Connect to Weaviate on `localhost:8080` and fetch meta information
 
 ```java
 import technology.semi.weaviate.client.Config;
@@ -44,6 +42,10 @@ public class App {
 }
 ```
 
+## Documentation
+
+- [Documentation](https://weaviate.io/developers/weaviate/current/client-libraries/java.html).
+
 ## Support
 
 - [Stackoverflow for questions](https://stackoverflow.com/questions/tagged/weaviate).
@@ -51,7 +53,7 @@ public class App {
 
 ## Contributing
 
-- [How to Contribute](https://github.com/semi-technologies/weaviate/blob/master/CONTRIBUTE.md).
+- [How to Contribute](https://github.com/semi-technologies/weaviate-java-client/blob/master/CONTRIBUTE.md).
 
 ## Build Status
 
