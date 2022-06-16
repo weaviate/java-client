@@ -10,17 +10,26 @@ import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.base.WeaviateErrorMessage;
 import technology.semi.weaviate.client.base.WeaviateErrorResponse;
+import technology.semi.weaviate.client.v1.data.util.ObjectsPathBuilder;
 
 public class ObjectDeleter extends BaseClient<String> implements ClientResult<Boolean> {
 
+  private final String version;
   private String id;
+  private String className;
 
-  public ObjectDeleter(Config config) {
+  public ObjectDeleter(Config config, String version) {
     super(config);
+    this.version = version;
   }
 
   public ObjectDeleter withID(String id) {
     this.id = id;
+    return this;
+  }
+
+  public ObjectDeleter withClassName(String className) {
+    this.className = className;
     return this;
   }
 
@@ -33,8 +42,12 @@ public class ObjectDeleter extends BaseClient<String> implements ClientResult<Bo
               .error(Stream.of(errorMessage).collect(Collectors.toList())).build();
       return new Result<>(500, false, errors);
     }
-    String path = String.format("/objects/%s", this.id);
+    String path = getPath(this.id, this.className);
     Response<String> resp = sendDeleteRequest(path, null, String.class);
     return new Result<>(resp.getStatusCode(), resp.getStatusCode() == 204, resp.getErrors());
+  }
+
+  private String getPath(String id, String className) {
+    return ObjectsPathBuilder.builder().id(id).className(className).build().buildPath(this.version);
   }
 }

@@ -1,5 +1,6 @@
 package technology.semi.weaviate.client.v1.classifications.api;
 
+import org.apache.commons.lang3.ObjectUtils;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.base.BaseClient;
 import technology.semi.weaviate.client.base.ClientResult;
@@ -92,17 +93,13 @@ public class Scheduler extends BaseClient<Classification> implements ClientResul
   @Override
   public Result<Classification> run() {
     Classification config = Classification.builder()
-            .basedOnProperties(basedOnProperties)
-            .className(className)
-            .classifyProperties(classifyProperties)
-            .filters(ClassificationFilters.builder()
-                    .sourceWhere(sourceWhereFilter)
-                    .targetWhere(targetWhereFilter)
-                    .trainingSetWhere(trainingSetWhereFilter)
-                    .build())
-            .type(classificationType)
-            .settings(settings)
-            .build();
+      .basedOnProperties(basedOnProperties)
+      .className(className)
+      .classifyProperties(classifyProperties)
+      .type(classificationType)
+      .settings(settings)
+      .filters(getClassificationFilters(sourceWhereFilter, targetWhereFilter, trainingSetWhereFilter))
+      .build();
     Response<Classification> resp = sendPostRequest("/classifications", config, Classification.class);
     if (resp.getStatusCode() == 201) {
       if (waitForCompletion) {
@@ -110,10 +107,21 @@ public class Scheduler extends BaseClient<Classification> implements ClientResul
           Classification c = waitForCompletion(resp.getBody().getId());
           return new Result<>(resp.getStatusCode(), c, null);
         } catch (InterruptedException e) {
-          return null;
+          return new Result<>(resp);
         }
       }
       return new Result<>(resp);
+    }
+    return new Result<>(resp);
+  }
+
+  private ClassificationFilters getClassificationFilters(WhereFilter sourceWhere, WhereFilter targetWhere, WhereFilter trainingSetWhere) {
+    if (ObjectUtils.anyNotNull(sourceWhere, targetWhere, trainingSetWhere)) {
+      return ClassificationFilters.builder()
+        .sourceWhere(sourceWhere)
+        .targetWhere(targetWhere)
+        .trainingSetWhere(trainingSetWhere)
+        .build();
     }
     return null;
   }

@@ -1,6 +1,5 @@
 package technology.semi.weaviate.client.v1.data.api;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -12,10 +11,13 @@ import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
 import technology.semi.weaviate.client.v1.data.model.ObjectsListResponse;
+import technology.semi.weaviate.client.v1.data.util.ObjectsPathBuilder;
 
 public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements ClientResult<List<WeaviateObject>> {
 
+  private final String version;
   private String id;
+  private String className;
   private Integer limit;
   private HashSet<String> additional;
 
@@ -37,16 +39,23 @@ public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements Cl
       return new Result<>(resp.getStatusCode(), Arrays.asList(resp.getBody()), resp.getErrors());
     }
   }
+
   private ObjectGetter objectGetter;
 
-  public ObjectsGetter(Config config) {
+  public ObjectsGetter(Config config, String version) {
     super(config);
-    objectGetter = new ObjectGetter(config);
-    additional = new HashSet<>();
+    this.objectGetter = new ObjectGetter(config);
+    this.additional = new HashSet<>();
+    this.version = version;
   }
 
   public ObjectsGetter withID(String id) {
     this.id = id;
+    return this;
+  }
+
+  public ObjectsGetter withClassName(String className) {
+    this.className = className;
     return this;
   }
 
@@ -66,22 +75,13 @@ public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements Cl
   }
 
   private String getPath() {
-    StringBuilder path = new StringBuilder();
-    path.append("/objects");
-    if (StringUtils.isNotBlank(id)) {
-      path.append("/").append(id);
-    }
-    List<String> params = new ArrayList<>();
-    if (additional.size() > 0) {
-      params.add(String.format("include=%s", StringUtils.joinWith(",", additional.toArray())));
-    }
-    if (limit != null) {
-      params.add(String.format("limit=%s", limit));
-    }
-    if (params.size() > 0) {
-      path.append("?").append(StringUtils.joinWith("&", params.toArray()));
-    }
-    return path.toString();
+    return ObjectsPathBuilder.builder()
+      .id(this.id)
+      .className(this.className)
+      .limit(this.limit)
+      .additional(this.additional.stream().toArray(String[]::new))
+      .build()
+      .buildPath(this.version);
   }
 
   @Override
