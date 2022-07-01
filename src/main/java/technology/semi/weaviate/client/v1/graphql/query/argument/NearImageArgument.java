@@ -24,6 +24,7 @@ public class NearImageArgument implements Argument {
   String image;
   File imageFile;
   Float certainty;
+  Float distance;
 
   private String readFile(File file) {
     try {
@@ -57,6 +58,9 @@ public class NearImageArgument implements Argument {
     }
     if (certainty != null) {
       fields.add(String.format("certainty: %s", certainty));
+    }
+    if (distance != null) {
+      fields.add(String.format("distance: %s", distance));
     }
     return String.format("nearImage: {%s}", StringUtils.joinWith(" ", fields.toArray()));
   }

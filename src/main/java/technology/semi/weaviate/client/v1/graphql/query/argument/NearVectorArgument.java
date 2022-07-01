@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 public class NearVectorArgument implements Argument {
   Float[] vector;
   Float certainty;
+  Float distance;
 
   @Override
   public String build() {
@@ -24,6 +25,9 @@ public class NearVectorArgument implements Argument {
     }
     if (certainty != null) {
       arg.add(String.format("certainty: %s", certainty));
+    }
+    if (distance != null) {
+      arg.add(String.format("distance: %s", distance));
     }
     return String.format("nearVector: {%s}", StringUtils.joinWith(" ", arg.toArray()));
   }

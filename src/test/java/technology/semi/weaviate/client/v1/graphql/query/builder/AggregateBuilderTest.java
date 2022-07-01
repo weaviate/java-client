@@ -116,98 +116,162 @@ public class AggregateBuilderTest extends TestCase {
 
   @Test
   public void testBuildAggregateWithNearVector() {
-    // given
-    NearVectorArgument nearVector = NearVectorArgument.builder().vector(new Float[]{ 0f, 1f, 0.8f }).certainty(0.8f).build();
     Field meta = Field.builder()
-      .name("meta")
-      .fields(new Field[]{ Field.builder().name("count").build() })
-      .build();
+            .name("meta")
+            .fields(new Field[]{ Field.builder().name("count").build() })
+            .build();
     Fields fields = Fields.builder().fields(new Field[]{ meta }).build();
-    // when
-    String query = AggregateBuilder.builder()
+
+    // given (certainty)
+    NearVectorArgument nearVectorWithCert = NearVectorArgument.builder().vector(new Float[]{ 0f, 1f, 0.8f }).certainty(0.8f).build();
+
+    // when (certainty)
+    String queryWithCert = AggregateBuilder.builder()
       .className("Pizza")
       .fields(fields)
-      .withNearVectorFilter(nearVector).build().buildQuery();
-    // then
-    assertNotNull(query);
-    assertEquals("{Aggregate{Pizza(nearVector: {vector: [0.0, 1.0, 0.8] certainty: 0.8}){meta{count}}}}", query);
+      .withNearVectorFilter(nearVectorWithCert).build().buildQuery();
+    // then (certainty)
+    assertNotNull(queryWithCert);
+    assertEquals("{Aggregate{Pizza(nearVector: {vector: [0.0, 1.0, 0.8] certainty: 0.8}){meta{count}}}}", queryWithCert);
+
+    // given (distance)
+    NearVectorArgument nearVectorWithDist = NearVectorArgument.builder().vector(new Float[]{ 0f, 1f, 0.8f }).distance(0.8f).build();
+
+    // when (distance)
+    String queryWithDist = AggregateBuilder.builder()
+            .className("Pizza")
+            .fields(fields)
+            .withNearVectorFilter(nearVectorWithDist).build().buildQuery();
+    // then (distance)
+    assertNotNull(queryWithDist);
+    assertEquals("{Aggregate{Pizza(nearVector: {vector: [0.0, 1.0, 0.8] distance: 0.8}){meta{count}}}}", queryWithDist);
   }
 
   @Test
   public void testBuildAggregateWithNearObject() {
-    // given
-    NearObjectArgument nearObject = NearObjectArgument.builder().id("some-uuid").certainty(0.8f).build();
     Field meta = Field.builder()
-      .name("meta")
-      .fields(new Field[]{ Field.builder().name("count").build() })
-      .build();
+            .name("meta")
+            .fields(new Field[]{ Field.builder().name("count").build() })
+            .build();
     Fields fields = Fields.builder().fields(new Field[]{ meta }).build();
-    // when
-    String query = AggregateBuilder.builder()
+
+    // given (certainty)
+    NearObjectArgument nearObjectWithCert = NearObjectArgument.builder().id("some-uuid").certainty(0.8f).build();
+    // when (certainty)
+    String queryWithCert = AggregateBuilder.builder()
       .className("Pizza")
       .fields(fields)
-      .withNearObjectFilter(nearObject).build().buildQuery();
-    // then
-    assertNotNull(query);
-    assertEquals("{Aggregate{Pizza(nearObject: {id: \"some-uuid\" certainty: 0.8}){meta{count}}}}", query);
+      .withNearObjectFilter(nearObjectWithCert).build().buildQuery();
+    // then (certainty)
+    assertNotNull(queryWithCert);
+    assertEquals("{Aggregate{Pizza(nearObject: {id: \"some-uuid\" certainty: 0.8}){meta{count}}}}", queryWithCert);
+
+    // given (distance)
+    NearObjectArgument nearObjectWithDist = NearObjectArgument.builder().id("some-uuid").distance(0.8f).build();
+    // when (distance)
+    String queryWithDist = AggregateBuilder.builder()
+            .className("Pizza")
+            .fields(fields)
+            .withNearObjectFilter(nearObjectWithDist).build().buildQuery();
+    // then (distance)
+    assertNotNull(queryWithDist);
+    assertEquals("{Aggregate{Pizza(nearObject: {id: \"some-uuid\" distance: 0.8}){meta{count}}}}", queryWithDist);
   }
 
   @Test
   public void testBuildAggregateWithAsk() {
-    // given
-    AskArgument ask = AskArgument.builder().question("question?").rerank(true).certainty(0.8f).build();
     Field meta = Field.builder()
-      .name("meta")
-      .fields(new Field[]{ Field.builder().name("count").build() })
-      .build();
+            .name("meta")
+            .fields(new Field[]{ Field.builder().name("count").build() })
+            .build();
     Fields fields = Fields.builder().fields(new Field[]{ meta }).build();
-    // when
-    String query = AggregateBuilder.builder()
+
+    // given (certainty)
+    AskArgument askWithCert = AskArgument.builder().question("question?").rerank(true).certainty(0.8f).build();
+    // when (certainty)
+    String queryWithCert = AggregateBuilder.builder()
       .className("Pizza")
       .fields(fields)
-      .withAskArgument(ask).build().buildQuery();
-    // then
-    assertNotNull(query);
-    assertEquals("{Aggregate{Pizza(ask: {question: \"question?\" certainty: 0.8 rerank: true}){meta{count}}}}", query);
+      .withAskArgument(askWithCert).build().buildQuery();
+    // then (certainty)
+    assertNotNull(queryWithCert);
+    assertEquals("{Aggregate{Pizza(ask: {question: \"question?\" certainty: 0.8 rerank: true}){meta{count}}}}", queryWithCert);
+
+    // given (distance)
+    AskArgument askWithDist = AskArgument.builder().question("question?").rerank(true).distance(0.8f).build();
+    // when (distance)
+    String queryWithDist = AggregateBuilder.builder()
+            .className("Pizza")
+            .fields(fields)
+            .withAskArgument(askWithDist).build().buildQuery();
+    // then (distance)
+    assertNotNull(queryWithDist);
+    assertEquals("{Aggregate{Pizza(ask: {question: \"question?\" distance: 0.8 rerank: true}){meta{count}}}}", queryWithDist);
   }
 
   @Test
   public void testBuildAggregateWithNearImage() {
-    // given
-    NearImageArgument nearImage = NearImageArgument.builder().image("iVBORw0KGgoAAAANS").certainty(0.8f).build();
     Field meta = Field.builder()
-      .name("meta")
-      .fields(new Field[]{ Field.builder().name("count").build() })
-      .build();
+            .name("meta")
+            .fields(new Field[]{ Field.builder().name("count").build() })
+            .build();
     Fields fields = Fields.builder().fields(new Field[]{ meta }).build();
-    // when
-    String query = AggregateBuilder.builder()
+
+    // given (certainty)
+    NearImageArgument nearImageWithCert = NearImageArgument.builder().image("iVBORw0KGgoAAAANS").certainty(0.8f).build();
+    // when (certainty)
+    String queryWithCert = AggregateBuilder.builder()
       .className("Pizza")
       .fields(fields)
-      .withNearImageFilter(nearImage).build().buildQuery();
-    // then
-    assertNotNull(query);
-    assertEquals("{Aggregate{Pizza(nearImage: {image: \"iVBORw0KGgoAAAANS\" certainty: 0.8}){meta{count}}}}", query);
+      .withNearImageFilter(nearImageWithCert).build().buildQuery();
+    // then (certainty)
+    assertNotNull(queryWithCert);
+    assertEquals("{Aggregate{Pizza(nearImage: {image: \"iVBORw0KGgoAAAANS\" certainty: 0.8}){meta{count}}}}", queryWithCert);
+
+    // given (certainty)
+    NearImageArgument nearImageWithDist = NearImageArgument.builder().image("iVBORw0KGgoAAAANS").distance(0.8f).build();
+    // when (certainty)
+    String queryWithDist = AggregateBuilder.builder()
+            .className("Pizza")
+            .fields(fields)
+            .withNearImageFilter(nearImageWithDist).build().buildQuery();
+    // then (certainty)
+    assertNotNull(queryWithDist);
+    assertEquals("{Aggregate{Pizza(nearImage: {image: \"iVBORw0KGgoAAAANS\" distance: 0.8}){meta{count}}}}", queryWithDist);
   }
 
   @Test
   public void testBuildAggregateWithObjectLimit() {
-    // given
-    NearImageArgument nearImage = NearImageArgument.builder().image("iVBORw0KGgoAAAANS").certainty(0.8f).build();
     Field meta = Field.builder()
-      .name("meta")
-      .fields(new Field[]{ Field.builder().name("count").build() })
-      .build();
+            .name("meta")
+            .fields(new Field[]{ Field.builder().name("count").build() })
+            .build();
     Fields fields = Fields.builder().fields(new Field[]{ meta }).build();
-    // when
-    String query = AggregateBuilder.builder()
+
+    // given (certainty)
+    NearImageArgument nearImageWithCert = NearImageArgument.builder().image("iVBORw0KGgoAAAANS").certainty(0.8f).build();
+    // when (certainty)
+    String queryWithCert = AggregateBuilder.builder()
       .className("Pizza")
       .fields(fields)
-      .withNearImageFilter(nearImage)
+      .withNearImageFilter(nearImageWithCert)
       .objectLimit(100).build()
       .buildQuery();
-    // then
-    assertNotNull(query);
-    assertEquals("{Aggregate{Pizza(nearImage: {image: \"iVBORw0KGgoAAAANS\" certainty: 0.8}, objectLimit: 100){meta{count}}}}", query);
+    // then (certainty)
+    assertNotNull(queryWithCert);
+    assertEquals("{Aggregate{Pizza(nearImage: {image: \"iVBORw0KGgoAAAANS\" certainty: 0.8}, objectLimit: 100){meta{count}}}}", queryWithCert);
+
+    // given (distance)
+    NearImageArgument nearImageWithDist = NearImageArgument.builder().image("iVBORw0KGgoAAAANS").distance(0.8f).build();
+    // when (distance)
+    String queryWithDist = AggregateBuilder.builder()
+            .className("Pizza")
+            .fields(fields)
+            .withNearImageFilter(nearImageWithDist)
+            .objectLimit(100).build()
+            .buildQuery();
+    // then (distance)
+    assertNotNull(queryWithDist);
+    assertEquals("{Aggregate{Pizza(nearImage: {image: \"iVBORw0KGgoAAAANS\" distance: 0.8}, objectLimit: 100){meta{count}}}}", queryWithDist);
   }
 }

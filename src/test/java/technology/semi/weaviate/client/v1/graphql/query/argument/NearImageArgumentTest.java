@@ -41,6 +41,21 @@ public class NearImageArgumentTest extends TestCase {
   }
 
   @Test
+  public void testBuildWithDistance() throws FileNotFoundException {
+    // given
+    File imageFile = new File("src/test/resources/image/pixel.png");
+    String base64File = new BufferedReader(new InputStreamReader(new FileInputStream("src/test/resources/image/base64.txt")))
+            .lines().collect(Collectors.joining("\n"));
+    Float distance = 0.5f;
+    String expected = String.format("nearImage: {image: \"%s\" distance: %s}", base64File, distance);
+    // when
+    String nearImage = NearImageArgument.builder().imageFile(imageFile).distance(distance).build().build();
+    // then
+    assertNotNull(nearImage);
+    assertEquals(expected, nearImage);
+  }
+
+  @Test
   public void testBuildWithImage() throws FileNotFoundException {
     // given
     String image = "iVBORw0KGgoAAAANS";
@@ -72,6 +87,19 @@ public class NearImageArgumentTest extends TestCase {
     String expected = String.format("nearImage: {image: \"%s\" certainty: %s}", image, certainty);
     // when
     String nearImage = NearImageArgument.builder().image(image).certainty(certainty).build().build();
+    // then
+    assertNotNull(nearImage);
+    assertEquals(expected, nearImage);
+  }
+
+  @Test
+  public void testBuildWithImageAndDistance() throws FileNotFoundException {
+    // given
+    String image = "iVBORw0KGgoAAAANS";
+    Float distance = 0.5f;
+    String expected = String.format("nearImage: {image: \"%s\" distance: %s}", image, distance);
+    // when
+    String nearImage = NearImageArgument.builder().image(image).distance(distance).build().build();
     // then
     assertNotNull(nearImage);
     assertEquals(expected, nearImage);

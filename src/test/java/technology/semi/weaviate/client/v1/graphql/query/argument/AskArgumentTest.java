@@ -46,6 +46,21 @@ public class AskArgumentTest extends TestCase {
   }
 
   @Test
+  public void testBuildWithPropertiesAndDistance() {
+    // given
+    String question = "What's your name?";
+    String[] properties = new String[]{ "prop1", "prop2" };
+    Float distance = 0.8f;
+    // when
+    String arg = AskArgument.builder()
+            .question(question).properties(properties).distance(distance)
+            .build().build();
+    // then
+    assertNotNull(arg);
+    assertEquals("ask: {question: \"What's your name?\" properties: [\"prop1\", \"prop2\"] distance: 0.8}", arg);
+  }
+
+  @Test
   public void testBuildWithAutocorrect() {
     // given
     String question = "What's your name?";
@@ -72,6 +87,21 @@ public class AskArgumentTest extends TestCase {
   }
 
   @Test
+  public void testBuildWithPropertiesAndDistanceAndAutocorrect() {
+    // given
+    String question = "What's your name?";
+    String[] properties = new String[]{ "prop1", "prop2" };
+    Float distance = 0.8f;
+    // when
+    String arg = AskArgument.builder()
+            .question(question).properties(properties).distance(distance).autocorrect(false)
+            .build().build();
+    // then
+    assertNotNull(arg);
+    assertEquals("ask: {question: \"What's your name?\" properties: [\"prop1\", \"prop2\"] distance: 0.8 autocorrect: false}", arg);
+  }
+
+  @Test
   public void testBuildWithPropertiesAndCertaintyAndAutocorrectAndRerank() {
     // given
     String question = "What's your name?";
@@ -84,6 +114,21 @@ public class AskArgumentTest extends TestCase {
     // then
     assertNotNull(arg);
     assertEquals("ask: {question: \"What's your name?\" properties: [\"prop1\", \"prop2\"] certainty: 0.8 autocorrect: false rerank: true}", arg);
+  }
+
+  @Test
+  public void testBuildWithPropertiesAndDistanceAndAutocorrectAndRerank() {
+    // given
+    String question = "What's your name?";
+    String[] properties = new String[]{ "prop1", "prop2" };
+    Float distance = 0.8f;
+    // when
+    String arg = AskArgument.builder()
+            .question(question).properties(properties).distance(distance).autocorrect(false).rerank(true)
+            .build().build();
+    // then
+    assertNotNull(arg);
+    assertEquals("ask: {question: \"What's your name?\" properties: [\"prop1\", \"prop2\"] distance: 0.8 autocorrect: false rerank: true}", arg);
   }
 
   @Test

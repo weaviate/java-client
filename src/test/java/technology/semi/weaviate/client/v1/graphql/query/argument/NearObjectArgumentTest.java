@@ -5,7 +5,7 @@ import org.junit.Assert;
 
 public class NearObjectArgumentTest extends TestCase {
 
-  public void testBuild() {
+  public void testBuildWithCertainty() {
     // given
     NearObjectArgument nearObject = NearObjectArgument.builder()
             .id("id").beacon("beacon").certainty(0.8f)
@@ -27,7 +27,18 @@ public class NearObjectArgumentTest extends TestCase {
     Assert.assertEquals("nearObject: {id: \"id\" beacon: \"beacon\"}", arg);
   }
 
-  public void testBuildWithoutId() {
+  public void testBuildWithDistance() {
+    // given
+    NearObjectArgument nearObject = NearObjectArgument.builder()
+            .id("id").beacon("beacon").distance(0.8f)
+            .build();
+    // when
+    String arg = nearObject.build();
+    // then
+    Assert.assertEquals("nearObject: {id: \"id\" beacon: \"beacon\" distance: 0.8}", arg);
+  }
+
+  public void testBuildWithCertaintyAndWithoutId() {
     // given
     NearObjectArgument nearObject = NearObjectArgument.builder()
             .beacon("beacon").certainty(0.4f)
@@ -38,7 +49,18 @@ public class NearObjectArgumentTest extends TestCase {
     Assert.assertEquals("nearObject: {beacon: \"beacon\" certainty: 0.4}", arg);
   }
 
-  public void testBuildWithoutBeacon() {
+  public void testBuildWithDistanceAndWithoutId() {
+    // given
+    NearObjectArgument nearObject = NearObjectArgument.builder()
+            .beacon("beacon").distance(0.4f)
+            .build();
+    // when
+    String arg = nearObject.build();
+    // then
+    Assert.assertEquals("nearObject: {beacon: \"beacon\" distance: 0.4}", arg);
+  }
+
+  public void testBuildWithCertaintyWithoutBeacon() {
     // given
     NearObjectArgument nearObject = NearObjectArgument.builder()
             .id("id").certainty(0.1f)
@@ -47,6 +69,17 @@ public class NearObjectArgumentTest extends TestCase {
     String arg = nearObject.build();
     // then
     Assert.assertEquals("nearObject: {id: \"id\" certainty: 0.1}", arg);
+  }
+
+  public void testBuildWithDistanceWithoutBeacon() {
+    // given
+    NearObjectArgument nearObject = NearObjectArgument.builder()
+            .id("id").distance(0.1f)
+            .build();
+    // when
+    String arg = nearObject.build();
+    // then
+    Assert.assertEquals("nearObject: {id: \"id\" distance: 0.1}", arg);
   }
 
   public void testBuildWithoutAll() {
