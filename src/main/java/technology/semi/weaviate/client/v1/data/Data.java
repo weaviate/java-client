@@ -10,33 +10,35 @@ import technology.semi.weaviate.client.v1.data.api.ReferenceCreator;
 import technology.semi.weaviate.client.v1.data.api.ReferenceDeleter;
 import technology.semi.weaviate.client.v1.data.api.ReferenceReplacer;
 import technology.semi.weaviate.client.v1.data.builder.ReferencePayloadBuilder;
-import technology.semi.weaviate.client.v1.schema.api.ObjectsChecker;
+import technology.semi.weaviate.client.v1.data.api.ObjectsChecker;
 
 public class Data {
   private final Config config;
+  private final String version;
 
-  public Data(Config config) {
+  public Data(Config config, String version) {
     this.config = config;
+    this.version = version;
   }
 
   public ObjectCreator creator() {
-    return new ObjectCreator(config);
+    return new ObjectCreator(config, version);
   }
 
   public ObjectsGetter objectsGetter() {
-    return new ObjectsGetter(config);
+    return new ObjectsGetter(config, version);
   }
 
   public ObjectsChecker checker() {
-    return new ObjectsChecker(config);
+    return new ObjectsChecker(config, version);
   }
 
   public ObjectDeleter deleter() {
-    return new ObjectDeleter(config);
+    return new ObjectDeleter(config, version);
   }
 
   public ObjectUpdater updater() {
-    return new ObjectUpdater(config);
+    return new ObjectUpdater(config, version);
   }
 
   public ObjectValidator validator() {

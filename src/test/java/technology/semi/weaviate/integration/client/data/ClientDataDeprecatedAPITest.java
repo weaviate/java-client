@@ -5,9 +5,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import technology.semi.weaviate.client.Config;
@@ -20,19 +26,12 @@ import technology.semi.weaviate.client.v1.schema.model.Schema;
 import technology.semi.weaviate.client.v1.schema.model.WeaviateClass;
 import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-
-public class ClientDataTest {
+public class ClientDataDeprecatedAPITest {
   private String address;
 
   @ClassRule
   public static DockerComposeContainer compose = new DockerComposeContainer(
-          new File("src/test/resources/docker-compose-test.yaml")
+          new File("src/test/resources/deprecated-api/docker-compose-deprecated-api-test.yaml")
   ).withExposedService("weaviate_1", 8080, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200));
 
   @Before
@@ -50,10 +49,10 @@ public class ClientDataTest {
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
     String objTID = "abefd256-8574-442b-9293-9205193737ee";
     String objAID = "565da3b6-60b3-40e5-ba21-e6bfe5dbba91";
-    Map<String, java.lang.Object> propertiesSchemaT = new HashMap<>();
+    Map<String, Object> propertiesSchemaT = new HashMap<>();
     propertiesSchemaT.put("name", "Hawaii");
     propertiesSchemaT.put("description", "Universally accepted to be the best pizza ever created.");
-    Map<String, java.lang.Object> propertiesSchemaA = new HashMap<>();
+    Map<String, Object> propertiesSchemaA = new HashMap<>();
     propertiesSchemaA.put("name", "ChickenSoup");
     propertiesSchemaA.put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
     // when
@@ -68,8 +67,8 @@ public class ClientDataTest {
             .withID(objAID)
             .withProperties(propertiesSchemaA)
             .run();
-    Result<List<WeaviateObject>> objectsT = client.data().objectsGetter().withClassName("Pizza").withID(objTID).run();
-    Result<List<WeaviateObject>> objectsA = client.data().objectsGetter().withClassName("Soup").withID(objAID).run();
+    Result<List<WeaviateObject>> objectsT = client.data().objectsGetter().withID(objTID).run();
+    Result<List<WeaviateObject>> objectsA = client.data().objectsGetter().withID(objAID).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(objectT);
@@ -105,7 +104,7 @@ public class ClientDataTest {
     String objTID = "abefd256-8574-442b-9293-9205193737ee";
     String name = "Zażółć gęślą jaźń";
     String description = "test äüëö";
-    Map<String, java.lang.Object> propertiesSchemaT = new HashMap<>();
+    Map<String, Object> propertiesSchemaT = new HashMap<>();
     propertiesSchemaT.put("name", name);
     propertiesSchemaT.put("description", description);
     // when
@@ -115,7 +114,7 @@ public class ClientDataTest {
             .withID(objTID)
             .withProperties(propertiesSchemaT)
             .run();
-    Result<List<WeaviateObject>> objectsT = client.data().objectsGetter().withClassName("Pizza").withID(objTID).run();
+    Result<List<WeaviateObject>> objectsT = client.data().objectsGetter().withID(objTID).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(objectT);
@@ -140,19 +139,19 @@ public class ClientDataTest {
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
     // when
     testGenerics.createWeaviateTestSchemaFood(client);
-    Result<WeaviateObject> pizzaObj1 = client.data().creator().withClassName("Pizza").withProperties(new HashMap<String, java.lang.Object>() {{
+    Result<WeaviateObject> pizzaObj1 = client.data().creator().withClassName("Pizza").withProperties(new HashMap<String, Object>() {{
       put("name", "Margherita");
       put("description", "plain");
     }}).run();
-    Result<WeaviateObject> pizzaObj2 = client.data().creator().withClassName("Pizza").withProperties(new HashMap<String, java.lang.Object>() {{
+    Result<WeaviateObject> pizzaObj2 = client.data().creator().withClassName("Pizza").withProperties(new HashMap<String, Object>() {{
       put("name", "Pepperoni");
       put("description", "meat");
     }}).run();
-    Result<WeaviateObject> soupObj1 = client.data().creator().withClassName("Soup").withProperties(new HashMap<String, java.lang.Object>() {{
+    Result<WeaviateObject> soupObj1 = client.data().creator().withClassName("Soup").withProperties(new HashMap<String, Object>() {{
       put("name", "Chicken");
       put("description", "plain");
     }}).run();
-    Result<WeaviateObject> soupObj2 = client.data().creator().withClassName("Soup").withProperties(new HashMap<String, java.lang.Object>() {{
+    Result<WeaviateObject> soupObj2 = client.data().creator().withClassName("Soup").withProperties(new HashMap<String, Object>() {{
       put("name", "Tofu");
       put("description", "vegetarian");
     }}).run();
@@ -188,10 +187,10 @@ public class ClientDataTest {
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
     String objTID = "abefd256-8574-442b-9293-9205193737ee";
     String objAID = "565da3b6-60b3-40e5-ba21-e6bfe5dbba91";
-    Map<String, java.lang.Object> propertiesSchemaT = new HashMap<>();
+    Map<String, Object> propertiesSchemaT = new HashMap<>();
     propertiesSchemaT.put("name", "Hawaii");
     propertiesSchemaT.put("description", "Universally accepted to be the best pizza ever created.");
-    Map<String, java.lang.Object> propertiesSchemaA = new HashMap<>();
+    Map<String, Object> propertiesSchemaA = new HashMap<>();
     propertiesSchemaA.put("name", "ChickenSoup");
     propertiesSchemaA.put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
     // when
@@ -206,34 +205,30 @@ public class ClientDataTest {
             .withID(objAID)
             .withProperties(propertiesSchemaA)
             .run();
-    Result<List<WeaviateObject>> objectsT = client.data().objectsGetter().withClassName("Pizza").withID(objTID).run();
-    Result<List<WeaviateObject>> objectsA = client.data().objectsGetter().withClassName("Soup").withID(objAID).run();
+    Result<List<WeaviateObject>> objectsT = client.data().objectsGetter().withID(objTID).run();
+    Result<List<WeaviateObject>> objectsA = client.data().objectsGetter().withID(objAID).run();
     Result<List<WeaviateObject>> objsAdditionalT = client.data()
-            .objectsGetter()
-            .withID(objTID)
-            .withClassName("Pizza")
+            .objectsGetter().withID(objTID)
             .withAdditional("classification")
             .withAdditional("nearestNeighbors")
             .withVector()
             .run();
     Result<List<WeaviateObject>> objsAdditionalA = client.data()
-            .objectsGetter()
-            .withID(objAID)
-            .withClassName("Soup")
+            .objectsGetter().withID(objAID)
             .withAdditional("classification")
             .withAdditional("nearestNeighbors")
             .withAdditional("interpretation")
             .withVector()
             .run();
     Result<List<WeaviateObject>> objsAdditionalA1 = client.data()
-            .objectsGetter().withID(objAID).withClassName("Soup")
+            .objectsGetter().withID(objAID)
             .run();
     Result<List<WeaviateObject>> objsAdditionalA2 = client.data()
-            .objectsGetter().withID(objAID).withClassName("Soup")
+            .objectsGetter().withID(objAID)
             .withAdditional("interpretation")
             .run();
     Result<List<WeaviateObject>> objsAdditionalAError = client.data()
-            .objectsGetter().withID(objAID).withClassName("Soup")
+            .objectsGetter().withID(objAID)
             .withAdditional("featureProjection")
             .run();
     testGenerics.cleanupWeaviate(client);
@@ -289,10 +284,10 @@ public class ClientDataTest {
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
     String objTID = "abefd256-8574-442b-9293-9205193737ee";
     String objAID = "565da3b6-60b3-40e5-ba21-e6bfe5dbba91";
-    Map<String, java.lang.Object> propertiesSchemaT = new HashMap<>();
+    Map<String, Object> propertiesSchemaT = new HashMap<>();
     propertiesSchemaT.put("name", "Hawaii");
     propertiesSchemaT.put("description", "Universally accepted to be the best pizza ever created.");
-    Map<String, java.lang.Object> propertiesSchemaA = new HashMap<>();
+    Map<String, Object> propertiesSchemaA = new HashMap<>();
     propertiesSchemaA.put("name", "ChickenSoup");
     propertiesSchemaA.put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
     // when
@@ -307,10 +302,10 @@ public class ClientDataTest {
             .withID(objAID)
             .withProperties(propertiesSchemaA)
             .run();
-    Result<Boolean> deleteObjT = client.data().deleter().withClassName("Pizza").withID(objTID).run();
-    Result<List<WeaviateObject>> objTlist = client.data().objectsGetter().withClassName("Pizza").withID(objTID).run();
-    Result<Boolean> deleteObjA = client.data().deleter().withClassName("Soup").withID(objAID).run();
-    Result<List<WeaviateObject>> objAlist = client.data().objectsGetter().withClassName("Soup").withID(objAID).run();
+    Result<Boolean> deleteObjT = client.data().deleter().withID(objTID).run();
+    Result<List<WeaviateObject>> objTlist = client.data().objectsGetter().withID(objTID).run();
+    Result<Boolean> deleteObjA = client.data().deleter().withID(objAID).run();
+    Result<List<WeaviateObject>> objAlist = client.data().objectsGetter().withID(objAID).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(objectT);
@@ -337,10 +332,10 @@ public class ClientDataTest {
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
     String objTID = "abefd256-8574-442b-9293-9205193737ee";
     String objAID = "565da3b6-60b3-40e5-ba21-e6bfe5dbba91";
-    Map<String, java.lang.Object> propertiesSchemaT = new HashMap<>();
+    Map<String, Object> propertiesSchemaT = new HashMap<>();
     propertiesSchemaT.put("name", "Random");
     propertiesSchemaT.put("description", "Missing description");
-    Map<String, java.lang.Object> propertiesSchemaA = new HashMap<>();
+    Map<String, Object> propertiesSchemaA = new HashMap<>();
     propertiesSchemaA.put("name", "water");
     propertiesSchemaA.put("description", "missing description");
     // when
@@ -358,7 +353,7 @@ public class ClientDataTest {
     Result<Boolean> updateObjectT = client.data().updater()
             .withClassName("Pizza")
             .withID(objTID)
-            .withProperties(new HashMap<String, java.lang.Object>() {{
+            .withProperties(new HashMap<String, Object>() {{
               put("name", "Hawaii");
               put("description", "Universally accepted to be the best pizza ever created.");
             }})
@@ -366,13 +361,13 @@ public class ClientDataTest {
     Result<Boolean> updateObjectA = client.data().updater()
             .withClassName("Soup")
             .withID(objAID)
-            .withProperties(new HashMap<String, java.lang.Object>() {{
+            .withProperties(new HashMap<String, Object>() {{
               put("name", "ChickenSoup");
               put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
             }})
             .run();
-    Result<List<WeaviateObject>> updatedObjsT = client.data().objectsGetter().withClassName("Pizza").withID(objTID).run();
-    Result<List<WeaviateObject>> updatedObjsA = client.data().objectsGetter().withClassName("Soup").withID(objAID).run();
+    Result<List<WeaviateObject>> updatedObjsT = client.data().objectsGetter().withID(objTID).run();
+    Result<List<WeaviateObject>> updatedObjsA = client.data().objectsGetter().withID(objAID).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(objectT);
@@ -406,10 +401,10 @@ public class ClientDataTest {
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
     String objTID = "abefd256-8574-442b-9293-9205193737ee";
     String objAID = "565da3b6-60b3-40e5-ba21-e6bfe5dbba91";
-    Map<String, java.lang.Object> propertiesSchemaT = new HashMap<>();
+    Map<String, Object> propertiesSchemaT = new HashMap<>();
     propertiesSchemaT.put("name", "Hawaii");
     propertiesSchemaT.put("description", "Missing description");
-    Map<String, java.lang.Object> propertiesSchemaA = new HashMap<>();
+    Map<String, Object> propertiesSchemaA = new HashMap<>();
     propertiesSchemaA.put("name", "ChickenSoup");
     propertiesSchemaA.put("description", "missing description");
     // when
@@ -427,7 +422,7 @@ public class ClientDataTest {
     Result<Boolean> mergeObjectT = client.data().updater()
             .withClassName("Pizza")
             .withID(objTID)
-            .withProperties(new HashMap<String, java.lang.Object>() {{
+            .withProperties(new HashMap<String, Object>() {{
               put("description", "Universally accepted to be the best pizza ever created.");
             }})
             .withMerge()
@@ -435,13 +430,13 @@ public class ClientDataTest {
     Result<Boolean> mergeObjectA = client.data().updater()
             .withClassName("Soup")
             .withID(objAID)
-            .withProperties(new HashMap<String, java.lang.Object>() {{
+            .withProperties(new HashMap<String, Object>() {{
               put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
             }})
             .withMerge()
             .run();
-    Result<List<WeaviateObject>> mergedObjsT = client.data().objectsGetter().withClassName("Pizza").withID(objTID).run();
-    Result<List<WeaviateObject>> mergeddObjsA = client.data().objectsGetter().withClassName("Soup").withID(objAID).run();
+    Result<List<WeaviateObject>> mergedObjsT = client.data().objectsGetter().withID(objTID).run();
+    Result<List<WeaviateObject>> mergeddObjsA = client.data().objectsGetter().withID(objAID).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(objectT);
@@ -475,10 +470,10 @@ public class ClientDataTest {
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
     String objTID = "abefd256-8574-442b-9293-9205193737ee";
     String objAID = "565da3b6-60b3-40e5-ba21-e6bfe5dbba91";
-    Map<String, java.lang.Object> propertiesSchemaT = new HashMap<>();
+    Map<String, Object> propertiesSchemaT = new HashMap<>();
     propertiesSchemaT.put("name", "Hawaii");
     propertiesSchemaT.put("description", "Universally accepted to be the best pizza ever created.");
-    Map<String, java.lang.Object> propertiesSchemaA = new HashMap<>();
+    Map<String, Object> propertiesSchemaA = new HashMap<>();
     propertiesSchemaA.put("name", "ChickenSoup");
     propertiesSchemaA.put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
     // when
@@ -550,9 +545,7 @@ public class ClientDataTest {
             .withProperties(propertiesSchemaA)
             .run();
     Result<List<WeaviateObject>> objsAdditionalT = client.data()
-            .objectsGetter()
-            .withID(objTID)
-            .withClassName("Pizza")
+            .objectsGetter().withID(objTID)
             .withAdditional("featureProjection")
             .withVector()
             .run();
@@ -602,7 +595,7 @@ public class ClientDataTest {
             }})
             .build();
     String objTID = "abefd256-8574-442b-9293-9205193737ee";
-    Map<String, java.lang.Object> propertiesSchemaT = new HashMap<>();
+    Map<String, Object> propertiesSchemaT = new HashMap<>();
     propertiesSchemaT.put("stringArray", new String[]{"a", "b"});
     propertiesSchemaT.put("textArray", new String[]{"c", "d"});
     propertiesSchemaT.put("intArray", new Integer[]{1, 2});
@@ -616,7 +609,7 @@ public class ClientDataTest {
             .withID(objTID)
             .withProperties(propertiesSchemaT)
             .run();
-    Result<List<WeaviateObject>> objectsT = client.data().objectsGetter().withClassName("ClassArrays").withID(objTID).run();
+    Result<List<WeaviateObject>> objectsT = client.data().objectsGetter().withID(objTID).run();
     Result<Boolean> deleteStatus = client.schema().allDeleter().run();
     Result<Schema> schemaAfterDelete = client.schema().getter().run();
     // then
@@ -676,8 +669,7 @@ public class ClientDataTest {
             .withProperties(propertiesSchemaT)
             .run();
     Result<List<WeaviateObject>> objT = client.data()
-            .objectsGetter()
-            .withClassName("ClassCustomVector").withID(objTID)
+            .objectsGetter().withID(objTID)
             .withVector()
             .run();
     Result<Boolean> deleteStatus = client.schema().allDeleter().run();
@@ -711,10 +703,10 @@ public class ClientDataTest {
     String objTID = "abefd256-8574-442b-9293-9205193737ee";
     String objAID = "565da3b6-60b3-40e5-ba21-e6bfe5dbba91";
     String nonExistentObjectID = "11111111-1111-1111-aaaa-aaaaaaaaaaaa";
-    Map<String, java.lang.Object> propertiesSchemaT = new HashMap<>();
+    Map<String, Object> propertiesSchemaT = new HashMap<>();
     propertiesSchemaT.put("name", "Hawaii");
     propertiesSchemaT.put("description", "Universally accepted to be the best pizza ever created.");
-    Map<String, java.lang.Object> propertiesSchemaA = new HashMap<>();
+    Map<String, Object> propertiesSchemaA = new HashMap<>();
     propertiesSchemaA.put("name", "ChickenSoup");
     propertiesSchemaA.put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
     // when
@@ -730,26 +722,22 @@ public class ClientDataTest {
             .withProperties(propertiesSchemaA)
             .run();
     // check object existence
-    Result<Boolean> checkObjT = client.data().checker().withClassName("Pizza").withID(objTID).run();
-    Result<Boolean> checkObjA = client.data().checker().withClassName("Soup").withID(objAID).run();
+    Result<Boolean> checkObjT = client.data().checker().withID(objTID).run();
+    Result<Boolean> checkObjA = client.data().checker().withID(objAID).run();
     Result<List<WeaviateObject>> objA = client.data()
-            .objectsGetter()
-            .withID(objAID)
-            .withClassName("Soup")
+            .objectsGetter().withID(objAID)
             .withVector()
             .run();
     Result<List<WeaviateObject>> objT = client.data()
-            .objectsGetter()
-            .withID(objTID)
-            .withClassName("Pizza")
+            .objectsGetter().withID(objTID)
             .withVector()
             .run();
-    Result<Boolean> checkNonexistentObject = client.data().checker().withClassName("Pizza").withID(nonExistentObjectID).run();
+    Result<Boolean> checkNonexistentObject = client.data().checker().withID(nonExistentObjectID).run();
     // delete all objects from Weaviate
     Result<Boolean> deleteStatus = client.schema().allDeleter().run();
     // check object's existence status after clean up
-    Result<Boolean> checkObjTAfterDelete = client.data().checker().withClassName("Pizza").withID(objTID).run();
-    Result<Boolean> checkObjAAfterDelete = client.data().checker().withClassName("Soup").withID(objAID).run();
+    Result<Boolean> checkObjTAfterDelete = client.data().checker().withID(objTID).run();
+    Result<Boolean> checkObjAAfterDelete = client.data().checker().withID(objAID).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(objectT);
@@ -786,7 +774,7 @@ public class ClientDataTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     String objID = "TODO_4";
-    Map<String, java.lang.Object> propertiesSchemaT = new HashMap<>();
+    Map<String, Object> propertiesSchemaT = new HashMap<>();
     propertiesSchemaT.put("name", "name");
     propertiesSchemaT.put("description", "description");
     // when
@@ -795,7 +783,7 @@ public class ClientDataTest {
             .withClassName("Pizza")
             .withProperties(propertiesSchemaT)
             .run();
-    Result<List<WeaviateObject>> objectsT = client.data().objectsGetter().withClassName("Pizza").withID(objID).run();
+    Result<List<WeaviateObject>> objectsT = client.data().objectsGetter().withID(objID).run();
     Result<Boolean> deleteStatus = client.schema().allDeleter().run();
     Result<Schema> schemaAfterDelete = client.schema().getter().run();
     // then

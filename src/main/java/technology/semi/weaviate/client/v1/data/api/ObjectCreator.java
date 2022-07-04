@@ -9,16 +9,19 @@ import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
+import technology.semi.weaviate.client.v1.data.util.ObjectsPathBuilder;
 
 public class ObjectCreator extends BaseClient<WeaviateObject> implements ClientResult<WeaviateObject> {
 
+  private final String version;
   private String uuid;
   private String className;
   private Map<String, Object> properties;
   private Float[] vector;
 
-  public ObjectCreator(Config config) {
+  public ObjectCreator(Config config, String version) {
     super(config);
+    this.version = version;
   }
 
   public ObjectCreator withClassName(String className) {
@@ -56,7 +59,11 @@ public class ObjectCreator extends BaseClient<WeaviateObject> implements ClientR
             .vector(vector)
             .id(getID())
             .build();
-    Response<WeaviateObject> resp = sendPostRequest("/objects", obj, WeaviateObject.class);
+    Response<WeaviateObject> resp = sendPostRequest(getPath(), obj, WeaviateObject.class);
     return new Result<>(resp);
+  }
+
+  private String getPath() {
+    return ObjectsPathBuilder.builder().build().buildPath(this.version);
   }
 }
