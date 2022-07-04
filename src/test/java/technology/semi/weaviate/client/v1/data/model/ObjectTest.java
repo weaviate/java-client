@@ -87,7 +87,7 @@ public class ObjectTest extends TestCase {
       put("description", "Used only to check if reference can be added.");
       put("otherFoods", new ObjectReference[]{
               ObjectReference.builder()
-                      .beacon("weaviate://localhost/abefd256-8574-442b-9293-9205193737ee")
+                      .beacon("weaviate://localhost/someClass/abefd256-8574-442b-9293-9205193737ee")
                       .build()
       });
       put("rating", "9/10");
@@ -105,6 +105,6 @@ public class ObjectTest extends TestCase {
     // then
     Assert.assertNotNull(result);
     Assert.assertTrue(result.contains("otherFoods"));
-    Assert.assertTrue(result.contains("weaviate://localhost/abefd256-8574-442b-9293-9205193737ee"));
+    Assert.assertTrue(result.contains("weaviate://localhost/someClass/abefd256-8574-442b-9293-9205193737ee"));
   }
 }

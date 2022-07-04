@@ -1,6 +1,7 @@
 package technology.semi.weaviate.client.v1.data.api;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import technology.semi.weaviate.client.Config;
@@ -9,19 +10,19 @@ import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
-import technology.semi.weaviate.client.v1.data.util.ObjectsPathBuilder;
+import technology.semi.weaviate.client.v1.data.util.ObjectsPath;
 
 public class ObjectCreator extends BaseClient<WeaviateObject> implements ClientResult<WeaviateObject> {
 
-  private final String version;
+  private final ObjectsPath objectsPath;
   private String uuid;
   private String className;
   private Map<String, Object> properties;
   private Float[] vector;
 
-  public ObjectCreator(Config config, String version) {
+  public ObjectCreator(Config config, ObjectsPath objectsPath) {
     super(config);
-    this.version = version;
+    this.objectsPath = Objects.requireNonNull(objectsPath);
   }
 
   public ObjectCreator withClassName(String className) {
@@ -53,17 +54,14 @@ public class ObjectCreator extends BaseClient<WeaviateObject> implements ClientR
 
   @Override
   public Result<WeaviateObject> run() {
+    String path = objectsPath.buildCreate(ObjectsPath.Params.builder().build());
     WeaviateObject obj = WeaviateObject.builder()
             .className(className)
             .properties(properties)
             .vector(vector)
             .id(getID())
             .build();
-    Response<WeaviateObject> resp = sendPostRequest(getPath(), obj, WeaviateObject.class);
+    Response<WeaviateObject> resp = sendPostRequest(path, obj, WeaviateObject.class);
     return new Result<>(resp);
-  }
-
-  private String getPath() {
-    return ObjectsPathBuilder.builder().build().buildPath(this.version);
   }
 }

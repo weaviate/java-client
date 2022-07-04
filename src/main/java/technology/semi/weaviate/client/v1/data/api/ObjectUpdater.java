@@ -1,6 +1,7 @@
 package technology.semi.weaviate.client.v1.data.api;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.BooleanUtils;
@@ -13,19 +14,19 @@ import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.base.WeaviateErrorMessage;
 import technology.semi.weaviate.client.base.WeaviateErrorResponse;
 import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
-import technology.semi.weaviate.client.v1.data.util.ObjectsPathBuilder;
+import technology.semi.weaviate.client.v1.data.util.ObjectsPath;
 
 public class ObjectUpdater extends BaseClient<WeaviateObject> implements ClientResult<Boolean> {
 
-  private final String version;
+  private final ObjectsPath objectsPath;
   private String id;
   private String className;
   private Map<String, Object> properties;
   private Boolean withMerge;
 
-  public ObjectUpdater(Config config, String version) {
+  public ObjectUpdater(Config config, ObjectsPath objectsPath) {
     super(config);
-    this.version = version;
+    this.objectsPath = Objects.requireNonNull(objectsPath);
   }
 
   public ObjectUpdater withClassName(String className) {
@@ -57,21 +58,20 @@ public class ObjectUpdater extends BaseClient<WeaviateObject> implements ClientR
               .error(Stream.of(errorMessage).collect(Collectors.toList())).build();
       return new Result<>(500, false, errors);
     }
+    String path = objectsPath.buildUpdate(ObjectsPath.Params.builder()
+            .id(id)
+            .className(className)
+            .build());
     WeaviateObject obj = WeaviateObject.builder()
             .className(className)
             .properties(properties)
             .id(id)
             .build();
-    String path = getPath(id, className);
     if (BooleanUtils.isTrue(withMerge)) {
       Response<WeaviateObject> resp = sendPatchRequest(path, obj, WeaviateObject.class);
       return new Result<>(resp.getStatusCode(), resp.getStatusCode() == 204, resp.getErrors());
     }
     Response<WeaviateObject> resp = sendPutRequest(path, obj, WeaviateObject.class);
     return new Result<>(resp.getStatusCode(), resp.getStatusCode() == 200, resp.getErrors());
-  }
-
-  private String getPath(String id, String className) {
-    return ObjectsPathBuilder.builder().id(id).className(className).build().buildPath(this.version);
   }
 }

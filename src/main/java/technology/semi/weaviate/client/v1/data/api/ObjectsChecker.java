@@ -1,5 +1,6 @@
 package technology.semi.weaviate.client.v1.data.api;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
@@ -10,17 +11,17 @@ import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.base.WeaviateErrorMessage;
 import technology.semi.weaviate.client.base.WeaviateErrorResponse;
-import technology.semi.weaviate.client.v1.data.util.ObjectsPathBuilder;
+import technology.semi.weaviate.client.v1.data.util.ObjectsPath;
 
 public class ObjectsChecker extends BaseClient<String> implements ClientResult<Boolean> {
 
-  private final String version;
+  private final ObjectsPath objectsPath;
   private String id;
   private String className;
 
-  public ObjectsChecker(Config config, String version) {
+  public ObjectsChecker(Config config, ObjectsPath objectsPath) {
     super(config);
-    this.version = version;
+    this.objectsPath = Objects.requireNonNull(objectsPath);
   }
 
   public ObjectsChecker withID(String id) {
@@ -42,12 +43,11 @@ public class ObjectsChecker extends BaseClient<String> implements ClientResult<B
               .error(Stream.of(errorMessage).collect(Collectors.toList())).build();
       return new Result<>(500, false, errors);
     }
-    String path = getPath(this.id, this.className);
+    String path = objectsPath.buildCheck(ObjectsPath.Params.builder()
+            .id(id)
+            .className(className)
+            .build());
     Response<String> resp = sendHeadRequest(path, String.class);
     return new Result<>(resp.getStatusCode(), resp.getStatusCode() == 204, resp.getErrors());
-  }
-
-  private String getPath(String id, String className) {
-    return ObjectsPathBuilder.builder().id(id).className(className).build().buildPath(this.version);
   }
 }

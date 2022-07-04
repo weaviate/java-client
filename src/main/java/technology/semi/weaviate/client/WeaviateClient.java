@@ -12,11 +12,11 @@ import technology.semi.weaviate.client.v1.schema.Schema;
 
 public class WeaviateClient {
   private final Config config;
-  private final String version;
+  private final String dbVersion;
 
   public WeaviateClient(Config config) {
     this.config = config;
-    this.version = getWeaviateVersion();
+    this.dbVersion = getWeaviateVersion();
   }
 
   public Misc misc() {
@@ -28,11 +28,11 @@ public class WeaviateClient {
   }
 
   public Data data() {
-    return new Data(config, version);
+    return new Data(config, dbVersion);
   }
 
   public Batch batch() {
-    return new Batch(config);
+    return new Batch(config, dbVersion);
   }
 
   public Contextionary c11y() {
