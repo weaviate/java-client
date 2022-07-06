@@ -11,66 +11,70 @@ import java.util.function.BiConsumer;
 
 public class BeaconPath {
 
-    private final DbVersionSupport support;
+  private final DbVersionSupport support;
 
-    public BeaconPath(DbVersionSupport support) {
-        this.support = support;
-    }
+  public BeaconPath(DbVersionSupport support) {
+    this.support = support;
+  }
 
-    public String buildBatchFrom(Params pathParams) {
-        return build(pathParams, this::addClassName, this::addId, this::addProperty);
-    }
-    public String buildBatchTo(Params pathParams) {
-        return build(pathParams, this::addClassNameDeprecatedNotSupportedCheck, this::addId);
-    }
-    public String buildSingle(Params pathParams) {
-        return build(pathParams, this::addClassNameDeprecatedNotSupportedCheck, this::addId);
-    }
+  public String buildBatchFrom(Params pathParams) {
+    return build(pathParams, this::addClassName, this::addId, this::addProperty);
+  }
 
-    @SafeVarargs
-    private final String build(Params pathParams, BiConsumer<StringBuilder, Params>... consumers) {
-        Objects.requireNonNull(pathParams);
+  public String buildBatchTo(Params pathParams) {
+    return build(pathParams, this::addClassNameDeprecatedNotSupportedCheck, this::addId);
+  }
 
-        StringBuilder path = new StringBuilder("weaviate://localhost");
-        Arrays.stream(consumers).forEach(consumer -> consumer.accept(path, pathParams));
-        return path.toString();
-    }
+  public String buildSingle(Params pathParams) {
+    return build(pathParams, this::addClassNameDeprecatedNotSupportedCheck, this::addId);
+  }
 
-    private void addClassNameDeprecatedNotSupportedCheck(StringBuilder path, Params pathParams) {
-        if (support.supportsClassNameNamespacedEndpoints()) {
-            if (StringUtils.isNotBlank(pathParams.className)) {
-                path.append("/").append(StringUtils.trim(pathParams.className));
-            } else {
-                support.warnDeprecatedNonClassNameNamespacedEndpointsForBeacons();
-            }
-        } else if (StringUtils.isNotBlank(pathParams.className)) {
-            support.warnUsageOfNotSupportedClassNamespacedEndpointsForBeacons();
-        }
+  @SafeVarargs
+  private final String build(Params pathParams, BiConsumer<StringBuilder, Params>... modifiers) {
+    Objects.requireNonNull(pathParams);
+
+    StringBuilder path = new StringBuilder("weaviate://localhost");
+    Arrays.stream(modifiers).forEach(consumer -> consumer.accept(path, pathParams));
+    return path.toString();
+  }
+
+  private void addClassNameDeprecatedNotSupportedCheck(StringBuilder path, Params pathParams) {
+    if (support.supportsClassNameNamespacedEndpoints()) {
+      if (StringUtils.isNotBlank(pathParams.className)) {
+        path.append("/").append(StringUtils.trim(pathParams.className));
+      } else {
+        support.warnDeprecatedNonClassNameNamespacedEndpointsForBeacons();
+      }
+    } else if (StringUtils.isNotBlank(pathParams.className)) {
+      support.warnNotSupportedClassNamespacedEndpointsForBeacons();
     }
-    private void addClassName(StringBuilder path, Params pathParams) {
-        if (StringUtils.isNotBlank(pathParams.className)) {
-            path.append("/").append(StringUtils.trim(pathParams.className));
-        }
+  }
+
+  private void addClassName(StringBuilder path, Params pathParams) {
+    if (StringUtils.isNotBlank(pathParams.className)) {
+      path.append("/").append(StringUtils.trim(pathParams.className));
     }
-    private void addId(StringBuilder path, Params pathParams) {
-        if (StringUtils.isNotBlank(pathParams.id)) {
-            path.append("/").append(StringUtils.trim(pathParams.id));
-        }
+  }
+
+  private void addId(StringBuilder path, Params pathParams) {
+    if (StringUtils.isNotBlank(pathParams.id)) {
+      path.append("/").append(StringUtils.trim(pathParams.id));
     }
-    private void addProperty(StringBuilder path, Params pathParams) {
-        if (StringUtils.isNotBlank(pathParams.property)) {
-            path.append("/").append(StringUtils.trim(pathParams.property));
-        }
+  }
+
+  private void addProperty(StringBuilder path, Params pathParams) {
+    if (StringUtils.isNotBlank(pathParams.property)) {
+      path.append("/").append(StringUtils.trim(pathParams.property));
     }
+  }
 
 
+  @Builder
+  @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+  public static class Params {
 
-    @Builder
-    @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-    public static class Params {
-
-        String id;
-        String className;
-        String property;
-    }
+    String id;
+    String className;
+    String property;
+  }
 }
