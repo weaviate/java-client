@@ -1,6 +1,8 @@
 package technology.semi.weaviate.client.v1.batch;
 
 import technology.semi.weaviate.client.Config;
+import technology.semi.weaviate.client.base.util.BeaconPath;
+import technology.semi.weaviate.client.base.util.DbVersionSupport;
 import technology.semi.weaviate.client.v1.batch.api.ObjectsBatchDeleter;
 import technology.semi.weaviate.client.v1.batch.api.ObjectsBatcher;
 import technology.semi.weaviate.client.v1.batch.api.ReferencePayloadBuilder;
@@ -8,9 +10,11 @@ import technology.semi.weaviate.client.v1.batch.api.ReferencesBatcher;
 
 public class Batch {
   private final Config config;
+  private final BeaconPath beaconPath;
 
-  public Batch(Config config) {
+  public Batch(Config config, String dbVersion) {
     this.config = config;
+    this.beaconPath = new BeaconPath(new DbVersionSupport(dbVersion));
   }
 
   public ObjectsBatcher objectsBatcher() {
@@ -22,7 +26,7 @@ public class Batch {
   }
 
   public ReferencePayloadBuilder referencePayloadBuilder() {
-    return new ReferencePayloadBuilder();
+    return new ReferencePayloadBuilder(beaconPath);
   }
 
   public ReferencesBatcher referencesBatcher() {

@@ -3,6 +3,8 @@ package technology.semi.weaviate.client.v1.data.api;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+
 import org.apache.commons.lang3.StringUtils;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.base.BaseClient;
@@ -11,15 +13,15 @@ import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
 import technology.semi.weaviate.client.v1.data.model.ObjectsListResponse;
-import technology.semi.weaviate.client.v1.data.util.ObjectsPathBuilder;
+import technology.semi.weaviate.client.v1.data.util.ObjectsPath;
 
 public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements ClientResult<List<WeaviateObject>> {
 
-  private final String version;
+  private final ObjectsPath objectsPath;
   private String id;
   private String className;
   private Integer limit;
-  private HashSet<String> additional;
+  private final HashSet<String> additional;
 
   private class ObjectGetter extends BaseClient<WeaviateObject> implements ClientResult<List<WeaviateObject>> {
     private String path;
@@ -40,13 +42,13 @@ public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements Cl
     }
   }
 
-  private ObjectGetter objectGetter;
+  private final ObjectGetter objectGetter;
 
-  public ObjectsGetter(Config config, String version) {
+  public ObjectsGetter(Config config, ObjectsPath objectsPath) {
     super(config);
     this.objectGetter = new ObjectGetter(config);
     this.additional = new HashSet<>();
-    this.version = version;
+    this.objectsPath = Objects.requireNonNull(objectsPath);
   }
 
   public ObjectsGetter withID(String id) {
@@ -74,22 +76,18 @@ public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements Cl
     return this;
   }
 
-  private String getPath() {
-    return ObjectsPathBuilder.builder()
-      .id(this.id)
-      .className(this.className)
-      .limit(this.limit)
-      .additional(this.additional.stream().toArray(String[]::new))
-      .build()
-      .buildPath(this.version);
-  }
-
   @Override
   public Result<List<WeaviateObject>> run() {
+    ObjectsPath.Params params = ObjectsPath.Params.builder()
+            .id(id)
+            .className(className)
+            .limit(limit)
+            .additional(additional.toArray(new String[0]))
+            .build();
     if (StringUtils.isNotBlank(id)) {
-      return this.objectGetter.withPath(getPath()).run();
+      return this.objectGetter.withPath(objectsPath.buildGetOne(params)).run();
     }
-    Response<ObjectsListResponse> resp = sendGetRequest(getPath(), ObjectsListResponse.class);
+    Response<ObjectsListResponse> resp = sendGetRequest(objectsPath.buildGet(params), ObjectsListResponse.class);
     return new Result<>(resp.getStatusCode(), Arrays.asList(resp.getBody().getObjects()), resp.getErrors());
   }
 }

@@ -1,9 +1,5 @@
 package technology.semi.weaviate.integration.client.data;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -17,17 +13,22 @@ import technology.semi.weaviate.client.v1.data.model.SingleRef;
 import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
 import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class ClientReferencesTest {
+public class ClientReferencesDeprecatedAPITest {
   private String address;
 
   @ClassRule
   public static DockerComposeContainer compose = new DockerComposeContainer(
-          new File("src/test/resources/docker-compose-test.yaml")
+          new File("src/test/resources/deprecated-api/docker-compose-deprecated-api-test.yaml")
   ).withExposedService("weaviate_1", 8080, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200));
 
   @Before
@@ -37,7 +38,7 @@ public class ClientReferencesTest {
     address = host + ":" + port;
   }
 
-  private void checkReference(Result<List<WeaviateObject>> result, String className, String refID) {
+  private void checkReference(Result<List<WeaviateObject>> result, String refID) {
     assertNotNull(result);
     assertNull(result.getError());
     assertNotNull(result.getResult());
@@ -51,8 +52,8 @@ public class ClientReferencesTest {
       assertNotNull(resultOtherFoods.get(0));
       assertTrue(resultOtherFoods.get(0) instanceof Map);
       Map propOtherFoods = (Map) resultOtherFoods.get(0);
-      assertEquals(propOtherFoods.get("beacon"), "weaviate://localhost/"+className+"/"+refID);
-      assertEquals(propOtherFoods.get("href"), "/v1/objects/"+className+"/"+refID);
+      assertEquals(propOtherFoods.get("beacon"), "weaviate://localhost/"+refID);
+      assertEquals(propOtherFoods.get("href"), "/v1/objects/"+refID);
     } else {
       assertEquals(resultOtherFoods.size(), 0);
     }
@@ -80,27 +81,25 @@ public class ClientReferencesTest {
     Result<WeaviateObject> objACreate = client.data().creator().withClassName("Soup").withID(objAID).withProperties(propertiesSchemaA).run();
     // Thing -> Action
     // Payload to reference the ChickenSoup
-    SingleRef chickenSoupRef = client.data().referencePayloadBuilder().withID(objAID).withClassName("Soup").payload();
+    SingleRef chickenSoupRef = client.data().referencePayloadBuilder().withID(objAID).payload();
     // Add the reference to the ChickenSoup to the Pizza OtherFoods reference
     Result<Boolean> otherFoodsPizzaRefCreate = client.data().referenceCreator()
             .withID(objTID)
-            .withClassName("Pizza")
             .withReferenceProperty("otherFoods")
             .withReference(chickenSoupRef)
             .run();
     // Action -> Thing
     // Payload to reference the Hawaii
-    SingleRef hawaiiRef = client.data().referencePayloadBuilder().withID(objTID).withClassName("Pizza").payload();
+    SingleRef hawaiiRef = client.data().referencePayloadBuilder().withID(objTID).payload();
     // Add the reference to the Hawaii to the Soup OtherFoods reference
     Result<Boolean> otherFoodsSoupRefCreate = client.data().referenceCreator()
             .withID(objAID)
-            .withClassName("Soup")
             .withReferenceProperty("otherFoods")
             .withReference(hawaiiRef)
             .run();
     // Get the objects
-    Result<List<WeaviateObject>> things = client.data().objectsGetter().withID(objTID).withClassName("Pizza").run();
-    Result<List<WeaviateObject>> actions = client.data().objectsGetter().withID(objAID).withClassName("Soup").run();
+    Result<List<WeaviateObject>> things = client.data().objectsGetter().withID(objTID).run();
+    Result<List<WeaviateObject>> actions = client.data().objectsGetter().withID(objAID).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(objTCreate);
@@ -114,9 +113,9 @@ public class ClientReferencesTest {
     assertNull(otherFoodsSoupRefCreate.getError());
     assertTrue(otherFoodsSoupRefCreate.getResult());
     // check objT
-    checkReference(things, "Soup", objAID);
+    checkReference(things, objAID);
     // check objA
-    checkReference(actions, "Pizza", objTID);
+    checkReference(actions, objTID);
   }
 
   @Test
@@ -135,8 +134,8 @@ public class ClientReferencesTest {
       put("name", "ChickenSoup");
       put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
     }};
-    SingleRef chickenSoupRef = client.data().referencePayloadBuilder().withID(objAID).withClassName("Soup").payload();
-    SingleRef hawaiiRef = client.data().referencePayloadBuilder().withID(objTID).withClassName("Pizza").payload();
+    SingleRef chickenSoupRef = client.data().referencePayloadBuilder().withID(objAID).payload();
+    SingleRef hawaiiRef = client.data().referencePayloadBuilder().withID(objTID).payload();
     // when
     testGenerics.createWeaviateTestSchemaFoodWithReferenceProperty(client);
     Result<WeaviateObject> objTCreate = client.data().creator().withClassName("Pizza").withID(objTID).withProperties(propertiesSchemaT).run();
@@ -146,7 +145,6 @@ public class ClientReferencesTest {
     // Add the reference to the ChickenSoup to the Pizza OtherFoods reference
     Result<Boolean> otherFoodsPizzaRefCreate = client.data().referenceCreator()
             .withID(objTID)
-            .withClassName("Pizza")
             .withReferenceProperty("otherFoods")
             .withReference(chickenSoupRef)
             .run();
@@ -155,30 +153,27 @@ public class ClientReferencesTest {
     // Add the reference to the Hawaii to the Soup OtherFoods reference
     Result<Boolean> otherFoodsSoupRefCreate = client.data().referenceCreator()
             .withID(objAID)
-            .withClassName("Soup")
             .withReferenceProperty("otherFoods")
             .withReference(hawaiiRef)
             .run();
     // Get the objects
-    Result<List<WeaviateObject>> things = client.data().objectsGetter().withID(objTID).withClassName("Pizza").run();
-    Result<List<WeaviateObject>> actions = client.data().objectsGetter().withID(objAID).withClassName("Soup").run();
+    Result<List<WeaviateObject>> things = client.data().objectsGetter().withID(objTID).run();
+    Result<List<WeaviateObject>> actions = client.data().objectsGetter().withID(objAID).run();
     // Replace the above reference with self references
     // Thing -> Thing
     Result<Boolean> otherFoodsPizzaRefReplace = client.data().referenceReplacer()
             .withID(objTID)
-            .withClassName("Pizza")
             .withReferenceProperty("otherFoods")
             .withReferences(new SingleRef[]{ hawaiiRef })
             .run();
     // Action -> Action
     Result<Boolean> otherFoodsSoupRefReplace = client.data().referenceReplacer()
             .withID(objAID)
-            .withClassName("Soup")
             .withReferenceProperty("otherFoods")
             .withReferences(new SingleRef[]{ chickenSoupRef })
             .run();
-    Result<List<WeaviateObject>> thingsReplaced = client.data().objectsGetter().withID(objTID).withClassName("Pizza").run();
-    Result<List<WeaviateObject>> actionsReplaced = client.data().objectsGetter().withID(objAID).withClassName("Soup").run();
+    Result<List<WeaviateObject>> thingsReplaced = client.data().objectsGetter().withID(objTID).run();
+    Result<List<WeaviateObject>> actionsReplaced = client.data().objectsGetter().withID(objAID).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(objTCreate);
@@ -192,13 +187,13 @@ public class ClientReferencesTest {
     assertNull(otherFoodsSoupRefCreate.getError());
     assertTrue(otherFoodsSoupRefCreate.getResult());
     // check objT
-    checkReference(things, "Soup", objAID);
+    checkReference(things, objAID);
     // check objA
-    checkReference(actions, "Pizza", objTID);
+    checkReference(actions, objTID);
     // check objT replaced
-    checkReference(thingsReplaced, "Pizza", objTID);
+    checkReference(thingsReplaced, objTID);
     // check objA replaced
-    checkReference(actionsReplaced, "Soup", objAID);
+    checkReference(actionsReplaced, objAID);
   }
 
   @Test
@@ -223,41 +218,37 @@ public class ClientReferencesTest {
     Result<WeaviateObject> objACreate = client.data().creator().withClassName("Soup").withID(objAID).withProperties(propertiesSchemaA).run();
     // Thing -> Action
     // Payload to reference the ChickenSoup
-    SingleRef chickenSoupRef = client.data().referencePayloadBuilder().withID(objAID).withClassName("Soup").payload();
+    SingleRef chickenSoupRef = client.data().referencePayloadBuilder().withID(objAID).payload();
     // Add the reference to the ChickenSoup to the Pizza OtherFoods reference
     Result<Boolean> otherFoodsPizzaRefCreate = client.data().referenceCreator()
             .withID(objTID)
-            .withClassName("Pizza")
             .withReferenceProperty("otherFoods")
             .withReference(chickenSoupRef)
             .run();
     // Action -> Thing
     // Payload to reference the Hawaii
-    SingleRef hawaiiRef = client.data().referencePayloadBuilder().withID(objTID).withClassName("Pizza").payload();
+    SingleRef hawaiiRef = client.data().referencePayloadBuilder().withID(objTID).payload();
     // Add the reference to the Hawaii to the Soup OtherFoods reference
     Result<Boolean> otherFoodsSoupRefCreate = client.data().referenceCreator()
             .withID(objAID)
-            .withClassName("Soup")
             .withReferenceProperty("otherFoods")
             .withReference(hawaiiRef)
             .run();
     // Get the objects
-    Result<List<WeaviateObject>> things = client.data().objectsGetter().withID(objTID).withClassName("Pizza").run();
-    Result<List<WeaviateObject>> actions = client.data().objectsGetter().withID(objAID).withClassName("Soup").run();
+    Result<List<WeaviateObject>> things = client.data().objectsGetter().withID(objTID).run();
+    Result<List<WeaviateObject>> actions = client.data().objectsGetter().withID(objAID).run();
     // Delete ref
     Result<Boolean> otherFoodsPizzaRefDelete = client.data().referenceDeleter()
             .withID(objTID)
-            .withClassName("Pizza")
             .withReferenceProperty("otherFoods")
             .withReference(chickenSoupRef).run();
     Result<Boolean> otherFoodsSoupRefDelete = client.data().referenceDeleter()
             .withID(objAID)
-            .withClassName("Soup")
             .withReferenceProperty("otherFoods")
             .withReference(hawaiiRef).run();
     // Get the objects
-    Result<List<WeaviateObject>> thingsAfterRefDelete = client.data().objectsGetter().withID(objTID).withClassName("Pizza").run();
-    Result<List<WeaviateObject>> actionsAfterRefDelete = client.data().objectsGetter().withID(objAID).withClassName("Soup").run();
+    Result<List<WeaviateObject>> thingsAfterRefDelete = client.data().objectsGetter().withID(objTID).run();
+    Result<List<WeaviateObject>> actionsAfterRefDelete = client.data().objectsGetter().withID(objAID).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(objTCreate);
@@ -271,9 +262,9 @@ public class ClientReferencesTest {
     assertNull(otherFoodsSoupRefCreate.getError());
     assertTrue(otherFoodsSoupRefCreate.getResult());
     // check objT
-    checkReference(things, "Soup", objAID);
+    checkReference(things, objAID);
     // check objA
-    checkReference(actions, "Pizza", objTID);
+    checkReference(actions, objTID);
     // check ref delete
     assertNotNull(otherFoodsPizzaRefDelete);
     assertNull(otherFoodsPizzaRefDelete.getError());
@@ -282,9 +273,9 @@ public class ClientReferencesTest {
     assertNull(otherFoodsSoupRefDelete.getError());
     assertTrue(otherFoodsSoupRefDelete.getResult());
     // check objT after delete, should be null
-    checkReference(thingsAfterRefDelete, null, null);
+    checkReference(thingsAfterRefDelete, null);
     // check objA after delete, should be null
-    checkReference(actionsAfterRefDelete, null, null);
+    checkReference(actionsAfterRefDelete, null);
   }
 
   @Test
@@ -303,7 +294,7 @@ public class ClientReferencesTest {
       put("name", "RefBeaconSoup");
       put("description", "Used only to check if reference can be added.");
       put("otherFoods", new ObjectReference[]{
-              ObjectReference.builder().beacon("weaviate://localhost/Pizza/abefd256-8574-442b-9293-9205193737ee").build()
+              ObjectReference.builder().beacon("weaviate://localhost/abefd256-8574-442b-9293-9205193737ee").build()
       });
     }};
     // when
@@ -316,7 +307,7 @@ public class ClientReferencesTest {
             .withProperties(propertiesSchemaRefBeacon)
             .run();
     // Get the object reference beacon to check if otherFoods reference has been set
-    Result<List<WeaviateObject>> objRefBeaconGet = client.data().objectsGetter().withID(objRefBeaconID).withClassName("Soup").run();
+    Result<List<WeaviateObject>> objRefBeaconGet = client.data().objectsGetter().withID(objRefBeaconID).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(objTCreate);
@@ -324,6 +315,6 @@ public class ClientReferencesTest {
     assertNotNull(objRefBeaconCreate);
     assertNull(objRefBeaconCreate.getError());
     // check objT
-    checkReference(objRefBeaconGet, "Pizza", objTID);
+    checkReference(objRefBeaconGet, objTID);
   }
 }

@@ -11,34 +11,44 @@ import technology.semi.weaviate.client.v1.data.api.ReferenceDeleter;
 import technology.semi.weaviate.client.v1.data.api.ReferenceReplacer;
 import technology.semi.weaviate.client.v1.data.builder.ReferencePayloadBuilder;
 import technology.semi.weaviate.client.v1.data.api.ObjectsChecker;
+import technology.semi.weaviate.client.base.util.BeaconPath;
+import technology.semi.weaviate.client.base.util.DbVersionSupport;
+import technology.semi.weaviate.client.v1.data.util.ObjectsPath;
+import technology.semi.weaviate.client.v1.data.util.ReferencesPath;
 
 public class Data {
   private final Config config;
-  private final String version;
+  private final ObjectsPath objectsPath;
+  private final ReferencesPath referencesPath;
+  private final BeaconPath beaconPath;
 
-  public Data(Config config, String version) {
+  public Data(Config config, String dbVersion) {
+    DbVersionSupport dbVersionSupport = new DbVersionSupport(dbVersion);
+
     this.config = config;
-    this.version = version;
+    this.objectsPath = new ObjectsPath(dbVersionSupport);
+    this.referencesPath = new ReferencesPath(dbVersionSupport);
+    this.beaconPath = new BeaconPath(dbVersionSupport);
   }
 
   public ObjectCreator creator() {
-    return new ObjectCreator(config, version);
+    return new ObjectCreator(config, objectsPath);
   }
 
   public ObjectsGetter objectsGetter() {
-    return new ObjectsGetter(config, version);
+    return new ObjectsGetter(config, objectsPath);
   }
 
   public ObjectsChecker checker() {
-    return new ObjectsChecker(config, version);
+    return new ObjectsChecker(config, objectsPath);
   }
 
   public ObjectDeleter deleter() {
-    return new ObjectDeleter(config, version);
+    return new ObjectDeleter(config, objectsPath);
   }
 
   public ObjectUpdater updater() {
-    return new ObjectUpdater(config, version);
+    return new ObjectUpdater(config, objectsPath);
   }
 
   public ObjectValidator validator() {
@@ -46,18 +56,18 @@ public class Data {
   }
 
   public ReferencePayloadBuilder referencePayloadBuilder() {
-    return new ReferencePayloadBuilder();
+    return new ReferencePayloadBuilder(beaconPath);
   }
 
   public ReferenceCreator referenceCreator() {
-    return new ReferenceCreator(config);
+    return new ReferenceCreator(config, referencesPath);
   }
 
   public ReferenceReplacer referenceReplacer() {
-    return new ReferenceReplacer(config);
+    return new ReferenceReplacer(config, referencesPath);
   }
 
   public ReferenceDeleter referenceDeleter() {
-    return new ReferenceDeleter(config);
+    return new ReferenceDeleter(config, referencesPath);
   }
 }

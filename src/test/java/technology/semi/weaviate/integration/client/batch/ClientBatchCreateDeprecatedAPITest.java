@@ -1,5 +1,11 @@
 package technology.semi.weaviate.integration.client.batch;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -15,22 +21,15 @@ import technology.semi.weaviate.client.v1.batch.model.ObjectGetResponse;
 import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
 import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class ClientBatchCreateTest {
+public class ClientBatchCreateDeprecatedAPITest {
   private String address;
 
   @ClassRule
   public static DockerComposeContainer compose = new DockerComposeContainer(
-          new File("src/test/resources/docker-compose-test.yaml")
+          new File("src/test/resources/deprecated-api/docker-compose-deprecated-api-test.yaml")
   ).withExposedService("weaviate_1", 8080, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200));
 
   @Before
@@ -48,23 +47,23 @@ public class ClientBatchCreateTest {
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
     // objT1
     String objTID = "abefd256-8574-442b-9293-9205193737ee";
-    Map<String, Object> propertiesSchemaT = new HashMap<>();
+    Map<String, java.lang.Object> propertiesSchemaT = new HashMap<>();
     propertiesSchemaT.put("name", "Hawaii");
     propertiesSchemaT.put("description", "Universally accepted to be the best pizza ever created.");
     // objT2
     String objT2ID = "97fa5147-bdad-4d74-9a81-f8babc811b09";
-    Map<String, Object> propertiesSchemaT2 = new HashMap<>();
+    Map<String, java.lang.Object> propertiesSchemaT2 = new HashMap<>();
     propertiesSchemaT2.put("name", "Doener");
     propertiesSchemaT2.put("description", "A innovation, some say revolution, in the pizza industry.");
     WeaviateObject objT2 = WeaviateObject.builder().className("Pizza").id(objT2ID).properties(propertiesSchemaT2).build();
     // objA1
     String objAID = "565da3b6-60b3-40e5-ba21-e6bfe5dbba91";
-    Map<String, Object> propertiesSchemaA = new HashMap<>();
+    Map<String, java.lang.Object> propertiesSchemaA = new HashMap<>();
     propertiesSchemaA.put("name", "ChickenSoup");
     propertiesSchemaA.put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
     // objA2
     String objA2ID = "07473b34-0ab2-4120-882d-303d9e13f7af";
-    Map<String, Object> propertiesSchemaA2 = new HashMap<>();
+    Map<String, java.lang.Object> propertiesSchemaA2 = new HashMap<>();
     propertiesSchemaA2.put("name", "Beautiful");
     propertiesSchemaA2.put("description", "Putting the game of letter soups to a whole new level.");
     WeaviateObject objA2 = WeaviateObject.builder().className("Soup").id(objA2ID).properties(propertiesSchemaA2).build();
@@ -89,10 +88,10 @@ public class ClientBatchCreateTest {
             .withObject(objA2)
             .run();
     // check if created objects exist
-    Result<List<WeaviateObject>> getObjT1 = client.data().objectsGetter().withID(objTID).withClassName("Pizza").run();
-    Result<List<WeaviateObject>> getObjT2 = client.data().objectsGetter().withID(objT2ID).withClassName("Pizza").run();
-    Result<List<WeaviateObject>> getObjA1 = client.data().objectsGetter().withID(objAID).withClassName("Soup").run();
-    Result<List<WeaviateObject>> getObjA2 = client.data().objectsGetter().withID(objA2ID).withClassName("Soup").run();
+    Result<List<WeaviateObject>> getObjT1 = client.data().objectsGetter().withID(objTID).run();
+    Result<List<WeaviateObject>> getObjT2 = client.data().objectsGetter().withID(objT2ID).run();
+    Result<List<WeaviateObject>> getObjA1 = client.data().objectsGetter().withID(objAID).run();
+    Result<List<WeaviateObject>> getObjA2 = client.data().objectsGetter().withID(objA2ID).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(objT1);
@@ -137,18 +136,18 @@ public class ClientBatchCreateTest {
     // references
     BatchReference refTtoA = BatchReference.builder()
             .from("weaviate://localhost/Pizza/97fa5147-bdad-4d74-9a81-f8babc811b09/otherFoods")
-            .to("weaviate://localhost/Soup/07473b34-0ab2-4120-882d-303d9e13f7af")
+            .to("weaviate://localhost/07473b34-0ab2-4120-882d-303d9e13f7af")
             .build();
     BatchReference refAtoT = BatchReference.builder()
             .from("weaviate://localhost/Soup/07473b34-0ab2-4120-882d-303d9e13f7af/otherFoods")
-            .to("weaviate://localhost/Pizza/97fa5147-bdad-4d74-9a81-f8babc811b09")
+            .to("weaviate://localhost/97fa5147-bdad-4d74-9a81-f8babc811b09")
             .build();
     // when
     testGenerics.createWeaviateTestSchemaFoodWithReferenceProperty(client);
     Result<WeaviateObject> classT = client.data().creator()
             .withClassName("Pizza")
             .withID(classTID)
-            .withProperties(new HashMap<String, Object>() {{
+            .withProperties(new HashMap<String, java.lang.Object>() {{
               put("name", "Doener");
               put("description", "A innovation, some say revolution, in the pizza industry.");
             }})
@@ -156,7 +155,7 @@ public class ClientBatchCreateTest {
     Result<WeaviateObject> classA = client.data().creator()
             .withClassName("Soup")
             .withID(classAID)
-            .withProperties(new HashMap<String, Object>() {{
+            .withProperties(new HashMap<String, java.lang.Object>() {{
               put("name", "Beautiful");
               put("description", "Putting the game of letter soups to a whole new level.");
             }})
@@ -168,20 +167,18 @@ public class ClientBatchCreateTest {
             .withFromRefProp("otherFoods")
             .withFromID(classTID)
             .withToID(classTID)
-            .withToClassName("Pizza")
             .payload();
     BatchReference refAtoA = client.batch().referencePayloadBuilder()
             .withFromClassName("Soup")
             .withFromRefProp("otherFoods")
             .withFromID(classAID)
             .withToID(classAID)
-            .withToClassName("Soup")
             .payload();
     Result<BatchReferenceResponse[]> refResult = client.batch().referencesBatcher()
             .withReference(refTtoA).withReference(refTtoT).withReference(refAtoT).withReference(refAtoA)
             .run();
-    Result<List<WeaviateObject>> objT = client.data().objectsGetter().withID(classTID).withClassName("Pizza").run();
-    Result<List<WeaviateObject>> objA = client.data().objectsGetter().withID(classAID).withClassName("Soup").run();
+    Result<List<WeaviateObject>> objT = client.data().objectsGetter().withID(classTID).run();
+    Result<List<WeaviateObject>> objA = client.data().objectsGetter().withID(classAID).run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(createClassT);
@@ -209,8 +206,8 @@ public class ClientBatchCreateTest {
     Map otherFood0 = (Map) otherFoods.get(0);
     Map otherFood1 = (Map) otherFoods.get(1);
     List beacons = Stream.of(otherFood0.get("beacon"), otherFood1.get("beacon")).collect(Collectors.toList());
-    Assert.assertTrue(beacons.contains("weaviate://localhost/Soup/07473b34-0ab2-4120-882d-303d9e13f7af"));
-    Assert.assertTrue(beacons.contains("weaviate://localhost/Pizza/97fa5147-bdad-4d74-9a81-f8babc811b09"));
+    Assert.assertTrue(beacons.contains("weaviate://localhost/07473b34-0ab2-4120-882d-303d9e13f7af"));
+    Assert.assertTrue(beacons.contains("weaviate://localhost/97fa5147-bdad-4d74-9a81-f8babc811b09"));
     // assert objA
     assertNotNull(objA);
     assertNotNull(objA.getResult());
@@ -225,7 +222,7 @@ public class ClientBatchCreateTest {
     otherFood0 = (Map) otherFoods.get(0);
     otherFood1 = (Map) otherFoods.get(1);
     beacons = Stream.of(otherFood0.get("beacon"), otherFood1.get("beacon")).collect(Collectors.toList());
-    Assert.assertTrue(beacons.contains("weaviate://localhost/Soup/07473b34-0ab2-4120-882d-303d9e13f7af"));
-    Assert.assertTrue(beacons.contains("weaviate://localhost/Pizza/97fa5147-bdad-4d74-9a81-f8babc811b09"));
+    Assert.assertTrue(beacons.contains("weaviate://localhost/07473b34-0ab2-4120-882d-303d9e13f7af"));
+    Assert.assertTrue(beacons.contains("weaviate://localhost/97fa5147-bdad-4d74-9a81-f8babc811b09"));
   }
 }
