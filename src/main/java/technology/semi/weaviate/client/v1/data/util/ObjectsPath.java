@@ -34,7 +34,7 @@ public class ObjectsPath {
   }
 
   public String buildGetOne(Params pathParams) {
-    return build(pathParams, this::addClassNameDeprecatedNotSupportedCheck, this::addId, this::addQueryParams);
+    return build(pathParams, this::addClassNameDeprecatedNotSupportedCheck, this::addId, this::addQueryParamsForGetOne);
   }
 
   public String buildGet(Params pathParams) {
@@ -89,6 +89,23 @@ public class ObjectsPath {
     }
     if (pathParams.limit != null) {
       queryParams.add(String.format("limit=%s", pathParams.limit));
+    }
+    if (StringUtils.isBlank(pathParams.id) && StringUtils.isNotBlank(pathParams.className)) {
+      if (support.supportsClassNameNamespacedEndpoints()) {
+        queryParams.add(String.format("class=%s", pathParams.className));
+      } else {
+        support.warnNotSupportedClassParameterInEndpointsForObjects();
+      }
+    }
+    if (queryParams.size() > 0) {
+      path.append("?").append(StringUtils.joinWith("&", queryParams.toArray()));
+    }
+  }
+
+  private void addQueryParamsForGetOne(StringBuilder path, Params pathParams) {
+    List<String> queryParams = new ArrayList<>();
+    if (ObjectUtils.isNotEmpty(pathParams.additional)) {
+      queryParams.add(String.format("include=%s", StringUtils.join(pathParams.additional, ",")));
     }
     if (queryParams.size() > 0) {
       path.append("?").append(StringUtils.joinWith("&", queryParams.toArray()));
