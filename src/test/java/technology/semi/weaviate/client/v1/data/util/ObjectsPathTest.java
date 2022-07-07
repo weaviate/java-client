@@ -30,6 +30,10 @@ public class ObjectsPathTest {
   private static final ObjectsPath.Params ID_PARAMS = ObjectsPath.Params.builder()
     .id("someId")
     .build();
+  private static final ObjectsPath.Params CLASS_QUERY_PARAMS = ObjectsPath.Params.builder()
+    .className("someClass")
+    .limit(10)
+    .build();
   private static final ObjectsPath.Params ALL_PARAMS = ObjectsPath.Params.builder()
     .className("someClass")
     .id("someId")
@@ -228,7 +232,7 @@ public class ObjectsPathTest {
       },
       {
         ALL_PARAMS,
-        "/objects/someClass/someId?include=additional1,additional2&limit=100"
+        "/objects/someClass/someId?include=additional1,additional2"
       },
     };
   }
@@ -257,7 +261,7 @@ public class ObjectsPathTest {
       },
       {
         ALL_PARAMS,
-        "/objects/someId?include=additional1,additional2&limit=100"
+        "/objects/someId?include=additional1,additional2"
       },
     };
   }
@@ -278,7 +282,7 @@ public class ObjectsPathTest {
       },
       {
         CLASS_PARAMS,
-        "/objects"
+        "/objects?class=someClass"
       },
       {
         ID_PARAMS,
@@ -288,6 +292,10 @@ public class ObjectsPathTest {
         ALL_PARAMS,
         "/objects?include=additional1,additional2&limit=100"
       },
+      {
+        CLASS_QUERY_PARAMS,
+        "/objects?limit=10&class=someClass"
+      }
     };
   }
 
@@ -317,6 +325,10 @@ public class ObjectsPathTest {
         ALL_PARAMS,
         "/objects?include=additional1,additional2&limit=100"
       },
+      {
+        CLASS_QUERY_PARAMS,
+        "/objects?limit=10"
+      }
     };
   }
 

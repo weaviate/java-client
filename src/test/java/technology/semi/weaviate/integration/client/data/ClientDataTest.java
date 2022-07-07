@@ -160,24 +160,13 @@ public class ClientDataTest {
     Result<List<WeaviateObject>> objects1 = client.data().objectsGetter().withLimit(1).run();
     testGenerics.cleanupWeaviate(client);
     // then
-    assertNotNull(pizzaObj1);
-    assertNotNull(pizzaObj1.getResult());
-    assertNotNull(pizzaObj1.getResult().getId());
-    assertNotNull(pizzaObj2);
-    assertNotNull(pizzaObj2.getResult());
-    assertNotNull(pizzaObj2.getResult().getId());
-    assertNotNull(soupObj1);
-    assertNotNull(soupObj1.getResult());
-    assertNotNull(soupObj1.getResult().getId());
-    assertNotNull(soupObj2);
-    assertNotNull(soupObj2.getResult());
-    assertNotNull(soupObj2.getResult().getId());
+    assertCreated(pizzaObj1);
+    assertCreated(pizzaObj2);
+    assertCreated(soupObj1);
+    assertCreated(soupObj2);
     assertNotNull(objects);
     assertNotNull(objects.getResult());
     assertEquals(4, objects.getResult().size());
-    assertNotNull(objects1);
-    assertNotNull(objects1.getResult());
-    assertEquals(1, objects1.getResult().size());
   }
 
   @Test
@@ -811,6 +800,56 @@ public class ClientDataTest {
     assertNotNull(deleteStatus);
     assertTrue(deleteStatus.getResult());
     assertEquals(0, schemaAfterDelete.getResult().getClasses().size());
+  }
+
+  @Test
+  public void testDataGetUsingClassParameter() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
+    // when
+    testGenerics.createWeaviateTestSchemaFood(client);
+    Result<WeaviateObject> pizzaObj1 = client.data().creator().withClassName("Pizza").withProperties(new HashMap<String, java.lang.Object>() {{
+      put("name", "Margherita");
+      put("description", "plain");
+    }}).run();
+    Result<WeaviateObject> pizzaObj2 = client.data().creator().withClassName("Pizza").withProperties(new HashMap<String, java.lang.Object>() {{
+      put("name", "Pepperoni");
+      put("description", "meat");
+    }}).run();
+    Result<WeaviateObject> soupObj1 = client.data().creator().withClassName("Soup").withProperties(new HashMap<String, java.lang.Object>() {{
+      put("name", "Chicken");
+      put("description", "plain");
+    }}).run();
+    Result<WeaviateObject> soupObj2 = client.data().creator().withClassName("Soup").withProperties(new HashMap<String, java.lang.Object>() {{
+      put("name", "Tofu");
+      put("description", "vegetarian");
+    }}).run();
+    Result<List<WeaviateObject>> objects = client.data().objectsGetter().run();
+    Result<List<WeaviateObject>> pizzaObjects = client.data().objectsGetter().withClassName("Pizza").run();
+    Result<List<WeaviateObject>> soupObjects = client.data().objectsGetter().withClassName("Soup").run();
+    testGenerics.cleanupWeaviate(client);
+    // then
+    assertCreated(pizzaObj1);
+    assertCreated(pizzaObj2);
+    assertCreated(soupObj1);
+    assertCreated(soupObj2);
+    assertNotNull(objects);
+    assertNotNull(objects.getResult());
+    assertEquals(4, objects.getResult().size());
+    assertNotNull(pizzaObjects);
+    assertNotNull(pizzaObjects.getResult());
+    assertEquals(2, pizzaObjects.getResult().size());
+    assertNotNull(soupObjects);
+    assertNotNull(soupObjects.getResult());
+    assertEquals(2, soupObjects.getResult().size());
+  }
+
+  private void assertCreated(Result<WeaviateObject> obj) {
+    assertNotNull(obj);
+    assertNotNull(obj.getResult());
+    assertNotNull(obj.getResult().getId());
   }
 
   private void checkArrays(Object property, int size, Object... contains) {
