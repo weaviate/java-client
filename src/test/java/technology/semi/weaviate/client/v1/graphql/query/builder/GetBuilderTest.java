@@ -129,16 +129,29 @@ public class GetBuilderTest extends TestCase {
 
   @Test
   public void testBuildGetWithNearVector() {
-    // given
     Field name = Field.builder().name("name").build();
-    NearVectorArgument nearVector = NearVectorArgument.builder().vector(new Float[]{ 0f, 1f, 0.8f }).certainty(0.8f).build();
-    // when
-    String query = GetBuilder.builder().className("Pizza")
+
+    // given (certainty)
+    NearVectorArgument nearVectorWithCert = NearVectorArgument.builder()
+            .vector(new Float[]{ 0f, 1f, 0.8f }).certainty(0.8f).build();
+    // when (certainty)
+    String queryWithCert = GetBuilder.builder().className("Pizza")
             .fields(Fields.builder().fields(new Field[]{ name }).build())
-            .withNearVectorFilter(nearVector).build().buildQuery();
-    // then
-    assertNotNull(query);
-    assertEquals("{Get{Pizza(nearVector: {vector: [0.0, 1.0, 0.8] certainty: 0.8}){name}}}", query);
+            .withNearVectorFilter(nearVectorWithCert).build().buildQuery();
+    // then (certainty)
+    assertNotNull(queryWithCert);
+    assertEquals("{Get{Pizza(nearVector: {vector: [0.0, 1.0, 0.8] certainty: 0.8}){name}}}", queryWithCert);
+
+    // given (distance)
+    NearVectorArgument nearVectorWithDist = NearVectorArgument.builder()
+            .vector(new Float[]{ 0f, 1f, 0.8f }).distance(0.8f).build();
+    // when (distance)
+    String queryWithDist = GetBuilder.builder().className("Pizza")
+            .fields(Fields.builder().fields(new Field[]{ name }).build())
+            .withNearVectorFilter(nearVectorWithDist).build().buildQuery();
+    // then (distance)
+    assertNotNull(queryWithDist);
+    assertEquals("{Get{Pizza(nearVector: {vector: [0.0, 1.0, 0.8] distance: 0.8}){name}}}", queryWithDist);
   }
 
   @Test
@@ -223,7 +236,7 @@ public class GetBuilderTest extends TestCase {
   }
 
   @Test
-  public void testBuildGetWithAsk() {
+  public void testBuildGetWithAskAndCertainty() {
     // given
     Fields fields = Fields.builder()
             .fields(new Field[]{ Field.builder().name("name").build() })
@@ -271,7 +284,55 @@ public class GetBuilderTest extends TestCase {
   }
 
   @Test
-  public void testBuildGetWithNearImage() throws FileNotFoundException {
+  public void testBuildGetWithAskAndDistance() {
+    // given
+    Fields fields = Fields.builder()
+            .fields(new Field[]{ Field.builder().name("name").build() })
+            .build();
+    AskArgument ask1 = AskArgument.builder()
+            .question("Who are you?")
+            .build();
+    AskArgument ask2 = AskArgument.builder()
+            .question("Who are you?")
+            .properties(new String[]{ "prop1", "prop2" })
+            .build();
+    AskArgument ask3 = AskArgument.builder()
+            .question("Who are you?")
+            .properties(new String[]{ "prop1", "prop2" })
+            .distance(0.1f)
+            .build();
+    AskArgument ask4 = AskArgument.builder()
+            .question("Who are you?")
+            .properties(new String[]{ "prop1", "prop2" })
+            .distance(0.1f)
+            .rerank(true)
+            .build();
+    // when
+    String query1 = GetBuilder.builder()
+            .className("Pizza").fields(fields).withAskArgument(ask1)
+            .build().buildQuery();
+    String query2 = GetBuilder.builder()
+            .className("Pizza").fields(fields).withAskArgument(ask2)
+            .build().buildQuery();
+    String query3 = GetBuilder.builder()
+            .className("Pizza").fields(fields).withAskArgument(ask3)
+            .build().buildQuery();
+    String query4 = GetBuilder.builder()
+            .className("Pizza").fields(fields).withAskArgument(ask4)
+            .build().buildQuery();
+    // then
+    assertNotNull(query1);
+    assertEquals("{Get{Pizza(ask: {question: \"Who are you?\"}){name}}}", query1);
+    assertNotNull(query2);
+    assertEquals("{Get{Pizza(ask: {question: \"Who are you?\" properties: [\"prop1\", \"prop2\"]}){name}}}", query2);
+    assertNotNull(query3);
+    assertEquals("{Get{Pizza(ask: {question: \"Who are you?\" properties: [\"prop1\", \"prop2\"] distance: 0.1}){name}}}", query3);
+    assertNotNull(query4);
+    assertEquals("{Get{Pizza(ask: {question: \"Who are you?\" properties: [\"prop1\", \"prop2\"] distance: 0.1 rerank: true}){name}}}", query4);
+  }
+
+  @Test
+  public void testBuildGetWithNearImageAndCertainty() throws FileNotFoundException {
     // given
     File imageFile = new File("src/test/resources/image/pixel.png");
     String base64File = new BufferedReader(new InputStreamReader(new FileInputStream("src/test/resources/image/base64.txt")))
@@ -300,6 +361,38 @@ public class GetBuilderTest extends TestCase {
     assertEquals(String.format("{Get{Pizza(nearImage: {image: \"%s\" certainty: 0.4}){name}}}", base64File), query2);
     assertNotNull(query3);
     assertEquals(String.format("{Get{Pizza(nearImage: {image: \"%s\" certainty: 0.1}, limit: 1){name}}}", expectedImage), query3);
+  }
+
+  @Test
+  public void testBuildGetWithNearImageAndDistance() throws FileNotFoundException {
+    // given
+    File imageFile = new File("src/test/resources/image/pixel.png");
+    String base64File = new BufferedReader(new InputStreamReader(new FileInputStream("src/test/resources/image/base64.txt")))
+            .lines().collect(Collectors.joining("\n"));
+    String image = "data:image/png;base64,iVBORw0KGgoAAAANS";
+    String expectedImage = "iVBORw0KGgoAAAANS";
+    NearImageArgument nearImage1 = NearImageArgument.builder().imageFile(imageFile).build();
+    NearImageArgument nearImage2 = NearImageArgument.builder().imageFile(imageFile).distance(0.4f).build();
+    NearImageArgument nearImage3 = NearImageArgument.builder().image(image).distance(0.1f).build();
+    Fields fields = Fields.builder()
+            .fields(new Field[]{ Field.builder().name("name").build() })
+            .build();
+    // when
+    String query1 = GetBuilder.builder()
+            .className("Pizza").fields(fields).withNearImageFilter(nearImage1)
+            .build().buildQuery();
+    String query2 = GetBuilder.builder()
+            .className("Pizza").fields(fields).withNearImageFilter(nearImage2)
+            .build().buildQuery();
+    String query3 = GetBuilder.builder()
+            .className("Pizza").fields(fields).withNearImageFilter(nearImage3).limit(1)
+            .build().buildQuery();
+    assertNotNull(query1);
+    assertEquals(String.format("{Get{Pizza(nearImage: {image: \"%s\"}){name}}}", base64File), query1);
+    assertNotNull(query2);
+    assertEquals(String.format("{Get{Pizza(nearImage: {image: \"%s\" distance: 0.4}){name}}}", base64File), query2);
+    assertNotNull(query3);
+    assertEquals(String.format("{Get{Pizza(nearImage: {image: \"%s\" distance: 0.1}, limit: 1){name}}}", expectedImage), query3);
   }
 
   @Test

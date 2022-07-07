@@ -17,6 +17,7 @@ public class AskArgument implements Argument {
   String question;
   String[] properties;
   Float certainty;
+  Float distance;
   Boolean autocorrect;
   Boolean rerank;
 
@@ -34,6 +35,9 @@ public class AskArgument implements Argument {
     }
     if (certainty != null) {
       arg.add(String.format("certainty: %s", certainty));
+    }
+    if (distance != null) {
+      arg.add(String.format("distance: %s", distance));
     }
     if (autocorrect != null) {
       arg.add(String.format("autocorrect: %s", autocorrect));

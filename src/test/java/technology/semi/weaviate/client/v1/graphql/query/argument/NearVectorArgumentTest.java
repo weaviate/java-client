@@ -7,7 +7,7 @@ import org.junit.Test;
 public class NearVectorArgumentTest extends TestCase {
 
     @Test
-    public void testBuild() {
+    public void testBuildWithCertainty() {
         // given
         NearVectorArgument nearVector = NearVectorArgument.builder()
                 .vector(new Float[]{1f, 2f, 3f}).certainty(0.8f).build();
@@ -15,6 +15,17 @@ public class NearVectorArgumentTest extends TestCase {
         String arg = nearVector.build();
         // then
         Assert.assertEquals("nearVector: {vector: [1.0, 2.0, 3.0] certainty: 0.8}", arg);
+    }
+
+    @Test
+    public void testBuildWithDistance() {
+        // given
+        NearVectorArgument nearVector = NearVectorArgument.builder()
+                .vector(new Float[]{1f, 2f, 3f}).distance(0.8f).build();
+        // when
+        String arg = nearVector.build();
+        // then
+        Assert.assertEquals("nearVector: {vector: [1.0, 2.0, 3.0] distance: 0.8}", arg);
     }
 
     @Test

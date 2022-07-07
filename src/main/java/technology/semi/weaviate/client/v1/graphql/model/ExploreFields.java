@@ -2,6 +2,7 @@ package technology.semi.weaviate.client.v1.graphql.model;
 
 public enum ExploreFields {
   CERTAINTY("certainty"),
+  DISTANCE("distance"),
   BEACON("beacon"),
   CLASS_NAME("className");
 

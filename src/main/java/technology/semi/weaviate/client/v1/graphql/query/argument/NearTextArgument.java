@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 public class NearTextArgument implements Argument {
   String[] concepts;
   Float certainty;
+  Float distance;
   NearTextMoveParameters moveTo;
   NearTextMoveParameters moveAwayFrom;
   Boolean autocorrect;
@@ -63,6 +64,9 @@ public class NearTextArgument implements Argument {
     }
     if (certainty != null) {
       arg.add(String.format("certainty: %s", certainty));
+    }
+    if (distance != null) {
+      arg.add(String.format("distance: %s", distance));
     }
     if (moveTo != null) {
       arg.add(buildMoveParam("moveTo", moveTo));

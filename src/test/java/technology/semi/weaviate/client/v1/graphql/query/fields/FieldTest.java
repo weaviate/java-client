@@ -61,4 +61,18 @@ public class FieldTest extends TestCase {
     // then
     Assert.assertEquals(expected, fieldString);
   }
+
+  @Test
+  public void testBuild4() {
+    // given
+    String expected = "_additional{distance}";
+    Field field = Field.builder()
+            .name("_additional")
+            .fields(new Field[]{ Field.builder().name("distance").build() })
+            .build();
+    // when
+    String fieldString = field.build();
+    // then
+    Assert.assertEquals(expected, fieldString);
+  }
 }
