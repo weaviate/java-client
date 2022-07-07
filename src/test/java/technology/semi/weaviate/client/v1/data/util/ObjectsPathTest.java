@@ -2,6 +2,7 @@ package technology.semi.weaviate.client.v1.data.util;
 
 import com.jparams.junit4.JParamsTestRunner;
 import com.jparams.junit4.data.DataMethod;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(JParamsTestRunner.class)
 public class ObjectsPathTest {
 
+  private AutoCloseable openedMocks;
   @InjectMocks
   private ObjectsPath objectsPath;
   @Mock
@@ -37,7 +39,11 @@ public class ObjectsPathTest {
 
   @Before
   public void setUp() {
-    MockitoAnnotations.initMocks(this);
+    openedMocks = MockitoAnnotations.openMocks(this);
+  }
+  @After
+  public void tearDown() throws Exception {
+    openedMocks.close();
   }
 
   @Test

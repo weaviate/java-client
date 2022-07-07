@@ -22,9 +22,7 @@ public class Data {
   private final ReferencesPath referencesPath;
   private final BeaconPath beaconPath;
 
-  public Data(Config config, String dbVersion) {
-    DbVersionSupport dbVersionSupport = new DbVersionSupport(dbVersion);
-
+  public Data(Config config, DbVersionSupport dbVersionSupport) {
     this.config = config;
     this.objectsPath = new ObjectsPath(dbVersionSupport);
     this.referencesPath = new ReferencesPath(dbVersionSupport);

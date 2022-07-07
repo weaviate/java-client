@@ -12,9 +12,9 @@ public class Batch {
   private final Config config;
   private final BeaconPath beaconPath;
 
-  public Batch(Config config, String dbVersion) {
+  public Batch(Config config, DbVersionSupport dbVersionSupport) {
     this.config = config;
-    this.beaconPath = new BeaconPath(new DbVersionSupport(dbVersion));
+    this.beaconPath = new BeaconPath(dbVersionSupport);
   }
 
   public ObjectsBatcher objectsBatcher() {

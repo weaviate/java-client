@@ -2,19 +2,41 @@ package technology.semi.weaviate.client.base.util;
 
 import com.jparams.junit4.JParamsTestRunner;
 import com.jparams.junit4.data.DataMethod;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(JParamsTestRunner.class)
 public class DbVersionSupportTest {
 
+  private AutoCloseable openedMocks;
+  @InjectMocks
+  private DbVersionSupport dbVersionSupport;
+  @Mock
+  private DbVersionProvider dbVersionProviderMock;
+
+  @Before
+  public void setUp() {
+    openedMocks = MockitoAnnotations.openMocks(this);
+  }
+  @After
+  public void tearDown() throws Exception {
+    openedMocks.close();
+  }
+
   @Test
   @DataMethod(source = DbVersionSupportTest.class, method = "provideNotSupported")
   public void shouldNotSupport(String dbVersion) {
-    DbVersionSupport support = new DbVersionSupport(dbVersion);
-    assertThat(support.supportsClassNameNamespacedEndpoints()).isFalse();
+    Mockito.when(dbVersionProviderMock.getVersion()).thenReturn(dbVersion);
+
+    assertThat(dbVersionSupport.supportsClassNameNamespacedEndpoints()).isFalse();
   }
 
   public static Object[][] provideNotSupported() {
@@ -29,8 +51,9 @@ public class DbVersionSupportTest {
   @Test
   @DataMethod(source = DbVersionSupportTest.class, method = "provideSupported")
   public void shouldSupport(String dbVersion) {
-    DbVersionSupport support = new DbVersionSupport(dbVersion);
-    assertThat(support.supportsClassNameNamespacedEndpoints()).isTrue();
+    Mockito.when(dbVersionProviderMock.getVersion()).thenReturn(dbVersion);
+
+    assertThat(dbVersionSupport.supportsClassNameNamespacedEndpoints()).isTrue();
   }
 
   public static Object[][] provideSupported() {
