@@ -4,17 +4,20 @@ import java.util.Optional;
 
 public class DbVersionProvider {
 
+  private static final String EMPTY_VERSION = "";
+
   private final VersionGetter getter;
   private String version;
 
 
   public DbVersionProvider(VersionGetter getter) {
     this.getter = getter;
-    this.version = "";
+    this.version = EMPTY_VERSION;
   }
 
 
   public String getVersion() {
+    refresh();
     return version;
   }
 
@@ -23,8 +26,8 @@ public class DbVersionProvider {
   }
 
   public void refresh(boolean force) {
-    if (force || "".equals(version)) {
-      getter.get().ifPresent(version -> this.version = version);
+    if (force || EMPTY_VERSION.equals(version)) {
+      this.version = getter.get().orElse(EMPTY_VERSION);
     }
   }
 
