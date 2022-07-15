@@ -148,7 +148,7 @@ public class ClientClassificationsTest {
       put("name", "Frutti di Mare");
       put("description", "Frutti di Mare is an Italian type of pizza that may be served with scampi, mussels or squid. It typically lacks cheese, with the seafood being served atop a tomato sauce.");
     }}).build();
-    Result<ObjectGetResponse[]> batchImport = client.batch().objectsBatcher().withObject(pizza1).withObject(pizza2).run();
+    Result<ObjectGetResponse[]> batchImport = client.batch().objectsBatcher().withObjects(pizza1, pizza2).run();
     assertNotNull(batchImport);
     assertNotNull(batchImport.getResult());
     Assert.assertEquals(2, batchImport.getResult().length);
@@ -159,7 +159,7 @@ public class ClientClassificationsTest {
     WeaviateObject tag2 = WeaviateObject.builder().className("Tag").properties(new HashMap<String, java.lang.Object>() {{
       put("name", "seafood");
     }}).build();
-    Result<ObjectGetResponse[]> batchImport2 = client.batch().objectsBatcher().withObject(tag1).withObject(tag2).run();
+    Result<ObjectGetResponse[]> batchImport2 = client.batch().objectsBatcher().withObjects(tag1, tag2).run();
     assertNotNull(batchImport2);
     assertNotNull(batchImport2.getResult());
     Assert.assertEquals(2, batchImport2.getResult().length);
