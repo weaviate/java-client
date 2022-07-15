@@ -1,6 +1,7 @@
 package technology.semi.weaviate.client.v1.batch.api;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.base.BaseClient;
@@ -12,7 +13,7 @@ import technology.semi.weaviate.client.v1.batch.model.BatchReferenceResponse;
 
 public class ReferencesBatcher extends BaseClient<BatchReferenceResponse[]> implements ClientResult<BatchReferenceResponse[]> {
 
-  private List<BatchReference> references;
+  private final List<BatchReference> references;
 
   public ReferencesBatcher(Config config) {
     super(config);
@@ -20,13 +21,17 @@ public class ReferencesBatcher extends BaseClient<BatchReferenceResponse[]> impl
   }
 
   public ReferencesBatcher withReference(BatchReference reference) {
-    this.references.add(reference);
+    return this.withReferences(reference);
+  }
+
+  public ReferencesBatcher withReferences(BatchReference... references) {
+    this.references.addAll(Arrays.asList(references));
     return this;
   }
 
   @Override
   public Result<BatchReferenceResponse[]> run() {
-    BatchReference[] payload = references.stream().toArray(BatchReference[]::new);
+    BatchReference[] payload = references.toArray(new BatchReference[0]);
     Response<BatchReferenceResponse[]> resp = sendPostRequest("/batch/references", payload, BatchReferenceResponse[].class);
     return new Result<>(resp);
   }

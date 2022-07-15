@@ -81,12 +81,10 @@ public class ClientBatchCreateTest {
             .withProperties(propertiesSchemaA)
             .run();
     Result<ObjectGetResponse[]> batchTs = client.batch().objectsBatcher()
-            .withObject(objT1.getResult())
-            .withObject(objT2)
+            .withObjects(objT1.getResult(), objT2)
             .run();
     Result<ObjectGetResponse[]> batchAs = client.batch().objectsBatcher()
-            .withObject(objA1.getResult())
-            .withObject(objA2)
+            .withObjects(objA1.getResult(), objA2)
             .run();
     // check if created objects exist
     Result<List<WeaviateObject>> getObjT1 = client.data().objectsGetter().withID(objTID).withClassName("Pizza").run();
@@ -161,8 +159,8 @@ public class ClientBatchCreateTest {
               put("description", "Putting the game of letter soups to a whole new level.");
             }})
             .run();
-    Result<ObjectGetResponse[]> createClassT = client.batch().objectsBatcher().withObject(classT.getResult()).run();
-    Result<ObjectGetResponse[]> createClassA = client.batch().objectsBatcher().withObject(classA.getResult()).run();
+    Result<ObjectGetResponse[]> createClassT = client.batch().objectsBatcher().withObjects(classT.getResult()).run();
+    Result<ObjectGetResponse[]> createClassA = client.batch().objectsBatcher().withObjects(classA.getResult()).run();
     BatchReference refTtoT = client.batch().referencePayloadBuilder()
             .withFromClassName("Pizza")
             .withFromRefProp("otherFoods")
@@ -178,7 +176,7 @@ public class ClientBatchCreateTest {
             .withToClassName("Soup")
             .payload();
     Result<BatchReferenceResponse[]> refResult = client.batch().referencesBatcher()
-            .withReference(refTtoA).withReference(refTtoT).withReference(refAtoT).withReference(refAtoA)
+            .withReferences(refTtoA, refTtoT, refAtoT, refAtoA)
             .run();
     Result<List<WeaviateObject>> objT = client.data().objectsGetter().withID(classTID).withClassName("Pizza").run();
     Result<List<WeaviateObject>> objA = client.data().objectsGetter().withID(classAID).withClassName("Soup").run();

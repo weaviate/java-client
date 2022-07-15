@@ -157,10 +157,10 @@ public class WeaviateTestGenerics {
                     "Putting the game of letter soups to a whole new level.",
                     3f, "2022-06-07T08:09:10+06:00"),
     };
-    ObjectsBatcher objectsBatcher = client.batch().objectsBatcher();
-    Stream.of(menuPizza).forEach(objectsBatcher::withObject);
-    Stream.of(menuSoup).forEach(objectsBatcher::withObject);
-    Result<ObjectGetResponse[]> insertStatus = objectsBatcher.run();
+    Result<ObjectGetResponse[]> insertStatus = client.batch().objectsBatcher()
+      .withObjects(menuPizza)
+      .withObjects(menuSoup)
+      .run();
     assertNotNull(insertStatus);
     assertNotNull(insertStatus.getResult());
     assertEquals(6, insertStatus.getResult().length);

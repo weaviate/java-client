@@ -103,7 +103,7 @@ public class ClientGraphQLTest {
             .build();
     // when
     testGenerics.createTestSchemaAndData(client);
-    Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObject(soupWithID).run();
+    Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObjects(soupWithID).run();
     Result<GraphQLResponse> result = client.graphQL().get().withClassName("Soup")
             .withNearObject(nearObjectArgument)
             .withFields(name, _additional).run();
@@ -148,7 +148,7 @@ public class ClientGraphQLTest {
             .build();
     // when
     testGenerics.createTestSchemaAndData(client);
-    Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObject(soupWithID).run();
+    Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObjects(soupWithID).run();
     Result<GraphQLResponse> result = client.graphQL().get().withClassName("Soup")
             .withNearObject(nearObjectArgument)
             .withFields(name, _additional).run();
@@ -294,7 +294,7 @@ public class ClientGraphQLTest {
       .build();
     // when
     testGenerics.createTestSchemaAndData(client);
-    Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObject(pizzaWithID).withObject(pizzaWithID2).run();
+    Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObjects(pizzaWithID, pizzaWithID2).run();
     Result<GraphQLResponse> result = client.graphQL().get()
       .withClassName("Pizza")
       .withNearText(nearText)
@@ -358,7 +358,7 @@ public class ClientGraphQLTest {
             .build();
     // when
     testGenerics.createTestSchemaAndData(client);
-    Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObject(pizzaWithID).withObject(pizzaWithID2).run();
+    Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObjects(pizzaWithID, pizzaWithID2).run();
     Result<GraphQLResponse> result = client.graphQL().get()
             .withClassName("Pizza")
             .withNearText(nearText)
@@ -644,7 +644,7 @@ public class ClientGraphQLTest {
             .build();
     // when
     testGenerics.createTestSchemaAndData(client);
-    Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObject(pizzaWithID).run();
+    Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObjects(pizzaWithID).run();
     Result<GraphQLResponse> result = client.graphQL().aggregate().withFields(meta).withClassName("Pizza").withWhere(where).run();
     testGenerics.cleanupWeaviate(client);
     // then
@@ -679,7 +679,7 @@ public class ClientGraphQLTest {
             .build();
     // when
     testGenerics.createTestSchemaAndData(client);
-    Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObject(pizzaWithID).run();
+    Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObjects(pizzaWithID).run();
     Result<GraphQLResponse> result = client.graphQL().aggregate().withFields(meta).withClassName("Pizza").withGroupBy("name").withWhere(where).run();
     testGenerics.cleanupWeaviate(client);
     // then
@@ -709,7 +709,7 @@ public class ClientGraphQLTest {
             .build();
     // when
     testGenerics.createTestSchemaAndData(client);
-    Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObject(pizzaWithID).run();
+    Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObjects(pizzaWithID).run();
     Result<GraphQLResponse> result = client.graphQL().aggregate().withFields(meta).withClassName("Pizza").withGroupBy("name").run();
     testGenerics.cleanupWeaviate(client);
     // then
