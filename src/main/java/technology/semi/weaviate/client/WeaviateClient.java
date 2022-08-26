@@ -2,6 +2,7 @@ package technology.semi.weaviate.client;
 
 import technology.semi.weaviate.client.base.util.DbVersionProvider;
 import technology.semi.weaviate.client.base.util.DbVersionSupport;
+import technology.semi.weaviate.client.v1.backup.Backup;
 import technology.semi.weaviate.client.v1.batch.Batch;
 import technology.semi.weaviate.client.v1.classifications.Classifications;
 import technology.semi.weaviate.client.v1.contextionary.Contextionary;
@@ -40,6 +41,10 @@ public class WeaviateClient {
   public Batch batch() {
     dbVersionProvider.refresh();
     return new Batch(config, dbVersionSupport);
+  }
+
+  public Backup backup() {
+    return new Backup(config);
   }
 
   public Contextionary c11y() {
