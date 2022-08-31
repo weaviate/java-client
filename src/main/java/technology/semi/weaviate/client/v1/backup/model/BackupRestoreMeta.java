@@ -1,5 +1,6 @@
 package technology.semi.weaviate.client.v1.backup.model;
 
+import com.google.gson.annotations.SerializedName;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +14,8 @@ public class BackupRestoreMeta {
   String id;
   String path;
   String storageName;
-  String className;
+  @SerializedName("classes")
+  String[] classNames;
   String status;
   String error;
 }

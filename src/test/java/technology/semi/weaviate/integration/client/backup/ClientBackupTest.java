@@ -32,7 +32,8 @@ import static org.assertj.core.api.InstanceOfAssertFactories.CHAR_SEQUENCE;
 public class ClientBackupTest {
 
   private static final String DOCKER_COMPOSE_BACKUPS_DIR = "/tmp/backups";
-  private static final String CLASS_NAME = "Pizza";
+  private static final String CLASS_NAME_PIZZA = "Pizza";
+  private static final String CLASS_NAME_SOUP = "Soup";
   private static final String NOT_EXISTING_CLASS_NAME = "not-existing-class";
   private static final String STORAGE_NAME = Storage.FILESYSTEM;
   private static final String NOT_EXISTING_STORAGE_NAME = "not-existing-storage";
@@ -74,7 +75,7 @@ public class ClientBackupTest {
 
     // Create backup
     Result<BackupCreateMeta> metaCreate = client.backup().creator()
-      .withClassName(CLASS_NAME)
+      .withIncludeClassNames(CLASS_NAME_PIZZA)
       .withStorageName(STORAGE_NAME)
       .withBackupId(backupId)
       .withWaitForCompletion(true)
@@ -83,9 +84,8 @@ public class ClientBackupTest {
     assertThat(metaCreate.hasErrors()).isFalse();
     assertThat(metaCreate.getResult()).isNotNull()
       .returns(backupId, BackupCreateMeta::getId)
-      // TODO add className to weaviate response
-      // .returns(className, BackupCreateMeta::getClassName)
-      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + CLASS_NAME + "/" + backupId, BackupCreateMeta::getPath)
+      .returns(new String[]{CLASS_NAME_PIZZA}, BackupCreateMeta::getClassNames)
+      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupCreateMeta::getPath)
       .returns(STORAGE_NAME, BackupCreateMeta::getStorageName)
       .returns(CreateStatus.SUCCESS, BackupCreateMeta::getStatus)
       .returns(null, BackupCreateMeta::getError);
@@ -94,7 +94,6 @@ public class ClientBackupTest {
 
     // Check backup status
     Result<BackupCreateMeta> metaCreateStatus = client.backup().createStatusGetter()
-      .withClassName(CLASS_NAME)
       .withStorageName(STORAGE_NAME)
       .withBackupId(backupId)
       .run();
@@ -102,16 +101,15 @@ public class ClientBackupTest {
     assertThat(metaCreateStatus.hasErrors()).isFalse();
     assertThat(metaCreateStatus.getResult()).isNotNull()
       .returns(backupId, BackupCreateMeta::getId)
-      // TODO add className to weaviate response
-      // .returns(className, BackupCreateMeta::getClassName)
-      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + CLASS_NAME + "/" + backupId, BackupCreateMeta::getPath)
+      .returns(new String[]{CLASS_NAME_PIZZA}, BackupCreateMeta::getClassNames)
+      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupCreateMeta::getPath)
       .returns(STORAGE_NAME, BackupCreateMeta::getStorageName)
       .returns(CreateStatus.SUCCESS, BackupCreateMeta::getStatus)
       .returns(null, BackupCreateMeta::getError);
 
     // Remove existing class
     Result<Boolean> delete = client.schema().classDeleter()
-      .withClassName(CLASS_NAME)
+      .withClassName(CLASS_NAME_PIZZA)
       .run();
 
     assertThat(delete.hasErrors()).isFalse();
@@ -119,7 +117,7 @@ public class ClientBackupTest {
 
     // Restore backup
     Result<BackupRestoreMeta> metaRestore = client.backup().restorer()
-      .withClassName(CLASS_NAME)
+      .withIncludeClassNames(CLASS_NAME_PIZZA)
       .withStorageName(STORAGE_NAME)
       .withBackupId(backupId)
       .withWaitForCompletion(true)
@@ -128,8 +126,8 @@ public class ClientBackupTest {
     assertThat(metaRestore.hasErrors()).isFalse();
     assertThat(metaRestore.getResult()).isNotNull()
       .returns(backupId, BackupRestoreMeta::getId)
-      .returns(CLASS_NAME, BackupRestoreMeta::getClassName)
-      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + CLASS_NAME + "/" + backupId, BackupRestoreMeta::getPath)
+      .returns(new String[]{CLASS_NAME_PIZZA}, BackupRestoreMeta::getClassNames)
+      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupRestoreMeta::getPath)
       .returns(STORAGE_NAME, BackupRestoreMeta::getStorageName)
       .returns(RestoreStatus.SUCCESS, BackupRestoreMeta::getStatus)
       .returns(null, BackupRestoreMeta::getError);
@@ -138,7 +136,6 @@ public class ClientBackupTest {
 
     // Check restore backup
     Result<BackupRestoreMeta> metaRestoreStatus = client.backup().restoreStatusGetter()
-      .withClassName(CLASS_NAME)
       .withStorageName(STORAGE_NAME)
       .withBackupId(backupId)
       .run();
@@ -146,8 +143,8 @@ public class ClientBackupTest {
     assertThat(metaRestoreStatus.hasErrors()).isFalse();
     assertThat(metaRestoreStatus.getResult()).isNotNull()
       .returns(backupId, BackupRestoreMeta::getId)
-      .returns(CLASS_NAME, BackupRestoreMeta::getClassName)
-      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + CLASS_NAME + "/" + backupId, BackupRestoreMeta::getPath)
+      .returns(new String[]{CLASS_NAME_PIZZA}, BackupRestoreMeta::getClassNames)
+      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupRestoreMeta::getPath)
       .returns(STORAGE_NAME, BackupRestoreMeta::getStorageName)
       .returns(RestoreStatus.SUCCESS, BackupRestoreMeta::getStatus)
       .returns(null, BackupRestoreMeta::getError);
@@ -159,7 +156,7 @@ public class ClientBackupTest {
 
     // Start creating backup
     Result<BackupCreateMeta> metaCreate = client.backup().creator()
-      .withClassName(CLASS_NAME)
+      .withIncludeClassNames(CLASS_NAME_PIZZA)
       .withStorageName(STORAGE_NAME)
       .withBackupId(backupId)
       .run();
@@ -167,16 +164,14 @@ public class ClientBackupTest {
     assertThat(metaCreate.hasErrors()).isFalse();
     assertThat(metaCreate.getResult()).isNotNull()
       .returns(backupId, BackupCreateMeta::getId)
-      // TODO add className to weaviate response
-      // .returns(CLASS_NAME, BackupCreateMeta::getClassName)
-      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + CLASS_NAME + "/" + backupId, BackupCreateMeta::getPath)
+      .returns(new String[]{CLASS_NAME_PIZZA}, BackupCreateMeta::getClassNames)
+      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupCreateMeta::getPath)
       .returns(STORAGE_NAME, BackupCreateMeta::getStorageName)
       .returns(CreateStatus.STARTED, BackupCreateMeta::getStatus)
       .returns(null, BackupCreateMeta::getError);
 
     // Wait until created
     BackupCreateStatusGetter createStatusGetter = client.backup().createStatusGetter()
-      .withClassName(CLASS_NAME)
       .withStorageName(STORAGE_NAME)
       .withBackupId(backupId);
 
@@ -187,9 +182,8 @@ public class ClientBackupTest {
       assertThat(metaCreateStatus.hasErrors()).isFalse();
       assertThat(metaCreateStatus.getResult()).isNotNull()
         .returns(backupId, BackupCreateMeta::getId)
-        // TODO add className to weaviate response
-        // .returns(CLASS_NAME, BackupCreateMeta::getClassName)
-        .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + CLASS_NAME + "/" + backupId, BackupCreateMeta::getPath)
+        .returns(new String[]{CLASS_NAME_PIZZA}, BackupCreateMeta::getClassNames)
+        .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupCreateMeta::getPath)
         .returns(STORAGE_NAME, BackupCreateMeta::getStorageName)
         .returns(null, BackupCreateMeta::getError)
         .extracting(BackupCreateMeta::getStatus).isIn(CreateStatus.STARTED, CreateStatus.TRANSFERRING,
@@ -205,7 +199,7 @@ public class ClientBackupTest {
 
     // Remove existing class
     Result<Boolean> delete = client.schema().classDeleter()
-      .withClassName(CLASS_NAME)
+      .withClassName(CLASS_NAME_PIZZA)
       .run();
 
     assertThat(delete.hasErrors()).isFalse();
@@ -213,7 +207,6 @@ public class ClientBackupTest {
 
     // Start restoring backup
     Result<BackupRestoreMeta> metaRestore = client.backup().restorer()
-      .withClassName(CLASS_NAME)
       .withStorageName(STORAGE_NAME)
       .withBackupId(backupId)
       .run();
@@ -221,16 +214,14 @@ public class ClientBackupTest {
     assertThat(metaRestore.hasErrors()).isFalse();
     assertThat(metaRestore.getResult()).isNotNull()
       .returns(backupId, BackupRestoreMeta::getId)
-      // TODO add className to weaviate response
-//      .returns(CLASS_NAME, BackupRestoreMeta::getClassName)
-      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + CLASS_NAME + "/" + backupId, BackupRestoreMeta::getPath)
+      .returns(new String[]{CLASS_NAME_PIZZA}, BackupRestoreMeta::getClassNames)
+      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupRestoreMeta::getPath)
       .returns(STORAGE_NAME, BackupRestoreMeta::getStorageName)
       .returns(RestoreStatus.STARTED, BackupRestoreMeta::getStatus)
       .returns(null, BackupRestoreMeta::getError);
 
     // Wait until restored
     BackupRestoreStatusGetter restoreStatusGetter = client.backup().restoreStatusGetter()
-      .withClassName(CLASS_NAME)
       .withStorageName(STORAGE_NAME)
       .withBackupId(backupId);
 
@@ -241,8 +232,8 @@ public class ClientBackupTest {
       assertThat(metaRestoreStatus.hasErrors()).isFalse();
       assertThat(metaRestoreStatus.getResult()).isNotNull()
         .returns(backupId, BackupRestoreMeta::getId)
-        .returns(CLASS_NAME, BackupRestoreMeta::getClassName)
-        .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + CLASS_NAME + "/" + backupId, BackupRestoreMeta::getPath)
+        .returns(new String[]{CLASS_NAME_PIZZA}, BackupRestoreMeta::getClassNames)
+        .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupRestoreMeta::getPath)
         .returns(STORAGE_NAME, BackupRestoreMeta::getStorageName)
         .returns(null, BackupRestoreMeta::getError)
         .extracting(BackupRestoreMeta::getStatus).isIn(RestoreStatus.STARTED, RestoreStatus.TRANSFERRING,
@@ -258,9 +249,93 @@ public class ClientBackupTest {
   }
 
   @Test
+  public void shouldCreateAndRestore1Of2Classes() {
+    assertThatAllPizzasExist();
+    assertThatAllSoupsExist();
+
+    // Create backup
+    Result<BackupCreateMeta> metaCreate = client.backup().creator()
+      .withIncludeClassNames(CLASS_NAME_PIZZA, CLASS_NAME_SOUP)
+      .withStorageName(STORAGE_NAME)
+      .withBackupId(backupId)
+      .withWaitForCompletion(true)
+      .run();
+
+    assertThat(metaCreate.hasErrors()).isFalse();
+    assertThat(metaCreate.getResult()).isNotNull()
+      .returns(backupId, BackupCreateMeta::getId)
+      .returns(new String[]{CLASS_NAME_PIZZA, CLASS_NAME_SOUP}, BackupCreateMeta::getClassNames)
+      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupCreateMeta::getPath)
+      .returns(STORAGE_NAME, BackupCreateMeta::getStorageName)
+      .returns(CreateStatus.SUCCESS, BackupCreateMeta::getStatus)
+      .returns(null, BackupCreateMeta::getError);
+
+    assertThatAllPizzasExist();
+    assertThatAllSoupsExist();
+
+    // Check backup status
+    Result<BackupCreateMeta> metaCreateStatus = client.backup().createStatusGetter()
+      .withStorageName(STORAGE_NAME)
+      .withBackupId(backupId)
+      .run();
+
+    assertThat(metaCreateStatus.hasErrors()).isFalse();
+    assertThat(metaCreateStatus.getResult()).isNotNull()
+      .returns(backupId, BackupCreateMeta::getId)
+      .returns(new String[]{CLASS_NAME_PIZZA, CLASS_NAME_SOUP}, BackupCreateMeta::getClassNames)
+      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupCreateMeta::getPath)
+      .returns(STORAGE_NAME, BackupCreateMeta::getStorageName)
+      .returns(CreateStatus.SUCCESS, BackupCreateMeta::getStatus)
+      .returns(null, BackupCreateMeta::getError);
+
+    // Remove existing class
+    Result<Boolean> delete = client.schema().classDeleter()
+      .withClassName(CLASS_NAME_PIZZA)
+      .run();
+
+    assertThat(delete.hasErrors()).isFalse();
+    assertThat(delete.getResult()).isTrue();
+
+    // Restore backup
+    Result<BackupRestoreMeta> metaRestore = client.backup().restorer()
+      .withIncludeClassNames(CLASS_NAME_PIZZA)
+      .withStorageName(STORAGE_NAME)
+      .withBackupId(backupId)
+      .withWaitForCompletion(true)
+      .run();
+
+    assertThat(metaRestore.hasErrors()).isFalse();
+    assertThat(metaRestore.getResult()).isNotNull()
+      .returns(backupId, BackupRestoreMeta::getId)
+      .returns(new String[]{CLASS_NAME_PIZZA}, BackupRestoreMeta::getClassNames)
+      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupRestoreMeta::getPath)
+      .returns(STORAGE_NAME, BackupRestoreMeta::getStorageName)
+      .returns(RestoreStatus.SUCCESS, BackupRestoreMeta::getStatus)
+      .returns(null, BackupRestoreMeta::getError);
+
+    assertThatAllPizzasExist();
+    assertThatAllSoupsExist();
+
+    // Check restore backup
+    Result<BackupRestoreMeta> metaRestoreStatus = client.backup().restoreStatusGetter()
+      .withStorageName(STORAGE_NAME)
+      .withBackupId(backupId)
+      .run();
+
+    assertThat(metaRestoreStatus.hasErrors()).isFalse();
+    assertThat(metaRestoreStatus.getResult()).isNotNull()
+      .returns(backupId, BackupRestoreMeta::getId)
+      .returns(new String[]{CLASS_NAME_PIZZA}, BackupRestoreMeta::getClassNames)
+      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupRestoreMeta::getPath)
+      .returns(STORAGE_NAME, BackupRestoreMeta::getStorageName)
+      .returns(RestoreStatus.SUCCESS, BackupRestoreMeta::getStatus)
+      .returns(null, BackupRestoreMeta::getError);
+  }
+
+  @Test
   public void shouldFailOnCreateBackupOnNotExistingStorage() {
     Result<BackupCreateMeta> metaCreate = client.backup().creator()
-      .withClassName(CLASS_NAME)
+      .withIncludeClassNames(CLASS_NAME_PIZZA)
       .withStorageName(NOT_EXISTING_STORAGE_NAME)
       .withBackupId(backupId)
       .run();
@@ -277,15 +352,13 @@ public class ClientBackupTest {
   @Test
   public void shouldFailOnCreateBackupStatusOnNotExistingStorage() {
     Result<BackupCreateMeta> metaCreateStatus = client.backup().createStatusGetter()
-      .withClassName(CLASS_NAME)
       .withStorageName(NOT_EXISTING_STORAGE_NAME)
       .withBackupId(backupId)
       .run();
 
     assertThat(metaCreateStatus.hasErrors()).isTrue();
     assertThat(metaCreateStatus.getError()).isNotNull()
-      // TODO should be 422?
-      .returns(500, WeaviateError::getStatusCode)
+      .returns(422, WeaviateError::getStatusCode)
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
       .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
@@ -293,35 +366,16 @@ public class ClientBackupTest {
   }
 
   @Test
-  public void shouldFailOnRestoreBackupOnNotExistingStorage() {
+  public void shouldFailOnRestoreBackupFromNotExistingStorage() {
     Result<BackupRestoreMeta> metaRestore = client.backup().restorer()
-      .withClassName(NOT_EXISTING_CLASS_NAME)
+      .withIncludeClassNames(NOT_EXISTING_CLASS_NAME)
       .withStorageName(NOT_EXISTING_STORAGE_NAME)
       .withBackupId(backupId)
       .run();
 
     assertThat(metaRestore.hasErrors()).isTrue();
     assertThat(metaRestore.getError()).isNotNull()
-      // TODO should be 422?
-      .returns(500, WeaviateError::getStatusCode)
-      .extracting(WeaviateError::getMessages).asList()
-      .hasSizeGreaterThan(0)
-      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
-      .first().asInstanceOf(CHAR_SEQUENCE).contains(NOT_EXISTING_STORAGE_NAME);
-  }
-
-  @Test
-  public void shouldFailOnRestoreBackupStatusOnNotExistingStorage() {
-    Result<BackupRestoreMeta> metaRestoreStatus = client.backup().restoreStatusGetter()
-      .withClassName(NOT_EXISTING_CLASS_NAME)
-      .withStorageName(NOT_EXISTING_STORAGE_NAME)
-      .withBackupId(backupId)
-      .run();
-
-    assertThat(metaRestoreStatus.hasErrors()).isTrue();
-    assertThat(metaRestoreStatus.getError()).isNotNull()
-      // TODO should be 422?
-      .returns(500, WeaviateError::getStatusCode)
+      .returns(422, WeaviateError::getStatusCode)
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
       .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
@@ -331,7 +385,7 @@ public class ClientBackupTest {
   @Test
   public void shouldFailOnCreateBackupForNotExistingClass() {
     Result<BackupCreateMeta> metaCreate = client.backup().creator()
-      .withClassName(NOT_EXISTING_CLASS_NAME)
+      .withIncludeClassNames(NOT_EXISTING_CLASS_NAME)
       .withStorageName(STORAGE_NAME)
       .withBackupId(backupId)
       .run();
@@ -346,27 +400,9 @@ public class ClientBackupTest {
   }
 
   @Test
-  public void shouldFailOnCreateBackupStatusForNotExistingClass() {
-    Result<BackupCreateMeta> metaCreateStatus = client.backup().createStatusGetter()
-      .withClassName(NOT_EXISTING_CLASS_NAME)
-      .withStorageName(STORAGE_NAME)
-      .withBackupId(backupId)
-      .run();
-
-    assertThat(metaCreateStatus.hasErrors()).isTrue();
-    assertThat(metaCreateStatus.getError()).isNotNull()
-      // TODO should be 422?
-      .returns(404, WeaviateError::getStatusCode)
-      .extracting(WeaviateError::getMessages).asList()
-      .hasSizeGreaterThan(0)
-      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
-      .first().asInstanceOf(CHAR_SEQUENCE).contains(NOT_EXISTING_CLASS_NAME);
-  }
-
-  @Test
   public void shouldFailOnRestoreBackupForExistingClass() {
     Result<BackupCreateMeta> metaCreate = client.backup().creator()
-      .withClassName(CLASS_NAME)
+      .withIncludeClassNames(CLASS_NAME_PIZZA)
       .withStorageName(STORAGE_NAME)
       .withBackupId(backupId)
       .withWaitForCompletion(true)
@@ -375,61 +411,24 @@ public class ClientBackupTest {
     assertThat(metaCreate.hasErrors()).isFalse();
 
     Result<BackupRestoreMeta> metaRestore = client.backup().restorer()
-      .withClassName(CLASS_NAME)
+      .withIncludeClassNames(CLASS_NAME_PIZZA)
       .withStorageName(STORAGE_NAME)
       .withBackupId(backupId)
       .run();
 
-//    // TODO should fail immediately
-//    assertThat(metaRestore.hasErrors()).isTrue();
-//    assertThat(metaRestore.getError()).isNotNull()
-//      .returns(422, WeaviateError::getStatusCode)
-//      .extracting(WeaviateError::getMessages).asList()
-//      .hasSizeGreaterThan(0)
-//      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
-//      .first().asInstanceOf(CHAR_SEQUENCE).contains(CLASS_NAME);
-
-    assertThat(metaRestore.hasErrors()).isFalse();
-    assertThat(metaRestore.getResult()).isNotNull()
-      .returns(backupId, BackupRestoreMeta::getId)
-      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + CLASS_NAME + "/" + backupId, BackupRestoreMeta::getPath)
-      .returns(STORAGE_NAME, BackupRestoreMeta::getStorageName)
-      .returns(RestoreStatus.STARTED, BackupRestoreMeta::getStatus)
-      .returns(null, BackupRestoreMeta::getError);
-  }
-
-  @Test
-  public void shouldFailOnRestoreBackupStatusForExistingClass() {
-    Result<BackupCreateMeta> metaCreate = client.backup().creator()
-      .withClassName(CLASS_NAME)
-      .withStorageName(STORAGE_NAME)
-      .withBackupId(backupId)
-      .withWaitForCompletion(true)
-      .run();
-
-    assertThat(metaCreate.hasErrors()).isFalse();
-
-    Result<BackupRestoreMeta> metaRestoreStatus = client.backup().restoreStatusGetter()
-      .withClassName(CLASS_NAME)
-      .withStorageName(STORAGE_NAME)
-      .withBackupId(backupId)
-      .run();
-
-    assertThat(metaRestoreStatus.hasErrors()).isTrue();
-    assertThat(metaRestoreStatus.getError()).isNotNull()
-      // TODO should be 422?
-      .returns(500, WeaviateError::getStatusCode)
+    assertThat(metaRestore.hasErrors()).isTrue();
+    assertThat(metaRestore.getError()).isNotNull()
+      .returns(422, WeaviateError::getStatusCode)
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
       .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
-      // TODO invalid error message - status not found vs expected existing index
-      .first().asInstanceOf(CHAR_SEQUENCE).contains(CLASS_NAME);
+      .first().asInstanceOf(CHAR_SEQUENCE).contains(CLASS_NAME_PIZZA);
   }
 
   @Test
   public void shouldFailOnCreateOfExistingBackup() {
     Result<BackupCreateMeta> metaCreate = client.backup().creator()
-      .withClassName(CLASS_NAME)
+      .withIncludeClassNames(CLASS_NAME_PIZZA)
       .withStorageName(STORAGE_NAME)
       .withBackupId(backupId)
       .withWaitForCompletion(true)
@@ -438,10 +437,9 @@ public class ClientBackupTest {
     assertThat(metaCreate.hasErrors()).isFalse();
 
     Result<BackupCreateMeta> metaCreateAgain = client.backup().creator()
-      .withClassName(CLASS_NAME)
+      .withIncludeClassNames(CLASS_NAME_PIZZA)
       .withStorageName(STORAGE_NAME)
       .withBackupId(backupId)
-      .withWaitForCompletion(true)
       .run();
 
     assertThat(metaCreateAgain.hasErrors()).isTrue();
@@ -456,7 +454,6 @@ public class ClientBackupTest {
   @Test
   public void shouldFailOnCreateStatusOfNotExistingBackup() {
     Result<BackupCreateMeta> metaCreateStatus = client.backup().createStatusGetter()
-      .withClassName(CLASS_NAME)
       .withStorageName(STORAGE_NAME)
       .withBackupId(notExistingBackupId)
       .run();
@@ -473,50 +470,145 @@ public class ClientBackupTest {
   @Test
   public void shouldFailOnRestoreOfNotExistingBackup() {
     Result<BackupRestoreMeta> metaRestore = client.backup().restorer()
-      .withClassName(NOT_EXISTING_CLASS_NAME)
+      .withIncludeClassNames(NOT_EXISTING_CLASS_NAME)
       .withStorageName(STORAGE_NAME)
       .withBackupId(notExistingBackupId)
       .run();
 
-//    // TODO should fail immediately
-//    assertThat(metaRestore.hasErrors()).isTrue();
-//    assertThat(metaRestore.getError()).isNotNull()
-//      .returns(404, WeaviateError::getStatusCode)
-//      .extracting(WeaviateError::getMessages).asList()
-//      .hasSizeGreaterThan(0)
-//      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
-//      .first().asInstanceOf(CHAR_SEQUENCE).contains(notExistingBackupId);
-
-    assertThat(metaRestore.hasErrors()).isFalse();
-    assertThat(metaRestore.getResult()).isNotNull()
-      .returns(notExistingBackupId, BackupRestoreMeta::getId)
-      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + NOT_EXISTING_CLASS_NAME + "/" + notExistingBackupId, BackupRestoreMeta::getPath)
-      .returns(STORAGE_NAME, BackupRestoreMeta::getStorageName)
-      .returns(RestoreStatus.STARTED, BackupRestoreMeta::getStatus)
-      .returns(null, BackupRestoreMeta::getError);
-  }
-
-  @Test
-  public void shouldFailOnRestoreStatusOfNotExistingBackup() {
-    Result<BackupRestoreMeta> metaRestoreStatus = client.backup().restoreStatusGetter()
-      .withClassName(NOT_EXISTING_CLASS_NAME)
-      .withStorageName(STORAGE_NAME)
-      .withBackupId(notExistingBackupId)
-      .run();
-
-    assertThat(metaRestoreStatus.hasErrors()).isTrue();
-    assertThat(metaRestoreStatus.getError()).isNotNull()
-      // TODO should be 404?
-      .returns(500, WeaviateError::getStatusCode)
+    assertThat(metaRestore.hasErrors()).isTrue();
+    assertThat(metaRestore.getError()).isNotNull()
+      .returns(404, WeaviateError::getStatusCode)
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
       .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
       .first().asInstanceOf(CHAR_SEQUENCE).contains(notExistingBackupId);
   }
 
+  @Test
+  public void shouldFailOnRestoreBackupStatusOfNotStartedRestore() {
+    Result<BackupCreateMeta> metaCreate = client.backup().creator()
+      .withIncludeClassNames(CLASS_NAME_PIZZA)
+      .withStorageName(STORAGE_NAME)
+      .withBackupId(backupId)
+      .withWaitForCompletion(true)
+      .run();
+
+    assertThat(metaCreate.hasErrors()).isFalse();
+
+    Result<BackupRestoreMeta> metaRestoreStatus = client.backup().restoreStatusGetter()
+      .withStorageName(STORAGE_NAME)
+      .withBackupId(backupId)
+      .run();
+
+    assertThat(metaRestoreStatus.hasErrors()).isTrue();
+    assertThat(metaRestoreStatus.getError()).isNotNull()
+      .returns(422, WeaviateError::getStatusCode)
+      .extracting(WeaviateError::getMessages).asList()
+      .hasSizeGreaterThan(0)
+      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
+      // TODO adjust to error message
+      .first().asInstanceOf(CHAR_SEQUENCE).contains(STORAGE_NAME).contains(backupId);
+  }
+
+  @Test
+  public void shouldFailOnCreateBackupForBothIncludeAndExcludeClasses() {
+    Result<BackupCreateMeta> metaCreate = client.backup().creator()
+      .withIncludeClassNames(CLASS_NAME_PIZZA)
+      .withExcludeClassNames(CLASS_NAME_SOUP)
+      .withStorageName(STORAGE_NAME)
+      .withBackupId(backupId)
+      .withWaitForCompletion(true)
+      .run();
+
+    assertThat(metaCreate.hasErrors()).isTrue();
+    assertThat(metaCreate.getError()).isNotNull()
+      .returns(422, WeaviateError::getStatusCode)
+      .extracting(WeaviateError::getMessages).asList()
+      .hasSizeGreaterThan(0)
+      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
+      // TODO adjust to error message
+      .first().asInstanceOf(CHAR_SEQUENCE).contains(CLASS_NAME_PIZZA).contains(CLASS_NAME_SOUP);
+  }
+
+  @Test
+  public void shouldFailOnRestoreBackupForBothIncludeAndExcludeClasses() {
+    // Create backup
+    Result<BackupCreateMeta> metaCreate = client.backup().creator()
+      .withIncludeClassNames(CLASS_NAME_PIZZA, CLASS_NAME_SOUP)
+      .withStorageName(STORAGE_NAME)
+      .withBackupId(backupId)
+      .withWaitForCompletion(true)
+      .run();
+
+    assertThat(metaCreate.hasErrors()).isFalse();
+
+    // Remove existing class
+    Result<Boolean> delete = client.schema().classDeleter()
+      .withClassName(CLASS_NAME_PIZZA)
+      .run();
+
+    assertThat(delete.hasErrors()).isFalse();
+
+    // Restore
+    Result<BackupRestoreMeta> metaRestore = client.backup().restorer()
+      .withIncludeClassNames(CLASS_NAME_PIZZA)
+      .withExcludeClassNames(CLASS_NAME_SOUP)
+      .withStorageName(STORAGE_NAME)
+      .withBackupId(backupId)
+      .run();
+
+    assertThat(metaRestore.hasErrors()).isTrue();
+    assertThat(metaRestore.getError()).isNotNull()
+      .returns(422, WeaviateError::getStatusCode)
+      .extracting(WeaviateError::getMessages).asList()
+      .hasSizeGreaterThan(0)
+      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
+      // TODO adjust to error message
+      .first().asInstanceOf(CHAR_SEQUENCE).contains(CLASS_NAME_PIZZA).contains(CLASS_NAME_SOUP);
+  }
+
+  @Test
+  public void shouldGetAllExistingBackups() {
+    Result<BackupCreateMeta> metaCreatePizza = client.backup().creator()
+      .withIncludeClassNames(CLASS_NAME_PIZZA)
+      .withStorageName(STORAGE_NAME)
+      .withBackupId(backupId + "Pizza")
+      .withWaitForCompletion(true)
+      .run();
+
+    assertThat(metaCreatePizza.hasErrors()).isFalse();
+
+    Result<BackupCreateMeta> metaCreateSoup = client.backup().creator()
+      .withIncludeClassNames(CLASS_NAME_SOUP)
+      .withStorageName(STORAGE_NAME)
+      .withBackupId(backupId + "Soup")
+      .withWaitForCompletion(true)
+      .run();
+
+    assertThat(metaCreateSoup.hasErrors()).isFalse();
+
+    Result<BackupCreateMeta[]> metas = client.backup().getter()
+      .withStorageName(STORAGE_NAME)
+      .run();
+
+    assertThat(metas.hasErrors()).isFalse();
+    assertThat(metas.getResult()).isNotNull()
+      .hasSize(2)
+      .extracting(BackupCreateMeta::getId)
+      .containsExactlyInAnyOrder(backupId + "Pizza", backupId + "Soup");
+  }
+
   private void assertThatAllPizzasExist() {
+    assertThatAllFoodObjectsExist("Pizza", "Quattro Formaggi", "Frutti di Mare", "Hawaii", "Doener");
+  }
+
+  private void assertThatAllSoupsExist() {
+    assertThatAllFoodObjectsExist("Soup", "ChickenSoup", "Beautiful");
+  }
+
+  private void assertThatAllFoodObjectsExist(String className, String... names) {
     Result<GraphQLResponse> result = client.graphQL().get()
-      .withClassName("Pizza")
+      .withClassName(className)
       .withFields(Field.builder().name("name").build())
       .run();
 
@@ -524,10 +616,10 @@ public class ClientBackupTest {
     assertThat(result.getResult()).isNotNull()
       .extracting(GraphQLResponse::getData).isInstanceOf(Map.class)
       .extracting(data -> ((Map<?, ?>)data).get("Get")).isInstanceOf(Map.class)
-      .extracting(get -> ((Map<?, ?>)get).get("Pizza")).asList()
-      .hasSize(4).hasOnlyElementsOfType(Map.class)
+      .extracting(get -> ((Map<?, ?>)get).get(className)).asList()
+      .hasSize(names.length).hasOnlyElementsOfType(Map.class)
       .extracting(pizza -> ((Map<?,?>)pizza).get("name")).hasOnlyElementsOfType(String.class)
       .extracting(name -> (String)name)
-      .containsExactlyInAnyOrder("Quattro Formaggi", "Frutti di Mare", "Hawaii", "Doener");
+      .containsExactlyInAnyOrder(names);
   }
 }

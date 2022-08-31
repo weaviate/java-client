@@ -5,6 +5,7 @@ import technology.semi.weaviate.client.base.BaseClient;
 import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.backup.model.BackupRestoreMeta;
+import technology.semi.weaviate.client.v1.backup.model.BackupRestorePayload;
 import technology.semi.weaviate.client.v1.backup.model.RestoreStatus;
 
 public class BackupRestoreHelper extends BaseClient<BackupRestoreMeta> {
@@ -15,33 +16,24 @@ public class BackupRestoreHelper extends BaseClient<BackupRestoreMeta> {
     super(config);
   }
 
-  Result<BackupRestoreMeta> restore(String className, String storageName, String backupId) {
-    return restore(endpoint(className, storageName, backupId));
-  }
-
-  private Result<BackupRestoreMeta> restore(String endpoint) {
-    Response<BackupRestoreMeta> response = sendPostRequest(endpoint, new Object(), BackupRestoreMeta.class);
+  Result<BackupRestoreMeta> restore(String storageName, BackupRestorePayload payload) {
+    Response<BackupRestoreMeta> response = sendPostRequest(path(storageName, payload.getId()), payload, BackupRestoreMeta.class);
     return new Result<>(response);
   }
 
-  Result<BackupRestoreMeta> statusRestore(String className, String storageName, String backupId) {
-    return statusRestore(endpoint(className, storageName, backupId));
-  }
-
-  private Result<BackupRestoreMeta> statusRestore(String endpoint) {
-    Response<BackupRestoreMeta> response = sendGetRequest(endpoint, BackupRestoreMeta.class);
+  Result<BackupRestoreMeta> statusRestore(String storageName, String backupId) {
+    Response<BackupRestoreMeta> response = sendGetRequest(path(storageName, backupId), BackupRestoreMeta.class);
     return new Result<>(response);
   }
 
-  Result<BackupRestoreMeta> restoreAndWaitForCompletion(String className, String storageName, String backupId) {
-    String endpoint = endpoint(className, storageName, backupId);
-    Result<BackupRestoreMeta> result = restore(endpoint);
+  Result<BackupRestoreMeta> restoreAndWaitForCompletion(String storageName, BackupRestorePayload payload) {
+    Result<BackupRestoreMeta> result = restore(storageName, payload);
     if (result.hasErrors()) {
       return result;
     }
 
     while(true) {
-      result = statusRestore(endpoint);
+      result = statusRestore(storageName, payload.getId());
       if (result.hasErrors()) {
         return result;
       }
@@ -60,8 +52,7 @@ public class BackupRestoreHelper extends BaseClient<BackupRestoreMeta> {
     }
   }
 
-  private String endpoint(String className, String storageName, String backupId) {
-    // TODO change snapshots to backups
-    return String.format("/schema/%s/snapshots/%s/%s/restore", className, storageName, backupId);
+  private String path(String storageName, String backupId) {
+    return String.format("/backups/%s/%s/restore", storageName, backupId);
   }
 }

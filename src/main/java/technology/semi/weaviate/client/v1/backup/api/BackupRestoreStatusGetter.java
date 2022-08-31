@@ -9,14 +9,8 @@ import technology.semi.weaviate.client.v1.backup.model.BackupRestoreMeta;
 public class BackupRestoreStatusGetter implements ClientResult<BackupRestoreMeta> {
 
   private final BackupRestoreHelper helper;
-  private String className;
   private String storageName;
   private String backupId;
-
-  public BackupRestoreStatusGetter withClassName(String className) {
-    this.className = className;
-    return this;
-  }
 
   public BackupRestoreStatusGetter withStorageName(String storageName) {
     this.storageName = storageName;
@@ -30,6 +24,6 @@ public class BackupRestoreStatusGetter implements ClientResult<BackupRestoreMeta
 
   @Override
   public Result<BackupRestoreMeta> run() {
-    return helper.statusRestore(className, storageName, backupId);
+    return helper.statusRestore(storageName, backupId);
   }
 }

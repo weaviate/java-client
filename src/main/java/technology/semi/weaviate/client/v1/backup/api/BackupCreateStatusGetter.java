@@ -9,14 +9,8 @@ import technology.semi.weaviate.client.v1.backup.model.BackupCreateMeta;
 public class BackupCreateStatusGetter implements ClientResult<BackupCreateMeta> {
 
   private final BackupCreateHelper helper;
-  private String className;
   private String storageName;
   private String backupId;
-
-  public BackupCreateStatusGetter withClassName(String className) {
-    this.className = className;
-    return this;
-  }
 
   public BackupCreateStatusGetter withStorageName(String storageName) {
     this.storageName = storageName;
@@ -30,6 +24,6 @@ public class BackupCreateStatusGetter implements ClientResult<BackupCreateMeta> 
 
   @Override
   public Result<BackupCreateMeta> run() {
-    return helper.statusCreate(className, storageName, backupId);
+    return helper.statusCreate(storageName, backupId);
   }
 }

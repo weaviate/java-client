@@ -5,6 +5,7 @@ import technology.semi.weaviate.client.base.BaseClient;
 import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.backup.model.BackupCreateMeta;
+import technology.semi.weaviate.client.v1.backup.model.BackupCreatePayload;
 import technology.semi.weaviate.client.v1.backup.model.CreateStatus;
 
 public class BackupCreateHelper extends BaseClient<BackupCreateMeta> {
@@ -15,33 +16,24 @@ public class BackupCreateHelper extends BaseClient<BackupCreateMeta> {
     super(config);
   }
 
-  Result<BackupCreateMeta> create(String className, String storageName, String backupId) {
-    return create(endpoint(className, storageName, backupId));
-  }
-
-  private Result<BackupCreateMeta> create(String endpoint) {
-    Response<BackupCreateMeta> response = sendPostRequest(endpoint, new Object(), BackupCreateMeta.class);
+  Result<BackupCreateMeta> create(String storageName, BackupCreatePayload payload) {
+    Response<BackupCreateMeta> response = sendPostRequest(path(storageName), payload, BackupCreateMeta.class);
     return new Result<>(response);
   }
 
-  Result<BackupCreateMeta> statusCreate(String className, String storageName, String backupId) {
-    return statusCreate(endpoint(className, storageName, backupId));
-  }
-
-  private Result<BackupCreateMeta> statusCreate(String endpoint) {
-    Response<BackupCreateMeta> response = sendGetRequest(endpoint, BackupCreateMeta.class);
+  Result<BackupCreateMeta> statusCreate(String storageName, String backupId) {
+    Response<BackupCreateMeta> response = sendGetRequest(path(storageName, backupId), BackupCreateMeta.class);
     return new Result<>(response);
   }
 
-  Result<BackupCreateMeta> createAndWaitForCompletion(String className, String storageName, String backupId) {
-    String endpoint = endpoint(className, storageName, backupId);
-    Result<BackupCreateMeta> result = create(endpoint);
+  Result<BackupCreateMeta> createAndWaitForCompletion(String storageName, BackupCreatePayload payload) {
+    Result<BackupCreateMeta> result = create(storageName, payload);
     if (result.hasErrors()) {
       return result;
     }
 
     while(true) {
-      result = statusCreate(endpoint);
+      result = statusCreate(storageName, payload.getId());
       if (result.hasErrors()) {
         return result;
       }
@@ -60,8 +52,11 @@ public class BackupCreateHelper extends BaseClient<BackupCreateMeta> {
     }
   }
 
-  private String endpoint(String className, String storageName, String backupId) {
-    // TODO change snapshots to backups
-    return String.format("/schema/%s/snapshots/%s/%s", className, storageName, backupId);
+  private String path(String storageName) {
+    return String.format("/backups/%s", storageName);
+  }
+
+  private String path(String storageName, String backupId) {
+    return String.format("/backups/%s/%s", storageName, backupId);
   }
 }
