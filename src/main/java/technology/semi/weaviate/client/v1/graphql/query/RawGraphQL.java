@@ -7,26 +7,26 @@ import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLQuery;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLResponse;
-import technology.semi.weaviate.client.v1.graphql.query.builder.RawGQLBuilder;
+import technology.semi.weaviate.client.v1.graphql.query.builder.RawGraphQLBuilder;
 
 
-public class RawGQL extends BaseClient<GraphQLResponse> implements ClientResult<GraphQLResponse> {
-  private final RawGQLBuilder.RawGQLBuilderBuilder rawGQLBuilder;
+public class RawGraphQL extends BaseClient<GraphQLResponse> implements ClientResult<GraphQLResponse> {
+  private final RawGraphQLBuilder.RawGraphQLBuilderBuilder rawGraphQLBuilder;
 
-  public RawGQL(Config config) {
+  public RawGraphQL(Config config) {
     super(config);
-    this.rawGQLBuilder = RawGQLBuilder.builder();
+    this.rawGraphQLBuilder = RawGraphQLBuilder.builder();
   }
 
-  public RawGQL withQuery(String query) {
-    this.rawGQLBuilder.query(query);
+  public RawGraphQL withQuery(String query) {
+    this.rawGraphQLBuilder.query(query);
     return this;
   }
 
 
   @Override
   public Result<GraphQLResponse> run() {
-    String getQuery = this.rawGQLBuilder.build().buildQuery();
+    String getQuery = this.rawGraphQLBuilder.build().buildQuery();
     GraphQLQuery query = GraphQLQuery.builder().query(getQuery).build();
     Response<GraphQLResponse> resp = sendPostRequest("/graphql", query, GraphQLResponse.class);
     return new Result<>(resp);

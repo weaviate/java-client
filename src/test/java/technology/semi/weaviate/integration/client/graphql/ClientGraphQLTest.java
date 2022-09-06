@@ -85,7 +85,7 @@ public class ClientGraphQLTest {
 
 
   @Test
-  public void testRawGQL() {
+  public void testRawGraphQL() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
@@ -93,7 +93,7 @@ public class ClientGraphQLTest {
     Field name = Field.builder().name("name").build();
     // when
     testGenerics.createTestSchemaAndData(client);
-    Result<GraphQLResponse> result = client.graphQL().rawGQL().withQuery("{Get{Pizza{_additional{id}}}}").run();
+    Result<GraphQLResponse> result = client.graphQL().raw().withQuery("{Get{Pizza{_additional{id}}}}").run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(result);

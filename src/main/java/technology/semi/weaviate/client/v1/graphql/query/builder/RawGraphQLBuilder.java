@@ -8,7 +8,7 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Builder
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class RawGQLBuilder implements Query {
+public class RawGraphQLBuilder implements Query {
   String query;
 
   @Override
