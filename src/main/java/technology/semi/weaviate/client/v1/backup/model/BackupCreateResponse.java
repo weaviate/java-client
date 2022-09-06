@@ -13,7 +13,7 @@ public class BackupCreateResponse {
 
   String id;
   String path;
-  String storageName;
+  String backend;
   @SerializedName("classes")
   String[] classNames;
   String status;

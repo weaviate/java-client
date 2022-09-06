@@ -9,14 +9,14 @@ import technology.semi.weaviate.client.v1.backup.model.BackupCreateResponse;
 
 public class BackupGetter extends BaseClient<BackupCreateResponse[]> implements ClientResult<BackupCreateResponse[]> {
 
-  private String storageName;
+  private String backend;
 
   public BackupGetter(Config config) {
     super(config);
   }
 
-  public BackupGetter withStorageName(String storageName) {
-    this.storageName = storageName;
+  public BackupGetter withBackend(String backend) {
+    this.backend = backend;
     return this;
   }
 
@@ -27,6 +27,6 @@ public class BackupGetter extends BaseClient<BackupCreateResponse[]> implements 
   }
 
   private String path() {
-    return String.format("/backups/%s", storageName);
+    return String.format("/backups/%s", backend);
   }
 }

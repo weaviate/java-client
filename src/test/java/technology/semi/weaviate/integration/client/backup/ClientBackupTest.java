@@ -19,7 +19,7 @@ import technology.semi.weaviate.client.v1.backup.model.BackupRestoreResponse;
 import technology.semi.weaviate.client.v1.backup.model.BackupRestoreStatusResponse;
 import technology.semi.weaviate.client.v1.backup.model.CreateStatus;
 import technology.semi.weaviate.client.v1.backup.model.RestoreStatus;
-import technology.semi.weaviate.client.v1.backup.model.Storage;
+import technology.semi.weaviate.client.v1.backup.model.Backend;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLResponse;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Field;
 import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
@@ -38,8 +38,8 @@ public class ClientBackupTest {
   private static final String CLASS_NAME_PIZZA = "Pizza";
   private static final String CLASS_NAME_SOUP = "Soup";
   private static final String NOT_EXISTING_CLASS_NAME = "not-existing-class";
-  private static final String STORAGE_NAME = Storage.FILESYSTEM;
-  private static final String NOT_EXISTING_STORAGE_NAME = "not-existing-storage";
+  private static final String BACKEND = Backend.FILESYSTEM;
+  private static final String NOT_EXISTING_BACKEND = "not-existing-backend";
 
   private String backupId;
   private String notExistingBackupId;
@@ -79,7 +79,7 @@ public class ClientBackupTest {
     // Create backup
     Result<BackupCreateResponse> createResult = client.backup().creator()
       .withIncludeClassNames(CLASS_NAME_PIZZA)
-      .withStorageName(STORAGE_NAME)
+      .withBackend(BACKEND)
       .withBackupId(backupId)
       .withWaitForCompletion(true)
       .run();
@@ -90,7 +90,7 @@ public class ClientBackupTest {
       .returns(new String[]{CLASS_NAME_PIZZA}, BackupCreateResponse::getClassNames)
       // TODO remove/leave /snapshot.json
       .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId + "/snapshot.json", BackupCreateResponse::getPath)
-      .returns(STORAGE_NAME, BackupCreateResponse::getStorageName)
+      .returns(BACKEND, BackupCreateResponse::getBackend)
       .returns(CreateStatus.SUCCESS, BackupCreateResponse::getStatus)
       .returns(null, BackupCreateResponse::getError);
 
@@ -98,7 +98,7 @@ public class ClientBackupTest {
 
     // Check backup status
     Result<BackupCreateStatusResponse> createStatusResult = client.backup().createStatusGetter()
-      .withStorageName(STORAGE_NAME)
+      .withBackend(BACKEND)
       .withBackupId(backupId)
       .run();
 
@@ -107,7 +107,7 @@ public class ClientBackupTest {
       .returns(backupId, BackupCreateStatusResponse::getId)
       // TODO remove/leave /snapshot.json
       .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId + "/snapshot.json", BackupCreateStatusResponse::getPath)
-      .returns(STORAGE_NAME, BackupCreateStatusResponse::getStorageName)
+      .returns(BACKEND, BackupCreateStatusResponse::getBackend)
       .returns(CreateStatus.SUCCESS, BackupCreateStatusResponse::getStatus)
       .returns(null, BackupCreateStatusResponse::getError);
 
@@ -122,7 +122,7 @@ public class ClientBackupTest {
     // Restore backup
     Result<BackupRestoreResponse> restoreResult = client.backup().restorer()
       .withIncludeClassNames(CLASS_NAME_PIZZA)
-      .withStorageName(STORAGE_NAME)
+      .backend(BACKEND)
       .withBackupId(backupId)
       .withWaitForCompletion(true)
       .run();
@@ -133,7 +133,7 @@ public class ClientBackupTest {
       .returns(new String[]{CLASS_NAME_PIZZA}, BackupRestoreResponse::getClassNames)
       // TODO remove/leave /snapshot.json
       .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId + "/snapshot.json", BackupRestoreResponse::getPath)
-      .returns(STORAGE_NAME, BackupRestoreResponse::getStorageName)
+      .returns(BACKEND, BackupRestoreResponse::getBackend)
       .returns(RestoreStatus.SUCCESS, BackupRestoreResponse::getStatus)
       .returns(null, BackupRestoreResponse::getError);
 
@@ -141,7 +141,7 @@ public class ClientBackupTest {
 
     // Check restore backup
     Result<BackupRestoreStatusResponse> restoreStatusResult = client.backup().restoreStatusGetter()
-      .withStorageName(STORAGE_NAME)
+      .withBackend(BACKEND)
       .withBackupId(backupId)
       .run();
 
@@ -150,7 +150,7 @@ public class ClientBackupTest {
       .returns(backupId, BackupRestoreStatusResponse::getId)
       // TODO remove/leave /snapshot.json
       .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId + "/snapshot.json", BackupRestoreStatusResponse::getPath)
-      .returns(STORAGE_NAME, BackupRestoreStatusResponse::getStorageName)
+      .returns(BACKEND, BackupRestoreStatusResponse::getBackend)
       .returns(RestoreStatus.SUCCESS, BackupRestoreStatusResponse::getStatus)
       .returns(null, BackupRestoreStatusResponse::getError);
   }
@@ -162,7 +162,7 @@ public class ClientBackupTest {
     // Start creating backup
     Result<BackupCreateResponse> createResult = client.backup().creator()
       .withIncludeClassNames(CLASS_NAME_PIZZA)
-      .withStorageName(STORAGE_NAME)
+      .withBackend(BACKEND)
       .withBackupId(backupId)
       .run();
 
@@ -172,13 +172,13 @@ public class ClientBackupTest {
       .returns(new String[]{CLASS_NAME_PIZZA}, BackupCreateResponse::getClassNames)
       // TODO remove/leave /snapshot.json
       .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId + "/snapshot.json", BackupCreateResponse::getPath)
-      .returns(STORAGE_NAME, BackupCreateResponse::getStorageName)
+      .returns(BACKEND, BackupCreateResponse::getBackend)
       .returns(CreateStatus.STARTED, BackupCreateResponse::getStatus)
       .returns(null, BackupCreateResponse::getError);
 
     // Wait until created
     BackupCreateStatusGetter createStatusGetter = client.backup().createStatusGetter()
-      .withStorageName(STORAGE_NAME)
+      .withBackend(BACKEND)
       .withBackupId(backupId);
 
     Result<BackupCreateStatusResponse> createStatusResult;
@@ -190,7 +190,7 @@ public class ClientBackupTest {
         .returns(backupId, BackupCreateStatusResponse::getId)
         // TODO remove/leave /snapshot.json
         .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId + "/snapshot.json", BackupCreateStatusResponse::getPath)
-        .returns(STORAGE_NAME, BackupCreateStatusResponse::getStorageName)
+        .returns(BACKEND, BackupCreateStatusResponse::getBackend)
         .returns(null, BackupCreateStatusResponse::getError)
         .extracting(BackupCreateStatusResponse::getStatus).isIn(CreateStatus.STARTED, CreateStatus.TRANSFERRING,
           CreateStatus.TRANSFERRED, CreateStatus.SUCCESS);
@@ -213,7 +213,7 @@ public class ClientBackupTest {
 
     // Start restoring backup
     Result<BackupRestoreResponse> restoreResult = client.backup().restorer()
-      .withStorageName(STORAGE_NAME)
+      .backend(BACKEND)
       .withBackupId(backupId)
       .run();
 
@@ -224,13 +224,13 @@ public class ClientBackupTest {
       // TODO remove/leave /snapshot.json
       // FIXME backups/filesystem/backup-1109550233/restore
 //      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId + "/snapshot.json", BackupRestoreResponse::getPath)
-      .returns(STORAGE_NAME, BackupRestoreResponse::getStorageName)
+      .returns(BACKEND, BackupRestoreResponse::getBackend)
       .returns(RestoreStatus.STARTED, BackupRestoreResponse::getStatus)
       .returns(null, BackupRestoreResponse::getError);
 
     // Wait until restored
     BackupRestoreStatusGetter restoreStatusGetter = client.backup().restoreStatusGetter()
-      .withStorageName(STORAGE_NAME)
+      .withBackend(BACKEND)
       .withBackupId(backupId);
 
     Result<BackupRestoreStatusResponse> restoreStatusResult;
@@ -242,7 +242,7 @@ public class ClientBackupTest {
         .returns(backupId, BackupRestoreStatusResponse::getId)
         // TODO remove/leave /snapshot.json
         .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId + "/snapshot.json", BackupRestoreStatusResponse::getPath)
-        .returns(STORAGE_NAME, BackupRestoreStatusResponse::getStorageName)
+        .returns(BACKEND, BackupRestoreStatusResponse::getBackend)
         .returns(null, BackupRestoreStatusResponse::getError)
         .extracting(BackupRestoreStatusResponse::getStatus).isIn(RestoreStatus.STARTED, RestoreStatus.TRANSFERRING,
           RestoreStatus.TRANSFERRED, RestoreStatus.SUCCESS);
@@ -263,7 +263,7 @@ public class ClientBackupTest {
 
     // Create backup for all existing classes (2)
     Result<BackupCreateResponse> createResult = client.backup().creator()
-      .withStorageName(STORAGE_NAME)
+      .withBackend(BACKEND)
       .withBackupId(backupId)
       .withWaitForCompletion(true)
       .run();
@@ -273,7 +273,7 @@ public class ClientBackupTest {
       .returns(backupId, BackupCreateResponse::getId)
       // TODO remove/leave /snapshot.json
       .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId + "/snapshot.json", BackupCreateResponse::getPath)
-      .returns(STORAGE_NAME, BackupCreateResponse::getStorageName)
+      .returns(BACKEND, BackupCreateResponse::getBackend)
       .returns(CreateStatus.SUCCESS, BackupCreateResponse::getStatus)
       .returns(null, BackupCreateResponse::getError)
       .extracting(BackupCreateResponse::getClassNames).asInstanceOf(ARRAY)
@@ -284,7 +284,7 @@ public class ClientBackupTest {
 
     // Check backup status
     Result<BackupCreateStatusResponse> createStatusResult = client.backup().createStatusGetter()
-      .withStorageName(STORAGE_NAME)
+      .withBackend(BACKEND)
       .withBackupId(backupId)
       .run();
 
@@ -293,7 +293,7 @@ public class ClientBackupTest {
       .returns(backupId, BackupCreateStatusResponse::getId)
       // TODO remove/leave /snapshot.json
       .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId + "/snapshot.json", BackupCreateStatusResponse::getPath)
-      .returns(STORAGE_NAME, BackupCreateStatusResponse::getStorageName)
+      .returns(BACKEND, BackupCreateStatusResponse::getBackend)
       .returns(CreateStatus.SUCCESS, BackupCreateStatusResponse::getStatus)
       .returns(null, BackupCreateStatusResponse::getError);
 
@@ -308,7 +308,7 @@ public class ClientBackupTest {
     // Restore backup
     Result<BackupRestoreResponse> restoreResult = client.backup().restorer()
       .withIncludeClassNames(CLASS_NAME_PIZZA)
-      .withStorageName(STORAGE_NAME)
+      .backend(BACKEND)
       .withBackupId(backupId)
       .withWaitForCompletion(true)
       .run();
@@ -319,7 +319,7 @@ public class ClientBackupTest {
       .returns(new String[]{CLASS_NAME_PIZZA}, BackupRestoreResponse::getClassNames)
       // TODO remove/leave /snapshot.json
       .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId + "/snapshot.json", BackupRestoreResponse::getPath)
-      .returns(STORAGE_NAME, BackupRestoreResponse::getStorageName)
+      .returns(BACKEND, BackupRestoreResponse::getBackend)
       .returns(RestoreStatus.SUCCESS, BackupRestoreResponse::getStatus)
       .returns(null, BackupRestoreResponse::getError);
 
@@ -328,7 +328,7 @@ public class ClientBackupTest {
 
     // Check restore backup
     Result<BackupRestoreStatusResponse> restoreStatusResult = client.backup().restoreStatusGetter()
-      .withStorageName(STORAGE_NAME)
+      .withBackend(BACKEND)
       .withBackupId(backupId)
       .run();
 
@@ -337,16 +337,16 @@ public class ClientBackupTest {
       .returns(backupId, BackupRestoreStatusResponse::getId)
       // TODO remove/leave /snapshot.json
       .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId + "/snapshot.json", BackupRestoreStatusResponse::getPath)
-      .returns(STORAGE_NAME, BackupRestoreStatusResponse::getStorageName)
+      .returns(BACKEND, BackupRestoreStatusResponse::getBackend)
       .returns(RestoreStatus.SUCCESS, BackupRestoreStatusResponse::getStatus)
       .returns(null, BackupRestoreStatusResponse::getError);
   }
 
   @Test
-  public void shouldFailOnCreateBackupOnNotExistingStorage() {
+  public void shouldFailOnCreateBackupOnNotExistingBackend() {
     Result<BackupCreateResponse> createResult = client.backup().creator()
       .withIncludeClassNames(CLASS_NAME_PIZZA)
-      .withStorageName(NOT_EXISTING_STORAGE_NAME)
+      .withBackend(NOT_EXISTING_BACKEND)
       .withBackupId(backupId)
       .run();
 
@@ -356,13 +356,13 @@ public class ClientBackupTest {
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
       .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
-      .first().asInstanceOf(CHAR_SEQUENCE).contains(NOT_EXISTING_STORAGE_NAME);
+      .first().asInstanceOf(CHAR_SEQUENCE).contains(NOT_EXISTING_BACKEND);
   }
 
   @Test
-  public void shouldFailOnCreateBackupStatusOnNotExistingStorage() {
+  public void shouldFailOnCreateBackupStatusOnNotExistingBackend() {
     Result<BackupCreateStatusResponse> createStatusResult = client.backup().createStatusGetter()
-      .withStorageName(NOT_EXISTING_STORAGE_NAME)
+      .withBackend(NOT_EXISTING_BACKEND)
       .withBackupId(backupId)
       .run();
 
@@ -373,14 +373,14 @@ public class ClientBackupTest {
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
       .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
-      .first().asInstanceOf(CHAR_SEQUENCE).contains(NOT_EXISTING_STORAGE_NAME);
+      .first().asInstanceOf(CHAR_SEQUENCE).contains(NOT_EXISTING_BACKEND);
   }
 
   @Test
-  public void shouldFailOnRestoreBackupFromNotExistingStorage() {
+  public void shouldFailOnRestoreBackupFromNotExistingBackend() {
     Result<BackupRestoreResponse> restoreResult = client.backup().restorer()
       .withIncludeClassNames(NOT_EXISTING_CLASS_NAME)
-      .withStorageName(NOT_EXISTING_STORAGE_NAME)
+      .backend(NOT_EXISTING_BACKEND)
       .withBackupId(backupId)
       .run();
 
@@ -390,14 +390,14 @@ public class ClientBackupTest {
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
       .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
-      .first().asInstanceOf(CHAR_SEQUENCE).contains(NOT_EXISTING_STORAGE_NAME);
+      .first().asInstanceOf(CHAR_SEQUENCE).contains(NOT_EXISTING_BACKEND);
   }
 
   @Test
   public void shouldFailOnCreateBackupForNotExistingClass() {
     Result<BackupCreateResponse> createResult = client.backup().creator()
       .withIncludeClassNames(NOT_EXISTING_CLASS_NAME)
-      .withStorageName(STORAGE_NAME)
+      .withBackend(BACKEND)
       .withBackupId(backupId)
       .run();
 
@@ -414,7 +414,7 @@ public class ClientBackupTest {
   public void shouldFailOnRestoreBackupForExistingClass() {
     Result<BackupCreateResponse> createResult = client.backup().creator()
       .withIncludeClassNames(CLASS_NAME_PIZZA)
-      .withStorageName(STORAGE_NAME)
+      .withBackend(BACKEND)
       .withBackupId(backupId)
       .withWaitForCompletion(true)
       .run();
@@ -423,7 +423,7 @@ public class ClientBackupTest {
 
     Result<BackupRestoreResponse> restoreResult = client.backup().restorer()
       .withIncludeClassNames(CLASS_NAME_PIZZA)
-      .withStorageName(STORAGE_NAME)
+      .backend(BACKEND)
       .withBackupId(backupId)
       .run();
 
@@ -440,7 +440,7 @@ public class ClientBackupTest {
   public void shouldFailOnCreateOfExistingBackup() {
     Result<BackupCreateResponse> createResult = client.backup().creator()
       .withIncludeClassNames(CLASS_NAME_PIZZA)
-      .withStorageName(STORAGE_NAME)
+      .withBackend(BACKEND)
       .withBackupId(backupId)
       .withWaitForCompletion(true)
       .run();
@@ -449,7 +449,7 @@ public class ClientBackupTest {
 
     Result<BackupCreateResponse> createResultAgain = client.backup().creator()
       .withIncludeClassNames(CLASS_NAME_PIZZA)
-      .withStorageName(STORAGE_NAME)
+      .withBackend(BACKEND)
       .withBackupId(backupId)
       .run();
 
@@ -465,7 +465,7 @@ public class ClientBackupTest {
   @Test
   public void shouldFailOnCreateStatusOfNotExistingBackup() {
     Result<BackupCreateStatusResponse> createStatusResult = client.backup().createStatusGetter()
-      .withStorageName(STORAGE_NAME)
+      .withBackend(BACKEND)
       .withBackupId(notExistingBackupId)
       .run();
 
@@ -482,7 +482,7 @@ public class ClientBackupTest {
   public void shouldFailOnRestoreOfNotExistingBackup() {
     Result<BackupRestoreResponse> restoreResult = client.backup().restorer()
       .withIncludeClassNames(NOT_EXISTING_CLASS_NAME)
-      .withStorageName(STORAGE_NAME)
+      .backend(BACKEND)
       .withBackupId(notExistingBackupId)
       .run();
 
@@ -499,7 +499,7 @@ public class ClientBackupTest {
   public void shouldFailOnRestoreBackupStatusOfNotStartedRestore() {
     Result<BackupCreateResponse> createResult = client.backup().creator()
       .withIncludeClassNames(CLASS_NAME_PIZZA)
-      .withStorageName(STORAGE_NAME)
+      .withBackend(BACKEND)
       .withBackupId(backupId)
       .withWaitForCompletion(true)
       .run();
@@ -507,7 +507,7 @@ public class ClientBackupTest {
     assertThat(createResult.hasErrors()).isFalse();
 
     Result<BackupRestoreStatusResponse> restoreStatusResult = client.backup().restoreStatusGetter()
-      .withStorageName(STORAGE_NAME)
+      .withBackend(BACKEND)
       .withBackupId(backupId)
       .run();
 
@@ -519,7 +519,7 @@ public class ClientBackupTest {
       .hasSizeGreaterThan(0)
       .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
       // TODO adjust to error message
-      .first().asInstanceOf(CHAR_SEQUENCE).contains(STORAGE_NAME).contains(backupId);
+      .first().asInstanceOf(CHAR_SEQUENCE).contains(BACKEND).contains(backupId);
   }
 
   @Test
@@ -527,7 +527,7 @@ public class ClientBackupTest {
     Result<BackupCreateResponse> createResult = client.backup().creator()
       .withIncludeClassNames(CLASS_NAME_PIZZA)
       .withExcludeClassNames(CLASS_NAME_SOUP)
-      .withStorageName(STORAGE_NAME)
+      .withBackend(BACKEND)
       .withBackupId(backupId)
       .withWaitForCompletion(true)
       .run();
@@ -546,7 +546,7 @@ public class ClientBackupTest {
     // Create backup
     Result<BackupCreateResponse> createResult = client.backup().creator()
       .withIncludeClassNames(CLASS_NAME_PIZZA, CLASS_NAME_SOUP)
-      .withStorageName(STORAGE_NAME)
+      .withBackend(BACKEND)
       .withBackupId(backupId)
       .withWaitForCompletion(true)
       .run();
@@ -564,7 +564,7 @@ public class ClientBackupTest {
     Result<BackupRestoreResponse> restoreResult = client.backup().restorer()
       .withIncludeClassNames(CLASS_NAME_PIZZA)
       .withExcludeClassNames(CLASS_NAME_SOUP)
-      .withStorageName(STORAGE_NAME)
+      .backend(BACKEND)
       .withBackupId(backupId)
       .run();
 
@@ -584,7 +584,7 @@ public class ClientBackupTest {
 //
 //    Result<BackupCreateResponse> createResultPizza = client.backup().creator()
 //      .withIncludeClassNames(CLASS_NAME_PIZZA)
-//      .withStorageName(STORAGE_NAME)
+//      .withBackend(BACKEND)
 //      .withBackupId(backupIdPizza)
 //      .withWaitForCompletion(true)
 //      .run();
@@ -593,7 +593,7 @@ public class ClientBackupTest {
 //
 //    Result<BackupCreateResponse> createResultSoup = client.backup().creator()
 //      .withIncludeClassNames(CLASS_NAME_SOUP)
-//      .withStorageName(STORAGE_NAME)
+//      .withBackend(BACKEND)
 //      .withBackupId(backupIdSoup)
 //      .withWaitForCompletion(true)
 //      .run();
@@ -601,7 +601,7 @@ public class ClientBackupTest {
 //    assertThat(createResultSoup.hasErrors()).isFalse();
 //
 //    Result<BackupCreateResponse[]> allResult = client.backup().getter()
-//      .withStorageName(STORAGE_NAME)
+//      .withBackend(BACKEND)
 //      .run();
 //
 //    assertThat(allResult.hasErrors()).isFalse();

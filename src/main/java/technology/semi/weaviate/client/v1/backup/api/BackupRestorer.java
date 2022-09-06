@@ -18,7 +18,7 @@ public class BackupRestorer extends BaseClient<BackupRestoreResponse> implements
   private final BackupRestoreStatusGetter statusGetter;
   private String[] includeClassNames;
   private String[] excludeClassNames;
-  private String storageName;
+  private String backend;
   private String backupId;
   private boolean waitForCompletion;
 
@@ -37,8 +37,8 @@ public class BackupRestorer extends BaseClient<BackupRestoreResponse> implements
     return this;
   }
 
-  public BackupRestorer withStorageName(String storageName) {
-    this.storageName = storageName;
+  public BackupRestorer backend(String backend) {
+    this.backend = backend;
     return this;
   }
 
@@ -68,7 +68,7 @@ public class BackupRestorer extends BaseClient<BackupRestoreResponse> implements
 
 
   private Result<BackupRestoreResponse> restore(BackupRestore payload) {
-    Response<BackupRestoreResponse> response = sendPostRequest(path(storageName, backupId), payload, BackupRestoreResponse.class);
+    Response<BackupRestoreResponse> response = sendPostRequest(path(), payload, BackupRestoreResponse.class);
     return new Result<>(response);
   }
 
@@ -78,7 +78,7 @@ public class BackupRestorer extends BaseClient<BackupRestoreResponse> implements
       return result;
     }
 
-    statusGetter.withStorageName(storageName).withBackupId(backupId);
+    statusGetter.withBackend(backend).withBackupId(backupId);
     while(true) {
       Response<BackupRestoreStatusResponse> statusResponse = statusGetter.statusRestore();
       if (new Result<>(statusResponse).hasErrors()) {
@@ -99,8 +99,8 @@ public class BackupRestorer extends BaseClient<BackupRestoreResponse> implements
     }
   }
 
-  private String path(String storageName, String backupId) {
-    return String.format("/backups/%s/%s/restore", storageName, backupId);
+  private String path() {
+    return String.format("/backups/%s/%s/restore", backend, backupId);
   }
 
   private Result<BackupRestoreResponse> merge(Response<BackupRestoreStatusResponse> response, Result<BackupRestoreResponse> result) {
@@ -112,7 +112,7 @@ public class BackupRestorer extends BaseClient<BackupRestoreResponse> implements
       merged = new BackupRestoreResponse();
 
       merged.setId(statusRestoreResponse.getId());
-      merged.setStorageName(statusRestoreResponse.getStorageName());
+      merged.setBackend(statusRestoreResponse.getBackend());
       merged.setPath(statusRestoreResponse.getPath());
       merged.setStatus(statusRestoreResponse.getStatus());
       merged.setError(statusRestoreResponse.getError());

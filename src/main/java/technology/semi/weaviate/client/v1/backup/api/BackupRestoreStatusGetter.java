@@ -9,15 +9,15 @@ import technology.semi.weaviate.client.v1.backup.model.BackupRestoreStatusRespon
 
 public class BackupRestoreStatusGetter extends BaseClient<BackupRestoreStatusResponse> implements ClientResult<BackupRestoreStatusResponse> {
 
-  private String storageName;
+  private String backend;
   private String backupId;
 
   public BackupRestoreStatusGetter(Config config) {
     super(config);
   }
 
-  public BackupRestoreStatusGetter withStorageName(String storageName) {
-    this.storageName = storageName;
+  public BackupRestoreStatusGetter withBackend(String backend) {
+    this.backend = backend;
     return this;
   }
 
@@ -36,6 +36,6 @@ public class BackupRestoreStatusGetter extends BaseClient<BackupRestoreStatusRes
   }
 
   private String path() {
-    return String.format("/backups/%s/%s/restore", storageName, backupId);
+    return String.format("/backups/%s/%s/restore", backend, backupId);
   }
 }

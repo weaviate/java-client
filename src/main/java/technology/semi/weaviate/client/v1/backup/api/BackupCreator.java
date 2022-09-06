@@ -18,7 +18,7 @@ public class BackupCreator extends BaseClient<BackupCreateResponse> implements C
   private final BackupCreateStatusGetter statusGetter;
   private String[] includeClassNames;
   private String[] excludeClassNames;
-  private String storageName;
+  private String backend;
   private String backupId;
   private boolean waitForCompletion;
 
@@ -38,8 +38,8 @@ public class BackupCreator extends BaseClient<BackupCreateResponse> implements C
     return this;
   }
 
-  public BackupCreator withStorageName(String storageName) {
-    this.storageName = storageName;
+  public BackupCreator withBackend(String backend) {
+    this.backend = backend;
     return this;
   }
 
@@ -79,7 +79,7 @@ public class BackupCreator extends BaseClient<BackupCreateResponse> implements C
       return result;
     }
 
-    statusGetter.withStorageName(storageName).withBackupId(backupId);
+    statusGetter.withBackend(backend).withBackupId(backupId);
     while(true) {
       Response<BackupCreateStatusResponse> statusResponse = statusGetter.statusCreate();
       if (new Result<>(statusResponse).hasErrors()) {
@@ -101,7 +101,7 @@ public class BackupCreator extends BaseClient<BackupCreateResponse> implements C
   }
 
   private String path() {
-    return String.format("/backups/%s", storageName);
+    return String.format("/backups/%s", backend);
   }
 
   private Result<BackupCreateResponse> merge(Response<BackupCreateStatusResponse> response, Result<BackupCreateResponse> result) {
@@ -113,7 +113,7 @@ public class BackupCreator extends BaseClient<BackupCreateResponse> implements C
       merged = new BackupCreateResponse();
 
       merged.setId(statusCreateResponse.getId());
-      merged.setStorageName(statusCreateResponse.getStorageName());
+      merged.setBackend(statusCreateResponse.getBackend());
       merged.setPath(statusCreateResponse.getPath());
       merged.setStatus(statusCreateResponse.getStatus());
       merged.setError(statusCreateResponse.getError());

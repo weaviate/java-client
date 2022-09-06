@@ -12,7 +12,7 @@ public class BackupCreateStatusResponse {
 
   String id;
   String path;
-  String storageName;
+  String backend;
   String status;
   String error;
 }
