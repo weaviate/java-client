@@ -623,6 +623,23 @@ public class ClientGraphQLTest {
   }
 
   @Test
+  public void testRawGQL() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
+    String query = "{Aggregate{Pizza{meta{count}}}}";
+    Result<GraphQLResponse> result = client.graphQL().rawGQL().withQuery(query).run();
+    testGenerics.cleanupWeaviate(client);
+    // then
+    assertNotNull(result);
+    assertFalse(result.hasErrors());
+    GraphQLResponse resp = result.getResult();
+    checkAggregateMetaCount(resp, 1, 4.0d);
+  }
+
+
+  @Test
   public void testGraphQLAggregateWithWhereFilter() {
     // given
     Config config = new Config("http", address);

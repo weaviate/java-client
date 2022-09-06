@@ -4,6 +4,7 @@ import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.v1.graphql.query.Aggregate;
 import technology.semi.weaviate.client.v1.graphql.query.Explore;
 import technology.semi.weaviate.client.v1.graphql.query.Get;
+import technology.semi.weaviate.client.v1.graphql.query.RawGQL;
 import technology.semi.weaviate.client.v1.graphql.query.argument.AskArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.GroupArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearImageArgument;
@@ -45,6 +46,10 @@ public class GraphQL {
 
   public Get get() {
     return new Get(config);
+  }
+
+  public RawGQL rawGQL() {
+    return new RawGQL(config);
   }
 
   public Explore explore() {
