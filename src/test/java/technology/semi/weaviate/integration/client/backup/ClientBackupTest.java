@@ -13,13 +13,13 @@ import technology.semi.weaviate.client.base.WeaviateError;
 import technology.semi.weaviate.client.base.WeaviateErrorMessage;
 import technology.semi.weaviate.client.v1.backup.api.BackupCreateStatusGetter;
 import technology.semi.weaviate.client.v1.backup.api.BackupRestoreStatusGetter;
+import technology.semi.weaviate.client.v1.backup.model.Backend;
 import technology.semi.weaviate.client.v1.backup.model.BackupCreateResponse;
 import technology.semi.weaviate.client.v1.backup.model.BackupCreateStatusResponse;
 import technology.semi.weaviate.client.v1.backup.model.BackupRestoreResponse;
 import technology.semi.weaviate.client.v1.backup.model.BackupRestoreStatusResponse;
 import technology.semi.weaviate.client.v1.backup.model.CreateStatus;
 import technology.semi.weaviate.client.v1.backup.model.RestoreStatus;
-import technology.semi.weaviate.client.v1.backup.model.Backend;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLResponse;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Field;
 import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
@@ -88,8 +88,7 @@ public class ClientBackupTest {
     assertThat(createResult.getResult()).isNotNull()
       .returns(backupId, BackupCreateResponse::getId)
       .returns(new String[]{CLASS_NAME_PIZZA}, BackupCreateResponse::getClassNames)
-      // TODO remove/leave /snapshot.json
-      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId + "/snapshot.json", BackupCreateResponse::getPath)
+      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupCreateResponse::getPath)
       .returns(BACKEND, BackupCreateResponse::getBackend)
       .returns(CreateStatus.SUCCESS, BackupCreateResponse::getStatus)
       .returns(null, BackupCreateResponse::getError);
@@ -105,8 +104,7 @@ public class ClientBackupTest {
     assertThat(createStatusResult.hasErrors()).isFalse();
     assertThat(createStatusResult.getResult()).isNotNull()
       .returns(backupId, BackupCreateStatusResponse::getId)
-      // TODO remove/leave /snapshot.json
-      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId + "/snapshot.json", BackupCreateStatusResponse::getPath)
+      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupCreateStatusResponse::getPath)
       .returns(BACKEND, BackupCreateStatusResponse::getBackend)
       .returns(CreateStatus.SUCCESS, BackupCreateStatusResponse::getStatus)
       .returns(null, BackupCreateStatusResponse::getError);
@@ -131,8 +129,7 @@ public class ClientBackupTest {
     assertThat(restoreResult.getResult()).isNotNull()
       .returns(backupId, BackupRestoreResponse::getId)
       .returns(new String[]{CLASS_NAME_PIZZA}, BackupRestoreResponse::getClassNames)
-      // TODO remove/leave /snapshot.json
-      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId + "/snapshot.json", BackupRestoreResponse::getPath)
+      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupRestoreResponse::getPath)
       .returns(BACKEND, BackupRestoreResponse::getBackend)
       .returns(RestoreStatus.SUCCESS, BackupRestoreResponse::getStatus)
       .returns(null, BackupRestoreResponse::getError);
@@ -148,8 +145,7 @@ public class ClientBackupTest {
     assertThat(restoreStatusResult.hasErrors()).isFalse();
     assertThat(restoreStatusResult.getResult()).isNotNull()
       .returns(backupId, BackupRestoreStatusResponse::getId)
-      // TODO remove/leave /snapshot.json
-      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId + "/snapshot.json", BackupRestoreStatusResponse::getPath)
+      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupRestoreStatusResponse::getPath)
       .returns(BACKEND, BackupRestoreStatusResponse::getBackend)
       .returns(RestoreStatus.SUCCESS, BackupRestoreStatusResponse::getStatus)
       .returns(null, BackupRestoreStatusResponse::getError);
@@ -170,8 +166,7 @@ public class ClientBackupTest {
     assertThat(createResult.getResult()).isNotNull()
       .returns(backupId, BackupCreateResponse::getId)
       .returns(new String[]{CLASS_NAME_PIZZA}, BackupCreateResponse::getClassNames)
-      // TODO remove/leave /snapshot.json
-      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId + "/snapshot.json", BackupCreateResponse::getPath)
+      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupCreateResponse::getPath)
       .returns(BACKEND, BackupCreateResponse::getBackend)
       .returns(CreateStatus.STARTED, BackupCreateResponse::getStatus)
       .returns(null, BackupCreateResponse::getError);
@@ -188,8 +183,7 @@ public class ClientBackupTest {
       assertThat(createStatusResult.hasErrors()).isFalse();
       assertThat(createStatusResult.getResult()).isNotNull()
         .returns(backupId, BackupCreateStatusResponse::getId)
-        // TODO remove/leave /snapshot.json
-        .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId + "/snapshot.json", BackupCreateStatusResponse::getPath)
+        .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupCreateStatusResponse::getPath)
         .returns(BACKEND, BackupCreateStatusResponse::getBackend)
         .returns(null, BackupCreateStatusResponse::getError)
         .extracting(BackupCreateStatusResponse::getStatus).isIn(CreateStatus.STARTED, CreateStatus.TRANSFERRING,
@@ -221,9 +215,7 @@ public class ClientBackupTest {
     assertThat(restoreResult.getResult()).isNotNull()
       .returns(backupId, BackupRestoreResponse::getId)
       .returns(new String[]{CLASS_NAME_PIZZA}, BackupRestoreResponse::getClassNames)
-      // TODO remove/leave /snapshot.json
-      // FIXME backups/filesystem/backup-1109550233/restore
-//      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId + "/snapshot.json", BackupRestoreResponse::getPath)
+      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupRestoreResponse::getPath)
       .returns(BACKEND, BackupRestoreResponse::getBackend)
       .returns(RestoreStatus.STARTED, BackupRestoreResponse::getStatus)
       .returns(null, BackupRestoreResponse::getError);
@@ -240,8 +232,7 @@ public class ClientBackupTest {
       assertThat(restoreStatusResult.hasErrors()).isFalse();
       assertThat(restoreStatusResult.getResult()).isNotNull()
         .returns(backupId, BackupRestoreStatusResponse::getId)
-        // TODO remove/leave /snapshot.json
-        .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId + "/snapshot.json", BackupRestoreStatusResponse::getPath)
+        .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupRestoreStatusResponse::getPath)
         .returns(BACKEND, BackupRestoreStatusResponse::getBackend)
         .returns(null, BackupRestoreStatusResponse::getError)
         .extracting(BackupRestoreStatusResponse::getStatus).isIn(RestoreStatus.STARTED, RestoreStatus.TRANSFERRING,
@@ -271,8 +262,7 @@ public class ClientBackupTest {
     assertThat(createResult.hasErrors()).isFalse();
     assertThat(createResult.getResult()).isNotNull()
       .returns(backupId, BackupCreateResponse::getId)
-      // TODO remove/leave /snapshot.json
-      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId + "/snapshot.json", BackupCreateResponse::getPath)
+      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupCreateResponse::getPath)
       .returns(BACKEND, BackupCreateResponse::getBackend)
       .returns(CreateStatus.SUCCESS, BackupCreateResponse::getStatus)
       .returns(null, BackupCreateResponse::getError)
@@ -291,8 +281,7 @@ public class ClientBackupTest {
     assertThat(createStatusResult.hasErrors()).isFalse();
     assertThat(createStatusResult.getResult()).isNotNull()
       .returns(backupId, BackupCreateStatusResponse::getId)
-      // TODO remove/leave /snapshot.json
-      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId + "/snapshot.json", BackupCreateStatusResponse::getPath)
+      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupCreateStatusResponse::getPath)
       .returns(BACKEND, BackupCreateStatusResponse::getBackend)
       .returns(CreateStatus.SUCCESS, BackupCreateStatusResponse::getStatus)
       .returns(null, BackupCreateStatusResponse::getError);
@@ -317,8 +306,7 @@ public class ClientBackupTest {
     assertThat(restoreResult.getResult()).isNotNull()
       .returns(backupId, BackupRestoreResponse::getId)
       .returns(new String[]{CLASS_NAME_PIZZA}, BackupRestoreResponse::getClassNames)
-      // TODO remove/leave /snapshot.json
-      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId + "/snapshot.json", BackupRestoreResponse::getPath)
+      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupRestoreResponse::getPath)
       .returns(BACKEND, BackupRestoreResponse::getBackend)
       .returns(RestoreStatus.SUCCESS, BackupRestoreResponse::getStatus)
       .returns(null, BackupRestoreResponse::getError);
@@ -335,8 +323,7 @@ public class ClientBackupTest {
     assertThat(restoreStatusResult.hasErrors()).isFalse();
     assertThat(restoreStatusResult.getResult()).isNotNull()
       .returns(backupId, BackupRestoreStatusResponse::getId)
-      // TODO remove/leave /snapshot.json
-      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId + "/snapshot.json", BackupRestoreStatusResponse::getPath)
+      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupRestoreStatusResponse::getPath)
       .returns(BACKEND, BackupRestoreStatusResponse::getBackend)
       .returns(RestoreStatus.SUCCESS, BackupRestoreStatusResponse::getStatus)
       .returns(null, BackupRestoreStatusResponse::getError);
@@ -368,8 +355,7 @@ public class ClientBackupTest {
 
     assertThat(createStatusResult.hasErrors()).isTrue();
     assertThat(createStatusResult.getError()).isNotNull()
-      // FIXME should be 422
-      .returns(500, WeaviateError::getStatusCode)
+      .returns(422, WeaviateError::getStatusCode)
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
       .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
@@ -513,12 +499,10 @@ public class ClientBackupTest {
 
     assertThat(restoreStatusResult.hasErrors()).isTrue();
     assertThat(restoreStatusResult.getError()).isNotNull()
-      // FIXME should be 404?
-      .returns(500, WeaviateError::getStatusCode)
+      .returns(404, WeaviateError::getStatusCode)
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
       .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
-      // TODO adjust to error message
       .first().asInstanceOf(CHAR_SEQUENCE).contains(BACKEND).contains(backupId);
   }
 
