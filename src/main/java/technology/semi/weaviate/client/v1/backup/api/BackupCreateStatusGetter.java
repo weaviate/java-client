@@ -1,16 +1,20 @@
 package technology.semi.weaviate.client.v1.backup.api;
 
-import lombok.RequiredArgsConstructor;
+import technology.semi.weaviate.client.Config;
+import technology.semi.weaviate.client.base.BaseClient;
 import technology.semi.weaviate.client.base.ClientResult;
+import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
-import technology.semi.weaviate.client.v1.backup.model.BackupCreateMeta;
+import technology.semi.weaviate.client.v1.backup.model.BackupCreateStatusResponse;
 
-@RequiredArgsConstructor
-public class BackupCreateStatusGetter implements ClientResult<BackupCreateMeta> {
+public class BackupCreateStatusGetter extends BaseClient<BackupCreateStatusResponse> implements ClientResult<BackupCreateStatusResponse> {
 
-  private final BackupCreateHelper helper;
   private String storageName;
   private String backupId;
+
+  public BackupCreateStatusGetter(Config config) {
+    super(config);
+  }
 
   public BackupCreateStatusGetter withStorageName(String storageName) {
     this.storageName = storageName;
@@ -23,7 +27,15 @@ public class BackupCreateStatusGetter implements ClientResult<BackupCreateMeta> 
   }
 
   @Override
-  public Result<BackupCreateMeta> run() {
-    return helper.statusCreate(storageName, backupId);
+  public Result<BackupCreateStatusResponse> run() {
+    return new Result<>(statusCreate());
+  }
+
+  Response<BackupCreateStatusResponse> statusCreate() {
+    return sendGetRequest(path(), BackupCreateStatusResponse.class);
+  }
+
+  private String path() {
+    return String.format("/backups/%s/%s", storageName, backupId);
   }
 }
