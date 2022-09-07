@@ -66,7 +66,8 @@ public class ClientMiscTest {
     assertNotNull(meta);
     assertNull(meta.getError());
     assertEquals("http://[::]:8080", meta.getResult().getHostname());
-    assertEquals("1.14.1", meta.getResult().getVersion());
-    assertEquals("{text2vec-contextionary={version=en0.16.0-v1.1.0, wordCount=818072.0}}", meta.getResult().getModules().toString());
+    assertEquals("1.15.0-alpha1", meta.getResult().getVersion());
+    // FIXME change to backupsPath
+    assertEquals("{backup-filesystem={snapshotsPath=/tmp/backups}, text2vec-contextionary={version=en0.16.0-v1.1.0, wordCount=818072.0}}", meta.getResult().getModules().toString());
   }
 }
