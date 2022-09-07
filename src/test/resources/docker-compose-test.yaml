@@ -9,7 +9,7 @@ services:
     - '8080'
     - --scheme
     - http
-    image: semitechnologies/weaviate:latest@sha256:9d44331c7ab5c6d6138775f4441aa97dfd81b18c7bfecd8992054b2a6f7461b9
+    image: semitechnologies/weaviate:1.15.0
     links:
       - "contextionary:contextionary"
     restart: on-failure:0
