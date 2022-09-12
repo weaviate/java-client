@@ -48,8 +48,8 @@ public class GraphQL {
     return new Get(config);
   }
 
-  public RawGraphQL raw() {
-    return new RawGraphQL(config);
+  public RawGraphQL raw(String query) {
+    return new RawGraphQL(config, query);
   }
 
   public Explore explore() {
