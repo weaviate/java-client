@@ -93,7 +93,7 @@ public class ClientGraphQLTest {
     Field name = Field.builder().name("name").build();
     // when
     testGenerics.createTestSchemaAndData(client);
-    Result<GraphQLResponse> result = client.graphQL().raw("{Get{Pizza{_additional{id}}}}").run();
+    Result<GraphQLResponse> result = client.graphQL().raw().withQuery("{Get{Pizza{_additional{id}}}}").run();
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(result);
