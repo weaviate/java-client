@@ -198,14 +198,14 @@ public class ExploreBuilderTest extends TestCase {
             "beacon, className}}", queryWithCert);
 
     // given (distance)
-    AskArgument askWithDist = AskArgument.builder().question("question?").rerank(true).certainty(0.8f).build();
+    AskArgument askWithDist = AskArgument.builder().question("question?").rerank(true).distance(0.8f).build();
     // when (distance)
     String queryWithDist = ExploreBuilder.builder()
             .fields(fields)
             .withAskArgument(askWithDist).build().buildQuery();
     // then (distance)
     assertNotNull(queryWithDist);
-    assertEquals("{Explore(ask: {question: \"question?\" certainty: 0.8 rerank: true}){certainty, distance, " +
+    assertEquals("{Explore(ask: {question: \"question?\" distance: 0.8 rerank: true}){certainty, distance, " +
             "beacon, className}}", queryWithDist);
   }
 
