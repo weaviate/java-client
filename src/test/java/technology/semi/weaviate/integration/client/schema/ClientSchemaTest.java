@@ -598,7 +598,7 @@ public class ClientSchemaTest {
     // vector index config
     Integer efConstruction = 128;
     Integer maxConnections = 64;
-    Integer vectorCacheMaxObjects = 500000;
+    Long vectorCacheMaxObjects = 500000l;
     Integer ef = -1;
     Boolean skip = false;
     Integer dynamicEfFactor = 8;

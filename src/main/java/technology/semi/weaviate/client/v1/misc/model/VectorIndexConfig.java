@@ -12,7 +12,7 @@ public class VectorIndexConfig {
   Integer cleanupIntervalSeconds;
   Integer efConstruction;
   Integer maxConnections;
-  Integer vectorCacheMaxObjects;
+  Long vectorCacheMaxObjects;
   Integer ef;
   Boolean skip;
   Integer dynamicEfFactor;

@@ -91,6 +91,7 @@ public class ClientBatchCreateTest {
     Result<List<WeaviateObject>> getObjT2 = client.data().objectsGetter().withID(objT2ID).withClassName("Pizza").run();
     Result<List<WeaviateObject>> getObjA1 = client.data().objectsGetter().withID(objAID).withClassName("Soup").run();
     Result<List<WeaviateObject>> getObjA2 = client.data().objectsGetter().withID(objA2ID).withClassName("Soup").run();
+    // clean up Weaviate
     testGenerics.cleanupWeaviate(client);
     // then
     assertNotNull(objT1);
