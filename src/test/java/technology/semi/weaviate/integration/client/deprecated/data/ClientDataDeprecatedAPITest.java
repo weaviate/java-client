@@ -1,4 +1,4 @@
-package technology.semi.weaviate.integration.client.data;
+package technology.semi.weaviate.integration.client.deprecated.data;
 
 import java.io.File;
 import java.util.ArrayList;
