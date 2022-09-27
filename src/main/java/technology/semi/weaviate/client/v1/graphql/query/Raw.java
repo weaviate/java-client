@@ -15,8 +15,6 @@ public class Raw extends BaseClient<GraphQLResponse> implements ClientResult<Gra
  
   public Raw(Config config) {
     super(config);
-    this.query = query;
-    
   }
 
   public Raw withQuery (String query)  {
