@@ -66,7 +66,7 @@ public class ClientMiscTest {
     assertNotNull(meta);
     assertNull(meta.getError());
     assertEquals("http://[::]:8080", meta.getResult().getHostname());
-    assertEquals("1.15.2", meta.getResult().getVersion());
+    assertEquals("1.15.3", meta.getResult().getVersion());
     assertEquals("{backup-filesystem={backupsPath=/tmp/backups}, text2vec-contextionary={version=en0.16.0-v1.1.0, wordCount=818072.0}}", meta.getResult().getModules().toString());
   }
 }

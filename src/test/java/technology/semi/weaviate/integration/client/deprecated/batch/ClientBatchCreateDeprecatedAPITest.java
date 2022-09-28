@@ -1,4 +1,4 @@
-package technology.semi.weaviate.integration.client.batch;
+package technology.semi.weaviate.integration.client.deprecated.batch;
 
 import java.io.File;
 import java.util.HashMap;
