@@ -4,6 +4,7 @@ import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.base.util.DbVersionProvider;
 import technology.semi.weaviate.client.v1.misc.api.LiveChecker;
 import technology.semi.weaviate.client.v1.misc.api.MetaGetter;
+import technology.semi.weaviate.client.v1.misc.api.NodesStatusGetter;
 import technology.semi.weaviate.client.v1.misc.api.OpenIDConfigGetter;
 import technology.semi.weaviate.client.v1.misc.api.ReadyChecker;
 
@@ -30,5 +31,9 @@ public class Misc {
 
   public ReadyChecker readyChecker() {
     return new ReadyChecker(config, dbVersionProvider);
+  }
+
+  public NodesStatusGetter nodesStatusGetter() {
+    return new NodesStatusGetter(config);
   }
 }
