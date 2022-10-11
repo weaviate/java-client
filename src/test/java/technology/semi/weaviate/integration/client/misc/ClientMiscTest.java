@@ -26,7 +26,7 @@ public class ClientMiscTest {
   // to be set according to weaviate docker image
   private static final String EXPECTED_WEAVIATE_VERSION = "1.15.4";
   // to be set according to weaviate docker image
-  private static final String EXPECTED_WEAVIATE_GIT_HASH = "cdf91cb";
+  private static final String EXPECTED_WEAVIATE_GIT_HASH = "d1ff58c";
 
   private WeaviateClient client;
   private final WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();

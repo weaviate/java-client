@@ -411,15 +411,23 @@ public class ClientBackupTest {
       .withIncludeClassNames(CLASS_NAME_PIZZA)
       .backend(BACKEND)
       .withBackupId(backupId)
+      .withWaitForCompletion(true)
       .run();
 
-    assertThat(restoreResult.hasErrors()).isTrue();
-    assertThat(restoreResult.getError()).isNotNull()
-      .returns(422, WeaviateError::getStatusCode)
-      .extracting(WeaviateError::getMessages).asList()
-      .hasSizeGreaterThan(0)
-      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
-      .first().asInstanceOf(CHAR_SEQUENCE).contains(CLASS_NAME_PIZZA);
+    assertThat(restoreResult.hasErrors()).isFalse();
+
+    Result<BackupRestoreStatusResponse> restoreStatusResult = client.backup().restoreStatusGetter()
+      .withBackend(BACKEND)
+      .withBackupId(backupId)
+      .run();
+
+    assertThat(restoreStatusResult.hasErrors()).isFalse();
+    assertThat(restoreStatusResult.getResult()).isNotNull()
+      .returns(backupId, BackupRestoreStatusResponse::getId)
+      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupRestoreStatusResponse::getPath)
+      .returns(BACKEND, BackupRestoreStatusResponse::getBackend)
+      .returns(RestoreStatus.FAILED, BackupRestoreStatusResponse::getStatus)
+      .returns("restore class Pizza: already exists", BackupRestoreStatusResponse::getError);
   }
 
   @Test
@@ -503,7 +511,7 @@ public class ClientBackupTest {
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
       .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
-      .first().asInstanceOf(CHAR_SEQUENCE).contains(BACKEND).contains(backupId);
+      .first().asInstanceOf(CHAR_SEQUENCE).contains(backupId);
   }
 
   @Test
