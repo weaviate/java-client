@@ -1,4 +1,4 @@
-package technology.semi.weaviate.client.v1.misc.model;
+package technology.semi.weaviate.client.v1.cluster.model;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.AccessLevel;

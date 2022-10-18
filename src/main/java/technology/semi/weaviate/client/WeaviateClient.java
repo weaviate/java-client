@@ -5,6 +5,7 @@ import technology.semi.weaviate.client.base.util.DbVersionSupport;
 import technology.semi.weaviate.client.v1.backup.Backup;
 import technology.semi.weaviate.client.v1.batch.Batch;
 import technology.semi.weaviate.client.v1.classifications.Classifications;
+import technology.semi.weaviate.client.v1.cluster.Cluster;
 import technology.semi.weaviate.client.v1.contextionary.Contextionary;
 import technology.semi.weaviate.client.v1.data.Data;
 import technology.semi.weaviate.client.v1.graphql.GraphQL;
@@ -55,6 +56,9 @@ public class WeaviateClient {
     return new Classifications(config);
   }
 
+  public Cluster cluster() {
+    return new Cluster(config);
+  }
   public GraphQL graphQL() {
     return new GraphQL(config);
   }

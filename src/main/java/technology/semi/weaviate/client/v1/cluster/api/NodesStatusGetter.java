@@ -1,11 +1,11 @@
-package technology.semi.weaviate.client.v1.misc.api;
+package technology.semi.weaviate.client.v1.cluster.api;
 
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.base.BaseClient;
 import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
-import technology.semi.weaviate.client.v1.misc.model.NodesStatusResponse;
+import technology.semi.weaviate.client.v1.cluster.model.NodesStatusResponse;
 
 public class NodesStatusGetter extends BaseClient<NodesStatusResponse> implements ClientResult<NodesStatusResponse> {
 
