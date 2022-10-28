@@ -39,6 +39,9 @@ public class CommonsHttpClientImpl implements HttpClient {
   @Override
   public HttpResponse sendGetRequest(String url) throws Exception {
     HttpGet httpGet = new HttpGet(url);
+    if (headers != null && headers.size() > 0) {
+      headers.forEach(httpGet::addHeader);
+    }
     httpGet.setHeader("Accept", "*/*");
     return sendRequest(httpGet);
   }
@@ -74,6 +77,9 @@ public class CommonsHttpClientImpl implements HttpClient {
   @Override
   public HttpResponse sendHeadRequest(String url) throws Exception {
     HttpHead httpHead = new HttpHead(url);
+    if (headers != null && headers.size() > 0) {
+      headers.forEach(httpHead::addHeader);
+    }
     httpHead.setHeader("Accept", "*/*");
     return sendRequest(httpHead);
   }
