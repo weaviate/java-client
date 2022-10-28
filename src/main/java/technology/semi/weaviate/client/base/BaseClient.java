@@ -2,6 +2,8 @@ package technology.semi.weaviate.client.base;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.apache.http.impl.client.HttpClientBuilder;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.base.http.HttpResponse;
@@ -13,8 +15,9 @@ public abstract class BaseClient<T> {
   private final Serializer serializer;
 
   public BaseClient(Config config) {
+    HttpClientBuilder builder = HttpClientBuilder.create();
     this.config = config;
-    this.client = new CommonsHttpClientImpl(config.getHeaders());
+    this.client = new CommonsHttpClientImpl(config.getHeaders(), builder::build);
     this.serializer = new Serializer();
   }
 
