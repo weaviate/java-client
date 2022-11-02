@@ -16,17 +16,12 @@ notifications:
     on_success: change
 before_install:
   # login to docker at the very beginning, so we don't run into rate-limiting
+  - java -version
   - |-
     if [ -n "$DOCKER_PASSWORD" ]
     then
       echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
     fi
-  - java -version
-  - openssl aes-256-cbc -K $encrypted_3b9f0b9d36d1_key -iv $encrypted_3b9f0b9d36d1_iv -in .secrets.tar.enc -out secrets.tar -d
-  - tar xvf secrets.tar
-  - cp settings.xml $HOME/.m2/
-  - gpg --batch --import key.gpg
-  - export GPG_TTY=$(tty)
 
 jobs:
   include:
@@ -35,7 +30,7 @@ jobs:
       directories:
       - "$HOME/.m2"
     script:
-    - mvn -DskipTests clean package
+    - mvn -DskipTests -Dgpg.skip clean package
   - stage: Run Tests
     if: branch = main OR type = pull_request
     cache:
@@ -44,15 +39,21 @@ jobs:
     install:
     - docker-compose -f src/test/resources/docker-compose-test.yaml pull
     script:
-    - mvn clean test
+    - mvn clean test -Dgpg.skip
   - stage: Deploy Artifacts
     if: tag IS present
     branches:
       only:
-        - main
+      - main
     cache:
       directories:
-        - "$HOME/.m2"
+      - "$HOME/.m2"
+    before_install:
+    - openssl aes-256-cbc -K $encrypted_3b9f0b9d36d1_key -iv $encrypted_3b9f0b9d36d1_iv -in .secrets.tar.enc -out secrets.tar -d
+    - tar xvf secrets.tar
+    - cp settings.xml $HOME/.m2/
+    - gpg --batch --import key.gpg
+    - export GPG_TTY=$(tty)
     install:
     - docker-compose -f src/test/resources/docker-compose-test.yaml pull
     script:
