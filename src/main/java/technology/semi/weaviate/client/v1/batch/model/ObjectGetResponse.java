@@ -5,15 +5,16 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 import technology.semi.weaviate.client.v1.data.model.Deprecation;
 import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
 
 @Getter
 @Setter
-@ToString
+@SuperBuilder
+@ToString(callSuper = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ObjectGetResponse {
+public class ObjectGetResponse extends WeaviateObject {
   Deprecation[] deprecations;
-  WeaviateObject object;
   ObjectsGetResponseAO2Result result;
 }
