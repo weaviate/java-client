@@ -1,24 +1,22 @@
 package technology.semi.weaviate.client.v1.graphql.query.argument;
 
-import java.io.BufferedReader;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.ToString;
+import lombok.experimental.FieldDefaults;
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.experimental.FieldDefaults;
-import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @Builder
+@ToString
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class NearImageArgument implements Argument {
   String image;

@@ -5,6 +5,7 @@ import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.StringUtils;
 import technology.semi.weaviate.client.v1.graphql.model.ExploreFields;
@@ -16,6 +17,7 @@ import technology.semi.weaviate.client.v1.graphql.query.argument.NearVectorArgum
 
 @Getter
 @Builder
+@ToString
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ExploreBuilder implements Query {
   ExploreFields[] fields;
