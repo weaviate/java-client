@@ -31,12 +31,12 @@ public class App {
     Config config = new Config("http", "localhost:8080");
     WeaviateClient client = new WeaviateClient(config);
     Result<Meta> meta = client.misc().metaGetter().run();
-    if (meta.getError() != null) {
+    if (meta.hasErrors()) {
+      System.out.printf("Error: %s\n", meta.getError().getMessages());
+    } else {
       System.out.printf("meta.hostname: %s\n", meta.getResult().getHostname());
       System.out.printf("meta.version: %s\n", meta.getResult().getVersion());
       System.out.printf("meta.modules: %s\n", meta.getResult().getModules());
-    } else {
-      System.out.printf("Error: %s\n", meta.getError().getMessages());
     }
   }
 }
