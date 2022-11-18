@@ -4,11 +4,13 @@ import com.google.gson.annotations.SerializedName;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import technology.semi.weaviate.client.v1.filters.WhereFilter;
 
 @Getter
 @Setter
+@ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BatchDeleteResponse {
 
@@ -20,6 +22,7 @@ public class BatchDeleteResponse {
 
     @Getter
     @Setter
+    @ToString
     @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class Match {
 
@@ -31,6 +34,7 @@ public class BatchDeleteResponse {
 
     @Getter
     @Setter
+    @ToString
     @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class Results {
 
@@ -43,6 +47,7 @@ public class BatchDeleteResponse {
 
     @Getter
     @Setter
+    @ToString
     @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class ResultObject {
 
@@ -53,6 +58,7 @@ public class BatchDeleteResponse {
 
     @Getter
     @Setter
+    @ToString
     @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class Errors {
 
@@ -61,6 +67,7 @@ public class BatchDeleteResponse {
 
     @Getter
     @Setter
+    @ToString
     @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class Error {
 

@@ -7,11 +7,13 @@ import java.util.stream.Stream;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @Builder
+@ToString
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class AskArgument implements Argument {
   String question;

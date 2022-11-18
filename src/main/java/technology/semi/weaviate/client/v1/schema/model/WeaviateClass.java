@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import technology.semi.weaviate.client.v1.misc.model.InvertedIndexConfig;
 import technology.semi.weaviate.client.v1.misc.model.ShardingConfig;
@@ -12,6 +13,7 @@ import technology.semi.weaviate.client.v1.misc.model.VectorIndexConfig;
 
 @Getter
 @Builder
+@ToString
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class WeaviateClass {
   @SerializedName("class")

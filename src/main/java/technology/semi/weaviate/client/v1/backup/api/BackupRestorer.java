@@ -37,9 +37,14 @@ public class BackupRestorer extends BaseClient<BackupRestoreResponse> implements
     return this;
   }
 
-  public BackupRestorer backend(String backend) {
+  public BackupRestorer withBackend(String backend) {
     this.backend = backend;
     return this;
+  }
+
+  @Deprecated
+  public BackupRestorer backend(String backend) {
+    return withBackend(backend);
   }
 
   public BackupRestorer withBackupId(String backupId) {

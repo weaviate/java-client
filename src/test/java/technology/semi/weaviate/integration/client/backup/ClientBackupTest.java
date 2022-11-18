@@ -120,7 +120,7 @@ public class ClientBackupTest {
     // Restore backup
     Result<BackupRestoreResponse> restoreResult = client.backup().restorer()
       .withIncludeClassNames(CLASS_NAME_PIZZA)
-      .backend(BACKEND)
+      .withBackend(BACKEND)
       .withBackupId(backupId)
       .withWaitForCompletion(true)
       .run();
@@ -207,7 +207,7 @@ public class ClientBackupTest {
 
     // Start restoring backup
     Result<BackupRestoreResponse> restoreResult = client.backup().restorer()
-      .backend(BACKEND)
+      .withBackend(BACKEND)
       .withBackupId(backupId)
       .run();
 
@@ -297,7 +297,7 @@ public class ClientBackupTest {
     // Restore backup
     Result<BackupRestoreResponse> restoreResult = client.backup().restorer()
       .withIncludeClassNames(CLASS_NAME_PIZZA)
-      .backend(BACKEND)
+      .withBackend(BACKEND)
       .withBackupId(backupId)
       .withWaitForCompletion(true)
       .run();
@@ -366,7 +366,7 @@ public class ClientBackupTest {
   public void shouldFailOnRestoreBackupFromNotExistingBackend() {
     Result<BackupRestoreResponse> restoreResult = client.backup().restorer()
       .withIncludeClassNames(NOT_EXISTING_CLASS_NAME)
-      .backend(NOT_EXISTING_BACKEND)
+      .withBackend(NOT_EXISTING_BACKEND)
       .withBackupId(backupId)
       .run();
 
@@ -409,7 +409,7 @@ public class ClientBackupTest {
 
     Result<BackupRestoreResponse> restoreResult = client.backup().restorer()
       .withIncludeClassNames(CLASS_NAME_PIZZA)
-      .backend(BACKEND)
+      .withBackend(BACKEND)
       .withBackupId(backupId)
       .withWaitForCompletion(true)
       .run();
@@ -469,7 +469,7 @@ public class ClientBackupTest {
   public void shouldFailOnRestoreOfNotExistingBackup() {
     Result<BackupRestoreResponse> restoreResult = client.backup().restorer()
       .withIncludeClassNames(NOT_EXISTING_CLASS_NAME)
-      .backend(BACKEND)
+      .withBackend(BACKEND)
       .withBackupId(notExistingBackupId)
       .run();
 
@@ -549,7 +549,7 @@ public class ClientBackupTest {
     Result<BackupRestoreResponse> restoreResult = client.backup().restorer()
       .withIncludeClassNames(CLASS_NAME_PIZZA)
       .withExcludeClassNames(CLASS_NAME_SOUP)
-      .backend(BACKEND)
+      .withBackend(BACKEND)
       .withBackupId(backupId)
       .run();
 
