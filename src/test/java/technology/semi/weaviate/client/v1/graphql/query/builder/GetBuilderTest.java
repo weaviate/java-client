@@ -193,31 +193,6 @@ public class GetBuilderTest extends TestCase {
   }
 
   @Test
-  public void testBuildGetWithMultipleFilters() {
-    // given
-    Fields fields = Fields.builder()
-            .fields(new Field[]{ Field.builder().name("name").build() })
-            .build();
-    NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(new String[]{ "good" })
-            .build();
-    WhereFilter where = WhereFilter.builder()
-            .path(new String[]{ "name" })
-            .operator(Operator.Equal)
-            .valueString("Hawaii")
-            .build();
-    Integer limit = 2;
-    // when
-    String query = GetBuilder.builder()
-            .className("Pizza").fields(fields).withNearTextFilter(nearText).withWhereFilter(where).limit(limit)
-            .build().buildQuery();
-    // then
-    assertNotNull(query);
-    assertEquals("{Get{Pizza(where:{path:[\"name\"] valueString:\"Hawaii\" operator:Equal}, " +
-            "nearText: {concepts: [\"good\"]}, limit: 2){name}}}", query);
-  }
-
-  @Test
   public void testBuildGetWithNearTextWithConcepts() {
     // given
     Fields fields = Fields.builder()
