@@ -1,20 +1,30 @@
 package technology.semi.weaviate.client.v1.batch.model;
 
+import com.google.gson.annotations.SerializedName;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
-import lombok.experimental.SuperBuilder;
 import technology.semi.weaviate.client.v1.data.model.Deprecation;
-import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
+
+import java.util.Map;
 
 @Getter
 @Setter
-@SuperBuilder
-@ToString(callSuper = true)
+@ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ObjectGetResponse extends WeaviateObject {
+public class ObjectGetResponse {
+  String id;
+  @SerializedName("class")
+  String className;
+  Long creationTimeUnix;
+  Long lastUpdateTimeUnix;
+  Map<String, Object> properties;
+  Map<String, Object> additional;
+  Float[] vector;
+  Object vectorWeights;
+
   Deprecation[] deprecations;
   ObjectsGetResponseAO2Result result;
 }
