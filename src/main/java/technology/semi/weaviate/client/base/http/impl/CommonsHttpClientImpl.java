@@ -1,33 +1,31 @@
 package technology.semi.weaviate.client.base.http.impl;
 
 import org.apache.http.HttpHeaders;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpHead;
-import org.apache.http.client.methods.HttpPatch;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.base.http.HttpResponse;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-public class CommonsHttpClientImpl implements HttpClient {
+public class CommonsHttpClientImpl implements HttpClient, Closeable {
   private final Map<String, String> headers;
-  private final CloseableHttpClientBuilder clientBuilder;
+  private final CloseableHttpClient client;
 
   public CommonsHttpClientImpl(Map<String, String> headers, CloseableHttpClientBuilder clientBuilder) {
     this.headers = headers;
-    this.clientBuilder = clientBuilder;
+    this.client = clientBuilder.build();
+  }
+
+  @Override
+  public void close() throws IOException {
+    client.close();
   }
 
   @Override
@@ -80,18 +78,15 @@ public class CommonsHttpClientImpl implements HttpClient {
       headers.forEach(request::addHeader);
     }
 
-    CloseableHttpClient client = clientBuilder.build();
     CloseableHttpResponse response = client.execute(request);
 
     int statusCode = response.getStatusLine().getStatusCode();
     String body = response.getEntity() != null
       ? EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8)
       : "";
-    client.close();
 
     return new HttpResponse(statusCode, body);
   }
-
 
   private static class HttpDeleteWithBody extends HttpEntityEnclosingRequestBase {
     public HttpDeleteWithBody() {
@@ -110,8 +105,8 @@ public class CommonsHttpClientImpl implements HttpClient {
     }
   }
 
-
   public interface CloseableHttpClientBuilder {
     CloseableHttpClient build();
   }
+
 }

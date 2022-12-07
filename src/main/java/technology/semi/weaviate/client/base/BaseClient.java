@@ -1,13 +1,14 @@
 package technology.semi.weaviate.client.base;
 
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.HttpClientBuilder;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.base.http.HttpResponse;
 import technology.semi.weaviate.client.base.http.impl.CommonsHttpClientImpl;
+
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class BaseClient<T> {
   private final HttpClient client;
@@ -16,6 +17,7 @@ public abstract class BaseClient<T> {
 
   public BaseClient(Config config) {
     HttpClientBuilder builder = HttpClientBuilder.create();
+    builder.setDefaultRequestConfig(buildTimeoutConfig(config));
     this.config = config;
     this.client = new CommonsHttpClientImpl(config.getHeaders(), builder::build);
     this.serializer = new Serializer();
@@ -97,4 +99,13 @@ public abstract class BaseClient<T> {
     WeaviateErrorMessage error = WeaviateErrorMessage.builder().message(e.getMessage()).build();
     return WeaviateErrorResponse.builder().error(Stream.of(error).collect(Collectors.toList())).build();
   }
+
+  private static RequestConfig buildTimeoutConfig(Config config) {
+    return RequestConfig.custom()
+      .setConnectTimeout(config.getConnectionTimeoutMs() * 1000)
+      .setConnectionRequestTimeout(config.getConnectionRequestTimeoutMs() * 1000)
+      .setSocketTimeout(config.getSocketTimeoutMs() * 1000)
+      .build();
+  }
+
 }
