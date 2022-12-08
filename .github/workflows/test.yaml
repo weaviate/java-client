@@ -14,7 +14,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Login to Docker Hub
-      if: ${{ secrets.DOCKER_PASSWORD != '' }}
+      env:
+        LOGIN_DOCKER: ${{ secrets.DOCKER_USERNAME }}
+      if: env.LOGIN_DOCKER != null
       uses: docker/login-action@v2
       with:
         username: ${{secrets.DOCKER_USERNAME}}
