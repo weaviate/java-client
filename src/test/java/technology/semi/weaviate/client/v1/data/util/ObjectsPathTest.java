@@ -40,6 +40,28 @@ public class ObjectsPathTest {
     .limit(100)
     .additional(new String[]{"additional1", "additional2"})
     .build();
+  private static final ObjectsPath.Params CONSISTENCY_LEVEL_CLASS_ID_PARAMS = ObjectsPath.Params.builder()
+    .className("someClass")
+    .id("someId")
+    .consistencyLevel("QUORUM")
+    .build();
+  private static final ObjectsPath.Params NODE_NAME_CLASS_ID_PARAMS = ObjectsPath.Params.builder()
+    .className("someClass")
+    .id("someId")
+    .nodeName("node1")
+    .build();
+  private static final ObjectsPath.Params CONSISTENCY_LEVEL_ALL_PARAMS = ObjectsPath.Params.builder()
+    .className("someClass")
+    .id("someId")
+    .additional(new String[]{"additional1", "additional2"})
+    .consistencyLevel("QUORUM")
+    .build();
+  private static final ObjectsPath.Params NODE_NAME_ALL_PARAMS = ObjectsPath.Params.builder()
+    .className("someClass")
+    .id("someId")
+    .additional(new String[]{"additional1", "additional2"})
+    .nodeName("node1")
+    .build();
 
   @Before
   public void setUp() {
@@ -234,6 +256,22 @@ public class ObjectsPathTest {
         ALL_PARAMS,
         "/objects/someClass/someId?include=additional1,additional2"
       },
+      {
+        CONSISTENCY_LEVEL_CLASS_ID_PARAMS,
+        "/objects/someClass/someId?consistency_level=QUORUM"
+      },
+      {
+        NODE_NAME_CLASS_ID_PARAMS,
+        "/objects/someClass/someId?node_name=node1"
+      },
+      {
+        CONSISTENCY_LEVEL_ALL_PARAMS,
+        "/objects/someClass/someId?include=additional1,additional2&consistency_level=QUORUM"
+      },
+      {
+        NODE_NAME_ALL_PARAMS,
+        "/objects/someClass/someId?include=additional1,additional2&node_name=node1"
+      }
     };
   }
 
