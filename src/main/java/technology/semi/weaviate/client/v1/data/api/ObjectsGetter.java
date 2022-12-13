@@ -22,7 +22,8 @@ public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements Cl
   private String className;
   private Integer limit;
   private final HashSet<String> additional;
-
+  private String consistencyLevel;
+  private String nodeName;
   private class ObjectGetter extends BaseClient<WeaviateObject> implements ClientResult<List<WeaviateObject>> {
     private String path;
 
@@ -76,6 +77,16 @@ public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements Cl
     return this;
   }
 
+  public ObjectsGetter withConsistencyLevel(String cl) {
+    this.consistencyLevel = cl;
+    return this;
+  }
+
+  public ObjectsGetter withNodeName(String name) {
+    this.nodeName = name;
+    return this;
+  }
+
   @Override
   public Result<List<WeaviateObject>> run() {
     ObjectsPath.Params params = ObjectsPath.Params.builder()
@@ -83,6 +94,8 @@ public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements Cl
             .className(className)
             .limit(limit)
             .additional(additional.toArray(new String[0]))
+            .consistencyLevel(consistencyLevel)
+            .nodeName(nodeName)
             .build();
     if (StringUtils.isNotBlank(id)) {
       return this.objectGetter.withPath(objectsPath.buildGetOne(params)).run();
