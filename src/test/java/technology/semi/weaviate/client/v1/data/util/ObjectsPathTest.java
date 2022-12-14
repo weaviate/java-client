@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import technology.semi.weaviate.client.base.util.DbVersionSupport;
+import technology.semi.weaviate.client.v1.data.replication.model.ConsistencyLevel;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -43,7 +44,7 @@ public class ObjectsPathTest {
   private static final ObjectsPath.Params CONSISTENCY_LEVEL_CLASS_ID_PARAMS = ObjectsPath.Params.builder()
     .className("someClass")
     .id("someId")
-    .consistencyLevel("QUORUM")
+    .consistencyLevel(ConsistencyLevel.QUORUM)
     .build();
   private static final ObjectsPath.Params NODE_NAME_CLASS_ID_PARAMS = ObjectsPath.Params.builder()
     .className("someClass")
@@ -54,7 +55,7 @@ public class ObjectsPathTest {
     .className("someClass")
     .id("someId")
     .additional(new String[]{"additional1", "additional2"})
-    .consistencyLevel("QUORUM")
+    .consistencyLevel(ConsistencyLevel.QUORUM)
     .build();
   private static final ObjectsPath.Params NODE_NAME_ALL_PARAMS = ObjectsPath.Params.builder()
     .className("someClass")
