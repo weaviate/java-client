@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import technology.semi.weaviate.client.v1.filters.WhereFilter;
 import technology.semi.weaviate.client.v1.filters.WhereFilterUtil;
 import technology.semi.weaviate.client.v1.graphql.query.argument.AskArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.Bm25Argument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.GroupArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearImageArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
@@ -32,6 +33,7 @@ public class GetBuilder implements Query {
   Integer limit;
   WhereFilter withWhereFilter;
   NearTextArgument withNearTextFilter;
+  Bm25Argument withBm25Filter;
   NearObjectArgument withNearObjectFilter;
   AskArgument withAskArgument;
   NearImageArgument withNearImageFilter;
@@ -41,7 +43,7 @@ public class GetBuilder implements Query {
 
   private boolean includesFilterClause() {
     return ObjectUtils.anyNotNull(withWhereFilter, withNearTextFilter, withNearObjectFilter,
-            withNearVectorFilter, withNearImageFilter, withGroupArgument, withAskArgument,
+            withNearVectorFilter, withNearImageFilter, withGroupArgument, withAskArgument,withBm25Filter,
             limit, offset, withSortArguments);
   }
 
@@ -53,6 +55,9 @@ public class GetBuilder implements Query {
       }
       if (withNearTextFilter != null) {
         filters.add(withNearTextFilter.build());
+      }
+      if (withBm25Filter != null) {
+        filters.add(withBm25Filter.build());
       }
       if (withNearObjectFilter != null) {
         filters.add(withNearObjectFilter.build());
