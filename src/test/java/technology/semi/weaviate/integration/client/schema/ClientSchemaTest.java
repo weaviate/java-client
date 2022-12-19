@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -16,6 +18,7 @@ import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.base.WeaviateErrorMessage;
 import technology.semi.weaviate.client.v1.misc.model.BM25Config;
 import technology.semi.weaviate.client.v1.misc.model.InvertedIndexConfig;
+import technology.semi.weaviate.client.v1.misc.model.ReplicationConfig;
 import technology.semi.weaviate.client.v1.misc.model.ShardingConfig;
 import technology.semi.weaviate.client.v1.misc.model.StopwordConfig;
 import technology.semi.weaviate.client.v1.misc.model.VectorIndexConfig;
@@ -28,6 +31,7 @@ import technology.semi.weaviate.client.v1.schema.model.ShardStatus;
 import technology.semi.weaviate.client.v1.schema.model.Tokenization;
 import technology.semi.weaviate.client.v1.schema.model.WeaviateClass;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -36,7 +40,7 @@ import static org.junit.Assert.assertTrue;
 
 
 public class ClientSchemaTest {
-  private String address;
+  private WeaviateClient client;
 
   @ClassRule
   public static DockerComposeContainer compose = new DockerComposeContainer(
@@ -47,14 +51,20 @@ public class ClientSchemaTest {
   public void before() {
     String host = compose.getServiceHost("weaviate_1", 8080);
     Integer port = compose.getServicePort("weaviate_1", 8080);
-    address = host + ":" + port;
+    Config config = new Config("http", host + ":" + port);
+
+    client = new WeaviateClient(config);
+  }
+
+  @After
+  public void after() {
+    Result<Boolean> deleted = client.schema().allDeleter().run();
+    assertThat(deleted.hasErrors()).isFalse();
   }
 
   @Test
   public void testSchemaCreateBandClass() {
     // given
-    Config config = new Config("http", address);
-    WeaviateClient client = new WeaviateClient(config);
     WeaviateClass clazz = WeaviateClass.builder()
             .className("Band")
             .description("Band that plays and produces music")
@@ -64,7 +74,6 @@ public class ClientSchemaTest {
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
     Result<Schema> schema = client.schema().getter().run();
-    Result<Boolean> deleteStatus = client.schema().classDeleter().withClassName(clazz.getClassName()).run();
     // then
     assertNotNull(createStatus);
     assertTrue(createStatus.getResult());
@@ -73,15 +82,11 @@ public class ClientSchemaTest {
     assertEquals(1, schema.getResult().getClasses().size());
     assertEquals(clazz.getClassName(), schema.getResult().getClasses().get(0).getClassName());
     assertEquals(clazz.getDescription(), schema.getResult().getClasses().get(0).getDescription());
-    assertNotNull(deleteStatus);
-    assertTrue(deleteStatus.getResult());
   }
 
   @Test
   public void testSchemaCreateRunClass() {
     // given
-    Config config = new Config("http", address);
-    WeaviateClient client = new WeaviateClient(config);
     WeaviateClass clazz = WeaviateClass.builder()
             .className("Run")
             .description("Running from the fuzz")
@@ -109,8 +114,6 @@ public class ClientSchemaTest {
   @Test
   public void testSchemaDeleteClasses() {
     // given
-    Config config = new Config("http", address);
-    WeaviateClient client = new WeaviateClient(config);
     WeaviateClass pizza = WeaviateClass.builder()
             .className("Pizza")
             .description("A delicious religion like food and arguably the best export of Italy.")
@@ -147,8 +150,6 @@ public class ClientSchemaTest {
   @Test
   public void testSchemaDeleteAllSchema() {
     // given
-    Config config = new Config("http", address);
-    WeaviateClient client = new WeaviateClient(config);
     WeaviateClass pizza = WeaviateClass.builder()
             .className("Pizza")
             .description("A delicious religion like food and arguably the best export of Italy.")
@@ -182,8 +183,6 @@ public class ClientSchemaTest {
   @Test
   public void testSchemaCreateClassesAddProperties() {
     // given
-    Config config = new Config("http", address);
-    WeaviateClient client = new WeaviateClient(config);
     WeaviateClass pizza = WeaviateClass.builder()
             .className("Pizza")
             .description("A delicious religion like food and arguably the best export of Italy.")
@@ -232,8 +231,6 @@ public class ClientSchemaTest {
   @Test
   public void testSchemaCreateClassExplicitVectorizerWithProperties() {
     // given
-    Config config = new Config("http", address);
-    WeaviateClient client = new WeaviateClient(config);
     WeaviateClass clazz = WeaviateClass.builder()
             .className("Article")
             .description("A written text, for example a news article or blog post")
@@ -281,8 +278,6 @@ public class ClientSchemaTest {
   @Test
   public void testSchemaCreateClassExplicitVectorizerWithArrayProperties() {
     // given
-    Config config = new Config("http", address);
-    WeaviateClient client = new WeaviateClient(config);
     WeaviateClass clazz = WeaviateClass.builder()
             .className("ClassArrays")
             .description("Class which properties are all array properties")
@@ -356,8 +351,6 @@ public class ClientSchemaTest {
   @Test
   public void testSchemaCreateClassWithProperties() {
     // given
-    Config config = new Config("http", address);
-    WeaviateClient client = new WeaviateClient(config);
     WeaviateClass clazz = WeaviateClass.builder()
             .className("Article")
             .description("A written text, for example a news article or blog post")
@@ -401,8 +394,6 @@ public class ClientSchemaTest {
   @Test
   public void testSchemaCreateClassWithInvalidTokenizationProperty() {
     // given
-    Config config = new Config("http", address);
-    WeaviateClient client = new WeaviateClient(config);
     WeaviateClass pizza = WeaviateClass.builder()
             .className("Pizza")
             .description("A delicious religion like food and arguably the best export of Italy.")
@@ -434,7 +425,6 @@ public class ClientSchemaTest {
             .withProperty(notSupportedTokenizationForText).withClassName(pizza.getClassName()).run();
     Result<Boolean> notSupportedTokenizationForIntCreateStatus = client.schema().propertyCreator()
             .withProperty(notSupportedTokenizationForInt).withClassName(pizza.getClassName()).run();
-    Result<Boolean> deleteAllStatus = client.schema().allDeleter().run();
 
     //then
     assertResultTrue(createStatus);
@@ -442,16 +432,11 @@ public class ClientSchemaTest {
     assertResultError("tokenization in body should be one of [word field]", notExistingTokenizationCreateStatus);
     assertResultError("Tokenization 'field' is not allowed for data type 'text'", notSupportedTokenizationForTextCreateStatus);
     assertResultError("Tokenization 'word' is not allowed for data type 'int'", notSupportedTokenizationForIntCreateStatus);
-
-    assertResultTrue(deleteAllStatus);
   }
 
   @Test
   public void testCreateClassWithBM25Config() {
     // given
-    Config config = new Config("http", address);
-    WeaviateClient client = new WeaviateClient(config);
-
     BM25Config bm25Config = BM25Config.builder()
             .b(0.777f)
             .k1(1.777f)
@@ -472,7 +457,6 @@ public class ClientSchemaTest {
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
     Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
-    Result<Boolean> deleteStatus = client.schema().allDeleter().run();
 
     // then
     assertNotNull(createStatus);
@@ -483,15 +467,11 @@ public class ClientSchemaTest {
     assertNotNull(bandClass.getResult().getInvertedIndexConfig().getBm25());
     assertEquals(bm25Config.getB(), bandClass.getResult().getInvertedIndexConfig().getBm25().getB());
     assertEquals(bm25Config.getK1(), bandClass.getResult().getInvertedIndexConfig().getBm25().getK1());
-    assertResultTrue(deleteStatus);
   }
 
   @Test
   public void testCreateClassWithStopwordsConfig() {
     // given
-    Config config = new Config("http", address);
-    WeaviateClient client = new WeaviateClient(config);
-
     StopwordConfig stopwordConfig = StopwordConfig.builder()
             .preset("en")
             .additions(new String[]{ "star", "nebula" })
@@ -513,7 +493,6 @@ public class ClientSchemaTest {
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
     Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
-    Result<Boolean> deleteStatus = client.schema().allDeleter().run();
 
     // then
     assertNotNull(createStatus);
@@ -525,15 +504,11 @@ public class ClientSchemaTest {
     assertEquals(stopwordConfig.getPreset(), bandClass.getResult().getInvertedIndexConfig().getStopwords().getPreset());
     assertArrayEquals(stopwordConfig.getAdditions(), bandClass.getResult().getInvertedIndexConfig().getStopwords().getAdditions());
     assertArrayEquals(stopwordConfig.getRemovals(), bandClass.getResult().getInvertedIndexConfig().getStopwords().getRemovals());
-    assertResultTrue(deleteStatus);
   }
 
   @Test
   public void testCreateClassWithBM25ConfigAndWithStopwordsConfig() {
     // given
-    Config config = new Config("http", address);
-    WeaviateClient client = new WeaviateClient(config);
-
     BM25Config bm25Config = BM25Config.builder()
             .b(0.777f)
             .k1(1.777f)
@@ -561,7 +536,6 @@ public class ClientSchemaTest {
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
     Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
-    Result<Boolean> deleteStatus = client.schema().allDeleter().run();
 
     // then
     assertNotNull(createStatus);
@@ -576,15 +550,11 @@ public class ClientSchemaTest {
     assertEquals(stopwordConfig.getPreset(), bandClass.getResult().getInvertedIndexConfig().getStopwords().getPreset());
     assertArrayEquals(stopwordConfig.getAdditions(), bandClass.getResult().getInvertedIndexConfig().getStopwords().getAdditions());
     assertArrayEquals(stopwordConfig.getRemovals(), bandClass.getResult().getInvertedIndexConfig().getStopwords().getRemovals());
-    assertResultTrue(deleteStatus);
   }
 
   @Test
   public void testCreateClassWithInvertedIndexConfigAndVectorIndexConfigAndShardConfig() {
     // given
-    Config config = new Config("http", address);
-    WeaviateClient client = new WeaviateClient(config);
-    // inverted index config
     BM25Config bm25Config = BM25Config.builder()
             .b(0.777f)
             .k1(1.777f)
@@ -658,7 +628,6 @@ public class ClientSchemaTest {
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
     Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
-    Result<Boolean> deleteStatus = client.schema().allDeleter().run();
 
     // then
     assertNotNull(createStatus);
@@ -695,14 +664,11 @@ public class ClientSchemaTest {
     assertEquals(key, classShardingIndexConfig.getKey());
     assertEquals(strategy, classShardingIndexConfig.getStrategy());
     assertEquals(virtualPerPhysical, classShardingIndexConfig.getVirtualPerPhysical());
-    assertResultTrue(deleteStatus);
   }
 
   @Test
   public void testSchemaGetBandClass() {
     // given
-    Config config = new Config("http", address);
-    WeaviateClient client = new WeaviateClient(config);
     WeaviateClass clazz = WeaviateClass.builder()
             .className("Band")
             .description("Band that plays and produces music")
@@ -713,7 +679,6 @@ public class ClientSchemaTest {
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
     Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
     Result<WeaviateClass> nonExistentClass = client.schema().classGetter().withClassName("nonExistentClass").run();
-    Result<Boolean> deleteStatus = client.schema().classDeleter().withClassName(clazz.getClassName()).run();
     // then
     assertNotNull(createStatus);
     assertTrue(createStatus.getResult());
@@ -727,15 +692,11 @@ public class ClientSchemaTest {
     assertNotNull(nonExistentClass);
     assertNull(nonExistentClass.getError());
     assertNull(nonExistentClass.getResult());
-    assertNotNull(deleteStatus);
-    assertTrue(deleteStatus.getResult());
   }
 
   @Test
   public void testSchemaGetShards() {
     // given
-    Config config = new Config("http", address);
-    WeaviateClient client = new WeaviateClient(config);
     WeaviateClass clazz = WeaviateClass.builder()
             .className("Band")
             .description("Band that plays and produces music")
@@ -761,17 +722,11 @@ public class ClientSchemaTest {
     Shard shard = shards.getResult()[0];
     assertNotNull(shard.getName());
     assertNotNull(shard.getStatus());
-
-    Result<Boolean> deleteStatus = client.schema().classDeleter().withClassName(clazz.getClassName()).run();
-    assertNotNull(deleteStatus);
-    assertTrue(deleteStatus.getResult());
   }
 
   @Test
   public void testSchemaUpdateShard() {
     // given
-    Config config = new Config("http", address);
-    WeaviateClient client = new WeaviateClient(config);
     String className = "Band";
     WeaviateClass clazz = WeaviateClass.builder()
             .className(className)
@@ -810,17 +765,11 @@ public class ClientSchemaTest {
             .run();
     assertNotNull(updateToREADY.getResult());
     assertEquals(ShardStatuses.READY,updateToREADY.getResult().getStatus());
-    // delete the class
-    Result<Boolean> deleteStatus = client.schema().classDeleter().withClassName(className).run();
-    assertNotNull(deleteStatus);
-    assertTrue(deleteStatus.getResult());
   }
 
   @Test
   public void testSchemaUpdateShards() {
     // given
-    Config config = new Config("http", address);
-    WeaviateClient client = new WeaviateClient(config);
     String className = "Band";
     int shardCount = 3;
     ShardingConfig shardingConfig = ShardingConfig.builder()
@@ -869,17 +818,10 @@ public class ClientSchemaTest {
     for (ShardStatus s : updateToREADY.getResult()) {
       assertEquals(ShardStatuses.READY, s.getStatus());
     }
-    // delete the class
-    Result<Boolean> deleteStatus = client.schema().classDeleter().withClassName(className).run();
-    assertNotNull(deleteStatus);
-    assertTrue(deleteStatus.getResult());
   }
 
   @Test
   public void testSchemaUpdateShardsException() {
-    // given
-    Config config = new Config("http", address);
-    WeaviateClient client = new WeaviateClient(config);
     // when
     Result<ShardStatus[]> res = client.schema().shardsUpdater().run();
     Result<ShardStatus[]> res2 = client.schema().shardsUpdater().withStatus(ShardStatuses.READY).run();
@@ -892,9 +834,6 @@ public class ClientSchemaTest {
 
   @Test
   public void testSchemaUpdateShardException() {
-    // given
-    Config config = new Config("http", address);
-    WeaviateClient client = new WeaviateClient(config);
     // when
     Result<ShardStatus> res = client.schema().shardUpdater().run();
     Result<ShardStatus> res2 = client.schema().shardUpdater().withStatus(ShardStatuses.READY).run();
@@ -909,13 +848,64 @@ public class ClientSchemaTest {
 
   @Test
   public void testSchemaGetShardsException() {
-    // given
-    Config config = new Config("http", address);
-    WeaviateClient client = new WeaviateClient(config);
     // when
     Result<Shard[]> res = client.schema().shardsGetter().run();
     // then
     assertResultError("className cannot be empty", res);
+  }
+
+  @Test
+  public void testClassWithExplicitReplicationFactor() {
+    // given
+    String className = "Band";
+    int replicationFactor = 2;
+    WeaviateClass clazz = WeaviateClass.builder()
+      .className(className)
+      .description("Band that plays and produces music")
+      .vectorIndexType("hnsw")
+      .vectorizer("text2vec-contextionary")
+      .replicationConfig(ReplicationConfig.builder().factor(replicationFactor).build())
+      .build();
+
+    // when
+    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
+    assertThat(createStatus.hasErrors()).isFalse();
+    assertThat(createStatus.getResult()).isTrue();
+
+    // then
+    Result<WeaviateClass> classResult = client.schema().classGetter().withClassName(className).run();
+    assertThat(classResult.hasErrors()).isFalse();
+    assertThat(classResult.getResult()).isNotNull()
+      .extracting(WeaviateClass::getReplicationConfig)
+      .isNotNull()
+      .extracting(ReplicationConfig::getFactor)
+      .isEqualTo(replicationFactor);
+  }
+
+  @Test
+  public void testClassWithImplicitReplicationFactor() {
+    // given
+    String className = "Band";
+    WeaviateClass clazz = WeaviateClass.builder()
+      .className(className)
+      .description("Band that plays and produces music")
+      .vectorIndexType("hnsw")
+      .vectorizer("text2vec-contextionary")
+      .build();
+
+    // when
+    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
+    assertThat(createStatus.hasErrors()).isFalse();
+    assertThat(createStatus.getResult()).isTrue();
+
+    // then
+    Result<WeaviateClass> classResult = client.schema().classGetter().withClassName(className).run();
+    assertThat(classResult.hasErrors()).isFalse();
+    assertThat(classResult.getResult()).isNotNull()
+      .extracting(WeaviateClass::getReplicationConfig)
+      .isNotNull()
+      .extracting(ReplicationConfig::getFactor)
+      .isEqualTo(1);
   }
 
   private void assertResultTrue(Result<Boolean> result) {
@@ -923,7 +913,7 @@ public class ClientSchemaTest {
     assertTrue(result.getResult());
   }
 
-  private void assertResultError(String msg, Result result) {
+  private void assertResultError(String msg, Result<?> result) {
     assertNotNull(result);
     assertTrue(result.hasErrors());
     List<WeaviateErrorMessage> messages = result.getError().getMessages();
