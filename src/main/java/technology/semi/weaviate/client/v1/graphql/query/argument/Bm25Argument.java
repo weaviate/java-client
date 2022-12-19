@@ -1,6 +1,6 @@
 package technology.semi.weaviate.client.v1.graphql.query.argument;
 
-import java.util.Arrays;
+
 import java.util.LinkedHashSet;
 import java.util.Set;
 import lombok.AccessLevel;
