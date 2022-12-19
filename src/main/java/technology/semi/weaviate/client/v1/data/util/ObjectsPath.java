@@ -108,10 +108,10 @@ public class ObjectsPath {
     if (ObjectUtils.isNotEmpty(pathParams.additional)) {
       queryParams.add(String.format("include=%s", StringUtils.join(pathParams.additional, ",")));
     }
-    if (pathParams.consistencyLevel != null && !pathParams.consistencyLevel.isEmpty()) {
+    if (StringUtils.isNotBlank(pathParams.consistencyLevel)) {
       queryParams.add(String.format("consistency_level=%s", pathParams.consistencyLevel));
     }
-    if (pathParams.nodeName != null && !pathParams.nodeName.isEmpty()) {
+    if (StringUtils.isNotBlank(pathParams.nodeName)) {
       queryParams.add(String.format("node_name=%s", pathParams.nodeName));
     }
     if (queryParams.size() > 0) {
