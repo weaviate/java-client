@@ -13,6 +13,8 @@ import technology.semi.weaviate.client.v1.graphql.query.argument.GroupArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearImageArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.Bm25Argument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.HybridArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.SortArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.SortArguments;
@@ -55,6 +57,16 @@ public class Get extends BaseClient<GraphQLResponse> implements ClientResult<Gra
 
   public Get withNearText(NearTextArgument nearText) {
     this.getBuilder.withNearTextFilter(nearText);
+    return this;
+  }
+
+  public Get withBm25(Bm25Argument Bm25Argument ) {
+    this.getBuilder.withBm25Filter(Bm25Argument);
+    return this;
+  }
+
+  public Get withHybrid(HybridArgument HybridArgument ) {
+    this.getBuilder.withHybridFilter(HybridArgument);
     return this;
   }
 
