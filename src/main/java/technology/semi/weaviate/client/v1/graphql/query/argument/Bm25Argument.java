@@ -31,7 +31,7 @@ public class Bm25Argument implements Argument {
 
 
     if (alpha != null) {
-      arg.add(String.format("certainty: %s", alpha));
+      arg.add(String.format("alpha: %s", alpha));
     }
     return String.format("bm25: {%s}", StringUtils.joinWith(" ", arg.toArray()));
   }
