@@ -15,7 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 public class Bm25Argument implements Argument {
   String query;
   Float alpha;
-  Float[] vector;
+  String[] properties;
 
 
   @Override
@@ -24,15 +24,10 @@ public class Bm25Argument implements Argument {
 
     arg.add(String.format("query: \"%s\"", query));
 
-    if (vector != null) {
-      arg.add(String.format("vector: %s", Arrays.toString(vector)));
+    if (properties != null) {
+      arg.add(String.format("properties: %s", Arrays.toString(properties)));
     }
-
-
-
-    if (alpha != null) {
-      arg.add(String.format("alpha: %s", alpha));
-    }
+    
     return String.format("bm25: {%s}", StringUtils.joinWith(" ", arg.toArray()));
   }
 }
