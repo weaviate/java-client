@@ -213,7 +213,7 @@ public class ClientGraphQLTest {
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
    
     Bm25Argument bm25 = client.graphQL().arguments().Bm25ArgBuilder()
-            .query("some say revolution")
+            .query("delicious")
             .vector(new Float[]{1.0f, 2.0f, 3.0f})
             .alpha(0.8f)
             .build();
