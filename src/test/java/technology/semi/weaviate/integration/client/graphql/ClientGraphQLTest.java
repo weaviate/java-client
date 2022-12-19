@@ -213,14 +213,14 @@ public class ClientGraphQLTest {
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
    
     Bm25Argument bm25 = client.graphQL().arguments().Bm25ArgBuilder()
-            .query("delicious")
-            .vector(new Float[]{1.0f, 2.0f, 3.0f})
+            .query("innovation")
+            .properties(new String[]{"description"})
             .alpha(0.8f)
             .build();
-    Field name = Field.builder().name("name").build();
+    Field name = Field.builder().name("description").build();
     Field _additional = Field.builder()
             .name("_additional")
-            .fields(new Field[]{Field.builder().name("name").build()})
+            .fields(new Field[]{Field.builder().name("id").build()})
             .build();
     // when
     testGenerics.createTestSchemaAndData(client);
