@@ -35,7 +35,7 @@ public class Get extends BaseClient<GraphQLResponse> implements ClientResult<Gra
     return this;
   }
 
-  public Get withFields(Field ...fields) {
+  public Get withFields(Field... fields) {
     this.getBuilder.fields(Fields.builder().fields(fields).build());
     return this;
   }
@@ -60,13 +60,13 @@ public class Get extends BaseClient<GraphQLResponse> implements ClientResult<Gra
     return this;
   }
 
-  public Get withBm25(Bm25Argument Bm25Argument ) {
-    this.getBuilder.withBm25Filter(Bm25Argument);
+  public Get withBm25(Bm25Argument bm25) {
+    this.getBuilder.withBm25Filter(bm25);
     return this;
   }
 
-  public Get withHybrid(HybridArgument HybridArgument ) {
-    this.getBuilder.withHybridFilter(HybridArgument);
+  public Get withHybrid(HybridArgument hybrid) {
+    this.getBuilder.withHybridFilter(hybrid);
     return this;
   }
 
@@ -95,7 +95,7 @@ public class Get extends BaseClient<GraphQLResponse> implements ClientResult<Gra
     return this;
   }
 
-  public Get withSort(SortArgument ...sort) {
+  public Get withSort(SortArgument... sort) {
     this.getBuilder.withSortArguments(SortArguments.builder().sort(sort).build());
     return this;
   }

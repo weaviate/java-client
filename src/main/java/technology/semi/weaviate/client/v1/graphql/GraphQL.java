@@ -22,10 +22,10 @@ public class GraphQL {
     public NearTextArgument.NearTextArgumentBuilder nearTextArgBuilder() {
       return NearTextArgument.builder();
     }
-    public Bm25Argument.Bm25ArgumentBuilder Bm25ArgBuilder() {
+    public Bm25Argument.Bm25ArgumentBuilder bm25ArgBuilder() {
       return Bm25Argument.builder();
     }
-    public HybridArgument.HybridArgumentBuilder HybridArgBuilder() {
+    public HybridArgument.HybridArgumentBuilder hybridArgBuilder() {
       return HybridArgument.builder();
     }
     public NearTextMoveParameters.NearTextMoveParametersBuilder nearTextMoveParameterBuilder() {

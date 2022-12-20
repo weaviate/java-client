@@ -212,10 +212,9 @@ public class ClientGraphQLTest {
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
    
-    Bm25Argument bm25 = client.graphQL().arguments().Bm25ArgBuilder()
+    Bm25Argument bm25 = client.graphQL().arguments().bm25ArgBuilder()
             .query("innovation")
             .properties(new String[]{"description"})
-            .alpha(0.8f)
             .build();
     Field name = Field.builder().name("description").build();
     Field _additional = Field.builder()
@@ -241,8 +240,11 @@ public class ClientGraphQLTest {
     Map get = (Map) data.get("Get");
     assertNotNull(get.get("Pizza"));
     assertTrue(get.get("Pizza") instanceof List);
-    List getSoup = (List) get.get("Pizza");
-    assertEquals(1, getSoup.size());
+    List pizza = (List) get.get("Pizza");
+    assertEquals(1, pizza.size());
+    Map fields = (Map) pizza.get(0);
+    String descr = (String) fields.get("description");
+    assertTrue(descr.contains("innovation"));
   }
 
   @Test
@@ -252,7 +254,7 @@ public class ClientGraphQLTest {
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
    
-    HybridArgument hybrid = client.graphQL().arguments().HybridArgBuilder()
+    HybridArgument hybrid = client.graphQL().arguments().hybridArgBuilder()
             .query("some say revolution")
             .alpha(0.8f)
             .build();
@@ -280,7 +282,6 @@ public class ClientGraphQLTest {
     Map get = (Map) data.get("Get");
     assertNotNull(get.get("Pizza"));
     assertTrue(get.get("Pizza") instanceof List);
-  
   }
 
 
