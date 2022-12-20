@@ -1,6 +1,7 @@
 package technology.semi.weaviate.client.v1.graphql.query.argument;
 
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import lombok.AccessLevel;
@@ -9,18 +10,12 @@ import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 @Getter
 @Builder
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class Bm25Argument implements Argument {
   String query;
-  Float alpha;
   String[] properties;
-
-
-
 
   @Override
   public String build() {
@@ -35,9 +30,8 @@ public class Bm25Argument implements Argument {
     return String.format("bm25: {%s}", StringUtils.joinWith(" ", arg.toArray()));
   }
 
-
-private String toJsonString(Object object) {
-  Gson serializer =  new GsonBuilder().disableHtmlEscaping().create();
-  return serializer.toJson(object);
-}
+  private String toJsonString(Object object) {
+    Gson serializer = new GsonBuilder().disableHtmlEscaping().create();
+    return serializer.toJson(object);
+  }
 }
