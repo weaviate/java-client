@@ -37,8 +37,7 @@ jobs:
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       run: |
         ./decrypt_secret.sh
-        cp settings.xml $HOME/.m2/
     - name: Deploy
       run: |
         mvn -DskipTests clean package
-        mvn deploy
+        mvn -s settings.xml deploy
