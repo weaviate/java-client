@@ -65,8 +65,8 @@
     <assertj-core.version>3.23.1</assertj-core.version>
     <jparams.version>1.0.4</jparams.version>
     <mockito.version>4.10.0</mockito.version>
-    <slf4j.version>2.0.2</slf4j.version>
-    <logback.version>1.4.1</logback.version>
+    <slf4j.version>2.0.6</slf4j.version>
+    <logback.version>1.4.5</logback.version>
   </properties>
 
   <dependencies>
