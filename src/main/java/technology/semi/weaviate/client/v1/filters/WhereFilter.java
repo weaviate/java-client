@@ -1,13 +1,12 @@
 package technology.semi.weaviate.client.v1.filters;
 
+import java.util.Date;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
-
-import java.util.Date;
 
 @Getter
 @Builder

@@ -13,12 +13,11 @@ import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.contextionary.model.C11yWordsResponse;
 
 public class ClientContextionaryTest {
-  private String address;
-
   @ClassRule
   public static DockerComposeContainer compose = new DockerComposeContainer(
-          new File("src/test/resources/docker-compose-test.yaml")
+    new File("src/test/resources/docker-compose-test.yaml")
   ).withExposedService("weaviate_1", 8080, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200));
+  private String address;
 
   @Before
   public void before() {
@@ -47,7 +46,7 @@ public class ClientContextionaryTest {
     WeaviateClient client = new WeaviateClient(config);
     // when
     Result<Boolean> extensionSuccess = client.c11y().extensionCreator()
-            .withConcept("xoxo").withDefinition("Hugs and kisses").withWeight(1.0f).run();
+      .withConcept("xoxo").withDefinition("Hugs and kisses").withWeight(1.0f).run();
     // then
     Assert.assertNotNull(extensionSuccess);
     Assert.assertTrue(extensionSuccess.getResult());

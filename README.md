@@ -7,6 +7,7 @@ A Java native client for weaviate.
 In order to get start using the java client one needs to add it's dependency:
 
 ```xml
+
 <dependency>
   <groupId>technology.semi.weaviate</groupId>
   <artifactId>client</artifactId>

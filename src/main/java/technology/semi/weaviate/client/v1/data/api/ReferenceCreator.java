@@ -1,5 +1,6 @@
 package technology.semi.weaviate.client.v1.data.api;
 
+import java.util.Objects;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.base.BaseClient;
 import technology.semi.weaviate.client.base.ClientResult;
@@ -7,8 +8,6 @@ import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.data.model.SingleRef;
 import technology.semi.weaviate.client.v1.data.util.ReferencesPath;
-
-import java.util.Objects;
 
 public class ReferenceCreator extends BaseClient<Object> implements ClientResult<Boolean> {
 
@@ -46,10 +45,10 @@ public class ReferenceCreator extends BaseClient<Object> implements ClientResult
   @Override
   public Result<Boolean> run() {
     String path = referencesPath.build(ReferencesPath.Params.builder()
-            .id(id)
-            .className(className)
-            .property(referenceProperty)
-            .build());
+      .id(id)
+      .className(className)
+      .property(referenceProperty)
+      .build());
     Response<Object> resp = sendPostRequest(path, referencePayload, Object.class);
     return new Result<>(resp.getStatusCode(), resp.getStatusCode() == 200, resp.getErrors());
   }

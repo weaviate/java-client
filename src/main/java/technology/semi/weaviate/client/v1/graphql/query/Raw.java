@@ -9,15 +9,14 @@ import technology.semi.weaviate.client.v1.graphql.model.GraphQLQuery;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLResponse;
 
 
-
 public class Raw extends BaseClient<GraphQLResponse> implements ClientResult<GraphQLResponse> {
-  private  String query;
- 
+  private String query;
+
   public Raw(Config config) {
     super(config);
   }
 
-  public Raw withQuery (String query)  {
+  public Raw withQuery(String query) {
     this.query = query;
     return this;
   }

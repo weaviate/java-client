@@ -3,12 +3,12 @@ version: '3.4'
 services:
   weaviate:
     command:
-    - --host
-    - 0.0.0.0
-    - --port
-    - '8080'
-    - --scheme
-    - http
+      - --host
+      - 0.0.0.0
+      - --port
+      - '8080'
+      - --scheme
+      - http
     image: semitechnologies/weaviate:1.17.0
     links:
       - "contextionary:contextionary"

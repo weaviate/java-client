@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.After;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -18,16 +16,17 @@ import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.batch.model.ObjectGetResponse;
 import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
 import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class ClientBatchCreateTest {
-  private WeaviateClient client;
-  private final WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-
   @ClassRule
   public static DockerComposeContainer compose = new DockerComposeContainer(
-          new File("src/test/resources/docker-compose-test.yaml")
+    new File("src/test/resources/docker-compose-test.yaml")
   ).withExposedService("weaviate_1", 8080, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200))
     .withTailChildContainers(true);
+  private final WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
+  private WeaviateClient client;
 
   @Before
   public void before() {
@@ -71,21 +70,21 @@ public class ClientBatchCreateTest {
     WeaviateObject objA2 = WeaviateObject.builder().className("Soup").id(objA2ID).properties(propertiesSchemaA2).build();
     // when
     Result<WeaviateObject> objT1 = client.data().creator()
-            .withClassName("Pizza")
-            .withID(objTID)
-            .withProperties(propertiesSchemaT)
-            .run();
+      .withClassName("Pizza")
+      .withID(objTID)
+      .withProperties(propertiesSchemaT)
+      .run();
     Result<WeaviateObject> objA1 = client.data().creator()
-            .withClassName("Soup")
-            .withID(objAID)
-            .withProperties(propertiesSchemaA)
-            .run();
+      .withClassName("Soup")
+      .withID(objAID)
+      .withProperties(propertiesSchemaA)
+      .run();
     Result<ObjectGetResponse[]> batchTs = client.batch().objectsBatcher()
-            .withObjects(objT1.getResult(), objT2)
-            .run();
+      .withObjects(objT1.getResult(), objT2)
+      .run();
     Result<ObjectGetResponse[]> batchAs = client.batch().objectsBatcher()
-            .withObjects(objA1.getResult(), objA2)
-            .run();
+      .withObjects(objA1.getResult(), objA2)
+      .run();
     // check if created objects exist
     Result<List<WeaviateObject>> getObjT1 = client.data().objectsGetter().withID(objTID).withClassName("Pizza").run();
     Result<List<WeaviateObject>> getObjT2 = client.data().objectsGetter().withID(objT2ID).withClassName("Pizza").run();

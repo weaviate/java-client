@@ -12,32 +12,32 @@ jobs:
     name: Tests
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Login to Docker Hub
-      if: ${{ !github.event.pull_request.head.repo.fork }}
-      uses: docker/login-action@v2
-      with:
-        username: ${{secrets.DOCKER_USERNAME}}
-        password: ${{secrets.DOCKER_PASSWORD}}
-    - name: Run Build
-      run: mvn -DskipTests clean package
-    - name: Run Tests
-      run: |
-        docker-compose -f src/test/resources/docker-compose-test.yaml pull
-        mvn clean test
+      - uses: actions/checkout@v3
+      - name: Login to Docker Hub
+        if: ${{ !github.event.pull_request.head.repo.fork }}
+        uses: docker/login-action@v2
+        with:
+          username: ${{secrets.DOCKER_USERNAME}}
+          password: ${{secrets.DOCKER_PASSWORD}}
+      - name: Run Build
+        run: mvn -DskipTests clean package
+      - name: Run Tests
+        run: |
+          docker-compose -f src/test/resources/docker-compose-test.yaml pull
+          mvn clean test
   deploy:
     needs: tests
     name: Deploy
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Unpack secrets
-      env:
-        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-      run: |
-        ./decrypt_secret.sh
-    - name: Deploy
-      run: |
-        mvn -DskipTests clean package
-        mvn -s settings.xml deploy
+      - uses: actions/checkout@v3
+      - name: Unpack secrets
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          ./decrypt_secret.sh
+      - name: Deploy
+        run: |
+          mvn -DskipTests clean package
+          mvn -s settings.xml deploy

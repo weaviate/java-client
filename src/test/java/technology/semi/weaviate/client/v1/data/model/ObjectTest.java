@@ -21,13 +21,13 @@ public class ObjectTest extends TestCase {
     properties.put("name", "Pizza");
     properties.put("description", "Italian pizzas");
     WeaviateObject obj = WeaviateObject.builder()
-            .id("uuid")
-            .className("class")
-            .creationTimeUnix(1000l)
-            .lastUpdateTimeUnix(2000l)
-            .vector(new Float[]{ 1.0f, 2.0f })
-            .properties(properties)
-            .build();
+      .id("uuid")
+      .className("class")
+      .creationTimeUnix(1000L)
+      .lastUpdateTimeUnix(2000L)
+      .vector(new Float[]{1.0f, 2.0f})
+      .properties(properties)
+      .build();
     // when
     String result = new GsonBuilder().setPrettyPrinting().create().toJson(obj);
     // then
@@ -86,22 +86,22 @@ public class ObjectTest extends TestCase {
       put("name", "RefBeaconSoup");
       put("description", "Used only to check if reference can be added.");
       put("otherFoods", new ObjectReference[]{
-              ObjectReference.builder()
-                      .beacon("weaviate://localhost/someClass/abefd256-8574-442b-9293-9205193737ee")
-                      .build()
+        ObjectReference.builder()
+          .beacon("weaviate://localhost/someClass/abefd256-8574-442b-9293-9205193737ee")
+          .build()
       });
       put("rating", "9/10");
     }};
     WeaviateObject obj = WeaviateObject.builder()
-            .id("uuid")
-            .className("class")
-            .properties(properties)
-            .build();
+      .id("uuid")
+      .className("class")
+      .properties(properties)
+      .build();
     // when
     String result = new GsonBuilder()
-            .setPrettyPrinting()
-            .create()
-            .toJson(obj);
+      .setPrettyPrinting()
+      .create()
+      .toJson(obj);
     // then
     Assert.assertNotNull(result);
     Assert.assertTrue(result.contains("otherFoods"));

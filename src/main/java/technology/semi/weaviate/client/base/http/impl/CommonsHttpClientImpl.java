@@ -1,18 +1,26 @@
 package technology.semi.weaviate.client.base.http.impl;
 
-import org.apache.http.HttpHeaders;
-import org.apache.http.client.methods.*;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.util.EntityUtils;
-import technology.semi.weaviate.client.base.http.HttpClient;
-import technology.semi.weaviate.client.base.http.HttpResponse;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import org.apache.http.HttpHeaders;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
+import org.apache.http.client.methods.HttpPatch;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
+import technology.semi.weaviate.client.base.http.HttpClient;
+import technology.semi.weaviate.client.base.http.HttpResponse;
 
 public class CommonsHttpClientImpl implements HttpClient, Closeable {
   private final Map<String, String> headers;
@@ -88,6 +96,10 @@ public class CommonsHttpClientImpl implements HttpClient, Closeable {
     return new HttpResponse(statusCode, body);
   }
 
+  public interface CloseableHttpClientBuilder {
+    CloseableHttpClient build();
+  }
+
   private static class HttpDeleteWithBody extends HttpEntityEnclosingRequestBase {
     public HttpDeleteWithBody() {
     }
@@ -103,10 +115,6 @@ public class CommonsHttpClientImpl implements HttpClient, Closeable {
     public String getMethod() {
       return HttpDelete.METHOD_NAME;
     }
-  }
-
-  public interface CloseableHttpClientBuilder {
-    CloseableHttpClient build();
   }
 
 }

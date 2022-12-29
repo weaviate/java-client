@@ -1,18 +1,18 @@
 package technology.semi.weaviate.client.v1.data;
 
 import technology.semi.weaviate.client.Config;
+import technology.semi.weaviate.client.base.util.BeaconPath;
+import technology.semi.weaviate.client.base.util.DbVersionSupport;
 import technology.semi.weaviate.client.v1.data.api.ObjectCreator;
 import technology.semi.weaviate.client.v1.data.api.ObjectDeleter;
 import technology.semi.weaviate.client.v1.data.api.ObjectUpdater;
 import technology.semi.weaviate.client.v1.data.api.ObjectValidator;
+import technology.semi.weaviate.client.v1.data.api.ObjectsChecker;
 import technology.semi.weaviate.client.v1.data.api.ObjectsGetter;
 import technology.semi.weaviate.client.v1.data.api.ReferenceCreator;
 import technology.semi.weaviate.client.v1.data.api.ReferenceDeleter;
 import technology.semi.weaviate.client.v1.data.api.ReferenceReplacer;
 import technology.semi.weaviate.client.v1.data.builder.ReferencePayloadBuilder;
-import technology.semi.weaviate.client.v1.data.api.ObjectsChecker;
-import technology.semi.weaviate.client.base.util.BeaconPath;
-import technology.semi.weaviate.client.base.util.DbVersionSupport;
 import technology.semi.weaviate.client.v1.data.util.ObjectsPath;
 import technology.semi.weaviate.client.v1.data.util.ReferencesPath;
 

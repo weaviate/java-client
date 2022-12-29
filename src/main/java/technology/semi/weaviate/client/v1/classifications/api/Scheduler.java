@@ -12,6 +12,7 @@ import technology.semi.weaviate.client.v1.filters.WhereFilter;
 
 public class Scheduler extends BaseClient<Classification> implements ClientResult<Classification> {
 
+  private final Getter getter;
   private String classificationType;
   private String className;
   private String[] classifyProperties;
@@ -21,8 +22,6 @@ public class Scheduler extends BaseClient<Classification> implements ClientResul
   private WhereFilter targetWhereFilter;
   private Boolean waitForCompletion;
   private Object settings;
-
-  private Getter getter;
 
   public Scheduler(Config config) {
     super(config);

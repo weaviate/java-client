@@ -1,5 +1,6 @@
 package technology.semi.weaviate.integration.client.misc;
 
+import java.io.File;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -9,9 +10,6 @@ import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.WeaviateClient;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.misc.model.Meta;
-
-import java.io.File;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -20,12 +18,11 @@ import static technology.semi.weaviate.integration.client.WeaviateVersion.EXPECT
 
 public class ClientMiscTest {
 
-  private WeaviateClient client;
-
   @ClassRule
   public static DockerComposeContainer<?> compose = new DockerComposeContainer<>(
     new File("src/test/resources/docker-compose-test.yaml")
   ).withExposedService("weaviate_1", 8080, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200));
+  private WeaviateClient client;
 
   @Before
   public void before() {

@@ -11,7 +11,7 @@ public class SerializerTest extends TestCase {
     // given
     Serializer s = new Serializer();
     String description = "test äüëö";
-    String jsonString = "{\"description\":\""+description+"\"}";
+    String jsonString = "{\"description\":\"" + description + "\"}";
     // when
     TestObj deserialized = s.toResponse(jsonString, TestObj.class);
     // then
@@ -57,16 +57,18 @@ public class SerializerTest extends TestCase {
     // then
     Assert.assertNotNull(deserialized);
     Assert.assertNull(deserialized.getError());
-    Assert.assertEquals(new Integer(601), deserialized.getCode());
+    Assert.assertEquals(Integer.valueOf(601), deserialized.getCode());
     Assert.assertEquals("id in body must be of type uuid: \"TODO_4\"", deserialized.getMessage());
   }
 }
 
 class TestObj {
-  private String description;
+  private final String description;
+
   public TestObj(String description) {
     this.description = description;
   }
+
   public String getDescription() {
     return description;
   }

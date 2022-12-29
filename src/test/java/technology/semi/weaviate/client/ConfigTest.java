@@ -24,9 +24,9 @@ public class ConfigTest {
     // when
     Config config = new Config(scheme, domain, null, timeout);
     // then
-    Assert.assertEquals(5, config.getConnectionTimeoutMs());
-    Assert.assertEquals(5, config.getSocketTimeoutMs());
-    Assert.assertEquals(5, config.getConnectionRequestTimeoutMs());
+    Assert.assertEquals(5, config.getConnectionTimeout());
+    Assert.assertEquals(5, config.getSocketTimeout());
+    Assert.assertEquals(5, config.getConnectionRequestTimeout());
   }
 
   @Test
@@ -40,9 +40,9 @@ public class ConfigTest {
     // when
     Config config = new Config(scheme, domain, null, connectionTimeoutMs, connectionRequestTimeoutMs, socketTimeoutMs);
     // then
-    Assert.assertEquals(30, config.getConnectionTimeoutMs());
-    Assert.assertEquals(20, config.getConnectionRequestTimeoutMs());
-    Assert.assertEquals(10, config.getSocketTimeoutMs());
+    Assert.assertEquals(30, config.getConnectionTimeout());
+    Assert.assertEquals(20, config.getConnectionRequestTimeout());
+    Assert.assertEquals(10, config.getSocketTimeout());
   }
 
 }

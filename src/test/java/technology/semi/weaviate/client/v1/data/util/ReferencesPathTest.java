@@ -11,17 +11,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import technology.semi.weaviate.client.base.util.DbVersionSupport;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(JParamsTestRunner.class)
 public class ReferencesPathTest {
-
-  private AutoCloseable openedMocks;
-  @InjectMocks
-  private ReferencesPath referencesPath;
-  @Mock
-  private DbVersionSupport dbVersionSupportMock;
 
   private static final ReferencesPath.Params EMPTY_PARAMS = ReferencesPath.Params.builder().build();
   private static final ReferencesPath.Params CLASS_PARAMS = ReferencesPath.Params.builder()
@@ -38,23 +31,11 @@ public class ReferencesPathTest {
     .id("someId")
     .property("someProperty")
     .build();
-
-  @Before
-  public void setUp() {
-    openedMocks = MockitoAnnotations.openMocks(this);
-  }
-  @After
-  public void tearDown() throws Exception {
-    openedMocks.close();
-  }
-
-  @Test
-  @DataMethod(source = ReferencesPathTest.class, method = "provideForSupported")
-  public void shouldBuildPathsWhenSupported(ReferencesPath.Params pathParams, String expectedPath) {
-    Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(true);
-
-    assertThat(referencesPath.build(pathParams)).isEqualTo(expectedPath);
-  }
+  private AutoCloseable openedMocks;
+  @InjectMocks
+  private ReferencesPath referencesPath;
+  @Mock
+  private DbVersionSupport dbVersionSupportMock;
 
   public static Object[][] provideForSupported() {
     return new Object[][]{
@@ -81,14 +62,6 @@ public class ReferencesPathTest {
     };
   }
 
-  @Test
-  @DataMethod(source = ReferencesPathTest.class, method = "provideForNotSupported")
-  public void shouldBuildPathsWhenNotSupported(ReferencesPath.Params pathParams, String expectedPath) {
-    Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(false);
-
-    assertThat(referencesPath.build(pathParams)).isEqualTo(expectedPath);
-  }
-
   public static Object[][] provideForNotSupported() {
     return new Object[][]{
       {
@@ -112,5 +85,31 @@ public class ReferencesPathTest {
         "/objects/someId/references/someProperty"
       },
     };
+  }
+
+  @Before
+  public void setUp() {
+    openedMocks = MockitoAnnotations.openMocks(this);
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    openedMocks.close();
+  }
+
+  @Test
+  @DataMethod(source = ReferencesPathTest.class, method = "provideForSupported")
+  public void shouldBuildPathsWhenSupported(ReferencesPath.Params pathParams, String expectedPath) {
+    Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(true);
+
+    assertThat(referencesPath.build(pathParams)).isEqualTo(expectedPath);
+  }
+
+  @Test
+  @DataMethod(source = ReferencesPathTest.class, method = "provideForNotSupported")
+  public void shouldBuildPathsWhenNotSupported(ReferencesPath.Params pathParams, String expectedPath) {
+    Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(false);
+
+    assertThat(referencesPath.build(pathParams)).isEqualTo(expectedPath);
   }
 }

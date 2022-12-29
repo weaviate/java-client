@@ -14,6 +14,13 @@ public class NodesStatusResponse {
   NodeStatus[] nodes;
 
 
+  public interface Status {
+
+    String HEALTHY = "HEALTHY";
+    String UNHEALTHY = "UNHEALTHY";
+    String UNAVAILABLE = "UNAVAILABLE";
+  }
+
   @Getter
   @ToString
   @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -45,12 +52,5 @@ public class NodesStatusResponse {
     @SerializedName("class")
     String className;
     Long objectCount;
-  }
-
-  public interface Status {
-
-    String HEALTHY = "HEALTHY";
-    String UNHEALTHY = "UNHEALTHY";
-    String UNAVAILABLE = "UNAVAILABLE";
   }
 }

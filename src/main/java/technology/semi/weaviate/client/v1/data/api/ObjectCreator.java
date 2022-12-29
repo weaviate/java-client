@@ -56,11 +56,11 @@ public class ObjectCreator extends BaseClient<WeaviateObject> implements ClientR
   public Result<WeaviateObject> run() {
     String path = objectsPath.buildCreate(ObjectsPath.Params.builder().build());
     WeaviateObject obj = WeaviateObject.builder()
-            .className(className)
-            .properties(properties)
-            .vector(vector)
-            .id(getID())
-            .build();
+      .className(className)
+      .properties(properties)
+      .vector(vector)
+      .id(getID())
+      .build();
     Response<WeaviateObject> resp = sendPostRequest(path, obj, WeaviateObject.class);
     return new Result<>(resp);
   }

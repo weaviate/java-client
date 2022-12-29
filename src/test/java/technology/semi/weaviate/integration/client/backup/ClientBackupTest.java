@@ -1,5 +1,8 @@
 package technology.semi.weaviate.integration.client.backup;
 
+import java.io.File;
+import java.util.Map;
+import java.util.Random;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -23,11 +26,6 @@ import technology.semi.weaviate.client.v1.backup.model.RestoreStatus;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLResponse;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Field;
 import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
-
-import java.io.File;
-import java.util.Map;
-import java.util.Random;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
 import static org.assertj.core.api.InstanceOfAssertFactories.CHAR_SEQUENCE;
@@ -40,18 +38,14 @@ public class ClientBackupTest {
   private static final String NOT_EXISTING_CLASS_NAME = "not-existing-class";
   private static final String BACKEND = Backend.FILESYSTEM;
   private static final String NOT_EXISTING_BACKEND = "not-existing-backend";
-
-  private String backupId;
-  private String notExistingBackupId;
-  private WeaviateClient client;
-
-  private final WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-
-
   @ClassRule
   public static DockerComposeContainer<?> compose = new DockerComposeContainer<>(
     new File("src/test/resources/docker-compose-test.yaml")
   ).withExposedService("weaviate_1", 8080, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200));
+  private final WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
+  private String backupId;
+  private String notExistingBackupId;
+  private WeaviateClient client;
 
   @Before
   public void before() {
@@ -342,7 +336,7 @@ public class ClientBackupTest {
       .returns(422, WeaviateError::getStatusCode)
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
-      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
+      .extracting(msg -> ((WeaviateErrorMessage) msg).getMessage())
       .first().asInstanceOf(CHAR_SEQUENCE).contains(NOT_EXISTING_BACKEND);
   }
 
@@ -358,7 +352,7 @@ public class ClientBackupTest {
       .returns(422, WeaviateError::getStatusCode)
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
-      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
+      .extracting(msg -> ((WeaviateErrorMessage) msg).getMessage())
       .first().asInstanceOf(CHAR_SEQUENCE).contains(NOT_EXISTING_BACKEND);
   }
 
@@ -375,7 +369,7 @@ public class ClientBackupTest {
       .returns(422, WeaviateError::getStatusCode)
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
-      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
+      .extracting(msg -> ((WeaviateErrorMessage) msg).getMessage())
       .first().asInstanceOf(CHAR_SEQUENCE).contains(NOT_EXISTING_BACKEND);
   }
 
@@ -392,7 +386,7 @@ public class ClientBackupTest {
       .returns(422, WeaviateError::getStatusCode)
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
-      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
+      .extracting(msg -> ((WeaviateErrorMessage) msg).getMessage())
       .first().asInstanceOf(CHAR_SEQUENCE).contains(NOT_EXISTING_CLASS_NAME);
   }
 
@@ -445,7 +439,7 @@ public class ClientBackupTest {
       .returns(422, WeaviateError::getStatusCode)
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
-      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
+      .extracting(msg -> ((WeaviateErrorMessage) msg).getMessage())
       .first().asInstanceOf(CHAR_SEQUENCE).contains(backupId);
   }
 
@@ -461,7 +455,7 @@ public class ClientBackupTest {
       .returns(404, WeaviateError::getStatusCode)
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
-      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
+      .extracting(msg -> ((WeaviateErrorMessage) msg).getMessage())
       .first().asInstanceOf(CHAR_SEQUENCE).contains(notExistingBackupId);
   }
 
@@ -478,7 +472,7 @@ public class ClientBackupTest {
       .returns(404, WeaviateError::getStatusCode)
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
-      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
+      .extracting(msg -> ((WeaviateErrorMessage) msg).getMessage())
       .first().asInstanceOf(CHAR_SEQUENCE).contains(notExistingBackupId);
   }
 
@@ -503,7 +497,7 @@ public class ClientBackupTest {
       .returns(404, WeaviateError::getStatusCode)
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
-      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
+      .extracting(msg -> ((WeaviateErrorMessage) msg).getMessage())
       .first().asInstanceOf(CHAR_SEQUENCE).contains(backupId);
   }
 
@@ -522,7 +516,7 @@ public class ClientBackupTest {
       .returns(422, WeaviateError::getStatusCode)
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
-      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
+      .extracting(msg -> ((WeaviateErrorMessage) msg).getMessage())
       .first().asInstanceOf(CHAR_SEQUENCE).contains("include").contains("exclude");
   }
 
@@ -558,7 +552,7 @@ public class ClientBackupTest {
       .returns(422, WeaviateError::getStatusCode)
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
-      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
+      .extracting(msg -> ((WeaviateErrorMessage) msg).getMessage())
       .first().asInstanceOf(CHAR_SEQUENCE).contains("include").contains("exclude");
   }
 
@@ -613,11 +607,11 @@ public class ClientBackupTest {
     assertThat(result.hasErrors()).isFalse();
     assertThat(result.getResult()).isNotNull()
       .extracting(GraphQLResponse::getData).isInstanceOf(Map.class)
-      .extracting(data -> ((Map<?, ?>)data).get("Get")).isInstanceOf(Map.class)
-      .extracting(get -> ((Map<?, ?>)get).get(className)).asList()
+      .extracting(data -> ((Map<?, ?>) data).get("Get")).isInstanceOf(Map.class)
+      .extracting(get -> ((Map<?, ?>) get).get(className)).asList()
       .hasSize(names.length).hasOnlyElementsOfType(Map.class)
-      .extracting(pizza -> ((Map<?,?>)pizza).get("name")).hasOnlyElementsOfType(String.class)
-      .extracting(name -> (String)name)
+      .extracting(pizza -> ((Map<?, ?>) pizza).get("name")).hasOnlyElementsOfType(String.class)
+      .extracting(name -> (String) name)
       .containsExactlyInAnyOrder(names);
   }
 }

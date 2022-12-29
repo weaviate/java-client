@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 class Serializer {
-  private Gson gson;
+  private final Gson gson;
 
   public Serializer() {
     this.gson = new GsonBuilder().disableHtmlEscaping().create();

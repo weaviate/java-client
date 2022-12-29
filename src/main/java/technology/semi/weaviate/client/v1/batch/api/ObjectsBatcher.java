@@ -33,9 +33,9 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]> implements C
   @Override
   public Result<ObjectGetResponse[]> run() {
     ObjectsBatchRequestBody batchRequest = ObjectsBatchRequestBody.builder()
-            .objects(objects.toArray(new WeaviateObject[0]))
-            .fields(new String[]{"ALL"})
-            .build();
+      .objects(objects.toArray(new WeaviateObject[0]))
+      .fields(new String[]{"ALL"})
+      .build();
     Response<ObjectGetResponse[]> resp = sendPostRequest("/batch/objects", batchRequest, ObjectGetResponse[].class);
     return new Result<>(resp);
   }

@@ -5,12 +5,12 @@ import java.util.stream.Collectors;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.base.WeaviateErrorMessage;
 import technology.semi.weaviate.client.base.WeaviateErrorResponse;
-import technology.semi.weaviate.client.v1.schema.model.WeaviateClass;
 import technology.semi.weaviate.client.v1.schema.model.Schema;
+import technology.semi.weaviate.client.v1.schema.model.WeaviateClass;
 
 public class SchemaDeleter {
-  private SchemaGetter schemaGetter;
-  private ClassDeleter classDeleter;
+  private final SchemaGetter schemaGetter;
+  private final ClassDeleter classDeleter;
 
   public SchemaDeleter(SchemaGetter schemaGetter, ClassDeleter classDeleter) {
     this.schemaGetter = schemaGetter;
@@ -21,10 +21,10 @@ public class SchemaDeleter {
     Result<Schema> schema = schemaGetter.run();
     if (schema.getError() != null) {
       List<WeaviateErrorMessage> errorMessages = schema.getError().getMessages().stream().map(err ->
-              WeaviateErrorMessage.builder().message(err.getMessage()).build()
+        WeaviateErrorMessage.builder().message(err.getMessage()).build()
       ).collect(Collectors.toList());
       WeaviateErrorResponse errors = WeaviateErrorResponse.builder()
-              .error(errorMessages).build();
+        .error(errorMessages).build();
       return new Result<>(schema.getError().getStatusCode(), false, errors);
     }
     if (schema.getError() == null) {

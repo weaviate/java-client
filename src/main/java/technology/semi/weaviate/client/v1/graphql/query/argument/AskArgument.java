@@ -31,8 +31,8 @@ public class AskArgument implements Argument {
     }
     if (properties != null && properties.length > 0) {
       String props = Stream.of(properties)
-              .map(f -> String.format("\"%s\"", f))
-              .collect(Collectors.joining(", "));
+        .map(f -> String.format("\"%s\"", f))
+        .collect(Collectors.joining(", "));
       arg.add(String.format("properties: [%s]", props));
     }
     if (certainty != null) {

@@ -38,15 +38,15 @@ public class ObjectDeleter extends BaseClient<String> implements ClientResult<Bo
   public Result<Boolean> run() {
     if (StringUtils.isEmpty(this.id)) {
       WeaviateErrorMessage errorMessage = WeaviateErrorMessage.builder()
-              .message("id cannot be empty").build();
+        .message("id cannot be empty").build();
       WeaviateErrorResponse errors = WeaviateErrorResponse.builder()
-              .error(Stream.of(errorMessage).collect(Collectors.toList())).build();
+        .error(Stream.of(errorMessage).collect(Collectors.toList())).build();
       return new Result<>(500, false, errors);
     }
     String path = objectsPath.buildDelete(ObjectsPath.Params.builder()
-            .id(id)
-            .className(className)
-            .build());
+      .id(id)
+      .className(className)
+      .build());
     Response<String> resp = sendDeleteRequest(path, null, String.class);
     return new Result<>(resp.getStatusCode(), resp.getStatusCode() == 204, resp.getErrors());
   }

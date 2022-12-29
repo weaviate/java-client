@@ -9,7 +9,7 @@ public class SortArgumentTest extends TestCase {
   public void testBuild() {
     // given
     // when
-    String arg = SortArgument.builder().path(new String[]{ "property" }).order(SortOrder.asc).build().build();
+    String arg = SortArgument.builder().path(new String[]{"property"}).order(SortOrder.asc).build().build();
     // then
     assertNotNull(arg);
     assertEquals("{path:[\"property\"] order:asc}", arg);
@@ -19,7 +19,7 @@ public class SortArgumentTest extends TestCase {
   public void testBuildWithoutOrder() {
     // given
     // when
-    String arg = SortArgument.builder().path(new String[]{ "property" }).build().build();
+    String arg = SortArgument.builder().path(new String[]{"property"}).build().build();
     // then
     assertNotNull(arg);
     assertEquals("{path:[\"property\"]}", arg);

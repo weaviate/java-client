@@ -18,9 +18,9 @@ public class AggregateBuilderTest extends TestCase {
     // given
     Field meta = Field.builder()
       .name("meta")
-      .fields(new Field[]{ Field.builder().name("count").build() })
+      .fields(new Field[]{Field.builder().name("count").build()})
       .build();
-    Fields fields = Fields.builder().fields(new Field[]{ meta }).build();
+    Fields fields = Fields.builder().fields(new Field[]{meta}).build();
     // when
     String query = AggregateBuilder.builder().className("Pizza").fields(fields).build().buildQuery();
     // then
@@ -33,13 +33,13 @@ public class AggregateBuilderTest extends TestCase {
     // given
     Field groupBy = Field.builder()
       .name("groupedBy")
-      .fields(new Field[]{ Field.builder().name("value").build() })
+      .fields(new Field[]{Field.builder().name("value").build()})
       .build();
     Field name = Field.builder()
       .name("name")
-      .fields(new Field[]{ Field.builder().name("count").build() })
+      .fields(new Field[]{Field.builder().name("count").build()})
       .build();
-    Fields fields = Fields.builder().fields(new Field[]{ groupBy, name }).build();
+    Fields fields = Fields.builder().fields(new Field[]{groupBy, name}).build();
     // when
     String query = AggregateBuilder.builder().className("Pizza").fields(fields).groupByClausePropertyName("name").build().buildQuery();
     // then
@@ -52,13 +52,13 @@ public class AggregateBuilderTest extends TestCase {
     // given
     Field groupBy = Field.builder()
       .name("groupedBy")
-      .fields(new Field[]{ Field.builder().name("value").build() })
+      .fields(new Field[]{Field.builder().name("value").build()})
       .build();
     Field name = Field.builder()
       .name("name")
-      .fields(new Field[]{ Field.builder().name("count").build() })
+      .fields(new Field[]{Field.builder().name("count").build()})
       .build();
-    Fields fields = Fields.builder().fields(new Field[]{ groupBy, name }).build();
+    Fields fields = Fields.builder().fields(new Field[]{groupBy, name}).build();
     // when
     String query = AggregateBuilder.builder().className("Pizza").fields(fields).
       groupByClausePropertyName("name").limit(10)
@@ -72,15 +72,15 @@ public class AggregateBuilderTest extends TestCase {
   public void testBuildAggregateWithWhere() {
     // given
     WhereFilter where = WhereFilter.builder()
-            .path(new String[]{ "name" })
-            .operator(Operator.Equal)
-            .valueString("Hawaii")
-            .build();
+      .path(new String[]{"name"})
+      .operator(Operator.Equal)
+      .valueString("Hawaii")
+      .build();
     Field meta = Field.builder()
       .name("meta")
-      .fields(new Field[]{ Field.builder().name("count").build() })
+      .fields(new Field[]{Field.builder().name("count").build()})
       .build();
-    Fields fields = Fields.builder().fields(new Field[]{ meta }).build();
+    Fields fields = Fields.builder().fields(new Field[]{meta}).build();
     // when
     String query = AggregateBuilder.builder().className("Pizza").fields(fields).withWhereFilter(where).build().buildQuery();
     // then
@@ -92,15 +92,15 @@ public class AggregateBuilderTest extends TestCase {
   public void testBuildAggregateWithWhereAndGroupedBy() {
     // given
     WhereFilter where = WhereFilter.builder()
-            .path(new String[]{ "name" })
-            .operator(Operator.Equal)
-            .valueString("Hawaii")
-            .build();
+      .path(new String[]{"name"})
+      .operator(Operator.Equal)
+      .valueString("Hawaii")
+      .build();
     Field meta = Field.builder()
       .name("meta")
-      .fields(new Field[]{ Field.builder().name("count").build() })
+      .fields(new Field[]{Field.builder().name("count").build()})
       .build();
-    Fields fields = Fields.builder().fields(new Field[]{ meta }).build();
+    Fields fields = Fields.builder().fields(new Field[]{meta}).build();
     // when
     String query = AggregateBuilder.builder()
       .className("Pizza")
@@ -117,13 +117,13 @@ public class AggregateBuilderTest extends TestCase {
   @Test
   public void testBuildAggregateWithNearVector() {
     Field meta = Field.builder()
-            .name("meta")
-            .fields(new Field[]{ Field.builder().name("count").build() })
-            .build();
-    Fields fields = Fields.builder().fields(new Field[]{ meta }).build();
+      .name("meta")
+      .fields(new Field[]{Field.builder().name("count").build()})
+      .build();
+    Fields fields = Fields.builder().fields(new Field[]{meta}).build();
 
     // given (certainty)
-    NearVectorArgument nearVectorWithCert = NearVectorArgument.builder().vector(new Float[]{ 0f, 1f, 0.8f }).certainty(0.8f).build();
+    NearVectorArgument nearVectorWithCert = NearVectorArgument.builder().vector(new Float[]{0f, 1f, 0.8f}).certainty(0.8f).build();
 
     // when (certainty)
     String queryWithCert = AggregateBuilder.builder()
@@ -135,13 +135,13 @@ public class AggregateBuilderTest extends TestCase {
     assertEquals("{Aggregate{Pizza(nearVector: {vector: [0.0, 1.0, 0.8] certainty: 0.8}){meta{count}}}}", queryWithCert);
 
     // given (distance)
-    NearVectorArgument nearVectorWithDist = NearVectorArgument.builder().vector(new Float[]{ 0f, 1f, 0.8f }).distance(0.8f).build();
+    NearVectorArgument nearVectorWithDist = NearVectorArgument.builder().vector(new Float[]{0f, 1f, 0.8f}).distance(0.8f).build();
 
     // when (distance)
     String queryWithDist = AggregateBuilder.builder()
-            .className("Pizza")
-            .fields(fields)
-            .withNearVectorFilter(nearVectorWithDist).build().buildQuery();
+      .className("Pizza")
+      .fields(fields)
+      .withNearVectorFilter(nearVectorWithDist).build().buildQuery();
     // then (distance)
     assertNotNull(queryWithDist);
     assertEquals("{Aggregate{Pizza(nearVector: {vector: [0.0, 1.0, 0.8] distance: 0.8}){meta{count}}}}", queryWithDist);
@@ -150,10 +150,10 @@ public class AggregateBuilderTest extends TestCase {
   @Test
   public void testBuildAggregateWithNearObject() {
     Field meta = Field.builder()
-            .name("meta")
-            .fields(new Field[]{ Field.builder().name("count").build() })
-            .build();
-    Fields fields = Fields.builder().fields(new Field[]{ meta }).build();
+      .name("meta")
+      .fields(new Field[]{Field.builder().name("count").build()})
+      .build();
+    Fields fields = Fields.builder().fields(new Field[]{meta}).build();
 
     // given (certainty)
     NearObjectArgument nearObjectWithCert = NearObjectArgument.builder().id("some-uuid").certainty(0.8f).build();
@@ -170,9 +170,9 @@ public class AggregateBuilderTest extends TestCase {
     NearObjectArgument nearObjectWithDist = NearObjectArgument.builder().id("some-uuid").distance(0.8f).build();
     // when (distance)
     String queryWithDist = AggregateBuilder.builder()
-            .className("Pizza")
-            .fields(fields)
-            .withNearObjectFilter(nearObjectWithDist).build().buildQuery();
+      .className("Pizza")
+      .fields(fields)
+      .withNearObjectFilter(nearObjectWithDist).build().buildQuery();
     // then (distance)
     assertNotNull(queryWithDist);
     assertEquals("{Aggregate{Pizza(nearObject: {id: \"some-uuid\" distance: 0.8}){meta{count}}}}", queryWithDist);
@@ -181,10 +181,10 @@ public class AggregateBuilderTest extends TestCase {
   @Test
   public void testBuildAggregateWithAsk() {
     Field meta = Field.builder()
-            .name("meta")
-            .fields(new Field[]{ Field.builder().name("count").build() })
-            .build();
-    Fields fields = Fields.builder().fields(new Field[]{ meta }).build();
+      .name("meta")
+      .fields(new Field[]{Field.builder().name("count").build()})
+      .build();
+    Fields fields = Fields.builder().fields(new Field[]{meta}).build();
 
     // given (certainty)
     AskArgument askWithCert = AskArgument.builder().question("question?").rerank(true).certainty(0.8f).build();
@@ -201,9 +201,9 @@ public class AggregateBuilderTest extends TestCase {
     AskArgument askWithDist = AskArgument.builder().question("question?").rerank(true).distance(0.8f).build();
     // when (distance)
     String queryWithDist = AggregateBuilder.builder()
-            .className("Pizza")
-            .fields(fields)
-            .withAskArgument(askWithDist).build().buildQuery();
+      .className("Pizza")
+      .fields(fields)
+      .withAskArgument(askWithDist).build().buildQuery();
     // then (distance)
     assertNotNull(queryWithDist);
     assertEquals("{Aggregate{Pizza(ask: {question: \"question?\" distance: 0.8 rerank: true}){meta{count}}}}", queryWithDist);
@@ -212,10 +212,10 @@ public class AggregateBuilderTest extends TestCase {
   @Test
   public void testBuildAggregateWithNearImage() {
     Field meta = Field.builder()
-            .name("meta")
-            .fields(new Field[]{ Field.builder().name("count").build() })
-            .build();
-    Fields fields = Fields.builder().fields(new Field[]{ meta }).build();
+      .name("meta")
+      .fields(new Field[]{Field.builder().name("count").build()})
+      .build();
+    Fields fields = Fields.builder().fields(new Field[]{meta}).build();
 
     // given (certainty)
     NearImageArgument nearImageWithCert = NearImageArgument.builder().image("iVBORw0KGgoAAAANS").certainty(0.8f).build();
@@ -232,9 +232,9 @@ public class AggregateBuilderTest extends TestCase {
     NearImageArgument nearImageWithDist = NearImageArgument.builder().image("iVBORw0KGgoAAAANS").distance(0.8f).build();
     // when (certainty)
     String queryWithDist = AggregateBuilder.builder()
-            .className("Pizza")
-            .fields(fields)
-            .withNearImageFilter(nearImageWithDist).build().buildQuery();
+      .className("Pizza")
+      .fields(fields)
+      .withNearImageFilter(nearImageWithDist).build().buildQuery();
     // then (certainty)
     assertNotNull(queryWithDist);
     assertEquals("{Aggregate{Pizza(nearImage: {image: \"iVBORw0KGgoAAAANS\" distance: 0.8}){meta{count}}}}", queryWithDist);
@@ -243,10 +243,10 @@ public class AggregateBuilderTest extends TestCase {
   @Test
   public void testBuildAggregateWithObjectLimit() {
     Field meta = Field.builder()
-            .name("meta")
-            .fields(new Field[]{ Field.builder().name("count").build() })
-            .build();
-    Fields fields = Fields.builder().fields(new Field[]{ meta }).build();
+      .name("meta")
+      .fields(new Field[]{Field.builder().name("count").build()})
+      .build();
+    Fields fields = Fields.builder().fields(new Field[]{meta}).build();
 
     // given (certainty)
     NearImageArgument nearImageWithCert = NearImageArgument.builder().image("iVBORw0KGgoAAAANS").certainty(0.8f).build();
@@ -265,11 +265,11 @@ public class AggregateBuilderTest extends TestCase {
     NearImageArgument nearImageWithDist = NearImageArgument.builder().image("iVBORw0KGgoAAAANS").distance(0.8f).build();
     // when (distance)
     String queryWithDist = AggregateBuilder.builder()
-            .className("Pizza")
-            .fields(fields)
-            .withNearImageFilter(nearImageWithDist)
-            .objectLimit(100).build()
-            .buildQuery();
+      .className("Pizza")
+      .fields(fields)
+      .withNearImageFilter(nearImageWithDist)
+      .objectLimit(100).build()
+      .buildQuery();
     // then (distance)
     assertNotNull(queryWithDist);
     assertEquals("{Aggregate{Pizza(nearImage: {image: \"iVBORw0KGgoAAAANS\" distance: 0.8}, objectLimit: 100){meta{count}}}}", queryWithDist);

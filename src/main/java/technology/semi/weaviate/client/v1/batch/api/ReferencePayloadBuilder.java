@@ -1,10 +1,9 @@
 package technology.semi.weaviate.client.v1.batch.api;
 
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import technology.semi.weaviate.client.base.util.BeaconPath;
 import technology.semi.weaviate.client.v1.batch.model.BatchReference;
-
-import java.util.Objects;
 
 public class ReferencePayloadBuilder {
 
@@ -52,7 +51,7 @@ public class ReferencePayloadBuilder {
 
   public BatchReference payload() {
     if (StringUtils.isBlank(fromClassName) || StringUtils.isBlank(fromUUID) ||
-            StringUtils.isBlank(fromPropertyName) || StringUtils.isBlank(toUUID)) {
+      StringUtils.isBlank(fromPropertyName) || StringUtils.isBlank(toUUID)) {
       return null;
     }
 
@@ -60,14 +59,14 @@ public class ReferencePayloadBuilder {
     String to;
     if (beaconPath != null) {
       from = beaconPath.buildBatchFrom(BeaconPath.Params.builder()
-              .id(fromUUID)
-              .className(fromClassName)
-              .property(fromPropertyName)
-              .build());
+        .id(fromUUID)
+        .className(fromClassName)
+        .property(fromPropertyName)
+        .build());
       to = beaconPath.buildBatchTo(BeaconPath.Params.builder()
-              .id(toUUID)
-              .className(toClassName)
-              .build());
+        .id(toUUID)
+        .className(toClassName)
+        .build());
     } else {
       from = beaconFromDeprecated();
       to = beaconToDeprecated();

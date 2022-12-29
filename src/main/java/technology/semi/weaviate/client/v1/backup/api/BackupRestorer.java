@@ -84,7 +84,7 @@ public class BackupRestorer extends BaseClient<BackupRestoreResponse> implements
     }
 
     statusGetter.withBackend(backend).withBackupId(backupId);
-    while(true) {
+    while (true) {
       Response<BackupRestoreStatusResponse> statusResponse = statusGetter.statusRestore();
       if (new Result<>(statusResponse).hasErrors()) {
         return merge(statusResponse, result);

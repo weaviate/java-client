@@ -1,28 +1,11 @@
 package technology.semi.weaviate.client.v1.data.util;
 
 import com.jparams.junit4.JParamsTestRunner;
-import com.jparams.junit4.data.DataMethod;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import technology.semi.weaviate.client.base.util.DbVersionSupport;
 import technology.semi.weaviate.client.v1.data.replication.model.ConsistencyLevel;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(JParamsTestRunner.class)
 public class ObjectsPathTest {
-
-  private AutoCloseable openedMocks;
-  @InjectMocks
-  private ObjectsPath objectsPath;
-  @Mock
-  private DbVersionSupport dbVersionSupportMock;
 
   private static final ObjectsPath.Params EMPTY_PARAMS = ObjectsPath.Params.builder().build();
   private static final ObjectsPath.Params CLASS_PARAMS = ObjectsPath.Params.builder()
@@ -64,23 +47,6 @@ public class ObjectsPathTest {
     .nodeName("node1")
     .build();
 
-  @Before
-  public void setUp() {
-    openedMocks = MockitoAnnotations.openMocks(this);
-  }
-  @After
-  public void tearDown() throws Exception {
-    openedMocks.close();
-  }
-
-  @Test
-  @DataMethod(source = ObjectsPathTest.class, method = "provideCreateForSupported")
-  public void shouldBuildCreatePathsWhenSupported(ObjectsPath.Params pathParams, String expectedPath) {
-    Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(true);
-
-    assertThat(objectsPath.buildCreate(pathParams)).isEqualTo(expectedPath);
-  }
-
   public static Object[][] provideCreateForSupported() {
     return new Object[][]{
       {
@@ -94,14 +60,6 @@ public class ObjectsPathTest {
     };
   }
 
-  @Test
-  @DataMethod(source = ObjectsPathTest.class, method = "provideCreateForNotSupported")
-  public void shouldBuildCreatePathsWhenNotSupported(ObjectsPath.Params pathParams, String expectedPath) {
-    Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(false);
-
-    assertThat(objectsPath.buildCreate(pathParams)).isEqualTo(expectedPath);
-  }
-
   public static Object[][] provideCreateForNotSupported() {
     return new Object[][]{
       {
@@ -113,14 +71,6 @@ public class ObjectsPathTest {
         "/objects"
       },
     };
-  }
-
-  @Test
-  @DataMethod(source = ObjectsPathTest.class, method = "provideDeleteForSupported")
-  public void shouldBuildDeletePathsWhenSupported(ObjectsPath.Params pathParams, String expectedPath) {
-    Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(true);
-
-    assertThat(objectsPath.buildDelete(pathParams)).isEqualTo(expectedPath);
   }
 
   public static Object[][] provideDeleteForSupported() {
@@ -144,14 +94,6 @@ public class ObjectsPathTest {
     };
   }
 
-  @Test
-  @DataMethod(source = ObjectsPathTest.class, method = "provideDeleteForNotSupported")
-  public void shouldBuildDeletePathsWhenNotSupported(ObjectsPath.Params pathParams, String expectedPath) {
-    Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(false);
-
-    assertThat(objectsPath.buildDelete(pathParams)).isEqualTo(expectedPath);
-  }
-
   public static Object[][] provideDeleteForNotSupported() {
     return new Object[][]{
       {
@@ -171,14 +113,6 @@ public class ObjectsPathTest {
         "/objects/someId"
       },
     };
-  }
-
-  @Test
-  @DataMethod(source = ObjectsPathTest.class, method = "provideCheckForSupported")
-  public void shouldBuildCheckPathsWhenSupported(ObjectsPath.Params pathParams, String expectedPath) {
-    Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(true);
-
-    assertThat(objectsPath.buildCheck(pathParams)).isEqualTo(expectedPath);
   }
 
   public static Object[][] provideCheckForSupported() {
@@ -202,14 +136,6 @@ public class ObjectsPathTest {
     };
   }
 
-  @Test
-  @DataMethod(source = ObjectsPathTest.class, method = "provideCheckForNotSupported")
-  public void shouldBuildCheckPathsWhenNotSupported(ObjectsPath.Params pathParams, String expectedPath) {
-    Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(false);
-
-    assertThat(objectsPath.buildCheck(pathParams)).isEqualTo(expectedPath);
-  }
-
   public static Object[][] provideCheckForNotSupported() {
     return new Object[][]{
       {
@@ -229,14 +155,6 @@ public class ObjectsPathTest {
         "/objects/someId"
       },
     };
-  }
-
-  @Test
-  @DataMethod(source = ObjectsPathTest.class, method = "provideGetOneForSupported")
-  public void shouldBuildGetOnePathsWhenSupported(ObjectsPath.Params pathParams, String expectedPath) {
-    Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(true);
-
-    assertThat(objectsPath.buildGetOne(pathParams)).isEqualTo(expectedPath);
   }
 
   public static Object[][] provideGetOneForSupported() {
@@ -276,14 +194,6 @@ public class ObjectsPathTest {
     };
   }
 
-  @Test
-  @DataMethod(source = ObjectsPathTest.class, method = "provideGetOneForNotSupported")
-  public void shouldBuildGetOnePathsWhenNotSupported(ObjectsPath.Params pathParams, String expectedPath) {
-    Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(false);
-
-    assertThat(objectsPath.buildGetOne(pathParams)).isEqualTo(expectedPath);
-  }
-
   public static Object[][] provideGetOneForNotSupported() {
     return new Object[][]{
       {
@@ -303,14 +213,6 @@ public class ObjectsPathTest {
         "/objects/someId?include=additional1,additional2"
       },
     };
-  }
-
-  @Test
-  @DataMethod(source = ObjectsPathTest.class, method = "provideGetForSupported")
-  public void shouldBuildGetPathsWhenSupported(ObjectsPath.Params pathParams, String expectedPath) {
-    Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(true);
-
-    assertThat(objectsPath.buildGet(pathParams)).isEqualTo(expectedPath);
   }
 
   public static Object[][] provideGetForSupported() {
@@ -338,14 +240,6 @@ public class ObjectsPathTest {
     };
   }
 
-  @Test
-  @DataMethod(source = ObjectsPathTest.class, method = "provideGetForNotSupported")
-  public void shouldBuildGetPathsWhenNotSupported(ObjectsPath.Params pathParams, String expectedPath) {
-    Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(false);
-
-    assertThat(objectsPath.buildGet(pathParams)).isEqualTo(expectedPath);
-  }
-
   public static Object[][] provideGetForNotSupported() {
     return new Object[][]{
       {
@@ -371,14 +265,6 @@ public class ObjectsPathTest {
     };
   }
 
-  @Test
-  @DataMethod(source = ObjectsPathTest.class, method = "provideUpdateForSupported")
-  public void shouldBuildUpdatePathsWhenSupported(ObjectsPath.Params pathParams, String expectedPath) {
-    Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(true);
-
-    assertThat(objectsPath.buildUpdate(pathParams)).isEqualTo(expectedPath);
-  }
-
   public static Object[][] provideUpdateForSupported() {
     return new Object[][]{
       {
@@ -398,14 +284,6 @@ public class ObjectsPathTest {
         "/objects/someClass/someId"
       },
     };
-  }
-
-  @Test
-  @DataMethod(source = ObjectsPathTest.class, method = "provideUpdateForNotSupported")
-  public void shouldBuildUpdatePathsWhenNotSupported(ObjectsPath.Params pathParams, String expectedPath) {
-    Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(false);
-
-    assertThat(objectsPath.buildUpdate(pathParams)).isEqualTo(expectedPath);
   }
 
   public static Object[][] provideUpdateForNotSupported() {

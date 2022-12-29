@@ -53,9 +53,9 @@ public class ShardUpdater extends BaseClient<ShardStatus> implements ClientResul
     if (emptyFieldNames.size() > 0) {
       String message = String.format("%s cannot be empty", StringUtils.joinWith(", ", emptyFieldNames.toArray()));
       WeaviateErrorMessage errorMessage = WeaviateErrorMessage.builder()
-              .message(message).build();
+        .message(message).build();
       WeaviateErrorResponse errors = WeaviateErrorResponse.builder()
-              .error(Collections.singletonList(errorMessage)).build();
+        .error(Collections.singletonList(errorMessage)).build();
       return new Result<>(HttpStatus.SC_BAD_REQUEST, null, errors);
     }
     String path = String.format("/schema/%s/shards/%s", this.className, this.shardName);

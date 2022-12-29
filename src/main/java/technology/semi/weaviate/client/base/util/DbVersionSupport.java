@@ -38,6 +38,7 @@ public class DbVersionSupport {
     System.err.printf("WARNING: Usage of objects paths with className is not supported in Weaviate %s." +
       " className parameter is ignored\n", provider.getVersion());
   }
+
   public void warnNotSupportedClassParameterInEndpointsForObjects() {
     System.err.printf("WARNING: Usage of objects paths with class query parameter is not supported in Weaviate %s." +
       " class query parameter is ignored\n", provider.getVersion());

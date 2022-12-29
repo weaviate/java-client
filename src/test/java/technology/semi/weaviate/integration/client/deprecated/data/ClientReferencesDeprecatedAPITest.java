@@ -1,5 +1,9 @@
 package technology.semi.weaviate.integration.client.deprecated.data;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -12,24 +16,17 @@ import technology.semi.weaviate.client.v1.data.model.ObjectReference;
 import technology.semi.weaviate.client.v1.data.model.SingleRef;
 import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
 import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class ClientReferencesDeprecatedAPITest {
-  private String address;
-
   @ClassRule
   public static DockerComposeContainer compose = new DockerComposeContainer(
-          new File("src/test/resources/deprecated-api/docker-compose-deprecated-api-test.yaml")
+    new File("src/test/resources/deprecated-api/docker-compose-deprecated-api-test.yaml")
   ).withExposedService("weaviate_1", 8080, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200));
+  private String address;
 
   @Before
   public void before() {
@@ -52,8 +49,8 @@ public class ClientReferencesDeprecatedAPITest {
       assertNotNull(resultOtherFoods.get(0));
       assertTrue(resultOtherFoods.get(0) instanceof Map);
       Map propOtherFoods = (Map) resultOtherFoods.get(0);
-      assertEquals(propOtherFoods.get("beacon"), "weaviate://localhost/"+refID);
-      assertEquals(propOtherFoods.get("href"), "/v1/objects/"+refID);
+      assertEquals(propOtherFoods.get("beacon"), "weaviate://localhost/" + refID);
+      assertEquals(propOtherFoods.get("href"), "/v1/objects/" + refID);
     } else {
       assertEquals(resultOtherFoods.size(), 0);
     }
@@ -84,19 +81,19 @@ public class ClientReferencesDeprecatedAPITest {
     SingleRef chickenSoupRef = client.data().referencePayloadBuilder().withID(objAID).payload();
     // Add the reference to the ChickenSoup to the Pizza OtherFoods reference
     Result<Boolean> otherFoodsPizzaRefCreate = client.data().referenceCreator()
-            .withID(objTID)
-            .withReferenceProperty("otherFoods")
-            .withReference(chickenSoupRef)
-            .run();
+      .withID(objTID)
+      .withReferenceProperty("otherFoods")
+      .withReference(chickenSoupRef)
+      .run();
     // Action -> Thing
     // Payload to reference the Hawaii
     SingleRef hawaiiRef = client.data().referencePayloadBuilder().withID(objTID).payload();
     // Add the reference to the Hawaii to the Soup OtherFoods reference
     Result<Boolean> otherFoodsSoupRefCreate = client.data().referenceCreator()
-            .withID(objAID)
-            .withReferenceProperty("otherFoods")
-            .withReference(hawaiiRef)
-            .run();
+      .withID(objAID)
+      .withReferenceProperty("otherFoods")
+      .withReference(hawaiiRef)
+      .run();
     // Get the objects
     Result<List<WeaviateObject>> things = client.data().objectsGetter().withID(objTID).run();
     Result<List<WeaviateObject>> actions = client.data().objectsGetter().withID(objAID).run();
@@ -144,34 +141,34 @@ public class ClientReferencesDeprecatedAPITest {
     // Payload to reference the ChickenSoup
     // Add the reference to the ChickenSoup to the Pizza OtherFoods reference
     Result<Boolean> otherFoodsPizzaRefCreate = client.data().referenceCreator()
-            .withID(objTID)
-            .withReferenceProperty("otherFoods")
-            .withReference(chickenSoupRef)
-            .run();
+      .withID(objTID)
+      .withReferenceProperty("otherFoods")
+      .withReference(chickenSoupRef)
+      .run();
     // Action -> Thing
     // Payload to reference the Hawaii
     // Add the reference to the Hawaii to the Soup OtherFoods reference
     Result<Boolean> otherFoodsSoupRefCreate = client.data().referenceCreator()
-            .withID(objAID)
-            .withReferenceProperty("otherFoods")
-            .withReference(hawaiiRef)
-            .run();
+      .withID(objAID)
+      .withReferenceProperty("otherFoods")
+      .withReference(hawaiiRef)
+      .run();
     // Get the objects
     Result<List<WeaviateObject>> things = client.data().objectsGetter().withID(objTID).run();
     Result<List<WeaviateObject>> actions = client.data().objectsGetter().withID(objAID).run();
     // Replace the above reference with self references
     // Thing -> Thing
     Result<Boolean> otherFoodsPizzaRefReplace = client.data().referenceReplacer()
-            .withID(objTID)
-            .withReferenceProperty("otherFoods")
-            .withReferences(new SingleRef[]{ hawaiiRef })
-            .run();
+      .withID(objTID)
+      .withReferenceProperty("otherFoods")
+      .withReferences(new SingleRef[]{hawaiiRef})
+      .run();
     // Action -> Action
     Result<Boolean> otherFoodsSoupRefReplace = client.data().referenceReplacer()
-            .withID(objAID)
-            .withReferenceProperty("otherFoods")
-            .withReferences(new SingleRef[]{ chickenSoupRef })
-            .run();
+      .withID(objAID)
+      .withReferenceProperty("otherFoods")
+      .withReferences(new SingleRef[]{chickenSoupRef})
+      .run();
     Result<List<WeaviateObject>> thingsReplaced = client.data().objectsGetter().withID(objTID).run();
     Result<List<WeaviateObject>> actionsReplaced = client.data().objectsGetter().withID(objAID).run();
     testGenerics.cleanupWeaviate(client);
@@ -221,31 +218,31 @@ public class ClientReferencesDeprecatedAPITest {
     SingleRef chickenSoupRef = client.data().referencePayloadBuilder().withID(objAID).payload();
     // Add the reference to the ChickenSoup to the Pizza OtherFoods reference
     Result<Boolean> otherFoodsPizzaRefCreate = client.data().referenceCreator()
-            .withID(objTID)
-            .withReferenceProperty("otherFoods")
-            .withReference(chickenSoupRef)
-            .run();
+      .withID(objTID)
+      .withReferenceProperty("otherFoods")
+      .withReference(chickenSoupRef)
+      .run();
     // Action -> Thing
     // Payload to reference the Hawaii
     SingleRef hawaiiRef = client.data().referencePayloadBuilder().withID(objTID).payload();
     // Add the reference to the Hawaii to the Soup OtherFoods reference
     Result<Boolean> otherFoodsSoupRefCreate = client.data().referenceCreator()
-            .withID(objAID)
-            .withReferenceProperty("otherFoods")
-            .withReference(hawaiiRef)
-            .run();
+      .withID(objAID)
+      .withReferenceProperty("otherFoods")
+      .withReference(hawaiiRef)
+      .run();
     // Get the objects
     Result<List<WeaviateObject>> things = client.data().objectsGetter().withID(objTID).run();
     Result<List<WeaviateObject>> actions = client.data().objectsGetter().withID(objAID).run();
     // Delete ref
     Result<Boolean> otherFoodsPizzaRefDelete = client.data().referenceDeleter()
-            .withID(objTID)
-            .withReferenceProperty("otherFoods")
-            .withReference(chickenSoupRef).run();
+      .withID(objTID)
+      .withReferenceProperty("otherFoods")
+      .withReference(chickenSoupRef).run();
     Result<Boolean> otherFoodsSoupRefDelete = client.data().referenceDeleter()
-            .withID(objAID)
-            .withReferenceProperty("otherFoods")
-            .withReference(hawaiiRef).run();
+      .withID(objAID)
+      .withReferenceProperty("otherFoods")
+      .withReference(hawaiiRef).run();
     // Get the objects
     Result<List<WeaviateObject>> thingsAfterRefDelete = client.data().objectsGetter().withID(objTID).run();
     Result<List<WeaviateObject>> actionsAfterRefDelete = client.data().objectsGetter().withID(objAID).run();
@@ -294,7 +291,7 @@ public class ClientReferencesDeprecatedAPITest {
       put("name", "RefBeaconSoup");
       put("description", "Used only to check if reference can be added.");
       put("otherFoods", new ObjectReference[]{
-              ObjectReference.builder().beacon("weaviate://localhost/abefd256-8574-442b-9293-9205193737ee").build()
+        ObjectReference.builder().beacon("weaviate://localhost/abefd256-8574-442b-9293-9205193737ee").build()
       });
     }};
     // when
@@ -302,10 +299,10 @@ public class ClientReferencesDeprecatedAPITest {
     Result<WeaviateObject> objTCreate = client.data().creator().withClassName("Pizza").withID(objTID).withProperties(propertiesSchemaT).run();
     // create object with a reference to objT
     Result<WeaviateObject> objRefBeaconCreate = client.data().creator()
-            .withClassName("Soup")
-            .withID(objRefBeaconID)
-            .withProperties(propertiesSchemaRefBeacon)
-            .run();
+      .withClassName("Soup")
+      .withID(objRefBeaconID)
+      .withProperties(propertiesSchemaRefBeacon)
+      .run();
     // Get the object reference beacon to check if otherFoods reference has been set
     Result<List<WeaviateObject>> objRefBeaconGet = client.data().objectsGetter().withID(objRefBeaconID).run();
     testGenerics.cleanupWeaviate(client);

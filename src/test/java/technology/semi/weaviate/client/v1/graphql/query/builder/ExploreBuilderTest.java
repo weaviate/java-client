@@ -15,35 +15,35 @@ public class ExploreBuilderTest extends TestCase {
   @Test
   public void testBuildQuery() {
     // given
-    ExploreFields[] fields = new ExploreFields[]{ ExploreFields.CERTAINTY, ExploreFields.DISTANCE, ExploreFields.BEACON, ExploreFields.CLASS_NAME };
+    ExploreFields[] fields = new ExploreFields[]{ExploreFields.CERTAINTY, ExploreFields.DISTANCE, ExploreFields.BEACON, ExploreFields.CLASS_NAME};
     NearTextMoveParameters moveTo = NearTextMoveParameters.builder()
-            .concepts(new String[]{ "a1", "b2" }).force(0.1f).build();
+      .concepts(new String[]{"a1", "b2"}).force(0.1f).build();
 
     // when (certainty)
     NearTextArgument nearTextWithCert = NearTextArgument.builder()
-            .concepts(new String[]{ "a", "b" }).certainty(0.8f).moveTo(moveTo).build();
+      .concepts(new String[]{"a", "b"}).certainty(0.8f).moveTo(moveTo).build();
     String queryWithCert = ExploreBuilder.builder().withNearText(nearTextWithCert).fields(fields).build().buildQuery();
     // then (certainty)
     assertNotNull(queryWithCert);
     assertEquals("{Explore(nearText: {concepts: [\"a\", \"b\"] certainty: 0.8 moveTo: {concepts: [\"a1\", \"b2\"] force: 0.1}}){certainty, distance, " +
-            "beacon, className}}", queryWithCert);
+      "beacon, className}}", queryWithCert);
 
     // when (distance)
     NearTextArgument nearTextWithDist = NearTextArgument.builder()
-            .concepts(new String[]{ "a", "b" }).distance(0.8f).moveTo(moveTo).build();
+      .concepts(new String[]{"a", "b"}).distance(0.8f).moveTo(moveTo).build();
     String queryWithDist = ExploreBuilder.builder().withNearText(nearTextWithDist).fields(fields).build().buildQuery();
     // then (distance)
     assertNotNull(queryWithCert);
     assertEquals("{Explore(nearText: {concepts: [\"a\", \"b\"] distance: 0.8 moveTo: {concepts: [\"a1\", \"b2\"] force: 0.1}}){certainty, distance, " +
-            "beacon, className}}", queryWithDist);
+      "beacon, className}}", queryWithDist);
   }
 
   @Test
   public void testBuildSimpleExplore() {
     // given
-    ExploreFields[] fields = new ExploreFields[]{ ExploreFields.CERTAINTY, ExploreFields.BEACON, ExploreFields.DISTANCE };
+    ExploreFields[] fields = new ExploreFields[]{ExploreFields.CERTAINTY, ExploreFields.BEACON, ExploreFields.DISTANCE};
     NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(new String[]{ "Cheese", "pineapple" }).build();
+      .concepts(new String[]{"Cheese", "pineapple"}).build();
     // when
     String query = ExploreBuilder.builder().withNearText(nearText).fields(fields).build().buildQuery();
     // then
@@ -54,9 +54,9 @@ public class ExploreBuilderTest extends TestCase {
   @Test
   public void testBuildExploreWithLimitAndCertainty() {
     // given
-    ExploreFields[] fields = new ExploreFields[]{ ExploreFields.BEACON };
+    ExploreFields[] fields = new ExploreFields[]{ExploreFields.BEACON};
     NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(new String[]{ "Cheese" }).certainty(0.71f).build();
+      .concepts(new String[]{"Cheese"}).certainty(0.71f).build();
     // when
     String query = ExploreBuilder.builder().withNearText(nearText).fields(fields).build().buildQuery();
     // then
@@ -67,9 +67,9 @@ public class ExploreBuilderTest extends TestCase {
   @Test
   public void testBuildExploreWithLimitAndDistance() {
     // given
-    ExploreFields[] fields = new ExploreFields[]{ ExploreFields.BEACON };
+    ExploreFields[] fields = new ExploreFields[]{ExploreFields.BEACON};
     NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(new String[]{ "Cheese" }).distance(0.71f).build();
+      .concepts(new String[]{"Cheese"}).distance(0.71f).build();
     // when
     String query = ExploreBuilder.builder().withNearText(nearText).fields(fields).build().buildQuery();
     // then
@@ -80,54 +80,54 @@ public class ExploreBuilderTest extends TestCase {
   @Test
   public void testBuildExploreWithMove() {
     // given
-    String[] concepts = new String[]{ "Cheese" };
+    String[] concepts = new String[]{"Cheese"};
     NearTextMoveParameters moveTo = NearTextMoveParameters.builder()
-            .concepts(new String[]{ "pizza", "pineapple" }).force(0.2f).build();
+      .concepts(new String[]{"pizza", "pineapple"}).force(0.2f).build();
     NearTextMoveParameters moveAwayFrom = NearTextMoveParameters.builder()
-            .concepts(new String[]{ "fish" }).force(0.1f).build();
-    ExploreFields[] fields = new ExploreFields[]{ ExploreFields.BEACON };
+      .concepts(new String[]{"fish"}).force(0.1f).build();
+    ExploreFields[] fields = new ExploreFields[]{ExploreFields.BEACON};
     NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(concepts).moveTo(moveTo).moveAwayFrom(moveAwayFrom)
-            .build();
+      .concepts(concepts).moveTo(moveTo).moveAwayFrom(moveAwayFrom)
+      .build();
     // when
     String query = ExploreBuilder.builder().withNearText(nearText).fields(fields).build().buildQuery();
     // then
     assertNotNull(query);
     assertEquals("{Explore(nearText: {concepts: [\"Cheese\"] " +
-            "moveTo: {concepts: [\"pizza\", \"pineapple\"] force: 0.2} " +
-            "moveAwayFrom: {concepts: [\"fish\"] force: 0.1}}){beacon}}", query);
+      "moveTo: {concepts: [\"pizza\", \"pineapple\"] force: 0.2} " +
+      "moveAwayFrom: {concepts: [\"fish\"] force: 0.1}}){beacon}}", query);
   }
 
   @Test
   public void testBuildExploreWithAllParams() {
     // given
-    String[] concepts = new String[]{ "New Yorker" };
+    String[] concepts = new String[]{"New Yorker"};
     Float certainty = 0.95f;
     NearTextMoveParameters moveTo = NearTextMoveParameters.builder()
-            .concepts(new String[]{ "publisher", "articles" }).force(0.5f)
-            .build();
+      .concepts(new String[]{"publisher", "articles"}).force(0.5f)
+      .build();
     NearTextMoveParameters moveAwayFrom = NearTextMoveParameters.builder()
-            .concepts(new String[]{ "fashion", "shop" }).force(0.2f)
-            .build();
-    ExploreFields[] fields = new ExploreFields[]{ ExploreFields.CERTAINTY, ExploreFields.DISTANCE, ExploreFields.BEACON, ExploreFields.CLASS_NAME };
+      .concepts(new String[]{"fashion", "shop"}).force(0.2f)
+      .build();
+    ExploreFields[] fields = new ExploreFields[]{ExploreFields.CERTAINTY, ExploreFields.DISTANCE, ExploreFields.BEACON, ExploreFields.CLASS_NAME};
     NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(concepts).moveTo(moveTo).moveAwayFrom(moveAwayFrom)
-            .build();
+      .concepts(concepts).moveTo(moveTo).moveAwayFrom(moveAwayFrom)
+      .build();
     // when
     String query = ExploreBuilder.builder().withNearText(nearText).fields(fields).build().buildQuery();
     // then
     assertNotNull(query);
     assertEquals("{Explore(nearText: {concepts: [\"New Yorker\"] moveTo: {concepts: [\"publisher\", \"articles\"] force: 0.5} moveAwayFrom: {concepts: " +
-            "[\"fashion\", \"shop\"] force: 0.2}}){certainty, distance, beacon, className}}", query);
+      "[\"fashion\", \"shop\"] force: 0.2}}){certainty, distance, beacon, className}}", query);
   }
 
   @Test
   public void testBuildExploreWithNearVector() {
     // given (certainty)
-    ExploreFields[] fields = new ExploreFields[]{ ExploreFields.CERTAINTY, ExploreFields.DISTANCE,
-            ExploreFields.BEACON, ExploreFields.CLASS_NAME };
+    ExploreFields[] fields = new ExploreFields[]{ExploreFields.CERTAINTY, ExploreFields.DISTANCE,
+      ExploreFields.BEACON, ExploreFields.CLASS_NAME};
     NearVectorArgument nearVectorWithCert = NearVectorArgument.builder()
-            .vector(new Float[]{ 0f, 1f, 0.8f }).certainty(0.8f).build();
+      .vector(new Float[]{0f, 1f, 0.8f}).certainty(0.8f).build();
 
     // when (certainty)
     String queryWithCert = ExploreBuilder.builder()
@@ -137,28 +137,28 @@ public class ExploreBuilderTest extends TestCase {
     // then (certainty)
     assertNotNull(queryWithCert);
     assertEquals("{Explore(nearVector: {vector: [0.0, 1.0, 0.8] certainty: 0.8})" +
-            "{certainty, distance, beacon, className}}", queryWithCert);
+      "{certainty, distance, beacon, className}}", queryWithCert);
 
     // given (distance)
     NearVectorArgument nearVectorWithDist = NearVectorArgument.builder()
-            .vector(new Float[]{ 0f, 1f, 0.8f }).distance(0.8f).build();
+      .vector(new Float[]{0f, 1f, 0.8f}).distance(0.8f).build();
 
     // when (distance)
     String queryWithDist = ExploreBuilder.builder()
-            .fields(fields)
-            .withNearVectorFilter(nearVectorWithDist).build().buildQuery();
+      .fields(fields)
+      .withNearVectorFilter(nearVectorWithDist).build().buildQuery();
 
     // then (distance)
     assertNotNull(queryWithDist);
     assertEquals("{Explore(nearVector: {vector: [0.0, 1.0, 0.8] distance: 0.8})" +
-            "{certainty, distance, beacon, className}}", queryWithDist);
+      "{certainty, distance, beacon, className}}", queryWithDist);
   }
 
   @Test
   public void testBuildExploreWithNearObject() {
     // given (certainty)
-    ExploreFields[] fields = new ExploreFields[]{ ExploreFields.CERTAINTY, ExploreFields.DISTANCE,
-            ExploreFields.BEACON, ExploreFields.CLASS_NAME };
+    ExploreFields[] fields = new ExploreFields[]{ExploreFields.CERTAINTY, ExploreFields.DISTANCE,
+      ExploreFields.BEACON, ExploreFields.CLASS_NAME};
     NearObjectArgument nearObjectWithCert = NearObjectArgument.builder().id("some-uuid").certainty(0.8f).build();
     // when (certainty)
     String queryWithCert = ExploreBuilder.builder()
@@ -166,27 +166,27 @@ public class ExploreBuilderTest extends TestCase {
       .withNearObjectFilter(nearObjectWithCert).build().buildQuery();
     // then (certainty)
     assertNotNull(queryWithCert);
-    assertEquals("{Explore(nearObject: {id: \"some-uuid\" certainty: 0.8}){certainty, distance, "+
-            "beacon, className}}", queryWithCert);
+    assertEquals("{Explore(nearObject: {id: \"some-uuid\" certainty: 0.8}){certainty, distance, " +
+      "beacon, className}}", queryWithCert);
 
     // given (distance)
     NearObjectArgument nearObjectWithDist = NearObjectArgument.builder().id("some-uuid").distance(0.8f).build();
     // when (distance)
     String queryWithDist = ExploreBuilder.builder()
-            .fields(fields)
-            .withNearObjectFilter(nearObjectWithDist).build().buildQuery();
+      .fields(fields)
+      .withNearObjectFilter(nearObjectWithDist).build().buildQuery();
     // then (distance)
     assertNotNull(queryWithDist);
     assertEquals("{Explore(nearObject: {id: \"some-uuid\" distance: 0.8}){certainty, distance, " +
-                    "beacon, className}}",
-            queryWithDist);
+        "beacon, className}}",
+      queryWithDist);
   }
 
   @Test
   public void testBuildExploreWithAsk() {
     // given (certainty)
-    ExploreFields[] fields = new ExploreFields[]{ ExploreFields.CERTAINTY, ExploreFields.DISTANCE,
-            ExploreFields.BEACON, ExploreFields.CLASS_NAME };
+    ExploreFields[] fields = new ExploreFields[]{ExploreFields.CERTAINTY, ExploreFields.DISTANCE,
+      ExploreFields.BEACON, ExploreFields.CLASS_NAME};
     AskArgument askWithCert = AskArgument.builder().question("question?").rerank(true).certainty(0.8f).build();
     // when (certainty)
     String queryWithCert = ExploreBuilder.builder()
@@ -195,25 +195,25 @@ public class ExploreBuilderTest extends TestCase {
     // then (certainty)
     assertNotNull(queryWithCert);
     assertEquals("{Explore(ask: {question: \"question?\" certainty: 0.8 rerank: true}){certainty, distance, " +
-            "beacon, className}}", queryWithCert);
+      "beacon, className}}", queryWithCert);
 
     // given (distance)
     AskArgument askWithDist = AskArgument.builder().question("question?").rerank(true).distance(0.8f).build();
     // when (distance)
     String queryWithDist = ExploreBuilder.builder()
-            .fields(fields)
-            .withAskArgument(askWithDist).build().buildQuery();
+      .fields(fields)
+      .withAskArgument(askWithDist).build().buildQuery();
     // then (distance)
     assertNotNull(queryWithDist);
     assertEquals("{Explore(ask: {question: \"question?\" distance: 0.8 rerank: true}){certainty, distance, " +
-            "beacon, className}}", queryWithDist);
+      "beacon, className}}", queryWithDist);
   }
 
   @Test
   public void testBuildExploreWithNearImage() {
     // given (certainty)
-    ExploreFields[] fields = new ExploreFields[]{ ExploreFields.CERTAINTY, ExploreFields.DISTANCE,
-            ExploreFields.BEACON, ExploreFields.CLASS_NAME };
+    ExploreFields[] fields = new ExploreFields[]{ExploreFields.CERTAINTY, ExploreFields.DISTANCE,
+      ExploreFields.BEACON, ExploreFields.CLASS_NAME};
     NearImageArgument nearImageWithCert = NearImageArgument.builder().image("iVBORw0KGgoAAAANS").certainty(0.8f).build();
     // when (certainty)
     String queryWithCert = ExploreBuilder.builder()
@@ -222,17 +222,17 @@ public class ExploreBuilderTest extends TestCase {
     // then (certainty)
     assertNotNull(queryWithCert);
     assertEquals("{Explore(nearImage: {image: \"iVBORw0KGgoAAAANS\" certainty: 0.8}){certainty, distance, " +
-            "beacon, className}}", queryWithCert);
+      "beacon, className}}", queryWithCert);
 
     // given (distance)
     NearImageArgument nearImageWithDist = NearImageArgument.builder().image("iVBORw0KGgoAAAANS").distance(0.8f).build();
     // when (distance)
     String queryWithDist = ExploreBuilder.builder()
-            .fields(fields)
-            .withNearImageFilter(nearImageWithDist).build().buildQuery();
+      .fields(fields)
+      .withNearImageFilter(nearImageWithDist).build().buildQuery();
     // then (distance)
     assertNotNull(queryWithDist);
     assertEquals("{Explore(nearImage: {image: \"iVBORw0KGgoAAAANS\" distance: 0.8}){certainty, distance, " +
-            "beacon, className}}", queryWithDist);
+      "beacon, className}}", queryWithDist);
   }
 }

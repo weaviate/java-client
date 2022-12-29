@@ -38,15 +38,15 @@ public class ObjectsChecker extends BaseClient<String> implements ClientResult<B
   public Result<Boolean> run() {
     if (StringUtils.isEmpty(this.id)) {
       WeaviateErrorMessage errorMessage = WeaviateErrorMessage.builder()
-              .message("id cannot be empty").build();
+        .message("id cannot be empty").build();
       WeaviateErrorResponse errors = WeaviateErrorResponse.builder()
-              .error(Stream.of(errorMessage).collect(Collectors.toList())).build();
+        .error(Stream.of(errorMessage).collect(Collectors.toList())).build();
       return new Result<>(500, false, errors);
     }
     String path = objectsPath.buildCheck(ObjectsPath.Params.builder()
-            .id(id)
-            .className(className)
-            .build());
+      .id(id)
+      .className(className)
+      .build());
     Response<String> resp = sendHeadRequest(path, String.class);
     return new Result<>(resp.getStatusCode(), resp.getStatusCode() == 204, resp.getErrors());
   }

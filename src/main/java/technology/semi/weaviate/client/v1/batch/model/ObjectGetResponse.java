@@ -1,14 +1,13 @@
 package technology.semi.weaviate.client.v1.batch.model;
 
 import com.google.gson.annotations.SerializedName;
+import java.util.Map;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import technology.semi.weaviate.client.v1.data.model.Deprecation;
-
-import java.util.Map;
 
 @Getter
 @Setter

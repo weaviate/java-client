@@ -1,5 +1,8 @@
 package technology.semi.weaviate.integration.client.batch;
 
+import java.io.File;
+import java.time.Instant;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -16,23 +19,16 @@ import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
 import technology.semi.weaviate.client.v1.filters.Operator;
 import technology.semi.weaviate.client.v1.filters.WhereFilter;
 import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
-
-import java.io.File;
-import java.time.Instant;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClientBatchDeleteTest {
 
-  private WeaviateClient client;
-  private final WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-
-
   @ClassRule
   public static DockerComposeContainer<?> compose = new DockerComposeContainer<>(
-          new File("src/test/resources/docker-compose-test.yaml")
+    new File("src/test/resources/docker-compose-test.yaml")
   ).withExposedService("weaviate_1", 8080, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200));
+  private final WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
+  private WeaviateClient client;
 
   @Before
   public void before() {
@@ -53,18 +49,18 @@ public class ClientBatchDeleteTest {
   public void testBatchDeleteDryRunVerbose() {
     // when
     WhereFilter whereFilter = WhereFilter.builder()
-            .operator(Operator.Equal)
-            .path(new String[]{ "name" })
-            .valueString("Hawaii")
-            .build();
+      .operator(Operator.Equal)
+      .path(new String[]{"name"})
+      .valueString("Hawaii")
+      .build();
 
     int allWeaviateObjects = countWeaviateObjects();
     Result<BatchDeleteResponse> resResponse = client.batch().objectsBatchDeleter()
-            .withDryRun(true)
-            .withOutput(BatchDeleteOutput.VERBOSE)
-            .withClassName("Pizza")
-            .withWhere(whereFilter)
-            .run();
+      .withDryRun(true)
+      .withOutput(BatchDeleteOutput.VERBOSE)
+      .withClassName("Pizza")
+      .withWhere(whereFilter)
+      .run();
     int remainingWeaviateObjects = countWeaviateObjects();
 
     // then
@@ -101,18 +97,18 @@ public class ClientBatchDeleteTest {
   public void testBatchDeleteDryRunMinimal() {
     // when
     WhereFilter whereFilter = WhereFilter.builder()
-            .operator(Operator.Like)
-            .path(new String[]{ "description" })
-            .valueText("microscopic")
-            .build();
+      .operator(Operator.Like)
+      .path(new String[]{"description"})
+      .valueText("microscopic")
+      .build();
 
     int allWeaviateObjects = countWeaviateObjects();
     Result<BatchDeleteResponse> resResponse = client.batch().objectsBatchDeleter()
-            .withDryRun(true)
-            .withOutput(BatchDeleteOutput.MINIMAL)
-            .withClassName("Soup")
-            .withWhere(whereFilter)
-            .run();
+      .withDryRun(true)
+      .withOutput(BatchDeleteOutput.MINIMAL)
+      .withClassName("Soup")
+      .withWhere(whereFilter)
+      .run();
     int remainingWeaviateObjects = countWeaviateObjects();
 
     // then
@@ -144,16 +140,16 @@ public class ClientBatchDeleteTest {
     // when
     long inAMinute = Instant.now().plusSeconds(60).toEpochMilli();
     WhereFilter whereFilter = WhereFilter.builder()
-            .operator(Operator.GreaterThan)
-            .path(new String[]{ "_creationTimeUnix" })
-            .valueString(Long.toString(inAMinute))
-            .build();
+      .operator(Operator.GreaterThan)
+      .path(new String[]{"_creationTimeUnix"})
+      .valueString(Long.toString(inAMinute))
+      .build();
 
     int allWeaviateObjects = countWeaviateObjects();
     Result<BatchDeleteResponse> response = client.batch().objectsBatchDeleter()
-            .withClassName("Pizza")
-            .withWhere(whereFilter)
-            .run();
+      .withClassName("Pizza")
+      .withWhere(whereFilter)
+      .run();
     int remainingWeaviateObjects = countWeaviateObjects();
 
     // then
@@ -185,17 +181,17 @@ public class ClientBatchDeleteTest {
     // when
     long inAMinute = Instant.now().plusSeconds(60).toEpochMilli();
     WhereFilter whereFilter = WhereFilter.builder()
-            .operator(Operator.LessThan)
-            .path(new String[]{ "_creationTimeUnix" })
-            .valueString(Long.toString(inAMinute))
-            .build();
+      .operator(Operator.LessThan)
+      .path(new String[]{"_creationTimeUnix"})
+      .valueString(Long.toString(inAMinute))
+      .build();
 
     int allWeaviateObjects = countWeaviateObjects();
     Result<BatchDeleteResponse> response = client.batch().objectsBatchDeleter()
-            .withOutput(BatchDeleteOutput.VERBOSE)
-            .withClassName("Pizza")
-            .withWhere(whereFilter)
-            .run();
+      .withOutput(BatchDeleteOutput.VERBOSE)
+      .withClassName("Pizza")
+      .withWhere(whereFilter)
+      .run();
     int remainingWeaviateObjects = countWeaviateObjects();
 
     // then
@@ -224,12 +220,12 @@ public class ClientBatchDeleteTest {
     assertThat(objects).hasSize(4);
     assertThat(objects).doesNotContainNull();
     assertThat(objects).extracting(BatchDeleteResponse.ResultObject::getStatus)
-            .containsOnly(BatchDeleteResultStatus.SUCCESS);
+      .containsOnly(BatchDeleteResultStatus.SUCCESS);
     assertThat(objects).extracting(BatchDeleteResponse.ResultObject::getErrors)
-            .containsOnlyNulls();
+      .containsOnlyNulls();
     assertThat(objects).extracting(BatchDeleteResponse.ResultObject::getId)
-            .contains(WeaviateTestGenerics.PIZZA_HAWAII_ID, WeaviateTestGenerics.PIZZA_DOENER_ID,
-                    WeaviateTestGenerics.PIZZA_QUATTRO_FORMAGGI_ID, WeaviateTestGenerics.PIZZA_FRUTTI_DI_MARE_ID);
+      .contains(WeaviateTestGenerics.PIZZA_HAWAII_ID, WeaviateTestGenerics.PIZZA_DOENER_ID,
+        WeaviateTestGenerics.PIZZA_QUATTRO_FORMAGGI_ID, WeaviateTestGenerics.PIZZA_FRUTTI_DI_MARE_ID);
   }
 
   private int countWeaviateObjects() {

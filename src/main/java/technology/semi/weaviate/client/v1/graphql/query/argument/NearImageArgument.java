@@ -1,18 +1,17 @@
 package technology.semi.weaviate.client.v1.graphql.query.argument;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
-import lombok.experimental.FieldDefaults;
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.ToString;
+import lombok.experimental.FieldDefaults;
+import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @Builder

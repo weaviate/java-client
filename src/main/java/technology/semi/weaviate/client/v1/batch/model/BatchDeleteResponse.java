@@ -14,63 +14,63 @@ import technology.semi.weaviate.client.v1.filters.WhereFilter;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BatchDeleteResponse {
 
-    Match match;
-    String output;
-    Boolean dryRun;
-    Results results;
+  Match match;
+  String output;
+  Boolean dryRun;
+  Results results;
 
 
-    @Getter
-    @Setter
-    @ToString
-    @FieldDefaults(level = AccessLevel.PRIVATE)
-    public static class Match {
+  @Getter
+  @Setter
+  @ToString
+  @FieldDefaults(level = AccessLevel.PRIVATE)
+  public static class Match {
 
-        @SerializedName("class")
-        String className;
-        @SerializedName("where")
-        WhereFilter whereFilter;
-    }
+    @SerializedName("class")
+    String className;
+    @SerializedName("where")
+    WhereFilter whereFilter;
+  }
 
-    @Getter
-    @Setter
-    @ToString
-    @FieldDefaults(level = AccessLevel.PRIVATE)
-    public static class Results {
+  @Getter
+  @Setter
+  @ToString
+  @FieldDefaults(level = AccessLevel.PRIVATE)
+  public static class Results {
 
-        Long matches;
-        Long limit;
-        Long successful;
-        Long failed;
-        ResultObject[] objects;
-    }
+    Long matches;
+    Long limit;
+    Long successful;
+    Long failed;
+    ResultObject[] objects;
+  }
 
-    @Getter
-    @Setter
-    @ToString
-    @FieldDefaults(level = AccessLevel.PRIVATE)
-    public static class ResultObject {
+  @Getter
+  @Setter
+  @ToString
+  @FieldDefaults(level = AccessLevel.PRIVATE)
+  public static class ResultObject {
 
-        String id;
-        String status;
-        Errors errors;
-    }
+    String id;
+    String status;
+    Errors errors;
+  }
 
-    @Getter
-    @Setter
-    @ToString
-    @FieldDefaults(level = AccessLevel.PRIVATE)
-    public static class Errors {
+  @Getter
+  @Setter
+  @ToString
+  @FieldDefaults(level = AccessLevel.PRIVATE)
+  public static class Errors {
 
-        Error[] error;
-    }
+    Error[] error;
+  }
 
-    @Getter
-    @Setter
-    @ToString
-    @FieldDefaults(level = AccessLevel.PRIVATE)
-    public static class Error {
+  @Getter
+  @Setter
+  @ToString
+  @FieldDefaults(level = AccessLevel.PRIVATE)
+  public static class Error {
 
-        String message;
-    }
+    String message;
+  }
 }

@@ -29,9 +29,9 @@ public class ClassGetter extends BaseClient<WeaviateClass> implements ClientResu
   public Result<WeaviateClass> run() {
     if (StringUtils.isEmpty(this.className)) {
       WeaviateErrorMessage errorMessage = WeaviateErrorMessage.builder()
-              .message("classname cannot be empty").build();
+        .message("classname cannot be empty").build();
       WeaviateErrorResponse errors = WeaviateErrorResponse.builder()
-              .error(Stream.of(errorMessage).collect(Collectors.toList())).build();
+        .error(Stream.of(errorMessage).collect(Collectors.toList())).build();
       return new Result<>(500, null, errors);
     }
     String path = String.format("/schema/%s", this.className);

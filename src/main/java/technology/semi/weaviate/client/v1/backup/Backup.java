@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.v1.backup.api.BackupCreateStatusGetter;
 import technology.semi.weaviate.client.v1.backup.api.BackupCreator;
-//import technology.semi.weaviate.client.v1.backup.api.BackupGetter;
 import technology.semi.weaviate.client.v1.backup.api.BackupRestoreStatusGetter;
 import technology.semi.weaviate.client.v1.backup.api.BackupRestorer;
 

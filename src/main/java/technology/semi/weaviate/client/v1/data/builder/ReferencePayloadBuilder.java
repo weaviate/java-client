@@ -1,9 +1,8 @@
 package technology.semi.weaviate.client.v1.data.builder;
 
-import technology.semi.weaviate.client.v1.data.model.SingleRef;
-import technology.semi.weaviate.client.base.util.BeaconPath;
-
 import java.util.Objects;
+import technology.semi.weaviate.client.base.util.BeaconPath;
+import technology.semi.weaviate.client.v1.data.model.SingleRef;
 
 public class ReferencePayloadBuilder {
 
@@ -35,9 +34,9 @@ public class ReferencePayloadBuilder {
     String beacon;
     if (beaconPath != null) {
       beacon = beaconPath.buildSingle(BeaconPath.Params.builder()
-              .id(id)
-              .className(className)
-              .build());
+        .id(id)
+        .className(className)
+        .build());
     } else {
       beacon = beaconDeprecated();
     }

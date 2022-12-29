@@ -7,44 +7,32 @@ public class Config {
   private static final int DEFAULT_TIMEOUT = 60;
   private final String scheme;
   private final String host;
-  private final int connectionTimeoutMs;
-  private final int connectionRequestTimeoutMs;
-  private final int socketTimeoutMs;
+  private final int connectionTimeout;
+  private final int connectionRequestTimeout;
+  private final int socketTimeout;
   private final String version;
   private final Map<String, String> headers;
 
+  public Config(String scheme, String host) {
+    this(scheme, host, null);
+  }
+
   public Config(String scheme, String host, Map<String, String> headers) {
-    this.scheme = scheme;
-    this.host = host;
-    this.version = "v1";
-    this.headers = headers;
-    this.connectionTimeoutMs = DEFAULT_TIMEOUT;
-    this.connectionRequestTimeoutMs = DEFAULT_TIMEOUT;
-    this.socketTimeoutMs = DEFAULT_TIMEOUT;
+    this(scheme, host, headers, DEFAULT_TIMEOUT, DEFAULT_TIMEOUT, DEFAULT_TIMEOUT);
   }
 
   public Config(String scheme, String host, Map<String, String> headers, int timeout) {
+    this(scheme, host, headers, timeout, timeout, timeout);
+  }
+
+  public Config(String scheme, String host, Map<String, String> headers, int connectionTimeout, int connectionRequestTimeout, int socketTimeout) {
     this.scheme = scheme;
     this.host = host;
     this.version = "v1";
     this.headers = headers;
-    this.connectionTimeoutMs = timeout;
-    this.connectionRequestTimeoutMs = timeout;
-    this.socketTimeoutMs = timeout;
-  }
-
-  public Config(String scheme, String host, Map<String, String> headers, int connectionTimeoutMs, int connectionRequestTimeoutMs, int socketTimeoutMs) {
-    this.scheme = scheme;
-    this.host = host;
-    this.version = "v1";
-    this.headers = headers;
-    this.connectionTimeoutMs = connectionTimeoutMs;
-    this.connectionRequestTimeoutMs = connectionRequestTimeoutMs;
-    this.socketTimeoutMs = socketTimeoutMs;
-  }
-
-  public Config(String scheme, String host) {
-    this(scheme, host, null);
+    this.connectionTimeout = connectionTimeout;
+    this.connectionRequestTimeout = connectionRequestTimeout;
+    this.socketTimeout = socketTimeout;
   }
 
   public String getBaseURL() {
@@ -55,16 +43,16 @@ public class Config {
     return this.headers;
   }
 
-  public int getConnectionTimeoutMs() {
-    return connectionTimeoutMs;
+  public int getConnectionTimeout() {
+    return connectionTimeout;
   }
 
-  public int getConnectionRequestTimeoutMs() {
-    return connectionRequestTimeoutMs;
+  public int getConnectionRequestTimeout() {
+    return connectionRequestTimeout;
   }
 
-  public int getSocketTimeoutMs() {
-    return socketTimeoutMs;
+  public int getSocketTimeout() {
+    return socketTimeout;
   }
 
 }

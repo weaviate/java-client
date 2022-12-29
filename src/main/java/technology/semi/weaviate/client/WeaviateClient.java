@@ -1,5 +1,6 @@
 package technology.semi.weaviate.client;
 
+import java.util.Optional;
 import technology.semi.weaviate.client.base.util.DbVersionProvider;
 import technology.semi.weaviate.client.base.util.DbVersionSupport;
 import technology.semi.weaviate.client.v1.backup.Backup;
@@ -12,8 +13,6 @@ import technology.semi.weaviate.client.v1.graphql.GraphQL;
 import technology.semi.weaviate.client.v1.misc.Misc;
 import technology.semi.weaviate.client.v1.misc.api.MetaGetter;
 import technology.semi.weaviate.client.v1.schema.Schema;
-
-import java.util.Optional;
 
 public class WeaviateClient {
   private final Config config;
@@ -59,6 +58,7 @@ public class WeaviateClient {
   public Cluster cluster() {
     return new Cluster(config);
   }
+
   public GraphQL graphQL() {
     return new GraphQL(config);
   }

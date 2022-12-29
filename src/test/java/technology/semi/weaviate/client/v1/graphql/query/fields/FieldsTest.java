@@ -13,7 +13,7 @@ public class FieldsTest extends TestCase {
     Field a = Field.builder().name("a").build();
     Field b = Field.builder().name("b").build();
     Field c = Field.builder().name("c").build();
-    Fields fields = Fields.builder().fields(new Field[]{ a, b, c }).build();
+    Fields fields = Fields.builder().fields(new Field[]{a, b, c}).build();
     // when
     String fieldsParameter = fields.build();
     // then
@@ -26,16 +26,16 @@ public class FieldsTest extends TestCase {
     String expected = "a{b} c{d{e}}";
     Field b = Field.builder().name("b").build();
     Field a = Field.builder()
-            .name("a")
-            .fields(new Field[]{b})
-            .build();
+      .name("a")
+      .fields(new Field[]{b})
+      .build();
     Field c = Field.builder()
-            .name("c")
-            .fields(new Field[]{Field.builder()
-                    .name("d")
-                    .fields(new Field[]{Field.builder().name("e").build()})
-                    .build()}).build();
-    Fields fields = Fields.builder().fields(new Field[]{ a, c }).build();
+      .name("c")
+      .fields(new Field[]{Field.builder()
+        .name("d")
+        .fields(new Field[]{Field.builder().name("e").build()})
+        .build()}).build();
+    Fields fields = Fields.builder().fields(new Field[]{a, c}).build();
     // when
     String fieldsParameter = fields.build();
     // then

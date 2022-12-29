@@ -8,8 +8,8 @@ public class NearObjectArgumentTest extends TestCase {
   public void testBuildWithCertainty() {
     // given
     NearObjectArgument nearObject = NearObjectArgument.builder()
-            .id("id").beacon("beacon").certainty(0.8f)
-            .build();
+      .id("id").beacon("beacon").certainty(0.8f)
+      .build();
     // when
     String arg = nearObject.build();
     // then
@@ -19,8 +19,8 @@ public class NearObjectArgumentTest extends TestCase {
   public void testBuildWithoutCertainity() {
     // given
     NearObjectArgument nearObject = NearObjectArgument.builder()
-            .id("id").beacon("beacon")
-            .build();
+      .id("id").beacon("beacon")
+      .build();
     // when
     String arg = nearObject.build();
     // then
@@ -30,8 +30,8 @@ public class NearObjectArgumentTest extends TestCase {
   public void testBuildWithDistance() {
     // given
     NearObjectArgument nearObject = NearObjectArgument.builder()
-            .id("id").beacon("beacon").distance(0.8f)
-            .build();
+      .id("id").beacon("beacon").distance(0.8f)
+      .build();
     // when
     String arg = nearObject.build();
     // then
@@ -41,8 +41,8 @@ public class NearObjectArgumentTest extends TestCase {
   public void testBuildWithCertaintyAndWithoutId() {
     // given
     NearObjectArgument nearObject = NearObjectArgument.builder()
-            .beacon("beacon").certainty(0.4f)
-            .build();
+      .beacon("beacon").certainty(0.4f)
+      .build();
     // when
     String arg = nearObject.build();
     // then
@@ -52,8 +52,8 @@ public class NearObjectArgumentTest extends TestCase {
   public void testBuildWithDistanceAndWithoutId() {
     // given
     NearObjectArgument nearObject = NearObjectArgument.builder()
-            .beacon("beacon").distance(0.4f)
-            .build();
+      .beacon("beacon").distance(0.4f)
+      .build();
     // when
     String arg = nearObject.build();
     // then
@@ -63,8 +63,8 @@ public class NearObjectArgumentTest extends TestCase {
   public void testBuildWithCertaintyWithoutBeacon() {
     // given
     NearObjectArgument nearObject = NearObjectArgument.builder()
-            .id("id").certainty(0.1f)
-            .build();
+      .id("id").certainty(0.1f)
+      .build();
     // when
     String arg = nearObject.build();
     // then
@@ -74,8 +74,8 @@ public class NearObjectArgumentTest extends TestCase {
   public void testBuildWithDistanceWithoutBeacon() {
     // given
     NearObjectArgument nearObject = NearObjectArgument.builder()
-            .id("id").distance(0.1f)
-            .build();
+      .id("id").distance(0.1f)
+      .build();
     // when
     String arg = nearObject.build();
     // then

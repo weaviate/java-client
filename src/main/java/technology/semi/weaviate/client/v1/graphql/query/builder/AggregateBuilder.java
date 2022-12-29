@@ -1,5 +1,7 @@
 package technology.semi.weaviate.client.v1.graphql.query.builder;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,9 +17,6 @@ import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgum
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
-
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @Getter
 @Builder

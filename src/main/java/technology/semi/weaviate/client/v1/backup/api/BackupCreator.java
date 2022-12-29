@@ -80,7 +80,7 @@ public class BackupCreator extends BaseClient<BackupCreateResponse> implements C
     }
 
     statusGetter.withBackend(backend).withBackupId(backupId);
-    while(true) {
+    while (true) {
       Response<BackupCreateStatusResponse> statusResponse = statusGetter.statusCreate();
       if (new Result<>(statusResponse).hasErrors()) {
         return merge(statusResponse, result);

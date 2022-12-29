@@ -1,8 +1,6 @@
 package technology.semi.weaviate.client.v1.schema.api;
 
 import java.util.Collections;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import technology.semi.weaviate.client.Config;
@@ -30,9 +28,9 @@ public class ShardsGetter extends BaseClient<Shard[]> implements ClientResult<Sh
   public Result<Shard[]> run() {
     if (StringUtils.isEmpty(this.className)) {
       WeaviateErrorMessage errorMessage = WeaviateErrorMessage.builder()
-              .message("className cannot be empty").build();
+        .message("className cannot be empty").build();
       WeaviateErrorResponse errors = WeaviateErrorResponse.builder()
-              .error(Collections.singletonList(errorMessage)).build();
+        .error(Collections.singletonList(errorMessage)).build();
       return new Result<>(HttpStatus.SC_BAD_REQUEST, null, errors);
     }
     String path = String.format("/schema/%s/shards", this.className);

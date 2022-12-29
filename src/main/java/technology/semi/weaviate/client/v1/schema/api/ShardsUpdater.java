@@ -53,7 +53,7 @@ public class ShardsUpdater implements ClientResult<ShardStatus[]> {
       String message = String.format("%s cannot be empty", StringUtils.joinWith(", ", emptyFieldNames.toArray()));
       WeaviateErrorMessage errorMessage = WeaviateErrorMessage.builder().message(message).build();
       WeaviateErrorResponse errors = WeaviateErrorResponse.builder()
-              .error(Collections.singletonList(errorMessage)).build();
+        .error(Collections.singletonList(errorMessage)).build();
       return new Result<>(HttpStatus.SC_BAD_REQUEST, null, errors);
     }
 
@@ -65,10 +65,10 @@ public class ShardsUpdater implements ClientResult<ShardStatus[]> {
     List<ShardStatus> shardStatuses = new ArrayList<>();
     for (Shard shard : shards.getResult()) {
       Result<ShardStatus> update = this.shardUpdater
-              .withClassName(this.className)
-              .withShardName(shard.getName())
-              .withStatus(this.status)
-              .run();
+        .withClassName(this.className)
+        .withShardName(shard.getName())
+        .withStatus(this.status)
+        .run();
       if (update.hasErrors()) {
         return toResult(update.getError());
       }

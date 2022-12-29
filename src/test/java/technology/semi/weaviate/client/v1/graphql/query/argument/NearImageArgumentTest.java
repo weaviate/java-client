@@ -16,7 +16,7 @@ public class NearImageArgumentTest extends TestCase {
     // given
     File imageFile = new File("src/test/resources/image/pixel.png");
     String base64File = new BufferedReader(new InputStreamReader(new FileInputStream("src/test/resources/image/base64.txt")))
-            .lines().collect(Collectors.joining("\n"));
+      .lines().collect(Collectors.joining("\n"));
     String expected = String.format("nearImage: {image: \"%s\"}", base64File);
     // when
     String nearImage = NearImageArgument.builder().imageFile(imageFile).build().build();
@@ -30,7 +30,7 @@ public class NearImageArgumentTest extends TestCase {
     // given
     File imageFile = new File("src/test/resources/image/pixel.png");
     String base64File = new BufferedReader(new InputStreamReader(new FileInputStream("src/test/resources/image/base64.txt")))
-            .lines().collect(Collectors.joining("\n"));
+      .lines().collect(Collectors.joining("\n"));
     Float certainty = 0.5f;
     String expected = String.format("nearImage: {image: \"%s\" certainty: %s}", base64File, certainty);
     // when
@@ -45,7 +45,7 @@ public class NearImageArgumentTest extends TestCase {
     // given
     File imageFile = new File("src/test/resources/image/pixel.png");
     String base64File = new BufferedReader(new InputStreamReader(new FileInputStream("src/test/resources/image/base64.txt")))
-            .lines().collect(Collectors.joining("\n"));
+      .lines().collect(Collectors.joining("\n"));
     Float distance = 0.5f;
     String expected = String.format("nearImage: {image: \"%s\" distance: %s}", base64File, distance);
     // when

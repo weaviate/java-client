@@ -42,16 +42,16 @@ public class ObjectValidator extends BaseClient<WeaviateObject> implements Clien
   public Result<Boolean> run() {
     if (StringUtils.isEmpty(id)) {
       WeaviateErrorMessage errorMessage = WeaviateErrorMessage.builder()
-              .message("id cannot be empty").build();
+        .message("id cannot be empty").build();
       WeaviateErrorResponse errors = WeaviateErrorResponse.builder()
-              .error(Stream.of(errorMessage).collect(Collectors.toList())).build();
+        .error(Stream.of(errorMessage).collect(Collectors.toList())).build();
       return new Result<>(500, false, errors);
     }
     WeaviateObject obj = WeaviateObject.builder()
-            .className(className)
-            .properties(properties)
-            .id(id)
-            .build();
+      .className(className)
+      .properties(properties)
+      .id(id)
+      .build();
     Response<WeaviateObject> resp = sendPostRequest("/objects/validate", obj, WeaviateObject.class);
     return new Result<>(resp.getStatusCode(), resp.getStatusCode() == 200, resp.getErrors());
   }

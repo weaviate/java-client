@@ -1,5 +1,6 @@
 package technology.semi.weaviate.integration.client.cluster;
 
+import java.io.File;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -11,22 +12,18 @@ import technology.semi.weaviate.client.WeaviateClient;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.cluster.model.NodesStatusResponse;
 import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
-
-import java.io.File;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static technology.semi.weaviate.integration.client.WeaviateVersion.EXPECTED_WEAVIATE_GIT_HASH;
 import static technology.semi.weaviate.integration.client.WeaviateVersion.EXPECTED_WEAVIATE_VERSION;
 
 public class ClientClusterTest {
 
-  private WeaviateClient client;
-  private final WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-
   @ClassRule
   public static DockerComposeContainer<?> compose = new DockerComposeContainer<>(
     new File("src/test/resources/docker-compose-test.yaml")
   ).withExposedService("weaviate_1", 8080, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200));
+  private final WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
+  private WeaviateClient client;
 
   @Before
   public void before() {

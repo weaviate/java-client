@@ -9,9 +9,9 @@ public class NearTextArgumentTest extends TestCase {
   @Test
   public void testBuildWithCertainty() {
     // given
-    String[] concepts = new String[]{ "a", "b", "c" };
+    String[] concepts = new String[]{"a", "b", "c"};
     NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(concepts).certainty(0.8f).build();
+      .concepts(concepts).certainty(0.8f).build();
     // when
     String arg = nearText.build();
     // then
@@ -21,9 +21,9 @@ public class NearTextArgumentTest extends TestCase {
   @Test
   public void testBuildWithDistance() {
     // given
-    String[] concepts = new String[]{ "a", "b", "c" };
+    String[] concepts = new String[]{"a", "b", "c"};
     NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(concepts).distance(0.8f).build();
+      .concepts(concepts).distance(0.8f).build();
     // when
     String arg = nearText.build();
     // then
@@ -34,7 +34,7 @@ public class NearTextArgumentTest extends TestCase {
   public void testBuildWithCertaintyAndNoConcepts() {
     // given
     NearTextArgument nearText = NearTextArgument.builder()
-            .certainty(0.8f).build();
+      .certainty(0.8f).build();
     // when
     String arg = nearText.build();
     // then
@@ -47,7 +47,7 @@ public class NearTextArgumentTest extends TestCase {
   public void testBuildWithDistanceAndNoConcepts() {
     // given
     NearTextArgument nearText = NearTextArgument.builder()
-            .distance(0.8f).build();
+      .distance(0.8f).build();
     // when
     String arg = nearText.build();
     // then
@@ -71,11 +71,11 @@ public class NearTextArgumentTest extends TestCase {
   @Test
   public void testBuildMoveToWithCertainty() {
     // given
-    String[] concepts = new String[]{ "a", "b", "c" };
+    String[] concepts = new String[]{"a", "b", "c"};
     NearTextMoveParameters moveTo = NearTextMoveParameters.builder()
-            .concepts(new String[]{ "a1", "b2" }).force(0.1f).build();
+      .concepts(new String[]{"a1", "b2"}).force(0.1f).build();
     NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(concepts).certainty(0.8f).moveTo(moveTo).build();
+      .concepts(concepts).certainty(0.8f).moveTo(moveTo).build();
     // when
     String arg = nearText.build();
     // then
@@ -85,11 +85,11 @@ public class NearTextArgumentTest extends TestCase {
   @Test
   public void testBuildMoveToWithDistance() {
     // given
-    String[] concepts = new String[]{ "a", "b", "c" };
+    String[] concepts = new String[]{"a", "b", "c"};
     NearTextMoveParameters moveTo = NearTextMoveParameters.builder()
-            .concepts(new String[]{ "a1", "b2" }).force(0.1f).build();
+      .concepts(new String[]{"a1", "b2"}).force(0.1f).build();
     NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(concepts).distance(0.8f).moveTo(moveTo).build();
+      .concepts(concepts).distance(0.8f).moveTo(moveTo).build();
     // when
     String arg = nearText.build();
     // then
@@ -99,11 +99,11 @@ public class NearTextArgumentTest extends TestCase {
   @Test
   public void testBuildMoveToWithCertaintyWithoutForce() {
     // given
-    String[] concepts = new String[]{ "a", "b", "c" };
+    String[] concepts = new String[]{"a", "b", "c"};
     NearTextMoveParameters moveTo = NearTextMoveParameters.builder()
-            .concepts(new String[]{ "a1", "b2" }).build();
+      .concepts(new String[]{"a1", "b2"}).build();
     NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(concepts).certainty(0.8f).moveTo(moveTo).build();
+      .concepts(concepts).certainty(0.8f).moveTo(moveTo).build();
     // when
     String arg = nearText.build();
     // then
@@ -113,11 +113,11 @@ public class NearTextArgumentTest extends TestCase {
   @Test
   public void testBuildMoveToWithDistanceWithoutForce() {
     // given
-    String[] concepts = new String[]{ "a", "b", "c" };
+    String[] concepts = new String[]{"a", "b", "c"};
     NearTextMoveParameters moveTo = NearTextMoveParameters.builder()
-            .concepts(new String[]{ "a1", "b2" }).build();
+      .concepts(new String[]{"a1", "b2"}).build();
     NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(concepts).distance(0.8f).moveTo(moveTo).build();
+      .concepts(concepts).distance(0.8f).moveTo(moveTo).build();
     // when
     String arg = nearText.build();
     // then
@@ -127,11 +127,11 @@ public class NearTextArgumentTest extends TestCase {
   @Test
   public void testBuildMoveAwayFromWithCertainty() {
     // given
-    String[] concepts = new String[]{ "a", "b", "c" };
+    String[] concepts = new String[]{"a", "b", "c"};
     NearTextMoveParameters moveAway = NearTextMoveParameters.builder()
-            .concepts(new String[]{ "a1", "b2" }).force(0.1f).build();
+      .concepts(new String[]{"a1", "b2"}).force(0.1f).build();
     NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(concepts).certainty(0.8f).moveAwayFrom(moveAway).build();
+      .concepts(concepts).certainty(0.8f).moveAwayFrom(moveAway).build();
     // when
     String arg = nearText.build();
     // then
@@ -141,11 +141,11 @@ public class NearTextArgumentTest extends TestCase {
   @Test
   public void testBuildMoveAwayFromWithDistance() {
     // given
-    String[] concepts = new String[]{ "a", "b", "c" };
+    String[] concepts = new String[]{"a", "b", "c"};
     NearTextMoveParameters moveAway = NearTextMoveParameters.builder()
-            .concepts(new String[]{ "a1", "b2" }).force(0.1f).build();
+      .concepts(new String[]{"a1", "b2"}).force(0.1f).build();
     NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(concepts).distance(0.8f).moveAwayFrom(moveAway).build();
+      .concepts(concepts).distance(0.8f).moveAwayFrom(moveAway).build();
     // when
     String arg = nearText.build();
     // then
@@ -155,11 +155,11 @@ public class NearTextArgumentTest extends TestCase {
   @Test
   public void testBuildMoveAwayFromWithCertaintyWithoutForce() {
     // given
-    String[] concepts = new String[]{ "a", "b", "c" };
+    String[] concepts = new String[]{"a", "b", "c"};
     NearTextMoveParameters moveAway = NearTextMoveParameters.builder()
-            .concepts(new String[]{ "a1", "b2" }).build();
+      .concepts(new String[]{"a1", "b2"}).build();
     NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(concepts).certainty(0.8f).moveAwayFrom(moveAway).build();
+      .concepts(concepts).certainty(0.8f).moveAwayFrom(moveAway).build();
     // when
     String arg = nearText.build();
     // then
@@ -169,11 +169,11 @@ public class NearTextArgumentTest extends TestCase {
   @Test
   public void testBuildMoveAwayFromWithDistanceWithoutForce() {
     // given
-    String[] concepts = new String[]{ "a", "b", "c" };
+    String[] concepts = new String[]{"a", "b", "c"};
     NearTextMoveParameters moveAway = NearTextMoveParameters.builder()
-            .concepts(new String[]{ "a1", "b2" }).build();
+      .concepts(new String[]{"a1", "b2"}).build();
     NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(concepts).distance(0.8f).moveAwayFrom(moveAway).build();
+      .concepts(concepts).distance(0.8f).moveAwayFrom(moveAway).build();
     // when
     String arg = nearText.build();
     // then
@@ -183,85 +183,85 @@ public class NearTextArgumentTest extends TestCase {
   @Test
   public void testBuildMoveToAndMoveAwayFromWithCertainty() {
     // given
-    String[] concepts = new String[]{ "a", "b", "c" };
+    String[] concepts = new String[]{"a", "b", "c"};
     NearTextMoveParameters moveTo = NearTextMoveParameters.builder()
-            .concepts(new String[]{ "z1", "y2" }).force(0.8f).build();
+      .concepts(new String[]{"z1", "y2"}).force(0.8f).build();
     NearTextMoveParameters moveAway = NearTextMoveParameters.builder()
-            .concepts(new String[]{ "a1", "b2" }).force(0.1f).build();
+      .concepts(new String[]{"a1", "b2"}).force(0.1f).build();
     NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(concepts).certainty(0.8f)
-            .moveTo(moveTo).moveAwayFrom(moveAway).build();
+      .concepts(concepts).certainty(0.8f)
+      .moveTo(moveTo).moveAwayFrom(moveAway).build();
     // when
     String arg = nearText.build();
     // then
     Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 " +
-            "moveTo: {concepts: [\"z1\", \"y2\"] force: 0.8} " +
-            "moveAwayFrom: {concepts: [\"a1\", \"b2\"] force: 0.1}}", arg);
+      "moveTo: {concepts: [\"z1\", \"y2\"] force: 0.8} " +
+      "moveAwayFrom: {concepts: [\"a1\", \"b2\"] force: 0.1}}", arg);
   }
 
   @Test
   public void testBuildMoveToAndMoveAwayFromWithDistance() {
     // given
-    String[] concepts = new String[]{ "a", "b", "c" };
+    String[] concepts = new String[]{"a", "b", "c"};
     NearTextMoveParameters moveTo = NearTextMoveParameters.builder()
-            .concepts(new String[]{ "z1", "y2" }).force(0.8f).build();
+      .concepts(new String[]{"z1", "y2"}).force(0.8f).build();
     NearTextMoveParameters moveAway = NearTextMoveParameters.builder()
-            .concepts(new String[]{ "a1", "b2" }).force(0.1f).build();
+      .concepts(new String[]{"a1", "b2"}).force(0.1f).build();
     NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(concepts).distance(0.8f)
-            .moveTo(moveTo).moveAwayFrom(moveAway).build();
+      .concepts(concepts).distance(0.8f)
+      .moveTo(moveTo).moveAwayFrom(moveAway).build();
     // when
     String arg = nearText.build();
     // then
     Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] distance: 0.8 " +
-            "moveTo: {concepts: [\"z1\", \"y2\"] force: 0.8} " +
-            "moveAwayFrom: {concepts: [\"a1\", \"b2\"] force: 0.1}}", arg);
+      "moveTo: {concepts: [\"z1\", \"y2\"] force: 0.8} " +
+      "moveAwayFrom: {concepts: [\"a1\", \"b2\"] force: 0.1}}", arg);
   }
 
   @Test
   public void testBuildMoveToAndMoveAwayFromWithCertaintyWithoutForce() {
     // given
-    String[] concepts = new String[]{ "a", "b", "c" };
+    String[] concepts = new String[]{"a", "b", "c"};
     NearTextMoveParameters moveTo = NearTextMoveParameters.builder()
-            .concepts(new String[]{ "z1", "y2" }).force(0.8f).build();
+      .concepts(new String[]{"z1", "y2"}).force(0.8f).build();
     NearTextMoveParameters moveAway = NearTextMoveParameters.builder()
-            .concepts(new String[]{ "a1", "b2" }).build();
+      .concepts(new String[]{"a1", "b2"}).build();
     NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(concepts).certainty(0.8f)
-            .moveTo(moveTo).moveAwayFrom(moveAway).build();
+      .concepts(concepts).certainty(0.8f)
+      .moveTo(moveTo).moveAwayFrom(moveAway).build();
     // when
     String arg = nearText.build();
     // then
     Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 " +
-            "moveTo: {concepts: [\"z1\", \"y2\"] force: 0.8} " +
-            "moveAwayFrom: {concepts: [\"a1\", \"b2\"]}}", arg);
+      "moveTo: {concepts: [\"z1\", \"y2\"] force: 0.8} " +
+      "moveAwayFrom: {concepts: [\"a1\", \"b2\"]}}", arg);
   }
 
   @Test
   public void testBuildMoveToAndMoveAwayFromWithDistanceWithoutForce() {
     // given
-    String[] concepts = new String[]{ "a", "b", "c" };
+    String[] concepts = new String[]{"a", "b", "c"};
     NearTextMoveParameters moveTo = NearTextMoveParameters.builder()
-            .concepts(new String[]{ "z1", "y2" }).force(0.8f).build();
+      .concepts(new String[]{"z1", "y2"}).force(0.8f).build();
     NearTextMoveParameters moveAway = NearTextMoveParameters.builder()
-            .concepts(new String[]{ "a1", "b2" }).build();
+      .concepts(new String[]{"a1", "b2"}).build();
     NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(concepts).distance(0.8f)
-            .moveTo(moveTo).moveAwayFrom(moveAway).build();
+      .concepts(concepts).distance(0.8f)
+      .moveTo(moveTo).moveAwayFrom(moveAway).build();
     // when
     String arg = nearText.build();
     // then
     Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] distance: 0.8 " +
-            "moveTo: {concepts: [\"z1\", \"y2\"] force: 0.8} " +
-            "moveAwayFrom: {concepts: [\"a1\", \"b2\"]}}", arg);
+      "moveTo: {concepts: [\"z1\", \"y2\"] force: 0.8} " +
+      "moveAwayFrom: {concepts: [\"a1\", \"b2\"]}}", arg);
   }
 
   @Test
   public void testBuildWithAutocorrectAndCertainty() {
     // given
-    String[] concepts = new String[]{ "a", "b", "c" };
+    String[] concepts = new String[]{"a", "b", "c"};
     NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(concepts).certainty(0.8f).autocorrect(false).build();
+      .concepts(concepts).certainty(0.8f).autocorrect(false).build();
     // when
     String arg = nearText.build();
     // then
@@ -271,9 +271,9 @@ public class NearTextArgumentTest extends TestCase {
   @Test
   public void testBuildWithAutocorrectAndDistance() {
     // given
-    String[] concepts = new String[]{ "a", "b", "c" };
+    String[] concepts = new String[]{"a", "b", "c"};
     NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(concepts).distance(0.8f).autocorrect(false).build();
+      .concepts(concepts).distance(0.8f).autocorrect(false).build();
     // when
     String arg = nearText.build();
     // then
@@ -283,39 +283,39 @@ public class NearTextArgumentTest extends TestCase {
   @Test
   public void testBuildMoveToAndMoveAwayFromWithCertaintyWithoutForceAndWithAutocorrect() {
     // given
-    String[] concepts = new String[]{ "a", "b", "c" };
+    String[] concepts = new String[]{"a", "b", "c"};
     NearTextMoveParameters moveTo = NearTextMoveParameters.builder()
-            .concepts(new String[]{ "z1", "y2" }).force(0.8f).build();
+      .concepts(new String[]{"z1", "y2"}).force(0.8f).build();
     NearTextMoveParameters moveAway = NearTextMoveParameters.builder()
-            .concepts(new String[]{ "a1", "b2" }).build();
+      .concepts(new String[]{"a1", "b2"}).build();
     NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(concepts).certainty(0.8f).autocorrect(true)
-            .moveTo(moveTo).moveAwayFrom(moveAway).build();
+      .concepts(concepts).certainty(0.8f).autocorrect(true)
+      .moveTo(moveTo).moveAwayFrom(moveAway).build();
     // when
     String arg = nearText.build();
     // then
     Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 " +
-            "moveTo: {concepts: [\"z1\", \"y2\"] force: 0.8} " +
-            "moveAwayFrom: {concepts: [\"a1\", \"b2\"]} autocorrect: true}", arg);
+      "moveTo: {concepts: [\"z1\", \"y2\"] force: 0.8} " +
+      "moveAwayFrom: {concepts: [\"a1\", \"b2\"]} autocorrect: true}", arg);
   }
 
   @Test
   public void testBuildMoveToAndMoveAwayFromWithDistanceWithoutForceAndWithAutocorrect() {
     // given
-    String[] concepts = new String[]{ "a", "b", "c" };
+    String[] concepts = new String[]{"a", "b", "c"};
     NearTextMoveParameters moveTo = NearTextMoveParameters.builder()
-            .concepts(new String[]{ "z1", "y2" }).force(0.8f).build();
+      .concepts(new String[]{"z1", "y2"}).force(0.8f).build();
     NearTextMoveParameters moveAway = NearTextMoveParameters.builder()
-            .concepts(new String[]{ "a1", "b2" }).build();
+      .concepts(new String[]{"a1", "b2"}).build();
     NearTextArgument nearText = NearTextArgument.builder()
-            .concepts(concepts).distance(0.8f).autocorrect(true)
-            .moveTo(moveTo).moveAwayFrom(moveAway).build();
+      .concepts(concepts).distance(0.8f).autocorrect(true)
+      .moveTo(moveTo).moveAwayFrom(moveAway).build();
     // when
     String arg = nearText.build();
     // then
     Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] distance: 0.8 " +
-            "moveTo: {concepts: [\"z1\", \"y2\"] force: 0.8} " +
-            "moveAwayFrom: {concepts: [\"a1\", \"b2\"]} autocorrect: true}", arg);
+      "moveTo: {concepts: [\"z1\", \"y2\"] force: 0.8} " +
+      "moveAwayFrom: {concepts: [\"a1\", \"b2\"]} autocorrect: true}", arg);
   }
 
   @Test
@@ -338,7 +338,7 @@ public class NearTextArgumentTest extends TestCase {
   @Test
   public void testBuildMoveToWithObjectsAndCertainty() {
     // given
-    String[] concepts = new String[]{ "a", "b", "c" };
+    String[] concepts = new String[]{"a", "b", "c"};
     NearTextMoveParameters moveTo1 = NearTextMoveParameters
       .builder()
       .objects(new NearTextMoveParameters.ObjectMove[]{
@@ -389,42 +389,42 @@ public class NearTextArgumentTest extends TestCase {
   @Test
   public void testBuildMoveToWithObjectsAndDistance() {
     // given
-    String[] concepts = new String[]{ "a", "b", "c" };
+    String[] concepts = new String[]{"a", "b", "c"};
     NearTextMoveParameters moveTo1 = NearTextMoveParameters
-            .builder()
-            .objects(new NearTextMoveParameters.ObjectMove[]{
-                    NearTextMoveParameters.ObjectMove.builder().id("uuid").build(),
-                    NearTextMoveParameters.ObjectMove.builder().beacon("beacon").build()
-            })
-            .force(0.1f)
-            .build();
+      .builder()
+      .objects(new NearTextMoveParameters.ObjectMove[]{
+        NearTextMoveParameters.ObjectMove.builder().id("uuid").build(),
+        NearTextMoveParameters.ObjectMove.builder().beacon("beacon").build()
+      })
+      .force(0.1f)
+      .build();
     NearTextMoveParameters moveTo2 = NearTextMoveParameters
-            .builder()
-            .objects(new NearTextMoveParameters.ObjectMove[]{
-                    NearTextMoveParameters.ObjectMove.builder().id("uuid").beacon("beacon").build(),
-            })
-            .force(0.1f)
-            .build();
+      .builder()
+      .objects(new NearTextMoveParameters.ObjectMove[]{
+        NearTextMoveParameters.ObjectMove.builder().id("uuid").beacon("beacon").build(),
+      })
+      .force(0.1f)
+      .build();
     NearTextMoveParameters moveTo3 = NearTextMoveParameters
-            .builder()
-            .objects(new NearTextMoveParameters.ObjectMove[]{
-                    NearTextMoveParameters.ObjectMove.builder().id("uuid").build(),
-            })
-            .build();
+      .builder()
+      .objects(new NearTextMoveParameters.ObjectMove[]{
+        NearTextMoveParameters.ObjectMove.builder().id("uuid").build(),
+      })
+      .build();
     NearTextMoveParameters moveTo4 = NearTextMoveParameters
-            .builder()
-            .objects(new NearTextMoveParameters.ObjectMove[]{
-                    NearTextMoveParameters.ObjectMove.builder().beacon("beacon").build(),
-            })
-            .build();
+      .builder()
+      .objects(new NearTextMoveParameters.ObjectMove[]{
+        NearTextMoveParameters.ObjectMove.builder().beacon("beacon").build(),
+      })
+      .build();
     NearTextArgument nearText1 = NearTextArgument.builder()
-            .concepts(concepts).distance(0.8f).moveTo(moveTo1).build();
+      .concepts(concepts).distance(0.8f).moveTo(moveTo1).build();
     NearTextArgument nearText2 = NearTextArgument.builder()
-            .concepts(concepts).distance(0.8f).moveTo(moveTo2).build();
+      .concepts(concepts).distance(0.8f).moveTo(moveTo2).build();
     NearTextArgument nearText3 = NearTextArgument.builder()
-            .concepts(concepts).distance(0.8f).moveTo(moveTo3).build();
+      .concepts(concepts).distance(0.8f).moveTo(moveTo3).build();
     NearTextArgument nearText4 = NearTextArgument.builder()
-            .concepts(concepts).distance(0.8f).moveTo(moveTo4).build();
+      .concepts(concepts).distance(0.8f).moveTo(moveTo4).build();
     // when
     String arg1 = nearText1.build();
     String arg2 = nearText2.build();
@@ -440,7 +440,7 @@ public class NearTextArgumentTest extends TestCase {
   @Test
   public void testBuildMoveAwayWithObjectsAndCertainty() {
     // given
-    String[] concepts = new String[]{ "a", "b", "c" };
+    String[] concepts = new String[]{"a", "b", "c"};
     NearTextMoveParameters moveAwayFrom1 = NearTextMoveParameters
       .builder()
       .objects(new NearTextMoveParameters.ObjectMove[]{
@@ -491,42 +491,42 @@ public class NearTextArgumentTest extends TestCase {
   @Test
   public void testBuildMoveAwayWithObjectsAndDistance() {
     // given
-    String[] concepts = new String[]{ "a", "b", "c" };
+    String[] concepts = new String[]{"a", "b", "c"};
     NearTextMoveParameters moveAwayFrom1 = NearTextMoveParameters
-            .builder()
-            .objects(new NearTextMoveParameters.ObjectMove[]{
-                    NearTextMoveParameters.ObjectMove.builder().id("uuid").build(),
-                    NearTextMoveParameters.ObjectMove.builder().beacon("beacon").build()
-            })
-            .force(0.1f)
-            .build();
+      .builder()
+      .objects(new NearTextMoveParameters.ObjectMove[]{
+        NearTextMoveParameters.ObjectMove.builder().id("uuid").build(),
+        NearTextMoveParameters.ObjectMove.builder().beacon("beacon").build()
+      })
+      .force(0.1f)
+      .build();
     NearTextMoveParameters moveAwayFrom2 = NearTextMoveParameters
-            .builder()
-            .objects(new NearTextMoveParameters.ObjectMove[]{
-                    NearTextMoveParameters.ObjectMove.builder().id("uuid").beacon("beacon").build(),
-            })
-            .force(0.1f)
-            .build();
+      .builder()
+      .objects(new NearTextMoveParameters.ObjectMove[]{
+        NearTextMoveParameters.ObjectMove.builder().id("uuid").beacon("beacon").build(),
+      })
+      .force(0.1f)
+      .build();
     NearTextMoveParameters moveAwayFrom3 = NearTextMoveParameters
-            .builder()
-            .objects(new NearTextMoveParameters.ObjectMove[]{
-                    NearTextMoveParameters.ObjectMove.builder().id("uuid").build(),
-            })
-            .build();
+      .builder()
+      .objects(new NearTextMoveParameters.ObjectMove[]{
+        NearTextMoveParameters.ObjectMove.builder().id("uuid").build(),
+      })
+      .build();
     NearTextMoveParameters moveAwayFrom4 = NearTextMoveParameters
-            .builder()
-            .objects(new NearTextMoveParameters.ObjectMove[]{
-                    NearTextMoveParameters.ObjectMove.builder().beacon("beacon").build(),
-            })
-            .build();
+      .builder()
+      .objects(new NearTextMoveParameters.ObjectMove[]{
+        NearTextMoveParameters.ObjectMove.builder().beacon("beacon").build(),
+      })
+      .build();
     NearTextArgument nearText1 = NearTextArgument.builder()
-            .concepts(concepts).distance(0.8f).moveAwayFrom(moveAwayFrom1).build();
+      .concepts(concepts).distance(0.8f).moveAwayFrom(moveAwayFrom1).build();
     NearTextArgument nearText2 = NearTextArgument.builder()
-            .concepts(concepts).distance(0.8f).moveAwayFrom(moveAwayFrom2).build();
+      .concepts(concepts).distance(0.8f).moveAwayFrom(moveAwayFrom2).build();
     NearTextArgument nearText3 = NearTextArgument.builder()
-            .concepts(concepts).distance(0.8f).moveAwayFrom(moveAwayFrom3).build();
+      .concepts(concepts).distance(0.8f).moveAwayFrom(moveAwayFrom3).build();
     NearTextArgument nearText4 = NearTextArgument.builder()
-            .concepts(concepts).distance(0.8f).moveAwayFrom(moveAwayFrom4).build();
+      .concepts(concepts).distance(0.8f).moveAwayFrom(moveAwayFrom4).build();
     // when
     String arg1 = nearText1.build();
     String arg2 = nearText2.build();
@@ -542,7 +542,7 @@ public class NearTextArgumentTest extends TestCase {
   @Test
   public void testBuildMoveToAndMoveAwayFromWithObjectsAndCertainty() {
     // given
-    String[] concepts = new String[]{ "a", "b", "c" };
+    String[] concepts = new String[]{"a", "b", "c"};
     NearTextMoveParameters moveTo = NearTextMoveParameters
       .builder()
       .objects(new NearTextMoveParameters.ObjectMove[]{
@@ -570,28 +570,28 @@ public class NearTextArgumentTest extends TestCase {
   @Test
   public void testBuildMoveToAndMoveAwayFromWithObjectsAndDistance() {
     // given
-    String[] concepts = new String[]{ "a", "b", "c" };
+    String[] concepts = new String[]{"a", "b", "c"};
     NearTextMoveParameters moveTo = NearTextMoveParameters
-            .builder()
-            .objects(new NearTextMoveParameters.ObjectMove[]{
-                    NearTextMoveParameters.ObjectMove.builder().id("uuid").build(),
-                    NearTextMoveParameters.ObjectMove.builder().beacon("beacon").build()
-            })
-            .force(0.1f)
-            .build();
+      .builder()
+      .objects(new NearTextMoveParameters.ObjectMove[]{
+        NearTextMoveParameters.ObjectMove.builder().id("uuid").build(),
+        NearTextMoveParameters.ObjectMove.builder().beacon("beacon").build()
+      })
+      .force(0.1f)
+      .build();
     NearTextMoveParameters moveAwayFrom = NearTextMoveParameters
-            .builder()
-            .objects(new NearTextMoveParameters.ObjectMove[]{
-                    NearTextMoveParameters.ObjectMove.builder().id("uuid").beacon("beacon").build(),
-            })
-            .force(0.2f)
-            .build();
+      .builder()
+      .objects(new NearTextMoveParameters.ObjectMove[]{
+        NearTextMoveParameters.ObjectMove.builder().id("uuid").beacon("beacon").build(),
+      })
+      .force(0.2f)
+      .build();
     NearTextArgument nearText1 = NearTextArgument.builder()
-            .concepts(concepts).distance(0.8f).moveTo(moveTo).moveAwayFrom(moveAwayFrom).build();
+      .concepts(concepts).distance(0.8f).moveTo(moveTo).moveAwayFrom(moveAwayFrom).build();
     // when
     String arg1 = nearText1.build();
     // then
     Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] distance: 0.8 moveTo: {force: 0.1 objects: [{id: \"uuid\"},{beacon: \"beacon\"}]} " +
-            "moveAwayFrom: {force: 0.2 objects: [{id: \"uuid\" beacon: \"beacon\"}]}}", arg1);
+      "moveAwayFrom: {force: 0.2 objects: [{id: \"uuid\" beacon: \"beacon\"}]}}", arg1);
   }
 }
