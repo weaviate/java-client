@@ -69,6 +69,7 @@
     <logback.version>1.4.5</logback.version>
     <mock-server.version>5.14.0</mock-server.version>
     <jackson.version>2.14.1</jackson.version>
+    <oauth2-oidc-sdk.version>10.4</oauth2-oidc-sdk.version>
   </properties>
 
   <dependencies>
@@ -91,6 +92,11 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>${lang3.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.nimbusds</groupId>
+      <artifactId>oauth2-oidc-sdk</artifactId>
+      <version>${oauth2-oidc-sdk.version}</version>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>

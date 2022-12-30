@@ -22,6 +22,11 @@ jobs:
     - name: Run Build
       run: mvn -DskipTests clean package
     - name: Run Tests
+      env:
+        OKTA_DUMMY_CI_PW: ${{ secrets.OKTA_DUMMY_CI_PW }}
+        WCS_DUMMY_CI_PW: ${{ secrets.WCS_DUMMY_CI_PW }}
+        OKTA_CLIENT_SECRET: ${{ secrets.OKTA_CLIENT_SECRET }}
+        AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
       run: |
         docker-compose -f src/test/resources/docker-compose-test.yaml pull
         mvn clean test
@@ -35,6 +40,10 @@ jobs:
     - name: Unpack secrets
       env:
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        OKTA_DUMMY_CI_PW: ${{ secrets.OKTA_DUMMY_CI_PW }}
+        WCS_DUMMY_CI_PW: ${{ secrets.WCS_DUMMY_CI_PW }}
+        OKTA_CLIENT_SECRET: ${{ secrets.OKTA_CLIENT_SECRET }}
+        AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
       run: |
         ./decrypt_secret.sh
     - name: Deploy
