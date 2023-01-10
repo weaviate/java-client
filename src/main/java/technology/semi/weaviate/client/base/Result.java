@@ -6,9 +6,11 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 @Getter
+@ToString
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class Result<T> {
   T result;
@@ -22,10 +24,10 @@ public class Result<T> {
     if (errors != null && errors.getError() != null) {
       List<WeaviateErrorMessage> items = errors.getError().stream().filter(Objects::nonNull).collect(Collectors.toList());
       this.error = new WeaviateError(statusCode, items);
-      this.result = null;
+      this.result = body;
     } else if (errors != null && errors.getMessage() != null) {
       this.error = new WeaviateError(statusCode, Collections.singletonList(WeaviateErrorMessage.builder().message(errors.getMessage()).build()));
-      this.result = null;
+      this.result = body;
     } else {
       this.result = body;
       this.error = null;

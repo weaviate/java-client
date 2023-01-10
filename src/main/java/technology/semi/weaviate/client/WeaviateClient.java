@@ -41,7 +41,7 @@ public class WeaviateClient {
 
   public Batch batch() {
     dbVersionProvider.refresh();
-    return new Batch(config, dbVersionSupport);
+    return new Batch(config, dbVersionSupport, data());
   }
 
   public Backup backup() {

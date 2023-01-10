@@ -317,11 +317,11 @@ public class ClientDataDeprecatedAPITest {
     assertNotNull(deleteObjT);
     assertTrue(deleteObjT.getResult());
     assertNotNull(objTlist);
-    assertNotNull(objTlist.getResult());
+    assertNull(objTlist.getResult());
     assertNotNull(deleteObjA);
     assertTrue(deleteObjA.getResult());
     assertNotNull(objAlist);
-    assertNotNull(objAlist.getResult());
+    assertNull(objAlist.getResult());
   }
 
   @Test

@@ -4,15 +4,17 @@ import com.google.gson.annotations.SerializedName;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Map;
 
 @Getter
+@Setter
 @Builder
 @ToString
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class WeaviateObject {
   String id;
   @SerializedName("class")

@@ -1,8 +1,10 @@
 package technology.semi.weaviate.client.base;
 
+import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.HttpClientBuilder;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.base.http.HttpClient;
@@ -94,7 +96,10 @@ public abstract class BaseClient<T> {
   }
 
   private WeaviateErrorResponse getWeaviateErrorResponse(Exception e) {
-    WeaviateErrorMessage error = WeaviateErrorMessage.builder().message(e.getMessage()).build();
-    return WeaviateErrorResponse.builder().error(Stream.of(error).collect(Collectors.toList())).build();
+    WeaviateErrorMessage error = WeaviateErrorMessage.builder()
+      .message(e.getMessage())
+      .throwable(e)
+      .build();
+    return WeaviateErrorResponse.builder().error(Collections.singletonList(error)).build();
   }
 }

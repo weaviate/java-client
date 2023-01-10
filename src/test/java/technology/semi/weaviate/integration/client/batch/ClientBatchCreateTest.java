@@ -1,15 +1,6 @@
 package technology.semi.weaviate.integration.client.batch;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.google.gson.internal.LinkedTreeMap;
 import org.junit.After;
-
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -18,11 +9,31 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.WeaviateClient;
 import technology.semi.weaviate.client.base.Result;
+import technology.semi.weaviate.client.v1.batch.api.ObjectsBatcher;
 import technology.semi.weaviate.client.v1.batch.model.ObjectGetResponse;
 import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
 import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class ClientBatchCreateTest {
+
+  private static final String PIZZA_1_ID = "abefd256-8574-442b-9293-9205193737ee";
+  private static final Map<String, Object> PIZZA_1_PROPS = createFoodProperties("Hawaii", "Universally accepted to be the best pizza ever created.");
+  private static final String PIZZA_2_ID = "97fa5147-bdad-4d74-9a81-f8babc811b09";
+  private static final Map<String, Object> PIZZA_2_PROPS = createFoodProperties("Doener", "A innovation, some say revolution, in the pizza industry.");
+  private static final String SOUP_1_ID = "565da3b6-60b3-40e5-ba21-e6bfe5dbba91";
+  private static final Map<String, Object> SOUP_1_PROPS = createFoodProperties("ChickenSoup", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
+  private static final String SOUP_2_ID = "07473b34-0ab2-4120-882d-303d9e13f7af";
+  private static final Map<String, Object> SOUP_2_PROPS = createFoodProperties("Beautiful", "Putting the game of letter soups to a whole new level.");
+
   private WeaviateClient client;
   private final WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
 
@@ -48,112 +59,201 @@ public class ClientBatchCreateTest {
   }
 
   @Test
-  public void testBatchCreate() {
-    // given
-    // objT1
-    String objTID = "abefd256-8574-442b-9293-9205193737ee";
-    Map<String, Object> propertiesSchemaT = new HashMap<>();
-    propertiesSchemaT.put("name", "Hawaii");
-    propertiesSchemaT.put("description", "Universally accepted to be the best pizza ever created.");
-    // objT2
-    String objT2ID = "97fa5147-bdad-4d74-9a81-f8babc811b09";
-    Map<String, Object> propertiesSchemaT2 = new HashMap<>();
-    propertiesSchemaT2.put("name", "Doener");
-    propertiesSchemaT2.put("description", "A innovation, some say revolution, in the pizza industry.");
-    WeaviateObject objT2 = WeaviateObject.builder().className("Pizza").id(objT2ID).properties(propertiesSchemaT2).build();
-    // objA1
-    String objAID = "565da3b6-60b3-40e5-ba21-e6bfe5dbba91";
-    Map<String, Object> propertiesSchemaA = new HashMap<>();
-    propertiesSchemaA.put("name", "ChickenSoup");
-    propertiesSchemaA.put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
-    // objA2
-    String objA2ID = "07473b34-0ab2-4120-882d-303d9e13f7af";
-    Map<String, Object> propertiesSchemaA2 = new HashMap<>();
-    propertiesSchemaA2.put("name", "Beautiful");
-    propertiesSchemaA2.put("description", "Putting the game of letter soups to a whole new level.");
-    WeaviateObject objA2 = WeaviateObject.builder().className("Soup").id(objA2ID).properties(propertiesSchemaA2).build();
+  public void shouldCreateBatch() {
     // when
-    Result<WeaviateObject> objT1 = client.data().creator()
+    Result<WeaviateObject> resPizza1 = client.data().creator()
       .withClassName("Pizza")
-      .withID(objTID)
-      .withProperties(propertiesSchemaT)
+      .withID(PIZZA_1_ID)
+      .withProperties(PIZZA_1_PROPS)
       .run();
-    Result<WeaviateObject> objA1 = client.data().creator()
+    Result<WeaviateObject> resSoup1 = client.data().creator()
       .withClassName("Soup")
-      .withID(objAID)
-      .withProperties(propertiesSchemaA)
+      .withID(SOUP_1_ID)
+      .withProperties(SOUP_1_PROPS)
       .run();
-    Result<ObjectGetResponse[]> batchTs = client.batch().objectsBatcher()
-      .withObjects(objT1.getResult(), objT2)
-      .run();
-    Result<ObjectGetResponse[]> batchAs = client.batch().objectsBatcher()
-      .withObjects(objA1.getResult(), objA2)
-      .run();
+
+    assertThat(resPizza1).isNotNull()
+      .returns(false, Result::hasErrors)
+      .extracting(Result::getResult).isNotNull();
+    assertThat(resSoup1).isNotNull()
+      .returns(false, Result::hasErrors)
+      .extracting(Result::getResult).isNotNull();
+
+    Result<ObjectGetResponse[]> resBatchPizzas = client.batch().objectsBatcher()
+      .withObjects(
+        resPizza1.getResult(),
+        WeaviateObject.builder().className("Pizza").id(PIZZA_2_ID).properties(PIZZA_2_PROPS).build()
+      ).run();
+    Result<ObjectGetResponse[]> resBatchSoups = client.batch().objectsBatcher()
+      .withObjects(
+        resSoup1.getResult(),
+        WeaviateObject.builder().className("Soup").id(SOUP_2_ID).properties(SOUP_2_PROPS).build()
+      ).run();
+
     // check if created objects exist
-    Result<List<WeaviateObject>> getObjT1 = client.data().objectsGetter().withID(objTID).withClassName("Pizza").run();
-    Result<List<WeaviateObject>> getObjT2 = client.data().objectsGetter().withID(objT2ID).withClassName("Pizza").run();
-    Result<List<WeaviateObject>> getObjA1 = client.data().objectsGetter().withID(objAID).withClassName("Soup").run();
-    Result<List<WeaviateObject>> getObjA2 = client.data().objectsGetter().withID(objA2ID).withClassName("Soup").run();
+    Result<List<WeaviateObject>> resGetPizza1 = client.data().objectsGetter().withID(PIZZA_1_ID).withClassName("Pizza").run();
+    Result<List<WeaviateObject>> resGetPizza2 = client.data().objectsGetter().withID(PIZZA_2_ID).withClassName("Pizza").run();
+    Result<List<WeaviateObject>> resGetSoup1 = client.data().objectsGetter().withID(SOUP_1_ID).withClassName("Soup").run();
+    Result<List<WeaviateObject>> resGetSoup2 = client.data().objectsGetter().withID(SOUP_2_ID).withClassName("Soup").run();
+
     // then
-    assertNotNull(objT1);
-    assertNotNull(objT1.getResult());
-    assertEquals(objTID, objT1.getResult().getId());
-    assertNotNull(objA1);
-    assertNotNull(objA1.getResult());
-    assertEquals(objAID, objA1.getResult().getId());
-    assertNotNull(batchTs);
-    assertNotNull(batchTs.getResult());
-    assertEquals(2, batchTs.getResult().length);
-    assertNotNull(batchAs);
-    assertNotNull(batchAs.getResult());
-    assertEquals(2, batchAs.getResult().length);
-    assertNotNull(getObjT1);
-    assertNotNull(getObjT1.getResult());
-    assertEquals(1, getObjT1.getResult().size());
-    assertEquals(objTID, getObjT1.getResult().get(0).getId());
-    assertNotNull(getObjT2);
-    assertNotNull(getObjT2.getResult());
-    assertEquals(1, getObjT2.getResult().size());
-    assertEquals(objT2ID, getObjT2.getResult().get(0).getId());
-    assertNotNull(getObjA1);
-    assertNotNull(getObjA1.getResult());
-    assertEquals(1, getObjA1.getResult().size());
-    assertEquals(objAID, getObjA1.getResult().get(0).getId());
-    assertNotNull(getObjA2);
-    assertEquals(1, getObjA2.getResult().size());
-    assertEquals(objA2ID, getObjA2.getResult().get(0).getId());
+    assertThat(resBatchPizzas).isNotNull()
+      .returns(false, Result::hasErrors);
+    assertThat(resBatchPizzas.getResult()).hasSize(2);
+
+    assertThat(resBatchSoups).isNotNull()
+      .returns(false, Result::hasErrors);
+    assertThat(resBatchSoups.getResult()).hasSize(2);
+
+    assertThat(resGetPizza1).isNotNull()
+      .returns(false, Result::hasErrors)
+      .extracting(Result::getResult).asList().hasSize(1)
+      .extracting(o -> ((WeaviateObject)o).getId()).first().isEqualTo(PIZZA_1_ID);
+
+    assertThat(resGetPizza2).isNotNull()
+      .returns(false, Result::hasErrors)
+      .extracting(Result::getResult).asList().hasSize(1)
+      .extracting(o -> ((WeaviateObject)o).getId()).first().isEqualTo(PIZZA_2_ID);
+
+    assertThat(resGetSoup1).isNotNull()
+      .returns(false, Result::hasErrors)
+      .extracting(Result::getResult).asList().hasSize(1)
+      .extracting(o -> ((WeaviateObject)o).getId()).first().isEqualTo(SOUP_1_ID);
+
+    assertThat(resGetSoup2).isNotNull()
+      .returns(false, Result::hasErrors)
+      .extracting(Result::getResult).asList().hasSize(1)
+      .extracting(o -> ((WeaviateObject)o).getId()).first().isEqualTo(SOUP_2_ID);
   }
 
   @Test
-  public void testBatchPartialError() {
-    String objID = "abefd256-8574-442b-9293-9205193737ef";
-    Map<String, Object> propertiesSchemaT = new HashMap<>();
-    propertiesSchemaT.put("name", 1);
-    propertiesSchemaT.put("description", "This pizza should throw a invalid name error");
-    WeaviateObject objWithError = WeaviateObject.builder()
-      .className("Pizza").id(objID).properties(propertiesSchemaT).build();
-
-    String objT2ID = "97fa5147-bdad-4d74-9a81-f8babc811b09";
-    Map<String, Object> propertiesSchemaT2 = new HashMap<>();
-    propertiesSchemaT2.put("name", "Doener");
-    propertiesSchemaT2.put("description", "A innovation, some say revolution, in the pizza industry.");
-    WeaviateObject objT2 = WeaviateObject.builder()
-      .className("Pizza").id(objT2ID).properties(propertiesSchemaT2).build();
-
-    Result<ObjectGetResponse[]> batchTs = client.batch().objectsBatcher()
-      .withObjects(objWithError, objT2)
+  public void shouldCreateAutoBatch() {
+    // when
+    Result<WeaviateObject> resPizza1 = client.data().creator()
+      .withClassName("Pizza")
+      .withID(PIZZA_1_ID)
+      .withProperties(PIZZA_1_PROPS)
+      .run();
+    Result<WeaviateObject> resSoup1 = client.data().creator()
+      .withClassName("Soup")
+      .withID(SOUP_1_ID)
+      .withProperties(SOUP_1_PROPS)
       .run();
 
-    assertEquals(2, batchTs.getResult().length);
-    assertEquals(objWithError.getId(), batchTs.getResult()[0].getId());
-    assertEquals("{error=[{message=invalid string property 'name' on class 'Pizza': not a string, but json.Number}]}",
-      batchTs.getResult()[0].getResult().getErrors().toString());
+    assertThat(resPizza1).isNotNull()
+      .returns(false, Result::hasErrors)
+      .extracting(Result::getResult).isNotNull();
+    assertThat(resSoup1).isNotNull()
+      .returns(false, Result::hasErrors)
+      .extracting(Result::getResult).isNotNull();
 
-    Result<List<WeaviateObject>> getObjT2 = client.data().objectsGetter().withID(objT2ID).withClassName("Pizza").run();
-    assertNotNull(getObjT2);
-    assertNotNull(getObjT2.getResult());
-    assertEquals(1, getObjT2.getResult().size());
+    List<Result<ObjectGetResponse[]>> resBatches = Collections.synchronizedList(new ArrayList<>(2));
+    ObjectsBatcher.AutoBatchConfig autoBatchConfig = ObjectsBatcher.AutoBatchConfig.defaultConfig()
+      .batchSize(2)
+      .callback(resBatches::add)
+      .build();
+    ObjectsBatcher.BatchRetriesConfig batchRetriesConfig = ObjectsBatcher.BatchRetriesConfig.defaultConfig().build();
+
+    client.batch().objectsAutoBatcher(batchRetriesConfig, autoBatchConfig)
+      .withObjects(
+        resPizza1.getResult(),
+        WeaviateObject.builder().className("Pizza").id(PIZZA_2_ID).properties(PIZZA_2_PROPS).build()
+      ).flush();
+    client.batch().objectsAutoBatcher(batchRetriesConfig, autoBatchConfig)
+      .withObjects(
+        resSoup1.getResult(),
+        WeaviateObject.builder().className("Soup").id(SOUP_2_ID).properties(SOUP_2_PROPS).build()
+      ).flush();
+
+    // check if created objects exist
+    Result<List<WeaviateObject>> resGetPizza1 = client.data().objectsGetter().withID(PIZZA_1_ID).withClassName("Pizza").run();
+    Result<List<WeaviateObject>> resGetPizza2 = client.data().objectsGetter().withID(PIZZA_2_ID).withClassName("Pizza").run();
+    Result<List<WeaviateObject>> resGetSoup1 = client.data().objectsGetter().withID(SOUP_1_ID).withClassName("Soup").run();
+    Result<List<WeaviateObject>> resGetSoup2 = client.data().objectsGetter().withID(SOUP_2_ID).withClassName("Soup").run();
+
+    // then
+    assertThat(resBatches.get(0)).isNotNull()
+      .returns(false, Result::hasErrors);
+    assertThat(resBatches.get(0).getResult()).hasSize(2);
+
+    assertThat(resBatches.get(1)).isNotNull()
+      .returns(false, Result::hasErrors);
+    assertThat(resBatches.get(1).getResult()).hasSize(2);
+
+    assertThat(resGetPizza1).isNotNull()
+      .returns(false, Result::hasErrors)
+      .extracting(Result::getResult).asList().hasSize(1)
+      .extracting(o -> ((WeaviateObject)o).getId()).first().isEqualTo(PIZZA_1_ID);
+
+    assertThat(resGetPizza2).isNotNull()
+      .returns(false, Result::hasErrors)
+      .extracting(Result::getResult).asList().hasSize(1)
+      .extracting(o -> ((WeaviateObject)o).getId()).first().isEqualTo(PIZZA_2_ID);
+
+    assertThat(resGetSoup1).isNotNull()
+      .returns(false, Result::hasErrors)
+      .extracting(Result::getResult).asList().hasSize(1)
+      .extracting(o -> ((WeaviateObject)o).getId()).first().isEqualTo(SOUP_1_ID);
+
+    assertThat(resGetSoup2).isNotNull()
+      .returns(false, Result::hasErrors)
+      .extracting(Result::getResult).asList().hasSize(1)
+      .extracting(o -> ((WeaviateObject)o).getId()).first().isEqualTo(SOUP_2_ID);
+  }
+
+  @Test
+  public void shouldCreateBatchWithPartialError() {
+    WeaviateObject pizzaWithError = WeaviateObject.builder()
+      .className("Pizza")
+      .id(PIZZA_1_ID)
+      .properties(createFoodProperties(1, "This pizza should throw a invalid name error"))
+      .build();
+    WeaviateObject pizza = WeaviateObject.builder()
+      .className("Pizza")
+      .id(PIZZA_2_ID)
+      .properties(PIZZA_2_PROPS)
+      .build();
+
+    Result<ObjectGetResponse[]> resBatch = client.batch().objectsBatcher()
+      .withObjects(pizzaWithError, pizza)
+      .run();
+
+    assertThat(resBatch).isNotNull()
+      .returns(false, Result::hasErrors);
+    assertThat(resBatch.getResult()).hasSize(2);
+
+    ObjectGetResponse resPizzaWithError = resBatch.getResult()[0];
+    assertThat(resPizzaWithError.getId()).isEqualTo(PIZZA_1_ID);
+    assertThat(resPizzaWithError.getResult().getErrors()).isNotNull()
+      .extracting(Object::toString).isEqualTo("{error=[{message=invalid string property 'name' on class 'Pizza': not a string, but json.Number}]}");
+    ObjectGetResponse resPizza = resBatch.getResult()[1];
+    assertThat(resPizza.getId()).isEqualTo(PIZZA_2_ID);
+    assertThat(resPizza.getResult().getErrors()).isNull();
+
+    Result<List<WeaviateObject>> resGetPizzaWithError = client.data().objectsGetter()
+      .withClassName("Pizza")
+      .withID(PIZZA_1_ID)
+      .run();
+    Result<List<WeaviateObject>> resGetPizza = client.data().objectsGetter()
+      .withClassName("Pizza")
+      .withID(PIZZA_2_ID)
+      .run();
+
+    assertThat(resGetPizzaWithError).isNotNull()
+      .returns(false, Result::hasErrors);
+    assertThat(resGetPizzaWithError.getResult()).isNull();
+
+    assertThat(resGetPizza).isNotNull()
+      .returns(false, Result::hasErrors);
+    assertThat(resGetPizza.getResult()).hasSize(1);
   }
 
 
+  private static Map<String, Object> createFoodProperties(Object name, Object description) {
+    Map<String, Object> props = new HashMap<>();
+    props.put("name", name);
+    props.put("description", description);
+
+    return props;
+  }
 }
