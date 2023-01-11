@@ -2,7 +2,6 @@ package technology.semi.weaviate.client;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -56,13 +55,10 @@ public class ConfigTest extends TestCase {
       }
 
       private void scheduleRefreshTokenTask(long period) {
-        TimerTask refreshTokenTask = new TimerTask() {
-          public void run() {
-            accessToken = "NEW_VALUE";
-          }
-        };
         executor = Executors.newSingleThreadScheduledExecutor();
-        executor.scheduleAtFixedRate(refreshTokenTask, period, period, TimeUnit.SECONDS);
+        executor.scheduleAtFixedRate(() -> {
+          accessToken = "NEW_VALUE";
+        }, period, period, TimeUnit.SECONDS);
       }
     }
 

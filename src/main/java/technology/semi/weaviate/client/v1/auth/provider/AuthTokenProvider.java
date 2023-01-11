@@ -24,16 +24,9 @@ public class AuthTokenProvider extends NimbusAuth implements AccessTokenProvider
   }
 
   private void scheduleRefreshTokenTask(Config config, AuthResponse authResponse, String refreshToken, long period) {
-    TimerTask refreshTokenTask = new TimerTask() {
-      public void run() {
-        accessToken = refreshToken(config, authResponse, refreshToken);
-      }
-    };
     executor = Executors.newSingleThreadScheduledExecutor();
-    executor.scheduleAtFixedRate(refreshTokenTask, period, period, TimeUnit.SECONDS);
+    executor.scheduleAtFixedRate(() -> {
+      accessToken = refreshToken(config, authResponse, refreshToken);
+    }, period, period, TimeUnit.SECONDS);
   }
-
-//  public void stopRefreshTokenTask() {
-//    executor.shutdown();
-//  }
 }

@@ -30,4 +30,9 @@ public class BearerTokenFlow extends NimbusAuth implements Authentication {
       accessToken, accessTokenLifetime, refreshToken);
     return new WeaviateClient(authConfig);
   }
+
+  @Override
+  public WeaviateClient getAuthClient(Config config) throws AuthException {
+    return getAuthClient(config, null);
+  }
 }

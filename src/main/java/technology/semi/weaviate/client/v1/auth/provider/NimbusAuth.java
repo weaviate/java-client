@@ -20,6 +20,7 @@ import com.nimbusds.openid.connect.sdk.OIDCTokenResponse;
 import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,8 +49,14 @@ public class NimbusAuth extends BaseAuth {
       logNoRefreshTokenWarning(accessToken.getLifetime());
     }
 
-    Config authConfig = AuthConfigUtil.toAuthConfig(config, authResponse,
+    return getWeaviateClient(config, authResponse,
       accessToken.getValue(), accessToken.getLifetime(), refreshTokenValue);
+  }
+
+  protected WeaviateClient getWeaviateClient(Config config, AuthResponse authResponse,
+    String accessToken, long accessTokenLifeTime, String refreshToken) {
+    Config authConfig = AuthConfigUtil.toAuthConfig(config, authResponse,
+      accessToken, accessTokenLifeTime, refreshToken);
     return new WeaviateClient(authConfig);
   }
 
@@ -75,9 +82,9 @@ public class NimbusAuth extends BaseAuth {
       String responseMode = "fragment";
       Scope scopes = getScopes(authResponse, clientScopes, clientID, providerMetadata);
       Map<String, List<String>> customParams = new HashMap<>();
-      customParams.put("response_type", Arrays.asList(responseTypes));
-      customParams.put("response_mode", Arrays.asList(responseMode));
-      customParams.put("redirect_url", Arrays.asList(redirectURL));
+      customParams.put("response_type", Collections.singletonList(responseTypes));
+      customParams.put("response_mode", Collections.singletonList(responseMode));
+      customParams.put("redirect_url", Collections.singletonList(redirectURL));
 
       TokenRequest tokenReq = new TokenRequest(providerMetadata.getTokenEndpointURI(),
         new ClientSecretPost(clientID, secret),
@@ -94,7 +101,7 @@ public class NimbusAuth extends BaseAuth {
 
       OIDCTokenResponse oidcTokenResponse = (OIDCTokenResponse) tokenResponse;
       return oidcTokenResponse;
-    } catch (Exception e) {
+    } catch (Throwable e) {
       throw new AuthException(e.getMessage(), e);
     }
   }

@@ -20,4 +20,9 @@ public class ClientCredentialsFlow extends NimbusAuth implements Authentication 
     WeaviateClient authClient = getAuthClient(config, clientSecret, "", "", scopes, AuthType.CLIENT_CREDENTIALS);
     return authClient;
   }
+
+  @Override
+  public WeaviateClient getAuthClient(Config config) throws AuthException {
+    return getAuthClient(config, null);
+  }
 }

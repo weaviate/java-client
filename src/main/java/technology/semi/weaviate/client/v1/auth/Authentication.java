@@ -7,4 +7,5 @@ import technology.semi.weaviate.client.v1.auth.provider.AuthException;
 
 public interface Authentication {
   WeaviateClient getAuthClient(Config config, List<String> scopes) throws AuthException;
+  WeaviateClient getAuthClient(Config config) throws AuthException;
 }

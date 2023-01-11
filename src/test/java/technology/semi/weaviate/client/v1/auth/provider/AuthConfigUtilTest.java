@@ -2,14 +2,14 @@ package technology.semi.weaviate.client.v1.auth.provider;
 
 import java.util.HashMap;
 import java.util.Map;
-import static org.junit.Assert.assertEquals;
-import org.junit.jupiter.api.Test;
+import junit.framework.TestCase;
+import org.junit.Test;
 import technology.semi.weaviate.client.Config;
 
-class AuthConfigUtilTest {
+public class AuthConfigUtilTest extends TestCase {
 
   @Test
-  void testGetAuthConfig() {
+  public void testGetAuthConfig() {
     // given
     String scheme = "https";
     String host = "sandbox.network.com";
@@ -23,7 +23,7 @@ class AuthConfigUtilTest {
   }
 
   @Test
-  void testGetAuthConfigWithHeaders() {
+  public void testGetAuthConfigWithHeaders() {
     // given
     String scheme = "http";
     String host = "sandbox.network.com";

@@ -44,12 +44,12 @@ class BaseAuth {
         String msg = "Auth001: The client was configured to use authentication, but weaviate is configured without authentication. Are you sure this is " +
           "correct?";
         log(msg);
-        return null;
+        throw new AuthException(msg);
       case 200:
         OIDCConfig oidcConfig = serializer.toResponse(response.getBody(), OIDCConfig.class);
         HttpResponse resp = sendGetRequest(client, oidcConfig.getHref());
         if (resp.getStatusCode() != 200) {
-          String errorMessage = String.format("OIDC configuration url %s returned status code %s", oidcConfig.getHref(), response.getStatusCode());
+          String errorMessage = String.format("OIDC configuration url %s returned status code %s", oidcConfig.getHref(), resp.getStatusCode());
           throw new AuthException(errorMessage);
         }
         return new AuthResponse(oidcConfig.getClientId(), oidcConfig.getScopes(), resp.getBody());
