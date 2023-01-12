@@ -16,7 +16,7 @@ public class AuthConfigUtilTest extends TestCase {
     String token = "token";
     // when
     Config config = new Config(scheme, host);
-    Config authConfig = AuthConfigUtil.toAuthConfig(config, null, token, 0l, null);
+    Config authConfig = AuthConfigUtil.refreshTokenConfig(config, null, token, 0l, null);
     // then
     assertEquals("https://sandbox.network.com/v1", authConfig.getBaseURL());
     assertEquals(String.format("Bearer %s", token), authConfig.getHeaders().get("Authorization"));
@@ -32,7 +32,7 @@ public class AuthConfigUtilTest extends TestCase {
     headers.put("X-Some-Key", "some value");
     // when
     Config config = new Config(scheme, host, headers);
-    Config authConfig = AuthConfigUtil.toAuthConfig(config, null, token, 0l, null);
+    Config authConfig = AuthConfigUtil.refreshTokenConfig(config, null, token, 0l, null);
     // then
     assertEquals("http://sandbox.network.com/v1", authConfig.getBaseURL());
     assertEquals(String.format("Bearer %s", token), authConfig.getHeaders().get("Authorization"));

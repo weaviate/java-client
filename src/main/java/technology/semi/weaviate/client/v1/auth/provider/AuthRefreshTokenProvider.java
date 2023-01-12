@@ -1,17 +1,16 @@
 package technology.semi.weaviate.client.v1.auth.provider;
 
-import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 import technology.semi.weaviate.client.Config;
 
-public class AuthTokenProvider extends NimbusAuth implements AccessTokenProvider {
+public class AuthRefreshTokenProvider extends NimbusAuth implements AccessTokenProvider {
   private String accessToken;
   private ScheduledExecutorService executor;
 
-  public AuthTokenProvider(Config config, AuthResponse authResponse, String accessToken, long lifetimeSeconds, String refreshToken) {
+  public AuthRefreshTokenProvider(Config config, AuthResponse authResponse, String accessToken, long lifetimeSeconds, String refreshToken) {
     this.accessToken = accessToken;
     if (StringUtils.isNotBlank(refreshToken)) {
       scheduleRefreshTokenTask(config, authResponse, refreshToken, lifetimeSeconds);

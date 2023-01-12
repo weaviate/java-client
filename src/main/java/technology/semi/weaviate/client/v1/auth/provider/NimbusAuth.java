@@ -3,7 +3,6 @@ package technology.semi.weaviate.client.v1.auth.provider;
 import com.nimbusds.oauth2.sdk.AuthorizationGrant;
 import com.nimbusds.oauth2.sdk.ClientCredentialsGrant;
 import com.nimbusds.oauth2.sdk.ErrorObject;
-import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.RefreshTokenGrant;
 import com.nimbusds.oauth2.sdk.ResourceOwnerPasswordCredentialsGrant;
 import com.nimbusds.oauth2.sdk.Scope;
@@ -24,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.WeaviateClient;
 
@@ -49,21 +49,41 @@ public class NimbusAuth extends BaseAuth {
       logNoRefreshTokenWarning(accessToken.getLifetime());
     }
 
-    return getWeaviateClient(config, authResponse,
-      accessToken.getValue(), accessToken.getLifetime(), refreshTokenValue);
+    return getWeaviateClient(config, authResponse, clientScopes,
+      accessToken.getValue(), accessToken.getLifetime(), refreshTokenValue, clientSecret, authType);
   }
 
-  protected WeaviateClient getWeaviateClient(Config config, AuthResponse authResponse,
-    String accessToken, long accessTokenLifeTime, String refreshToken) {
-    Config authConfig = AuthConfigUtil.toAuthConfig(config, authResponse,
-      accessToken, accessTokenLifeTime, refreshToken);
+  protected WeaviateClient getWeaviateClient(Config config, AuthResponse authResponse, List<String> clientScopes,
+    String accessToken, long accessTokenLifeTime, String refreshToken, String clientSecret, AuthType authType) {
+    Config authConfig = getAuthConfig(config, authResponse, clientScopes,
+      accessToken, accessTokenLifeTime, refreshToken, clientSecret, authType);
     return new WeaviateClient(authConfig);
+  }
+
+  private Config getAuthConfig(Config config, AuthResponse authResponse, List<String> clientScopes,
+    String accessToken, long accessTokenLifeTime, String refreshToken, String clientSecret, AuthType authType) {
+    if (authType == AuthType.CLIENT_CREDENTIALS) {
+      return AuthConfigUtil.clientCredentialsAuthConfig(config, authResponse, clientScopes,
+        accessToken, accessTokenLifeTime, clientSecret);
+    }
+    return AuthConfigUtil.refreshTokenConfig(config, authResponse,
+      accessToken, accessTokenLifeTime, refreshToken);
   }
 
   protected String refreshToken(Config config, AuthResponse authResponse, String refreshToken) {
     try {
       OIDCTokenResponse oidcTokenResponse = getOIDCTokenResponse(config, authResponse,
         "", "", "", refreshToken, null, AuthType.REFRESH_TOKEN);
+      return oidcTokenResponse.getOIDCTokens().getAccessToken().getValue();
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  protected String refreshClientCredentialsToken(Config config, AuthResponse authResponse, List<String> clientScopes, String clientSecret) {
+    try {
+      OIDCTokenResponse oidcTokenResponse = getOIDCTokenResponse(config, authResponse,
+        clientSecret, "", "", "", clientScopes, AuthType.CLIENT_CREDENTIALS);
       return oidcTokenResponse.getOIDCTokens().getAccessToken().getValue();
     } catch (Exception e) {
       throw new RuntimeException(e);

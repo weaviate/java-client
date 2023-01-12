@@ -3,7 +3,6 @@ package technology.semi.weaviate.client;
 import java.util.HashMap;
 import java.util.Map;
 import technology.semi.weaviate.client.v1.auth.provider.AccessTokenProvider;
-import technology.semi.weaviate.client.v1.auth.provider.AuthTokenProvider;
 
 public class Config {
   private final String scheme;

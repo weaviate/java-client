@@ -26,7 +26,7 @@ public class BearerTokenFlow extends NimbusAuth implements Authentication {
       logNoRefreshTokenWarning(accessTokenLifetime);
     }
     AuthResponse authResponse = getIdAndTokenEndpoint(config);
-    Config authConfig = AuthConfigUtil.toAuthConfig(config, authResponse,
+    Config authConfig = AuthConfigUtil.refreshTokenConfig(config, authResponse,
       accessToken, accessTokenLifetime, refreshToken);
     return new WeaviateClient(authConfig);
   }
