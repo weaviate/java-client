@@ -9,7 +9,7 @@ services:
     - '8080'
     - --scheme
     - http
-    image: semitechnologies/weaviate:1.17.0
+    image: ghcr.io/semi-technologies/weaviate:preview-push-docker-container-to-github-registry-36f5060
     links:
       - "contextionary:contextionary"
     restart: on-failure:0
