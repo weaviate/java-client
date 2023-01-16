@@ -13,6 +13,8 @@ import technology.semi.weaviate.client.v1.graphql.query.argument.GroupArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearImageArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.Bm25Argument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.HybridArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.SortArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.SortArguments;
@@ -33,7 +35,7 @@ public class Get extends BaseClient<GraphQLResponse> implements ClientResult<Gra
     return this;
   }
 
-  public Get withFields(Field ...fields) {
+  public Get withFields(Field... fields) {
     this.getBuilder.fields(Fields.builder().fields(fields).build());
     return this;
   }
@@ -55,6 +57,16 @@ public class Get extends BaseClient<GraphQLResponse> implements ClientResult<Gra
 
   public Get withNearText(NearTextArgument nearText) {
     this.getBuilder.withNearTextFilter(nearText);
+    return this;
+  }
+
+  public Get withBm25(Bm25Argument bm25) {
+    this.getBuilder.withBm25Filter(bm25);
+    return this;
+  }
+
+  public Get withHybrid(HybridArgument hybrid) {
+    this.getBuilder.withHybridFilter(hybrid);
     return this;
   }
 
@@ -83,7 +95,7 @@ public class Get extends BaseClient<GraphQLResponse> implements ClientResult<Gra
     return this;
   }
 
-  public Get withSort(SortArgument ...sort) {
+  public Get withSort(SortArgument... sort) {
     this.getBuilder.withSortArguments(SortArguments.builder().sort(sort).build());
     return this;
   }

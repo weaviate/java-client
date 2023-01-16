@@ -14,6 +14,8 @@ import technology.semi.weaviate.client.v1.filters.Operator;
 import technology.semi.weaviate.client.v1.filters.WhereFilter;
 import technology.semi.weaviate.client.v1.graphql.model.ExploreFields;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLResponse;
+import technology.semi.weaviate.client.v1.graphql.query.argument.Bm25Argument;
+import technology.semi.weaviate.client.v1.graphql.query.argument.HybridArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.GroupArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.GroupType;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
@@ -23,7 +25,6 @@ import technology.semi.weaviate.client.v1.graphql.query.argument.NearVectorArgum
 import technology.semi.weaviate.client.v1.graphql.query.argument.SortArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.SortOrder;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Field;
-import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
 import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
 
 import java.io.File;
@@ -202,6 +203,87 @@ public class ClientGraphQLTest {
     List getSoup = (List) get.get("Soup");
     assertEquals(1, getSoup.size());
   }
+
+
+  @Test
+  public void testBm25() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
+   
+    Bm25Argument bm25 = client.graphQL().arguments().bm25ArgBuilder()
+            .query("innovation")
+            .properties(new String[]{"description"})
+            .build();
+    Field name = Field.builder().name("description").build();
+    Field _additional = Field.builder()
+            .name("_additional")
+            .fields(new Field[]{Field.builder().name("id").build()})
+            .build();
+    // when
+    testGenerics.createTestSchemaAndData(client);
+    Result<GraphQLResponse> result = client.graphQL().get().withClassName("Pizza")
+            .withBm25(bm25)
+            .withFields(name, _additional).run();
+    testGenerics.cleanupWeaviate(client);
+    // then
+    assertNotNull(result);
+    assertFalse(result.hasErrors());
+    GraphQLResponse resp = result.getResult();
+    assertNotNull(resp);
+    assertNotNull(resp.getData());
+    assertTrue(resp.getData() instanceof Map);
+    Map data = (Map) resp.getData();
+    assertNotNull(data.get("Get"));
+    assertTrue(data.get("Get") instanceof Map);
+    Map get = (Map) data.get("Get");
+    assertNotNull(get.get("Pizza"));
+    assertTrue(get.get("Pizza") instanceof List);
+    List pizza = (List) get.get("Pizza");
+    assertEquals(1, pizza.size());
+    Map fields = (Map) pizza.get(0);
+    String descr = (String) fields.get("description");
+    assertTrue(descr.contains("innovation"));
+  }
+
+  @Test
+  public void testHybrid() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
+   
+    HybridArgument hybrid = client.graphQL().arguments().hybridArgBuilder()
+            .query("some say revolution")
+            .alpha(0.8f)
+            .build();
+    Field name = Field.builder().name("description").build();
+    Field _additional = Field.builder()
+            .name("_additional")
+            .fields(new Field[]{Field.builder().name("id").build()})
+            .build();
+    // when
+    testGenerics.createTestSchemaAndData(client);
+    Result<GraphQLResponse> result = client.graphQL().get().withClassName("Pizza")
+            .withHybrid(hybrid)
+            .withFields(name, _additional).run();
+    testGenerics.cleanupWeaviate(client);
+    // then
+    assertNotNull(result);
+    assertFalse(result.hasErrors());
+    GraphQLResponse resp = result.getResult();
+    assertNotNull(resp);
+    assertNotNull(resp.getData());
+    assertTrue(resp.getData() instanceof Map);
+    Map data = (Map) resp.getData();
+    assertNotNull(data.get("Get"));
+    assertTrue(data.get("Get") instanceof Map);
+    Map get = (Map) data.get("Get");
+    assertNotNull(get.get("Pizza"));
+    assertTrue(get.get("Pizza") instanceof List);
+  }
+
 
   @Test
   public void testGraphQLGetWithNearTextAndCertainty() {

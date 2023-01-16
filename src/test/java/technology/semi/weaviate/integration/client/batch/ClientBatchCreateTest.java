@@ -29,7 +29,8 @@ public class ClientBatchCreateTest {
   @ClassRule
   public static DockerComposeContainer compose = new DockerComposeContainer(
     new File("src/test/resources/docker-compose-test.yaml")
-  ).withExposedService("weaviate_1", 8080, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200));
+  ).withExposedService("weaviate_1", 8080, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200))
+    .withTailChildContainers(true);
 
   @Before
   public void before() {

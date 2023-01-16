@@ -108,11 +108,16 @@ public class ObjectsPath {
     if (ObjectUtils.isNotEmpty(pathParams.additional)) {
       queryParams.add(String.format("include=%s", StringUtils.join(pathParams.additional, ",")));
     }
+    if (StringUtils.isNotBlank(pathParams.consistencyLevel)) {
+      queryParams.add(String.format("consistency_level=%s", pathParams.consistencyLevel));
+    }
+    if (StringUtils.isNotBlank(pathParams.nodeName)) {
+      queryParams.add(String.format("node_name=%s", pathParams.nodeName));
+    }
     if (queryParams.size() > 0) {
       path.append("?").append(StringUtils.joinWith("&", queryParams.toArray()));
     }
   }
-
 
   @Builder
   @ToString
@@ -123,5 +128,7 @@ public class ObjectsPath {
     String className;
     Integer limit;
     String[] additional;
+    String consistencyLevel;
+    String nodeName;
   }
 }
