@@ -4,9 +4,12 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.google.gson.internal.LinkedTreeMap;
 import org.junit.After;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+
+import static org.junit.Assert.*;
+
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -25,7 +28,7 @@ public class ClientBatchCreateTest {
 
   @ClassRule
   public static DockerComposeContainer compose = new DockerComposeContainer(
-          new File("src/test/resources/docker-compose-test.yaml")
+    new File("src/test/resources/docker-compose-test.yaml")
   ).withExposedService("weaviate_1", 8080, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200))
     .withTailChildContainers(true);
 
@@ -71,21 +74,21 @@ public class ClientBatchCreateTest {
     WeaviateObject objA2 = WeaviateObject.builder().className("Soup").id(objA2ID).properties(propertiesSchemaA2).build();
     // when
     Result<WeaviateObject> objT1 = client.data().creator()
-            .withClassName("Pizza")
-            .withID(objTID)
-            .withProperties(propertiesSchemaT)
-            .run();
+      .withClassName("Pizza")
+      .withID(objTID)
+      .withProperties(propertiesSchemaT)
+      .run();
     Result<WeaviateObject> objA1 = client.data().creator()
-            .withClassName("Soup")
-            .withID(objAID)
-            .withProperties(propertiesSchemaA)
-            .run();
+      .withClassName("Soup")
+      .withID(objAID)
+      .withProperties(propertiesSchemaA)
+      .run();
     Result<ObjectGetResponse[]> batchTs = client.batch().objectsBatcher()
-            .withObjects(objT1.getResult(), objT2)
-            .run();
+      .withObjects(objT1.getResult(), objT2)
+      .run();
     Result<ObjectGetResponse[]> batchAs = client.batch().objectsBatcher()
-            .withObjects(objA1.getResult(), objA2)
-            .run();
+      .withObjects(objA1.getResult(), objA2)
+      .run();
     // check if created objects exist
     Result<List<WeaviateObject>> getObjT1 = client.data().objectsGetter().withID(objTID).withClassName("Pizza").run();
     Result<List<WeaviateObject>> getObjT2 = client.data().objectsGetter().withID(objT2ID).withClassName("Pizza").run();
@@ -120,4 +123,37 @@ public class ClientBatchCreateTest {
     assertEquals(1, getObjA2.getResult().size());
     assertEquals(objA2ID, getObjA2.getResult().get(0).getId());
   }
+
+  @Test
+  public void testBatchPartialError() {
+    String objID = "abefd256-8574-442b-9293-9205193737ef";
+    Map<String, Object> propertiesSchemaT = new HashMap<>();
+    propertiesSchemaT.put("name", 1);
+    propertiesSchemaT.put("description", "This pizza should throw a invalid name error");
+    WeaviateObject objWithError = WeaviateObject.builder()
+      .className("Pizza").id(objID).properties(propertiesSchemaT).build();
+
+    String objT2ID = "97fa5147-bdad-4d74-9a81-f8babc811b09";
+    Map<String, Object> propertiesSchemaT2 = new HashMap<>();
+    propertiesSchemaT2.put("name", "Doener");
+    propertiesSchemaT2.put("description", "A innovation, some say revolution, in the pizza industry.");
+    WeaviateObject objT2 = WeaviateObject.builder()
+      .className("Pizza").id(objT2ID).properties(propertiesSchemaT2).build();
+
+    Result<ObjectGetResponse[]> batchTs = client.batch().objectsBatcher()
+      .withObjects(objWithError, objT2)
+      .run();
+
+    assertEquals(2, batchTs.getResult().length);
+    assertEquals(objWithError.getId(), batchTs.getResult()[0].getId());
+    assertEquals("{error=[{message=invalid string property 'name' on class 'Pizza': not a string, but json.Number}]}",
+      batchTs.getResult()[0].getResult().getErrors().toString());
+
+    Result<List<WeaviateObject>> getObjT2 = client.data().objectsGetter().withID(objT2ID).withClassName("Pizza").run();
+    assertNotNull(getObjT2);
+    assertNotNull(getObjT2.getResult());
+    assertEquals(1, getObjT2.getResult().size());
+  }
+
+
 }
