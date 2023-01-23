@@ -21,7 +21,7 @@ public class Batch {
   }
 
   public ObjectsBatcher objectsBatcher() {
-    return ObjectsBatcher.create(config, data);
+    return objectsBatcher(ObjectsBatcher.BatchRetriesConfig.defaultConfig().build());
   }
 
   public ObjectsBatcher objectsBatcher(ObjectsBatcher.BatchRetriesConfig batchRetriesConfig) {
@@ -29,7 +29,24 @@ public class Batch {
   }
 
   public ObjectsBatcher objectsAutoBatcher() {
-    return ObjectsBatcher.createAuto(config, data);
+    return objectsAutoBatcher(
+      ObjectsBatcher.BatchRetriesConfig.defaultConfig().build(),
+      ObjectsBatcher.AutoBatchConfig.defaultConfig().build()
+    );
+  }
+
+  public ObjectsBatcher objectsAutoBatcher(ObjectsBatcher.BatchRetriesConfig batchRetriesConfig) {
+    return objectsAutoBatcher(
+      batchRetriesConfig,
+      ObjectsBatcher.AutoBatchConfig.defaultConfig().build()
+    );
+  }
+
+  public ObjectsBatcher objectsAutoBatcher(ObjectsBatcher.AutoBatchConfig autoBatchConfig) {
+    return objectsAutoBatcher(
+      ObjectsBatcher.BatchRetriesConfig.defaultConfig().build(),
+      autoBatchConfig
+    );
   }
 
   public ObjectsBatcher objectsAutoBatcher(ObjectsBatcher.BatchRetriesConfig batchRetriesConfig,
@@ -46,14 +63,31 @@ public class Batch {
   }
 
   public ReferencesBatcher referencesBatcher() {
-    return ReferencesBatcher.create(config);
+    return referencesBatcher(ReferencesBatcher.BatchRetriesConfig.defaultConfig().build());
   }
   public ReferencesBatcher referencesBatcher(ReferencesBatcher.BatchRetriesConfig batchRetriesConfig) {
     return ReferencesBatcher.create(config, batchRetriesConfig);
   }
 
   public ReferencesBatcher referencesAutoBatcher() {
-    return ReferencesBatcher.createAuto(config);
+    return referencesAutoBatcher(
+      ReferencesBatcher.BatchRetriesConfig.defaultConfig().build(),
+      ReferencesBatcher.AutoBatchConfig.defaultConfig().build()
+    );
+  }
+
+  public ReferencesBatcher referencesAutoBatcher(ReferencesBatcher.BatchRetriesConfig batchRetriesConfig) {
+    return referencesAutoBatcher(
+      batchRetriesConfig,
+      ReferencesBatcher.AutoBatchConfig.defaultConfig().build()
+    );
+  }
+
+  public ReferencesBatcher referencesAutoBatcher(ReferencesBatcher.AutoBatchConfig autoBatchConfig) {
+    return referencesAutoBatcher(
+      ReferencesBatcher.BatchRetriesConfig.defaultConfig().build(),
+      autoBatchConfig
+    );
   }
 
   public ReferencesBatcher referencesAutoBatcher(ReferencesBatcher.BatchRetriesConfig batchRetriesConfig,

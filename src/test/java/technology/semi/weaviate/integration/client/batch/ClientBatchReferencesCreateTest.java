@@ -294,9 +294,8 @@ public class ClientBatchReferencesCreateTest {
       .batchSize(2)
       .callback(resultsReferences::add)
       .build();
-    ReferencesBatcher.BatchRetriesConfig batchRetriesConfig = ReferencesBatcher.BatchRetriesConfig.defaultConfig().build();
 
-    client.batch().referencesAutoBatcher(batchRetriesConfig, autoBatchConfig)
+    client.batch().referencesAutoBatcher(autoBatchConfig)
       .withReferences(refPizzaToSoup, refSoupToPizza, refPizzaToPizza, refSoupToSoup)
       .flush();
 

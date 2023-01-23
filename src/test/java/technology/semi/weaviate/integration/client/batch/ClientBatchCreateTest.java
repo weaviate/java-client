@@ -152,14 +152,13 @@ public class ClientBatchCreateTest {
       .batchSize(2)
       .callback(resBatches::add)
       .build();
-    ObjectsBatcher.BatchRetriesConfig batchRetriesConfig = ObjectsBatcher.BatchRetriesConfig.defaultConfig().build();
 
-    client.batch().objectsAutoBatcher(batchRetriesConfig, autoBatchConfig)
+    client.batch().objectsAutoBatcher(autoBatchConfig)
       .withObjects(
         resPizza1.getResult(),
         WeaviateObject.builder().className("Pizza").id(PIZZA_2_ID).properties(PIZZA_2_PROPS).build()
       ).flush();
-    client.batch().objectsAutoBatcher(batchRetriesConfig, autoBatchConfig)
+    client.batch().objectsAutoBatcher(autoBatchConfig)
       .withObjects(
         resSoup1.getResult(),
         WeaviateObject.builder().className("Soup").id(SOUP_2_ID).properties(SOUP_2_PROPS).build()

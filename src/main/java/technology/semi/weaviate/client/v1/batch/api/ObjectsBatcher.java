@@ -77,18 +77,10 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
     }
   }
 
-  public static ObjectsBatcher create(Config config, Data data) {
-    return new ObjectsBatcher(config, data, BatchRetriesConfig.defaultConfig().build(), null);
-  }
-
   public static ObjectsBatcher create(Config config, Data data,
                                       BatchRetriesConfig batchRetriesConfig) {
     Assert.requiredNotNull(batchRetriesConfig, "batchRetriesConfig");
     return new ObjectsBatcher(config, data, batchRetriesConfig, null);
-  }
-
-  public static ObjectsBatcher createAuto(Config config, Data data) {
-    return new ObjectsBatcher(config, data, BatchRetriesConfig.defaultConfig().build(), AutoBatchConfig.defaultConfig().build());
   }
 
   public static ObjectsBatcher createAuto(Config config, Data data,
