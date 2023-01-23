@@ -40,13 +40,14 @@ jobs:
     - name: Unpack secrets
       env:
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+      run: |
+        ./decrypt_secret.sh
+    - name: Deploy
+      env:
         OKTA_DUMMY_CI_PW: ${{ secrets.OKTA_DUMMY_CI_PW }}
         WCS_DUMMY_CI_PW: ${{ secrets.WCS_DUMMY_CI_PW }}
         OKTA_CLIENT_SECRET: ${{ secrets.OKTA_CLIENT_SECRET }}
         AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-      run: |
-        ./decrypt_secret.sh
-    - name: Deploy
       run: |
         mvn -DskipTests clean package
         mvn -s settings.xml deploy
