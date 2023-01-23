@@ -1,6 +1,7 @@
 package technology.semi.weaviate.client.v1.data.api;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -39,7 +40,11 @@ public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements Cl
     @Override
     public Result<List<WeaviateObject>> run() {
       Response<WeaviateObject> resp = sendGetRequest(path, WeaviateObject.class);
-      return new Result<>(resp.getStatusCode(), Arrays.asList(resp.getBody()), resp.getErrors());
+      WeaviateObject object = resp.getBody();
+      List<WeaviateObject> objects = object == null
+        ? null
+        : Collections.singletonList(object);
+      return new Result<>(resp.getStatusCode(), objects, resp.getErrors());
     }
   }
 

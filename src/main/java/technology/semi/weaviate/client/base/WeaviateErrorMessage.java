@@ -12,4 +12,5 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class WeaviateErrorMessage {
   String message;
+  Throwable throwable;
 }

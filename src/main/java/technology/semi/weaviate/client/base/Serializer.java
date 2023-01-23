@@ -3,7 +3,7 @@ package technology.semi.weaviate.client.base;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-class Serializer {
+public class Serializer {
   private Gson gson;
 
   public Serializer() {
