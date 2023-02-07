@@ -11,6 +11,7 @@ import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.base.WeaviateErrorMessage;
 import technology.semi.weaviate.client.base.WeaviateErrorResponse;
+import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.v1.data.util.ObjectsPath;
 
 public class ObjectsChecker extends BaseClient<String> implements ClientResult<Boolean> {
@@ -19,8 +20,8 @@ public class ObjectsChecker extends BaseClient<String> implements ClientResult<B
   private String id;
   private String className;
 
-  public ObjectsChecker(Config config, ObjectsPath objectsPath) {
-    super(config);
+  public ObjectsChecker(HttpClient httpClient, Config config, ObjectsPath objectsPath) {
+    super(httpClient, config);
     this.objectsPath = Objects.requireNonNull(objectsPath);
   }
 

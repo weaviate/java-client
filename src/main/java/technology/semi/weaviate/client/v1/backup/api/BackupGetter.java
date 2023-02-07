@@ -5,14 +5,15 @@ import technology.semi.weaviate.client.base.BaseClient;
 import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
+import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.v1.backup.model.BackupCreateResponse;
 
 public class BackupGetter extends BaseClient<BackupCreateResponse[]> implements ClientResult<BackupCreateResponse[]> {
 
   private String backend;
 
-  public BackupGetter(Config config) {
-    super(config);
+  public BackupGetter(HttpClient httpClient, Config config) {
+    super(httpClient, config);
   }
 
   public BackupGetter withBackend(String backend) {

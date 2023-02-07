@@ -10,6 +10,7 @@ import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.base.WeaviateErrorMessage;
 import technology.semi.weaviate.client.base.WeaviateErrorResponse;
+import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.v1.schema.model.Property;
 
 public class PropertyCreator extends BaseClient<Property> implements ClientResult<Boolean> {
@@ -17,8 +18,8 @@ public class PropertyCreator extends BaseClient<Property> implements ClientResul
   private String className;
   private Property property;
 
-  public PropertyCreator(Config config) {
-    super(config);
+  public PropertyCreator(HttpClient httpClient, Config config) {
+    super(httpClient, config);
   }
 
   public PropertyCreator withClassName(String className) {

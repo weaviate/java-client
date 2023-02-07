@@ -13,6 +13,7 @@ import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.base.WeaviateErrorMessage;
 import technology.semi.weaviate.client.base.WeaviateErrorResponse;
+import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
 import technology.semi.weaviate.client.v1.data.util.ObjectsPath;
 
@@ -24,8 +25,8 @@ public class ObjectUpdater extends BaseClient<WeaviateObject> implements ClientR
   private Map<String, Object> properties;
   private Boolean withMerge;
 
-  public ObjectUpdater(Config config, ObjectsPath objectsPath) {
-    super(config);
+  public ObjectUpdater(HttpClient httpClient, Config config, ObjectsPath objectsPath) {
+    super(httpClient, config);
     this.objectsPath = Objects.requireNonNull(objectsPath);
   }
 

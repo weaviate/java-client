@@ -4,15 +4,19 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import org.apache.commons.lang3.StringUtils;
 import technology.semi.weaviate.client.Config;
+import technology.semi.weaviate.client.v1.auth.nimbus.BaseAuth;
+import technology.semi.weaviate.client.v1.auth.nimbus.NimbusAuth;
 
-public class AuthClientCredentialsTokenProvider extends NimbusAuth implements AccessTokenProvider {
+public class AuthClientCredentialsTokenProvider implements AccessTokenProvider {
+
+  private final NimbusAuth nimbusAuth;
   private String accessToken;
   private ScheduledExecutorService executor;
 
-  public AuthClientCredentialsTokenProvider(Config config, AuthResponse authResponse, List<String> clientScopes,
+  public AuthClientCredentialsTokenProvider(Config config, BaseAuth.AuthResponse authResponse, List<String> clientScopes,
     String accessToken, long lifetimeSeconds, String clientSecret) {
+    this.nimbusAuth = new NimbusAuth();
     this.accessToken = accessToken;
     scheduleRefreshTokenTask(config, authResponse, clientScopes, clientSecret, lifetimeSeconds);
   }
@@ -22,10 +26,13 @@ public class AuthClientCredentialsTokenProvider extends NimbusAuth implements Ac
     return accessToken;
   }
 
-  private void scheduleRefreshTokenTask(Config config, AuthResponse authResponse, List<String> clientScopes, String clientSecret, long period) {
+  public void shutdown() {
+    executor.shutdown();
+  }
+
+  private void scheduleRefreshTokenTask(Config config, BaseAuth.AuthResponse authResponse, List<String> clientScopes, String clientSecret, long period) {
     executor = Executors.newSingleThreadScheduledExecutor();
-    executor.scheduleAtFixedRate(() -> {
-      accessToken = refreshClientCredentialsToken(config, authResponse, clientScopes, clientSecret);
-    }, period, period, TimeUnit.SECONDS);
+    executor.scheduleAtFixedRate(() -> accessToken = nimbusAuth.refreshClientCredentialsToken(config, authResponse, clientScopes, clientSecret),
+      period, period, TimeUnit.SECONDS);
   }
 }

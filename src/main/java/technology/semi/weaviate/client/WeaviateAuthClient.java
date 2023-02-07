@@ -4,7 +4,7 @@ import java.util.List;
 import technology.semi.weaviate.client.v1.auth.BearerTokenFlow;
 import technology.semi.weaviate.client.v1.auth.ClientCredentialsFlow;
 import technology.semi.weaviate.client.v1.auth.ResourceOwnerPasswordFlow;
-import technology.semi.weaviate.client.v1.auth.provider.AuthException;
+import technology.semi.weaviate.client.v1.auth.exception.AuthException;
 
 public class WeaviateAuthClient {
 

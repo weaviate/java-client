@@ -10,7 +10,7 @@ import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 import org.mockserver.verify.VerificationTimes;
-import technology.semi.weaviate.client.v1.auth.provider.AuthException;
+import technology.semi.weaviate.client.v1.auth.exception.AuthException;
 
 public class WeaviateAuthClientTest extends TestCase {
 

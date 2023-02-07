@@ -36,45 +36,4 @@ public class ConfigTest extends TestCase {
     Assert.assertEquals("https://localhost:8080/v1", config.getBaseURL());
     Assert.assertEquals(1, config.getHeaders().size());
   }
-
-  @Test
-  public void testConfigAuthProvider() throws InterruptedException {
-    // given
-
-    class AuthProviderImpl implements AccessTokenProvider {
-      private String accessToken;
-      private ScheduledExecutorService executor;
-
-      public AuthProviderImpl(String accessToken, long period) {
-        this.accessToken = accessToken;
-        scheduleRefreshTokenTask(period);
-      }
-      @Override
-      public String getAccessToken() {
-        return accessToken;
-      }
-
-      private void scheduleRefreshTokenTask(long period) {
-        executor = Executors.newSingleThreadScheduledExecutor();
-        executor.scheduleAtFixedRate(() -> {
-          accessToken = "NEW_VALUE";
-        }, period, period, TimeUnit.SECONDS);
-      }
-    }
-
-    String scheme = "https";
-    String domain = "localhost:8080";
-    Map<String, String> headers = new HashMap<>();
-    headers.put("Authorization", "Bearer valueA");
-    headers.put("Authorization", "Bearer valueB");
-    AccessTokenProvider provider = new AuthProviderImpl("OLD_VALUE", 2);
-    // when
-    Config config = new Config(scheme, domain, headers, provider);
-    // then
-    Assert.assertEquals("https://localhost:8080/v1", config.getBaseURL());
-    Assert.assertEquals(1, config.getHeaders().size());
-    Assert.assertEquals("Bearer OLD_VALUE", config.getHeaders().get("Authorization"));
-    Thread.sleep(3000);
-    Assert.assertEquals("Bearer NEW_VALUE", config.getHeaders().get("Authorization"));
-  }
 }

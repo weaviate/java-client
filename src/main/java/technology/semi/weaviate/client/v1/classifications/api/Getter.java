@@ -6,14 +6,15 @@ import technology.semi.weaviate.client.base.BaseClient;
 import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
+import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.v1.classifications.model.Classification;
 
 public class Getter extends BaseClient<Classification> implements ClientResult<Classification> {
 
   private String id;
 
-  public Getter(Config config) {
-    super(config);
+  public Getter(HttpClient httpClient, Config config) {
+    super(httpClient, config);
   }
 
   public Getter withID(String id) {

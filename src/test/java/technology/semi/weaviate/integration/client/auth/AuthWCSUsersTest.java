@@ -14,7 +14,7 @@ import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.WeaviateClient;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.auth.ResourceOwnerPasswordFlow;
-import technology.semi.weaviate.client.v1.auth.provider.AuthException;
+import technology.semi.weaviate.client.v1.auth.exception.AuthException;
 import technology.semi.weaviate.client.v1.misc.model.Meta;
 import static technology.semi.weaviate.integration.client.WeaviateVersion.EXPECTED_WEAVIATE_VERSION;
 

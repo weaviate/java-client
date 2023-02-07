@@ -1,4 +1,4 @@
-package technology.semi.weaviate.client.v1.auth.provider;
+package technology.semi.weaviate.client.v1.auth.nimbus;
 
 import com.nimbusds.oauth2.sdk.AuthorizationGrant;
 import com.nimbusds.oauth2.sdk.ClientCredentialsGrant;
@@ -18,14 +18,18 @@ import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import com.nimbusds.openid.connect.sdk.OIDCTokenResponse;
 import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import technology.semi.weaviate.client.Config;
-import technology.semi.weaviate.client.WeaviateClient;
+import technology.semi.weaviate.client.v1.auth.exception.AuthException;
+import technology.semi.weaviate.client.v1.auth.provider.AccessTokenProvider;
+import technology.semi.weaviate.client.v1.auth.provider.AuthClientCredentialsTokenProvider;
+import technology.semi.weaviate.client.v1.auth.provider.AuthRefreshTokenProvider;
 
 public class NimbusAuth extends BaseAuth {
 
@@ -33,10 +37,10 @@ public class NimbusAuth extends BaseAuth {
     super();
   }
 
-  protected WeaviateClient getAuthClient(Config config,
+  public AccessTokenProvider getAccessTokenProvider(Config config,
     String clientSecret, String username, String password, List<String> clientScopes,
     AuthType authType) throws AuthException {
-    AuthResponse authResponse = getIdAndTokenEndpoint(config);
+    BaseAuth.AuthResponse authResponse = getIdAndTokenEndpoint(config);
     OIDCTokenResponse oidcTokenResponse = getOIDCTokenResponse(config, authResponse,
       clientSecret, username, password, "", clientScopes, authType);
     AccessToken accessToken = oidcTokenResponse.getOIDCTokens().getAccessToken();
@@ -49,28 +53,19 @@ public class NimbusAuth extends BaseAuth {
       logNoRefreshTokenWarning(accessToken.getLifetime());
     }
 
-    return getWeaviateClient(config, authResponse, clientScopes,
+    return getTokenProvider(config, authResponse, clientScopes,
       accessToken.getValue(), accessToken.getLifetime(), refreshTokenValue, clientSecret, authType);
   }
 
-  protected WeaviateClient getWeaviateClient(Config config, AuthResponse authResponse, List<String> clientScopes,
-    String accessToken, long accessTokenLifeTime, String refreshToken, String clientSecret, AuthType authType) {
-    Config authConfig = getAuthConfig(config, authResponse, clientScopes,
-      accessToken, accessTokenLifeTime, refreshToken, clientSecret, authType);
-    return new WeaviateClient(authConfig);
-  }
-
-  private Config getAuthConfig(Config config, AuthResponse authResponse, List<String> clientScopes,
+  protected AccessTokenProvider getTokenProvider(Config config, BaseAuth.AuthResponse authResponse, List<String> clientScopes,
     String accessToken, long accessTokenLifeTime, String refreshToken, String clientSecret, AuthType authType) {
     if (authType == AuthType.CLIENT_CREDENTIALS) {
-      return AuthConfigUtil.clientCredentialsAuthConfig(config, authResponse, clientScopes,
-        accessToken, accessTokenLifeTime, clientSecret);
+      return new AuthClientCredentialsTokenProvider(config, authResponse, clientScopes, accessToken, accessTokenLifeTime, clientSecret);
     }
-    return AuthConfigUtil.refreshTokenConfig(config, authResponse,
-      accessToken, accessTokenLifeTime, refreshToken);
+    return new AuthRefreshTokenProvider(config, authResponse, accessToken, accessTokenLifeTime, refreshToken);
   }
 
-  protected String refreshToken(Config config, AuthResponse authResponse, String refreshToken) {
+  public String refreshToken(Config config, BaseAuth.AuthResponse authResponse, String refreshToken) {
     try {
       OIDCTokenResponse oidcTokenResponse = getOIDCTokenResponse(config, authResponse,
         "", "", "", refreshToken, null, AuthType.REFRESH_TOKEN);
@@ -80,7 +75,7 @@ public class NimbusAuth extends BaseAuth {
     }
   }
 
-  protected String refreshClientCredentialsToken(Config config, AuthResponse authResponse, List<String> clientScopes, String clientSecret) {
+  public String refreshClientCredentialsToken(Config config, BaseAuth.AuthResponse authResponse, List<String> clientScopes, String clientSecret) {
     try {
       OIDCTokenResponse oidcTokenResponse = getOIDCTokenResponse(config, authResponse,
         clientSecret, "", "", "", clientScopes, AuthType.CLIENT_CREDENTIALS);
@@ -90,14 +85,19 @@ public class NimbusAuth extends BaseAuth {
     }
   }
 
-  protected OIDCTokenResponse getOIDCTokenResponse(Config config, AuthResponse authResponse,
+  public void logNoRefreshTokenWarning(long accessTokenLifetime) {
+    String msgFormat = "Auth002: Your access token is valid for %s and no refresh token was provided.";
+    log(String.format(msgFormat, getAccessTokenExpireDate(accessTokenLifetime)));
+  }
+
+  private OIDCTokenResponse getOIDCTokenResponse(Config config, BaseAuth.AuthResponse authResponse,
     String clientSecret, String username, String password, String refreshToken, List<String> clientScopes,
     AuthType authType) throws AuthException {
     try {
       OIDCProviderMetadata providerMetadata = OIDCProviderMetadata.parse(authResponse.getConfiguration());
       ClientID clientID = new ClientID(authResponse.getClientId());
       Secret secret = new Secret(clientSecret);
-      String redirectURL = String.format("%s%s", config.getBaseURL(), OIDC_URL);
+      String redirectURL = String.format("%s%s", config.getBaseURL(), BaseAuth.OIDC_URL);
       String responseTypes = "code id_token";
       String responseMode = "fragment";
       Scope scopes = getScopes(authResponse, clientScopes, clientID, providerMetadata);
@@ -126,7 +126,7 @@ public class NimbusAuth extends BaseAuth {
     }
   }
 
-  private Scope getScopes(AuthResponse authResponse, List<String> clientScopes, ClientID clientID, OIDCProviderMetadata providerMetadata) {
+  private Scope getScopes(BaseAuth.AuthResponse authResponse, List<String> clientScopes, ClientID clientID, OIDCProviderMetadata providerMetadata) {
     Scope scopes = new Scope();
     if (authResponse.getScopes() != null) {
       Arrays.stream(authResponse.getScopes()).forEach(scopes::add);
@@ -151,5 +151,18 @@ public class NimbusAuth extends BaseAuth {
       default:
         return new RefreshTokenGrant(new RefreshToken(refreshToken));
     }
+  }
+
+
+
+  private String getAccessTokenExpireDate(Long accessTokenLifetime) {
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    Calendar cal = Calendar.getInstance();
+    cal.add(Calendar.SECOND, accessTokenLifetime.intValue());
+    return dateFormat.format(cal.getTime());
+  }
+
+  private void log(String msg) {
+    System.out.println(msg);
   }
 }

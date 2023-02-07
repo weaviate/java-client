@@ -4,24 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.WeaviateClient;
-import technology.semi.weaviate.client.v1.auth.provider.AuthException;
-import technology.semi.weaviate.client.v1.auth.provider.AuthType;
-import technology.semi.weaviate.client.v1.auth.provider.NimbusAuth;
+import technology.semi.weaviate.client.v1.auth.exception.AuthException;
+import technology.semi.weaviate.client.v1.auth.nimbus.AuthType;
+import technology.semi.weaviate.client.v1.auth.nimbus.NimbusAuth;
+import technology.semi.weaviate.client.v1.auth.provider.AccessTokenProvider;
 
-public class ResourceOwnerPasswordFlow extends NimbusAuth implements Authentication {
+public class ResourceOwnerPasswordFlow implements Authentication {
+
+  private final NimbusAuth nimbusAuth;
   private final String username;
   private final String password;
 
   public ResourceOwnerPasswordFlow(String username, String password) {
-    super();
+    this.nimbusAuth = new NimbusAuth();
     this.username = username;
     this.password = password;
   }
 
   @Override
   public WeaviateClient getAuthClient(Config config, List<String> scopes) throws AuthException {
-    WeaviateClient authClient = getAuthClient(config, "", username, password, addDefaultScopes(scopes), AuthType.USER_PASSWORD);
-    return authClient;
+    AccessTokenProvider tokenProvider = nimbusAuth.getAccessTokenProvider(config, "", username, password, addDefaultScopes(scopes), AuthType.USER_PASSWORD);
+    return new WeaviateClient(config, tokenProvider);
   }
 
   @Override

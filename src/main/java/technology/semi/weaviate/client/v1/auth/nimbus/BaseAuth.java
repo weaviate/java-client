@@ -1,7 +1,5 @@
-package technology.semi.weaviate.client.v1.auth.provider;
+package technology.semi.weaviate.client.v1.auth.nimbus;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -10,9 +8,10 @@ import technology.semi.weaviate.client.base.Serializer;
 import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.base.http.HttpResponse;
 import technology.semi.weaviate.client.base.http.impl.CommonsHttpClientImpl;
+import technology.semi.weaviate.client.v1.auth.exception.AuthException;
 
-class BaseAuth {
-  protected final String OIDC_URL = "/.well-known/openid-configuration";
+public class BaseAuth {
+  public final static String OIDC_URL = "/.well-known/openid-configuration";
   private final Serializer serializer;
 
   BaseAuth() {
@@ -34,7 +33,7 @@ class BaseAuth {
     String[] scopes;
   }
 
-  protected AuthResponse getIdAndTokenEndpoint(Config config) throws AuthException {
+  public AuthResponse getIdAndTokenEndpoint(Config config) throws AuthException {
     HttpClientBuilder builder = HttpClientBuilder.create();
     HttpClient client = new CommonsHttpClientImpl(config.getHeaders(), builder::build);
     String url = config.getBaseURL() + OIDC_URL;
@@ -67,19 +66,7 @@ class BaseAuth {
     }
   }
 
-  protected void logNoRefreshTokenWarning(long accessTokenLifetime) {
-    String msgFormat = "Auth002: Your access token is valid for %s and no refresh token was provided.";
-    log(String.format(msgFormat, getAccessTokenExpireDate(accessTokenLifetime)));
-  }
-
-  private String getAccessTokenExpireDate(Long accessTokenLifetime) {
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    Calendar cal = Calendar.getInstance();
-    cal.add(Calendar.SECOND, accessTokenLifetime.intValue());
-    return dateFormat.format(cal.getTime());
-  }
-
-  protected void log(String msg) {
+  private void log(String msg) {
     System.out.println(msg);
   }
 }

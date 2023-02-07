@@ -1,6 +1,7 @@
 package technology.semi.weaviate.client.v1.batch;
 
 import technology.semi.weaviate.client.Config;
+import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.base.util.BeaconPath;
 import technology.semi.weaviate.client.base.util.DbVersionSupport;
 import technology.semi.weaviate.client.v1.batch.api.ReferencesBatcher;
@@ -11,11 +12,13 @@ import technology.semi.weaviate.client.v1.data.Data;
 
 public class Batch {
   private final Config config;
+  private final HttpClient httpClient;
   private final BeaconPath beaconPath;
   private final Data data;
 
-  public Batch(Config config, DbVersionSupport dbVersionSupport, Data data) {
+  public Batch(HttpClient httpClient, Config config, DbVersionSupport dbVersionSupport, Data data) {
     this.config = config;
+    this.httpClient = httpClient;
     this.beaconPath = new BeaconPath(dbVersionSupport);
     this.data = data;
   }
@@ -25,7 +28,7 @@ public class Batch {
   }
 
   public ObjectsBatcher objectsBatcher(ObjectsBatcher.BatchRetriesConfig batchRetriesConfig) {
-    return ObjectsBatcher.create(config, data, batchRetriesConfig);
+    return ObjectsBatcher.create(httpClient, config, data, batchRetriesConfig);
   }
 
   public ObjectsBatcher objectsAutoBatcher() {
@@ -51,11 +54,11 @@ public class Batch {
 
   public ObjectsBatcher objectsAutoBatcher(ObjectsBatcher.BatchRetriesConfig batchRetriesConfig,
                                            ObjectsBatcher.AutoBatchConfig autoBatchConfig) {
-    return ObjectsBatcher.createAuto(config, data, batchRetriesConfig, autoBatchConfig);
+    return ObjectsBatcher.createAuto(httpClient, config, data, batchRetriesConfig, autoBatchConfig);
   }
 
   public ObjectsBatchDeleter objectsBatchDeleter() {
-    return new ObjectsBatchDeleter(config);
+    return new ObjectsBatchDeleter(httpClient, config);
   }
 
   public ReferencePayloadBuilder referencePayloadBuilder() {
@@ -66,7 +69,7 @@ public class Batch {
     return referencesBatcher(ReferencesBatcher.BatchRetriesConfig.defaultConfig().build());
   }
   public ReferencesBatcher referencesBatcher(ReferencesBatcher.BatchRetriesConfig batchRetriesConfig) {
-    return ReferencesBatcher.create(config, batchRetriesConfig);
+    return ReferencesBatcher.create(httpClient, config, batchRetriesConfig);
   }
 
   public ReferencesBatcher referencesAutoBatcher() {
@@ -92,6 +95,6 @@ public class Batch {
 
   public ReferencesBatcher referencesAutoBatcher(ReferencesBatcher.BatchRetriesConfig batchRetriesConfig,
                                                  ReferencesBatcher.AutoBatchConfig autoBatchConfig) {
-    return ReferencesBatcher.createAuto(config, batchRetriesConfig, autoBatchConfig);
+    return ReferencesBatcher.createAuto(httpClient, config, batchRetriesConfig, autoBatchConfig);
   }
 }

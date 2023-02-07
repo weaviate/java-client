@@ -3,22 +3,25 @@ package technology.semi.weaviate.client.v1.auth;
 import java.util.List;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.WeaviateClient;
-import technology.semi.weaviate.client.v1.auth.provider.AuthException;
-import technology.semi.weaviate.client.v1.auth.provider.AuthType;
-import technology.semi.weaviate.client.v1.auth.provider.NimbusAuth;
+import technology.semi.weaviate.client.v1.auth.exception.AuthException;
+import technology.semi.weaviate.client.v1.auth.nimbus.AuthType;
+import technology.semi.weaviate.client.v1.auth.nimbus.NimbusAuth;
+import technology.semi.weaviate.client.v1.auth.provider.AccessTokenProvider;
 
-public class ClientCredentialsFlow extends NimbusAuth implements Authentication {
+public class ClientCredentialsFlow implements Authentication {
+
+  private final NimbusAuth nimbusAuth;
   private final String clientSecret;
 
   public ClientCredentialsFlow(String clientSecret) {
-    super();
+    this.nimbusAuth = new NimbusAuth();
     this.clientSecret = clientSecret;
   }
 
   @Override
   public WeaviateClient getAuthClient(Config config, List<String> scopes) throws AuthException {
-    WeaviateClient authClient = getAuthClient(config, clientSecret, "", "", scopes, AuthType.CLIENT_CREDENTIALS);
-    return authClient;
+    AccessTokenProvider tokenProvider = nimbusAuth.getAccessTokenProvider(config, clientSecret, "", "", scopes, AuthType.CLIENT_CREDENTIALS);
+    return new WeaviateClient(config, tokenProvider);
   }
 
   @Override

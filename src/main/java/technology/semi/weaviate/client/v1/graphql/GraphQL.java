@@ -1,6 +1,7 @@
 package technology.semi.weaviate.client.v1.graphql;
 
 import technology.semi.weaviate.client.Config;
+import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.v1.graphql.query.Aggregate;
 import technology.semi.weaviate.client.v1.graphql.query.Explore;
 import technology.semi.weaviate.client.v1.graphql.query.Get;
@@ -17,6 +18,7 @@ import technology.semi.weaviate.client.v1.graphql.query.argument.SortArgument;
 
 public class GraphQL {
   private Config config;
+  private HttpClient httpClient;
 
   public class Arguments {
     public NearTextArgument.NearTextArgumentBuilder nearTextArgBuilder() {
@@ -48,24 +50,25 @@ public class GraphQL {
     }
   }
 
-  public GraphQL(Config config) {
+  public GraphQL(HttpClient httpClient, Config config) {
     this.config = config;
+    this.httpClient = httpClient;
   }
 
   public Get get() {
-    return new Get(config);
+    return new Get(httpClient, config);
   }
 
   public Raw raw() {
-    return new Raw(config);
+    return new Raw(httpClient, config);
   }
 
   public Explore explore() {
-    return new Explore(config);
+    return new Explore(httpClient, config);
   }
 
   public Aggregate aggregate() {
-    return new Aggregate(config);
+    return new Aggregate(httpClient, config);
   }
 
   public GraphQL.Arguments arguments() {

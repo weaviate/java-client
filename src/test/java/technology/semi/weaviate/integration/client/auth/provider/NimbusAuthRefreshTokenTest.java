@@ -12,16 +12,18 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.WeaviateClient;
 import technology.semi.weaviate.client.base.Result;
-import technology.semi.weaviate.client.v1.auth.provider.AuthConfigUtil;
-import technology.semi.weaviate.client.v1.auth.provider.AuthException;
-import technology.semi.weaviate.client.v1.auth.provider.AuthType;
-import technology.semi.weaviate.client.v1.auth.provider.NimbusAuth;
+import technology.semi.weaviate.client.v1.auth.exception.AuthException;
+import technology.semi.weaviate.client.v1.auth.nimbus.AuthType;
+import technology.semi.weaviate.client.v1.auth.nimbus.BaseAuth;
+import technology.semi.weaviate.client.v1.auth.nimbus.NimbusAuth;
+import technology.semi.weaviate.client.v1.auth.provider.AccessTokenProvider;
+import technology.semi.weaviate.client.v1.auth.provider.AuthRefreshTokenProvider;
 import technology.semi.weaviate.client.v1.misc.model.Meta;
 import static technology.semi.weaviate.integration.client.WeaviateVersion.EXPECTED_WEAVIATE_VERSION;
 
 public class NimbusAuthRefreshTokenTest {
   private String address;
-  private Config refreshConfig;
+  private AccessTokenProvider tokenProvider;
 
   @ClassRule
   public static DockerComposeContainer compose = new DockerComposeContainer(
@@ -38,23 +40,12 @@ public class NimbusAuthRefreshTokenTest {
   @Test
   public void testAuthWCS() throws AuthException, InterruptedException {
     class NimbusAuthAuthImpl extends NimbusAuth {
-      public WeaviateClient getAuthClientWithOverriddenRefreshTokenValue(Config config, List<String> scopes,
-        String username, String password) throws AuthException {
-        return getAuthClient(config, "", username, password, scopes, AuthType.USER_PASSWORD);
-      }
-
       @Override
-      protected WeaviateClient getWeaviateClient(Config config, AuthResponse authResponse, List<String> clientScopes,
+      protected AccessTokenProvider getTokenProvider(Config config, BaseAuth.AuthResponse authResponse, List<String> clientScopes,
         String accessToken, long accessTokenLifeTime, String refreshToken, String clientSecret, AuthType authType) {
-        // Here we override the getWeaviateClient just to get the auth config
-        // and override the lifetime value so that the refresh token request appears faster
-        // The lifetime of the access token is set artificially to 2 seconds
-        refreshConfig = AuthConfigUtil.refreshTokenConfig(config, authResponse,
-          accessToken, 2l, refreshToken);
-        // here also we override the lifetime value to check that the client also works fine
-        // with the refreshed token
-        // The lifetime of the access token is set artificially to 2 seconds
-        return super.getWeaviateClient(config, authResponse, clientScopes, accessToken, 2l, refreshToken, clientSecret, authType);
+        // User Password flow
+        tokenProvider = new AuthRefreshTokenProvider(config, authResponse, accessToken, 2l, refreshToken);
+        return tokenProvider;
       }
     }
 
@@ -62,12 +53,13 @@ public class NimbusAuthRefreshTokenTest {
     if (StringUtils.isNotBlank(password)) {
       Config config = new Config("http", address);
       String username = "ms_2d0e007e7136de11d5f29fce7a53dae219a51458@existiert.net";
-      assertThat(refreshConfig).isNull();
+      assertThat(tokenProvider).isNull();
       NimbusAuthAuthImpl nimbusAuth = new NimbusAuthAuthImpl();
-      WeaviateClient client = nimbusAuth.getAuthClientWithOverriddenRefreshTokenValue(config, null, username, password);
-      assertThat(refreshConfig).isNotNull();
+      AccessTokenProvider provider = nimbusAuth.getAccessTokenProvider(config, "", username, password, null, AuthType.USER_PASSWORD);
+      WeaviateClient client = new WeaviateClient(config, provider);
+      assertThat(tokenProvider).isNotNull();
       // get the access token
-      String firstBearerAccessTokenHeader = refreshConfig.getHeaders().get("Authorization");
+      String firstBearerAccessTokenHeader = tokenProvider.getAccessToken();
       assertThat(firstBearerAccessTokenHeader).isNotBlank();
       Result<Meta> meta = client.misc().metaGetter().run();
       assertThat(meta).isNotNull();
@@ -76,7 +68,7 @@ public class NimbusAuthRefreshTokenTest {
       assertThat(meta.getResult().getVersion()).isEqualTo(EXPECTED_WEAVIATE_VERSION);
       Thread.sleep(3000l);
       // get the access token after refresh
-      String afterRefreshBearerAccessTokenHeader = refreshConfig.getHeaders().get("Authorization");
+      String afterRefreshBearerAccessTokenHeader = tokenProvider.getAccessToken();
       assertThat(firstBearerAccessTokenHeader).isNotEqualTo(afterRefreshBearerAccessTokenHeader);
       meta = client.misc().metaGetter().run();
       assertThat(meta).isNotNull();

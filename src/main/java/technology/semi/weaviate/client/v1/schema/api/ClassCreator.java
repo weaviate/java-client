@@ -5,14 +5,15 @@ import technology.semi.weaviate.client.base.BaseClient;
 import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
+import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.v1.schema.model.WeaviateClass;
 
 public class ClassCreator extends BaseClient<WeaviateClass> implements ClientResult<Boolean> {
 
   private WeaviateClass clazz;
 
-  public ClassCreator(Config config) {
-    super(config);
+  public ClassCreator(HttpClient httpClient, Config config) {
+    super(httpClient, config);
   }
 
   public ClassCreator withClass(WeaviateClass clazz) {

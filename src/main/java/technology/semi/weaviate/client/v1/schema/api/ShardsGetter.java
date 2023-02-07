@@ -12,13 +12,14 @@ import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.base.WeaviateErrorMessage;
 import technology.semi.weaviate.client.base.WeaviateErrorResponse;
+import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.v1.schema.model.Shard;
 
 public class ShardsGetter extends BaseClient<Shard[]> implements ClientResult<Shard[]> {
   private String className;
 
-  public ShardsGetter(Config config) {
-    super(config);
+  public ShardsGetter(HttpClient httpClient, Config config) {
+    super(httpClient, config);
   }
 
   public ShardsGetter withClassName(String className) {

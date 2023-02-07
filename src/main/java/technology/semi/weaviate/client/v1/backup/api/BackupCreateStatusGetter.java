@@ -5,6 +5,7 @@ import technology.semi.weaviate.client.base.BaseClient;
 import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
+import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.v1.backup.model.BackupCreateStatusResponse;
 
 public class BackupCreateStatusGetter extends BaseClient<BackupCreateStatusResponse> implements ClientResult<BackupCreateStatusResponse> {
@@ -12,8 +13,8 @@ public class BackupCreateStatusGetter extends BaseClient<BackupCreateStatusRespo
   private String backend;
   private String backupId;
 
-  public BackupCreateStatusGetter(Config config) {
-    super(config);
+  public BackupCreateStatusGetter(HttpClient httpClient, Config config) {
+    super(httpClient, config);
   }
 
   public BackupCreateStatusGetter withBackend(String backend) {

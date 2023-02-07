@@ -1,4 +1,4 @@
-package technology.semi.weaviate.client.v1.auth.provider;
+package technology.semi.weaviate.client.v1.auth.nimbus;
 
 public enum AuthType {
   USER_PASSWORD,

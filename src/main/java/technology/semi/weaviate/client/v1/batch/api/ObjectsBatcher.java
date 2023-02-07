@@ -15,6 +15,7 @@ import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.base.WeaviateErrorMessage;
 import technology.semi.weaviate.client.base.WeaviateErrorResponse;
+import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.base.util.Assert;
 import technology.semi.weaviate.client.v1.batch.model.ObjectGetResponse;
 import technology.semi.weaviate.client.v1.batch.model.ObjectsBatchRequestBody;
@@ -55,9 +56,9 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
   private final List<CompletableFuture<Result<ObjectGetResponse[]>>> undoneFutures;
 
 
-  private ObjectsBatcher(Config config, Data data,
+  private ObjectsBatcher(HttpClient httpClient, Config config, Data data,
                          BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig) {
-    super(config);
+    super(httpClient, config);
     this.data = data;
     this.objects = new ArrayList<>();
     this.batchRetriesConfig = batchRetriesConfig;
@@ -77,17 +78,17 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
     }
   }
 
-  public static ObjectsBatcher create(Config config, Data data,
+  public static ObjectsBatcher create(HttpClient httpClient, Config config, Data data,
                                       BatchRetriesConfig batchRetriesConfig) {
     Assert.requiredNotNull(batchRetriesConfig, "batchRetriesConfig");
-    return new ObjectsBatcher(config, data, batchRetriesConfig, null);
+    return new ObjectsBatcher(httpClient, config, data, batchRetriesConfig, null);
   }
 
-  public static ObjectsBatcher createAuto(Config config, Data data,
+  public static ObjectsBatcher createAuto(HttpClient httpClient, Config config, Data data,
                                           BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig) {
     Assert.requiredNotNull(batchRetriesConfig, "batchRetriesConfig");
     Assert.requiredNotNull(autoBatchConfig, "autoBatchConfig");
-    return new ObjectsBatcher(config, data, batchRetriesConfig, autoBatchConfig);
+    return new ObjectsBatcher(httpClient, config, data, batchRetriesConfig, autoBatchConfig);
   }
 
 

@@ -7,6 +7,7 @@ import technology.semi.weaviate.client.base.BaseClient;
 import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
+import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.v1.backup.model.BackupRestoreResponse;
 import technology.semi.weaviate.client.v1.backup.model.BackupRestoreStatusResponse;
 import technology.semi.weaviate.client.v1.backup.model.RestoreStatus;
@@ -22,8 +23,8 @@ public class BackupRestorer extends BaseClient<BackupRestoreResponse> implements
   private String backupId;
   private boolean waitForCompletion;
 
-  public BackupRestorer(Config config, BackupRestoreStatusGetter statusGetter) {
-    super(config);
+  public BackupRestorer(HttpClient httpClient, Config config, BackupRestoreStatusGetter statusGetter) {
+    super(httpClient, config);
     this.statusGetter = statusGetter;
   }
 

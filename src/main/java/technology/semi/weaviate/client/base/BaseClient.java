@@ -16,10 +16,9 @@ public abstract class BaseClient<T> {
   private final Config config;
   private final Serializer serializer;
 
-  public BaseClient(Config config) {
-    HttpClientBuilder builder = HttpClientBuilder.create();
+  public BaseClient(HttpClient client, Config config) {
     this.config = config;
-    this.client = new CommonsHttpClientImpl(config.getHeaders(), builder::build);
+    this.client = client;
     this.serializer = new Serializer();
   }
 

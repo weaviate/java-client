@@ -9,14 +9,15 @@ import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.base.WeaviateErrorMessage;
 import technology.semi.weaviate.client.base.WeaviateErrorResponse;
+import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.v1.contextionary.model.C11yExtension;
 
 public class ExtensionCreator extends BaseClient<Object> implements ClientResult<Boolean> {
 
   private C11yExtension.C11yExtensionBuilder extension;
 
-  public ExtensionCreator(Config config) {
-    super(config);
+  public ExtensionCreator(HttpClient httpClient, Config config) {
+    super(httpClient, config);
     this.extension = C11yExtension.builder().weight(1.0f);
   }
 

@@ -6,6 +6,7 @@ import technology.semi.weaviate.client.base.BaseClient;
 import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
+import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.v1.classifications.model.Classification;
 import technology.semi.weaviate.client.v1.classifications.model.ClassificationFilters;
 import technology.semi.weaviate.client.v1.filters.WhereFilter;
@@ -24,9 +25,9 @@ public class Scheduler extends BaseClient<Classification> implements ClientResul
 
   private Getter getter;
 
-  public Scheduler(Config config) {
-    super(config);
-    this.getter = new Getter(config);
+  public Scheduler(HttpClient httpClient, Config config) {
+    super(httpClient, config);
+    this.getter = new Getter(httpClient, config);
     this.waitForCompletion = false;
   }
 
