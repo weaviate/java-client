@@ -1,4 +1,4 @@
 # Ci related folders
-/.github/ @semi-technologies/core
-decrypt_secret.sh @semi-technologies/core
-secrets.tar.gp @semi-technologies/core
+/.github/ @weaviate/core
+decrypt_secret.sh @weaviate/core
+secrets.tar.gp @weaviate/core

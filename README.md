@@ -1,4 +1,4 @@
-# Weaviate Java client  <img alt='Weaviate logo' src='https://raw.githubusercontent.com/semi-technologies/weaviate/19de0956c69b66c5552447e84d016f4fe29d12c9/docs/assets/weaviate-logo.png' width='180' align='right' />
+# Weaviate Java client  <img alt='Weaviate logo' src='https://raw.githubusercontent.com/weaviate/weaviate/19de0956c69b66c5552447e84d016f4fe29d12c9/docs/assets/weaviate-logo.png' width='180' align='right' />
 
 A Java native client for weaviate.
 
@@ -49,14 +49,12 @@ public class App {
 ## Support
 
 - [Stackoverflow for questions](https://stackoverflow.com/questions/tagged/weaviate).
-- [Github for issues](https://github.com/semi-technologies/weaviate-java-client/issues).
+- [Github for issues](https://github.com/weaviate/weaviate-java-client/issues).
 
 ## Contributing
 
-- [How to Contribute](https://github.com/semi-technologies/weaviate-java-client/blob/master/CONTRIBUTE.md).
+- [How to Contribute](https://github.com/weaviate/weaviate-java-client/blob/main/CONTRIBUTE.md).
 
 ## Build Status
 
-| Branch   | Status        |
-| -------- |:-------------:|
-| Main     | [![Build Status](https://travis-ci.com/semi-technologies/weaviate-java-client.svg?token=YPa1Pbr1QfTDsrnqbHLf&branch=main)](https://travis-ci.com/github/semi-technologies/weaviate-java-client)
+[![Build Status](https://github.com/weaviate/weaviate-java-client/actions/workflows/.github/workflows/test.yaml/badge.svg?branch=main)](https://github.com/weaviate/weaviate-java-client/actions/workflows/.github/workflows/test.yaml)

@@ -9,33 +9,33 @@
 
   <name>Weaviate Java client</name>
   <description>A java client for Weaviate Vector Search Engine</description>
-  <url>https://github.com/semi-technologies/weaviate-java-client</url>
+  <url>https://github.com/weaviate/weaviate-java-client</url>
 
   <organization>
-    <name>SeMI Technologies B.V.</name>
-    <url>https://www.semi.technology</url>
+    <name>Weaviate B.V.</name>
+    <url>https://www.weaviate.io</url>
   </organization>
 
   <licenses>
     <license>
-      <name>SeMI Technologies B.V. License</name>
-      <url>https://github.com/semi-technologies/weaviate-java-client/blob/main/LICENSE</url>
+      <name>Weaviate B.V. License</name>
+      <url>https://github.com/weaviate/weaviate-java-client/blob/main/LICENSE</url>
     </license>
   </licenses>
 
   <developers>
     <developer>
       <name>Marcin Antas</name>
-      <email>marcin@semi.technology</email>
-      <organization>SeMI Technologies B.V.</organization>
-      <organizationUrl>https://www.semi.technology</organizationUrl>
+      <email>marcin@weaviate.io</email>
+      <organization>Weaviate B.V.</organization>
+      <organizationUrl>https://www.weaviate.io</organizationUrl>
     </developer>
   </developers>
 
   <scm>
-    <connection>scm:git:git://github.com/semi-technologies/weaviate-java-client.git</connection>
-    <developerConnection>scm:git:ssh://github.com:semi-technologies/weaviate-java-client.git</developerConnection>
-    <url>https://github.com/semi-technologies/weaviate-java-client/tree/main</url>
+    <connection>scm:git:git://github.com/weaviate/weaviate-java-client.git</connection>
+    <developerConnection>scm:git:ssh://github.com:weaviate/weaviate-java-client.git</developerConnection>
+    <url>https://github.com/weaviate/weaviate-java-client/tree/main</url>
     <tag>3.5.0</tag>
   </scm>
 
@@ -56,15 +56,15 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <lombok.version>1.18.24</lombok.version>
+    <lombok.version>1.18.26</lombok.version>
     <gson.version>2.10.1</gson.version>
     <httpclient.version>4.5.14</httpclient.version>
     <lang3.version>3.12.0</lang3.version>
     <junit.version>5.9.2</junit.version>
     <testcontainers.version>1.17.6</testcontainers.version>
-    <assertj-core.version>3.24.1</assertj-core.version>
+    <assertj-core.version>3.24.2</assertj-core.version>
     <jparams.version>1.0.4</jparams.version>
-    <mockito.version>4.11.0</mockito.version>
+    <mockito.version>5.1.1</mockito.version>
     <slf4j.version>2.0.6</slf4j.version>
     <logback.version>1.4.5</logback.version>
     <mock-server.version>5.14.0</mock-server.version>
