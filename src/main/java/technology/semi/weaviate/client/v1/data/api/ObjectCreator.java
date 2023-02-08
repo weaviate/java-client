@@ -9,6 +9,7 @@ import technology.semi.weaviate.client.base.BaseClient;
 import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
+import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
 import technology.semi.weaviate.client.v1.data.util.ObjectsPath;
 
@@ -20,8 +21,8 @@ public class ObjectCreator extends BaseClient<WeaviateObject> implements ClientR
   private Map<String, Object> properties;
   private Float[] vector;
 
-  public ObjectCreator(Config config, ObjectsPath objectsPath) {
-    super(config);
+  public ObjectCreator(HttpClient httpClient, Config config, ObjectsPath objectsPath) {
+    super(httpClient, config);
     this.objectsPath = Objects.requireNonNull(objectsPath);
   }
 

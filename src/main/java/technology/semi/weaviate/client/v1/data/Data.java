@@ -1,6 +1,7 @@
 package technology.semi.weaviate.client.v1.data;
 
 import technology.semi.weaviate.client.Config;
+import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.v1.data.api.ObjectCreator;
 import technology.semi.weaviate.client.v1.data.api.ObjectDeleter;
 import technology.semi.weaviate.client.v1.data.api.ObjectUpdater;
@@ -18,39 +19,41 @@ import technology.semi.weaviate.client.v1.data.util.ReferencesPath;
 
 public class Data {
   private final Config config;
+  private final HttpClient httpClient;
   private final ObjectsPath objectsPath;
   private final ReferencesPath referencesPath;
   private final BeaconPath beaconPath;
 
-  public Data(Config config, DbVersionSupport dbVersionSupport) {
+  public Data(HttpClient httpClient, Config config, DbVersionSupport dbVersionSupport) {
     this.config = config;
+    this.httpClient = httpClient;
     this.objectsPath = new ObjectsPath(dbVersionSupport);
     this.referencesPath = new ReferencesPath(dbVersionSupport);
     this.beaconPath = new BeaconPath(dbVersionSupport);
   }
 
   public ObjectCreator creator() {
-    return new ObjectCreator(config, objectsPath);
+    return new ObjectCreator(httpClient, config, objectsPath);
   }
 
   public ObjectsGetter objectsGetter() {
-    return new ObjectsGetter(config, objectsPath);
+    return new ObjectsGetter(httpClient, config, objectsPath);
   }
 
   public ObjectsChecker checker() {
-    return new ObjectsChecker(config, objectsPath);
+    return new ObjectsChecker(httpClient, config, objectsPath);
   }
 
   public ObjectDeleter deleter() {
-    return new ObjectDeleter(config, objectsPath);
+    return new ObjectDeleter(httpClient, config, objectsPath);
   }
 
   public ObjectUpdater updater() {
-    return new ObjectUpdater(config, objectsPath);
+    return new ObjectUpdater(httpClient, config, objectsPath);
   }
 
   public ObjectValidator validator() {
-    return new ObjectValidator(config);
+    return new ObjectValidator(httpClient, config);
   }
 
   public ReferencePayloadBuilder referencePayloadBuilder() {
@@ -58,14 +61,14 @@ public class Data {
   }
 
   public ReferenceCreator referenceCreator() {
-    return new ReferenceCreator(config, referencesPath);
+    return new ReferenceCreator(httpClient, config, referencesPath);
   }
 
   public ReferenceReplacer referenceReplacer() {
-    return new ReferenceReplacer(config, referencesPath);
+    return new ReferenceReplacer(httpClient, config, referencesPath);
   }
 
   public ReferenceDeleter referenceDeleter() {
-    return new ReferenceDeleter(config, referencesPath);
+    return new ReferenceDeleter(httpClient, config, referencesPath);
   }
 }

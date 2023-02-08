@@ -10,14 +10,15 @@ import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.base.WeaviateErrorMessage;
 import technology.semi.weaviate.client.base.WeaviateErrorResponse;
+import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.v1.schema.model.WeaviateClass;
 
 public class ClassGetter extends BaseClient<WeaviateClass> implements ClientResult<WeaviateClass> {
 
   private String className;
 
-  public ClassGetter(Config config) {
-    super(config);
+  public ClassGetter(HttpClient httpClient, Config config) {
+    super(httpClient, config);
   }
 
   public ClassGetter withClassName(String className) {

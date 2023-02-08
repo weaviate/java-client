@@ -8,6 +8,7 @@ import technology.semi.weaviate.client.base.BaseClient;
 import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
+import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.v1.batch.model.BatchDeleteResponse;
 import technology.semi.weaviate.client.v1.filters.WhereFilter;
 
@@ -19,8 +20,8 @@ public class ObjectsBatchDeleter extends BaseClient<BatchDeleteResponse> impleme
     private Boolean dryRun;
 
 
-    public ObjectsBatchDeleter(Config config) {
-        super(config);
+    public ObjectsBatchDeleter(HttpClient httpClient, Config config) {
+        super(httpClient, config);
     }
 
 

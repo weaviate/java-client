@@ -11,6 +11,7 @@ import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.base.WeaviateError;
 import technology.semi.weaviate.client.base.WeaviateErrorMessage;
 import technology.semi.weaviate.client.base.WeaviateErrorResponse;
+import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.v1.schema.model.Shard;
 import technology.semi.weaviate.client.v1.schema.model.ShardStatus;
 
@@ -21,9 +22,9 @@ public class ShardsUpdater implements ClientResult<ShardStatus[]> {
   private String className;
   private String status;
 
-  public ShardsUpdater(Config config) {
-    this.shardsGetter = new ShardsGetter(config);
-    this.shardUpdater = new ShardUpdater(config);
+  public ShardsUpdater(HttpClient httpClient, Config config) {
+    this.shardsGetter = new ShardsGetter(httpClient, config);
+    this.shardUpdater = new ShardUpdater(httpClient, config);
   }
 
   public ShardsUpdater withClassName(String className) {

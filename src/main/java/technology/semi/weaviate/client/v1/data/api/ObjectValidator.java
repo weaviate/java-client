@@ -11,6 +11,7 @@ import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.base.WeaviateErrorMessage;
 import technology.semi.weaviate.client.base.WeaviateErrorResponse;
+import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
 
 public class ObjectValidator extends BaseClient<WeaviateObject> implements ClientResult<Boolean> {
@@ -19,8 +20,8 @@ public class ObjectValidator extends BaseClient<WeaviateObject> implements Clien
   private String className;
   private Map<String, Object> properties;
 
-  public ObjectValidator(Config config) {
-    super(config);
+  public ObjectValidator(HttpClient httpClient, Config config) {
+    super(httpClient, config);
   }
 
   public ObjectValidator withID(String id) {

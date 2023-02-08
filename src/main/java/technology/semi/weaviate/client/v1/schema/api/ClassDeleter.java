@@ -10,13 +10,14 @@ import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.base.WeaviateErrorMessage;
 import technology.semi.weaviate.client.base.WeaviateErrorResponse;
+import technology.semi.weaviate.client.base.http.HttpClient;
 
 public class ClassDeleter extends BaseClient<String> implements ClientResult<Boolean> {
 
   private String className;
 
-  public ClassDeleter(Config config) {
-    super(config);
+  public ClassDeleter(HttpClient httpClient, Config config) {
+    super(httpClient, config);
   }
 
   public ClassDeleter withClassName(String className) {

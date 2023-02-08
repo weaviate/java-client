@@ -5,14 +5,15 @@ import technology.semi.weaviate.client.base.BaseClient;
 import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
+import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.base.util.DbVersionProvider;
 
 public class LiveChecker extends BaseClient<String> implements ClientResult<Boolean> {
 
   private final DbVersionProvider dbVersionProvider;
 
-  public LiveChecker(Config config, DbVersionProvider dbVersionProvider) {
-    super(config);
+  public LiveChecker(HttpClient httpClient, Config config, DbVersionProvider dbVersionProvider) {
+    super(httpClient, config);
     this.dbVersionProvider = dbVersionProvider;
   }
 

@@ -12,6 +12,7 @@ import technology.semi.weaviate.client.base.BaseClient;
 import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
+import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
 import technology.semi.weaviate.client.v1.data.model.ObjectsListResponse;
 import technology.semi.weaviate.client.v1.data.util.ObjectsPath;
@@ -28,8 +29,8 @@ public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements Cl
   private class ObjectGetter extends BaseClient<WeaviateObject> implements ClientResult<List<WeaviateObject>> {
     private String path;
 
-    public ObjectGetter(Config config) {
-      super(config);
+    public ObjectGetter(HttpClient httpClient, Config config) {
+      super(httpClient, config);
     }
 
     public ObjectGetter withPath(String path) {
@@ -50,9 +51,9 @@ public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements Cl
 
   private final ObjectGetter objectGetter;
 
-  public ObjectsGetter(Config config, ObjectsPath objectsPath) {
-    super(config);
-    this.objectGetter = new ObjectGetter(config);
+  public ObjectsGetter(HttpClient httpClient, Config config, ObjectsPath objectsPath) {
+    super(httpClient, config);
+    this.objectGetter = new ObjectGetter(httpClient, config);
     this.additional = new HashSet<>();
     this.objectsPath = Objects.requireNonNull(objectsPath);
   }

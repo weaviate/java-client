@@ -8,6 +8,10 @@ public class Config {
   private final String version;
   private final Map<String, String> headers;
 
+  public Config(String scheme, String host) {
+    this(scheme, host, null);
+  }
+
   public Config(String scheme, String host, Map<String, String> headers) {
     this.scheme = scheme;
     this.host = host;
@@ -15,15 +19,11 @@ public class Config {
     this.headers = headers;
   }
 
-  public Config(String scheme, String host) {
-    this(scheme, host, null);
-  }
-
   public String getBaseURL() {
     return scheme + "://" + host + "/" + version;
   }
 
   public Map<String, String> getHeaders() {
-    return this.headers;
+    return headers;
   }
 }

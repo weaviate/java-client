@@ -5,6 +5,7 @@ import technology.semi.weaviate.client.base.BaseClient;
 import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
+import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.v1.filters.WhereFilter;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLQuery;
 import technology.semi.weaviate.client.v1.graphql.model.GraphQLResponse;
@@ -25,8 +26,8 @@ import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
 public class Get extends BaseClient<GraphQLResponse> implements ClientResult<GraphQLResponse> {
   private final GetBuilder.GetBuilderBuilder getBuilder;
 
-  public Get(Config config) {
-    super(config);
+  public Get(HttpClient httpClient, Config config) {
+    super(httpClient, config);
     this.getBuilder = GetBuilder.builder();
   }
 

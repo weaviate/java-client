@@ -1,5 +1,7 @@
 package technology.semi.weaviate.client.base.http.impl;
 
+import java.io.Closeable;
+import java.io.IOException;
 import org.apache.http.HttpHeaders;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
@@ -20,14 +22,22 @@ import technology.semi.weaviate.client.base.http.HttpResponse;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import technology.semi.weaviate.client.v1.auth.provider.AccessTokenProvider;
+import technology.semi.weaviate.client.v1.auth.provider.AuthRefreshTokenProvider;
 
-public class CommonsHttpClientImpl implements HttpClient {
+public class CommonsHttpClientImpl implements HttpClient, Closeable {
   private final Map<String, String> headers;
+  private AccessTokenProvider tokenProvider;
   private final CloseableHttpClientBuilder clientBuilder;
 
   public CommonsHttpClientImpl(Map<String, String> headers, CloseableHttpClientBuilder clientBuilder) {
+    this(headers, null, clientBuilder);
+  }
+
+  public CommonsHttpClientImpl(Map<String, String> headers, AccessTokenProvider tokenProvider, CloseableHttpClientBuilder clientBuilder) {
     this.headers = headers;
     this.clientBuilder = clientBuilder;
+    this.tokenProvider = tokenProvider;
   }
 
   @Override
@@ -79,6 +89,9 @@ public class CommonsHttpClientImpl implements HttpClient {
     if (headers != null && headers.size() > 0) {
       headers.forEach(request::addHeader);
     }
+    if (tokenProvider != null) {
+      request.addHeader("Authorization", String.format("Bearer %s", tokenProvider.getAccessToken()));
+    }
 
     CloseableHttpClient client = clientBuilder.build();
     CloseableHttpResponse response = client.execute(request);
@@ -92,6 +105,12 @@ public class CommonsHttpClientImpl implements HttpClient {
     return new HttpResponse(statusCode, body);
   }
 
+  @Override
+  public void close() throws IOException {
+    if (tokenProvider != null) {
+      tokenProvider.shutdown();
+    }
+  }
 
   private static class HttpDeleteWithBody extends HttpEntityEnclosingRequestBase {
     public HttpDeleteWithBody() {
@@ -109,6 +128,7 @@ public class CommonsHttpClientImpl implements HttpClient {
       return HttpDelete.METHOD_NAME;
     }
   }
+
 
 
   public interface CloseableHttpClientBuilder {

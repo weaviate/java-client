@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.http.impl.BHttpConnectionBase;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.base.BaseClient;
 import technology.semi.weaviate.client.base.ClientResult;
@@ -13,6 +14,7 @@ import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.base.WeaviateErrorMessage;
 import technology.semi.weaviate.client.base.WeaviateErrorResponse;
+import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.base.util.Assert;
 import technology.semi.weaviate.client.v1.batch.model.BatchReference;
 import technology.semi.weaviate.client.v1.batch.model.BatchReferenceResponse;
@@ -45,8 +47,8 @@ public class ReferencesBatcher extends BaseClient<BatchReferenceResponse[]>
   private final List<CompletableFuture<Result<BatchReferenceResponse[]>>> undoneFutures;
 
 
-  private ReferencesBatcher(Config config, BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig) {
-    super(config);
+  private ReferencesBatcher(HttpClient httpClient, Config config, BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig) {
+    super(httpClient, config);
     this.references = new ArrayList<>();
     this.batchRetriesConfig = batchRetriesConfig;
 
@@ -65,23 +67,23 @@ public class ReferencesBatcher extends BaseClient<BatchReferenceResponse[]>
     }
   }
 
-  public static ReferencesBatcher create(Config config) {
-    return new ReferencesBatcher(config, BatchRetriesConfig.defaultConfig().build(), null);
+  public static ReferencesBatcher create(HttpClient httpClient, Config config) {
+    return new ReferencesBatcher(httpClient, config, BatchRetriesConfig.defaultConfig().build(), null);
   }
 
-  public static ReferencesBatcher create(Config config, BatchRetriesConfig batchRetriesConfig) {
+  public static ReferencesBatcher create(HttpClient httpClient, Config config, BatchRetriesConfig batchRetriesConfig) {
     Assert.requiredNotNull(batchRetriesConfig, "batchRetriesConfig");
-    return new ReferencesBatcher(config, batchRetriesConfig, null);
+    return new ReferencesBatcher(httpClient, config, batchRetriesConfig, null);
   }
 
-  public static ReferencesBatcher createAuto(Config config) {
-    return new ReferencesBatcher(config, BatchRetriesConfig.defaultConfig().build(), AutoBatchConfig.defaultConfig().build());
+  public static ReferencesBatcher createAuto(HttpClient httpClient, Config config) {
+    return new ReferencesBatcher(httpClient, config, BatchRetriesConfig.defaultConfig().build(), AutoBatchConfig.defaultConfig().build());
   }
 
-  public static ReferencesBatcher createAuto(Config config, BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig) {
+  public static ReferencesBatcher createAuto(HttpClient httpClient, Config config, BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig) {
     Assert.requiredNotNull(batchRetriesConfig, "batchRetriesConfig");
     Assert.requiredNotNull(autoBatchConfig, "autoBatchConfig");
-    return new ReferencesBatcher(config, batchRetriesConfig, autoBatchConfig);
+    return new ReferencesBatcher(httpClient, config, batchRetriesConfig, autoBatchConfig);
   }
 
 

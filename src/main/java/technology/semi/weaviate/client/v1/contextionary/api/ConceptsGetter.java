@@ -5,14 +5,15 @@ import technology.semi.weaviate.client.base.BaseClient;
 import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
+import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.v1.contextionary.model.C11yWordsResponse;
 
 public class ConceptsGetter extends BaseClient<C11yWordsResponse> implements ClientResult<C11yWordsResponse> {
 
   private String concept;
 
-  public ConceptsGetter(Config config) {
-    super(config);
+  public ConceptsGetter(HttpClient httpClient, Config config) {
+    super(httpClient, config);
   }
 
   public ConceptsGetter withConcept(String concept) {

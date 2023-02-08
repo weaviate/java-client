@@ -5,6 +5,7 @@ import technology.semi.weaviate.client.base.BaseClient;
 import technology.semi.weaviate.client.base.ClientResult;
 import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
+import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.v1.data.model.SingleRef;
 import technology.semi.weaviate.client.v1.data.util.ReferencesPath;
 
@@ -18,8 +19,8 @@ public class ReferenceCreator extends BaseClient<Object> implements ClientResult
   private String referenceProperty;
   private SingleRef referencePayload;
 
-  public ReferenceCreator(Config config, ReferencesPath referencesPath) {
-    super(config);
+  public ReferenceCreator(HttpClient httpClient, Config config, ReferencesPath referencesPath) {
+    super(httpClient, config);
     this.referencesPath = Objects.requireNonNull(referencesPath);
   }
 
