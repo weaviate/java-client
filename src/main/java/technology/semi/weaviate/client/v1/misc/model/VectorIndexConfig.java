@@ -11,14 +11,15 @@ import lombok.experimental.FieldDefaults;
 @ToString
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class VectorIndexConfig {
-  Integer cleanupIntervalSeconds;
+  String distance;
+  Integer ef;
   Integer efConstruction;
   Integer maxConnections;
-  Long vectorCacheMaxObjects;
-  Integer ef;
-  Boolean skip;
-  Integer dynamicEfFactor;
-  Integer dynamicEfMax;
   Integer dynamicEfMin;
+  Integer dynamicEfMax;
+  Integer dynamicEfFactor;
+  Long vectorCacheMaxObjects;
   Integer flatSearchCutoff;
+  Integer cleanupIntervalSeconds;
+  Boolean skip;
 }
