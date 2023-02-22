@@ -5,7 +5,7 @@
   <groupId>technology.semi.weaviate</groupId>
   <artifactId>client</artifactId>
   <packaging>jar</packaging>
-  <version>3.6.1-SNAPSHOT</version>
+  <version>3.6.1</version>
 
   <name>Weaviate Java client</name>
   <description>A java client for Weaviate Vector Search Engine</description>
@@ -36,7 +36,7 @@
     <connection>scm:git:git://github.com/weaviate/weaviate-java-client.git</connection>
     <developerConnection>scm:git:ssh://github.com:weaviate/weaviate-java-client.git</developerConnection>
     <url>https://github.com/weaviate/weaviate-java-client/tree/main</url>
-    <tag>3.6.0</tag>
+    <tag>3.6.1</tag>
   </scm>
 
   <distributionManagement>
