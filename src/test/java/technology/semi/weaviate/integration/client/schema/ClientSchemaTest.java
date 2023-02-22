@@ -17,6 +17,7 @@ import technology.semi.weaviate.client.WeaviateClient;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.base.WeaviateErrorMessage;
 import technology.semi.weaviate.client.v1.misc.model.BM25Config;
+import technology.semi.weaviate.client.v1.misc.model.DistanceType;
 import technology.semi.weaviate.client.v1.misc.model.InvertedIndexConfig;
 import technology.semi.weaviate.client.v1.misc.model.ReplicationConfig;
 import technology.semi.weaviate.client.v1.misc.model.ShardingConfig;
@@ -575,6 +576,7 @@ public class ClientSchemaTest {
     Integer dynamicEfMax = 500;
     Integer dynamicEfMin = 100;
     Integer flatSearchCutoff = 40000;
+    String distance = DistanceType.DOT;
     // shard config
     Integer actualCount = 1;
     Integer actualVirtualCount = 128;
@@ -602,6 +604,7 @@ public class ClientSchemaTest {
             .dynamicEfMax(dynamicEfMax)
             .dynamicEfMin(dynamicEfMin)
             .flatSearchCutoff(flatSearchCutoff)
+            .distance(distance)
             .build();
 
     ShardingConfig shardingConfig = ShardingConfig.builder()
@@ -655,6 +658,7 @@ public class ClientSchemaTest {
     assertEquals(dynamicEfMax, classVectorIndexConfig.getDynamicEfMax());
     assertEquals(dynamicEfMin, classVectorIndexConfig.getDynamicEfMin());
     assertEquals(flatSearchCutoff, classVectorIndexConfig.getFlatSearchCutoff());
+    assertEquals(distance, classVectorIndexConfig.getDistance());
     ShardingConfig classShardingIndexConfig = bandClass.getResult().getShardingConfig();
     assertEquals(actualCount, classShardingIndexConfig.getActualCount());
     assertEquals(actualVirtualCount, classShardingIndexConfig.getActualVirtualCount());
