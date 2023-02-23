@@ -21,11 +21,23 @@ public class WeaviateClass {
   String className;
   String description;
   InvertedIndexConfig invertedIndexConfig;
-  Object ModuleConfig;
+  Object moduleConfig;
   List<Property> properties;
   VectorIndexConfig vectorIndexConfig;
   ShardingConfig shardingConfig;
   String vectorIndexType;
   String vectorizer;
   ReplicationConfig replicationConfig;
+
+
+  public static class WeaviateClassBuilder {
+
+    private Object moduleConfig;
+
+    @Deprecated
+    public WeaviateClassBuilder ModuleConfig(Object moduleConfig) {
+      this.moduleConfig = moduleConfig;
+      return this;
+    }
+  }
 }
