@@ -4,7 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
@@ -33,6 +35,7 @@ import technology.semi.weaviate.client.v1.schema.model.Tokenization;
 import technology.semi.weaviate.client.v1.schema.model.WeaviateClass;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -81,8 +84,10 @@ public class ClientSchemaTest {
     assertNotNull(schema);
     assertNotNull(schema.getResult());
     assertEquals(1, schema.getResult().getClasses().size());
-    assertEquals(clazz.getClassName(), schema.getResult().getClasses().get(0).getClassName());
-    assertEquals(clazz.getDescription(), schema.getResult().getClasses().get(0).getDescription());
+
+    WeaviateClass resultClass = schema.getResult().getClasses().get(0);
+    assertEquals(clazz.getClassName(), resultClass.getClassName());
+    assertEquals(clazz.getDescription(), resultClass.getDescription());
   }
 
   @Test
@@ -232,11 +237,17 @@ public class ClientSchemaTest {
   @Test
   public void testSchemaCreateClassExplicitVectorizerWithProperties() {
     // given
+    Map<String, Object> text2vecContextionary = new HashMap<>();
+    text2vecContextionary.put("vectorizeClassName", false);
+    Map<String, Object> moduleConfig = new HashMap<>();
+    moduleConfig.put("text2vec-contextionary", text2vecContextionary);
+
     WeaviateClass clazz = WeaviateClass.builder()
             .className("Article")
             .description("A written text, for example a news article or blog post")
             .vectorIndexType("hnsw")
             .vectorizer("text2vec-contextionary")
+            .moduleConfig(moduleConfig)
             .properties(new ArrayList() {{
               add(Property.builder()
                       .dataType(new ArrayList() {{
@@ -268,6 +279,16 @@ public class ClientSchemaTest {
 
     WeaviateClass resultArticleClass = schemaAfterCreate.getResult().getClasses().get(0);
     assertClassEquals(clazz.getClassName(), clazz.getDescription(), resultArticleClass);
+
+    assertThat(resultArticleClass.getModuleConfig())
+      .asInstanceOf(MAP)
+      .containsOnlyKeys("text2vec-contextionary")
+      .extracting(m -> m.get("text2vec-contextionary"))
+      .asInstanceOf(MAP)
+      .containsOnlyKeys("vectorizeClassName")
+      .extracting(m -> m.get("vectorizeClassName"))
+      .isEqualTo(false);
+
     assertPropertiesSize(2, resultArticleClass);
     assertPropertyEquals("title", "field", resultArticleClass.getProperties().get(0));
     assertPropertyEquals("content", "word", resultArticleClass.getProperties().get(1));
