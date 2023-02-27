@@ -8,18 +8,24 @@ import technology.semi.weaviate.client.v1.batch.api.ReferencesBatcher;
 import technology.semi.weaviate.client.v1.batch.api.ObjectsBatcher;
 import technology.semi.weaviate.client.v1.batch.api.ObjectsBatchDeleter;
 import technology.semi.weaviate.client.v1.batch.api.ReferencePayloadBuilder;
+import technology.semi.weaviate.client.v1.batch.util.ObjectsPath;
+import technology.semi.weaviate.client.v1.batch.util.ReferencesPath;
 import technology.semi.weaviate.client.v1.data.Data;
 
 public class Batch {
   private final Config config;
   private final HttpClient httpClient;
   private final BeaconPath beaconPath;
+  private final ObjectsPath objectsPath;
+  private final ReferencesPath referencesPath;
   private final Data data;
 
   public Batch(HttpClient httpClient, Config config, DbVersionSupport dbVersionSupport, Data data) {
     this.config = config;
     this.httpClient = httpClient;
     this.beaconPath = new BeaconPath(dbVersionSupport);
+    this.objectsPath = new ObjectsPath();
+    this.referencesPath = new ReferencesPath();
     this.data = data;
   }
 
@@ -28,7 +34,7 @@ public class Batch {
   }
 
   public ObjectsBatcher objectsBatcher(ObjectsBatcher.BatchRetriesConfig batchRetriesConfig) {
-    return ObjectsBatcher.create(httpClient, config, data, batchRetriesConfig);
+    return ObjectsBatcher.create(httpClient, config, data, objectsPath, batchRetriesConfig);
   }
 
   public ObjectsBatcher objectsAutoBatcher() {
@@ -54,11 +60,11 @@ public class Batch {
 
   public ObjectsBatcher objectsAutoBatcher(ObjectsBatcher.BatchRetriesConfig batchRetriesConfig,
                                            ObjectsBatcher.AutoBatchConfig autoBatchConfig) {
-    return ObjectsBatcher.createAuto(httpClient, config, data, batchRetriesConfig, autoBatchConfig);
+    return ObjectsBatcher.createAuto(httpClient, config, data, objectsPath, batchRetriesConfig, autoBatchConfig);
   }
 
   public ObjectsBatchDeleter objectsBatchDeleter() {
-    return new ObjectsBatchDeleter(httpClient, config);
+    return new ObjectsBatchDeleter(httpClient, config, objectsPath);
   }
 
   public ReferencePayloadBuilder referencePayloadBuilder() {
@@ -69,7 +75,7 @@ public class Batch {
     return referencesBatcher(ReferencesBatcher.BatchRetriesConfig.defaultConfig().build());
   }
   public ReferencesBatcher referencesBatcher(ReferencesBatcher.BatchRetriesConfig batchRetriesConfig) {
-    return ReferencesBatcher.create(httpClient, config, batchRetriesConfig);
+    return ReferencesBatcher.create(httpClient, config, referencesPath, batchRetriesConfig);
   }
 
   public ReferencesBatcher referencesAutoBatcher() {
@@ -95,6 +101,6 @@ public class Batch {
 
   public ReferencesBatcher referencesAutoBatcher(ReferencesBatcher.BatchRetriesConfig batchRetriesConfig,
                                                  ReferencesBatcher.AutoBatchConfig autoBatchConfig) {
-    return ReferencesBatcher.createAuto(httpClient, config, batchRetriesConfig, autoBatchConfig);
+    return ReferencesBatcher.createAuto(httpClient, config, referencesPath, batchRetriesConfig, autoBatchConfig);
   }
 }

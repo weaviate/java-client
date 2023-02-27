@@ -16,6 +16,7 @@ public class ReferenceCreator extends BaseClient<Object> implements ClientResult
   private final ReferencesPath referencesPath;
   private String id;
   private String className;
+  private String consistencyLevel;
   private String referenceProperty;
   private SingleRef referencePayload;
 
@@ -34,6 +35,11 @@ public class ReferenceCreator extends BaseClient<Object> implements ClientResult
     return this;
   }
 
+  public ReferenceCreator withConsistencyLevel(String consistencyLevel) {
+    this.consistencyLevel = consistencyLevel;
+    return this;
+  }
+
   public ReferenceCreator withReferenceProperty(String propertyName) {
     this.referenceProperty = propertyName;
     return this;
@@ -46,11 +52,12 @@ public class ReferenceCreator extends BaseClient<Object> implements ClientResult
 
   @Override
   public Result<Boolean> run() {
-    String path = referencesPath.build(ReferencesPath.Params.builder()
+    String path = referencesPath.buildCreate(ReferencesPath.Params.builder()
             .id(id)
             .className(className)
+            .consistencyLevel(consistencyLevel)
             .property(referenceProperty)
-            .build());
+        .build());
     Response<Object> resp = sendPostRequest(path, referencePayload, Object.class);
     return new Result<>(resp.getStatusCode(), resp.getStatusCode() == 200, resp.getErrors());
   }

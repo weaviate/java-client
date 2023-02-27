@@ -14,6 +14,7 @@ import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.WeaviateClient;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
+import technology.semi.weaviate.client.v1.data.replication.model.ConsistencyLevel;
 import technology.semi.weaviate.client.v1.schema.model.DataType;
 import technology.semi.weaviate.client.v1.schema.model.Property;
 import technology.semi.weaviate.client.v1.schema.model.Schema;
@@ -62,11 +63,13 @@ public class ClientDataTest {
             .withClassName("Pizza")
             .withID(objTID)
             .withProperties(propertiesSchemaT)
+            .withConsistencyLevel(ConsistencyLevel.QUORUM)
             .run();
     Result<WeaviateObject> objectA = client.data().creator()
             .withClassName("Soup")
             .withID(objAID)
             .withProperties(propertiesSchemaA)
+            .withConsistencyLevel(ConsistencyLevel.QUORUM)
             .run();
     Result<List<WeaviateObject>> objectsT = client.data().objectsGetter().withClassName("Pizza").withID(objTID).run();
     Result<List<WeaviateObject>> objectsA = client.data().objectsGetter().withClassName("Soup").withID(objAID).run();
@@ -296,9 +299,17 @@ public class ClientDataTest {
             .withID(objAID)
             .withProperties(propertiesSchemaA)
             .run();
-    Result<Boolean> deleteObjT = client.data().deleter().withClassName("Pizza").withID(objTID).run();
+    Result<Boolean> deleteObjT = client.data().deleter()
+      .withClassName("Pizza")
+      .withID(objTID)
+      .withConsistencyLevel(ConsistencyLevel.QUORUM)
+      .run();
     Result<List<WeaviateObject>> objTlist = client.data().objectsGetter().withClassName("Pizza").withID(objTID).run();
-    Result<Boolean> deleteObjA = client.data().deleter().withClassName("Soup").withID(objAID).run();
+    Result<Boolean> deleteObjA = client.data().deleter()
+      .withClassName("Soup")
+      .withID(objAID)
+      .withConsistencyLevel(ConsistencyLevel.QUORUM)
+      .run();
     Result<List<WeaviateObject>> objAlist = client.data().objectsGetter().withClassName("Soup").withID(objAID).run();
     testGenerics.cleanupWeaviate(client);
     // then
@@ -351,6 +362,7 @@ public class ClientDataTest {
               put("name", "Hawaii");
               put("description", "Universally accepted to be the best pizza ever created.");
             }})
+            .withConsistencyLevel(ConsistencyLevel.QUORUM)
             .run();
     Result<Boolean> updateObjectA = client.data().updater()
             .withClassName("Soup")
@@ -359,6 +371,7 @@ public class ClientDataTest {
               put("name", "ChickenSoup");
               put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
             }})
+            .withConsistencyLevel(ConsistencyLevel.QUORUM)
             .run();
     Result<List<WeaviateObject>> updatedObjsT = client.data().objectsGetter().withClassName("Pizza").withID(objTID).run();
     Result<List<WeaviateObject>> updatedObjsA = client.data().objectsGetter().withClassName("Soup").withID(objAID).run();

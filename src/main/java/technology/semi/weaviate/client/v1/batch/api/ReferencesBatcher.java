@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.http.impl.BHttpConnectionBase;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.base.BaseClient;
 import technology.semi.weaviate.client.base.ClientResult;
@@ -18,6 +17,7 @@ import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.base.util.Assert;
 import technology.semi.weaviate.client.v1.batch.model.BatchReference;
 import technology.semi.weaviate.client.v1.batch.model.BatchReferenceResponse;
+import technology.semi.weaviate.client.v1.batch.util.ReferencesPath;
 
 import java.io.Closeable;
 import java.net.ConnectException;
@@ -38,17 +38,22 @@ import java.util.stream.Collectors;
 public class ReferencesBatcher extends BaseClient<BatchReferenceResponse[]>
   implements ClientResult<BatchReferenceResponse[]>, Closeable {
 
+  private final ReferencesPath referencesPath;
+
   private final BatchRetriesConfig batchRetriesConfig;
   private final AutoBatchConfig autoBatchConfig;
   private final boolean autoRunEnabled;
   private final ScheduledExecutorService executorService;
   private final DelayedExecutor<?> delayedExecutor;
   private final List<BatchReference> references;
+  private String consistencyLevel;
   private final List<CompletableFuture<Result<BatchReferenceResponse[]>>> undoneFutures;
 
 
-  private ReferencesBatcher(HttpClient httpClient, Config config, BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig) {
+  private ReferencesBatcher(HttpClient httpClient, Config config, ReferencesPath referencesPath,
+                            BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig) {
     super(httpClient, config);
+    this.referencesPath = referencesPath;
     this.references = new ArrayList<>();
     this.batchRetriesConfig = batchRetriesConfig;
 
@@ -67,23 +72,17 @@ public class ReferencesBatcher extends BaseClient<BatchReferenceResponse[]>
     }
   }
 
-  public static ReferencesBatcher create(HttpClient httpClient, Config config) {
-    return new ReferencesBatcher(httpClient, config, BatchRetriesConfig.defaultConfig().build(), null);
-  }
-
-  public static ReferencesBatcher create(HttpClient httpClient, Config config, BatchRetriesConfig batchRetriesConfig) {
+  public static ReferencesBatcher create(HttpClient httpClient, Config config, ReferencesPath referencesPath,
+                                         BatchRetriesConfig batchRetriesConfig) {
     Assert.requiredNotNull(batchRetriesConfig, "batchRetriesConfig");
-    return new ReferencesBatcher(httpClient, config, batchRetriesConfig, null);
+    return new ReferencesBatcher(httpClient, config, referencesPath, batchRetriesConfig, null);
   }
 
-  public static ReferencesBatcher createAuto(HttpClient httpClient, Config config) {
-    return new ReferencesBatcher(httpClient, config, BatchRetriesConfig.defaultConfig().build(), AutoBatchConfig.defaultConfig().build());
-  }
-
-  public static ReferencesBatcher createAuto(HttpClient httpClient, Config config, BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig) {
+  public static ReferencesBatcher createAuto(HttpClient httpClient, Config config, ReferencesPath referencesPath,
+                                             BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig) {
     Assert.requiredNotNull(batchRetriesConfig, "batchRetriesConfig");
     Assert.requiredNotNull(autoBatchConfig, "autoBatchConfig");
-    return new ReferencesBatcher(httpClient, config, batchRetriesConfig, autoBatchConfig);
+    return new ReferencesBatcher(httpClient, config, referencesPath, batchRetriesConfig, autoBatchConfig);
   }
 
 
@@ -94,6 +93,11 @@ public class ReferencesBatcher extends BaseClient<BatchReferenceResponse[]>
   public ReferencesBatcher withReferences(BatchReference... references) {
     this.references.addAll(Arrays.asList(references));
     autoRun();
+    return this;
+  }
+
+  public ReferencesBatcher withConsistencyLevel(String consistencyLevel) {
+    this.consistencyLevel = consistencyLevel;
     return this;
   }
 
@@ -233,7 +237,10 @@ public class ReferencesBatcher extends BaseClient<BatchReferenceResponse[]>
 
   private Result<BatchReferenceResponse[]> internalRun(List<BatchReference> batch) {
     BatchReference[] payload = batch.toArray(new BatchReference[0]);
-    Response<BatchReferenceResponse[]> resp = sendPostRequest("/batch/references", payload, BatchReferenceResponse[].class);
+    String path = referencesPath.buildCreate(ReferencesPath.Params.builder()
+        .consistencyLevel(consistencyLevel)
+        .build());
+    Response<BatchReferenceResponse[]> resp = sendPostRequest(path, payload, BatchReferenceResponse[].class);
     return new Result<>(resp);
   }
 

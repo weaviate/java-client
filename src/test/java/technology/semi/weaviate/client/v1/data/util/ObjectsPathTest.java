@@ -24,15 +24,17 @@ public class ObjectsPathTest {
   @Mock
   private DbVersionSupport dbVersionSupportMock;
 
-  private static final ObjectsPath.Params EMPTY_PARAMS = ObjectsPath.Params.builder().build();
+  private static final ObjectsPath.Params EMPTY_PARAMS = ObjectsPath.Params.builder()
+    .build();
   private static final ObjectsPath.Params CLASS_PARAMS = ObjectsPath.Params.builder()
     .className("someClass")
     .build();
   private static final ObjectsPath.Params ID_PARAMS = ObjectsPath.Params.builder()
     .id("someId")
     .build();
-  private static final ObjectsPath.Params CLASS_QUERY_PARAMS = ObjectsPath.Params.builder()
+  private static final ObjectsPath.Params SOME_PARAMS = ObjectsPath.Params.builder()
     .className("someClass")
+    .consistencyLevel(ConsistencyLevel.QUORUM)
     .limit(10)
     .build();
   private static final ObjectsPath.Params ALL_PARAMS = ObjectsPath.Params.builder()
@@ -40,29 +42,10 @@ public class ObjectsPathTest {
     .id("someId")
     .limit(100)
     .additional(new String[]{"additional1", "additional2"})
-    .build();
-  private static final ObjectsPath.Params CONSISTENCY_LEVEL_CLASS_ID_PARAMS = ObjectsPath.Params.builder()
-    .className("someClass")
-    .id("someId")
     .consistencyLevel(ConsistencyLevel.QUORUM)
-    .build();
-  private static final ObjectsPath.Params NODE_NAME_CLASS_ID_PARAMS = ObjectsPath.Params.builder()
-    .className("someClass")
-    .id("someId")
     .nodeName("node1")
     .build();
-  private static final ObjectsPath.Params CONSISTENCY_LEVEL_ALL_PARAMS = ObjectsPath.Params.builder()
-    .className("someClass")
-    .id("someId")
-    .additional(new String[]{"additional1", "additional2"})
-    .consistencyLevel(ConsistencyLevel.QUORUM)
-    .build();
-  private static final ObjectsPath.Params NODE_NAME_ALL_PARAMS = ObjectsPath.Params.builder()
-    .className("someClass")
-    .id("someId")
-    .additional(new String[]{"additional1", "additional2"})
-    .nodeName("node1")
-    .build();
+
 
   @Before
   public void setUp() {
@@ -73,12 +56,13 @@ public class ObjectsPathTest {
     openedMocks.close();
   }
 
+
   @Test
   @DataMethod(source = ObjectsPathTest.class, method = "provideCreateForSupported")
-  public void shouldBuildCreatePathsWhenSupported(ObjectsPath.Params pathParams, String expectedPath) {
+  public void shouldBuildCreatePathsWhenSupported(ObjectsPath.Params params, String expectedPath) {
     Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(true);
 
-    assertThat(objectsPath.buildCreate(pathParams)).isEqualTo(expectedPath);
+    assertThat(objectsPath.buildCreate(params)).isEqualTo(expectedPath);
   }
 
   public static Object[][] provideCreateForSupported() {
@@ -88,18 +72,30 @@ public class ObjectsPathTest {
         "/objects"
       },
       {
-        ALL_PARAMS,
+        CLASS_PARAMS,
         "/objects"
+      },
+      {
+        ID_PARAMS,
+        "/objects"
+      },
+      {
+        SOME_PARAMS,
+        "/objects?consistency_level=QUORUM"
+      },
+      {
+        ALL_PARAMS,
+        "/objects?consistency_level=QUORUM"
       },
     };
   }
 
   @Test
   @DataMethod(source = ObjectsPathTest.class, method = "provideCreateForNotSupported")
-  public void shouldBuildCreatePathsWhenNotSupported(ObjectsPath.Params pathParams, String expectedPath) {
+  public void shouldBuildCreatePathsWhenNotSupported(ObjectsPath.Params params, String expectedPath) {
     Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(false);
 
-    assertThat(objectsPath.buildCreate(pathParams)).isEqualTo(expectedPath);
+    assertThat(objectsPath.buildCreate(params)).isEqualTo(expectedPath);
   }
 
   public static Object[][] provideCreateForNotSupported() {
@@ -109,91 +105,115 @@ public class ObjectsPathTest {
         "/objects"
       },
       {
-        ALL_PARAMS,
+        CLASS_PARAMS,
         "/objects"
+      },
+      {
+        ID_PARAMS,
+        "/objects"
+      },
+      {
+        SOME_PARAMS,
+        "/objects?consistency_level=QUORUM"
+      },
+      {
+        ALL_PARAMS,
+        "/objects?consistency_level=QUORUM"
       },
     };
   }
 
   @Test
   @DataMethod(source = ObjectsPathTest.class, method = "provideDeleteForSupported")
-  public void shouldBuildDeletePathsWhenSupported(ObjectsPath.Params pathParams, String expectedPath) {
+  public void shouldBuildDeletePathsWhenSupported(ObjectsPath.Params params, String expectedPath) {
     Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(true);
 
-    assertThat(objectsPath.buildDelete(pathParams)).isEqualTo(expectedPath);
+    assertThat(objectsPath.buildDelete(params)).isEqualTo(expectedPath);
   }
 
   public static Object[][] provideDeleteForSupported() {
     return new Object[][]{
       {
-        EMPTY_PARAMS,   // TODO should be valid?
+        EMPTY_PARAMS,
         "/objects"
       },
       {
-        CLASS_PARAMS,   // TODO should be valid?
+        CLASS_PARAMS,
         "/objects/someClass"
       },
       {
-        ID_PARAMS,      // TODO should be valid?
+        ID_PARAMS,
         "/objects/someId"
       },
       {
+        SOME_PARAMS,
+        "/objects/someClass?consistency_level=QUORUM"
+      },
+      {
         ALL_PARAMS,
-        "/objects/someClass/someId"
+        "/objects/someClass/someId?consistency_level=QUORUM"
       },
     };
   }
 
   @Test
   @DataMethod(source = ObjectsPathTest.class, method = "provideDeleteForNotSupported")
-  public void shouldBuildDeletePathsWhenNotSupported(ObjectsPath.Params pathParams, String expectedPath) {
+  public void shouldBuildDeletePathsWhenNotSupported(ObjectsPath.Params params, String expectedPath) {
     Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(false);
 
-    assertThat(objectsPath.buildDelete(pathParams)).isEqualTo(expectedPath);
+    assertThat(objectsPath.buildDelete(params)).isEqualTo(expectedPath);
   }
 
   public static Object[][] provideDeleteForNotSupported() {
     return new Object[][]{
       {
-        EMPTY_PARAMS,   // TODO should be valid?
+        EMPTY_PARAMS,
         "/objects"
       },
       {
-        CLASS_PARAMS,   // TODO should be valid?
+        CLASS_PARAMS,
         "/objects"
       },
       {
-        ID_PARAMS,      // TODO should be valid?
+        ID_PARAMS,
         "/objects/someId"
+      },
+      {
+        SOME_PARAMS,
+        "/objects?consistency_level=QUORUM"
       },
       {
         ALL_PARAMS,
-        "/objects/someId"
+        "/objects/someId?consistency_level=QUORUM"
       },
     };
   }
 
   @Test
   @DataMethod(source = ObjectsPathTest.class, method = "provideCheckForSupported")
-  public void shouldBuildCheckPathsWhenSupported(ObjectsPath.Params pathParams, String expectedPath) {
+  public void shouldBuildCheckPathsWhenSupported(ObjectsPath.Params params, String expectedPath) {
     Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(true);
 
-    assertThat(objectsPath.buildCheck(pathParams)).isEqualTo(expectedPath);
+    assertThat(objectsPath.buildCheck(params)).isEqualTo(expectedPath);
   }
 
   public static Object[][] provideCheckForSupported() {
     return new Object[][]{
       {
-        EMPTY_PARAMS,   // TODO should be valid?
+        EMPTY_PARAMS,
         "/objects"
       },
       {
-        CLASS_PARAMS,   // TODO should be valid?
+        CLASS_PARAMS,
         "/objects/someClass"
       },
       {
-        ID_PARAMS,      // TODO should be valid?
+        ID_PARAMS,
         "/objects/someId"
+      },
+      {
+        SOME_PARAMS,
+        "/objects/someClass"
       },
       {
         ALL_PARAMS,
@@ -204,25 +224,29 @@ public class ObjectsPathTest {
 
   @Test
   @DataMethod(source = ObjectsPathTest.class, method = "provideCheckForNotSupported")
-  public void shouldBuildCheckPathsWhenNotSupported(ObjectsPath.Params pathParams, String expectedPath) {
+  public void shouldBuildCheckPathsWhenNotSupported(ObjectsPath.Params params, String expectedPath) {
     Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(false);
 
-    assertThat(objectsPath.buildCheck(pathParams)).isEqualTo(expectedPath);
+    assertThat(objectsPath.buildCheck(params)).isEqualTo(expectedPath);
   }
 
   public static Object[][] provideCheckForNotSupported() {
     return new Object[][]{
       {
-        EMPTY_PARAMS,   // TODO should be valid?
+        EMPTY_PARAMS,
         "/objects"
       },
       {
-        CLASS_PARAMS,   // TODO should be valid?
+        CLASS_PARAMS,
         "/objects"
       },
       {
-        ID_PARAMS,      // TODO should be valid?
+        ID_PARAMS,
         "/objects/someId"
+      },
+      {
+        SOME_PARAMS,
+        "/objects"
       },
       {
         ALL_PARAMS,
@@ -233,84 +257,76 @@ public class ObjectsPathTest {
 
   @Test
   @DataMethod(source = ObjectsPathTest.class, method = "provideGetOneForSupported")
-  public void shouldBuildGetOnePathsWhenSupported(ObjectsPath.Params pathParams, String expectedPath) {
+  public void shouldBuildGetOnePathsWhenSupported(ObjectsPath.Params params, String expectedPath) {
     Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(true);
 
-    assertThat(objectsPath.buildGetOne(pathParams)).isEqualTo(expectedPath);
+    assertThat(objectsPath.buildGetOne(params)).isEqualTo(expectedPath);
   }
 
   public static Object[][] provideGetOneForSupported() {
     return new Object[][]{
       {
-        EMPTY_PARAMS,   // TODO should be valid?
+        EMPTY_PARAMS,
         "/objects"
       },
       {
-        CLASS_PARAMS,   // TODO should be valid?
+        CLASS_PARAMS,
         "/objects/someClass"
       },
       {
-        ID_PARAMS,      // TODO should be valid?
+        ID_PARAMS,
         "/objects/someId"
       },
       {
+        SOME_PARAMS,
+        "/objects/someClass?consistency_level=QUORUM"
+      },
+      {
         ALL_PARAMS,
-        "/objects/someClass/someId?include=additional1,additional2"
+        "/objects/someClass/someId?include=additional1,additional2&consistency_level=QUORUM&node_name=node1"
       },
-      {
-        CONSISTENCY_LEVEL_CLASS_ID_PARAMS,
-        "/objects/someClass/someId?consistency_level=QUORUM"
-      },
-      {
-        NODE_NAME_CLASS_ID_PARAMS,
-        "/objects/someClass/someId?node_name=node1"
-      },
-      {
-        CONSISTENCY_LEVEL_ALL_PARAMS,
-        "/objects/someClass/someId?include=additional1,additional2&consistency_level=QUORUM"
-      },
-      {
-        NODE_NAME_ALL_PARAMS,
-        "/objects/someClass/someId?include=additional1,additional2&node_name=node1"
-      }
     };
   }
 
   @Test
   @DataMethod(source = ObjectsPathTest.class, method = "provideGetOneForNotSupported")
-  public void shouldBuildGetOnePathsWhenNotSupported(ObjectsPath.Params pathParams, String expectedPath) {
+  public void shouldBuildGetOnePathsWhenNotSupported(ObjectsPath.Params params, String expectedPath) {
     Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(false);
 
-    assertThat(objectsPath.buildGetOne(pathParams)).isEqualTo(expectedPath);
+    assertThat(objectsPath.buildGetOne(params)).isEqualTo(expectedPath);
   }
 
   public static Object[][] provideGetOneForNotSupported() {
     return new Object[][]{
       {
-        EMPTY_PARAMS,   // TODO should be valid?
+        EMPTY_PARAMS,
         "/objects"
       },
       {
-        CLASS_PARAMS,   // TODO should be valid?
+        CLASS_PARAMS,
         "/objects"
       },
       {
-        ID_PARAMS,      // TODO should be valid?
+        ID_PARAMS,
         "/objects/someId"
       },
       {
+        SOME_PARAMS,
+        "/objects?consistency_level=QUORUM"
+      },
+      {
         ALL_PARAMS,
-        "/objects/someId?include=additional1,additional2"
+        "/objects/someId?include=additional1,additional2&consistency_level=QUORUM&node_name=node1"
       },
     };
   }
 
   @Test
   @DataMethod(source = ObjectsPathTest.class, method = "provideGetForSupported")
-  public void shouldBuildGetPathsWhenSupported(ObjectsPath.Params pathParams, String expectedPath) {
+  public void shouldBuildGetPathsWhenSupported(ObjectsPath.Params params, String expectedPath) {
     Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(true);
 
-    assertThat(objectsPath.buildGet(pathParams)).isEqualTo(expectedPath);
+    assertThat(objectsPath.buildGet(params)).isEqualTo(expectedPath);
   }
 
   public static Object[][] provideGetForSupported() {
@@ -328,22 +344,22 @@ public class ObjectsPathTest {
         "/objects"
       },
       {
+        SOME_PARAMS,
+        "/objects?class=someClass&limit=10"
+      },
+      {
         ALL_PARAMS,
         "/objects?include=additional1,additional2&limit=100"
       },
-      {
-        CLASS_QUERY_PARAMS,
-        "/objects?limit=10&class=someClass"
-      }
     };
   }
 
   @Test
   @DataMethod(source = ObjectsPathTest.class, method = "provideGetForNotSupported")
-  public void shouldBuildGetPathsWhenNotSupported(ObjectsPath.Params pathParams, String expectedPath) {
+  public void shouldBuildGetPathsWhenNotSupported(ObjectsPath.Params params, String expectedPath) {
     Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(false);
 
-    assertThat(objectsPath.buildGet(pathParams)).isEqualTo(expectedPath);
+    assertThat(objectsPath.buildGet(params)).isEqualTo(expectedPath);
   }
 
   public static Object[][] provideGetForNotSupported() {
@@ -361,70 +377,78 @@ public class ObjectsPathTest {
         "/objects"
       },
       {
+        SOME_PARAMS,
+        "/objects?limit=10"
+      },
+      {
         ALL_PARAMS,
         "/objects?include=additional1,additional2&limit=100"
       },
-      {
-        CLASS_QUERY_PARAMS,
-        "/objects?limit=10"
-      }
     };
   }
 
   @Test
   @DataMethod(source = ObjectsPathTest.class, method = "provideUpdateForSupported")
-  public void shouldBuildUpdatePathsWhenSupported(ObjectsPath.Params pathParams, String expectedPath) {
+  public void shouldBuildUpdatePathsWhenSupported(ObjectsPath.Params params, String expectedPath) {
     Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(true);
 
-    assertThat(objectsPath.buildUpdate(pathParams)).isEqualTo(expectedPath);
+    assertThat(objectsPath.buildUpdate(params)).isEqualTo(expectedPath);
   }
 
   public static Object[][] provideUpdateForSupported() {
     return new Object[][]{
       {
-        EMPTY_PARAMS,   // TODO should be valid?
+        EMPTY_PARAMS,
         "/objects"
       },
       {
-        CLASS_PARAMS,   // TODO should be valid?
+        CLASS_PARAMS,
         "/objects/someClass"
       },
       {
-        ID_PARAMS,      // TODO should be valid?
+        ID_PARAMS,
         "/objects/someId"
       },
       {
+        SOME_PARAMS,
+        "/objects/someClass?consistency_level=QUORUM"
+      },
+      {
         ALL_PARAMS,
-        "/objects/someClass/someId"
+        "/objects/someClass/someId?consistency_level=QUORUM"
       },
     };
   }
 
   @Test
   @DataMethod(source = ObjectsPathTest.class, method = "provideUpdateForNotSupported")
-  public void shouldBuildUpdatePathsWhenNotSupported(ObjectsPath.Params pathParams, String expectedPath) {
+  public void shouldBuildUpdatePathsWhenNotSupported(ObjectsPath.Params params, String expectedPath) {
     Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(false);
 
-    assertThat(objectsPath.buildUpdate(pathParams)).isEqualTo(expectedPath);
+    assertThat(objectsPath.buildUpdate(params)).isEqualTo(expectedPath);
   }
 
   public static Object[][] provideUpdateForNotSupported() {
     return new Object[][]{
       {
-        EMPTY_PARAMS,   // TODO should be valid?
+        EMPTY_PARAMS,
         "/objects"
       },
       {
-        CLASS_PARAMS,   // TODO should be valid?
+        CLASS_PARAMS,
         "/objects"
       },
       {
-        ID_PARAMS,      // TODO should be valid?
+        ID_PARAMS,
         "/objects/someId"
+      },
+      {
+        SOME_PARAMS,
+        "/objects?consistency_level=QUORUM"
       },
       {
         ALL_PARAMS,
-        "/objects/someId"
+        "/objects/someId?consistency_level=QUORUM"
       },
     };
   }

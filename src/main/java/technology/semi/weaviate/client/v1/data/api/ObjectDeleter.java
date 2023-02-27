@@ -19,6 +19,7 @@ public class ObjectDeleter extends BaseClient<String> implements ClientResult<Bo
   private final ObjectsPath objectsPath;
   private String id;
   private String className;
+  private String consistencyLevel;
 
   public ObjectDeleter(HttpClient httpClient, Config config, ObjectsPath objectsPath) {
     super(httpClient, config);
@@ -35,9 +36,14 @@ public class ObjectDeleter extends BaseClient<String> implements ClientResult<Bo
     return this;
   }
 
+  public ObjectDeleter withConsistencyLevel(String consistencyLevel) {
+    this.consistencyLevel = consistencyLevel;
+    return this;
+  }
+
   @Override
   public Result<Boolean> run() {
-    if (StringUtils.isEmpty(this.id)) {
+    if (StringUtils.isEmpty(id)) {
       WeaviateErrorMessage errorMessage = WeaviateErrorMessage.builder()
               .message("id cannot be empty").build();
       WeaviateErrorResponse errors = WeaviateErrorResponse.builder()
@@ -47,6 +53,7 @@ public class ObjectDeleter extends BaseClient<String> implements ClientResult<Bo
     String path = objectsPath.buildDelete(ObjectsPath.Params.builder()
             .id(id)
             .className(className)
+            .consistencyLevel(consistencyLevel)
             .build());
     Response<String> resp = sendDeleteRequest(path, null, String.class);
     return new Result<>(resp.getStatusCode(), resp.getStatusCode() == 204, resp.getErrors());

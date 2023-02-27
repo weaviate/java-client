@@ -16,8 +16,9 @@ import technology.semi.weaviate.client.v1.data.util.ObjectsPath;
 public class ObjectCreator extends BaseClient<WeaviateObject> implements ClientResult<WeaviateObject> {
 
   private final ObjectsPath objectsPath;
-  private String uuid;
+  private String id;
   private String className;
+  private String consistencyLevel;
   private Map<String, Object> properties;
   private Float[] vector;
 
@@ -26,13 +27,18 @@ public class ObjectCreator extends BaseClient<WeaviateObject> implements ClientR
     this.objectsPath = Objects.requireNonNull(objectsPath);
   }
 
+  public ObjectCreator withID(String id) {
+    this.id = id;
+    return this;
+  }
+
   public ObjectCreator withClassName(String className) {
     this.className = className;
     return this;
   }
 
-  public ObjectCreator withID(String uuid) {
-    this.uuid = uuid;
+  public ObjectCreator withConsistencyLevel(String consistencyLevel) {
+    this.consistencyLevel = consistencyLevel;
     return this;
   }
 
@@ -47,15 +53,17 @@ public class ObjectCreator extends BaseClient<WeaviateObject> implements ClientR
   }
 
   private String getID() {
-    if (StringUtils.isEmpty(uuid)) {
+    if (StringUtils.isEmpty(id)) {
       return UUID.randomUUID().toString();
     }
-    return uuid;
+    return id;
   }
 
   @Override
   public Result<WeaviateObject> run() {
-    String path = objectsPath.buildCreate(ObjectsPath.Params.builder().build());
+    String path = objectsPath.buildCreate(ObjectsPath.Params.builder()
+        .consistencyLevel(consistencyLevel)
+        .build());
     WeaviateObject obj = WeaviateObject.builder()
             .className(className)
             .properties(properties)

@@ -12,6 +12,7 @@ import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.batch.api.ObjectsBatcher;
 import technology.semi.weaviate.client.v1.batch.model.ObjectGetResponse;
 import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
+import technology.semi.weaviate.client.v1.data.replication.model.ConsistencyLevel;
 import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
 
 import java.io.File;
@@ -83,12 +84,16 @@ public class ClientBatchCreateTest {
       .withObjects(
         resPizza1.getResult(),
         WeaviateObject.builder().className("Pizza").id(PIZZA_2_ID).properties(PIZZA_2_PROPS).build()
-      ).run();
+      )
+      .withConsistencyLevel(ConsistencyLevel.QUORUM)
+      .run();
     Result<ObjectGetResponse[]> resBatchSoups = client.batch().objectsBatcher()
       .withObjects(
         resSoup1.getResult(),
         WeaviateObject.builder().className("Soup").id(SOUP_2_ID).properties(SOUP_2_PROPS).build()
-      ).run();
+      )
+      .withConsistencyLevel(ConsistencyLevel.QUORUM)
+      .run();
 
     // check if created objects exist
     Result<List<WeaviateObject>> resGetPizza1 = client.data().objectsGetter().withID(PIZZA_1_ID).withClassName("Pizza").run();

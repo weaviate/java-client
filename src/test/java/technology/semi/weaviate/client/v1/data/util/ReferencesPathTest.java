@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import technology.semi.weaviate.client.base.util.DbVersionSupport;
+import technology.semi.weaviate.client.v1.data.replication.model.ConsistencyLevel;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,7 +24,8 @@ public class ReferencesPathTest {
   @Mock
   private DbVersionSupport dbVersionSupportMock;
 
-  private static final ReferencesPath.Params EMPTY_PARAMS = ReferencesPath.Params.builder().build();
+  private static final ReferencesPath.Params EMPTY_PARAMS = ReferencesPath.Params.builder()
+    .build();
   private static final ReferencesPath.Params CLASS_PARAMS = ReferencesPath.Params.builder()
     .className("someClass")
     .build();
@@ -37,7 +39,9 @@ public class ReferencesPathTest {
     .className("someClass")
     .id("someId")
     .property("someProperty")
+    .consistencyLevel(ConsistencyLevel.QUORUM)
     .build();
+
 
   @Before
   public void setUp() {
@@ -48,68 +52,201 @@ public class ReferencesPathTest {
     openedMocks.close();
   }
 
+
   @Test
-  @DataMethod(source = ReferencesPathTest.class, method = "provideForSupported")
-  public void shouldBuildPathsWhenSupported(ReferencesPath.Params pathParams, String expectedPath) {
+  @DataMethod(source = ReferencesPathTest.class, method = "provideCreateForSupported")
+  public void shouldBuildCreatePathsWhenSupported(ReferencesPath.Params params, String expectedPath) {
     Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(true);
 
-    assertThat(referencesPath.build(pathParams)).isEqualTo(expectedPath);
+    assertThat(referencesPath.buildCreate(params)).isEqualTo(expectedPath);
   }
 
-  public static Object[][] provideForSupported() {
+  public static Object[][] provideCreateForSupported() {
     return new Object[][]{
       {
-        EMPTY_PARAMS,   // TODO should be valid?
+        EMPTY_PARAMS,
         "/objects/references"
       },
       {
-        CLASS_PARAMS,   // TODO should be valid?
+        CLASS_PARAMS,
         "/objects/someClass/references"
       },
       {
-        ID_PARAMS,      // TODO should be valid?
+        ID_PARAMS,
         "/objects/someId/references"
       },
       {
-        PROPERTY_PARAMS,    // TODO should be valid?
+        PROPERTY_PARAMS,
         "/objects/references/someProperty"
       },
       {
         ALL_PARAMS,
-        "/objects/someClass/someId/references/someProperty"
+        "/objects/someClass/someId/references/someProperty?consistency_level=QUORUM"
       },
     };
   }
 
   @Test
-  @DataMethod(source = ReferencesPathTest.class, method = "provideForNotSupported")
-  public void shouldBuildPathsWhenNotSupported(ReferencesPath.Params pathParams, String expectedPath) {
+  @DataMethod(source = ReferencesPathTest.class, method = "provideCreateForNotSupported")
+  public void shouldBuildCreatePathsWhenNotSupported(ReferencesPath.Params params, String expectedPath) {
     Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(false);
 
-    assertThat(referencesPath.build(pathParams)).isEqualTo(expectedPath);
+    assertThat(referencesPath.buildCreate(params)).isEqualTo(expectedPath);
   }
 
-  public static Object[][] provideForNotSupported() {
+  public static Object[][] provideCreateForNotSupported() {
     return new Object[][]{
       {
-        EMPTY_PARAMS,   // TODO should be valid?
+        EMPTY_PARAMS,
         "/objects/references"
       },
       {
-        CLASS_PARAMS,   // TODO should be valid?
+        CLASS_PARAMS,
         "/objects/references"
       },
       {
-        ID_PARAMS,      // TODO should be valid?
+        ID_PARAMS,
         "/objects/someId/references"
       },
       {
-        PROPERTY_PARAMS,    // TODO should be valid?
+        PROPERTY_PARAMS,
         "/objects/references/someProperty"
       },
       {
         ALL_PARAMS,
-        "/objects/someId/references/someProperty"
+        "/objects/someId/references/someProperty?consistency_level=QUORUM"
+      },
+    };
+  }
+
+  @Test
+  @DataMethod(source = ReferencesPathTest.class, method = "provideDeleteForSupported")
+  public void shouldBuildDeletePathsWhenSupported(ReferencesPath.Params params, String expectedPath) {
+    Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(true);
+
+    assertThat(referencesPath.buildDelete(params)).isEqualTo(expectedPath);
+  }
+
+  public static Object[][] provideDeleteForSupported() {
+    return new Object[][]{
+      {
+        EMPTY_PARAMS,
+        "/objects/references"
+      },
+      {
+        CLASS_PARAMS,
+        "/objects/someClass/references"
+      },
+      {
+        ID_PARAMS,
+        "/objects/someId/references"
+      },
+      {
+        PROPERTY_PARAMS,
+        "/objects/references/someProperty"
+      },
+      {
+        ALL_PARAMS,
+        "/objects/someClass/someId/references/someProperty?consistency_level=QUORUM"
+      },
+    };
+  }
+
+  @Test
+  @DataMethod(source = ReferencesPathTest.class, method = "provideDeleteForNotSupported")
+  public void shouldBuildDeletePathsWhenNotSupported(ReferencesPath.Params params, String expectedPath) {
+    Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(false);
+
+    assertThat(referencesPath.buildDelete(params)).isEqualTo(expectedPath);
+  }
+
+  public static Object[][] provideDeleteForNotSupported() {
+    return new Object[][]{
+      {
+        EMPTY_PARAMS,
+        "/objects/references"
+      },
+      {
+        CLASS_PARAMS,
+        "/objects/references"
+      },
+      {
+        ID_PARAMS,
+        "/objects/someId/references"
+      },
+      {
+        PROPERTY_PARAMS,
+        "/objects/references/someProperty"
+      },
+      {
+        ALL_PARAMS,
+        "/objects/someId/references/someProperty?consistency_level=QUORUM"
+      },
+    };
+  }
+
+  @Test
+  @DataMethod(source = ReferencesPathTest.class, method = "provideReplaceForSupported")
+  public void shouldBuildReplacePathsWhenSupported(ReferencesPath.Params params, String expectedPath) {
+    Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(true);
+
+    assertThat(referencesPath.buildReplace(params)).isEqualTo(expectedPath);
+  }
+
+  public static Object[][] provideReplaceForSupported() {
+    return new Object[][]{
+      {
+        EMPTY_PARAMS,
+        "/objects/references"
+      },
+      {
+        CLASS_PARAMS,
+        "/objects/someClass/references"
+      },
+      {
+        ID_PARAMS,
+        "/objects/someId/references"
+      },
+      {
+        PROPERTY_PARAMS,
+        "/objects/references/someProperty"
+      },
+      {
+        ALL_PARAMS,
+        "/objects/someClass/someId/references/someProperty?consistency_level=QUORUM"
+      },
+    };
+  }
+
+  @Test
+  @DataMethod(source = ReferencesPathTest.class, method = "provideReplaceForNotSupported")
+  public void shouldBuildReplacePathsWhenNotSupported(ReferencesPath.Params params, String expectedPath) {
+    Mockito.when(dbVersionSupportMock.supportsClassNameNamespacedEndpoints()).thenReturn(false);
+
+    assertThat(referencesPath.buildReplace(params)).isEqualTo(expectedPath);
+  }
+
+  public static Object[][] provideReplaceForNotSupported() {
+    return new Object[][]{
+      {
+        EMPTY_PARAMS,
+        "/objects/references"
+      },
+      {
+        CLASS_PARAMS,
+        "/objects/references"
+      },
+      {
+        ID_PARAMS,
+        "/objects/someId/references"
+      },
+      {
+        PROPERTY_PARAMS,
+        "/objects/references/someProperty"
+      },
+      {
+        ALL_PARAMS,
+        "/objects/someId/references/someProperty?consistency_level=QUORUM"
       },
     };
   }

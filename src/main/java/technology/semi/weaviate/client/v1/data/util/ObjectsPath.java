@@ -7,12 +7,13 @@ import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import technology.semi.weaviate.client.base.util.DbVersionSupport;
+import technology.semi.weaviate.client.base.util.TriConsumer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 public class ObjectsPath {
 
@@ -22,102 +23,149 @@ public class ObjectsPath {
     this.support = support;
   }
 
-  public String buildCreate(Params pathParams) {
-    return build(pathParams);
+
+  public String buildCreate(Params params) {
+    return build(
+      params,
+      this::addQueryConsistencyLevel
+    );
   }
 
-  public String buildDelete(Params pathParams) {
-    return build(pathParams, this::addClassNameDeprecatedNotSupportedCheck, this::addId);
+  public String buildDelete(Params params) {
+    return build(
+      params,
+      this::addPathClassNameWithDeprecatedNotSupportedCheck,
+      this::addPathId,
+      this::addQueryConsistencyLevel
+    );
   }
 
-  public String buildCheck(Params pathParams) {
-    return build(pathParams, this::addClassNameDeprecatedNotSupportedCheck, this::addId);
+  public String buildUpdate(Params params) {
+    return build(
+      params,
+      this::addPathClassNameWithDeprecatedCheck,
+      this::addPathId,
+      this::addQueryConsistencyLevel
+    );
   }
 
-  public String buildGetOne(Params pathParams) {
-    return build(pathParams, this::addClassNameDeprecatedNotSupportedCheck, this::addId, this::addQueryParamsForGetOne);
+  public String buildCheck(Params params) {
+    return build(
+      params,
+      this::addPathClassNameWithDeprecatedNotSupportedCheck,
+      this::addPathId
+    );
   }
 
-  public String buildGet(Params pathParams) {
-    return build(pathParams, this::addQueryParams);
+  public String buildGet(Params params) {
+    return build(
+      params,
+      this::addQueryClassNameWithDeprecatedCheck,
+      this::addQueryAdditionals,
+      this::addQueryLimit
+    );
   }
 
-  public String buildUpdate(Params pathParams) {
-    return build(pathParams, this::addClassNameDeprecatedCheck, this::addId);
+  public String buildGetOne(Params params) {
+    return build(
+      params,
+      this::addPathClassNameWithDeprecatedNotSupportedCheck,
+      this::addPathId,
+      this::addQueryAdditionals,
+      this::addQueryConsistencyLevel,
+      this::addQueryNodeName
+    );
   }
+
 
   @SafeVarargs
-  private final String build(Params pathParams, BiConsumer<StringBuilder, Params>... modifiers) {
-    Objects.requireNonNull(pathParams);
+  private final String build(Params params, TriConsumer<Params, List<String>, List<String>>... appenders) {
+    Objects.requireNonNull(params);
 
-    StringBuilder path = new StringBuilder("/objects");
-    Arrays.stream(modifiers).forEach(consumer -> consumer.accept(path, pathParams));
-    return path.toString();
+    List<String> pathParams = new ArrayList<>();
+    List<String> queryParams = new ArrayList<>();
+
+    pathParams.add("/objects");
+    Arrays.stream(appenders).forEach(consumer -> consumer.accept(params, pathParams, queryParams));
+
+    String path = String.join("/", pathParams);
+    if (!queryParams.isEmpty()) {
+      return path + "?" + String.join("&", queryParams);
+    }
+    return path;
   }
 
-  private void addClassNameDeprecatedNotSupportedCheck(StringBuilder path, Params pathParams) {
+
+  private void addPathClassNameWithDeprecatedNotSupportedCheck(Params params, List<String> pathParams, List<String> queryParams) {
     if (support.supportsClassNameNamespacedEndpoints()) {
-      if (StringUtils.isNotBlank(pathParams.className)) {
-        path.append("/").append(StringUtils.trim(pathParams.className));
+      if (StringUtils.isNotBlank(params.className)) {
+        pathParams.add(StringUtils.trim(params.className));
       } else {
         support.warnDeprecatedNonClassNameNamespacedEndpointsForObjects();
       }
-    } else if (StringUtils.isNotBlank(pathParams.className)) {
+    } else if (StringUtils.isNotBlank(params.className)) {
       support.warnNotSupportedClassNamespacedEndpointsForObjects();
     }
   }
 
-  private void addClassNameDeprecatedCheck(StringBuilder path, Params pathParams) {
+  private void addPathClassNameWithDeprecatedCheck(Params params, List<String> pathParams, List<String> queryParams) {
     if (support.supportsClassNameNamespacedEndpoints()) {
-      if (StringUtils.isNotBlank(pathParams.className)) {
-        path.append("/").append(StringUtils.trim(pathParams.className));
+      if (StringUtils.isNotBlank(params.className)) {
+        pathParams.add(StringUtils.trim(params.className));
       } else {
         support.warnDeprecatedNonClassNameNamespacedEndpointsForObjects();
       }
     }
   }
 
-  private void addId(StringBuilder path, Params pathParams) {
-    if (StringUtils.isNotBlank(pathParams.id)) {
-      path.append("/").append(StringUtils.trim(pathParams.id));
+  private void addPathId(Params params, List<String> pathParams, List<String> queryParams) {
+    if (StringUtils.isNotBlank(params.id)) {
+      pathParams.add(StringUtils.trim(params.id));
     }
   }
 
-  private void addQueryParams(StringBuilder path, Params pathParams) {
-    List<String> queryParams = new ArrayList<>();
-    if (ObjectUtils.isNotEmpty(pathParams.additional)) {
-      queryParams.add(String.format("include=%s", StringUtils.join(pathParams.additional, ",")));
-    }
-    if (pathParams.limit != null) {
-      queryParams.add(String.format("limit=%s", pathParams.limit));
-    }
-    if (StringUtils.isBlank(pathParams.id) && StringUtils.isNotBlank(pathParams.className)) {
+
+  private void addQueryClassNameWithDeprecatedCheck(Params params, List<String> pathParams, List<String> queryParams) {
+    if (StringUtils.isBlank(params.id) && StringUtils.isNotBlank(params.className)) {
       if (support.supportsClassNameNamespacedEndpoints()) {
-        queryParams.add(String.format("class=%s", pathParams.className));
+        queryParams.add(String.format("%s=%s", "class", StringUtils.trim(params.className)));
       } else {
         support.warnNotSupportedClassParameterInEndpointsForObjects();
       }
     }
-    if (queryParams.size() > 0) {
-      path.append("?").append(StringUtils.joinWith("&", queryParams.toArray()));
+  }
+
+  private void addQueryAdditionals(Params params, List<String> pathParams, List<String> queryParams) {
+    if (ObjectUtils.isNotEmpty(params.additional)) {
+      String include = Arrays.stream(params.additional)
+        .map(StringUtils::trim)
+        .filter(StringUtils::isNotBlank)
+        .collect(Collectors.joining(","));
+
+      if (StringUtils.isNotBlank(include)) {
+        queryParams.add(String.format("%s=%s", "include", include));
+      }
     }
   }
 
-  private void addQueryParamsForGetOne(StringBuilder path, Params pathParams) {
-    List<String> queryParams = new ArrayList<>();
-    if (ObjectUtils.isNotEmpty(pathParams.additional)) {
-      queryParams.add(String.format("include=%s", StringUtils.join(pathParams.additional, ",")));
-    }
-    if (StringUtils.isNotBlank(pathParams.consistencyLevel)) {
-      queryParams.add(String.format("consistency_level=%s", pathParams.consistencyLevel));
-    }
-    if (StringUtils.isNotBlank(pathParams.nodeName)) {
-      queryParams.add(String.format("node_name=%s", pathParams.nodeName));
-    }
-    if (queryParams.size() > 0) {
-      path.append("?").append(StringUtils.joinWith("&", queryParams.toArray()));
+  private void addQueryLimit(Params params, List<String> pathParams, List<String> queryParams) {
+    if (params.limit != null) {
+      queryParams.add(String.format("%s=%s", "limit", params.limit));
     }
   }
+
+  private void addQueryConsistencyLevel(Params params, List<String> pathParams, List<String> queryParams) {
+    if (StringUtils.isNotBlank(params.consistencyLevel)) {
+      queryParams.add(String.format("%s=%s", "consistency_level", StringUtils.trim(params.consistencyLevel)));
+    }
+  }
+
+  private void addQueryNodeName(Params params, List<String> pathParams, List<String> queryParams) {
+    if (StringUtils.isNotBlank(params.nodeName)) {
+      queryParams.add(String.format("%s=%s", "node_name", StringUtils.trim(params.nodeName)));
+    }
+  }
+
 
   @Builder
   @ToString
