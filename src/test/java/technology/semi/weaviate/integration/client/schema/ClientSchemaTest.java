@@ -21,6 +21,7 @@ import technology.semi.weaviate.client.base.WeaviateErrorMessage;
 import technology.semi.weaviate.client.v1.misc.model.BM25Config;
 import technology.semi.weaviate.client.v1.misc.model.DistanceType;
 import technology.semi.weaviate.client.v1.misc.model.InvertedIndexConfig;
+import technology.semi.weaviate.client.v1.misc.model.PqConfig;
 import technology.semi.weaviate.client.v1.misc.model.ReplicationConfig;
 import technology.semi.weaviate.client.v1.misc.model.ShardingConfig;
 import technology.semi.weaviate.client.v1.misc.model.StopwordConfig;
@@ -590,7 +591,7 @@ public class ClientSchemaTest {
     // vector index config
     Integer efConstruction = 128;
     Integer maxConnections = 64;
-    Long vectorCacheMaxObjects = 500000l;
+    Long vectorCacheMaxObjects = 500000L;
     Integer ef = -1;
     Boolean skip = false;
     Integer dynamicEfFactor = 8;
@@ -598,6 +599,13 @@ public class ClientSchemaTest {
     Integer dynamicEfMin = 100;
     Integer flatSearchCutoff = 40000;
     String distance = DistanceType.DOT;
+    //pq config
+    Boolean enabled = true;
+    Boolean bitCompression = true;
+    Integer segments = 4;
+    Integer centroids = 8;
+    String encoderType = "tile";
+    String encoderDistribution = "normal";
     // shard config
     Integer actualCount = 1;
     Integer actualVirtualCount = 128;
@@ -626,6 +634,16 @@ public class ClientSchemaTest {
             .dynamicEfMin(dynamicEfMin)
             .flatSearchCutoff(flatSearchCutoff)
             .distance(distance)
+            .pq(PqConfig.builder()
+                .enabled(enabled)
+                .bitCompression(bitCompression)
+                .segments(segments)
+                .centroids(centroids)
+                .encoder(PqConfig.Encoder.builder()
+                    .type(encoderType)
+                    .distribution(encoderDistribution)
+                    .build())
+                .build())
             .build();
 
     ShardingConfig shardingConfig = ShardingConfig.builder()
@@ -680,6 +698,18 @@ public class ClientSchemaTest {
     assertEquals(dynamicEfMin, classVectorIndexConfig.getDynamicEfMin());
     assertEquals(flatSearchCutoff, classVectorIndexConfig.getFlatSearchCutoff());
     assertEquals(distance, classVectorIndexConfig.getDistance());
+
+    assertThat(classVectorIndexConfig.getPq())
+      .isNotNull()
+      .returns(enabled, PqConfig::getEnabled)
+      .returns(bitCompression, PqConfig::getBitCompression)
+      .returns(segments, PqConfig::getSegments)
+      .returns(centroids, PqConfig::getCentroids);
+    assertThat(classVectorIndexConfig.getPq().getEncoder())
+      .isNotNull()
+      .returns(encoderType, PqConfig.Encoder::getType)
+      .returns(encoderDistribution, PqConfig.Encoder::getDistribution);
+
     ShardingConfig classShardingIndexConfig = bandClass.getResult().getShardingConfig();
     assertEquals(actualCount, classShardingIndexConfig.getActualCount());
     assertEquals(actualVirtualCount, classShardingIndexConfig.getActualVirtualCount());
