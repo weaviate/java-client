@@ -23,6 +23,8 @@ public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements Cl
   private String id;
   private String className;
   private Integer limit;
+  private Integer offset;
+  private String after;
   private final HashSet<String> additional;
   private String consistencyLevel;
   private String nodeName;
@@ -93,12 +95,24 @@ public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements Cl
     return this;
   }
 
+  public ObjectsGetter withAfter(String after) {
+    this.after = after;
+    return this;
+  }
+
+  public ObjectsGetter withOffset(Integer offset) {
+    this.offset = offset;
+    return this;
+  }
+
   @Override
   public Result<List<WeaviateObject>> run() {
     ObjectsPath.Params params = ObjectsPath.Params.builder()
             .id(id)
             .className(className)
             .limit(limit)
+            .offset(offset)
+            .after(after)
             .additional(additional.toArray(new String[0]))
             .consistencyLevel(consistencyLevel)
             .nodeName(nodeName)

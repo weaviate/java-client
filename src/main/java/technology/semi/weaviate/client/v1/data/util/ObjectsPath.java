@@ -62,7 +62,9 @@ public class ObjectsPath {
       params,
       this::addQueryClassNameWithDeprecatedCheck,
       this::addQueryAdditionals,
-      this::addQueryLimit
+      this::addQueryLimit,
+      this::addQueryOffset,
+      this::addQueryAfter
     );
   }
 
@@ -154,6 +156,18 @@ public class ObjectsPath {
     }
   }
 
+  private void addQueryOffset(Params params, List<String> pathParams, List<String> queryParams) {
+    if (params.offset != null) {
+      queryParams.add(String.format("%s=%s", "offset", params.offset));
+    }
+  }
+
+  private void addQueryAfter(Params params, List<String> pathParams, List<String> queryParams) {
+    if (StringUtils.isNotBlank(params.after)) {
+      queryParams.add(String.format("%s=%s", "after", params.after));
+    }
+  }
+
   private void addQueryConsistencyLevel(Params params, List<String> pathParams, List<String> queryParams) {
     if (StringUtils.isNotBlank(params.consistencyLevel)) {
       queryParams.add(String.format("%s=%s", "consistency_level", StringUtils.trim(params.consistencyLevel)));
@@ -175,6 +189,8 @@ public class ObjectsPath {
     String id;
     String className;
     Integer limit;
+    Integer offset;
+    String after;
     String[] additional;
     String consistencyLevel;
     String nodeName;

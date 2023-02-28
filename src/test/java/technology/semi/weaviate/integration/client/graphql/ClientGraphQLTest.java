@@ -1163,6 +1163,66 @@ public class ClientGraphQLTest {
     testGenerics.cleanupWeaviate(client);
   }
 
+  @Test
+  public void testGraphQLGetUsingCursorAPI() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
+    Field name = Field.builder().name("name").build();
+    // when
+    testGenerics.createTestSchemaAndData(client);
+    Result<GraphQLResponse> result = client.graphQL().get()
+      .withClassName("Pizza").withAfter("00000000-0000-0000-0000-000000000000").withLimit(10).withFields(name)
+      .run();
+    testGenerics.cleanupWeaviate(client);
+    // then
+    assertNotNull(result);
+    assertFalse(result.hasErrors());
+    GraphQLResponse resp = result.getResult();
+    assertNotNull(resp);
+    assertNotNull(resp.getData());
+    assertTrue(resp.getData() instanceof Map);
+    Map data = (Map) resp.getData();
+    assertNotNull(data.get("Get"));
+    assertTrue(data.get("Get") instanceof Map);
+    Map get = (Map) data.get("Get");
+    assertNotNull(get.get("Pizza"));
+    assertTrue(get.get("Pizza") instanceof List);
+    List getPizza = (List) get.get("Pizza");
+    assertEquals(3, getPizza.size());
+  }
+
+  @Test
+  public void testGraphQLGetUsingLimitAndOffset() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
+    Field name = Field.builder().name("name").build();
+    // when
+    testGenerics.createTestSchemaAndData(client);
+    Result<GraphQLResponse> result = client.graphQL().get()
+      .withClassName("Pizza").withOffset(3).withLimit(4).withFields(name)
+      .run();
+    testGenerics.cleanupWeaviate(client);
+    // then
+    assertNotNull(result);
+    assertFalse(result.hasErrors());
+    GraphQLResponse resp = result.getResult();
+    assertNotNull(resp);
+    assertNotNull(resp.getData());
+    assertTrue(resp.getData() instanceof Map);
+    Map data = (Map) resp.getData();
+    assertNotNull(data.get("Get"));
+    assertTrue(data.get("Get") instanceof Map);
+    Map get = (Map) data.get("Get");
+    assertNotNull(get.get("Pizza"));
+    assertTrue(get.get("Pizza") instanceof List);
+    List getPizza = (List) get.get("Pizza");
+    assertEquals(1, getPizza.size());
+  }
+
   private void expectPizzaNamesOrder(Result<GraphQLResponse> result, String[] expectedPizzas) {
     assertNotNull(result);
     assertFalse(result.hasErrors());

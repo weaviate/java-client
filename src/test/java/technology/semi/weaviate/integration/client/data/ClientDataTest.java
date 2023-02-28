@@ -160,7 +160,15 @@ public class ClientDataTest {
       put("description", "vegetarian");
     }}).run();
     Result<List<WeaviateObject>> objects = client.data().objectsGetter().run();
-    Result<List<WeaviateObject>> objects1 = client.data().objectsGetter().withLimit(1).run();
+    Result<List<WeaviateObject>> objects1 = client.data().objectsGetter().withClassName("Pizza").withLimit(1).run();
+    assertNull(objects1.getError());
+    assertEquals(1l, objects1.getResult().size());
+    String firstPizzaID = objects1.getResult().get(0).getId();
+    Result<List<WeaviateObject>> afterFirstPizzaObjects = client.data()
+      .objectsGetter()
+      .withClassName("Pizza").withAfter(firstPizzaID).withLimit(1)
+      .run();
+
     testGenerics.cleanupWeaviate(client);
     // then
     assertCreated(pizzaObj1);
@@ -170,6 +178,8 @@ public class ClientDataTest {
     assertNotNull(objects);
     assertNotNull(objects.getResult());
     assertEquals(4, objects.getResult().size());
+    assertNull(afterFirstPizzaObjects.getError());
+    assertEquals(1l, afterFirstPizzaObjects.getResult().size());
   }
 
   @Test
