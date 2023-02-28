@@ -21,7 +21,7 @@ import technology.semi.weaviate.client.base.WeaviateErrorMessage;
 import technology.semi.weaviate.client.v1.misc.model.BM25Config;
 import technology.semi.weaviate.client.v1.misc.model.DistanceType;
 import technology.semi.weaviate.client.v1.misc.model.InvertedIndexConfig;
-import technology.semi.weaviate.client.v1.misc.model.PqConfig;
+import technology.semi.weaviate.client.v1.misc.model.PQConfig;
 import technology.semi.weaviate.client.v1.misc.model.ReplicationConfig;
 import technology.semi.weaviate.client.v1.misc.model.ShardingConfig;
 import technology.semi.weaviate.client.v1.misc.model.StopwordConfig;
@@ -634,12 +634,12 @@ public class ClientSchemaTest {
             .dynamicEfMin(dynamicEfMin)
             .flatSearchCutoff(flatSearchCutoff)
             .distance(distance)
-            .pq(PqConfig.builder()
+            .pq(PQConfig.builder()
                 .enabled(enabled)
                 .bitCompression(bitCompression)
                 .segments(segments)
                 .centroids(centroids)
-                .encoder(PqConfig.Encoder.builder()
+                .encoder(PQConfig.Encoder.builder()
                     .type(encoderType)
                     .distribution(encoderDistribution)
                     .build())
@@ -701,14 +701,14 @@ public class ClientSchemaTest {
 
     assertThat(classVectorIndexConfig.getPq())
       .isNotNull()
-      .returns(enabled, PqConfig::getEnabled)
-      .returns(bitCompression, PqConfig::getBitCompression)
-      .returns(segments, PqConfig::getSegments)
-      .returns(centroids, PqConfig::getCentroids);
+      .returns(enabled, PQConfig::getEnabled)
+      .returns(bitCompression, PQConfig::getBitCompression)
+      .returns(segments, PQConfig::getSegments)
+      .returns(centroids, PQConfig::getCentroids);
     assertThat(classVectorIndexConfig.getPq().getEncoder())
       .isNotNull()
-      .returns(encoderType, PqConfig.Encoder::getType)
-      .returns(encoderDistribution, PqConfig.Encoder::getDistribution);
+      .returns(encoderType, PQConfig.Encoder::getType)
+      .returns(encoderDistribution, PQConfig.Encoder::getDistribution);
 
     ShardingConfig classShardingIndexConfig = bandClass.getResult().getShardingConfig();
     assertEquals(actualCount, classShardingIndexConfig.getActualCount());

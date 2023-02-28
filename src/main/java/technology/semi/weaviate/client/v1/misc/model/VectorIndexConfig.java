@@ -22,5 +22,5 @@ public class VectorIndexConfig {
   Integer flatSearchCutoff;
   Integer cleanupIntervalSeconds;
   Boolean skip;
-  PqConfig pq;
+  PQConfig pq;
 }

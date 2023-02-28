@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @ToString
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class PqConfig {
+public class PQConfig {
 
   Boolean enabled;
   Boolean bitCompression;
