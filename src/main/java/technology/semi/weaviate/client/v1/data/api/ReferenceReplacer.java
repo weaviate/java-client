@@ -16,6 +16,7 @@ public class ReferenceReplacer extends BaseClient<Object> implements ClientResul
   private final ReferencesPath referencesPath;
   private String id;
   private String className;
+  private String consistencyLevel;
   private String referenceProperty;
   private SingleRef[] referencePayload;
 
@@ -34,6 +35,11 @@ public class ReferenceReplacer extends BaseClient<Object> implements ClientResul
     return this;
   }
 
+  public ReferenceReplacer withConsistencyLevel(String consistencyLevel) {
+    this.consistencyLevel = consistencyLevel;
+    return this;
+  }
+
   public ReferenceReplacer withReferenceProperty(String propertyName) {
     this.referenceProperty = propertyName;
     return this;
@@ -46,9 +52,10 @@ public class ReferenceReplacer extends BaseClient<Object> implements ClientResul
 
   @Override
   public Result<Boolean> run() {
-    String path = referencesPath.build(ReferencesPath.Params.builder()
+    String path = referencesPath.buildReplace(ReferencesPath.Params.builder()
             .id(id)
             .className(className)
+            .consistencyLevel(consistencyLevel)
             .property(referenceProperty)
             .build());
     Response<Object> resp = sendPutRequest(path, referencePayload, Object.class);

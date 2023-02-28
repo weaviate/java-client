@@ -19,6 +19,7 @@ import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.base.util.Assert;
 import technology.semi.weaviate.client.v1.batch.model.ObjectGetResponse;
 import technology.semi.weaviate.client.v1.batch.model.ObjectsBatchRequestBody;
+import technology.semi.weaviate.client.v1.batch.util.ObjectsPath;
 import technology.semi.weaviate.client.v1.data.Data;
 import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
 
@@ -46,6 +47,7 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
   implements ClientResult<ObjectGetResponse[]>, Closeable {
 
   private final Data data;
+  private final ObjectsPath objectsPath;
 
   private final BatchRetriesConfig batchRetriesConfig;
   private final AutoBatchConfig autoBatchConfig;
@@ -53,13 +55,15 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
   private final ScheduledExecutorService executorService;
   private final DelayedExecutor<?> delayedExecutor;
   private final List<WeaviateObject> objects;
+  private String consistencyLevel;
   private final List<CompletableFuture<Result<ObjectGetResponse[]>>> undoneFutures;
 
 
-  private ObjectsBatcher(HttpClient httpClient, Config config, Data data,
+  private ObjectsBatcher(HttpClient httpClient, Config config, Data data, ObjectsPath objectsPath,
                          BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig) {
     super(httpClient, config);
     this.data = data;
+    this.objectsPath = objectsPath;
     this.objects = new ArrayList<>();
     this.batchRetriesConfig = batchRetriesConfig;
 
@@ -78,17 +82,17 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
     }
   }
 
-  public static ObjectsBatcher create(HttpClient httpClient, Config config, Data data,
+  public static ObjectsBatcher create(HttpClient httpClient, Config config, Data data, ObjectsPath objectsPath,
                                       BatchRetriesConfig batchRetriesConfig) {
     Assert.requiredNotNull(batchRetriesConfig, "batchRetriesConfig");
-    return new ObjectsBatcher(httpClient, config, data, batchRetriesConfig, null);
+    return new ObjectsBatcher(httpClient, config, data, objectsPath, batchRetriesConfig, null);
   }
 
-  public static ObjectsBatcher createAuto(HttpClient httpClient, Config config, Data data,
+  public static ObjectsBatcher createAuto(HttpClient httpClient, Config config, Data data, ObjectsPath objectsPath,
                                           BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig) {
     Assert.requiredNotNull(batchRetriesConfig, "batchRetriesConfig");
     Assert.requiredNotNull(autoBatchConfig, "autoBatchConfig");
-    return new ObjectsBatcher(httpClient, config, data, batchRetriesConfig, autoBatchConfig);
+    return new ObjectsBatcher(httpClient, config, data, objectsPath, batchRetriesConfig, autoBatchConfig);
   }
 
 
@@ -100,6 +104,11 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
     addMissingIds(objects);
     this.objects.addAll(Arrays.asList(objects));
     autoRun();
+    return this;
+  }
+
+  public ObjectsBatcher withConsistencyLevel(String consistencyLevel) {
+    this.consistencyLevel = consistencyLevel;
     return this;
   }
 
@@ -254,7 +263,10 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
       .objects(batch.toArray(new WeaviateObject[0]))
       .fields(new String[]{"ALL"})
       .build();
-    Response<ObjectGetResponse[]> resp = sendPostRequest("/batch/objects", batchRequest, ObjectGetResponse[].class);
+    String path = objectsPath.buildCreate(ObjectsPath.Params.builder()
+        .consistencyLevel(consistencyLevel)
+        .build());
+    Response<ObjectGetResponse[]> resp = sendPostRequest(path, batchRequest, ObjectGetResponse[].class);
     return new Result<>(resp);
   }
 

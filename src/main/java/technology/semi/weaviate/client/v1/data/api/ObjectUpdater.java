@@ -22,6 +22,7 @@ public class ObjectUpdater extends BaseClient<WeaviateObject> implements ClientR
   private final ObjectsPath objectsPath;
   private String id;
   private String className;
+  private String consistencyLevel;
   private Map<String, Object> properties;
   private Boolean withMerge;
 
@@ -30,13 +31,18 @@ public class ObjectUpdater extends BaseClient<WeaviateObject> implements ClientR
     this.objectsPath = Objects.requireNonNull(objectsPath);
   }
 
+  public ObjectUpdater withID(String id) {
+    this.id = id;
+    return this;
+  }
+
   public ObjectUpdater withClassName(String className) {
     this.className = className;
     return this;
   }
 
-  public ObjectUpdater withID(String id) {
-    this.id = id;
+  public ObjectUpdater withConsistencyLevel(String consistencyLevel) {
+    this.consistencyLevel = consistencyLevel;
     return this;
   }
 
@@ -62,6 +68,7 @@ public class ObjectUpdater extends BaseClient<WeaviateObject> implements ClientR
     String path = objectsPath.buildUpdate(ObjectsPath.Params.builder()
             .id(id)
             .className(className)
+            .consistencyLevel(consistencyLevel)
             .build());
     WeaviateObject obj = WeaviateObject.builder()
             .className(className)

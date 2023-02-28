@@ -10,24 +10,33 @@ import technology.semi.weaviate.client.base.Response;
 import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.v1.batch.model.BatchDeleteResponse;
+import technology.semi.weaviate.client.v1.batch.util.ObjectsPath;
 import technology.semi.weaviate.client.v1.filters.WhereFilter;
 
 public class ObjectsBatchDeleter extends BaseClient<BatchDeleteResponse> implements ClientResult<BatchDeleteResponse> {
 
+    private final ObjectsPath objectsPath;
     private String className;
+    private String consistencyLevel;
     private WhereFilter where;
     private String output;
     private Boolean dryRun;
 
 
-    public ObjectsBatchDeleter(HttpClient httpClient, Config config) {
+    public ObjectsBatchDeleter(HttpClient httpClient, Config config, ObjectsPath objectsPath) {
         super(httpClient, config);
+        this.objectsPath = objectsPath;
     }
 
 
     public ObjectsBatchDeleter withClassName(String className) {
         this.className = className;
         return this;
+    }
+
+    public ObjectsBatchDeleter withConsistencyLevel(String consistencyLevel) {
+      this.consistencyLevel = consistencyLevel;
+      return this;
     }
 
     public ObjectsBatchDeleter withWhere(WhereFilter where) {
@@ -57,7 +66,10 @@ public class ObjectsBatchDeleter extends BaseClient<BatchDeleteResponse> impleme
                 .output(output)
                 .match(match)
                 .build();
-        Response<BatchDeleteResponse> resp = sendDeleteRequest("/batch/objects", batchDelete, BatchDeleteResponse.class);
+        String path = objectsPath.buildDelete(ObjectsPath.Params.builder()
+            .consistencyLevel(consistencyLevel)
+            .build());
+        Response<BatchDeleteResponse> resp = sendDeleteRequest(path, batchDelete, BatchDeleteResponse.class);
         return new Result<>(resp);
     }
 

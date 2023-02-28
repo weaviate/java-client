@@ -15,6 +15,7 @@ import technology.semi.weaviate.client.base.Result;
 import technology.semi.weaviate.client.v1.data.model.ObjectReference;
 import technology.semi.weaviate.client.v1.data.model.SingleRef;
 import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
+import technology.semi.weaviate.client.v1.data.replication.model.ConsistencyLevel;
 import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
 
 import static org.junit.Assert.assertEquals;
@@ -87,6 +88,7 @@ public class ClientReferencesTest {
             .withClassName("Pizza")
             .withReferenceProperty("otherFoods")
             .withReference(chickenSoupRef)
+            .withConsistencyLevel(ConsistencyLevel.QUORUM)
             .run();
     // Action -> Thing
     // Payload to reference the Hawaii
@@ -97,6 +99,7 @@ public class ClientReferencesTest {
             .withClassName("Soup")
             .withReferenceProperty("otherFoods")
             .withReference(hawaiiRef)
+            .withConsistencyLevel(ConsistencyLevel.QUORUM)
             .run();
     // Get the objects
     Result<List<WeaviateObject>> things = client.data().objectsGetter().withID(objTID).withClassName("Pizza").run();
@@ -169,6 +172,7 @@ public class ClientReferencesTest {
             .withClassName("Pizza")
             .withReferenceProperty("otherFoods")
             .withReferences(new SingleRef[]{ hawaiiRef })
+            .withConsistencyLevel(ConsistencyLevel.QUORUM)
             .run();
     // Action -> Action
     Result<Boolean> otherFoodsSoupRefReplace = client.data().referenceReplacer()
@@ -176,6 +180,7 @@ public class ClientReferencesTest {
             .withClassName("Soup")
             .withReferenceProperty("otherFoods")
             .withReferences(new SingleRef[]{ chickenSoupRef })
+            .withConsistencyLevel(ConsistencyLevel.QUORUM)
             .run();
     Result<List<WeaviateObject>> thingsReplaced = client.data().objectsGetter().withID(objTID).withClassName("Pizza").run();
     Result<List<WeaviateObject>> actionsReplaced = client.data().objectsGetter().withID(objAID).withClassName("Soup").run();
@@ -249,12 +254,16 @@ public class ClientReferencesTest {
             .withID(objTID)
             .withClassName("Pizza")
             .withReferenceProperty("otherFoods")
-            .withReference(chickenSoupRef).run();
+            .withReference(chickenSoupRef)
+            .withConsistencyLevel(ConsistencyLevel.QUORUM)
+            .run();
     Result<Boolean> otherFoodsSoupRefDelete = client.data().referenceDeleter()
             .withID(objAID)
             .withClassName("Soup")
             .withReferenceProperty("otherFoods")
-            .withReference(hawaiiRef).run();
+            .withReference(hawaiiRef)
+            .withConsistencyLevel(ConsistencyLevel.QUORUM)
+            .run();
     // Get the objects
     Result<List<WeaviateObject>> thingsAfterRefDelete = client.data().objectsGetter().withID(objTID).withClassName("Pizza").run();
     Result<List<WeaviateObject>> actionsAfterRefDelete = client.data().objectsGetter().withID(objAID).withClassName("Soup").run();

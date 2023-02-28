@@ -13,6 +13,7 @@ import technology.semi.weaviate.client.v1.batch.model.BatchDeleteOutput;
 import technology.semi.weaviate.client.v1.batch.model.BatchDeleteResponse;
 import technology.semi.weaviate.client.v1.batch.model.BatchDeleteResultStatus;
 import technology.semi.weaviate.client.v1.data.model.WeaviateObject;
+import technology.semi.weaviate.client.v1.data.replication.model.ConsistencyLevel;
 import technology.semi.weaviate.client.v1.filters.Operator;
 import technology.semi.weaviate.client.v1.filters.WhereFilter;
 import technology.semi.weaviate.integration.client.WeaviateTestGenerics;
@@ -153,6 +154,7 @@ public class ClientBatchDeleteTest {
     Result<BatchDeleteResponse> response = client.batch().objectsBatchDeleter()
             .withClassName("Pizza")
             .withWhere(whereFilter)
+            .withConsistencyLevel(ConsistencyLevel.QUORUM)
             .run();
     int remainingWeaviateObjects = countWeaviateObjects();
 
@@ -195,6 +197,7 @@ public class ClientBatchDeleteTest {
             .withOutput(BatchDeleteOutput.VERBOSE)
             .withClassName("Pizza")
             .withWhere(whereFilter)
+            .withConsistencyLevel(ConsistencyLevel.QUORUM)
             .run();
     int remainingWeaviateObjects = countWeaviateObjects();
 
