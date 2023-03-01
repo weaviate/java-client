@@ -2,11 +2,11 @@ package technology.semi.weaviate.client.v1.auth.nimbus;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.apache.http.impl.client.HttpClientBuilder;
 import technology.semi.weaviate.client.Config;
 import technology.semi.weaviate.client.base.Serializer;
 import technology.semi.weaviate.client.base.http.HttpClient;
 import technology.semi.weaviate.client.base.http.HttpResponse;
+import technology.semi.weaviate.client.base.http.builder.HttpApacheClientBuilder;
 import technology.semi.weaviate.client.base.http.impl.CommonsHttpClientImpl;
 import technology.semi.weaviate.client.v1.auth.exception.AuthException;
 
@@ -34,8 +34,7 @@ public class BaseAuth {
   }
 
   public AuthResponse getIdAndTokenEndpoint(Config config) throws AuthException {
-    HttpClientBuilder builder = HttpClientBuilder.create();
-    HttpClient client = new CommonsHttpClientImpl(config.getHeaders(), builder::build);
+    HttpClient client = new CommonsHttpClientImpl(config.getHeaders(), HttpApacheClientBuilder.build(config));
     String url = config.getBaseURL() + OIDC_URL;
     HttpResponse response = sendGetRequest(client, url);
     switch (response.getStatusCode()) {
