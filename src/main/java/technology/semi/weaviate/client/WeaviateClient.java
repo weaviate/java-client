@@ -1,8 +1,8 @@
 package technology.semi.weaviate.client;
 
 import java.util.Optional;
-import org.apache.http.impl.client.HttpClientBuilder;
 import technology.semi.weaviate.client.base.http.HttpClient;
+import technology.semi.weaviate.client.base.http.builder.HttpApacheClientBuilder;
 import technology.semi.weaviate.client.base.http.impl.CommonsHttpClientImpl;
 import technology.semi.weaviate.client.base.util.DbVersionProvider;
 import technology.semi.weaviate.client.base.util.DbVersionSupport;
@@ -25,11 +25,11 @@ public class WeaviateClient {
   private final HttpClient httpClient;
 
   public WeaviateClient(Config config) {
-    this(config, new CommonsHttpClientImpl(config.getHeaders(), null, HttpClientBuilder.create()::build));
+    this(config, new CommonsHttpClientImpl(config.getHeaders(), null, HttpApacheClientBuilder.build(config)));
   }
 
   public WeaviateClient(Config config, AccessTokenProvider tokenProvider) {
-    this(config, new CommonsHttpClientImpl(config.getHeaders(), tokenProvider, HttpClientBuilder.create()::build));
+    this(config, new CommonsHttpClientImpl(config.getHeaders(), tokenProvider, HttpApacheClientBuilder.build(config)));
   }
 
   public WeaviateClient(Config config, HttpClient httpClient) {
