@@ -5,7 +5,7 @@
   <groupId>technology.semi.weaviate</groupId>
   <artifactId>client</artifactId>
   <packaging>jar</packaging>
-  <version>3.6.3</version>
+  <version>3.6.4-SNAPSHOT</version>
 
   <name>Weaviate Java client</name>
   <description>A java client for Weaviate Vector Search Engine</description>
