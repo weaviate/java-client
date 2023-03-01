@@ -22,7 +22,7 @@ public class WeaviateTestGenerics {
 
   public static final String PIZZA_QUATTRO_FORMAGGI_ID = "10523cdd-15a2-42f4-81fa-267fe92f7cd6";
   public static final String PIZZA_FRUTTI_DI_MARE_ID = "927dd3ac-e012-4093-8007-7799cc7e81e4";
-  public static final String PIZZA_HAWAII_ID = "f824a18e-c430-4475-9bef-847673fbb54e";
+  public static final String PIZZA_HAWAII_ID = "00000000-0000-0000-0000-000000000000";
   public static final String PIZZA_DOENER_ID = "d2b393ff-4b26-48c7-b554-218d970a9e17";
   public static final String SOUP_CHICKENSOUP_ID = "8c156d37-81aa-4ce9-a811-621e2702b825";
   public static final String SOUP_BEAUTIFUL_ID = "27351361-2898-4d1a-aad7-1ca48253eb0b";

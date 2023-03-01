@@ -56,6 +56,11 @@ public class Get extends BaseClient<GraphQLResponse> implements ClientResult<Gra
     return this;
   }
 
+  public Get withAfter(String after) {
+    this.getBuilder.after(after);
+    return this;
+  }
+
   public Get withNearText(NearTextArgument nearText) {
     this.getBuilder.withNearTextFilter(nearText);
     return this;

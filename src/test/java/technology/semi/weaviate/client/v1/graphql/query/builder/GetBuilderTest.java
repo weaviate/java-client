@@ -113,6 +113,23 @@ public class GetBuilderTest extends TestCase {
   }
 
   @Test
+  public void testBuildGetWithLimitAndAfter() {
+    // given
+    Field name = Field.builder().name("name").build();
+    Fields fields = Fields.builder().fields(new Field[]{ name }).build();
+    // when
+    String query = GetBuilder.builder()
+      .className("Pizza")
+      .fields(fields)
+      .after("00000000-0000-0000-0000-000000000000")
+      .limit(2)
+      .build().buildQuery();
+    // then
+    assertNotNull(query);
+    assertEquals("{Get{Pizza(limit: 2, after: \"00000000-0000-0000-0000-000000000000\"){name}}}", query);
+  }
+
+  @Test
   public void testBuildGetWithNearText() {
     // given
     Field name = Field.builder().name("name").build();

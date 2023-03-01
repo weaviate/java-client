@@ -41,6 +41,8 @@ public class ObjectsPathTest {
     .className("someClass")
     .id("someId")
     .limit(100)
+    .offset(0)
+    .after("00000000-0000-0000-0000-000000000000")
     .additional(new String[]{"additional1", "additional2"})
     .consistencyLevel(ConsistencyLevel.QUORUM)
     .nodeName("node1")
@@ -349,7 +351,7 @@ public class ObjectsPathTest {
       },
       {
         ALL_PARAMS,
-        "/objects?include=additional1,additional2&limit=100"
+        "/objects?include=additional1,additional2&limit=100&offset=0&after=00000000-0000-0000-0000-000000000000"
       },
     };
   }
@@ -382,7 +384,7 @@ public class ObjectsPathTest {
       },
       {
         ALL_PARAMS,
-        "/objects?include=additional1,additional2&limit=100"
+        "/objects?include=additional1,additional2&limit=100&offset=0&after=00000000-0000-0000-0000-000000000000"
       },
     };
   }

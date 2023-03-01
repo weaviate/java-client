@@ -32,6 +32,7 @@ public class GetBuilder implements Query {
   Fields fields;
   Integer offset;
   Integer limit;
+  String after;
   WhereFilter withWhereFilter;
   NearTextArgument withNearTextFilter;
   Bm25Argument withBm25Filter;
@@ -84,6 +85,9 @@ public class GetBuilder implements Query {
       }
       if (offset != null) {
         filters.add(String.format("offset: %s", offset));
+      }
+      if (after != null) {
+        filters.add(String.format("after: \"%s\"", after));
       }
       if (withSortArguments != null) {
         filters.add(withSortArguments.build());
