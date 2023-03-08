@@ -4,7 +4,6 @@ import com.jparams.junit4.JParamsTestRunner;
 import com.jparams.junit4.data.DataMethod;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockserver.client.MockServerClient;
@@ -55,7 +54,7 @@ public class ClientBatchReferencesCreateMockServerTest {
       response().withStatusCode(200).withBody(metaBody())
     );
 
-    Config config = new Config("http", MOCK_SERVER_HOST + ":" + MOCK_SERVER_PORT);
+    Config config = new Config("http", MOCK_SERVER_HOST + ":" + MOCK_SERVER_PORT, null, 1, 1, 1);
     client = new WeaviateClient(config);
   }
 
@@ -194,7 +193,6 @@ public class ClientBatchReferencesCreateMockServerTest {
     };
   }
 
-  @Ignore("ignore until client has configurable timeout value (1s for following the test)")
   @Test
   @DataMethod(source = ClientBatchReferencesCreateMockServerTest.class,
     method = "provideForNotCreateBatchReferencesDueToTimeoutIssue")
@@ -243,7 +241,6 @@ public class ClientBatchReferencesCreateMockServerTest {
     );
   }
 
-  @Ignore("ignore until client has configurable timeout value (1s for following the test)")
   @Test
   @DataMethod(source = ClientBatchReferencesCreateMockServerTest.class,
     method = "provideForNotCreateBatchReferencesDueToTimeoutIssue")
