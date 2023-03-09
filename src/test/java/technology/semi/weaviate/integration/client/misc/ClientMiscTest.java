@@ -63,6 +63,6 @@ public class ClientMiscTest {
     assertNull(meta.getError());
     assertEquals("http://[::]:8080", meta.getResult().getHostname());
     assertEquals(EXPECTED_WEAVIATE_VERSION, meta.getResult().getVersion());
-    assertEquals("{backup-filesystem={backupsPath=/tmp/backups}, text2vec-contextionary={version=en0.16.0-v1.1.0, wordCount=818072.0}}", meta.getResult().getModules().toString());
+    assertEquals("{backup-filesystem={backupsPath=/tmp/backups}, text2vec-contextionary={version=en0.16.0-v1.2.0, wordCount=818072.0}}", meta.getResult().getModules().toString());
   }
 }
