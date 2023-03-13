@@ -32,15 +32,6 @@ public class WeaviateClient {
 
   public WeaviateClient(Config config, AccessTokenProvider tokenProvider) {
     this(config, new CommonsHttpClientImpl(config.getHeaders(), tokenProvider, HttpApacheClientBuilder.build(config)));
-    Calendar cal = Calendar.getInstance();
-    cal.set(2023, Calendar.MARCH, 14, 0, 0, 0);
-    Date relocationDate = cal.getTime();
-    Date now = new Date();
-    if (now.after(relocationDate)) {
-      System.err.println("WARNING: On 2023-03-14 base package of Weaviate Java client moved from technology.semi.weaviate.client.* to" +
-        " io.weaviate.client.* Please update your imports." +
-        "This warning will disappear after updating.");
-    }
   }
 
   public WeaviateClient(Config config, HttpClient httpClient) {
