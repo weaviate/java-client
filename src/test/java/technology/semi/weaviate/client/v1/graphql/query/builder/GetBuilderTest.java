@@ -1,6 +1,5 @@
 package technology.semi.weaviate.client.v1.graphql.query.builder;
 
-import junit.framework.TestCase;
 import org.junit.Test;
 import technology.semi.weaviate.client.v1.filters.Operator;
 import technology.semi.weaviate.client.v1.filters.WhereFilter;
@@ -15,6 +14,7 @@ import technology.semi.weaviate.client.v1.graphql.query.argument.SortArguments;
 import technology.semi.weaviate.client.v1.graphql.query.argument.SortOrder;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Field;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
+import technology.semi.weaviate.client.v1.graphql.query.fields.GenerativeSearchBuilder;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -23,7 +23,11 @@ import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.util.stream.Collectors;
 
-public class GetBuilderTest extends TestCase {
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+public class GetBuilderTest {
 
   @Test
   public void testBuildSimpleGet() {
@@ -411,5 +415,62 @@ public class GetBuilderTest extends TestCase {
     assertEquals("{Get{Pizza(sort:[{path:[\"property1\"]}]){name}}}", query1);
     assertEquals("{Get{Pizza(sort:[{path:[\"property1\"]}, {path:[\"property2\"] order:desc}]){name}}}", query2);
     assertEquals("{Get{Pizza(sort:[{path:[\"property1\"]}, {path:[\"property2\"] order:desc}, {path:[\"property3\"] order:asc}]){name}}}", query3);
+  }
+
+  @Test
+  public void shouldBuildGetWithGenerativeSearchAndMultipleFieldsIncludingAdditional() {
+    // given
+    Fields fields = Fields.builder().fields(new Field[]{
+      Field.builder().name("name").build(),
+      Field.builder().name("description").build(),
+      Field.builder().name("_additional").fields(new Field[]{
+        Field.builder().name("id").build()
+      }).build()
+    }).build();
+
+    // when
+    String query = GetBuilder.builder()
+      .className("Pizza")
+      .fields(fields)
+      .withGenerativeSearch(
+        GenerativeSearchBuilder.builder()
+          .singleResultPrompt("What is the meaning of life?")
+          .groupedResultTask("Explain why these magazines or newspapers are about finance")
+          .build()
+      )
+      .build().buildQuery();
+
+    // then
+    assertThat(query).isEqualTo("{Get{Pizza{name description _additional{id generate(" +
+      "singleResult:{prompt:\"\"\"What is the meaning of life?\"\"\"} " +
+      "groupedResult:{task:\"\"\"Explain why these magazines or newspapers are about finance\"\"\"})" +
+      "{singleResult groupedResult error}}}}}");
+  }
+
+  @Test
+  public void shouldBuildGetWithGenerativeSearchAndMultipleFields() {
+    // given
+    Fields fields = Fields.builder().fields(new Field[]{
+      Field.builder().name("name").build(),
+      Field.builder().name("description").build()
+    }).build();
+
+    // when
+    String query = GetBuilder.builder()
+      .className("Pizza")
+      .fields(fields)
+      .withGenerativeSearch(
+        GenerativeSearchBuilder.builder()
+          .singleResultPrompt("What is the meaning of life?")
+          .groupedResultTask("Explain why these magazines or newspapers are about finance")
+          .build()
+      )
+      .build().buildQuery();
+
+    // then
+    assertThat(query).isEqualTo("{Get{Pizza{name description _additional{generate(" +
+      "singleResult:{prompt:\"\"\"What is the meaning of life?\"\"\"} " +
+      "groupedResult:{task:\"\"\"Explain why these magazines or newspapers are about finance\"\"\"})" +
+      "{singleResult groupedResult error}}}}}");
   }
 }

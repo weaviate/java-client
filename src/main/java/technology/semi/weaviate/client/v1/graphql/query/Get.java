@@ -22,6 +22,7 @@ import technology.semi.weaviate.client.v1.graphql.query.argument.SortArguments;
 import technology.semi.weaviate.client.v1.graphql.query.builder.GetBuilder;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Field;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
+import technology.semi.weaviate.client.v1.graphql.query.fields.GenerativeSearchBuilder;
 
 public class Get extends BaseClient<GraphQLResponse> implements ClientResult<GraphQLResponse> {
   private final GetBuilder.GetBuilderBuilder getBuilder;
@@ -103,6 +104,11 @@ public class Get extends BaseClient<GraphQLResponse> implements ClientResult<Gra
 
   public Get withSort(SortArgument... sort) {
     this.getBuilder.withSortArguments(SortArguments.builder().sort(sort).build());
+    return this;
+  }
+
+  public Get withGenerativeSearch(GenerativeSearchBuilder generativeSearch) {
+    this.getBuilder.withGenerativeSearch(generativeSearch);
     return this;
   }
 

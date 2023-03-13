@@ -27,6 +27,7 @@ jobs:
         WCS_DUMMY_CI_PW: ${{ secrets.WCS_DUMMY_CI_PW }}
         OKTA_CLIENT_SECRET: ${{ secrets.OKTA_CLIENT_SECRET }}
         AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+        OPENAI_APIKEY: ${{ secrets.OPENAI_APIKEY }}
       run: |
         docker-compose -f src/test/resources/docker-compose-test.yaml pull
         mvn clean test

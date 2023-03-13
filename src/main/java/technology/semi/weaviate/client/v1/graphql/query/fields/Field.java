@@ -3,6 +3,7 @@ package technology.semi.weaviate.client.v1.graphql.query.fields;
 import java.util.Arrays;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
@@ -12,6 +13,7 @@ import technology.semi.weaviate.client.v1.graphql.query.argument.Argument;
 @Getter
 @Builder
 @ToString
+@EqualsAndHashCode
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class Field implements Argument {
   String name;

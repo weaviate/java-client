@@ -18,10 +18,18 @@ import technology.semi.weaviate.client.v1.graphql.query.argument.NearObjectArgum
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearTextArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
 import technology.semi.weaviate.client.v1.graphql.query.argument.SortArguments;
+import technology.semi.weaviate.client.v1.graphql.query.fields.Field;
 import technology.semi.weaviate.client.v1.graphql.query.fields.Fields;
+import technology.semi.weaviate.client.v1.graphql.query.fields.GenerativeSearchBuilder;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Getter
 @Builder
@@ -43,11 +51,12 @@ public class GetBuilder implements Query {
   NearVectorArgument withNearVectorFilter;
   GroupArgument withGroupArgument;
   SortArguments withSortArguments;
+  GenerativeSearchBuilder withGenerativeSearch;
 
   private boolean includesFilterClause() {
-    return ObjectUtils.anyNotNull(withWhereFilter, withNearTextFilter, withNearObjectFilter,
-            withNearVectorFilter, withNearImageFilter, withGroupArgument, withAskArgument,withBm25Filter, withHybridFilter,
-            limit, offset, withSortArguments);
+    return ObjectUtils.anyNotNull(withWhereFilter, withNearTextFilter, withNearObjectFilter, withNearVectorFilter,
+      withNearImageFilter, withGroupArgument, withAskArgument, withBm25Filter, withHybridFilter, limit, offset,
+      withSortArguments);
   }
 
   private String createFilterClause() {
@@ -98,7 +107,54 @@ public class GetBuilder implements Query {
   }
 
   private String createFields() {
-    return fields != null ? fields.build() : "";
+    if (ObjectUtils.allNull(fields, withGenerativeSearch)) {
+      return "";
+    }
+
+    if (withGenerativeSearch == null) {
+      return fields.build();
+    }
+
+    Field generate = withGenerativeSearch.build();
+    Field generateAdditional = Field.builder()
+      .name("_additional")
+      .fields(new Field[]{generate})
+      .build();
+
+    if (fields == null) {
+      return generateAdditional.build();
+    }
+
+    // check if _additional field exists. If missing just add new _additional with generate,
+    // if exists merge generate into present one
+    Map<Boolean, List<Field>> grouped = Arrays.stream(fields.getFields())
+      .collect(Collectors.groupingBy(f -> "_additional".equals(f.getName())));
+
+    List<Field> additionals = grouped.getOrDefault(true, new ArrayList<>());
+    if (additionals.isEmpty()) {
+      additionals.add(generateAdditional);
+    } else {
+      Field[] mergedInternalFields = Stream.concat(
+        Arrays.stream(additionals.get(0).getFields()),
+        Stream.of(generate)
+      ).toArray(Field[]::new);
+
+      additionals.set(0, Field.builder()
+        .name("_additional")
+        .fields(mergedInternalFields)
+        .build()
+      );
+    }
+
+    Field[] allFields = Stream.concat(
+      grouped.getOrDefault(false, new ArrayList<>()).stream(),
+      additionals.stream()
+    ).toArray(Field[]::new);
+
+    return Fields.builder()
+      .fields(allFields)
+      .build()
+      .build();
   }
 
   @Override
