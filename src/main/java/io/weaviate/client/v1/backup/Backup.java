@@ -7,8 +7,6 @@ import io.weaviate.client.v1.backup.api.BackupRestoreStatusGetter;
 import io.weaviate.client.v1.backup.api.BackupRestorer;
 import lombok.RequiredArgsConstructor;
 import io.weaviate.client.Config;
-//import api.backup.v1.io.weaviate.client.BackupGetter;
-
 
 @RequiredArgsConstructor
 public class Backup {
