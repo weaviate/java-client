@@ -49,12 +49,12 @@ public class App {
 ## Support
 
 - [Stackoverflow for questions](https://stackoverflow.com/questions/tagged/weaviate).
-- [Github for issues](https://github.com/weaviate/weaviate-java-client/issues).
+- [Github for issues](https://github.com/weaviate/java-client/issues).
 
 ## Contributing
 
-- [How to Contribute](https://github.com/weaviate/weaviate-java-client/blob/main/CONTRIBUTE.md).
+- [How to Contribute](https://github.com/weaviate/java-client/blob/main/CONTRIBUTE.md).
 
 ## Build Status
 
-[![Build Status](https://github.com/weaviate/weaviate-java-client/actions/workflows/.github/workflows/test.yaml/badge.svg?branch=main)](https://github.com/weaviate/weaviate-java-client/actions/workflows/.github/workflows/test.yaml)
+[![Build Status](https://github.com/weaviate/java-client/actions/workflows/.github/workflows/test.yaml/badge.svg?branch=main)](https://github.com/weaviate/java-client/actions/workflows/.github/workflows/test.yaml)
