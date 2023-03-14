@@ -8,7 +8,7 @@ In order to get start using the java client one needs to add it's dependency:
 
 ```xml
 <dependency>
-  <groupId>technology.semi.weaviate</groupId>
+  <groupId>io.weaviate</groupId>
   <artifactId>client</artifactId>
   <version>3.6.5</version>
 </dependency>
@@ -21,10 +21,12 @@ Here's a simple code to start up working with Java client:
 2. Connect to Weaviate on `localhost:8080` and fetch meta information
 
 ```java
-import technology.semi.weaviate.client.Config;
-import technology.semi.weaviate.client.WeaviateClient;
-import technology.semi.weaviate.client.base.Result;
-import technology.semi.weaviate.client.v1.misc.model.Meta;
+package io.weaviate;
+
+import io.weaviate.client.Config;
+import io.weaviate.client.WeaviateClient;
+import io.weaviate.client.base.Result;
+import io.weaviate.client.v1.misc.model.Meta;
 
 public class App {
   public static void main(String[] args) {
