@@ -1,9 +1,11 @@
 package io.weaviate.client.v1.graphql.query.argument;
 
-import junit.framework.TestCase;
 import org.junit.Test;
 
-public class SortArgumentTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+public class SortArgumentTest {
 
   @Test
   public void testBuild() {

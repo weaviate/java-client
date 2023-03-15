@@ -1,10 +1,10 @@
 package io.weaviate.client.v1.graphql.query.fields;
 
-import junit.framework.TestCase;
-import org.junit.Assert;
 import org.junit.Test;
 
-public class FieldTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+
+public class FieldTest {
 
   @Test
   public void testBuild() {
@@ -17,7 +17,7 @@ public class FieldTest extends TestCase {
     // when
     String fieldString = field.build();
     // then
-    Assert.assertEquals(expected, fieldString);
+    assertEquals(expected, fieldString);
   }
 
   @Test
@@ -40,7 +40,7 @@ public class FieldTest extends TestCase {
     // when
     String fieldString = _additional.build();
     // then
-    Assert.assertEquals(expected, fieldString);
+    assertEquals(expected, fieldString);
   }
 
   @Test
@@ -59,7 +59,7 @@ public class FieldTest extends TestCase {
     // when
     String fieldString = field.build();
     // then
-    Assert.assertEquals(expected, fieldString);
+    assertEquals(expected, fieldString);
   }
 
   @Test
@@ -73,6 +73,6 @@ public class FieldTest extends TestCase {
     // when
     String fieldString = field.build();
     // then
-    Assert.assertEquals(expected, fieldString);
+    assertEquals(expected, fieldString);
   }
 }

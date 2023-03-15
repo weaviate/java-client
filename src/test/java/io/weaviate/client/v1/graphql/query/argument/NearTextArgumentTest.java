@@ -1,10 +1,11 @@
 package io.weaviate.client.v1.graphql.query.argument;
 
-import junit.framework.TestCase;
-import org.junit.Assert;
 import org.junit.Test;
 
-public class NearTextArgumentTest extends TestCase {
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+
+public class NearTextArgumentTest {
 
   @Test
   public void testBuildWithCertainty() {
@@ -15,7 +16,7 @@ public class NearTextArgumentTest extends TestCase {
     // when
     String arg = nearText.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8}", arg);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] certainty:0.8}", arg);
   }
 
   @Test
@@ -27,7 +28,7 @@ public class NearTextArgumentTest extends TestCase {
     // when
     String arg = nearText.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] distance: 0.8}", arg);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] distance:0.8}", arg);
   }
 
   @Test
@@ -40,7 +41,7 @@ public class NearTextArgumentTest extends TestCase {
     // then
     // builder will return a faulty nearText arg in order for Weaviate to error
     // so that user will know that something was wrong
-    Assert.assertEquals("nearText: {certainty: 0.8}", arg);
+    assertEquals("nearText:{certainty:0.8}", arg);
   }
 
   @Test
@@ -53,7 +54,7 @@ public class NearTextArgumentTest extends TestCase {
     // then
     // builder will return a faulty nearText arg in order for Weaviate to error
     // so that user will know that something was wrong
-    Assert.assertEquals("nearText: {distance: 0.8}", arg);
+    assertEquals("nearText:{distance:0.8}", arg);
   }
 
   @Test
@@ -65,7 +66,7 @@ public class NearTextArgumentTest extends TestCase {
     // then
     // builder will return a faulty nearText arg in order for Weaviate to error
     // so that user will know that something was wrong
-    Assert.assertEquals("nearText: {}", arg);
+    assertEquals("nearText:{}", arg);
   }
 
   @Test
@@ -79,7 +80,7 @@ public class NearTextArgumentTest extends TestCase {
     // when
     String arg = nearText.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveTo: {concepts: [\"a1\", \"b2\"] force: 0.1}}", arg);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] certainty:0.8 moveTo:{concepts:[\"a1\",\"b2\"] force:0.1}}", arg);
   }
 
   @Test
@@ -93,7 +94,7 @@ public class NearTextArgumentTest extends TestCase {
     // when
     String arg = nearText.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] distance: 0.8 moveTo: {concepts: [\"a1\", \"b2\"] force: 0.1}}", arg);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] distance:0.8 moveTo:{concepts:[\"a1\",\"b2\"] force:0.1}}", arg);
   }
 
   @Test
@@ -107,7 +108,7 @@ public class NearTextArgumentTest extends TestCase {
     // when
     String arg = nearText.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveTo: {concepts: [\"a1\", \"b2\"]}}", arg);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] certainty:0.8 moveTo:{concepts:[\"a1\",\"b2\"]}}", arg);
   }
 
   @Test
@@ -121,7 +122,7 @@ public class NearTextArgumentTest extends TestCase {
     // when
     String arg = nearText.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] distance: 0.8 moveTo: {concepts: [\"a1\", \"b2\"]}}", arg);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] distance:0.8 moveTo:{concepts:[\"a1\",\"b2\"]}}", arg);
   }
 
   @Test
@@ -135,7 +136,7 @@ public class NearTextArgumentTest extends TestCase {
     // when
     String arg = nearText.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveAwayFrom: {concepts: [\"a1\", \"b2\"] force: 0.1}}", arg);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] certainty:0.8 moveAwayFrom:{concepts:[\"a1\",\"b2\"] force:0.1}}", arg);
   }
 
   @Test
@@ -149,7 +150,7 @@ public class NearTextArgumentTest extends TestCase {
     // when
     String arg = nearText.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] distance: 0.8 moveAwayFrom: {concepts: [\"a1\", \"b2\"] force: 0.1}}", arg);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] distance:0.8 moveAwayFrom:{concepts:[\"a1\",\"b2\"] force:0.1}}", arg);
   }
 
   @Test
@@ -163,7 +164,7 @@ public class NearTextArgumentTest extends TestCase {
     // when
     String arg = nearText.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveAwayFrom: {concepts: [\"a1\", \"b2\"]}}", arg);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] certainty:0.8 moveAwayFrom:{concepts:[\"a1\",\"b2\"]}}", arg);
   }
 
   @Test
@@ -177,7 +178,7 @@ public class NearTextArgumentTest extends TestCase {
     // when
     String arg = nearText.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] distance: 0.8 moveAwayFrom: {concepts: [\"a1\", \"b2\"]}}", arg);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] distance:0.8 moveAwayFrom:{concepts:[\"a1\",\"b2\"]}}", arg);
   }
 
   @Test
@@ -194,9 +195,9 @@ public class NearTextArgumentTest extends TestCase {
     // when
     String arg = nearText.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 " +
-            "moveTo: {concepts: [\"z1\", \"y2\"] force: 0.8} " +
-            "moveAwayFrom: {concepts: [\"a1\", \"b2\"] force: 0.1}}", arg);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] certainty:0.8 " +
+            "moveTo:{concepts:[\"z1\",\"y2\"] force:0.8} " +
+            "moveAwayFrom:{concepts:[\"a1\",\"b2\"] force:0.1}}", arg);
   }
 
   @Test
@@ -213,9 +214,9 @@ public class NearTextArgumentTest extends TestCase {
     // when
     String arg = nearText.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] distance: 0.8 " +
-            "moveTo: {concepts: [\"z1\", \"y2\"] force: 0.8} " +
-            "moveAwayFrom: {concepts: [\"a1\", \"b2\"] force: 0.1}}", arg);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] distance:0.8 " +
+            "moveTo:{concepts:[\"z1\",\"y2\"] force:0.8} " +
+            "moveAwayFrom:{concepts:[\"a1\",\"b2\"] force:0.1}}", arg);
   }
 
   @Test
@@ -232,9 +233,9 @@ public class NearTextArgumentTest extends TestCase {
     // when
     String arg = nearText.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 " +
-            "moveTo: {concepts: [\"z1\", \"y2\"] force: 0.8} " +
-            "moveAwayFrom: {concepts: [\"a1\", \"b2\"]}}", arg);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] certainty:0.8 " +
+            "moveTo:{concepts:[\"z1\",\"y2\"] force:0.8} " +
+            "moveAwayFrom:{concepts:[\"a1\",\"b2\"]}}", arg);
   }
 
   @Test
@@ -251,9 +252,9 @@ public class NearTextArgumentTest extends TestCase {
     // when
     String arg = nearText.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] distance: 0.8 " +
-            "moveTo: {concepts: [\"z1\", \"y2\"] force: 0.8} " +
-            "moveAwayFrom: {concepts: [\"a1\", \"b2\"]}}", arg);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] distance:0.8 " +
+            "moveTo:{concepts:[\"z1\",\"y2\"] force:0.8} " +
+            "moveAwayFrom:{concepts:[\"a1\",\"b2\"]}}", arg);
   }
 
   @Test
@@ -265,7 +266,7 @@ public class NearTextArgumentTest extends TestCase {
     // when
     String arg = nearText.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 autocorrect: false}", arg);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] certainty:0.8 autocorrect:false}", arg);
   }
 
   @Test
@@ -277,7 +278,7 @@ public class NearTextArgumentTest extends TestCase {
     // when
     String arg = nearText.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] distance: 0.8 autocorrect: false}", arg);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] distance:0.8 autocorrect:false}", arg);
   }
 
   @Test
@@ -294,9 +295,9 @@ public class NearTextArgumentTest extends TestCase {
     // when
     String arg = nearText.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 " +
-            "moveTo: {concepts: [\"z1\", \"y2\"] force: 0.8} " +
-            "moveAwayFrom: {concepts: [\"a1\", \"b2\"]} autocorrect: true}", arg);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] certainty:0.8 " +
+            "moveTo:{concepts:[\"z1\",\"y2\"] force:0.8} " +
+            "moveAwayFrom:{concepts:[\"a1\",\"b2\"]} autocorrect:true}", arg);
   }
 
   @Test
@@ -313,9 +314,9 @@ public class NearTextArgumentTest extends TestCase {
     // when
     String arg = nearText.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] distance: 0.8 " +
-            "moveTo: {concepts: [\"z1\", \"y2\"] force: 0.8} " +
-            "moveAwayFrom: {concepts: [\"a1\", \"b2\"]} autocorrect: true}", arg);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] distance:0.8 " +
+            "moveTo:{concepts:[\"z1\",\"y2\"] force:0.8} " +
+            "moveAwayFrom:{concepts:[\"a1\",\"b2\"]} autocorrect:true}", arg);
   }
 
   @Test
@@ -330,9 +331,9 @@ public class NearTextArgumentTest extends TestCase {
     String arg2 = nearText2.build();
     String arg3 = nearText3.build();
     // then
-    Assert.assertEquals("nearText: {moveTo: {}}", arg1);
-    Assert.assertEquals("nearText: {moveAwayFrom: {}}", arg2);
-    Assert.assertEquals("nearText: {moveTo: {} moveAwayFrom: {}}", arg3);
+    assertEquals("nearText:{moveTo:{}}", arg1);
+    assertEquals("nearText:{moveAwayFrom:{}}", arg2);
+    assertEquals("nearText:{moveTo:{} moveAwayFrom:{}}", arg3);
   }
 
   @Test
@@ -380,10 +381,10 @@ public class NearTextArgumentTest extends TestCase {
     String arg3 = nearText3.build();
     String arg4 = nearText4.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveTo: {force: 0.1 objects: [{id: \"uuid\"},{beacon: \"beacon\"}]}}", arg1);
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveTo: {force: 0.1 objects: [{id: \"uuid\" beacon: \"beacon\"}]}}", arg2);
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveTo: {objects: [{id: \"uuid\"}]}}", arg3);
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveTo: {objects: [{beacon: \"beacon\"}]}}", arg4);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] certainty:0.8 moveTo:{force:0.1 objects:[{id:\"uuid\"},{beacon:\"beacon\"}]}}", arg1);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] certainty:0.8 moveTo:{force:0.1 objects:[{id:\"uuid\" beacon:\"beacon\"}]}}", arg2);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] certainty:0.8 moveTo:{objects:[{id:\"uuid\"}]}}", arg3);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] certainty:0.8 moveTo:{objects:[{beacon:\"beacon\"}]}}", arg4);
   }
 
   @Test
@@ -431,10 +432,10 @@ public class NearTextArgumentTest extends TestCase {
     String arg3 = nearText3.build();
     String arg4 = nearText4.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] distance: 0.8 moveTo: {force: 0.1 objects: [{id: \"uuid\"},{beacon: \"beacon\"}]}}", arg1);
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] distance: 0.8 moveTo: {force: 0.1 objects: [{id: \"uuid\" beacon: \"beacon\"}]}}", arg2);
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] distance: 0.8 moveTo: {objects: [{id: \"uuid\"}]}}", arg3);
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] distance: 0.8 moveTo: {objects: [{beacon: \"beacon\"}]}}", arg4);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] distance:0.8 moveTo:{force:0.1 objects:[{id:\"uuid\"},{beacon:\"beacon\"}]}}", arg1);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] distance:0.8 moveTo:{force:0.1 objects:[{id:\"uuid\" beacon:\"beacon\"}]}}", arg2);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] distance:0.8 moveTo:{objects:[{id:\"uuid\"}]}}", arg3);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] distance:0.8 moveTo:{objects:[{beacon:\"beacon\"}]}}", arg4);
   }
 
   @Test
@@ -482,10 +483,10 @@ public class NearTextArgumentTest extends TestCase {
     String arg3 = nearText3.build();
     String arg4 = nearText4.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveAwayFrom: {force: 0.1 objects: [{id: \"uuid\"},{beacon: \"beacon\"}]}}", arg1);
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveAwayFrom: {force: 0.1 objects: [{id: \"uuid\" beacon: \"beacon\"}]}}", arg2);
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveAwayFrom: {objects: [{id: \"uuid\"}]}}", arg3);
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveAwayFrom: {objects: [{beacon: \"beacon\"}]}}", arg4);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] certainty:0.8 moveAwayFrom:{force:0.1 objects:[{id:\"uuid\"},{beacon:\"beacon\"}]}}", arg1);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] certainty:0.8 moveAwayFrom:{force:0.1 objects:[{id:\"uuid\" beacon:\"beacon\"}]}}", arg2);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] certainty:0.8 moveAwayFrom:{objects:[{id:\"uuid\"}]}}", arg3);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] certainty:0.8 moveAwayFrom:{objects:[{beacon:\"beacon\"}]}}", arg4);
   }
 
   @Test
@@ -533,10 +534,10 @@ public class NearTextArgumentTest extends TestCase {
     String arg3 = nearText3.build();
     String arg4 = nearText4.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] distance: 0.8 moveAwayFrom: {force: 0.1 objects: [{id: \"uuid\"},{beacon: \"beacon\"}]}}", arg1);
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] distance: 0.8 moveAwayFrom: {force: 0.1 objects: [{id: \"uuid\" beacon: \"beacon\"}]}}", arg2);
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] distance: 0.8 moveAwayFrom: {objects: [{id: \"uuid\"}]}}", arg3);
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] distance: 0.8 moveAwayFrom: {objects: [{beacon: \"beacon\"}]}}", arg4);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] distance:0.8 moveAwayFrom:{force:0.1 objects:[{id:\"uuid\"},{beacon:\"beacon\"}]}}", arg1);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] distance:0.8 moveAwayFrom:{force:0.1 objects:[{id:\"uuid\" beacon:\"beacon\"}]}}", arg2);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] distance:0.8 moveAwayFrom:{objects:[{id:\"uuid\"}]}}", arg3);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] distance:0.8 moveAwayFrom:{objects:[{beacon:\"beacon\"}]}}", arg4);
   }
 
   @Test
@@ -563,8 +564,8 @@ public class NearTextArgumentTest extends TestCase {
     // when
     String arg1 = nearText1.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] certainty: 0.8 moveTo: {force: 0.1 objects: [{id: \"uuid\"},{beacon: \"beacon\"}]} " +
-      "moveAwayFrom: {force: 0.2 objects: [{id: \"uuid\" beacon: \"beacon\"}]}}", arg1);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] certainty:0.8 moveTo:{force:0.1 objects:[{id:\"uuid\"},{beacon:\"beacon\"}]} " +
+      "moveAwayFrom:{force:0.2 objects:[{id:\"uuid\" beacon:\"beacon\"}]}}", arg1);
   }
 
   @Test
@@ -591,7 +592,26 @@ public class NearTextArgumentTest extends TestCase {
     // when
     String arg1 = nearText1.build();
     // then
-    Assert.assertEquals("nearText: {concepts: [\"a\", \"b\", \"c\"] distance: 0.8 moveTo: {force: 0.1 objects: [{id: \"uuid\"},{beacon: \"beacon\"}]} " +
-            "moveAwayFrom: {force: 0.2 objects: [{id: \"uuid\" beacon: \"beacon\"}]}}", arg1);
+    assertEquals("nearText:{concepts:[\"a\",\"b\",\"c\"] distance:0.8 moveTo:{force:0.1 objects:[{id:\"uuid\"},{beacon:\"beacon\"}]} " +
+            "moveAwayFrom:{force:0.2 objects:[{id:\"uuid\" beacon:\"beacon\"}]}}", arg1);
+  }
+
+  @Test
+  public void shouldCreateArgumentWithChars() {
+    // given
+    String[] concepts = new String[]{ "\"I'm a complex\" {'`:concept:`'}", "b" };
+    NearTextMoveParameters moveTo = NearTextMoveParameters.builder()
+      .concepts(new String[]{ "\"I'm a another complex\" {'`:concept:`'}", "y2" }).force(0.8f).build();
+    NearTextMoveParameters moveAway = NearTextMoveParameters.builder()
+      .concepts(new String[]{ "\"I'm a yet another complex\" {'`:concept:`'}", "b2" }).force(0.1f).build();
+    NearTextArgument nearText = NearTextArgument.builder()
+      .concepts(concepts).certainty(0.8f)
+      .moveTo(moveTo).moveAwayFrom(moveAway).build();
+    // when
+    String arg = nearText.build();
+    // then
+    assertThat(arg).isEqualTo("nearText:{concepts:[\"\\\"I'm a complex\\\" {'`:concept:`'}\",\"b\"] certainty:0.8 " +
+      "moveTo:{concepts:[\"\\\"I'm a another complex\\\" {'`:concept:`'}\",\"y2\"] force:0.8} " +
+      "moveAwayFrom:{concepts:[\"\\\"I'm a yet another complex\\\" {'`:concept:`'}\",\"b2\"] force:0.1}}");
   }
 }

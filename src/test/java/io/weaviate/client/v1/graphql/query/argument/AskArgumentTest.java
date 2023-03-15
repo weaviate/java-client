@@ -1,9 +1,12 @@
 package io.weaviate.client.v1.graphql.query.argument;
 
-import junit.framework.TestCase;
 import org.junit.Test;
 
-public class AskArgumentTest extends TestCase {
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+public class AskArgumentTest {
 
   @Test
   public void testBuild() {
@@ -13,7 +16,7 @@ public class AskArgumentTest extends TestCase {
     String arg = AskArgument.builder().question(question).build().build();
     // then
     assertNotNull(arg);
-    assertEquals("ask: {question: \"What's your name?\"}", arg);
+    assertEquals("ask:{question:\"What's your name?\"}", arg);
   }
 
   @Test
@@ -27,7 +30,7 @@ public class AskArgumentTest extends TestCase {
             .build().build();
     // then
     assertNotNull(arg);
-    assertEquals("ask: {question: \"What's your name?\" properties: [\"prop1\", \"prop2\"]}", arg);
+    assertEquals("ask:{question:\"What's your name?\" properties:[\"prop1\",\"prop2\"]}", arg);
   }
 
   @Test
@@ -42,7 +45,7 @@ public class AskArgumentTest extends TestCase {
             .build().build();
     // then
     assertNotNull(arg);
-    assertEquals("ask: {question: \"What's your name?\" properties: [\"prop1\", \"prop2\"] certainty: 0.8}", arg);
+    assertEquals("ask:{question:\"What's your name?\" properties:[\"prop1\",\"prop2\"] certainty:0.8}", arg);
   }
 
   @Test
@@ -57,7 +60,7 @@ public class AskArgumentTest extends TestCase {
             .build().build();
     // then
     assertNotNull(arg);
-    assertEquals("ask: {question: \"What's your name?\" properties: [\"prop1\", \"prop2\"] distance: 0.8}", arg);
+    assertEquals("ask:{question:\"What's your name?\" properties:[\"prop1\",\"prop2\"] distance:0.8}", arg);
   }
 
   @Test
@@ -68,7 +71,7 @@ public class AskArgumentTest extends TestCase {
     String arg = AskArgument.builder().question(question).autocorrect(true).build().build();
     // then
     assertNotNull(arg);
-    assertEquals("ask: {question: \"What's your name?\" autocorrect: true}", arg);
+    assertEquals("ask:{question:\"What's your name?\" autocorrect:true}", arg);
   }
 
   @Test
@@ -83,7 +86,7 @@ public class AskArgumentTest extends TestCase {
             .build().build();
     // then
     assertNotNull(arg);
-    assertEquals("ask: {question: \"What's your name?\" properties: [\"prop1\", \"prop2\"] certainty: 0.8 autocorrect: false}", arg);
+    assertEquals("ask:{question:\"What's your name?\" properties:[\"prop1\",\"prop2\"] certainty:0.8 autocorrect:false}", arg);
   }
 
   @Test
@@ -98,7 +101,7 @@ public class AskArgumentTest extends TestCase {
             .build().build();
     // then
     assertNotNull(arg);
-    assertEquals("ask: {question: \"What's your name?\" properties: [\"prop1\", \"prop2\"] distance: 0.8 autocorrect: false}", arg);
+    assertEquals("ask:{question:\"What's your name?\" properties:[\"prop1\",\"prop2\"] distance:0.8 autocorrect:false}", arg);
   }
 
   @Test
@@ -113,7 +116,7 @@ public class AskArgumentTest extends TestCase {
             .build().build();
     // then
     assertNotNull(arg);
-    assertEquals("ask: {question: \"What's your name?\" properties: [\"prop1\", \"prop2\"] certainty: 0.8 autocorrect: false rerank: true}", arg);
+    assertEquals("ask:{question:\"What's your name?\" properties:[\"prop1\",\"prop2\"] certainty:0.8 autocorrect:false rerank:true}", arg);
   }
 
   @Test
@@ -128,7 +131,7 @@ public class AskArgumentTest extends TestCase {
             .build().build();
     // then
     assertNotNull(arg);
-    assertEquals("ask: {question: \"What's your name?\" properties: [\"prop1\", \"prop2\"] distance: 0.8 autocorrect: false rerank: true}", arg);
+    assertEquals("ask:{question:\"What's your name?\" properties:[\"prop1\",\"prop2\"] distance:0.8 autocorrect:false rerank:true}", arg);
   }
 
   @Test
@@ -139,7 +142,7 @@ public class AskArgumentTest extends TestCase {
     String arg = AskArgument.builder().question(question).rerank(false).build().build();
     // then
     assertNotNull(arg);
-    assertEquals("ask: {question: \"What's your name?\" rerank: false}", arg);
+    assertEquals("ask:{question:\"What's your name?\" rerank:false}", arg);
   }
 
   @Test
@@ -151,6 +154,19 @@ public class AskArgumentTest extends TestCase {
     // builder will return a faulty ask arg in order for Weaviate to error
     // so that user will know that something was wrong
     assertNotNull(arg);
-    assertEquals("ask: {}", arg);
+    assertEquals("ask:{}", arg);
+  }
+
+  @Test
+  public void shouldCreateArgumentWithChars() {
+    AskArgument ask = AskArgument.builder()
+      .question("What's \"your\" {'`:name:`'}?")
+      .properties(new String[]{"prop:\"'`{0}`'\""})
+      .build();
+
+    String str = ask.build();
+
+    assertThat(str).isEqualTo("ask:{question:\"What's \\\"your\\\" {'`:name:`'}?\" " +
+      "properties:[\"prop:\\\"'`{0}`'\\\"\"]}");
   }
 }

@@ -1,13 +1,13 @@
 package io.weaviate.client.v1.graphql.query.argument;
 
-import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import io.weaviate.client.v1.graphql.query.util.Serializer;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
-import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @Builder
@@ -20,13 +20,15 @@ public class HybridArgument implements Argument {
   @Override
   public String build() {
     Set<String> arg = new LinkedHashSet<>();
-    arg.add(String.format("query: \"%s\"", query));
+
+    arg.add(String.format("query:%s", Serializer.quote(query)));
     if (vector != null) {
-      arg.add(String.format("vector: %s", Arrays.toString(vector)));
+      arg.add(String.format("vector:%s", Serializer.array(vector)));
     }
     if (alpha != null) {
-      arg.add(String.format("alpha: %s", alpha));
+      arg.add(String.format("alpha:%s", alpha));
     }
-    return String.format("hybrid: {%s}", StringUtils.joinWith(" ", arg.toArray()));
+
+    return String.format("hybrid:{%s}", String.join(" ", arg));
   }
 }

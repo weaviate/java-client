@@ -2,12 +2,15 @@ package io.weaviate.client.v1.graphql.query.fields;
 
 import io.weaviate.client.v1.graphql.query.argument.Argument;
 import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 @Getter
@@ -25,9 +28,20 @@ public class Field implements Argument {
     if (StringUtils.isNotBlank(name)) {
       s.append(name);
     }
-    if (fields != null && fields.length > 0) {
-      s.append(String.format("{%s}", StringUtils.joinWith(" ", Arrays.stream(this.fields).map(Field::build).toArray())));
+    if (ArrayUtils.isNotEmpty(fields)) {
+      s.append(String.format("{%s}", Arrays.stream(fields).map(Field::build).collect(Collectors.joining(" "))));
     }
     return s.toString();
+  }
+
+
+  // created to accept a variable number of fields
+  public static class FieldBuilder {
+    private Field[] fields;
+
+    public FieldBuilder fields(Field... fields) {
+      this.fields = fields;
+      return this;
+    }
   }
 }

@@ -63,4 +63,21 @@ public class GenerativeSearchBuilderTest {
     assertThat(generate.getFields()).extracting(Field::getName)
       .containsExactly("singleResult", "groupedResult", "error");
   }
+
+  @Test
+  public void shouldBuildBothSingleResultPromptAndGroupedResultTaskFieldWithChars() {
+    GenerativeSearchBuilder generativeSearchBuilder = GenerativeSearchBuilder.builder()
+      .singleResultPrompt("\"I'm a complex string\" says the {'`:string:`'}")
+      .groupedResultTask("\"I'm a complex string\" says the {'`:string:`'}")
+      .build();
+
+    Field generate = generativeSearchBuilder.build();
+
+    assertThat(generate.getName()).isEqualTo("generate(" +
+      "singleResult:{prompt:\"\"\"\\\"I'm a complex string\\\" says the {'`:string:`'}\"\"\"} " +
+      "groupedResult:{task:\"\"\"\\\"I'm a complex string\\\" says the {'`:string:`'}\"\"\"}" +
+      ")");
+    assertThat(generate.getFields()).extracting(Field::getName)
+      .containsExactly("singleResult", "groupedResult", "error");
+  }
 }

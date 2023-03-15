@@ -1,10 +1,10 @@
 package io.weaviate.client.v1.graphql.query.argument;
 
-import junit.framework.TestCase;
-import org.junit.Assert;
 import org.junit.Test;
 
-public class NearVectorArgumentTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+
+public class NearVectorArgumentTest {
 
     @Test
     public void testBuildWithCertainty() {
@@ -14,7 +14,7 @@ public class NearVectorArgumentTest extends TestCase {
         // when
         String arg = nearVector.build();
         // then
-        Assert.assertEquals("nearVector: {vector: [1.0, 2.0, 3.0] certainty: 0.8}", arg);
+        assertEquals("nearVector:{vector:[1.0,2.0,3.0] certainty:0.8}", arg);
     }
 
     @Test
@@ -25,7 +25,7 @@ public class NearVectorArgumentTest extends TestCase {
         // when
         String arg = nearVector.build();
         // then
-        Assert.assertEquals("nearVector: {vector: [1.0, 2.0, 3.0] distance: 0.8}", arg);
+        assertEquals("nearVector:{vector:[1.0,2.0,3.0] distance:0.8}", arg);
     }
 
     @Test
@@ -35,6 +35,6 @@ public class NearVectorArgumentTest extends TestCase {
         // when
         String arg = nearVector.build();
         // then
-        Assert.assertEquals("nearVector: {vector: [1.0, 2.0, 3.0]}", arg);
+        assertEquals("nearVector:{vector:[1.0,2.0,3.0]}", arg);
     }
 }

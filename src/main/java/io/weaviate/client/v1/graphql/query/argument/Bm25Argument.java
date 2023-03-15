@@ -1,14 +1,13 @@
 package io.weaviate.client.v1.graphql.query.argument;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import io.weaviate.client.v1.graphql.query.util.Serializer;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
-import org.apache.commons.lang3.StringUtils;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Getter
 @Builder
@@ -21,17 +20,11 @@ public class Bm25Argument implements Argument {
   public String build() {
     Set<String> arg = new LinkedHashSet<>();
 
-    arg.add(String.format("query: \"%s\"", query));
-
+    arg.add(String.format("query:%s", Serializer.quote(query)));
     if (properties != null) {
-      arg.add(String.format("properties: %s", toJsonString(properties)));
+      arg.add(String.format("properties:%s", Serializer.arrayWithQuotes(properties)));
     }
 
-    return String.format("bm25: {%s}", StringUtils.joinWith(" ", arg.toArray()));
-  }
-
-  private String toJsonString(Object object) {
-    Gson serializer = new GsonBuilder().disableHtmlEscaping().create();
-    return serializer.toJson(object);
+    return String.format("bm25:{%s}", String.join(" ", arg));
   }
 }

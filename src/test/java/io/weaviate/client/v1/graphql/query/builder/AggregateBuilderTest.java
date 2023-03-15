@@ -1,17 +1,21 @@
 package io.weaviate.client.v1.graphql.query.builder;
 
-import junit.framework.TestCase;
-import org.junit.Test;
 import io.weaviate.client.v1.filters.Operator;
 import io.weaviate.client.v1.filters.WhereFilter;
 import io.weaviate.client.v1.graphql.query.argument.AskArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearImageArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
+import io.weaviate.client.v1.graphql.query.argument.WhereArgument;
 import io.weaviate.client.v1.graphql.query.fields.Field;
 import io.weaviate.client.v1.graphql.query.fields.Fields;
+import org.junit.Test;
 
-public class AggregateBuilderTest extends TestCase {
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+public class AggregateBuilderTest {
 
   @Test
   public void testBuildSimpleAggregate() {
@@ -44,7 +48,7 @@ public class AggregateBuilderTest extends TestCase {
     String query = AggregateBuilder.builder().className("Pizza").fields(fields).groupByClausePropertyName("name").build().buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Aggregate{Pizza(groupBy: \"name\"){groupedBy{value} name{count}}}}", query);
+    assertEquals("{Aggregate{Pizza(groupBy:\"name\"){groupedBy{value} name{count}}}}", query);
   }
 
   @Test
@@ -65,17 +69,19 @@ public class AggregateBuilderTest extends TestCase {
       .build().buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Aggregate{Pizza(groupBy: \"name\", limit: 10){groupedBy{value} name{count}}}}", query);
+    assertEquals("{Aggregate{Pizza(groupBy:\"name\" limit:10){groupedBy{value} name{count}}}}", query);
   }
 
   @Test
   public void testBuildAggregateWithWhere() {
     // given
-    WhereFilter where = WhereFilter.builder()
-            .path(new String[]{ "name" })
-            .operator(Operator.Equal)
-            .valueString("Hawaii")
-            .build();
+    WhereArgument where = WhereArgument.builder()
+      .filter(WhereFilter.builder()
+        .path(new String[]{ "name" })
+        .operator(Operator.Equal)
+        .valueString("Hawaii")
+        .build())
+      .build();
     Field meta = Field.builder()
       .name("meta")
       .fields(new Field[]{ Field.builder().name("count").build() })
@@ -91,11 +97,13 @@ public class AggregateBuilderTest extends TestCase {
   @Test
   public void testBuildAggregateWithWhereAndGroupedBy() {
     // given
-    WhereFilter where = WhereFilter.builder()
-            .path(new String[]{ "name" })
-            .operator(Operator.Equal)
-            .valueString("Hawaii")
-            .build();
+    WhereArgument where = WhereArgument.builder()
+      .filter(WhereFilter.builder()
+        .path(new String[]{ "name" })
+        .operator(Operator.Equal)
+        .valueString("Hawaii")
+        .build())
+      .build();
     Field meta = Field.builder()
       .name("meta")
       .fields(new Field[]{ Field.builder().name("count").build() })
@@ -111,7 +119,7 @@ public class AggregateBuilderTest extends TestCase {
       .buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Aggregate{Pizza(groupBy: \"name\", where:{path:[\"name\"] valueString:\"Hawaii\" operator:Equal}){meta{count}}}}", query);
+    assertEquals("{Aggregate{Pizza(groupBy:\"name\" where:{path:[\"name\"] valueString:\"Hawaii\" operator:Equal}){meta{count}}}}", query);
   }
 
   @Test
@@ -132,7 +140,7 @@ public class AggregateBuilderTest extends TestCase {
       .withNearVectorFilter(nearVectorWithCert).build().buildQuery();
     // then (certainty)
     assertNotNull(queryWithCert);
-    assertEquals("{Aggregate{Pizza(nearVector: {vector: [0.0, 1.0, 0.8] certainty: 0.8}){meta{count}}}}", queryWithCert);
+    assertEquals("{Aggregate{Pizza(nearVector:{vector:[0.0,1.0,0.8] certainty:0.8}){meta{count}}}}", queryWithCert);
 
     // given (distance)
     NearVectorArgument nearVectorWithDist = NearVectorArgument.builder().vector(new Float[]{ 0f, 1f, 0.8f }).distance(0.8f).build();
@@ -144,7 +152,7 @@ public class AggregateBuilderTest extends TestCase {
             .withNearVectorFilter(nearVectorWithDist).build().buildQuery();
     // then (distance)
     assertNotNull(queryWithDist);
-    assertEquals("{Aggregate{Pizza(nearVector: {vector: [0.0, 1.0, 0.8] distance: 0.8}){meta{count}}}}", queryWithDist);
+    assertEquals("{Aggregate{Pizza(nearVector:{vector:[0.0,1.0,0.8] distance:0.8}){meta{count}}}}", queryWithDist);
   }
 
   @Test
@@ -164,7 +172,7 @@ public class AggregateBuilderTest extends TestCase {
       .withNearObjectFilter(nearObjectWithCert).build().buildQuery();
     // then (certainty)
     assertNotNull(queryWithCert);
-    assertEquals("{Aggregate{Pizza(nearObject: {id: \"some-uuid\" certainty: 0.8}){meta{count}}}}", queryWithCert);
+    assertEquals("{Aggregate{Pizza(nearObject:{id:\"some-uuid\" certainty:0.8}){meta{count}}}}", queryWithCert);
 
     // given (distance)
     NearObjectArgument nearObjectWithDist = NearObjectArgument.builder().id("some-uuid").distance(0.8f).build();
@@ -175,7 +183,7 @@ public class AggregateBuilderTest extends TestCase {
             .withNearObjectFilter(nearObjectWithDist).build().buildQuery();
     // then (distance)
     assertNotNull(queryWithDist);
-    assertEquals("{Aggregate{Pizza(nearObject: {id: \"some-uuid\" distance: 0.8}){meta{count}}}}", queryWithDist);
+    assertEquals("{Aggregate{Pizza(nearObject:{id:\"some-uuid\" distance:0.8}){meta{count}}}}", queryWithDist);
   }
 
   @Test
@@ -195,7 +203,7 @@ public class AggregateBuilderTest extends TestCase {
       .withAskArgument(askWithCert).build().buildQuery();
     // then (certainty)
     assertNotNull(queryWithCert);
-    assertEquals("{Aggregate{Pizza(ask: {question: \"question?\" certainty: 0.8 rerank: true}){meta{count}}}}", queryWithCert);
+    assertEquals("{Aggregate{Pizza(ask:{question:\"question?\" certainty:0.8 rerank:true}){meta{count}}}}", queryWithCert);
 
     // given (distance)
     AskArgument askWithDist = AskArgument.builder().question("question?").rerank(true).distance(0.8f).build();
@@ -206,7 +214,7 @@ public class AggregateBuilderTest extends TestCase {
             .withAskArgument(askWithDist).build().buildQuery();
     // then (distance)
     assertNotNull(queryWithDist);
-    assertEquals("{Aggregate{Pizza(ask: {question: \"question?\" distance: 0.8 rerank: true}){meta{count}}}}", queryWithDist);
+    assertEquals("{Aggregate{Pizza(ask:{question:\"question?\" distance:0.8 rerank:true}){meta{count}}}}", queryWithDist);
   }
 
   @Test
@@ -226,7 +234,7 @@ public class AggregateBuilderTest extends TestCase {
       .withNearImageFilter(nearImageWithCert).build().buildQuery();
     // then (certainty)
     assertNotNull(queryWithCert);
-    assertEquals("{Aggregate{Pizza(nearImage: {image: \"iVBORw0KGgoAAAANS\" certainty: 0.8}){meta{count}}}}", queryWithCert);
+    assertEquals("{Aggregate{Pizza(nearImage:{image:\"iVBORw0KGgoAAAANS\" certainty:0.8}){meta{count}}}}", queryWithCert);
 
     // given (certainty)
     NearImageArgument nearImageWithDist = NearImageArgument.builder().image("iVBORw0KGgoAAAANS").distance(0.8f).build();
@@ -237,7 +245,7 @@ public class AggregateBuilderTest extends TestCase {
             .withNearImageFilter(nearImageWithDist).build().buildQuery();
     // then (certainty)
     assertNotNull(queryWithDist);
-    assertEquals("{Aggregate{Pizza(nearImage: {image: \"iVBORw0KGgoAAAANS\" distance: 0.8}){meta{count}}}}", queryWithDist);
+    assertEquals("{Aggregate{Pizza(nearImage:{image:\"iVBORw0KGgoAAAANS\" distance:0.8}){meta{count}}}}", queryWithDist);
   }
 
   @Test
@@ -259,7 +267,7 @@ public class AggregateBuilderTest extends TestCase {
       .buildQuery();
     // then (certainty)
     assertNotNull(queryWithCert);
-    assertEquals("{Aggregate{Pizza(nearImage: {image: \"iVBORw0KGgoAAAANS\" certainty: 0.8}, objectLimit: 100){meta{count}}}}", queryWithCert);
+    assertEquals("{Aggregate{Pizza(nearImage:{image:\"iVBORw0KGgoAAAANS\" certainty:0.8} objectLimit:100){meta{count}}}}", queryWithCert);
 
     // given (distance)
     NearImageArgument nearImageWithDist = NearImageArgument.builder().image("iVBORw0KGgoAAAANS").distance(0.8f).build();
@@ -272,6 +280,30 @@ public class AggregateBuilderTest extends TestCase {
             .buildQuery();
     // then (distance)
     assertNotNull(queryWithDist);
-    assertEquals("{Aggregate{Pizza(nearImage: {image: \"iVBORw0KGgoAAAANS\" distance: 0.8}, objectLimit: 100){meta{count}}}}", queryWithDist);
+    assertEquals("{Aggregate{Pizza(nearImage:{image:\"iVBORw0KGgoAAAANS\" distance:0.8} objectLimit:100){meta{count}}}}", queryWithDist);
+  }
+
+  @Test
+  public void shouldSupportDeprecatedWhereFilter() {
+    WhereFilter where = WhereFilter.builder()
+      .path(new String[]{ "name" })
+      .operator(Operator.Equal)
+      .valueString("Hawaii")
+      .build();
+    Field meta = Field.builder()
+      .name("meta")
+      .fields(Field.builder().name("count").build())
+      .build();
+    Fields fields = Fields.builder().fields(meta).build();
+
+    String query = AggregateBuilder.builder()
+      .className("Pizza")
+      .fields(fields)
+      .groupByClausePropertyName("name")
+      .withWhereFilter(where)
+      .build()
+      .buildQuery();
+
+    assertThat(query).isEqualTo("{Aggregate{Pizza(groupBy:\"name\" where:{path:[\"name\"] valueString:\"Hawaii\" operator:Equal}){meta{count}}}}");
   }
 }
