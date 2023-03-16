@@ -1,14 +1,15 @@
 package io.weaviate.client.v1.graphql.query.argument;
 
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import io.weaviate.client.v1.graphql.query.util.Serializer;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Getter
 @Builder
@@ -22,15 +23,17 @@ public class NearVectorArgument implements Argument {
   @Override
   public String build() {
     Set<String> arg = new LinkedHashSet<>();
+
     if (vector != null) {
-      arg.add(String.format("vector: %s", Arrays.toString(vector)));
+      arg.add(String.format("vector:%s", Serializer.array(vector)));
     }
     if (certainty != null) {
-      arg.add(String.format("certainty: %s", certainty));
+      arg.add(String.format("certainty:%s", certainty));
     }
     if (distance != null) {
-      arg.add(String.format("distance: %s", distance));
+      arg.add(String.format("distance:%s", distance));
     }
-    return String.format("nearVector: {%s}", StringUtils.joinWith(" ", arg.toArray()));
+
+    return String.format("nearVector:{%s}", String.join(" ", arg));
   }
 }

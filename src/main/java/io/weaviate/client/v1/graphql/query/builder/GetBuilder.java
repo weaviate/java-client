@@ -1,5 +1,6 @@
 package io.weaviate.client.v1.graphql.query.builder;
 
+import io.weaviate.client.v1.filters.WhereFilter;
 import io.weaviate.client.v1.graphql.query.argument.AskArgument;
 import io.weaviate.client.v1.graphql.query.argument.Bm25Argument;
 import io.weaviate.client.v1.graphql.query.argument.GroupArgument;
@@ -9,18 +10,17 @@ import io.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearTextArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
 import io.weaviate.client.v1.graphql.query.argument.SortArguments;
+import io.weaviate.client.v1.graphql.query.argument.WhereArgument;
+import io.weaviate.client.v1.graphql.query.fields.Field;
 import io.weaviate.client.v1.graphql.query.fields.Fields;
+import io.weaviate.client.v1.graphql.query.fields.GenerativeSearchBuilder;
+import io.weaviate.client.v1.graphql.query.util.Serializer;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
-import io.weaviate.client.v1.filters.WhereFilter;
-import io.weaviate.client.v1.filters.WhereFilterUtil;
-import io.weaviate.client.v1.graphql.query.fields.Field;
-import io.weaviate.client.v1.graphql.query.fields.GenerativeSearchBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,7 +41,7 @@ public class GetBuilder implements Query {
   Integer offset;
   Integer limit;
   String after;
-  WhereFilter withWhereFilter;
+  WhereArgument withWhereFilter;
   NearTextArgument withNearTextFilter;
   Bm25Argument withBm25Filter;
   HybridArgument withHybridFilter;
@@ -62,8 +62,9 @@ public class GetBuilder implements Query {
   private String createFilterClause() {
     if (includesFilterClause()) {
       Set<String> filters = new LinkedHashSet<>();
+
       if (withWhereFilter != null) {
-        filters.add(WhereFilterUtil.toGraphQLString(withWhereFilter));
+        filters.add(withWhereFilter.build());
       }
       if (withNearTextFilter != null) {
         filters.add(withNearTextFilter.build());
@@ -90,18 +91,19 @@ public class GetBuilder implements Query {
         filters.add(withNearImageFilter.build());
       }
       if (limit != null) {
-        filters.add(String.format("limit: %s", limit));
+        filters.add(String.format("limit:%s", limit));
       }
       if (offset != null) {
-        filters.add(String.format("offset: %s", offset));
+        filters.add(String.format("offset:%s", offset));
       }
       if (after != null) {
-        filters.add(String.format("after: \"%s\"", after));
+        filters.add(String.format("after:%s", Serializer.quote(after)));
       }
       if (withSortArguments != null) {
         filters.add(withSortArguments.build());
       }
-      return String.format("(%s)", StringUtils.joinWith(", ", filters.toArray()));
+
+      return String.format("(%s)", String.join(",", filters));
     }
     return "";
   }
@@ -159,6 +161,22 @@ public class GetBuilder implements Query {
 
   @Override
   public String buildQuery() {
-    return String.format("{Get{%s%s{%s}}}", className, createFilterClause(), createFields());
+    return String.format("{Get{%s%s{%s}}}", Serializer.escape(className), createFilterClause(), createFields());
+  }
+
+
+  // created to support both types of setters: WhereArgument and deprecated WhereFilter
+  public static class GetBuilderBuilder {
+    private WhereArgument withWhereFilter;
+
+    @Deprecated
+    public GetBuilderBuilder withWhereFilter(WhereFilter whereFilter) {
+      this.withWhereFilter = WhereArgument.builder().filter(whereFilter).build();
+      return this;
+    }
+    public GetBuilderBuilder withWhereFilter(WhereArgument whereArgument) {
+      this.withWhereFilter = whereArgument;
+      return this;
+    }
   }
 }

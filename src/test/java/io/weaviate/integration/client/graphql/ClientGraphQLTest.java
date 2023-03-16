@@ -1,11 +1,5 @@
 package io.weaviate.integration.client.graphql;
 
-import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.testcontainers.containers.DockerComposeContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
@@ -16,22 +10,29 @@ import io.weaviate.client.v1.filters.WhereFilter;
 import io.weaviate.client.v1.graphql.model.ExploreFields;
 import io.weaviate.client.v1.graphql.model.GraphQLResponse;
 import io.weaviate.client.v1.graphql.query.argument.Bm25Argument;
-import io.weaviate.client.v1.graphql.query.argument.HybridArgument;
 import io.weaviate.client.v1.graphql.query.argument.GroupArgument;
 import io.weaviate.client.v1.graphql.query.argument.GroupType;
+import io.weaviate.client.v1.graphql.query.argument.HybridArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearTextArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearTextMoveParameters;
 import io.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
 import io.weaviate.client.v1.graphql.query.argument.SortArgument;
 import io.weaviate.client.v1.graphql.query.argument.SortOrder;
+import io.weaviate.client.v1.graphql.query.argument.WhereArgument;
 import io.weaviate.client.v1.graphql.query.fields.Field;
 import io.weaviate.client.v1.graphql.query.fields.GenerativeSearchBuilder;
 import io.weaviate.integration.client.WeaviateTestGenerics;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
+import org.testcontainers.containers.DockerComposeContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -589,26 +590,34 @@ public class ClientGraphQLTest {
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
     Field name = Field.builder().name("name").build();
 
-    WhereFilter whereFullString = WhereFilter.builder()
-            .path(new String[]{ "name" })
-            .operator(Operator.Equal)
-            .valueString("Frutti di Mare")
-            .build();
-    WhereFilter wherePartString = WhereFilter.builder()
-            .path(new String[]{ "name" })
-            .operator(Operator.Equal)
-            .valueString("Frutti")
-            .build();
-    WhereFilter whereFullText = WhereFilter.builder()
-            .path(new String[]{ "description" })
-            .operator(Operator.Equal)
-            .valueText("Universally accepted to be the best pizza ever created.")
-            .build();
-    WhereFilter wherePartText = WhereFilter.builder()
-            .path(new String[]{ "description" })
-            .operator(Operator.Equal)
-            .valueText("Universally")
-            .build();
+    WhereArgument whereFullString = WhereArgument.builder()
+      .filter(WhereFilter.builder()
+        .path(new String[]{ "name" })
+        .operator(Operator.Equal)
+        .valueString("Frutti di Mare")
+        .build())
+      .build();
+    WhereArgument wherePartString = WhereArgument.builder()
+      .filter(WhereFilter.builder()
+        .path(new String[]{ "name" })
+        .operator(Operator.Equal)
+        .valueString("Frutti")
+        .build())
+      .build();
+    WhereArgument whereFullText = WhereArgument.builder()
+      .filter(WhereFilter.builder()
+        .path(new String[]{ "description" })
+        .operator(Operator.Equal)
+        .valueText("Universally accepted to be the best pizza ever created.")
+        .build())
+      .build();
+    WhereArgument wherePartText = WhereArgument.builder()
+      .filter(WhereFilter.builder()
+        .path(new String[]{ "description" })
+        .operator(Operator.Equal)
+        .valueText("Universally")
+        .build())
+      .build();
     // when
     testGenerics.createTestSchemaAndData(client);
     Result<GraphQLResponse> resultFullString = client.graphQL().get().withWhere(whereFullString).withClassName("Pizza").withFields(name).run();
@@ -631,22 +640,25 @@ public class ClientGraphQLTest {
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
     Field name = Field.builder().name("name").build();
 
-    // 2022-02-01T00:00:00+0100
-    Date date = new Date(2022-1900, 2-1, 1, 0, 0, 0);
+    Calendar cal = Calendar.getInstance();
+    cal.set(2022, Calendar.FEBRUARY, 1, 0, 0, 0);
 
-    WhereFilter whereDate = WhereFilter.builder()
-            .path(new String[]{ "bestBefore" })
-            .operator(Operator.GreaterThan)
-            .valueDate(date)
-            .build();
+    WhereArgument whereDate = WhereArgument.builder()
+      .filter(WhereFilter.builder()
+        .path(new String[]{ "bestBefore" })
+        .operator(Operator.GreaterThan)
+        .valueDate(cal.getTime())
+        .build())
+      .build();
     // when
     testGenerics.createTestSchemaAndData(client);
     Result<GraphQLResponse> resultDate = client.graphQL().get().withWhere(whereDate).withClassName("Pizza").withFields(name).run();
     testGenerics.cleanupWeaviate(client);
     // then
     List<Map<String, Object>> maps = extractResult(resultDate, "Pizza");
-    assertThat(maps).hasSize(3);
-    assertThat(maps).extracting(el -> (String) el.get("name")).contains("Frutti di Mare", "Hawaii", "Doener");
+    assertThat(maps).hasSize(3)
+      .extracting(el -> (String) el.get("name"))
+      .contains("Frutti di Mare", "Hawaii", "Doener");
   }
 
   @Test
@@ -751,11 +763,13 @@ public class ClientGraphQLTest {
       put("name", "JustPizza");
       put("description", "pizza with id");
     }}).build();
-    WhereFilter where = WhereFilter.builder()
-            .path(new String[]{ "id" })
-            .operator(Operator.Equal)
-            .valueString(newObjID)
-            .build();
+    WhereArgument where = WhereArgument.builder()
+      .filter(WhereFilter.builder()
+        .path(new String[]{ "id" })
+        .operator(Operator.Equal)
+        .valueString(newObjID)
+        .build())
+      .build();
     Field meta = Field.builder()
             .name("meta")
             .fields(new Field[]{Field.builder().name("count").build()})
@@ -786,11 +800,13 @@ public class ClientGraphQLTest {
       put("name", "JustPizza");
       put("description", "pizza with id");
     }}).build();
-    WhereFilter where = WhereFilter.builder()
-            .path(new String[]{ "id" })
-            .operator(Operator.Equal)
-            .valueString(newObjID)
-            .build();
+    WhereArgument where = WhereArgument.builder()
+      .filter(WhereFilter.builder()
+        .path(new String[]{ "id" })
+        .operator(Operator.Equal)
+        .valueString(newObjID)
+        .build())
+      .build();
     Field meta = Field.builder()
             .name("meta")
             .fields(new Field[]{Field.builder().name("count").build()})
@@ -1142,16 +1158,20 @@ public class ClientGraphQLTest {
     GraphQLResponse resp = expected.getResult();
     String expectedCreateTime = getAdditionalFieldFromResponse(resp, "creationTimeUnix");
     String expectedUpdateTime = getAdditionalFieldFromResponse(resp, "lastUpdateTimeUnix");
-    WhereFilter createTimeFilter = WhereFilter.builder()
-            .path(new String[]{ "_creationTimeUnix" })
-            .operator(Operator.Equal)
-            .valueString(expectedCreateTime)
-            .build();
-    WhereFilter updateTimeFilter = WhereFilter.builder()
-            .path(new String[]{ "_lastUpdateTimeUnix" })
-            .operator(Operator.Equal)
-            .valueString(expectedCreateTime)
-            .build();
+    WhereArgument createTimeFilter = WhereArgument.builder()
+      .filter(WhereFilter.builder()
+        .path(new String[]{ "_creationTimeUnix" })
+        .operator(Operator.Equal)
+        .valueString(expectedCreateTime)
+        .build())
+      .build();
+    WhereArgument updateTimeFilter = WhereArgument.builder()
+      .filter(WhereFilter.builder()
+        .path(new String[]{ "_lastUpdateTimeUnix" })
+        .operator(Operator.Equal)
+        .valueString(expectedCreateTime)
+        .build())
+      .build();
     // when
     Result<GraphQLResponse> createTimeResult = client.graphQL().get()
         .withClassName("Pizza")

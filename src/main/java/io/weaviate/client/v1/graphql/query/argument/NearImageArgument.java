@@ -1,5 +1,6 @@
 package io.weaviate.client.v1.graphql.query.argument;
 
+import io.weaviate.client.v1.graphql.query.util.Serializer;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -50,16 +51,18 @@ public class NearImageArgument implements Argument {
   @Override
   public String build() {
     Set<String> fields = new LinkedHashSet<>();
+
     String content = getContent();
     if (StringUtils.isNotBlank(content)) {
-      fields.add(String.format("image: \"%s\"", content));
+      fields.add(String.format("image:%s", Serializer.quote(content)));
     }
     if (certainty != null) {
-      fields.add(String.format("certainty: %s", certainty));
+      fields.add(String.format("certainty:%s", certainty));
     }
     if (distance != null) {
-      fields.add(String.format("distance: %s", distance));
+      fields.add(String.format("distance:%s", distance));
     }
-    return String.format("nearImage: {%s}", StringUtils.joinWith(" ", fields.toArray()));
+
+    return String.format("nearImage:{%s}", String.join(" ", fields));
   }
 }

@@ -29,4 +29,15 @@ public class Fields implements Argument {
       .map(Field::build)
       .collect(Collectors.joining(" "));
   }
+
+
+  // created to accept a variable number of fields
+  public static class FieldsBuilder {
+    private Field[] fields;
+
+    public FieldsBuilder fields(Field... fields) {
+      this.fields = fields;
+      return this;
+    }
+  }
 }

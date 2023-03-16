@@ -1,7 +1,6 @@
 package io.weaviate.client.v1.graphql.query.argument;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
+import io.weaviate.client.v1.graphql.query.util.Serializer;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +18,7 @@ public class SortArguments implements Argument {
   @Override
   public String build() {
     if (ArrayUtils.isNotEmpty(sort)) {
-      return String.format("sort:[%s]", Arrays.stream(sort).map(SortArgument::build).collect(Collectors.joining(", ")));
+      return String.format("sort:%s", Serializer.array(sort, SortArgument::build));
     }
     return "sort:[]";
   }

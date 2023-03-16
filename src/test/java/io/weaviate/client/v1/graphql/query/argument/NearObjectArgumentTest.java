@@ -1,10 +1,12 @@
 package io.weaviate.client.v1.graphql.query.argument;
 
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.Test;
 
-public class NearObjectArgumentTest extends TestCase {
+import static org.junit.Assert.assertEquals;
 
+public class NearObjectArgumentTest {
+
+  @Test
   public void testBuildWithCertainty() {
     // given
     NearObjectArgument nearObject = NearObjectArgument.builder()
@@ -13,9 +15,10 @@ public class NearObjectArgumentTest extends TestCase {
     // when
     String arg = nearObject.build();
     // then
-    Assert.assertEquals("nearObject: {id: \"id\" beacon: \"beacon\" certainty: 0.8}", arg);
+    assertEquals("nearObject:{id:\"id\" beacon:\"beacon\" certainty:0.8}", arg);
   }
 
+  @Test
   public void testBuildWithoutCertainity() {
     // given
     NearObjectArgument nearObject = NearObjectArgument.builder()
@@ -24,9 +27,10 @@ public class NearObjectArgumentTest extends TestCase {
     // when
     String arg = nearObject.build();
     // then
-    Assert.assertEquals("nearObject: {id: \"id\" beacon: \"beacon\"}", arg);
+    assertEquals("nearObject:{id:\"id\" beacon:\"beacon\"}", arg);
   }
 
+  @Test
   public void testBuildWithDistance() {
     // given
     NearObjectArgument nearObject = NearObjectArgument.builder()
@@ -35,9 +39,10 @@ public class NearObjectArgumentTest extends TestCase {
     // when
     String arg = nearObject.build();
     // then
-    Assert.assertEquals("nearObject: {id: \"id\" beacon: \"beacon\" distance: 0.8}", arg);
+    assertEquals("nearObject:{id:\"id\" beacon:\"beacon\" distance:0.8}", arg);
   }
 
+  @Test
   public void testBuildWithCertaintyAndWithoutId() {
     // given
     NearObjectArgument nearObject = NearObjectArgument.builder()
@@ -46,9 +51,10 @@ public class NearObjectArgumentTest extends TestCase {
     // when
     String arg = nearObject.build();
     // then
-    Assert.assertEquals("nearObject: {beacon: \"beacon\" certainty: 0.4}", arg);
+    assertEquals("nearObject:{beacon:\"beacon\" certainty:0.4}", arg);
   }
 
+  @Test
   public void testBuildWithDistanceAndWithoutId() {
     // given
     NearObjectArgument nearObject = NearObjectArgument.builder()
@@ -57,9 +63,10 @@ public class NearObjectArgumentTest extends TestCase {
     // when
     String arg = nearObject.build();
     // then
-    Assert.assertEquals("nearObject: {beacon: \"beacon\" distance: 0.4}", arg);
+    assertEquals("nearObject:{beacon:\"beacon\" distance:0.4}", arg);
   }
 
+  @Test
   public void testBuildWithCertaintyWithoutBeacon() {
     // given
     NearObjectArgument nearObject = NearObjectArgument.builder()
@@ -68,9 +75,10 @@ public class NearObjectArgumentTest extends TestCase {
     // when
     String arg = nearObject.build();
     // then
-    Assert.assertEquals("nearObject: {id: \"id\" certainty: 0.1}", arg);
+    assertEquals("nearObject:{id:\"id\" certainty:0.1}", arg);
   }
 
+  @Test
   public void testBuildWithDistanceWithoutBeacon() {
     // given
     NearObjectArgument nearObject = NearObjectArgument.builder()
@@ -79,9 +87,10 @@ public class NearObjectArgumentTest extends TestCase {
     // when
     String arg = nearObject.build();
     // then
-    Assert.assertEquals("nearObject: {id: \"id\" distance: 0.1}", arg);
+    assertEquals("nearObject:{id:\"id\" distance:0.1}", arg);
   }
 
+  @Test
   public void testBuildWithoutAll() {
     // given
     NearObjectArgument nearObject = NearObjectArgument.builder().build();
@@ -90,6 +99,6 @@ public class NearObjectArgumentTest extends TestCase {
     // then
     // builder will return a faulty nearObject arg in order for Weaviate to error
     // so that user will know that something was wrong
-    Assert.assertEquals("nearObject: {}", arg);
+    assertEquals("nearObject:{}", arg);
   }
 }

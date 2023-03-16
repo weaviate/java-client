@@ -21,46 +21,46 @@ public class Explore extends BaseClient<GraphQLResponse> implements ClientResult
 
   public Explore(HttpClient httpClient, Config config) {
     super(httpClient, config);
-    this.exploreBuilder = ExploreBuilder.builder();
+    exploreBuilder = ExploreBuilder.builder();
   }
 
   public Explore withFields(ExploreFields... fields) {
-    this.exploreBuilder.fields(fields);
+    exploreBuilder.fields(fields);
     return this;
   }
 
   public Explore withLimit(Integer limit) {
-    this.exploreBuilder.limit(limit);
+    exploreBuilder.limit(limit);
     return this;
   }
 
   public Explore withOffset(Integer offset) {
-    this.exploreBuilder.offset(offset);
+    exploreBuilder.offset(offset);
     return this;
   }
 
   public Explore withNearVector(NearVectorArgument nearVector) {
-    this.exploreBuilder.withNearVectorFilter(nearVector);
+    exploreBuilder.withNearVectorFilter(nearVector);
     return this;
   }
 
   public Explore withNearObject(NearObjectArgument nearObject) {
-    this.exploreBuilder.withNearObjectFilter(nearObject);
+    exploreBuilder.withNearObjectFilter(nearObject);
     return this;
   }
 
   public Explore withNearText(NearTextArgument nearText) {
-    this.exploreBuilder.withNearText(nearText);
+    exploreBuilder.withNearText(nearText);
     return this;
   }
 
   public Explore withAsk(AskArgument ask) {
-    this.exploreBuilder.withAskArgument(ask);
+    exploreBuilder.withAskArgument(ask);
     return this;
   }
 
   public Explore withNearImage(NearImageArgument nearImage) {
-    this.exploreBuilder.withNearImageFilter(nearImage);
+    exploreBuilder.withNearImageFilter(nearImage);
     return this;
   }
 

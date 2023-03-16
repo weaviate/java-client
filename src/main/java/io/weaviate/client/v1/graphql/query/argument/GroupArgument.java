@@ -1,13 +1,13 @@
 package io.weaviate.client.v1.graphql.query.argument;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
-import org.apache.commons.lang3.StringUtils;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Getter
 @Builder
@@ -20,12 +20,14 @@ public class GroupArgument implements Argument {
   @Override
   public String build() {
     Set<String> arg = new LinkedHashSet<>();
+
     if (type != null) {
-      arg.add(String.format("type: %s", type));
+      arg.add(String.format("type:%s", type));
     }
     if (force != null) {
-      arg.add(String.format("force: %s", force));
+      arg.add(String.format("force:%s", force));
     }
-    return String.format("group:{%s}", StringUtils.joinWith(" ", arg.toArray()));
+
+    return String.format("group:{%s}", String.join(" ", arg));
   }
 }

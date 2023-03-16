@@ -26,7 +26,7 @@ public class SortArgumentsTest extends TestCase {
     String res = SortArguments.builder().sort(new SortArgument[]{sort1, sort2, sort3}).build().build();
     // then
     assertNotNull(res);
-    assertEquals("sort:[{path:[\"property\"] order:asc}, {path:[\"other\"] order:desc}, {path:[\"no-sort-order\"]}]", res);
+    assertEquals("sort:[{path:[\"property\"] order:asc},{path:[\"other\"] order:desc},{path:[\"no-sort-order\"]}]", res);
   }
 
   @Test

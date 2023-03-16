@@ -1,5 +1,6 @@
 package io.weaviate.client.v1.graphql.query.builder;
 
+import io.weaviate.client.v1.graphql.query.argument.WhereArgument;
 import org.junit.Test;
 import io.weaviate.client.v1.filters.Operator;
 import io.weaviate.client.v1.filters.WhereFilter;
@@ -53,24 +54,35 @@ public class GetBuilderTest {
     assertEquals("{Get{Pizza{name description}}}", query);
   }
 
+  @Test
   public void testBuildGetWhereFilter() {
     // given
     Field name = Field.builder().name("name").build();
     Fields fields = Fields.builder().fields(new Field[]{ name }).build();
-    WhereFilter where1 = WhereFilter.builder()
-            .path(new String[]{ "name" }).operator(Operator.Equal).valueString("Hawaii")
-            .build();
-    WhereFilter where2 = WhereFilter.builder()
-            .operands(new WhereFilter[]{
-                    WhereFilter.builder()
-                            .path(new String[]{ "name" }).operator(Operator.Equal).valueString("Hawaii")
-                            .build(),
-                    WhereFilter.builder()
-                            .path(new String[]{ "name" }).operator(Operator.Equal).valueString("Doener")
-                            .build(),
-            })
-            .operator(Operator.Or)
-            .build();
+    WhereArgument where1 = WhereArgument.builder()
+      .filter(WhereFilter.builder()
+        .path(new String[]{ "name" })
+        .operator(Operator.Equal)
+        .valueString("Hawaii")
+        .build())
+      .build();
+    WhereArgument where2 = WhereArgument.builder()
+      .filter(WhereFilter.builder()
+        .operands(new WhereFilter[]{
+          WhereFilter.builder()
+            .path(new String[]{ "name" })
+            .operator(Operator.Equal)
+            .valueString("Hawaii")
+            .build(),
+          WhereFilter.builder()
+            .path(new String[]{ "name" })
+            .operator(Operator.Equal)
+            .valueString("Doener")
+            .build(),
+        })
+        .operator(Operator.Or)
+        .build())
+      .build();
     // when
     String query1 = GetBuilder.builder().className("Pizza").fields(fields).withWhereFilter(where1).build().buildQuery();
     String query2 = GetBuilder.builder().className("Pizza").fields(fields).withWhereFilter(where2).build().buildQuery();
@@ -96,7 +108,7 @@ public class GetBuilderTest {
             .build().buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Get{Pizza(limit: 2){name}}}", query);
+    assertEquals("{Get{Pizza(limit:2){name}}}", query);
   }
 
   @Test
@@ -113,7 +125,7 @@ public class GetBuilderTest {
             .build().buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Get{Pizza(limit: 2, offset: 0){name}}}", query);
+    assertEquals("{Get{Pizza(limit:2,offset:0){name}}}", query);
   }
 
   @Test
@@ -130,7 +142,7 @@ public class GetBuilderTest {
       .build().buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Get{Pizza(limit: 2, after: \"00000000-0000-0000-0000-000000000000\"){name}}}", query);
+    assertEquals("{Get{Pizza(limit:2,after:\"00000000-0000-0000-0000-000000000000\"){name}}}", query);
   }
 
   @Test
@@ -145,7 +157,7 @@ public class GetBuilderTest {
             .withNearTextFilter(nearText).build().buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Get{Pizza(nearText: {concepts: [\"good\"]}){name}}}", query);
+    assertEquals("{Get{Pizza(nearText:{concepts:[\"good\"]}){name}}}", query);
   }
 
   @Test
@@ -161,7 +173,7 @@ public class GetBuilderTest {
             .withNearVectorFilter(nearVectorWithCert).build().buildQuery();
     // then (certainty)
     assertNotNull(queryWithCert);
-    assertEquals("{Get{Pizza(nearVector: {vector: [0.0, 1.0, 0.8] certainty: 0.8}){name}}}", queryWithCert);
+    assertEquals("{Get{Pizza(nearVector:{vector:[0.0,1.0,0.8] certainty:0.8}){name}}}", queryWithCert);
 
     // given (distance)
     NearVectorArgument nearVectorWithDist = NearVectorArgument.builder()
@@ -172,7 +184,7 @@ public class GetBuilderTest {
             .withNearVectorFilter(nearVectorWithDist).build().buildQuery();
     // then (distance)
     assertNotNull(queryWithDist);
-    assertEquals("{Get{Pizza(nearVector: {vector: [0.0, 1.0, 0.8] distance: 0.8}){name}}}", queryWithDist);
+    assertEquals("{Get{Pizza(nearVector:{vector:[0.0,1.0,0.8] distance:0.8}){name}}}", queryWithDist);
   }
 
   @Test
@@ -186,7 +198,7 @@ public class GetBuilderTest {
             .withGroupArgument(group).build().buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Get{Pizza(group:{type: closest force: 0.4}){name}}}", query);
+    assertEquals("{Get{Pizza(group:{type:closest force:0.4}){name}}}", query);
   }
 
   @Test
@@ -198,11 +210,13 @@ public class GetBuilderTest {
     NearTextArgument nearText = NearTextArgument.builder()
             .concepts(new String[]{ "good" })
             .build();
-    WhereFilter where = WhereFilter.builder()
-            .path(new String[]{ "name" })
-            .operator(Operator.Equal)
-            .valueString("Hawaii")
-            .build();
+    WhereArgument where = WhereArgument.builder()
+      .filter(WhereFilter.builder()
+        .path(new String[]{ "name" })
+        .operator(Operator.Equal)
+        .valueString("Hawaii")
+        .build())
+      .build();
     Integer limit = 2;
     // when
     String query = GetBuilder.builder()
@@ -210,7 +224,7 @@ public class GetBuilderTest {
             .build().buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Get{Pizza(where:{path:[\"name\"] valueString:\"Hawaii\" operator:Equal}, nearText: {concepts: [\"good\"]}, limit: 2){name}}}", query);
+    assertEquals("{Get{Pizza(where:{path:[\"name\"] valueString:\"Hawaii\" operator:Equal},nearText:{concepts:[\"good\"]},limit:2){name}}}", query);
   }
 
   @Test
@@ -228,7 +242,7 @@ public class GetBuilderTest {
             .build().buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Get{Pizza(nearText: {concepts: [\"good\"]}){name}}}", query);
+    assertEquals("{Get{Pizza(nearText:{concepts:[\"good\"]}){name}}}", query);
   }
 
   @Test
@@ -270,13 +284,13 @@ public class GetBuilderTest {
             .build().buildQuery();
     // then
     assertNotNull(query1);
-    assertEquals("{Get{Pizza(ask: {question: \"Who are you?\"}){name}}}", query1);
+    assertEquals("{Get{Pizza(ask:{question:\"Who are you?\"}){name}}}", query1);
     assertNotNull(query2);
-    assertEquals("{Get{Pizza(ask: {question: \"Who are you?\" properties: [\"prop1\", \"prop2\"]}){name}}}", query2);
+    assertEquals("{Get{Pizza(ask:{question:\"Who are you?\" properties:[\"prop1\",\"prop2\"]}){name}}}", query2);
     assertNotNull(query3);
-    assertEquals("{Get{Pizza(ask: {question: \"Who are you?\" properties: [\"prop1\", \"prop2\"] certainty: 0.1}){name}}}", query3);
+    assertEquals("{Get{Pizza(ask:{question:\"Who are you?\" properties:[\"prop1\",\"prop2\"] certainty:0.1}){name}}}", query3);
     assertNotNull(query4);
-    assertEquals("{Get{Pizza(ask: {question: \"Who are you?\" properties: [\"prop1\", \"prop2\"] certainty: 0.1 rerank: true}){name}}}", query4);
+    assertEquals("{Get{Pizza(ask:{question:\"Who are you?\" properties:[\"prop1\",\"prop2\"] certainty:0.1 rerank:true}){name}}}", query4);
   }
 
   @Test
@@ -318,13 +332,13 @@ public class GetBuilderTest {
             .build().buildQuery();
     // then
     assertNotNull(query1);
-    assertEquals("{Get{Pizza(ask: {question: \"Who are you?\"}){name}}}", query1);
+    assertEquals("{Get{Pizza(ask:{question:\"Who are you?\"}){name}}}", query1);
     assertNotNull(query2);
-    assertEquals("{Get{Pizza(ask: {question: \"Who are you?\" properties: [\"prop1\", \"prop2\"]}){name}}}", query2);
+    assertEquals("{Get{Pizza(ask:{question:\"Who are you?\" properties:[\"prop1\",\"prop2\"]}){name}}}", query2);
     assertNotNull(query3);
-    assertEquals("{Get{Pizza(ask: {question: \"Who are you?\" properties: [\"prop1\", \"prop2\"] distance: 0.1}){name}}}", query3);
+    assertEquals("{Get{Pizza(ask:{question:\"Who are you?\" properties:[\"prop1\",\"prop2\"] distance:0.1}){name}}}", query3);
     assertNotNull(query4);
-    assertEquals("{Get{Pizza(ask: {question: \"Who are you?\" properties: [\"prop1\", \"prop2\"] distance: 0.1 rerank: true}){name}}}", query4);
+    assertEquals("{Get{Pizza(ask:{question:\"Who are you?\" properties:[\"prop1\",\"prop2\"] distance:0.1 rerank:true}){name}}}", query4);
   }
 
   @Test
@@ -352,11 +366,11 @@ public class GetBuilderTest {
             .className("Pizza").fields(fields).withNearImageFilter(nearImage3).limit(1)
             .build().buildQuery();
     assertNotNull(query1);
-    assertEquals(String.format("{Get{Pizza(nearImage: {image: \"%s\"}){name}}}", base64File), query1);
+    assertEquals(String.format("{Get{Pizza(nearImage:{image:\"%s\"}){name}}}", base64File), query1);
     assertNotNull(query2);
-    assertEquals(String.format("{Get{Pizza(nearImage: {image: \"%s\" certainty: 0.4}){name}}}", base64File), query2);
+    assertEquals(String.format("{Get{Pizza(nearImage:{image:\"%s\" certainty:0.4}){name}}}", base64File), query2);
     assertNotNull(query3);
-    assertEquals(String.format("{Get{Pizza(nearImage: {image: \"%s\" certainty: 0.1}, limit: 1){name}}}", expectedImage), query3);
+    assertEquals(String.format("{Get{Pizza(nearImage:{image:\"%s\" certainty:0.1},limit:1){name}}}", expectedImage), query3);
   }
 
   @Test
@@ -384,11 +398,11 @@ public class GetBuilderTest {
             .className("Pizza").fields(fields).withNearImageFilter(nearImage3).limit(1)
             .build().buildQuery();
     assertNotNull(query1);
-    assertEquals(String.format("{Get{Pizza(nearImage: {image: \"%s\"}){name}}}", base64File), query1);
+    assertEquals(String.format("{Get{Pizza(nearImage:{image:\"%s\"}){name}}}", base64File), query1);
     assertNotNull(query2);
-    assertEquals(String.format("{Get{Pizza(nearImage: {image: \"%s\" distance: 0.4}){name}}}", base64File), query2);
+    assertEquals(String.format("{Get{Pizza(nearImage:{image:\"%s\" distance:0.4}){name}}}", base64File), query2);
     assertNotNull(query3);
-    assertEquals(String.format("{Get{Pizza(nearImage: {image: \"%s\" distance: 0.1}, limit: 1){name}}}", expectedImage), query3);
+    assertEquals(String.format("{Get{Pizza(nearImage:{image:\"%s\" distance:0.1},limit:1){name}}}", expectedImage), query3);
   }
 
   @Test
@@ -413,8 +427,8 @@ public class GetBuilderTest {
     // then
     assertNotNull(query1);
     assertEquals("{Get{Pizza(sort:[{path:[\"property1\"]}]){name}}}", query1);
-    assertEquals("{Get{Pizza(sort:[{path:[\"property1\"]}, {path:[\"property2\"] order:desc}]){name}}}", query2);
-    assertEquals("{Get{Pizza(sort:[{path:[\"property1\"]}, {path:[\"property2\"] order:desc}, {path:[\"property3\"] order:asc}]){name}}}", query3);
+    assertEquals("{Get{Pizza(sort:[{path:[\"property1\"]},{path:[\"property2\"] order:desc}]){name}}}", query2);
+    assertEquals("{Get{Pizza(sort:[{path:[\"property1\"]},{path:[\"property2\"] order:desc},{path:[\"property3\"] order:asc}]){name}}}", query3);
   }
 
   @Test
@@ -472,5 +486,31 @@ public class GetBuilderTest {
       "singleResult:{prompt:\"\"\"What is the meaning of life?\"\"\"} " +
       "groupedResult:{task:\"\"\"Explain why these magazines or newspapers are about finance\"\"\"})" +
       "{singleResult groupedResult error}}}}}");
+  }
+
+  @Test
+  public void shouldSupportDeprecatedWhereFilter() {
+    WhereFilter where = WhereFilter.builder()
+      .path(new String[]{ "name" })
+      .operator(Operator.Equal)
+      .valueString("Hawaii")
+      .build();
+    Fields fields = Fields.builder()
+      .fields(Field.builder().name("name").build())
+      .build();
+    NearTextArgument nearText = NearTextArgument.builder()
+      .concepts(new String[]{ "good" })
+      .build();
+    Integer limit = 2;
+
+    String query = GetBuilder.builder()
+      .className("Pizza")
+      .fields(fields)
+      .withNearTextFilter(nearText)
+      .withWhereFilter(where)
+      .limit(limit)
+      .build().buildQuery();
+
+    assertThat(query).isEqualTo("{Get{Pizza(where:{path:[\"name\"] valueString:\"Hawaii\" operator:Equal},nearText:{concepts:[\"good\"]},limit:2){name}}}");
   }
 }

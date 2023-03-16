@@ -1,5 +1,6 @@
 package io.weaviate.client.v1.graphql.query.fields;
 
+import io.weaviate.client.v1.graphql.query.util.Serializer;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,11 +26,11 @@ public class GenerativeSearchBuilder {
     Set<String> fieldNames = new LinkedHashSet<>();
 
     if (StringUtils.isNotBlank(singleResultPrompt)) {
-      nameParts.add(String.format("singleResult:{prompt:\"\"\"%s\"\"\"}", singleResultPrompt));
+      nameParts.add(String.format("singleResult:{prompt:\"\"%s\"\"}", Serializer.quote(singleResultPrompt)));
       fieldNames.add("singleResult");
     }
     if (StringUtils.isNotBlank(groupedResultTask)) {
-      nameParts.add(String.format("groupedResult:{task:\"\"\"%s\"\"\"}", groupedResultTask));
+      nameParts.add(String.format("groupedResult:{task:\"\"%s\"\"}", Serializer.quote(groupedResultTask)));
       fieldNames.add("groupedResult");
     }
 
@@ -38,7 +39,7 @@ public class GenerativeSearchBuilder {
     }
 
     fieldNames.add("error");
-    String name = String.format("generate(%s)", StringUtils.join(nameParts, " "));
+    String name = String.format("generate(%s)", String.join(" ", nameParts));
     Field[] fields = fieldNames.stream()
       .map(n -> Field.builder().name(n).build())
       .toArray(Field[]::new);
