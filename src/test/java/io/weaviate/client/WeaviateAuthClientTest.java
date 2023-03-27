@@ -1,18 +1,22 @@
 package io.weaviate.client;
 
-import junit.framework.TestCase;
-import org.junit.After;
+import io.weaviate.client.v1.auth.exception.AuthException;
+import org.apache.http.client.methods.HttpGet;
+import org.junit.AfterClass;
 import org.junit.Test;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
+import org.mockserver.model.HttpRequest;
+import org.mockserver.verify.VerificationTimes;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
-import org.mockserver.verify.VerificationTimes;
-import io.weaviate.client.v1.auth.exception.AuthException;
 
-public class WeaviateAuthClientTest extends TestCase {
+public class WeaviateAuthClientTest {
 
   private static final int mockServerPort = 8899;
   private static final int oidcMockServerPort = 8999;
@@ -21,7 +25,7 @@ public class WeaviateAuthClientTest extends TestCase {
   private static final ClientAndServer mockServer = startClientAndServer(mockServerPort);
   private static final ClientAndServer oidcMockServer = startClientAndServer(oidcMockServerPort);
 
-  @After
+  @AfterClass
   public static void after() {
     mockServer.stop();
     oidcMockServer.stop();
@@ -196,5 +200,27 @@ public class WeaviateAuthClientTest extends TestCase {
     assertEquals(msg, exceptionClientCredentials.getMessage());
     assertEquals(msg, exceptionClientPassword.getMessage());
     assertNotNull(weaviateClient);
+  }
+
+  @Test
+  public void shouldAddApiKeyHeader() throws AuthException {
+    String metaPath = "/v1/meta";
+    String apiKey = "some-api-key";
+    HttpRequest requestDefinition = request().withMethod(HttpGet.METHOD_NAME).withPath(metaPath);
+    Config config = new Config("http", String.format("localhost:%s", mockServerPort));
+
+    mockServer.reset();
+    new MockServerClient("localhost", mockServerPort)
+      .when(requestDefinition)
+      .respond(response().withStatusCode(200));
+
+    WeaviateAuthClient.apiKey(config, apiKey).misc().metaGetter().run();
+
+    new MockServerClient("localhost", mockServerPort)
+      .verify(
+        request().withMethod(HttpGet.METHOD_NAME).withPath(metaPath)
+          .withHeader("Authorization", String.format("Bearer %s", apiKey)),
+        VerificationTimes.once()
+      );
   }
 }
