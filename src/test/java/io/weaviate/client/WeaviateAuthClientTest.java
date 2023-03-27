@@ -18,12 +18,17 @@ import static org.mockserver.model.HttpResponse.response;
 
 public class WeaviateAuthClientTest {
 
-  private static final int mockServerPort = 8899;
-  private static final int oidcMockServerPort = 8999;
-  private static final String OIDC_URL = "/v1/.well-known/openid-configuration";
+  private static final String MOCK_SERVER_HOST = "localhost";
+  private static final int MOCK_SERVER_PORT = 8899;
+  private static final int OIDC_MOCK_SERVER_PORT = 8999;
+  private static final Config MOCK_SERVER_CONFIG = new Config(
+    "http",
+    String.format("%s:%s", MOCK_SERVER_HOST, MOCK_SERVER_PORT)
+  );
+  private static final String OIDC_PATH = "/v1/.well-known/openid-configuration";
 
-  private static final ClientAndServer mockServer = startClientAndServer(mockServerPort);
-  private static final ClientAndServer oidcMockServer = startClientAndServer(oidcMockServerPort);
+  private static final ClientAndServer mockServer = startClientAndServer(MOCK_SERVER_PORT);
+  private static final ClientAndServer oidcMockServer = startClientAndServer(OIDC_MOCK_SERVER_PORT);
 
   @AfterClass
   public static void after() {
@@ -38,39 +43,36 @@ public class WeaviateAuthClientTest {
       "correct?";
 
     mockServer.reset();
-    new MockServerClient("localhost", mockServerPort)
+    new MockServerClient(MOCK_SERVER_HOST, MOCK_SERVER_PORT)
       .when(
-        request().withMethod("GET").withPath(OIDC_URL)
+        request().withMethod("GET").withPath(OIDC_PATH)
       )
       .respond(
         response().withStatusCode(404)
       );
-    new MockServerClient("localhost", mockServerPort)
+    new MockServerClient(MOCK_SERVER_HOST, MOCK_SERVER_PORT)
       .retrieveRecordedRequests(
-        request().withMethod("GET").withPath(OIDC_URL)
+        request().withMethod("GET").withPath(OIDC_PATH)
       );
     //when
-    AuthException exceptionClientCredentials = assertThrows(AuthException.class, () -> {
-      Config config = new Config("http", String.format("localhost:%s", mockServerPort));
-      WeaviateAuthClient.clientCredentials(config, "some-secret", null);
-    });
-    AuthException exceptionClientPassword = assertThrows(AuthException.class, () -> {
-      Config config = new Config("http", String.format("localhost:%s", mockServerPort));
-      WeaviateAuthClient.clientPassword(config, "user", "pass", null);
-    });
-    AuthException exceptionBearerToken = assertThrows(AuthException.class, () -> {
-      Config config = new Config("http", String.format("localhost:%s", mockServerPort));
-      WeaviateAuthClient.bearerToken(config, "access-token", 0l, "refresh-token");
-    });
+    AuthException exceptionClientCredentials = assertThrows(AuthException.class, () ->
+      WeaviateAuthClient.clientCredentials(MOCK_SERVER_CONFIG, "some-secret", null)
+    );
+    AuthException exceptionClientPassword = assertThrows(AuthException.class, () ->
+      WeaviateAuthClient.clientPassword(MOCK_SERVER_CONFIG, "user", "pass", null)
+    );
+    AuthException exceptionBearerToken = assertThrows(AuthException.class, () ->
+      WeaviateAuthClient.bearerToken(MOCK_SERVER_CONFIG, "access-token", 0l, "refresh-token")
+    );
     //then
     assertEquals(msg, exceptionClientCredentials.getMessage());
     assertEquals(msg, exceptionClientPassword.getMessage());
     assertEquals(msg, exceptionBearerToken.getMessage());
 
-    new MockServerClient("localhost", mockServerPort)
+    new MockServerClient(MOCK_SERVER_HOST, MOCK_SERVER_PORT)
       .verify(
         request()
-          .withPath(OIDC_URL),
+          .withPath(OIDC_PATH),
         VerificationTimes.exactly(3)
       );
   }
@@ -80,42 +82,39 @@ public class WeaviateAuthClientTest {
     //given
     int statusCode = 503;
     String msg = String.format("OIDC configuration url %s returned status code %s",
-      String.format("http://localhost:%s%s", mockServerPort, OIDC_URL), statusCode);
+      String.format("http://%s:%s%s", MOCK_SERVER_HOST, MOCK_SERVER_PORT, OIDC_PATH), statusCode);
 
     mockServer.reset();
-    new MockServerClient("localhost", mockServerPort)
+    new MockServerClient(MOCK_SERVER_HOST, MOCK_SERVER_PORT)
       .when(
-        request().withMethod("GET").withPath(OIDC_URL)
+        request().withMethod("GET").withPath(OIDC_PATH)
       )
       .respond(
         response().withStatusCode(statusCode)
       );
-    new MockServerClient("localhost", mockServerPort)
+    new MockServerClient(MOCK_SERVER_HOST, MOCK_SERVER_PORT)
       .retrieveRecordedRequests(
-        request().withMethod("GET").withPath(OIDC_URL)
+        request().withMethod("GET").withPath(OIDC_PATH)
       );
     //when
-    AuthException exceptionClientCredentials = assertThrows(AuthException.class, () -> {
-      Config config = new Config("http", String.format("localhost:%s", mockServerPort));
-      WeaviateAuthClient.clientCredentials(config, "some-secret", null);
-    });
-    AuthException exceptionClientPassword = assertThrows(AuthException.class, () -> {
-      Config config = new Config("http", String.format("localhost:%s", mockServerPort));
-      WeaviateAuthClient.clientPassword(config, "user", "pass", null);
-    });
-    AuthException exceptionBearerToken = assertThrows(AuthException.class, () -> {
-      Config config = new Config("http", String.format("localhost:%s", mockServerPort));
-      WeaviateAuthClient.bearerToken(config, "access-token", 0l, "refresh-token");
-    });
+    AuthException exceptionClientCredentials = assertThrows(AuthException.class, () ->
+      WeaviateAuthClient.clientCredentials(MOCK_SERVER_CONFIG, "some-secret", null)
+    );
+    AuthException exceptionClientPassword = assertThrows(AuthException.class, () ->
+      WeaviateAuthClient.clientPassword(MOCK_SERVER_CONFIG, "user", "pass", null)
+    );
+    AuthException exceptionBearerToken = assertThrows(AuthException.class, () ->
+      WeaviateAuthClient.bearerToken(MOCK_SERVER_CONFIG, "access-token", 0l, "refresh-token")
+    );
     //then
     assertEquals(msg, exceptionClientCredentials.getMessage());
     assertEquals(msg, exceptionClientPassword.getMessage());
     assertEquals(msg, exceptionBearerToken.getMessage());
 
-    new MockServerClient("localhost", mockServerPort)
+    new MockServerClient(MOCK_SERVER_HOST, MOCK_SERVER_PORT)
       .verify(
         request()
-          .withPath(OIDC_URL),
+          .withPath(OIDC_PATH),
         VerificationTimes.exactly(3)
       );
   }
@@ -124,20 +123,20 @@ public class WeaviateAuthClientTest {
   public void test201OIDCHrefCase() {
     //given
     int statusCode = 201;
-    String hrefURL = String.format("http://localhost:%s/oidc", oidcMockServerPort);
+    String hrefURL = String.format("http://%s:%s/oidc", MOCK_SERVER_HOST, OIDC_MOCK_SERVER_PORT);
     String msg = String.format("OIDC configuration url %s returned status code %s",
       hrefURL, statusCode);
 
     mockServer.reset();
-    new MockServerClient("localhost", mockServerPort)
+    new MockServerClient(MOCK_SERVER_HOST, MOCK_SERVER_PORT)
       .when(
-        request().withMethod("GET").withPath(OIDC_URL)
+        request().withMethod("GET").withPath(OIDC_PATH)
       )
       .respond(
         response().withStatusCode(200).withBody(String.format("{\"href\":\"%s\"}", hrefURL))
       );
     oidcMockServer.reset();
-    new MockServerClient("localhost", oidcMockServerPort)
+    new MockServerClient(MOCK_SERVER_HOST, OIDC_MOCK_SERVER_PORT)
       .when(
         request().withMethod("GET").withPath("/oidc")
       )
@@ -145,18 +144,15 @@ public class WeaviateAuthClientTest {
         response().withStatusCode(statusCode)
       );
     //when
-    AuthException exceptionClientCredentials = assertThrows(AuthException.class, () -> {
-      Config config = new Config("http", String.format("localhost:%s", mockServerPort));
-      WeaviateAuthClient.clientCredentials(config, "some-secret", null);
-    });
-    AuthException exceptionClientPassword = assertThrows(AuthException.class, () -> {
-      Config config = new Config("http", String.format("localhost:%s", mockServerPort));
-      WeaviateAuthClient.clientPassword(config, "user", "pass", null);
-    });
-    AuthException exceptionBearerToken = assertThrows(AuthException.class, () -> {
-      Config config = new Config("http", String.format("localhost:%s", mockServerPort));
-      WeaviateAuthClient.bearerToken(config, "access-token", 0l, "refresh-token");
-    });
+    AuthException exceptionClientCredentials = assertThrows(AuthException.class, () ->
+      WeaviateAuthClient.clientCredentials(MOCK_SERVER_CONFIG, "some-secret", null)
+    );
+    AuthException exceptionClientPassword = assertThrows(AuthException.class, () ->
+      WeaviateAuthClient.clientPassword(MOCK_SERVER_CONFIG, "user", "pass", null)
+    );
+    AuthException exceptionBearerToken = assertThrows(AuthException.class, () ->
+      WeaviateAuthClient.bearerToken(MOCK_SERVER_CONFIG, "access-token", 0l, "refresh-token")
+    );
     //then
     assertEquals(msg, exceptionClientCredentials.getMessage());
     assertEquals(msg, exceptionClientPassword.getMessage());
@@ -166,19 +162,19 @@ public class WeaviateAuthClientTest {
   @Test
   public void test200ParseException() throws AuthException {
     //given
-    String hrefURL = String.format("http://localhost:%s/oidc", oidcMockServerPort);
+    String hrefURL = String.format("http://%s:%s/oidc", MOCK_SERVER_HOST, OIDC_MOCK_SERVER_PORT);
     String msg = "Invalid JSON: Unexpected token parse-exception} at position 17.";
 
     mockServer.reset();
-    new MockServerClient("localhost", mockServerPort)
+    new MockServerClient(MOCK_SERVER_HOST, MOCK_SERVER_PORT)
       .when(
-        request().withMethod("GET").withPath(OIDC_URL)
+        request().withMethod("GET").withPath(OIDC_PATH)
       )
       .respond(
         response().withStatusCode(200).withBody(String.format("{\"href\":\"%s\"}", hrefURL))
       );
     oidcMockServer.reset();
-    new MockServerClient("localhost", oidcMockServerPort)
+    new MockServerClient(MOCK_SERVER_HOST, OIDC_MOCK_SERVER_PORT)
       .when(
         request().withMethod("GET").withPath("/oidc")
       )
@@ -186,16 +182,13 @@ public class WeaviateAuthClientTest {
         response().withStatusCode(200).withBody("{parse-exception}")
       );
     //when
-    AuthException exceptionClientCredentials = assertThrows(AuthException.class, () -> {
-      Config config = new Config("http", String.format("localhost:%s", mockServerPort));
-      WeaviateAuthClient.clientCredentials(config, "some-secret", null);
-    });
-    AuthException exceptionClientPassword = assertThrows(AuthException.class, () -> {
-      Config config = new Config("http", String.format("localhost:%s", mockServerPort));
-      WeaviateAuthClient.clientPassword(config, "user", "pass", null);
-    });
-    Config config = new Config("http", String.format("localhost:%s", mockServerPort));
-    WeaviateClient weaviateClient = WeaviateAuthClient.bearerToken(config, "access-token", 0l, "");
+    AuthException exceptionClientCredentials = assertThrows(AuthException.class, () ->
+      WeaviateAuthClient.clientCredentials(MOCK_SERVER_CONFIG, "some-secret", null)
+    );
+    AuthException exceptionClientPassword = assertThrows(AuthException.class, () ->
+      WeaviateAuthClient.clientPassword(MOCK_SERVER_CONFIG, "user", "pass", null)
+    );
+    WeaviateClient weaviateClient = WeaviateAuthClient.bearerToken(MOCK_SERVER_CONFIG, "access-token", 0l, "");
     //then
     assertEquals(msg, exceptionClientCredentials.getMessage());
     assertEquals(msg, exceptionClientPassword.getMessage());
@@ -207,16 +200,15 @@ public class WeaviateAuthClientTest {
     String metaPath = "/v1/meta";
     String apiKey = "some-api-key";
     HttpRequest requestDefinition = request().withMethod(HttpGet.METHOD_NAME).withPath(metaPath);
-    Config config = new Config("http", String.format("localhost:%s", mockServerPort));
 
     mockServer.reset();
-    new MockServerClient("localhost", mockServerPort)
+    new MockServerClient(MOCK_SERVER_HOST, MOCK_SERVER_PORT)
       .when(requestDefinition)
       .respond(response().withStatusCode(200));
 
-    WeaviateAuthClient.apiKey(config, apiKey).misc().metaGetter().run();
+    WeaviateAuthClient.apiKey(MOCK_SERVER_CONFIG, apiKey).misc().metaGetter().run();
 
-    new MockServerClient("localhost", mockServerPort)
+    new MockServerClient(MOCK_SERVER_HOST, MOCK_SERVER_PORT)
       .verify(
         request().withMethod(HttpGet.METHOD_NAME).withPath(metaPath)
           .withHeader("Authorization", String.format("Bearer %s", apiKey)),
