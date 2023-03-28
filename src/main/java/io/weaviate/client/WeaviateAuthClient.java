@@ -1,5 +1,6 @@
 package io.weaviate.client;
 
+import io.weaviate.client.v1.auth.ApiKeyFlow;
 import io.weaviate.client.v1.auth.BearerTokenFlow;
 import io.weaviate.client.v1.auth.ClientCredentialsFlow;
 import io.weaviate.client.v1.auth.ResourceOwnerPasswordFlow;
@@ -21,5 +22,10 @@ public class WeaviateAuthClient {
   public static WeaviateClient bearerToken(Config config, String accessToken, long accessTokenLifetime, String refreshToken) throws AuthException {
     BearerTokenFlow bearerTokenFlow = new BearerTokenFlow(accessToken, accessTokenLifetime, refreshToken);
     return bearerTokenFlow.getAuthClient(config, null);
+  }
+
+  public static WeaviateClient apiKey(Config config, String apiKey) throws AuthException {
+    ApiKeyFlow flow = new ApiKeyFlow(apiKey);
+    return flow.getAuthClient(config);
   }
 }

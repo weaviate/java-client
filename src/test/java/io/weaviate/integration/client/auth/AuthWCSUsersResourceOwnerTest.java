@@ -18,7 +18,7 @@ import io.weaviate.client.v1.auth.exception.AuthException;
 import io.weaviate.client.v1.misc.model.Meta;
 import static io.weaviate.integration.client.WeaviateVersion.EXPECTED_WEAVIATE_VERSION;
 
-public class AuthWCSUsersTest {
+public class AuthWCSUsersResourceOwnerTest {
   private String address;
 
   @ClassRule
