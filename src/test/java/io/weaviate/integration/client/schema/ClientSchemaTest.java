@@ -39,6 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -760,15 +761,14 @@ public class ClientSchemaTest {
             .build();
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
-
+    Result<Boolean> bandClassStatus = client.schema().exists().withClassName(clazz.getClassName()).run();
+    Result<Boolean> nonExistentClassStatus = client.schema().exists().withClassName("nonExistentClass").run();
     // then
-    assertNotNull(createStatus);
-    assertTrue(createStatus.getResult());
-    assertNotNull(bandClass);
-    assertNotNull(bandClass.getResult());
-    assertNull(bandClass.getError());
-
+    assertResultTrue(createStatus);
+    assertResultTrue(bandClassStatus);
+    assertNotNull(nonExistentClassStatus);
+    assertFalse(nonExistentClassStatus.getResult());
+    assertNull(nonExistentClassStatus.getError());
     Result<Shard[]> shards = client.schema().shardsGetter()
             .withClassName(clazz.getClassName()).run();
     assertNotNull(shards);
