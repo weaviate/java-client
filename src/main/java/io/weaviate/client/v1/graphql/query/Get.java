@@ -118,6 +118,11 @@ public class Get extends BaseClient<GraphQLResponse> implements ClientResult<Gra
     return this;
   }
 
+  public Get withConsistencyLevel(String level) {
+    getBuilder.withConsistencyLevel(level);
+    return this;
+  }
+
   @Override
   public Result<GraphQLResponse> run() {
     String getQuery = getBuilder.build().buildQuery();
