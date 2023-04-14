@@ -31,7 +31,7 @@ public class Schema {
   }
 
   public ClassExists exists() {
-    return new ClassExists(httpClient, config);
+    return new ClassExists(new ClassGetter(httpClient, config));
   }
 
   public ClassCreator classCreator() {
