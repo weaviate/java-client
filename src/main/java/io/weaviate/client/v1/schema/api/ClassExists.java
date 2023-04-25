@@ -24,10 +24,6 @@ public class ClassExists implements ClientResult<Boolean> {
     return this;
   }
 
-  private Result<Boolean> toResult(WeaviateError error) {
-    return new Result<>(error.getStatusCode(), null, WeaviateErrorResponse.builder().error(error.getMessages()).build());
-  }
-
   @Override
   public Result<Boolean> run() {
     if (StringUtils.isEmpty(className)) {
