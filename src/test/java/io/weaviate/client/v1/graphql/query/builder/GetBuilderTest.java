@@ -1,12 +1,11 @@
 package io.weaviate.client.v1.graphql.query.builder;
 
 import io.weaviate.client.v1.data.replication.model.ConsistencyLevel;
-import io.weaviate.client.v1.graphql.query.argument.WhereArgument;
-import org.junit.Test;
 import io.weaviate.client.v1.filters.Operator;
 import io.weaviate.client.v1.filters.WhereFilter;
 import io.weaviate.client.v1.graphql.query.argument.AskArgument;
 import io.weaviate.client.v1.graphql.query.argument.GroupArgument;
+import io.weaviate.client.v1.graphql.query.argument.GroupByArgument;
 import io.weaviate.client.v1.graphql.query.argument.GroupType;
 import io.weaviate.client.v1.graphql.query.argument.NearImageArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearTextArgument;
@@ -14,9 +13,11 @@ import io.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
 import io.weaviate.client.v1.graphql.query.argument.SortArgument;
 import io.weaviate.client.v1.graphql.query.argument.SortArguments;
 import io.weaviate.client.v1.graphql.query.argument.SortOrder;
+import io.weaviate.client.v1.graphql.query.argument.WhereArgument;
 import io.weaviate.client.v1.graphql.query.fields.Field;
 import io.weaviate.client.v1.graphql.query.fields.Fields;
 import io.weaviate.client.v1.graphql.query.fields.GenerativeSearchBuilder;
+import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -535,5 +536,42 @@ public class GetBuilderTest {
       .build().buildQuery();
 
     assertThat(query).isEqualTo("{Get{Pizza(where:{path:[\"name\"] valueString:\"Hawaii\" operator:Equal},nearText:{concepts:[\"good\"]},limit:2){name}}}");
+  }
+
+  @Test
+  public void testBuildGetWithGroupBy() {
+    // given
+    Field[] hits = new Field[]{
+      Field.builder().name("prop1").build(),
+      Field.builder().name("_additional{distance}").build(),
+    };
+
+    Field group = Field.builder()
+      .name("group")
+      .fields(new Field[]{
+        Field.builder().name("groupValue").build(),
+        Field.builder().name("count").build(),
+        Field.builder().name("maxDistance").build(),
+        Field.builder().name("minDistance").build(),
+        Field.builder().name("hits").fields(hits).build(),
+      }).build();
+
+    Fields fields = Fields.builder().fields(new Field[]{
+      Field.builder().name("_additional").fields(new Field[]{ group }).build()
+    }).build();
+
+    GroupByArgument groupBy1 = GroupByArgument.builder().path(new String[]{ "prop1" }).build();
+    GroupByArgument groupBy2 = GroupByArgument.builder().path(new String[]{ "prop1" }).groups(1).objectsPerGroup(3).build();
+    // when
+    String query1 = GetBuilder.builder().className("Pizza").fields(fields)
+      .withGroupByArgument(groupBy1)
+      .build().buildQuery();
+    String query2 = GetBuilder.builder().className("Pizza").fields(fields)
+      .withGroupByArgument(groupBy2)
+      .build().buildQuery();
+    // then
+    assertNotNull(query1);
+    assertEquals("{Get{Pizza(groupBy:{path:[\"prop1\"]}){_additional{group{groupValue count maxDistance minDistance hits{prop1 _additional{distance}}}}}}}", query1);
+    assertEquals("{Get{Pizza(groupBy:{path:[\"prop1\"] groups:1 objectsPerGroup:3}){_additional{group{groupValue count maxDistance minDistance hits{prop1 _additional{distance}}}}}}}", query2);
   }
 }

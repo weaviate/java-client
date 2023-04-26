@@ -3,6 +3,7 @@ package io.weaviate.client.v1.graphql.query;
 import io.weaviate.client.v1.graphql.query.argument.AskArgument;
 import io.weaviate.client.v1.graphql.query.argument.Bm25Argument;
 import io.weaviate.client.v1.graphql.query.argument.GroupArgument;
+import io.weaviate.client.v1.graphql.query.argument.GroupByArgument;
 import io.weaviate.client.v1.graphql.query.argument.HybridArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearImageArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
@@ -120,6 +121,11 @@ public class Get extends BaseClient<GraphQLResponse> implements ClientResult<Gra
 
   public Get withConsistencyLevel(String level) {
     getBuilder.withConsistencyLevel(level);
+    return this;
+  }
+
+  public Get withGroupBy(GroupByArgument groupBy) {
+    getBuilder.withGroupByArgument(groupBy);
     return this;
   }
 

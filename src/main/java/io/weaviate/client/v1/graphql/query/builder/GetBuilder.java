@@ -4,6 +4,7 @@ import io.weaviate.client.v1.filters.WhereFilter;
 import io.weaviate.client.v1.graphql.query.argument.AskArgument;
 import io.weaviate.client.v1.graphql.query.argument.Bm25Argument;
 import io.weaviate.client.v1.graphql.query.argument.GroupArgument;
+import io.weaviate.client.v1.graphql.query.argument.GroupByArgument;
 import io.weaviate.client.v1.graphql.query.argument.HybridArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearImageArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
@@ -53,11 +54,12 @@ public class GetBuilder implements Query {
   GroupArgument withGroupArgument;
   SortArguments withSortArguments;
   GenerativeSearchBuilder withGenerativeSearch;
+  GroupByArgument withGroupByArgument;
 
   private boolean includesFilterClause() {
     return ObjectUtils.anyNotNull(withWhereFilter, withNearTextFilter, withNearObjectFilter, withNearVectorFilter,
       withNearImageFilter, withGroupArgument, withAskArgument, withBm25Filter, withHybridFilter, limit, offset,
-      withSortArguments, withConsistencyLevel);
+      withSortArguments, withConsistencyLevel, withGroupByArgument);
   }
 
   private String createFilterClause() {
@@ -105,6 +107,9 @@ public class GetBuilder implements Query {
       }
       if (withConsistencyLevel != null) {
         filters.add(String.format("consistencyLevel:%s", withConsistencyLevel));
+      }
+      if (withGroupByArgument != null) {
+        filters.add(withGroupByArgument.build());
       }
 
       return String.format("(%s)", String.join(",", filters));

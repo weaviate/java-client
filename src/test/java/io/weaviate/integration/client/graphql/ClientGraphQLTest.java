@@ -3,6 +3,7 @@ package io.weaviate.integration.client.graphql;
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
+import io.weaviate.client.base.Serializer;
 import io.weaviate.client.v1.batch.model.ObjectGetResponse;
 import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.filters.Operator;
@@ -11,6 +12,7 @@ import io.weaviate.client.v1.graphql.model.ExploreFields;
 import io.weaviate.client.v1.graphql.model.GraphQLResponse;
 import io.weaviate.client.v1.graphql.query.argument.Bm25Argument;
 import io.weaviate.client.v1.graphql.query.argument.GroupArgument;
+import io.weaviate.client.v1.graphql.query.argument.GroupByArgument;
 import io.weaviate.client.v1.graphql.query.argument.GroupType;
 import io.weaviate.client.v1.graphql.query.argument.HybridArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
@@ -22,7 +24,13 @@ import io.weaviate.client.v1.graphql.query.argument.SortOrder;
 import io.weaviate.client.v1.graphql.query.argument.WhereArgument;
 import io.weaviate.client.v1.graphql.query.fields.Field;
 import io.weaviate.client.v1.graphql.query.fields.GenerativeSearchBuilder;
+import io.weaviate.integration.client.WeaviateTestDocumentPassageSchema;
 import io.weaviate.integration.client.WeaviateTestGenerics;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -1404,6 +1412,146 @@ public class ClientGraphQLTest {
     for (int i=0; i<pizzas.size(); i++) {
       assertPizzaName(expectedPizzas[i], pizzas, i);
     }
+  }
+
+  @Getter
+  @AllArgsConstructor
+  private static class AdditionalGroupHit {
+    String id;
+    Float distance;
+  }
+  @Getter
+  @AllArgsConstructor
+  private static class AdditionalOfDocument {
+    String id;
+  }
+  @Getter
+  @AllArgsConstructor
+  private static class GroupHitOfDocument {
+    AdditionalOfDocument _additional;
+  }
+  @Getter
+  @AllArgsConstructor
+  private static class GroupHit {
+    AdditionalGroupHit _additional;
+    List<GroupHitOfDocument> ofDocument;
+  }
+  @Getter
+  @AllArgsConstructor
+  private static class Group {
+    String id;
+    String groupValue;
+    Integer count;
+    Float maxDistance;
+    Float minDistance;
+    List<GroupHit> hits;
+  }
+  @Getter
+  private static class Additional {
+    Group group;
+  }
+  @Getter
+  private static class AdditionalGroupByAdditional {
+    Additional _additional;
+  }
+
+  @Test
+  public void testGraphQLGetWithGroupBy() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateTestDocumentPassageSchema testData = new WeaviateTestDocumentPassageSchema();
+    List<GroupHitOfDocument> ofDocumentA = Collections.singletonList(
+      new GroupHitOfDocument(new AdditionalOfDocument(testData.DOCUMENT_IDS[0]))
+    );
+    List<GroupHitOfDocument> ofDocumentB = Collections.singletonList(
+      new GroupHitOfDocument(new AdditionalOfDocument(testData.DOCUMENT_IDS[1]))
+    );
+    List<GroupHit> expectedHits1 = new ArrayList<>();
+    expectedHits1.add(new GroupHit(new AdditionalGroupHit(testData.PASSAGE_IDS[0], 4.172325e-7f), ofDocumentA));
+    expectedHits1.add(new GroupHit(new AdditionalGroupHit(testData.PASSAGE_IDS[8], 0.0023148656f), ofDocumentA));
+    expectedHits1.add(new GroupHit(new AdditionalGroupHit(testData.PASSAGE_IDS[6], 0.0023562312f), ofDocumentA));
+    expectedHits1.add(new GroupHit(new AdditionalGroupHit(testData.PASSAGE_IDS[7], 0.0025092363f), ofDocumentA));
+    expectedHits1.add(new GroupHit(new AdditionalGroupHit(testData.PASSAGE_IDS[5], 0.002709806f), ofDocumentA));
+    expectedHits1.add(new GroupHit(new AdditionalGroupHit(testData.PASSAGE_IDS[9], 0.002762556f), ofDocumentA));
+    expectedHits1.add(new GroupHit(new AdditionalGroupHit(testData.PASSAGE_IDS[4], 0.0028533936f), ofDocumentA));
+    expectedHits1.add(new GroupHit(new AdditionalGroupHit(testData.PASSAGE_IDS[3], 0.0033442378f), ofDocumentA));
+    expectedHits1.add(new GroupHit(new AdditionalGroupHit(testData.PASSAGE_IDS[2], 0.004181564f), ofDocumentA));
+    expectedHits1.add(new GroupHit(new AdditionalGroupHit(testData.PASSAGE_IDS[1], 0.0057129264f), ofDocumentA));
+    List<GroupHit> expectedHits2 = new ArrayList<>();
+    expectedHits2.add(new GroupHit(new AdditionalGroupHit(testData.PASSAGE_IDS[10], 0.0025351048f), ofDocumentB));
+    expectedHits2.add(new GroupHit(new AdditionalGroupHit(testData.PASSAGE_IDS[12], 0.00288558f), ofDocumentB));
+    expectedHits2.add(new GroupHit(new AdditionalGroupHit(testData.PASSAGE_IDS[11], 0.0033002496f), ofDocumentB));
+    expectedHits2.add(new GroupHit(new AdditionalGroupHit(testData.PASSAGE_IDS[13], 0.004168868f), ofDocumentB));
+    // hits
+    Field[] hits = new Field[]{
+      Field.builder()
+        .name("ofDocument")
+        .fields(new Field[]{
+          Field.builder().name("... on Document")
+            .fields(new Field[]{ Field.builder().name("_additional{id}").build() }).build()
+        })
+        .build(),
+      Field.builder().name("_additional{id distance}").build(),
+    };
+    // group
+    Field group = Field.builder()
+      .name("group")
+      .fields(new Field[]{
+        Field.builder().name("id").build(),
+        Field.builder().name("groupValue").build(),
+        Field.builder().name("count").build(),
+        Field.builder().name("maxDistance").build(),
+        Field.builder().name("minDistance").build(),
+        Field.builder().name("hits").fields(hits).build(),
+      }).build();
+    // _additional
+    Field _additional = Field.builder().name("_additional").fields(new Field[]{ group }).build();
+    // filter arguments
+    GroupByArgument groupBy = client.graphQL().arguments().groupByArgBuilder()
+      .path(new String[]{ "ofDocument" }).groups(3).objectsPerGroup(10).build();
+    NearObjectArgument nearObject = client.graphQL().arguments().nearObjectArgBuilder().id("00000000-0000-0000-0000-000000000001").build();
+    // when
+    testData.createAndInsertData(client);
+    Result<GraphQLResponse> groupByResult = client.graphQL().get()
+      .withClassName(testData.PASSAGE)
+      .withNearObject(nearObject)
+      .withGroupBy(groupBy)
+      .withFields(_additional).run();
+    testData.cleanupWeaviate(client);
+    // then
+    assertThat(groupByResult).isNotNull();
+    assertThat(groupByResult.getError()).isNull();
+    assertThat(groupByResult.getResult()).isNotNull();
+    List<Map<String, Object>> result = extractResult(groupByResult, testData.PASSAGE);
+    assertThat(result).isNotNull().hasSize(3);
+    List<Group> groups = getGroups(result);
+    assertThat(groups).isNotNull().hasSize(3);
+    for (int i = 0; i < 3; i++) {
+      assertThat(groups.get(i).minDistance).isEqualTo(groups.get(i).getHits().get(0).get_additional().getDistance());
+      assertThat(groups.get(i).maxDistance).isEqualTo(groups.get(i).getHits().get(groups.get(i).getHits().size() - 1).get_additional().getDistance());
+    }
+    checkGroupElements(expectedHits1, groups.get(0).getHits());
+    checkGroupElements(expectedHits2, groups.get(1).getHits());
+  }
+
+  private void checkGroupElements(List<GroupHit> expected, List<GroupHit> actual) {
+    assertThat(expected).hasSameSizeAs(actual);
+    for (int i = 0; i < actual.size(); i++) {
+      assertThat(actual.get(i).get_additional().getId()).isEqualTo(expected.get(i).get_additional().getId());
+      assertThat(actual.get(i).getOfDocument().get(0).get_additional().getId()).isEqualTo(expected.get(i).getOfDocument().get(0).get_additional().getId());
+    }
+  }
+
+  private List<Group> getGroups(List<Map<String, Object>> result) {
+    Serializer serializer = new Serializer();
+    String jsonString = serializer.toJsonString(result);
+    AdditionalGroupByAdditional[] response = serializer.toResponse(jsonString, AdditionalGroupByAdditional[].class);
+    assertThat(response).isNotNull().hasSize(3);
+    return Arrays.stream(response)
+      .map(AdditionalGroupByAdditional::get_additional)
+      .map(Additional::getGroup)
+      .collect(Collectors.toList());
   }
 
   private void assertPizzaName(String name, List pizzas, int position) {
