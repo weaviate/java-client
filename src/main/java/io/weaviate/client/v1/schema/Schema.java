@@ -1,8 +1,10 @@
 package io.weaviate.client.v1.schema;
 
 import io.weaviate.client.base.http.HttpClient;
+import io.weaviate.client.Config;
 import io.weaviate.client.v1.schema.api.ClassCreator;
 import io.weaviate.client.v1.schema.api.ClassDeleter;
+import io.weaviate.client.v1.schema.api.ClassExists;
 import io.weaviate.client.v1.schema.api.ClassGetter;
 import io.weaviate.client.v1.schema.api.PropertyCreator;
 import io.weaviate.client.v1.schema.api.SchemaDeleter;
@@ -10,7 +12,6 @@ import io.weaviate.client.v1.schema.api.SchemaGetter;
 import io.weaviate.client.v1.schema.api.ShardUpdater;
 import io.weaviate.client.v1.schema.api.ShardsGetter;
 import io.weaviate.client.v1.schema.api.ShardsUpdater;
-import io.weaviate.client.Config;
 
 public class Schema {
   private final Config config;
@@ -27,6 +28,10 @@ public class Schema {
 
   public ClassGetter classGetter() {
     return new ClassGetter(httpClient, config);
+  }
+
+  public ClassExists exists() {
+    return new ClassExists(new ClassGetter(httpClient, config));
   }
 
   public ClassCreator classCreator() {
