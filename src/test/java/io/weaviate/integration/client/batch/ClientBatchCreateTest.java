@@ -229,7 +229,7 @@ public class ClientBatchCreateTest {
     ObjectGetResponse resPizzaWithError = resBatch.getResult()[0];
     assertThat(resPizzaWithError.getId()).isEqualTo(PIZZA_1_ID);
     assertThat(resPizzaWithError.getResult().getErrors()).isNotNull()
-      .extracting(Object::toString).isEqualTo("{error=[{message=invalid string property 'name' on class 'Pizza': not a string, but json.Number}]}");
+      .extracting(Object::toString).isEqualTo("{error=[{message=invalid text property 'name' on class 'Pizza': not a string, but json.Number}]}");
     ObjectGetResponse resPizza = resBatch.getResult()[1];
     assertThat(resPizza.getId()).isEqualTo(PIZZA_2_ID);
     assertThat(resPizza.getResult().getErrors()).isNull();

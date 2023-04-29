@@ -24,27 +24,19 @@ import io.weaviate.client.v1.graphql.query.argument.SortOrder;
 import io.weaviate.client.v1.graphql.query.argument.WhereArgument;
 import io.weaviate.client.v1.graphql.query.fields.Field;
 import io.weaviate.client.v1.graphql.query.fields.GenerativeSearchBuilder;
-import io.weaviate.integration.client.WeaviateTestDocumentPassageSchema;
 import io.weaviate.integration.client.WeaviateTestGenerics;
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.testcontainers.containers.DockerComposeContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -52,6 +44,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
+import org.testcontainers.containers.DockerComposeContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 
 public class ClientGraphQLTest {
   private String address;
@@ -79,7 +76,7 @@ public class ClientGraphQLTest {
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
     Field name = Field.builder().name("name").build();
     // when
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
     Result<GraphQLResponse> result = client.graphQL().get().withClassName("Pizza").withFields(name).run();
     testGenerics.cleanupWeaviate(client);
     // then
@@ -108,7 +105,7 @@ public class ClientGraphQLTest {
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
     Field name = Field.builder().name("name").build();
     // when
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
     Result<GraphQLResponse> result = client.graphQL().raw().withQuery("{Get{Pizza{_additional{id}}}}").run();
     testGenerics.cleanupWeaviate(client);
     // then
@@ -148,7 +145,7 @@ public class ClientGraphQLTest {
             .fields(new Field[]{Field.builder().name("certainty").build()})
             .build();
     // when
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
     Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObjects(soupWithID).run();
     Result<GraphQLResponse> result = client.graphQL().get().withClassName("Soup")
             .withNearObject(nearObjectArgument)
@@ -193,7 +190,7 @@ public class ClientGraphQLTest {
             .fields(new Field[]{Field.builder().name("certainty").build()})
             .build();
     // when
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
     Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObjects(soupWithID).run();
     Result<GraphQLResponse> result = client.graphQL().get().withClassName("Soup")
             .withNearObject(nearObjectArgument)
@@ -237,7 +234,7 @@ public class ClientGraphQLTest {
             .fields(new Field[]{Field.builder().name("id").build()})
             .build();
     // when
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
     Result<GraphQLResponse> result = client.graphQL().get().withClassName("Pizza")
             .withBm25(bm25)
             .withFields(name, _additional).run();
@@ -279,7 +276,7 @@ public class ClientGraphQLTest {
             .fields(new Field[]{Field.builder().name("id").build()})
             .build();
     // when
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
     Result<GraphQLResponse> result = client.graphQL().get().withClassName("Pizza")
             .withHybrid(hybrid)
             .withFields(name, _additional).run();
@@ -320,7 +317,7 @@ public class ClientGraphQLTest {
             .fields(new Field[]{Field.builder().name("certainty").build()})
             .build();
     // when
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
     Result<GraphQLResponse> result = client.graphQL().get().withClassName("Pizza")
             .withNearText(nearText)
             .withFields(name, _additional).run();
@@ -362,7 +359,7 @@ public class ClientGraphQLTest {
             .fields(new Field[]{Field.builder().name("certainty").build()})
             .build();
     // when
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
     Result<GraphQLResponse> result = client.graphQL().get().withClassName("Pizza")
             .withNearText(nearText)
             .withFields(name, _additional).run();
@@ -420,7 +417,7 @@ public class ClientGraphQLTest {
       .fields(new Field[]{Field.builder().name("certainty").build()})
       .build();
     // when
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
     Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObjects(pizzaWithID, pizzaWithID2).run();
     Result<GraphQLResponse> result = client.graphQL().get()
       .withClassName("Pizza")
@@ -484,7 +481,7 @@ public class ClientGraphQLTest {
             .fields(new Field[]{Field.builder().name("certainty").build()})
             .build();
     // when
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
     Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObjects(pizzaWithID, pizzaWithID2).run();
     Result<GraphQLResponse> result = client.graphQL().get()
             .withClassName("Pizza")
@@ -528,7 +525,7 @@ public class ClientGraphQLTest {
             .fields(new Field[]{Field.builder().name("certainty").build()})
             .build();
     // when
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
     Result<GraphQLResponse> result = client.graphQL().get().withClassName("Pizza")
             .withNearText(nearText)
             .withLimit(1)
@@ -567,7 +564,7 @@ public class ClientGraphQLTest {
             .fields(new Field[]{Field.builder().name("certainty").build()})
             .build();
     // when
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
     Result<GraphQLResponse> result = client.graphQL().get().withClassName("Pizza")
             .withNearText(nearText)
             .withLimit(1)
@@ -627,7 +624,7 @@ public class ClientGraphQLTest {
         .build())
       .build();
     // when
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
     Result<GraphQLResponse> resultFullString = client.graphQL().get().withWhere(whereFullString).withClassName("Pizza").withFields(name).run();
     Result<GraphQLResponse> resultPartString = client.graphQL().get().withWhere(wherePartString).withClassName("Pizza").withFields(name).run();
     Result<GraphQLResponse> resultFullText = client.graphQL().get().withWhere(whereFullText).withClassName("Pizza").withFields(name).run();
@@ -659,7 +656,7 @@ public class ClientGraphQLTest {
         .build())
       .build();
     // when
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
     Result<GraphQLResponse> resultDate = client.graphQL().get().withWhere(whereDate).withClassName("Pizza").withFields(name).run();
     testGenerics.cleanupWeaviate(client);
     // then
@@ -686,7 +683,7 @@ public class ClientGraphQLTest {
             .moveTo(moveTo).moveAwayFrom(moveAwayFrom)
             .build();
     // when
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
     Result<GraphQLResponse> result = client.graphQL().explore().withFields(fields).withNearText(withNearText).run();
     testGenerics.cleanupWeaviate(client);
     // then
@@ -721,7 +718,7 @@ public class ClientGraphQLTest {
             .moveTo(moveTo).moveAwayFrom(moveAwayFrom)
             .build();
     // when
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
     Result<GraphQLResponse> result = client.graphQL().explore().withFields(fields).withNearText(withNearText).run();
     testGenerics.cleanupWeaviate(client);
     // then
@@ -750,7 +747,7 @@ public class ClientGraphQLTest {
             .fields(new Field[]{Field.builder().name("count").build()})
             .build();
     // when
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
     Result<GraphQLResponse> result = client.graphQL().aggregate().withFields(meta).withClassName("Pizza").run();
     testGenerics.cleanupWeaviate(client);
     // then
@@ -783,7 +780,7 @@ public class ClientGraphQLTest {
             .fields(new Field[]{Field.builder().name("count").build()})
             .build();
     // when
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
     Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObjects(pizzaWithID).run();
     Result<GraphQLResponse> result = client.graphQL().aggregate().withFields(meta).withClassName("Pizza").withWhere(where).run();
     testGenerics.cleanupWeaviate(client);
@@ -820,7 +817,7 @@ public class ClientGraphQLTest {
             .fields(new Field[]{Field.builder().name("count").build()})
             .build();
     // when
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
     Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObjects(pizzaWithID).run();
     Result<GraphQLResponse> result = client.graphQL().aggregate().withFields(meta).withClassName("Pizza").withGroupBy("name").withWhere(where).run();
     testGenerics.cleanupWeaviate(client);
@@ -850,7 +847,7 @@ public class ClientGraphQLTest {
             .fields(new Field[]{Field.builder().name("count").build()})
             .build();
     // when
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
     Result<ObjectGetResponse[]> insert = client.batch().objectsBatcher().withObjects(pizzaWithID).run();
     Result<GraphQLResponse> result = client.graphQL().aggregate().withFields(meta).withClassName("Pizza").withGroupBy("name").run();
     testGenerics.cleanupWeaviate(client);
@@ -870,7 +867,7 @@ public class ClientGraphQLTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
     Field additional = Field.builder()
             .name("_additional")
             .fields(new Field[]{Field.builder().name("vector").build()})
@@ -902,7 +899,7 @@ public class ClientGraphQLTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
     Field additional = Field.builder()
             .name("_additional")
             .fields(new Field[]{Field.builder().name("id").build()})
@@ -934,7 +931,7 @@ public class ClientGraphQLTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
     Field additional = Field.builder()
             .name("_additional")
             .fields(new Field[]{Field.builder().name("id").build()})
@@ -966,7 +963,7 @@ public class ClientGraphQLTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
 
     // when
     Field meta = Field.builder()
@@ -991,7 +988,7 @@ public class ClientGraphQLTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
 
     // when
     Field meta = Field.builder()
@@ -1016,7 +1013,7 @@ public class ClientGraphQLTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
 
     // when
     Integer objectLimit = 1;
@@ -1048,7 +1045,7 @@ public class ClientGraphQLTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
 
     // when
     Integer objectLimit = 1;
@@ -1084,7 +1081,7 @@ public class ClientGraphQLTest {
             .type(GroupType.merge).force(1.0f).build();
     Field name = Field.builder().name("name").build();
     // when
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
     Result<GraphQLResponse> result = client.graphQL().get()
             .withClassName("Soup")
             .withFields(name)
@@ -1127,7 +1124,7 @@ public class ClientGraphQLTest {
             .build();
     String[] expectedByPriceAsc = new String[]{ "Hawaii", "Doener", "Quattro Formaggi", "Frutti di Mare" };
     // when
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
     Result<GraphQLResponse> resultByNameDesc = client.graphQL().get()
             .withClassName("Pizza")
             .withSort(byNameDesc)
@@ -1153,7 +1150,7 @@ public class ClientGraphQLTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
     Field additional = Field.builder()
         .name("_additional")
         .fields(new Field[]{
@@ -1205,7 +1202,7 @@ public class ClientGraphQLTest {
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
     Field name = Field.builder().name("name").build();
     // when
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
     Result<GraphQLResponse> result = client.graphQL().get()
       .withClassName("Pizza").withAfter("00000000-0000-0000-0000-000000000000").withLimit(10).withFields(name)
       .run();
@@ -1235,7 +1232,7 @@ public class ClientGraphQLTest {
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
     Field name = Field.builder().name("name").build();
     // when
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
     Result<GraphQLResponse> result = client.graphQL().get()
       .withClassName("Pizza").withOffset(3).withLimit(4).withFields(name)
       .run();
@@ -1264,7 +1261,7 @@ public class ClientGraphQLTest {
     // given
     WeaviateClient client = createClientWithOpenAIHeader();
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
 
     Field name = Field.builder().name("name").build();
     GenerativeSearchBuilder generativeSearch = GenerativeSearchBuilder.builder()
@@ -1302,7 +1299,7 @@ public class ClientGraphQLTest {
     // given
     WeaviateClient client = createClientWithOpenAIHeader();
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
 
     Field name = Field.builder().name("name").build();
     GenerativeSearchBuilder generativeSearch = GenerativeSearchBuilder.builder()
@@ -1346,7 +1343,7 @@ public class ClientGraphQLTest {
     // given
     WeaviateClient client = createClientWithOpenAIHeader();
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-    testGenerics.createTestSchemaAndData(client);
+    testGenerics.createTestSchemaAndDataDeprecated(client);
 
     Field name = Field.builder().name("name").build();
     GenerativeSearchBuilder generativeSearch = GenerativeSearchBuilder.builder()
@@ -1460,7 +1457,7 @@ public class ClientGraphQLTest {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
-    WeaviateTestDocumentPassageSchema testData = new WeaviateTestDocumentPassageSchema();
+    WeaviateTestGenerics.DocumentPassageSchema testData = new WeaviateTestGenerics.DocumentPassageSchema();;
     List<GroupHitOfDocument> ofDocumentA = Collections.singletonList(
       new GroupHitOfDocument(new AdditionalOfDocument(testData.DOCUMENT_IDS[0]))
     );
