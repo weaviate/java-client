@@ -1435,9 +1435,15 @@ public class ClientGraphQLTest {
   }
   @Getter
   @AllArgsConstructor
+  private static class GroupedBy {
+    String value;
+    String[] path;
+  }
+  @Getter
+  @AllArgsConstructor
   private static class Group {
     String id;
-    String groupValue;
+    GroupedBy groupedBy;
     Integer count;
     Float maxDistance;
     Float minDistance;
@@ -1496,7 +1502,11 @@ public class ClientGraphQLTest {
       .name("group")
       .fields(new Field[]{
         Field.builder().name("id").build(),
-        Field.builder().name("groupValue").build(),
+        Field.builder().name("groupedBy")
+          .fields(new Field[]{
+            Field.builder().name("value").build(),
+            Field.builder().name("path").build(),
+          }).build(),
         Field.builder().name("count").build(),
         Field.builder().name("maxDistance").build(),
         Field.builder().name("minDistance").build(),

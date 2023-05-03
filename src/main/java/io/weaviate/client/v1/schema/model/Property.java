@@ -17,5 +17,7 @@ public class Property {
   String description;
   String tokenization;
   Boolean indexInverted;
+  Boolean indexFilterable;
+  Boolean indexSearchable;
   Object moduleConfig;
 }

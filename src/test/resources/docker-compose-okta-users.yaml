@@ -10,7 +10,7 @@ services:
       - --scheme
       - http
       - --write-timeout=600s
-    image: semitechnologies/weaviate:preview-group-by-arbitrary-prop-including-ref-return-top-k-per-group-6ccfd0a
+    image: semitechnologies/weaviate:preview-group-by-arbitrary-prop-including-ref-return-top-k-per-group-77fe35f
     restart: on-failure:0
     environment:
       PERSISTENCE_DATA_PATH: '/var/lib/weaviate'

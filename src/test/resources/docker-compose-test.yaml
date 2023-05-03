@@ -9,7 +9,7 @@ services:
     - '8080'
     - --scheme
     - http
-    image: semitechnologies/weaviate:preview-group-by-arbitrary-prop-including-ref-return-top-k-per-group-6ccfd0a
+    image: semitechnologies/weaviate:preview-group-by-arbitrary-prop-including-ref-return-top-k-per-group-77fe35f
     links:
       - "contextionary:contextionary"
     restart: on-failure:0
