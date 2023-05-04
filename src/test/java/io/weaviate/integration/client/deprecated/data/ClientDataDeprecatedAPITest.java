@@ -56,7 +56,7 @@ public class ClientDataDeprecatedAPITest {
     propertiesSchemaA.put("name", "ChickenSoup");
     propertiesSchemaA.put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
     // when
-    testGenerics.createWeaviateTestSchemaFoodDeprecated(client);
+    testGenerics.createWeaviateTestSchemaFood(client, true);
     Result<WeaviateObject> objectT = client.data().creator()
             .withClassName("Pizza")
             .withID(objTID)
@@ -108,7 +108,7 @@ public class ClientDataDeprecatedAPITest {
     propertiesSchemaT.put("name", name);
     propertiesSchemaT.put("description", description);
     // when
-    testGenerics.createWeaviateTestSchemaFoodDeprecated(client);
+    testGenerics.createWeaviateTestSchemaFood(client, true);
     Result<WeaviateObject> objectT = client.data().creator()
             .withClassName("Pizza")
             .withID(objTID)
@@ -138,7 +138,7 @@ public class ClientDataDeprecatedAPITest {
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
     // when
-    testGenerics.createWeaviateTestSchemaFoodDeprecated(client);
+    testGenerics.createWeaviateTestSchemaFood(client, true);
     Result<WeaviateObject> pizzaObj1 = client.data().creator().withClassName("Pizza").withProperties(new HashMap<String, Object>() {{
       put("name", "Margherita");
       put("description", "plain");
@@ -194,7 +194,7 @@ public class ClientDataDeprecatedAPITest {
     propertiesSchemaA.put("name", "ChickenSoup");
     propertiesSchemaA.put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
     // when
-    testGenerics.createWeaviateTestSchemaFoodDeprecated(client);
+    testGenerics.createWeaviateTestSchemaFood(client, true);
     Result<WeaviateObject> objectT = client.data().creator()
             .withClassName("Pizza")
             .withID(objTID)
@@ -291,7 +291,7 @@ public class ClientDataDeprecatedAPITest {
     propertiesSchemaA.put("name", "ChickenSoup");
     propertiesSchemaA.put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
     // when
-    testGenerics.createWeaviateTestSchemaFoodDeprecated(client);
+    testGenerics.createWeaviateTestSchemaFood(client, true);
     Result<WeaviateObject> objectT = client.data().creator()
             .withClassName("Pizza")
             .withID(objTID)
@@ -339,7 +339,7 @@ public class ClientDataDeprecatedAPITest {
     propertiesSchemaA.put("name", "water");
     propertiesSchemaA.put("description", "missing description");
     // when
-    testGenerics.createWeaviateTestSchemaFoodDeprecated(client);
+    testGenerics.createWeaviateTestSchemaFood(client, true);
     Result<WeaviateObject> objectT = client.data().creator()
             .withClassName("Pizza")
             .withID(objTID)
@@ -408,7 +408,7 @@ public class ClientDataDeprecatedAPITest {
     propertiesSchemaA.put("name", "ChickenSoup");
     propertiesSchemaA.put("description", "missing description");
     // when
-    testGenerics.createWeaviateTestSchemaFoodDeprecated(client);
+    testGenerics.createWeaviateTestSchemaFood(client, true);
     Result<WeaviateObject> objectT = client.data().creator()
             .withClassName("Pizza")
             .withID(objTID)
@@ -477,7 +477,7 @@ public class ClientDataDeprecatedAPITest {
     propertiesSchemaA.put("name", "ChickenSoup");
     propertiesSchemaA.put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
     // when
-    testGenerics.createWeaviateTestSchemaFoodDeprecated(client);
+    testGenerics.createWeaviateTestSchemaFood(client, true);
     Result<Boolean> validateObjT = client.data().validator()
             .withClassName("Pizza")
             .withID(objTID)
@@ -533,7 +533,7 @@ public class ClientDataDeprecatedAPITest {
     propertiesSchemaA.put("name", "ChickenSoup");
     propertiesSchemaA.put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
     // when
-    testGenerics.createWeaviateTestSchemaFoodDeprecated(client);
+    testGenerics.createWeaviateTestSchemaFood(client, true);
     Result<WeaviateObject> objectT = client.data().creator()
             .withClassName("Pizza")
             .withID(objTID)
@@ -710,7 +710,7 @@ public class ClientDataDeprecatedAPITest {
     propertiesSchemaA.put("name", "ChickenSoup");
     propertiesSchemaA.put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
     // when
-    testGenerics.createWeaviateTestSchemaFoodDeprecated(client);
+    testGenerics.createWeaviateTestSchemaFood(client, true);
     Result<WeaviateObject> objectT = client.data().creator()
             .withClassName("Pizza")
             .withID(objTID)

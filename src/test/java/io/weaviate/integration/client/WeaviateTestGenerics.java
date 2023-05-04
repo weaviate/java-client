@@ -35,11 +35,7 @@ public class WeaviateTestGenerics {
     createWeaviateTestSchemaFood(client, false);
   }
 
-  public void createWeaviateTestSchemaFoodDeprecated(WeaviateClient client) {
-    createWeaviateTestSchemaFood(client, true);
-  }
-
-  private void createWeaviateTestSchemaFood(WeaviateClient client, Boolean isDeprecated) {
+  public void createWeaviateTestSchemaFood(WeaviateClient client, boolean deprecatedMode) {
     // classes
     WeaviateClass pizza = WeaviateClass.builder()
             .className("Pizza")
@@ -58,17 +54,21 @@ public class WeaviateTestGenerics {
     Result<Boolean> soupCreateStatus = client.schema().classCreator().withClass(soup).run();
     assertNotNull(soupCreateStatus);
     assertTrue(soupCreateStatus.getResult());
-    String namePropertyDataType = DataType.TEXT;
-    if (isDeprecated) {
-      namePropertyDataType = DataType.STRING;
-    }
+
     // properties
-    Property nameProperty = Property.builder()
-            .dataType(Arrays.asList(namePropertyDataType))
-            .description("name")
-            .name("name")
-            .tokenization(Tokenization.FIELD)
-            .build();
+    Property nameProperty = deprecatedMode
+      ? Property.builder()
+        .dataType(Arrays.asList(DataType.STRING))
+        .description("name")
+        .name("name")
+        .tokenization(Tokenization.FIELD)
+        .build()
+      : Property.builder()
+        .dataType(Arrays.asList(DataType.TEXT))
+        .description("name")
+        .name("name")
+        .tokenization(Tokenization.FIELD)
+        .build();
     Property descriptionProperty = Property.builder()
             .dataType(Arrays.asList(DataType.TEXT))
             .description("description")
@@ -130,12 +130,9 @@ public class WeaviateTestGenerics {
     createWeaviateTestSchemaFoodWithReferenceProperty(client, false);
   }
 
-  public void createWeaviateTestSchemaFoodWithReferencePropertyDeprecated(WeaviateClient client) {
-    createWeaviateTestSchemaFoodWithReferenceProperty(client, true);
-  }
+  public void createWeaviateTestSchemaFoodWithReferenceProperty(WeaviateClient client, boolean deprecatedMode) {
+    createWeaviateTestSchemaFood(client, deprecatedMode);
 
-  private void createWeaviateTestSchemaFoodWithReferenceProperty(WeaviateClient client, Boolean isDeprecated) {
-    createWeaviateTestSchemaFood(client, isDeprecated);
     // reference property
     Property referenceProperty = Property.builder()
             .dataType(Arrays.asList("Pizza", "Soup"))
@@ -150,17 +147,12 @@ public class WeaviateTestGenerics {
     assertTrue(soupRefAdd.getResult());
   }
 
-  public void createTestSchemaAndDataDeprecated(WeaviateClient client) {
-    createTestSchemaAndData(client, true);
-  }
-
   public void createTestSchemaAndData(WeaviateClient client) {
     createTestSchemaAndData(client, false);
   }
 
-  private void createTestSchemaAndData(WeaviateClient client, Boolean isDeprecated) {
-    createWeaviateTestSchemaFood(client, isDeprecated);
-
+  public void createTestSchemaAndData(WeaviateClient client, boolean deprecatedMode) {
+    createWeaviateTestSchemaFood(client, deprecatedMode);
 
     // Create pizzas
     WeaviateObject[] menuPizza = new WeaviateObject[]{

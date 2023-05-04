@@ -76,7 +76,7 @@ public class ClientReferencesDeprecatedAPITest {
       put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
     }};
     // when
-    testGenerics.createWeaviateTestSchemaFoodWithReferencePropertyDeprecated(client);
+    testGenerics.createWeaviateTestSchemaFoodWithReferenceProperty(client, true);
     Result<WeaviateObject> objTCreate = client.data().creator().withClassName("Pizza").withID(objTID).withProperties(propertiesSchemaT).run();
     Result<WeaviateObject> objACreate = client.data().creator().withClassName("Soup").withID(objAID).withProperties(propertiesSchemaA).run();
     // Thing -> Action
@@ -137,7 +137,7 @@ public class ClientReferencesDeprecatedAPITest {
     SingleRef chickenSoupRef = client.data().referencePayloadBuilder().withID(objAID).payload();
     SingleRef hawaiiRef = client.data().referencePayloadBuilder().withID(objTID).payload();
     // when
-    testGenerics.createWeaviateTestSchemaFoodWithReferencePropertyDeprecated(client);
+    testGenerics.createWeaviateTestSchemaFoodWithReferenceProperty(client, true);
     Result<WeaviateObject> objTCreate = client.data().creator().withClassName("Pizza").withID(objTID).withProperties(propertiesSchemaT).run();
     Result<WeaviateObject> objACreate = client.data().creator().withClassName("Soup").withID(objAID).withProperties(propertiesSchemaA).run();
     // Thing -> Action
@@ -213,7 +213,7 @@ public class ClientReferencesDeprecatedAPITest {
       put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
     }};
     // when
-    testGenerics.createWeaviateTestSchemaFoodWithReferencePropertyDeprecated(client);
+    testGenerics.createWeaviateTestSchemaFoodWithReferenceProperty(client, true);
     Result<WeaviateObject> objTCreate = client.data().creator().withClassName("Pizza").withID(objTID).withProperties(propertiesSchemaT).run();
     Result<WeaviateObject> objACreate = client.data().creator().withClassName("Soup").withID(objAID).withProperties(propertiesSchemaA).run();
     // Thing -> Action
@@ -298,7 +298,7 @@ public class ClientReferencesDeprecatedAPITest {
       });
     }};
     // when
-    testGenerics.createWeaviateTestSchemaFoodWithReferencePropertyDeprecated(client);
+    testGenerics.createWeaviateTestSchemaFoodWithReferenceProperty(client, true);
     Result<WeaviateObject> objTCreate = client.data().creator().withClassName("Pizza").withID(objTID).withProperties(propertiesSchemaT).run();
     // create object with a reference to objT
     Result<WeaviateObject> objRefBeaconCreate = client.data().creator()
