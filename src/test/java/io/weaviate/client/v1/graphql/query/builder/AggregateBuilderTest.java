@@ -79,7 +79,7 @@ public class AggregateBuilderTest {
       .filter(WhereFilter.builder()
         .path(new String[]{ "name" })
         .operator(Operator.Equal)
-        .valueString("Hawaii")
+        .valueText("Hawaii")
         .build())
       .build();
     Field meta = Field.builder()
@@ -91,7 +91,7 @@ public class AggregateBuilderTest {
     String query = AggregateBuilder.builder().className("Pizza").fields(fields).withWhereFilter(where).build().buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Aggregate{Pizza(where:{path:[\"name\"] valueString:\"Hawaii\" operator:Equal}){meta{count}}}}", query);
+    assertEquals("{Aggregate{Pizza(where:{path:[\"name\"] valueText:\"Hawaii\" operator:Equal}){meta{count}}}}", query);
   }
 
   @Test
@@ -101,7 +101,7 @@ public class AggregateBuilderTest {
       .filter(WhereFilter.builder()
         .path(new String[]{ "name" })
         .operator(Operator.Equal)
-        .valueString("Hawaii")
+        .valueText("Hawaii")
         .build())
       .build();
     Field meta = Field.builder()
@@ -119,7 +119,7 @@ public class AggregateBuilderTest {
       .buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Aggregate{Pizza(groupBy:\"name\" where:{path:[\"name\"] valueString:\"Hawaii\" operator:Equal}){meta{count}}}}", query);
+    assertEquals("{Aggregate{Pizza(groupBy:\"name\" where:{path:[\"name\"] valueText:\"Hawaii\" operator:Equal}){meta{count}}}}", query);
   }
 
   @Test
@@ -288,7 +288,7 @@ public class AggregateBuilderTest {
     WhereFilter where = WhereFilter.builder()
       .path(new String[]{ "name" })
       .operator(Operator.Equal)
-      .valueString("Hawaii")
+      .valueText("Hawaii")
       .build();
     Field meta = Field.builder()
       .name("meta")
@@ -304,6 +304,6 @@ public class AggregateBuilderTest {
       .build()
       .buildQuery();
 
-    assertThat(query).isEqualTo("{Aggregate{Pizza(groupBy:\"name\" where:{path:[\"name\"] valueString:\"Hawaii\" operator:Equal}){meta{count}}}}");
+    assertThat(query).isEqualTo("{Aggregate{Pizza(groupBy:\"name\" where:{path:[\"name\"] valueText:\"Hawaii\" operator:Equal}){meta{count}}}}");
   }
 }

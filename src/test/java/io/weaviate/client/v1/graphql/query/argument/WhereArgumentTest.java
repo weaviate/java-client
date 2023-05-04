@@ -27,7 +27,7 @@ public class WhereArgumentTest {
   }
 
   @Test
-  public void testValueString() {
+  public void testDeprecatedValueString() {
     WhereArgument where = WhereArgument.builder()
       .filter(WhereFilter.builder()
         .valueString("txt")
@@ -141,7 +141,7 @@ public class WhereArgumentTest {
             .operator(Operator.LessThanEqual)
             .build(),
           WhereFilter.builder()
-            .valueString("word")
+            .valueText("word")
             .path(new String[]{ "word" })
             .operator(Operator.LessThan)
             .build(),
@@ -152,7 +152,7 @@ public class WhereArgumentTest {
 
     String str = where.build();
 
-    assertThat(str).isEqualTo("where:{operator:And operands:[{path:[\"wordCount\"] valueInt:10 operator:LessThanEqual},{path:[\"word\"] valueString:\"word\" operator:LessThan}]}");
+    assertThat(str).isEqualTo("where:{operator:And operands:[{path:[\"wordCount\"] valueInt:10 operator:LessThanEqual},{path:[\"word\"] valueText:\"word\" operator:LessThan}]}");
   }
 
   @Test
@@ -185,7 +185,7 @@ public class WhereArgumentTest {
             .path(new String[]{ "wordCount" })
             .build(),
           WhereFilter.builder()
-            .valueString("word")
+            .valueText("word")
             .operator(Operator.LessThan)
             .path(new String[]{ "w1", "w2", "w3" })
             .build(),
@@ -196,7 +196,7 @@ public class WhereArgumentTest {
 
     String str = where.build();
 
-    assertThat(str).isEqualTo("where:{operator:NotEqual operands:[{path:[\"wordCount\"] valueInt:10 operator:LessThanEqual},{path:[\"w1\",\"w2\",\"w3\"] valueString:\"word\" operator:LessThan}]}");
+    assertThat(str).isEqualTo("where:{operator:NotEqual operands:[{path:[\"wordCount\"] valueInt:10 operator:LessThanEqual},{path:[\"w1\",\"w2\",\"w3\"] valueText:\"word\" operator:LessThan}]}");
   }
 
   @Test

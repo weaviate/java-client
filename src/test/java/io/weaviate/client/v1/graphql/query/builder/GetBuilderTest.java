@@ -65,7 +65,7 @@ public class GetBuilderTest {
       .filter(WhereFilter.builder()
         .path(new String[]{ "name" })
         .operator(Operator.Equal)
-        .valueString("Hawaii")
+        .valueText("Hawaii")
         .build())
       .build();
     WhereArgument where2 = WhereArgument.builder()
@@ -74,12 +74,12 @@ public class GetBuilderTest {
           WhereFilter.builder()
             .path(new String[]{ "name" })
             .operator(Operator.Equal)
-            .valueString("Hawaii")
+            .valueText("Hawaii")
             .build(),
           WhereFilter.builder()
             .path(new String[]{ "name" })
             .operator(Operator.Equal)
-            .valueString("Doener")
+            .valueText("Doener")
             .build(),
         })
         .operator(Operator.Or)
@@ -90,10 +90,10 @@ public class GetBuilderTest {
     String query2 = GetBuilder.builder().className("Pizza").fields(fields).withWhereFilter(where2).build().buildQuery();
     // then
     assertNotNull(query1);
-    assertEquals("{Get{Pizza(where:{path:[\"name\"] valueString:\"Hawaii\" operator:Equal}){name}}}", query1);
+    assertEquals("{Get{Pizza(where:{path:[\"name\"] valueText:\"Hawaii\" operator:Equal}){name}}}", query1);
     assertNotNull(query2);
     assertEquals("{Get{Pizza" +
-            "(where:{operator:Or operands:[{path:[\"name\"] valueString:\"Hawaii\" operator:Equal},{path:[\"name\"] valueString:\"Doener\" operator:Equal}]})" +
+            "(where:{operator:Or operands:[{path:[\"name\"] valueText:\"Hawaii\" operator:Equal},{path:[\"name\"] valueText:\"Doener\" operator:Equal}]})" +
             "{name}}}", query2);
   }
 
@@ -216,7 +216,7 @@ public class GetBuilderTest {
       .filter(WhereFilter.builder()
         .path(new String[]{ "name" })
         .operator(Operator.Equal)
-        .valueString("Hawaii")
+        .valueText("Hawaii")
         .build())
       .build();
     Integer limit = 2;
@@ -226,7 +226,7 @@ public class GetBuilderTest {
             .build().buildQuery();
     // then
     assertNotNull(query);
-    assertEquals("{Get{Pizza(where:{path:[\"name\"] valueString:\"Hawaii\" operator:Equal},nearText:{concepts:[\"good\"]},limit:2){name}}}", query);
+    assertEquals("{Get{Pizza(where:{path:[\"name\"] valueText:\"Hawaii\" operator:Equal},nearText:{concepts:[\"good\"]},limit:2){name}}}", query);
   }
 
   @Test
@@ -517,7 +517,7 @@ public class GetBuilderTest {
     WhereFilter where = WhereFilter.builder()
       .path(new String[]{ "name" })
       .operator(Operator.Equal)
-      .valueString("Hawaii")
+      .valueText("Hawaii")
       .build();
     Fields fields = Fields.builder()
       .fields(Field.builder().name("name").build())
@@ -535,7 +535,7 @@ public class GetBuilderTest {
       .limit(limit)
       .build().buildQuery();
 
-    assertThat(query).isEqualTo("{Get{Pizza(where:{path:[\"name\"] valueString:\"Hawaii\" operator:Equal},nearText:{concepts:[\"good\"]},limit:2){name}}}");
+    assertThat(query).isEqualTo("{Get{Pizza(where:{path:[\"name\"] valueText:\"Hawaii\" operator:Equal},nearText:{concepts:[\"good\"]},limit:2){name}}}");
   }
 
   @Test
