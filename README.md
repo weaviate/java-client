@@ -14,6 +14,26 @@ In order to get start using the java client one needs to add it's dependency:
 </dependency>
 ```
 
+
+### For applications on Java 9 or above
+
+The client utilizes Gson for JSON serialization/deserialization and Gson uses reflection of internal `java.lang` classes
+to do it. This is not allowed by default in Java 9 and above.
+
+To work around this, it's necessary to add this JVM commandline argument:
+```
+--add-opens=java.base/java.lang=ALL-UNNAMED
+```
+
+If you're using Gradle, you can add this instead to your `application` block in your `build.gradle.kts` file:
+
+```kotlin
+applicationDefaultJvmArgs += listOf(
+  "--add-opens=java.base/java.lang=ALL-UNNAMED",
+)
+```
+
+
 Here's a simple code to start up working with Java client:
 
 1. Add dependency to your java project.
