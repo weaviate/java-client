@@ -21,9 +21,13 @@ public class PropertyTest extends TestCase {
             .description("price")
             .name("price")
             .moduleConfig(moduleConfig)
+            .indexFilterable(true)
+            .indexSearchable(true)
             .build();
+
     String expected = "{\"name\":\"price\",\"dataType\":[\"number\"],\"description\":\"price\"," +
-            "\"moduleConfig\":{\"text2vec-contextionary\":{\"vectorizePropertyName\":false}}}";
+            "\"moduleConfig\":{\"text2vec-contextionary\":{\"vectorizePropertyName\":false}}," +
+            "\"indexFilterable\":true,\"indexSearchable\":true}";
     // when
     String result = new GsonBuilder().create().toJson(priceProperty);
     // then

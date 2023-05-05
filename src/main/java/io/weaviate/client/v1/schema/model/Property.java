@@ -18,4 +18,6 @@ public class Property {
   String tokenization;
   Boolean indexInverted;
   Object moduleConfig;
+  Boolean indexFilterable;
+  Boolean indexSearchable;
 }
