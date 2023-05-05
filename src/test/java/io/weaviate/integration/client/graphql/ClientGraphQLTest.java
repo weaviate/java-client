@@ -1,5 +1,6 @@
 package io.weaviate.integration.client.graphql;
 
+import com.google.common.base.Function;
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
@@ -8,6 +9,7 @@ import io.weaviate.client.v1.batch.model.ObjectGetResponse;
 import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.filters.Operator;
 import io.weaviate.client.v1.filters.WhereFilter;
+import io.weaviate.client.v1.graphql.GraphQL;
 import io.weaviate.client.v1.graphql.model.ExploreFields;
 import io.weaviate.client.v1.graphql.model.GraphQLResponse;
 import io.weaviate.client.v1.graphql.query.argument.Bm25Argument;
@@ -24,6 +26,9 @@ import io.weaviate.client.v1.graphql.query.argument.SortOrder;
 import io.weaviate.client.v1.graphql.query.argument.WhereArgument;
 import io.weaviate.client.v1.graphql.query.fields.Field;
 import io.weaviate.client.v1.graphql.query.fields.GenerativeSearchBuilder;
+import io.weaviate.client.v1.schema.model.DataType;
+import io.weaviate.client.v1.schema.model.Property;
+import io.weaviate.client.v1.schema.model.WeaviateClass;
 import io.weaviate.integration.client.WeaviateTestGenerics;
 
 import java.io.File;
@@ -34,6 +39,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -1688,5 +1695,115 @@ public class ClientGraphQLTest {
     Map additional = (Map) firstPizza.get("_additional");
     String targetField = (String) additional.get(fieldName);
     return targetField;
+  }
+
+  @Test
+  public void shouldSupportSearchByUUID() {
+    WeaviateClient client = new WeaviateClient(new Config("http", address));
+
+    String className = "ClassUUID";
+    WeaviateClass clazz = WeaviateClass.builder()
+      .className(className)
+      .description("class with uuid properties")
+      .properties(Arrays.asList(
+        Property.builder()
+          .dataType(Collections.singletonList(DataType.UUID))
+          .name("uuidProp")
+          .build(),
+        Property.builder()
+          .dataType(Collections.singletonList(DataType.UUID_ARRAY))
+          .name("uuidArrayProp")
+          .build()
+      ))
+      .build();
+
+    String id = "abefd256-8574-442b-9293-9205193737ee";
+    Map<String, Object> properties = new HashMap<>();
+    properties.put("uuidProp", "7aaa79d3-a564-45db-8fa8-c49e20b8a39a");
+    properties.put("uuidArrayProp", new String[]{
+      "f70512a3-26cb-4ae4-9369-204555917f15",
+      "9e516f40-fd54-4083-a476-f4675b2b5f92"
+    });
+
+    Result<Boolean> createStatus = client.schema().classCreator()
+      .withClass(clazz)
+      .run();
+
+    assertThat(createStatus).isNotNull()
+      .returns(false, Result::hasErrors)
+      .returns(true, Result::getResult);
+
+    Result<WeaviateObject> objectStatus = client.data().creator()
+      .withClassName(className)
+      .withID(id)
+      .withProperties(properties)
+      .run();
+
+    assertThat(objectStatus).isNotNull()
+      .returns(false, Result::hasErrors)
+      .extracting(Result::getResult).isNotNull();
+
+    Field fieldId = Field.builder()
+      .name("_additional")
+      .fields(Field.builder().name("id").build())
+      .build();
+    WhereArgument whereUuid = WhereArgument.builder()
+      .filter(WhereFilter.builder()
+        .path(new String[]{"uuidProp"})
+        .operator(Operator.Equal)
+        .valueText("7aaa79d3-a564-45db-8fa8-c49e20b8a39a")
+        .build())
+      .build();
+    WhereArgument whereUuidArray1 = WhereArgument.builder()
+      .filter(WhereFilter.builder()
+        .path(new String[]{"uuidArrayProp"})
+        .operator(Operator.Equal)
+        .valueText("f70512a3-26cb-4ae4-9369-204555917f15")
+        .build())
+      .build();
+    WhereArgument whereUuidArray2 = WhereArgument.builder()
+      .filter(WhereFilter.builder()
+        .path(new String[]{"uuidArrayProp"})
+        .operator(Operator.Equal)
+        .valueText("9e516f40-fd54-4083-a476-f4675b2b5f92")
+        .build())
+      .build();
+
+    Result<GraphQLResponse> resultUuid = client.graphQL().get()
+      .withWhere(whereUuid)
+      .withClassName(className)
+      .withFields(fieldId)
+      .run();
+    Result<GraphQLResponse> resultUuidArray1 = client.graphQL().get()
+      .withWhere(whereUuidArray1)
+      .withClassName(className)
+      .withFields(fieldId)
+      .run();
+    Result<GraphQLResponse> resultUuidArray2 = client.graphQL().get()
+      .withWhere(whereUuidArray2)
+      .withClassName(className)
+      .withFields(fieldId)
+      .run();
+
+    Consumer<Result<GraphQLResponse>> assertId = (Result<GraphQLResponse> result) ->
+      assertThat(result).isNotNull()
+        .returns(false, Result::hasErrors)
+        .extracting(Result::getResult).isNotNull()
+        .extracting(GraphQLResponse::getData).isInstanceOf(Map.class)
+        .extracting(data -> ((Map<String, Object>)data).get("Get")).isInstanceOf(Map.class)
+        .extracting(get -> ((Map<String, Object>)get).get(className)).isInstanceOf(List.class).asList()
+        .first().extracting(props -> ((Map<String, Object>)props).get("_additional")).isInstanceOf(Map.class)
+        .extracting(add -> ((Map<String, Object>)add).get("id")).asString()
+        .isEqualTo(id);
+
+    assertId.accept(resultUuid);
+    assertId.accept(resultUuidArray1);
+    assertId.accept(resultUuidArray2);
+
+    Result<Boolean> deleteStatus = client.schema().allDeleter().run();
+
+    assertThat(deleteStatus).isNotNull()
+      .returns(false, Result::hasErrors)
+      .returns(true, Result::getResult);
   }
 }
