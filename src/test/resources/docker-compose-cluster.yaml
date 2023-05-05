@@ -10,7 +10,7 @@ services:
       - --scheme
       - http
       - --write-timeout=600s
-    image: semitechnologies/weaviate:preview-gql-handler-consistency-level-integration-4a12f55
+    image: semitechnologies/weaviate:1.19.0
     restart: on-failure:0
     environment:
       LOG_LEVEL: 'debug'
@@ -22,8 +22,6 @@ services:
       DEFAULT_VECTORIZER_MODULE: text2vec-contextionary
       ENABLE_MODULES: text2vec-contextionary
       CONTEXTIONARY_URL: contextionary:9999
-    networks:
-      cluster-net:
 
   contextionary:
     image: semitechnologies/contextionary:en0.16.0-v1.2.0
@@ -33,8 +31,6 @@ services:
       EXTENSIONS_STORAGE_ORIGIN: http://weaviate-node-1:8087
       NEIGHBOR_OCCURRENCE_IGNORE_PERCENTILE: 5
       ENABLE_COMPOUND_SPLITTING: 'false'
-    networks:
-      cluster-net:
 
   weaviate-node-2:
     init: true
@@ -45,7 +41,7 @@ services:
       - '8088'
       - --scheme
       - http
-    image: semitechnologies/weaviate:preview-gql-handler-consistency-level-integration-4a12f55
+    image: semitechnologies/weaviate:1.19.0
     restart: on-failure:0
     environment:
       LOG_LEVEL: 'debug'
@@ -59,9 +55,3 @@ services:
       DEFAULT_VECTORIZER_MODULE: text2vec-contextionary
       ENABLE_MODULES: text2vec-contextionary
       CONTEXTIONARY_URL: contextionary:9999
-    networks:
-      cluster-net:
-
-networks:
-  cluster-net:
-...

@@ -16,6 +16,14 @@ public class Property {
   List<String> dataType;
   String description;
   String tokenization;
+  /**
+   * As of Weaviate v1.19 'indexInverted' is deprecated and replaced by 'indexFilterable'
+   * and 'indexSearchable'.<br>
+   * See <a href="https://weaviate.io/developers/weaviate/configuration/indexes#inverted-index">inverted index</a>
+   */
+  @Deprecated
   Boolean indexInverted;
+  Boolean indexFilterable;
+  Boolean indexSearchable;
   Object moduleConfig;
 }

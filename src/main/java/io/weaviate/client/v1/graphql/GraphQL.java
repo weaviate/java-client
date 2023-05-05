@@ -7,6 +7,7 @@ import io.weaviate.client.v1.graphql.query.Raw;
 import io.weaviate.client.v1.graphql.query.argument.AskArgument;
 import io.weaviate.client.v1.graphql.query.argument.Bm25Argument;
 import io.weaviate.client.v1.graphql.query.argument.GroupArgument;
+import io.weaviate.client.v1.graphql.query.argument.GroupByArgument;
 import io.weaviate.client.v1.graphql.query.argument.HybridArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearImageArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
@@ -47,6 +48,9 @@ public class GraphQL {
     }
     public SortArgument.SortArgumentBuilder sortArgBuilder() {
       return SortArgument.builder();
+    }
+    public GroupByArgument.GroupByArgumentBuilder groupByArgBuilder() {
+      return GroupByArgument.builder();
     }
   }
 

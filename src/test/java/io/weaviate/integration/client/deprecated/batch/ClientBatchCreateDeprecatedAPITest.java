@@ -68,7 +68,7 @@ public class ClientBatchCreateDeprecatedAPITest {
     propertiesSchemaA2.put("description", "Putting the game of letter soups to a whole new level.");
     WeaviateObject objA2 = WeaviateObject.builder().className("Soup").id(objA2ID).properties(propertiesSchemaA2).build();
     // when
-    testGenerics.createWeaviateTestSchemaFood(client);
+    testGenerics.createWeaviateTestSchemaFood(client, true);
     Result<WeaviateObject> objT1 = client.data().creator()
             .withClassName("Pizza")
             .withID(objTID)
@@ -143,7 +143,7 @@ public class ClientBatchCreateDeprecatedAPITest {
             .to("weaviate://localhost/97fa5147-bdad-4d74-9a81-f8babc811b09")
             .build();
     // when
-    testGenerics.createWeaviateTestSchemaFoodWithReferenceProperty(client);
+    testGenerics.createWeaviateTestSchemaFoodWithReferenceProperty(client, true);
     Result<WeaviateObject> classT = client.data().creator()
             .withClassName("Pizza")
             .withID(classTID)

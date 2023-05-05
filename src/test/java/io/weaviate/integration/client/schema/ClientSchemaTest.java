@@ -200,7 +200,7 @@ public class ClientSchemaTest {
             .description("A soup made in part out of chicken, not for chicken.")
             .build();
     Property newProperty = Property.builder()
-            .dataType(Arrays.asList(DataType.STRING))
+            .dataType(Arrays.asList(DataType.TEXT))
             .description("name")
             .name("name")
             .build();
@@ -253,7 +253,7 @@ public class ClientSchemaTest {
             .properties(new ArrayList() {{
               add(Property.builder()
                       .dataType(new ArrayList() {{
-                        add(DataType.STRING);
+                        add(DataType.TEXT);
                       }})
                       .description("Title of the article")
                       .name("title")
@@ -310,7 +310,7 @@ public class ClientSchemaTest {
             .properties(new ArrayList() {{
               add(Property.builder()
                       .dataType(new ArrayList() {{
-                        add(DataType.STRING_ARRAY);
+                        add(DataType.TEXT_ARRAY);
                       }})
                       .name("stringArray")
                       .tokenization(Tokenization.FIELD)
@@ -361,7 +361,7 @@ public class ClientSchemaTest {
     WeaviateClass resultArraysClass = schemaAfterCreate.getResult().getClasses().get(0);
     assertClassEquals(clazz.getClassName(), clazz.getDescription(), resultArraysClass);
     assertPropertiesSize(6, resultArraysClass);
-    assertPropertyEquals("stringArray", DataType.STRING_ARRAY, "field", resultArraysClass.getProperties().get(0));
+    assertPropertyEquals("stringArray", DataType.TEXT_ARRAY, "field", resultArraysClass.getProperties().get(0));
     assertPropertyEquals("textArray", DataType.TEXT_ARRAY, "word", resultArraysClass.getProperties().get(1));
     assertPropertyEquals("intArray", DataType.INT_ARRAY, null, resultArraysClass.getProperties().get(2));
     assertPropertyEquals("numberArray", DataType.NUMBER_ARRAY, null, resultArraysClass.getProperties().get(3));
@@ -381,7 +381,7 @@ public class ClientSchemaTest {
             .properties(new ArrayList() {{
               add(Property.builder()
                       .dataType(new ArrayList() {{
-                        add(DataType.STRING);
+                        add(DataType.TEXT);
                       }})
                       .description("Title of the article")
                       .name("title")
@@ -424,16 +424,10 @@ public class ClientSchemaTest {
             .build();
 
     Property notExistingTokenization = Property.builder()
-            .dataType(Collections.singletonList(DataType.STRING))
+            .dataType(Collections.singletonList(DataType.TEXT))
             .description("someString")
             .name("someString")
             .tokenization("not-existing")
-            .build();
-    Property notSupportedTokenizationForText = Property.builder()
-            .dataType(Collections.singletonList(DataType.TEXT))
-            .description("someText")
-            .name("someText")
-            .tokenization(Tokenization.FIELD)
             .build();
     Property notSupportedTokenizationForInt = Property.builder()
             .dataType(Collections.singletonList(DataType.INT))
@@ -445,17 +439,14 @@ public class ClientSchemaTest {
     Result<Boolean> createStatus = client.schema().classCreator().withClass(pizza).run();
     Result<Boolean> notExistingTokenizationCreateStatus = client.schema().propertyCreator()
             .withProperty(notExistingTokenization).withClassName(pizza.getClassName()).run();
-    Result<Boolean> notSupportedTokenizationForTextCreateStatus = client.schema().propertyCreator()
-            .withProperty(notSupportedTokenizationForText).withClassName(pizza.getClassName()).run();
     Result<Boolean> notSupportedTokenizationForIntCreateStatus = client.schema().propertyCreator()
             .withProperty(notSupportedTokenizationForInt).withClassName(pizza.getClassName()).run();
 
     //then
     assertResultTrue(createStatus);
 
-    assertResultError("tokenization in body should be one of [word field]", notExistingTokenizationCreateStatus);
-    assertResultError("Tokenization 'field' is not allowed for data type 'text'", notSupportedTokenizationForTextCreateStatus);
-    assertResultError("Tokenization 'word' is not allowed for data type 'int'", notSupportedTokenizationForIntCreateStatus);
+    assertResultError("tokenization in body should be one of [word lowercase whitespace field]", notExistingTokenizationCreateStatus);
+    assertResultError("Tokenization is not allowed for data type 'int'", notSupportedTokenizationForIntCreateStatus);
   }
 
   @Test
@@ -913,7 +904,7 @@ public class ClientSchemaTest {
   public void testClassWithExplicitReplicationFactor() {
     // given
     String className = "Band";
-    int replicationFactor = 2;
+    int replicationFactor = 1;
     WeaviateClass clazz = WeaviateClass.builder()
       .className(className)
       .description("Band that plays and produces music")

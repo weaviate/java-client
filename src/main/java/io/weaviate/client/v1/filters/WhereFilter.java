@@ -25,6 +25,11 @@ public class WhereFilter {
   GeoRange valueGeoRange;
   Integer valueInt;
   Double valueNumber;
+  /**
+   * As of Weaviate v1.19 'valueString' is deprecated and replaced by 'valueText'.<br>
+   * See <a href="https://weaviate.io/developers/weaviate/config-refs/datatypes#introduction">data types</a>
+   */
+  @Deprecated
   String valueString;
   String valueText;
 

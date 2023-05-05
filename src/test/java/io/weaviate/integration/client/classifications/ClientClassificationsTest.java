@@ -114,7 +114,7 @@ public class ClientClassificationsTest {
     testGenerics.createWeaviateTestSchemaFood(client);
     // defina Tag class
     Property nameProperty = Property.builder()
-            .dataType(Arrays.asList(DataType.STRING))
+            .dataType(Arrays.asList(DataType.TEXT))
             .description("name")
             .name("name")
             .build();

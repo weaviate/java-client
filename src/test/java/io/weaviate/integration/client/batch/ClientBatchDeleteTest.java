@@ -56,7 +56,7 @@ public class ClientBatchDeleteTest {
     WhereFilter whereFilter = WhereFilter.builder()
             .operator(Operator.Equal)
             .path(new String[]{ "name" })
-            .valueString("Hawaii")
+            .valueText("Hawaii")
             .build();
 
     int allWeaviateObjects = countWeaviateObjects();
@@ -147,7 +147,7 @@ public class ClientBatchDeleteTest {
     WhereFilter whereFilter = WhereFilter.builder()
             .operator(Operator.GreaterThan)
             .path(new String[]{ "_creationTimeUnix" })
-            .valueString(Long.toString(inAMinute))
+            .valueText(Long.toString(inAMinute))
             .build();
 
     int allWeaviateObjects = countWeaviateObjects();
@@ -189,7 +189,7 @@ public class ClientBatchDeleteTest {
     WhereFilter whereFilter = WhereFilter.builder()
             .operator(Operator.LessThan)
             .path(new String[]{ "_creationTimeUnix" })
-            .valueString(Long.toString(inAMinute))
+            .valueText(Long.toString(inAMinute))
             .build();
 
     int allWeaviateObjects = countWeaviateObjects();

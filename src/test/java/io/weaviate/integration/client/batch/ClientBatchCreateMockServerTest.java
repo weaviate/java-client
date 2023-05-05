@@ -51,7 +51,7 @@ public class ClientBatchCreateMockServerTest {
   private MockServerClient mockServerClient;
 
   private static final String MOCK_SERVER_HOST = "localhost";
-  private static final int MOCK_SERVER_PORT = 8080;
+  private static final int MOCK_SERVER_PORT = 8999;
 
   @Before
   public void before() {

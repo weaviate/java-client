@@ -592,7 +592,7 @@ public class ClientDataTest {
             .vectorizer("text2vec-contextionary")
             .properties(new ArrayList() {{
               add(Property.builder()
-                      .dataType(new ArrayList(){{ add(DataType.STRING_ARRAY); }})
+                      .dataType(new ArrayList(){{ add(DataType.TEXT_ARRAY); }})
                       .name("stringArray")
                       .build());
               add(Property.builder()
@@ -669,7 +669,7 @@ public class ClientDataTest {
             .vectorizer("none")
             .properties(new ArrayList() {{
               add(Property.builder()
-                      .dataType(new ArrayList(){{ add(DataType.STRING); }})
+                      .dataType(new ArrayList(){{ add(DataType.TEXT); }})
                       .name("foo")
                       .build());
             }})
