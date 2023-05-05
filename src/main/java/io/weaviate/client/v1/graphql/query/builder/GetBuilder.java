@@ -41,6 +41,7 @@ public class GetBuilder implements Query {
   Integer offset;
   Integer limit;
   String after;
+  String withConsistencyLevel;
   WhereArgument withWhereFilter;
   NearTextArgument withNearTextFilter;
   Bm25Argument withBm25Filter;
@@ -56,7 +57,7 @@ public class GetBuilder implements Query {
   private boolean includesFilterClause() {
     return ObjectUtils.anyNotNull(withWhereFilter, withNearTextFilter, withNearObjectFilter, withNearVectorFilter,
       withNearImageFilter, withGroupArgument, withAskArgument, withBm25Filter, withHybridFilter, limit, offset,
-      withSortArguments);
+      withSortArguments, withConsistencyLevel);
   }
 
   private String createFilterClause() {
@@ -101,6 +102,9 @@ public class GetBuilder implements Query {
       }
       if (withSortArguments != null) {
         filters.add(withSortArguments.build());
+      }
+      if (withConsistencyLevel != null) {
+        filters.add(String.format("consistencyLevel:%s", withConsistencyLevel));
       }
 
       return String.format("(%s)", String.join(",", filters));

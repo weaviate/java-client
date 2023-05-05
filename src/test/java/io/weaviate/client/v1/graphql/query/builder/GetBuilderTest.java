@@ -1,5 +1,6 @@
 package io.weaviate.client.v1.graphql.query.builder;
 
+import io.weaviate.client.v1.data.replication.model.ConsistencyLevel;
 import io.weaviate.client.v1.graphql.query.argument.WhereArgument;
 import org.junit.Test;
 import io.weaviate.client.v1.filters.Operator;
@@ -429,6 +430,28 @@ public class GetBuilderTest {
     assertEquals("{Get{Pizza(sort:[{path:[\"property1\"]}]){name}}}", query1);
     assertEquals("{Get{Pizza(sort:[{path:[\"property1\"]},{path:[\"property2\"] order:desc}]){name}}}", query2);
     assertEquals("{Get{Pizza(sort:[{path:[\"property1\"]},{path:[\"property2\"] order:desc},{path:[\"property3\"] order:asc}]){name}}}", query3);
+  }
+
+  @Test
+  public void testBuildGetWithConsistencyLevel() {
+    // given
+    Fields fields = Fields.builder()
+      .fields(new Field[]{ Field.builder().name("name").build() })
+      .build();
+    // when
+    String withAll = GetBuilder.builder().className("Pizza").fields(fields)
+      .withConsistencyLevel(ConsistencyLevel.ALL)
+      .build().buildQuery();
+    String withQuorum = GetBuilder.builder().className("Pizza").fields(fields)
+      .withConsistencyLevel(ConsistencyLevel.QUORUM)
+      .build().buildQuery();
+    String withOne = GetBuilder.builder().className("Pizza").fields(fields)
+      .withConsistencyLevel(ConsistencyLevel.ONE)
+      .build().buildQuery();
+    // then
+    assertEquals("{Get{Pizza(consistencyLevel:ALL){name}}}", withAll);
+    assertEquals("{Get{Pizza(consistencyLevel:QUORUM){name}}}", withQuorum);
+    assertEquals("{Get{Pizza(consistencyLevel:ONE){name}}}", withOne);
   }
 
   @Test
