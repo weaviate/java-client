@@ -485,6 +485,34 @@ public class ClientSchemaTest {
   }
 
   @Test
+  public void testCreateClassWithInvertedIndexContainingIndexNullState() {
+    // given
+    InvertedIndexConfig invertedIndexConfig = InvertedIndexConfig.builder()
+      .indexNullState(true)
+      .build();
+
+    WeaviateClass clazz = WeaviateClass.builder()
+      .className("Band")
+      .description("Band that plays and produces music")
+      .vectorIndexType("hnsw")
+      .vectorizer("text2vec-contextionary")
+      .invertedIndexConfig(invertedIndexConfig)
+      .build();
+
+    // when
+    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
+    Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
+
+    // then
+    assertNotNull(createStatus);
+    assertTrue(createStatus.getResult());
+    assertNotNull(bandClass);
+    assertNotNull(bandClass.getResult());
+    assertNull(bandClass.getError());
+    assertTrue(bandClass.getResult().getInvertedIndexConfig().getIndexNullState());
+  }
+
+  @Test
   public void testCreateClassWithStopwordsConfig() {
     // given
     StopwordConfig stopwordConfig = StopwordConfig.builder()
