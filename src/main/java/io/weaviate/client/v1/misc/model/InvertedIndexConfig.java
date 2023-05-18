@@ -16,4 +16,5 @@ public class InvertedIndexConfig {
   Integer cleanupIntervalSeconds;
   Boolean indexTimestamps;
   Boolean indexNullState;
+  Boolean indexPropertyLength;
 }
