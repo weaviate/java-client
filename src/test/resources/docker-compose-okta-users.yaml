@@ -10,7 +10,7 @@ services:
       - --scheme
       - http
       - --write-timeout=600s
-    image: semitechnologies/weaviate:1.19.0
+    image: semitechnologies/weaviate:1.19.5
     restart: on-failure:0
     environment:
       PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
