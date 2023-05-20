@@ -12,5 +12,5 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class WeaviateErrorMessage {
   String message;
-  Throwable throwable;
+  transient Throwable throwable; // transient = not serialized by gson. This field is only used on Java.
 }
