@@ -1372,6 +1372,51 @@ public class ClientGraphQLTest {
   }
 
   @Test
+  public void shouldRunGenerativeSearchWithGroupedResultAndProperties() {
+    assumeTrue("OpenAI Api Key has to be configured to run the test", StringUtils.isNotBlank(openAIApiKey));
+
+    // given
+    WeaviateClient client = createClientWithOpenAIHeader();
+    WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
+    testGenerics.createTestSchemaAndData(client);
+
+    Field name = Field.builder().name("name").build();
+    GenerativeSearchBuilder generativeSearch = GenerativeSearchBuilder.builder()
+      .groupedResultTask("Describe these pizzas")
+      .groupedResultProperties(new String[]{"name", "description"})
+      .build();
+
+    // when
+    Result<GraphQLResponse> result = client.graphQL().get()
+      .withClassName("Pizza")
+      .withFields(name)
+      .withGenerativeSearch(generativeSearch)
+      .run();
+    testGenerics.cleanupWeaviate(client);
+
+    // then
+    List<Map<String, Object>> pizzas = extractResult(result, "Pizza");
+    assertThat(pizzas).hasSize(4);
+    for (int i = 0; i < pizzas.size(); i++) {
+      Map<String, Object> pizza = pizzas.get(i);
+
+      if (i == 0) {
+        assertThat(pizza.get("_additional")).isNotNull().isInstanceOf(Map.class);
+        Map<String, Object> additional = (Map<String, Object>) pizza.get("_additional");
+
+        assertThat(additional.get("generate")).isNotNull().isInstanceOf(Map.class);
+        Map<String, String> generate = (Map<String, String>) additional.get("generate");
+
+        assertThat(generate).containsOnlyKeys("error", "groupedResult");
+        assertThat(generate.get("error")).isNull();
+        assertThat(generate.get("groupedResult")).isNotBlank();
+      } else {
+        assertThat(pizza.get("_additional")).isNull();
+      }
+    }
+  }
+
+  @Test
   public void shouldRunGenerativeSearchWithBothSingleAndGroupedResults() {
     assumeTrue("OpenAI Api Key has to be configured to run the test", StringUtils.isNotBlank(openAIApiKey));
 
