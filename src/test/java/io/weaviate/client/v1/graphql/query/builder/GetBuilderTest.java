@@ -486,6 +486,37 @@ public class GetBuilderTest {
   }
 
   @Test
+  public void shouldBuildGetWithGenerativeSearchWithPropertiesAndMultipleFieldsIncludingAdditional() {
+    // given
+    Fields fields = Fields.builder().fields(new Field[]{
+      Field.builder().name("name").build(),
+      Field.builder().name("description").build(),
+      Field.builder().name("_additional").fields(new Field[]{
+        Field.builder().name("id").build()
+      }).build()
+    }).build();
+
+    // when
+    String query = GetBuilder.builder()
+      .className("Pizza")
+      .fields(fields)
+      .withGenerativeSearch(
+        GenerativeSearchBuilder.builder()
+          .singleResultPrompt("What is the meaning of life?")
+          .groupedResultTask("Explain why these magazines or newspapers are about finance")
+          .groupedResultProperties(new String[]{"title", "content"})
+          .build()
+      )
+      .build().buildQuery();
+
+    // then
+    assertThat(query).isEqualTo("{Get{Pizza{name description _additional{id generate(" +
+      "singleResult:{prompt:\"\"\"What is the meaning of life?\"\"\"} " +
+      "groupedResult:{task:\"\"\"Explain why these magazines or newspapers are about finance\"\"\" properties:[\"title\",\"content\"]})" +
+      "{singleResult groupedResult error}}}}}");
+  }
+
+  @Test
   public void shouldBuildGetWithGenerativeSearchAndMultipleFields() {
     // given
     Fields fields = Fields.builder().fields(new Field[]{

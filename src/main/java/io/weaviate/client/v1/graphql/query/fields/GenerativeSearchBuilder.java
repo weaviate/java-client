@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.LinkedHashSet;
@@ -19,7 +20,7 @@ public class GenerativeSearchBuilder {
 
   String singleResultPrompt;
   String groupedResultTask;
-
+  String[] groupedResultProperties;
 
   public Field build() {
     Set<String> nameParts = new LinkedHashSet<>();
@@ -29,8 +30,15 @@ public class GenerativeSearchBuilder {
       nameParts.add(String.format("singleResult:{prompt:\"\"%s\"\"}", Serializer.quote(singleResultPrompt)));
       fieldNames.add("singleResult");
     }
-    if (StringUtils.isNotBlank(groupedResultTask)) {
-      nameParts.add(String.format("groupedResult:{task:\"\"%s\"\"}", Serializer.quote(groupedResultTask)));
+    if (StringUtils.isNotBlank(groupedResultTask) || ArrayUtils.isNotEmpty(groupedResultProperties)) {
+      Set<String> argParts = new LinkedHashSet<>();
+      if (StringUtils.isNotBlank(groupedResultTask)) {
+        argParts.add(String.format("task:\"\"%s\"\"", Serializer.quote(groupedResultTask)));
+      }
+      if (ArrayUtils.isNotEmpty(groupedResultProperties)) {
+        argParts.add(String.format("properties:%s", Serializer.arrayWithQuotes(groupedResultProperties)));
+      }
+      nameParts.add(String.format("groupedResult:{%s}", StringUtils.join(argParts, " ")));
       fieldNames.add("groupedResult");
     }
 
