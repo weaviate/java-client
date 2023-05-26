@@ -15,4 +15,6 @@ public class InvertedIndexConfig {
   StopwordConfig stopwords;
   Integer cleanupIntervalSeconds;
   Boolean indexTimestamps;
+  Boolean indexNullState;
+  Boolean indexPropertyLength;
 }
