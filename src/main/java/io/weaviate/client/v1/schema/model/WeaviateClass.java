@@ -2,6 +2,8 @@ package io.weaviate.client.v1.schema.model;
 
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
+
+import io.weaviate.client.v1.misc.model.MultiTenancyConfig;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,6 +30,7 @@ public class WeaviateClass {
   String vectorIndexType;
   String vectorizer;
   ReplicationConfig replicationConfig;
+  MultiTenancyConfig multiTenancyConfig;
 
 
   public static class WeaviateClassBuilder {

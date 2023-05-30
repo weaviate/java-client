@@ -12,6 +12,7 @@ import lombok.experimental.FieldDefaults;
 @ToString
 @EqualsAndHashCode
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class ReplicationConfig {
-  Integer factor;
+public class MultiTenancyConfig {
+  Boolean enabled;
+  String tenantKey;
 }
