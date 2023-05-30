@@ -12,7 +12,6 @@ import lombok.experimental.FieldDefaults;
 @ToString
 @EqualsAndHashCode
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class Shard {
+public class Tenant {
   String name;
-  String status;
 }

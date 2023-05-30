@@ -12,6 +12,7 @@ import io.weaviate.client.v1.schema.api.SchemaGetter;
 import io.weaviate.client.v1.schema.api.ShardUpdater;
 import io.weaviate.client.v1.schema.api.ShardsGetter;
 import io.weaviate.client.v1.schema.api.ShardsUpdater;
+import io.weaviate.client.v1.schema.api.TenantCreator;
 
 public class Schema {
   private final Config config;
@@ -60,5 +61,9 @@ public class Schema {
 
   public ShardsUpdater shardsUpdater() {
     return new ShardsUpdater(httpClient, config);
+  }
+
+  public TenantCreator tenantCreator() {
+    return new TenantCreator(httpClient, config);
   }
 }
