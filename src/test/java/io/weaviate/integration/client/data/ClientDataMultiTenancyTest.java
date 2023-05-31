@@ -72,6 +72,7 @@ public class ClientDataMultiTenancyTest {
         .withProperties(pizzaProps)
         .withTenantKey(tenant)
         .run();
+
       assertThat(pizzaCreateStatus).isNotNull()
         .returns(false, Result::hasErrors)
         .extracting(Result::getResult)
@@ -92,6 +93,7 @@ public class ClientDataMultiTenancyTest {
         .withProperties(soupProps)
         .withTenantKey(tenant)
         .run();
+
       assertThat(soupCreateStatus).isNotNull()
         .returns(false, Result::hasErrors)
         .extracting(Result::getResult)
@@ -107,7 +109,7 @@ public class ClientDataMultiTenancyTest {
   }
 
   @Test
-  public void shouldDeleteDataForMultipleTenants() {
+  public void shouldDeleteObjectsForMultipleTenants() {
     testGenerics.createFoodSchemaForTenants(client);
     String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
     testGenerics.createTenants(client, tenants);
@@ -137,9 +139,110 @@ public class ClientDataMultiTenancyTest {
           assertThat(deleteStatus).isNotNull()
             .returns(false, Result::hasErrors)
             .returns(true, Result::getResult);
+
+          // TODO check if exists
         })
       )
     );
   }
+
+  @Test
+  public void shouldUpdateObjectsForMultipleTenants() {
+    testGenerics.createFoodSchemaForTenants(client);
+    String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
+    testGenerics.createTenants(client, tenants);
+    testGenerics.createFoodDataForTenants(client, tenants);
+
+    Map<String, Object> pizzaProps = new HashMap<>();
+    pizzaProps.put("name", "Quattro Formaggi");
+    pizzaProps.put("description", "updated Quattro Formaggi description");
+    pizzaProps.put("price", 1000.1f);
+    pizzaProps.put("bestBefore", "2022-01-02T03:04:05+01:00");
+
+    Map<String, Object> soupProps = new HashMap<>();
+    soupProps.put("name", "ChickenSoup");
+    soupProps.put("description", "updated ChickenSoup description");
+    soupProps.put("price", 2000.2f);
+    soupProps.put("bestBefore", "2022-05-06T07:08:09+05:00");
+
+    Arrays.stream(tenants).forEach(tenant -> {
+      pizzaProps.put("tenantName", tenant);
+
+      Result<Boolean> pizzaUpdateStatus = client.data().updater()
+        .withClassName("Pizza")
+        .withID(WeaviateTestGenerics.PIZZA_QUATTRO_FORMAGGI_ID)
+        .withProperties(pizzaProps)
+        .withTenantKey(tenant)
+        .run();
+
+      assertThat(pizzaUpdateStatus).isNotNull()
+        .returns(false, Result::hasErrors)
+        .returns(true, Result::getResult);
+
+      soupProps.put("tenantName", tenant);
+
+      Result<Boolean> soupUpdateStatus = client.data().updater()
+        .withClassName("Soup")
+        .withID(WeaviateTestGenerics.SOUP_CHICKENSOUP_ID)
+        .withProperties(soupProps)
+        .withTenantKey(tenant)
+        .run();
+
+      assertThat(soupUpdateStatus).isNotNull()
+        .returns(false, Result::hasErrors)
+        .returns(true, Result::getResult);
+
+      // TODO check if updated
+    });
+  }
+
+  @Test
+  public void shouldMergeObjectsForMultipleTenants() {
+    testGenerics.createFoodSchemaForTenants(client);
+    String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
+    testGenerics.createTenants(client, tenants);
+    testGenerics.createFoodDataForTenants(client, tenants);
+
+    Map<String, Object> pizzaProps = new HashMap<>();
+    pizzaProps.put("description", "updated Quattro Formaggi description");
+    pizzaProps.put("price", 1000.1f);
+
+    Map<String, Object> soupProps = new HashMap<>();
+    soupProps.put("description", "updated ChickenSoup description");
+    soupProps.put("price", 2000.2f);
+
+    Arrays.stream(tenants).forEach(tenant -> {
+//      pizzaProps.put("tenantName", tenant);
+
+      Result<Boolean> pizzaUpdateStatus = client.data().updater()
+        .withClassName("Pizza")
+        .withID(WeaviateTestGenerics.PIZZA_QUATTRO_FORMAGGI_ID)
+        .withProperties(pizzaProps)
+        .withTenantKey(tenant)
+        .withMerge()
+        .run();
+
+      assertThat(pizzaUpdateStatus).isNotNull()
+        .returns(false, Result::hasErrors)
+        .returns(true, Result::getResult);
+
+//      soupProps.put("tenantName", tenant);
+
+      Result<Boolean> soupUpdateStatus = client.data().updater()
+        .withClassName("Soup")
+        .withID(WeaviateTestGenerics.SOUP_CHICKENSOUP_ID)
+        .withProperties(soupProps)
+        .withTenantKey(tenant)
+        .withMerge()
+        .run();
+
+      assertThat(soupUpdateStatus).isNotNull()
+        .returns(false, Result::hasErrors)
+        .returns(true, Result::getResult);
+
+      // TODO check if merged
+    });
+  }
+
 }
 
