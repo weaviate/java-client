@@ -969,5 +969,71 @@ public class ClientDataTest {
       .returns(false, Result::hasErrors)
       .returns(true, Result::getResult);
   }
+
+  @Test
+  public void shouldAddDataForMultipleTenants() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
+
+    testGenerics.createFoodSchemaForTenants(client);
+    String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
+    testGenerics.createTenants(client, tenants);
+
+    Map<String, Object> pizzaProps = new HashMap<>();
+    pizzaProps.put("name", "Quattro Formaggi");
+    pizzaProps.put("description", "Pizza quattro formaggi Italian: [ˈkwattro forˈmaddʒi] (four cheese pizza) is a variety of pizza in Italian cuisine that is topped with a combination of four kinds of cheese, usually melted together, with (rossa, red) or without (bianca, white) tomato sauce. It is popular worldwide, including in Italy,[1] and is one of the iconic items from pizzerias's menus.");
+    pizzaProps.put("price", 1.4f);
+    pizzaProps.put("bestBefore", "2022-01-02T03:04:05+01:00");
+
+    Map<String, Object> soupProps = new HashMap<>();
+    soupProps.put("name", "ChickenSoup");
+    soupProps.put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
+    soupProps.put("price", 2.0f);
+    soupProps.put("bestBefore", "2022-05-06T07:08:09+05:00");
+
+    Arrays.stream(tenants).forEach(tenant -> {
+      pizzaProps.put("tenantName", tenant);
+
+      Result<WeaviateObject> pizzaCreateStatus = client.data().creator()
+        .withClassName("Pizza")
+        .withID(WeaviateTestGenerics.PIZZA_QUATTRO_FORMAGGI_ID)
+        .withProperties(pizzaProps)
+        .withTenantKey(tenant)
+        .run();
+      assertThat(pizzaCreateStatus).isNotNull()
+        .returns(false, Result::hasErrors)
+        .extracting(Result::getResult)
+        .returns(WeaviateTestGenerics.PIZZA_QUATTRO_FORMAGGI_ID, WeaviateObject::getId)
+        .returns("Pizza", WeaviateObject::getClassName)
+        .extracting(WeaviateObject::getProperties)
+        .returns("Quattro Formaggi", p -> p.get("name"))
+        .returns(1.4d, p -> p.get("price"))
+        .returns("Pizza quattro formaggi Italian: [ˈkwattro forˈmaddʒi] (four cheese pizza) is a variety of pizza in Italian cuisine that is topped with a combination of four kinds of cheese, usually melted together, with (rossa, red) or without (bianca, white) tomato sauce. It is popular worldwide, including in Italy,[1] and is one of the iconic items from pizzerias's menus.", p -> p.get("description"))
+        .returns("2022-01-02T03:04:05+01:00", p -> p.get("bestBefore"))
+        .returns(tenant, p -> p.get("tenantName"));
+
+      soupProps.put("tenantName", tenant);
+
+      Result<WeaviateObject> soupCreateStatus = client.data().creator()
+        .withClassName("Soup")
+        .withID(WeaviateTestGenerics.SOUP_CHICKENSOUP_ID)
+        .withProperties(soupProps)
+        .withTenantKey(tenant)
+        .run();
+      assertThat(soupCreateStatus).isNotNull()
+        .returns(false, Result::hasErrors)
+        .extracting(Result::getResult)
+        .returns(WeaviateTestGenerics.SOUP_CHICKENSOUP_ID, WeaviateObject::getId)
+        .returns("Soup", WeaviateObject::getClassName)
+        .extracting(WeaviateObject::getProperties)
+        .returns("ChickenSoup", p -> p.get("name"))
+        .returns(2.0d, p -> p.get("price"))
+        .returns("Used by humans when their inferior genetics are attacked by microscopic organisms.", p -> p.get("description"))
+        .returns("2022-05-06T07:08:09+05:00", p -> p.get("bestBefore"))
+        .returns(tenant, p -> p.get("tenantName"));
+    });
+  }
 }
 

@@ -19,6 +19,7 @@ public class ObjectCreator extends BaseClient<WeaviateObject> implements ClientR
   private String id;
   private String className;
   private String consistencyLevel;
+  private String tenantKey;
   private Map<String, Object> properties;
   private Float[] vector;
 
@@ -39,6 +40,11 @@ public class ObjectCreator extends BaseClient<WeaviateObject> implements ClientR
 
   public ObjectCreator withConsistencyLevel(String consistencyLevel) {
     this.consistencyLevel = consistencyLevel;
+    return this;
+  }
+
+  public ObjectCreator withTenantKey(String tenantKey) {
+    this.tenantKey = tenantKey;
     return this;
   }
 
@@ -63,6 +69,7 @@ public class ObjectCreator extends BaseClient<WeaviateObject> implements ClientR
   public Result<WeaviateObject> run() {
     String path = objectsPath.buildCreate(ObjectsPath.Params.builder()
         .consistencyLevel(consistencyLevel)
+        .tenantKey(tenantKey)
         .build());
     WeaviateObject obj = WeaviateObject.builder()
             .className(className)
