@@ -13,13 +13,19 @@ import io.weaviate.client.v1.schema.model.Property;
 import io.weaviate.client.v1.schema.model.Tenant;
 import io.weaviate.client.v1.schema.model.Tokenization;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
+import org.assertj.core.api.ObjectAssert;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -159,27 +165,15 @@ public class WeaviateTestGenerics {
 
     // Create pizzas
     WeaviateObject[] menuPizza = new WeaviateObject[]{
-      createObject(PIZZA_QUATTRO_FORMAGGI_ID, "Pizza", "Quattro Formaggi",
-        "Pizza quattro formaggi Italian: [ˈkwattro forˈmaddʒi] (four cheese pizza) is a variety of pizza in Italian cuisine that is topped with a combination of four kinds of cheese, usually melted together, with (rossa, red) or without (bianca, white) tomato sauce. It is popular worldwide, including in Italy,[1] and is one of the iconic items from pizzerias's menus.",
-        1.4f, "2022-01-02T03:04:05+01:00"),
-      createObject(PIZZA_FRUTTI_DI_MARE_ID, "Pizza", "Frutti di Mare",
-        "Frutti di Mare is an Italian type of pizza that may be served with scampi, mussels or squid. It typically lacks cheese, with the seafood being served atop a tomato sauce.",
-        2.5f, "2022-02-03T04:05:06+02:00"),
-      createObject(PIZZA_HAWAII_ID, "Pizza", "Hawaii",
-        "Universally accepted to be the best pizza ever created.",
-        1.1f, "2022-03-04T05:06:07+03:00"),
-      createObject(PIZZA_DOENER_ID, "Pizza", "Doener",
-        "A innovation, some say revolution, in the pizza industry.",
-        1.2f, "2022-04-05T06:07:08+04:00"),
+      pizzaQuattroFormaggi(),
+      pizzaFruttiDiMare(),
+      pizzaHawaii(),
+      pizzaDoener()
     };
     // Create soups
     WeaviateObject[] menuSoup = new WeaviateObject[]{
-      createObject(SOUP_CHICKENSOUP_ID, "Soup", "ChickenSoup",
-        "Used by humans when their inferior genetics are attacked by microscopic organisms.",
-        2.0f, "2022-05-06T07:08:09+05:00"),
-      createObject(SOUP_BEAUTIFUL_ID, "Soup", "Beautiful",
-        "Putting the game of letter soups to a whole new level.",
-        3f, "2022-06-07T08:09:10+06:00"),
+      soupChicken(),
+      soupBeautiful()
     };
     Result<ObjectGetResponse[]> insertStatus = client.batch().objectsBatcher()
       .withObjects(menuPizza)
@@ -195,27 +189,15 @@ public class WeaviateTestGenerics {
 
     // Create pizzas
     WeaviateObject[] menuPizza = new WeaviateObject[]{
-      createObject(PIZZA_QUATTRO_FORMAGGI_ID, "Pizza", "Quattro Formaggi",
-        "Pizza quattro formaggi Italian: [ˈkwattro forˈmaddʒi] (four cheese pizza) is a variety of pizza in Italian cuisine that is topped with a combination of four kinds of cheese, usually melted together, with (rossa, red) or without (bianca, white) tomato sauce. It is popular worldwide, including in Italy,[1] and is one of the iconic items from pizzerias's menus.",
-        1.4f, "2022-01-02T03:04:05+01:00"),
-      createObject(PIZZA_FRUTTI_DI_MARE_ID, "Pizza", "Frutti di Mare",
-        "Frutti di Mare is an Italian type of pizza that may be served with scampi, mussels or squid. It typically lacks cheese, with the seafood being served atop a tomato sauce.",
-        2.5f, "2022-02-03T04:05:06+02:00"),
-      createObject(PIZZA_HAWAII_ID, "Pizza", "Hawaii",
-        "Universally accepted to be the best pizza ever created.",
-        1.1f, "2022-03-04T05:06:07+03:00"),
-      createObject(PIZZA_DOENER_ID, "Pizza", "Doener",
-        "A innovation, some say revolution, in the pizza industry.",
-        1.2f, "2022-04-05T06:07:08+04:00"),
+      pizzaQuattroFormaggi(),
+      pizzaFruttiDiMare(),
+      pizzaHawaii(),
+      pizzaDoener()
     };
     // Create soups
     WeaviateObject[] menuSoup = new WeaviateObject[]{
-      createObject(SOUP_CHICKENSOUP_ID, "Soup", "ChickenSoup",
-        "Used by humans when their inferior genetics are attacked by microscopic organisms.",
-        2.0f, "2022-05-06T07:08:09+05:00"),
-      createObject(SOUP_BEAUTIFUL_ID, "Soup", "Beautiful",
-        "Putting the game of letter soups to a whole new level.",
-        3f, "2022-06-07T08:09:10+06:00"),
+      soupChicken(),
+      soupBeautiful()
     };
     Result<ObjectGetResponse[]> insertStatus = client.batch().objectsBatcher()
       .withObjects(menuPizza)
@@ -435,6 +417,76 @@ public class WeaviateTestGenerics {
       .returns(false, Result::hasErrors)
       .returns(true, Result::getResult);
   }
+
+  public void createFoodDataForTenants(WeaviateClient client, String... tenantNames) {
+    String tenantKey = "tenantName";
+
+    BiFunction<WeaviateObject, String, WeaviateObject> addTenantProperty = (object, name) -> {
+      Map<String, Object> props = object.getProperties();
+      props.put(tenantKey, name);
+      return object;
+    };
+
+    Arrays.stream(tenantNames).forEach(name -> {
+      WeaviateObject[] pizzaObjects = new WeaviateObject[]{
+        addTenantProperty.apply(pizzaQuattroFormaggi(), name),
+        addTenantProperty.apply(pizzaFruttiDiMare(), name),
+        addTenantProperty.apply(pizzaHawaii(), name),
+        addTenantProperty.apply(pizzaDoener(), name)
+      };
+      WeaviateObject[] soupObjects = new WeaviateObject[]{
+        addTenantProperty.apply(soupChicken(), name),
+        addTenantProperty.apply(soupBeautiful(), name)
+      };
+
+      Result<ObjectGetResponse[]> insertStatus = client.batch().objectsBatcher()
+        .withObjects(pizzaObjects)
+        .withObjects(soupObjects)
+        .run();
+
+      assertThat(insertStatus).isNotNull()
+        .returns(false, Result::hasErrors)
+        .extracting(Result::getResult).asInstanceOf(ARRAY)
+        .hasSize(6);
+    });
+  }
+
+  private WeaviateObject pizzaQuattroFormaggi() {
+    return createObject(PIZZA_QUATTRO_FORMAGGI_ID, "Pizza", "Quattro Formaggi",
+      "Pizza quattro formaggi Italian: [ˈkwattro forˈmaddʒi] (four cheese pizza) is a variety of pizza in Italian cuisine that is topped with a combination of four kinds of cheese, usually melted together, with (rossa, red) or without (bianca, white) tomato sauce. It is popular worldwide, including in Italy,[1] and is one of the iconic items from pizzerias's menus.",
+      1.4f, "2022-01-02T03:04:05+01:00");
+  }
+
+  private WeaviateObject pizzaFruttiDiMare() {
+    return createObject(PIZZA_FRUTTI_DI_MARE_ID, "Pizza", "Frutti di Mare",
+      "Frutti di Mare is an Italian type of pizza that may be served with scampi, mussels or squid. It typically lacks cheese, with the seafood being served atop a tomato sauce.",
+      2.5f, "2022-02-03T04:05:06+02:00");
+  }
+
+  private WeaviateObject pizzaHawaii() {
+    return createObject(PIZZA_HAWAII_ID, "Pizza", "Hawaii",
+      "Universally accepted to be the best pizza ever created.",
+      1.1f, "2022-03-04T05:06:07+03:00");
+  }
+
+  private WeaviateObject pizzaDoener() {
+    return createObject(PIZZA_DOENER_ID, "Pizza", "Doener",
+      "A innovation, some say revolution, in the pizza industry.",
+      1.2f, "2022-04-05T06:07:08+04:00");
+  }
+
+  private WeaviateObject soupChicken() {
+    return createObject(SOUP_CHICKENSOUP_ID, "Soup", "ChickenSoup",
+      "Used by humans when their inferior genetics are attacked by microscopic organisms.",
+      2.0f, "2022-05-06T07:08:09+05:00");
+  }
+
+  private WeaviateObject soupBeautiful() {
+    return createObject(SOUP_BEAUTIFUL_ID, "Soup", "Beautiful",
+      "Putting the game of letter soups to a whole new level.",
+      3f, "2022-06-07T08:09:10+06:00");
+  }
+
 
   public static class DocumentPassageSchema {
 

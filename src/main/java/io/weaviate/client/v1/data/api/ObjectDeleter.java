@@ -20,6 +20,7 @@ public class ObjectDeleter extends BaseClient<String> implements ClientResult<Bo
   private String id;
   private String className;
   private String consistencyLevel;
+  private String tenantKey;
 
   public ObjectDeleter(HttpClient httpClient, Config config, ObjectsPath objectsPath) {
     super(httpClient, config);
@@ -41,6 +42,11 @@ public class ObjectDeleter extends BaseClient<String> implements ClientResult<Bo
     return this;
   }
 
+  public ObjectDeleter withTenantKey(String tenantKey) {
+    this.tenantKey = tenantKey;
+    return this;
+  }
+
   @Override
   public Result<Boolean> run() {
     if (StringUtils.isEmpty(id)) {
@@ -54,6 +60,7 @@ public class ObjectDeleter extends BaseClient<String> implements ClientResult<Bo
             .id(id)
             .className(className)
             .consistencyLevel(consistencyLevel)
+            .tenantKey(tenantKey)
             .build());
     Response<String> resp = sendDeleteRequest(path, null, String.class);
     return new Result<>(resp.getStatusCode(), resp.getStatusCode() == 204, resp.getErrors());

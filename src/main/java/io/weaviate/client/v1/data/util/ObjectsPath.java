@@ -40,7 +40,8 @@ public class ObjectsPath {
       params,
       this::addPathClassNameWithDeprecatedNotSupportedCheck,
       this::addPathId,
-      this::addQueryConsistencyLevel
+      this::addQueryConsistencyLevel,
+      this::addQueryTenantKey
     );
   }
 
