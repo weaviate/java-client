@@ -59,7 +59,8 @@ public class ObjectsPath {
     return build(
       params,
       this::addPathClassNameWithDeprecatedNotSupportedCheck,
-      this::addPathId
+      this::addPathId,
+      this::addQueryTenantKey
     );
   }
 

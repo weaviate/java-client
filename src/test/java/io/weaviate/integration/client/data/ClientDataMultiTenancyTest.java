@@ -24,6 +24,20 @@ public class ClientDataMultiTenancyTest {
   private WeaviateClient client;
   private WeaviateTestGenerics testGenerics;
 
+  private static final Map<String, List<String>> IDS_BY_CLASS = new HashMap<>();
+  static {
+    IDS_BY_CLASS.put("Pizza", Arrays.asList(
+      WeaviateTestGenerics.PIZZA_QUATTRO_FORMAGGI_ID,
+      WeaviateTestGenerics.PIZZA_FRUTTI_DI_MARE_ID,
+      WeaviateTestGenerics.PIZZA_HAWAII_ID,
+      WeaviateTestGenerics.PIZZA_DOENER_ID
+    ));
+    IDS_BY_CLASS.put("Soup", Arrays.asList(
+      WeaviateTestGenerics.SOUP_CHICKENSOUP_ID,
+      WeaviateTestGenerics.SOUP_BEAUTIFUL_ID
+    ));
+  }
+
   @ClassRule
   public static DockerComposeContainer<?> compose = new DockerComposeContainer<>(
     new File("src/test/resources/docker-compose-test.yaml")
@@ -115,20 +129,9 @@ public class ClientDataMultiTenancyTest {
     testGenerics.createTenants(client, tenants);
     testGenerics.createFoodDataForTenants(client, tenants);
 
-    Map<String, List<String>> idsByClass = new HashMap<>();
-    idsByClass.put("Pizza", Arrays.asList(
-      WeaviateTestGenerics.PIZZA_QUATTRO_FORMAGGI_ID,
-      WeaviateTestGenerics.PIZZA_FRUTTI_DI_MARE_ID,
-      WeaviateTestGenerics.PIZZA_HAWAII_ID,
-      WeaviateTestGenerics.PIZZA_DOENER_ID
-    ));
-    idsByClass.put("Soup", Arrays.asList(
-      WeaviateTestGenerics.SOUP_CHICKENSOUP_ID,
-      WeaviateTestGenerics.SOUP_BEAUTIFUL_ID
-    ));
-
     Arrays.stream(tenants).forEach(tenant ->
-      idsByClass.forEach((className, classIds) -> {
+      IDS_BY_CLASS.forEach((className, classIds) -> {
+        // TODO should fetch all for tenant?
 //        Result<List<WeaviateObject>> getResult = client.data().objectsGetter()
 //          .withTenantKey(tenant)
 //          .withClassName(className)
@@ -160,26 +163,38 @@ public class ClientDataMultiTenancyTest {
   }
 
   @Test
+  public void shouldCheckObjects() {
+    testGenerics.createFoodSchemaForTenants(client);
+    String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
+    testGenerics.createTenants(client, tenants);
+    testGenerics.createFoodDataForTenants(client, tenants);
+
+    Arrays.stream(tenants).forEach(tenant ->
+        IDS_BY_CLASS.forEach((className, classIds) ->
+          classIds.forEach(id -> {
+            Result<Boolean> checkResult = client.data().checker()
+              .withTenantKey(tenant)
+              .withClassName(className)
+              .withID(id)
+              .run();
+
+            assertThat(checkResult).isNotNull()
+              .returns(false, Result::hasErrors)
+              .returns(true, Result::getResult);
+          })
+        )
+    );
+  }
+
+  @Test
   public void shouldDeleteObjects() {
     testGenerics.createFoodSchemaForTenants(client);
     String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
     testGenerics.createTenants(client, tenants);
     testGenerics.createFoodDataForTenants(client, tenants);
 
-    Map<String, List<String>> idsByClass = new HashMap<>();
-    idsByClass.put("Pizza", Arrays.asList(
-      WeaviateTestGenerics.PIZZA_QUATTRO_FORMAGGI_ID,
-      WeaviateTestGenerics.PIZZA_FRUTTI_DI_MARE_ID,
-      WeaviateTestGenerics.PIZZA_HAWAII_ID,
-      WeaviateTestGenerics.PIZZA_DOENER_ID
-    ));
-    idsByClass.put("Soup", Arrays.asList(
-      WeaviateTestGenerics.SOUP_CHICKENSOUP_ID,
-      WeaviateTestGenerics.SOUP_BEAUTIFUL_ID
-    ));
-
     Arrays.stream(tenants).forEach(tenant ->
-      idsByClass.forEach((className, classIds) ->
+      IDS_BY_CLASS.forEach((className, classIds) ->
         classIds.forEach(id -> {
           Result<Boolean> deleteStatus = client.data().deleter()
             .withTenantKey(tenant)
