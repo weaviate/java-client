@@ -46,7 +46,7 @@ public class ClientDataMultiTenancyTest {
 
 
   @Test
-  public void shouldAddDataForMultipleTenants() {
+  public void shouldAddObjects() {
     testGenerics.createFoodSchemaForTenants(client);
     String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
     testGenerics.createTenants(client, tenants);
@@ -109,7 +109,58 @@ public class ClientDataMultiTenancyTest {
   }
 
   @Test
-  public void shouldDeleteObjectsForMultipleTenants() {
+  public void shouldGetObjects() {
+    testGenerics.createFoodSchemaForTenants(client);
+    String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
+    testGenerics.createTenants(client, tenants);
+    testGenerics.createFoodDataForTenants(client, tenants);
+
+    Map<String, List<String>> idsByClass = new HashMap<>();
+    idsByClass.put("Pizza", Arrays.asList(
+      WeaviateTestGenerics.PIZZA_QUATTRO_FORMAGGI_ID,
+      WeaviateTestGenerics.PIZZA_FRUTTI_DI_MARE_ID,
+      WeaviateTestGenerics.PIZZA_HAWAII_ID,
+      WeaviateTestGenerics.PIZZA_DOENER_ID
+    ));
+    idsByClass.put("Soup", Arrays.asList(
+      WeaviateTestGenerics.SOUP_CHICKENSOUP_ID,
+      WeaviateTestGenerics.SOUP_BEAUTIFUL_ID
+    ));
+
+    Arrays.stream(tenants).forEach(tenant ->
+      idsByClass.forEach((className, classIds) -> {
+//        Result<List<WeaviateObject>> getResult = client.data().objectsGetter()
+//          .withTenantKey(tenant)
+//          .withClassName(className)
+//          .run();
+//
+//        assertThat(getResult).isNotNull()
+//          .returns(false, Result::hasErrors);
+
+        classIds.forEach(id -> {
+          Result<List<WeaviateObject>> getOneResult = client.data().objectsGetter()
+            .withTenantKey(tenant)
+            .withClassName(className)
+            .withID(id)
+            .run();
+
+          assertThat(getOneResult).isNotNull()
+            .returns(false, Result::hasErrors)
+            .extracting(Result::getResult).asList()
+            .hasSize(1)
+            .first()
+            .extracting(o -> (WeaviateObject) o)
+            .returns(id, WeaviateObject::getId)
+            .returns(className, WeaviateObject::getClassName)
+            .extracting(WeaviateObject::getProperties)
+            .returns(tenant, p -> p.get("tenantName"));
+        });
+      })
+    );
+  }
+
+  @Test
+  public void shouldDeleteObjects() {
     testGenerics.createFoodSchemaForTenants(client);
     String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
     testGenerics.createTenants(client, tenants);
@@ -140,14 +191,22 @@ public class ClientDataMultiTenancyTest {
             .returns(false, Result::hasErrors)
             .returns(true, Result::getResult);
 
-          // TODO check if exists
+          Result<List<WeaviateObject>> getOneResult = client.data().objectsGetter()
+            .withTenantKey(tenant)
+            .withClassName(className)
+            .withID(id)
+            .run();
+
+          assertThat(getOneResult).isNotNull()
+            .returns(false, Result::hasErrors)
+            .extracting(Result::getResult).isNull();
         })
       )
     );
   }
 
   @Test
-  public void shouldUpdateObjectsForMultipleTenants() {
+  public void shouldUpdateObjects() {
     testGenerics.createFoodSchemaForTenants(client);
     String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
     testGenerics.createTenants(client, tenants);
@@ -179,6 +238,24 @@ public class ClientDataMultiTenancyTest {
         .returns(false, Result::hasErrors)
         .returns(true, Result::getResult);
 
+      Result<List<WeaviateObject>> getPizzaResult = client.data().objectsGetter()
+        .withTenantKey(tenant)
+        .withClassName("Pizza")
+        .withID(WeaviateTestGenerics.PIZZA_QUATTRO_FORMAGGI_ID)
+        .run();
+
+      assertThat(getPizzaResult).isNotNull()
+        .returns(false, Result::hasErrors)
+        .extracting(Result::getResult).asList()
+        .hasSize(1)
+        .first()
+        .extracting(o -> ((WeaviateObject)o).getProperties())
+        .returns("Quattro Formaggi", p -> p.get("name"))
+        .returns("updated Quattro Formaggi description", p -> p.get("description"))
+        .returns(1000.1d, p -> p.get("price"))
+        .returns("2022-01-02T03:04:05+01:00", p -> p.get("bestBefore"))
+        .returns(tenant, p -> p.get("tenantName"));
+
       soupProps.put("tenantName", tenant);
 
       Result<Boolean> soupUpdateStatus = client.data().updater()
@@ -192,12 +269,28 @@ public class ClientDataMultiTenancyTest {
         .returns(false, Result::hasErrors)
         .returns(true, Result::getResult);
 
-      // TODO check if updated
+      Result<List<WeaviateObject>> getSoupResult = client.data().objectsGetter()
+        .withTenantKey(tenant)
+        .withClassName("Soup")
+        .withID(WeaviateTestGenerics.SOUP_CHICKENSOUP_ID)
+        .run();
+
+      assertThat(getSoupResult).isNotNull()
+        .returns(false, Result::hasErrors)
+        .extracting(Result::getResult).asList()
+        .hasSize(1)
+        .first()
+        .extracting(o -> ((WeaviateObject)o).getProperties())
+        .returns("ChickenSoup", p -> p.get("name"))
+        .returns("updated ChickenSoup description", p -> p.get("description"))
+        .returns(2000.2d, p -> p.get("price"))
+        .returns("2022-05-06T07:08:09+05:00", p -> p.get("bestBefore"))
+        .returns(tenant, p -> p.get("tenantName"));
     });
   }
 
   @Test
-  public void shouldMergeObjectsForMultipleTenants() {
+  public void shouldMergeObjects() {
     testGenerics.createFoodSchemaForTenants(client);
     String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
     testGenerics.createTenants(client, tenants);
@@ -212,8 +305,6 @@ public class ClientDataMultiTenancyTest {
     soupProps.put("price", 2000.2f);
 
     Arrays.stream(tenants).forEach(tenant -> {
-//      pizzaProps.put("tenantName", tenant);
-
       Result<Boolean> pizzaUpdateStatus = client.data().updater()
         .withClassName("Pizza")
         .withID(WeaviateTestGenerics.PIZZA_QUATTRO_FORMAGGI_ID)
@@ -226,7 +317,23 @@ public class ClientDataMultiTenancyTest {
         .returns(false, Result::hasErrors)
         .returns(true, Result::getResult);
 
-//      soupProps.put("tenantName", tenant);
+      Result<List<WeaviateObject>> getPizzaResult = client.data().objectsGetter()
+        .withTenantKey(tenant)
+        .withClassName("Pizza")
+        .withID(WeaviateTestGenerics.PIZZA_QUATTRO_FORMAGGI_ID)
+        .run();
+
+      assertThat(getPizzaResult).isNotNull()
+        .returns(false, Result::hasErrors)
+        .extracting(Result::getResult).asList()
+        .hasSize(1)
+        .first()
+        .extracting(o -> ((WeaviateObject)o).getProperties())
+        .returns("Quattro Formaggi", p -> p.get("name"))
+        .returns("updated Quattro Formaggi description", p -> p.get("description"))
+        .returns(1000.1d, p -> p.get("price"))
+        .returns("2022-01-02T03:04:05+01:00", p -> p.get("bestBefore"))
+        .returns(tenant, p -> p.get("tenantName"));
 
       Result<Boolean> soupUpdateStatus = client.data().updater()
         .withClassName("Soup")
@@ -240,9 +347,24 @@ public class ClientDataMultiTenancyTest {
         .returns(false, Result::hasErrors)
         .returns(true, Result::getResult);
 
-      // TODO check if merged
+      Result<List<WeaviateObject>> getSoupResult = client.data().objectsGetter()
+        .withTenantKey(tenant)
+        .withClassName("Soup")
+        .withID(WeaviateTestGenerics.SOUP_CHICKENSOUP_ID)
+        .run();
+
+      assertThat(getSoupResult).isNotNull()
+        .returns(false, Result::hasErrors)
+        .extracting(Result::getResult).asList()
+        .hasSize(1)
+        .first()
+        .extracting(o -> ((WeaviateObject)o).getProperties())
+        .returns("ChickenSoup", p -> p.get("name"))
+        .returns("updated ChickenSoup description", p -> p.get("description"))
+        .returns(2000.2d, p -> p.get("price"))
+        .returns("2022-05-06T07:08:09+05:00", p -> p.get("bestBefore"))
+        .returns(tenant, p -> p.get("tenantName"));
     });
   }
-
 }
 

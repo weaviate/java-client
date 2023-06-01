@@ -70,7 +70,8 @@ public class ObjectsPath {
       this::addQueryAdditionals,
       this::addQueryLimit,
       this::addQueryOffset,
-      this::addQueryAfter
+      this::addQueryAfter,
+      this::addQueryTenantKey
     );
   }
 
@@ -81,7 +82,8 @@ public class ObjectsPath {
       this::addPathId,
       this::addQueryAdditionals,
       this::addQueryConsistencyLevel,
-      this::addQueryNodeName
+      this::addQueryNodeName,
+      this::addQueryTenantKey
     );
   }
 
