@@ -1,5 +1,6 @@
 package io.weaviate.client.v1.batch.util;
 
+import io.weaviate.client.base.util.UrlEncoder;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.ToString;
@@ -49,7 +50,7 @@ public class ObjectsPath {
 
   private void addQueryConsistencyLevel(Params params, List<String> pathParams, List<String> queryParams) {
     if (StringUtils.isNotBlank(params.consistencyLevel)) {
-      queryParams.add(String.format("%s=%s", "consistency_level", StringUtils.trim(params.consistencyLevel)));
+      queryParams.add(UrlEncoder.encodeQueryParam("consistency_level", params.consistencyLevel));
     }
   }
 

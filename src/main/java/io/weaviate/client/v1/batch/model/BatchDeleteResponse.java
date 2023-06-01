@@ -2,6 +2,7 @@ package io.weaviate.client.v1.batch.model;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -11,6 +12,7 @@ import io.weaviate.client.v1.filters.WhereFilter;
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BatchDeleteResponse {
 
@@ -23,6 +25,7 @@ public class BatchDeleteResponse {
     @Getter
     @Setter
     @ToString
+    @EqualsAndHashCode
     @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class Match {
 
@@ -35,6 +38,7 @@ public class BatchDeleteResponse {
     @Getter
     @Setter
     @ToString
+    @EqualsAndHashCode
     @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class Results {
 
@@ -48,6 +52,7 @@ public class BatchDeleteResponse {
     @Getter
     @Setter
     @ToString
+    @EqualsAndHashCode
     @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class ResultObject {
 
@@ -59,6 +64,7 @@ public class BatchDeleteResponse {
     @Getter
     @Setter
     @ToString
+    @EqualsAndHashCode
     @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class Errors {
 
@@ -68,6 +74,7 @@ public class BatchDeleteResponse {
     @Getter
     @Setter
     @ToString
+    @EqualsAndHashCode
     @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class Error {
 

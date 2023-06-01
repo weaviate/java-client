@@ -1,15 +1,13 @@
 package io.weaviate.client.v1.batch.util;
 
 import io.weaviate.client.base.util.TriConsumer;
+import io.weaviate.client.base.util.UrlEncoder;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,25 +43,13 @@ public class ReferencesPath {
 
   private void addQueryConsistencyLevel(Params params, List<String> pathParams, List<String> queryParams) {
     if (StringUtils.isNotBlank(params.consistencyLevel)) {
-      queryParams.add(String.format("%s=%s", "consistency_level", StringUtils.trim(params.consistencyLevel)));
+      queryParams.add(UrlEncoder.encodeQueryParam("consistency_level", params.consistencyLevel));
     }
   }
 
   private void addQueryTenantKey(Params params, List<String> pathParams, List<String> queryParams) {
     if (StringUtils.isNotBlank(params.tenantKey)) {
-      queryParams.add(encodeQueryParam("tenant_key", params.tenantKey));
-    }
-  }
-
-  private String encodeQueryParam(String key, String value) {
-    return String.format("%s=%s", key, encode(StringUtils.trim(value)));
-  }
-
-  private String encode(String value) {
-    try {
-      return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
-    } catch (UnsupportedEncodingException e) {
-      return value;
+      queryParams.add(UrlEncoder.encodeQueryParam("tenant_key", params.tenantKey));
     }
   }
 

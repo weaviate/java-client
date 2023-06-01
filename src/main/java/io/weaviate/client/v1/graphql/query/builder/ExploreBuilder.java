@@ -9,6 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
@@ -19,6 +20,7 @@ import io.weaviate.client.v1.graphql.model.ExploreFields;
 @Getter
 @Builder
 @ToString
+@EqualsAndHashCode
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ExploreBuilder implements Query {
   ExploreFields[] fields;

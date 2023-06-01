@@ -5,8 +5,10 @@ import io.weaviate.client.v1.batch.model.ObjectsBatchRequestBody;
 import io.weaviate.client.v1.batch.util.ObjectsPath;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -440,6 +442,8 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
 
   @Getter
   @Builder
+  @ToString
+  @EqualsAndHashCode
   @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
   public static class BatchRetriesConfig {
 
@@ -471,6 +475,8 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
 
   @Getter
   @Builder
+  @ToString
+  @EqualsAndHashCode
   @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
   public static class AutoBatchConfig {
 

@@ -10,6 +10,7 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Builder
 @ToString
+@EqualsAndHashCode
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class NearTextMoveParameters {
   String[] concepts;
@@ -19,8 +20,8 @@ public class NearTextMoveParameters {
   @Getter
   @Builder
   @ToString
-  @FieldDefaults(level = AccessLevel.PRIVATE)
   @EqualsAndHashCode
+  @FieldDefaults(level = AccessLevel.PRIVATE)
   public static class ObjectMove {
     String id;
     String beacon;

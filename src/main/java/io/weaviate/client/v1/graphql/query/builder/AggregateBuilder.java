@@ -10,6 +10,7 @@ import io.weaviate.client.v1.graphql.query.fields.Fields;
 import io.weaviate.client.v1.graphql.query.util.Serializer;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
@@ -23,6 +24,7 @@ import java.util.Set;
 @Getter
 @Builder
 @ToString
+@EqualsAndHashCode
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class AggregateBuilder implements Query {
   String className;

@@ -1,17 +1,15 @@
 package io.weaviate.client.v1.data.util;
 
+import io.weaviate.client.base.util.DbVersionSupport;
+import io.weaviate.client.base.util.TriConsumer;
+import io.weaviate.client.base.util.UrlEncoder;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import io.weaviate.client.base.util.DbVersionSupport;
-import io.weaviate.client.base.util.TriConsumer;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -110,7 +108,7 @@ public class ObjectsPath {
   private void addPathClassNameWithDeprecatedNotSupportedCheck(Params params, List<String> pathParams, List<String> queryParams) {
     if (support.supportsClassNameNamespacedEndpoints()) {
       if (StringUtils.isNotBlank(params.className)) {
-        pathParams.add(StringUtils.trim(params.className));
+        pathParams.add(UrlEncoder.encodePathParam(params.className));
       } else {
         support.warnDeprecatedNonClassNameNamespacedEndpointsForObjects();
       }
@@ -122,7 +120,7 @@ public class ObjectsPath {
   private void addPathClassNameWithDeprecatedCheck(Params params, List<String> pathParams, List<String> queryParams) {
     if (support.supportsClassNameNamespacedEndpoints()) {
       if (StringUtils.isNotBlank(params.className)) {
-        pathParams.add(StringUtils.trim(params.className));
+        pathParams.add(UrlEncoder.encodePathParam(params.className));
       } else {
         support.warnDeprecatedNonClassNameNamespacedEndpointsForObjects();
       }
@@ -131,7 +129,7 @@ public class ObjectsPath {
 
   private void addPathId(Params params, List<String> pathParams, List<String> queryParams) {
     if (StringUtils.isNotBlank(params.id)) {
-      pathParams.add(StringUtils.trim(params.id));
+      pathParams.add(UrlEncoder.encodePathParam(params.id));
     }
   }
 
@@ -139,7 +137,7 @@ public class ObjectsPath {
   private void addQueryClassNameWithDeprecatedCheck(Params params, List<String> pathParams, List<String> queryParams) {
     if (StringUtils.isBlank(params.id) && StringUtils.isNotBlank(params.className)) {
       if (support.supportsClassNameNamespacedEndpoints()) {
-        queryParams.add(String.format("%s=%s", "class", StringUtils.trim(params.className)));
+        queryParams.add(UrlEncoder.encodeQueryParam("class", params.className));
       } else {
         support.warnNotSupportedClassParameterInEndpointsForObjects();
       }
@@ -149,7 +147,7 @@ public class ObjectsPath {
   private void addQueryAdditionals(Params params, List<String> pathParams, List<String> queryParams) {
     if (ObjectUtils.isNotEmpty(params.additional)) {
       String include = Arrays.stream(params.additional)
-        .map(StringUtils::trim)
+        .map(UrlEncoder::encodePathParam)
         .filter(StringUtils::isNotBlank)
         .collect(Collectors.joining(","));
 
@@ -161,49 +159,37 @@ public class ObjectsPath {
 
   private void addQueryLimit(Params params, List<String> pathParams, List<String> queryParams) {
     if (params.limit != null) {
-      queryParams.add(String.format("%s=%s", "limit", params.limit));
+      queryParams.add(UrlEncoder.encodeQueryParam("limit", Integer.toString(params.limit)));
     }
   }
 
   private void addQueryOffset(Params params, List<String> pathParams, List<String> queryParams) {
     if (params.offset != null) {
-      queryParams.add(String.format("%s=%s", "offset", params.offset));
+      queryParams.add(UrlEncoder.encodeQueryParam("offset", Integer.toString(params.offset)));
     }
   }
 
   private void addQueryAfter(Params params, List<String> pathParams, List<String> queryParams) {
     if (StringUtils.isNotBlank(params.after)) {
-      queryParams.add(String.format("%s=%s", "after", params.after));
+      queryParams.add(UrlEncoder.encodeQueryParam("after", params.after));
     }
   }
 
   private void addQueryConsistencyLevel(Params params, List<String> pathParams, List<String> queryParams) {
     if (StringUtils.isNotBlank(params.consistencyLevel)) {
-      queryParams.add(String.format("%s=%s", "consistency_level", StringUtils.trim(params.consistencyLevel)));
+      queryParams.add(UrlEncoder.encodeQueryParam("consistency_level", params.consistencyLevel));
     }
   }
 
   private void addQueryNodeName(Params params, List<String> pathParams, List<String> queryParams) {
     if (StringUtils.isNotBlank(params.nodeName)) {
-      queryParams.add(String.format("%s=%s", "node_name", StringUtils.trim(params.nodeName)));
+      queryParams.add(UrlEncoder.encodeQueryParam("node_name", params.nodeName));
     }
   }
 
   private void addQueryTenantKey(Params params, List<String> pathParams, List<String> queryParams) {
     if (StringUtils.isNotBlank(params.tenantKey)) {
-      queryParams.add(encodeQueryParam("tenant_key", params.tenantKey));
-    }
-  }
-
-  private String encodeQueryParam(String key, String value) {
-    return String.format("%s=%s", key, encode(StringUtils.trim(value)));
-  }
-
-  private String encode(String value) {
-    try {
-      return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
-    } catch (UnsupportedEncodingException e) {
-      return value;
+      queryParams.add(UrlEncoder.encodeQueryParam("tenant_key", params.tenantKey));
     }
   }
 
