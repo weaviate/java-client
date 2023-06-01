@@ -17,6 +17,7 @@ import io.weaviate.integration.client.WeaviateTestGenerics;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
@@ -565,6 +566,83 @@ public class ClientDataMultiTenancyTest {
   }
 
   @Test
+  @Ignore("reference replace seems to be broken for now")
+  public void shouldReplaceReferences() {
+    testGenerics.createFoodSchemaForTenants(client);
+    String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
+    testGenerics.createTenants(client, tenants);
+    testGenerics.createFoodDataForTenants(client, tenants);
+
+    Result<Boolean> refPropResult = client.schema().propertyCreator()
+      .withClassName("Soup")
+      .withProperty(Property.builder()
+        .name("relatedTo")
+        .dataType(Collections.singletonList("Pizza"))
+        .build())
+      .run();
+
+    assertThat(refPropResult).isNotNull()
+      .returns(false, Result::hasErrors)
+      .returns(true, Result::getResult);
+
+    Arrays.stream(tenants).forEach(tenant ->
+      IDS_BY_CLASS.get("Soup").forEach(soupId -> {
+        ReferencePayloadBuilder soupRpb = client.batch().referencePayloadBuilder()
+          .withFromClassName("Soup")
+          .withFromID(soupId)
+          .withFromRefProp("relatedTo")
+          .withToClassName("Pizza");
+        BatchReference[] refs = IDS_BY_CLASS.get("Pizza").stream()
+          .skip(2)
+          .map(pizzaId -> soupRpb.withToID(pizzaId).payload())
+          .toArray(BatchReference[]::new);
+
+        Result<BatchReferenceResponse[]> batchRefResult = client.batch().referencesBatcher()
+          .withReferences(refs)
+          .withTenantKey(tenant)
+          .run();
+
+        assertThat(batchRefResult).isNotNull()
+          .returns(false, Result::hasErrors);
+
+        io.weaviate.client.v1.data.builder.ReferencePayloadBuilder pizzaRpb = client.data().referencePayloadBuilder()
+          .withClassName("Pizza");
+        SingleRef[] replaceRefs = IDS_BY_CLASS.get("Pizza").stream()
+          .limit(2)
+          .map(pizzaId -> pizzaRpb.withID(pizzaId).payload())
+          .toArray(SingleRef[]::new);
+
+        Result<Boolean> refReplaceResult = client.data().referenceReplacer()
+          .withClassName("Soup")
+          .withID(soupId)
+          .withReferenceProperty("relatedTo")
+          .withReferences(replaceRefs)
+          .withTenantKey(tenant)
+          .run();
+
+        assertThat(refReplaceResult).isNotNull()
+          .returns(false, Result::hasErrors)
+          .returns(true, Result::getResult);
+
+        Result<List<WeaviateObject>> getSoupResult = client.data().objectsGetter()
+          .withTenantKey(tenant)
+          .withClassName("Soup")
+          .withID(soupId)
+          .run();
+
+        assertThat(getSoupResult).isNotNull()
+          .returns(false, Result::hasErrors)
+          .extracting(Result::getResult).asList()
+          .hasSize(1)
+          .first()
+          .extracting(o -> ((WeaviateObject) o).getProperties())
+          .extracting(p -> p.get("relatedTo")).asList()
+          .hasSize(2);
+      })
+    );
+  }
+
+  @Test
   public void shouldRemoveReferences() {
     testGenerics.createFoodSchemaForTenants(client);
     String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
@@ -590,7 +668,6 @@ public class ClientDataMultiTenancyTest {
           .withFromID(soupId)
           .withFromRefProp("relatedTo")
           .withToClassName("Pizza");
-
         BatchReference[] references = IDS_BY_CLASS.get("Pizza").stream().map(pizzaId ->
           rpb.withToID(pizzaId).payload()
         ).toArray(BatchReference[]::new);
@@ -667,7 +744,6 @@ public class ClientDataMultiTenancyTest {
           .withFromID(soupId)
           .withFromRefProp("relatedTo")
           .withToClassName("Pizza");
-
         BatchReference[] references = IDS_BY_CLASS.get("Pizza").stream().map(pizzaId ->
           rpb.withToID(pizzaId).payload()
         ).toArray(BatchReference[]::new);
