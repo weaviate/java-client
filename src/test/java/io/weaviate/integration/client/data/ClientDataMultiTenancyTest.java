@@ -8,6 +8,7 @@ import io.weaviate.client.v1.batch.model.BatchDeleteResponse;
 import io.weaviate.client.v1.batch.model.BatchReference;
 import io.weaviate.client.v1.batch.model.BatchReferenceResponse;
 import io.weaviate.client.v1.batch.model.ObjectGetResponse;
+import io.weaviate.client.v1.data.model.SingleRef;
 import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.filters.Operator;
 import io.weaviate.client.v1.filters.WhereFilter;
@@ -506,6 +507,64 @@ public class ClientDataMultiTenancyTest {
   }
 
   @Test
+  public void shouldAddReferences() {
+    testGenerics.createFoodSchemaForTenants(client);
+    String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
+    testGenerics.createTenants(client, tenants);
+    testGenerics.createFoodDataForTenants(client, tenants);
+
+    Result<Boolean> refPropResult = client.schema().propertyCreator()
+      .withClassName("Soup")
+      .withProperty(Property.builder()
+        .name("relatedTo")
+        .dataType(Collections.singletonList("Pizza"))
+        .build())
+      .run();
+
+    assertThat(refPropResult).isNotNull()
+      .returns(false, Result::hasErrors)
+      .returns(true, Result::getResult);
+
+    Arrays.stream(tenants).forEach(tenant ->
+      IDS_BY_CLASS.get("Soup").forEach(soupId -> {
+        IDS_BY_CLASS.get("Pizza").forEach(pizzaId -> {
+          SingleRef pizzaRef = client.data().referencePayloadBuilder()
+            .withClassName("Pizza")
+            .withID(pizzaId)
+            .payload();
+
+          Result<Boolean> refResult = client.data().referenceCreator()
+            .withClassName("Soup")
+            .withID(soupId)
+            .withReferenceProperty("relatedTo")
+            .withReference(pizzaRef)
+            .withTenantKey(tenant)
+            .run();
+
+          assertThat(refResult).isNotNull()
+            .returns(false, Result::hasErrors)
+            .returns(true, Result::getResult);
+        });
+
+        Result<List<WeaviateObject>> getSoupResult = client.data().objectsGetter()
+          .withTenantKey(tenant)
+          .withClassName("Soup")
+          .withID(soupId)
+          .run();
+
+        assertThat(getSoupResult).isNotNull()
+          .returns(false, Result::hasErrors)
+          .extracting(Result::getResult).asList()
+          .hasSize(1)
+          .first()
+          .extracting(o -> ((WeaviateObject) o).getProperties())
+          .extracting(p -> p.get("relatedTo")).asList()
+          .hasSize(IDS_BY_CLASS.get("Pizza").size());
+      })
+    );
+  }
+
+  @Test
   public void shouldBatchAddReferences() {
     testGenerics.createFoodSchemaForTenants(client);
     String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
@@ -524,7 +583,7 @@ public class ClientDataMultiTenancyTest {
       .returns(false, Result::hasErrors)
       .returns(true, Result::getResult);
 
-    Arrays.stream(tenants).forEach(tenant -> {
+    Arrays.stream(tenants).forEach(tenant ->
       IDS_BY_CLASS.get("Soup").forEach(soupId -> {
         ReferencePayloadBuilder rpb = client.batch().referencePayloadBuilder()
           .withFromClassName("Soup")
@@ -546,13 +605,13 @@ public class ClientDataMultiTenancyTest {
           .extracting(Result::getResult).asInstanceOf(ARRAY)
           .hasSize(IDS_BY_CLASS.get("Pizza").size());
 
-        Result<List<WeaviateObject>> getOneResult = client.data().objectsGetter()
+        Result<List<WeaviateObject>> getSoupResult = client.data().objectsGetter()
           .withTenantKey(tenant)
           .withClassName("Soup")
           .withID(soupId)
           .run();
 
-        assertThat(getOneResult).isNotNull()
+        assertThat(getSoupResult).isNotNull()
           .returns(false, Result::hasErrors)
           .extracting(Result::getResult).asList()
           .hasSize(1)
@@ -560,8 +619,8 @@ public class ClientDataMultiTenancyTest {
           .extracting(o -> ((WeaviateObject) o).getProperties())
           .extracting(p -> p.get("relatedTo")).asList()
           .hasSize(IDS_BY_CLASS.get("Pizza").size());
-      });
-    });
+      })
+    );
   }
 }
 

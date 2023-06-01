@@ -8,6 +8,9 @@ import org.apache.commons.lang3.StringUtils;
 import io.weaviate.client.base.util.DbVersionSupport;
 import io.weaviate.client.base.util.TriConsumer;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +26,15 @@ public class ReferencesPath {
 
 
   public String buildCreate(Params params) {
-    return commonBuild(params);
+    return build(
+      params,
+      this::addPathClassNameWithDeprecatedNotSupportedCheck,
+      this::addPathId,
+      this::addPathReferences,
+      this::addPathProperty,
+      this::addQueryConsistencyLevel,
+      this::addQueryTenantKey
+    );
   }
 
   public String buildDelete(Params params) {
@@ -99,6 +110,24 @@ public class ReferencesPath {
     }
   }
 
+  private void addQueryTenantKey(Params params, List<String> pathParams, List<String> queryParams) {
+    if (StringUtils.isNotBlank(params.tenantKey)) {
+      queryParams.add(encodeQueryParam("tenant_key", params.tenantKey));
+    }
+  }
+
+  private String encodeQueryParam(String key, String value) {
+    return String.format("%s=%s", key, encode(StringUtils.trim(value)));
+  }
+
+  private String encode(String value) {
+    try {
+      return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
+    } catch (UnsupportedEncodingException e) {
+      return value;
+    }
+  }
+
 
   @Builder
   @ToString
@@ -108,6 +137,7 @@ public class ReferencesPath {
     String id;
     String className;
     String consistencyLevel;
+    String tenantKey;
     String property;
   }
 }
