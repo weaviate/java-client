@@ -533,7 +533,7 @@ public class ClientDataMultiTenancyTest {
             .withID(pizzaId)
             .payload();
 
-          Result<Boolean> refResult = client.data().referenceCreator()
+          Result<Boolean> refAddResult = client.data().referenceCreator()
             .withClassName("Soup")
             .withID(soupId)
             .withReferenceProperty("relatedTo")
@@ -541,7 +541,7 @@ public class ClientDataMultiTenancyTest {
             .withTenantKey(tenant)
             .run();
 
-          assertThat(refResult).isNotNull()
+          assertThat(refAddResult).isNotNull()
             .returns(false, Result::hasErrors)
             .returns(true, Result::getResult);
         });
@@ -560,6 +560,83 @@ public class ClientDataMultiTenancyTest {
           .extracting(o -> ((WeaviateObject) o).getProperties())
           .extracting(p -> p.get("relatedTo")).asList()
           .hasSize(IDS_BY_CLASS.get("Pizza").size());
+      })
+    );
+  }
+
+  @Test
+  public void shouldRemoveReferences() {
+    testGenerics.createFoodSchemaForTenants(client);
+    String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
+    testGenerics.createTenants(client, tenants);
+    testGenerics.createFoodDataForTenants(client, tenants);
+
+    Result<Boolean> refPropResult = client.schema().propertyCreator()
+      .withClassName("Soup")
+      .withProperty(Property.builder()
+        .name("relatedTo")
+        .dataType(Collections.singletonList("Pizza"))
+        .build())
+      .run();
+
+    assertThat(refPropResult).isNotNull()
+      .returns(false, Result::hasErrors)
+      .returns(true, Result::getResult);
+
+    Arrays.stream(tenants).forEach(tenant ->
+      IDS_BY_CLASS.get("Soup").forEach(soupId -> {
+        ReferencePayloadBuilder rpb = client.batch().referencePayloadBuilder()
+          .withFromClassName("Soup")
+          .withFromID(soupId)
+          .withFromRefProp("relatedTo")
+          .withToClassName("Pizza");
+
+        BatchReference[] references = IDS_BY_CLASS.get("Pizza").stream().map(pizzaId ->
+          rpb.withToID(pizzaId).payload()
+        ).toArray(BatchReference[]::new);
+
+        Result<BatchReferenceResponse[]> batchRefResult = client.batch().referencesBatcher()
+          .withReferences(references)
+          .withTenantKey(tenant)
+          .run();
+
+        assertThat(batchRefResult).isNotNull()
+          .returns(false, Result::hasErrors);
+
+        int[] refsLeft = new int[]{IDS_BY_CLASS.get("Pizza").size()};
+        IDS_BY_CLASS.get("Pizza").forEach(pizzaId -> {
+          SingleRef pizzaRef = client.data().referencePayloadBuilder()
+            .withClassName("Pizza")
+            .withID(pizzaId)
+            .payload();
+
+          Result<Boolean> refDeleteResult = client.data().referenceDeleter()
+            .withClassName("Soup")
+            .withID(soupId)
+            .withReferenceProperty("relatedTo")
+            .withReference(pizzaRef)
+            .withTenantKey(tenant)
+            .run();
+
+          assertThat(refDeleteResult).isNotNull()
+            .returns(false, Result::hasErrors)
+            .returns(true, Result::getResult);
+
+          Result<List<WeaviateObject>> getSoupResult = client.data().objectsGetter()
+            .withTenantKey(tenant)
+            .withClassName("Soup")
+            .withID(soupId)
+            .run();
+
+          assertThat(getSoupResult).isNotNull()
+            .returns(false, Result::hasErrors)
+            .extracting(Result::getResult).asList()
+            .hasSize(1)
+            .first()
+            .extracting(o -> ((WeaviateObject) o).getProperties())
+            .extracting(p -> p.get("relatedTo")).asList()
+            .hasSize(--refsLeft[0]);
+        });
       })
     );
   }

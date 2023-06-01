@@ -17,6 +17,7 @@ public class ReferenceDeleter extends BaseClient<Object> implements ClientResult
   private String id;
   private String className;
   private String consistencyLevel;
+  private String tenantKey;
   private String referenceProperty;
   private SingleRef referencePayload;
 
@@ -40,6 +41,11 @@ public class ReferenceDeleter extends BaseClient<Object> implements ClientResult
     return this;
   }
 
+  public ReferenceDeleter withTenantKey(String tenantKey) {
+    this.tenantKey = tenantKey;
+    return this;
+  }
+
   public ReferenceDeleter withReferenceProperty(String propertyName) {
     this.referenceProperty = propertyName;
     return this;
@@ -56,6 +62,7 @@ public class ReferenceDeleter extends BaseClient<Object> implements ClientResult
             .id(id)
             .className(className)
             .consistencyLevel(consistencyLevel)
+            .tenantKey(tenantKey)
             .property(referenceProperty)
             .build());
     Response<Object> resp = sendDeleteRequest(path, referencePayload, Object.class);

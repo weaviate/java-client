@@ -38,7 +38,15 @@ public class ReferencesPath {
   }
 
   public String buildDelete(Params params) {
-    return commonBuild(params);
+    return build(
+      params,
+      this::addPathClassNameWithDeprecatedNotSupportedCheck,
+      this::addPathId,
+      this::addPathReferences,
+      this::addPathProperty,
+      this::addQueryConsistencyLevel,
+      this::addQueryTenantKey
+    );
   }
 
   public String buildReplace(Params params) {
