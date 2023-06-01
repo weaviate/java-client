@@ -3,11 +3,15 @@ package io.weaviate.integration.client.data;
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
+import io.weaviate.client.v1.batch.api.ReferencePayloadBuilder;
 import io.weaviate.client.v1.batch.model.BatchDeleteResponse;
+import io.weaviate.client.v1.batch.model.BatchReference;
+import io.weaviate.client.v1.batch.model.BatchReferenceResponse;
 import io.weaviate.client.v1.batch.model.ObjectGetResponse;
 import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.filters.Operator;
 import io.weaviate.client.v1.filters.WhereFilter;
+import io.weaviate.client.v1.schema.model.Property;
 import io.weaviate.integration.client.WeaviateTestGenerics;
 import org.junit.After;
 import org.junit.Before;
@@ -18,6 +22,7 @@ import org.testcontainers.containers.wait.strategy.Wait;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -481,8 +486,8 @@ public class ClientDataMultiTenancyTest {
           .returns(false, Result::hasErrors)
           .extracting(Result::getResult).isNotNull()
           .extracting(BatchDeleteResponse::getResults)
-          .returns((long)classIds.size(), BatchDeleteResponse.Results::getMatches)
-          .returns((long)classIds.size(), BatchDeleteResponse.Results::getSuccessful);
+          .returns((long) classIds.size(), BatchDeleteResponse.Results::getMatches)
+          .returns((long) classIds.size(), BatchDeleteResponse.Results::getSuccessful);
 
         classIds.forEach(id -> {
           Result<List<WeaviateObject>> getOneResult = client.data().objectsGetter()
@@ -498,6 +503,65 @@ public class ClientDataMultiTenancyTest {
         });
       })
     );
+  }
+
+  @Test
+  public void shouldBatchAddReferences() {
+    testGenerics.createFoodSchemaForTenants(client);
+    String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
+    testGenerics.createTenants(client, tenants);
+    testGenerics.createFoodDataForTenants(client, tenants);
+
+    Result<Boolean> refPropResult = client.schema().propertyCreator()
+      .withClassName("Soup")
+      .withProperty(Property.builder()
+        .name("relatedTo")
+        .dataType(Collections.singletonList("Pizza"))
+        .build())
+      .run();
+
+    assertThat(refPropResult).isNotNull()
+      .returns(false, Result::hasErrors)
+      .returns(true, Result::getResult);
+
+    Arrays.stream(tenants).forEach(tenant -> {
+      IDS_BY_CLASS.get("Soup").forEach(soupId -> {
+        ReferencePayloadBuilder rpb = client.batch().referencePayloadBuilder()
+          .withFromClassName("Soup")
+          .withFromID(soupId)
+          .withFromRefProp("relatedTo")
+          .withToClassName("Pizza");
+
+        BatchReference[] references = IDS_BY_CLASS.get("Pizza").stream().map(pizzaId ->
+          rpb.withToID(pizzaId).payload()
+        ).toArray(BatchReference[]::new);
+
+        Result<BatchReferenceResponse[]> batchRefResult = client.batch().referencesBatcher()
+          .withReferences(references)
+          .withTenantKey(tenant)
+          .run();
+
+        assertThat(batchRefResult).isNotNull()
+          .returns(false, Result::hasErrors)
+          .extracting(Result::getResult).asInstanceOf(ARRAY)
+          .hasSize(IDS_BY_CLASS.get("Pizza").size());
+
+        Result<List<WeaviateObject>> getOneResult = client.data().objectsGetter()
+          .withTenantKey(tenant)
+          .withClassName("Soup")
+          .withID(soupId)
+          .run();
+
+        assertThat(getOneResult).isNotNull()
+          .returns(false, Result::hasErrors)
+          .extracting(Result::getResult).asList()
+          .hasSize(1)
+          .first()
+          .extracting(o -> ((WeaviateObject) o).getProperties())
+          .extracting(p -> p.get("relatedTo")).asList()
+          .hasSize(IDS_BY_CLASS.get("Pizza").size());
+      });
+    });
   }
 }
 
