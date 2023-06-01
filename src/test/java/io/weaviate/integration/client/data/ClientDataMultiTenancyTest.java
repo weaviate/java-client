@@ -3,7 +3,11 @@ package io.weaviate.integration.client.data;
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
+import io.weaviate.client.v1.batch.model.BatchDeleteResponse;
+import io.weaviate.client.v1.batch.model.ObjectGetResponse;
 import io.weaviate.client.v1.data.model.WeaviateObject;
+import io.weaviate.client.v1.filters.Operator;
+import io.weaviate.client.v1.filters.WhereFilter;
 import io.weaviate.integration.client.WeaviateTestGenerics;
 import org.junit.After;
 import org.junit.Before;
@@ -17,14 +21,17 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
 
 public class ClientDataMultiTenancyTest {
   private WeaviateClient client;
   private WeaviateTestGenerics testGenerics;
 
   private static final Map<String, List<String>> IDS_BY_CLASS = new HashMap<>();
+
   static {
     IDS_BY_CLASS.put("Pizza", Arrays.asList(
       WeaviateTestGenerics.PIZZA_QUATTRO_FORMAGGI_ID,
@@ -123,71 +130,7 @@ public class ClientDataMultiTenancyTest {
   }
 
   @Test
-  public void shouldGetObjects() {
-    testGenerics.createFoodSchemaForTenants(client);
-    String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
-    testGenerics.createTenants(client, tenants);
-    testGenerics.createFoodDataForTenants(client, tenants);
-
-    Arrays.stream(tenants).forEach(tenant ->
-      IDS_BY_CLASS.forEach((className, classIds) -> {
-        // TODO should fetch all for tenant?
-//        Result<List<WeaviateObject>> getResult = client.data().objectsGetter()
-//          .withTenantKey(tenant)
-//          .withClassName(className)
-//          .run();
-//
-//        assertThat(getResult).isNotNull()
-//          .returns(false, Result::hasErrors);
-
-        classIds.forEach(id -> {
-          Result<List<WeaviateObject>> getOneResult = client.data().objectsGetter()
-            .withTenantKey(tenant)
-            .withClassName(className)
-            .withID(id)
-            .run();
-
-          assertThat(getOneResult).isNotNull()
-            .returns(false, Result::hasErrors)
-            .extracting(Result::getResult).asList()
-            .hasSize(1)
-            .first()
-            .extracting(o -> (WeaviateObject) o)
-            .returns(id, WeaviateObject::getId)
-            .returns(className, WeaviateObject::getClassName)
-            .extracting(WeaviateObject::getProperties)
-            .returns(tenant, p -> p.get("tenantName"));
-        });
-      })
-    );
-  }
-
-  @Test
   public void shouldCheckObjects() {
-    testGenerics.createFoodSchemaForTenants(client);
-    String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
-    testGenerics.createTenants(client, tenants);
-    testGenerics.createFoodDataForTenants(client, tenants);
-
-    Arrays.stream(tenants).forEach(tenant ->
-        IDS_BY_CLASS.forEach((className, classIds) ->
-          classIds.forEach(id -> {
-            Result<Boolean> checkResult = client.data().checker()
-              .withTenantKey(tenant)
-              .withClassName(className)
-              .withID(id)
-              .run();
-
-            assertThat(checkResult).isNotNull()
-              .returns(false, Result::hasErrors)
-              .returns(true, Result::getResult);
-          })
-        )
-    );
-  }
-
-  @Test
-  public void shouldDeleteObjects() {
     testGenerics.createFoodSchemaForTenants(client);
     String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
     testGenerics.createTenants(client, tenants);
@@ -196,27 +139,57 @@ public class ClientDataMultiTenancyTest {
     Arrays.stream(tenants).forEach(tenant ->
       IDS_BY_CLASS.forEach((className, classIds) ->
         classIds.forEach(id -> {
-          Result<Boolean> deleteStatus = client.data().deleter()
+          Result<Boolean> checkResult = client.data().checker()
             .withTenantKey(tenant)
             .withClassName(className)
             .withID(id)
             .run();
 
-          assertThat(deleteStatus).isNotNull()
+          assertThat(checkResult).isNotNull()
             .returns(false, Result::hasErrors)
             .returns(true, Result::getResult);
-
-          Result<List<WeaviateObject>> getOneResult = client.data().objectsGetter()
-            .withTenantKey(tenant)
-            .withClassName(className)
-            .withID(id)
-            .run();
-
-          assertThat(getOneResult).isNotNull()
-            .returns(false, Result::hasErrors)
-            .extracting(Result::getResult).isNull();
         })
       )
+    );
+  }
+
+  @Test
+  public void shouldGetObjects() {
+    testGenerics.createFoodSchemaForTenants(client);
+    String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
+    testGenerics.createTenants(client, tenants);
+    testGenerics.createFoodDataForTenants(client, tenants);
+
+    Arrays.stream(tenants).forEach(tenant ->
+        IDS_BY_CLASS.forEach((className, classIds) -> {
+          // TODO should fetch all for tenant?
+//        Result<List<WeaviateObject>> getResult = client.data().objectsGetter()
+//          .withTenantKey(tenant)
+//          .withClassName(className)
+//          .run();
+//
+//        assertThat(getResult).isNotNull()
+//          .returns(false, Result::hasErrors);
+
+          classIds.forEach(id -> {
+            Result<List<WeaviateObject>> getOneResult = client.data().objectsGetter()
+              .withTenantKey(tenant)
+              .withClassName(className)
+              .withID(id)
+              .run();
+
+            assertThat(getOneResult).isNotNull()
+              .returns(false, Result::hasErrors)
+              .extracting(Result::getResult).asList()
+              .hasSize(1)
+              .first()
+              .extracting(o -> (WeaviateObject) o)
+              .returns(id, WeaviateObject::getId)
+              .returns(className, WeaviateObject::getClassName)
+              .extracting(WeaviateObject::getProperties)
+              .returns(tenant, p -> p.get("tenantName"));
+          });
+        })
     );
   }
 
@@ -264,7 +237,7 @@ public class ClientDataMultiTenancyTest {
         .extracting(Result::getResult).asList()
         .hasSize(1)
         .first()
-        .extracting(o -> ((WeaviateObject)o).getProperties())
+        .extracting(o -> ((WeaviateObject) o).getProperties())
         .returns("Quattro Formaggi", p -> p.get("name"))
         .returns("updated Quattro Formaggi description", p -> p.get("description"))
         .returns(1000.1d, p -> p.get("price"))
@@ -295,7 +268,7 @@ public class ClientDataMultiTenancyTest {
         .extracting(Result::getResult).asList()
         .hasSize(1)
         .first()
-        .extracting(o -> ((WeaviateObject)o).getProperties())
+        .extracting(o -> ((WeaviateObject) o).getProperties())
         .returns("ChickenSoup", p -> p.get("name"))
         .returns("updated ChickenSoup description", p -> p.get("description"))
         .returns(2000.2d, p -> p.get("price"))
@@ -343,7 +316,7 @@ public class ClientDataMultiTenancyTest {
         .extracting(Result::getResult).asList()
         .hasSize(1)
         .first()
-        .extracting(o -> ((WeaviateObject)o).getProperties())
+        .extracting(o -> ((WeaviateObject) o).getProperties())
         .returns("Quattro Formaggi", p -> p.get("name"))
         .returns("updated Quattro Formaggi description", p -> p.get("description"))
         .returns(1000.1d, p -> p.get("price"))
@@ -373,13 +346,158 @@ public class ClientDataMultiTenancyTest {
         .extracting(Result::getResult).asList()
         .hasSize(1)
         .first()
-        .extracting(o -> ((WeaviateObject)o).getProperties())
+        .extracting(o -> ((WeaviateObject) o).getProperties())
         .returns("ChickenSoup", p -> p.get("name"))
         .returns("updated ChickenSoup description", p -> p.get("description"))
         .returns(2000.2d, p -> p.get("price"))
         .returns("2022-05-06T07:08:09+05:00", p -> p.get("bestBefore"))
         .returns(tenant, p -> p.get("tenantName"));
     });
+  }
+
+  @Test
+  public void shouldDeleteObjects() {
+    testGenerics.createFoodSchemaForTenants(client);
+    String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
+    testGenerics.createTenants(client, tenants);
+    testGenerics.createFoodDataForTenants(client, tenants);
+
+    Arrays.stream(tenants).forEach(tenant ->
+      IDS_BY_CLASS.forEach((className, classIds) ->
+        classIds.forEach(id -> {
+          Result<Boolean> deleteStatus = client.data().deleter()
+            .withTenantKey(tenant)
+            .withClassName(className)
+            .withID(id)
+            .run();
+
+          assertThat(deleteStatus).isNotNull()
+            .returns(false, Result::hasErrors)
+            .returns(true, Result::getResult);
+
+          Result<List<WeaviateObject>> getOneResult = client.data().objectsGetter()
+            .withTenantKey(tenant)
+            .withClassName(className)
+            .withID(id)
+            .run();
+
+          assertThat(getOneResult).isNotNull()
+            .returns(false, Result::hasErrors)
+            .extracting(Result::getResult).isNull();
+        })
+      )
+    );
+  }
+
+  @Test
+  public void shouldBatchAddObjects() {
+    testGenerics.createFoodSchemaForTenants(client);
+    String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
+    testGenerics.createTenants(client, tenants);
+
+    WeaviateObject[] objects = Arrays.stream(tenants).flatMap(tenant -> {
+      Map<String, Object> pizzaProps = new HashMap<>();
+      pizzaProps.put("name", "Quattro Formaggi");
+      pizzaProps.put("description", "Pizza quattro formaggi Italian: [ˈkwattro forˈmaddʒi] (four cheese pizza) is a variety of pizza in Italian cuisine that is topped with a combination of four kinds of cheese, usually melted together, with (rossa, red) or without (bianca, white) tomato sauce. It is popular worldwide, including in Italy,[1] and is one of the iconic items from pizzerias's menus.");
+      pizzaProps.put("price", 1.4f);
+      pizzaProps.put("bestBefore", "2022-01-02T03:04:05+01:00");
+      pizzaProps.put("tenantName", tenant);
+
+      WeaviateObject pizza = WeaviateObject.builder()
+        .id(WeaviateTestGenerics.PIZZA_QUATTRO_FORMAGGI_ID)
+        .className("Pizza")
+        .properties(pizzaProps)
+        .build();
+
+      Map<String, Object> soupProps = new HashMap<>();
+      soupProps.put("name", "ChickenSoup");
+      soupProps.put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
+      soupProps.put("price", 2.0f);
+      soupProps.put("bestBefore", "2022-05-06T07:08:09+05:00");
+      soupProps.put("tenantName", tenant);
+
+      WeaviateObject soup = WeaviateObject.builder()
+        .id(WeaviateTestGenerics.SOUP_CHICKENSOUP_ID)
+        .className("Soup")
+        .properties(soupProps)
+        .build();
+
+      return Stream.of(pizza, soup);
+    }).toArray(WeaviateObject[]::new);
+
+    Result<ObjectGetResponse[]> batchAddResult = client.batch().objectsBatcher()
+      .withObjects(objects)
+      .run();
+
+    assertThat(batchAddResult).isNotNull()
+      .returns(false, Result::hasErrors)
+      .extracting(Result::getResult).asInstanceOf(ARRAY)
+      .hasSize(6);
+
+    Arrays.stream(tenants).forEach(tenant -> {
+      Result<List<WeaviateObject>> getPizzaResult = client.data().objectsGetter()
+        .withTenantKey(tenant)
+        .withClassName("Pizza")
+        .withID(WeaviateTestGenerics.PIZZA_QUATTRO_FORMAGGI_ID)
+        .run();
+
+      assertThat(getPizzaResult).isNotNull()
+        .returns(false, Result::hasErrors)
+        .extracting(Result::getResult)
+        .isNotNull();
+
+      Result<List<WeaviateObject>> getSoupResult = client.data().objectsGetter()
+        .withTenantKey(tenant)
+        .withClassName("Soup")
+        .withID(WeaviateTestGenerics.SOUP_CHICKENSOUP_ID)
+        .run();
+
+      assertThat(getSoupResult).isNotNull()
+        .returns(false, Result::hasErrors)
+        .extracting(Result::getResult)
+        .isNotNull();
+    });
+  }
+
+  @Test
+  public void shouldBatchDeleteObjects() {
+    testGenerics.createFoodSchemaForTenants(client);
+    String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
+    testGenerics.createTenants(client, tenants);
+    testGenerics.createFoodDataForTenants(client, tenants);
+
+    Arrays.stream(tenants).forEach(tenant ->
+      IDS_BY_CLASS.forEach((className, classIds) -> {
+        Result<BatchDeleteResponse> batchDeleteResult = client.batch().objectsBatchDeleter()
+          .withClassName(className)
+          .withWhere(WhereFilter.builder()
+            .operator(Operator.Equal)
+            .path(new String[]{"tenantName"})
+            .valueText(tenant)
+            .build())
+          .run();
+
+        assertThat(batchDeleteResult).isNotNull()
+          .returns(false, Result::hasErrors)
+          .extracting(Result::getResult).isNotNull()
+          .extracting(BatchDeleteResponse::getResults)
+          .returns((long)classIds.size(), BatchDeleteResponse.Results::getMatches)
+          .returns((long)classIds.size(), BatchDeleteResponse.Results::getSuccessful);
+
+        classIds.forEach(id -> {
+          Result<List<WeaviateObject>> getOneResult = client.data().objectsGetter()
+            .withTenantKey(tenant)
+            .withClassName(className)
+            .withID(id)
+            .run();
+
+          assertThat(getOneResult).isNotNull()
+            .returns(false, Result::hasErrors)
+            .extracting(Result::getResult)
+            .isNull();
+        });
+      })
+    );
   }
 }
 
