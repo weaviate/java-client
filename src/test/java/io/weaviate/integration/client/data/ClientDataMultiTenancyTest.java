@@ -3,6 +3,8 @@ package io.weaviate.integration.client.data;
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
+import io.weaviate.client.base.WeaviateError;
+import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.v1.batch.api.ReferencePayloadBuilder;
 import io.weaviate.client.v1.batch.model.BatchDeleteResponse;
 import io.weaviate.client.v1.batch.model.BatchReference;
@@ -32,6 +34,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
+import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
 
 public class ClientDataMultiTenancyTest {
   private WeaviateClient client;
@@ -75,9 +78,9 @@ public class ClientDataMultiTenancyTest {
 
   @Test
   public void shouldAddObjects() {
-    testGenerics.createFoodSchemaForTenants(client);
     String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
-    testGenerics.createTenants(client, tenants);
+    testGenerics.createSchemaFoodForTenants(client);
+    testGenerics.createTenantsFood(client, tenants);
 
     Map<String, Object> pizzaProps = new HashMap<>();
     pizzaProps.put("name", "Quattro Formaggi");
@@ -138,10 +141,10 @@ public class ClientDataMultiTenancyTest {
 
   @Test
   public void shouldCheckObjects() {
-    testGenerics.createFoodSchemaForTenants(client);
     String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
-    testGenerics.createTenants(client, tenants);
-    testGenerics.createFoodDataForTenants(client, tenants);
+    testGenerics.createSchemaFoodForTenants(client);
+    testGenerics.createTenantsFood(client, tenants);
+    testGenerics.createDataFoodForTenants(client, tenants);
 
     Arrays.stream(tenants).forEach(tenant ->
       IDS_BY_CLASS.forEach((className, classIds) ->
@@ -162,10 +165,10 @@ public class ClientDataMultiTenancyTest {
 
   @Test
   public void shouldGetObjects() {
-    testGenerics.createFoodSchemaForTenants(client);
     String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
-    testGenerics.createTenants(client, tenants);
-    testGenerics.createFoodDataForTenants(client, tenants);
+    testGenerics.createSchemaFoodForTenants(client);
+    testGenerics.createTenantsFood(client, tenants);
+    testGenerics.createDataFoodForTenants(client, tenants);
 
     Arrays.stream(tenants).forEach(tenant ->
         IDS_BY_CLASS.forEach((className, classIds) -> {
@@ -202,10 +205,10 @@ public class ClientDataMultiTenancyTest {
 
   @Test
   public void shouldUpdateObjects() {
-    testGenerics.createFoodSchemaForTenants(client);
     String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
-    testGenerics.createTenants(client, tenants);
-    testGenerics.createFoodDataForTenants(client, tenants);
+    testGenerics.createSchemaFoodForTenants(client);
+    testGenerics.createTenantsFood(client, tenants);
+    testGenerics.createDataFoodForTenants(client, tenants);
 
     Map<String, Object> pizzaProps = new HashMap<>();
     pizzaProps.put("name", "Quattro Formaggi");
@@ -286,10 +289,10 @@ public class ClientDataMultiTenancyTest {
 
   @Test
   public void shouldMergeObjects() {
-    testGenerics.createFoodSchemaForTenants(client);
     String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
-    testGenerics.createTenants(client, tenants);
-    testGenerics.createFoodDataForTenants(client, tenants);
+    testGenerics.createSchemaFoodForTenants(client);
+    testGenerics.createTenantsFood(client, tenants);
+    testGenerics.createDataFoodForTenants(client, tenants);
 
     Map<String, Object> pizzaProps = new HashMap<>();
     pizzaProps.put("description", "updated Quattro Formaggi description");
@@ -364,10 +367,10 @@ public class ClientDataMultiTenancyTest {
 
   @Test
   public void shouldDeleteObjects() {
-    testGenerics.createFoodSchemaForTenants(client);
     String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
-    testGenerics.createTenants(client, tenants);
-    testGenerics.createFoodDataForTenants(client, tenants);
+    testGenerics.createSchemaFoodForTenants(client);
+    testGenerics.createTenantsFood(client, tenants);
+    testGenerics.createDataFoodForTenants(client, tenants);
 
     Arrays.stream(tenants).forEach(tenant ->
       IDS_BY_CLASS.forEach((className, classIds) ->
@@ -398,9 +401,9 @@ public class ClientDataMultiTenancyTest {
 
   @Test
   public void shouldBatchAddObjects() {
-    testGenerics.createFoodSchemaForTenants(client);
     String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
-    testGenerics.createTenants(client, tenants);
+    testGenerics.createSchemaFoodForTenants(client);
+    testGenerics.createTenantsFood(client, tenants);
 
     WeaviateObject[] objects = Arrays.stream(tenants).flatMap(tenant -> {
       Map<String, Object> pizzaProps = new HashMap<>();
@@ -468,10 +471,10 @@ public class ClientDataMultiTenancyTest {
 
   @Test
   public void shouldBatchDeleteObjects() {
-    testGenerics.createFoodSchemaForTenants(client);
     String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
-    testGenerics.createTenants(client, tenants);
-    testGenerics.createFoodDataForTenants(client, tenants);
+    testGenerics.createSchemaFoodForTenants(client);
+    testGenerics.createTenantsFood(client, tenants);
+    testGenerics.createDataFoodForTenants(client, tenants);
 
     Arrays.stream(tenants).forEach(tenant ->
       IDS_BY_CLASS.forEach((className, classIds) -> {
@@ -509,15 +512,15 @@ public class ClientDataMultiTenancyTest {
 
   @Test
   public void shouldAddReferences() {
-    testGenerics.createFoodSchemaForTenants(client);
     String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
-    testGenerics.createTenants(client, tenants);
-    testGenerics.createFoodDataForTenants(client, tenants);
+    testGenerics.createSchemaFoodForTenants(client);
+    testGenerics.createTenantsFood(client, tenants);
+    testGenerics.createDataFoodForTenants(client, tenants);
 
     Result<Boolean> refPropResult = client.schema().propertyCreator()
       .withClassName("Soup")
       .withProperty(Property.builder()
-        .name("relatedTo")
+        .name("relatedToPizza")
         .dataType(Collections.singletonList("Pizza"))
         .build())
       .run();
@@ -537,7 +540,7 @@ public class ClientDataMultiTenancyTest {
           Result<Boolean> refAddResult = client.data().referenceCreator()
             .withClassName("Soup")
             .withID(soupId)
-            .withReferenceProperty("relatedTo")
+            .withReferenceProperty("relatedToPizza")
             .withReference(pizzaRef)
             .withTenantKey(tenant)
             .run();
@@ -559,7 +562,7 @@ public class ClientDataMultiTenancyTest {
           .hasSize(1)
           .first()
           .extracting(o -> ((WeaviateObject) o).getProperties())
-          .extracting(p -> p.get("relatedTo")).asList()
+          .extracting(p -> p.get("relatedToPizza")).asList()
           .hasSize(IDS_BY_CLASS.get("Pizza").size());
       })
     );
@@ -568,15 +571,15 @@ public class ClientDataMultiTenancyTest {
   @Test
   @Ignore("reference replace seems to be broken for now")
   public void shouldReplaceReferences() {
-    testGenerics.createFoodSchemaForTenants(client);
     String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
-    testGenerics.createTenants(client, tenants);
-    testGenerics.createFoodDataForTenants(client, tenants);
+    testGenerics.createSchemaFoodForTenants(client);
+    testGenerics.createTenantsFood(client, tenants);
+    testGenerics.createDataFoodForTenants(client, tenants);
 
     Result<Boolean> refPropResult = client.schema().propertyCreator()
       .withClassName("Soup")
       .withProperty(Property.builder()
-        .name("relatedTo")
+        .name("relatedToPizza")
         .dataType(Collections.singletonList("Pizza"))
         .build())
       .run();
@@ -590,7 +593,7 @@ public class ClientDataMultiTenancyTest {
         ReferencePayloadBuilder soupRpb = client.batch().referencePayloadBuilder()
           .withFromClassName("Soup")
           .withFromID(soupId)
-          .withFromRefProp("relatedTo")
+          .withFromRefProp("relatedToPizza")
           .withToClassName("Pizza");
         BatchReference[] refs = IDS_BY_CLASS.get("Pizza").stream()
           .skip(2)
@@ -615,7 +618,7 @@ public class ClientDataMultiTenancyTest {
         Result<Boolean> refReplaceResult = client.data().referenceReplacer()
           .withClassName("Soup")
           .withID(soupId)
-          .withReferenceProperty("relatedTo")
+          .withReferenceProperty("relatedToPizza")
           .withReferences(replaceRefs)
           .withTenantKey(tenant)
           .run();
@@ -636,7 +639,7 @@ public class ClientDataMultiTenancyTest {
           .hasSize(1)
           .first()
           .extracting(o -> ((WeaviateObject) o).getProperties())
-          .extracting(p -> p.get("relatedTo")).asList()
+          .extracting(p -> p.get("relatedToPizza")).asList()
           .hasSize(2);
       })
     );
@@ -644,15 +647,15 @@ public class ClientDataMultiTenancyTest {
 
   @Test
   public void shouldRemoveReferences() {
-    testGenerics.createFoodSchemaForTenants(client);
     String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
-    testGenerics.createTenants(client, tenants);
-    testGenerics.createFoodDataForTenants(client, tenants);
+    testGenerics.createSchemaFoodForTenants(client);
+    testGenerics.createTenantsFood(client, tenants);
+    testGenerics.createDataFoodForTenants(client, tenants);
 
     Result<Boolean> refPropResult = client.schema().propertyCreator()
       .withClassName("Soup")
       .withProperty(Property.builder()
-        .name("relatedTo")
+        .name("relatedToPizza")
         .dataType(Collections.singletonList("Pizza"))
         .build())
       .run();
@@ -666,7 +669,7 @@ public class ClientDataMultiTenancyTest {
         ReferencePayloadBuilder rpb = client.batch().referencePayloadBuilder()
           .withFromClassName("Soup")
           .withFromID(soupId)
-          .withFromRefProp("relatedTo")
+          .withFromRefProp("relatedToPizza")
           .withToClassName("Pizza");
         BatchReference[] references = IDS_BY_CLASS.get("Pizza").stream().map(pizzaId ->
           rpb.withToID(pizzaId).payload()
@@ -690,7 +693,7 @@ public class ClientDataMultiTenancyTest {
           Result<Boolean> refDeleteResult = client.data().referenceDeleter()
             .withClassName("Soup")
             .withID(soupId)
-            .withReferenceProperty("relatedTo")
+            .withReferenceProperty("relatedToPizza")
             .withReference(pizzaRef)
             .withTenantKey(tenant)
             .run();
@@ -711,7 +714,7 @@ public class ClientDataMultiTenancyTest {
             .hasSize(1)
             .first()
             .extracting(o -> ((WeaviateObject) o).getProperties())
-            .extracting(p -> p.get("relatedTo")).asList()
+            .extracting(p -> p.get("relatedToPizza")).asList()
             .hasSize(--refsLeft[0]);
         });
       })
@@ -720,15 +723,15 @@ public class ClientDataMultiTenancyTest {
 
   @Test
   public void shouldBatchAddReferences() {
-    testGenerics.createFoodSchemaForTenants(client);
     String[] tenants = new String[]{"TenantNo1", "TenantNo2", "TenantNo3"};
-    testGenerics.createTenants(client, tenants);
-    testGenerics.createFoodDataForTenants(client, tenants);
+    testGenerics.createSchemaFoodForTenants(client);
+    testGenerics.createTenantsFood(client, tenants);
+    testGenerics.createDataFoodForTenants(client, tenants);
 
     Result<Boolean> refPropResult = client.schema().propertyCreator()
       .withClassName("Soup")
       .withProperty(Property.builder()
-        .name("relatedTo")
+        .name("relatedToPizza")
         .dataType(Collections.singletonList("Pizza"))
         .build())
       .run();
@@ -742,7 +745,7 @@ public class ClientDataMultiTenancyTest {
         ReferencePayloadBuilder rpb = client.batch().referencePayloadBuilder()
           .withFromClassName("Soup")
           .withFromID(soupId)
-          .withFromRefProp("relatedTo")
+          .withFromRefProp("relatedToPizza")
           .withToClassName("Pizza");
         BatchReference[] references = IDS_BY_CLASS.get("Pizza").stream().map(pizzaId ->
           rpb.withToID(pizzaId).payload()
@@ -770,10 +773,274 @@ public class ClientDataMultiTenancyTest {
           .hasSize(1)
           .first()
           .extracting(o -> ((WeaviateObject) o).getProperties())
-          .extracting(p -> p.get("relatedTo")).asList()
+          .extracting(p -> p.get("relatedToPizza")).asList()
           .hasSize(IDS_BY_CLASS.get("Pizza").size());
       })
     );
+  }
+
+  @Test
+  public void shouldNotAddReferenceBetweenTenants() {
+    String tenantSoup = "TenantSoup";
+    String tenantPizza = "TenantPizza";
+    testGenerics.createSchemaFoodForTenants(client);
+    testGenerics.createTenantsFood(client, tenantSoup, tenantPizza);
+    testGenerics.createDataSoupForTenants(client, tenantSoup);
+    testGenerics.createDataPizzaForTenants(client, tenantPizza);
+
+    Result<Boolean> refPropResult = client.schema().propertyCreator()
+      .withClassName("Soup")
+      .withProperty(Property.builder()
+        .name("relatedToPizza")
+        .dataType(Collections.singletonList("Pizza"))
+        .build())
+      .run();
+
+    assertThat(refPropResult).isNotNull()
+      .returns(false, Result::hasErrors)
+      .returns(true, Result::getResult);
+
+    IDS_BY_CLASS.get("Soup").forEach(soupId -> {
+      IDS_BY_CLASS.get("Pizza").forEach(pizzaId -> {
+        SingleRef pizzaRef = client.data().referencePayloadBuilder()
+          .withClassName("Pizza")
+          .withID(pizzaId)
+          .payload();
+
+        Result<Boolean> refAddResultTenantSoup = client.data().referenceCreator()
+          .withClassName("Soup")
+          .withID(soupId)
+          .withReferenceProperty("relatedToPizza")
+          .withReference(pizzaRef)
+          .withTenantKey(tenantSoup)
+          .run();
+
+        assertThat(refAddResultTenantSoup).isNotNull()
+          .returns(true, Result::hasErrors)
+          .extracting(Result::getError)
+          .extracting(WeaviateError::getMessages).asList()
+          .first()
+          .extracting(m -> ((WeaviateErrorMessage) m).getMessage()).asInstanceOf(STRING)
+          .contains("no object with id", "found");
+
+        Result<Boolean> refAddResultTenantPizza = client.data().referenceCreator()
+          .withClassName("Soup")
+          .withID(soupId)
+          .withReferenceProperty("relatedToPizza")
+          .withReference(pizzaRef)
+          .withTenantKey(tenantPizza)
+          .run();
+
+        // TODO should be error?
+//        assertThat(refAddResultTenantPizza).isNotNull()
+//          .returns(true, Result::hasErrors);
+        assertThat(refAddResultTenantPizza).isNotNull()
+          .returns(false, Result::getResult);
+
+        Result<List<WeaviateObject>> getSoupResult = client.data().objectsGetter()
+          .withTenantKey(tenantSoup)
+          .withClassName("Soup")
+          .withID(soupId)
+          .run();
+
+        assertThat(getSoupResult).isNotNull()
+          .returns(false, Result::hasErrors)
+          .extracting(Result::getResult).asList()
+          .hasSize(1)
+          .first()
+          .extracting(o -> ((WeaviateObject) o).getProperties())
+          .extracting(p -> p.get("relatedToPizza"))
+          .isNull();
+      });
+    });
+  }
+
+  @Test
+  @Ignore("adding batch references between different tenants should not be possible")
+  public void shouldNotBatchAddReferenceBetweenTenants() {
+    String tenantSoup = "TenantSoup";
+    String tenantPizza = "TenantPizza";
+    testGenerics.createSchemaFoodForTenants(client);
+    testGenerics.createTenantsFood(client, tenantSoup, tenantPizza);
+    testGenerics.createDataSoupForTenants(client, tenantSoup);
+    testGenerics.createDataPizzaForTenants(client, tenantPizza);
+
+    Result<Boolean> refPropResult = client.schema().propertyCreator()
+      .withClassName("Soup")
+      .withProperty(Property.builder()
+        .name("relatedToPizza")
+        .dataType(Collections.singletonList("Pizza"))
+        .build())
+      .run();
+
+    assertThat(refPropResult).isNotNull()
+      .returns(false, Result::hasErrors)
+      .returns(true, Result::getResult);
+
+    IDS_BY_CLASS.get("Soup").forEach(soupId -> {
+      ReferencePayloadBuilder rpb = client.batch().referencePayloadBuilder()
+        .withFromClassName("Soup")
+        .withFromID(soupId)
+        .withFromRefProp("relatedToPizza")
+        .withToClassName("Pizza");
+      BatchReference[] references = IDS_BY_CLASS.get("Pizza").stream().map(pizzaId ->
+        rpb.withToID(pizzaId).payload()
+      ).toArray(BatchReference[]::new);
+
+      Result<BatchReferenceResponse[]> batchRefResult = client.batch().referencesBatcher()
+        .withReferences(references)
+        .withTenantKey(tenantSoup)
+        .run();
+
+      // TODO should error
+      assertThat(batchRefResult).isNotNull()
+        .returns(true, Result::hasErrors);
+
+      Result<BatchReferenceResponse[]> batchRefResult2 = client.batch().referencesBatcher()
+        .withReferences(references)
+        .withTenantKey(tenantPizza)
+        .run();
+
+      // TODO should error
+      assertThat(batchRefResult2).isNotNull()
+        .returns(true, Result::hasErrors);
+
+      Result<List<WeaviateObject>> getSoupResult = client.data().objectsGetter()
+        .withTenantKey(tenantSoup)
+        .withClassName("Soup")
+        .withID(soupId)
+        .run();
+
+      // TODO should be empty
+      assertThat(getSoupResult).isNotNull()
+        .returns(false, Result::hasErrors)
+        .extracting(Result::getResult).asList()
+        .hasSize(1)
+        .first()
+        .extracting(o -> ((WeaviateObject) o).getProperties())
+        .extracting(p -> p.get("relatedToPizza"))
+        .isNull();
+
+      Result<List<WeaviateObject>> getSoupResult2 = client.data().objectsGetter()
+        .withTenantKey(tenantPizza)
+        .withClassName("Soup")
+        .withID(soupId)
+        .run();
+
+      // TODO should be empty
+      assertThat(getSoupResult2).isNotNull()
+        .returns(false, Result::hasErrors)
+        .extracting(Result::getResult).asList()
+        .hasSize(1)
+        .first()
+        .extracting(o -> ((WeaviateObject) o).getProperties())
+        .extracting(p -> p.get("relatedToPizza"))
+        .isNull();
+    });
+  }
+
+  @Test
+  public void shouldAddReferenceBetweenTenantAndNonTenant() {
+    String tenantSoup = "TenantSoup";
+    testGenerics.createSchemaSoupForTenants(client);
+    testGenerics.createSchemaPizza(client);
+    testGenerics.createTenantsSoup(client, tenantSoup);
+    testGenerics.createDataSoupForTenants(client, tenantSoup);
+    testGenerics.createDataPizza(client);
+
+    Result<Boolean> refPropSoupResult = client.schema().propertyCreator()
+      .withClassName("Soup")
+      .withProperty(Property.builder()
+        .name("relatedToPizza")
+        .dataType(Collections.singletonList("Pizza"))
+        .build())
+      .run();
+
+    assertThat(refPropSoupResult).isNotNull()
+      .returns(false, Result::hasErrors)
+      .returns(true, Result::getResult);
+
+    Result<Boolean> refPropPizzaResult = client.schema().propertyCreator()
+      .withClassName("Pizza")
+      .withProperty(Property.builder()
+        .name("relatedToSoup")
+        .dataType(Collections.singletonList("Soup"))
+        .build())
+      .run();
+
+    assertThat(refPropPizzaResult).isNotNull()
+      .returns(false, Result::hasErrors)
+      .returns(true, Result::getResult);
+
+    int[] soupCounter = new int[]{0};
+    IDS_BY_CLASS.get("Soup").forEach(soupId -> {
+      ++soupCounter[0];
+
+      SingleRef soupRef = client.data().referencePayloadBuilder()
+        .withClassName("Soup")
+        .withID(soupId)
+        .payload();
+
+      IDS_BY_CLASS.get("Pizza").forEach(pizzaId -> {
+        SingleRef pizzaRef = client.data().referencePayloadBuilder()
+          .withClassName("Pizza")
+          .withID(pizzaId)
+          .payload();
+
+        Result<Boolean> refAddResultTenantSoup = client.data().referenceCreator()
+          .withClassName("Soup")
+          .withID(soupId)
+          .withReferenceProperty("relatedToPizza")
+          .withReference(pizzaRef)
+          .withTenantKey(tenantSoup)
+          .run();
+
+        assertThat(refAddResultTenantSoup).isNotNull()
+          .returns(false, Result::hasErrors)
+          .returns(true, Result::getResult);
+
+        Result<Boolean> refAddResultTenantPizza = client.data().referenceCreator()
+          .withClassName("Pizza")
+          .withID(pizzaId)
+          .withReferenceProperty("relatedToSoup")
+          .withReference(soupRef)
+          .withTenantKey(tenantSoup)
+          .run();
+
+        assertThat(refAddResultTenantPizza).isNotNull()
+          .returns(false, Result::hasErrors)
+          .returns(true, Result::getResult);
+
+        Result<List<WeaviateObject>> getPizzaResult = client.data().objectsGetter()
+          .withClassName("Pizza")
+          .withID(pizzaId)
+          .run();
+
+        assertThat(getPizzaResult).isNotNull()
+          .returns(false, Result::hasErrors)
+          .extracting(Result::getResult).asList()
+          .hasSize(1)
+          .first()
+          .extracting(o -> ((WeaviateObject) o).getProperties())
+          .extracting(p -> p.get("relatedToSoup")).asList()
+          .hasSize(soupCounter[0]);
+      });
+
+      Result<List<WeaviateObject>> getSoupResult = client.data().objectsGetter()
+        .withTenantKey(tenantSoup)
+        .withClassName("Soup")
+        .withID(soupId)
+        .run();
+
+      assertThat(getSoupResult).isNotNull()
+        .returns(false, Result::hasErrors)
+        .extracting(Result::getResult).asList()
+        .hasSize(1)
+        .first()
+        .extracting(o -> ((WeaviateObject) o).getProperties())
+        .extracting(p -> p.get("relatedToPizza")).asList()
+        .hasSize(IDS_BY_CLASS.get("Pizza").size());
+    });
   }
 }
 

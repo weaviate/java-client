@@ -13,16 +13,15 @@ import io.weaviate.client.v1.schema.model.Property;
 import io.weaviate.client.v1.schema.model.Tenant;
 import io.weaviate.client.v1.schema.model.Tokenization;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
-import org.assertj.core.api.ObjectAssert;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
+import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
@@ -165,15 +164,15 @@ public class WeaviateTestGenerics {
 
     // Create pizzas
     WeaviateObject[] menuPizza = new WeaviateObject[]{
-      pizzaQuattroFormaggi(),
-      pizzaFruttiDiMare(),
-      pizzaHawaii(),
-      pizzaDoener()
+      objectPizzaQuattroFormaggi(),
+      objectPizzaFruttiDiMare(),
+      objectPizzaHawaii(),
+      objectPizzaDoener()
     };
     // Create soups
     WeaviateObject[] menuSoup = new WeaviateObject[]{
-      soupChicken(),
-      soupBeautiful()
+      objectSoupChicken(),
+      objectSoupBeautiful()
     };
     Result<ObjectGetResponse[]> insertStatus = client.batch().objectsBatcher()
       .withObjects(menuPizza)
@@ -189,15 +188,15 @@ public class WeaviateTestGenerics {
 
     // Create pizzas
     WeaviateObject[] menuPizza = new WeaviateObject[]{
-      pizzaQuattroFormaggi(),
-      pizzaFruttiDiMare(),
-      pizzaHawaii(),
-      pizzaDoener()
+      objectPizzaQuattroFormaggi(),
+      objectPizzaFruttiDiMare(),
+      objectPizzaHawaii(),
+      objectPizzaDoener()
     };
     // Create soups
     WeaviateObject[] menuSoup = new WeaviateObject[]{
-      soupChicken(),
-      soupBeautiful()
+      objectSoupChicken(),
+      objectSoupBeautiful()
     };
     Result<ObjectGetResponse[]> insertStatus = client.batch().objectsBatcher()
       .withObjects(menuPizza)
@@ -311,17 +310,196 @@ public class WeaviateTestGenerics {
     assertTrue(deleteAllStatus.getResult());
   }
 
-  public void createFoodSchemaForTenants(WeaviateClient client) {
-    String pizzaClassName = "Pizza";
-    String soupClassName = "Soup";
+  public void createSchemaPizza(WeaviateClient client) {
+    createSchema(client, classPizza());
+  }
+
+  public void createSchemaSoup(WeaviateClient client) {
+    createSchema(client, classSoup());
+  }
+
+  public void createSchemaFood(WeaviateClient client) {
+    createSchemaPizza(client);
+    createSchemaSoup(client);
+  }
+
+  public void createSchemaPizzaForTenants(WeaviateClient client) {
+    createSchema(client, classPizzaForTenants("tenantName"));
+  }
+
+  public void createSchemaSoupForTenants(WeaviateClient client) {
+    createSchema(client, classSoupForTenants("tenantName"));
+  }
+
+  public void createSchemaFoodForTenants(WeaviateClient client) {
+    createSchemaPizzaForTenants(client);
+    createSchemaSoupForTenants(client);
+  }
+
+  private void createSchema(WeaviateClient client, WeaviateClass cl) {
+    Result<Boolean> pizzaCreateStatus = client.schema().classCreator().withClass(cl).run();
+    assertThat(pizzaCreateStatus).isNotNull()
+      .returns(false, Result::hasErrors)
+      .returns(true, Result::getResult);
+  }
+
+  public void createTenantsPizza(WeaviateClient client, String... tenantNames) {
+    createTenants(client, "Pizza", tenantNames);
+  }
+
+  public void createTenantsSoup(WeaviateClient client, String... tenantNames) {
+    createTenants(client, "Soup", tenantNames);
+  }
+
+  public void createTenantsFood(WeaviateClient client, String... tenantNames) {
+    createTenantsPizza(client, tenantNames);
+    createTenantsSoup(client, tenantNames);
+  }
+
+  private void createTenants(WeaviateClient client, String className, String[] tenantNames) {
+    Tenant[] tenants = Arrays.stream(tenantNames)
+      .map(name -> Tenant.builder().name(name).build())
+      .toArray(Tenant[]::new);
+
+    Result<Boolean> createStatus = client.schema().tenantCreator()
+      .withClassName(className)
+      .withTenants(tenants)
+      .run();
+    assertThat(createStatus).isNotNull()
+      .returns(false, Result::hasErrors)
+      .returns(true, Result::getResult);
+  }
+
+  public void createDataPizza(WeaviateClient client) {
+    createDataFood(client, new WeaviateObject[]{
+      objectPizzaQuattroFormaggi(),
+      objectPizzaFruttiDiMare(),
+      objectPizzaHawaii(),
+      objectPizzaDoener(),
+    });
+  }
+
+  public void createDataSoup(WeaviateClient client) {
+    createDataFood(client, new WeaviateObject[]{
+      objectSoupChicken(),
+      objectSoupBeautiful(),
+    });
+  }
+
+  public void createDataFood(WeaviateClient client) {
+    createDataFood(client, new WeaviateObject[]{
+      objectPizzaQuattroFormaggi(),
+      objectPizzaFruttiDiMare(),
+      objectPizzaHawaii(),
+      objectPizzaDoener(),
+      objectSoupChicken(),
+      objectSoupBeautiful(),
+    });
+  }
+
+  private void createDataFood(WeaviateClient client, WeaviateObject[] objects) {
+    Result<ObjectGetResponse[]> insertStatus = client.batch().objectsBatcher()
+      .withObjects(objects)
+      .run();
+
+    assertThat(insertStatus).isNotNull()
+      .returns(false, Result::hasErrors)
+      .extracting(Result::getResult).asInstanceOf(ARRAY)
+      .hasSize(objects.length);
+  }
+
+  public void createDataPizzaForTenants(WeaviateClient client, String... tenantNames) {
+    createDataFoodForTenants(client, tenantNames, () -> new WeaviateObject[]{
+      objectPizzaQuattroFormaggi(),
+      objectPizzaFruttiDiMare(),
+      objectPizzaHawaii(),
+      objectPizzaDoener()
+    });
+  }
+
+  public void createDataSoupForTenants(WeaviateClient client, String... tenantNames) {
+    createDataFoodForTenants(client, tenantNames, () -> new WeaviateObject[]{
+      objectSoupChicken(),
+      objectSoupBeautiful()
+    });
+  }
+
+  public void createDataFoodForTenants(WeaviateClient client, String... tenantNames) {
+    createDataFoodForTenants(client, tenantNames, () -> new WeaviateObject[]{
+      objectPizzaQuattroFormaggi(),
+      objectPizzaFruttiDiMare(),
+      objectPizzaHawaii(),
+      objectPizzaDoener(),
+      objectSoupChicken(),
+      objectSoupBeautiful()
+    });
+  }
+
+  private void createDataFoodForTenants(WeaviateClient client, String[] tenantNames, Supplier<WeaviateObject[]> objectsSupplier) {
     String tenantKey = "tenantName";
 
-    // properties
-    Property tenantKeyProperty = Property.builder()
-      .name(tenantKey)
-      .description("property used as tenant key")
-      .dataType(Collections.singletonList(DataType.TEXT))
+    BiFunction<WeaviateObject, String, WeaviateObject> addTenantProperty = (object, name) -> {
+      Map<String, Object> props = object.getProperties();
+      props.put(tenantKey, name);
+      return object;
+    };
+
+    WeaviateObject[] allObjects = Arrays.stream(tenantNames).flatMap(name ->
+      Arrays.stream(objectsSupplier.get())
+        .map(obj -> addTenantProperty.apply(obj, name))
+    ).toArray(WeaviateObject[]::new);
+
+    createDataFood(client, allObjects);
+  }
+
+  private WeaviateClass classPizza() {
+    return WeaviateClass.builder()
+      .className("Pizza")
+      .description("A delicious religion like food and arguably the best export of Italy.")
+      .invertedIndexConfig(InvertedIndexConfig.builder()
+        .indexTimestamps(true)
+        .build())
+      .properties(classPropertiesFood())
       .build();
+  }
+
+  private WeaviateClass classPizzaForTenants(String tenantKey) {
+    return WeaviateClass.builder()
+      .className("Pizza")
+      .description("A delicious religion like food and arguably the best export of Italy.")
+      .invertedIndexConfig(InvertedIndexConfig.builder()
+        .indexTimestamps(true)
+        .build())
+      .multiTenancyConfig(MultiTenancyConfig.builder()
+        .enabled(true)
+        .tenantKey(tenantKey)
+        .build())
+      .properties(classPropertiesFoodWithTenant(tenantKey))
+      .build();
+  }
+
+  private WeaviateClass classSoup
+    () {
+    return WeaviateClass.builder()
+      .className("Soup")
+      .description("Mostly water based brew of sustenance for humans.")
+      .properties(classPropertiesFood())
+      .build();
+  }
+
+  private WeaviateClass classSoupForTenants(String tenantKey) {
+    return WeaviateClass.builder()
+      .className("Soup")
+      .description("Mostly water based brew of sustenance for humans.")
+      .multiTenancyConfig(MultiTenancyConfig.builder()
+        .enabled(true)
+        .tenantKey(tenantKey)
+        .build())
+      .properties(classPropertiesFoodWithTenant(tenantKey))
+      .build();
+  }
+
+  private List<Property> classPropertiesFood() {
     Property nameProperty = Property.builder()
       .name("name")
       .description("property holding name")
@@ -350,138 +528,57 @@ public class WeaviateTestGenerics {
       .moduleConfig(moduleConfig)
       .build();
 
-    // classes
-    WeaviateClass pizza = WeaviateClass.builder()
-      .className(pizzaClassName)
-      .description("A delicious religion like food and arguably the best export of Italy.")
-      .invertedIndexConfig(InvertedIndexConfig.builder()
-        .indexTimestamps(true)
-        .build())
-      .multiTenancyConfig(MultiTenancyConfig.builder()
-        .enabled(true)
-        .tenantKey(tenantKey)
-        .build())
-      .properties(Arrays.asList(
-        tenantKeyProperty,
-        nameProperty,
-        descriptionProperty,
-        bestBeforeProperty,
-        priceProperty))
-      .build();
-    WeaviateClass soup = WeaviateClass.builder()
-      .className(soupClassName)
-      .description("Mostly water based brew of sustenance for humans.")
-      .multiTenancyConfig(MultiTenancyConfig.builder()
-        .enabled(true)
-        .tenantKey(tenantKey)
-        .build())
-      .properties(Arrays.asList(
-        tenantKeyProperty,
-        nameProperty,
-        descriptionProperty,
-        bestBeforeProperty,
-        priceProperty))
-      .build();
+    List<Property> properties = new ArrayList<>();
+    properties.add(nameProperty);
+    properties.add(descriptionProperty);
+    properties.add(bestBeforeProperty);
+    properties.add(priceProperty);
 
-    // create classes
-    Result<Boolean> pizzaCreateStatus = client.schema().classCreator().withClass(pizza).run();
-    assertThat(pizzaCreateStatus).isNotNull()
-      .returns(false, Result::hasErrors)
-      .returns(true, Result::getResult);
-    Result<Boolean> soupCreateStatus = client.schema().classCreator().withClass(soup).run();
-    assertThat(soupCreateStatus).isNotNull()
-      .returns(false, Result::hasErrors)
-      .returns(true, Result::getResult);
+    return properties;
   }
 
-  public void createTenants(WeaviateClient client, String... tenantNames) {
-    String pizzaClassName = "Pizza";
-    String soupClassName = "Soup";
+  private List<Property> classPropertiesFoodWithTenant(String tenantKey) {
+    List<Property> properties = classPropertiesFood();
+    properties.add(Property.builder()
+      .name(tenantKey)
+      .description("property used as tenant key")
+      .dataType(Collections.singletonList(DataType.TEXT))
+      .build());
 
-    Tenant[] tenants = Arrays.stream(tenantNames)
-      .map(name -> Tenant.builder().name(name).build())
-      .toArray(Tenant[]::new);
-
-    Result<Boolean> pizzaTenantsCreateStatus = client.schema().tenantCreator()
-      .withClassName(pizzaClassName)
-      .withTenants(tenants)
-      .run();
-    assertThat(pizzaTenantsCreateStatus).isNotNull()
-      .returns(false, Result::hasErrors)
-      .returns(true, Result::getResult);
-    Result<Boolean> soupTenantsCreateStatus = client.schema().tenantCreator()
-      .withClassName(soupClassName)
-      .withTenants(tenants)
-      .run();
-    assertThat(soupTenantsCreateStatus).isNotNull()
-      .returns(false, Result::hasErrors)
-      .returns(true, Result::getResult);
+    return properties;
   }
 
-  public void createFoodDataForTenants(WeaviateClient client, String... tenantNames) {
-    String tenantKey = "tenantName";
-
-    BiFunction<WeaviateObject, String, WeaviateObject> addTenantProperty = (object, name) -> {
-      Map<String, Object> props = object.getProperties();
-      props.put(tenantKey, name);
-      return object;
-    };
-
-    Arrays.stream(tenantNames).forEach(name -> {
-      WeaviateObject[] pizzaObjects = new WeaviateObject[]{
-        addTenantProperty.apply(pizzaQuattroFormaggi(), name),
-        addTenantProperty.apply(pizzaFruttiDiMare(), name),
-        addTenantProperty.apply(pizzaHawaii(), name),
-        addTenantProperty.apply(pizzaDoener(), name)
-      };
-      WeaviateObject[] soupObjects = new WeaviateObject[]{
-        addTenantProperty.apply(soupChicken(), name),
-        addTenantProperty.apply(soupBeautiful(), name)
-      };
-
-      Result<ObjectGetResponse[]> insertStatus = client.batch().objectsBatcher()
-        .withObjects(pizzaObjects)
-        .withObjects(soupObjects)
-        .run();
-
-      assertThat(insertStatus).isNotNull()
-        .returns(false, Result::hasErrors)
-        .extracting(Result::getResult).asInstanceOf(ARRAY)
-        .hasSize(6);
-    });
-  }
-
-  private WeaviateObject pizzaQuattroFormaggi() {
+  private WeaviateObject objectPizzaQuattroFormaggi() {
     return createObject(PIZZA_QUATTRO_FORMAGGI_ID, "Pizza", "Quattro Formaggi",
       "Pizza quattro formaggi Italian: [ˈkwattro forˈmaddʒi] (four cheese pizza) is a variety of pizza in Italian cuisine that is topped with a combination of four kinds of cheese, usually melted together, with (rossa, red) or without (bianca, white) tomato sauce. It is popular worldwide, including in Italy,[1] and is one of the iconic items from pizzerias's menus.",
       1.4f, "2022-01-02T03:04:05+01:00");
   }
 
-  private WeaviateObject pizzaFruttiDiMare() {
+  private WeaviateObject objectPizzaFruttiDiMare() {
     return createObject(PIZZA_FRUTTI_DI_MARE_ID, "Pizza", "Frutti di Mare",
       "Frutti di Mare is an Italian type of pizza that may be served with scampi, mussels or squid. It typically lacks cheese, with the seafood being served atop a tomato sauce.",
       2.5f, "2022-02-03T04:05:06+02:00");
   }
 
-  private WeaviateObject pizzaHawaii() {
+  private WeaviateObject objectPizzaHawaii() {
     return createObject(PIZZA_HAWAII_ID, "Pizza", "Hawaii",
       "Universally accepted to be the best pizza ever created.",
       1.1f, "2022-03-04T05:06:07+03:00");
   }
 
-  private WeaviateObject pizzaDoener() {
+  private WeaviateObject objectPizzaDoener() {
     return createObject(PIZZA_DOENER_ID, "Pizza", "Doener",
       "A innovation, some say revolution, in the pizza industry.",
       1.2f, "2022-04-05T06:07:08+04:00");
   }
 
-  private WeaviateObject soupChicken() {
+  private WeaviateObject objectSoupChicken() {
     return createObject(SOUP_CHICKENSOUP_ID, "Soup", "ChickenSoup",
       "Used by humans when their inferior genetics are attacked by microscopic organisms.",
       2.0f, "2022-05-06T07:08:09+05:00");
   }
 
-  private WeaviateObject soupBeautiful() {
+  private WeaviateObject objectSoupBeautiful() {
     return createObject(SOUP_BEAUTIFUL_ID, "Soup", "Beautiful",
       "Putting the game of letter soups to a whole new level.",
       3f, "2022-06-07T08:09:10+06:00");
