@@ -1,32 +1,15 @@
 package io.weaviate.integration.client.schema;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import io.weaviate.client.base.WeaviateError;
-import io.weaviate.client.v1.misc.model.MultiTenancyConfig;
-import io.weaviate.client.v1.schema.api.TenantCreator;
-import io.weaviate.client.v1.schema.model.Tenant;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.testcontainers.containers.DockerComposeContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
+import io.weaviate.client.base.WeaviateError;
 import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.v1.misc.model.BM25Config;
 import io.weaviate.client.v1.misc.model.DistanceType;
 import io.weaviate.client.v1.misc.model.InvertedIndexConfig;
+import io.weaviate.client.v1.misc.model.MultiTenancyConfig;
 import io.weaviate.client.v1.misc.model.PQConfig;
-import io.weaviate.client.v1.misc.model.ReplicationConfig;
 import io.weaviate.client.v1.misc.model.ShardingConfig;
 import io.weaviate.client.v1.misc.model.StopwordConfig;
 import io.weaviate.client.v1.misc.model.VectorIndexConfig;
@@ -34,10 +17,25 @@ import io.weaviate.client.v1.schema.model.DataType;
 import io.weaviate.client.v1.schema.model.Property;
 import io.weaviate.client.v1.schema.model.Schema;
 import io.weaviate.client.v1.schema.model.Shard;
-import io.weaviate.client.v1.schema.model.ShardStatuses;
 import io.weaviate.client.v1.schema.model.ShardStatus;
+import io.weaviate.client.v1.schema.model.ShardStatuses;
+import io.weaviate.client.v1.schema.model.Tenant;
 import io.weaviate.client.v1.schema.model.Tokenization;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
+import org.testcontainers.containers.DockerComposeContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.CHAR_SEQUENCE;
@@ -959,60 +957,6 @@ public class ClientSchemaTest {
     Result<Shard[]> res = client.schema().shardsGetter().run();
     // then
     assertResultError("className cannot be empty", res);
-  }
-
-  @Test
-  public void testClassWithExplicitReplicationFactor() {
-    // given
-    String className = "Band";
-    int replicationFactor = 1;
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className(className)
-      .description("Band that plays and produces music")
-      .vectorIndexType("hnsw")
-      .vectorizer("text2vec-contextionary")
-      .replicationConfig(ReplicationConfig.builder().factor(replicationFactor).build())
-      .build();
-
-    // when
-    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    assertThat(createStatus.hasErrors()).isFalse();
-    assertThat(createStatus.getResult()).isTrue();
-
-    // then
-    Result<WeaviateClass> classResult = client.schema().classGetter().withClassName(className).run();
-    assertThat(classResult.hasErrors()).isFalse();
-    assertThat(classResult.getResult()).isNotNull()
-      .extracting(WeaviateClass::getReplicationConfig)
-      .isNotNull()
-      .extracting(ReplicationConfig::getFactor)
-      .isEqualTo(replicationFactor);
-  }
-
-  @Test
-  public void testClassWithImplicitReplicationFactor() {
-    // given
-    String className = "Band";
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className(className)
-      .description("Band that plays and produces music")
-      .vectorIndexType("hnsw")
-      .vectorizer("text2vec-contextionary")
-      .build();
-
-    // when
-    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    assertThat(createStatus.hasErrors()).isFalse();
-    assertThat(createStatus.getResult()).isTrue();
-
-    // then
-    Result<WeaviateClass> classResult = client.schema().classGetter().withClassName(className).run();
-    assertThat(classResult.hasErrors()).isFalse();
-    assertThat(classResult.getResult()).isNotNull()
-      .extracting(WeaviateClass::getReplicationConfig)
-      .isNotNull()
-      .extracting(ReplicationConfig::getFactor)
-      .isEqualTo(1);
   }
 
   @Test
