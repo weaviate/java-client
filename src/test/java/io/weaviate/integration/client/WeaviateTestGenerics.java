@@ -3,6 +3,7 @@ package io.weaviate.integration.client;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.batch.model.ObjectGetResponse;
+import io.weaviate.client.v1.batch.model.ObjectsGetResponseAO2Result;
 import io.weaviate.client.v1.data.model.SingleRef;
 import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.misc.model.InvertedIndexConfig;
@@ -20,7 +21,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -337,8 +337,8 @@ public class WeaviateTestGenerics {
   }
 
   private void createSchema(WeaviateClient client, WeaviateClass cl) {
-    Result<Boolean> pizzaCreateStatus = client.schema().classCreator().withClass(cl).run();
-    assertThat(pizzaCreateStatus).isNotNull()
+    Result<Boolean> createStatus = client.schema().classCreator().withClass(cl).run();
+    assertThat(createStatus).isNotNull()
       .returns(false, Result::hasErrors)
       .returns(true, Result::getResult);
   }
@@ -438,18 +438,31 @@ public class WeaviateTestGenerics {
   private void createDataFoodForTenants(WeaviateClient client, String[] tenantNames, Supplier<WeaviateObject[]> objectsSupplier) {
     String tenantKey = "tenantName";
 
-    BiFunction<WeaviateObject, String, WeaviateObject> addTenantProperty = (object, name) -> {
-      Map<String, Object> props = object.getProperties();
-      props.put(tenantKey, name);
-      return object;
-    };
+    Arrays.stream(tenantNames).forEach(name -> {
+      WeaviateObject[] objects = Arrays.stream(objectsSupplier.get())
+        .peek(object -> {
+          Map<String, Object> props = object.getProperties();
+          props.put(tenantKey, name);
+        })
+        .toArray(WeaviateObject[]::new);
 
-    WeaviateObject[] allObjects = Arrays.stream(tenantNames).flatMap(name ->
-      Arrays.stream(objectsSupplier.get())
-        .map(obj -> addTenantProperty.apply(obj, name))
-    ).toArray(WeaviateObject[]::new);
+      Result<ObjectGetResponse[]> insertStatus = client.batch().objectsBatcher()
+        .withObjects(objects)
+        .withTenantKey(name)
+        .run();
 
-    createDataFood(client, allObjects);
+      assertThat(insertStatus).isNotNull()
+        .returns(false, Result::hasErrors)
+        .extracting(Result::getResult).asInstanceOf(ARRAY)
+        .hasSize(objects.length);
+      Arrays.stream(insertStatus.getResult()).forEach(r ->
+          assertThat(r.getResult())
+            // TODO should be SUCCESS
+//          .returns("SUCCESS", ObjectsGetResponseAO2Result::getStatus)
+            .extracting(ObjectsGetResponseAO2Result::getErrors)
+            .isNull()
+      );
+    });
   }
 
   private WeaviateClass classPizza() {
@@ -474,12 +487,11 @@ public class WeaviateTestGenerics {
         .enabled(true)
         .tenantKey(tenantKey)
         .build())
-      .properties(classPropertiesFoodWithTenant(tenantKey))
+      .properties(classPropertiesFoodForTenants(tenantKey))
       .build();
   }
 
-  private WeaviateClass classSoup
-    () {
+  private WeaviateClass classSoup() {
     return WeaviateClass.builder()
       .className("Soup")
       .description("Mostly water based brew of sustenance for humans.")
@@ -495,7 +507,7 @@ public class WeaviateTestGenerics {
         .enabled(true)
         .tenantKey(tenantKey)
         .build())
-      .properties(classPropertiesFoodWithTenant(tenantKey))
+      .properties(classPropertiesFoodForTenants(tenantKey))
       .build();
   }
 
@@ -537,7 +549,7 @@ public class WeaviateTestGenerics {
     return properties;
   }
 
-  private List<Property> classPropertiesFoodWithTenant(String tenantKey) {
+  private List<Property> classPropertiesFoodForTenants(String tenantKey) {
     List<Property> properties = classPropertiesFood();
     properties.add(Property.builder()
       .name(tenantKey)

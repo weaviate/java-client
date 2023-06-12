@@ -18,6 +18,7 @@ public class ObjectsBatchDeleter extends BaseClient<BatchDeleteResponse> impleme
     private final ObjectsPath objectsPath;
     private String className;
     private String consistencyLevel;
+    private String tenantKey;
     private WhereFilter where;
     private String output;
     private Boolean dryRun;
@@ -34,10 +35,15 @@ public class ObjectsBatchDeleter extends BaseClient<BatchDeleteResponse> impleme
         return this;
     }
 
-    public ObjectsBatchDeleter withConsistencyLevel(String consistencyLevel) {
-      this.consistencyLevel = consistencyLevel;
-      return this;
-    }
+  public ObjectsBatchDeleter withConsistencyLevel(String consistencyLevel) {
+    this.consistencyLevel = consistencyLevel;
+    return this;
+  }
+
+  public ObjectsBatchDeleter withTenantKey(String tenantKey) {
+    this.tenantKey = tenantKey;
+    return this;
+  }
 
     public ObjectsBatchDeleter withWhere(WhereFilter where) {
         this.where = where;
@@ -68,6 +74,7 @@ public class ObjectsBatchDeleter extends BaseClient<BatchDeleteResponse> impleme
                 .build();
         String path = objectsPath.buildDelete(ObjectsPath.Params.builder()
             .consistencyLevel(consistencyLevel)
+            .tenantKey(tenantKey)
             .build());
         Response<BatchDeleteResponse> resp = sendDeleteRequest(path, batchDelete, BatchDeleteResponse.class);
         return new Result<>(resp);

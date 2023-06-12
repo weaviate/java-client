@@ -26,7 +26,8 @@ public class ObjectsPath {
   private String commonBuild(Params params) {
     return build(
       params,
-      this::addQueryConsistencyLevel
+      this::addQueryConsistencyLevel,
+      this::addQueryTenantKey
     );
   }
 
@@ -54,6 +55,12 @@ public class ObjectsPath {
     }
   }
 
+  private void addQueryTenantKey(Params params, List<String> pathParams, List<String> queryParams) {
+    if (StringUtils.isNotBlank(params.tenantKey)) {
+      queryParams.add(UrlEncoder.encodeQueryParam("tenant_key", params.tenantKey));
+    }
+  }
+
 
   @Builder
   @ToString
@@ -61,5 +68,6 @@ public class ObjectsPath {
   public static class Params {
 
     String consistencyLevel;
+    String tenantKey;
   }
 }

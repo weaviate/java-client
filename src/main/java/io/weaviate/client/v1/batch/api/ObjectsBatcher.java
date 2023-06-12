@@ -58,6 +58,7 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
   private final DelayedExecutor<?> delayedExecutor;
   private final List<WeaviateObject> objects;
   private String consistencyLevel;
+  private String tenantKey;
   private final List<CompletableFuture<Result<ObjectGetResponse[]>>> undoneFutures;
 
 
@@ -111,6 +112,11 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
 
   public ObjectsBatcher withConsistencyLevel(String consistencyLevel) {
     this.consistencyLevel = consistencyLevel;
+    return this;
+  }
+
+  public ObjectsBatcher withTenantKey(String tenantKey) {
+    this.tenantKey = tenantKey;
     return this;
   }
 
@@ -267,6 +273,7 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
       .build();
     String path = objectsPath.buildCreate(ObjectsPath.Params.builder()
         .consistencyLevel(consistencyLevel)
+        .tenantKey(tenantKey)
         .build());
     Response<ObjectGetResponse[]> resp = sendPostRequest(path, batchRequest, ObjectGetResponse[].class);
     return new Result<>(resp);

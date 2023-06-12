@@ -10,6 +10,7 @@ import io.weaviate.client.v1.batch.model.BatchDeleteResponse;
 import io.weaviate.client.v1.batch.model.BatchReference;
 import io.weaviate.client.v1.batch.model.BatchReferenceResponse;
 import io.weaviate.client.v1.batch.model.ObjectGetResponse;
+import io.weaviate.client.v1.batch.model.ObjectsGetResponseAO2Result;
 import io.weaviate.client.v1.data.model.SingleRef;
 import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.filters.Operator;
@@ -30,7 +31,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
@@ -405,7 +405,7 @@ public class ClientDataMultiTenancyTest {
     testGenerics.createSchemaFoodForTenants(client);
     testGenerics.createTenantsFood(client, tenants);
 
-    WeaviateObject[] objects = Arrays.stream(tenants).flatMap(tenant -> {
+    Arrays.stream(tenants).forEach(tenant -> {
       Map<String, Object> pizzaProps = new HashMap<>();
       pizzaProps.put("name", "Quattro Formaggi");
       pizzaProps.put("description", "Pizza quattro formaggi Italian: [ˈkwattro forˈmaddʒi] (four cheese pizza) is a variety of pizza in Italian cuisine that is topped with a combination of four kinds of cheese, usually melted together, with (rossa, red) or without (bianca, white) tomato sauce. It is popular worldwide, including in Italy,[1] and is one of the iconic items from pizzerias's menus.");
@@ -432,17 +432,23 @@ public class ClientDataMultiTenancyTest {
         .properties(soupProps)
         .build();
 
-      return Stream.of(pizza, soup);
-    }).toArray(WeaviateObject[]::new);
+      Result<ObjectGetResponse[]> batchAddResult = client.batch().objectsBatcher()
+        .withObjects(pizza, soup)
+        .withTenantKey(tenant)
+        .run();
 
-    Result<ObjectGetResponse[]> batchAddResult = client.batch().objectsBatcher()
-      .withObjects(objects)
-      .run();
-
-    assertThat(batchAddResult).isNotNull()
-      .returns(false, Result::hasErrors)
-      .extracting(Result::getResult).asInstanceOf(ARRAY)
-      .hasSize(6);
+      assertThat(batchAddResult).isNotNull()
+        .returns(false, Result::hasErrors)
+        .extracting(Result::getResult).asInstanceOf(ARRAY)
+        .hasSize(2);
+      Arrays.stream(batchAddResult.getResult()).forEach(r ->
+        assertThat(r.getResult())
+          // TODO should be SUCCESS
+//          .returns("SUCCESS", ObjectsGetResponseAO2Result::getStatus)
+          .extracting(ObjectsGetResponseAO2Result::getErrors)
+          .isNull()
+      );
+    });
 
     Arrays.stream(tenants).forEach(tenant -> {
       Result<List<WeaviateObject>> getPizzaResult = client.data().objectsGetter()
@@ -480,10 +486,11 @@ public class ClientDataMultiTenancyTest {
       IDS_BY_CLASS.forEach((className, classIds) -> {
         Result<BatchDeleteResponse> batchDeleteResult = client.batch().objectsBatchDeleter()
           .withClassName(className)
+          .withTenantKey(tenant)
           .withWhere(WhereFilter.builder()
-            .operator(Operator.Equal)
-            .path(new String[]{"tenantName"})
-            .valueText(tenant)
+            .operator(Operator.Like)
+            .path(new String[]{"_id"})
+            .valueText("*")
             .build())
           .run();
 
@@ -831,9 +838,8 @@ public class ClientDataMultiTenancyTest {
           .withTenantKey(tenantPizza)
           .run();
 
-        // TODO should be error?
-//        assertThat(refAddResultTenantPizza).isNotNull()
-//          .returns(true, Result::hasErrors);
+        assertThat(refAddResultTenantPizza).isNotNull()
+          .returns(false, Result::hasErrors);
         assertThat(refAddResultTenantPizza).isNotNull()
           .returns(false, Result::getResult);
 
