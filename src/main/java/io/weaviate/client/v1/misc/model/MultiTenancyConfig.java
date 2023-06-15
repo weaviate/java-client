@@ -1,4 +1,4 @@
-package io.weaviate.client.v1.data.model;
+package io.weaviate.client.v1.misc.model;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -12,6 +12,7 @@ import lombok.experimental.FieldDefaults;
 @ToString
 @EqualsAndHashCode
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class ObjectReference {
-  String beacon;
+public class MultiTenancyConfig {
+  Boolean enabled;
+  String tenantKey;
 }

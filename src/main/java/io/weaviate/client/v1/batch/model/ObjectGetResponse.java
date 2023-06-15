@@ -2,6 +2,7 @@ package io.weaviate.client.v1.batch.model;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -13,6 +14,7 @@ import java.util.Map;
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ObjectGetResponse {
   String id;

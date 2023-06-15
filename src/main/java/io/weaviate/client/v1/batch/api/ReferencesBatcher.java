@@ -5,8 +5,10 @@ import io.weaviate.client.v1.batch.model.BatchReferenceResponse;
 import io.weaviate.client.v1.batch.util.ReferencesPath;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.ObjectUtils;
 import io.weaviate.client.Config;
@@ -47,6 +49,7 @@ public class ReferencesBatcher extends BaseClient<BatchReferenceResponse[]>
   private final DelayedExecutor<?> delayedExecutor;
   private final List<BatchReference> references;
   private String consistencyLevel;
+  private String tenantKey;
   private final List<CompletableFuture<Result<BatchReferenceResponse[]>>> undoneFutures;
 
 
@@ -98,6 +101,11 @@ public class ReferencesBatcher extends BaseClient<BatchReferenceResponse[]>
 
   public ReferencesBatcher withConsistencyLevel(String consistencyLevel) {
     this.consistencyLevel = consistencyLevel;
+    return this;
+  }
+
+  public ReferencesBatcher withTenantKey(String tenantKey) {
+    this.tenantKey = tenantKey;
     return this;
   }
 
@@ -239,6 +247,7 @@ public class ReferencesBatcher extends BaseClient<BatchReferenceResponse[]>
     BatchReference[] payload = batch.toArray(new BatchReference[0]);
     String path = referencesPath.buildCreate(ReferencesPath.Params.builder()
         .consistencyLevel(consistencyLevel)
+        .tenantKey(tenantKey)
         .build());
     Response<BatchReferenceResponse[]> resp = sendPostRequest(path, payload, BatchReferenceResponse[].class);
     return new Result<>(resp);
@@ -320,6 +329,8 @@ public class ReferencesBatcher extends BaseClient<BatchReferenceResponse[]>
 
   @Getter
   @Builder
+  @ToString
+  @EqualsAndHashCode
   @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
   public static class BatchRetriesConfig {
 
@@ -351,6 +362,8 @@ public class ReferencesBatcher extends BaseClient<BatchReferenceResponse[]>
 
   @Getter
   @Builder
+  @ToString
+  @EqualsAndHashCode
   @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
   public static class AutoBatchConfig {
 

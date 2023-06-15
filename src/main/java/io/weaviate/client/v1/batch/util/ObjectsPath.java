@@ -1,5 +1,6 @@
 package io.weaviate.client.v1.batch.util;
 
+import io.weaviate.client.base.util.UrlEncoder;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.ToString;
@@ -25,7 +26,8 @@ public class ObjectsPath {
   private String commonBuild(Params params) {
     return build(
       params,
-      this::addQueryConsistencyLevel
+      this::addQueryConsistencyLevel,
+      this::addQueryTenantKey
     );
   }
 
@@ -49,7 +51,13 @@ public class ObjectsPath {
 
   private void addQueryConsistencyLevel(Params params, List<String> pathParams, List<String> queryParams) {
     if (StringUtils.isNotBlank(params.consistencyLevel)) {
-      queryParams.add(String.format("%s=%s", "consistency_level", StringUtils.trim(params.consistencyLevel)));
+      queryParams.add(UrlEncoder.encodeQueryParam("consistency_level", params.consistencyLevel));
+    }
+  }
+
+  private void addQueryTenantKey(Params params, List<String> pathParams, List<String> queryParams) {
+    if (StringUtils.isNotBlank(params.tenantKey)) {
+      queryParams.add(UrlEncoder.encodeQueryParam("tenant_key", params.tenantKey));
     }
   }
 
@@ -60,5 +68,6 @@ public class ObjectsPath {
   public static class Params {
 
     String consistencyLevel;
+    String tenantKey;
   }
 }

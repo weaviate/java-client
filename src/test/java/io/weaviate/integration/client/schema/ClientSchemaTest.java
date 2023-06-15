@@ -1,5 +1,34 @@
 package io.weaviate.integration.client.schema;
 
+import io.weaviate.client.Config;
+import io.weaviate.client.WeaviateClient;
+import io.weaviate.client.base.Result;
+import io.weaviate.client.base.WeaviateError;
+import io.weaviate.client.base.WeaviateErrorMessage;
+import io.weaviate.client.v1.misc.model.BM25Config;
+import io.weaviate.client.v1.misc.model.DistanceType;
+import io.weaviate.client.v1.misc.model.InvertedIndexConfig;
+import io.weaviate.client.v1.misc.model.MultiTenancyConfig;
+import io.weaviate.client.v1.misc.model.PQConfig;
+import io.weaviate.client.v1.misc.model.ShardingConfig;
+import io.weaviate.client.v1.misc.model.StopwordConfig;
+import io.weaviate.client.v1.misc.model.VectorIndexConfig;
+import io.weaviate.client.v1.schema.model.DataType;
+import io.weaviate.client.v1.schema.model.Property;
+import io.weaviate.client.v1.schema.model.Schema;
+import io.weaviate.client.v1.schema.model.Shard;
+import io.weaviate.client.v1.schema.model.ShardStatus;
+import io.weaviate.client.v1.schema.model.ShardStatuses;
+import io.weaviate.client.v1.schema.model.Tenant;
+import io.weaviate.client.v1.schema.model.Tokenization;
+import io.weaviate.client.v1.schema.model.WeaviateClass;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
+import org.testcontainers.containers.DockerComposeContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,34 +37,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.testcontainers.containers.DockerComposeContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
-import io.weaviate.client.Config;
-import io.weaviate.client.WeaviateClient;
-import io.weaviate.client.base.Result;
-import io.weaviate.client.base.WeaviateErrorMessage;
-import io.weaviate.client.v1.misc.model.BM25Config;
-import io.weaviate.client.v1.misc.model.DistanceType;
-import io.weaviate.client.v1.misc.model.InvertedIndexConfig;
-import io.weaviate.client.v1.misc.model.PQConfig;
-import io.weaviate.client.v1.misc.model.ReplicationConfig;
-import io.weaviate.client.v1.misc.model.ShardingConfig;
-import io.weaviate.client.v1.misc.model.StopwordConfig;
-import io.weaviate.client.v1.misc.model.VectorIndexConfig;
-import io.weaviate.client.v1.schema.model.DataType;
-import io.weaviate.client.v1.schema.model.Property;
-import io.weaviate.client.v1.schema.model.Schema;
-import io.weaviate.client.v1.schema.model.Shard;
-import io.weaviate.client.v1.schema.model.ShardStatuses;
-import io.weaviate.client.v1.schema.model.ShardStatus;
-import io.weaviate.client.v1.schema.model.Tokenization;
-import io.weaviate.client.v1.schema.model.WeaviateClass;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.CHAR_SEQUENCE;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -957,42 +960,127 @@ public class ClientSchemaTest {
   }
 
   @Test
-  public void testClassWithExplicitReplicationFactor() {
-    // given
-    String className = "Band";
-    int replicationFactor = 1;
+  public void testClassWithMultiTenancyConfig() {
+    String className = "MultiTenantClass";
+    String tenantKey = "tenantName";
     WeaviateClass clazz = WeaviateClass.builder()
       .className(className)
-      .description("Band that plays and produces music")
-      .vectorIndexType("hnsw")
-      .vectorizer("text2vec-contextionary")
-      .replicationConfig(ReplicationConfig.builder().factor(replicationFactor).build())
+      .multiTenancyConfig(MultiTenancyConfig.builder()
+        .enabled(true)
+        .tenantKey(tenantKey)
+        .build())
+      .properties(Collections.singletonList(
+        Property.builder()
+          .name(tenantKey)
+          .dataType(Collections.singletonList(DataType.TEXT))
+          .build()
+      ))
       .build();
 
-    // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
     assertThat(createStatus.hasErrors()).isFalse();
     assertThat(createStatus.getResult()).isTrue();
 
-    // then
     Result<WeaviateClass> classResult = client.schema().classGetter().withClassName(className).run();
     assertThat(classResult.hasErrors()).isFalse();
     assertThat(classResult.getResult()).isNotNull()
-      .extracting(WeaviateClass::getReplicationConfig)
+      .extracting(WeaviateClass::getMultiTenancyConfig)
       .isNotNull()
-      .extracting(ReplicationConfig::getFactor)
-      .isEqualTo(replicationFactor);
+      .returns(true, MultiTenancyConfig::getEnabled)
+      .returns(tenantKey, MultiTenancyConfig::getTenantKey);
   }
 
   @Test
-  public void testClassWithImplicitReplicationFactor() {
-    // given
-    String className = "Band";
+  public void testClassWithMultiTenancyConfigDisabled() {
+    String className = "MultiTenantClassWannabe";
+    String tenantKey = "tenantName";
     WeaviateClass clazz = WeaviateClass.builder()
       .className(className)
-      .description("Band that plays and produces music")
-      .vectorIndexType("hnsw")
-      .vectorizer("text2vec-contextionary")
+      .multiTenancyConfig(MultiTenancyConfig.builder()
+        .enabled(false)
+        .tenantKey(tenantKey)
+        .build())
+      .properties(Collections.singletonList(
+        Property.builder()
+          .name(tenantKey)
+          .dataType(Collections.singletonList(DataType.TEXT))
+          .build()
+      ))
+      .build();
+
+    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
+    assertThat(createStatus.hasErrors()).isFalse();
+    assertThat(createStatus.getResult()).isTrue();
+
+    Result<WeaviateClass> classResult = client.schema().classGetter().withClassName(className).run();
+    assertThat(classResult.hasErrors()).isFalse();
+    assertThat(classResult.getResult()).isNotNull()
+      .extracting(WeaviateClass::getMultiTenancyConfig)
+      .isNotNull()
+      .returns(null, MultiTenancyConfig::getEnabled)
+      .returns(tenantKey, MultiTenancyConfig::getTenantKey);
+  }
+
+  @Test
+  public void testClassWithMultiTenancyConfigMissingTenant() {
+    String className = "MultiTenantClassWannabe";
+    String tenantKey = "tenantName";
+    WeaviateClass clazz = WeaviateClass.builder()
+      .className(className)
+      .multiTenancyConfig(MultiTenancyConfig.builder()
+        .enabled(true)
+        .build())
+      .properties(Collections.singletonList(
+        Property.builder()
+          .name(tenantKey)
+          .dataType(Collections.singletonList(DataType.TEXT))
+          .build()
+      ))
+      .build();
+
+    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
+    assertThat(createStatus.getError()).isNotNull()
+      .returns(422, WeaviateError::getStatusCode)
+      .extracting(WeaviateError::getMessages).asList()
+      .hasSizeGreaterThan(0)
+      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
+      .first().asInstanceOf(CHAR_SEQUENCE).contains("multiTenancyConfig.tenantKey is required");
+  }
+
+  @Test
+  public void testClassWithMultiTenancyConfigMissingTenantProperty() {
+    String className = "MultiTenantClassWannabe";
+    String tenantKey = "tenantName";
+    WeaviateClass clazz = WeaviateClass.builder()
+      .className(className)
+      .multiTenancyConfig(MultiTenancyConfig.builder()
+        .enabled(true)
+        .tenantKey(tenantKey)
+        .build())
+      .build();
+
+    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
+    assertThat(createStatus.getError()).isNotNull()
+      .returns(422, WeaviateError::getStatusCode)
+      .extracting(WeaviateError::getMessages).asList()
+      .hasSizeGreaterThan(0)
+      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
+      .first().asInstanceOf(CHAR_SEQUENCE).contains("no class property found for multiTenancyConfig.tenantKey \"tenantName\"");
+  }
+
+  @Test
+  public void testClassWithoutMultiTenancyConfig() {
+    // given
+    String className = "OrdinaryClass";
+    String tenantKey = "tenantName";
+    WeaviateClass clazz = WeaviateClass.builder()
+      .className(className)
+      .properties(Collections.singletonList(
+        Property.builder()
+          .name(tenantKey)
+          .dataType(Collections.singletonList(DataType.TEXT))
+          .build()
+      ))
       .build();
 
     // when
@@ -1004,10 +1092,79 @@ public class ClientSchemaTest {
     Result<WeaviateClass> classResult = client.schema().classGetter().withClassName(className).run();
     assertThat(classResult.hasErrors()).isFalse();
     assertThat(classResult.getResult()).isNotNull()
-      .extracting(WeaviateClass::getReplicationConfig)
-      .isNotNull()
-      .extracting(ReplicationConfig::getFactor)
-      .isEqualTo(1);
+      .extracting(WeaviateClass::getMultiTenancyConfig)
+      .isNull();
+  }
+
+  @Test
+  public void shouldAddSingleTenantToMultiTenancyClass() {
+    String className = "MultiTenantClass";
+    String tenantKey = "tenantName";
+    WeaviateClass clazz = WeaviateClass.builder()
+      .className(className)
+      .multiTenancyConfig(MultiTenancyConfig.builder()
+        .enabled(true)
+        .tenantKey(tenantKey)
+        .build())
+      .properties(Collections.singletonList(
+        Property.builder()
+          .name(tenantKey)
+          .dataType(Collections.singletonList(DataType.TEXT))
+          .build()
+      ))
+      .build();
+
+    Result<Boolean> createClassStatus = client.schema().classCreator().withClass(clazz).run();
+    assertThat(createClassStatus.hasErrors()).isFalse();
+    assertThat(createClassStatus.getResult()).isTrue();
+
+    Result<Boolean> createTenantsResult = client.schema().tenantCreator()
+      .withClassName(className)
+      .withTenants(
+        Tenant.builder()
+          .name("TenantNo1")
+          .build()
+      )
+      .run();
+    assertThat(createTenantsResult.hasErrors()).isFalse();
+    assertThat(createTenantsResult.getResult()).isTrue();
+  }
+
+  @Test
+  public void shouldAddMultipleTenantsToMultiTenancyClass() {
+    String className = "MultiTenantClass";
+    String tenantKey = "tenantName";
+    WeaviateClass clazz = WeaviateClass.builder()
+      .className(className)
+      .multiTenancyConfig(MultiTenancyConfig.builder()
+        .enabled(true)
+        .tenantKey(tenantKey)
+        .build())
+      .properties(Collections.singletonList(
+        Property.builder()
+          .name(tenantKey)
+          .dataType(Collections.singletonList(DataType.TEXT))
+          .build()
+      ))
+      .build();
+
+    Result<Boolean> createClassStatus = client.schema().classCreator().withClass(clazz).run();
+    assertThat(createClassStatus.hasErrors()).isFalse();
+    assertThat(createClassStatus.getResult()).isTrue();
+
+    Result<Boolean> createTenantsResult = client.schema().tenantCreator()
+      .withClassName(className)
+      .withTenants(
+        Tenant.builder()
+          .name("TenantNo1")
+          .build(),
+        Tenant.builder()
+          .name("TenantNo2")
+          .build()
+      )
+      .run();
+    assertThat(createTenantsResult.hasErrors()).isFalse();
+    assertThat(createTenantsResult.getResult()).isTrue();
   }
 
   private void assertResultTrue(Result<Boolean> result) {

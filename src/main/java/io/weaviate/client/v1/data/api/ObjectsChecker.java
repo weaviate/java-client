@@ -19,6 +19,7 @@ public class ObjectsChecker extends BaseClient<String> implements ClientResult<B
   private final ObjectsPath objectsPath;
   private String id;
   private String className;
+  private String tenantKey;
 
   public ObjectsChecker(HttpClient httpClient, Config config, ObjectsPath objectsPath) {
     super(httpClient, config);
@@ -35,6 +36,11 @@ public class ObjectsChecker extends BaseClient<String> implements ClientResult<B
     return this;
   }
 
+  public ObjectsChecker withTenantKey(String tenantKey) {
+    this.tenantKey = tenantKey;
+    return this;
+  }
+
   @Override
   public Result<Boolean> run() {
     if (StringUtils.isEmpty(this.id)) {
@@ -47,6 +53,7 @@ public class ObjectsChecker extends BaseClient<String> implements ClientResult<B
     String path = objectsPath.buildCheck(ObjectsPath.Params.builder()
             .id(id)
             .className(className)
+            .tenantKey(tenantKey)
             .build());
     Response<String> resp = sendHeadRequest(path, String.class);
     return new Result<>(resp.getStatusCode(), resp.getStatusCode() == 204, resp.getErrors());

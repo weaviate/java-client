@@ -23,6 +23,7 @@ public class ObjectUpdater extends BaseClient<WeaviateObject> implements ClientR
   private String id;
   private String className;
   private String consistencyLevel;
+  private String tenantKey;
   private Map<String, Object> properties;
   private Boolean withMerge;
 
@@ -43,6 +44,11 @@ public class ObjectUpdater extends BaseClient<WeaviateObject> implements ClientR
 
   public ObjectUpdater withConsistencyLevel(String consistencyLevel) {
     this.consistencyLevel = consistencyLevel;
+    return this;
+  }
+
+  public ObjectUpdater withTenantKey(String tenantKey) {
+    this.tenantKey = tenantKey;
     return this;
   }
 
@@ -69,6 +75,7 @@ public class ObjectUpdater extends BaseClient<WeaviateObject> implements ClientR
             .id(id)
             .className(className)
             .consistencyLevel(consistencyLevel)
+            .tenantKey(tenantKey)
             .build());
     WeaviateObject obj = WeaviateObject.builder()
             .className(className)

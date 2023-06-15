@@ -3,6 +3,7 @@ package io.weaviate.client.v1.data.model;
 import com.google.gson.annotations.SerializedName;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,6 +15,7 @@ import java.util.Map;
 @Setter
 @Builder
 @ToString
+@EqualsAndHashCode
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class WeaviateObject {
   String id;

@@ -2,12 +2,14 @@ package io.weaviate.client.v1.cluster.model;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 @Getter
 @ToString
+@EqualsAndHashCode
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class NodesStatusResponse {
 
@@ -16,6 +18,7 @@ public class NodesStatusResponse {
 
   @Getter
   @ToString
+  @EqualsAndHashCode
   @FieldDefaults(level = AccessLevel.PRIVATE)
   public static class NodeStatus {
 
@@ -29,6 +32,7 @@ public class NodesStatusResponse {
 
   @Getter
   @ToString
+  @EqualsAndHashCode
   @FieldDefaults(level = AccessLevel.PRIVATE)
   public static class Stats {
 
@@ -38,6 +42,7 @@ public class NodesStatusResponse {
 
   @Getter
   @ToString
+  @EqualsAndHashCode
   @FieldDefaults(level = AccessLevel.PRIVATE)
   public static class ShardStatus {
 

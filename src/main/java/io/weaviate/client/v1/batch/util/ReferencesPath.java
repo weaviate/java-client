@@ -1,11 +1,12 @@
 package io.weaviate.client.v1.batch.util;
 
+import io.weaviate.client.base.util.TriConsumer;
+import io.weaviate.client.base.util.UrlEncoder;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.StringUtils;
-import io.weaviate.client.base.util.TriConsumer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,7 +18,8 @@ public class ReferencesPath {
   public String buildCreate(Params params) {
     return build(
       params,
-      this::addQueryConsistencyLevel
+      this::addQueryConsistencyLevel,
+      this::addQueryTenantKey
     );
   }
 
@@ -41,7 +43,13 @@ public class ReferencesPath {
 
   private void addQueryConsistencyLevel(Params params, List<String> pathParams, List<String> queryParams) {
     if (StringUtils.isNotBlank(params.consistencyLevel)) {
-      queryParams.add(String.format("%s=%s", "consistency_level", StringUtils.trim(params.consistencyLevel)));
+      queryParams.add(UrlEncoder.encodeQueryParam("consistency_level", params.consistencyLevel));
+    }
+  }
+
+  private void addQueryTenantKey(Params params, List<String> pathParams, List<String> queryParams) {
+    if (StringUtils.isNotBlank(params.tenantKey)) {
+      queryParams.add(UrlEncoder.encodeQueryParam("tenant_key", params.tenantKey));
     }
   }
 
@@ -52,5 +60,6 @@ public class ReferencesPath {
   public static class Params {
 
     String consistencyLevel;
+    String tenantKey;
   }
 }

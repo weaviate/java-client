@@ -1,12 +1,13 @@
 package io.weaviate.client.v1.data.util;
 
+import io.weaviate.client.base.util.DbVersionSupport;
+import io.weaviate.client.base.util.TriConsumer;
+import io.weaviate.client.base.util.UrlEncoder;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.StringUtils;
-import io.weaviate.client.base.util.DbVersionSupport;
-import io.weaviate.client.base.util.TriConsumer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,7 +42,8 @@ public class ReferencesPath {
       this::addPathId,
       this::addPathReferences,
       this::addPathProperty,
-      this::addQueryConsistencyLevel
+      this::addQueryConsistencyLevel,
+      this::addQueryTenantKey
     );
   }
 
@@ -67,7 +69,7 @@ public class ReferencesPath {
   private void addPathClassNameWithDeprecatedNotSupportedCheck(Params params, List<String> pathParams, List<String> queryParams) {
     if (support.supportsClassNameNamespacedEndpoints()) {
       if (StringUtils.isNotBlank(params.className)) {
-        pathParams.add(StringUtils.trim(params.className));
+        pathParams.add(UrlEncoder.encodePathParam(params.className));
       } else {
         support.warnDeprecatedNonClassNameNamespacedEndpointsForObjects();
       }
@@ -78,7 +80,7 @@ public class ReferencesPath {
 
   private void addPathId(Params params, List<String> pathParams, List<String> queryParams) {
     if (StringUtils.isNotBlank(params.id)) {
-      pathParams.add(StringUtils.trim(params.id));
+      pathParams.add(UrlEncoder.encodePathParam(params.id));
     }
   }
 
@@ -88,14 +90,20 @@ public class ReferencesPath {
 
   private void addPathProperty(Params params, List<String> pathParams, List<String> queryParams) {
     if (StringUtils.isNotBlank(params.property)) {
-      pathParams.add(StringUtils.trim(params.property));
+      pathParams.add(UrlEncoder.encodePathParam(params.property));
     }
   }
 
 
   private void addQueryConsistencyLevel(Params params, List<String> pathParams, List<String> queryParams) {
     if (StringUtils.isNotBlank(params.consistencyLevel)) {
-      queryParams.add(String.format("%s=%s", "consistency_level", StringUtils.trim(params.consistencyLevel)));
+      queryParams.add(UrlEncoder.encodeQueryParam("consistency_level", params.consistencyLevel));
+    }
+  }
+
+  private void addQueryTenantKey(Params params, List<String> pathParams, List<String> queryParams) {
+    if (StringUtils.isNotBlank(params.tenantKey)) {
+      queryParams.add(UrlEncoder.encodeQueryParam("tenant_key", params.tenantKey));
     }
   }
 
@@ -108,6 +116,7 @@ public class ReferencesPath {
     String id;
     String className;
     String consistencyLevel;
+    String tenantKey;
     String property;
   }
 }
