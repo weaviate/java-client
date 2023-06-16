@@ -76,6 +76,11 @@ public class Aggregate extends BaseClient<GraphQLResponse> implements ClientResu
     return this;
   }
 
+  public Aggregate withTenantKey(String tenantKey) {
+    aggregateBuilder.tenantKey(tenantKey);
+    return this;
+  }
+
   @Override
   public Result<GraphQLResponse> run() {
     String aggregateQuery = aggregateBuilder.build().buildQuery();

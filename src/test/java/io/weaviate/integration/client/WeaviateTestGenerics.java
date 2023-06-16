@@ -408,19 +408,40 @@ public class WeaviateTestGenerics {
       .hasSize(objects.length);
   }
 
+  public void createDataPizzaQuattroFormaggiForTenants(WeaviateClient client, String... tenantNames) {
+    createDataFoodForTenants(client, tenantNames, () -> new WeaviateObject[]{
+      objectPizzaQuattroFormaggi(),
+    });
+  }
+
+  public void createDataPizzaFruttiDiMareForTenants(WeaviateClient client, String... tenantNames) {
+    createDataFoodForTenants(client, tenantNames, () -> new WeaviateObject[]{
+      objectPizzaFruttiDiMare(),
+    });
+  }
+
+  public void createDataPizzaHawaiiForTenants(WeaviateClient client, String... tenantNames) {
+    createDataFoodForTenants(client, tenantNames, () -> new WeaviateObject[]{
+      objectPizzaHawaii(),
+    });
+  } public void createDataPizzaDoenerForTenants(WeaviateClient client, String... tenantNames) {
+    createDataFoodForTenants(client, tenantNames, () -> new WeaviateObject[]{
+      objectPizzaDoener(),
+    });
+  }
   public void createDataPizzaForTenants(WeaviateClient client, String... tenantNames) {
     createDataFoodForTenants(client, tenantNames, () -> new WeaviateObject[]{
       objectPizzaQuattroFormaggi(),
       objectPizzaFruttiDiMare(),
       objectPizzaHawaii(),
-      objectPizzaDoener()
+      objectPizzaDoener(),
     });
   }
 
   public void createDataSoupForTenants(WeaviateClient client, String... tenantNames) {
     createDataFoodForTenants(client, tenantNames, () -> new WeaviateObject[]{
       objectSoupChicken(),
-      objectSoupBeautiful()
+      objectSoupBeautiful(),
     });
   }
 
@@ -431,7 +452,7 @@ public class WeaviateTestGenerics {
       objectPizzaHawaii(),
       objectPizzaDoener(),
       objectSoupChicken(),
-      objectSoupBeautiful()
+      objectSoupBeautiful(),
     });
   }
 

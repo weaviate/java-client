@@ -5,7 +5,7 @@ public class WeaviateVersion {
   // to be set according to weaviate docker image
   public static final String EXPECTED_WEAVIATE_VERSION = "1.20.0-prealpha";
   // to be set according to weaviate docker image
-  public static final String EXPECTED_WEAVIATE_GIT_HASH = "1e258e9";
+  public static final String EXPECTED_WEAVIATE_GIT_HASH = "2216131";
 
   private WeaviateVersion() {}
 }

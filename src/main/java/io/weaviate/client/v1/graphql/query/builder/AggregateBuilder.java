@@ -38,17 +38,21 @@ public class AggregateBuilder implements Query {
   NearImageArgument withNearImageFilter;
   Integer objectLimit;
   Integer limit;
+  String tenantKey;
 
   private boolean includesFilterClause() {
     return ObjectUtils.anyNotNull(withWhereFilter, withNearTextFilter, withNearObjectFilter,
       withNearVectorFilter, objectLimit, withAskArgument, withNearImageFilter, limit)
-      || StringUtils.isNotBlank(groupByClausePropertyName);
+      || !StringUtils.isAllBlank(groupByClausePropertyName, tenantKey);
   }
 
   private String createFilterClause() {
     if (includesFilterClause()) {
       Set<String> filters = new LinkedHashSet<>();
 
+      if (StringUtils.isNotBlank(tenantKey)) {
+        filters.add(String.format("tenantKey:%s", Serializer.quote(tenantKey)));
+      }
       if (StringUtils.isNotBlank(groupByClausePropertyName)) {
         filters.add(String.format("groupBy:%s", Serializer.quote(groupByClausePropertyName)));
       }
