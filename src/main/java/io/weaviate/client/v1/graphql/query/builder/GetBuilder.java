@@ -23,6 +23,7 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,17 +58,22 @@ public class GetBuilder implements Query {
   SortArguments withSortArguments;
   GenerativeSearchBuilder withGenerativeSearch;
   GroupByArgument withGroupByArgument;
+  String tenantKey;
 
   private boolean includesFilterClause() {
     return ObjectUtils.anyNotNull(withWhereFilter, withNearTextFilter, withNearObjectFilter, withNearVectorFilter,
       withNearImageFilter, withGroupArgument, withAskArgument, withBm25Filter, withHybridFilter, limit, offset,
-      withSortArguments, withConsistencyLevel, withGroupByArgument);
+      withSortArguments, withGroupByArgument)
+      || !StringUtils.isAllBlank(withConsistencyLevel, after, tenantKey);
   }
 
   private String createFilterClause() {
     if (includesFilterClause()) {
       Set<String> filters = new LinkedHashSet<>();
 
+      if (StringUtils.isNotBlank(tenantKey)) {
+        filters.add(String.format("tenantKey:%s", Serializer.quote(tenantKey)));
+      }
       if (withWhereFilter != null) {
         filters.add(withWhereFilter.build());
       }
@@ -101,20 +107,20 @@ public class GetBuilder implements Query {
       if (offset != null) {
         filters.add(String.format("offset:%s", offset));
       }
-      if (after != null) {
+      if (StringUtils.isNotBlank(after)) {
         filters.add(String.format("after:%s", Serializer.quote(after)));
       }
       if (withSortArguments != null) {
         filters.add(withSortArguments.build());
       }
-      if (withConsistencyLevel != null) {
-        filters.add(String.format("consistencyLevel:%s", withConsistencyLevel));
+      if (StringUtils.isNotBlank(withConsistencyLevel)) {
+        filters.add(String.format("consistencyLevel:%s", Serializer.escape(withConsistencyLevel)));
       }
       if (withGroupByArgument != null) {
         filters.add(withGroupByArgument.build());
       }
 
-      return String.format("(%s)", String.join(",", filters));
+      return String.format("(%s)", String.join(" ", filters));
     }
     return "";
   }
@@ -185,6 +191,7 @@ public class GetBuilder implements Query {
       this.withWhereFilter = WhereArgument.builder().filter(whereFilter).build();
       return this;
     }
+
     public GetBuilderBuilder withWhereFilter(WhereArgument whereArgument) {
       this.withWhereFilter = whereArgument;
       return this;

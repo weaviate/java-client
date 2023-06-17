@@ -129,6 +129,11 @@ public class Get extends BaseClient<GraphQLResponse> implements ClientResult<Gra
     return this;
   }
 
+  public Get withTenantKey(String tenantKey) {
+    getBuilder.tenantKey(tenantKey);
+    return this;
+  }
+
   @Override
   public Result<GraphQLResponse> run() {
     String getQuery = getBuilder.build().buildQuery();
