@@ -57,6 +57,7 @@ import static org.junit.Assume.assumeTrue;
 
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
@@ -1290,6 +1291,7 @@ public class ClientGraphQLTest {
   }
 
   @Test
+  @Ignore("turned off as openai seems to be quite unstable")
   public void shouldRunGenerativeSearchWithSingleResult() {
     assumeTrue("OpenAI Api Key has to be configured to run the test", StringUtils.isNotBlank(openAIApiKey));
 
@@ -1328,6 +1330,7 @@ public class ClientGraphQLTest {
   }
 
   @Test
+  @Ignore("turned off as openai seems to be quite unstable")
   public void shouldRunGenerativeSearchWithGroupedResult() {
     assumeTrue("OpenAI Api Key has to be configured to run the test", StringUtils.isNotBlank(openAIApiKey));
 
@@ -1372,6 +1375,7 @@ public class ClientGraphQLTest {
   }
 
   @Test
+  @Ignore("turned off as openai seems to be quite unstable")
   public void shouldRunGenerativeSearchWithGroupedResultAndProperties() {
     assumeTrue("OpenAI Api Key has to be configured to run the test", StringUtils.isNotBlank(openAIApiKey));
 
@@ -1417,6 +1421,7 @@ public class ClientGraphQLTest {
   }
 
   @Test
+  @Ignore("turned off as openai seems to be quite unstable")
   public void shouldRunGenerativeSearchWithBothSingleAndGroupedResults() {
     assumeTrue("OpenAI Api Key has to be configured to run the test", StringUtils.isNotBlank(openAIApiKey));
 
