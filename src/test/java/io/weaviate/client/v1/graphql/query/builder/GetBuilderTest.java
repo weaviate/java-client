@@ -643,4 +643,42 @@ public class GetBuilderTest {
 
     assertThat(query).isEqualTo("{Get{Pizza(tenantKey:\"TenantNo1\" where:{path:[\"name\"] valueText:\"Hawaii\" operator:Equal}){name}}}");
   }
+
+  @Test
+  public void shouldBuildGetWithAutocut() {
+    Fields fields = Fields.builder()
+      .fields(Field.builder().name("name").build())
+      .build();
+
+    String query = GetBuilder.builder()
+      .className("Pizza")
+      .fields(fields)
+      .autocut(2)
+      .build().buildQuery();
+
+    assertThat(query).isEqualTo("{Get{Pizza(autocut:2){name}}}");
+  }
+
+  @Test
+  public void shouldBuildGetWithAutocutAndWhere() {
+    WhereArgument where = WhereArgument.builder()
+      .filter(WhereFilter.builder()
+        .path(new String[]{"name"})
+        .operator(Operator.Equal)
+        .valueText("Hawaii")
+        .build())
+      .build();
+    Fields fields = Fields.builder()
+      .fields(Field.builder().name("name").build())
+      .build();
+
+    String query = GetBuilder.builder()
+      .className("Pizza")
+      .fields(fields)
+      .autocut(2)
+      .withWhereFilter(where)
+      .build().buildQuery();
+
+    assertThat(query).isEqualTo("{Get{Pizza(where:{path:[\"name\"] valueText:\"Hawaii\" operator:Equal} autocut:2){name}}}");
+  }
 }
