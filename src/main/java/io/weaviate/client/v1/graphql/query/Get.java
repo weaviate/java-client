@@ -134,6 +134,11 @@ public class Get extends BaseClient<GraphQLResponse> implements ClientResult<Gra
     return this;
   }
 
+  public Get withAutocut(Integer autocut) {
+    getBuilder.autocut(autocut);
+    return this;
+  }
+
   @Override
   public Result<GraphQLResponse> run() {
     String getQuery = getBuilder.build().buildQuery();

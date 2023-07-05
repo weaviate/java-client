@@ -45,6 +45,7 @@ public class GetBuilder implements Query {
   Integer offset;
   Integer limit;
   String after;
+  Integer autocut;
   String withConsistencyLevel;
   WhereArgument withWhereFilter;
   NearTextArgument withNearTextFilter;
@@ -63,7 +64,7 @@ public class GetBuilder implements Query {
   private boolean includesFilterClause() {
     return ObjectUtils.anyNotNull(withWhereFilter, withNearTextFilter, withNearObjectFilter, withNearVectorFilter,
       withNearImageFilter, withGroupArgument, withAskArgument, withBm25Filter, withHybridFilter, limit, offset,
-      withSortArguments, withGroupByArgument)
+      withSortArguments, withGroupByArgument, autocut)
       || !StringUtils.isAllBlank(withConsistencyLevel, after, tenantKey);
   }
 
@@ -118,6 +119,9 @@ public class GetBuilder implements Query {
       }
       if (withGroupByArgument != null) {
         filters.add(withGroupByArgument.build());
+      }
+      if (autocut != null) {
+        filters.add(String.format("autocut:%s", autocut));
       }
 
       return String.format("(%s)", String.join(" ", filters));
