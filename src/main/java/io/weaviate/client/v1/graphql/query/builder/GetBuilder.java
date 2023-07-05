@@ -59,21 +59,21 @@ public class GetBuilder implements Query {
   SortArguments withSortArguments;
   GenerativeSearchBuilder withGenerativeSearch;
   GroupByArgument withGroupByArgument;
-  String tenantKey;
+  String tenant;
 
   private boolean includesFilterClause() {
     return ObjectUtils.anyNotNull(withWhereFilter, withNearTextFilter, withNearObjectFilter, withNearVectorFilter,
       withNearImageFilter, withGroupArgument, withAskArgument, withBm25Filter, withHybridFilter, limit, offset,
       withSortArguments, withGroupByArgument, autocut)
-      || !StringUtils.isAllBlank(withConsistencyLevel, after, tenantKey);
+      || !StringUtils.isAllBlank(withConsistencyLevel, after, tenant);
   }
 
   private String createFilterClause() {
     if (includesFilterClause()) {
       Set<String> filters = new LinkedHashSet<>();
 
-      if (StringUtils.isNotBlank(tenantKey)) {
-        filters.add(String.format("tenantKey:%s", Serializer.quote(tenantKey)));
+      if (StringUtils.isNotBlank(tenant)) {
+        filters.add(String.format("tenant:%s", Serializer.quote(tenant)));
       }
       if (withWhereFilter != null) {
         filters.add(withWhereFilter.build());

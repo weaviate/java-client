@@ -28,8 +28,7 @@ public class ObjectsPath {
   public String buildCreate(Params params) {
     return build(
       params,
-      this::addQueryConsistencyLevel,
-      this::addQueryTenantKey
+      this::addQueryConsistencyLevel
     );
   }
 
@@ -39,7 +38,7 @@ public class ObjectsPath {
       this::addPathClassNameWithDeprecatedNotSupportedCheck,
       this::addPathId,
       this::addQueryConsistencyLevel,
-      this::addQueryTenantKey
+      this::addQueryTenant
     );
   }
 
@@ -49,7 +48,7 @@ public class ObjectsPath {
       this::addPathClassNameWithDeprecatedCheck,
       this::addPathId,
       this::addQueryConsistencyLevel,
-      this::addQueryTenantKey
+      this::addQueryTenant
     );
   }
 
@@ -58,7 +57,7 @@ public class ObjectsPath {
       params,
       this::addPathClassNameWithDeprecatedNotSupportedCheck,
       this::addPathId,
-      this::addQueryTenantKey
+      this::addQueryTenant
     );
   }
 
@@ -70,7 +69,7 @@ public class ObjectsPath {
       this::addQueryLimit,
       this::addQueryOffset,
       this::addQueryAfter,
-      this::addQueryTenantKey
+      this::addQueryTenant
     );
   }
 
@@ -82,7 +81,7 @@ public class ObjectsPath {
       this::addQueryAdditionals,
       this::addQueryConsistencyLevel,
       this::addQueryNodeName,
-      this::addQueryTenantKey
+      this::addQueryTenant
     );
   }
 
@@ -187,9 +186,9 @@ public class ObjectsPath {
     }
   }
 
-  private void addQueryTenantKey(Params params, List<String> pathParams, List<String> queryParams) {
-    if (StringUtils.isNotBlank(params.tenantKey)) {
-      queryParams.add(UrlEncoder.encodeQueryParam("tenant_key", params.tenantKey));
+  private void addQueryTenant(Params params, List<String> pathParams, List<String> queryParams) {
+    if (StringUtils.isNotBlank(params.tenant)) {
+      queryParams.add(UrlEncoder.encodeQueryParam("tenant", params.tenant));
     }
   }
 
@@ -207,6 +206,6 @@ public class ObjectsPath {
     String[] additional;
     String consistencyLevel;
     String nodeName;
-    String tenantKey;
+    String tenant;
   }
 }

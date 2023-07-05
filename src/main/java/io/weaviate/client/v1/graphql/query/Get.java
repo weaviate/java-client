@@ -129,8 +129,8 @@ public class Get extends BaseClient<GraphQLResponse> implements ClientResult<Gra
     return this;
   }
 
-  public Get withTenantKey(String tenantKey) {
-    getBuilder.tenantKey(tenantKey);
+  public Get withTenant(String tenant) {
+    getBuilder.tenant(tenant);
     return this;
   }
 

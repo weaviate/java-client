@@ -2,10 +2,12 @@ package io.weaviate.client.v1.data.api;
 
 import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.data.util.ObjectsPath;
+
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import io.weaviate.client.Config;
@@ -23,7 +25,7 @@ public class ObjectUpdater extends BaseClient<WeaviateObject> implements ClientR
   private String id;
   private String className;
   private String consistencyLevel;
-  private String tenantKey;
+  private String tenant;
   private Map<String, Object> properties;
   private Boolean withMerge;
 
@@ -47,8 +49,8 @@ public class ObjectUpdater extends BaseClient<WeaviateObject> implements ClientR
     return this;
   }
 
-  public ObjectUpdater withTenantKey(String tenantKey) {
-    this.tenantKey = tenantKey;
+  public ObjectUpdater withTenant(String tenant) {
+    this.tenant = tenant;
     return this;
   }
 
@@ -66,22 +68,22 @@ public class ObjectUpdater extends BaseClient<WeaviateObject> implements ClientR
   public Result<Boolean> run() {
     if (StringUtils.isEmpty(id)) {
       WeaviateErrorMessage errorMessage = WeaviateErrorMessage.builder()
-              .message("id cannot be empty").build();
+        .message("id cannot be empty").build();
       WeaviateErrorResponse errors = WeaviateErrorResponse.builder()
-              .error(Stream.of(errorMessage).collect(Collectors.toList())).build();
+        .error(Stream.of(errorMessage).collect(Collectors.toList())).build();
       return new Result<>(500, false, errors);
     }
     String path = objectsPath.buildUpdate(ObjectsPath.Params.builder()
-            .id(id)
-            .className(className)
-            .consistencyLevel(consistencyLevel)
-            .tenantKey(tenantKey)
-            .build());
+      .id(id)
+      .className(className)
+      .consistencyLevel(consistencyLevel)
+      .build());
     WeaviateObject obj = WeaviateObject.builder()
-            .className(className)
-            .properties(properties)
-            .id(id)
-            .build();
+      .className(className)
+      .properties(properties)
+      .id(id)
+      .tenant(tenant)
+      .build();
     if (BooleanUtils.isTrue(withMerge)) {
       Response<WeaviateObject> resp = sendPatchRequest(path, obj, WeaviateObject.class);
       return new Result<>(resp.getStatusCode(), resp.getStatusCode() == 204, resp.getErrors());

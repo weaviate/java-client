@@ -16,18 +16,17 @@ import java.util.Objects;
 public class ObjectsPath {
 
   public String buildCreate(Params params) {
-    return commonBuild(params);
+    return build(
+      params,
+      this::addQueryConsistencyLevel
+    );
   }
 
   public String buildDelete(Params params) {
-    return commonBuild(params);
-  }
-
-  private String commonBuild(Params params) {
     return build(
       params,
       this::addQueryConsistencyLevel,
-      this::addQueryTenantKey
+      this::addQueryTenant
     );
   }
 
@@ -55,9 +54,9 @@ public class ObjectsPath {
     }
   }
 
-  private void addQueryTenantKey(Params params, List<String> pathParams, List<String> queryParams) {
-    if (StringUtils.isNotBlank(params.tenantKey)) {
-      queryParams.add(UrlEncoder.encodeQueryParam("tenant_key", params.tenantKey));
+  private void addQueryTenant(Params params, List<String> pathParams, List<String> queryParams) {
+    if (StringUtils.isNotBlank(params.tenant)) {
+      queryParams.add(UrlEncoder.encodeQueryParam("tenant", params.tenant));
     }
   }
 
@@ -68,6 +67,6 @@ public class ObjectsPath {
   public static class Params {
 
     String consistencyLevel;
-    String tenantKey;
+    String tenant;
   }
 }

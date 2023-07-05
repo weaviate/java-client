@@ -15,4 +15,5 @@ import lombok.experimental.FieldDefaults;
 public class BatchReference {
   String from;
   String to;
+  String tenant;
 }

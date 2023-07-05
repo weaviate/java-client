@@ -18,7 +18,7 @@ public class ObjectsBatchDeleter extends BaseClient<BatchDeleteResponse> impleme
   private final ObjectsPath objectsPath;
   private String className;
   private String consistencyLevel;
-  private String tenantKey;
+  private String tenant;
   private WhereFilter where;
   private String output;
   private Boolean dryRun;
@@ -40,8 +40,8 @@ public class ObjectsBatchDeleter extends BaseClient<BatchDeleteResponse> impleme
     return this;
   }
 
-  public ObjectsBatchDeleter withTenantKey(String tenantKey) {
-    this.tenantKey = tenantKey;
+  public ObjectsBatchDeleter withTenant(String tenant) {
+    this.tenant = tenant;
     return this;
   }
 
@@ -74,7 +74,7 @@ public class ObjectsBatchDeleter extends BaseClient<BatchDeleteResponse> impleme
       .build();
     String path = objectsPath.buildDelete(ObjectsPath.Params.builder()
       .consistencyLevel(consistencyLevel)
-      .tenantKey(tenantKey)
+      .tenant(tenant)
       .build());
     Response<BatchDeleteResponse> resp = sendDeleteRequest(path, batchDelete, BatchDeleteResponse.class);
     return new Result<>(resp);

@@ -307,7 +307,7 @@ public class AggregateBuilderTest {
   }
 
   @Test
-  public void shouldBuildAggregateWithTenantKey() {
+  public void shouldBuildAggregateWithTenant() {
     Field meta = Field.builder()
       .name("meta")
       .fields(Field.builder().name("count").build())
@@ -317,14 +317,14 @@ public class AggregateBuilderTest {
     String query = AggregateBuilder.builder()
       .className("Pizza")
       .fields(fields)
-      .tenantKey("TenantNo1")
+      .tenant("TenantNo1")
       .build().buildQuery();
 
-    assertThat(query).isEqualTo("{Aggregate{Pizza(tenantKey:\"TenantNo1\"){meta{count}}}}");
+    assertThat(query).isEqualTo("{Aggregate{Pizza(tenant:\"TenantNo1\"){meta{count}}}}");
   }
 
   @Test
-  public void shouldBuildAggregateWithTenantKeyAndWhere() {
+  public void shouldBuildAggregateWithTenantAndWhere() {
     WhereArgument where = WhereArgument.builder()
       .filter(WhereFilter.builder()
         .path(new String[]{"name"})
@@ -341,10 +341,10 @@ public class AggregateBuilderTest {
     String query = AggregateBuilder.builder()
       .className("Pizza")
       .fields(fields)
-      .tenantKey("TenantNo1")
+      .tenant("TenantNo1")
       .withWhereFilter(where)
       .build().buildQuery();
 
-    assertThat(query).isEqualTo("{Aggregate{Pizza(tenantKey:\"TenantNo1\" where:{path:[\"name\"] valueText:\"Hawaii\" operator:Equal}){meta{count}}}}");
+    assertThat(query).isEqualTo("{Aggregate{Pizza(tenant:\"TenantNo1\" where:{path:[\"name\"] valueText:\"Hawaii\" operator:Equal}){meta{count}}}}");
   }
 }

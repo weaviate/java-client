@@ -18,8 +18,7 @@ public class ReferencesPath {
   public String buildCreate(Params params) {
     return build(
       params,
-      this::addQueryConsistencyLevel,
-      this::addQueryTenantKey
+      this::addQueryConsistencyLevel
     );
   }
 
@@ -47,12 +46,6 @@ public class ReferencesPath {
     }
   }
 
-  private void addQueryTenantKey(Params params, List<String> pathParams, List<String> queryParams) {
-    if (StringUtils.isNotBlank(params.tenantKey)) {
-      queryParams.add(UrlEncoder.encodeQueryParam("tenant_key", params.tenantKey));
-    }
-  }
-
 
   @Builder
   @ToString
@@ -60,6 +53,5 @@ public class ReferencesPath {
   public static class Params {
 
     String consistencyLevel;
-    String tenantKey;
   }
 }

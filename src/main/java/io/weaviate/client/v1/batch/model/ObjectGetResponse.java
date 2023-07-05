@@ -26,6 +26,7 @@ public class ObjectGetResponse {
   Map<String, Object> additional;
   Float[] vector;
   Object vectorWeights;
+  String tenant;
 
   Deprecation[] deprecations;
   ObjectsGetResponseAO2Result result;

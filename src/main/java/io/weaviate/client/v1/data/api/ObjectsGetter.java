@@ -27,7 +27,7 @@ public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements Cl
   private String after;
   private final HashSet<String> additional;
   private String consistencyLevel;
-  private String tenantKey;
+  private String tenant;
   private String nodeName;
   private class ObjectGetter extends BaseClient<WeaviateObject> implements ClientResult<List<WeaviateObject>> {
     private String path;
@@ -91,8 +91,8 @@ public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements Cl
     return this;
   }
 
-  public ObjectsGetter withTenantKey(String tenantKey) {
-    this.tenantKey = tenantKey;
+  public ObjectsGetter withTenant(String tenant) {
+    this.tenant = tenant;
     return this;
   }
 
@@ -121,13 +121,16 @@ public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements Cl
             .after(after)
             .additional(additional.toArray(new String[0]))
             .consistencyLevel(consistencyLevel)
-            .tenantKey(tenantKey)
+            .tenant(tenant)
             .nodeName(nodeName)
             .build();
     if (StringUtils.isNotBlank(id)) {
       return this.objectGetter.withPath(objectsPath.buildGetOne(params)).run();
     }
     Response<ObjectsListResponse> resp = sendGetRequest(objectsPath.buildGet(params), ObjectsListResponse.class);
-    return new Result<>(resp.getStatusCode(), Arrays.asList(resp.getBody().getObjects()), resp.getErrors());
+    List<WeaviateObject> objects = resp.getBody() == null
+      ? null
+      : Arrays.asList(resp.getBody().getObjects());
+    return new Result<>(resp.getStatusCode(), objects, resp.getErrors());
   }
 }

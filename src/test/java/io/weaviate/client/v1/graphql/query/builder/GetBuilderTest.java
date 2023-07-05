@@ -607,7 +607,7 @@ public class GetBuilderTest {
   }
 
   @Test
-  public void shouldBuildGetWithTenantKey() {
+  public void shouldBuildGetWithTenant() {
     Fields fields = Fields.builder()
       .fields(Field.builder().name("name").build())
       .build();
@@ -615,14 +615,14 @@ public class GetBuilderTest {
     String query = GetBuilder.builder()
       .className("Pizza")
       .fields(fields)
-      .tenantKey("TenantNo1")
+      .tenant("TenantNo1")
       .build().buildQuery();
 
-    assertThat(query).isEqualTo("{Get{Pizza(tenantKey:\"TenantNo1\"){name}}}");
+    assertThat(query).isEqualTo("{Get{Pizza(tenant:\"TenantNo1\"){name}}}");
   }
 
   @Test
-  public void shouldBuildGetWithTenantKeyAndWhere() {
+  public void shouldBuildGetWithTenantAndWhere() {
     WhereArgument where = WhereArgument.builder()
       .filter(WhereFilter.builder()
         .path(new String[]{"name"})
@@ -637,11 +637,11 @@ public class GetBuilderTest {
     String query = GetBuilder.builder()
       .className("Pizza")
       .fields(fields)
-      .tenantKey("TenantNo1")
+      .tenant("TenantNo1")
       .withWhereFilter(where)
       .build().buildQuery();
 
-    assertThat(query).isEqualTo("{Get{Pizza(tenantKey:\"TenantNo1\" where:{path:[\"name\"] valueText:\"Hawaii\" operator:Equal}){name}}}");
+    assertThat(query).isEqualTo("{Get{Pizza(tenant:\"TenantNo1\" where:{path:[\"name\"] valueText:\"Hawaii\" operator:Equal}){name}}}");
   }
 
   @Test
