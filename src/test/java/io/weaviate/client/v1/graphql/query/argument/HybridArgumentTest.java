@@ -42,4 +42,30 @@ public class HybridArgumentTest {
 
     assertThat(str).isEqualTo("hybrid:{query:\"\\\"I'm a complex string\\\" says the {'`:string:`'}\"}");
   }
+
+  @Test
+  public void shouldCreateArgumentWithFusionTypeRanked() {
+    HybridArgument hybrid = HybridArgument.builder()
+      .query("I'm a simple string")
+      .fusionType(FusionType.RANKED)
+      .build();
+
+    String str = hybrid.build();
+
+    assertThat(str).isEqualTo("hybrid:{query:\"I'm a simple string\" " +
+      "fusionType:rankedFusion}");
+  }
+
+  @Test
+  public void shouldCreateArgumentWithFusionTypeRelativeScore() {
+    HybridArgument hybrid = HybridArgument.builder()
+      .query("I'm a simple string")
+      .fusionType(FusionType.RELATIVE_SCORE)
+      .build();
+
+    String str = hybrid.build();
+
+    assertThat(str).isEqualTo("hybrid:{query:\"I'm a simple string\" " +
+      "fusionType:relativeScoreFusion}");
+  }
 }

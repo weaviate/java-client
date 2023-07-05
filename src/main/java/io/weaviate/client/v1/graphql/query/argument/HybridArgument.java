@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
+import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @Builder
@@ -20,6 +21,7 @@ public class HybridArgument implements Argument {
   String query;
   Float alpha;
   Float[] vector;
+  String fusionType;
 
   @Override
   public String build() {
@@ -31,6 +33,9 @@ public class HybridArgument implements Argument {
     }
     if (alpha != null) {
       arg.add(String.format("alpha:%s", alpha));
+    }
+    if (StringUtils.isNotBlank(fusionType)) {
+      arg.add(String.format("fusionType:%s", fusionType));
     }
 
     return String.format("hybrid:{%s}", String.join(" ", arg));
