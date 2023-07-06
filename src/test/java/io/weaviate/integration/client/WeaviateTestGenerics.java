@@ -386,7 +386,7 @@ public class WeaviateTestGenerics {
       .map(tenant -> Tenant.builder().name(tenant).build())
       .toArray(Tenant[]::new);
 
-    Result<Boolean> createStatus = client.schema().tenantCreator()
+    Result<Boolean> createStatus = client.schema().tenantsCreator()
       .withClassName(className)
       .withTenants(t)
       .run();

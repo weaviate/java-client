@@ -3,12 +3,10 @@ package io.weaviate.integration.client.schema;
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
-import io.weaviate.client.base.WeaviateError;
 import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.v1.misc.model.BM25Config;
 import io.weaviate.client.v1.misc.model.DistanceType;
 import io.weaviate.client.v1.misc.model.InvertedIndexConfig;
-import io.weaviate.client.v1.misc.model.MultiTenancyConfig;
 import io.weaviate.client.v1.misc.model.PQConfig;
 import io.weaviate.client.v1.misc.model.ShardingConfig;
 import io.weaviate.client.v1.misc.model.StopwordConfig;
@@ -19,7 +17,6 @@ import io.weaviate.client.v1.schema.model.Schema;
 import io.weaviate.client.v1.schema.model.Shard;
 import io.weaviate.client.v1.schema.model.ShardStatus;
 import io.weaviate.client.v1.schema.model.ShardStatuses;
-import io.weaviate.client.v1.schema.model.Tenant;
 import io.weaviate.client.v1.schema.model.Tokenization;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
 import org.junit.After;
@@ -38,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.CHAR_SEQUENCE;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -958,133 +954,6 @@ public class ClientSchemaTest {
     // then
     assertResultError("className cannot be empty", res);
   }
-
-  @Test
-  public void shouldCreateClassWithMultiTenancyConfig() {
-    String className = "MultiTenantClass";
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className(className)
-      .multiTenancyConfig(MultiTenancyConfig.builder()
-        .enabled(true)
-        .build())
-      .properties(Collections.singletonList(
-        Property.builder()
-          .name("name")
-          .dataType(Collections.singletonList(DataType.TEXT))
-          .build()
-      ))
-      .build();
-
-    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    assertThat(createStatus.hasErrors()).isFalse();
-    assertThat(createStatus.getResult()).isTrue();
-
-    Result<WeaviateClass> classResult = client.schema().classGetter().withClassName(className).run();
-    assertThat(classResult.hasErrors()).isFalse();
-    assertThat(classResult.getResult()).isNotNull()
-      .extracting(WeaviateClass::getMultiTenancyConfig)
-      .isNotNull()
-      .returns(true, MultiTenancyConfig::getEnabled);
-  }
-
-  @Test
-  public void shouldCreateClassWithMultiTenancyConfigDisabled() {
-    String className = "MultiTenantClassWannabe";
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className(className)
-      .multiTenancyConfig(MultiTenancyConfig.builder()
-        .enabled(false)
-        .build())
-      .properties(Collections.singletonList(
-        Property.builder()
-          .name("name")
-          .dataType(Collections.singletonList(DataType.TEXT))
-          .build()
-      ))
-      .build();
-
-    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    assertThat(createStatus.hasErrors()).isFalse();
-    assertThat(createStatus.getResult()).isTrue();
-
-    Result<WeaviateClass> classResult = client.schema().classGetter().withClassName(className).run();
-    assertThat(classResult.hasErrors()).isFalse();
-    assertThat(classResult.getResult()).isNotNull()
-      .extracting(WeaviateClass::getMultiTenancyConfig)
-      .isNotNull()
-      .returns(false, MultiTenancyConfig::getEnabled);
-  }
-
-  @Test
-  public void shouldCreateClassWithoutMultiTenancyConfig() {
-    // given
-    String className = "OrdinaryClass";
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className(className)
-      .properties(Collections.singletonList(
-        Property.builder()
-          .name("name")
-          .dataType(Collections.singletonList(DataType.TEXT))
-          .build()
-      ))
-      .build();
-
-    // when
-    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    assertThat(createStatus.hasErrors()).isFalse();
-    assertThat(createStatus.getResult()).isTrue();
-
-    // then
-    Result<WeaviateClass> classResult = client.schema().classGetter().withClassName(className).run();
-    assertThat(classResult.hasErrors()).isFalse();
-    assertThat(classResult.getResult()).isNotNull()
-      .extracting(WeaviateClass::getMultiTenancyConfig)
-      .isNotNull()
-      .returns(false, MultiTenancyConfig::getEnabled);
-  }
-
-  @Test
-  public void shouldAddTenantsToMultiTenancyClass() {
-    String className = "MultiTenantClass";
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className(className)
-      .multiTenancyConfig(MultiTenancyConfig.builder()
-        .enabled(true)
-        .build())
-      .properties(Collections.singletonList(
-        Property.builder()
-          .name("name")
-          .dataType(Collections.singletonList(DataType.TEXT))
-          .build()
-      ))
-      .build();
-
-    Result<Boolean> createClassStatus = client.schema().classCreator().withClass(clazz).run();
-    assertThat(createClassStatus.hasErrors()).isFalse();
-    assertThat(createClassStatus.getResult()).isTrue();
-
-    Result<Boolean> createTenantsResult = client.schema().tenantCreator()
-      .withClassName(className)
-      .withTenants(
-        Tenant.builder()
-          .name("TenantNo1")
-          .build(),
-        Tenant.builder()
-          .name("TenantNo2")
-          .build()
-      )
-      .run();
-    assertThat(createTenantsResult.hasErrors()).isFalse();
-    assertThat(createTenantsResult.getResult()).isTrue();
-  }
-
-
-  // TODO MT
-  // fails adding tenants to non-MT class
-  // gets tenants of MT class
-  // fails getting tenants from non-MT class
-  // deletes tenants from MT class
-  // Fails deleting tenants from non-MT class
 
   private void assertResultTrue(Result<Boolean> result) {
     assertNotNull(result);
