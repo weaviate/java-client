@@ -57,7 +57,7 @@ public class ClientClusterTest {
 
     NodesStatusResponse.NodeStatus nodeStatus = nodes.getNodes()[0];
     assertThat(nodeStatus.getName()).isNotBlank();
-    assertThat(nodeStatus.getShards()).hasSize(0);
+    assertThat(nodeStatus.getShards()).isNull();
     assertThat(nodeStatus)
       .returns(EXPECTED_WEAVIATE_VERSION, NodesStatusResponse.NodeStatus::getVersion)
       .returns(EXPECTED_WEAVIATE_GIT_HASH, NodesStatusResponse.NodeStatus::getGitHash)
