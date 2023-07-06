@@ -76,8 +76,8 @@ public class Aggregate extends BaseClient<GraphQLResponse> implements ClientResu
     return this;
   }
 
-  public Aggregate withTenantKey(String tenantKey) {
-    aggregateBuilder.tenantKey(tenantKey);
+  public Aggregate withTenant(String tenant) {
+    aggregateBuilder.tenant(tenant);
     return this;
   }
 

@@ -17,7 +17,7 @@ public class ReferenceReplacer extends BaseClient<Object> implements ClientResul
   private String id;
   private String className;
   private String consistencyLevel;
-  private String tenantKey;
+  private String tenant;
   private String referenceProperty;
   private SingleRef[] referencePayload;
 
@@ -41,8 +41,8 @@ public class ReferenceReplacer extends BaseClient<Object> implements ClientResul
     return this;
   }
 
-  public ReferenceReplacer withTenantKey(String tenantKey) {
-    this.tenantKey = tenantKey;
+  public ReferenceReplacer withTenant(String tenant) {
+    this.tenant = tenant;
     return this;
   }
 
@@ -51,7 +51,7 @@ public class ReferenceReplacer extends BaseClient<Object> implements ClientResul
     return this;
   }
 
-  public ReferenceReplacer withReferences(SingleRef[] referencePayload) {
+  public ReferenceReplacer withReferences(SingleRef... referencePayload) {
     this.referencePayload = referencePayload;
     return this;
   }
@@ -62,7 +62,7 @@ public class ReferenceReplacer extends BaseClient<Object> implements ClientResul
             .id(id)
             .className(className)
             .consistencyLevel(consistencyLevel)
-            .tenantKey(tenantKey)
+            .tenant(tenant)
             .property(referenceProperty)
             .build());
     Response<Object> resp = sendPutRequest(path, referencePayload, Object.class);

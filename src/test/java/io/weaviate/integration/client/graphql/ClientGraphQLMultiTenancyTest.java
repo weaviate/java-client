@@ -73,7 +73,7 @@ public class ClientGraphQLMultiTenancyTest {
 
     expectedIdsByTenant.forEach((tenant, expectedIds) -> {
       Result<GraphQLResponse> response = client.graphQL().get()
-        .withTenantKey(tenant)
+        .withTenant(tenant)
         .withClassName("Pizza")
         .withFields(Field.builder()
           .name("_additional")
@@ -107,7 +107,7 @@ public class ClientGraphQLMultiTenancyTest {
 
     expectedIdsByTenant.forEach((tenant, expectedIds) -> {
       Result<GraphQLResponse> response = client.graphQL().get()
-        .withTenantKey(tenant)
+        .withTenant(tenant)
         .withClassName("Pizza")
         .withLimit(1)
         .withFields(Field.builder()
@@ -141,7 +141,7 @@ public class ClientGraphQLMultiTenancyTest {
 
     expectedIdsByTenant.forEach((tenant, expectedIds) -> {
       Result<GraphQLResponse> response = client.graphQL().get()
-        .withTenantKey(tenant)
+        .withTenant(tenant)
         .withClassName("Pizza")
         .withWhere(WhereArgument.builder()
           .filter(WhereFilter.builder()
@@ -194,7 +194,7 @@ public class ClientGraphQLMultiTenancyTest {
 
     expectedAggValuesByTenant.forEach((tenant, expectedAggValues) -> {
       Result<GraphQLResponse> response = client.graphQL().aggregate()
-        .withTenantKey(tenant)
+        .withTenant(tenant)
         .withClassName("Pizza")
         .withFields(Field.builder()
           .name("price")
@@ -247,7 +247,7 @@ public class ClientGraphQLMultiTenancyTest {
 
     expectedAggValuesByTenant.forEach((tenant, expectedAggValues) -> {
       Result<GraphQLResponse> response = client.graphQL().aggregate()
-        .withTenantKey(tenant)
+        .withTenant(tenant)
         .withClassName("Pizza")
         .withWhere(WhereArgument.builder()
           .filter(WhereFilter.builder()

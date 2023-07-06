@@ -64,7 +64,7 @@ public class ClientMiscTest {
     assertEquals("http://[::]:8080", meta.getResult().getHostname());
     assertEquals(EXPECTED_WEAVIATE_VERSION, meta.getResult().getVersion());
     assertEquals("{backup-filesystem={backupsPath=/tmp/backups}, " +
-      "generative-openai={documentationHref=https://beta.openai.com/docs/api-reference/completions, name=Generative Search - OpenAI}, " +
+      "generative-openai={documentationHref=https://platform.openai.com/docs/api-reference/completions, name=Generative Search - OpenAI}, " +
       "text2vec-contextionary={version=en0.16.0-v1.2.1, wordCount=818072.0}}", meta.getResult().getModules().toString());
   }
 }

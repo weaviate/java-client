@@ -3,12 +3,10 @@ package io.weaviate.integration.client.schema;
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
-import io.weaviate.client.base.WeaviateError;
 import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.v1.misc.model.BM25Config;
 import io.weaviate.client.v1.misc.model.DistanceType;
 import io.weaviate.client.v1.misc.model.InvertedIndexConfig;
-import io.weaviate.client.v1.misc.model.MultiTenancyConfig;
 import io.weaviate.client.v1.misc.model.PQConfig;
 import io.weaviate.client.v1.misc.model.ShardingConfig;
 import io.weaviate.client.v1.misc.model.StopwordConfig;
@@ -19,7 +17,6 @@ import io.weaviate.client.v1.schema.model.Schema;
 import io.weaviate.client.v1.schema.model.Shard;
 import io.weaviate.client.v1.schema.model.ShardStatus;
 import io.weaviate.client.v1.schema.model.ShardStatuses;
-import io.weaviate.client.v1.schema.model.Tenant;
 import io.weaviate.client.v1.schema.model.Tokenization;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
 import org.junit.After;
@@ -38,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.CHAR_SEQUENCE;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -53,7 +49,7 @@ public class ClientSchemaTest {
 
   @ClassRule
   public static DockerComposeContainer compose = new DockerComposeContainer(
-          new File("src/test/resources/docker-compose-test.yaml")
+    new File("src/test/resources/docker-compose-test.yaml")
   ).withExposedService("weaviate_1", 8080, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200));
 
   @Before
@@ -75,11 +71,11 @@ public class ClientSchemaTest {
   public void testSchemaCreateBandClass() {
     // given
     WeaviateClass clazz = WeaviateClass.builder()
-            .className("Band")
-            .description("Band that plays and produces music")
-            .vectorIndexType("hnsw")
-            .vectorizer("text2vec-contextionary")
-            .build();
+      .className("Band")
+      .description("Band that plays and produces music")
+      .vectorIndexType("hnsw")
+      .vectorizer("text2vec-contextionary")
+      .build();
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
     Result<Schema> schema = client.schema().getter().run();
@@ -99,11 +95,11 @@ public class ClientSchemaTest {
   public void testSchemaCreateRunClass() {
     // given
     WeaviateClass clazz = WeaviateClass.builder()
-            .className("Run")
-            .description("Running from the fuzz")
-            .vectorIndexType("hnsw")
-            .vectorizer("text2vec-contextionary")
-            .build();
+      .className("Run")
+      .description("Running from the fuzz")
+      .vectorIndexType("hnsw")
+      .vectorizer("text2vec-contextionary")
+      .build();
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
     Result<Schema> schemaAfterCreate = client.schema().getter().run();
@@ -126,13 +122,13 @@ public class ClientSchemaTest {
   public void testSchemaDeleteClasses() {
     // given
     WeaviateClass pizza = WeaviateClass.builder()
-            .className("Pizza")
-            .description("A delicious religion like food and arguably the best export of Italy.")
-            .build();
+      .className("Pizza")
+      .description("A delicious religion like food and arguably the best export of Italy.")
+      .build();
     WeaviateClass chickenSoup = WeaviateClass.builder()
-            .className("ChickenSoup")
-            .description("A soup made in part out of chicken, not for chicken.")
-            .build();
+      .className("ChickenSoup")
+      .description("A soup made in part out of chicken, not for chicken.")
+      .build();
     // when
     Result<Boolean> pizzaCreateStatus = client.schema().classCreator().withClass(pizza).run();
     Result<Boolean> chickenSoupCreateStatus = client.schema().classCreator().withClass(chickenSoup).run();
@@ -162,13 +158,13 @@ public class ClientSchemaTest {
   public void testSchemaDeleteAllSchema() {
     // given
     WeaviateClass pizza = WeaviateClass.builder()
-            .className("Pizza")
-            .description("A delicious religion like food and arguably the best export of Italy.")
-            .build();
+      .className("Pizza")
+      .description("A delicious religion like food and arguably the best export of Italy.")
+      .build();
     WeaviateClass chickenSoup = WeaviateClass.builder()
-            .className("ChickenSoup")
-            .description("A soup made in part out of chicken, not for chicken.")
-            .build();
+      .className("ChickenSoup")
+      .description("A soup made in part out of chicken, not for chicken.")
+      .build();
     // when
     Result<Boolean> pizzaCreateStatus = client.schema().classCreator().withClass(pizza).run();
     Result<Boolean> chickenSoupCreateStatus = client.schema().classCreator().withClass(chickenSoup).run();
@@ -195,25 +191,25 @@ public class ClientSchemaTest {
   public void testSchemaCreateClassesAddProperties() {
     // given
     WeaviateClass pizza = WeaviateClass.builder()
-            .className("Pizza")
-            .description("A delicious religion like food and arguably the best export of Italy.")
-            .build();
+      .className("Pizza")
+      .description("A delicious religion like food and arguably the best export of Italy.")
+      .build();
     WeaviateClass chickenSoup = WeaviateClass.builder()
-            .className("ChickenSoup")
-            .description("A soup made in part out of chicken, not for chicken.")
-            .build();
+      .className("ChickenSoup")
+      .description("A soup made in part out of chicken, not for chicken.")
+      .build();
     Property newProperty = Property.builder()
-            .dataType(Arrays.asList(DataType.TEXT))
-            .description("name")
-            .name("name")
-            .build();
+      .dataType(Arrays.asList(DataType.TEXT))
+      .description("name")
+      .name("name")
+      .build();
     // when
     Result<Boolean> pizzaCreateStatus = client.schema().classCreator().withClass(pizza).run();
     Result<Boolean> chickenSoupCreateStatus = client.schema().classCreator().withClass(chickenSoup).run();
     Result<Boolean> pizzaPropertyCreateStatus = client.schema().propertyCreator()
-            .withProperty(newProperty).withClassName(pizza.getClassName()).run();
+      .withProperty(newProperty).withClassName(pizza.getClassName()).run();
     Result<Boolean> chickenSoupPropertyCreateStatus = client.schema().propertyCreator()
-            .withProperty(newProperty).withClassName(chickenSoup.getClassName()).run();
+      .withProperty(newProperty).withClassName(chickenSoup.getClassName()).run();
     Result<Schema> schemaAfterCreate = client.schema().getter().run();
     Result<Boolean> deleteAllStatus = client.schema().allDeleter().run();
     Result<Schema> schemaAfterDelete = client.schema().getter().run();
@@ -248,30 +244,30 @@ public class ClientSchemaTest {
     moduleConfig.put("text2vec-contextionary", text2vecContextionary);
 
     WeaviateClass clazz = WeaviateClass.builder()
-            .className("Article")
-            .description("A written text, for example a news article or blog post")
-            .vectorIndexType("hnsw")
-            .vectorizer("text2vec-contextionary")
-            .moduleConfig(moduleConfig)
-            .properties(new ArrayList() {{
-              add(Property.builder()
-                      .dataType(new ArrayList() {{
-                        add(DataType.TEXT);
-                      }})
-                      .description("Title of the article")
-                      .name("title")
-                      .tokenization(Tokenization.FIELD)
-                      .build());
-              add(Property.builder()
-                      .dataType(new ArrayList() {{
-                        add(DataType.TEXT);
-                      }})
-                      .description("The content of the article")
-                      .name("content")
-                      .tokenization(Tokenization.WORD)
-                      .build());
-            }})
-            .build();
+      .className("Article")
+      .description("A written text, for example a news article or blog post")
+      .vectorIndexType("hnsw")
+      .vectorizer("text2vec-contextionary")
+      .moduleConfig(moduleConfig)
+      .properties(new ArrayList() {{
+        add(Property.builder()
+          .dataType(new ArrayList() {{
+            add(DataType.TEXT);
+          }})
+          .description("Title of the article")
+          .name("title")
+          .tokenization(Tokenization.FIELD)
+          .build());
+        add(Property.builder()
+          .dataType(new ArrayList() {{
+            add(DataType.TEXT);
+          }})
+          .description("The content of the article")
+          .name("content")
+          .tokenization(Tokenization.WORD)
+          .build());
+      }})
+      .build();
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
     Result<Schema> schemaAfterCreate = client.schema().getter().run();
@@ -306,51 +302,51 @@ public class ClientSchemaTest {
   public void testSchemaCreateClassExplicitVectorizerWithArrayProperties() {
     // given
     WeaviateClass clazz = WeaviateClass.builder()
-            .className("ClassArrays")
-            .description("Class which properties are all array properties")
-            .vectorIndexType("hnsw")
-            .vectorizer("text2vec-contextionary")
-            .properties(new ArrayList() {{
-              add(Property.builder()
-                      .dataType(new ArrayList() {{
-                        add(DataType.TEXT_ARRAY);
-                      }})
-                      .name("stringArray")
-                      .tokenization(Tokenization.FIELD)
-                      .build());
-              add(Property.builder()
-                      .dataType(new ArrayList() {{
-                        add(DataType.TEXT_ARRAY);
-                      }})
-                      .name("textArray")
-                      .tokenization(Tokenization.WORD)
-                      .build());
-              add(Property.builder()
-                      .dataType(new ArrayList() {{
-                        add(DataType.INT_ARRAY);
-                      }})
-                      .name("intArray")
-                      .build());
-              add(Property.builder()
-                      .dataType(new ArrayList() {{
-                        add(DataType.NUMBER_ARRAY);
-                      }})
-                      .name("numberArray")
-                      .build());
-              add(Property.builder()
-                      .dataType(new ArrayList() {{
-                        add(DataType.BOOLEAN_ARRAY);
-                      }})
-                      .name("booleanArray")
-                      .build());
-              add(Property.builder()
-                      .dataType(new ArrayList() {{
-                        add(DataType.DATE_ARRAY);
-                      }})
-                      .name("dateArray")
-                      .build());
-            }})
-            .build();
+      .className("ClassArrays")
+      .description("Class which properties are all array properties")
+      .vectorIndexType("hnsw")
+      .vectorizer("text2vec-contextionary")
+      .properties(new ArrayList() {{
+        add(Property.builder()
+          .dataType(new ArrayList() {{
+            add(DataType.TEXT_ARRAY);
+          }})
+          .name("stringArray")
+          .tokenization(Tokenization.FIELD)
+          .build());
+        add(Property.builder()
+          .dataType(new ArrayList() {{
+            add(DataType.TEXT_ARRAY);
+          }})
+          .name("textArray")
+          .tokenization(Tokenization.WORD)
+          .build());
+        add(Property.builder()
+          .dataType(new ArrayList() {{
+            add(DataType.INT_ARRAY);
+          }})
+          .name("intArray")
+          .build());
+        add(Property.builder()
+          .dataType(new ArrayList() {{
+            add(DataType.NUMBER_ARRAY);
+          }})
+          .name("numberArray")
+          .build());
+        add(Property.builder()
+          .dataType(new ArrayList() {{
+            add(DataType.BOOLEAN_ARRAY);
+          }})
+          .name("booleanArray")
+          .build());
+        add(Property.builder()
+          .dataType(new ArrayList() {{
+            add(DataType.DATE_ARRAY);
+          }})
+          .name("dateArray")
+          .build());
+      }})
+      .build();
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
     Result<Schema> schemaAfterCreate = client.schema().getter().run();
@@ -379,25 +375,25 @@ public class ClientSchemaTest {
   public void testSchemaCreateClassWithProperties() {
     // given
     WeaviateClass clazz = WeaviateClass.builder()
-            .className("Article")
-            .description("A written text, for example a news article or blog post")
-            .properties(new ArrayList() {{
-              add(Property.builder()
-                      .dataType(new ArrayList() {{
-                        add(DataType.TEXT);
-                      }})
-                      .description("Title of the article")
-                      .name("title")
-                      .build());
-              add(Property.builder()
-                      .dataType(new ArrayList() {{
-                        add(DataType.TEXT);
-                      }})
-                      .description("The content of the article")
-                      .name("content")
-                      .build());
-            }})
-            .build();
+      .className("Article")
+      .description("A written text, for example a news article or blog post")
+      .properties(new ArrayList() {{
+        add(Property.builder()
+          .dataType(new ArrayList() {{
+            add(DataType.TEXT);
+          }})
+          .description("Title of the article")
+          .name("title")
+          .build());
+        add(Property.builder()
+          .dataType(new ArrayList() {{
+            add(DataType.TEXT);
+          }})
+          .description("The content of the article")
+          .name("content")
+          .build());
+      }})
+      .build();
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
     Result<Schema> schemaAfterCreate = client.schema().getter().run();
@@ -422,28 +418,28 @@ public class ClientSchemaTest {
   public void testSchemaCreateClassWithInvalidTokenizationProperty() {
     // given
     WeaviateClass pizza = WeaviateClass.builder()
-            .className("Pizza")
-            .description("A delicious religion like food and arguably the best export of Italy.")
-            .build();
+      .className("Pizza")
+      .description("A delicious religion like food and arguably the best export of Italy.")
+      .build();
 
     Property notExistingTokenization = Property.builder()
-            .dataType(Collections.singletonList(DataType.TEXT))
-            .description("someString")
-            .name("someString")
-            .tokenization("not-existing")
-            .build();
+      .dataType(Collections.singletonList(DataType.TEXT))
+      .description("someString")
+      .name("someString")
+      .tokenization("not-existing")
+      .build();
     Property notSupportedTokenizationForInt = Property.builder()
-            .dataType(Collections.singletonList(DataType.INT))
-            .description("someInt")
-            .name("someInt")
-            .tokenization(Tokenization.WORD)
-            .build();
+      .dataType(Collections.singletonList(DataType.INT))
+      .description("someInt")
+      .name("someInt")
+      .tokenization(Tokenization.WORD)
+      .build();
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(pizza).run();
     Result<Boolean> notExistingTokenizationCreateStatus = client.schema().propertyCreator()
-            .withProperty(notExistingTokenization).withClassName(pizza.getClassName()).run();
+      .withProperty(notExistingTokenization).withClassName(pizza.getClassName()).run();
     Result<Boolean> notSupportedTokenizationForIntCreateStatus = client.schema().propertyCreator()
-            .withProperty(notSupportedTokenizationForInt).withClassName(pizza.getClassName()).run();
+      .withProperty(notSupportedTokenizationForInt).withClassName(pizza.getClassName()).run();
 
     //then
     assertResultTrue(createStatus);
@@ -456,21 +452,21 @@ public class ClientSchemaTest {
   public void testCreateClassWithBM25Config() {
     // given
     BM25Config bm25Config = BM25Config.builder()
-            .b(0.777f)
-            .k1(1.777f)
-            .build();
+      .b(0.777f)
+      .k1(1.777f)
+      .build();
 
     InvertedIndexConfig invertedIndexConfig = InvertedIndexConfig.builder()
-            .bm25(bm25Config)
-            .build();
+      .bm25(bm25Config)
+      .build();
 
     WeaviateClass clazz = WeaviateClass.builder()
-            .className("Band")
-            .description("Band that plays and produces music")
-            .vectorIndexType("hnsw")
-            .vectorizer("text2vec-contextionary")
-            .invertedIndexConfig(invertedIndexConfig)
-            .build();
+      .className("Band")
+      .description("Band that plays and produces music")
+      .vectorIndexType("hnsw")
+      .vectorizer("text2vec-contextionary")
+      .invertedIndexConfig(invertedIndexConfig)
+      .build();
 
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
@@ -547,22 +543,22 @@ public class ClientSchemaTest {
   public void testCreateClassWithStopwordsConfig() {
     // given
     StopwordConfig stopwordConfig = StopwordConfig.builder()
-            .preset("en")
-            .additions(new String[]{ "star", "nebula" })
-            .removals(new String[]{ "a", "the" })
-            .build();
+      .preset("en")
+      .additions(new String[]{"star", "nebula"})
+      .removals(new String[]{"a", "the"})
+      .build();
 
     InvertedIndexConfig invertedIndexConfig = InvertedIndexConfig.builder()
-            .stopwords(stopwordConfig)
-            .build();
+      .stopwords(stopwordConfig)
+      .build();
 
     WeaviateClass clazz = WeaviateClass.builder()
-            .className("Band")
-            .description("Band that plays and produces music")
-            .vectorIndexType("hnsw")
-            .vectorizer("text2vec-contextionary")
-            .invertedIndexConfig(invertedIndexConfig)
-            .build();
+      .className("Band")
+      .description("Band that plays and produces music")
+      .vectorIndexType("hnsw")
+      .vectorizer("text2vec-contextionary")
+      .invertedIndexConfig(invertedIndexConfig)
+      .build();
 
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
@@ -584,28 +580,28 @@ public class ClientSchemaTest {
   public void testCreateClassWithBM25ConfigAndWithStopwordsConfig() {
     // given
     BM25Config bm25Config = BM25Config.builder()
-            .b(0.777f)
-            .k1(1.777f)
-            .build();
+      .b(0.777f)
+      .k1(1.777f)
+      .build();
 
     StopwordConfig stopwordConfig = StopwordConfig.builder()
-            .preset("en")
-            .additions(new String[]{ "star", "nebula" })
-            .removals(new String[]{ "a", "the" })
-            .build();
+      .preset("en")
+      .additions(new String[]{"star", "nebula"})
+      .removals(new String[]{"a", "the"})
+      .build();
 
     InvertedIndexConfig invertedIndexConfig = InvertedIndexConfig.builder()
-            .bm25(bm25Config)
-            .stopwords(stopwordConfig)
-            .build();
+      .bm25(bm25Config)
+      .stopwords(stopwordConfig)
+      .build();
 
     WeaviateClass clazz = WeaviateClass.builder()
-            .className("Band")
-            .description("Band that plays and produces music")
-            .vectorIndexType("hnsw")
-            .vectorizer("text2vec-contextionary")
-            .invertedIndexConfig(invertedIndexConfig)
-            .build();
+      .className("Band")
+      .description("Band that plays and produces music")
+      .vectorIndexType("hnsw")
+      .vectorizer("text2vec-contextionary")
+      .invertedIndexConfig(invertedIndexConfig)
+      .build();
 
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
@@ -630,14 +626,14 @@ public class ClientSchemaTest {
   public void testCreateClassWithInvertedIndexConfigAndVectorIndexConfigAndShardConfig() {
     // given
     BM25Config bm25Config = BM25Config.builder()
-            .b(0.777f)
-            .k1(1.777f)
-            .build();
+      .b(0.777f)
+      .k1(1.777f)
+      .build();
     StopwordConfig stopwordConfig = StopwordConfig.builder()
-            .preset("en")
-            .additions(new String[]{ "star", "nebula" })
-            .removals(new String[]{ "a", "the" })
-            .build();
+      .preset("en")
+      .additions(new String[]{"star", "nebula"})
+      .removals(new String[]{"a", "the"})
+      .build();
     Integer cleanupIntervalSeconds = 300;
     // vector index config
     Integer efConstruction = 128;
@@ -668,55 +664,55 @@ public class ClientSchemaTest {
     Integer virtualPerPhysical = 128;
 
     InvertedIndexConfig invertedIndexConfig = InvertedIndexConfig.builder()
-            .bm25(bm25Config)
-            .stopwords(stopwordConfig)
-            .cleanupIntervalSeconds(cleanupIntervalSeconds)
-            .build();
+      .bm25(bm25Config)
+      .stopwords(stopwordConfig)
+      .cleanupIntervalSeconds(cleanupIntervalSeconds)
+      .build();
 
     VectorIndexConfig vectorIndexConfig = VectorIndexConfig.builder()
-            .cleanupIntervalSeconds(cleanupIntervalSeconds)
-            .efConstruction(efConstruction)
-            .maxConnections(maxConnections)
-            .vectorCacheMaxObjects(vectorCacheMaxObjects)
-            .ef(ef)
-            .skip(skip)
-            .dynamicEfFactor(dynamicEfFactor)
-            .dynamicEfMax(dynamicEfMax)
-            .dynamicEfMin(dynamicEfMin)
-            .flatSearchCutoff(flatSearchCutoff)
-            .distance(distance)
-            .pq(PQConfig.builder()
-                .enabled(enabled)
-                .bitCompression(bitCompression)
-                .segments(segments)
-                .centroids(centroids)
-                .encoder(PQConfig.Encoder.builder()
-                    .type(encoderType)
-                    .distribution(encoderDistribution)
-                    .build())
-                .build())
-            .build();
+      .cleanupIntervalSeconds(cleanupIntervalSeconds)
+      .efConstruction(efConstruction)
+      .maxConnections(maxConnections)
+      .vectorCacheMaxObjects(vectorCacheMaxObjects)
+      .ef(ef)
+      .skip(skip)
+      .dynamicEfFactor(dynamicEfFactor)
+      .dynamicEfMax(dynamicEfMax)
+      .dynamicEfMin(dynamicEfMin)
+      .flatSearchCutoff(flatSearchCutoff)
+      .distance(distance)
+      .pq(PQConfig.builder()
+        .enabled(enabled)
+        .bitCompression(bitCompression)
+        .segments(segments)
+        .centroids(centroids)
+        .encoder(PQConfig.Encoder.builder()
+          .type(encoderType)
+          .distribution(encoderDistribution)
+          .build())
+        .build())
+      .build();
 
     ShardingConfig shardingConfig = ShardingConfig.builder()
-            .actualCount(actualCount)
-            .actualVirtualCount(actualVirtualCount)
-            .desiredCount(desiredCount)
-            .desiredVirtualCount(desiredVirtualCount)
-            .function(function)
-            .key(key)
-            .strategy(strategy)
-            .virtualPerPhysical(virtualPerPhysical)
-            .build();
+      .actualCount(actualCount)
+      .actualVirtualCount(actualVirtualCount)
+      .desiredCount(desiredCount)
+      .desiredVirtualCount(desiredVirtualCount)
+      .function(function)
+      .key(key)
+      .strategy(strategy)
+      .virtualPerPhysical(virtualPerPhysical)
+      .build();
 
     WeaviateClass clazz = WeaviateClass.builder()
-            .className("Band")
-            .description("Band that plays and produces music")
-            .vectorIndexType("hnsw")
-            .vectorizer("text2vec-contextionary")
-            .invertedIndexConfig(invertedIndexConfig)
-            .vectorIndexConfig(vectorIndexConfig)
-            .shardingConfig(shardingConfig)
-            .build();
+      .className("Band")
+      .description("Band that plays and produces music")
+      .vectorIndexType("hnsw")
+      .vectorizer("text2vec-contextionary")
+      .invertedIndexConfig(invertedIndexConfig)
+      .vectorIndexConfig(vectorIndexConfig)
+      .shardingConfig(shardingConfig)
+      .build();
 
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
@@ -776,11 +772,11 @@ public class ClientSchemaTest {
   public void testSchemaGetBandClass() {
     // given
     WeaviateClass clazz = WeaviateClass.builder()
-            .className("Band")
-            .description("Band that plays and produces music")
-            .vectorIndexType("hnsw")
-            .vectorizer("text2vec-contextionary")
-            .build();
+      .className("Band")
+      .description("Band that plays and produces music")
+      .vectorIndexType("hnsw")
+      .vectorizer("text2vec-contextionary")
+      .build();
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
     Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
@@ -804,11 +800,11 @@ public class ClientSchemaTest {
   public void testSchemaGetShards() {
     // given
     WeaviateClass clazz = WeaviateClass.builder()
-            .className("Band")
-            .description("Band that plays and produces music")
-            .vectorIndexType("hnsw")
-            .vectorizer("text2vec-contextionary")
-            .build();
+      .className("Band")
+      .description("Band that plays and produces music")
+      .vectorIndexType("hnsw")
+      .vectorizer("text2vec-contextionary")
+      .build();
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
     Result<Boolean> bandClassStatus = client.schema().exists().withClassName(clazz.getClassName()).run();
@@ -820,7 +816,7 @@ public class ClientSchemaTest {
     assertFalse(nonExistentClassStatus.getResult());
     assertNull(nonExistentClassStatus.getError());
     Result<Shard[]> shards = client.schema().shardsGetter()
-            .withClassName(clazz.getClassName()).run();
+      .withClassName(clazz.getClassName()).run();
     assertNotNull(shards);
     assertNotNull(shards.getResult());
     assertEquals(1, shards.getResult().length);
@@ -834,11 +830,11 @@ public class ClientSchemaTest {
     // given
     String className = "Band";
     WeaviateClass clazz = WeaviateClass.builder()
-            .className(className)
-            .description("Band that plays and produces music")
-            .vectorIndexType("hnsw")
-            .vectorizer("text2vec-contextionary")
-            .build();
+      .className(className)
+      .description("Band that plays and produces music")
+      .vectorIndexType("hnsw")
+      .vectorizer("text2vec-contextionary")
+      .build();
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
     assertNull(createStatus.getError());
@@ -856,20 +852,20 @@ public class ClientSchemaTest {
     assertNotNull(shardName);
     // update shard status to READONLY
     Result<ShardStatus> updateToREADONLY = client.schema().shardUpdater()
-            .withClassName(className)
-            .withShardName(shardName)
-            .withStatus(ShardStatuses.READONLY)
-            .run();
+      .withClassName(className)
+      .withShardName(shardName)
+      .withStatus(ShardStatuses.READONLY)
+      .run();
     assertNotNull(updateToREADONLY.getResult());
-    assertEquals(ShardStatuses.READONLY,updateToREADONLY.getResult().getStatus());
+    assertEquals(ShardStatuses.READONLY, updateToREADONLY.getResult().getStatus());
     // update shard status to READY
     Result<ShardStatus> updateToREADY = client.schema().shardUpdater()
-            .withClassName(className)
-            .withShardName(shardName)
-            .withStatus(ShardStatuses.READY)
-            .run();
+      .withClassName(className)
+      .withShardName(shardName)
+      .withStatus(ShardStatuses.READY)
+      .run();
     assertNotNull(updateToREADY.getResult());
-    assertEquals(ShardStatuses.READY,updateToREADY.getResult().getStatus());
+    assertEquals(ShardStatuses.READY, updateToREADY.getResult().getStatus());
   }
 
   @Test
@@ -878,22 +874,22 @@ public class ClientSchemaTest {
     String className = "Band";
     int shardCount = 3;
     ShardingConfig shardingConfig = ShardingConfig.builder()
-            .actualCount(shardCount)
-            .actualVirtualCount(128)
-            .desiredCount(shardCount)
-            .desiredVirtualCount(128)
-            .function("murmur3")
-            .key("_id")
-            .strategy("hash")
-            .virtualPerPhysical(128)
-            .build();
+      .actualCount(shardCount)
+      .actualVirtualCount(128)
+      .desiredCount(shardCount)
+      .desiredVirtualCount(128)
+      .function("murmur3")
+      .key("_id")
+      .strategy("hash")
+      .virtualPerPhysical(128)
+      .build();
     WeaviateClass clazz = WeaviateClass.builder()
-            .className(className)
-            .description("Band that plays and produces music")
-            .vectorIndexType("hnsw")
-            .vectorizer("text2vec-contextionary")
-            .shardingConfig(shardingConfig)
-            .build();
+      .className(className)
+      .description("Band that plays and produces music")
+      .vectorIndexType("hnsw")
+      .vectorizer("text2vec-contextionary")
+      .shardingConfig(shardingConfig)
+      .build();
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
     assertResultTrue(createStatus);
@@ -905,9 +901,9 @@ public class ClientSchemaTest {
     assertEquals(3, shards.getResult().length);
     // update shard status to READONLY
     Result<ShardStatus[]> updateToREADONLY = client.schema().shardsUpdater()
-            .withClassName(className)
-            .withStatus(ShardStatuses.READONLY)
-            .run();
+      .withClassName(className)
+      .withStatus(ShardStatuses.READONLY)
+      .run();
     assertNotNull(updateToREADONLY.getResult());
     assertEquals(3, updateToREADONLY.getResult().length);
     for (ShardStatus s : updateToREADONLY.getResult()) {
@@ -915,9 +911,9 @@ public class ClientSchemaTest {
     }
     // update shard status to READY
     Result<ShardStatus[]> updateToREADY = client.schema().shardsUpdater()
-            .withClassName(className)
-            .withStatus(ShardStatuses.READY)
-            .run();
+      .withClassName(className)
+      .withStatus(ShardStatuses.READY)
+      .run();
     assertNotNull(updateToREADY.getResult());
     assertEquals(3, updateToREADY.getResult().length);
     for (ShardStatus s : updateToREADY.getResult()) {
@@ -957,214 +953,6 @@ public class ClientSchemaTest {
     Result<Shard[]> res = client.schema().shardsGetter().run();
     // then
     assertResultError("className cannot be empty", res);
-  }
-
-  @Test
-  public void testClassWithMultiTenancyConfig() {
-    String className = "MultiTenantClass";
-    String tenantKey = "tenantName";
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className(className)
-      .multiTenancyConfig(MultiTenancyConfig.builder()
-        .enabled(true)
-        .tenantKey(tenantKey)
-        .build())
-      .properties(Collections.singletonList(
-        Property.builder()
-          .name(tenantKey)
-          .dataType(Collections.singletonList(DataType.TEXT))
-          .build()
-      ))
-      .build();
-
-    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    assertThat(createStatus.hasErrors()).isFalse();
-    assertThat(createStatus.getResult()).isTrue();
-
-    Result<WeaviateClass> classResult = client.schema().classGetter().withClassName(className).run();
-    assertThat(classResult.hasErrors()).isFalse();
-    assertThat(classResult.getResult()).isNotNull()
-      .extracting(WeaviateClass::getMultiTenancyConfig)
-      .isNotNull()
-      .returns(true, MultiTenancyConfig::getEnabled)
-      .returns(tenantKey, MultiTenancyConfig::getTenantKey);
-  }
-
-  @Test
-  public void testClassWithMultiTenancyConfigDisabled() {
-    String className = "MultiTenantClassWannabe";
-    String tenantKey = "tenantName";
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className(className)
-      .multiTenancyConfig(MultiTenancyConfig.builder()
-        .enabled(false)
-        .tenantKey(tenantKey)
-        .build())
-      .properties(Collections.singletonList(
-        Property.builder()
-          .name(tenantKey)
-          .dataType(Collections.singletonList(DataType.TEXT))
-          .build()
-      ))
-      .build();
-
-    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    assertThat(createStatus.hasErrors()).isFalse();
-    assertThat(createStatus.getResult()).isTrue();
-
-    Result<WeaviateClass> classResult = client.schema().classGetter().withClassName(className).run();
-    assertThat(classResult.hasErrors()).isFalse();
-    assertThat(classResult.getResult()).isNotNull()
-      .extracting(WeaviateClass::getMultiTenancyConfig)
-      .isNotNull()
-      .returns(null, MultiTenancyConfig::getEnabled)
-      .returns(tenantKey, MultiTenancyConfig::getTenantKey);
-  }
-
-  @Test
-  public void testClassWithMultiTenancyConfigMissingTenant() {
-    String className = "MultiTenantClassWannabe";
-    String tenantKey = "tenantName";
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className(className)
-      .multiTenancyConfig(MultiTenancyConfig.builder()
-        .enabled(true)
-        .build())
-      .properties(Collections.singletonList(
-        Property.builder()
-          .name(tenantKey)
-          .dataType(Collections.singletonList(DataType.TEXT))
-          .build()
-      ))
-      .build();
-
-    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    assertThat(createStatus.getError()).isNotNull()
-      .returns(422, WeaviateError::getStatusCode)
-      .extracting(WeaviateError::getMessages).asList()
-      .hasSizeGreaterThan(0)
-      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
-      .first().asInstanceOf(CHAR_SEQUENCE).contains("multiTenancyConfig.tenantKey is required");
-  }
-
-  @Test
-  public void testClassWithMultiTenancyConfigMissingTenantProperty() {
-    String className = "MultiTenantClassWannabe";
-    String tenantKey = "tenantName";
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className(className)
-      .multiTenancyConfig(MultiTenancyConfig.builder()
-        .enabled(true)
-        .tenantKey(tenantKey)
-        .build())
-      .build();
-
-    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    assertThat(createStatus.getError()).isNotNull()
-      .returns(422, WeaviateError::getStatusCode)
-      .extracting(WeaviateError::getMessages).asList()
-      .hasSizeGreaterThan(0)
-      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
-      .first().asInstanceOf(CHAR_SEQUENCE).contains("no class property found for multiTenancyConfig.tenantKey \"tenantName\"");
-  }
-
-  @Test
-  public void testClassWithoutMultiTenancyConfig() {
-    // given
-    String className = "OrdinaryClass";
-    String tenantKey = "tenantName";
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className(className)
-      .properties(Collections.singletonList(
-        Property.builder()
-          .name(tenantKey)
-          .dataType(Collections.singletonList(DataType.TEXT))
-          .build()
-      ))
-      .build();
-
-    // when
-    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    assertThat(createStatus.hasErrors()).isFalse();
-    assertThat(createStatus.getResult()).isTrue();
-
-    // then
-    Result<WeaviateClass> classResult = client.schema().classGetter().withClassName(className).run();
-    assertThat(classResult.hasErrors()).isFalse();
-    assertThat(classResult.getResult()).isNotNull()
-      .extracting(WeaviateClass::getMultiTenancyConfig)
-      .isNull();
-  }
-
-  @Test
-  public void shouldAddSingleTenantToMultiTenancyClass() {
-    String className = "MultiTenantClass";
-    String tenantKey = "tenantName";
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className(className)
-      .multiTenancyConfig(MultiTenancyConfig.builder()
-        .enabled(true)
-        .tenantKey(tenantKey)
-        .build())
-      .properties(Collections.singletonList(
-        Property.builder()
-          .name(tenantKey)
-          .dataType(Collections.singletonList(DataType.TEXT))
-          .build()
-      ))
-      .build();
-
-    Result<Boolean> createClassStatus = client.schema().classCreator().withClass(clazz).run();
-    assertThat(createClassStatus.hasErrors()).isFalse();
-    assertThat(createClassStatus.getResult()).isTrue();
-
-    Result<Boolean> createTenantsResult = client.schema().tenantCreator()
-      .withClassName(className)
-      .withTenants(
-        Tenant.builder()
-          .name("TenantNo1")
-          .build()
-      )
-      .run();
-    assertThat(createTenantsResult.hasErrors()).isFalse();
-    assertThat(createTenantsResult.getResult()).isTrue();
-  }
-
-  @Test
-  public void shouldAddMultipleTenantsToMultiTenancyClass() {
-    String className = "MultiTenantClass";
-    String tenantKey = "tenantName";
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className(className)
-      .multiTenancyConfig(MultiTenancyConfig.builder()
-        .enabled(true)
-        .tenantKey(tenantKey)
-        .build())
-      .properties(Collections.singletonList(
-        Property.builder()
-          .name(tenantKey)
-          .dataType(Collections.singletonList(DataType.TEXT))
-          .build()
-      ))
-      .build();
-
-    Result<Boolean> createClassStatus = client.schema().classCreator().withClass(clazz).run();
-    assertThat(createClassStatus.hasErrors()).isFalse();
-    assertThat(createClassStatus.getResult()).isTrue();
-
-    Result<Boolean> createTenantsResult = client.schema().tenantCreator()
-      .withClassName(className)
-      .withTenants(
-        Tenant.builder()
-          .name("TenantNo1")
-          .build(),
-        Tenant.builder()
-          .name("TenantNo2")
-          .build()
-      )
-      .run();
-    assertThat(createTenantsResult.hasErrors()).isFalse();
-    assertThat(createTenantsResult.getResult()).isTrue();
   }
 
   private void assertResultTrue(Result<Boolean> result) {

@@ -1,6 +1,8 @@
 package io.weaviate.client.v1.data.api;
 
 import io.weaviate.client.v1.data.util.ObjectsPath;
+
+import java.util.Collections;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -13,13 +15,14 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.base.WeaviateErrorResponse;
 import io.weaviate.client.base.http.HttpClient;
+import org.apache.http.HttpStatus;
 
 public class ObjectsChecker extends BaseClient<String> implements ClientResult<Boolean> {
 
   private final ObjectsPath objectsPath;
   private String id;
   private String className;
-  private String tenantKey;
+  private String tenant;
 
   public ObjectsChecker(HttpClient httpClient, Config config, ObjectsPath objectsPath) {
     super(httpClient, config);
@@ -36,8 +39,8 @@ public class ObjectsChecker extends BaseClient<String> implements ClientResult<B
     return this;
   }
 
-  public ObjectsChecker withTenantKey(String tenantKey) {
-    this.tenantKey = tenantKey;
+  public ObjectsChecker withTenant(String tenant) {
+    this.tenant = tenant;
     return this;
   }
 
@@ -53,9 +56,17 @@ public class ObjectsChecker extends BaseClient<String> implements ClientResult<B
     String path = objectsPath.buildCheck(ObjectsPath.Params.builder()
             .id(id)
             .className(className)
-            .tenantKey(tenantKey)
+            .tenant(tenant)
             .build());
     Response<String> resp = sendHeadRequest(path, String.class);
-    return new Result<>(resp.getStatusCode(), resp.getStatusCode() == 204, resp.getErrors());
+
+    switch (resp.getStatusCode()) {
+      case HttpStatus.SC_NO_CONTENT:
+      case HttpStatus.SC_NOT_FOUND:
+        return new Result<>(resp.getStatusCode(), resp.getStatusCode() == HttpStatus.SC_NO_CONTENT, resp.getErrors());
+      default:
+        WeaviateErrorResponse dummyError = WeaviateErrorResponse.builder().error(Collections.emptyList()).build();
+        return new Result<>(resp.getStatusCode(), resp.getStatusCode() == HttpStatus.SC_NO_CONTENT, dummyError);
+    }
   }
 }

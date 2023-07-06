@@ -1,9 +1,11 @@
 package io.weaviate.client.v1.data.api;
 
 import io.weaviate.client.v1.data.util.ObjectsPath;
+
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+
 import org.apache.commons.lang3.StringUtils;
 import io.weaviate.client.Config;
 import io.weaviate.client.base.BaseClient;
@@ -19,7 +21,7 @@ public class ObjectCreator extends BaseClient<WeaviateObject> implements ClientR
   private String id;
   private String className;
   private String consistencyLevel;
-  private String tenantKey;
+  private String tenant;
   private Map<String, Object> properties;
   private Float[] vector;
 
@@ -43,8 +45,8 @@ public class ObjectCreator extends BaseClient<WeaviateObject> implements ClientR
     return this;
   }
 
-  public ObjectCreator withTenantKey(String tenantKey) {
-    this.tenantKey = tenantKey;
+  public ObjectCreator withTenant(String tenant) {
+    this.tenant = tenant;
     return this;
   }
 
@@ -68,15 +70,15 @@ public class ObjectCreator extends BaseClient<WeaviateObject> implements ClientR
   @Override
   public Result<WeaviateObject> run() {
     String path = objectsPath.buildCreate(ObjectsPath.Params.builder()
-        .consistencyLevel(consistencyLevel)
-        .tenantKey(tenantKey)
-        .build());
+      .consistencyLevel(consistencyLevel)
+      .build());
     WeaviateObject obj = WeaviateObject.builder()
-            .className(className)
-            .properties(properties)
-            .vector(vector)
-            .id(getID())
-            .build();
+      .className(className)
+      .properties(properties)
+      .vector(vector)
+      .id(getID())
+      .tenant(tenant)
+      .build();
     Response<WeaviateObject> resp = sendPostRequest(path, obj, WeaviateObject.class);
     return new Result<>(resp);
   }

@@ -1,5 +1,6 @@
 package io.weaviate.integration.client.cluster;
 
+import io.weaviate.client.base.util.TriConsumer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -13,10 +14,13 @@ import io.weaviate.client.v1.cluster.model.NodesStatusResponse;
 import io.weaviate.integration.client.WeaviateTestGenerics;
 
 import java.io.File;
+import java.util.List;
+import java.util.function.Consumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static io.weaviate.integration.client.WeaviateVersion.EXPECTED_WEAVIATE_GIT_HASH;
 import static io.weaviate.integration.client.WeaviateVersion.EXPECTED_WEAVIATE_VERSION;
+import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
 
 public class ClientClusterTest {
 
@@ -57,7 +61,7 @@ public class ClientClusterTest {
 
     NodesStatusResponse.NodeStatus nodeStatus = nodes.getNodes()[0];
     assertThat(nodeStatus.getName()).isNotBlank();
-    assertThat(nodeStatus.getShards()).hasSize(0);
+    assertThat(nodeStatus.getShards()).isNull();
     assertThat(nodeStatus)
       .returns(EXPECTED_WEAVIATE_VERSION, NodesStatusResponse.NodeStatus::getVersion)
       .returns(EXPECTED_WEAVIATE_GIT_HASH, NodesStatusResponse.NodeStatus::getGitHash)
@@ -108,5 +112,59 @@ public class ClientClusterTest {
           break;
       }
     }
+  }
+
+  @Test
+  public void shouldGetNodeStatusPerClass() {
+    List<String> pizzaIds = WeaviateTestGenerics.IDS_BY_CLASS.get("Pizza");
+    List<String> soupIds = WeaviateTestGenerics.IDS_BY_CLASS.get("Soup");
+    testGenerics.createSchemaPizza(client);
+    testGenerics.createDataPizza(client);
+    testGenerics.createSchemaSoup(client);
+    testGenerics.createDataSoup(client);
+
+    Consumer<Result<NodesStatusResponse>> assertSingleNode = (Result<NodesStatusResponse> result) ->
+      assertThat(result).isNotNull()
+        .returns(false, Result::hasErrors)
+        .extracting(Result::getResult).isNotNull()
+        .extracting(NodesStatusResponse::getNodes).asInstanceOf(ARRAY)
+        .hasSize(1);
+
+    TriConsumer<NodesStatusResponse.NodeStatus, Long, Long> assertCounts = (NodesStatusResponse.NodeStatus nodeStatus, Long shardCount, Long objectCount) -> {
+      assertThat(nodeStatus.getName()).isNotBlank();
+      assertThat(nodeStatus)
+        .returns(EXPECTED_WEAVIATE_VERSION, NodesStatusResponse.NodeStatus::getVersion)
+        .returns(EXPECTED_WEAVIATE_GIT_HASH, NodesStatusResponse.NodeStatus::getGitHash)
+        .returns(NodesStatusResponse.Status.HEALTHY, NodesStatusResponse.NodeStatus::getStatus)
+        .extracting(NodesStatusResponse.NodeStatus::getStats)
+        .returns(shardCount, NodesStatusResponse.Stats::getShardCount)
+        .returns(objectCount, NodesStatusResponse.Stats::getObjectCount);
+    };
+
+    // ALL
+    Result<NodesStatusResponse> resultAll = client.cluster()
+      .nodesStatusGetter()
+      .run();
+
+    assertSingleNode.accept(resultAll);
+    assertCounts.accept(resultAll.getResult().getNodes()[0], 2L, (long) (pizzaIds.size() + soupIds.size()));
+
+    // PIZZA
+    Result<NodesStatusResponse> resultPizza = client.cluster()
+      .nodesStatusGetter()
+      .withClassName("Pizza")
+      .run();
+
+    assertSingleNode.accept(resultPizza);
+    assertCounts.accept(resultPizza.getResult().getNodes()[0], 1L, (long) pizzaIds.size());
+
+    // SOUP
+    Result<NodesStatusResponse> resultSoup = client.cluster()
+      .nodesStatusGetter()
+      .withClassName("Soup")
+      .run();
+
+    assertSingleNode.accept(resultSoup);
+    assertCounts.accept(resultSoup.getResult().getNodes()[0], 1L, (long) soupIds.size());
   }
 }

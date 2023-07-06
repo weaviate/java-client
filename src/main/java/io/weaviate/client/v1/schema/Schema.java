@@ -12,7 +12,9 @@ import io.weaviate.client.v1.schema.api.SchemaGetter;
 import io.weaviate.client.v1.schema.api.ShardUpdater;
 import io.weaviate.client.v1.schema.api.ShardsGetter;
 import io.weaviate.client.v1.schema.api.ShardsUpdater;
-import io.weaviate.client.v1.schema.api.TenantCreator;
+import io.weaviate.client.v1.schema.api.TenantsCreator;
+import io.weaviate.client.v1.schema.api.TenantsDeleter;
+import io.weaviate.client.v1.schema.api.TenantsGetter;
 
 public class Schema {
   private final Config config;
@@ -63,7 +65,15 @@ public class Schema {
     return new ShardsUpdater(httpClient, config);
   }
 
-  public TenantCreator tenantCreator() {
-    return new TenantCreator(httpClient, config);
+  public TenantsCreator tenantsCreator() {
+    return new TenantsCreator(httpClient, config);
+  }
+
+  public TenantsDeleter tenantsDeleter() {
+    return new TenantsDeleter(httpClient, config);
+  }
+
+  public TenantsGetter tenantsGetter() {
+    return new TenantsGetter(httpClient, config);
   }
 }

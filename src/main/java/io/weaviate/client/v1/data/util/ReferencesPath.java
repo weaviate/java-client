@@ -43,7 +43,7 @@ public class ReferencesPath {
       this::addPathReferences,
       this::addPathProperty,
       this::addQueryConsistencyLevel,
-      this::addQueryTenantKey
+      this::addQueryTenant
     );
   }
 
@@ -101,9 +101,9 @@ public class ReferencesPath {
     }
   }
 
-  private void addQueryTenantKey(Params params, List<String> pathParams, List<String> queryParams) {
-    if (StringUtils.isNotBlank(params.tenantKey)) {
-      queryParams.add(UrlEncoder.encodeQueryParam("tenant_key", params.tenantKey));
+  private void addQueryTenant(Params params, List<String> pathParams, List<String> queryParams) {
+    if (StringUtils.isNotBlank(params.tenant)) {
+      queryParams.add(UrlEncoder.encodeQueryParam("tenant", params.tenant));
     }
   }
 
@@ -116,7 +116,7 @@ public class ReferencesPath {
     String id;
     String className;
     String consistencyLevel;
-    String tenantKey;
+    String tenant;
     String property;
   }
 }

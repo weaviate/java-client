@@ -14,5 +14,4 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class MultiTenancyConfig {
   Boolean enabled;
-  String tenantKey;
 }

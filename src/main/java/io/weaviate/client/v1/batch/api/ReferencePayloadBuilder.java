@@ -14,6 +14,7 @@ public class ReferencePayloadBuilder {
   private String fromPropertyName;
   private String toUUID;
   private String toClassName;
+  private String tenant;
 
   @Deprecated
   public ReferencePayloadBuilder() {
@@ -50,6 +51,11 @@ public class ReferencePayloadBuilder {
     return this;
   }
 
+  public ReferencePayloadBuilder withTenant(String tenant) {
+    this.tenant = tenant;
+    return this;
+  }
+
   public BatchReference payload() {
     if (StringUtils.isBlank(fromClassName) || StringUtils.isBlank(fromUUID) ||
             StringUtils.isBlank(fromPropertyName) || StringUtils.isBlank(toUUID)) {
@@ -73,7 +79,7 @@ public class ReferencePayloadBuilder {
       to = beaconToDeprecated();
     }
 
-    return BatchReference.builder().from(from).to(to).build();
+    return BatchReference.builder().from(from).to(to).tenant(tenant).build();
   }
 
   private String beaconFromDeprecated() {
