@@ -68,4 +68,17 @@ public class HybridArgumentTest {
     assertThat(str).isEqualTo("hybrid:{query:\"I'm a simple string\" " +
       "fusionType:relativeScoreFusion}");
   }
+
+  @Test
+  public void shouldCreateArgumentWithProperties() {
+    HybridArgument hybrid = HybridArgument.builder()
+      .query("I'm a simple string")
+      .properties(new String[]{"prop1", "prop2"})
+      .build();
+
+    String str = hybrid.build();
+
+    assertThat(str).isEqualTo("hybrid:{query:\"I'm a simple string\" " +
+      "properties:[\"prop1\",\"prop2\"]}");
+  }
 }
