@@ -1,19 +1,20 @@
 package io.weaviate.integration.client.batch;
 
+import io.weaviate.client.Config;
+import io.weaviate.client.WeaviateClient;
+import io.weaviate.client.base.Result;
+import io.weaviate.client.v1.batch.api.ObjectsBatcher;
+import io.weaviate.client.v1.batch.model.ObjectGetResponse;
+import io.weaviate.client.v1.batch.model.ObjectsGetResponseAO2Result;
+import io.weaviate.client.v1.data.model.WeaviateObject;
+import io.weaviate.client.v1.data.replication.model.ConsistencyLevel;
+import io.weaviate.integration.client.WeaviateTestGenerics;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
-import io.weaviate.client.Config;
-import io.weaviate.client.WeaviateClient;
-import io.weaviate.client.base.Result;
-import io.weaviate.client.v1.batch.api.ObjectsBatcher;
-import io.weaviate.client.v1.batch.model.ObjectGetResponse;
-import io.weaviate.client.v1.data.model.WeaviateObject;
-import io.weaviate.client.v1.data.replication.model.ConsistencyLevel;
-import io.weaviate.integration.client.WeaviateTestGenerics;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -228,8 +229,11 @@ public class ClientBatchCreateTest {
 
     ObjectGetResponse resPizzaWithError = resBatch.getResult()[0];
     assertThat(resPizzaWithError.getId()).isEqualTo(PIZZA_1_ID);
-    assertThat(resPizzaWithError.getResult().getErrors()).isNotNull()
-      .extracting(Object::toString).isEqualTo("{error=[{message=invalid text property 'name' on class 'Pizza': not a string, but json.Number}]}");
+    assertThat(resPizzaWithError.getResult().getErrors())
+      .extracting(ObjectsGetResponseAO2Result.ErrorResponse::getError).asList()
+      .first()
+      .extracting(i -> ((ObjectsGetResponseAO2Result.ErrorItem) i).getMessage()).asString()
+      .contains("invalid text property 'name' on class 'Pizza': not a string, but json.Number");
     ObjectGetResponse resPizza = resBatch.getResult()[1];
     assertThat(resPizza.getId()).isEqualTo(PIZZA_2_ID);
     assertThat(resPizza.getResult().getErrors()).isNull();

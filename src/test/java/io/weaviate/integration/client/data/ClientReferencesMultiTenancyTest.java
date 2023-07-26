@@ -6,6 +6,7 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.batch.model.BatchReference;
 import io.weaviate.client.v1.batch.model.BatchReferenceResponse;
 import io.weaviate.client.v1.batch.model.BatchReferenceResponseAO1Result;
+import io.weaviate.client.v1.batch.model.BatchReferenceResponseStatus;
 import io.weaviate.client.v1.data.model.SingleRef;
 import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.schema.model.Property;
@@ -916,7 +917,7 @@ public class ClientReferencesMultiTenancyTest {
       assertThat(item).isNotNull()
         .extracting(BatchReferenceResponse::getResult)
         .isNotNull()
-        .returns("SUCCESS", BatchReferenceResponseAO1Result::getStatus)
+        .returns(BatchReferenceResponseStatus.SUCCESS, BatchReferenceResponseAO1Result::getStatus)
     );
   }
 }

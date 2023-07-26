@@ -1,7 +1,9 @@
 package io.weaviate.client.v1.batch.api;
 
 import io.weaviate.client.v1.batch.model.ObjectGetResponse;
+import io.weaviate.client.v1.batch.model.ObjectGetResponseStatus;
 import io.weaviate.client.v1.batch.model.ObjectsBatchRequestBody;
+import io.weaviate.client.v1.batch.model.ObjectsGetResponseAO2Result;
 import io.weaviate.client.v1.batch.util.ObjectsPath;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -329,6 +331,9 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
   }
 
   private ObjectGetResponse createResponseFromExistingObject(WeaviateObject existingObject) {
+    ObjectsGetResponseAO2Result result = new ObjectsGetResponseAO2Result();
+    result.setStatus(ObjectGetResponseStatus.SUCCESS);
+
     ObjectGetResponse response = new ObjectGetResponse();
     response.setId(existingObject.getId());
     response.setClassName(existingObject.getClassName());
@@ -338,6 +343,7 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
     response.setLastUpdateTimeUnix(existingObject.getLastUpdateTimeUnix());
     response.setVector(existingObject.getVector());
     response.setVectorWeights(existingObject.getVectorWeights());
+    response.setResult(result);
 
     return response;
   }
