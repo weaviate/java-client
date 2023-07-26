@@ -6,6 +6,7 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.batch.model.BatchReference;
 import io.weaviate.client.v1.batch.model.BatchReferenceResponse;
 import io.weaviate.client.v1.batch.model.BatchReferenceResponseAO1Result;
+import io.weaviate.client.v1.batch.model.BatchReferenceResponseStatus;
 import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.schema.model.Property;
 import io.weaviate.integration.client.WeaviateTestGenerics;
@@ -91,7 +92,7 @@ public class ClientBatchReferencesMultiTenancyTest {
       assertThat(item).isNotNull()
         .extracting(BatchReferenceResponse::getResult)
         .isNotNull()
-        .returns("SUCCESS", BatchReferenceResponseAO1Result::getStatus)
+        .returns(BatchReferenceResponseStatus.SUCCESS, BatchReferenceResponseAO1Result::getStatus)
     );
 
     // verify created
@@ -154,7 +155,7 @@ public class ClientBatchReferencesMultiTenancyTest {
       assertThat(item).isNotNull()
         .extracting(BatchReferenceResponse::getResult)
         .isNotNull()
-        .returns("FAILED", BatchReferenceResponseAO1Result::getStatus)
+        .returns(BatchReferenceResponseStatus.FAILED, BatchReferenceResponseAO1Result::getStatus)
         .extracting(BatchReferenceResponseAO1Result::getErrors)
         .extracting(BatchReferenceResponseAO1Result.ErrorResponse::getError).asList()
         .first()
@@ -224,7 +225,7 @@ public class ClientBatchReferencesMultiTenancyTest {
       assertThat(item).isNotNull()
         .extracting(BatchReferenceResponse::getResult)
         .isNotNull()
-        .returns("SUCCESS", BatchReferenceResponseAO1Result::getStatus)
+        .returns(BatchReferenceResponseStatus.SUCCESS, BatchReferenceResponseAO1Result::getStatus)
     );
 
     // verify created
@@ -286,7 +287,7 @@ public class ClientBatchReferencesMultiTenancyTest {
       assertThat(item).isNotNull()
         .extracting(BatchReferenceResponse::getResult)
         .isNotNull()
-        .returns("FAILED", BatchReferenceResponseAO1Result::getStatus)
+        .returns(BatchReferenceResponseStatus.FAILED, BatchReferenceResponseAO1Result::getStatus)
         .extracting(BatchReferenceResponseAO1Result::getErrors)
         .extracting(BatchReferenceResponseAO1Result.ErrorResponse::getError).asList()
         .first()
@@ -356,7 +357,7 @@ public class ClientBatchReferencesMultiTenancyTest {
       assertThat(item).isNotNull()
         .extracting(BatchReferenceResponse::getResult)
         .isNotNull()
-        .returns("FAILED", BatchReferenceResponseAO1Result::getStatus)
+        .returns(BatchReferenceResponseStatus.FAILED, BatchReferenceResponseAO1Result::getStatus)
         .extracting(BatchReferenceResponseAO1Result::getErrors)
         .extracting(BatchReferenceResponseAO1Result.ErrorResponse::getError).asList()
         .first()

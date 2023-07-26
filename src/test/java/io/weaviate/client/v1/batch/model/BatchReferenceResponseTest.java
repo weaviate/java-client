@@ -23,6 +23,6 @@ public class BatchReferenceResponseTest extends TestCase {
     Assert.assertEquals(4, resp.length);
     Assert.assertEquals("weaviate://localhost/Pizza/97fa5147-bdad-4d74-9a81-f8babc811b09/otherFoods", resp[0].getFrom());
     Assert.assertEquals("weaviate://localhost/07473b34-0ab2-4120-882d-303d9e13f7af", resp[0].getTo());
-    Assert.assertEquals("SUCCESS", resp[0].getResult().getStatus());
+    Assert.assertEquals(BatchReferenceResponseStatus.SUCCESS, resp[0].getResult().getStatus());
   }
 }

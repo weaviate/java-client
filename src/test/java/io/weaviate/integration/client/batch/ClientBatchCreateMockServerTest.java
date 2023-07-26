@@ -2,6 +2,8 @@ package io.weaviate.integration.client.batch;
 
 import com.jparams.junit4.JParamsTestRunner;
 import com.jparams.junit4.data.DataMethod;
+import io.weaviate.client.v1.batch.model.ObjectGetResponseStatus;
+import io.weaviate.client.v1.batch.model.ObjectsGetResponseAO2Result;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +47,7 @@ public class ClientBatchCreateMockServerTest {
   private static final Map<String, Object> SOUP_1_PROPS = createFoodProperties("ChickenSoup", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
   private static final String SOUP_2_ID = "07473b34-0ab2-4120-882d-303d9e13f7af";
   private static final Map<String, Object> SOUP_2_PROPS = createFoodProperties("Beautiful", "Putting the game of letter soups to a whole new level.");
-  
+
   private WeaviateClient client;
   private ClientAndServer mockServer;
   private MockServerClient mockServerClient;
@@ -134,7 +136,7 @@ public class ClientBatchCreateMockServerTest {
     assertThat(ChronoUnit.MILLIS.between(start, end)).isBetween(expectedExecMinMillis, expectedExecMaxMillis);
     assertThat(resBatches).hasSize(2);
 
-    for (Result<ObjectGetResponse[]> resBatch: resBatches) {
+    for (Result<ObjectGetResponse[]> resBatch : resBatches) {
       assertThat(resBatch.getResult()).isNull();
       assertThat(resBatch.hasErrors()).isTrue();
 
@@ -154,8 +156,8 @@ public class ClientBatchCreateMockServerTest {
   }
 
   public static Object[][] provideForNotCreateBatchDueToConnectionIssue() {
-    return new Object[][] {
-      new Object[] {
+    return new Object[][]{
+      new Object[]{
         // final response should be available immediately
         ObjectsBatcher.BatchRetriesConfig.defaultConfig()
           .retriesIntervalMs(400)
@@ -163,7 +165,7 @@ public class ClientBatchCreateMockServerTest {
           .build(),
         0, 350
       },
-      new Object[] {
+      new Object[]{
         // final response should be available after 1 retry (400 ms)
         ObjectsBatcher.BatchRetriesConfig.defaultConfig()
           .retriesIntervalMs(400)
@@ -171,7 +173,7 @@ public class ClientBatchCreateMockServerTest {
           .build(),
         400, 750
       },
-      new Object[] {
+      new Object[]{
         // final response should be available after 2 retries (400 + 800 ms)
         ObjectsBatcher.BatchRetriesConfig.defaultConfig()
           .retriesIntervalMs(400)
@@ -179,7 +181,7 @@ public class ClientBatchCreateMockServerTest {
           .build(),
         1200, 1550
       },
-      new Object[] {
+      new Object[]{
         // final response should be available after 1 retry (400 + 800 + 1200 ms)
         ObjectsBatcher.BatchRetriesConfig.defaultConfig()
           .retriesIntervalMs(400)
@@ -259,10 +261,17 @@ public class ClientBatchCreateMockServerTest {
     assertThat(errorMessages.get(1).getThrowable()).isNull();
     assertThat(errorMessages.get(1).getMessage()).contains(PIZZA_2_ID, SOUP_2_ID).doesNotContain(PIZZA_1_ID, SOUP_1_ID);
 
-    assertThat(resBatch.getResult()[0].getId()).isEqualTo(PIZZA_1_ID);
-    assertThat(resBatch.getResult()[1].getId()).isEqualTo(SOUP_1_ID);
+    assertThat(resBatch.getResult()[0])
+      .returns(PIZZA_1_ID, ObjectGetResponse::getId)
+      .extracting(ObjectGetResponse::getResult).isNotNull()
+      .returns(ObjectGetResponseStatus.SUCCESS, ObjectsGetResponseAO2Result::getStatus)
+      .returns(null, ObjectsGetResponseAO2Result::getErrors);
+    assertThat(resBatch.getResult()[1])
+      .returns(SOUP_1_ID, ObjectGetResponse::getId)
+      .extracting(ObjectGetResponse::getResult).isNotNull()
+      .returns(ObjectGetResponseStatus.SUCCESS, ObjectsGetResponseAO2Result::getStatus)
+      .returns(null, ObjectsGetResponseAO2Result::getErrors);
   }
-
 
   @Test
   @DataMethod(source = ClientBatchCreateMockServerTest.class, method = "provideForNotCreateBatchDueToTimeoutIssue")
@@ -332,7 +341,7 @@ public class ClientBatchCreateMockServerTest {
 
     assertThat(resBatches).hasSize(2);
 
-    for (Result<ObjectGetResponse[]> resBatch: resBatches) {
+    for (Result<ObjectGetResponse[]> resBatch : resBatches) {
       assertThat(resBatch.getResult()).hasSize(1);
       assertThat(resBatch.hasErrors()).isTrue();
 
@@ -345,17 +354,25 @@ public class ClientBatchCreateMockServerTest {
       String failedIdsMessage = errorMessages.get(1).getMessage();
       if (failedIdsMessage.contains(PIZZA_2_ID)) {
         assertThat(failedIdsMessage).contains(PIZZA_2_ID).doesNotContain(PIZZA_1_ID, SOUP_1_ID, SOUP_2_ID);
-        assertThat(resBatch.getResult()[0].getId()).isEqualTo(PIZZA_1_ID);
+        assertThat(resBatch.getResult()[0])
+          .returns(PIZZA_1_ID, ObjectGetResponse::getId)
+          .extracting(ObjectGetResponse::getResult).isNotNull()
+          .returns(ObjectGetResponseStatus.SUCCESS, ObjectsGetResponseAO2Result::getStatus)
+          .returns(null, ObjectsGetResponseAO2Result::getErrors);
       } else {
         assertThat(failedIdsMessage).contains(SOUP_2_ID).doesNotContain(PIZZA_1_ID, PIZZA_2_ID, SOUP_1_ID);
-        assertThat(resBatch.getResult()[0].getId()).isEqualTo(SOUP_1_ID);
+        assertThat(resBatch.getResult()[0])
+          .returns(SOUP_1_ID, ObjectGetResponse::getId)
+          .extracting(ObjectGetResponse::getResult).isNotNull()
+          .returns(ObjectGetResponseStatus.SUCCESS, ObjectsGetResponseAO2Result::getStatus)
+          .returns(null, ObjectsGetResponseAO2Result::getErrors);
       }
     }
   }
 
   public static Object[][] provideForNotCreateBatchDueToTimeoutIssue() {
-    return new Object[][] {
-      new Object[] {
+    return new Object[][]{
+      new Object[]{
         // final response should be available immediately
         ObjectsBatcher.BatchRetriesConfig.defaultConfig()
           .retriesIntervalMs(200)
@@ -363,7 +380,7 @@ public class ClientBatchCreateMockServerTest {
           .build(),
         1
       },
-      new Object[] {
+      new Object[]{
         // final response should be available after 1 retry (200 ms)
         ObjectsBatcher.BatchRetriesConfig.defaultConfig()
           .retriesIntervalMs(200)
@@ -371,7 +388,7 @@ public class ClientBatchCreateMockServerTest {
           .build(),
         2
       },
-      new Object[] {
+      new Object[]{
         // final response should be available after 2 retries (200 + 400 ms)
         ObjectsBatcher.BatchRetriesConfig.defaultConfig()
           .retriesIntervalMs(200)

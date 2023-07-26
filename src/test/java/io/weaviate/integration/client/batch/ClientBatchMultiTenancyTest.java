@@ -5,6 +5,7 @@ import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.batch.model.BatchDeleteResponse;
 import io.weaviate.client.v1.batch.model.ObjectGetResponse;
+import io.weaviate.client.v1.batch.model.ObjectGetResponseStatus;
 import io.weaviate.client.v1.batch.model.ObjectsGetResponseAO2Result;
 import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.filters.Operator;
@@ -147,7 +148,7 @@ public class ClientBatchMultiTenancyTest {
         assertThat(item).isNotNull()
           .returns(tenant, ObjectGetResponse::getTenant)
           .extracting(ObjectGetResponse::getResult)
-          .returns("SUCCESS", ObjectsGetResponseAO2Result::getStatus)
+          .returns(ObjectGetResponseStatus.SUCCESS, ObjectsGetResponseAO2Result::getStatus)
       );
     });
 
@@ -236,7 +237,7 @@ public class ClientBatchMultiTenancyTest {
       assertThat(ogr).isNotNull()
         .returns(null, ObjectGetResponse::getTenant)
         .extracting(ObjectGetResponse::getResult)
-        .returns("FAILED", ObjectsGetResponseAO2Result::getStatus)
+        .returns(ObjectGetResponseStatus.FAILED, ObjectsGetResponseAO2Result::getStatus)
     );
 
     // verify not created
