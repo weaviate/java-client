@@ -174,7 +174,11 @@ public class ClientSchemaMultiTenancyTest {
 
   @Test
   public void shouldGetTenantsFromMTClass() {
-    String[] tenants = new String[]{"TenantNo1", "TenantNo2"};
+    Tenant[] tenants = new Tenant[]{
+      WeaviateTestGenerics.TENANT_1,
+      WeaviateTestGenerics.TENANT_2,
+    };
+    String[] tenantNames = Arrays.stream(tenants).map(Tenant::getName).toArray(String[]::new);
     testGenerics.createSchemaPizzaForTenants(client);
     testGenerics.createTenantsPizza(client, tenants);
 
@@ -190,7 +194,7 @@ public class ClientSchemaMultiTenancyTest {
     String[] fetchedTenants = getResult.getResult().stream()
       .map(Tenant::getName)
       .toArray(String[]::new);
-    assertThat(fetchedTenants).containsExactlyInAnyOrder(tenants);
+    assertThat(fetchedTenants).containsExactlyInAnyOrder(tenantNames);
   }
 
   @Test
@@ -206,13 +210,17 @@ public class ClientSchemaMultiTenancyTest {
 
   @Test
   public void shouldDeleteTenantsFromMTClass() {
-    String[] tenants = new String[]{"TenantNo1", "TenantNo2"};
+    Tenant[] tenants = new Tenant[]{
+      WeaviateTestGenerics.TENANT_1,
+      WeaviateTestGenerics.TENANT_2,
+    };
+    String[] tenantNames = Arrays.stream(tenants).map(Tenant::getName).toArray(String[]::new);
     testGenerics.createSchemaPizzaForTenants(client);
     testGenerics.createTenantsPizza(client, tenants);
 
     Result<Boolean> deleteResult = client.schema().tenantsDeleter()
       .withClassName("Pizza")
-      .withTenants(tenants)
+      .withTenants(tenantNames)
       .run();
 
     assertThat(deleteResult).isNotNull()

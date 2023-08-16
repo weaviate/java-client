@@ -61,6 +61,13 @@ public class WeaviateTestGenerics {
     ));
   }
 
+  public static final Tenant TENANT_1 = Tenant.builder()
+    .name("TenantNo1")
+    .build();
+  public static final Tenant TENANT_2 = Tenant.builder()
+    .name("TenantNo2")
+    .build();
+
 
   public void createWeaviateTestSchemaFood(WeaviateClient client) {
     createWeaviateTestSchemaFood(client, false);
@@ -368,27 +375,23 @@ public class WeaviateTestGenerics {
   }
 
 
-  public void createTenantsPizza(WeaviateClient client, String... tenants) {
+  public void createTenantsPizza(WeaviateClient client, Tenant... tenants) {
     createTenants(client, "Pizza", tenants);
   }
 
-  public void createTenantsSoup(WeaviateClient client, String... tenants) {
+  public void createTenantsSoup(WeaviateClient client, Tenant... tenants) {
     createTenants(client, "Soup", tenants);
   }
 
-  public void createTenantsFood(WeaviateClient client, String... tenants) {
+  public void createTenantsFood(WeaviateClient client, Tenant... tenants) {
     createTenantsPizza(client, tenants);
     createTenantsSoup(client, tenants);
   }
 
-  private void createTenants(WeaviateClient client, String className, String[] tenants) {
-    Tenant[] t = Arrays.stream(tenants)
-      .map(tenant -> Tenant.builder().name(tenant).build())
-      .toArray(Tenant[]::new);
-
+  private void createTenants(WeaviateClient client, String className, Tenant[] tenants) {
     Result<Boolean> createStatus = client.schema().tenantsCreator()
       .withClassName(className)
-      .withTenants(t)
+      .withTenants(tenants)
       .run();
     assertThat(createStatus).isNotNull()
       .returns(false, Result::hasErrors)

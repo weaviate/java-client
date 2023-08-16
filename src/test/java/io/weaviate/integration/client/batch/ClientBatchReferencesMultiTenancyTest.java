@@ -9,6 +9,7 @@ import io.weaviate.client.v1.batch.model.BatchReferenceResponseAO1Result;
 import io.weaviate.client.v1.batch.model.BatchReferenceResponseStatus;
 import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.schema.model.Property;
+import io.weaviate.client.v1.schema.model.Tenant;
 import io.weaviate.integration.client.WeaviateTestGenerics;
 import org.junit.After;
 import org.junit.Before;
@@ -52,15 +53,19 @@ public class ClientBatchReferencesMultiTenancyTest {
 
   @Test
   public void shouldCreateReferencesBetweenMTClasses() {
-    String[] tenants = new String[]{"TenantNo1", "TenantNo2"};
+    Tenant[] tenants = new Tenant[]{
+      WeaviateTestGenerics.TENANT_1,
+      WeaviateTestGenerics.TENANT_2,
+    };
+    String[] tenantNames = Arrays.stream(tenants).map(Tenant::getName).toArray(String[]::new);
     List<String> soupIds = WeaviateTestGenerics.IDS_BY_CLASS.get("Soup");
     List<String> pizzaIds = WeaviateTestGenerics.IDS_BY_CLASS.get("Pizza");
     testGenerics.createSchemaSoupForTenants(client);
     testGenerics.createTenantsSoup(client, tenants);
-    testGenerics.createDataSoupForTenants(client, tenants);
+    testGenerics.createDataSoupForTenants(client, tenantNames);
     testGenerics.createSchemaPizzaForTenants(client);
     testGenerics.createTenantsPizza(client, tenants);
-    testGenerics.createDataPizzaForTenants(client, tenants);
+    testGenerics.createDataPizzaForTenants(client, tenantNames);
 
     createSoupToPizzaRefProp();
 
@@ -68,7 +73,7 @@ public class ClientBatchReferencesMultiTenancyTest {
       soupIds.stream().flatMap(soupId ->
         pizzaIds.stream().map(pizzaId ->
           client.batch().referencePayloadBuilder()
-            .withTenant(tenant)
+            .withTenant(tenant.getName())
             .withFromClassName("Soup")
             .withFromID(soupId)
             .withFromRefProp("relatedToPizza")
@@ -99,7 +104,7 @@ public class ClientBatchReferencesMultiTenancyTest {
     Arrays.stream(tenants).forEach(tenant ->
       soupIds.forEach(soupId -> {
         Result<List<WeaviateObject>> getSoupResult = client.data().objectsGetter()
-          .withTenant(tenant)
+          .withTenant(tenant.getName())
           .withClassName("Soup")
           .withID(soupId)
           .run();
@@ -118,15 +123,19 @@ public class ClientBatchReferencesMultiTenancyTest {
 
   @Test
   public void shouldNotCreateReferencesBetweenMTClassesWithoutTenant() {
-    String[] tenants = new String[]{"TenantNo1", "TenantNo2"};
+    Tenant[] tenants = new Tenant[]{
+      WeaviateTestGenerics.TENANT_1,
+      WeaviateTestGenerics.TENANT_2,
+    };
+    String[] tenantNames = Arrays.stream(tenants).map(Tenant::getName).toArray(String[]::new);
     List<String> soupIds = WeaviateTestGenerics.IDS_BY_CLASS.get("Soup");
     List<String> pizzaIds = WeaviateTestGenerics.IDS_BY_CLASS.get("Pizza");
     testGenerics.createSchemaSoupForTenants(client);
     testGenerics.createTenantsSoup(client, tenants);
-    testGenerics.createDataSoupForTenants(client, tenants);
+    testGenerics.createDataSoupForTenants(client, tenantNames);
     testGenerics.createSchemaPizzaForTenants(client);
     testGenerics.createTenantsPizza(client, tenants);
-    testGenerics.createDataPizzaForTenants(client, tenants);
+    testGenerics.createDataPizzaForTenants(client, tenantNames);
 
     createSoupToPizzaRefProp();
 
@@ -167,7 +176,7 @@ public class ClientBatchReferencesMultiTenancyTest {
     Arrays.stream(tenants).forEach(tenant ->
       soupIds.forEach(soupId -> {
         Result<List<WeaviateObject>> getSoupResult = client.data().objectsGetter()
-          .withTenant(tenant)
+          .withTenant(tenant.getName())
           .withClassName("Soup")
           .withID(soupId)
           .run();
@@ -186,12 +195,16 @@ public class ClientBatchReferencesMultiTenancyTest {
 
   @Test
   public void shouldCreateReferencesBetweenMTAndNonMTClasses() {
-    String[] tenants = new String[]{"TenantNo1", "TenantNo2"};
+    Tenant[] tenants = new Tenant[]{
+      WeaviateTestGenerics.TENANT_1,
+      WeaviateTestGenerics.TENANT_2,
+    };
+    String[] tenantNames = Arrays.stream(tenants).map(Tenant::getName).toArray(String[]::new);
     List<String> soupIds = WeaviateTestGenerics.IDS_BY_CLASS.get("Soup");
     List<String> pizzaIds = WeaviateTestGenerics.IDS_BY_CLASS.get("Pizza");
     testGenerics.createSchemaSoupForTenants(client);
     testGenerics.createTenantsSoup(client, tenants);
-    testGenerics.createDataSoupForTenants(client, tenants);
+    testGenerics.createDataSoupForTenants(client, tenantNames);
     testGenerics.createSchemaPizza(client);
     testGenerics.createDataPizza(client);
 
@@ -201,7 +214,7 @@ public class ClientBatchReferencesMultiTenancyTest {
       soupIds.stream().flatMap(soupId ->
         pizzaIds.stream().map(pizzaId ->
           client.batch().referencePayloadBuilder()
-            .withTenant(tenant)
+            .withTenant(tenant.getName())
             .withFromClassName("Soup")
             .withFromID(soupId)
             .withFromRefProp("relatedToPizza")
@@ -232,7 +245,7 @@ public class ClientBatchReferencesMultiTenancyTest {
     Arrays.stream(tenants).forEach(tenant ->
       soupIds.forEach(soupId -> {
         Result<List<WeaviateObject>> getSoupResult = client.data().objectsGetter()
-          .withTenant(tenant)
+          .withTenant(tenant.getName())
           .withClassName("Soup")
           .withID(soupId)
           .run();
@@ -251,12 +264,16 @@ public class ClientBatchReferencesMultiTenancyTest {
 
   @Test
   public void shouldNotCreateReferencesBetweenMTAndNonMTClassesWithoutTenant() {
-    String[] tenants = new String[]{"TenantNo1", "TenantNo2"};
+    Tenant[] tenants = new Tenant[]{
+      WeaviateTestGenerics.TENANT_1,
+      WeaviateTestGenerics.TENANT_2,
+    };
+    String[] tenantNames = Arrays.stream(tenants).map(Tenant::getName).toArray(String[]::new);
     List<String> soupIds = WeaviateTestGenerics.IDS_BY_CLASS.get("Soup");
     List<String> pizzaIds = WeaviateTestGenerics.IDS_BY_CLASS.get("Pizza");
     testGenerics.createSchemaSoupForTenants(client);
     testGenerics.createTenantsSoup(client, tenants);
-    testGenerics.createDataSoupForTenants(client, tenants);
+    testGenerics.createDataSoupForTenants(client, tenantNames);
     testGenerics.createSchemaPizza(client);
     testGenerics.createDataPizza(client);
 
@@ -299,7 +316,7 @@ public class ClientBatchReferencesMultiTenancyTest {
     Arrays.stream(tenants).forEach(tenant ->
       soupIds.forEach(soupId -> {
         Result<List<WeaviateObject>> getSoupResult = client.data().objectsGetter()
-          .withTenant(tenant)
+          .withTenant(tenant.getName())
           .withClassName("Soup")
           .withID(soupId)
           .run();
@@ -318,14 +335,18 @@ public class ClientBatchReferencesMultiTenancyTest {
 
   @Test
   public void shouldNotCreateReferencesBetweenNonMTAndMTClasses() {
-    String[] tenants = new String[]{"TenantNo1", "TenantNo2"};
+    Tenant[] tenants = new Tenant[]{
+      WeaviateTestGenerics.TENANT_1,
+      WeaviateTestGenerics.TENANT_2,
+    };
+    String[] tenantNames = Arrays.stream(tenants).map(Tenant::getName).toArray(String[]::new);
     List<String> soupIds = WeaviateTestGenerics.IDS_BY_CLASS.get("Soup");
     List<String> pizzaIds = WeaviateTestGenerics.IDS_BY_CLASS.get("Pizza");
     testGenerics.createSchemaSoup(client);
     testGenerics.createDataSoup(client);
     testGenerics.createSchemaPizzaForTenants(client);
     testGenerics.createTenantsPizza(client, tenants);
-    testGenerics.createDataPizzaForTenants(client, tenants);
+    testGenerics.createDataPizzaForTenants(client, tenantNames);
 
     createSoupToPizzaRefProp();
 
@@ -333,7 +354,7 @@ public class ClientBatchReferencesMultiTenancyTest {
       soupIds.stream().flatMap(soupId ->
         pizzaIds.stream().map(pizzaId ->
           client.batch().referencePayloadBuilder()
-            .withTenant(tenant)
+            .withTenant(tenant.getName())
             .withFromClassName("Soup")
             .withFromID(soupId)
             .withFromRefProp("relatedToPizza")
