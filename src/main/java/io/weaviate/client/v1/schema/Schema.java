@@ -15,6 +15,7 @@ import io.weaviate.client.v1.schema.api.ShardsUpdater;
 import io.weaviate.client.v1.schema.api.TenantsCreator;
 import io.weaviate.client.v1.schema.api.TenantsDeleter;
 import io.weaviate.client.v1.schema.api.TenantsGetter;
+import io.weaviate.client.v1.schema.api.TenantsUpdater;
 
 public class Schema {
   private final Config config;
@@ -67,6 +68,10 @@ public class Schema {
 
   public TenantsCreator tenantsCreator() {
     return new TenantsCreator(httpClient, config);
+  }
+
+  public TenantsUpdater tenantsUpdater() {
+    return new TenantsUpdater(httpClient, config);
   }
 
   public TenantsDeleter tenantsDeleter() {

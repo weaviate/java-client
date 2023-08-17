@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static io.weaviate.integration.client.WeaviateTestGenerics.TENANT_1;
+import static io.weaviate.integration.client.WeaviateTestGenerics.TENANT_2;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClientGraphQLMultiTenancyTest {
@@ -51,22 +53,19 @@ public class ClientGraphQLMultiTenancyTest {
 
   @Test
   public void shouldGetAllDataForTenant() {
-    String tenant1 = "TenantNo1";
-    String tenant2 = "TenantNo2";
-
     testGenerics.createSchemaPizzaForTenants(client);
-    testGenerics.createTenantsPizza(client, tenant1, tenant2);
-    testGenerics.createDataPizzaQuattroFormaggiForTenants(client, tenant1);
-    testGenerics.createDataPizzaFruttiDiMareForTenants(client, tenant1);
-    testGenerics.createDataPizzaHawaiiForTenants(client, tenant2);
-    testGenerics.createDataPizzaDoenerForTenants(client, tenant2);
+    testGenerics.createTenantsPizza(client, TENANT_1, TENANT_2);
+    testGenerics.createDataPizzaQuattroFormaggiForTenants(client, TENANT_1.getName());
+    testGenerics.createDataPizzaFruttiDiMareForTenants(client, TENANT_1.getName());
+    testGenerics.createDataPizzaHawaiiForTenants(client, TENANT_2.getName());
+    testGenerics.createDataPizzaDoenerForTenants(client, TENANT_2.getName());
 
     Map<String, String[]> expectedIdsByTenant = new HashMap<>();
-    expectedIdsByTenant.put(tenant1, new String[]{
+    expectedIdsByTenant.put(TENANT_1.getName(), new String[]{
       WeaviateTestGenerics.PIZZA_QUATTRO_FORMAGGI_ID,
       WeaviateTestGenerics.PIZZA_FRUTTI_DI_MARE_ID,
     });
-    expectedIdsByTenant.put(tenant2, new String[]{
+    expectedIdsByTenant.put(TENANT_2.getName(), new String[]{
       WeaviateTestGenerics.PIZZA_HAWAII_ID,
       WeaviateTestGenerics.PIZZA_DOENER_ID,
     });
@@ -87,21 +86,18 @@ public class ClientGraphQLMultiTenancyTest {
 
   @Test
   public void shouldGetLimitedDataForTenant() {
-    String tenant1 = "TenantNo1";
-    String tenant2 = "TenantNo2";
-
     testGenerics.createSchemaPizzaForTenants(client);
-    testGenerics.createTenantsPizza(client, tenant1, tenant2);
-    testGenerics.createDataPizzaQuattroFormaggiForTenants(client, tenant1);
-    testGenerics.createDataPizzaFruttiDiMareForTenants(client, tenant1);
-    testGenerics.createDataPizzaHawaiiForTenants(client, tenant2);
-    testGenerics.createDataPizzaDoenerForTenants(client, tenant2);
+    testGenerics.createTenantsPizza(client, TENANT_1, TENANT_2);
+    testGenerics.createDataPizzaQuattroFormaggiForTenants(client, TENANT_1.getName());
+    testGenerics.createDataPizzaFruttiDiMareForTenants(client, TENANT_1.getName());
+    testGenerics.createDataPizzaHawaiiForTenants(client, TENANT_2.getName());
+    testGenerics.createDataPizzaDoenerForTenants(client, TENANT_2.getName());
 
     Map<String, String[]> expectedIdsByTenant = new HashMap<>();
-    expectedIdsByTenant.put(tenant1, new String[]{
+    expectedIdsByTenant.put(TENANT_1.getName(), new String[]{
       WeaviateTestGenerics.PIZZA_QUATTRO_FORMAGGI_ID,
     });
-    expectedIdsByTenant.put(tenant2, new String[]{
+    expectedIdsByTenant.put(TENANT_2.getName(), new String[]{
       WeaviateTestGenerics.PIZZA_HAWAII_ID,
     });
 
@@ -122,21 +118,18 @@ public class ClientGraphQLMultiTenancyTest {
 
   @Test
   public void shouldGetFilteredDataForTenant() {
-    String tenant1 = "TenantNo1";
-    String tenant2 = "TenantNo2";
-
     testGenerics.createSchemaPizzaForTenants(client);
-    testGenerics.createTenantsPizza(client, tenant1, tenant2);
-    testGenerics.createDataPizzaQuattroFormaggiForTenants(client, tenant1);
-    testGenerics.createDataPizzaFruttiDiMareForTenants(client, tenant1);
-    testGenerics.createDataPizzaHawaiiForTenants(client, tenant2);
-    testGenerics.createDataPizzaDoenerForTenants(client, tenant2);
+    testGenerics.createTenantsPizza(client, TENANT_1, TENANT_2);
+    testGenerics.createDataPizzaQuattroFormaggiForTenants(client, TENANT_1.getName());
+    testGenerics.createDataPizzaFruttiDiMareForTenants(client, TENANT_1.getName());
+    testGenerics.createDataPizzaHawaiiForTenants(client, TENANT_2.getName());
+    testGenerics.createDataPizzaDoenerForTenants(client, TENANT_2.getName());
 
     Map<String, String[]> expectedIdsByTenant = new HashMap<>();
-    expectedIdsByTenant.put(tenant1, new String[]{
+    expectedIdsByTenant.put(TENANT_1.getName(), new String[]{
       WeaviateTestGenerics.PIZZA_FRUTTI_DI_MARE_ID,
     });
-    expectedIdsByTenant.put(tenant2, new String[]{
+    expectedIdsByTenant.put(TENANT_2.getName(), new String[]{
     });
 
     expectedIdsByTenant.forEach((tenant, expectedIds) -> {
@@ -162,18 +155,15 @@ public class ClientGraphQLMultiTenancyTest {
 
   @Test
   public void shouldAggregateAllDataForTenant() {
-    String tenant1 = "TenantNo1";
-    String tenant2 = "TenantNo2";
-
     testGenerics.createSchemaPizzaForTenants(client);
-    testGenerics.createTenantsPizza(client, tenant1, tenant2);
-    testGenerics.createDataPizzaQuattroFormaggiForTenants(client, tenant1);
-    testGenerics.createDataPizzaFruttiDiMareForTenants(client, tenant1);
-    testGenerics.createDataPizzaHawaiiForTenants(client, tenant2);
-    testGenerics.createDataPizzaDoenerForTenants(client, tenant2);
+    testGenerics.createTenantsPizza(client, TENANT_1, TENANT_2);
+    testGenerics.createDataPizzaQuattroFormaggiForTenants(client, TENANT_1.getName());
+    testGenerics.createDataPizzaFruttiDiMareForTenants(client, TENANT_1.getName());
+    testGenerics.createDataPizzaHawaiiForTenants(client, TENANT_2.getName());
+    testGenerics.createDataPizzaDoenerForTenants(client, TENANT_2.getName());
 
     Map<String, Map<String, Double>> expectedAggValuesByTenant = new HashMap<>();
-    expectedAggValuesByTenant.put(tenant1, new HashMap<String, Double>() {{
+    expectedAggValuesByTenant.put(TENANT_1.getName(), new HashMap<String, Double>() {{
       put("count", 2.0);
       put("maximum", 2.5);
       put("minimum", 1.4);
@@ -182,7 +172,7 @@ public class ClientGraphQLMultiTenancyTest {
       put("mode", 1.4);
       put("sum", 3.9);
     }});
-    expectedAggValuesByTenant.put(tenant2, new HashMap<String, Double>() {{
+    expectedAggValuesByTenant.put(TENANT_2.getName(), new HashMap<String, Double>() {{
       put("count", 2.0);
       put("maximum", 1.2);
       put("minimum", 1.1);
@@ -215,18 +205,15 @@ public class ClientGraphQLMultiTenancyTest {
 
   @Test
   public void shouldAggregateFilteredDataForTenant() {
-    String tenant1 = "TenantNo1";
-    String tenant2 = "TenantNo2";
-
     testGenerics.createSchemaPizzaForTenants(client);
-    testGenerics.createTenantsPizza(client, tenant1, tenant2);
-    testGenerics.createDataPizzaQuattroFormaggiForTenants(client, tenant1);
-    testGenerics.createDataPizzaFruttiDiMareForTenants(client, tenant1);
-    testGenerics.createDataPizzaHawaiiForTenants(client, tenant2);
-    testGenerics.createDataPizzaDoenerForTenants(client, tenant2);
+    testGenerics.createTenantsPizza(client, TENANT_1, TENANT_2);
+    testGenerics.createDataPizzaQuattroFormaggiForTenants(client, TENANT_1.getName());
+    testGenerics.createDataPizzaFruttiDiMareForTenants(client, TENANT_1.getName());
+    testGenerics.createDataPizzaHawaiiForTenants(client, TENANT_2.getName());
+    testGenerics.createDataPizzaDoenerForTenants(client, TENANT_2.getName());
 
     Map<String, Map<String, Double>> expectedAggValuesByTenant = new HashMap<>();
-    expectedAggValuesByTenant.put(tenant1, new HashMap<String, Double>() {{
+    expectedAggValuesByTenant.put(TENANT_1.getName(), new HashMap<String, Double>() {{
       put("count", 1.0);
       put("maximum", 2.5);
       put("minimum", 2.5);
@@ -235,7 +222,7 @@ public class ClientGraphQLMultiTenancyTest {
       put("mode", 2.5);
       put("sum", 2.5);
     }});
-    expectedAggValuesByTenant.put(tenant2, new HashMap<String, Double>() {{
+    expectedAggValuesByTenant.put(TENANT_2.getName(), new HashMap<String, Double>() {{
       put("count", 0.0);
       put("maximum", null);
       put("minimum", null);

@@ -5,6 +5,7 @@ import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.util.TriConsumer;
 import io.weaviate.client.v1.cluster.model.NodesStatusResponse;
+import io.weaviate.client.v1.schema.model.Tenant;
 import io.weaviate.integration.client.WeaviateTestGenerics;
 import org.junit.After;
 import org.junit.Before;
@@ -14,6 +15,7 @@ import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -49,16 +51,26 @@ public class ClientClusterMultiTenancyTest {
 
   @Test
   public void shouldGetNodeStatusPerClass() {
-    String[] pizzaTenants = new String[]{"TenantPizza1", "TenantPizza2"};
-    String[] soupTenants = new String[]{"TenantSoup1", "TenantSoup2", "TenantSoup3"};
+    Tenant[] pizzaTenants = new Tenant[] {
+      Tenant.builder().name("TenantPizza1").build(),
+      Tenant.builder().name("TenantPizza2").build(),
+    };
+    Tenant[] soupTenants = new Tenant[] {
+      Tenant.builder().name("TenantSoup1").build(),
+      Tenant.builder().name("TenantSoup2").build(),
+      Tenant.builder().name("TenantSoup3").build(),
+    };
+    String[] pizzaTenantNames = Arrays.stream(pizzaTenants).map(Tenant::getName).toArray(String[]::new);
+    String[] soupTenantNames = Arrays.stream(soupTenants).map(Tenant::getName).toArray(String[]::new);
+
     List<String> pizzaIds = WeaviateTestGenerics.IDS_BY_CLASS.get("Pizza");
     List<String> soupIds = WeaviateTestGenerics.IDS_BY_CLASS.get("Soup");
     testGenerics.createSchemaPizzaForTenants(client);
     testGenerics.createTenantsPizza(client, pizzaTenants);
-    testGenerics.createDataPizzaForTenants(client, pizzaTenants);
+    testGenerics.createDataPizzaForTenants(client, pizzaTenantNames);
     testGenerics.createSchemaSoupForTenants(client);
     testGenerics.createTenantsSoup(client, soupTenants);
-    testGenerics.createDataSoupForTenants(client, soupTenants);
+    testGenerics.createDataSoupForTenants(client, soupTenantNames);
 
     Consumer<Result<NodesStatusResponse>> assertSingleNode = (Result<NodesStatusResponse> result) ->
       assertThat(result).isNotNull()

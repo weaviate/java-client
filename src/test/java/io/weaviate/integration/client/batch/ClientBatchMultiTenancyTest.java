@@ -10,6 +10,7 @@ import io.weaviate.client.v1.batch.model.ObjectsGetResponseAO2Result;
 import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.filters.Operator;
 import io.weaviate.client.v1.filters.WhereFilter;
+import io.weaviate.client.v1.schema.model.Tenant;
 import io.weaviate.integration.client.AssertMultiTenancy;
 import io.weaviate.integration.client.WeaviateTestGenerics;
 import org.junit.After;
@@ -59,7 +60,10 @@ public class ClientBatchMultiTenancyTest {
 
   @Test
   public void shouldCreateObjects() {
-    String[] tenants = new String[]{"TenantNo1", "TenantNo2"};
+    Tenant[] tenants = new Tenant[]{
+      WeaviateTestGenerics.TENANT_1,
+      WeaviateTestGenerics.TENANT_2,
+    };
     testGenerics.createSchemaPizzaForTenants(client);
     testGenerics.createSchemaSoupForTenants(client);
     testGenerics.createTenantsPizza(client, tenants);
@@ -100,28 +104,28 @@ public class ClientBatchMultiTenancyTest {
         .id(WeaviateTestGenerics.PIZZA_QUATTRO_FORMAGGI_ID)
         .className("Pizza")
         .properties(propsQuatroFormaggi)
-        .tenant(tenant)
+        .tenant(tenant.getName())
         .build();
 
       WeaviateObject pizzaFruttiDiMare = WeaviateObject.builder()
         .id(WeaviateTestGenerics.PIZZA_FRUTTI_DI_MARE_ID)
         .className("Pizza")
         .properties(propsFruttiDiMare)
-        .tenant(tenant)
+        .tenant(tenant.getName())
         .build();
 
       WeaviateObject soupChicken = WeaviateObject.builder()
         .id(WeaviateTestGenerics.SOUP_CHICKENSOUP_ID)
         .className("Soup")
         .properties(propsChicken)
-        .tenant(tenant)
+        .tenant(tenant.getName())
         .build();
 
       WeaviateObject soupBeautiful = WeaviateObject.builder()
         .id(WeaviateTestGenerics.SOUP_BEAUTIFUL_ID)
         .className("Soup")
         .properties(propsBeautiful)
-        .tenant(tenant)
+        .tenant(tenant.getName())
         .build();
 
       return Stream.of(pizzaQuatroFormaggi, pizzaFruttiDiMare, soupChicken, soupBeautiful);
@@ -139,14 +143,14 @@ public class ClientBatchMultiTenancyTest {
     Map<String, List<ObjectGetResponse>> grouped = Arrays.stream(result.getResult())
       .collect(Collectors.groupingBy(ObjectGetResponse::getTenant));
     Arrays.stream(tenants).forEach(tenant -> {
-      assertThat(grouped.get(tenant)).isNotNull()
+      assertThat(grouped.get(tenant.getName())).isNotNull()
         .hasSize(4)
         .extracting(ObjectGetResponse::getId)
         .containsExactlyInAnyOrderElementsOf(ids.keySet());
 
-      grouped.get(tenant).forEach(item ->
+      grouped.get(tenant.getName()).forEach(item ->
         assertThat(item).isNotNull()
-          .returns(tenant, ObjectGetResponse::getTenant)
+          .returns(tenant.getName(), ObjectGetResponse::getTenant)
           .extracting(ObjectGetResponse::getResult)
           .returns(ObjectGetResponseStatus.SUCCESS, ObjectsGetResponseAO2Result::getStatus)
       );
@@ -155,14 +159,17 @@ public class ClientBatchMultiTenancyTest {
     // verify created
     Arrays.stream(tenants).forEach(tenant ->
       ids.forEach((id, className) ->
-        assertMT.objectExists(className, id, tenant)
+        assertMT.objectExists(className, id, tenant.getName())
       )
     );
   }
 
   @Test
   public void shouldNotCreateObjectsWithoutTenant() {
-    String[] tenants = new String[]{"TenantNo1", "TenantNo2"};
+    Tenant[] tenants = new Tenant[]{
+      WeaviateTestGenerics.TENANT_1,
+      WeaviateTestGenerics.TENANT_2,
+    };
     testGenerics.createSchemaPizzaForTenants(client);
     testGenerics.createSchemaSoupForTenants(client);
     testGenerics.createTenantsPizza(client, tenants);
@@ -243,23 +250,27 @@ public class ClientBatchMultiTenancyTest {
     // verify not created
     Arrays.stream(tenants).forEach(tenant ->
       ids.forEach((id, className) ->
-        assertMT.objectDoesNotExist(className, id, tenant)
+        assertMT.objectDoesNotExist(className, id, tenant.getName())
       )
     );
   }
 
   @Test
   public void shouldDeleteObjects() {
-    String[] tenants = new String[]{"TenantNo1", "TenantNo2"};
+    Tenant[] tenants = new Tenant[]{
+      WeaviateTestGenerics.TENANT_1,
+      WeaviateTestGenerics.TENANT_2,
+    };
+    String[] tenantNames = Arrays.stream(tenants).map(Tenant::getName).toArray(String[]::new);
     testGenerics.createSchemaFoodForTenants(client);
     testGenerics.createTenantsFood(client, tenants);
-    testGenerics.createDataFoodForTenants(client, tenants);
+    testGenerics.createDataFoodForTenants(client, tenantNames);
 
     Arrays.stream(tenants).forEach(tenant ->
       WeaviateTestGenerics.IDS_BY_CLASS.forEach((className, ids) -> {
         Result<BatchDeleteResponse> result = client.batch().objectsBatchDeleter()
           .withClassName(className)
-          .withTenant(tenant)
+          .withTenant(tenant.getName())
           .withWhere(WhereFilter.builder()
             .operator(Operator.Like)
             .path(new String[]{"_id"})
@@ -275,17 +286,21 @@ public class ClientBatchMultiTenancyTest {
           .returns((long) ids.size(), BatchDeleteResponse.Results::getSuccessful);
 
         // verify deleted
-        ids.forEach(id -> assertMT.objectDoesNotExist(className, id, tenant));
+        ids.forEach(id -> assertMT.objectDoesNotExist(className, id, tenant.getName()));
       })
     );
   }
 
   @Test
   public void shouldNotDeleteObjectsWithoutTenant() {
-    String[] tenants = new String[]{"TenantNo1", "TenantNo2"};
+    Tenant[] tenants = new Tenant[]{
+      WeaviateTestGenerics.TENANT_1,
+      WeaviateTestGenerics.TENANT_2,
+    };
+    String[] tenantNames = Arrays.stream(tenants).map(Tenant::getName).toArray(String[]::new);
     testGenerics.createSchemaFoodForTenants(client);
     testGenerics.createTenantsFood(client, tenants);
-    testGenerics.createDataFoodForTenants(client, tenants);
+    testGenerics.createDataFoodForTenants(client, tenantNames);
 
     WeaviateTestGenerics.IDS_BY_CLASS.forEach((className, ids) -> {
       Result<BatchDeleteResponse> result = client.batch().objectsBatchDeleter()
@@ -302,7 +317,7 @@ public class ClientBatchMultiTenancyTest {
 
     Arrays.stream(tenants).forEach(tenant ->
       WeaviateTestGenerics.IDS_BY_CLASS.forEach((className, ids) ->
-        ids.forEach(id -> assertMT.objectExists(className, id, tenant))
+        ids.forEach(id -> assertMT.objectExists(className, id, tenant.getName()))
       )
     );
   }

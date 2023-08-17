@@ -5,6 +5,7 @@ import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateError;
 import io.weaviate.client.v1.data.model.WeaviateObject;
+import io.weaviate.client.v1.schema.model.Tenant;
 import io.weaviate.integration.client.AssertMultiTenancy;
 import io.weaviate.integration.client.WeaviateTestGenerics;
 import org.junit.After;
@@ -52,7 +53,10 @@ public class ClientDataMultiTenancyTest {
 
   @Test
   public void shouldCreateObjects() {
-    String[] tenants = new String[]{"TenantNo1", "TenantNo2"};
+    Tenant[] tenants = new Tenant[]{
+      WeaviateTestGenerics.TENANT_1,
+      WeaviateTestGenerics.TENANT_2,
+    };
     testGenerics.createSchemaPizzaForTenants(client);
     testGenerics.createTenantsPizza(client, tenants);
 
@@ -73,7 +77,7 @@ public class ClientDataMultiTenancyTest {
         .withClassName("Pizza")
         .withID(WeaviateTestGenerics.PIZZA_QUATTRO_FORMAGGI_ID)
         .withProperties(propsQuatroFormaggi)
-        .withTenant(tenant)
+        .withTenant(tenant.getName())
         .run();
 
       assertThat(pizzaQuatroFormaggiStatus).isNotNull()
@@ -81,7 +85,7 @@ public class ClientDataMultiTenancyTest {
         .extracting(Result::getResult)
         .returns(WeaviateTestGenerics.PIZZA_QUATTRO_FORMAGGI_ID, WeaviateObject::getId)
         .returns("Pizza", WeaviateObject::getClassName)
-        .returns(tenant, WeaviateObject::getTenant)
+        .returns(tenant.getName(), WeaviateObject::getTenant)
         .extracting(WeaviateObject::getProperties)
         .returns("Quattro Formaggi", p -> p.get("name"))
         .returns(1.4d, p -> p.get("price"))
@@ -92,7 +96,7 @@ public class ClientDataMultiTenancyTest {
         .withClassName("Pizza")
         .withID(WeaviateTestGenerics.PIZZA_FRUTTI_DI_MARE_ID)
         .withProperties(propsFruttiDiMare)
-        .withTenant(tenant)
+        .withTenant(tenant.getName())
         .run();
 
       assertThat(pizzaFruttiDiMareStatus).isNotNull()
@@ -100,7 +104,7 @@ public class ClientDataMultiTenancyTest {
         .extracting(Result::getResult)
         .returns(WeaviateTestGenerics.PIZZA_FRUTTI_DI_MARE_ID, WeaviateObject::getId)
         .returns("Pizza", WeaviateObject::getClassName)
-        .returns(tenant, WeaviateObject::getTenant)
+        .returns(tenant.getName(), WeaviateObject::getTenant)
         .extracting(WeaviateObject::getProperties)
         .returns("Frutti di Mare", p -> p.get("name"))
         .returns(2.5d, p -> p.get("price"))
@@ -113,12 +117,16 @@ public class ClientDataMultiTenancyTest {
       Arrays.asList(
         WeaviateTestGenerics.PIZZA_QUATTRO_FORMAGGI_ID,
         WeaviateTestGenerics.PIZZA_FRUTTI_DI_MARE_ID
-      ).forEach(id -> assertMT.objectExists("Pizza", id, tenant)));
+      ).forEach(id -> assertMT.objectExists("Pizza", id, tenant.getName())));
   }
 
   @Test
   public void shouldNotCreateObjectsWithoutTenant() {
-    String[] tenants = new String[]{"TenantNo1", "TenantNo2"};
+    Tenant[] tenants = new Tenant[]{
+      WeaviateTestGenerics.TENANT_1,
+      WeaviateTestGenerics.TENANT_2,
+    };
+
     testGenerics.createSchemaPizzaForTenants(client);
     testGenerics.createTenantsPizza(client, tenants);
 
@@ -155,21 +163,25 @@ public class ClientDataMultiTenancyTest {
       Arrays.asList(
         WeaviateTestGenerics.PIZZA_QUATTRO_FORMAGGI_ID,
         WeaviateTestGenerics.PIZZA_FRUTTI_DI_MARE_ID
-      ).forEach(id -> assertMT.objectDoesNotExist("Pizza", id, tenant)));
+      ).forEach(id -> assertMT.objectDoesNotExist("Pizza", id, tenant.getName())));
   }
 
   @Test
   public void shouldGetObjects() {
-    String[] tenants = new String[]{"TenantNo1", "TenantNo2"};
+    Tenant[] tenants = new Tenant[]{
+      WeaviateTestGenerics.TENANT_1,
+      WeaviateTestGenerics.TENANT_2,
+    };
+    String[] tenantNames = Arrays.stream(tenants).map(Tenant::getName).toArray(String[]::new);
     testGenerics.createSchemaFoodForTenants(client);
     testGenerics.createTenantsFood(client, tenants);
-    testGenerics.createDataFoodForTenants(client, tenants);
+    testGenerics.createDataFoodForTenants(client, tenantNames);
 
     Arrays.stream(tenants).forEach(tenant -> {
         WeaviateTestGenerics.IDS_BY_CLASS.forEach((className, ids) -> {
           ids.forEach(id -> {
             Result<List<WeaviateObject>> getResultByClassId = client.data().objectsGetter()
-              .withTenant(tenant)
+              .withTenant(tenant.getName())
               .withClassName(className)
               .withID(id)
               .run();
@@ -182,11 +194,11 @@ public class ClientDataMultiTenancyTest {
               .extracting(o -> (WeaviateObject) o)
               .returns(id, WeaviateObject::getId)
               .returns(className, WeaviateObject::getClassName)
-              .returns(tenant, WeaviateObject::getTenant);
+              .returns(tenant.getName(), WeaviateObject::getTenant);
           });
 
           Result<List<WeaviateObject>> getResultByClass = client.data().objectsGetter()
-            .withTenant(tenant)
+            .withTenant(tenant.getName())
             .withClassName(className)
             .run();
 
@@ -199,7 +211,7 @@ public class ClientDataMultiTenancyTest {
         });
 
         Result<List<WeaviateObject>> getResultAll = client.data().objectsGetter()
-          .withTenant(tenant)
+          .withTenant(tenant.getName())
           .run();
 
         assertThat(getResultAll).isNotNull()
@@ -214,10 +226,14 @@ public class ClientDataMultiTenancyTest {
 
   @Test
   public void shouldNotGetObjectsWithoutTenant() {
-    String[] tenants = new String[]{"TenantNo1", "TenantNo2"};
+    Tenant[] tenants = new Tenant[]{
+      WeaviateTestGenerics.TENANT_1,
+      WeaviateTestGenerics.TENANT_2,
+    };
+    String[] tenantNames = Arrays.stream(tenants).map(Tenant::getName).toArray(String[]::new);
     testGenerics.createSchemaFoodForTenants(client);
     testGenerics.createTenantsFood(client, tenants);
-    testGenerics.createDataFoodForTenants(client, tenants);
+    testGenerics.createDataFoodForTenants(client, tenantNames);
 
     WeaviateTestGenerics.IDS_BY_CLASS.forEach((className, ids) -> {
       ids.forEach(id -> {
@@ -226,14 +242,14 @@ public class ClientDataMultiTenancyTest {
           .withID(id)
           .run();
 
-        assertMT.error(getResultByClassId, null, 500, "has multi-tenancy enabled, but request was without tenant"); // TODO 422?
+        assertMT.error(getResultByClassId, null, 422, "has multi-tenancy enabled, but request was without tenant");
       });
 
       Result<List<WeaviateObject>> getResultByClass = client.data().objectsGetter()
         .withClassName(className)
         .run();
 
-      assertMT.error(getResultByClass, null, 500, "has multi-tenancy enabled, but request was without tenant"); // TODO 422?
+      assertMT.error(getResultByClass, null, 422, "has multi-tenancy enabled, but request was without tenant");
     });
 
     Result<List<WeaviateObject>> getResultAll = client.data().objectsGetter()
@@ -247,10 +263,14 @@ public class ClientDataMultiTenancyTest {
 
   @Test
   public void shouldCheckObjects() {
-    String[] tenants = new String[]{"TenantNo1", "TenantNo2"};
+    Tenant[] tenants = new Tenant[]{
+      WeaviateTestGenerics.TENANT_1,
+      WeaviateTestGenerics.TENANT_2,
+    };
+    String[] tenantNames = Arrays.stream(tenants).map(Tenant::getName).toArray(String[]::new);
     testGenerics.createSchemaFoodForTenants(client);
     testGenerics.createTenantsFood(client, tenants);
-    testGenerics.createDataFoodForTenants(client, tenants);
+    testGenerics.createDataFoodForTenants(client, tenantNames);
 
     Arrays.stream(tenants).forEach(tenant ->
       WeaviateTestGenerics.IDS_BY_CLASS.forEach((className, ids) ->
@@ -258,7 +278,7 @@ public class ClientDataMultiTenancyTest {
           Result<Boolean> checkResult = client.data().checker()
             .withClassName(className)
             .withID(id)
-            .withTenant(tenant)
+            .withTenant(tenant.getName())
             .run();
 
           assertThat(checkResult).isNotNull()
@@ -271,10 +291,14 @@ public class ClientDataMultiTenancyTest {
 
   @Test
   public void shouldNotCheckObjectsWithoutTenant() {
-    String[] tenants = new String[]{"TenantNo1", "TenantNo2"};
+    Tenant[] tenants = new Tenant[]{
+      WeaviateTestGenerics.TENANT_1,
+      WeaviateTestGenerics.TENANT_2,
+    };
+    String[] tenantNames = Arrays.stream(tenants).map(Tenant::getName).toArray(String[]::new);
     testGenerics.createSchemaFoodForTenants(client);
     testGenerics.createTenantsFood(client, tenants);
-    testGenerics.createDataFoodForTenants(client, tenants);
+    testGenerics.createDataFoodForTenants(client, tenantNames);
 
     WeaviateTestGenerics.IDS_BY_CLASS.forEach((className, ids) ->
       ids.forEach(id -> {
@@ -287,7 +311,7 @@ public class ClientDataMultiTenancyTest {
           .returns(false, Result::getResult)
           .returns(true, Result::hasErrors)
           .extracting(Result::getError)
-          .returns(500, WeaviateError::getStatusCode) // TODO 422?
+          .returns(422, WeaviateError::getStatusCode)
           .extracting(WeaviateError::getMessages).asList()
           .isEmpty();
       })
@@ -296,10 +320,14 @@ public class ClientDataMultiTenancyTest {
 
   @Test
   public void shouldDeleteObjects() {
-    String[] tenants = new String[]{"TenantNo1", "TenantNo2"};
+    Tenant[] tenants = new Tenant[]{
+      WeaviateTestGenerics.TENANT_1,
+      WeaviateTestGenerics.TENANT_2,
+    };
+    String[] tenantNames = Arrays.stream(tenants).map(Tenant::getName).toArray(String[]::new);
     testGenerics.createSchemaFoodForTenants(client);
     testGenerics.createTenantsFood(client, tenants);
-    testGenerics.createDataFoodForTenants(client, tenants);
+    testGenerics.createDataFoodForTenants(client, tenantNames);
 
     Arrays.stream(tenants).forEach(tenant ->
       WeaviateTestGenerics.IDS_BY_CLASS.forEach((className, ids) -> {
@@ -307,7 +335,7 @@ public class ClientDataMultiTenancyTest {
 
         ids.forEach(id -> {
           Result<Boolean> deleteStatus = client.data().deleter()
-            .withTenant(tenant)
+            .withTenant(tenant.getName())
             .withClassName(className)
             .withID(id)
             .run();
@@ -317,8 +345,8 @@ public class ClientDataMultiTenancyTest {
             .returns(true, Result::getResult);
 
           // verify deleted
-          assertMT.objectDoesNotExist(className, id, tenant);
-          assertMT.countObjects(className, tenant, --expectedObjectsLeft[0]);
+          assertMT.objectDoesNotExist(className, id, tenant.getName());
+          assertMT.countObjects(className, tenant.getName(), --expectedObjectsLeft[0]);
         });
       })
     );
@@ -326,10 +354,14 @@ public class ClientDataMultiTenancyTest {
 
   @Test
   public void shouldNotDeleteObjectsWithoutTenant() {
-    String[] tenants = new String[]{"TenantNo1", "TenantNo2"};
+    Tenant[] tenants = new Tenant[]{
+      WeaviateTestGenerics.TENANT_1,
+      WeaviateTestGenerics.TENANT_2,
+    };
+    String[] tenantNames = Arrays.stream(tenants).map(Tenant::getName).toArray(String[]::new);
     testGenerics.createSchemaFoodForTenants(client);
     testGenerics.createTenantsFood(client, tenants);
-    testGenerics.createDataFoodForTenants(client, tenants);
+    testGenerics.createDataFoodForTenants(client, tenantNames);
 
     WeaviateTestGenerics.IDS_BY_CLASS.forEach((className, ids) ->
       ids.forEach(id -> {
@@ -338,27 +370,31 @@ public class ClientDataMultiTenancyTest {
           .withID(id)
           .run();
 
-        assertMT.error(deleteStatus, false, 500, "has multi-tenancy enabled, but request was without tenant"); // TODO 422?
+        assertMT.error(deleteStatus, false, 422, "has multi-tenancy enabled, but request was without tenant");
 
         // verify not deleted
         Arrays.stream(tenants).forEach(tenant ->
-          assertMT.objectExists(className, id, tenant)
+          assertMT.objectExists(className, id, tenant.getName())
         );
       })
     );
 
     // verify not deleted
     Arrays.stream(tenants).forEach(tenant ->
-      assertMT.countObjects(tenant, WeaviateTestGenerics.IDS_ALL.size())
+      assertMT.countObjects(tenant.getName(), WeaviateTestGenerics.IDS_ALL.size())
     );
   }
 
   @Test
   public void shouldUpdateObjects() {
-    String[] tenants = new String[]{"TenantNo1", "TenantNo2"};
+    Tenant[] tenants = new Tenant[]{
+      WeaviateTestGenerics.TENANT_1,
+      WeaviateTestGenerics.TENANT_2,
+    };
+    String[] tenantNames = Arrays.stream(tenants).map(Tenant::getName).toArray(String[]::new);
     testGenerics.createSchemaSoupForTenants(client);
     testGenerics.createTenantsSoup(client, tenants);
-    testGenerics.createDataSoupForTenants(client, tenants);
+    testGenerics.createDataSoupForTenants(client, tenantNames);
 
     Map<String, Object> propsChicken = new HashMap<>();
     propsChicken.put("name", "ChickenSoup");
@@ -374,7 +410,7 @@ public class ClientDataMultiTenancyTest {
 
     Arrays.stream(tenants).forEach(tenant -> {
       Result<Boolean> soupChickenStatus = client.data().updater()
-        .withTenant(tenant)
+        .withTenant(tenant.getName())
         .withClassName("Soup")
         .withID(WeaviateTestGenerics.SOUP_CHICKENSOUP_ID)
         .withProperties(propsChicken)
@@ -385,7 +421,7 @@ public class ClientDataMultiTenancyTest {
         .returns(true, Result::getResult);
 
       Result<Boolean> soupBeautifulStatus = client.data().updater()
-        .withTenant(tenant)
+        .withTenant(tenant.getName())
         .withClassName("Soup")
         .withID(WeaviateTestGenerics.SOUP_BEAUTIFUL_ID)
         .withProperties(propsBeautiful)
@@ -397,7 +433,7 @@ public class ClientDataMultiTenancyTest {
 
       // verify updated
       Result<List<WeaviateObject>> soupChicken = client.data().objectsGetter()
-        .withTenant(tenant)
+        .withTenant(tenant.getName())
         .withClassName("Soup")
         .withID(WeaviateTestGenerics.SOUP_CHICKENSOUP_ID)
         .run();
@@ -408,7 +444,7 @@ public class ClientDataMultiTenancyTest {
         .hasSize(1)
         .first()
         .extracting(o -> (WeaviateObject) o)
-        .returns(tenant, WeaviateObject::getTenant)
+        .returns(tenant.getName(), WeaviateObject::getTenant)
         .extracting(WeaviateObject::getProperties)
         .returns(propsChicken.get("name"), p -> p.get("name"))
         .returns(propsChicken.get("description"), p -> p.get("description"))
@@ -416,7 +452,7 @@ public class ClientDataMultiTenancyTest {
         .returns(propsChicken.get("bestBefore"), p -> p.get("bestBefore"));
 
       Result<List<WeaviateObject>> soupBeautiful = client.data().objectsGetter()
-        .withTenant(tenant)
+        .withTenant(tenant.getName())
         .withClassName("Soup")
         .withID(WeaviateTestGenerics.SOUP_BEAUTIFUL_ID)
         .run();
@@ -427,7 +463,7 @@ public class ClientDataMultiTenancyTest {
         .hasSize(1)
         .first()
         .extracting(o -> (WeaviateObject) o)
-        .returns(tenant, WeaviateObject::getTenant)
+        .returns(tenant.getName(), WeaviateObject::getTenant)
         .extracting(WeaviateObject::getProperties)
         .returns(propsBeautiful.get("name"), p -> p.get("name"))
         .returns(propsBeautiful.get("description"), p -> p.get("description"))
@@ -438,10 +474,14 @@ public class ClientDataMultiTenancyTest {
 
   @Test
   public void shouldNotUpdateObjectsWithoutTenant() {
-    String[] tenants = new String[]{"TenantNo1", "TenantNo2"};
+    Tenant[] tenants = new Tenant[]{
+      WeaviateTestGenerics.TENANT_1,
+      WeaviateTestGenerics.TENANT_2,
+    };
+    String[] tenantNames = Arrays.stream(tenants).map(Tenant::getName).toArray(String[]::new);
     testGenerics.createSchemaSoupForTenants(client);
     testGenerics.createTenantsSoup(client, tenants);
-    testGenerics.createDataSoupForTenants(client, tenants);
+    testGenerics.createDataSoupForTenants(client, tenantNames);
 
     Map<String, Object> propsChicken = new HashMap<>();
     propsChicken.put("name", "ChickenSoup");
@@ -461,7 +501,7 @@ public class ClientDataMultiTenancyTest {
       .withProperties(propsChicken)
       .run();
 
-    assertMT.error(soupChickenStatus, false, 500, "has multi-tenancy enabled, but request was without tenant"); // TODO 422?
+    assertMT.error(soupChickenStatus, false, 422, "has multi-tenancy enabled, but request was without tenant");
 
     Result<Boolean> soupBeautifulStatus = client.data().updater()
       .withClassName("Soup")
@@ -469,12 +509,12 @@ public class ClientDataMultiTenancyTest {
       .withProperties(propsBeautiful)
       .run();
 
-    assertMT.error(soupBeautifulStatus, false, 500, "has multi-tenancy enabled, but request was without tenant"); // TODO 422?
+    assertMT.error(soupBeautifulStatus, false, 422, "has multi-tenancy enabled, but request was without tenant");
 
     // verify not updated
     Arrays.stream(tenants).forEach(tenant -> {
       Result<List<WeaviateObject>> soupChicken = client.data().objectsGetter()
-        .withTenant(tenant)
+        .withTenant(tenant.getName())
         .withClassName("Soup")
         .withID(WeaviateTestGenerics.SOUP_CHICKENSOUP_ID)
         .run();
@@ -485,7 +525,7 @@ public class ClientDataMultiTenancyTest {
         .hasSize(1)
         .first()
         .extracting(o -> (WeaviateObject) o)
-        .returns(tenant, WeaviateObject::getTenant)
+        .returns(tenant.getName(), WeaviateObject::getTenant)
         .extracting(WeaviateObject::getProperties)
         .returns("ChickenSoup", p -> p.get("name"))
         .returns("Used by humans when their inferior genetics are attacked by microscopic organisms.", p -> p.get("description"))
@@ -493,7 +533,7 @@ public class ClientDataMultiTenancyTest {
         .returns("2022-05-06T07:08:09+05:00", p -> p.get("bestBefore"));
 
       Result<List<WeaviateObject>> soupBeautiful = client.data().objectsGetter()
-        .withTenant(tenant)
+        .withTenant(tenant.getName())
         .withClassName("Soup")
         .withID(WeaviateTestGenerics.SOUP_BEAUTIFUL_ID)
         .run();
@@ -504,7 +544,7 @@ public class ClientDataMultiTenancyTest {
         .hasSize(1)
         .first()
         .extracting(o -> (WeaviateObject) o)
-        .returns(tenant, WeaviateObject::getTenant)
+        .returns(tenant.getName(), WeaviateObject::getTenant)
         .extracting(WeaviateObject::getProperties)
         .returns("Beautiful", p -> p.get("name"))
         .returns("Putting the game of letter soups to a whole new level.", p -> p.get("description"))
@@ -515,10 +555,14 @@ public class ClientDataMultiTenancyTest {
 
   @Test
   public void shouldMergeObjects() {
-    String[] tenants = new String[]{"TenantNo1", "TenantNo2"};
+    Tenant[] tenants = new Tenant[]{
+      WeaviateTestGenerics.TENANT_1,
+      WeaviateTestGenerics.TENANT_2,
+    };
+    String[] tenantNames = Arrays.stream(tenants).map(Tenant::getName).toArray(String[]::new);
     testGenerics.createSchemaSoupForTenants(client);
     testGenerics.createTenantsSoup(client, tenants);
-    testGenerics.createDataSoupForTenants(client, tenants);
+    testGenerics.createDataSoupForTenants(client, tenantNames);
 
     Map<String, Object> propsChicken = new HashMap<>();
     propsChicken.put("description", "updated ChickenSoup description");
@@ -530,7 +574,7 @@ public class ClientDataMultiTenancyTest {
 
     Arrays.stream(tenants).forEach(tenant -> {
       Result<Boolean> soupChickenStatus = client.data().updater()
-        .withTenant(tenant)
+        .withTenant(tenant.getName())
         .withClassName("Soup")
         .withID(WeaviateTestGenerics.SOUP_CHICKENSOUP_ID)
         .withProperties(propsChicken)
@@ -542,7 +586,7 @@ public class ClientDataMultiTenancyTest {
         .returns(true, Result::getResult);
 
       Result<Boolean> soupBeautifulStatus = client.data().updater()
-        .withTenant(tenant)
+        .withTenant(tenant.getName())
         .withClassName("Soup")
         .withID(WeaviateTestGenerics.SOUP_BEAUTIFUL_ID)
         .withProperties(propsBeautiful)
@@ -555,7 +599,7 @@ public class ClientDataMultiTenancyTest {
 
       // verify merged
       Result<List<WeaviateObject>> soupChicken = client.data().objectsGetter()
-        .withTenant(tenant)
+        .withTenant(tenant.getName())
         .withClassName("Soup")
         .withID(WeaviateTestGenerics.SOUP_CHICKENSOUP_ID)
         .run();
@@ -566,7 +610,7 @@ public class ClientDataMultiTenancyTest {
         .hasSize(1)
         .first()
         .extracting(o -> (WeaviateObject) o)
-        .returns(tenant, WeaviateObject::getTenant)
+        .returns(tenant.getName(), WeaviateObject::getTenant)
         .extracting(WeaviateObject::getProperties)
         .returns("ChickenSoup", p -> p.get("name"))
         .returns(propsChicken.get("description"), p -> p.get("description"))
@@ -574,7 +618,7 @@ public class ClientDataMultiTenancyTest {
         .returns("2022-05-06T07:08:09+05:00", p -> p.get("bestBefore"));
 
       Result<List<WeaviateObject>> soupBeautiful = client.data().objectsGetter()
-        .withTenant(tenant)
+        .withTenant(tenant.getName())
         .withClassName("Soup")
         .withID(WeaviateTestGenerics.SOUP_BEAUTIFUL_ID)
         .run();
@@ -585,7 +629,7 @@ public class ClientDataMultiTenancyTest {
         .hasSize(1)
         .first()
         .extracting(o -> (WeaviateObject) o)
-        .returns(tenant, WeaviateObject::getTenant)
+        .returns(tenant.getName(), WeaviateObject::getTenant)
         .extracting(WeaviateObject::getProperties)
         .returns("Beautiful", p -> p.get("name"))
         .returns(propsBeautiful.get("description"), p -> p.get("description"))
@@ -596,10 +640,14 @@ public class ClientDataMultiTenancyTest {
 
   @Test
   public void shouldNotMergeObjectsWithoutTenant() {
-    String[] tenants = new String[]{"TenantNo1", "TenantNo2"};
+    Tenant[] tenants = new Tenant[]{
+      WeaviateTestGenerics.TENANT_1,
+      WeaviateTestGenerics.TENANT_2,
+    };
+    String[] tenantNames = Arrays.stream(tenants).map(Tenant::getName).toArray(String[]::new);
     testGenerics.createSchemaSoupForTenants(client);
     testGenerics.createTenantsSoup(client, tenants);
-    testGenerics.createDataSoupForTenants(client, tenants);
+    testGenerics.createDataSoupForTenants(client, tenantNames);
 
     Map<String, Object> propsChicken = new HashMap<>();
     propsChicken.put("description", "updated ChickenSoup description");
@@ -616,7 +664,7 @@ public class ClientDataMultiTenancyTest {
       .withMerge()
       .run();
 
-    assertMT.error(soupChickenStatus, false, 500, "has multi-tenancy enabled, but request was without tenant"); // TODO 422?
+    assertMT.error(soupChickenStatus, false, 422, "has multi-tenancy enabled, but request was without tenant");
 
     Result<Boolean> soupBeautifulStatus = client.data().updater()
       .withClassName("Soup")
@@ -625,12 +673,12 @@ public class ClientDataMultiTenancyTest {
       .withMerge()
       .run();
 
-    assertMT.error(soupBeautifulStatus, false, 500, "has multi-tenancy enabled, but request was without tenant"); // TODO 422?
+    assertMT.error(soupBeautifulStatus, false, 422, "has multi-tenancy enabled, but request was without tenant");
 
     // verify not updated
     Arrays.stream(tenants).forEach(tenant -> {
       Result<List<WeaviateObject>> soupChicken = client.data().objectsGetter()
-        .withTenant(tenant)
+        .withTenant(tenant.getName())
         .withClassName("Soup")
         .withID(WeaviateTestGenerics.SOUP_CHICKENSOUP_ID)
         .run();
@@ -641,7 +689,7 @@ public class ClientDataMultiTenancyTest {
         .hasSize(1)
         .first()
         .extracting(o -> (WeaviateObject) o)
-        .returns(tenant, WeaviateObject::getTenant)
+        .returns(tenant.getName(), WeaviateObject::getTenant)
         .extracting(WeaviateObject::getProperties)
         .returns("ChickenSoup", p -> p.get("name"))
         .returns("Used by humans when their inferior genetics are attacked by microscopic organisms.", p -> p.get("description"))
@@ -649,7 +697,7 @@ public class ClientDataMultiTenancyTest {
         .returns("2022-05-06T07:08:09+05:00", p -> p.get("bestBefore"));
 
       Result<List<WeaviateObject>> soupBeautiful = client.data().objectsGetter()
-        .withTenant(tenant)
+        .withTenant(tenant.getName())
         .withClassName("Soup")
         .withID(WeaviateTestGenerics.SOUP_BEAUTIFUL_ID)
         .run();
@@ -660,7 +708,7 @@ public class ClientDataMultiTenancyTest {
         .hasSize(1)
         .first()
         .extracting(o -> (WeaviateObject) o)
-        .returns(tenant, WeaviateObject::getTenant)
+        .returns(tenant.getName(), WeaviateObject::getTenant)
         .extracting(WeaviateObject::getProperties)
         .returns("Beautiful", p -> p.get("name"))
         .returns("Putting the game of letter soups to a whole new level.", p -> p.get("description"))
