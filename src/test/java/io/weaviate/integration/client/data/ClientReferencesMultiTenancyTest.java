@@ -271,7 +271,7 @@ public class ClientReferencesMultiTenancyTest {
           .withReference(pizzaRef)
           .run();
 
-        assertMT.error(result, false, 500, "has multi-tenancy enabled, but request was without tenant"); // TODO 422?
+        assertMT.error(result, false, 422, "has multi-tenancy enabled, but request was without tenant");
       });
     });
 
@@ -408,7 +408,7 @@ public class ClientReferencesMultiTenancyTest {
         .withReferences(refs)
         .run();
 
-      assertMT.error(result, false, 500, "has multi-tenancy enabled, but request was without tenant"); // TODO 422?
+      assertMT.error(result, false, 422, "has multi-tenancy enabled, but request was without tenant");
     });
 
     // verify not replaced
@@ -535,7 +535,7 @@ public class ClientReferencesMultiTenancyTest {
           .withReference(pizzaRef)
           .run();
 
-        assertMT.error(refAddResult, false, 500, "has multi-tenancy enabled, but request was without tenant"); // TODO 422?
+        assertMT.error(refAddResult, false, 422, "has multi-tenancy enabled, but request was without tenant");
       })
     );
 
@@ -652,7 +652,7 @@ public class ClientReferencesMultiTenancyTest {
           .withReference(pizzaRef)
           .run();
 
-        assertMT.error(result, false, 500, "has multi-tenancy enabled, but request was without tenant"); // TODO 422?
+        assertMT.error(result, false, 422, "has multi-tenancy enabled, but request was without tenant");
       });
     });
 
@@ -787,7 +787,7 @@ public class ClientReferencesMultiTenancyTest {
         .withReferences(refs)
         .run();
 
-      assertMT.error(result, false, 500, "has multi-tenancy enabled, but request was without tenant"); // TODO 422?
+      assertMT.error(result, false, 422, "has multi-tenancy enabled, but request was without tenant");
     });
 
     // verify not replaced
@@ -850,7 +850,7 @@ public class ClientReferencesMultiTenancyTest {
           .withTenant(tenantPizza.getName())
           .run();
 
-        assertMT.error(result, false, 500, "has multi-tenancy disabled, but request was with tenant"); // TODO 422?
+        assertMT.error(result, false, 422, "has multi-tenancy disabled, but request was with tenant");
       })
     );
 
@@ -901,7 +901,7 @@ public class ClientReferencesMultiTenancyTest {
         .withTenant(tenantPizza.getName())
         .run();
 
-      assertMT.error(result, false, 500, "has multi-tenancy disabled, but request was with tenant"); // TODO 422?
+      assertMT.error(result, false, 422, "has multi-tenancy disabled, but request was with tenant");
     });
 
     // verify not replaced

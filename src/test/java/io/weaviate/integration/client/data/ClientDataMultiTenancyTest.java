@@ -242,14 +242,14 @@ public class ClientDataMultiTenancyTest {
           .withID(id)
           .run();
 
-        assertMT.error(getResultByClassId, null, 500, "has multi-tenancy enabled, but request was without tenant"); // TODO 422?
+        assertMT.error(getResultByClassId, null, 422, "has multi-tenancy enabled, but request was without tenant");
       });
 
       Result<List<WeaviateObject>> getResultByClass = client.data().objectsGetter()
         .withClassName(className)
         .run();
 
-      assertMT.error(getResultByClass, null, 500, "has multi-tenancy enabled, but request was without tenant"); // TODO 422?
+      assertMT.error(getResultByClass, null, 422, "has multi-tenancy enabled, but request was without tenant");
     });
 
     Result<List<WeaviateObject>> getResultAll = client.data().objectsGetter()
@@ -311,7 +311,7 @@ public class ClientDataMultiTenancyTest {
           .returns(false, Result::getResult)
           .returns(true, Result::hasErrors)
           .extracting(Result::getError)
-          .returns(500, WeaviateError::getStatusCode) // TODO 422?
+          .returns(422, WeaviateError::getStatusCode)
           .extracting(WeaviateError::getMessages).asList()
           .isEmpty();
       })
@@ -370,7 +370,7 @@ public class ClientDataMultiTenancyTest {
           .withID(id)
           .run();
 
-        assertMT.error(deleteStatus, false, 500, "has multi-tenancy enabled, but request was without tenant"); // TODO 422?
+        assertMT.error(deleteStatus, false, 422, "has multi-tenancy enabled, but request was without tenant");
 
         // verify not deleted
         Arrays.stream(tenants).forEach(tenant ->
@@ -501,7 +501,7 @@ public class ClientDataMultiTenancyTest {
       .withProperties(propsChicken)
       .run();
 
-    assertMT.error(soupChickenStatus, false, 500, "has multi-tenancy enabled, but request was without tenant"); // TODO 422?
+    assertMT.error(soupChickenStatus, false, 422, "has multi-tenancy enabled, but request was without tenant");
 
     Result<Boolean> soupBeautifulStatus = client.data().updater()
       .withClassName("Soup")
@@ -509,7 +509,7 @@ public class ClientDataMultiTenancyTest {
       .withProperties(propsBeautiful)
       .run();
 
-    assertMT.error(soupBeautifulStatus, false, 500, "has multi-tenancy enabled, but request was without tenant"); // TODO 422?
+    assertMT.error(soupBeautifulStatus, false, 422, "has multi-tenancy enabled, but request was without tenant");
 
     // verify not updated
     Arrays.stream(tenants).forEach(tenant -> {
@@ -664,7 +664,7 @@ public class ClientDataMultiTenancyTest {
       .withMerge()
       .run();
 
-    assertMT.error(soupChickenStatus, false, 500, "has multi-tenancy enabled, but request was without tenant"); // TODO 422?
+    assertMT.error(soupChickenStatus, false, 422, "has multi-tenancy enabled, but request was without tenant");
 
     Result<Boolean> soupBeautifulStatus = client.data().updater()
       .withClassName("Soup")
@@ -673,7 +673,7 @@ public class ClientDataMultiTenancyTest {
       .withMerge()
       .run();
 
-    assertMT.error(soupBeautifulStatus, false, 500, "has multi-tenancy enabled, but request was without tenant"); // TODO 422?
+    assertMT.error(soupBeautifulStatus, false, 422, "has multi-tenancy enabled, but request was without tenant");
 
     // verify not updated
     Arrays.stream(tenants).forEach(tenant -> {
