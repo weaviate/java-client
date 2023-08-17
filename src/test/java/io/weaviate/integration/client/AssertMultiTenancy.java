@@ -5,8 +5,12 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateError;
 import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.v1.data.model.WeaviateObject;
+import io.weaviate.client.v1.schema.model.ActivityStatus;
+import io.weaviate.client.v1.schema.model.Tenant;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
@@ -69,5 +73,52 @@ public class AssertMultiTenancy {
       .first()
       .extracting(m -> ((WeaviateErrorMessage) m).getMessage()).asInstanceOf(STRING)
       .contains(expectedContains);
+  }
+
+  public void tenantActive(String className, String tenantName) {
+    tenantStatus(className, tenantName, ActivityStatus.HOT);
+  }
+
+  public void tenantInactive(String className, String tenantName) {
+    tenantStatus(className, tenantName, ActivityStatus.COLD);
+  }
+
+  private void tenantStatus(String className, String tenantName, String activityStatus) {
+    Result<List<Tenant>> result = client.schema().tenantsGetter()
+      .withClassName(className)
+      .run();
+
+    assertThat(result).isNotNull()
+      .returns(false, Result::hasErrors)
+      .extracting(Result::getResult).isNotNull();
+
+    Optional<Tenant> maybeTenant = result.getResult().stream()
+      .filter(Objects::nonNull)
+      .filter(tenant -> tenantName.equals(tenant.getName()))
+      .filter(tenant -> activityStatus.equals(tenant.getActivityStatus()))
+      .findFirst();
+
+    assertThat(maybeTenant).isNotEmpty();
+  }
+
+  public void tenantActiveGetsObjects(String className, String tenantName, int objectsCount) {
+    Result<List<WeaviateObject>> result = client.data().objectsGetter()
+      .withClassName(className)
+      .withTenant(tenantName)
+      .run();
+
+    assertThat(result).isNotNull()
+      .returns(false, Result::hasErrors)
+      .extracting(Result::getResult).asList()
+      .hasSize(objectsCount);
+  }
+
+  public void tenantInactiveGetsNoObjects(String className, String tenantName) {
+    Result<List<WeaviateObject>> result = client.data().objectsGetter()
+      .withClassName(className)
+      .withTenant(tenantName)
+      .run();
+
+    error(result, null, 422, "tenant not active");
   }
 }

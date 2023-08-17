@@ -4,6 +4,7 @@ import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.misc.model.MultiTenancyConfig;
+import io.weaviate.client.v1.schema.model.ActivityStatus;
 import io.weaviate.client.v1.schema.model.DataType;
 import io.weaviate.client.v1.schema.model.Property;
 import io.weaviate.client.v1.schema.model.Tenant;
@@ -22,6 +23,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static io.weaviate.integration.client.WeaviateTestGenerics.TENANT_1;
+import static io.weaviate.integration.client.WeaviateTestGenerics.TENANT_2;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClientSchemaMultiTenancyTest {
@@ -169,15 +172,12 @@ public class ClientSchemaMultiTenancyTest {
       .withTenants(tenantObjs)
       .run();
 
-    assertMT.error(addResult, false, 422,"multi-tenancy is not enabled for class");
+    assertMT.error(addResult, false, 422, "multi-tenancy is not enabled for class");
   }
 
   @Test
   public void shouldGetTenantsFromMTClass() {
-    Tenant[] tenants = new Tenant[]{
-      WeaviateTestGenerics.TENANT_1,
-      WeaviateTestGenerics.TENANT_2,
-    };
+    Tenant[] tenants = new Tenant[]{TENANT_1, TENANT_2};
     String[] tenantNames = Arrays.stream(tenants).map(Tenant::getName).toArray(String[]::new);
     testGenerics.createSchemaPizzaForTenants(client);
     testGenerics.createTenantsPizza(client, tenants);
@@ -209,18 +209,60 @@ public class ClientSchemaMultiTenancyTest {
   }
 
   @Test
+  public void shouldUpdateTenantsOfMTClass() {
+    Tenant[] tenants = new Tenant[]{TENANT_1, TENANT_2};
+    testGenerics.createSchemaPizzaForTenants(client);
+    testGenerics.createTenantsPizza(client, tenants);
+
+    Result<Boolean> updateResult = client.schema().tenantsUpdater()
+      .withClassName("Pizza")
+      .withTenants(Arrays.stream(tenants)
+        .map(tenant -> Tenant.builder().name(tenant.getName()).activityStatus(ActivityStatus.COLD).build())
+        .toArray(Tenant[]::new))
+      .run();
+
+    assertThat(updateResult).isNotNull()
+      .returns(false, Result::hasErrors)
+      .returns(true, Result::getResult);
+  }
+
+  @Test
+  public void shouldNotUpdateNonExistentTenantsOfMTClass() {
+    Tenant[] tenants = new Tenant[]{TENANT_1, TENANT_2};
+    testGenerics.createSchemaPizzaForTenants(client);
+    testGenerics.createTenantsPizza(client, tenants);
+
+    Result<Boolean> updateResult = client.schema().tenantsUpdater()
+      .withClassName("Pizza")
+      .withTenants(Tenant.builder().name("nonExistentTenant").activityStatus(ActivityStatus.COLD).build())
+      .run();
+
+    assertMT.error(updateResult, false, 422, "nonExistentTenant", "not found");
+  }
+
+  @Test
+  public void shouldNotUpdateTenantsOfNonMTClass() {
+    testGenerics.createSchemaPizza(client);
+
+    Result<Boolean> updateResult = client.schema().tenantsUpdater()
+      .withClassName("Pizza")
+      .withTenants(
+        Tenant.builder().name(TENANT_1.getName()).activityStatus(ActivityStatus.COLD).build(),
+        Tenant.builder().name(TENANT_2.getName()).activityStatus(ActivityStatus.COLD).build())
+      .run();
+
+    assertMT.error(updateResult, false, 422, "multi-tenancy is not enabled for class");
+  }
+
+  @Test
   public void shouldDeleteTenantsFromMTClass() {
-    Tenant[] tenants = new Tenant[]{
-      WeaviateTestGenerics.TENANT_1,
-      WeaviateTestGenerics.TENANT_2,
-    };
-    String[] tenantNames = Arrays.stream(tenants).map(Tenant::getName).toArray(String[]::new);
+    Tenant[] tenants = new Tenant[]{TENANT_1, TENANT_2};
     testGenerics.createSchemaPizzaForTenants(client);
     testGenerics.createTenantsPizza(client, tenants);
 
     Result<Boolean> deleteResult = client.schema().tenantsDeleter()
       .withClassName("Pizza")
-      .withTenants(tenantNames)
+      .withTenants(TENANT_1.getName(), TENANT_2.getName(), "nonExistentTenant")
       .run();
 
     assertThat(deleteResult).isNotNull()
@@ -239,5 +281,107 @@ public class ClientSchemaMultiTenancyTest {
       .run();
 
     assertMT.error(deleteResult, false, 422, "multi-tenancy is not enabled for class");
+  }
+
+  @Test
+  public void shouldActivateDeactivateTenants() {
+    Tenant[] tenants = new Tenant[]{
+      Tenant.builder().name("TenantNo1").build(), // default activity status (HOT)
+      Tenant.builder().name("TenantNo2").activityStatus(ActivityStatus.HOT).build(),
+      Tenant.builder().name("TenantNo3").activityStatus(ActivityStatus.COLD).build(),
+    };
+
+    String classPizza = "Pizza";
+    int pizzaSize = WeaviateTestGenerics.IDS_BY_CLASS.get(classPizza).size();
+
+    // create tenants (1,2,3)
+    testGenerics.createSchemaPizzaForTenants(client);
+    testGenerics.createTenantsPizza(client, tenants);
+
+    // populate active tenants (1,2)
+    testGenerics.createDataPizzaForTenants(client, tenants[0].getName(), tenants[1].getName());
+
+    assertMT.tenantActive(classPizza, tenants[0].getName());
+    assertMT.tenantActiveGetsObjects(classPizza, tenants[0].getName(), pizzaSize);
+    assertMT.tenantActive(classPizza, tenants[1].getName());
+    assertMT.tenantActiveGetsObjects(classPizza, tenants[1].getName(), pizzaSize);
+    assertMT.tenantInactive(classPizza, tenants[2].getName());
+    assertMT.tenantInactiveGetsNoObjects(classPizza, tenants[2].getName());
+
+    // deactivate tenant (1)
+    Result<Boolean> result = client.schema().tenantsUpdater()
+      .withClassName(classPizza)
+      .withTenants(Tenant.builder().name(tenants[0].getName()).activityStatus(ActivityStatus.COLD).build())
+      .run();
+    assertThat(result).isNotNull()
+      .returns(false, Result::hasErrors)
+      .returns(true, Result::getResult);
+
+    assertMT.tenantInactive(classPizza, tenants[0].getName());
+    assertMT.tenantInactiveGetsNoObjects(classPizza, tenants[0].getName());
+    assertMT.tenantActive(classPizza, tenants[1].getName());
+    assertMT.tenantActiveGetsObjects(classPizza, tenants[1].getName(), pizzaSize);
+    assertMT.tenantInactive(classPizza, tenants[2].getName());
+    assertMT.tenantInactiveGetsNoObjects(classPizza, tenants[2].getName());
+
+    // activate tenant (3)
+    Result<Boolean> result2 = client.schema().tenantsUpdater()
+      .withClassName(classPizza)
+      .withTenants(Tenant.builder().name(tenants[2].getName()).activityStatus(ActivityStatus.HOT).build())
+      .run();
+    assertThat(result2).isNotNull()
+      .returns(false, Result::hasErrors)
+      .returns(true, Result::getResult);
+
+    // populate active tenant (3)
+    testGenerics.createDataPizzaForTenants(client, tenants[2].getName());
+
+    assertMT.tenantInactive(classPizza, tenants[0].getName());
+    assertMT.tenantInactiveGetsNoObjects(classPizza, tenants[0].getName());
+    assertMT.tenantActive(classPizza, tenants[1].getName());
+    assertMT.tenantActiveGetsObjects(classPizza, tenants[1].getName(), pizzaSize);
+    assertMT.tenantActive(classPizza, tenants[2].getName());
+    assertMT.tenantActiveGetsObjects(classPizza, tenants[2].getName(), pizzaSize);
+
+    // activate tenant (1)
+    Result<Boolean> result3 = client.schema().tenantsUpdater()
+      .withClassName(classPizza)
+      .withTenants(Tenant.builder().name(tenants[0].getName()).activityStatus(ActivityStatus.HOT).build())
+      .run();
+    assertThat(result3).isNotNull()
+      .returns(false, Result::hasErrors)
+      .returns(true, Result::getResult);
+
+    assertMT.tenantActive(classPizza, tenants[0].getName());
+    assertMT.tenantActiveGetsObjects(classPizza, tenants[0].getName(), pizzaSize);
+    assertMT.tenantActive(classPizza, tenants[1].getName());
+    assertMT.tenantActiveGetsObjects(classPizza, tenants[1].getName(), pizzaSize);
+    assertMT.tenantActive(classPizza, tenants[2].getName());
+    assertMT.tenantActiveGetsObjects(classPizza, tenants[2].getName(), pizzaSize);
+
+    // deactivate tenant (2)
+    Result<Boolean> result4 = client.schema().tenantsUpdater()
+      .withClassName(classPizza)
+      .withTenants(Tenant.builder().name(tenants[1].getName()).activityStatus(ActivityStatus.COLD).build())
+      .run();
+    assertThat(result4).isNotNull()
+      .returns(false, Result::hasErrors)
+      .returns(true, Result::getResult);
+
+    assertMT.tenantActive(classPizza, tenants[0].getName());
+    assertMT.tenantActiveGetsObjects(classPizza, tenants[0].getName(), pizzaSize);
+    assertMT.tenantInactive(classPizza, tenants[1].getName());
+    assertMT.tenantInactiveGetsNoObjects(classPizza, tenants[1].getName());
+    assertMT.tenantActive(classPizza, tenants[2].getName());
+    assertMT.tenantActiveGetsObjects(classPizza, tenants[2].getName(), pizzaSize);
+
+    // delete tenants
+    Result<Boolean> result5 = client.schema().tenantsDeleter()
+      .withClassName(classPizza)
+      .withTenants(Arrays.stream(tenants).map(Tenant::getName).toArray(String[]::new))
+      .run();
+    assertThat(result5).isNotNull()
+      .returns(false, Result::hasErrors)
+      .returns(true, Result::getResult);
   }
 }
