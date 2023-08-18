@@ -13,4 +13,6 @@ public interface Operator {
   String LessThan = "LessThan";
   String LessThanEqual = "LessThanEqual";
   String WithinGeoRange = "WithinGeoRange";
+  String ContainsAny = "ContainsAny";
+  String ContainsAll = "ContainsAll";
 }

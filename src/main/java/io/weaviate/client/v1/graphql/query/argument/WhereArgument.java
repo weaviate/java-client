@@ -13,7 +13,9 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 
 @Getter
 @Builder
@@ -37,30 +39,21 @@ public class WhereArgument implements Argument {
       if (f.getOperator() != null) {
         args.add(buildArg("operator", Serializer.escape(f.getOperator())));
       }
-      args.add(String.format("operands:%s", Serializer.array(f.getOperands(), o -> String.format("{%s}", buildNestedFilter(o)))));
+      args.add(buildArg("operands", Serializer.array(f.getOperands(), o -> String.format("{%s}", buildNestedFilter(o)))));
     } else {
       if (ArrayUtils.isNotEmpty(f.getPath())) {
-        args.add(String.format("path:%s", Serializer.arrayWithQuotes(f.getPath())));
+        args.add(buildArg("path", Serializer.arrayWithQuotes(f.getPath())));
       }
-      if (f.getValueInt() != null) {
-        args.add(buildArg("valueInt", f.getValueInt()));
-      }
-      if (f.getValueNumber() != null) {
-        args.add(buildArg("valueNumber", f.getValueNumber()));
-      }
-      if (f.getValueBoolean() != null) {
-        args.add(buildArg("valueBoolean", f.getValueBoolean()));
-      }
-      if (f.getValueString() != null) {
-        args.add(buildArg("valueString", Serializer.quote(f.getValueString())));
-      }
-      if (f.getValueText() != null) {
-        args.add(buildArg("valueText", Serializer.quote(f.getValueText())));
-      }
-      if (f.getValueDate() != null) {
-        String date = DateFormatUtils.format(f.getValueDate(), "yyyy-MM-dd'T'HH:mm:ssZZZZZ");
-        args.add(buildArg("valueDate", Serializer.quote(date)));
-      }
+      addArgSingleOrArray("valueBoolean", f.getValueBoolean(), f.getValueBooleanArray(), args::add);
+      addArgSingleOrArray("valueInt", f.getValueInt(), f.getValueIntArray(), args::add);
+      addArgSingleOrArray("valueNumber", f.getValueNumber(), f.getValueNumberArray(), args::add);
+      addArgSingleOrArray("valueString", f.getValueString(), f.getValueStringArray(), args::add, Serializer::quote);
+      addArgSingleOrArray("valueText", f.getValueText(), f.getValueTextArray(), args::add, Serializer::quote);
+      addArgSingleOrArray("valueDate", f.getValueDate(), f.getValueDateArray(), args::add, date -> {
+        String dateString = DateFormatUtils.format(date, "yyyy-MM-dd'T'HH:mm:ssZZZZZ");
+        return Serializer.quote(dateString);
+      });
+
       if (f.getValueGeoRange() != null) {
         args.add(buildArg("valueGeoRange", buildGeoRange(f.getValueGeoRange())));
       }
@@ -86,5 +79,22 @@ public class WhereArgument implements Argument {
 
   private String buildArg(String name, Object value) {
     return String.format("%s:%s", name, value);
+  }
+
+  private <T> void addArgSingleOrArray(String valueName, T value, T[] values, Function<String, Boolean> add,
+                                       Function<T, String> valueMapper) {
+    String valAsString = null;
+    if (Objects.nonNull(value)) {
+      valAsString = valueMapper.apply(value);
+    } else if (ArrayUtils.isNotEmpty(values)) {
+      valAsString = Serializer.array(values, valueMapper);
+    }
+    if (Objects.nonNull(valAsString)) {
+      add.apply(buildArg(valueName, valAsString));
+    }
+  }
+
+  private <T> void addArgSingleOrArray(String valueName, T value, T[] values, Function<String, Boolean> add) {
+    addArgSingleOrArray(valueName, value, values, add, Objects::toString);
   }
 }
