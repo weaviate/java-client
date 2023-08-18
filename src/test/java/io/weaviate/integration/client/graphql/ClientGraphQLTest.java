@@ -1,15 +1,15 @@
 package io.weaviate.integration.client.graphql;
 
-import com.google.common.base.Function;
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.Serializer;
 import io.weaviate.client.v1.batch.model.ObjectGetResponse;
+import io.weaviate.client.v1.batch.model.ObjectGetResponseStatus;
+import io.weaviate.client.v1.batch.model.ObjectsGetResponseAO2Result;
 import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.filters.Operator;
 import io.weaviate.client.v1.filters.WhereFilter;
-import io.weaviate.client.v1.graphql.GraphQL;
 import io.weaviate.client.v1.graphql.model.ExploreFields;
 import io.weaviate.client.v1.graphql.model.GraphQLResponse;
 import io.weaviate.client.v1.graphql.query.argument.Bm25Argument;
@@ -30,37 +30,42 @@ import io.weaviate.client.v1.schema.model.DataType;
 import io.weaviate.client.v1.schema.model.Property;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
 import io.weaviate.integration.client.WeaviateTestGenerics;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
-
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
+
+import java.io.File;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 public class ClientGraphQLTest {
   private String address;
@@ -1835,25 +1840,387 @@ public class ClientGraphQLTest {
       .withFields(fieldId)
       .run();
 
-    Consumer<Result<GraphQLResponse>> assertId = (Result<GraphQLResponse> result) ->
-      assertThat(result).isNotNull()
-        .returns(false, Result::hasErrors)
-        .extracting(Result::getResult).isNotNull()
-        .extracting(GraphQLResponse::getData).isInstanceOf(Map.class)
-        .extracting(data -> ((Map<String, Object>)data).get("Get")).isInstanceOf(Map.class)
-        .extracting(get -> ((Map<String, Object>)get).get(className)).isInstanceOf(List.class).asList()
-        .first().extracting(props -> ((Map<String, Object>)props).get("_additional")).isInstanceOf(Map.class)
-        .extracting(add -> ((Map<String, Object>)add).get("id")).asString()
-        .isEqualTo(id);
-
-    assertId.accept(resultUuid);
-    assertId.accept(resultUuidArray1);
-    assertId.accept(resultUuidArray2);
+    assertIds(className, resultUuid, new String[]{ id });
+    assertIds(className, resultUuidArray1, new String[]{ id });
+    assertIds(className, resultUuidArray2, new String[]{ id });
 
     Result<Boolean> deleteStatus = client.schema().allDeleter().run();
 
     assertThat(deleteStatus).isNotNull()
       .returns(false, Result::hasErrors)
       .returns(true, Result::getResult);
+  }
+
+  @Test
+  public void shouldSupportSearchWithContains() {
+    WeaviateClient client = new WeaviateClient(new Config("http", address));
+    String className = "ContainsClass";
+
+    Result<Boolean> createResult = client.schema().classCreator()
+      .withClass(WeaviateClass.builder()
+        .className(className)
+        .properties(Arrays.asList(
+          Property.builder()
+            .name("bool")
+            .dataType(Collections.singletonList(DataType.BOOLEAN))
+            .build(),
+          Property.builder()
+            .name("bools")
+            .dataType(Collections.singletonList(DataType.BOOLEAN_ARRAY))
+            .build(),
+
+          Property.builder()
+            .name("int")
+            .dataType(Collections.singletonList(DataType.INT))
+            .build(),
+          Property.builder()
+            .name("ints")
+            .dataType(Collections.singletonList(DataType.INT_ARRAY))
+            .build(),
+
+          Property.builder()
+            .name("number")
+            .dataType(Collections.singletonList(DataType.NUMBER))
+            .build(),
+          Property.builder()
+            .name("numbers")
+            .dataType(Collections.singletonList(DataType.NUMBER_ARRAY))
+            .build(),
+
+          Property.builder()
+            .name("string")
+            .dataType(Collections.singletonList(DataType.STRING))
+            .build(),
+          Property.builder()
+            .name("strings")
+            .dataType(Collections.singletonList(DataType.STRING_ARRAY))
+            .build(),
+
+          Property.builder()
+            .name("text")
+            .dataType(Collections.singletonList(DataType.TEXT))
+            .build(),
+          Property.builder()
+            .name("texts")
+            .dataType(Collections.singletonList(DataType.TEXT_ARRAY))
+            .build(),
+
+          Property.builder()
+            .name("date")
+            .dataType(Collections.singletonList(DataType.DATE))
+            .build(),
+          Property.builder()
+            .name("dates")
+            .dataType(Collections.singletonList(DataType.DATE_ARRAY))
+            .build(),
+
+          Property.builder()
+            .name("uuid")
+            .dataType(Collections.singletonList(DataType.UUID))
+            .build(),
+          Property.builder()
+            .name("uuids")
+            .dataType(Collections.singletonList(DataType.UUID_ARRAY))
+            .build()
+        ))
+        .build()
+      )
+      .run();
+
+    assertThat(createResult).isNotNull()
+      .returns(false, Result::hasErrors)
+      .returns(true, Result::getResult);
+
+    String id1 = "00000000-0000-0000-0000-000000000001";
+    String id2 = "00000000-0000-0000-0000-000000000002";
+    String id3 = "00000000-0000-0000-0000-000000000003";
+
+    TimeZone.setDefault(TimeZone.getTimeZone(ZoneOffset.UTC));
+    Calendar cal1 = Calendar.getInstance();
+    cal1.set(2023, Calendar.JANUARY, 15, 17, 1, 2);
+    Date date1 = cal1.getTime();
+    Calendar cal2 = Calendar.getInstance();
+    cal2.set(2023, Calendar.FEBRUARY, 15, 17, 1, 2);
+    Date date2 = cal2.getTime();
+    Calendar cal3 = Calendar.getInstance();
+    cal3.set(2023, Calendar.MARCH, 15, 17, 1, 2);
+    Date date3 = cal3.getTime();
+
+    String[] ids = new String[]{
+      id1, id2, id3
+    };
+    Boolean[] bools = new Boolean[]{
+      true, false, true
+    };
+    Boolean[][] boolsArray = new Boolean[][]{
+      {true, false, true},
+      {true, false},
+      {true},
+    };
+    Integer[] ints = new Integer[]{
+      1, 2, 3
+    };
+    Integer[][] intsArray = new Integer[][]{
+      {1, 2, 3},
+      {1, 2},
+      {1},
+    };
+    Double[] numbers = new Double[]{
+      1.1, 2.2, 3.3
+    };
+    Double[][] numbersArray = new Double[][]{
+      {1.1, 2.2, 3.3},
+      {1.1, 2.2},
+      {1.1},
+    };
+    String[] strings = new String[]{
+      "string1", "string2", "string3"
+    };
+    String[][] stringsArray = new String[][]{
+      {"string1", "string2", "string3"},
+      {"string1", "string2"},
+      {"string1"},
+    };
+    String[] texts = new String[]{
+      "text1", "text2", "text3"
+    };
+    String[][] textsArray = new String[][]{
+      {"text1", "text2", "text3"},
+      {"text1", "text2"},
+      {"text1"},
+    };
+    Date[] dates = new Date[]{
+      date1, date2, date3
+    };
+    Date[][] datesArray = new Date[][]{
+      {date1, date2, date3},
+      {date1, date2},
+      {date1},
+    };
+    String[] uuids = new String[]{
+      id1, id2, id3
+    };
+    String[][] uuidsArray = new String[][]{
+      {id1, id2, id3},
+      {id1, id2},
+      {id1},
+    };
+
+    Function<Date, String> formatDate = date -> DateFormatUtils.format(date, "yyyy-MM-dd'T'HH:mm:ssZZZZZ");
+
+    WeaviateObject[] objects = IntStream.range(0, ids.length).mapToObj(i -> {
+        Map<String, Object> props = new HashMap<>();
+        props.put("bool", bools[i]);
+        props.put("bools", boolsArray[i]);
+        props.put("int", ints[i]);
+        props.put("ints", intsArray[i]);
+        props.put("number", numbers[i]);
+        props.put("numbers", numbersArray[i]);
+        props.put("string", strings[i]);
+        props.put("strings", stringsArray[i]);
+        props.put("text", texts[i]);
+        props.put("texts", textsArray[i]);
+        props.put("date", formatDate.apply(dates[i]));
+        props.put("dates", Arrays.stream(datesArray[i]).map(formatDate).toArray(String[]::new));
+        props.put("uuid", uuids[i]);
+        props.put("uuids", uuidsArray[i]);
+
+        return WeaviateObject.builder()
+          .className(className)
+          .id(ids[i])
+          .properties(props)
+          .build();
+      }
+    ).toArray(WeaviateObject[]::new);
+
+    Result<ObjectGetResponse[]> batchResult = client.batch().objectsBatcher()
+      .withObjects(objects)
+      .run();
+
+    assertBatchSuccessful(objects, batchResult);
+
+
+    BiConsumer<WhereFilter, String[]> runAndAssertExpectedIds = (filter, expectedIds) -> {
+      Result<GraphQLResponse> gqlResult = client.graphQL().get()
+        .withClassName(className)
+        .withWhere(WhereArgument.builder().filter(filter).build())
+        .withFields(Field.builder()
+          .name("_additional")
+          .fields(Field.builder().name("id").build())
+          .build(),
+          Field.builder().name("bool").build(),
+          Field.builder().name("bools").build())
+        .run();
+
+      assertIds(className, gqlResult, expectedIds);
+    };
+
+    // FIXME: 0 returned
+//    runAndAssertExpectedIds.accept(
+//      WhereFilter.builder().path("bools").operator(Operator.ContainsAll).valueBoolean(boolsArray[0]).build(),
+//      new String[]{id1, id2});
+    // FIXME: 0 returned
+//    runAndAssertExpectedIds.accept(
+//      WhereFilter.builder().path("bools").operator(Operator.ContainsAll).valueBoolean(boolsArray[1]).build(),
+//      new String[]{id1, id2});
+    // FIXME: 1 returned
+//    runAndAssertExpectedIds.accept(
+//      WhereFilter.builder().path("bools").operator(Operator.ContainsAll).valueBoolean(boolsArray[2]).build(),
+//      new String[]{id1, id2, id3});
+    // FIXME: 1 returned
+//    runAndAssertExpectedIds.accept(
+//      WhereFilter.builder().path("bools").operator(Operator.ContainsAny).valueBoolean(boolsArray[0]).build(),
+//      new String[]{id1, id2, id3});
+    // FIXME: 1 returned
+//    runAndAssertExpectedIds.accept(
+//      WhereFilter.builder().path("bools").operator(Operator.ContainsAny).valueBoolean(boolsArray[1]).build(),
+//      new String[]{id1, id2, id3});
+    // FIXME: 1 returned
+//    runAndAssertExpectedIds.accept(
+//      WhereFilter.builder().path("bools").operator(Operator.ContainsAny).valueBoolean(boolsArray[2]).build(),
+//      new String[]{id1, id2, id3});
+
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("ints").operator(Operator.ContainsAll).valueInt(intsArray[0]).build(),
+      new String[]{id1});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("ints").operator(Operator.ContainsAll).valueInt(intsArray[1]).build(),
+      new String[]{id1, id2});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("ints").operator(Operator.ContainsAll).valueInt(intsArray[2]).build(),
+      new String[]{id1, id2, id3});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("ints").operator(Operator.ContainsAny).valueInt(intsArray[0]).build(),
+      new String[]{id1, id2, id3});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("ints").operator(Operator.ContainsAny).valueInt(intsArray[1]).build(),
+      new String[]{id1, id2, id3});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("ints").operator(Operator.ContainsAny).valueInt(intsArray[2]).build(),
+      new String[]{id1, id2, id3});
+
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("numbers").operator(Operator.ContainsAll).valueNumber(numbersArray[0]).build(),
+      new String[]{id1});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("numbers").operator(Operator.ContainsAll).valueNumber(numbersArray[1]).build(),
+      new String[]{id1, id2});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("numbers").operator(Operator.ContainsAll).valueNumber(numbersArray[2]).build(),
+      new String[]{id1, id2, id3});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("numbers").operator(Operator.ContainsAny).valueNumber(numbersArray[0]).build(),
+      new String[]{id1, id2, id3});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("numbers").operator(Operator.ContainsAny).valueNumber(numbersArray[1]).build(),
+      new String[]{id1, id2, id3});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("numbers").operator(Operator.ContainsAny).valueNumber(numbersArray[2]).build(),
+      new String[]{id1, id2, id3});
+
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("strings").operator(Operator.ContainsAll).valueString(stringsArray[0]).build(),
+      new String[]{id1});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("strings").operator(Operator.ContainsAll).valueString(stringsArray[1]).build(),
+      new String[]{id1, id2});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("strings").operator(Operator.ContainsAll).valueString(stringsArray[2]).build(),
+      new String[]{id1, id2, id3});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("strings").operator(Operator.ContainsAny).valueString(stringsArray[0]).build(),
+      new String[]{id1, id2, id3});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("strings").operator(Operator.ContainsAny).valueString(stringsArray[1]).build(),
+      new String[]{id1, id2, id3});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("strings").operator(Operator.ContainsAny).valueString(stringsArray[2]).build(),
+      new String[]{id1, id2, id3});
+
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("texts").operator(Operator.ContainsAll).valueText(textsArray[0]).build(),
+      new String[]{id1});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("texts").operator(Operator.ContainsAll).valueText(textsArray[1]).build(),
+      new String[]{id1, id2});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("texts").operator(Operator.ContainsAll).valueText(textsArray[2]).build(),
+      new String[]{id1, id2, id3});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("texts").operator(Operator.ContainsAny).valueText(textsArray[0]).build(),
+      new String[]{id1, id2, id3});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("texts").operator(Operator.ContainsAny).valueText(textsArray[1]).build(),
+      new String[]{id1, id2, id3});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("texts").operator(Operator.ContainsAny).valueText(textsArray[2]).build(),
+      new String[]{id1, id2, id3});
+
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("dates").operator(Operator.ContainsAll).valueDate(datesArray[0]).build(),
+      new String[]{id1});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("dates").operator(Operator.ContainsAll).valueDate(datesArray[1]).build(),
+      new String[]{id1, id2});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("dates").operator(Operator.ContainsAll).valueDate(datesArray[2]).build(),
+      new String[]{id1, id2, id3});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("dates").operator(Operator.ContainsAny).valueDate(datesArray[0]).build(),
+      new String[]{id1, id2, id3});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("dates").operator(Operator.ContainsAny).valueDate(datesArray[1]).build(),
+      new String[]{id1, id2, id3});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("dates").operator(Operator.ContainsAny).valueDate(datesArray[2]).build(),
+      new String[]{id1, id2, id3});
+
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("uuids").operator(Operator.ContainsAll).valueText(uuidsArray[0]).build(),
+      new String[]{id1});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("uuids").operator(Operator.ContainsAll).valueText(uuidsArray[1]).build(),
+      new String[]{id1, id2});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("uuids").operator(Operator.ContainsAll).valueText(uuidsArray[2]).build(),
+      new String[]{id1, id2, id3});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("uuids").operator(Operator.ContainsAny).valueText(uuidsArray[0]).build(),
+      new String[]{id1, id2, id3});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("uuids").operator(Operator.ContainsAny).valueText(uuidsArray[1]).build(),
+      new String[]{id1, id2, id3});
+    runAndAssertExpectedIds.accept(
+      WhereFilter.builder().path("uuids").operator(Operator.ContainsAny).valueText(uuidsArray[2]).build(),
+      new String[]{id1, id2, id3});
+  }
+
+  private void assertIds(String className, Result<GraphQLResponse> gqlResult, String[] expectedIds) {
+    assertThat(gqlResult).isNotNull()
+      .returns(false, Result::hasErrors)
+      .extracting(Result::getResult).isNotNull()
+      .extracting(GraphQLResponse::getData).isInstanceOf(Map.class)
+      .extracting(data -> ((Map<String, Object>) data).get("Get")).isInstanceOf(Map.class)
+      .extracting(get -> ((Map<String, Object>) get).get(className)).isInstanceOf(List.class).asList()
+      .hasSize(expectedIds.length);
+
+    List<Map<String, Object>> results = (List<Map<String, Object>>) ((Map<String, Object>) (((Map<String, Object>) (gqlResult.getResult().getData())).get("Get"))).get(className);
+    String[] resultIds = results.stream()
+      .map(m -> m.get("_additional"))
+      .map(a -> ((Map<String, String>) a).get("id"))
+      .toArray(String[]::new);
+
+    assertThat(resultIds).containsExactlyInAnyOrder(expectedIds);
+  }
+
+  private void assertBatchSuccessful(WeaviateObject[] objects, Result<ObjectGetResponse[]> batchResult) {
+    assertThat(batchResult).isNotNull()
+      .returns(false, Result::hasErrors)
+      .extracting(Result::getResult).asInstanceOf(ARRAY)
+      .hasSize(objects.length);
+    Arrays.stream(batchResult.getResult()).forEach(resp ->
+      assertThat(resp).isNotNull()
+        .extracting(ObjectGetResponse::getResult)
+        .returns(ObjectGetResponseStatus.SUCCESS, ObjectsGetResponseAO2Result::getStatus));
   }
 }
