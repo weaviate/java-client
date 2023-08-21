@@ -1,10 +1,17 @@
 package io.weaviate.client.v1.graphql.query.builder;
 
+import io.weaviate.client.v1.filters.WhereFilter;
+import io.weaviate.client.v1.graphql.query.argument.Argument;
 import io.weaviate.client.v1.graphql.query.argument.AskArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearAudioArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearDepthArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearImageArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearImuArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearTextArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearThermalArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearVideoArgument;
 import io.weaviate.client.v1.graphql.query.argument.WhereArgument;
 import io.weaviate.client.v1.graphql.query.fields.Fields;
 import io.weaviate.client.v1.graphql.query.util.Serializer;
@@ -14,12 +21,12 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import io.weaviate.client.v1.filters.WhereFilter;
 
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Stream;
 
 @Getter
 @Builder
@@ -31,19 +38,38 @@ public class AggregateBuilder implements Query {
   Fields fields;
   String groupByClausePropertyName;
   WhereArgument withWhereFilter;
+  AskArgument withAskArgument;
   NearTextArgument withNearTextFilter;
   NearObjectArgument withNearObjectFilter;
   NearVectorArgument withNearVectorFilter;
-  AskArgument withAskArgument;
   NearImageArgument withNearImageFilter;
+  NearAudioArgument withNearAudioFilter;
+  NearVideoArgument withNearVideoFilter;
+  NearDepthArgument withNearDepthFilter;
+  NearThermalArgument withNearThermalFilter;
+  NearImuArgument withNearImuFilter;
   Integer objectLimit;
   Integer limit;
   String tenant;
 
+  private Stream<Argument> buildableArguments() {
+    return Stream.of(withWhereFilter, withAskArgument, withNearTextFilter, withNearObjectFilter,
+      withNearVectorFilter, withNearImageFilter, withNearAudioFilter, withNearVideoFilter, withNearDepthFilter,
+      withNearThermalFilter, withNearImuFilter);
+  }
+
+  private Stream<Object> nonStringArguments() {
+    return Stream.of(objectLimit, limit);
+  }
+
+  private Stream<String> stringArguments() {
+    return Stream.of(groupByClausePropertyName, tenant);
+  }
+
   private boolean includesFilterClause() {
-    return ObjectUtils.anyNotNull(withWhereFilter, withNearTextFilter, withNearObjectFilter,
-      withNearVectorFilter, objectLimit, withAskArgument, withNearImageFilter, limit)
-      || !StringUtils.isAllBlank(groupByClausePropertyName, tenant);
+    return buildableArguments().anyMatch(Objects::nonNull)
+      || nonStringArguments().anyMatch(Objects::nonNull)
+      || stringArguments().anyMatch(StringUtils::isNotBlank);
   }
 
   private String createFilterClause() {
@@ -56,24 +82,12 @@ public class AggregateBuilder implements Query {
       if (StringUtils.isNotBlank(groupByClausePropertyName)) {
         filters.add(String.format("groupBy:%s", Serializer.quote(groupByClausePropertyName)));
       }
-      if (withWhereFilter != null) {
-        filters.add(withWhereFilter.build());
-      }
-      if (withNearTextFilter != null) {
-        filters.add(withNearTextFilter.build());
-      }
-      if (withNearObjectFilter != null) {
-        filters.add(withNearObjectFilter.build());
-      }
-      if (withNearVectorFilter != null) {
-        filters.add(withNearVectorFilter.build());
-      }
-      if (withAskArgument != null) {
-        filters.add(withAskArgument.build());
-      }
-      if (withNearImageFilter != null) {
-        filters.add(withNearImageFilter.build());
-      }
+
+      buildableArguments()
+        .filter(Objects::nonNull)
+        .map(Argument::build)
+        .forEach(filters::add);
+
       if (limit != null) {
         filters.add(String.format("limit:%s", limit));
       }
@@ -102,6 +116,7 @@ public class AggregateBuilder implements Query {
       this.withWhereFilter = WhereArgument.builder().filter(whereFilter).build();
       return this;
     }
+
     public AggregateBuilderBuilder withWhereFilter(WhereArgument whereArgument) {
       this.withWhereFilter = whereArgument;
       return this;

@@ -14,10 +14,10 @@ import java.io.File;
 @ToString
 @EqualsAndHashCode
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class NearImageArgument implements Argument {
+public class NearThermalArgument implements Argument {
 
-  String image;
-  File imageFile;
+  String thermal;
+  File thermalFile;
   Float certainty;
   Float distance;
 
@@ -26,10 +26,10 @@ public class NearImageArgument implements Argument {
     return NearMediaArgumentHelper.builder()
       .certainty(certainty)
       .distance(distance)
-      .data(image)
-      .dataFile(imageFile)
-      .mediaField("image")
-      .mediaName("nearImage")
+      .data(thermal)
+      .dataFile(thermalFile)
+      .mediaField("thermal")
+      .mediaName("nearThermal")
       .build().build();
   }
 }

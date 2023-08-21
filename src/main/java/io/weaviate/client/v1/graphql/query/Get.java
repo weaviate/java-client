@@ -5,10 +5,15 @@ import io.weaviate.client.v1.graphql.query.argument.Bm25Argument;
 import io.weaviate.client.v1.graphql.query.argument.GroupArgument;
 import io.weaviate.client.v1.graphql.query.argument.GroupByArgument;
 import io.weaviate.client.v1.graphql.query.argument.HybridArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearAudioArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearDepthArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearImageArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearImuArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearTextArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearThermalArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearVideoArgument;
 import io.weaviate.client.v1.graphql.query.argument.SortArgument;
 import io.weaviate.client.v1.graphql.query.argument.SortArguments;
 import io.weaviate.client.v1.graphql.query.argument.WhereArgument;
@@ -69,11 +74,6 @@ public class Get extends BaseClient<GraphQLResponse> implements ClientResult<Gra
     return this;
   }
 
-  public Get withNearText(NearTextArgument nearText) {
-    getBuilder.withNearTextFilter(nearText);
-    return this;
-  }
-
   public Get withBm25(Bm25Argument bm25) {
     getBuilder.withBm25Filter(bm25);
     return this;
@@ -89,8 +89,13 @@ public class Get extends BaseClient<GraphQLResponse> implements ClientResult<Gra
     return this;
   }
 
-  public Get withNearImage(NearImageArgument nearImage) {
-    getBuilder.withNearImageFilter(nearImage);
+  public Get withNearText(NearTextArgument nearText) {
+    getBuilder.withNearTextFilter(nearText);
+    return this;
+  }
+
+  public Get withNearObject(NearObjectArgument nearObject) {
+    getBuilder.withNearObjectFilter(nearObject);
     return this;
   }
 
@@ -99,8 +104,33 @@ public class Get extends BaseClient<GraphQLResponse> implements ClientResult<Gra
     return this;
   }
 
-  public Get withNearObject(NearObjectArgument nearObject) {
-    getBuilder.withNearObjectFilter(nearObject);
+  public Get withNearImage(NearImageArgument nearImage) {
+    getBuilder.withNearImageFilter(nearImage);
+    return this;
+  }
+
+  public Get withNearAudio(NearAudioArgument nearAudio) {
+    getBuilder.withNearAudioFilter(nearAudio);
+    return this;
+  }
+
+  public Get withNearVideo(NearVideoArgument nearVideo) {
+    getBuilder.withNearVideoFilter(nearVideo);
+    return this;
+  }
+
+  public Get withNearDepth(NearDepthArgument nearDepth) {
+    getBuilder.withNearDepthFilter(nearDepth);
+    return this;
+  }
+
+  public Get withNearThermal(NearThermalArgument nearThermal) {
+    getBuilder.withNearThermalFilter(nearThermal);
+    return this;
+  }
+
+  public Get withNearImu(NearImuArgument nearImu) {
+    getBuilder.withNearImuFilter(nearImu);
     return this;
   }
 

@@ -14,10 +14,10 @@ import java.io.File;
 @ToString
 @EqualsAndHashCode
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class NearImageArgument implements Argument {
+public class NearImuArgument implements Argument {
 
-  String image;
-  File imageFile;
+  String imu;
+  File imuFile;
   Float certainty;
   Float distance;
 
@@ -26,10 +26,10 @@ public class NearImageArgument implements Argument {
     return NearMediaArgumentHelper.builder()
       .certainty(certainty)
       .distance(distance)
-      .data(image)
-      .dataFile(imageFile)
-      .mediaField("image")
-      .mediaName("nearImage")
+      .data(imu)
+      .dataFile(imuFile)
+      .mediaField("imu")
+      .mediaName("nearIMU")
       .build().build();
   }
 }
