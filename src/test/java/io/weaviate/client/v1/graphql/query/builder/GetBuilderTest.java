@@ -7,9 +7,14 @@ import io.weaviate.client.v1.graphql.query.argument.AskArgument;
 import io.weaviate.client.v1.graphql.query.argument.GroupArgument;
 import io.weaviate.client.v1.graphql.query.argument.GroupByArgument;
 import io.weaviate.client.v1.graphql.query.argument.GroupType;
+import io.weaviate.client.v1.graphql.query.argument.NearAudioArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearDepthArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearImageArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearImuArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearTextArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearThermalArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearVideoArgument;
 import io.weaviate.client.v1.graphql.query.argument.SortArgument;
 import io.weaviate.client.v1.graphql.query.argument.SortArguments;
 import io.weaviate.client.v1.graphql.query.argument.SortOrder;
@@ -680,5 +685,100 @@ public class GetBuilderTest {
       .build().buildQuery();
 
     assertThat(query).isEqualTo("{Get{Pizza(where:{path:[\"name\"] valueText:\"Hawaii\" operator:Equal} autocut:2){name}}}");
+  }
+
+  @Test
+  public void shouldBuildGetWithNearAudio() {
+    NearAudioArgument nearAudio = NearAudioArgument.builder()
+      .audio("iVBORw0KGgoAAAANS")
+      .distance(0.1f)
+      .build();
+    Fields fields = Fields.builder()
+      .fields(Field.builder().name("name").build())
+      .build();
+
+    String query = GetBuilder.builder()
+      .className("PizzaAudio")
+      .fields(fields)
+      .withNearAudioFilter(nearAudio)
+      .build().buildQuery();
+
+    assertThat(query).isEqualTo("{Get{PizzaAudio(nearAudio:{audio:\"iVBORw0KGgoAAAANS\" distance:0.1}){name}}}");
+  }
+
+  @Test
+  public void shouldBuildGetWithNearVideo() {
+    NearVideoArgument nearVideo = NearVideoArgument.builder()
+      .video("iVBORw0KGgoAAAANS")
+      .distance(0.1f)
+      .build();
+    Fields fields = Fields.builder()
+      .fields(Field.builder().name("name").build())
+      .build();
+
+    String query = GetBuilder.builder()
+      .className("PizzaVideo")
+      .fields(fields)
+      .withNearVideoFilter(nearVideo)
+      .build().buildQuery();
+
+    assertThat(query).isEqualTo("{Get{PizzaVideo(nearVideo:{video:\"iVBORw0KGgoAAAANS\" distance:0.1}){name}}}");
+  }
+
+  @Test
+  public void shouldBuildGetWithNearDepth() {
+    NearDepthArgument nearDepth = NearDepthArgument.builder()
+      .depth("iVBORw0KGgoAAAANS")
+      .distance(0.1f)
+      .build();
+    Fields fields = Fields.builder()
+      .fields(Field.builder().name("name").build())
+      .build();
+
+    String query = GetBuilder.builder()
+      .className("PizzaDepth")
+      .fields(fields)
+      .withNearDepthFilter(nearDepth)
+      .build().buildQuery();
+
+    assertThat(query).isEqualTo("{Get{PizzaDepth(nearDepth:{depth:\"iVBORw0KGgoAAAANS\" distance:0.1}){name}}}");
+  }
+
+  @Test
+  public void shouldBuildGetWithNearThermal() {
+    NearThermalArgument nearThermal = NearThermalArgument.builder()
+      .thermal("iVBORw0KGgoAAAANS")
+      .distance(0.1f)
+      .build();
+    Fields fields = Fields.builder()
+      .fields(Field.builder().name("name").build())
+      .build();
+
+    String query = GetBuilder.builder()
+      .className("PizzaThermal")
+      .fields(fields)
+      .withNearThermalFilter(nearThermal)
+      .build().buildQuery();
+
+    assertThat(query).isEqualTo("{Get{PizzaThermal(nearThermal:{thermal:\"iVBORw0KGgoAAAANS\" distance:0.1}){name}}}");
+  }
+
+  @Test
+  public void shouldBuildGetWithNearImu() {
+    NearImuArgument nearImu = NearImuArgument.builder()
+      .imu("iVBORw0KGgoAAAANS")
+      .distance(0.1f)
+      .build();
+    Fields fields = Fields.builder()
+      .fields(Field.builder().name("name").build())
+      .build();
+
+    String query = GetBuilder.builder()
+      .className("PizzaImu")
+      .fields(fields)
+      .withNearImuFilter(nearImu)
+      .build().buildQuery();
+
+    assertThat(query).isEqualTo("{Get{PizzaImu(nearIMU:{imu:\"iVBORw0KGgoAAAANS\" distance:0.1}){name}}}");
   }
 }

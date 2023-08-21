@@ -1,9 +1,15 @@
 package io.weaviate.client.v1.graphql.query;
 
 import io.weaviate.client.v1.graphql.query.argument.AskArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearAudioArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearDepthArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearImageArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearImuArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearTextArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearThermalArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearVideoArgument;
 import io.weaviate.client.v1.graphql.query.argument.WhereArgument;
 import io.weaviate.client.v1.graphql.query.builder.AggregateBuilder;
 import io.weaviate.client.v1.graphql.query.fields.Field;
@@ -51,13 +57,8 @@ public class Aggregate extends BaseClient<GraphQLResponse> implements ClientResu
     return this;
   }
 
-  public Aggregate withNearVector(NearVectorArgument withNearVectorFilter) {
-    aggregateBuilder.withNearVectorFilter(withNearVectorFilter);
-    return this;
-  }
-
-  public Aggregate withNearObject(NearObjectArgument withNearObjectFilter) {
-    aggregateBuilder.withNearObjectFilter(withNearObjectFilter);
+  public Aggregate withAsk(AskArgument ask) {
+    aggregateBuilder.withAskArgument(ask);
     return this;
   }
 
@@ -66,8 +67,43 @@ public class Aggregate extends BaseClient<GraphQLResponse> implements ClientResu
     return this;
   }
 
-  public Aggregate withAsk(AskArgument ask) {
-    aggregateBuilder.withAskArgument(ask);
+  public Aggregate withNearObject(NearObjectArgument withNearObjectFilter) {
+    aggregateBuilder.withNearObjectFilter(withNearObjectFilter);
+    return this;
+  }
+
+  public Aggregate withNearVector(NearVectorArgument withNearVectorFilter) {
+    aggregateBuilder.withNearVectorFilter(withNearVectorFilter);
+    return this;
+  }
+
+  public Aggregate withNearImage(NearImageArgument nearImage) {
+    aggregateBuilder.withNearImageFilter(nearImage);
+    return this;
+  }
+
+  public Aggregate withNearAudio(NearAudioArgument nearAudio) {
+    aggregateBuilder.withNearAudioFilter(nearAudio);
+    return this;
+  }
+
+  public Aggregate withNearVideo(NearVideoArgument nearVideo) {
+    aggregateBuilder.withNearVideoFilter(nearVideo);
+    return this;
+  }
+
+  public Aggregate withNearDepth(NearDepthArgument nearDepth) {
+    aggregateBuilder.withNearDepthFilter(nearDepth);
+    return this;
+  }
+
+  public Aggregate withNearThermal(NearThermalArgument nearThermal) {
+    aggregateBuilder.withNearThermalFilter(nearThermal);
+    return this;
+  }
+
+  public Aggregate withNearImu(NearImuArgument nearImu) {
+    aggregateBuilder.withNearImuFilter(nearImu);
     return this;
   }
 

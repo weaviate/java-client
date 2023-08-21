@@ -2,134 +2,113 @@ package io.weaviate.client.v1.graphql.query.argument;
 
 import org.junit.Test;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
-import java.util.stream.Collectors;
+import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class NearImageArgumentTest {
 
   @Test
-  public void testBuild() throws FileNotFoundException {
-    // given
-    File imageFile = new File("src/test/resources/image/pixel.png");
-    String base64File = new BufferedReader(new InputStreamReader(new FileInputStream("src/test/resources/image/base64.txt")))
-            .lines().collect(Collectors.joining("\n"));
-    String expected = String.format("nearImage:{image:\"%s\"}", base64File);
-    // when
-    String nearImage = NearImageArgument.builder().imageFile(imageFile).build().build();
-    // then
-    assertNotNull(nearImage);
-    assertEquals(expected, nearImage);
+  public void shouldBuildFromFile() throws IOException {
+    String nearImage = NearImageArgument.builder()
+      .imageFile(NearMediaArgumentHelperTest.exampleMediaFile())
+      .build().build();
+
+    assertThat(nearImage).isEqualTo(String.format("nearImage:{image:\"%s\"}",
+      NearMediaArgumentHelperTest.exampleMediaFileAsBase64()));
   }
 
   @Test
-  public void testBuildWithCertainty() throws FileNotFoundException {
-    // given
-    File imageFile = new File("src/test/resources/image/pixel.png");
-    String base64File = new BufferedReader(new InputStreamReader(new FileInputStream("src/test/resources/image/base64.txt")))
-            .lines().collect(Collectors.joining("\n"));
+  public void shouldBuildFromFileWithCertainty() throws IOException {
     Float certainty = 0.5f;
-    String expected = String.format("nearImage:{image:\"%s\" certainty:%s}", base64File, certainty);
-    // when
-    String nearImage = NearImageArgument.builder().imageFile(imageFile).certainty(certainty).build().build();
-    // then
-    assertNotNull(nearImage);
-    assertEquals(expected, nearImage);
+
+    String nearImage = NearImageArgument.builder()
+      .imageFile(NearMediaArgumentHelperTest.exampleMediaFile())
+      .certainty(certainty)
+      .build().build();
+
+    assertThat(nearImage).isEqualTo(String.format("nearImage:{image:\"%s\" certainty:%s}",
+      NearMediaArgumentHelperTest.exampleMediaFileAsBase64(), certainty));
   }
 
   @Test
-  public void testBuildWithDistance() throws FileNotFoundException {
-    // given
-    File imageFile = new File("src/test/resources/image/pixel.png");
-    String base64File = new BufferedReader(new InputStreamReader(new FileInputStream("src/test/resources/image/base64.txt")))
-            .lines().collect(Collectors.joining("\n"));
+  public void shouldBuildFromFileWithDistance() throws IOException {
     Float distance = 0.5f;
-    String expected = String.format("nearImage:{image:\"%s\" distance:%s}", base64File, distance);
-    // when
-    String nearImage = NearImageArgument.builder().imageFile(imageFile).distance(distance).build().build();
-    // then
-    assertNotNull(nearImage);
-    assertEquals(expected, nearImage);
+
+    String nearImage = NearImageArgument.builder()
+      .imageFile(NearMediaArgumentHelperTest.exampleMediaFile())
+      .distance(distance)
+      .build().build();
+
+    assertThat(nearImage).isEqualTo(String.format("nearImage:{image:\"%s\" distance:%s}",
+      NearMediaArgumentHelperTest.exampleMediaFileAsBase64(), distance));
   }
 
   @Test
-  public void testBuildWithImage() throws FileNotFoundException {
-    // given
-    String image = "iVBORw0KGgoAAAANS";
-    String expected = String.format("nearImage:{image:\"%s\"}", image);
-    // when
-    String nearImage = NearImageArgument.builder().image(image).build().build();
-    // then
-    assertNotNull(nearImage);
-    assertEquals(expected, nearImage);
+  public void shouldBuildFromBase64() {
+    String imageBase64 = "iVBORw0KGgoAAAANS";
+
+    String nearImage = NearImageArgument.builder()
+      .image(imageBase64)
+      .build().build();
+
+    assertThat(nearImage).isEqualTo(String.format("nearImage:{image:\"%s\"}", imageBase64));
   }
 
   @Test
-  public void testBuildWithBase64DataImage() throws FileNotFoundException {
-    // given
-    String image = "data:image/png;base64,iVBORw0KGgoAAAANS";
-    String expected = "nearImage:{image:\"iVBORw0KGgoAAAANS\"}";
-    // when
-    String nearImage = NearImageArgument.builder().image(image).build().build();
-    // then
-    assertNotNull(nearImage);
-    assertEquals(expected, nearImage);
+  public void shouldBuildFromBase64WithHeader() {
+    String imageBase64 = "data:image/mp4;base64,iVBORw0KGgoAAAANS";
+
+    String nearImage = NearImageArgument.builder()
+      .image(imageBase64)
+      .build().build();
+
+    assertThat(nearImage).isEqualTo("nearImage:{image:\"iVBORw0KGgoAAAANS\"}");
   }
 
   @Test
-  public void testBuildWithImageAndCertainty() throws FileNotFoundException {
-    // given
-    String image = "iVBORw0KGgoAAAANS";
+  public void shouldBuildFromBase64WithCertainty() {
+    String imageBase64 = "iVBORw0KGgoAAAANS";
     Float certainty = 0.5f;
-    String expected = String.format("nearImage:{image:\"%s\" certainty:%s}", image, certainty);
-    // when
-    String nearImage = NearImageArgument.builder().image(image).certainty(certainty).build().build();
-    // then
-    assertNotNull(nearImage);
-    assertEquals(expected, nearImage);
+
+    String nearImage = NearImageArgument.builder()
+      .image(imageBase64)
+      .certainty(certainty)
+      .build().build();
+
+    assertThat(nearImage).isEqualTo(String.format("nearImage:{image:\"%s\" certainty:%s}", imageBase64, certainty));
   }
 
   @Test
-  public void testBuildWithImageAndDistance() throws FileNotFoundException {
-    // given
-    String image = "iVBORw0KGgoAAAANS";
+  public void shouldBuildFromBase64WithDistance() {
+    String imageBase64 = "iVBORw0KGgoAAAANS";
     Float distance = 0.5f;
-    String expected = String.format("nearImage:{image:\"%s\" distance:%s}", image, distance);
-    // when
-    String nearImage = NearImageArgument.builder().image(image).distance(distance).build().build();
-    // then
-    assertNotNull(nearImage);
-    assertEquals(expected, nearImage);
+
+    String nearImage = NearImageArgument.builder()
+      .image(imageBase64)
+      .distance(distance)
+      .build().build();
+
+    assertThat(nearImage).isEqualTo(String.format("nearImage:{image:\"%s\" distance:%s}", imageBase64, distance));
   }
 
   @Test
-  public void testBuildWithBadFile() throws FileNotFoundException {
-    // given
-    File badImageFile = new File("");
-    // when
-    String nearImage = NearImageArgument.builder().imageFile(badImageFile).build().build();
-    // then
-    assertNotNull(nearImage);
-    // builder will return a faulty nearImage arg in order for Weaviate to error
-    // so that user will know that something was wrong
-    assertEquals("nearImage:{}", nearImage);
+  public void shouldBuildEmptyDueToBadFile() {
+    File badFile = new File("");
+
+    String nearImage = NearImageArgument.builder()
+      .imageFile(badFile)
+      .build().build();
+
+    assertThat(nearImage).isEqualTo("nearImage:{}");
   }
 
   @Test
-  public void testBuildWithoutAll() throws FileNotFoundException {
-    // given
-    // when
-    String nearImage = NearImageArgument.builder().build().build();
-    // then
-    assertNotNull(nearImage);
-    // builder will return a faulty nearImage arg in order for Weaviate to error
-    // so that user will know that something was wrong
-    assertEquals("nearImage:{}", nearImage);
+  public void shouldBuildEmptyDueToNotSet() {
+    String nearImage = NearImageArgument.builder()
+      .build().build();
+
+    assertThat(nearImage).isEqualTo("nearImage:{}");
   }
 }

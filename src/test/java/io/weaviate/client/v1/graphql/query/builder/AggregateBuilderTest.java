@@ -3,9 +3,14 @@ package io.weaviate.client.v1.graphql.query.builder;
 import io.weaviate.client.v1.filters.Operator;
 import io.weaviate.client.v1.filters.WhereFilter;
 import io.weaviate.client.v1.graphql.query.argument.AskArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearAudioArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearDepthArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearImageArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearImuArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearThermalArgument;
 import io.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearVideoArgument;
 import io.weaviate.client.v1.graphql.query.argument.WhereArgument;
 import io.weaviate.client.v1.graphql.query.fields.Field;
 import io.weaviate.client.v1.graphql.query.fields.Fields;
@@ -346,5 +351,111 @@ public class AggregateBuilderTest {
       .build().buildQuery();
 
     assertThat(query).isEqualTo("{Aggregate{Pizza(tenant:\"TenantNo1\" where:{path:[\"name\"] valueText:\"Hawaii\" operator:Equal}){meta{count}}}}");
+  }
+
+  @Test
+  public void shouldBuildAggregateWithNearAudio() {
+    NearAudioArgument nearAudio = NearAudioArgument.builder()
+      .audio("iVBORw0KGgoAAAANS")
+      .distance(0.1f)
+      .build();
+    Field meta = Field.builder()
+      .name("meta")
+      .fields(Field.builder().name("count").build())
+      .build();
+    Fields fields = Fields.builder().fields(meta).build();
+
+
+    String query = AggregateBuilder.builder()
+      .className("PizzaAudio")
+      .fields(fields)
+      .withNearAudioFilter(nearAudio)
+      .build().buildQuery();
+
+    assertThat(query).isEqualTo("{Aggregate{PizzaAudio(nearAudio:{audio:\"iVBORw0KGgoAAAANS\" distance:0.1}){meta{count}}}}");
+  }
+
+  @Test
+  public void shouldBuildAggregateWithNearVideo() {
+    NearVideoArgument nearVideo = NearVideoArgument.builder()
+      .video("iVBORw0KGgoAAAANS")
+      .distance(0.1f)
+      .build();
+    Field meta = Field.builder()
+      .name("meta")
+      .fields(Field.builder().name("count").build())
+      .build();
+    Fields fields = Fields.builder().fields(meta).build();
+
+    String query = AggregateBuilder.builder()
+      .className("PizzaVideo")
+      .fields(fields)
+      .withNearVideoFilter(nearVideo)
+      .build().buildQuery();
+
+    assertThat(query).isEqualTo("{Aggregate{PizzaVideo(nearVideo:{video:\"iVBORw0KGgoAAAANS\" distance:0.1}){meta{count}}}}");
+  }
+
+  @Test
+  public void shouldBuildAggregateWithNearDepth() {
+    NearDepthArgument nearDepth = NearDepthArgument.builder()
+      .depth("iVBORw0KGgoAAAANS")
+      .distance(0.1f)
+      .build();
+    Field meta = Field.builder()
+      .name("meta")
+      .fields(Field.builder().name("count").build())
+      .build();
+    Fields fields = Fields.builder().fields(meta).build();
+
+    String query = AggregateBuilder.builder()
+      .className("PizzaDepth")
+      .fields(fields)
+      .withNearDepthFilter(nearDepth)
+      .build().buildQuery();
+
+    assertThat(query).isEqualTo("{Aggregate{PizzaDepth(nearDepth:{depth:\"iVBORw0KGgoAAAANS\" distance:0.1}){meta{count}}}}");
+  }
+
+  @Test
+  public void shouldBuildAggregateWithNearThermal() {
+    NearThermalArgument nearThermal = NearThermalArgument.builder()
+      .thermal("iVBORw0KGgoAAAANS")
+      .distance(0.1f)
+      .build();
+    Field meta = Field.builder()
+      .name("meta")
+      .fields(Field.builder().name("count").build())
+      .build();
+    Fields fields = Fields.builder().fields(meta).build();
+
+    String query = AggregateBuilder.builder()
+      .className("PizzaThermal")
+      .fields(fields)
+      .withNearThermalFilter(nearThermal)
+      .build().buildQuery();
+
+    assertThat(query).isEqualTo("{Aggregate{PizzaThermal(nearThermal:{thermal:\"iVBORw0KGgoAAAANS\" distance:0.1}){meta{count}}}}");
+  }
+
+  @Test
+  public void shouldBuildAggregateWithNearImu() {
+    NearImuArgument nearImu = NearImuArgument.builder()
+      .imu("iVBORw0KGgoAAAANS")
+      .distance(0.1f)
+      .build();
+    Field meta = Field.builder()
+      .name("meta")
+      .fields(Field.builder().name("count").build())
+      .build();
+    Fields fields = Fields.builder().fields(meta).build();
+
+    String query = AggregateBuilder.builder()
+      .className("PizzaImu")
+      .fields(fields)
+      .withNearImuFilter(nearImu)
+      .build().buildQuery();
+
+    assertThat(query).isEqualTo("{Aggregate{PizzaImu(nearIMU:{imu:\"iVBORw0KGgoAAAANS\" distance:0.1}){meta{count}}}}");
   }
 }
