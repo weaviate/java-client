@@ -12,7 +12,7 @@ public class Config {
   private final int connectionTimeout;
   private final int connectionRequestTimeout;
   private final int socketTimeout;
-  private String proxyUrl;
+  private String proxyHost;
   private int proxyPort;
   private String proxyScheme;
 
@@ -55,14 +55,14 @@ public class Config {
     return socketTimeout;
   }
 
-  public void setProxy(String proxyUrl, int proxyPort, String proxyScheme) {
-    this.proxyUrl = proxyUrl;
+  public void setProxy(String proxyHost, int proxyPort, String proxyScheme) {
+    this.proxyHost = proxyHost;
     this.proxyPort = proxyPort;
     this.proxyScheme = proxyScheme;
   }
 
-  public String getProxyUrl() {
-    return proxyUrl;
+  public String getProxyHost() {
+    return proxyHost;
   }
 
   public int getProxyPort() {

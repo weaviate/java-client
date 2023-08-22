@@ -16,8 +16,8 @@ public class HttpApacheClientBuilder {
       .setConnectionRequestTimeout(config.getConnectionRequestTimeout() * 1000)
       .setSocketTimeout(config.getSocketTimeout() * 1000);
       
-    if (config.getProxyUrl() != null) {
-      requestConfigBuilder.setProxy(new HttpHost(config.getProxyUrl(), config.getProxyPort(), config.getProxyScheme()));
+    if (config.getProxyHost() != null) {
+      requestConfigBuilder.setProxy(new HttpHost(config.getProxyHost(), config.getProxyPort(), config.getProxyScheme()));
     }
 
     RequestConfig requestConfig = requestConfigBuilder.build();

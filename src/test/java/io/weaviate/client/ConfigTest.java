@@ -38,15 +38,15 @@ public class ConfigTest extends TestCase {
     // given
     String scheme = "https";
     String domain = "localhost:8080";
-    String proxyUrl = "proxy";
+    String proxyHost = "proxy";
     int proxyPort = 8080;
     String proxyScheme = "http";
     // when
     Config config = new Config(scheme, domain);
-    config.setProxy(proxyUrl, proxyPort, proxyScheme);
+    config.setProxy(proxyHost, proxyPort, proxyScheme);
     // then
     Assert.assertEquals("https://localhost:8080/v1", config.getBaseURL());
-    Assert.assertEquals("proxy", config.getProxyUrl());
+    Assert.assertEquals("proxy", config.getProxyHost());
     Assert.assertEquals(8080, config.getProxyPort());
     Assert.assertEquals("http", config.getProxyScheme());
   }

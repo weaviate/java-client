@@ -28,10 +28,8 @@ public class ClientProxyTest {
   ).withExposedService("weaviate_1", 8080, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200)
   ).withExposedService("proxy_1", 80, Wait.forHttp("/").forStatusCode(503));
 
-
   @Test
   public void testProxyUnset() {
-
     Config config = new Config("http", "weaviate.local");
 
     client = new WeaviateClient(config);
@@ -59,6 +57,4 @@ public class ClientProxyTest {
     assertNull(meta.getError());
     assertEquals("http://[::]:8080", meta.getResult().getHostname());
   }
-
-
 }
