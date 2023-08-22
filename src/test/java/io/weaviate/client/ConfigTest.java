@@ -32,4 +32,22 @@ public class ConfigTest extends TestCase {
     Assert.assertEquals("https://localhost:8080/v1", config.getBaseURL());
     Assert.assertEquals(1, config.getHeaders().size());
   }
+
+  @Test
+  public void testConfigProxy() {
+    // given
+    String scheme = "https";
+    String domain = "localhost:8080";
+    String proxyHost = "proxy";
+    int proxyPort = 8080;
+    String proxyScheme = "http";
+    // when
+    Config config = new Config(scheme, domain);
+    config.setProxy(proxyHost, proxyPort, proxyScheme);
+    // then
+    Assert.assertEquals("https://localhost:8080/v1", config.getBaseURL());
+    Assert.assertEquals("proxy", config.getProxyHost());
+    Assert.assertEquals(8080, config.getProxyPort());
+    Assert.assertEquals("http", config.getProxyScheme());
+  }
 }
