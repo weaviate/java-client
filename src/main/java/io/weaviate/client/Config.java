@@ -12,6 +12,10 @@ public class Config {
   private final int connectionTimeout;
   private final int connectionRequestTimeout;
   private final int socketTimeout;
+  private String proxyUrl;
+  private int proxyPort;
+  private String proxyScheme;
+
 
   public Config(String scheme, String host) {
     this(scheme, host, null, DEFAULT_TIMEOUT_SECONDS, DEFAULT_TIMEOUT_SECONDS, DEFAULT_TIMEOUT_SECONDS);
@@ -50,4 +54,23 @@ public class Config {
   public int getSocketTimeout() {
     return socketTimeout;
   }
+
+  public void setProxy(String proxyUrl, int proxyPort, String proxyScheme) {
+    this.proxyUrl = proxyUrl;
+    this.proxyPort = proxyPort;
+    this.proxyScheme = proxyScheme;
+  }
+
+  public String getProxyUrl() {
+    return proxyUrl;
+  }
+
+  public int getProxyPort() {
+    return proxyPort;
+  }
+
+  public String getProxyScheme() {
+    return proxyScheme;
+  }
+  
 }
