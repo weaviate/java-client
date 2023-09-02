@@ -59,7 +59,7 @@
     <lombok.version>1.18.28</lombok.version>
     <gson.version>2.10.1</gson.version>
     <httpclient.version>4.5.14</httpclient.version>
-    <lang3.version>3.12.0</lang3.version>
+    <lang3.version>3.13.0</lang3.version>
     <junit.version>5.9.3</junit.version>
     <testcontainers.version>1.18.3</testcontainers.version>
     <assertj-core.version>3.24.2</assertj-core.version>
@@ -219,7 +219,7 @@
               </goals>
               <configuration>
                 <target>
-                  <jar destfile="${project.build.directory}/${project.build.finalName}-sources.jar" basedir="${project.build.directory}/delombok" />
+                  <jar destfile="${project.build.directory}/${project.build.finalName}-sources.jar" basedir="${project.build.directory}/delombok"/>
                 </target>
               </configuration>
             </execution>
