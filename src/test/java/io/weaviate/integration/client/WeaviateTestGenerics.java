@@ -1,5 +1,6 @@
 package io.weaviate.integration.client;
 
+import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.batch.model.ObjectGetResponse;
@@ -14,14 +15,21 @@ import io.weaviate.client.v1.schema.model.Tenant;
 import io.weaviate.client.v1.schema.model.Tokenization;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
 
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
+import java.util.stream.IntStream;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
 import static org.junit.Assert.assertEquals;
@@ -755,6 +763,225 @@ public class WeaviateTestGenerics {
       Result<Boolean> deleteAllStatus = client.schema().allDeleter().run();
       assertNotNull(deleteAllStatus);
       assertTrue(deleteAllStatus.getResult());
+    }
+  }
+
+  public static class AllPropertiesSchema {
+
+    public String REF_CLASS = "RefClass";
+    public String CLASS_NAME = "AllProperties";
+    public void createSchema(WeaviateClient client) {
+      createAllPropertiesClass(client);
+    }
+
+    public void createSchemaWithRefClass(WeaviateClient client) {
+      createAllPropertiesClass(client);
+      createRefClass(client);
+    }
+
+    private void createAllPropertiesClass(WeaviateClient client) {
+      Result<Boolean> createResult = client.schema().classCreator()
+        .withClass(WeaviateClass.builder()
+          .className(CLASS_NAME)
+          .properties(Arrays.asList(
+            Property.builder()
+              .name("bool")
+              .dataType(Collections.singletonList(DataType.BOOLEAN))
+              .build(),
+            Property.builder()
+              .name("bools")
+              .dataType(Collections.singletonList(DataType.BOOLEAN_ARRAY))
+              .build(),
+
+            Property.builder()
+              .name("int")
+              .dataType(Collections.singletonList(DataType.INT))
+              .build(),
+            Property.builder()
+              .name("ints")
+              .dataType(Collections.singletonList(DataType.INT_ARRAY))
+              .build(),
+
+            Property.builder()
+              .name("number")
+              .dataType(Collections.singletonList(DataType.NUMBER))
+              .build(),
+            Property.builder()
+              .name("numbers")
+              .dataType(Collections.singletonList(DataType.NUMBER_ARRAY))
+              .build(),
+
+            Property.builder()
+              .name("string")
+              .dataType(Collections.singletonList(DataType.STRING))
+              .build(),
+            Property.builder()
+              .name("strings")
+              .dataType(Collections.singletonList(DataType.STRING_ARRAY))
+              .build(),
+
+            Property.builder()
+              .name("text")
+              .dataType(Collections.singletonList(DataType.TEXT))
+              .build(),
+            Property.builder()
+              .name("texts")
+              .dataType(Collections.singletonList(DataType.TEXT_ARRAY))
+              .build(),
+
+            Property.builder()
+              .name("date")
+              .dataType(Collections.singletonList(DataType.DATE))
+              .build(),
+            Property.builder()
+              .name("dates")
+              .dataType(Collections.singletonList(DataType.DATE_ARRAY))
+              .build(),
+
+            Property.builder()
+              .name("uuid")
+              .dataType(Collections.singletonList(DataType.UUID))
+              .build(),
+            Property.builder()
+              .name("uuids")
+              .dataType(Collections.singletonList(DataType.UUID_ARRAY))
+              .build()
+          ))
+          .build()
+        )
+        .run();
+
+      assertThat(createResult).isNotNull()
+        .returns(false, Result::hasErrors)
+        .returns(true, Result::getResult);
+    }
+
+    private void createRefClass(WeaviateClient client) {
+      WeaviateClass jeopardyClass = WeaviateClass.builder()
+        .className(REF_CLASS)
+        .properties(Arrays.asList(
+          Property.builder()
+            .name("category")
+            .dataType(Arrays.asList(DataType.TEXT))
+            .build()
+        ))
+        .build();
+
+      Result<Boolean> result = client.schema().classCreator()
+        .withClass(jeopardyClass)
+        .run();
+
+      assertThat(result).isNotNull()
+        .withFailMessage(() -> result.getError().toString())
+        .returns(false, Result::hasErrors)
+        .withFailMessage(null)
+        .returns(true, Result::getResult);
+    }
+
+    public WeaviateObject[] objects() {
+      String id1 = "00000000-0000-0000-0000-000000000001";
+      String id2 = "00000000-0000-0000-0000-000000000002";
+      String id3 = "00000000-0000-0000-0000-000000000003";
+
+      TimeZone.setDefault(TimeZone.getTimeZone(ZoneOffset.UTC));
+      Calendar cal1 = Calendar.getInstance();
+      cal1.set(2023, Calendar.JANUARY, 15, 17, 1, 2);
+      Date date1 = cal1.getTime();
+      Calendar cal2 = Calendar.getInstance();
+      cal2.set(2023, Calendar.FEBRUARY, 15, 17, 1, 2);
+      Date date2 = cal2.getTime();
+      Calendar cal3 = Calendar.getInstance();
+      cal3.set(2023, Calendar.MARCH, 15, 17, 1, 2);
+      Date date3 = cal3.getTime();
+
+      String[] ids = new String[]{
+        id1, id2, id3
+      };
+      Boolean[] bools = new Boolean[]{
+        true, false, true
+      };
+      Boolean[][] boolsArray = new Boolean[][]{
+        {true, false, true},
+        {true, false},
+        {true},
+      };
+      Integer[] ints = new Integer[]{
+        1, 2, 3
+      };
+      Integer[][] intsArray = new Integer[][]{
+        {1, 2, 3},
+        {1, 2},
+        {1},
+      };
+      Double[] numbers = new Double[]{
+        1.1, 2.2, 3.3
+      };
+      Double[][] numbersArray = new Double[][]{
+        {1.1, 2.2, 3.3},
+        {1.1, 2.2},
+        {1.1},
+      };
+      String[] strings = new String[]{
+        "string1", "string2", "string3"
+      };
+      String[][] stringsArray = new String[][]{
+        {"string1", "string2", "string3"},
+        {"string1", "string2"},
+        {"string1"},
+      };
+      String[] texts = new String[]{
+        "text1", "text2", "text3"
+      };
+      String[][] textsArray = new String[][]{
+        {"text1", "text2", "text3"},
+        {"text1", "text2"},
+        {"text1"},
+      };
+      Date[] dates = new Date[]{
+        date1, date2, date3
+      };
+      Date[][] datesArray = new Date[][]{
+        {date1, date2, date3},
+        {date1, date2},
+        {date1},
+      };
+      String[] uuids = new String[]{
+        id1, id2, id3
+      };
+      String[][] uuidsArray = new String[][]{
+        {id1, id2, id3},
+        {id1, id2},
+        {id1},
+      };
+
+      Function<Date, String> formatDate = date -> DateFormatUtils.format(date, "yyyy-MM-dd'T'HH:mm:ssZZZZZ");
+
+      WeaviateObject[] objects = IntStream.range(0, ids.length).mapToObj(i -> {
+          Map<String, Object> props = new HashMap<>();
+          props.put("bool", bools[i]);
+          props.put("bools", boolsArray[i]);
+          props.put("int", ints[i]);
+          props.put("ints", intsArray[i]);
+          props.put("number", numbers[i]);
+          props.put("numbers", numbersArray[i]);
+          props.put("string", strings[i]);
+          props.put("strings", stringsArray[i]);
+          props.put("text", texts[i]);
+          props.put("texts", textsArray[i]);
+          props.put("date", formatDate.apply(dates[i]));
+          props.put("dates", Arrays.stream(datesArray[i]).map(formatDate).toArray(String[]::new));
+          props.put("uuid", uuids[i]);
+          props.put("uuids", uuidsArray[i]);
+
+          return WeaviateObject.builder()
+            .className(CLASS_NAME)
+            .id(ids[i])
+            .properties(props)
+            .build();
+        }
+      ).toArray(WeaviateObject[]::new);
+
+      return objects;
     }
   }
 

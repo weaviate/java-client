@@ -1,10 +1,16 @@
 package io.weaviate.client.v1.batch.api;
 
+import io.weaviate.client.base.WeaviateError;
+import io.weaviate.client.grpc.client.GrpcClient;
+import io.weaviate.client.grpc.protocol.WeaviateGrpc;
+import io.weaviate.client.grpc.protocol.WeaviateProto;
+import io.weaviate.client.v1.batch.grpc.BatchObjectConverter;
 import io.weaviate.client.v1.batch.model.ObjectGetResponse;
 import io.weaviate.client.v1.batch.model.ObjectGetResponseStatus;
 import io.weaviate.client.v1.batch.model.ObjectsBatchRequestBody;
 import io.weaviate.client.v1.batch.model.ObjectsGetResponseAO2Result;
 import io.weaviate.client.v1.batch.util.ObjectsPath;
+import io.weaviate.client.v1.data.replication.model.ConsistencyLevel;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -14,6 +20,7 @@ import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import io.weaviate.client.Config;
 import io.weaviate.client.base.BaseClient;
@@ -61,11 +68,17 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
   private final List<WeaviateObject> objects;
   private String consistencyLevel;
   private final List<CompletableFuture<Result<ObjectGetResponse[]>>> undoneFutures;
+  private WeaviateGrpc.WeaviateBlockingStub grpcClient;
+  private boolean useGRPC;
 
 
   private ObjectsBatcher(HttpClient httpClient, Config config, Data data, ObjectsPath objectsPath,
                          BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig) {
     super(httpClient, config);
+    if (config.useGRPC()) {
+      this.useGRPC = config.useGRPC();
+      this.grpcClient = GrpcClient.create(config);
+    }
     this.data = data;
     this.objectsPath = objectsPath;
     this.objects = new ArrayList<>();
@@ -217,7 +230,7 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
 
   private <T> T runRecursively(List<WeaviateObject> batch, int connectionErrorCount, int timeoutErrorCount,
                                List<ObjectGetResponse> combinedSingleResponses, DelayedExecutor<T> delayedExecutor) {
-    Result<ObjectGetResponse[]> result = internalRun(batch);
+    Result<ObjectGetResponse[]> result = useGRPC ? internalGrpcRun(batch) : internalRun(batch);
 
     if (result.hasErrors()) {
       List<WeaviateErrorMessage> messages = result.getError().getMessages();
@@ -272,6 +285,52 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
         .build());
     Response<ObjectGetResponse[]> resp = sendPostRequest(path, batchRequest, ObjectGetResponse[].class);
     return new Result<>(resp);
+  }
+
+  private Result<ObjectGetResponse[]> internalGrpcRun(List<WeaviateObject> batch) {
+    List<WeaviateProto.BatchObject> batchObjects = batch.stream()
+      .map(BatchObjectConverter::toBatchObject)
+      .collect(Collectors.toList());
+    WeaviateProto.BatchObjectsRequest.Builder batchObjectsRequestBuilder = WeaviateProto.BatchObjectsRequest.newBuilder();
+    batchObjectsRequestBuilder.addAllObjects(batchObjects);
+    if (consistencyLevel != null) {
+      WeaviateProto.ConsistencyLevel cl = WeaviateProto.ConsistencyLevel.CONSISTENCY_LEVEL_ONE;
+      if (consistencyLevel.equals(ConsistencyLevel.ALL)) {
+        cl = WeaviateProto.ConsistencyLevel.CONSISTENCY_LEVEL_ALL;
+      }
+      if (consistencyLevel.equals(ConsistencyLevel.QUORUM)) {
+        cl = WeaviateProto.ConsistencyLevel.CONSISTENCY_LEVEL_QUORUM;
+      }
+      batchObjectsRequestBuilder.setConsistencyLevel(cl);
+    }
+
+    WeaviateProto.BatchObjectsRequest batchObjectsRequest = batchObjectsRequestBuilder.build();
+    WeaviateProto.BatchObjectsReply batchObjectsReply = this.grpcClient.batchObjects(batchObjectsRequest);
+
+    List<WeaviateErrorMessage> weaviateErrorMessages = batchObjectsReply.getResultsList().stream()
+      .map(WeaviateProto.BatchObjectsReply.BatchResults::getError)
+      .filter(e -> !e.isEmpty())
+      .map(msg -> WeaviateErrorMessage.builder().message(msg).build())
+      .collect(Collectors.toList());
+
+    if (!weaviateErrorMessages.isEmpty()) {
+      WeaviateErrorResponse weaviateErrorResponse = WeaviateErrorResponse.builder()
+        .code(422).message(StringUtils.join(weaviateErrorMessages, ",")).error(weaviateErrorMessages).build();
+      return new Result<>(422, null, weaviateErrorResponse);
+    }
+
+    ObjectGetResponse[] objectGetResponses = batch.stream().map(o -> {
+      ObjectGetResponse resp = new ObjectGetResponse();
+      resp.setId(o.getId());
+      resp.setClassName(o.getClassName());
+      resp.setTenant(o.getTenant());
+      ObjectsGetResponseAO2Result result = new ObjectsGetResponseAO2Result();
+      result.setStatus(ObjectGetResponseStatus.SUCCESS);
+      resp.setResult(result);
+      return resp;
+    }).toArray(ObjectGetResponse[]::new);
+
+    return new Result<>(200, objectGetResponses, null);
   }
 
   private Pair<List<ObjectGetResponse>, List<WeaviateObject>> fetchCreatedAndBuildBatchToReRun(List<WeaviateObject> batch) {

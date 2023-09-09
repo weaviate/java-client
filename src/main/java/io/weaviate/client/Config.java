@@ -1,10 +1,12 @@
 package io.weaviate.client;
 
 import java.util.Map;
+import lombok.Getter;
 
 public class Config {
 
   private static final int DEFAULT_TIMEOUT_SECONDS = 60;
+  @Getter
   private final String scheme;
   private final String host;
   private final String version;
@@ -15,6 +17,9 @@ public class Config {
   private String proxyHost;
   private int proxyPort;
   private String proxyScheme;
+  private boolean useGRPC;
+  @Getter
+  private String grpcAddress;
 
 
   public Config(String scheme, String host) {
@@ -35,8 +40,23 @@ public class Config {
     this.socketTimeout = socketTimeout;
   }
 
+  public Config(String scheme, String host, Map<String, String> headers, int timeout, boolean useGRPC) {
+    this.scheme = scheme;
+    this.host = host;
+    this.version = "v1";
+    this.headers = headers;
+    this.connectionTimeout = timeout;
+    this.connectionRequestTimeout = timeout;
+    this.socketTimeout = timeout;
+    this.useGRPC = useGRPC;
+  }
+
   public String getBaseURL() {
     return scheme + "://" + host + "/" + version;
+  }
+
+  public String getHost() {
+    return host;
   }
 
   public Map<String, String> getHeaders() {
@@ -72,5 +92,16 @@ public class Config {
   public String getProxyScheme() {
     return proxyScheme;
   }
-  
+
+  public boolean useGRPC() {
+    return this.useGRPC;
+  }
+
+  public void setUseGRPC(boolean useGRPC) {
+    this.useGRPC = useGRPC;
+  }
+
+  public void setGrpcAddress(String grpcAddress) {
+    this.grpcAddress = grpcAddress;
+  }
 }
