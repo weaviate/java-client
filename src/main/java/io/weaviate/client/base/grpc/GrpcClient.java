@@ -1,11 +1,11 @@
-package io.weaviate.client.grpc.client;
+package io.weaviate.client.base.grpc;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Metadata;
 import io.grpc.stub.MetadataUtils;
 import io.weaviate.client.Config;
-import io.weaviate.client.grpc.protocol.WeaviateGrpc;
+import io.weaviate.grpc.protocol.WeaviateGrpc;
 import java.util.Map;
 
 public class GrpcClient {

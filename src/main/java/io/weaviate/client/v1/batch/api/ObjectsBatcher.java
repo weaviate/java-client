@@ -1,9 +1,7 @@
 package io.weaviate.client.v1.batch.api;
 
-import io.weaviate.client.base.WeaviateError;
-import io.weaviate.client.grpc.client.GrpcClient;
-import io.weaviate.client.grpc.protocol.WeaviateGrpc;
-import io.weaviate.client.grpc.protocol.WeaviateProto;
+import io.weaviate.client.base.grpc.GrpcClient;
+import io.weaviate.grpc.protocol.WeaviateGrpc;
 import io.weaviate.client.v1.batch.grpc.BatchObjectConverter;
 import io.weaviate.client.v1.batch.model.ObjectGetResponse;
 import io.weaviate.client.v1.batch.model.ObjectGetResponseStatus;
@@ -11,6 +9,8 @@ import io.weaviate.client.v1.batch.model.ObjectsBatchRequestBody;
 import io.weaviate.client.v1.batch.model.ObjectsGetResponseAO2Result;
 import io.weaviate.client.v1.batch.util.ObjectsPath;
 import io.weaviate.client.v1.data.replication.model.ConsistencyLevel;
+import io.weaviate.grpc.protocol.WeaviateProtoBase;
+import io.weaviate.grpc.protocol.WeaviateProtoBatch;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -288,27 +288,27 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
   }
 
   private Result<ObjectGetResponse[]> internalGrpcRun(List<WeaviateObject> batch) {
-    List<WeaviateProto.BatchObject> batchObjects = batch.stream()
+    List<WeaviateProtoBatch.BatchObject> batchObjects = batch.stream()
       .map(BatchObjectConverter::toBatchObject)
       .collect(Collectors.toList());
-    WeaviateProto.BatchObjectsRequest.Builder batchObjectsRequestBuilder = WeaviateProto.BatchObjectsRequest.newBuilder();
+    WeaviateProtoBatch.BatchObjectsRequest.Builder batchObjectsRequestBuilder = WeaviateProtoBatch.BatchObjectsRequest.newBuilder();
     batchObjectsRequestBuilder.addAllObjects(batchObjects);
     if (consistencyLevel != null) {
-      WeaviateProto.ConsistencyLevel cl = WeaviateProto.ConsistencyLevel.CONSISTENCY_LEVEL_ONE;
+      WeaviateProtoBase.ConsistencyLevel cl = WeaviateProtoBase.ConsistencyLevel.CONSISTENCY_LEVEL_ONE;
       if (consistencyLevel.equals(ConsistencyLevel.ALL)) {
-        cl = WeaviateProto.ConsistencyLevel.CONSISTENCY_LEVEL_ALL;
+        cl = WeaviateProtoBase.ConsistencyLevel.CONSISTENCY_LEVEL_ALL;
       }
       if (consistencyLevel.equals(ConsistencyLevel.QUORUM)) {
-        cl = WeaviateProto.ConsistencyLevel.CONSISTENCY_LEVEL_QUORUM;
+        cl = WeaviateProtoBase.ConsistencyLevel.CONSISTENCY_LEVEL_QUORUM;
       }
       batchObjectsRequestBuilder.setConsistencyLevel(cl);
     }
 
-    WeaviateProto.BatchObjectsRequest batchObjectsRequest = batchObjectsRequestBuilder.build();
-    WeaviateProto.BatchObjectsReply batchObjectsReply = this.grpcClient.batchObjects(batchObjectsRequest);
+    WeaviateProtoBatch.BatchObjectsRequest batchObjectsRequest = batchObjectsRequestBuilder.build();
+    WeaviateProtoBatch.BatchObjectsReply batchObjectsReply = this.grpcClient.batchObjects(batchObjectsRequest);
 
     List<WeaviateErrorMessage> weaviateErrorMessages = batchObjectsReply.getResultsList().stream()
-      .map(WeaviateProto.BatchObjectsReply.BatchResults::getError)
+      .map(WeaviateProtoBatch.BatchObjectsReply.BatchResults::getError)
       .filter(e -> !e.isEmpty())
       .map(msg -> WeaviateErrorMessage.builder().message(msg).build())
       .collect(Collectors.toList());

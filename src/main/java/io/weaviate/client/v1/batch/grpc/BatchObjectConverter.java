@@ -1,11 +1,10 @@
 package io.weaviate.client.v1.batch.grpc;
 
-import com.google.protobuf.FloatValue;
 import com.google.protobuf.Struct;
 import com.google.protobuf.Value;
-import io.weaviate.client.grpc.protocol.WeaviateGrpc;
-import io.weaviate.client.grpc.protocol.WeaviateProto;
 import io.weaviate.client.v1.data.model.WeaviateObject;
+import io.weaviate.grpc.protocol.WeaviateProtoBase;
+import io.weaviate.grpc.protocol.WeaviateProtoBatch;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -14,8 +13,8 @@ import java.util.stream.Collectors;
 
 public class BatchObjectConverter {
 
-  public static WeaviateProto.BatchObject toBatchObject(WeaviateObject obj) {
-    WeaviateProto.BatchObject.Builder builder = WeaviateProto.BatchObject.newBuilder();
+  public static WeaviateProtoBatch.BatchObject toBatchObject(WeaviateObject obj) {
+    WeaviateProtoBatch.BatchObject.Builder builder = WeaviateProtoBatch.BatchObject.newBuilder();
     if (obj.getId() != null) {
       builder.setUuid(obj.getId());
     }
@@ -34,8 +33,8 @@ public class BatchObjectConverter {
     return builder.build();
   }
 
-  private static WeaviateProto.BatchObject.Properties buildProperties(Map<String, Object> properties) {
-    WeaviateProto.BatchObject.Properties.Builder builder = WeaviateProto.BatchObject.Properties.newBuilder();
+  private static WeaviateProtoBatch.BatchObject.Properties buildProperties(Map<String, Object> properties) {
+    WeaviateProtoBatch.BatchObject.Properties.Builder builder = WeaviateProtoBatch.BatchObject.Properties.newBuilder();
     Map<String, Value> nonRefProperties = new HashMap<>();
     for (Map.Entry<String, Object> e : properties.entrySet()) {
       String propName = e.getKey();
@@ -70,26 +69,26 @@ public class BatchObjectConverter {
       }
       if (propValue instanceof String[]) {
         // TODO: handle ref properties
-        WeaviateProto.TextArrayProperties textArrayProperties = WeaviateProto.TextArrayProperties.newBuilder()
+        WeaviateProtoBase.TextArrayProperties textArrayProperties = WeaviateProtoBase.TextArrayProperties.newBuilder()
           .setPropName(propName).addAllValues(Arrays.asList((String[]) propValue)).build();
         builder.addTextArrayProperties(textArrayProperties);
         continue;
       }
       if (propValue instanceof Boolean[]) {
-        WeaviateProto.BooleanArrayProperties booleanArrayProperties = WeaviateProto.BooleanArrayProperties.newBuilder()
+        WeaviateProtoBase.BooleanArrayProperties booleanArrayProperties = WeaviateProtoBase.BooleanArrayProperties.newBuilder()
           .setPropName(propName).addAllValues(Arrays.asList((Boolean[]) propValue)).build();
         builder.addBooleanArrayProperties(booleanArrayProperties);
         continue;
       }
       if (propValue instanceof Integer[]) {
         List<Long> value = Arrays.stream((Integer[]) propValue).map(Integer::longValue).collect(Collectors.toList());
-        WeaviateProto.IntArrayProperties intArrayProperties = WeaviateProto.IntArrayProperties.newBuilder()
+        WeaviateProtoBase.IntArrayProperties intArrayProperties = WeaviateProtoBase.IntArrayProperties.newBuilder()
           .setPropName(propName).addAllValues(value).build();
         builder.addIntArrayProperties(intArrayProperties);
         continue;
       }
       if (propValue instanceof Long[]) {
-        WeaviateProto.IntArrayProperties intArrayProperties = WeaviateProto.IntArrayProperties.newBuilder()
+        WeaviateProtoBase.IntArrayProperties intArrayProperties = WeaviateProtoBase.IntArrayProperties.newBuilder()
           .setPropName(propName)
           .addAllValues(Arrays.asList((Long[]) propValue))
           .build();
@@ -98,13 +97,13 @@ public class BatchObjectConverter {
       }
       if (propValue instanceof Float[]) {
         List<Double> value = Arrays.stream((Float[]) propValue).map(Float::doubleValue).collect(Collectors.toList());
-        WeaviateProto.NumberArrayProperties numberArrayProperties = WeaviateProto.NumberArrayProperties.newBuilder()
+        WeaviateProtoBase.NumberArrayProperties numberArrayProperties = WeaviateProtoBase.NumberArrayProperties.newBuilder()
           .setPropName(propName).addAllValues(value).build();
         builder.addNumberArrayProperties(numberArrayProperties);
         continue;
       }
       if (propValue instanceof Double[]) {
-        WeaviateProto.NumberArrayProperties numberArrayProperties = WeaviateProto.NumberArrayProperties.newBuilder()
+        WeaviateProtoBase.NumberArrayProperties numberArrayProperties = WeaviateProtoBase.NumberArrayProperties.newBuilder()
           .setPropName(propName).addAllValues(Arrays.asList((Double[]) propValue)).build();
         builder.addNumberArrayProperties(numberArrayProperties);
       }
