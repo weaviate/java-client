@@ -16,6 +16,8 @@ public interface DataType {
   String GEO_COORDINATES = "geoCoordinates";
   String PHONE_NUMBER = "phoneNumber";
   String UUID = "uuid";
+  String OBJECT = "object";
+
   /**
    * As of Weaviate v1.19 'string[]' is deprecated and replaced by 'text[]'.<br>
    * See <a href="https://weaviate.io/developers/weaviate/config-refs/datatypes#introduction">data types</a>
@@ -28,4 +30,5 @@ public interface DataType {
   String BOOLEAN_ARRAY = "boolean[]";
   String DATE_ARRAY = "date[]";
   String UUID_ARRAY = "uuid[]";
+  String OBJECT_ARRAY = "object[]";
 }

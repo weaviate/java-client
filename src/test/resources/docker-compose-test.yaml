@@ -9,7 +9,7 @@ services:
     - '8080'
     - --scheme
     - http
-    image: semitechnologies/weaviate:1.21.0
+    image: semitechnologies/weaviate:preview-adds-support-for-object-object-data-types-8a40c6b
     links:
       - "contextionary:contextionary"
     restart: on-failure:0
