@@ -28,4 +28,21 @@ public class Property {
   Boolean indexFilterable;
   Boolean indexSearchable;
   Object moduleConfig;
+  List<NestedProperty> nestedProperties;
+
+
+  @Getter
+  @Builder
+  @ToString
+  @EqualsAndHashCode
+  @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+  public static class NestedProperty {
+    String name;
+    List<String> dataType;
+    String description;
+    String tokenization;
+    Boolean indexFilterable;
+    Boolean indexSearchable;
+    List<NestedProperty> nestedProperties;
+  }
 }

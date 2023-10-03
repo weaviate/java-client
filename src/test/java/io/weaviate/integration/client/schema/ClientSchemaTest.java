@@ -4,6 +4,8 @@ import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateErrorMessage;
+import io.weaviate.client.v1.batch.model.ObjectGetResponse;
+import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.misc.model.BM25Config;
 import io.weaviate.client.v1.misc.model.DistanceType;
 import io.weaviate.client.v1.misc.model.InvertedIndexConfig;
@@ -46,6 +48,7 @@ import static org.junit.Assert.assertTrue;
 
 public class ClientSchemaTest {
   private WeaviateClient client;
+  private final NestedObjectsUtils utils = new NestedObjectsUtils();
 
   @ClassRule
   public static DockerComposeContainer compose = new DockerComposeContainer(
@@ -994,5 +997,360 @@ public class ClientSchemaTest {
     assertPropertyEquals(expectedName, expectedTokenization, property);
     assertTrue(property.getDataType().size() > 0);
     assertEquals(expectedDataType, property.getDataType().get(0));
+  }
+
+  @Test
+  public void shouldAddObjectsWithNestedProperties_EntireSchema() {
+    WeaviateClass schemaClass;
+    String className = "ClassWithObjectProperty";
+    Map<String, String> expectedProps = new HashMap<String, String>() {{
+      put("name", DataType.TEXT);
+      put("objectProperty", DataType.OBJECT);
+      put("objectProperty.nestedInt", DataType.INT);
+      put("objectProperty.nestedNumber", DataType.NUMBER);
+      put("objectProperty.nestedText", DataType.TEXT);
+      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+      put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
+      put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
+      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+    }};
+
+    WeaviateClass wvtClass = utils.nestedClassEntireSchema(className);
+    utils.createClass(client, wvtClass);
+
+    schemaClass = utils.getClass(client, className);
+    utils.assertThatSchemaPropertiesHaveDataTypes(expectedProps, schemaClass);
+
+    // schema did not change after adding object 1
+    WeaviateObject object1 = utils.createObject(client, utils.nestedObject1(className));
+    utils.assertThatObjectsAreSimilar(utils.expectedNestedObject1(className), object1);
+    schemaClass = utils.getClass(client, className);
+    utils.assertThatSchemaPropertiesHaveDataTypes(expectedProps, schemaClass);
+
+    // schema did not change after adding object 2
+    WeaviateObject object2 = utils.createObject(client, utils.nestedObject2(className));
+    utils.assertThatObjectsAreSimilar(utils.expectedNestedObject2(className), object2);
+    schemaClass = utils.getClass(client, className);
+    utils.assertThatSchemaPropertiesHaveDataTypes(expectedProps, schemaClass);
+  }
+
+  @Test
+  public void shouldAddObjectsWithNestedProperties_PartialSchema1() {
+    WeaviateClass schemaClass;
+    String className = "ClassWithObjectProperty";
+    Map<String, String> expectedPropsStep1 = new HashMap<String, String>() {{
+      put("name", DataType.TEXT);
+      put("objectProperty", DataType.OBJECT);
+      put("objectProperty.nestedInt", DataType.INT);
+      put("objectProperty.nestedText", DataType.TEXT);
+      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+      put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
+      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+    }};
+    Map<String, String> expectedPropsStep2 = new HashMap<String, String>() {{
+      put("name", DataType.TEXT);
+      put("objectProperty", DataType.OBJECT);
+      put("objectProperty.nestedInt", DataType.INT);
+      put("objectProperty.nestedNumber", DataType.NUMBER);
+      put("objectProperty.nestedText", DataType.TEXT);
+      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+      put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
+      put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
+      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+    }};
+
+    WeaviateClass wvtClass = utils.nestedClassPartialSchema1(className);
+    utils.createClass(client, wvtClass);
+
+    schemaClass = utils.getClass(client, className);
+    utils.assertThatSchemaPropertiesHaveDataTypes(expectedPropsStep1, schemaClass);
+
+    // schema did not change after adding object 1
+    WeaviateObject object1 = utils.createObject(client, utils.nestedObject1(className));
+    utils.assertThatObjectsAreSimilar(utils.expectedNestedObject1(className), object1);
+    schemaClass = utils.getClass(client, className);
+    utils.assertThatSchemaPropertiesHaveDataTypes(expectedPropsStep1, schemaClass);
+
+    // schema changed after adding object 2
+    WeaviateObject object2 = utils.createObject(client, utils.nestedObject2(className));
+    utils.assertThatObjectsAreSimilar(utils.expectedNestedObject2(className), object2);
+    schemaClass = utils.getClass(client, className);
+    utils.assertThatSchemaPropertiesHaveDataTypes(expectedPropsStep2, schemaClass);
+  }
+
+  @Test
+  public void shouldAddObjectsWithNestedProperties_PartialSchema2() {
+    WeaviateClass schemaClass;
+    String className = "ClassWithObjectProperty";
+    Map<String, String> expectedPropsStep1 = new HashMap<String, String>() {{
+      put("name", DataType.TEXT);
+      put("objectProperty", DataType.OBJECT);
+      put("objectProperty.nestedNumber", DataType.NUMBER);
+      put("objectProperty.nestedText", DataType.TEXT);
+      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+      put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
+      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+    }};
+    Map<String, String> expectedPropsStep2 = new HashMap<String, String>() {{
+      put("name", DataType.TEXT);
+      put("objectProperty", DataType.OBJECT);
+      put("objectProperty.nestedInt", DataType.NUMBER); // autoschema determines type as number
+      put("objectProperty.nestedNumber", DataType.NUMBER);
+      put("objectProperty.nestedText", DataType.TEXT);
+      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+      put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
+      put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
+      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+    }};
+
+    WeaviateClass wvtClass = utils.nestedClassPartialSchema2(className);
+    utils.createClass(client, wvtClass);
+
+    schemaClass = utils.getClass(client, className);
+    utils.assertThatSchemaPropertiesHaveDataTypes(expectedPropsStep1, schemaClass);
+
+    // schema did not change after adding object 2
+    WeaviateObject object2 = utils.createObject(client, utils.nestedObject2(className));
+    utils.assertThatObjectsAreSimilar(utils.expectedNestedObject2(className), object2);
+    schemaClass = utils.getClass(client, className);
+    utils.assertThatSchemaPropertiesHaveDataTypes(expectedPropsStep1, schemaClass);
+
+    // schema changed after adding object 1
+    WeaviateObject object1 = utils.createObject(client, utils.nestedObject1(className));
+    utils.assertThatObjectsAreSimilar(utils.expectedNestedObject1(className), object1);
+    schemaClass = utils.getClass(client, className);
+    utils.assertThatSchemaPropertiesHaveDataTypes(expectedPropsStep2, schemaClass);
+  }
+
+  @Test
+  public void shouldAddObjectsWithNestedProperties_NoSchema1() {
+    WeaviateClass schemaClass;
+    String className = "ClassWithObjectProperty";
+    Map<String, String> expectedPropsStep1 = new HashMap<String, String>() {{
+      put("name", DataType.TEXT);
+      put("objectProperty", DataType.OBJECT);
+      put("objectProperty.nestedInt", DataType.NUMBER); // autoschema determines type as number
+      put("objectProperty.nestedText", DataType.TEXT);
+      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+      put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
+      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+    }};
+    Map<String, String> expectedPropsStep2 = new HashMap<String, String>() {{
+      put("name", DataType.TEXT);
+      put("objectProperty", DataType.OBJECT);
+      put("objectProperty.nestedInt", DataType.NUMBER);
+      put("objectProperty.nestedNumber", DataType.NUMBER);
+      put("objectProperty.nestedText", DataType.TEXT);
+      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+      put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
+      put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
+      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+    }};
+
+    // schema created after adding object 1
+    WeaviateObject object1 = utils.createObject(client, utils.nestedObject1(className));
+    utils.assertThatObjectsAreSimilar(utils.expectedNestedObject1(className), object1);
+    schemaClass = utils.getClass(client, className);
+    utils.assertThatSchemaPropertiesHaveDataTypes(expectedPropsStep1, schemaClass);
+
+    // schema changed after adding object 2
+    WeaviateObject object2 = utils.createObject(client, utils.nestedObject2(className));
+    utils.assertThatObjectsAreSimilar(utils.expectedNestedObject2(className), object2);
+    schemaClass = utils.getClass(client, className);
+    utils.assertThatSchemaPropertiesHaveDataTypes(expectedPropsStep2, schemaClass);
+  }
+
+  @Test
+  public void shouldAddObjectsWithNestedProperties_NoSchema2() {
+    WeaviateClass schemaClass;
+    String className = "ClassWithObjectProperty";
+    Map<String, String> expectedPropsStep1 = new HashMap<String, String>() {{
+      put("name", DataType.TEXT);
+      put("objectProperty", DataType.OBJECT);
+      put("objectProperty.nestedNumber", DataType.NUMBER);
+      put("objectProperty.nestedText", DataType.TEXT);
+      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+      put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
+      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+    }};
+    Map<String, String> expectedPropsStep2 = new HashMap<String, String>() {{
+      put("name", DataType.TEXT);
+      put("objectProperty", DataType.OBJECT);
+      put("objectProperty.nestedInt", DataType.NUMBER); // autoschema determines type as number
+      put("objectProperty.nestedNumber", DataType.NUMBER);
+      put("objectProperty.nestedText", DataType.TEXT);
+      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+      put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
+      put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
+      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+    }};
+
+    // schema created after adding object 2
+    WeaviateObject object2 = utils.createObject(client, utils.nestedObject2(className));
+    utils.assertThatObjectsAreSimilar(utils.expectedNestedObject2(className), object2);
+    schemaClass = utils.getClass(client, className);
+    utils.assertThatSchemaPropertiesHaveDataTypes(expectedPropsStep1, schemaClass);
+
+    // schema changed after adding object 1
+    WeaviateObject object1 = utils.createObject(client, utils.nestedObject1(className));
+    utils.assertThatObjectsAreSimilar(utils.expectedNestedObject1(className), object1);
+    schemaClass = utils.getClass(client, className);
+    utils.assertThatSchemaPropertiesHaveDataTypes(expectedPropsStep2, schemaClass);
+  }
+
+  @Test
+  public void shouldBatchObjectsWithNestedProperties_EntireSchema() {
+    WeaviateClass schemaClass;
+    String className = "ClassWithObjectProperty";
+    Map<String, String> expectedProps = new HashMap<String, String>() {{
+      put("name", DataType.TEXT);
+      put("objectProperty", DataType.OBJECT);
+      put("objectProperty.nestedInt", DataType.INT);
+      put("objectProperty.nestedNumber", DataType.NUMBER);
+      put("objectProperty.nestedText", DataType.TEXT);
+      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+      put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
+      put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
+      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+    }};
+
+    WeaviateClass wvtClass = utils.nestedClassEntireSchema(className);
+    utils.createClass(client, wvtClass);
+
+    schemaClass = utils.getClass(client, className);
+    utils.assertThatSchemaPropertiesHaveDataTypes(expectedProps, schemaClass);
+
+    // schema did not change after adding objects
+    ObjectGetResponse[] objects = utils.batchObjects(client, utils.nestedObject1(className), utils.nestedObject2(className));
+    utils.assertThatObjectsAreSimilar(utils.expectedNestedObject1(className), objects[0]);
+    utils.assertThatObjectsAreSimilar(utils.expectedNestedObject2(className), objects[1]);
+    schemaClass = utils.getClass(client, className);
+    utils.assertThatSchemaPropertiesHaveDataTypes(expectedProps, schemaClass);
+  }
+
+  @Test
+  public void shouldBatchObjectsWithNestedProperties_PartialSchema1() {
+    WeaviateClass schemaClass;
+    String className = "ClassWithObjectProperty";
+    Map<String, String> expectedPropsStep1 = new HashMap<String, String>() {{
+      put("name", DataType.TEXT);
+      put("objectProperty", DataType.OBJECT);
+      put("objectProperty.nestedInt", DataType.INT);
+      put("objectProperty.nestedText", DataType.TEXT);
+      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+      put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
+      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+    }};
+    Map<String, String> expectedPropsStep2 = new HashMap<String, String>() {{
+      put("name", DataType.TEXT);
+      put("objectProperty", DataType.OBJECT);
+      put("objectProperty.nestedInt", DataType.INT);
+      put("objectProperty.nestedNumber", DataType.NUMBER);
+      put("objectProperty.nestedText", DataType.TEXT);
+      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+      put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
+      put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
+      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+    }};
+
+    WeaviateClass wvtClass = utils.nestedClassPartialSchema1(className);
+    utils.createClass(client, wvtClass);
+
+    schemaClass = utils.getClass(client, className);
+    utils.assertThatSchemaPropertiesHaveDataTypes(expectedPropsStep1, schemaClass);
+
+    // schema changed after adding objects
+    ObjectGetResponse[] objects = utils.batchObjects(client, utils.nestedObject1(className), utils.nestedObject2(className));
+    utils.assertThatObjectsAreSimilar(utils.expectedNestedObject1(className), objects[0]);
+    utils.assertThatObjectsAreSimilar(utils.expectedNestedObject2(className), objects[1]);
+    schemaClass = utils.getClass(client, className);
+    utils.assertThatSchemaPropertiesHaveDataTypes(expectedPropsStep2, schemaClass);
+  }
+
+  @Test
+  public void shouldBatchObjectsWithNestedProperties_PartialSchema2() {
+    WeaviateClass schemaClass;
+    String className = "ClassWithObjectProperty";
+    Map<String, String> expectedPropsStep1 = new HashMap<String, String>() {{
+      put("name", DataType.TEXT);
+      put("objectProperty", DataType.OBJECT);
+      put("objectProperty.nestedNumber", DataType.NUMBER);
+      put("objectProperty.nestedText", DataType.TEXT);
+      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+      put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
+      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+    }};
+    Map<String, String> expectedPropsStep2 = new HashMap<String, String>() {{
+      put("name", DataType.TEXT);
+      put("objectProperty", DataType.OBJECT);
+      put("objectProperty.nestedInt", DataType.NUMBER); // autoschema determines type as number
+      put("objectProperty.nestedNumber", DataType.NUMBER);
+      put("objectProperty.nestedText", DataType.TEXT);
+      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+      put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
+      put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
+      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+    }};
+
+    WeaviateClass wvtClass = utils.nestedClassPartialSchema2(className);
+    utils.createClass(client, wvtClass);
+
+    schemaClass = utils.getClass(client, className);
+    utils.assertThatSchemaPropertiesHaveDataTypes(expectedPropsStep1, schemaClass);
+
+    // schema changed after adding objects
+    ObjectGetResponse[] objects = utils.batchObjects(client, utils.nestedObject1(className), utils.nestedObject2(className));
+    utils.assertThatObjectsAreSimilar(utils.expectedNestedObject1(className), objects[0]);
+    utils.assertThatObjectsAreSimilar(utils.expectedNestedObject2(className), objects[1]);
+    schemaClass = utils.getClass(client, className);
+    utils.assertThatSchemaPropertiesHaveDataTypes(expectedPropsStep2, schemaClass);
+  }
+
+  @Test
+  public void shouldBatchObjectsWithNestedProperties_NoSchema1() {
+    WeaviateClass schemaClass;
+    String className = "ClassWithObjectProperty";
+    Map<String, String> expectedProps = new HashMap<String, String>() {{
+      put("name", DataType.TEXT);
+      put("objectProperty", DataType.OBJECT);
+      put("objectProperty.nestedInt", DataType.NUMBER); // autoschema determines type as number
+      put("objectProperty.nestedNumber", DataType.NUMBER);
+      put("objectProperty.nestedText", DataType.TEXT);
+      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+      put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
+      put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
+      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+    }};
+
+    // schema created after adding objects
+    ObjectGetResponse[] objects = utils.batchObjects(client, utils.nestedObject1(className), utils.nestedObject2(className));
+    utils.assertThatObjectsAreSimilar(utils.expectedNestedObject1(className), objects[0]);
+    utils.assertThatObjectsAreSimilar(utils.expectedNestedObject2(className), objects[1]);
+    schemaClass = utils.getClass(client, className);
+    utils.assertThatSchemaPropertiesHaveDataTypes(expectedProps, schemaClass);
+  }
+
+  @Test
+  public void shouldBatchObjectsWithNestedProperties_NoSchema2() {
+    WeaviateClass schemaClass;
+    String className = "ClassWithObjectProperty";
+    Map<String, String> expectedProps = new HashMap<String, String>() {{
+      put("name", DataType.TEXT);
+      put("objectProperty", DataType.OBJECT);
+      put("objectProperty.nestedInt", DataType.NUMBER); // autoschema determines type as number
+      put("objectProperty.nestedNumber", DataType.NUMBER);
+      put("objectProperty.nestedText", DataType.TEXT);
+      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+      put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
+      put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
+      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+    }};
+
+    // schema created after adding objects
+    ObjectGetResponse[] objects = utils.batchObjects(client, utils.nestedObject2(className), utils.nestedObject1(className));
+    utils.assertThatObjectsAreSimilar(utils.expectedNestedObject2(className), objects[0]);
+    utils.assertThatObjectsAreSimilar(utils.expectedNestedObject1(className), objects[1]);
+    schemaClass = utils.getClass(client, className);
+    utils.assertThatSchemaPropertiesHaveDataTypes(expectedProps, schemaClass);
   }
 }
