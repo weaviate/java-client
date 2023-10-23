@@ -8,19 +8,26 @@ public class Config {
   private static final int DEFAULT_TIMEOUT_SECONDS = 60;
   @Getter
   private final String scheme;
+  @Getter
   private final String host;
   private final String version;
+  @Getter
   private final Map<String, String> headers;
+  @Getter
   private final int connectionTimeout;
+  @Getter
   private final int connectionRequestTimeout;
+  @Getter
   private final int socketTimeout;
+  @Getter
   private String proxyHost;
+  @Getter
   private int proxyPort;
+  @Getter
   private String proxyScheme;
   private boolean useGRPC;
   @Getter
   private String grpcAddress;
-
 
   public Config(String scheme, String host) {
     this(scheme, host, null, DEFAULT_TIMEOUT_SECONDS, DEFAULT_TIMEOUT_SECONDS, DEFAULT_TIMEOUT_SECONDS);
@@ -55,42 +62,10 @@ public class Config {
     return scheme + "://" + host + "/" + version;
   }
 
-  public String getHost() {
-    return host;
-  }
-
-  public Map<String, String> getHeaders() {
-    return headers;
-  }
-
-  public int getConnectionTimeout() {
-    return connectionTimeout;
-  }
-
-  public int getConnectionRequestTimeout() {
-    return connectionRequestTimeout;
-  }
-
-  public int getSocketTimeout() {
-    return socketTimeout;
-  }
-
   public void setProxy(String proxyHost, int proxyPort, String proxyScheme) {
     this.proxyHost = proxyHost;
     this.proxyPort = proxyPort;
     this.proxyScheme = proxyScheme;
-  }
-
-  public String getProxyHost() {
-    return proxyHost;
-  }
-
-  public int getProxyPort() {
-    return proxyPort;
-  }
-
-  public String getProxyScheme() {
-    return proxyScheme;
   }
 
   public boolean useGRPC() {

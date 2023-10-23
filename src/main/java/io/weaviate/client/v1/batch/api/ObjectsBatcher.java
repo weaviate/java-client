@@ -1,7 +1,7 @@
 package io.weaviate.client.v1.batch.api;
 
 import io.weaviate.client.base.grpc.GrpcClient;
-import io.weaviate.grpc.protocol.WeaviateGrpc;
+import io.weaviate.grpc.protocol.v1.WeaviateGrpc;
 import io.weaviate.client.v1.batch.grpc.BatchObjectConverter;
 import io.weaviate.client.v1.batch.model.ObjectGetResponse;
 import io.weaviate.client.v1.batch.model.ObjectGetResponseStatus;
@@ -9,8 +9,8 @@ import io.weaviate.client.v1.batch.model.ObjectsBatchRequestBody;
 import io.weaviate.client.v1.batch.model.ObjectsGetResponseAO2Result;
 import io.weaviate.client.v1.batch.util.ObjectsPath;
 import io.weaviate.client.v1.data.replication.model.ConsistencyLevel;
-import io.weaviate.grpc.protocol.WeaviateProtoBase;
-import io.weaviate.grpc.protocol.WeaviateProtoBatch;
+import io.weaviate.grpc.protocol.v1.WeaviateProtoBase;
+import io.weaviate.grpc.protocol.v1.WeaviateProtoBatch;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -307,8 +307,8 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
     WeaviateProtoBatch.BatchObjectsRequest batchObjectsRequest = batchObjectsRequestBuilder.build();
     WeaviateProtoBatch.BatchObjectsReply batchObjectsReply = this.grpcClient.batchObjects(batchObjectsRequest);
 
-    List<WeaviateErrorMessage> weaviateErrorMessages = batchObjectsReply.getResultsList().stream()
-      .map(WeaviateProtoBatch.BatchObjectsReply.BatchResults::getError)
+    List<WeaviateErrorMessage> weaviateErrorMessages = batchObjectsReply.getErrorsList().stream()
+      .map(WeaviateProtoBatch.BatchObjectsReply.BatchError::getError)
       .filter(e -> !e.isEmpty())
       .map(msg -> WeaviateErrorMessage.builder().message(msg).build())
       .collect(Collectors.toList());

@@ -5,6 +5,8 @@ import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.batch.model.ObjectGetResponse;
 import io.weaviate.client.v1.data.model.WeaviateObject;
+import io.weaviate.client.v1.schema.model.Property;
+import io.weaviate.client.v1.schema.model.WeaviateClass;
 import io.weaviate.integration.client.WeaviateTestGenerics;
 import java.io.File;
 import java.util.List;
@@ -43,20 +45,71 @@ public class ClientBatchGrpcCreateTest {
   }
 
   @Test
+  public void shouldCreateBatchWithNestedObjectUsingGRPC() {
+    testCreateBatchWithNested(true);
+  }
+
+  @Test
+  public void shouldCreateBatchWithNestedObjectAndNestedArrayObjectUsingGRPC() {
+    testCreateBatchWithNestedAndNestArrayObject(true);
+  }
+
+  @Test
   public void shouldCreateBatchUsingRest() {
     testCreateBatch(false);
   }
 
+  @Test
+  public void shouldCreateBatchWithNestedObjectUsingRest() {
+    testCreateBatchWithNested(false);
+  }
+
+  @Test
+  public void shouldCreateBatchWithNestedObjectAndNestedArrayObjectUsingRest() {
+    testCreateBatchWithNestedAndNestArrayObject(false);
+  }
+
   private void testCreateBatch(Boolean useGRPC) {
+    WeaviateTestGenerics.AllPropertiesSchema testData = new WeaviateTestGenerics.AllPropertiesSchema();
+    String className = testData.CLASS_NAME;
+    List<Property> properties = testData.allProperties();
+    WeaviateObject[] objects = testData.objects();
+    testCreateBatch(useGRPC, className, properties, objects);
+  }
+
+  private void testCreateBatchWithNested(Boolean useGRPC) {
+    WeaviateTestGenerics.AllPropertiesSchema testData = new WeaviateTestGenerics.AllPropertiesSchema();
+    String className = testData.CLASS_NAME;
+    List<Property> properties = testData.allPropertiesWithNestedObject();
+    WeaviateObject[] objects = testData.objectsWithNestedObject();
+    testCreateBatch(useGRPC, className, properties, objects);
+  }
+
+  private void testCreateBatchWithNestedAndNestArrayObject(Boolean useGRPC) {
+    WeaviateTestGenerics.AllPropertiesSchema testData = new WeaviateTestGenerics.AllPropertiesSchema();
+    String className = testData.CLASS_NAME;
+    List<Property> properties = testData.allPropertiesWithNestedObjectAndNestedArrayObject();
+    WeaviateObject[] objects = testData.objectsWithNestedObjectAndNestedArrayObject();
+    testCreateBatch(useGRPC, className, properties, objects);
+  }
+
+  private void testCreateBatch(Boolean useGRPC, String className, List<Property> properties, WeaviateObject[] objects) {
     Config config = new Config("http", host + ":" + port);
     config.setUseGRPC(useGRPC);
     config.setGrpcAddress(host + ":" + grpcPort);
     WeaviateClient client = new WeaviateClient(config);
     // create schema
-    WeaviateTestGenerics.AllPropertiesSchema testData = new WeaviateTestGenerics.AllPropertiesSchema();
-    testData.createSchema(client);
+    Result<Boolean> createResult = client.schema().classCreator()
+      .withClass(WeaviateClass.builder()
+        .className(className)
+        .properties(properties)
+        .build()
+      )
+      .run();
+    assertThat(createResult).isNotNull()
+      .returns(false, Result::hasErrors)
+      .returns(true, Result::getResult);
 
-    WeaviateObject[] objects = testData.objects();
     Result<ObjectGetResponse[]> result = client.batch().objectsBatcher()
       .withObjects(objects)
       .run();
@@ -80,7 +133,7 @@ public class ClientBatchGrpcCreateTest {
         });
     }
     // clean up
-    Result<Boolean> delete = client.schema().classDeleter().withClassName(testData.CLASS_NAME).run();
+    Result<Boolean> delete = client.schema().classDeleter().withClassName(className).run();
     assertThat(delete).isNotNull()
       .returns(false, Result::hasErrors)
       .extracting(Result::getResult).isEqualTo(Boolean.TRUE);

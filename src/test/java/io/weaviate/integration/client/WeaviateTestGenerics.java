@@ -1,6 +1,6 @@
 package io.weaviate.integration.client;
 
-import io.weaviate.client.Config;
+import com.google.gson.Gson;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.batch.model.ObjectGetResponse;
@@ -15,6 +15,10 @@ import io.weaviate.client.v1.schema.model.Tenant;
 import io.weaviate.client.v1.schema.model.Tokenization;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +36,7 @@ import java.util.stream.IntStream;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
+import org.jetbrains.annotations.NotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -770,9 +775,6 @@ public class WeaviateTestGenerics {
 
     public String REF_CLASS = "RefClass";
     public String CLASS_NAME = "AllProperties";
-    public void createSchema(WeaviateClient client) {
-      createAllPropertiesClass(client);
-    }
 
     public void createSchemaWithRefClass(WeaviateClient client) {
       createAllPropertiesClass(client);
@@ -783,70 +785,7 @@ public class WeaviateTestGenerics {
       Result<Boolean> createResult = client.schema().classCreator()
         .withClass(WeaviateClass.builder()
           .className(CLASS_NAME)
-          .properties(Arrays.asList(
-            Property.builder()
-              .name("bool")
-              .dataType(Collections.singletonList(DataType.BOOLEAN))
-              .build(),
-            Property.builder()
-              .name("bools")
-              .dataType(Collections.singletonList(DataType.BOOLEAN_ARRAY))
-              .build(),
-
-            Property.builder()
-              .name("int")
-              .dataType(Collections.singletonList(DataType.INT))
-              .build(),
-            Property.builder()
-              .name("ints")
-              .dataType(Collections.singletonList(DataType.INT_ARRAY))
-              .build(),
-
-            Property.builder()
-              .name("number")
-              .dataType(Collections.singletonList(DataType.NUMBER))
-              .build(),
-            Property.builder()
-              .name("numbers")
-              .dataType(Collections.singletonList(DataType.NUMBER_ARRAY))
-              .build(),
-
-            Property.builder()
-              .name("string")
-              .dataType(Collections.singletonList(DataType.STRING))
-              .build(),
-            Property.builder()
-              .name("strings")
-              .dataType(Collections.singletonList(DataType.STRING_ARRAY))
-              .build(),
-
-            Property.builder()
-              .name("text")
-              .dataType(Collections.singletonList(DataType.TEXT))
-              .build(),
-            Property.builder()
-              .name("texts")
-              .dataType(Collections.singletonList(DataType.TEXT_ARRAY))
-              .build(),
-
-            Property.builder()
-              .name("date")
-              .dataType(Collections.singletonList(DataType.DATE))
-              .build(),
-            Property.builder()
-              .name("dates")
-              .dataType(Collections.singletonList(DataType.DATE_ARRAY))
-              .build(),
-
-            Property.builder()
-              .name("uuid")
-              .dataType(Collections.singletonList(DataType.UUID))
-              .build(),
-            Property.builder()
-              .name("uuids")
-              .dataType(Collections.singletonList(DataType.UUID_ARRAY))
-              .build()
-          ))
+          .properties(allProperties())
           .build()
         )
         .run();
@@ -854,6 +793,107 @@ public class WeaviateTestGenerics {
       assertThat(createResult).isNotNull()
         .returns(false, Result::hasErrors)
         .returns(true, Result::getResult);
+    }
+
+    public List<Property> allProperties() {
+      return Arrays.asList(
+        Property.builder()
+          .name("bool")
+          .dataType(Collections.singletonList(DataType.BOOLEAN))
+          .build(),
+        Property.builder()
+          .name("bools")
+          .dataType(Collections.singletonList(DataType.BOOLEAN_ARRAY))
+          .build(),
+
+        Property.builder()
+          .name("int")
+          .dataType(Collections.singletonList(DataType.INT))
+          .build(),
+        Property.builder()
+          .name("ints")
+          .dataType(Collections.singletonList(DataType.INT_ARRAY))
+          .build(),
+
+        Property.builder()
+          .name("number")
+          .dataType(Collections.singletonList(DataType.NUMBER))
+          .build(),
+        Property.builder()
+          .name("numbers")
+          .dataType(Collections.singletonList(DataType.NUMBER_ARRAY))
+          .build(),
+
+        Property.builder()
+          .name("string")
+          .dataType(Collections.singletonList(DataType.STRING))
+          .build(),
+        Property.builder()
+          .name("strings")
+          .dataType(Collections.singletonList(DataType.STRING_ARRAY))
+          .build(),
+
+        Property.builder()
+          .name("text")
+          .dataType(Collections.singletonList(DataType.TEXT))
+          .build(),
+        Property.builder()
+          .name("texts")
+          .dataType(Collections.singletonList(DataType.TEXT_ARRAY))
+          .build(),
+
+        Property.builder()
+          .name("date")
+          .dataType(Collections.singletonList(DataType.DATE))
+          .build(),
+        Property.builder()
+          .name("dates")
+          .dataType(Collections.singletonList(DataType.DATE_ARRAY))
+          .build(),
+
+        Property.builder()
+          .name("uuid")
+          .dataType(Collections.singletonList(DataType.UUID))
+          .build(),
+        Property.builder()
+          .name("uuids")
+          .dataType(Collections.singletonList(DataType.UUID_ARRAY))
+          .build()
+      );
+    }
+
+    public List<Property> allPropertiesWithNestedObject() {
+      Property objectProperty = Property.builder()
+        .name("objectProperty")
+        .dataType(Collections.singletonList(DataType.OBJECT))
+        .nestedProperties(Arrays.asList(
+          Property.NestedProperty.builder()
+            .name("firstName")
+            .dataType(Arrays.asList(DataType.TEXT))
+            .build()
+        ))
+        .build();
+      List<Property> props = new ArrayList<>();
+      props.addAll(allProperties());
+      props.add(objectProperty);
+      return props;
+    }
+
+    public List<Property> allPropertiesWithNestedObjectAndNestedArrayObject() {
+      Property objectArrayProperty = Property.builder()
+        .name("objectArrayProperty")
+        .dataType(Collections.singletonList(DataType.OBJECT_ARRAY))
+        .nestedProperties(Arrays.asList(
+          Property.NestedProperty.builder()
+            .name("firstName")
+            .dataType(Arrays.asList(DataType.TEXT))
+            .build()
+        ))
+        .build();
+      List<Property> props = new ArrayList<>();
+      props.addAll(allPropertiesWithNestedObject());
+      props.add(objectArrayProperty);
+      return props;
     }
 
     private void createRefClass(WeaviateClient client) {
@@ -982,6 +1022,36 @@ public class WeaviateTestGenerics {
       ).toArray(WeaviateObject[]::new);
 
       return objects;
+    }
+
+    public WeaviateObject[] objectsWithNestedObject() {
+      try {
+        File jsonFile = new File("src/test/resources/json/nested-one-object.json");
+        InputStreamReader reader = new InputStreamReader(Files.newInputStream(jsonFile.toPath()));
+        final Object nestedOneObject = new Gson().fromJson(reader, Object.class);
+        WeaviateObject[] objects = objects();
+        Arrays.stream(objects).forEach(obj -> {
+          obj.getProperties().put("objectProperty", nestedOneObject);
+        });
+        return objects;
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    public WeaviateObject[] objectsWithNestedObjectAndNestedArrayObject() {
+      try {
+        File jsonFile = new File("src/test/resources/json/nested-array-object.json");
+        InputStreamReader reader = new InputStreamReader(Files.newInputStream(jsonFile.toPath()));
+        final Object nestedArrayObject = new Gson().fromJson(reader, Object.class);
+        WeaviateObject[] objects = objects();
+        Arrays.stream(objects).forEach(obj -> {
+          obj.getProperties().put("objectArrayProperty", nestedArrayObject);
+        });
+        return objects;
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
     }
   }
 

@@ -10,7 +10,7 @@ services:
       - --scheme
       - http
       - --write-timeout=600s
-    image: semitechnologies/weaviate:preview-adds-support-for-object-object-data-types-8a40c6b
+    image: semitechnologies/weaviate:preview-fix-grpc-batch-api-autoschema-77dcea7
     restart: on-failure:0
     environment:
       LOG_LEVEL: 'debug'
@@ -41,7 +41,7 @@ services:
       - '8088'
       - --scheme
       - http
-    image: semitechnologies/weaviate:preview-adds-support-for-object-object-data-types-8a40c6b
+    image: semitechnologies/weaviate:preview-fix-grpc-batch-api-autoschema-77dcea7
     restart: on-failure:0
     environment:
       LOG_LEVEL: 'debug'
