@@ -23,19 +23,21 @@ public class ClientBatchGrpcCreateTest {
 
   private static String host;
   private static Integer port;
+  private static String grpcHost;
   private static Integer grpcPort;
 
   @ClassRule
   public static DockerComposeContainer compose = new DockerComposeContainer(
     new File("src/test/resources/docker-compose-test.yaml")
   ).withExposedService("weaviate_1", 8080, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200))
-    .withExposedService("weaviate_1", 50051)
+    .withExposedService("weaviate_1", 50051, Wait.forListeningPort())
     .withTailChildContainers(true);
 
   @Before
   public void before() {
     host = compose.getServiceHost("weaviate_1", 8080);
     port = compose.getServicePort("weaviate_1", 8080);
+    grpcHost = compose.getServiceHost("weaviate_1", 50051);
     grpcPort = compose.getServicePort("weaviate_1", 50051);
   }
 
@@ -96,7 +98,7 @@ public class ClientBatchGrpcCreateTest {
   private void testCreateBatch(Boolean useGRPC, String className, List<Property> properties, WeaviateObject[] objects) {
     Config config = new Config("http", host + ":" + port);
     config.setUseGRPC(useGRPC);
-    config.setGrpcAddress(host + ":" + grpcPort);
+    config.setGrpcAddress(grpcHost + ":" + grpcPort);
     WeaviateClient client = new WeaviateClient(config);
     // create schema
     Result<Boolean> createResult = client.schema().classCreator()

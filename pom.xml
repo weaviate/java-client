@@ -61,23 +61,22 @@
     <httpclient.version>4.5.14</httpclient.version>
     <lang3.version>3.13.0</lang3.version>
     <junit.version>5.10.0</junit.version>
-    <testcontainers.version>1.19.0</testcontainers.version>
+    <testcontainers.version>1.19.1</testcontainers.version>
     <assertj-core.version>3.24.2</assertj-core.version>
     <jparams.version>1.0.4</jparams.version>
-    <mockito.version>5.5.0</mockito.version>
+    <mockito.version>5.6.0</mockito.version>
     <slf4j.version>2.0.9</slf4j.version>
     <logback.version>1.4.11</logback.version>
     <mock-server.version>5.14.0</mock-server.version>
-    <jackson.version>2.15.2</jackson.version>
-    <oauth2-oidc-sdk.version>10.15</oauth2-oidc-sdk.version>
+    <jackson.version>2.15.3</jackson.version>
+    <oauth2-oidc-sdk.version>11.4</oauth2-oidc-sdk.version>
     <mock-server.version>5.15.0</mock-server.version>
     <jackson.version>2.15.2</jackson.version>
-    <protobuf.java.version>3.24.3</protobuf.java.version>
-    <grpc-netty-shaded.version>1.58.0</grpc-netty-shaded.version>
-    <grpc-protobuf.version>1.58.0</grpc-protobuf.version>
-    <grpc-stub.version>1.58.0</grpc-stub.version>
+    <protobuf.java.version>3.24.4</protobuf.java.version>
+    <grpc-netty-shaded.version>1.59.0</grpc-netty-shaded.version>
+    <grpc-protobuf.version>1.59.0</grpc-protobuf.version>
+    <grpc-stub.version>1.59.0</grpc-stub.version>
     <annotations-api.version>6.0.53</annotations-api.version>
-    <protocol-buffers-java.version>0.1.0</protocol-buffers-java.version>
   </properties>
 
   <dependencies>
@@ -210,6 +209,7 @@
             <pluginArtifact>io.grpc:protoc-gen-grpc-java:1.58.0:exe:${os.detected.classifier}</pluginArtifact>
             <outputDirectory>src/main/java</outputDirectory>
             <clearOutputDirectory>false</clearOutputDirectory>
+
           </configuration>
           <executions>
             <execution>
