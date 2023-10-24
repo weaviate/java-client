@@ -16,7 +16,7 @@ import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.testcontainers.containers.DockerComposeContainer;
+import org.testcontainers.containers.ComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
 public class ClientBatchGrpcCreateTest {
@@ -27,18 +27,18 @@ public class ClientBatchGrpcCreateTest {
   private static Integer grpcPort;
 
   @ClassRule
-  public static DockerComposeContainer compose = new DockerComposeContainer(
+  public static ComposeContainer compose = new ComposeContainer(
     new File("src/test/resources/docker-compose-test.yaml")
-  ).withExposedService("weaviate_1", 8080, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200))
-    .withExposedService("weaviate_1", 50051, Wait.forListeningPort())
+  ).withExposedService("weaviate-1", 8080, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200))
+    .withExposedService("weaviate-1", 50051, Wait.forListeningPort())
     .withTailChildContainers(true);
 
   @Before
   public void before() {
-    host = compose.getServiceHost("weaviate_1", 8080);
-    port = compose.getServicePort("weaviate_1", 8080);
-    grpcHost = compose.getServiceHost("weaviate_1", 50051);
-    grpcPort = compose.getServicePort("weaviate_1", 50051);
+    host = compose.getServiceHost("weaviate-1", 8080);
+    port = compose.getServicePort("weaviate-1", 8080);
+    grpcHost = compose.getServiceHost("weaviate-1", 50051);
+    grpcPort = compose.getServicePort("weaviate-1", 50051);
   }
 
   @Test
