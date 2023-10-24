@@ -72,6 +72,7 @@
     <oauth2-oidc-sdk.version>10.15</oauth2-oidc-sdk.version>
     <mock-server.version>5.15.0</mock-server.version>
     <jackson.version>2.15.2</jackson.version>
+    <protobuf.java.version>3.24.3</protobuf.java.version>
     <grpc-netty-shaded.version>1.58.0</grpc-netty-shaded.version>
     <grpc-protobuf.version>1.58.0</grpc-protobuf.version>
     <grpc-stub.version>1.58.0</grpc-stub.version>
@@ -81,9 +82,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>io.weaviate</groupId>
-      <artifactId>protocol-buffers-java</artifactId>
-      <version>${protocol-buffers-java.version}</version>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <version>${protobuf.java.version}</version>
     </dependency>
     <dependency>
         <groupId>io.grpc</groupId>
@@ -189,8 +190,38 @@
   </dependencies>
 
   <build>
+    <extensions>
+      <extension>
+        <groupId>kr.motd.maven</groupId>
+        <artifactId>os-maven-plugin</artifactId>
+        <version>1.7.1</version>
+      </extension>
+    </extensions>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>org.xolstice.maven.plugins</groupId>
+          <artifactId>protobuf-maven-plugin</artifactId>
+          <version>0.6.1</version>
+          <configuration>
+            <protocArtifact>com.google.protobuf:protoc:3.24.0:exe:${os.detected.classifier}</protocArtifact>
+            <outputDirectory>src/main/java</outputDirectory>
+            <pluginId>grpc-java</pluginId>
+            <pluginArtifact>io.grpc:protoc-gen-grpc-java:1.58.0:exe:${os.detected.classifier}</pluginArtifact>
+            <outputDirectory>src/main/java</outputDirectory>
+            <clearOutputDirectory>false</clearOutputDirectory>
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>compile</goal>
+                <goal>compile-custom</goal>
+                <goal>test-compile</goal>
+                <goal>test-compile-custom</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
         <plugin>
           <artifactId>maven-clean-plugin</artifactId>
           <version>3.1.0</version>
@@ -384,6 +415,10 @@
       <plugin>
         <groupId>org.projectlombok</groupId>
         <artifactId>lombok-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.xolstice.maven.plugins</groupId>
+        <artifactId>protobuf-maven-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
