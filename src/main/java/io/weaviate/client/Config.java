@@ -2,6 +2,7 @@ package io.weaviate.client;
 
 import java.util.Map;
 import lombok.Getter;
+import lombok.Setter;
 
 public class Config {
 
@@ -25,8 +26,9 @@ public class Config {
   private int proxyPort;
   @Getter
   private String proxyScheme;
+  @Setter
   private boolean useGRPC;
-  @Getter
+  @Getter @Setter
   private String grpcAddress;
 
   public Config(String scheme, String host) {
@@ -70,13 +72,5 @@ public class Config {
 
   public boolean useGRPC() {
     return this.useGRPC;
-  }
-
-  public void setUseGRPC(boolean useGRPC) {
-    this.useGRPC = useGRPC;
-  }
-
-  public void setGrpcAddress(String grpcAddress) {
-    this.grpcAddress = grpcAddress;
   }
 }

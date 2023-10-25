@@ -36,7 +36,6 @@ import java.util.stream.IntStream;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
-import org.jetbrains.annotations.NotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -777,15 +776,15 @@ public class WeaviateTestGenerics {
     public String CLASS_NAME = "AllProperties";
 
     public void createSchemaWithRefClass(WeaviateClient client) {
-      createAllPropertiesClass(client);
+      createClass(client);
       createRefClass(client);
     }
 
-    private void createAllPropertiesClass(WeaviateClient client) {
+    private void createClass(WeaviateClient client) {
       Result<Boolean> createResult = client.schema().classCreator()
         .withClass(WeaviateClass.builder()
           .className(CLASS_NAME)
-          .properties(allProperties())
+          .properties(properties())
           .build()
         )
         .run();
@@ -795,7 +794,7 @@ public class WeaviateTestGenerics {
         .returns(true, Result::getResult);
     }
 
-    public List<Property> allProperties() {
+    public List<Property> properties() {
       return Arrays.asList(
         Property.builder()
           .name("bool")
@@ -862,7 +861,7 @@ public class WeaviateTestGenerics {
       );
     }
 
-    public List<Property> allPropertiesWithNestedObject() {
+    public List<Property> propertiesWithNestedObject() {
       Property objectProperty = Property.builder()
         .name("objectProperty")
         .dataType(Collections.singletonList(DataType.OBJECT))
@@ -874,12 +873,12 @@ public class WeaviateTestGenerics {
         ))
         .build();
       List<Property> props = new ArrayList<>();
-      props.addAll(allProperties());
+      props.addAll(properties());
       props.add(objectProperty);
       return props;
     }
 
-    public List<Property> allPropertiesWithNestedObjectAndNestedArrayObject() {
+    public List<Property> propertiesWithNestedObjectAndNestedArrayObject() {
       Property objectArrayProperty = Property.builder()
         .name("objectArrayProperty")
         .dataType(Collections.singletonList(DataType.OBJECT_ARRAY))
@@ -891,7 +890,7 @@ public class WeaviateTestGenerics {
         ))
         .build();
       List<Property> props = new ArrayList<>();
-      props.addAll(allPropertiesWithNestedObject());
+      props.addAll(propertiesWithNestedObject());
       props.add(objectArrayProperty);
       return props;
     }

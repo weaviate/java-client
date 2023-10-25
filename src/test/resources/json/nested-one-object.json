@@ -3,11 +3,11 @@
   "lastName": "Smith",
   "profession": "Software Engineer",
   "description": "Experienced software engineer with a passion for coding and problem-solving.",
-  "phone": {
+  "phoneAsObject": {
     "input": "020 1234567",
     "defaultCountry": "us"
   },
-  "location": {
+  "locationAsObject": {
     "latitude": 52.366667,
     "longitude": 4.9
   },

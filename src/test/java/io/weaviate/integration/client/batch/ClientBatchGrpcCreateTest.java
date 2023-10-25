@@ -74,7 +74,7 @@ public class ClientBatchGrpcCreateTest {
   private void testCreateBatch(Boolean useGRPC) {
     WeaviateTestGenerics.AllPropertiesSchema testData = new WeaviateTestGenerics.AllPropertiesSchema();
     String className = testData.CLASS_NAME;
-    List<Property> properties = testData.allProperties();
+    List<Property> properties = testData.properties();
     WeaviateObject[] objects = testData.objects();
     testCreateBatch(useGRPC, className, properties, objects);
   }
@@ -82,7 +82,7 @@ public class ClientBatchGrpcCreateTest {
   private void testCreateBatchWithNested(Boolean useGRPC) {
     WeaviateTestGenerics.AllPropertiesSchema testData = new WeaviateTestGenerics.AllPropertiesSchema();
     String className = testData.CLASS_NAME;
-    List<Property> properties = testData.allPropertiesWithNestedObject();
+    List<Property> properties = testData.propertiesWithNestedObject();
     WeaviateObject[] objects = testData.objectsWithNestedObject();
     testCreateBatch(useGRPC, className, properties, objects);
   }
@@ -90,7 +90,7 @@ public class ClientBatchGrpcCreateTest {
   private void testCreateBatchWithNestedAndNestArrayObject(Boolean useGRPC) {
     WeaviateTestGenerics.AllPropertiesSchema testData = new WeaviateTestGenerics.AllPropertiesSchema();
     String className = testData.CLASS_NAME;
-    List<Property> properties = testData.allPropertiesWithNestedObjectAndNestedArrayObject();
+    List<Property> properties = testData.propertiesWithNestedObjectAndNestedArrayObject();
     WeaviateObject[] objects = testData.objectsWithNestedObjectAndNestedArrayObject();
     testCreateBatch(useGRPC, className, properties, objects);
   }
@@ -122,7 +122,7 @@ public class ClientBatchGrpcCreateTest {
 
     for (WeaviateObject obj : objects) {
       Result<List<WeaviateObject>> resultObj = client.data().objectsGetter()
-        .withID(obj.getId()).withClassName(obj.getTenant())
+        .withID(obj.getId()).withClassName(obj.getClassName())
         .run();
       assertThat(resultObj).isNotNull()
         .returns(false, Result::hasErrors)

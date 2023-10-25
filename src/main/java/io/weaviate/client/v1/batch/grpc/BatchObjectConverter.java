@@ -80,10 +80,6 @@ public class BatchObjectConverter {
     for (Map.Entry<String, Object> e : properties.entrySet()) {
       String propName = e.getKey();
       Object propValue = e.getValue();
-      if (propName.equals("_lastUpdateTimeUnix") || propName.equals("_creationTimeUnix")) {
-        // ignore for now _creationTimeUnix / _lastUpdateTimeUnix
-        continue;
-      }
       if (propValue instanceof String) {
         nonRefProperties.put(propName, Value.newBuilder().setStringValue((String) propValue).build());
         continue;

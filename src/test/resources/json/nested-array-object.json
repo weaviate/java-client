@@ -4,11 +4,11 @@
     "lastName": "Smith",
     "profession": "Software Engineer",
     "description": "Experienced software engineer with a passion for coding and problem-solving.",
-    "phone": {
+    "phoneAsObject": {
       "input": "020 1234567",
       "defaultCountry": "us"
     },
-    "location": {
+    "locationAsObject": {
       "latitude": 52.366667,
       "longitude": 4.9
     },
@@ -19,11 +19,11 @@
     "lastName": "Johnson",
     "profession": "Graphic Designer",
     "description": "Creative graphic designer with a strong sense of visual aesthetics.",
-    "phone": {
+    "phoneAsObject": {
       "input": "020 1234599",
       "defaultCountry": "us"
     },
-    "location": {
+    "locationAsObject": {
       "latitude": 52.366667,
       "longitude": 4.19
     },
@@ -34,11 +34,11 @@
     "lastName": "Williams",
     "profession": "Accountant",
     "description": "Detail-oriented accountant with a knack for numbers and financial analysis.",
-    "phone": {
+    "phoneAsObject": {
       "input": "020 1234588",
       "defaultCountry": "us"
     },
-    "location": {
+    "locationAsObject": {
       "latitude": 52.366667,
       "longitude": 4.29
     },
@@ -49,11 +49,11 @@
     "lastName": "Davis",
     "profession": "Marketing Manager",
     "description": "Seasoned marketing manager specializing in digital marketing strategies.",
-    "phone": {
+    "phoneAsObject": {
       "input": "020 1234511",
       "defaultCountry": "us"
     },
-    "location": {
+    "locationAsObject": {
       "latitude": 52.366667,
       "longitude": 4.39
     },
@@ -64,11 +64,11 @@
     "lastName": "Brown",
     "profession": "Doctor",
     "description": "Dedicated medical doctor committed to providing top-quality healthcare.",
-    "phone": {
+    "phoneAsObject": {
       "input": "020 1234111",
       "defaultCountry": "us"
     },
-    "location": {
+    "locationAsObject": {
       "latitude": 52.366667,
       "longitude": 4.49
     },
@@ -79,11 +79,11 @@
     "lastName": "Miller",
     "profession": "Teacher",
     "description": "Passionate teacher with a love for educating and nurturing young minds.",
-    "phone": {
+    "phoneAsObject": {
       "input": "020 1234589",
       "defaultCountry": "us"
     },
-    "location": {
+    "locationAsObject": {
       "latitude": 52.366667,
       "longitude": 4.339
     },
@@ -94,11 +94,11 @@
     "lastName": "Jones",
     "profession": "Architect",
     "description": "Innovative architect known for creating breathtaking and sustainable designs.",
-    "phone": {
+    "phoneAsObject": {
       "input": "020 1234567",
       "defaultCountry": "us"
     },
-    "location": {
+    "locationAsObject": {
       "latitude": 52.366667,
       "longitude": 5.9
     },
@@ -109,11 +109,11 @@
     "lastName": "Wilson",
     "profession": "Chef",
     "description": "Talented chef renowned for crafting exquisite culinary delights.",
-    "phone": {
+    "phoneAsObject": {
       "input": "020 200300300",
       "defaultCountry": "us"
     },
-    "location": {
+    "locationAsObject": {
       "latitude": 52.366667,
       "longitude": 4.9009
     },
@@ -124,11 +124,11 @@
     "lastName": "Anderson",
     "profession": "Financial Analyst",
     "description": "Analytical financial analyst with expertise in investment strategies.",
-    "phone": {
+    "phoneAsObject": {
       "input": "020 1234444",
       "defaultCountry": "us"
     },
-    "location": {
+    "locationAsObject": {
       "latitude": 52.366667,
       "longitude": 6.9
     },
@@ -139,11 +139,11 @@
     "lastName": "Martin",
     "profession": "Journalist",
     "description": "Dedicated journalist with a passion for reporting the truth.",
-    "phone": {
+    "phoneAsObject": {
       "input": "020 1234909",
       "defaultCountry": "us"
     },
-    "location": {
+    "locationAsObject": {
       "latitude": 52.366667,
       "longitude": 44.9
     },
