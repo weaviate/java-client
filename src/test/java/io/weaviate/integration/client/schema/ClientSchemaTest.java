@@ -1,10 +1,12 @@
 package io.weaviate.integration.client.schema;
 
+import com.google.gson.Gson;
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.v1.batch.model.ObjectGetResponse;
+import io.weaviate.client.v1.data.model.ObjectsListResponse;
 import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.misc.model.BM25Config;
 import io.weaviate.client.v1.misc.model.DistanceType;
@@ -21,6 +23,9 @@ import io.weaviate.client.v1.schema.model.ShardStatus;
 import io.weaviate.client.v1.schema.model.ShardStatuses;
 import io.weaviate.client.v1.schema.model.Tokenization;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -1352,5 +1357,71 @@ public class ClientSchemaTest {
     utils.assertThatObjectsAreSimilar(utils.expectedNestedObject1(className), objects[1]);
     schemaClass = utils.getClass(client, className);
     utils.assertThatSchemaPropertiesHaveDataTypes(expectedProps, schemaClass);
+  }
+
+  @Test
+  public void shouldBatchObjectsWithNestedProperties_FromFileNestedObject() throws Exception {
+    // given
+    File jsonFile = new File("src/test/resources/json/nested-one-object.json");
+    InputStreamReader reader = new InputStreamReader(Files.newInputStream(jsonFile.toPath()));
+    // when
+    Object nestedOneObject = new Gson().fromJson(reader, Object.class);
+    String className = "ClassWithOneObjectPropertyFromFile";
+    String id = "d3ca0fc9-d392-4253-8f2a-0bce51efff80";
+
+    Map<String, Object> props = new HashMap<>();
+    props.put("name", "nested object from file");
+    props.put("objectProperty", nestedOneObject);
+
+    WeaviateObject weaviateObject = WeaviateObject.builder()
+      .className(className).id(id).properties(props).build();
+
+    // then
+    ObjectGetResponse[] objects = utils.batchObjects(client, weaviateObject);
+    assertThat(objects).isNotEmpty();
+    Result<List<WeaviateObject>> result = client.data().objectsGetter().withID(id).withClassName(className).run();
+    assertThat(result).isNotNull()
+      .returns(false, Result::hasErrors)
+      .extracting(Result::getResult)
+      .isNotNull()
+      .extracting(objs -> objs.get(0)).isNotNull()
+      .satisfies(obj -> {
+        assertThat(obj.getId()).isEqualTo(id);
+        assertThat(obj.getProperties()).isNotNull()
+          .extracting(p -> p.get("objectProperty")).isNotNull();
+      });
+  }
+
+  @Test
+  public void shouldBatchObjectsWithNestedProperties_FromFileNestedArrayObject() throws Exception {
+    // given
+    File jsonFile = new File("src/test/resources/json/nested-array-object.json");
+    InputStreamReader reader = new InputStreamReader(Files.newInputStream(jsonFile.toPath()));
+    // when
+    Object nestedArrayObject = new Gson().fromJson(reader, Object.class);
+    String className = "ClassWithOneObjectArrayPropertyFromFile";
+    String id = "d3ca0fc9-d392-4253-8f2a-0bce51efff80";
+
+    Map<String, Object> props = new HashMap<>();
+    props.put("name", "nested object from file");
+    props.put("objectArrayProperty", nestedArrayObject);
+
+    WeaviateObject weaviateObject = WeaviateObject.builder()
+      .className(className).id(id).properties(props).build();
+
+    // then
+    ObjectGetResponse[] objects = utils.batchObjects(client, weaviateObject);
+    assertThat(objects).isNotEmpty();
+    Result<List<WeaviateObject>> result = client.data().objectsGetter().withID(id).withClassName(className).run();
+    assertThat(result).isNotNull()
+      .returns(false, Result::hasErrors)
+      .extracting(Result::getResult)
+      .isNotNull()
+      .extracting(objs -> objs.get(0)).isNotNull()
+      .satisfies(obj -> {
+        assertThat(obj.getId()).isEqualTo(id);
+        assertThat(obj.getProperties()).isNotNull()
+          .extracting(p -> p.get("objectArrayProperty")).isNotNull();
+      });
   }
 }

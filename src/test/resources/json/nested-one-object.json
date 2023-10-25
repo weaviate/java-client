@@ -1,0 +1,15 @@
+{
+  "firstName": "John",
+  "lastName": "Smith",
+  "profession": "Software Engineer",
+  "description": "Experienced software engineer with a passion for coding and problem-solving.",
+  "phoneAsObject": {
+    "input": "020 1234567",
+    "defaultCountry": "us"
+  },
+  "locationAsObject": {
+    "latitude": 52.366667,
+    "longitude": 4.9
+  },
+  "city": "New York"
+}
