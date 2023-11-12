@@ -29,8 +29,8 @@ public class ClientBatchGrpcCreateTest {
   @ClassRule
   public static ComposeContainer compose = new ComposeContainer(
     new File("src/test/resources/docker-compose-test.yaml")
-  ).withExposedService("weaviate-1", 8080, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200))
-    .withExposedService("weaviate-1", 50051, Wait.forListeningPort())
+  ).withExposedService("weaviate-1", 8080, Wait.forListeningPorts(8080))
+    .withExposedService("weaviate-1", 50051, Wait.forListeningPorts(50051))
     .withTailChildContainers(true);
 
   @Before
@@ -40,6 +40,7 @@ public class ClientBatchGrpcCreateTest {
     grpcHost = compose.getServiceHost("weaviate-1", 50051);
     grpcPort = compose.getServicePort("weaviate-1", 50051);
   }
+
 
   @Test
   public void shouldCreateBatchUsingGRPC() {
@@ -57,6 +58,26 @@ public class ClientBatchGrpcCreateTest {
   }
 
   @Test
+  public void shouldCreateBatchWithCrossReferencesUsingGRPC() {
+    testCreateBatchWithReferenceWithoutNested(true);
+  }
+
+  @Test
+  public void shouldCreateBatchWithMultiCrossReferencesUsingGRPC() {
+    testCreateBatchWithMultiReferenceWithoutNested(true);
+  }
+
+  @Test
+  public void shouldCreateBatchWithCrossReferencesWithNestedPropertiesUsingGRPC() {
+    testCreateBatchWithReferenceWithNested(true);
+  }
+
+  @Test
+  public void shouldCreateBatchWithMultiCrossReferencesWithNestedPropertiesUsingGRPC() {
+    testCreateBatchWithMultiReferenceWithNested(true);
+  }
+
+  @Test
   public void shouldCreateBatchUsingRest() {
     testCreateBatch(false);
   }
@@ -71,35 +92,117 @@ public class ClientBatchGrpcCreateTest {
     testCreateBatchWithNestedAndNestArrayObject(false);
   }
 
+  @Test
+  public void shouldCreateBatchWithCrossReferencesUsingRest() {
+    testCreateBatchWithReferenceWithoutNested(false);
+  }
+
+  @Test
+  public void shouldCreateBatchWithMultiCrossReferencesUsingRest() {
+    testCreateBatchWithMultiReferenceWithoutNested(false);
+  }
+
+  @Test
+  public void shouldCreateBatchWithCrossReferencesWithNestedPropertiesUsingRest() {
+    testCreateBatchWithReferenceWithNested(false);
+  }
+
+  @Test
+  public void shouldCreateBatchWithMultiCrossReferencesWithNestedPropertiesUsingRest() {
+    testCreateBatchWithMultiReferenceWithNested(false);
+  }
+
+  private void testCreateBatchWithReferenceWithoutNested(Boolean useGRPC) {
+    WeaviateClient client = createClient(useGRPC);
+    WeaviateTestGenerics.AllPropertiesSchema testData = new WeaviateTestGenerics.AllPropertiesSchema();
+    // create ref class and populate objects
+    testData.createRefClassesWithObjects(client);
+    // create all properties class
+    String className = testData.CLASS_NAME;
+    List<Property> properties = testData.propertiesWithCrossReference();
+    WeaviateObject[] objects = testData.objectsWithCrossReferences();
+    testCreateBatch(client, className, properties, objects);
+    // delete ref class
+    testData.deleteRefClasses(client);
+  }
+
+  private void testCreateBatchWithMultiReferenceWithoutNested(Boolean useGRPC) {
+    WeaviateClient client = createClient(useGRPC);
+    WeaviateTestGenerics.AllPropertiesSchema testData = new WeaviateTestGenerics.AllPropertiesSchema();
+    // create ref class and populate objects
+    testData.createRefClassesWithObjects(client);
+    // create all properties class
+    String className = testData.CLASS_NAME;
+    List<Property> properties = testData.propertiesWithMultiCrossReference();
+    WeaviateObject[] objects = testData.objectsWithMultiCrossReferences();
+    testCreateBatch(client, className, properties, objects);
+    // delete ref class
+    testData.deleteRefClasses(client);
+  }
+
+  private void testCreateBatchWithReferenceWithNested(Boolean useGRPC) {
+    WeaviateClient client = createClient(useGRPC);
+    WeaviateTestGenerics.AllPropertiesSchema testData = new WeaviateTestGenerics.AllPropertiesSchema();
+    // create ref class and populate objects
+    testData.createRefClassesWithObjects(client);
+    // create all properties class
+    String className = testData.CLASS_NAME;
+    List<Property> properties = testData.propertiesWithCrossReferenceWithNestedProperties();
+    WeaviateObject[] objects = testData.objectsWithCrossReferencesWithNestedProperties();
+    testCreateBatch(client, className, properties, objects);
+    // delete ref class
+    testData.deleteRefClasses(client);
+  }
+
+  private void testCreateBatchWithMultiReferenceWithNested(Boolean useGRPC) {
+    WeaviateClient client = createClient(useGRPC);
+    WeaviateTestGenerics.AllPropertiesSchema testData = new WeaviateTestGenerics.AllPropertiesSchema();
+    // create ref class and populate objects
+    testData.createRefClassesWithObjects(client);
+    // create all properties class
+    String className = testData.CLASS_NAME;
+    List<Property> properties = testData.propertiesWithMultiCrossReferenceWithNestedProperties();
+    WeaviateObject[] objects = testData.objectsWithMultiCrossReferencesWithNestedProperties();
+    testCreateBatch(client, className, properties, objects);
+    // delete ref class
+    testData.deleteRefClasses(client);
+  }
+
   private void testCreateBatch(Boolean useGRPC) {
+    WeaviateClient client = createClient(useGRPC);
     WeaviateTestGenerics.AllPropertiesSchema testData = new WeaviateTestGenerics.AllPropertiesSchema();
     String className = testData.CLASS_NAME;
     List<Property> properties = testData.properties();
     WeaviateObject[] objects = testData.objects();
-    testCreateBatch(useGRPC, className, properties, objects);
+    testCreateBatch(client, className, properties, objects);
   }
 
   private void testCreateBatchWithNested(Boolean useGRPC) {
+    WeaviateClient client = createClient(useGRPC);
     WeaviateTestGenerics.AllPropertiesSchema testData = new WeaviateTestGenerics.AllPropertiesSchema();
     String className = testData.CLASS_NAME;
     List<Property> properties = testData.propertiesWithNestedObject();
     WeaviateObject[] objects = testData.objectsWithNestedObject();
-    testCreateBatch(useGRPC, className, properties, objects);
+    testCreateBatch(client, className, properties, objects);
   }
 
   private void testCreateBatchWithNestedAndNestArrayObject(Boolean useGRPC) {
+    WeaviateClient client = createClient(useGRPC);
     WeaviateTestGenerics.AllPropertiesSchema testData = new WeaviateTestGenerics.AllPropertiesSchema();
     String className = testData.CLASS_NAME;
     List<Property> properties = testData.propertiesWithNestedObjectAndNestedArrayObject();
     WeaviateObject[] objects = testData.objectsWithNestedObjectAndNestedArrayObject();
-    testCreateBatch(useGRPC, className, properties, objects);
+    testCreateBatch(client, className, properties, objects);
   }
 
-  private void testCreateBatch(Boolean useGRPC, String className, List<Property> properties, WeaviateObject[] objects) {
+  private WeaviateClient createClient(Boolean useGRPC) {
     Config config = new Config("http", host + ":" + port);
     config.setUseGRPC(useGRPC);
     config.setGrpcAddress(grpcHost + ":" + grpcPort);
-    WeaviateClient client = new WeaviateClient(config);
+    return new WeaviateClient(config);
+  }
+
+  private void testCreateBatch(WeaviateClient client, String className, List<Property> properties, WeaviateObject[] objects) {
     // create schema
     Result<Boolean> createResult = client.schema().classCreator()
       .withClass(WeaviateClass.builder()
@@ -132,6 +235,9 @@ public class ClientBatchGrpcCreateTest {
           assertThat(o.getId()).isEqualTo(obj.getId());
           assertThat(o.getProperties()).isNotNull()
             .extracting(Map::size).isEqualTo(obj.getProperties().size());
+          obj.getProperties().keySet().stream().forEach(propName -> {
+            assertThat(o.getProperties().get(propName)).isNotNull();
+          });
         });
     }
     // clean up

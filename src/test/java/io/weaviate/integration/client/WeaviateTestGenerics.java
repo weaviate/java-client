@@ -33,6 +33,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
@@ -773,12 +774,24 @@ public class WeaviateTestGenerics {
   public static class AllPropertiesSchema {
 
     public String REF_CLASS = "RefClass";
+    public String REF_CLASS_CATEGORY_PROPERTY = "category";
+    public String REF_CLASS_CATEGORY_PROPERTY_TYPE = DataType.TEXT;
+    public String REF_CLASS2 = "RefClass2";
+    public String REF_CLASS2_CATEGORY_PROPERTY = REF_CLASS_CATEGORY_PROPERTY;
+    public String REF_CLASS2_CATEGORY_PROPERTY_TYPE = REF_CLASS_CATEGORY_PROPERTY_TYPE;
     public String CLASS_NAME = "AllProperties";
+    public String HAS_REF_PROP = "hasRefProp";
+    public String HAS_REF_PROP2 = "hasRefProp2";
 
-    public void createSchemaWithRefClass(WeaviateClient client) {
-      createClass(client);
-      createRefClass(client);
-    }
+    public String REF_ID1 = "a0000000-0000-0000-0000-000000000001";
+    public String REF_ID2 = "a0000000-0000-0000-0000-000000000002";
+    public String REF_ID3 = "a0000000-0000-0000-0000-000000000003";
+    public String[] REF_IDS = new String[] {
+      REF_ID1, REF_ID2, REF_ID3
+    };
+    public String[] REF2_IDS = new String[] {
+      REF_ID1, REF_ID2, REF_ID3
+    };
 
     private void createClass(WeaviateClient client) {
       Result<Boolean> createResult = client.schema().classCreator()
@@ -861,6 +874,26 @@ public class WeaviateTestGenerics {
       );
     }
 
+    public List<Property> propertiesWithCrossReference() {
+      Property hasRefProperty = Property.builder()
+        .name(HAS_REF_PROP)
+        .dataType(Collections.singletonList(REF_CLASS))
+        .build();
+      List<Property> props = new ArrayList<>(properties());
+      props.add(hasRefProperty);
+      return props;
+    }
+
+    public List<Property> propertiesWithMultiCrossReference() {
+      Property hasRefProperty = Property.builder()
+        .name(HAS_REF_PROP2)
+        .dataType(Arrays.asList(REF_CLASS, REF_CLASS2))
+        .build();
+      List<Property> props = new ArrayList<>(propertiesWithCrossReference());
+      props.add(hasRefProperty);
+      return props;
+    }
+
     public List<Property> propertiesWithNestedObject() {
       Property objectProperty = Property.builder()
         .name("objectProperty")
@@ -872,8 +905,7 @@ public class WeaviateTestGenerics {
             .build()
         ))
         .build();
-      List<Property> props = new ArrayList<>();
-      props.addAll(properties());
+      List<Property> props = new ArrayList<>(properties());
       props.add(objectProperty);
       return props;
     }
@@ -889,25 +921,65 @@ public class WeaviateTestGenerics {
             .build()
         ))
         .build();
-      List<Property> props = new ArrayList<>();
-      props.addAll(propertiesWithNestedObject());
+      List<Property> props = new ArrayList<>(propertiesWithNestedObject());
       props.add(objectArrayProperty);
       return props;
     }
 
-    private void createRefClass(WeaviateClient client) {
-      WeaviateClass jeopardyClass = WeaviateClass.builder()
-        .className(REF_CLASS)
-        .properties(Arrays.asList(
+    public List<Property> propertiesWithCrossReferenceWithNestedProperties() {
+      Property hasRefProperty = Property.builder()
+        .name(HAS_REF_PROP)
+        .dataType(Collections.singletonList(REF_CLASS))
+        .build();
+      List<Property> props = new ArrayList<>(propertiesWithNestedObjectAndNestedArrayObject());
+      props.add(hasRefProperty);
+      return props;
+    }
+
+    public List<Property> propertiesWithMultiCrossReferenceWithNestedProperties() {
+      Property hasRefProperty2 = Property.builder()
+        .name(HAS_REF_PROP2)
+        .dataType(Arrays.asList(REF_CLASS, REF_CLASS2))
+        .build();
+      List<Property> props = new ArrayList<>(propertiesWithCrossReferenceWithNestedProperties());
+      props.add(hasRefProperty2);
+      return props;
+    }
+
+    public void createRefClassesWithObjects(WeaviateClient client) {
+      createRefClasses(client);
+      createRefClassObjects(client, REF_CLASS, REF_CLASS_CATEGORY_PROPERTY);
+      createRefClassObjects(client, REF_CLASS2, REF_CLASS2_CATEGORY_PROPERTY);
+    }
+
+    public void deleteRefClasses(WeaviateClient client) {
+      // clean up
+      Stream.of(REF_CLASS, REF_CLASS2).forEach(className -> {
+        Result<Boolean> delete = client.schema().classDeleter().withClassName(className).run();
+        assertThat(delete).isNotNull()
+          .returns(false, Result::hasErrors)
+          .extracting(Result::getResult).isEqualTo(Boolean.TRUE);
+      });
+    }
+
+    private void createRefClasses(WeaviateClient client) {
+      createRefClasses(client, REF_CLASS, REF_CLASS_CATEGORY_PROPERTY, REF_CLASS_CATEGORY_PROPERTY_TYPE);
+      createRefClasses(client, REF_CLASS2, REF_CLASS2_CATEGORY_PROPERTY, REF_CLASS2_CATEGORY_PROPERTY_TYPE);
+    }
+
+    private void createRefClasses(WeaviateClient client, String className, String propertyName, String propertyType) {
+      WeaviateClass refClass = WeaviateClass.builder()
+        .className(className)
+        .properties(Collections.singletonList(
           Property.builder()
-            .name("category")
-            .dataType(Arrays.asList(DataType.TEXT))
+            .name(propertyName)
+            .dataType(Collections.singletonList(propertyType))
             .build()
         ))
         .build();
 
       Result<Boolean> result = client.schema().classCreator()
-        .withClass(jeopardyClass)
+        .withClass(refClass)
         .run();
 
       assertThat(result).isNotNull()
@@ -915,6 +987,33 @@ public class WeaviateTestGenerics {
         .returns(false, Result::hasErrors)
         .withFailMessage(null)
         .returns(true, Result::getResult);
+    }
+
+    private void createRefClassObjects(WeaviateClient client, String className, String propertyName) {
+      String[] refIds = REF_IDS;
+      String[] categories = new String[]{
+        "science-fiction", "fantasy", "novel",
+      };
+
+      WeaviateObject[] objects = IntStream.range(0, refIds.length).mapToObj(i -> {
+          Map<String, Object> props = new HashMap<>();
+          props.put(propertyName, categories[i]);
+
+          return WeaviateObject.builder()
+            .className(className)
+            .id(refIds[i])
+            .properties(props)
+            .build();
+        }
+      ).toArray(WeaviateObject[]::new);
+
+      Result<ObjectGetResponse[]> result = client.batch().objectsBatcher()
+        .withObjects(objects)
+        .run();
+      assertThat(result).isNotNull()
+        .returns(false, Result::hasErrors)
+        .extracting(Result::getResult).asInstanceOf(ARRAY)
+        .hasSize(objects.length);
     }
 
     public WeaviateObject[] objects() {
@@ -1023,6 +1122,44 @@ public class WeaviateTestGenerics {
       return objects;
     }
 
+    private final List<Map<String, String>> createBeacon(String className, String id) {
+      Map<String, String> refProperty = new HashMap<>();
+      refProperty.put("beacon", String.format("weaviate://localhost/%s/%s", className, id));
+      return Collections.singletonList(refProperty);
+    }
+
+    private final List<Map<String, String>> createMultiRefBeacon(String className, String id, String className2, String id2) {
+      Map<String, String> refProperty = new HashMap<>();
+      refProperty.put("beacon", String.format("weaviate://localhost/%s/%s", className, id));
+      Map<String, String> refProperty2 = new HashMap<>();
+      refProperty2.put("beacon", String.format("weaviate://localhost/%s/%s", className2, id2));
+      return Arrays.asList(refProperty, refProperty2);
+    }
+
+    private WeaviateObject[] objectsWithCrossReferences(WeaviateObject[] objects) {
+      IntStream.range(0, objects.length)
+        .forEach(i -> {
+          objects[i].getProperties().put(HAS_REF_PROP, createBeacon(REF_CLASS, REF_IDS[0]));
+        });
+      return objects;
+    }
+
+    private WeaviateObject[] objectsWithMultiCrossReferences(WeaviateObject[] objects) {
+      IntStream.range(0, objects.length)
+        .forEach(i -> {
+          objects[i].getProperties().put(HAS_REF_PROP2, createMultiRefBeacon(REF_CLASS, REF_IDS[1], REF_CLASS2, REF2_IDS[2]));
+        });
+      return objects;
+    }
+
+    public WeaviateObject[] objectsWithCrossReferences() {
+      return objectsWithCrossReferences(objects());
+    }
+
+    public WeaviateObject[] objectsWithMultiCrossReferences() {
+      return objectsWithMultiCrossReferences(objectsWithCrossReferences());
+    }
+
     public WeaviateObject[] objectsWithNestedObject() {
       try {
         File jsonFile = new File("src/test/resources/json/nested-one-object.json");
@@ -1043,7 +1180,7 @@ public class WeaviateTestGenerics {
         File jsonFile = new File("src/test/resources/json/nested-array-object.json");
         InputStreamReader reader = new InputStreamReader(Files.newInputStream(jsonFile.toPath()));
         final Object nestedArrayObject = new Gson().fromJson(reader, Object.class);
-        WeaviateObject[] objects = objects();
+        WeaviateObject[] objects = objectsWithNestedObject();
         Arrays.stream(objects).forEach(obj -> {
           obj.getProperties().put("objectArrayProperty", nestedArrayObject);
         });
@@ -1051,6 +1188,14 @@ public class WeaviateTestGenerics {
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
+    }
+
+    public WeaviateObject[] objectsWithCrossReferencesWithNestedProperties() {
+      return objectsWithCrossReferences(objectsWithNestedObjectAndNestedArrayObject());
+    }
+
+    public WeaviateObject[] objectsWithMultiCrossReferencesWithNestedProperties() {
+      return objectsWithMultiCrossReferences(objectsWithCrossReferencesWithNestedProperties());
     }
   }
 
