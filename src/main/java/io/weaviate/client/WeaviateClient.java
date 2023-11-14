@@ -1,10 +1,12 @@
 package io.weaviate.client;
 
+import io.weaviate.client.base.grpc.GrpcClient;
 import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.base.http.builder.HttpApacheClientBuilder;
 import io.weaviate.client.base.http.impl.CommonsHttpClientImpl;
 import io.weaviate.client.base.util.DbVersionProvider;
 import io.weaviate.client.base.util.DbVersionSupport;
+import io.weaviate.client.grpc.protocol.v1.WeaviateGrpc;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.backup.Backup;
 import io.weaviate.client.v1.batch.Batch;
@@ -25,20 +27,26 @@ public class WeaviateClient {
   private final DbVersionProvider dbVersionProvider;
   private final DbVersionSupport dbVersionSupport;
   private final HttpClient httpClient;
+  private final WeaviateGrpc.WeaviateBlockingStub grpcClient;
 
   public WeaviateClient(Config config) {
-    this(config, new CommonsHttpClientImpl(config.getHeaders(), null, HttpApacheClientBuilder.build(config)));
+    this(config, new CommonsHttpClientImpl(config.getHeaders(), null, HttpApacheClientBuilder.build(config)), null);
   }
 
   public WeaviateClient(Config config, AccessTokenProvider tokenProvider) {
-    this(config, new CommonsHttpClientImpl(config.getHeaders(), tokenProvider, HttpApacheClientBuilder.build(config)));
+    this(config, new CommonsHttpClientImpl(config.getHeaders(), tokenProvider, HttpApacheClientBuilder.build(config)), tokenProvider);
   }
 
-  public WeaviateClient(Config config, HttpClient httpClient) {
+  public WeaviateClient(Config config, HttpClient httpClient, AccessTokenProvider tokenProvider) {
     this.config = config;
     this.httpClient = httpClient;
     dbVersionProvider = initDbVersionProvider();
     dbVersionSupport = new DbVersionSupport(dbVersionProvider);
+    if (this.config.useGRPC()) {
+      this.grpcClient = GrpcClient.create(config, tokenProvider);
+    } else {
+      this.grpcClient = null;
+    }
   }
 
   public Misc misc() {
@@ -56,7 +64,7 @@ public class WeaviateClient {
 
   public Batch batch() {
     dbVersionProvider.refresh();
-    return new Batch(httpClient, config, dbVersionSupport, data());
+    return new Batch(httpClient, config, dbVersionSupport, grpcClient, data());
   }
 
   public Backup backup() {
