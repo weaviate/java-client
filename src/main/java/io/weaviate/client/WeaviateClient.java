@@ -1,12 +1,10 @@
 package io.weaviate.client;
 
-import io.weaviate.client.base.grpc.GrpcClient;
 import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.base.http.builder.HttpApacheClientBuilder;
 import io.weaviate.client.base.http.impl.CommonsHttpClientImpl;
 import io.weaviate.client.base.util.DbVersionProvider;
 import io.weaviate.client.base.util.DbVersionSupport;
-import io.weaviate.client.grpc.protocol.v1.WeaviateGrpc;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.backup.Backup;
 import io.weaviate.client.v1.batch.Batch;
@@ -18,8 +16,6 @@ import io.weaviate.client.v1.graphql.GraphQL;
 import io.weaviate.client.v1.misc.Misc;
 import io.weaviate.client.v1.misc.api.MetaGetter;
 import io.weaviate.client.v1.schema.Schema;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Optional;
 
 public class WeaviateClient {
@@ -27,7 +23,7 @@ public class WeaviateClient {
   private final DbVersionProvider dbVersionProvider;
   private final DbVersionSupport dbVersionSupport;
   private final HttpClient httpClient;
-  private final WeaviateGrpc.WeaviateBlockingStub grpcClient;
+  private final AccessTokenProvider tokenProvider;
 
   public WeaviateClient(Config config) {
     this(config, new CommonsHttpClientImpl(config.getHeaders(), null, HttpApacheClientBuilder.build(config)), null);
@@ -42,11 +38,7 @@ public class WeaviateClient {
     this.httpClient = httpClient;
     dbVersionProvider = initDbVersionProvider();
     dbVersionSupport = new DbVersionSupport(dbVersionProvider);
-    if (this.config.useGRPC()) {
-      this.grpcClient = GrpcClient.create(config, tokenProvider);
-    } else {
-      this.grpcClient = null;
-    }
+    this.tokenProvider = tokenProvider;
   }
 
   public Misc misc() {
@@ -64,7 +56,7 @@ public class WeaviateClient {
 
   public Batch batch() {
     dbVersionProvider.refresh();
-    return new Batch(httpClient, config, dbVersionSupport, grpcClient, data());
+    return new Batch(httpClient, config, dbVersionSupport, tokenProvider, data());
   }
 
   public Backup backup() {

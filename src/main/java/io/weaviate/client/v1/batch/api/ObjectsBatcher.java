@@ -1,27 +1,5 @@
 package io.weaviate.client.v1.batch.api;
 
-import io.weaviate.client.base.grpc.GrpcClient;
-import io.weaviate.client.grpc.protocol.v1.WeaviateGrpc;
-import io.weaviate.client.v1.batch.grpc.BatchObjectConverter;
-import io.weaviate.client.v1.batch.model.ObjectGetResponse;
-import io.weaviate.client.v1.batch.model.ObjectGetResponseStatus;
-import io.weaviate.client.v1.batch.model.ObjectsBatchRequestBody;
-import io.weaviate.client.v1.batch.model.ObjectsGetResponseAO2Result;
-import io.weaviate.client.v1.batch.util.ObjectsPath;
-import io.weaviate.client.v1.data.replication.model.ConsistencyLevel;
-import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase;
-import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
-import lombok.experimental.FieldDefaults;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import io.weaviate.client.Config;
 import io.weaviate.client.base.BaseClient;
 import io.weaviate.client.base.ClientResult;
@@ -29,11 +7,21 @@ import io.weaviate.client.base.Response;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.base.WeaviateErrorResponse;
+import io.weaviate.client.base.grpc.GrpcClient;
 import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.base.util.Assert;
+import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase;
+import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
+import io.weaviate.client.v1.batch.grpc.BatchObjectConverter;
+import io.weaviate.client.v1.batch.model.ObjectGetResponse;
+import io.weaviate.client.v1.batch.model.ObjectGetResponseStatus;
+import io.weaviate.client.v1.batch.model.ObjectsBatchRequestBody;
+import io.weaviate.client.v1.batch.model.ObjectsGetResponseAO2Result;
+import io.weaviate.client.v1.batch.util.ObjectsPath;
 import io.weaviate.client.v1.data.Data;
 import io.weaviate.client.v1.data.model.WeaviateObject;
-
+import io.weaviate.client.v1.data.replication.model.ConsistencyLevel;
 import java.io.Closeable;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -53,6 +41,17 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.FieldDefaults;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
   implements ClientResult<ObjectGetResponse[]>, Closeable {
@@ -68,16 +67,18 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
   private final List<WeaviateObject> objects;
   private String consistencyLevel;
   private final List<CompletableFuture<Result<ObjectGetResponse[]>>> undoneFutures;
-  private final WeaviateGrpc.WeaviateBlockingStub grpcClient;
   private final boolean useGRPC;
+  private final AccessTokenProvider tokenProvider;
+  private final Config config;
 
 
   private ObjectsBatcher(HttpClient httpClient, Config config, Data data, ObjectsPath objectsPath,
-                         WeaviateGrpc.WeaviateBlockingStub grpcClient,
+                         AccessTokenProvider tokenProvider,
                          BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig) {
     super(httpClient, config);
+    this.config = config;
     this.useGRPC = config.useGRPC();
-    this.grpcClient = grpcClient;
+    this.tokenProvider = tokenProvider;
     this.data = data;
     this.objectsPath = objectsPath;
     this.objects = new ArrayList<>();
@@ -99,18 +100,18 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
   }
 
   public static ObjectsBatcher create(HttpClient httpClient, Config config, Data data, ObjectsPath objectsPath,
-                                      WeaviateGrpc.WeaviateBlockingStub grpcClient,
+                                      AccessTokenProvider tokenProvider,
                                       BatchRetriesConfig batchRetriesConfig) {
     Assert.requiredNotNull(batchRetriesConfig, "batchRetriesConfig");
-    return new ObjectsBatcher(httpClient, config, data, objectsPath, grpcClient, batchRetriesConfig, null);
+    return new ObjectsBatcher(httpClient, config, data, objectsPath, tokenProvider, batchRetriesConfig, null);
   }
 
   public static ObjectsBatcher createAuto(HttpClient httpClient, Config config, Data data, ObjectsPath objectsPath,
-                                          WeaviateGrpc.WeaviateBlockingStub grpcClient,
+                                          AccessTokenProvider tokenProvider,
                                           BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig) {
     Assert.requiredNotNull(batchRetriesConfig, "batchRetriesConfig");
     Assert.requiredNotNull(autoBatchConfig, "autoBatchConfig");
-    return new ObjectsBatcher(httpClient, config, data, objectsPath, grpcClient, batchRetriesConfig, autoBatchConfig);
+    return new ObjectsBatcher(httpClient, config, data, objectsPath, tokenProvider, batchRetriesConfig, autoBatchConfig);
   }
 
 
@@ -306,7 +307,13 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
     }
 
     WeaviateProtoBatch.BatchObjectsRequest batchObjectsRequest = batchObjectsRequestBuilder.build();
-    WeaviateProtoBatch.BatchObjectsReply batchObjectsReply = this.grpcClient.batchObjects(batchObjectsRequest);
+    WeaviateProtoBatch.BatchObjectsReply batchObjectsReply;
+    GrpcClient grpcClient = GrpcClient.create(this.config, this.tokenProvider);
+    try {
+      batchObjectsReply = grpcClient.batchObjects(batchObjectsRequest);
+    } finally {
+      grpcClient.shutdown();
+    }
 
     List<WeaviateErrorMessage> weaviateErrorMessages = batchObjectsReply.getErrorsList().stream()
       .map(WeaviateProtoBatch.BatchObjectsReply.BatchError::getError)
