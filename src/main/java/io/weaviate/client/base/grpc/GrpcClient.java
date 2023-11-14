@@ -6,12 +6,31 @@ import io.grpc.Metadata;
 import io.grpc.stub.MetadataUtils;
 import io.weaviate.client.Config;
 import io.weaviate.client.grpc.protocol.v1.WeaviateGrpc;
+import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import java.util.Map;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class GrpcClient {
+  WeaviateGrpc.WeaviateBlockingStub client;
+  ManagedChannel channel;
 
-  public static WeaviateGrpc.WeaviateBlockingStub create(Config config, AccessTokenProvider tokenProvider) {
+  private GrpcClient(WeaviateGrpc.WeaviateBlockingStub client, ManagedChannel channel) {
+    this.client = client;
+    this.channel = channel;
+  }
+
+  public WeaviateProtoBatch.BatchObjectsReply batchObjects(WeaviateProtoBatch.BatchObjectsRequest request) {
+    return this.client.batchObjects(request);
+  }
+
+  public void shutdown() {
+    this.channel.shutdown();
+  }
+
+  public static GrpcClient create(Config config, AccessTokenProvider tokenProvider) {
     Metadata headers = new Metadata();
     if (config.getHeaders() != null) {
       for (Map.Entry<String, String> e : config.getHeaders().entrySet()) {
@@ -29,7 +48,8 @@ public class GrpcClient {
     }
     ManagedChannel channel = channelBuilder.build();
     WeaviateGrpc.WeaviateBlockingStub blockingStub = WeaviateGrpc.newBlockingStub(channel);
-    return blockingStub.withInterceptors(MetadataUtils.newAttachHeadersInterceptor(headers));
+    WeaviateGrpc.WeaviateBlockingStub client = blockingStub.withInterceptors(MetadataUtils.newAttachHeadersInterceptor(headers));
+    return new GrpcClient(client, channel);
   }
 
   private static String getAddress(Config config) {
