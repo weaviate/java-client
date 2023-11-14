@@ -9,7 +9,7 @@ services:
     - '8080'
     - --scheme
     - http
-    image: semitechnologies/weaviate:preview-fix-grpc-batch-api-autoschema-77dcea7
+    image: semitechnologies/weaviate:1.22.3
     links:
       - "contextionary:contextionary"
     restart: on-failure:0
