@@ -68,17 +68,16 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
   private final List<WeaviateObject> objects;
   private String consistencyLevel;
   private final List<CompletableFuture<Result<ObjectGetResponse[]>>> undoneFutures;
-  private WeaviateGrpc.WeaviateBlockingStub grpcClient;
-  private boolean useGRPC;
+  private final WeaviateGrpc.WeaviateBlockingStub grpcClient;
+  private final boolean useGRPC;
 
 
   private ObjectsBatcher(HttpClient httpClient, Config config, Data data, ObjectsPath objectsPath,
+                         WeaviateGrpc.WeaviateBlockingStub grpcClient,
                          BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig) {
     super(httpClient, config);
-    if (config.useGRPC()) {
-      this.useGRPC = config.useGRPC();
-      this.grpcClient = GrpcClient.create(config);
-    }
+    this.useGRPC = config.useGRPC();
+    this.grpcClient = grpcClient;
     this.data = data;
     this.objectsPath = objectsPath;
     this.objects = new ArrayList<>();
@@ -100,16 +99,18 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
   }
 
   public static ObjectsBatcher create(HttpClient httpClient, Config config, Data data, ObjectsPath objectsPath,
+                                      WeaviateGrpc.WeaviateBlockingStub grpcClient,
                                       BatchRetriesConfig batchRetriesConfig) {
     Assert.requiredNotNull(batchRetriesConfig, "batchRetriesConfig");
-    return new ObjectsBatcher(httpClient, config, data, objectsPath, batchRetriesConfig, null);
+    return new ObjectsBatcher(httpClient, config, data, objectsPath, grpcClient, batchRetriesConfig, null);
   }
 
   public static ObjectsBatcher createAuto(HttpClient httpClient, Config config, Data data, ObjectsPath objectsPath,
+                                          WeaviateGrpc.WeaviateBlockingStub grpcClient,
                                           BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig) {
     Assert.requiredNotNull(batchRetriesConfig, "batchRetriesConfig");
     Assert.requiredNotNull(autoBatchConfig, "autoBatchConfig");
-    return new ObjectsBatcher(httpClient, config, data, objectsPath, batchRetriesConfig, autoBatchConfig);
+    return new ObjectsBatcher(httpClient, config, data, objectsPath, grpcClient, batchRetriesConfig, autoBatchConfig);
   }
 
 

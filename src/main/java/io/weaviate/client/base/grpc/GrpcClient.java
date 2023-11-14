@@ -6,16 +6,20 @@ import io.grpc.Metadata;
 import io.grpc.stub.MetadataUtils;
 import io.weaviate.client.Config;
 import io.weaviate.client.grpc.protocol.v1.WeaviateGrpc;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import java.util.Map;
 
 public class GrpcClient {
 
-  public static WeaviateGrpc.WeaviateBlockingStub create(Config config) {
+  public static WeaviateGrpc.WeaviateBlockingStub create(Config config, AccessTokenProvider tokenProvider) {
     Metadata headers = new Metadata();
     if (config.getHeaders() != null) {
       for (Map.Entry<String, String> e : config.getHeaders().entrySet()) {
         headers.put(Metadata.Key.of(e.getKey(), Metadata.ASCII_STRING_MARSHALLER), e.getValue());
       }
+    }
+    if (tokenProvider != null) {
+      headers.put(Metadata.Key.of("Authorization", Metadata.ASCII_STRING_MARSHALLER), String.format("Bearer %s", tokenProvider.getAccessToken()));
     }
     ManagedChannelBuilder<?> channelBuilder = ManagedChannelBuilder.forTarget(getAddress(config));
     if (config.isGRPCSecured()) {
