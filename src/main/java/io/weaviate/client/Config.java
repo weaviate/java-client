@@ -26,10 +26,10 @@ public class Config {
   private int proxyPort;
   @Getter
   private String proxyScheme;
-  @Setter
-  private boolean useGRPC;
   @Getter @Setter
-  private String grpcAddress;
+  private boolean gRPCSecured;
+  @Getter @Setter
+  private String gRPCHost;
 
   public Config(String scheme, String host) {
     this(scheme, host, null, DEFAULT_TIMEOUT_SECONDS, DEFAULT_TIMEOUT_SECONDS, DEFAULT_TIMEOUT_SECONDS);
@@ -49,7 +49,7 @@ public class Config {
     this.socketTimeout = socketTimeout;
   }
 
-  public Config(String scheme, String host, Map<String, String> headers, int timeout, boolean useGRPC) {
+  public Config(String scheme, String host, Map<String, String> headers, int timeout, boolean gRPCSecured, String gRPCHost) {
     this.scheme = scheme;
     this.host = host;
     this.version = "v1";
@@ -57,7 +57,8 @@ public class Config {
     this.connectionTimeout = timeout;
     this.connectionRequestTimeout = timeout;
     this.socketTimeout = timeout;
-    this.useGRPC = useGRPC;
+    this.gRPCSecured = gRPCSecured;
+    this.gRPCHost = gRPCHost;
   }
 
   public String getBaseURL() {
@@ -71,6 +72,6 @@ public class Config {
   }
 
   public boolean useGRPC() {
-    return this.useGRPC;
+    return this.gRPCHost != null && !this.gRPCHost.trim().isEmpty();
   }
 }

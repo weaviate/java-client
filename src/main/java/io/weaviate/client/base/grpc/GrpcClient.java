@@ -18,7 +18,7 @@ public class GrpcClient {
       }
     }
     ManagedChannelBuilder<?> channelBuilder = ManagedChannelBuilder.forTarget(getAddress(config));
-    if (config.getScheme().equals("https")) {
+    if (config.isGRPCSecured()) {
       channelBuilder = channelBuilder.useTransportSecurity();
     } else {
       channelBuilder.usePlaintext();
@@ -29,16 +29,16 @@ public class GrpcClient {
   }
 
   private static String getAddress(Config config) {
-    if (config.getGrpcAddress() != null) {
-      return config.getGrpcAddress();
-    }
-    String host = config.getHost();
-    if (!host.contains(":")) {
-      if (config.getScheme() != null && config.getScheme().equals("https")) {
+    if (config.getGRPCHost() != null) {
+      String host = config.getGRPCHost();
+      if (host.contains(":")) {
+        return host;
+      }
+      if (config.isGRPCSecured()) {
         return String.format("%s:443", host);
       }
       return String.format("%s:80", host);
     }
-    return host;
+    return "";
   }
 }

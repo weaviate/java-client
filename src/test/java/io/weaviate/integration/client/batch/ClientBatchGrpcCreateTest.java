@@ -197,8 +197,10 @@ public class ClientBatchGrpcCreateTest {
 
   private WeaviateClient createClient(Boolean useGRPC) {
     Config config = new Config("http", host + ":" + port);
-    config.setUseGRPC(useGRPC);
-    config.setGrpcAddress(grpcHost + ":" + grpcPort);
+    if (useGRPC) {
+      config.setGRPCSecured(false);
+      config.setGRPCHost(grpcHost + ":" + grpcPort);
+    }
     return new WeaviateClient(config);
   }
 
