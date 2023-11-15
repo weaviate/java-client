@@ -49,6 +49,10 @@ public class Config {
     this.socketTimeout = socketTimeout;
   }
 
+  public Config(String scheme, String host, Map<String, String> headers, int timeout) {
+    this(scheme, host, headers, timeout, false, "");
+  }
+
   public Config(String scheme, String host, Map<String, String> headers, int timeout, boolean gRPCSecured, String gRPCHost) {
     this.scheme = scheme;
     this.host = host;
