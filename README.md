@@ -10,7 +10,7 @@ In order to get start using the java client one needs to add it's dependency:
 <dependency>
   <groupId>io.weaviate</groupId>
   <artifactId>client</artifactId>
-  <version>4.4.0</version>
+  <version>4.4.1</version>
 </dependency>
 ```
 
