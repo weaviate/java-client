@@ -6,6 +6,7 @@ import io.weaviate.client.v1.schema.api.ClassCreator;
 import io.weaviate.client.v1.schema.api.ClassDeleter;
 import io.weaviate.client.v1.schema.api.ClassExists;
 import io.weaviate.client.v1.schema.api.ClassGetter;
+import io.weaviate.client.v1.schema.api.ClassUpdater;
 import io.weaviate.client.v1.schema.api.PropertyCreator;
 import io.weaviate.client.v1.schema.api.SchemaDeleter;
 import io.weaviate.client.v1.schema.api.SchemaGetter;
@@ -40,6 +41,10 @@ public class Schema {
 
   public ClassCreator classCreator() {
     return new ClassCreator(httpClient, config);
+  }
+
+  public ClassUpdater classUpdater() {
+    return new ClassUpdater(httpClient, config);
   }
 
   public ClassDeleter classDeleter() {

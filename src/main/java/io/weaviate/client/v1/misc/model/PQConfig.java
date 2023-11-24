@@ -18,6 +18,7 @@ public class PQConfig {
   Boolean bitCompression;
   Integer segments;
   Integer centroids;
+  Integer trainingLimit;
   Encoder encoder;
 
 

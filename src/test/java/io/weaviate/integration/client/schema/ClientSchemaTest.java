@@ -6,7 +6,6 @@ import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.v1.batch.model.ObjectGetResponse;
-import io.weaviate.client.v1.data.model.ObjectsListResponse;
 import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.misc.model.BM25Config;
 import io.weaviate.client.v1.misc.model.DistanceType;
@@ -23,9 +22,6 @@ import io.weaviate.client.v1.schema.model.ShardStatus;
 import io.weaviate.client.v1.schema.model.ShardStatuses;
 import io.weaviate.client.v1.schema.model.Tokenization;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -34,6 +30,8 @@ import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
 import java.io.File;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -1423,5 +1421,88 @@ public class ClientSchemaTest {
         assertThat(obj.getProperties()).isNotNull()
           .extracting(p -> p.get("objectArrayProperty")).isNotNull();
       });
+  }
+
+  @Test
+  public void shouldUpdateClass() {
+    String className = "Question";
+    List<Property> properties = Arrays.asList(
+      Property.builder()
+        .name("question")
+        .dataType(Arrays.asList(DataType.TEXT))
+        .build(),
+      Property.builder()
+        .name("answer")
+        .dataType(Arrays.asList(DataType.TEXT))
+        .build()
+    );
+
+    WeaviateClass jeopardyClass = WeaviateClass.builder()
+      .className(className)
+      .description("A Jeopardy! question")
+      .vectorizer("text2vec-contextionary")
+      .properties(properties)
+      .build();
+
+    Result<Boolean> createResult = client.schema().classCreator()
+      .withClass(jeopardyClass)
+      .run();
+
+    assertThat(createResult).isNotNull()
+      .withFailMessage(() -> createResult.getError().toString())
+      .returns(false, Result::hasErrors)
+      .withFailMessage(null)
+      .returns(true, Result::getResult);
+
+    Result<WeaviateClass> createdClassResult = client.schema().classGetter()
+      .withClassName(className)
+      .run();
+
+    assertThat(createdClassResult).isNotNull()
+      .withFailMessage(() -> createdClassResult.getError().toString())
+      .returns(false, Result::hasErrors)
+      .withFailMessage(null)
+      .extracting(Result::getResult).isNotNull()
+      .extracting(WeaviateClass::getVectorIndexConfig).isNotNull()
+      .extracting(VectorIndexConfig::getPq).isNotNull()
+      .returns(false, PQConfig::getEnabled);
+
+    WeaviateClass newJeopardyClass = WeaviateClass.builder()
+      .className(className)
+      .vectorizer("text2vec-contextionary")
+      .properties(properties)
+      .vectorIndexConfig(VectorIndexConfig.builder()
+        .pq(PQConfig.builder()
+          .enabled(true)
+          .trainingLimit(99_999)
+          .segments(96)
+          .build())
+        .build())
+      .build();
+
+    Result<Boolean> updateResult = client.schema().classUpdater()
+      .withClass(newJeopardyClass)
+      .run();
+
+    assertThat(updateResult).isNotNull()
+      .withFailMessage(() -> updateResult.getError().toString())
+      .returns(false, Result::hasErrors)
+      .withFailMessage(null)
+      .returns(true, Result::getResult);
+
+    Result<WeaviateClass> updatedClassResult = client.schema().classGetter()
+      .withClassName(className)
+      .run();
+
+    assertThat(updatedClassResult).isNotNull()
+      .withFailMessage(() -> updatedClassResult.getError().toString())
+      .returns(false, Result::hasErrors)
+      .withFailMessage(null)
+      .extracting(Result::getResult).isNotNull()
+      .extracting(WeaviateClass::getVectorIndexConfig).isNotNull()
+      .extracting(VectorIndexConfig::getPq).isNotNull()
+      .returns(true, PQConfig::getEnabled)
+      .returns(96, PQConfig::getSegments)
+      .returns(99_999, PQConfig::getTrainingLimit);
   }
 }
