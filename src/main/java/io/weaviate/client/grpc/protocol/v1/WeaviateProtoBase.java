@@ -145,16 +145,28 @@ public final class WeaviateProtoBase {
       com.google.protobuf.MessageOrBuilder {
 
     /**
+     * <pre>
+     * will be removed in the future, use vector_bytes
+     * </pre>
+     *
      * <code>repeated double values = 1;</code>
      * @return A list containing the values.
      */
     java.util.List<java.lang.Double> getValuesList();
     /**
+     * <pre>
+     * will be removed in the future, use vector_bytes
+     * </pre>
+     *
      * <code>repeated double values = 1;</code>
      * @return The count of values.
      */
     int getValuesCount();
     /**
+     * <pre>
+     * will be removed in the future, use vector_bytes
+     * </pre>
+     *
      * <code>repeated double values = 1;</code>
      * @param index The index of the element to return.
      * @return The values at the given index.
@@ -172,6 +184,12 @@ public final class WeaviateProtoBase {
      */
     com.google.protobuf.ByteString
         getPropNameBytes();
+
+    /**
+     * <code>bytes values_bytes = 3;</code>
+     * @return The valuesBytes.
+     */
+    com.google.protobuf.ByteString getValuesBytes();
   }
   /**
    * Protobuf type {@code weaviate.v1.NumberArrayProperties}
@@ -188,6 +206,7 @@ public final class WeaviateProtoBase {
     private NumberArrayProperties() {
       values_ = emptyDoubleList();
       propName_ = "";
+      valuesBytes_ = com.google.protobuf.ByteString.EMPTY;
     }
 
     @java.lang.Override
@@ -215,6 +234,10 @@ public final class WeaviateProtoBase {
     private com.google.protobuf.Internal.DoubleList values_ =
         emptyDoubleList();
     /**
+     * <pre>
+     * will be removed in the future, use vector_bytes
+     * </pre>
+     *
      * <code>repeated double values = 1;</code>
      * @return A list containing the values.
      */
@@ -224,6 +247,10 @@ public final class WeaviateProtoBase {
       return values_;
     }
     /**
+     * <pre>
+     * will be removed in the future, use vector_bytes
+     * </pre>
+     *
      * <code>repeated double values = 1;</code>
      * @return The count of values.
      */
@@ -231,6 +258,10 @@ public final class WeaviateProtoBase {
       return values_.size();
     }
     /**
+     * <pre>
+     * will be removed in the future, use vector_bytes
+     * </pre>
+     *
      * <code>repeated double values = 1;</code>
      * @param index The index of the element to return.
      * @return The values at the given index.
@@ -279,6 +310,17 @@ public final class WeaviateProtoBase {
       }
     }
 
+    public static final int VALUES_BYTES_FIELD_NUMBER = 3;
+    private com.google.protobuf.ByteString valuesBytes_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <code>bytes values_bytes = 3;</code>
+     * @return The valuesBytes.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getValuesBytes() {
+      return valuesBytes_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -304,6 +346,9 @@ public final class WeaviateProtoBase {
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(propName_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, propName_);
       }
+      if (!valuesBytes_.isEmpty()) {
+        output.writeBytes(3, valuesBytes_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -327,6 +372,10 @@ public final class WeaviateProtoBase {
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(propName_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, propName_);
       }
+      if (!valuesBytes_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, valuesBytes_);
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
@@ -346,6 +395,8 @@ public final class WeaviateProtoBase {
           .equals(other.getValuesList())) return false;
       if (!getPropName()
           .equals(other.getPropName())) return false;
+      if (!getValuesBytes()
+          .equals(other.getValuesBytes())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -363,6 +414,8 @@ public final class WeaviateProtoBase {
       }
       hash = (37 * hash) + PROP_NAME_FIELD_NUMBER;
       hash = (53 * hash) + getPropName().hashCode();
+      hash = (37 * hash) + VALUES_BYTES_FIELD_NUMBER;
+      hash = (53 * hash) + getValuesBytes().hashCode();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -496,6 +549,7 @@ public final class WeaviateProtoBase {
         bitField0_ = 0;
         values_ = emptyDoubleList();
         propName_ = "";
+        valuesBytes_ = com.google.protobuf.ByteString.EMPTY;
         return this;
       }
 
@@ -535,6 +589,9 @@ public final class WeaviateProtoBase {
         }
         if (((from_bitField0_ & 0x00000002) != 0)) {
           result.propName_ = propName_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.valuesBytes_ = valuesBytes_;
         }
       }
 
@@ -598,6 +655,9 @@ public final class WeaviateProtoBase {
           bitField0_ |= 0x00000002;
           onChanged();
         }
+        if (other.getValuesBytes() != com.google.protobuf.ByteString.EMPTY) {
+          setValuesBytes(other.getValuesBytes());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -646,6 +706,11 @@ public final class WeaviateProtoBase {
                 bitField0_ |= 0x00000002;
                 break;
               } // case 18
+              case 26: {
+                valuesBytes_ = input.readBytes();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -677,6 +742,10 @@ public final class WeaviateProtoBase {
         bitField0_ |= 0x00000001;
       }
       /**
+       * <pre>
+       * will be removed in the future, use vector_bytes
+       * </pre>
+       *
        * <code>repeated double values = 1;</code>
        * @return A list containing the values.
        */
@@ -686,6 +755,10 @@ public final class WeaviateProtoBase {
         return values_;
       }
       /**
+       * <pre>
+       * will be removed in the future, use vector_bytes
+       * </pre>
+       *
        * <code>repeated double values = 1;</code>
        * @return The count of values.
        */
@@ -693,6 +766,10 @@ public final class WeaviateProtoBase {
         return values_.size();
       }
       /**
+       * <pre>
+       * will be removed in the future, use vector_bytes
+       * </pre>
+       *
        * <code>repeated double values = 1;</code>
        * @param index The index of the element to return.
        * @return The values at the given index.
@@ -701,6 +778,10 @@ public final class WeaviateProtoBase {
         return values_.getDouble(index);
       }
       /**
+       * <pre>
+       * will be removed in the future, use vector_bytes
+       * </pre>
+       *
        * <code>repeated double values = 1;</code>
        * @param index The index to set the value at.
        * @param value The values to set.
@@ -716,6 +797,10 @@ public final class WeaviateProtoBase {
         return this;
       }
       /**
+       * <pre>
+       * will be removed in the future, use vector_bytes
+       * </pre>
+       *
        * <code>repeated double values = 1;</code>
        * @param value The values to add.
        * @return This builder for chaining.
@@ -729,6 +814,10 @@ public final class WeaviateProtoBase {
         return this;
       }
       /**
+       * <pre>
+       * will be removed in the future, use vector_bytes
+       * </pre>
+       *
        * <code>repeated double values = 1;</code>
        * @param values The values to add.
        * @return This builder for chaining.
@@ -743,6 +832,10 @@ public final class WeaviateProtoBase {
         return this;
       }
       /**
+       * <pre>
+       * will be removed in the future, use vector_bytes
+       * </pre>
+       *
        * <code>repeated double values = 1;</code>
        * @return This builder for chaining.
        */
@@ -821,6 +914,38 @@ public final class WeaviateProtoBase {
         checkByteStringIsUtf8(value);
         propName_ = value;
         bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString valuesBytes_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes values_bytes = 3;</code>
+       * @return The valuesBytes.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getValuesBytes() {
+        return valuesBytes_;
+      }
+      /**
+       * <code>bytes values_bytes = 3;</code>
+       * @param value The valuesBytes to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValuesBytes(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        valuesBytes_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes values_bytes = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValuesBytes() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        valuesBytes_ = getDefaultInstance().getValuesBytes();
         onChanged();
         return this;
       }
@@ -7747,36 +7872,36 @@ public final class WeaviateProtoBase {
   static {
     java.lang.String[] descriptorData = {
       "\n\rv1/base.proto\022\013weaviate.v1\032\034google/pro" +
-      "tobuf/struct.proto\":\n\025NumberArrayPropert" +
-      "ies\022\016\n\006values\030\001 \003(\001\022\021\n\tprop_name\030\002 \001(\t\"7" +
-      "\n\022IntArrayProperties\022\016\n\006values\030\001 \003(\003\022\021\n\t" +
-      "prop_name\030\002 \001(\t\"8\n\023TextArrayProperties\022\016" +
-      "\n\006values\030\001 \003(\t\022\021\n\tprop_name\030\002 \001(\t\";\n\026Boo" +
-      "leanArrayProperties\022\016\n\006values\030\001 \003(\010\022\021\n\tp" +
-      "rop_name\030\002 \001(\t\"\327\003\n\025ObjectPropertiesValue" +
-      "\0223\n\022non_ref_properties\030\001 \001(\0132\027.google.pr" +
-      "otobuf.Struct\022C\n\027number_array_properties" +
-      "\030\002 \003(\0132\".weaviate.v1.NumberArrayProperti" +
-      "es\022=\n\024int_array_properties\030\003 \003(\0132\037.weavi" +
-      "ate.v1.IntArrayProperties\022?\n\025text_array_" +
-      "properties\030\004 \003(\0132 .weaviate.v1.TextArray" +
-      "Properties\022E\n\030boolean_array_properties\030\005" +
-      " \003(\0132#.weaviate.v1.BooleanArrayPropertie" +
-      "s\0228\n\021object_properties\030\006 \003(\0132\035.weaviate." +
-      "v1.ObjectProperties\022C\n\027object_array_prop" +
-      "erties\030\007 \003(\0132\".weaviate.v1.ObjectArrayPr" +
-      "operties\"^\n\025ObjectArrayProperties\0222\n\006val" +
-      "ues\030\001 \003(\0132\".weaviate.v1.ObjectProperties" +
-      "Value\022\021\n\tprop_name\030\002 \001(\t\"X\n\020ObjectProper" +
-      "ties\0221\n\005value\030\001 \001(\0132\".weaviate.v1.Object" +
-      "PropertiesValue\022\021\n\tprop_name\030\002 \001(\t*\211\001\n\020C" +
-      "onsistencyLevel\022!\n\035CONSISTENCY_LEVEL_UNS" +
-      "PECIFIED\020\000\022\031\n\025CONSISTENCY_LEVEL_ONE\020\001\022\034\n" +
-      "\030CONSISTENCY_LEVEL_QUORUM\020\002\022\031\n\025CONSISTEN" +
-      "CY_LEVEL_ALL\020\003Bn\n#io.weaviate.client.grp" +
-      "c.protocol.v1B\021WeaviateProtoBaseZ4github" +
-      ".com/weaviate/weaviate/grpc/generated;pr" +
-      "otocolb\006proto3"
+      "tobuf/struct.proto\"P\n\025NumberArrayPropert" +
+      "ies\022\016\n\006values\030\001 \003(\001\022\021\n\tprop_name\030\002 \001(\t\022\024" +
+      "\n\014values_bytes\030\003 \001(\014\"7\n\022IntArrayProperti" +
+      "es\022\016\n\006values\030\001 \003(\003\022\021\n\tprop_name\030\002 \001(\t\"8\n" +
+      "\023TextArrayProperties\022\016\n\006values\030\001 \003(\t\022\021\n\t" +
+      "prop_name\030\002 \001(\t\";\n\026BooleanArrayPropertie" +
+      "s\022\016\n\006values\030\001 \003(\010\022\021\n\tprop_name\030\002 \001(\t\"\327\003\n" +
+      "\025ObjectPropertiesValue\0223\n\022non_ref_proper" +
+      "ties\030\001 \001(\0132\027.google.protobuf.Struct\022C\n\027n" +
+      "umber_array_properties\030\002 \003(\0132\".weaviate." +
+      "v1.NumberArrayProperties\022=\n\024int_array_pr" +
+      "operties\030\003 \003(\0132\037.weaviate.v1.IntArrayPro" +
+      "perties\022?\n\025text_array_properties\030\004 \003(\0132 " +
+      ".weaviate.v1.TextArrayProperties\022E\n\030bool" +
+      "ean_array_properties\030\005 \003(\0132#.weaviate.v1" +
+      ".BooleanArrayProperties\0228\n\021object_proper" +
+      "ties\030\006 \003(\0132\035.weaviate.v1.ObjectPropertie" +
+      "s\022C\n\027object_array_properties\030\007 \003(\0132\".wea" +
+      "viate.v1.ObjectArrayProperties\"^\n\025Object" +
+      "ArrayProperties\0222\n\006values\030\001 \003(\0132\".weavia" +
+      "te.v1.ObjectPropertiesValue\022\021\n\tprop_name" +
+      "\030\002 \001(\t\"X\n\020ObjectProperties\0221\n\005value\030\001 \001(" +
+      "\0132\".weaviate.v1.ObjectPropertiesValue\022\021\n" +
+      "\tprop_name\030\002 \001(\t*\211\001\n\020ConsistencyLevel\022!\n" +
+      "\035CONSISTENCY_LEVEL_UNSPECIFIED\020\000\022\031\n\025CONS" +
+      "ISTENCY_LEVEL_ONE\020\001\022\034\n\030CONSISTENCY_LEVEL" +
+      "_QUORUM\020\002\022\031\n\025CONSISTENCY_LEVEL_ALL\020\003Bn\n#" +
+      "io.weaviate.client.grpc.protocol.v1B\021Wea" +
+      "viateProtoBaseZ4github.com/weaviate/weav" +
+      "iate/grpc/generated;protocolb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -7788,7 +7913,7 @@ public final class WeaviateProtoBase {
     internal_static_weaviate_v1_NumberArrayProperties_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_NumberArrayProperties_descriptor,
-        new java.lang.String[] { "Values", "PropName", });
+        new java.lang.String[] { "Values", "PropName", "ValuesBytes", });
     internal_static_weaviate_v1_IntArrayProperties_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_weaviate_v1_IntArrayProperties_fieldAccessorTable = new

@@ -227,7 +227,7 @@ public class ClientBatchGrpcCreateTest {
 
     for (WeaviateObject obj : objects) {
       Result<List<WeaviateObject>> resultObj = client.data().objectsGetter()
-        .withID(obj.getId()).withClassName(obj.getClassName())
+        .withID(obj.getId()).withClassName(obj.getClassName()).withVector()
         .run();
       assertThat(resultObj).isNotNull()
         .returns(false, Result::hasErrors)
@@ -235,9 +235,10 @@ public class ClientBatchGrpcCreateTest {
         .extracting(r -> r.get(0)).isNotNull()
         .satisfies(o -> {
           assertThat(o.getId()).isEqualTo(obj.getId());
+          assertThat(o.getVector()).isNotEmpty();
           assertThat(o.getProperties()).isNotNull()
             .extracting(Map::size).isEqualTo(obj.getProperties().size());
-          obj.getProperties().keySet().stream().forEach(propName -> {
+          obj.getProperties().keySet().forEach(propName -> {
             assertThat(o.getProperties().get(propName)).isNotNull();
           });
         });

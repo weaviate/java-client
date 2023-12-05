@@ -16036,6 +16036,12 @@ public final class WeaviateProtoSearchGet {
      * @return The fusionType.
      */
     io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.Hybrid.FusionType getFusionType();
+
+    /**
+     * <code>bytes vector_bytes = 6;</code>
+     * @return The vectorBytes.
+     */
+    com.google.protobuf.ByteString getVectorBytes();
   }
   /**
    * Protobuf type {@code weaviate.v1.Hybrid}
@@ -16055,6 +16061,7 @@ public final class WeaviateProtoSearchGet {
           com.google.protobuf.LazyStringArrayList.emptyList();
       vector_ = emptyFloatList();
       fusionType_ = 0;
+      vectorBytes_ = com.google.protobuf.ByteString.EMPTY;
     }
 
     @java.lang.Override
@@ -16341,6 +16348,17 @@ public final class WeaviateProtoSearchGet {
       return result == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.Hybrid.FusionType.UNRECOGNIZED : result;
     }
 
+    public static final int VECTOR_BYTES_FIELD_NUMBER = 6;
+    private com.google.protobuf.ByteString vectorBytes_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <code>bytes vector_bytes = 6;</code>
+     * @return The vectorBytes.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getVectorBytes() {
+      return vectorBytes_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -16374,6 +16392,9 @@ public final class WeaviateProtoSearchGet {
       }
       if (fusionType_ != io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.Hybrid.FusionType.FUSION_TYPE_UNSPECIFIED.getNumber()) {
         output.writeEnum(5, fusionType_);
+      }
+      if (!vectorBytes_.isEmpty()) {
+        output.writeBytes(6, vectorBytes_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -16414,6 +16435,10 @@ public final class WeaviateProtoSearchGet {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(5, fusionType_);
       }
+      if (!vectorBytes_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(6, vectorBytes_);
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
@@ -16439,6 +16464,8 @@ public final class WeaviateProtoSearchGet {
           != java.lang.Float.floatToIntBits(
               other.getAlpha())) return false;
       if (fusionType_ != other.fusionType_) return false;
+      if (!getVectorBytes()
+          .equals(other.getVectorBytes())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -16465,6 +16492,8 @@ public final class WeaviateProtoSearchGet {
           getAlpha());
       hash = (37 * hash) + FUSION_TYPE_FIELD_NUMBER;
       hash = (53 * hash) + fusionType_;
+      hash = (37 * hash) + VECTOR_BYTES_FIELD_NUMBER;
+      hash = (53 * hash) + getVectorBytes().hashCode();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -16602,6 +16631,7 @@ public final class WeaviateProtoSearchGet {
         vector_ = emptyFloatList();
         alpha_ = 0F;
         fusionType_ = 0;
+        vectorBytes_ = com.google.protobuf.ByteString.EMPTY;
         return this;
       }
 
@@ -16651,6 +16681,9 @@ public final class WeaviateProtoSearchGet {
         }
         if (((from_bitField0_ & 0x00000010) != 0)) {
           result.fusionType_ = fusionType_;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.vectorBytes_ = vectorBytes_;
         }
       }
 
@@ -16730,6 +16763,9 @@ public final class WeaviateProtoSearchGet {
         if (other.fusionType_ != 0) {
           setFusionTypeValue(other.getFusionTypeValue());
         }
+        if (other.getVectorBytes() != com.google.protobuf.ByteString.EMPTY) {
+          setVectorBytes(other.getVectorBytes());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -16794,6 +16830,11 @@ public final class WeaviateProtoSearchGet {
                 bitField0_ |= 0x00000010;
                 break;
               } // case 40
+              case 50: {
+                vectorBytes_ = input.readBytes();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 50
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -17193,6 +17234,38 @@ public final class WeaviateProtoSearchGet {
       public Builder clearFusionType() {
         bitField0_ = (bitField0_ & ~0x00000010);
         fusionType_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString vectorBytes_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes vector_bytes = 6;</code>
+       * @return The vectorBytes.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getVectorBytes() {
+        return vectorBytes_;
+      }
+      /**
+       * <code>bytes vector_bytes = 6;</code>
+       * @param value The vectorBytes to set.
+       * @return This builder for chaining.
+       */
+      public Builder setVectorBytes(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        vectorBytes_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes vector_bytes = 6;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearVectorBytes() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        vectorBytes_ = getDefaultInstance().getVectorBytes();
         onChanged();
         return this;
       }
@@ -23661,6 +23734,12 @@ public final class WeaviateProtoSearchGet {
      * @return The distance.
      */
     double getDistance();
+
+    /**
+     * <code>bytes vector_bytes = 4;</code>
+     * @return The vectorBytes.
+     */
+    com.google.protobuf.ByteString getVectorBytes();
   }
   /**
    * Protobuf type {@code weaviate.v1.NearVector}
@@ -23676,6 +23755,7 @@ public final class WeaviateProtoSearchGet {
     }
     private NearVector() {
       vector_ = emptyFloatList();
+      vectorBytes_ = com.google.protobuf.ByteString.EMPTY;
     }
 
     @java.lang.Override
@@ -23779,6 +23859,17 @@ public final class WeaviateProtoSearchGet {
       return distance_;
     }
 
+    public static final int VECTOR_BYTES_FIELD_NUMBER = 4;
+    private com.google.protobuf.ByteString vectorBytes_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <code>bytes vector_bytes = 4;</code>
+     * @return The vectorBytes.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getVectorBytes() {
+      return vectorBytes_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -23807,6 +23898,9 @@ public final class WeaviateProtoSearchGet {
       if (((bitField0_ & 0x00000002) != 0)) {
         output.writeDouble(3, distance_);
       }
+      if (!vectorBytes_.isEmpty()) {
+        output.writeBytes(4, vectorBytes_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -23834,6 +23928,10 @@ public final class WeaviateProtoSearchGet {
       if (((bitField0_ & 0x00000002) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(3, distance_);
+      }
+      if (!vectorBytes_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(4, vectorBytes_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -23864,6 +23962,8 @@ public final class WeaviateProtoSearchGet {
             != java.lang.Double.doubleToLongBits(
                 other.getDistance())) return false;
       }
+      if (!getVectorBytes()
+          .equals(other.getVectorBytes())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -23889,6 +23989,8 @@ public final class WeaviateProtoSearchGet {
         hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
             java.lang.Double.doubleToLongBits(getDistance()));
       }
+      hash = (37 * hash) + VECTOR_BYTES_FIELD_NUMBER;
+      hash = (53 * hash) + getVectorBytes().hashCode();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -24023,6 +24125,7 @@ public final class WeaviateProtoSearchGet {
         vector_ = emptyFloatList();
         certainty_ = 0D;
         distance_ = 0D;
+        vectorBytes_ = com.google.protobuf.ByteString.EMPTY;
         return this;
       }
 
@@ -24068,6 +24171,9 @@ public final class WeaviateProtoSearchGet {
         if (((from_bitField0_ & 0x00000004) != 0)) {
           result.distance_ = distance_;
           to_bitField0_ |= 0x00000002;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.vectorBytes_ = vectorBytes_;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -24133,6 +24239,9 @@ public final class WeaviateProtoSearchGet {
         if (other.hasDistance()) {
           setDistance(other.getDistance());
         }
+        if (other.getVectorBytes() != com.google.protobuf.ByteString.EMPTY) {
+          setVectorBytes(other.getVectorBytes());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -24186,6 +24295,11 @@ public final class WeaviateProtoSearchGet {
                 bitField0_ |= 0x00000004;
                 break;
               } // case 25
+              case 34: {
+                vectorBytes_ = input.readBytes();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -24397,6 +24511,38 @@ public final class WeaviateProtoSearchGet {
       public Builder clearDistance() {
         bitField0_ = (bitField0_ & ~0x00000004);
         distance_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString vectorBytes_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes vector_bytes = 4;</code>
+       * @return The vectorBytes.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getVectorBytes() {
+        return vectorBytes_;
+      }
+      /**
+       * <code>bytes vector_bytes = 4;</code>
+       * @param value The vectorBytes to set.
+       * @return This builder for chaining.
+       */
+      public Builder setVectorBytes(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        vectorBytes_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes vector_bytes = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearVectorBytes() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        vectorBytes_ = getDefaultInstance().getVectorBytes();
         onChanged();
         return this;
       }
@@ -28742,6 +28888,18 @@ public final class WeaviateProtoSearchGet {
      * @return The generativePresent.
      */
     boolean getGenerativePresent();
+
+    /**
+     * <code>bool is_consistent_present = 18;</code>
+     * @return The isConsistentPresent.
+     */
+    boolean getIsConsistentPresent();
+
+    /**
+     * <code>bytes vector_bytes = 19;</code>
+     * @return The vectorBytes.
+     */
+    com.google.protobuf.ByteString getVectorBytes();
   }
   /**
    * Protobuf type {@code weaviate.v1.MetadataResult}
@@ -28760,6 +28918,7 @@ public final class WeaviateProtoSearchGet {
       vector_ = emptyFloatList();
       explainScore_ = "";
       generative_ = "";
+      vectorBytes_ = com.google.protobuf.ByteString.EMPTY;
     }
 
     @java.lang.Override
@@ -29093,6 +29252,28 @@ public final class WeaviateProtoSearchGet {
       return generativePresent_;
     }
 
+    public static final int IS_CONSISTENT_PRESENT_FIELD_NUMBER = 18;
+    private boolean isConsistentPresent_ = false;
+    /**
+     * <code>bool is_consistent_present = 18;</code>
+     * @return The isConsistentPresent.
+     */
+    @java.lang.Override
+    public boolean getIsConsistentPresent() {
+      return isConsistentPresent_;
+    }
+
+    public static final int VECTOR_BYTES_FIELD_NUMBER = 19;
+    private com.google.protobuf.ByteString vectorBytes_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <code>bytes vector_bytes = 19;</code>
+     * @return The vectorBytes.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getVectorBytes() {
+      return vectorBytes_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -29162,6 +29343,12 @@ public final class WeaviateProtoSearchGet {
       }
       if (generativePresent_ != false) {
         output.writeBool(17, generativePresent_);
+      }
+      if (isConsistentPresent_ != false) {
+        output.writeBool(18, isConsistentPresent_);
+      }
+      if (!vectorBytes_.isEmpty()) {
+        output.writeBytes(19, vectorBytes_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -29244,6 +29431,14 @@ public final class WeaviateProtoSearchGet {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(17, generativePresent_);
       }
+      if (isConsistentPresent_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(18, isConsistentPresent_);
+      }
+      if (!vectorBytes_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(19, vectorBytes_);
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
@@ -29299,6 +29494,10 @@ public final class WeaviateProtoSearchGet {
           .equals(other.getGenerative())) return false;
       if (getGenerativePresent()
           != other.getGenerativePresent()) return false;
+      if (getIsConsistentPresent()
+          != other.getIsConsistentPresent()) return false;
+      if (!getVectorBytes()
+          .equals(other.getVectorBytes())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -29361,6 +29560,11 @@ public final class WeaviateProtoSearchGet {
       hash = (37 * hash) + GENERATIVE_PRESENT_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getGenerativePresent());
+      hash = (37 * hash) + IS_CONSISTENT_PRESENT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getIsConsistentPresent());
+      hash = (37 * hash) + VECTOR_BYTES_FIELD_NUMBER;
+      hash = (53 * hash) + getVectorBytes().hashCode();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -29509,6 +29713,8 @@ public final class WeaviateProtoSearchGet {
         isConsistent_ = false;
         generative_ = "";
         generativePresent_ = false;
+        isConsistentPresent_ = false;
+        vectorBytes_ = com.google.protobuf.ByteString.EMPTY;
         return this;
       }
 
@@ -29595,6 +29801,12 @@ public final class WeaviateProtoSearchGet {
         }
         if (((from_bitField0_ & 0x00010000) != 0)) {
           result.generativePresent_ = generativePresent_;
+        }
+        if (((from_bitField0_ & 0x00020000) != 0)) {
+          result.isConsistentPresent_ = isConsistentPresent_;
+        }
+        if (((from_bitField0_ & 0x00040000) != 0)) {
+          result.vectorBytes_ = vectorBytes_;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -29707,6 +29919,12 @@ public final class WeaviateProtoSearchGet {
         }
         if (other.getGenerativePresent() != false) {
           setGenerativePresent(other.getGenerativePresent());
+        }
+        if (other.getIsConsistentPresent() != false) {
+          setIsConsistentPresent(other.getIsConsistentPresent());
+        }
+        if (other.getVectorBytes() != com.google.protobuf.ByteString.EMPTY) {
+          setVectorBytes(other.getVectorBytes());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -29831,6 +30049,16 @@ public final class WeaviateProtoSearchGet {
                 bitField0_ |= 0x00010000;
                 break;
               } // case 136
+              case 144: {
+                isConsistentPresent_ = input.readBool();
+                bitField0_ |= 0x00020000;
+                break;
+              } // case 144
+              case 154: {
+                vectorBytes_ = input.readBytes();
+                bitField0_ |= 0x00040000;
+                break;
+              } // case 154
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -30602,6 +30830,70 @@ public final class WeaviateProtoSearchGet {
       public Builder clearGenerativePresent() {
         bitField0_ = (bitField0_ & ~0x00010000);
         generativePresent_ = false;
+        onChanged();
+        return this;
+      }
+
+      private boolean isConsistentPresent_ ;
+      /**
+       * <code>bool is_consistent_present = 18;</code>
+       * @return The isConsistentPresent.
+       */
+      @java.lang.Override
+      public boolean getIsConsistentPresent() {
+        return isConsistentPresent_;
+      }
+      /**
+       * <code>bool is_consistent_present = 18;</code>
+       * @param value The isConsistentPresent to set.
+       * @return This builder for chaining.
+       */
+      public Builder setIsConsistentPresent(boolean value) {
+
+        isConsistentPresent_ = value;
+        bitField0_ |= 0x00020000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool is_consistent_present = 18;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearIsConsistentPresent() {
+        bitField0_ = (bitField0_ & ~0x00020000);
+        isConsistentPresent_ = false;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString vectorBytes_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes vector_bytes = 19;</code>
+       * @return The vectorBytes.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getVectorBytes() {
+        return vectorBytes_;
+      }
+      /**
+       * <code>bytes vector_bytes = 19;</code>
+       * @param value The vectorBytes to set.
+       * @return This builder for chaining.
+       */
+      public Builder setVectorBytes(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        vectorBytes_ = value;
+        bitField0_ |= 0x00040000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes vector_bytes = 19;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearVectorBytes() {
+        bitField0_ = (bitField0_ & ~0x00040000);
+        vectorBytes_ = getDefaultInstance().getVectorBytes();
         onChanged();
         return this;
       }
@@ -35408,82 +35700,84 @@ public final class WeaviateProtoSearchGet {
       "pertiesRequest\022\021\n\tprop_name\030\001 \001(\t\022\034\n\024pri" +
       "mitive_properties\030\002 \003(\t\022?\n\021object_proper" +
       "ties\030\003 \003(\0132$.weaviate.v1.ObjectPropertie" +
-      "sRequest\"\342\001\n\006Hybrid\022\r\n\005query\030\001 \001(\t\022\022\n\npr" +
+      "sRequest\"\370\001\n\006Hybrid\022\r\n\005query\030\001 \001(\t\022\022\n\npr" +
       "operties\030\002 \003(\t\022\016\n\006vector\030\003 \003(\002\022\r\n\005alpha\030" +
       "\004 \001(\002\0223\n\013fusion_type\030\005 \001(\0162\036.weaviate.v1" +
-      ".Hybrid.FusionType\"a\n\nFusionType\022\033\n\027FUSI" +
-      "ON_TYPE_UNSPECIFIED\020\000\022\026\n\022FUSION_TYPE_RAN" +
-      "KED\020\001\022\036\n\032FUSION_TYPE_RELATIVE_SCORE\020\002\"\255\002" +
-      "\n\016NearTextSearch\022\r\n\005query\030\001 \003(\t\022\026\n\tcerta" +
-      "inty\030\002 \001(\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001\0226" +
-      "\n\007move_to\030\004 \001(\0132 .weaviate.v1.NearTextSe" +
-      "arch.MoveH\002\210\001\001\0228\n\tmove_away\030\005 \001(\0132 .weav" +
-      "iate.v1.NearTextSearch.MoveH\003\210\001\001\0326\n\004Move" +
-      "\022\r\n\005force\030\001 \001(\002\022\020\n\010concepts\030\002 \003(\t\022\r\n\005uui" +
-      "ds\030\003 \003(\tB\014\n\n_certaintyB\013\n\t_distanceB\n\n\010_" +
-      "move_toB\014\n\n_move_away\"j\n\017NearImageSearch" +
-      "\022\r\n\005image\030\001 \001(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022" +
-      "\025\n\010distance\030\003 \001(\001H\001\210\001\001B\014\n\n_certaintyB\013\n\t" +
-      "_distance\"j\n\017NearAudioSearch\022\r\n\005audio\030\001 " +
-      "\001(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n\010distance\030" +
-      "\003 \001(\001H\001\210\001\001B\014\n\n_certaintyB\013\n\t_distance\"j\n" +
-      "\017NearVideoSearch\022\r\n\005video\030\001 \001(\t\022\026\n\tcerta" +
-      "inty\030\002 \001(\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001B\014" +
-      "\n\n_certaintyB\013\n\t_distance\")\n\004BM25\022\r\n\005que" +
-      "ry\030\001 \001(\t\022\022\n\nproperties\030\002 \003(\t\"\261\001\n\024RefProp" +
-      "ertiesRequest\022\032\n\022reference_property\030\001 \001(" +
-      "\t\0222\n\nproperties\030\002 \001(\0132\036.weaviate.v1.Prop" +
-      "ertiesRequest\022.\n\010metadata\030\003 \001(\0132\034.weavia" +
-      "te.v1.MetadataRequest\022\031\n\021target_collecti" +
-      "on\030\004 \001(\t\"f\n\nNearVector\022\016\n\006vector\030\001 \003(\002\022\026" +
-      "\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001" +
-      "H\001\210\001\001B\014\n\n_certaintyB\013\n\t_distance\"b\n\nNear" +
-      "Object\022\n\n\002id\030\001 \001(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210" +
-      "\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001B\014\n\n_certaintyB" +
-      "\013\n\t_distance\"\303\001\n\013SearchReply\022\014\n\004took\030\001 \001" +
-      "(\002\022*\n\007results\030\002 \003(\0132\031.weaviate.v1.Search" +
-      "Result\022&\n\031generative_grouped_result\030\003 \001(" +
-      "\tH\000\210\001\001\0224\n\020group_by_results\030\004 \003(\0132\032.weavi" +
-      "ate.v1.GroupByResultB\034\n\032_generative_grou" +
-      "ped_result\"\220\001\n\rGroupByResult\022\014\n\004name\030\001 \001" +
-      "(\t\022\024\n\014min_distance\030\002 \001(\002\022\024\n\014max_distance" +
-      "\030\003 \001(\002\022\031\n\021number_of_objects\030\004 \001(\003\022*\n\007obj" +
-      "ects\030\005 \003(\0132\031.weaviate.v1.SearchResult\"p\n" +
-      "\014SearchResult\0221\n\nproperties\030\001 \001(\0132\035.weav" +
-      "iate.v1.PropertiesResult\022-\n\010metadata\030\002 \001" +
-      "(\0132\033.weaviate.v1.MetadataResult\"\306\003\n\016Meta" +
-      "dataResult\022\n\n\002id\030\001 \001(\t\022\016\n\006vector\030\002 \003(\002\022\032" +
-      "\n\022creation_time_unix\030\003 \001(\003\022\"\n\032creation_t" +
-      "ime_unix_present\030\004 \001(\010\022\035\n\025last_update_ti" +
-      "me_unix\030\005 \001(\003\022%\n\035last_update_time_unix_p" +
-      "resent\030\006 \001(\010\022\020\n\010distance\030\007 \001(\002\022\030\n\020distan" +
-      "ce_present\030\010 \001(\010\022\021\n\tcertainty\030\t \001(\002\022\031\n\021c" +
-      "ertainty_present\030\n \001(\010\022\r\n\005score\030\013 \001(\002\022\025\n" +
-      "\rscore_present\030\014 \001(\010\022\025\n\rexplain_score\030\r " +
-      "\001(\t\022\035\n\025explain_score_present\030\016 \001(\010\022\032\n\ris" +
-      "_consistent\030\017 \001(\010H\000\210\001\001\022\022\n\ngenerative\030\020 \001" +
-      "(\t\022\032\n\022generative_present\030\021 \001(\010B\020\n\016_is_co" +
-      "nsistent\"\321\004\n\020PropertiesResult\0223\n\022non_ref" +
-      "_properties\030\001 \001(\0132\027.google.protobuf.Stru" +
-      "ct\0223\n\tref_props\030\002 \003(\0132 .weaviate.v1.RefP" +
-      "ropertiesResult\022\031\n\021target_collection\030\003 \001" +
-      "(\t\022-\n\010metadata\030\004 \001(\0132\033.weaviate.v1.Metad" +
-      "ataResult\022C\n\027number_array_properties\030\005 \003" +
-      "(\0132\".weaviate.v1.NumberArrayProperties\022=" +
-      "\n\024int_array_properties\030\006 \003(\0132\037.weaviate." +
-      "v1.IntArrayProperties\022?\n\025text_array_prop" +
-      "erties\030\007 \003(\0132 .weaviate.v1.TextArrayProp" +
-      "erties\022E\n\030boolean_array_properties\030\010 \003(\013" +
-      "2#.weaviate.v1.BooleanArrayProperties\0228\n" +
-      "\021object_properties\030\t \003(\0132\035.weaviate.v1.O" +
-      "bjectProperties\022C\n\027object_array_properti" +
-      "es\030\n \003(\0132\".weaviate.v1.ObjectArrayProper" +
-      "ties\"[\n\023RefPropertiesResult\0221\n\npropertie" +
-      "s\030\001 \003(\0132\035.weaviate.v1.PropertiesResult\022\021" +
-      "\n\tprop_name\030\002 \001(\tBs\n#io.weaviate.client." +
-      "grpc.protocol.v1B\026WeaviateProtoSearchGet" +
-      "Z4github.com/weaviate/weaviate/grpc/gene" +
-      "rated;protocolb\006proto3"
+      ".Hybrid.FusionType\022\024\n\014vector_bytes\030\006 \001(\014" +
+      "\"a\n\nFusionType\022\033\n\027FUSION_TYPE_UNSPECIFIE" +
+      "D\020\000\022\026\n\022FUSION_TYPE_RANKED\020\001\022\036\n\032FUSION_TY" +
+      "PE_RELATIVE_SCORE\020\002\"\255\002\n\016NearTextSearch\022\r" +
+      "\n\005query\030\001 \003(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n" +
+      "\010distance\030\003 \001(\001H\001\210\001\001\0226\n\007move_to\030\004 \001(\0132 ." +
+      "weaviate.v1.NearTextSearch.MoveH\002\210\001\001\0228\n\t" +
+      "move_away\030\005 \001(\0132 .weaviate.v1.NearTextSe" +
+      "arch.MoveH\003\210\001\001\0326\n\004Move\022\r\n\005force\030\001 \001(\002\022\020\n" +
+      "\010concepts\030\002 \003(\t\022\r\n\005uuids\030\003 \003(\tB\014\n\n_certa" +
+      "intyB\013\n\t_distanceB\n\n\010_move_toB\014\n\n_move_a" +
+      "way\"j\n\017NearImageSearch\022\r\n\005image\030\001 \001(\t\022\026\n" +
+      "\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H" +
+      "\001\210\001\001B\014\n\n_certaintyB\013\n\t_distance\"j\n\017NearA" +
+      "udioSearch\022\r\n\005audio\030\001 \001(\t\022\026\n\tcertainty\030\002" +
+      " \001(\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001B\014\n\n_cer" +
+      "taintyB\013\n\t_distance\"j\n\017NearVideoSearch\022\r" +
+      "\n\005video\030\001 \001(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n" +
+      "\010distance\030\003 \001(\001H\001\210\001\001B\014\n\n_certaintyB\013\n\t_d" +
+      "istance\")\n\004BM25\022\r\n\005query\030\001 \001(\t\022\022\n\nproper" +
+      "ties\030\002 \003(\t\"\261\001\n\024RefPropertiesRequest\022\032\n\022r" +
+      "eference_property\030\001 \001(\t\0222\n\nproperties\030\002 " +
+      "\001(\0132\036.weaviate.v1.PropertiesRequest\022.\n\010m" +
+      "etadata\030\003 \001(\0132\034.weaviate.v1.MetadataRequ" +
+      "est\022\031\n\021target_collection\030\004 \001(\t\"|\n\nNearVe" +
+      "ctor\022\016\n\006vector\030\001 \003(\002\022\026\n\tcertainty\030\002 \001(\001H" +
+      "\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001\022\024\n\014vector_by" +
+      "tes\030\004 \001(\014B\014\n\n_certaintyB\013\n\t_distance\"b\n\n" +
+      "NearObject\022\n\n\002id\030\001 \001(\t\022\026\n\tcertainty\030\002 \001(" +
+      "\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001B\014\n\n_certai" +
+      "ntyB\013\n\t_distance\"\303\001\n\013SearchReply\022\014\n\004took" +
+      "\030\001 \001(\002\022*\n\007results\030\002 \003(\0132\031.weaviate.v1.Se" +
+      "archResult\022&\n\031generative_grouped_result\030" +
+      "\003 \001(\tH\000\210\001\001\0224\n\020group_by_results\030\004 \003(\0132\032.w" +
+      "eaviate.v1.GroupByResultB\034\n\032_generative_" +
+      "grouped_result\"\220\001\n\rGroupByResult\022\014\n\004name" +
+      "\030\001 \001(\t\022\024\n\014min_distance\030\002 \001(\002\022\024\n\014max_dist" +
+      "ance\030\003 \001(\002\022\031\n\021number_of_objects\030\004 \001(\003\022*\n" +
+      "\007objects\030\005 \003(\0132\031.weaviate.v1.SearchResul" +
+      "t\"p\n\014SearchResult\0221\n\nproperties\030\001 \001(\0132\035." +
+      "weaviate.v1.PropertiesResult\022-\n\010metadata" +
+      "\030\002 \001(\0132\033.weaviate.v1.MetadataResult\"\373\003\n\016" +
+      "MetadataResult\022\n\n\002id\030\001 \001(\t\022\016\n\006vector\030\002 \003" +
+      "(\002\022\032\n\022creation_time_unix\030\003 \001(\003\022\"\n\032creati" +
+      "on_time_unix_present\030\004 \001(\010\022\035\n\025last_updat" +
+      "e_time_unix\030\005 \001(\003\022%\n\035last_update_time_un" +
+      "ix_present\030\006 \001(\010\022\020\n\010distance\030\007 \001(\002\022\030\n\020di" +
+      "stance_present\030\010 \001(\010\022\021\n\tcertainty\030\t \001(\002\022" +
+      "\031\n\021certainty_present\030\n \001(\010\022\r\n\005score\030\013 \001(" +
+      "\002\022\025\n\rscore_present\030\014 \001(\010\022\025\n\rexplain_scor" +
+      "e\030\r \001(\t\022\035\n\025explain_score_present\030\016 \001(\010\022\032" +
+      "\n\ris_consistent\030\017 \001(\010H\000\210\001\001\022\022\n\ngenerative" +
+      "\030\020 \001(\t\022\032\n\022generative_present\030\021 \001(\010\022\035\n\025is" +
+      "_consistent_present\030\022 \001(\010\022\024\n\014vector_byte" +
+      "s\030\023 \001(\014B\020\n\016_is_consistent\"\321\004\n\020Properties" +
+      "Result\0223\n\022non_ref_properties\030\001 \001(\0132\027.goo" +
+      "gle.protobuf.Struct\0223\n\tref_props\030\002 \003(\0132 " +
+      ".weaviate.v1.RefPropertiesResult\022\031\n\021targ" +
+      "et_collection\030\003 \001(\t\022-\n\010metadata\030\004 \001(\0132\033." +
+      "weaviate.v1.MetadataResult\022C\n\027number_arr" +
+      "ay_properties\030\005 \003(\0132\".weaviate.v1.Number" +
+      "ArrayProperties\022=\n\024int_array_properties\030" +
+      "\006 \003(\0132\037.weaviate.v1.IntArrayProperties\022?" +
+      "\n\025text_array_properties\030\007 \003(\0132 .weaviate" +
+      ".v1.TextArrayProperties\022E\n\030boolean_array" +
+      "_properties\030\010 \003(\0132#.weaviate.v1.BooleanA" +
+      "rrayProperties\0228\n\021object_properties\030\t \003(" +
+      "\0132\035.weaviate.v1.ObjectProperties\022C\n\027obje" +
+      "ct_array_properties\030\n \003(\0132\".weaviate.v1." +
+      "ObjectArrayProperties\"[\n\023RefPropertiesRe" +
+      "sult\0221\n\nproperties\030\001 \003(\0132\035.weaviate.v1.P" +
+      "ropertiesResult\022\021\n\tprop_name\030\002 \001(\tBs\n#io" +
+      ".weaviate.client.grpc.protocol.v1B\026Weavi" +
+      "ateProtoSearchGetZ4github.com/weaviate/w" +
+      "eaviate/grpc/generated;protocolb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -35568,7 +35862,7 @@ public final class WeaviateProtoSearchGet {
     internal_static_weaviate_v1_Hybrid_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_Hybrid_descriptor,
-        new java.lang.String[] { "Query", "Properties", "Vector", "Alpha", "FusionType", });
+        new java.lang.String[] { "Query", "Properties", "Vector", "Alpha", "FusionType", "VectorBytes", });
     internal_static_weaviate_v1_NearTextSearch_descriptor =
       getDescriptor().getMessageTypes().get(13);
     internal_static_weaviate_v1_NearTextSearch_fieldAccessorTable = new
@@ -35616,7 +35910,7 @@ public final class WeaviateProtoSearchGet {
     internal_static_weaviate_v1_NearVector_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_NearVector_descriptor,
-        new java.lang.String[] { "Vector", "Certainty", "Distance", "Certainty", "Distance", });
+        new java.lang.String[] { "Vector", "Certainty", "Distance", "VectorBytes", "Certainty", "Distance", });
     internal_static_weaviate_v1_NearObject_descriptor =
       getDescriptor().getMessageTypes().get(20);
     internal_static_weaviate_v1_NearObject_fieldAccessorTable = new
@@ -35646,7 +35940,7 @@ public final class WeaviateProtoSearchGet {
     internal_static_weaviate_v1_MetadataResult_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_MetadataResult_descriptor,
-        new java.lang.String[] { "Id", "Vector", "CreationTimeUnix", "CreationTimeUnixPresent", "LastUpdateTimeUnix", "LastUpdateTimeUnixPresent", "Distance", "DistancePresent", "Certainty", "CertaintyPresent", "Score", "ScorePresent", "ExplainScore", "ExplainScorePresent", "IsConsistent", "Generative", "GenerativePresent", "IsConsistent", });
+        new java.lang.String[] { "Id", "Vector", "CreationTimeUnix", "CreationTimeUnixPresent", "LastUpdateTimeUnix", "LastUpdateTimeUnixPresent", "Distance", "DistancePresent", "Certainty", "CertaintyPresent", "Score", "ScorePresent", "ExplainScore", "ExplainScorePresent", "IsConsistent", "Generative", "GenerativePresent", "IsConsistentPresent", "VectorBytes", "IsConsistent", });
     internal_static_weaviate_v1_PropertiesResult_descriptor =
       getDescriptor().getMessageTypes().get(25);
     internal_static_weaviate_v1_PropertiesResult_fieldAccessorTable = new
