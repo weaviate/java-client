@@ -1,11 +1,15 @@
 package io.weaviate.client.v1.batch.grpc;
 
+import com.google.protobuf.ByteString;
 import com.google.protobuf.Struct;
 import com.google.protobuf.Value;
 import io.weaviate.client.base.util.CrossReference;
+import io.weaviate.client.base.util.GrpcVersionSupport;
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase;
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch;
 import io.weaviate.client.v1.data.model.WeaviateObject;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,12 +18,17 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
+@RequiredArgsConstructor
 public class BatchObjectConverter {
 
-  public static WeaviateProtoBatch.BatchObject toBatchObject(WeaviateObject obj) {
+  protected static final int BYTES_PER_FLOAT = Float.SIZE / 8;
+  private final GrpcVersionSupport grpcVersionSupport;
+
+  public WeaviateProtoBatch.BatchObject toBatchObject(WeaviateObject obj) {
     WeaviateProtoBatch.BatchObject.Builder builder = WeaviateProtoBatch.BatchObject.newBuilder();
     if (obj.getId() != null) {
       builder.setUuid(obj.getId());
@@ -28,7 +37,13 @@ public class BatchObjectConverter {
       builder.setCollection(obj.getClassName());
     }
     if (obj.getVector() != null) {
-      builder.addAllVector(Arrays.asList(obj.getVector()));
+      if (grpcVersionSupport.supportsVectorBytesField()) {
+        ByteBuffer buffer = ByteBuffer.allocate(obj.getVector().length * BYTES_PER_FLOAT).order(ByteOrder.LITTLE_ENDIAN);
+        Arrays.stream(obj.getVector()).forEach(buffer::putFloat);
+        builder.setVectorBytes(ByteString.copyFrom(buffer.array()));
+      } else {
+        builder.addAllVector(Arrays.asList(obj.getVector()));
+      }
     }
     if (obj.getTenant() != null) {
       builder.setTenant(obj.getTenant());

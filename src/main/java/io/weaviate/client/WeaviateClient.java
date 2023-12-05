@@ -5,6 +5,7 @@ import io.weaviate.client.base.http.builder.HttpApacheClientBuilder;
 import io.weaviate.client.base.http.impl.CommonsHttpClientImpl;
 import io.weaviate.client.base.util.DbVersionProvider;
 import io.weaviate.client.base.util.DbVersionSupport;
+import io.weaviate.client.base.util.GrpcVersionSupport;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.backup.Backup;
 import io.weaviate.client.v1.batch.Batch;
@@ -22,6 +23,7 @@ public class WeaviateClient {
   private final Config config;
   private final DbVersionProvider dbVersionProvider;
   private final DbVersionSupport dbVersionSupport;
+  private final GrpcVersionSupport grpcVersionSupport;
   private final HttpClient httpClient;
   private final AccessTokenProvider tokenProvider;
 
@@ -38,6 +40,7 @@ public class WeaviateClient {
     this.httpClient = httpClient;
     dbVersionProvider = initDbVersionProvider();
     dbVersionSupport = new DbVersionSupport(dbVersionProvider);
+    grpcVersionSupport = new GrpcVersionSupport(dbVersionProvider);
     this.tokenProvider = tokenProvider;
   }
 
@@ -56,7 +59,7 @@ public class WeaviateClient {
 
   public Batch batch() {
     dbVersionProvider.refresh();
-    return new Batch(httpClient, config, dbVersionSupport, tokenProvider, data());
+    return new Batch(httpClient, config, dbVersionSupport, grpcVersionSupport, tokenProvider, data());
   }
 
   public Backup backup() {
