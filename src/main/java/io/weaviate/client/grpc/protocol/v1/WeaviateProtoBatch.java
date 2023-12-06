@@ -1012,6 +1012,12 @@ public final class WeaviateProtoBatch {
      */
     com.google.protobuf.ByteString
         getTenantBytes();
+
+    /**
+     * <code>bytes vector_bytes = 6;</code>
+     * @return The vectorBytes.
+     */
+    com.google.protobuf.ByteString getVectorBytes();
   }
   /**
    * Protobuf type {@code weaviate.v1.BatchObject}
@@ -1030,6 +1036,7 @@ public final class WeaviateProtoBatch {
       vector_ = emptyFloatList();
       collection_ = "";
       tenant_ = "";
+      vectorBytes_ = com.google.protobuf.ByteString.EMPTY;
     }
 
     @java.lang.Override
@@ -6534,6 +6541,17 @@ public final class WeaviateProtoBatch {
       }
     }
 
+    public static final int VECTOR_BYTES_FIELD_NUMBER = 6;
+    private com.google.protobuf.ByteString vectorBytes_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <code>bytes vector_bytes = 6;</code>
+     * @return The vectorBytes.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getVectorBytes() {
+      return vectorBytes_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -6568,6 +6586,9 @@ public final class WeaviateProtoBatch {
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(tenant_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 5, tenant_);
       }
+      if (!vectorBytes_.isEmpty()) {
+        output.writeBytes(6, vectorBytes_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -6601,6 +6622,10 @@ public final class WeaviateProtoBatch {
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(tenant_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, tenant_);
       }
+      if (!vectorBytes_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(6, vectorBytes_);
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
@@ -6629,6 +6654,8 @@ public final class WeaviateProtoBatch {
           .equals(other.getCollection())) return false;
       if (!getTenant()
           .equals(other.getTenant())) return false;
+      if (!getVectorBytes()
+          .equals(other.getVectorBytes())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -6654,6 +6681,8 @@ public final class WeaviateProtoBatch {
       hash = (53 * hash) + getCollection().hashCode();
       hash = (37 * hash) + TENANT_FIELD_NUMBER;
       hash = (53 * hash) + getTenant().hashCode();
+      hash = (37 * hash) + VECTOR_BYTES_FIELD_NUMBER;
+      hash = (53 * hash) + getVectorBytes().hashCode();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -6800,6 +6829,7 @@ public final class WeaviateProtoBatch {
         }
         collection_ = "";
         tenant_ = "";
+        vectorBytes_ = com.google.protobuf.ByteString.EMPTY;
         return this;
       }
 
@@ -6852,6 +6882,9 @@ public final class WeaviateProtoBatch {
         }
         if (((from_bitField0_ & 0x00000010) != 0)) {
           result.tenant_ = tenant_;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.vectorBytes_ = vectorBytes_;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -6929,6 +6962,9 @@ public final class WeaviateProtoBatch {
           bitField0_ |= 0x00000010;
           onChanged();
         }
+        if (other.getVectorBytes() != com.google.protobuf.ByteString.EMPTY) {
+          setVectorBytes(other.getVectorBytes());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -6994,6 +7030,11 @@ public final class WeaviateProtoBatch {
                 bitField0_ |= 0x00000010;
                 break;
               } // case 42
+              case 50: {
+                vectorBytes_ = input.readBytes();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 50
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -7462,6 +7503,38 @@ public final class WeaviateProtoBatch {
         checkByteStringIsUtf8(value);
         tenant_ = value;
         bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString vectorBytes_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes vector_bytes = 6;</code>
+       * @return The vectorBytes.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getVectorBytes() {
+        return vectorBytes_;
+      }
+      /**
+       * <code>bytes vector_bytes = 6;</code>
+       * @param value The vectorBytes to set.
+       * @return This builder for chaining.
+       */
+      public Builder setVectorBytes(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        vectorBytes_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes vector_bytes = 6;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearVectorBytes() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        vectorBytes_ = getDefaultInstance().getVectorBytes();
         onChanged();
         return this;
       }
@@ -9058,36 +9131,37 @@ public final class WeaviateProtoBatch {
       "atchObjectsRequest\022)\n\007objects\030\001 \003(\0132\030.we" +
       "aviate.v1.BatchObject\022=\n\021consistency_lev" +
       "el\030\002 \001(\0162\035.weaviate.v1.ConsistencyLevelH" +
-      "\000\210\001\001B\024\n\022_consistency_level\"\203\007\n\013BatchObje" +
+      "\000\210\001\001B\024\n\022_consistency_level\"\231\007\n\013BatchObje" +
       "ct\022\014\n\004uuid\030\001 \001(\t\022\016\n\006vector\030\002 \003(\002\0227\n\nprop" +
       "erties\030\003 \001(\0132#.weaviate.v1.BatchObject.P" +
       "roperties\022\022\n\ncollection\030\004 \001(\t\022\016\n\006tenant\030" +
-      "\005 \001(\t\032\352\004\n\nProperties\0223\n\022non_ref_properti" +
-      "es\030\001 \001(\0132\027.google.protobuf.Struct\022N\n\027sin" +
-      "gle_target_ref_props\030\002 \003(\0132-.weaviate.v1" +
-      ".BatchObject.SingleTargetRefProps\022L\n\026mul" +
-      "ti_target_ref_props\030\003 \003(\0132,.weaviate.v1." +
-      "BatchObject.MultiTargetRefProps\022C\n\027numbe" +
-      "r_array_properties\030\004 \003(\0132\".weaviate.v1.N" +
-      "umberArrayProperties\022=\n\024int_array_proper" +
-      "ties\030\005 \003(\0132\037.weaviate.v1.IntArrayPropert" +
-      "ies\022?\n\025text_array_properties\030\006 \003(\0132 .wea" +
-      "viate.v1.TextArrayProperties\022E\n\030boolean_" +
-      "array_properties\030\007 \003(\0132#.weaviate.v1.Boo" +
-      "leanArrayProperties\0228\n\021object_properties" +
-      "\030\010 \003(\0132\035.weaviate.v1.ObjectProperties\022C\n" +
-      "\027object_array_properties\030\t \003(\0132\".weaviat" +
-      "e.v1.ObjectArrayProperties\0328\n\024SingleTarg" +
-      "etRefProps\022\r\n\005uuids\030\001 \003(\t\022\021\n\tprop_name\030\002" +
-      " \001(\t\032R\n\023MultiTargetRefProps\022\r\n\005uuids\030\001 \003" +
-      "(\t\022\021\n\tprop_name\030\002 \001(\t\022\031\n\021target_collecti" +
-      "on\030\003 \001(\t\"\210\001\n\021BatchObjectsReply\022\014\n\004took\030\001" +
-      " \001(\002\0229\n\006errors\030\002 \003(\0132).weaviate.v1.Batch" +
-      "ObjectsReply.BatchError\032*\n\nBatchError\022\r\n" +
-      "\005index\030\001 \001(\005\022\r\n\005error\030\002 \001(\tBo\n#io.weavia" +
-      "te.client.grpc.protocol.v1B\022WeaviateProt" +
-      "oBatchZ4github.com/weaviate/weaviate/grp" +
-      "c/generated;protocolb\006proto3"
+      "\005 \001(\t\022\024\n\014vector_bytes\030\006 \001(\014\032\352\004\n\nProperti" +
+      "es\0223\n\022non_ref_properties\030\001 \001(\0132\027.google." +
+      "protobuf.Struct\022N\n\027single_target_ref_pro" +
+      "ps\030\002 \003(\0132-.weaviate.v1.BatchObject.Singl" +
+      "eTargetRefProps\022L\n\026multi_target_ref_prop" +
+      "s\030\003 \003(\0132,.weaviate.v1.BatchObject.MultiT" +
+      "argetRefProps\022C\n\027number_array_properties" +
+      "\030\004 \003(\0132\".weaviate.v1.NumberArrayProperti" +
+      "es\022=\n\024int_array_properties\030\005 \003(\0132\037.weavi" +
+      "ate.v1.IntArrayProperties\022?\n\025text_array_" +
+      "properties\030\006 \003(\0132 .weaviate.v1.TextArray" +
+      "Properties\022E\n\030boolean_array_properties\030\007" +
+      " \003(\0132#.weaviate.v1.BooleanArrayPropertie" +
+      "s\0228\n\021object_properties\030\010 \003(\0132\035.weaviate." +
+      "v1.ObjectProperties\022C\n\027object_array_prop" +
+      "erties\030\t \003(\0132\".weaviate.v1.ObjectArrayPr" +
+      "operties\0328\n\024SingleTargetRefProps\022\r\n\005uuid" +
+      "s\030\001 \003(\t\022\021\n\tprop_name\030\002 \001(\t\032R\n\023MultiTarge" +
+      "tRefProps\022\r\n\005uuids\030\001 \003(\t\022\021\n\tprop_name\030\002 " +
+      "\001(\t\022\031\n\021target_collection\030\003 \001(\t\"\210\001\n\021Batch" +
+      "ObjectsReply\022\014\n\004took\030\001 \001(\002\0229\n\006errors\030\002 \003" +
+      "(\0132).weaviate.v1.BatchObjectsReply.Batch" +
+      "Error\032*\n\nBatchError\022\r\n\005index\030\001 \001(\005\022\r\n\005er" +
+      "ror\030\002 \001(\tBo\n#io.weaviate.client.grpc.pro" +
+      "tocol.v1B\022WeaviateProtoBatchZ4github.com" +
+      "/weaviate/weaviate/grpc/generated;protoc" +
+      "olb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -9106,7 +9180,7 @@ public final class WeaviateProtoBatch {
     internal_static_weaviate_v1_BatchObject_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_BatchObject_descriptor,
-        new java.lang.String[] { "Uuid", "Vector", "Properties", "Collection", "Tenant", });
+        new java.lang.String[] { "Uuid", "Vector", "Properties", "Collection", "Tenant", "VectorBytes", });
     internal_static_weaviate_v1_BatchObject_Properties_descriptor =
       internal_static_weaviate_v1_BatchObject_descriptor.getNestedTypes().get(0);
     internal_static_weaviate_v1_BatchObject_Properties_fieldAccessorTable = new
