@@ -10,7 +10,7 @@ services:
       - --scheme
       - http
       - --write-timeout=600s
-    image: semitechnologies/weaviate:1.22.6
+    image: semitechnologies/weaviate:preview-hnsw-bq-ea13956
     restart: on-failure:0
     environment:
       LOG_LEVEL: 'debug'
@@ -41,7 +41,7 @@ services:
       - '8088'
       - --scheme
       - http
-    image: semitechnologies/weaviate:1.22.6
+    image: semitechnologies/weaviate:preview-hnsw-bq-ea13956
     restart: on-failure:0
     environment:
       LOG_LEVEL: 'debug'

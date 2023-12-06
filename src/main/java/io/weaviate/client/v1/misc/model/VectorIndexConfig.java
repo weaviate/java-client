@@ -25,4 +25,5 @@ public class VectorIndexConfig {
   Integer cleanupIntervalSeconds;
   Boolean skip;
   PQConfig pq;
+  BQConfig bq;
 }
