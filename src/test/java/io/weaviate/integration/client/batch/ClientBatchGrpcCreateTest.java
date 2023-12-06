@@ -5,6 +5,8 @@ import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.batch.model.ObjectGetResponse;
 import io.weaviate.client.v1.data.model.WeaviateObject;
+import io.weaviate.client.v1.misc.model.BQConfig;
+import io.weaviate.client.v1.misc.model.VectorIndexConfig;
 import io.weaviate.client.v1.schema.model.Property;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
 import io.weaviate.integration.client.WeaviateTestGenerics;
@@ -16,6 +18,7 @@ import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.platform.commons.util.StringUtils;
 import org.testcontainers.containers.ComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
@@ -78,6 +81,11 @@ public class ClientBatchGrpcCreateTest {
   }
 
   @Test
+  public void shouldCreateBatchUsingGRPCWithFlatBQConfig() {
+    testCreateBatchWithFlatVectorIndex(true);
+  }
+
+  @Test
   public void shouldCreateBatchUsingRest() {
     testCreateBatch(false);
   }
@@ -110,6 +118,11 @@ public class ClientBatchGrpcCreateTest {
   @Test
   public void shouldCreateBatchWithMultiCrossReferencesWithNestedPropertiesUsingRest() {
     testCreateBatchWithMultiReferenceWithNested(false);
+  }
+
+  @Test
+  public void shouldCreateBatchUsingRestWithFlatBQConfig() {
+    testCreateBatchWithFlatVectorIndex(false);
   }
 
   private void testCreateBatchWithReferenceWithoutNested(Boolean useGRPC) {
@@ -168,13 +181,24 @@ public class ClientBatchGrpcCreateTest {
     testData.deleteRefClasses(client);
   }
 
-  private void testCreateBatch(Boolean useGRPC) {
+  private void testCreateBatch(Boolean useGRPC, String vectorIndexType, VectorIndexConfig vectorIndexConfig) {
     WeaviateClient client = createClient(useGRPC);
     WeaviateTestGenerics.AllPropertiesSchema testData = new WeaviateTestGenerics.AllPropertiesSchema();
     String className = testData.CLASS_NAME;
     List<Property> properties = testData.properties();
     WeaviateObject[] objects = testData.objects();
-    testCreateBatch(client, className, properties, objects);
+    testCreateBatch(client, className, properties, objects, vectorIndexType, vectorIndexConfig);
+  }
+
+  private void testCreateBatchWithFlatVectorIndex(Boolean useGRPC) {
+    VectorIndexConfig vectorIndexConfig = VectorIndexConfig.builder()
+      .bq(BQConfig.builder().enabled(true).build())
+      .build();
+    testCreateBatch(useGRPC, "flat", vectorIndexConfig);
+  }
+
+  private void testCreateBatch(Boolean useGRPC) {
+    testCreateBatch(useGRPC, null, null);
   }
 
   private void testCreateBatchWithNested(Boolean useGRPC) {
@@ -205,13 +229,20 @@ public class ClientBatchGrpcCreateTest {
   }
 
   private void testCreateBatch(WeaviateClient client, String className, List<Property> properties, WeaviateObject[] objects) {
+    testCreateBatch(client, className, properties, objects, null, null);
+  }
+
+  private void testCreateBatch(WeaviateClient client, String className, List<Property> properties, WeaviateObject[] objects,
+    String vectorIndexType, VectorIndexConfig vectorIndexConfig) {
     // create schema
+    WeaviateClass.WeaviateClassBuilder weaviateClassBuilder = WeaviateClass.builder()
+      .className(className)
+      .properties(properties);
+    if (StringUtils.isNotBlank(vectorIndexType) && vectorIndexConfig != null) {
+      weaviateClassBuilder.vectorIndexType(vectorIndexType).vectorIndexConfig(vectorIndexConfig);
+    }
     Result<Boolean> createResult = client.schema().classCreator()
-      .withClass(WeaviateClass.builder()
-        .className(className)
-        .properties(properties)
-        .build()
-      )
+      .withClass(weaviateClassBuilder.build())
       .run();
     assertThat(createResult).isNotNull()
       .returns(false, Result::hasErrors)

@@ -12,25 +12,8 @@ import lombok.experimental.FieldDefaults;
 @ToString
 @EqualsAndHashCode
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class PQConfig {
+public class BQConfig {
   Boolean enabled;
-  // HNSW index specific settings
-  Boolean bitCompression;
-  Integer segments;
-  Integer centroids;
-  Integer trainingLimit;
-  Encoder encoder;
-  // Flat index specific settings
   Long rescoreLimit;
   Boolean cache;
-
-
-  @Getter
-  @Builder
-  @ToString
-  @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-  public static class Encoder {
-    String type;
-    String distribution;
-  }
 }
