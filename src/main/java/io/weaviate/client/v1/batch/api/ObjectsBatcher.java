@@ -10,6 +10,7 @@ import io.weaviate.client.base.WeaviateErrorResponse;
 import io.weaviate.client.base.grpc.GrpcClient;
 import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.base.util.Assert;
+import io.weaviate.client.base.util.GrpcVersionSupport;
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase;
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
@@ -69,11 +70,12 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
   private final List<CompletableFuture<Result<ObjectGetResponse[]>>> undoneFutures;
   private final boolean useGRPC;
   private final AccessTokenProvider tokenProvider;
+  private final GrpcVersionSupport grpcVersionSupport;
   private final Config config;
 
 
   private ObjectsBatcher(HttpClient httpClient, Config config, Data data, ObjectsPath objectsPath,
-                         AccessTokenProvider tokenProvider,
+                         AccessTokenProvider tokenProvider, GrpcVersionSupport grpcVersionSupport,
                          BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig) {
     super(httpClient, config);
     this.config = config;
@@ -81,6 +83,7 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
     this.tokenProvider = tokenProvider;
     this.data = data;
     this.objectsPath = objectsPath;
+    this.grpcVersionSupport = grpcVersionSupport;
     this.objects = new ArrayList<>();
     this.batchRetriesConfig = batchRetriesConfig;
 
@@ -100,18 +103,18 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
   }
 
   public static ObjectsBatcher create(HttpClient httpClient, Config config, Data data, ObjectsPath objectsPath,
-                                      AccessTokenProvider tokenProvider,
+                                      AccessTokenProvider tokenProvider, GrpcVersionSupport grpcVersionSupport,
                                       BatchRetriesConfig batchRetriesConfig) {
     Assert.requiredNotNull(batchRetriesConfig, "batchRetriesConfig");
-    return new ObjectsBatcher(httpClient, config, data, objectsPath, tokenProvider, batchRetriesConfig, null);
+    return new ObjectsBatcher(httpClient, config, data, objectsPath, tokenProvider, grpcVersionSupport, batchRetriesConfig, null);
   }
 
   public static ObjectsBatcher createAuto(HttpClient httpClient, Config config, Data data, ObjectsPath objectsPath,
-                                          AccessTokenProvider tokenProvider,
+                                          AccessTokenProvider tokenProvider, GrpcVersionSupport grpcVersionSupport,
                                           BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig) {
     Assert.requiredNotNull(batchRetriesConfig, "batchRetriesConfig");
     Assert.requiredNotNull(autoBatchConfig, "autoBatchConfig");
-    return new ObjectsBatcher(httpClient, config, data, objectsPath, tokenProvider, batchRetriesConfig, autoBatchConfig);
+    return new ObjectsBatcher(httpClient, config, data, objectsPath, tokenProvider, grpcVersionSupport, batchRetriesConfig, autoBatchConfig);
   }
 
 
@@ -290,8 +293,9 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
   }
 
   private Result<ObjectGetResponse[]> internalGrpcRun(List<WeaviateObject> batch) {
+    BatchObjectConverter batchObjectConverter = new BatchObjectConverter(grpcVersionSupport);
     List<WeaviateProtoBatch.BatchObject> batchObjects = batch.stream()
-      .map(BatchObjectConverter::toBatchObject)
+      .map(batchObjectConverter::toBatchObject)
       .collect(Collectors.toList());
     WeaviateProtoBatch.BatchObjectsRequest.Builder batchObjectsRequestBuilder = WeaviateProtoBatch.BatchObjectsRequest.newBuilder();
     batchObjectsRequestBuilder.addAllObjects(batchObjects);

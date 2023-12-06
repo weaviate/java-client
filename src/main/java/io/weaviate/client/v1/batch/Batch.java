@@ -4,6 +4,7 @@ import io.weaviate.client.Config;
 import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.base.util.BeaconPath;
 import io.weaviate.client.base.util.DbVersionSupport;
+import io.weaviate.client.base.util.GrpcVersionSupport;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.batch.api.ObjectsBatchDeleter;
 import io.weaviate.client.v1.batch.api.ObjectsBatcher;
@@ -20,14 +21,16 @@ public class Batch {
   private final BeaconPath beaconPath;
   private final ObjectsPath objectsPath;
   private final ReferencesPath referencesPath;
+  private final GrpcVersionSupport grpcVersionSupport;
   private final Data data;
 
-  public Batch(HttpClient httpClient, Config config, DbVersionSupport dbVersionSupport,
+  public Batch(HttpClient httpClient, Config config, DbVersionSupport dbVersionSupport, GrpcVersionSupport grpcVersionSupport,
     AccessTokenProvider tokenProvider, Data data) {
     this.config = config;
     this.httpClient = httpClient;
     this.tokenProvider = tokenProvider;
     this.beaconPath = new BeaconPath(dbVersionSupport);
+    this.grpcVersionSupport = grpcVersionSupport;
     this.objectsPath = new ObjectsPath();
     this.referencesPath = new ReferencesPath();
     this.data = data;
@@ -38,7 +41,7 @@ public class Batch {
   }
 
   public ObjectsBatcher objectsBatcher(ObjectsBatcher.BatchRetriesConfig batchRetriesConfig) {
-    return ObjectsBatcher.create(httpClient, config, data, objectsPath, tokenProvider, batchRetriesConfig);
+    return ObjectsBatcher.create(httpClient, config, data, objectsPath, tokenProvider, grpcVersionSupport, batchRetriesConfig);
   }
 
   public ObjectsBatcher objectsAutoBatcher() {
@@ -64,7 +67,7 @@ public class Batch {
 
   public ObjectsBatcher objectsAutoBatcher(ObjectsBatcher.BatchRetriesConfig batchRetriesConfig,
                                            ObjectsBatcher.AutoBatchConfig autoBatchConfig) {
-    return ObjectsBatcher.createAuto(httpClient, config, data, objectsPath, tokenProvider, batchRetriesConfig, autoBatchConfig);
+    return ObjectsBatcher.createAuto(httpClient, config, data, objectsPath, tokenProvider, grpcVersionSupport, batchRetriesConfig, autoBatchConfig);
   }
 
   public ObjectsBatchDeleter objectsBatchDeleter() {
