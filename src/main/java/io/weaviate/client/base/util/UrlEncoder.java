@@ -11,7 +11,7 @@ public class UrlEncoder {
   private UrlEncoder() {}
 
   public static String encodeQueryParam(String key, String value) {
-    return String.format("%s=%s", key, encode(StringUtils.trim(value)));
+    return String.format("%s=%s", encode(StringUtils.trim(key)), encode(StringUtils.trim(value)));
   }
 
   public static String encodePathParam(String value) {

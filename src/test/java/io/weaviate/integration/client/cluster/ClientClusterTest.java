@@ -1,6 +1,7 @@
 package io.weaviate.integration.client.cluster;
 
 import io.weaviate.client.base.util.TriConsumer;
+import io.weaviate.client.v1.cluster.model.NodeStatusOutput;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -77,7 +78,7 @@ public class ClientClusterTest {
     testGenerics.createTestSchemaAndData(client);
 
     // when
-    Result<NodesStatusResponse> result = client.cluster().nodesStatusGetter().run();
+    Result<NodesStatusResponse> result = client.cluster().nodesStatusGetter().withOutput(NodeStatusOutput.VERBOSE).run();
 
     // then
     assertThat(result).isNotNull();
@@ -166,5 +167,64 @@ public class ClientClusterTest {
 
     assertSingleNode.accept(resultSoup);
     assertCounts.accept(resultSoup.getResult().getNodes()[0], 1L, (long) soupIds.size());
+  }
+
+  @Test
+  public void testClusterNodesEndpointWithDataWithOutputMinimal() {
+    // given
+    testGenerics.createTestSchemaAndData(client);
+
+    // when
+    Result<NodesStatusResponse> result = client.cluster().nodesStatusGetter().withOutput(NodeStatusOutput.MINIMAL).run();
+
+    // then
+    assertThat(result).isNotNull();
+    assertThat(result.hasErrors()).isFalse();
+
+    NodesStatusResponse nodes = result.getResult();
+    assertThat(nodes).isNotNull();
+    assertThat(nodes.getNodes()).hasSize(1);
+
+    NodesStatusResponse.NodeStatus nodeStatus = nodes.getNodes()[0];
+    assertThat(nodeStatus.getName()).isNotBlank();
+    assertThat(nodeStatus)
+      .returns(EXPECTED_WEAVIATE_VERSION, NodesStatusResponse.NodeStatus::getVersion)
+      .returns(EXPECTED_WEAVIATE_GIT_HASH, NodesStatusResponse.NodeStatus::getGitHash)
+      .returns(NodesStatusResponse.Status.HEALTHY, NodesStatusResponse.NodeStatus::getStatus)
+      .extracting(NodesStatusResponse.NodeStatus::getStats)
+      .returns(2L, NodesStatusResponse.Stats::getShardCount)
+      .returns(6L, NodesStatusResponse.Stats::getObjectCount);
+
+    assertThat(nodeStatus.getShards()).isNull();
+  }
+
+  @Test
+  public void testClusterNodesEndpointWithDataWithClassWithOutputMinimal() {
+    // given
+    testGenerics.createTestSchemaAndData(client);
+
+    // when
+    Result<NodesStatusResponse> result = client.cluster().nodesStatusGetter()
+      .withClassName("Soup").withOutput(NodeStatusOutput.MINIMAL).run();
+
+    // then
+    assertThat(result).isNotNull();
+    assertThat(result.hasErrors()).isFalse();
+
+    NodesStatusResponse nodes = result.getResult();
+    assertThat(nodes).isNotNull();
+    assertThat(nodes.getNodes()).hasSize(1);
+
+    NodesStatusResponse.NodeStatus nodeStatus = nodes.getNodes()[0];
+    assertThat(nodeStatus.getName()).isNotBlank();
+    assertThat(nodeStatus)
+      .returns(EXPECTED_WEAVIATE_VERSION, NodesStatusResponse.NodeStatus::getVersion)
+      .returns(EXPECTED_WEAVIATE_GIT_HASH, NodesStatusResponse.NodeStatus::getGitHash)
+      .returns(NodesStatusResponse.Status.HEALTHY, NodesStatusResponse.NodeStatus::getStatus)
+      .extracting(NodesStatusResponse.NodeStatus::getStats)
+      .returns(1L, NodesStatusResponse.Stats::getShardCount)
+      .returns(2L, NodesStatusResponse.Stats::getObjectCount);
+
+    assertThat(nodeStatus.getShards()).isNull();
   }
 }

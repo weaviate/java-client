@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 public class NodesStatusGetter extends BaseClient<NodesStatusResponse> implements ClientResult<NodesStatusResponse> {
 
   private String className;
+  private String output;
 
   public NodesStatusGetter(HttpClient httpClient, Config config) {
     super(httpClient, config);
@@ -20,6 +21,11 @@ public class NodesStatusGetter extends BaseClient<NodesStatusResponse> implement
 
   public NodesStatusGetter withClassName(String className) {
     this.className = className;
+    return this;
+  }
+
+  public NodesStatusGetter withOutput(String output) {
+    this.output = output;
     return this;
   }
 
@@ -33,6 +39,9 @@ public class NodesStatusGetter extends BaseClient<NodesStatusResponse> implement
     String path = "/nodes";
     if (StringUtils.isNotBlank(className)) {
       path = String.format("%s/%s", path, UrlEncoder.encodePathParam(className));
+    }
+    if (StringUtils.isNotBlank(output)) {
+      path = String.format("%s?%s", path, UrlEncoder.encodeQueryParam("output", output));
     }
     return path;
   }
