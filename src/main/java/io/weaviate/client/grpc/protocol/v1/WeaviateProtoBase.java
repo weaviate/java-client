@@ -149,29 +149,35 @@ public final class WeaviateProtoBase {
      * will be removed in the future, use vector_bytes
      * </pre>
      *
-     * <code>repeated double values = 1;</code>
+     * <code>repeated double values = 1 [deprecated = true];</code>
+     * @deprecated weaviate.v1.NumberArrayProperties.values is deprecated.
+     *     See v1/base.proto;l=17
      * @return A list containing the values.
      */
-    java.util.List<java.lang.Double> getValuesList();
+    @java.lang.Deprecated java.util.List<java.lang.Double> getValuesList();
     /**
      * <pre>
      * will be removed in the future, use vector_bytes
      * </pre>
      *
-     * <code>repeated double values = 1;</code>
+     * <code>repeated double values = 1 [deprecated = true];</code>
+     * @deprecated weaviate.v1.NumberArrayProperties.values is deprecated.
+     *     See v1/base.proto;l=17
      * @return The count of values.
      */
-    int getValuesCount();
+    @java.lang.Deprecated int getValuesCount();
     /**
      * <pre>
      * will be removed in the future, use vector_bytes
      * </pre>
      *
-     * <code>repeated double values = 1;</code>
+     * <code>repeated double values = 1 [deprecated = true];</code>
+     * @deprecated weaviate.v1.NumberArrayProperties.values is deprecated.
+     *     See v1/base.proto;l=17
      * @param index The index of the element to return.
      * @return The values at the given index.
      */
-    double getValues(int index);
+    @java.lang.Deprecated double getValues(int index);
 
     /**
      * <code>string prop_name = 2;</code>
@@ -238,11 +244,13 @@ public final class WeaviateProtoBase {
      * will be removed in the future, use vector_bytes
      * </pre>
      *
-     * <code>repeated double values = 1;</code>
+     * <code>repeated double values = 1 [deprecated = true];</code>
+     * @deprecated weaviate.v1.NumberArrayProperties.values is deprecated.
+     *     See v1/base.proto;l=17
      * @return A list containing the values.
      */
     @java.lang.Override
-    public java.util.List<java.lang.Double>
+    @java.lang.Deprecated public java.util.List<java.lang.Double>
         getValuesList() {
       return values_;
     }
@@ -251,10 +259,12 @@ public final class WeaviateProtoBase {
      * will be removed in the future, use vector_bytes
      * </pre>
      *
-     * <code>repeated double values = 1;</code>
+     * <code>repeated double values = 1 [deprecated = true];</code>
+     * @deprecated weaviate.v1.NumberArrayProperties.values is deprecated.
+     *     See v1/base.proto;l=17
      * @return The count of values.
      */
-    public int getValuesCount() {
+    @java.lang.Deprecated public int getValuesCount() {
       return values_.size();
     }
     /**
@@ -262,11 +272,13 @@ public final class WeaviateProtoBase {
      * will be removed in the future, use vector_bytes
      * </pre>
      *
-     * <code>repeated double values = 1;</code>
+     * <code>repeated double values = 1 [deprecated = true];</code>
+     * @deprecated weaviate.v1.NumberArrayProperties.values is deprecated.
+     *     See v1/base.proto;l=17
      * @param index The index of the element to return.
      * @return The values at the given index.
      */
-    public double getValues(int index) {
+    @java.lang.Deprecated public double getValues(int index) {
       return values_.getDouble(index);
     }
     private int valuesMemoizedSerializedSize = -1;
@@ -746,10 +758,12 @@ public final class WeaviateProtoBase {
        * will be removed in the future, use vector_bytes
        * </pre>
        *
-       * <code>repeated double values = 1;</code>
+       * <code>repeated double values = 1 [deprecated = true];</code>
+       * @deprecated weaviate.v1.NumberArrayProperties.values is deprecated.
+       *     See v1/base.proto;l=17
        * @return A list containing the values.
        */
-      public java.util.List<java.lang.Double>
+      @java.lang.Deprecated public java.util.List<java.lang.Double>
           getValuesList() {
         values_.makeImmutable();
         return values_;
@@ -759,10 +773,12 @@ public final class WeaviateProtoBase {
        * will be removed in the future, use vector_bytes
        * </pre>
        *
-       * <code>repeated double values = 1;</code>
+       * <code>repeated double values = 1 [deprecated = true];</code>
+       * @deprecated weaviate.v1.NumberArrayProperties.values is deprecated.
+       *     See v1/base.proto;l=17
        * @return The count of values.
        */
-      public int getValuesCount() {
+      @java.lang.Deprecated public int getValuesCount() {
         return values_.size();
       }
       /**
@@ -770,11 +786,13 @@ public final class WeaviateProtoBase {
        * will be removed in the future, use vector_bytes
        * </pre>
        *
-       * <code>repeated double values = 1;</code>
+       * <code>repeated double values = 1 [deprecated = true];</code>
+       * @deprecated weaviate.v1.NumberArrayProperties.values is deprecated.
+       *     See v1/base.proto;l=17
        * @param index The index of the element to return.
        * @return The values at the given index.
        */
-      public double getValues(int index) {
+      @java.lang.Deprecated public double getValues(int index) {
         return values_.getDouble(index);
       }
       /**
@@ -782,12 +800,14 @@ public final class WeaviateProtoBase {
        * will be removed in the future, use vector_bytes
        * </pre>
        *
-       * <code>repeated double values = 1;</code>
+       * <code>repeated double values = 1 [deprecated = true];</code>
+       * @deprecated weaviate.v1.NumberArrayProperties.values is deprecated.
+       *     See v1/base.proto;l=17
        * @param index The index to set the value at.
        * @param value The values to set.
        * @return This builder for chaining.
        */
-      public Builder setValues(
+      @java.lang.Deprecated public Builder setValues(
           int index, double value) {
 
         ensureValuesIsMutable();
@@ -801,11 +821,13 @@ public final class WeaviateProtoBase {
        * will be removed in the future, use vector_bytes
        * </pre>
        *
-       * <code>repeated double values = 1;</code>
+       * <code>repeated double values = 1 [deprecated = true];</code>
+       * @deprecated weaviate.v1.NumberArrayProperties.values is deprecated.
+       *     See v1/base.proto;l=17
        * @param value The values to add.
        * @return This builder for chaining.
        */
-      public Builder addValues(double value) {
+      @java.lang.Deprecated public Builder addValues(double value) {
 
         ensureValuesIsMutable();
         values_.addDouble(value);
@@ -818,11 +840,13 @@ public final class WeaviateProtoBase {
        * will be removed in the future, use vector_bytes
        * </pre>
        *
-       * <code>repeated double values = 1;</code>
+       * <code>repeated double values = 1 [deprecated = true];</code>
+       * @deprecated weaviate.v1.NumberArrayProperties.values is deprecated.
+       *     See v1/base.proto;l=17
        * @param values The values to add.
        * @return This builder for chaining.
        */
-      public Builder addAllValues(
+      @java.lang.Deprecated public Builder addAllValues(
           java.lang.Iterable<? extends java.lang.Double> values) {
         ensureValuesIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -836,10 +860,12 @@ public final class WeaviateProtoBase {
        * will be removed in the future, use vector_bytes
        * </pre>
        *
-       * <code>repeated double values = 1;</code>
+       * <code>repeated double values = 1 [deprecated = true];</code>
+       * @deprecated weaviate.v1.NumberArrayProperties.values is deprecated.
+       *     See v1/base.proto;l=17
        * @return This builder for chaining.
        */
-      public Builder clearValues() {
+      @java.lang.Deprecated public Builder clearValues() {
         values_ = emptyDoubleList();
         bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
@@ -7872,36 +7898,36 @@ public final class WeaviateProtoBase {
   static {
     java.lang.String[] descriptorData = {
       "\n\rv1/base.proto\022\013weaviate.v1\032\034google/pro" +
-      "tobuf/struct.proto\"P\n\025NumberArrayPropert" +
-      "ies\022\016\n\006values\030\001 \003(\001\022\021\n\tprop_name\030\002 \001(\t\022\024" +
-      "\n\014values_bytes\030\003 \001(\014\"7\n\022IntArrayProperti" +
-      "es\022\016\n\006values\030\001 \003(\003\022\021\n\tprop_name\030\002 \001(\t\"8\n" +
-      "\023TextArrayProperties\022\016\n\006values\030\001 \003(\t\022\021\n\t" +
-      "prop_name\030\002 \001(\t\";\n\026BooleanArrayPropertie" +
-      "s\022\016\n\006values\030\001 \003(\010\022\021\n\tprop_name\030\002 \001(\t\"\327\003\n" +
-      "\025ObjectPropertiesValue\0223\n\022non_ref_proper" +
-      "ties\030\001 \001(\0132\027.google.protobuf.Struct\022C\n\027n" +
-      "umber_array_properties\030\002 \003(\0132\".weaviate." +
-      "v1.NumberArrayProperties\022=\n\024int_array_pr" +
-      "operties\030\003 \003(\0132\037.weaviate.v1.IntArrayPro" +
-      "perties\022?\n\025text_array_properties\030\004 \003(\0132 " +
-      ".weaviate.v1.TextArrayProperties\022E\n\030bool" +
-      "ean_array_properties\030\005 \003(\0132#.weaviate.v1" +
-      ".BooleanArrayProperties\0228\n\021object_proper" +
-      "ties\030\006 \003(\0132\035.weaviate.v1.ObjectPropertie" +
-      "s\022C\n\027object_array_properties\030\007 \003(\0132\".wea" +
-      "viate.v1.ObjectArrayProperties\"^\n\025Object" +
-      "ArrayProperties\0222\n\006values\030\001 \003(\0132\".weavia" +
-      "te.v1.ObjectPropertiesValue\022\021\n\tprop_name" +
-      "\030\002 \001(\t\"X\n\020ObjectProperties\0221\n\005value\030\001 \001(" +
-      "\0132\".weaviate.v1.ObjectPropertiesValue\022\021\n" +
-      "\tprop_name\030\002 \001(\t*\211\001\n\020ConsistencyLevel\022!\n" +
-      "\035CONSISTENCY_LEVEL_UNSPECIFIED\020\000\022\031\n\025CONS" +
-      "ISTENCY_LEVEL_ONE\020\001\022\034\n\030CONSISTENCY_LEVEL" +
-      "_QUORUM\020\002\022\031\n\025CONSISTENCY_LEVEL_ALL\020\003Bn\n#" +
-      "io.weaviate.client.grpc.protocol.v1B\021Wea" +
-      "viateProtoBaseZ4github.com/weaviate/weav" +
-      "iate/grpc/generated;protocolb\006proto3"
+      "tobuf/struct.proto\"T\n\025NumberArrayPropert" +
+      "ies\022\022\n\006values\030\001 \003(\001B\002\030\001\022\021\n\tprop_name\030\002 \001" +
+      "(\t\022\024\n\014values_bytes\030\003 \001(\014\"7\n\022IntArrayProp" +
+      "erties\022\016\n\006values\030\001 \003(\003\022\021\n\tprop_name\030\002 \001(" +
+      "\t\"8\n\023TextArrayProperties\022\016\n\006values\030\001 \003(\t" +
+      "\022\021\n\tprop_name\030\002 \001(\t\";\n\026BooleanArrayPrope" +
+      "rties\022\016\n\006values\030\001 \003(\010\022\021\n\tprop_name\030\002 \001(\t" +
+      "\"\327\003\n\025ObjectPropertiesValue\0223\n\022non_ref_pr" +
+      "operties\030\001 \001(\0132\027.google.protobuf.Struct\022" +
+      "C\n\027number_array_properties\030\002 \003(\0132\".weavi" +
+      "ate.v1.NumberArrayProperties\022=\n\024int_arra" +
+      "y_properties\030\003 \003(\0132\037.weaviate.v1.IntArra" +
+      "yProperties\022?\n\025text_array_properties\030\004 \003" +
+      "(\0132 .weaviate.v1.TextArrayProperties\022E\n\030" +
+      "boolean_array_properties\030\005 \003(\0132#.weaviat" +
+      "e.v1.BooleanArrayProperties\0228\n\021object_pr" +
+      "operties\030\006 \003(\0132\035.weaviate.v1.ObjectPrope" +
+      "rties\022C\n\027object_array_properties\030\007 \003(\0132\"" +
+      ".weaviate.v1.ObjectArrayProperties\"^\n\025Ob" +
+      "jectArrayProperties\0222\n\006values\030\001 \003(\0132\".we" +
+      "aviate.v1.ObjectPropertiesValue\022\021\n\tprop_" +
+      "name\030\002 \001(\t\"X\n\020ObjectProperties\0221\n\005value\030" +
+      "\001 \001(\0132\".weaviate.v1.ObjectPropertiesValu" +
+      "e\022\021\n\tprop_name\030\002 \001(\t*\211\001\n\020ConsistencyLeve" +
+      "l\022!\n\035CONSISTENCY_LEVEL_UNSPECIFIED\020\000\022\031\n\025" +
+      "CONSISTENCY_LEVEL_ONE\020\001\022\034\n\030CONSISTENCY_L" +
+      "EVEL_QUORUM\020\002\022\031\n\025CONSISTENCY_LEVEL_ALL\020\003" +
+      "Bn\n#io.weaviate.client.grpc.protocol.v1B" +
+      "\021WeaviateProtoBaseZ4github.com/weaviate/" +
+      "weaviate/grpc/generated;protocolb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

@@ -370,6 +370,14 @@ public final class WeaviateProtoSearchGet {
      * <code>optional .weaviate.v1.GenerativeSearch generative = 60;</code>
      */
     io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearchOrBuilder getGenerativeOrBuilder();
+
+    /**
+     * <code>bool uses_123_api = 100 [deprecated = true];</code>
+     * @deprecated weaviate.v1.SearchRequest.uses_123_api is deprecated.
+     *     See v1/search_get.proto;l=46
+     * @return The uses123Api.
+     */
+    @java.lang.Deprecated boolean getUses123Api();
   }
   /**
    * Protobuf type {@code weaviate.v1.SearchRequest}
@@ -1030,6 +1038,19 @@ public final class WeaviateProtoSearchGet {
       return generative_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch.getDefaultInstance() : generative_;
     }
 
+    public static final int USES_123_API_FIELD_NUMBER = 100;
+    private boolean uses123Api_ = false;
+    /**
+     * <code>bool uses_123_api = 100 [deprecated = true];</code>
+     * @deprecated weaviate.v1.SearchRequest.uses_123_api is deprecated.
+     *     See v1/search_get.proto;l=46
+     * @return The uses123Api.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated public boolean getUses123Api() {
+      return uses123Api_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -1106,6 +1127,9 @@ public final class WeaviateProtoSearchGet {
       }
       if (((bitField0_ & 0x00002000) != 0)) {
         output.writeMessage(60, getGenerative());
+      }
+      if (uses123Api_ != false) {
+        output.writeBool(100, uses123Api_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -1196,6 +1220,10 @@ public final class WeaviateProtoSearchGet {
       if (((bitField0_ & 0x00002000) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(60, getGenerative());
+      }
+      if (uses123Api_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(100, uses123Api_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -1295,6 +1323,8 @@ public final class WeaviateProtoSearchGet {
         if (!getGenerative()
             .equals(other.getGenerative())) return false;
       }
+      if (getUses123Api()
+          != other.getUses123Api()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -1378,6 +1408,9 @@ public final class WeaviateProtoSearchGet {
         hash = (37 * hash) + GENERATIVE_FIELD_NUMBER;
         hash = (53 * hash) + getGenerative().hashCode();
       }
+      hash = (37 * hash) + USES_123_API_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getUses123Api());
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1607,6 +1640,7 @@ public final class WeaviateProtoSearchGet {
           generativeBuilder_.dispose();
           generativeBuilder_ = null;
         }
+        uses123Api_ = false;
         return this;
       }
 
@@ -1754,6 +1788,9 @@ public final class WeaviateProtoSearchGet {
               : generativeBuilder_.build();
           to_bitField0_ |= 0x00002000;
         }
+        if (((from_bitField0_ & 0x00200000) != 0)) {
+          result.uses123Api_ = uses123Api_;
+        }
         result.bitField0_ |= to_bitField0_;
       }
 
@@ -1892,6 +1929,9 @@ public final class WeaviateProtoSearchGet {
         }
         if (other.hasGenerative()) {
           mergeGenerative(other.getGenerative());
+        }
+        if (other.getUses123Api() != false) {
+          setUses123Api(other.getUses123Api());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -2058,6 +2098,11 @@ public final class WeaviateProtoSearchGet {
                 bitField0_ |= 0x00100000;
                 break;
               } // case 482
+              case 800: {
+                uses123Api_ = input.readBool();
+                bitField0_ |= 0x00200000;
+                break;
+              } // case 800
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -4454,6 +4499,44 @@ public final class WeaviateProtoSearchGet {
           generative_ = null;
         }
         return generativeBuilder_;
+      }
+
+      private boolean uses123Api_ ;
+      /**
+       * <code>bool uses_123_api = 100 [deprecated = true];</code>
+       * @deprecated weaviate.v1.SearchRequest.uses_123_api is deprecated.
+       *     See v1/search_get.proto;l=46
+       * @return The uses123Api.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated public boolean getUses123Api() {
+        return uses123Api_;
+      }
+      /**
+       * <code>bool uses_123_api = 100 [deprecated = true];</code>
+       * @deprecated weaviate.v1.SearchRequest.uses_123_api is deprecated.
+       *     See v1/search_get.proto;l=46
+       * @param value The uses123Api to set.
+       * @return This builder for chaining.
+       */
+      @java.lang.Deprecated public Builder setUses123Api(boolean value) {
+
+        uses123Api_ = value;
+        bitField0_ |= 0x00200000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool uses_123_api = 100 [deprecated = true];</code>
+       * @deprecated weaviate.v1.SearchRequest.uses_123_api is deprecated.
+       *     See v1/search_get.proto;l=46
+       * @return This builder for chaining.
+       */
+      @java.lang.Deprecated public Builder clearUses123Api() {
+        bitField0_ = (bitField0_ & ~0x00200000);
+        uses123Api_ = false;
+        onChanged();
+        return this;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -9641,15 +9724,15 @@ public final class WeaviateProtoSearchGet {
     boolean getValueBoolean();
 
     /**
-     * <code>float value_number = 7;</code>
+     * <code>double value_number = 7;</code>
      * @return Whether the valueNumber field is set.
      */
     boolean hasValueNumber();
     /**
-     * <code>float value_number = 7;</code>
+     * <code>double value_number = 7;</code>
      * @return The valueNumber.
      */
-    float getValueNumber();
+    double getValueNumber();
 
     /**
      * <code>.weaviate.v1.TextArray value_text_array = 9;</code>
@@ -9710,6 +9793,21 @@ public final class WeaviateProtoSearchGet {
      * <code>.weaviate.v1.NumberArray value_number_array = 12;</code>
      */
     io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NumberArrayOrBuilder getValueNumberArrayOrBuilder();
+
+    /**
+     * <code>.weaviate.v1.GeoCoordinatesFilter value_geo = 13;</code>
+     * @return Whether the valueGeo field is set.
+     */
+    boolean hasValueGeo();
+    /**
+     * <code>.weaviate.v1.GeoCoordinatesFilter value_geo = 13;</code>
+     * @return The valueGeo.
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter getValueGeo();
+    /**
+     * <code>.weaviate.v1.GeoCoordinatesFilter value_geo = 13;</code>
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilterOrBuilder getValueGeoOrBuilder();
 
     io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.Filters.TestValueCase getTestValueCase();
   }
@@ -9982,6 +10080,7 @@ public final class WeaviateProtoSearchGet {
       VALUE_INT_ARRAY(10),
       VALUE_BOOLEAN_ARRAY(11),
       VALUE_NUMBER_ARRAY(12),
+      VALUE_GEO(13),
       TESTVALUE_NOT_SET(0);
       private final int value;
       private TestValueCase(int value) {
@@ -10007,6 +10106,7 @@ public final class WeaviateProtoSearchGet {
           case 10: return VALUE_INT_ARRAY;
           case 11: return VALUE_BOOLEAN_ARRAY;
           case 12: return VALUE_NUMBER_ARRAY;
+          case 13: return VALUE_GEO;
           case 0: return TESTVALUE_NOT_SET;
           default: return null;
         }
@@ -10230,7 +10330,7 @@ public final class WeaviateProtoSearchGet {
 
     public static final int VALUE_NUMBER_FIELD_NUMBER = 7;
     /**
-     * <code>float value_number = 7;</code>
+     * <code>double value_number = 7;</code>
      * @return Whether the valueNumber field is set.
      */
     @java.lang.Override
@@ -10238,15 +10338,15 @@ public final class WeaviateProtoSearchGet {
       return testValueCase_ == 7;
     }
     /**
-     * <code>float value_number = 7;</code>
+     * <code>double value_number = 7;</code>
      * @return The valueNumber.
      */
     @java.lang.Override
-    public float getValueNumber() {
+    public double getValueNumber() {
       if (testValueCase_ == 7) {
-        return (java.lang.Float) testValue_;
+        return (java.lang.Double) testValue_;
       }
-      return 0F;
+      return 0D;
     }
 
     public static final int VALUE_TEXT_ARRAY_FIELD_NUMBER = 9;
@@ -10373,6 +10473,37 @@ public final class WeaviateProtoSearchGet {
       return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NumberArray.getDefaultInstance();
     }
 
+    public static final int VALUE_GEO_FIELD_NUMBER = 13;
+    /**
+     * <code>.weaviate.v1.GeoCoordinatesFilter value_geo = 13;</code>
+     * @return Whether the valueGeo field is set.
+     */
+    @java.lang.Override
+    public boolean hasValueGeo() {
+      return testValueCase_ == 13;
+    }
+    /**
+     * <code>.weaviate.v1.GeoCoordinatesFilter value_geo = 13;</code>
+     * @return The valueGeo.
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter getValueGeo() {
+      if (testValueCase_ == 13) {
+         return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter) testValue_;
+      }
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter.getDefaultInstance();
+    }
+    /**
+     * <code>.weaviate.v1.GeoCoordinatesFilter value_geo = 13;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilterOrBuilder getValueGeoOrBuilder() {
+      if (testValueCase_ == 13) {
+         return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter) testValue_;
+      }
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter.getDefaultInstance();
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -10408,8 +10539,8 @@ public final class WeaviateProtoSearchGet {
             6, (boolean)((java.lang.Boolean) testValue_));
       }
       if (testValueCase_ == 7) {
-        output.writeFloat(
-            7, (float)((java.lang.Float) testValue_));
+        output.writeDouble(
+            7, (double)((java.lang.Double) testValue_));
       }
       if (testValueCase_ == 9) {
         output.writeMessage(9, (io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.TextArray) testValue_);
@@ -10422,6 +10553,9 @@ public final class WeaviateProtoSearchGet {
       }
       if (testValueCase_ == 12) {
         output.writeMessage(12, (io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NumberArray) testValue_);
+      }
+      if (testValueCase_ == 13) {
+        output.writeMessage(13, (io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter) testValue_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -10463,8 +10597,8 @@ public final class WeaviateProtoSearchGet {
       }
       if (testValueCase_ == 7) {
         size += com.google.protobuf.CodedOutputStream
-          .computeFloatSize(
-              7, (float)((java.lang.Float) testValue_));
+          .computeDoubleSize(
+              7, (double)((java.lang.Double) testValue_));
       }
       if (testValueCase_ == 9) {
         size += com.google.protobuf.CodedOutputStream
@@ -10481,6 +10615,10 @@ public final class WeaviateProtoSearchGet {
       if (testValueCase_ == 12) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(12, (io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NumberArray) testValue_);
+      }
+      if (testValueCase_ == 13) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(13, (io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter) testValue_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -10517,8 +10655,8 @@ public final class WeaviateProtoSearchGet {
               != other.getValueBoolean()) return false;
           break;
         case 7:
-          if (java.lang.Float.floatToIntBits(getValueNumber())
-              != java.lang.Float.floatToIntBits(
+          if (java.lang.Double.doubleToLongBits(getValueNumber())
+              != java.lang.Double.doubleToLongBits(
                   other.getValueNumber())) return false;
           break;
         case 9:
@@ -10536,6 +10674,10 @@ public final class WeaviateProtoSearchGet {
         case 12:
           if (!getValueNumberArray()
               .equals(other.getValueNumberArray())) return false;
+          break;
+        case 13:
+          if (!getValueGeo()
+              .equals(other.getValueGeo())) return false;
           break;
         case 0:
         default:
@@ -10578,8 +10720,8 @@ public final class WeaviateProtoSearchGet {
           break;
         case 7:
           hash = (37 * hash) + VALUE_NUMBER_FIELD_NUMBER;
-          hash = (53 * hash) + java.lang.Float.floatToIntBits(
-              getValueNumber());
+          hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              java.lang.Double.doubleToLongBits(getValueNumber()));
           break;
         case 9:
           hash = (37 * hash) + VALUE_TEXT_ARRAY_FIELD_NUMBER;
@@ -10596,6 +10738,10 @@ public final class WeaviateProtoSearchGet {
         case 12:
           hash = (37 * hash) + VALUE_NUMBER_ARRAY_FIELD_NUMBER;
           hash = (53 * hash) + getValueNumberArray().hashCode();
+          break;
+        case 13:
+          hash = (37 * hash) + VALUE_GEO_FIELD_NUMBER;
+          hash = (53 * hash) + getValueGeo().hashCode();
           break;
         case 0:
         default:
@@ -10753,6 +10899,9 @@ public final class WeaviateProtoSearchGet {
         if (valueNumberArrayBuilder_ != null) {
           valueNumberArrayBuilder_.clear();
         }
+        if (valueGeoBuilder_ != null) {
+          valueGeoBuilder_.clear();
+        }
         testValueCase_ = 0;
         testValue_ = null;
         return this;
@@ -10829,6 +10978,10 @@ public final class WeaviateProtoSearchGet {
         if (testValueCase_ == 12 &&
             valueNumberArrayBuilder_ != null) {
           result.testValue_ = valueNumberArrayBuilder_.build();
+        }
+        if (testValueCase_ == 13 &&
+            valueGeoBuilder_ != null) {
+          result.testValue_ = valueGeoBuilder_.build();
         }
       }
 
@@ -10950,6 +11103,10 @@ public final class WeaviateProtoSearchGet {
             mergeValueNumberArray(other.getValueNumberArray());
             break;
           }
+          case VALUE_GEO: {
+            mergeValueGeo(other.getValueGeo());
+            break;
+          }
           case TESTVALUE_NOT_SET: {
             break;
           }
@@ -11020,11 +11177,11 @@ public final class WeaviateProtoSearchGet {
                 testValueCase_ = 6;
                 break;
               } // case 48
-              case 61: {
-                testValue_ = input.readFloat();
+              case 57: {
+                testValue_ = input.readDouble();
                 testValueCase_ = 7;
                 break;
-              } // case 61
+              } // case 57
               case 74: {
                 input.readMessage(
                     getValueTextArrayFieldBuilder().getBuilder(),
@@ -11053,6 +11210,13 @@ public final class WeaviateProtoSearchGet {
                 testValueCase_ = 12;
                 break;
               } // case 98
+              case 106: {
+                input.readMessage(
+                    getValueGeoFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                testValueCase_ = 13;
+                break;
+              } // case 106
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -11703,28 +11867,28 @@ public final class WeaviateProtoSearchGet {
       }
 
       /**
-       * <code>float value_number = 7;</code>
+       * <code>double value_number = 7;</code>
        * @return Whether the valueNumber field is set.
        */
       public boolean hasValueNumber() {
         return testValueCase_ == 7;
       }
       /**
-       * <code>float value_number = 7;</code>
+       * <code>double value_number = 7;</code>
        * @return The valueNumber.
        */
-      public float getValueNumber() {
+      public double getValueNumber() {
         if (testValueCase_ == 7) {
-          return (java.lang.Float) testValue_;
+          return (java.lang.Double) testValue_;
         }
-        return 0F;
+        return 0D;
       }
       /**
-       * <code>float value_number = 7;</code>
+       * <code>double value_number = 7;</code>
        * @param value The valueNumber to set.
        * @return This builder for chaining.
        */
-      public Builder setValueNumber(float value) {
+      public Builder setValueNumber(double value) {
 
         testValueCase_ = 7;
         testValue_ = value;
@@ -11732,7 +11896,7 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>float value_number = 7;</code>
+       * <code>double value_number = 7;</code>
        * @return This builder for chaining.
        */
       public Builder clearValueNumber() {
@@ -12311,6 +12475,148 @@ public final class WeaviateProtoSearchGet {
         onChanged();
         return valueNumberArrayBuilder_;
       }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilterOrBuilder> valueGeoBuilder_;
+      /**
+       * <code>.weaviate.v1.GeoCoordinatesFilter value_geo = 13;</code>
+       * @return Whether the valueGeo field is set.
+       */
+      @java.lang.Override
+      public boolean hasValueGeo() {
+        return testValueCase_ == 13;
+      }
+      /**
+       * <code>.weaviate.v1.GeoCoordinatesFilter value_geo = 13;</code>
+       * @return The valueGeo.
+       */
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter getValueGeo() {
+        if (valueGeoBuilder_ == null) {
+          if (testValueCase_ == 13) {
+            return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter) testValue_;
+          }
+          return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter.getDefaultInstance();
+        } else {
+          if (testValueCase_ == 13) {
+            return valueGeoBuilder_.getMessage();
+          }
+          return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.GeoCoordinatesFilter value_geo = 13;</code>
+       */
+      public Builder setValueGeo(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter value) {
+        if (valueGeoBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          testValue_ = value;
+          onChanged();
+        } else {
+          valueGeoBuilder_.setMessage(value);
+        }
+        testValueCase_ = 13;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.GeoCoordinatesFilter value_geo = 13;</code>
+       */
+      public Builder setValueGeo(
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter.Builder builderForValue) {
+        if (valueGeoBuilder_ == null) {
+          testValue_ = builderForValue.build();
+          onChanged();
+        } else {
+          valueGeoBuilder_.setMessage(builderForValue.build());
+        }
+        testValueCase_ = 13;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.GeoCoordinatesFilter value_geo = 13;</code>
+       */
+      public Builder mergeValueGeo(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter value) {
+        if (valueGeoBuilder_ == null) {
+          if (testValueCase_ == 13 &&
+              testValue_ != io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter.getDefaultInstance()) {
+            testValue_ = io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter.newBuilder((io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter) testValue_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            testValue_ = value;
+          }
+          onChanged();
+        } else {
+          if (testValueCase_ == 13) {
+            valueGeoBuilder_.mergeFrom(value);
+          } else {
+            valueGeoBuilder_.setMessage(value);
+          }
+        }
+        testValueCase_ = 13;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.GeoCoordinatesFilter value_geo = 13;</code>
+       */
+      public Builder clearValueGeo() {
+        if (valueGeoBuilder_ == null) {
+          if (testValueCase_ == 13) {
+            testValueCase_ = 0;
+            testValue_ = null;
+            onChanged();
+          }
+        } else {
+          if (testValueCase_ == 13) {
+            testValueCase_ = 0;
+            testValue_ = null;
+          }
+          valueGeoBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.GeoCoordinatesFilter value_geo = 13;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter.Builder getValueGeoBuilder() {
+        return getValueGeoFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.weaviate.v1.GeoCoordinatesFilter value_geo = 13;</code>
+       */
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilterOrBuilder getValueGeoOrBuilder() {
+        if ((testValueCase_ == 13) && (valueGeoBuilder_ != null)) {
+          return valueGeoBuilder_.getMessageOrBuilder();
+        } else {
+          if (testValueCase_ == 13) {
+            return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter) testValue_;
+          }
+          return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.GeoCoordinatesFilter value_geo = 13;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilterOrBuilder> 
+          getValueGeoFieldBuilder() {
+        if (valueGeoBuilder_ == null) {
+          if (!(testValueCase_ == 13)) {
+            testValue_ = io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter.getDefaultInstance();
+          }
+          valueGeoBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilterOrBuilder>(
+                  (io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter) testValue_,
+                  getParentForChildren(),
+                  isClean());
+          testValue_ = null;
+        }
+        testValueCase_ = 13;
+        onChanged();
+        return valueGeoBuilder_;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -12370,6 +12676,632 @@ public final class WeaviateProtoSearchGet {
 
     @java.lang.Override
     public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.Filters getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface GeoCoordinatesFilterOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:weaviate.v1.GeoCoordinatesFilter)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>float latitude = 1;</code>
+     * @return The latitude.
+     */
+    float getLatitude();
+
+    /**
+     * <code>float longitude = 2;</code>
+     * @return The longitude.
+     */
+    float getLongitude();
+
+    /**
+     * <code>float distance = 3;</code>
+     * @return The distance.
+     */
+    float getDistance();
+  }
+  /**
+   * Protobuf type {@code weaviate.v1.GeoCoordinatesFilter}
+   */
+  public static final class GeoCoordinatesFilter extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:weaviate.v1.GeoCoordinatesFilter)
+      GeoCoordinatesFilterOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use GeoCoordinatesFilter.newBuilder() to construct.
+    private GeoCoordinatesFilter(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private GeoCoordinatesFilter() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new GeoCoordinatesFilter();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.internal_static_weaviate_v1_GeoCoordinatesFilter_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.internal_static_weaviate_v1_GeoCoordinatesFilter_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter.class, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter.Builder.class);
+    }
+
+    public static final int LATITUDE_FIELD_NUMBER = 1;
+    private float latitude_ = 0F;
+    /**
+     * <code>float latitude = 1;</code>
+     * @return The latitude.
+     */
+    @java.lang.Override
+    public float getLatitude() {
+      return latitude_;
+    }
+
+    public static final int LONGITUDE_FIELD_NUMBER = 2;
+    private float longitude_ = 0F;
+    /**
+     * <code>float longitude = 2;</code>
+     * @return The longitude.
+     */
+    @java.lang.Override
+    public float getLongitude() {
+      return longitude_;
+    }
+
+    public static final int DISTANCE_FIELD_NUMBER = 3;
+    private float distance_ = 0F;
+    /**
+     * <code>float distance = 3;</code>
+     * @return The distance.
+     */
+    @java.lang.Override
+    public float getDistance() {
+      return distance_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (java.lang.Float.floatToRawIntBits(latitude_) != 0) {
+        output.writeFloat(1, latitude_);
+      }
+      if (java.lang.Float.floatToRawIntBits(longitude_) != 0) {
+        output.writeFloat(2, longitude_);
+      }
+      if (java.lang.Float.floatToRawIntBits(distance_) != 0) {
+        output.writeFloat(3, distance_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (java.lang.Float.floatToRawIntBits(latitude_) != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(1, latitude_);
+      }
+      if (java.lang.Float.floatToRawIntBits(longitude_) != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(2, longitude_);
+      }
+      if (java.lang.Float.floatToRawIntBits(distance_) != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(3, distance_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter)) {
+        return super.equals(obj);
+      }
+      io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter other = (io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter) obj;
+
+      if (java.lang.Float.floatToIntBits(getLatitude())
+          != java.lang.Float.floatToIntBits(
+              other.getLatitude())) return false;
+      if (java.lang.Float.floatToIntBits(getLongitude())
+          != java.lang.Float.floatToIntBits(
+              other.getLongitude())) return false;
+      if (java.lang.Float.floatToIntBits(getDistance())
+          != java.lang.Float.floatToIntBits(
+              other.getDistance())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + LATITUDE_FIELD_NUMBER;
+      hash = (53 * hash) + java.lang.Float.floatToIntBits(
+          getLatitude());
+      hash = (37 * hash) + LONGITUDE_FIELD_NUMBER;
+      hash = (53 * hash) + java.lang.Float.floatToIntBits(
+          getLongitude());
+      hash = (37 * hash) + DISTANCE_FIELD_NUMBER;
+      hash = (53 * hash) + java.lang.Float.floatToIntBits(
+          getDistance());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code weaviate.v1.GeoCoordinatesFilter}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:weaviate.v1.GeoCoordinatesFilter)
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilterOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.internal_static_weaviate_v1_GeoCoordinatesFilter_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.internal_static_weaviate_v1_GeoCoordinatesFilter_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter.class, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter.Builder.class);
+      }
+
+      // Construct using io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        latitude_ = 0F;
+        longitude_ = 0F;
+        distance_ = 0F;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.internal_static_weaviate_v1_GeoCoordinatesFilter_descriptor;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter getDefaultInstanceForType() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter build() {
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter buildPartial() {
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter result = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.latitude_ = latitude_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.longitude_ = longitude_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.distance_ = distance_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter) {
+          return mergeFrom((io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter other) {
+        if (other == io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter.getDefaultInstance()) return this;
+        if (other.getLatitude() != 0F) {
+          setLatitude(other.getLatitude());
+        }
+        if (other.getLongitude() != 0F) {
+          setLongitude(other.getLongitude());
+        }
+        if (other.getDistance() != 0F) {
+          setDistance(other.getDistance());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 13: {
+                latitude_ = input.readFloat();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 13
+              case 21: {
+                longitude_ = input.readFloat();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 21
+              case 29: {
+                distance_ = input.readFloat();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 29
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private float latitude_ ;
+      /**
+       * <code>float latitude = 1;</code>
+       * @return The latitude.
+       */
+      @java.lang.Override
+      public float getLatitude() {
+        return latitude_;
+      }
+      /**
+       * <code>float latitude = 1;</code>
+       * @param value The latitude to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLatitude(float value) {
+
+        latitude_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>float latitude = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLatitude() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        latitude_ = 0F;
+        onChanged();
+        return this;
+      }
+
+      private float longitude_ ;
+      /**
+       * <code>float longitude = 2;</code>
+       * @return The longitude.
+       */
+      @java.lang.Override
+      public float getLongitude() {
+        return longitude_;
+      }
+      /**
+       * <code>float longitude = 2;</code>
+       * @param value The longitude to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLongitude(float value) {
+
+        longitude_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>float longitude = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLongitude() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        longitude_ = 0F;
+        onChanged();
+        return this;
+      }
+
+      private float distance_ ;
+      /**
+       * <code>float distance = 3;</code>
+       * @return The distance.
+       */
+      @java.lang.Override
+      public float getDistance() {
+        return distance_;
+      }
+      /**
+       * <code>float distance = 3;</code>
+       * @param value The distance to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDistance(float value) {
+
+        distance_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>float distance = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDistance() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        distance_ = 0F;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:weaviate.v1.GeoCoordinatesFilter)
+    }
+
+    // @@protoc_insertion_point(class_scope:weaviate.v1.GeoCoordinatesFilter)
+    private static final io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter();
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<GeoCoordinatesFilter>
+        PARSER = new com.google.protobuf.AbstractParser<GeoCoordinatesFilter>() {
+      @java.lang.Override
+      public GeoCoordinatesFilter parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<GeoCoordinatesFilter> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<GeoCoordinatesFilter> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GeoCoordinatesFilter getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -13512,6 +14444,12 @@ public final class WeaviateProtoSearchGet {
      */
     io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.ObjectPropertiesRequestOrBuilder getObjectPropertiesOrBuilder(
         int index);
+
+    /**
+     * <code>bool return_all_nonref_properties = 11;</code>
+     * @return The returnAllNonrefProperties.
+     */
+    boolean getReturnAllNonrefProperties();
   }
   /**
    * Protobuf type {@code weaviate.v1.PropertiesRequest}
@@ -13671,6 +14609,17 @@ public final class WeaviateProtoSearchGet {
       return objectProperties_.get(index);
     }
 
+    public static final int RETURN_ALL_NONREF_PROPERTIES_FIELD_NUMBER = 11;
+    private boolean returnAllNonrefProperties_ = false;
+    /**
+     * <code>bool return_all_nonref_properties = 11;</code>
+     * @return The returnAllNonrefProperties.
+     */
+    @java.lang.Override
+    public boolean getReturnAllNonrefProperties() {
+      return returnAllNonrefProperties_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -13693,6 +14642,9 @@ public final class WeaviateProtoSearchGet {
       }
       for (int i = 0; i < objectProperties_.size(); i++) {
         output.writeMessage(3, objectProperties_.get(i));
+      }
+      if (returnAllNonrefProperties_ != false) {
+        output.writeBool(11, returnAllNonrefProperties_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -13719,6 +14671,10 @@ public final class WeaviateProtoSearchGet {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(3, objectProperties_.get(i));
       }
+      if (returnAllNonrefProperties_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(11, returnAllNonrefProperties_);
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
@@ -13740,6 +14696,8 @@ public final class WeaviateProtoSearchGet {
           .equals(other.getRefPropertiesList())) return false;
       if (!getObjectPropertiesList()
           .equals(other.getObjectPropertiesList())) return false;
+      if (getReturnAllNonrefProperties()
+          != other.getReturnAllNonrefProperties()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -13763,6 +14721,9 @@ public final class WeaviateProtoSearchGet {
         hash = (37 * hash) + OBJECT_PROPERTIES_FIELD_NUMBER;
         hash = (53 * hash) + getObjectPropertiesList().hashCode();
       }
+      hash = (37 * hash) + RETURN_ALL_NONREF_PROPERTIES_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getReturnAllNonrefProperties());
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -13910,6 +14871,7 @@ public final class WeaviateProtoSearchGet {
           objectPropertiesBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000004);
+        returnAllNonrefProperties_ = false;
         return this;
       }
 
@@ -13968,6 +14930,9 @@ public final class WeaviateProtoSearchGet {
         if (((from_bitField0_ & 0x00000001) != 0)) {
           nonRefProperties_.makeImmutable();
           result.nonRefProperties_ = nonRefProperties_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.returnAllNonrefProperties_ = returnAllNonrefProperties_;
         }
       }
 
@@ -14077,6 +15042,9 @@ public final class WeaviateProtoSearchGet {
             }
           }
         }
+        if (other.getReturnAllNonrefProperties() != false) {
+          setReturnAllNonrefProperties(other.getReturnAllNonrefProperties());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -14135,6 +15103,11 @@ public final class WeaviateProtoSearchGet {
                 }
                 break;
               } // case 26
+              case 88: {
+                returnAllNonrefProperties_ = input.readBool();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 88
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -14741,6 +15714,38 @@ public final class WeaviateProtoSearchGet {
           objectProperties_ = null;
         }
         return objectPropertiesBuilder_;
+      }
+
+      private boolean returnAllNonrefProperties_ ;
+      /**
+       * <code>bool return_all_nonref_properties = 11;</code>
+       * @return The returnAllNonrefProperties.
+       */
+      @java.lang.Override
+      public boolean getReturnAllNonrefProperties() {
+        return returnAllNonrefProperties_;
+      }
+      /**
+       * <code>bool return_all_nonref_properties = 11;</code>
+       * @param value The returnAllNonrefProperties to set.
+       * @return This builder for chaining.
+       */
+      public Builder setReturnAllNonrefProperties(boolean value) {
+
+        returnAllNonrefProperties_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool return_all_nonref_properties = 11;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearReturnAllNonrefProperties() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        returnAllNonrefProperties_ = false;
+        onChanged();
+        return this;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -15996,29 +17001,35 @@ public final class WeaviateProtoSearchGet {
      * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
      * </pre>
      *
-     * <code>repeated float vector = 3;</code>
+     * <code>repeated float vector = 3 [deprecated = true];</code>
+     * @deprecated weaviate.v1.Hybrid.vector is deprecated.
+     *     See v1/search_get.proto;l=159
      * @return A list containing the vector.
      */
-    java.util.List<java.lang.Float> getVectorList();
+    @java.lang.Deprecated java.util.List<java.lang.Float> getVectorList();
     /**
      * <pre>
      * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
      * </pre>
      *
-     * <code>repeated float vector = 3;</code>
+     * <code>repeated float vector = 3 [deprecated = true];</code>
+     * @deprecated weaviate.v1.Hybrid.vector is deprecated.
+     *     See v1/search_get.proto;l=159
      * @return The count of vector.
      */
-    int getVectorCount();
+    @java.lang.Deprecated int getVectorCount();
     /**
      * <pre>
      * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
      * </pre>
      *
-     * <code>repeated float vector = 3;</code>
+     * <code>repeated float vector = 3 [deprecated = true];</code>
+     * @deprecated weaviate.v1.Hybrid.vector is deprecated.
+     *     See v1/search_get.proto;l=159
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
-    float getVector(int index);
+    @java.lang.Deprecated float getVector(int index);
 
     /**
      * <code>float alpha = 4;</code>
@@ -16286,11 +17297,13 @@ public final class WeaviateProtoSearchGet {
      * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
      * </pre>
      *
-     * <code>repeated float vector = 3;</code>
+     * <code>repeated float vector = 3 [deprecated = true];</code>
+     * @deprecated weaviate.v1.Hybrid.vector is deprecated.
+     *     See v1/search_get.proto;l=159
      * @return A list containing the vector.
      */
     @java.lang.Override
-    public java.util.List<java.lang.Float>
+    @java.lang.Deprecated public java.util.List<java.lang.Float>
         getVectorList() {
       return vector_;
     }
@@ -16299,10 +17312,12 @@ public final class WeaviateProtoSearchGet {
      * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
      * </pre>
      *
-     * <code>repeated float vector = 3;</code>
+     * <code>repeated float vector = 3 [deprecated = true];</code>
+     * @deprecated weaviate.v1.Hybrid.vector is deprecated.
+     *     See v1/search_get.proto;l=159
      * @return The count of vector.
      */
-    public int getVectorCount() {
+    @java.lang.Deprecated public int getVectorCount() {
       return vector_.size();
     }
     /**
@@ -16310,11 +17325,13 @@ public final class WeaviateProtoSearchGet {
      * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
      * </pre>
      *
-     * <code>repeated float vector = 3;</code>
+     * <code>repeated float vector = 3 [deprecated = true];</code>
+     * @deprecated weaviate.v1.Hybrid.vector is deprecated.
+     *     See v1/search_get.proto;l=159
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
-    public float getVector(int index) {
+    @java.lang.Deprecated public float getVector(int index) {
       return vector_.getFloat(index);
     }
     private int vectorMemoizedSerializedSize = -1;
@@ -17053,10 +18070,12 @@ public final class WeaviateProtoSearchGet {
        * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
        * </pre>
        *
-       * <code>repeated float vector = 3;</code>
+       * <code>repeated float vector = 3 [deprecated = true];</code>
+       * @deprecated weaviate.v1.Hybrid.vector is deprecated.
+       *     See v1/search_get.proto;l=159
        * @return A list containing the vector.
        */
-      public java.util.List<java.lang.Float>
+      @java.lang.Deprecated public java.util.List<java.lang.Float>
           getVectorList() {
         vector_.makeImmutable();
         return vector_;
@@ -17066,10 +18085,12 @@ public final class WeaviateProtoSearchGet {
        * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
        * </pre>
        *
-       * <code>repeated float vector = 3;</code>
+       * <code>repeated float vector = 3 [deprecated = true];</code>
+       * @deprecated weaviate.v1.Hybrid.vector is deprecated.
+       *     See v1/search_get.proto;l=159
        * @return The count of vector.
        */
-      public int getVectorCount() {
+      @java.lang.Deprecated public int getVectorCount() {
         return vector_.size();
       }
       /**
@@ -17077,11 +18098,13 @@ public final class WeaviateProtoSearchGet {
        * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
        * </pre>
        *
-       * <code>repeated float vector = 3;</code>
+       * <code>repeated float vector = 3 [deprecated = true];</code>
+       * @deprecated weaviate.v1.Hybrid.vector is deprecated.
+       *     See v1/search_get.proto;l=159
        * @param index The index of the element to return.
        * @return The vector at the given index.
        */
-      public float getVector(int index) {
+      @java.lang.Deprecated public float getVector(int index) {
         return vector_.getFloat(index);
       }
       /**
@@ -17089,12 +18112,14 @@ public final class WeaviateProtoSearchGet {
        * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
        * </pre>
        *
-       * <code>repeated float vector = 3;</code>
+       * <code>repeated float vector = 3 [deprecated = true];</code>
+       * @deprecated weaviate.v1.Hybrid.vector is deprecated.
+       *     See v1/search_get.proto;l=159
        * @param index The index to set the value at.
        * @param value The vector to set.
        * @return This builder for chaining.
        */
-      public Builder setVector(
+      @java.lang.Deprecated public Builder setVector(
           int index, float value) {
 
         ensureVectorIsMutable();
@@ -17108,11 +18133,13 @@ public final class WeaviateProtoSearchGet {
        * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
        * </pre>
        *
-       * <code>repeated float vector = 3;</code>
+       * <code>repeated float vector = 3 [deprecated = true];</code>
+       * @deprecated weaviate.v1.Hybrid.vector is deprecated.
+       *     See v1/search_get.proto;l=159
        * @param value The vector to add.
        * @return This builder for chaining.
        */
-      public Builder addVector(float value) {
+      @java.lang.Deprecated public Builder addVector(float value) {
 
         ensureVectorIsMutable();
         vector_.addFloat(value);
@@ -17125,11 +18152,13 @@ public final class WeaviateProtoSearchGet {
        * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
        * </pre>
        *
-       * <code>repeated float vector = 3;</code>
+       * <code>repeated float vector = 3 [deprecated = true];</code>
+       * @deprecated weaviate.v1.Hybrid.vector is deprecated.
+       *     See v1/search_get.proto;l=159
        * @param values The vector to add.
        * @return This builder for chaining.
        */
-      public Builder addAllVector(
+      @java.lang.Deprecated public Builder addAllVector(
           java.lang.Iterable<? extends java.lang.Float> values) {
         ensureVectorIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -17143,10 +18172,12 @@ public final class WeaviateProtoSearchGet {
        * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
        * </pre>
        *
-       * <code>repeated float vector = 3;</code>
+       * <code>repeated float vector = 3 [deprecated = true];</code>
+       * @deprecated weaviate.v1.Hybrid.vector is deprecated.
+       *     See v1/search_get.proto;l=159
        * @return This builder for chaining.
        */
-      public Builder clearVector() {
+      @java.lang.Deprecated public Builder clearVector() {
         vector_ = emptyFloatList();
         bitField0_ = (bitField0_ & ~0x00000004);
         onChanged();
@@ -23689,29 +24720,35 @@ public final class WeaviateProtoSearchGet {
      * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
      * </pre>
      *
-     * <code>repeated float vector = 1;</code>
+     * <code>repeated float vector = 1 [deprecated = true];</code>
+     * @deprecated weaviate.v1.NearVector.vector is deprecated.
+     *     See v1/search_get.proto;l=217
      * @return A list containing the vector.
      */
-    java.util.List<java.lang.Float> getVectorList();
+    @java.lang.Deprecated java.util.List<java.lang.Float> getVectorList();
     /**
      * <pre>
      * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
      * </pre>
      *
-     * <code>repeated float vector = 1;</code>
+     * <code>repeated float vector = 1 [deprecated = true];</code>
+     * @deprecated weaviate.v1.NearVector.vector is deprecated.
+     *     See v1/search_get.proto;l=217
      * @return The count of vector.
      */
-    int getVectorCount();
+    @java.lang.Deprecated int getVectorCount();
     /**
      * <pre>
      * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
      * </pre>
      *
-     * <code>repeated float vector = 1;</code>
+     * <code>repeated float vector = 1 [deprecated = true];</code>
+     * @deprecated weaviate.v1.NearVector.vector is deprecated.
+     *     See v1/search_get.proto;l=217
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
-    float getVector(int index);
+    @java.lang.Deprecated float getVector(int index);
 
     /**
      * <code>optional double certainty = 2;</code>
@@ -23788,11 +24825,13 @@ public final class WeaviateProtoSearchGet {
      * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
      * </pre>
      *
-     * <code>repeated float vector = 1;</code>
+     * <code>repeated float vector = 1 [deprecated = true];</code>
+     * @deprecated weaviate.v1.NearVector.vector is deprecated.
+     *     See v1/search_get.proto;l=217
      * @return A list containing the vector.
      */
     @java.lang.Override
-    public java.util.List<java.lang.Float>
+    @java.lang.Deprecated public java.util.List<java.lang.Float>
         getVectorList() {
       return vector_;
     }
@@ -23801,10 +24840,12 @@ public final class WeaviateProtoSearchGet {
      * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
      * </pre>
      *
-     * <code>repeated float vector = 1;</code>
+     * <code>repeated float vector = 1 [deprecated = true];</code>
+     * @deprecated weaviate.v1.NearVector.vector is deprecated.
+     *     See v1/search_get.proto;l=217
      * @return The count of vector.
      */
-    public int getVectorCount() {
+    @java.lang.Deprecated public int getVectorCount() {
       return vector_.size();
     }
     /**
@@ -23812,11 +24853,13 @@ public final class WeaviateProtoSearchGet {
      * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
      * </pre>
      *
-     * <code>repeated float vector = 1;</code>
+     * <code>repeated float vector = 1 [deprecated = true];</code>
+     * @deprecated weaviate.v1.NearVector.vector is deprecated.
+     *     See v1/search_get.proto;l=217
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
-    public float getVector(int index) {
+    @java.lang.Deprecated public float getVector(int index) {
       return vector_.getFloat(index);
     }
     private int vectorMemoizedSerializedSize = -1;
@@ -24335,10 +25378,12 @@ public final class WeaviateProtoSearchGet {
        * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
        * </pre>
        *
-       * <code>repeated float vector = 1;</code>
+       * <code>repeated float vector = 1 [deprecated = true];</code>
+       * @deprecated weaviate.v1.NearVector.vector is deprecated.
+       *     See v1/search_get.proto;l=217
        * @return A list containing the vector.
        */
-      public java.util.List<java.lang.Float>
+      @java.lang.Deprecated public java.util.List<java.lang.Float>
           getVectorList() {
         vector_.makeImmutable();
         return vector_;
@@ -24348,10 +25393,12 @@ public final class WeaviateProtoSearchGet {
        * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
        * </pre>
        *
-       * <code>repeated float vector = 1;</code>
+       * <code>repeated float vector = 1 [deprecated = true];</code>
+       * @deprecated weaviate.v1.NearVector.vector is deprecated.
+       *     See v1/search_get.proto;l=217
        * @return The count of vector.
        */
-      public int getVectorCount() {
+      @java.lang.Deprecated public int getVectorCount() {
         return vector_.size();
       }
       /**
@@ -24359,11 +25406,13 @@ public final class WeaviateProtoSearchGet {
        * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
        * </pre>
        *
-       * <code>repeated float vector = 1;</code>
+       * <code>repeated float vector = 1 [deprecated = true];</code>
+       * @deprecated weaviate.v1.NearVector.vector is deprecated.
+       *     See v1/search_get.proto;l=217
        * @param index The index of the element to return.
        * @return The vector at the given index.
        */
-      public float getVector(int index) {
+      @java.lang.Deprecated public float getVector(int index) {
         return vector_.getFloat(index);
       }
       /**
@@ -24371,12 +25420,14 @@ public final class WeaviateProtoSearchGet {
        * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
        * </pre>
        *
-       * <code>repeated float vector = 1;</code>
+       * <code>repeated float vector = 1 [deprecated = true];</code>
+       * @deprecated weaviate.v1.NearVector.vector is deprecated.
+       *     See v1/search_get.proto;l=217
        * @param index The index to set the value at.
        * @param value The vector to set.
        * @return This builder for chaining.
        */
-      public Builder setVector(
+      @java.lang.Deprecated public Builder setVector(
           int index, float value) {
 
         ensureVectorIsMutable();
@@ -24390,11 +25441,13 @@ public final class WeaviateProtoSearchGet {
        * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
        * </pre>
        *
-       * <code>repeated float vector = 1;</code>
+       * <code>repeated float vector = 1 [deprecated = true];</code>
+       * @deprecated weaviate.v1.NearVector.vector is deprecated.
+       *     See v1/search_get.proto;l=217
        * @param value The vector to add.
        * @return This builder for chaining.
        */
-      public Builder addVector(float value) {
+      @java.lang.Deprecated public Builder addVector(float value) {
 
         ensureVectorIsMutable();
         vector_.addFloat(value);
@@ -24407,11 +25460,13 @@ public final class WeaviateProtoSearchGet {
        * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
        * </pre>
        *
-       * <code>repeated float vector = 1;</code>
+       * <code>repeated float vector = 1 [deprecated = true];</code>
+       * @deprecated weaviate.v1.NearVector.vector is deprecated.
+       *     See v1/search_get.proto;l=217
        * @param values The vector to add.
        * @return This builder for chaining.
        */
-      public Builder addAllVector(
+      @java.lang.Deprecated public Builder addAllVector(
           java.lang.Iterable<? extends java.lang.Float> values) {
         ensureVectorIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -24425,10 +25480,12 @@ public final class WeaviateProtoSearchGet {
        * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
        * </pre>
        *
-       * <code>repeated float vector = 1;</code>
+       * <code>repeated float vector = 1 [deprecated = true];</code>
+       * @deprecated weaviate.v1.NearVector.vector is deprecated.
+       *     See v1/search_get.proto;l=217
        * @return This builder for chaining.
        */
-      public Builder clearVector() {
+      @java.lang.Deprecated public Builder clearVector() {
         vector_ = emptyFloatList();
         bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
@@ -28758,29 +29815,35 @@ public final class WeaviateProtoSearchGet {
      * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
      * </pre>
      *
-     * <code>repeated float vector = 2;</code>
+     * <code>repeated float vector = 2 [deprecated = true];</code>
+     * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
+     *     See v1/search_get.proto;l=252
      * @return A list containing the vector.
      */
-    java.util.List<java.lang.Float> getVectorList();
+    @java.lang.Deprecated java.util.List<java.lang.Float> getVectorList();
     /**
      * <pre>
      * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
      * </pre>
      *
-     * <code>repeated float vector = 2;</code>
+     * <code>repeated float vector = 2 [deprecated = true];</code>
+     * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
+     *     See v1/search_get.proto;l=252
      * @return The count of vector.
      */
-    int getVectorCount();
+    @java.lang.Deprecated int getVectorCount();
     /**
      * <pre>
      * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
      * </pre>
      *
-     * <code>repeated float vector = 2;</code>
+     * <code>repeated float vector = 2 [deprecated = true];</code>
+     * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
+     *     See v1/search_get.proto;l=252
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
-    float getVector(int index);
+    @java.lang.Deprecated float getVector(int index);
 
     /**
      * <code>int64 creation_time_unix = 3;</code>
@@ -28900,6 +29963,12 @@ public final class WeaviateProtoSearchGet {
      * @return The vectorBytes.
      */
     com.google.protobuf.ByteString getVectorBytes();
+
+    /**
+     * <code>bytes id_as_bytes = 20;</code>
+     * @return The idAsBytes.
+     */
+    com.google.protobuf.ByteString getIdAsBytes();
   }
   /**
    * Protobuf type {@code weaviate.v1.MetadataResult}
@@ -28919,6 +29988,7 @@ public final class WeaviateProtoSearchGet {
       explainScore_ = "";
       generative_ = "";
       vectorBytes_ = com.google.protobuf.ByteString.EMPTY;
+      idAsBytes_ = com.google.protobuf.ByteString.EMPTY;
     }
 
     @java.lang.Override
@@ -28990,11 +30060,13 @@ public final class WeaviateProtoSearchGet {
      * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
      * </pre>
      *
-     * <code>repeated float vector = 2;</code>
+     * <code>repeated float vector = 2 [deprecated = true];</code>
+     * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
+     *     See v1/search_get.proto;l=252
      * @return A list containing the vector.
      */
     @java.lang.Override
-    public java.util.List<java.lang.Float>
+    @java.lang.Deprecated public java.util.List<java.lang.Float>
         getVectorList() {
       return vector_;
     }
@@ -29003,10 +30075,12 @@ public final class WeaviateProtoSearchGet {
      * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
      * </pre>
      *
-     * <code>repeated float vector = 2;</code>
+     * <code>repeated float vector = 2 [deprecated = true];</code>
+     * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
+     *     See v1/search_get.proto;l=252
      * @return The count of vector.
      */
-    public int getVectorCount() {
+    @java.lang.Deprecated public int getVectorCount() {
       return vector_.size();
     }
     /**
@@ -29014,11 +30088,13 @@ public final class WeaviateProtoSearchGet {
      * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
      * </pre>
      *
-     * <code>repeated float vector = 2;</code>
+     * <code>repeated float vector = 2 [deprecated = true];</code>
+     * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
+     *     See v1/search_get.proto;l=252
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
-    public float getVector(int index) {
+    @java.lang.Deprecated public float getVector(int index) {
       return vector_.getFloat(index);
     }
     private int vectorMemoizedSerializedSize = -1;
@@ -29274,6 +30350,17 @@ public final class WeaviateProtoSearchGet {
       return vectorBytes_;
     }
 
+    public static final int ID_AS_BYTES_FIELD_NUMBER = 20;
+    private com.google.protobuf.ByteString idAsBytes_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <code>bytes id_as_bytes = 20;</code>
+     * @return The idAsBytes.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getIdAsBytes() {
+      return idAsBytes_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -29349,6 +30436,9 @@ public final class WeaviateProtoSearchGet {
       }
       if (!vectorBytes_.isEmpty()) {
         output.writeBytes(19, vectorBytes_);
+      }
+      if (!idAsBytes_.isEmpty()) {
+        output.writeBytes(20, idAsBytes_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -29439,6 +30529,10 @@ public final class WeaviateProtoSearchGet {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(19, vectorBytes_);
       }
+      if (!idAsBytes_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(20, idAsBytes_);
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
@@ -29498,6 +30592,8 @@ public final class WeaviateProtoSearchGet {
           != other.getIsConsistentPresent()) return false;
       if (!getVectorBytes()
           .equals(other.getVectorBytes())) return false;
+      if (!getIdAsBytes()
+          .equals(other.getIdAsBytes())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -29565,6 +30661,8 @@ public final class WeaviateProtoSearchGet {
           getIsConsistentPresent());
       hash = (37 * hash) + VECTOR_BYTES_FIELD_NUMBER;
       hash = (53 * hash) + getVectorBytes().hashCode();
+      hash = (37 * hash) + ID_AS_BYTES_FIELD_NUMBER;
+      hash = (53 * hash) + getIdAsBytes().hashCode();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -29715,6 +30813,7 @@ public final class WeaviateProtoSearchGet {
         generativePresent_ = false;
         isConsistentPresent_ = false;
         vectorBytes_ = com.google.protobuf.ByteString.EMPTY;
+        idAsBytes_ = com.google.protobuf.ByteString.EMPTY;
         return this;
       }
 
@@ -29807,6 +30906,9 @@ public final class WeaviateProtoSearchGet {
         }
         if (((from_bitField0_ & 0x00040000) != 0)) {
           result.vectorBytes_ = vectorBytes_;
+        }
+        if (((from_bitField0_ & 0x00080000) != 0)) {
+          result.idAsBytes_ = idAsBytes_;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -29925,6 +31027,9 @@ public final class WeaviateProtoSearchGet {
         }
         if (other.getVectorBytes() != com.google.protobuf.ByteString.EMPTY) {
           setVectorBytes(other.getVectorBytes());
+        }
+        if (other.getIdAsBytes() != com.google.protobuf.ByteString.EMPTY) {
+          setIdAsBytes(other.getIdAsBytes());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -30059,6 +31164,11 @@ public final class WeaviateProtoSearchGet {
                 bitField0_ |= 0x00040000;
                 break;
               } // case 154
+              case 162: {
+                idAsBytes_ = input.readBytes();
+                bitField0_ |= 0x00080000;
+                break;
+              } // case 162
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -30166,10 +31276,12 @@ public final class WeaviateProtoSearchGet {
        * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
        * </pre>
        *
-       * <code>repeated float vector = 2;</code>
+       * <code>repeated float vector = 2 [deprecated = true];</code>
+       * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
+       *     See v1/search_get.proto;l=252
        * @return A list containing the vector.
        */
-      public java.util.List<java.lang.Float>
+      @java.lang.Deprecated public java.util.List<java.lang.Float>
           getVectorList() {
         vector_.makeImmutable();
         return vector_;
@@ -30179,10 +31291,12 @@ public final class WeaviateProtoSearchGet {
        * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
        * </pre>
        *
-       * <code>repeated float vector = 2;</code>
+       * <code>repeated float vector = 2 [deprecated = true];</code>
+       * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
+       *     See v1/search_get.proto;l=252
        * @return The count of vector.
        */
-      public int getVectorCount() {
+      @java.lang.Deprecated public int getVectorCount() {
         return vector_.size();
       }
       /**
@@ -30190,11 +31304,13 @@ public final class WeaviateProtoSearchGet {
        * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
        * </pre>
        *
-       * <code>repeated float vector = 2;</code>
+       * <code>repeated float vector = 2 [deprecated = true];</code>
+       * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
+       *     See v1/search_get.proto;l=252
        * @param index The index of the element to return.
        * @return The vector at the given index.
        */
-      public float getVector(int index) {
+      @java.lang.Deprecated public float getVector(int index) {
         return vector_.getFloat(index);
       }
       /**
@@ -30202,12 +31318,14 @@ public final class WeaviateProtoSearchGet {
        * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
        * </pre>
        *
-       * <code>repeated float vector = 2;</code>
+       * <code>repeated float vector = 2 [deprecated = true];</code>
+       * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
+       *     See v1/search_get.proto;l=252
        * @param index The index to set the value at.
        * @param value The vector to set.
        * @return This builder for chaining.
        */
-      public Builder setVector(
+      @java.lang.Deprecated public Builder setVector(
           int index, float value) {
 
         ensureVectorIsMutable();
@@ -30221,11 +31339,13 @@ public final class WeaviateProtoSearchGet {
        * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
        * </pre>
        *
-       * <code>repeated float vector = 2;</code>
+       * <code>repeated float vector = 2 [deprecated = true];</code>
+       * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
+       *     See v1/search_get.proto;l=252
        * @param value The vector to add.
        * @return This builder for chaining.
        */
-      public Builder addVector(float value) {
+      @java.lang.Deprecated public Builder addVector(float value) {
 
         ensureVectorIsMutable();
         vector_.addFloat(value);
@@ -30238,11 +31358,13 @@ public final class WeaviateProtoSearchGet {
        * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
        * </pre>
        *
-       * <code>repeated float vector = 2;</code>
+       * <code>repeated float vector = 2 [deprecated = true];</code>
+       * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
+       *     See v1/search_get.proto;l=252
        * @param values The vector to add.
        * @return This builder for chaining.
        */
-      public Builder addAllVector(
+      @java.lang.Deprecated public Builder addAllVector(
           java.lang.Iterable<? extends java.lang.Float> values) {
         ensureVectorIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -30256,10 +31378,12 @@ public final class WeaviateProtoSearchGet {
        * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
        * </pre>
        *
-       * <code>repeated float vector = 2;</code>
+       * <code>repeated float vector = 2 [deprecated = true];</code>
+       * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
+       *     See v1/search_get.proto;l=252
        * @return This builder for chaining.
        */
-      public Builder clearVector() {
+      @java.lang.Deprecated public Builder clearVector() {
         vector_ = emptyFloatList();
         bitField0_ = (bitField0_ & ~0x00000002);
         onChanged();
@@ -30897,6 +32021,38 @@ public final class WeaviateProtoSearchGet {
         onChanged();
         return this;
       }
+
+      private com.google.protobuf.ByteString idAsBytes_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes id_as_bytes = 20;</code>
+       * @return The idAsBytes.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getIdAsBytes() {
+        return idAsBytes_;
+      }
+      /**
+       * <code>bytes id_as_bytes = 20;</code>
+       * @param value The idAsBytes to set.
+       * @return This builder for chaining.
+       */
+      public Builder setIdAsBytes(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        idAsBytes_ = value;
+        bitField0_ |= 0x00080000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes id_as_bytes = 20;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearIdAsBytes() {
+        bitField0_ = (bitField0_ & ~0x00080000);
+        idAsBytes_ = getDefaultInstance().getIdAsBytes();
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -30966,19 +32122,23 @@ public final class WeaviateProtoSearchGet {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>.google.protobuf.Struct non_ref_properties = 1;</code>
+     * <code>.google.protobuf.Struct non_ref_properties = 1 [deprecated = true];</code>
+     * @deprecated weaviate.v1.PropertiesResult.non_ref_properties is deprecated.
+     *     See v1/search_get.proto;l=274
      * @return Whether the nonRefProperties field is set.
      */
-    boolean hasNonRefProperties();
+    @java.lang.Deprecated boolean hasNonRefProperties();
     /**
-     * <code>.google.protobuf.Struct non_ref_properties = 1;</code>
+     * <code>.google.protobuf.Struct non_ref_properties = 1 [deprecated = true];</code>
+     * @deprecated weaviate.v1.PropertiesResult.non_ref_properties is deprecated.
+     *     See v1/search_get.proto;l=274
      * @return The nonRefProperties.
      */
-    com.google.protobuf.Struct getNonRefProperties();
+    @java.lang.Deprecated com.google.protobuf.Struct getNonRefProperties();
     /**
-     * <code>.google.protobuf.Struct non_ref_properties = 1;</code>
+     * <code>.google.protobuf.Struct non_ref_properties = 1 [deprecated = true];</code>
      */
-    com.google.protobuf.StructOrBuilder getNonRefPropertiesOrBuilder();
+    @java.lang.Deprecated com.google.protobuf.StructOrBuilder getNonRefPropertiesOrBuilder();
 
     /**
      * <code>repeated .weaviate.v1.RefPropertiesResult ref_props = 2;</code>
@@ -31032,148 +32192,163 @@ public final class WeaviateProtoSearchGet {
     io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.MetadataResultOrBuilder getMetadataOrBuilder();
 
     /**
-     * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5;</code>
+     * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5 [deprecated = true];</code>
      */
-    java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties> 
+    @java.lang.Deprecated java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties> 
         getNumberArrayPropertiesList();
     /**
-     * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5;</code>
+     * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5 [deprecated = true];</code>
      */
-    io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties getNumberArrayProperties(int index);
+    @java.lang.Deprecated io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties getNumberArrayProperties(int index);
     /**
-     * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5;</code>
+     * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5 [deprecated = true];</code>
      */
-    int getNumberArrayPropertiesCount();
+    @java.lang.Deprecated int getNumberArrayPropertiesCount();
     /**
-     * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5;</code>
+     * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5 [deprecated = true];</code>
      */
-    java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayPropertiesOrBuilder> 
+    @java.lang.Deprecated java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayPropertiesOrBuilder> 
         getNumberArrayPropertiesOrBuilderList();
     /**
-     * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5;</code>
+     * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5 [deprecated = true];</code>
      */
-    io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayPropertiesOrBuilder getNumberArrayPropertiesOrBuilder(
+    @java.lang.Deprecated io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayPropertiesOrBuilder getNumberArrayPropertiesOrBuilder(
         int index);
 
     /**
-     * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6;</code>
+     * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6 [deprecated = true];</code>
      */
-    java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties> 
+    @java.lang.Deprecated java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties> 
         getIntArrayPropertiesList();
     /**
-     * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6;</code>
+     * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6 [deprecated = true];</code>
      */
-    io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties getIntArrayProperties(int index);
+    @java.lang.Deprecated io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties getIntArrayProperties(int index);
     /**
-     * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6;</code>
+     * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6 [deprecated = true];</code>
      */
-    int getIntArrayPropertiesCount();
+    @java.lang.Deprecated int getIntArrayPropertiesCount();
     /**
-     * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6;</code>
+     * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6 [deprecated = true];</code>
      */
-    java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayPropertiesOrBuilder> 
+    @java.lang.Deprecated java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayPropertiesOrBuilder> 
         getIntArrayPropertiesOrBuilderList();
     /**
-     * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6;</code>
+     * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6 [deprecated = true];</code>
      */
-    io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayPropertiesOrBuilder getIntArrayPropertiesOrBuilder(
+    @java.lang.Deprecated io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayPropertiesOrBuilder getIntArrayPropertiesOrBuilder(
         int index);
 
     /**
-     * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7;</code>
+     * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7 [deprecated = true];</code>
      */
-    java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties> 
+    @java.lang.Deprecated java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties> 
         getTextArrayPropertiesList();
     /**
-     * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7;</code>
+     * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7 [deprecated = true];</code>
      */
-    io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties getTextArrayProperties(int index);
+    @java.lang.Deprecated io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties getTextArrayProperties(int index);
     /**
-     * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7;</code>
+     * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7 [deprecated = true];</code>
      */
-    int getTextArrayPropertiesCount();
+    @java.lang.Deprecated int getTextArrayPropertiesCount();
     /**
-     * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7;</code>
+     * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7 [deprecated = true];</code>
      */
-    java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayPropertiesOrBuilder> 
+    @java.lang.Deprecated java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayPropertiesOrBuilder> 
         getTextArrayPropertiesOrBuilderList();
     /**
-     * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7;</code>
+     * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7 [deprecated = true];</code>
      */
-    io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayPropertiesOrBuilder getTextArrayPropertiesOrBuilder(
+    @java.lang.Deprecated io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayPropertiesOrBuilder getTextArrayPropertiesOrBuilder(
         int index);
 
     /**
-     * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8;</code>
+     * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8 [deprecated = true];</code>
      */
-    java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties> 
+    @java.lang.Deprecated java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties> 
         getBooleanArrayPropertiesList();
     /**
-     * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8;</code>
+     * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8 [deprecated = true];</code>
      */
-    io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties getBooleanArrayProperties(int index);
+    @java.lang.Deprecated io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties getBooleanArrayProperties(int index);
     /**
-     * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8;</code>
+     * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8 [deprecated = true];</code>
      */
-    int getBooleanArrayPropertiesCount();
+    @java.lang.Deprecated int getBooleanArrayPropertiesCount();
     /**
-     * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8;</code>
+     * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8 [deprecated = true];</code>
      */
-    java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayPropertiesOrBuilder> 
+    @java.lang.Deprecated java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayPropertiesOrBuilder> 
         getBooleanArrayPropertiesOrBuilderList();
     /**
-     * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8;</code>
+     * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8 [deprecated = true];</code>
      */
-    io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayPropertiesOrBuilder getBooleanArrayPropertiesOrBuilder(
+    @java.lang.Deprecated io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayPropertiesOrBuilder getBooleanArrayPropertiesOrBuilder(
         int index);
 
     /**
-     * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9;</code>
+     * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9 [deprecated = true];</code>
      */
-    java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties> 
+    @java.lang.Deprecated java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties> 
         getObjectPropertiesList();
     /**
-     * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9;</code>
+     * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9 [deprecated = true];</code>
      */
-    io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties getObjectProperties(int index);
+    @java.lang.Deprecated io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties getObjectProperties(int index);
     /**
-     * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9;</code>
+     * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9 [deprecated = true];</code>
      */
-    int getObjectPropertiesCount();
+    @java.lang.Deprecated int getObjectPropertiesCount();
     /**
-     * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9;</code>
+     * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9 [deprecated = true];</code>
      */
-    java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectPropertiesOrBuilder> 
+    @java.lang.Deprecated java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectPropertiesOrBuilder> 
         getObjectPropertiesOrBuilderList();
     /**
-     * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9;</code>
+     * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9 [deprecated = true];</code>
      */
-    io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectPropertiesOrBuilder getObjectPropertiesOrBuilder(
+    @java.lang.Deprecated io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectPropertiesOrBuilder getObjectPropertiesOrBuilder(
         int index);
 
     /**
-     * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10;</code>
+     * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10 [deprecated = true];</code>
      */
-    java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties> 
+    @java.lang.Deprecated java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties> 
         getObjectArrayPropertiesList();
     /**
-     * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10;</code>
+     * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10 [deprecated = true];</code>
      */
-    io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties getObjectArrayProperties(int index);
+    @java.lang.Deprecated io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties getObjectArrayProperties(int index);
     /**
-     * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10;</code>
+     * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10 [deprecated = true];</code>
      */
-    int getObjectArrayPropertiesCount();
+    @java.lang.Deprecated int getObjectArrayPropertiesCount();
     /**
-     * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10;</code>
+     * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10 [deprecated = true];</code>
      */
-    java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayPropertiesOrBuilder> 
+    @java.lang.Deprecated java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayPropertiesOrBuilder> 
         getObjectArrayPropertiesOrBuilderList();
     /**
-     * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10;</code>
+     * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10 [deprecated = true];</code>
      */
-    io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayPropertiesOrBuilder getObjectArrayPropertiesOrBuilder(
+    @java.lang.Deprecated io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayPropertiesOrBuilder getObjectArrayPropertiesOrBuilder(
         int index);
+
+    /**
+     * <code>.weaviate.v1.Properties non_ref_props = 11;</code>
+     * @return Whether the nonRefProps field is set.
+     */
+    boolean hasNonRefProps();
+    /**
+     * <code>.weaviate.v1.Properties non_ref_props = 11;</code>
+     * @return The nonRefProps.
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties getNonRefProps();
+    /**
+     * <code>.weaviate.v1.Properties non_ref_props = 11;</code>
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PropertiesOrBuilder getNonRefPropsOrBuilder();
   }
   /**
    * Protobuf type {@code weaviate.v1.PropertiesResult}
@@ -31222,26 +32397,30 @@ public final class WeaviateProtoSearchGet {
     public static final int NON_REF_PROPERTIES_FIELD_NUMBER = 1;
     private com.google.protobuf.Struct nonRefProperties_;
     /**
-     * <code>.google.protobuf.Struct non_ref_properties = 1;</code>
+     * <code>.google.protobuf.Struct non_ref_properties = 1 [deprecated = true];</code>
+     * @deprecated weaviate.v1.PropertiesResult.non_ref_properties is deprecated.
+     *     See v1/search_get.proto;l=274
      * @return Whether the nonRefProperties field is set.
      */
     @java.lang.Override
-    public boolean hasNonRefProperties() {
+    @java.lang.Deprecated public boolean hasNonRefProperties() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>.google.protobuf.Struct non_ref_properties = 1;</code>
+     * <code>.google.protobuf.Struct non_ref_properties = 1 [deprecated = true];</code>
+     * @deprecated weaviate.v1.PropertiesResult.non_ref_properties is deprecated.
+     *     See v1/search_get.proto;l=274
      * @return The nonRefProperties.
      */
     @java.lang.Override
-    public com.google.protobuf.Struct getNonRefProperties() {
+    @java.lang.Deprecated public com.google.protobuf.Struct getNonRefProperties() {
       return nonRefProperties_ == null ? com.google.protobuf.Struct.getDefaultInstance() : nonRefProperties_;
     }
     /**
-     * <code>.google.protobuf.Struct non_ref_properties = 1;</code>
+     * <code>.google.protobuf.Struct non_ref_properties = 1 [deprecated = true];</code>
      */
     @java.lang.Override
-    public com.google.protobuf.StructOrBuilder getNonRefPropertiesOrBuilder() {
+    @java.lang.Deprecated public com.google.protobuf.StructOrBuilder getNonRefPropertiesOrBuilder() {
       return nonRefProperties_ == null ? com.google.protobuf.Struct.getDefaultInstance() : nonRefProperties_;
     }
 
@@ -31355,39 +32534,39 @@ public final class WeaviateProtoSearchGet {
     @SuppressWarnings("serial")
     private java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties> numberArrayProperties_;
     /**
-     * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5;</code>
+     * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5 [deprecated = true];</code>
      */
     @java.lang.Override
-    public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties> getNumberArrayPropertiesList() {
+    @java.lang.Deprecated public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties> getNumberArrayPropertiesList() {
       return numberArrayProperties_;
     }
     /**
-     * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5;</code>
+     * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5 [deprecated = true];</code>
      */
     @java.lang.Override
-    public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayPropertiesOrBuilder> 
+    @java.lang.Deprecated public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayPropertiesOrBuilder> 
         getNumberArrayPropertiesOrBuilderList() {
       return numberArrayProperties_;
     }
     /**
-     * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5;</code>
+     * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5 [deprecated = true];</code>
      */
     @java.lang.Override
-    public int getNumberArrayPropertiesCount() {
+    @java.lang.Deprecated public int getNumberArrayPropertiesCount() {
       return numberArrayProperties_.size();
     }
     /**
-     * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5;</code>
+     * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5 [deprecated = true];</code>
      */
     @java.lang.Override
-    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties getNumberArrayProperties(int index) {
+    @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties getNumberArrayProperties(int index) {
       return numberArrayProperties_.get(index);
     }
     /**
-     * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5;</code>
+     * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5 [deprecated = true];</code>
      */
     @java.lang.Override
-    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayPropertiesOrBuilder getNumberArrayPropertiesOrBuilder(
+    @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayPropertiesOrBuilder getNumberArrayPropertiesOrBuilder(
         int index) {
       return numberArrayProperties_.get(index);
     }
@@ -31396,39 +32575,39 @@ public final class WeaviateProtoSearchGet {
     @SuppressWarnings("serial")
     private java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties> intArrayProperties_;
     /**
-     * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6;</code>
+     * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6 [deprecated = true];</code>
      */
     @java.lang.Override
-    public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties> getIntArrayPropertiesList() {
+    @java.lang.Deprecated public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties> getIntArrayPropertiesList() {
       return intArrayProperties_;
     }
     /**
-     * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6;</code>
+     * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6 [deprecated = true];</code>
      */
     @java.lang.Override
-    public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayPropertiesOrBuilder> 
+    @java.lang.Deprecated public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayPropertiesOrBuilder> 
         getIntArrayPropertiesOrBuilderList() {
       return intArrayProperties_;
     }
     /**
-     * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6;</code>
+     * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6 [deprecated = true];</code>
      */
     @java.lang.Override
-    public int getIntArrayPropertiesCount() {
+    @java.lang.Deprecated public int getIntArrayPropertiesCount() {
       return intArrayProperties_.size();
     }
     /**
-     * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6;</code>
+     * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6 [deprecated = true];</code>
      */
     @java.lang.Override
-    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties getIntArrayProperties(int index) {
+    @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties getIntArrayProperties(int index) {
       return intArrayProperties_.get(index);
     }
     /**
-     * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6;</code>
+     * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6 [deprecated = true];</code>
      */
     @java.lang.Override
-    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayPropertiesOrBuilder getIntArrayPropertiesOrBuilder(
+    @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayPropertiesOrBuilder getIntArrayPropertiesOrBuilder(
         int index) {
       return intArrayProperties_.get(index);
     }
@@ -31437,39 +32616,39 @@ public final class WeaviateProtoSearchGet {
     @SuppressWarnings("serial")
     private java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties> textArrayProperties_;
     /**
-     * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7;</code>
+     * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7 [deprecated = true];</code>
      */
     @java.lang.Override
-    public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties> getTextArrayPropertiesList() {
+    @java.lang.Deprecated public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties> getTextArrayPropertiesList() {
       return textArrayProperties_;
     }
     /**
-     * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7;</code>
+     * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7 [deprecated = true];</code>
      */
     @java.lang.Override
-    public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayPropertiesOrBuilder> 
+    @java.lang.Deprecated public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayPropertiesOrBuilder> 
         getTextArrayPropertiesOrBuilderList() {
       return textArrayProperties_;
     }
     /**
-     * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7;</code>
+     * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7 [deprecated = true];</code>
      */
     @java.lang.Override
-    public int getTextArrayPropertiesCount() {
+    @java.lang.Deprecated public int getTextArrayPropertiesCount() {
       return textArrayProperties_.size();
     }
     /**
-     * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7;</code>
+     * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7 [deprecated = true];</code>
      */
     @java.lang.Override
-    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties getTextArrayProperties(int index) {
+    @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties getTextArrayProperties(int index) {
       return textArrayProperties_.get(index);
     }
     /**
-     * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7;</code>
+     * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7 [deprecated = true];</code>
      */
     @java.lang.Override
-    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayPropertiesOrBuilder getTextArrayPropertiesOrBuilder(
+    @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayPropertiesOrBuilder getTextArrayPropertiesOrBuilder(
         int index) {
       return textArrayProperties_.get(index);
     }
@@ -31478,39 +32657,39 @@ public final class WeaviateProtoSearchGet {
     @SuppressWarnings("serial")
     private java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties> booleanArrayProperties_;
     /**
-     * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8;</code>
+     * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8 [deprecated = true];</code>
      */
     @java.lang.Override
-    public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties> getBooleanArrayPropertiesList() {
+    @java.lang.Deprecated public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties> getBooleanArrayPropertiesList() {
       return booleanArrayProperties_;
     }
     /**
-     * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8;</code>
+     * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8 [deprecated = true];</code>
      */
     @java.lang.Override
-    public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayPropertiesOrBuilder> 
+    @java.lang.Deprecated public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayPropertiesOrBuilder> 
         getBooleanArrayPropertiesOrBuilderList() {
       return booleanArrayProperties_;
     }
     /**
-     * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8;</code>
+     * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8 [deprecated = true];</code>
      */
     @java.lang.Override
-    public int getBooleanArrayPropertiesCount() {
+    @java.lang.Deprecated public int getBooleanArrayPropertiesCount() {
       return booleanArrayProperties_.size();
     }
     /**
-     * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8;</code>
+     * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8 [deprecated = true];</code>
      */
     @java.lang.Override
-    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties getBooleanArrayProperties(int index) {
+    @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties getBooleanArrayProperties(int index) {
       return booleanArrayProperties_.get(index);
     }
     /**
-     * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8;</code>
+     * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8 [deprecated = true];</code>
      */
     @java.lang.Override
-    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayPropertiesOrBuilder getBooleanArrayPropertiesOrBuilder(
+    @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayPropertiesOrBuilder getBooleanArrayPropertiesOrBuilder(
         int index) {
       return booleanArrayProperties_.get(index);
     }
@@ -31519,39 +32698,39 @@ public final class WeaviateProtoSearchGet {
     @SuppressWarnings("serial")
     private java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties> objectProperties_;
     /**
-     * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9;</code>
+     * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9 [deprecated = true];</code>
      */
     @java.lang.Override
-    public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties> getObjectPropertiesList() {
+    @java.lang.Deprecated public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties> getObjectPropertiesList() {
       return objectProperties_;
     }
     /**
-     * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9;</code>
+     * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9 [deprecated = true];</code>
      */
     @java.lang.Override
-    public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectPropertiesOrBuilder> 
+    @java.lang.Deprecated public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectPropertiesOrBuilder> 
         getObjectPropertiesOrBuilderList() {
       return objectProperties_;
     }
     /**
-     * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9;</code>
+     * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9 [deprecated = true];</code>
      */
     @java.lang.Override
-    public int getObjectPropertiesCount() {
+    @java.lang.Deprecated public int getObjectPropertiesCount() {
       return objectProperties_.size();
     }
     /**
-     * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9;</code>
+     * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9 [deprecated = true];</code>
      */
     @java.lang.Override
-    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties getObjectProperties(int index) {
+    @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties getObjectProperties(int index) {
       return objectProperties_.get(index);
     }
     /**
-     * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9;</code>
+     * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9 [deprecated = true];</code>
      */
     @java.lang.Override
-    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectPropertiesOrBuilder getObjectPropertiesOrBuilder(
+    @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectPropertiesOrBuilder getObjectPropertiesOrBuilder(
         int index) {
       return objectProperties_.get(index);
     }
@@ -31560,41 +32739,67 @@ public final class WeaviateProtoSearchGet {
     @SuppressWarnings("serial")
     private java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties> objectArrayProperties_;
     /**
-     * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10;</code>
+     * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10 [deprecated = true];</code>
      */
     @java.lang.Override
-    public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties> getObjectArrayPropertiesList() {
+    @java.lang.Deprecated public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties> getObjectArrayPropertiesList() {
       return objectArrayProperties_;
     }
     /**
-     * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10;</code>
+     * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10 [deprecated = true];</code>
      */
     @java.lang.Override
-    public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayPropertiesOrBuilder> 
+    @java.lang.Deprecated public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayPropertiesOrBuilder> 
         getObjectArrayPropertiesOrBuilderList() {
       return objectArrayProperties_;
     }
     /**
-     * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10;</code>
+     * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10 [deprecated = true];</code>
      */
     @java.lang.Override
-    public int getObjectArrayPropertiesCount() {
+    @java.lang.Deprecated public int getObjectArrayPropertiesCount() {
       return objectArrayProperties_.size();
     }
     /**
-     * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10;</code>
+     * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10 [deprecated = true];</code>
      */
     @java.lang.Override
-    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties getObjectArrayProperties(int index) {
+    @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties getObjectArrayProperties(int index) {
       return objectArrayProperties_.get(index);
     }
     /**
-     * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10;</code>
+     * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10 [deprecated = true];</code>
      */
     @java.lang.Override
-    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayPropertiesOrBuilder getObjectArrayPropertiesOrBuilder(
+    @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayPropertiesOrBuilder getObjectArrayPropertiesOrBuilder(
         int index) {
       return objectArrayProperties_.get(index);
+    }
+
+    public static final int NON_REF_PROPS_FIELD_NUMBER = 11;
+    private io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties nonRefProps_;
+    /**
+     * <code>.weaviate.v1.Properties non_ref_props = 11;</code>
+     * @return Whether the nonRefProps field is set.
+     */
+    @java.lang.Override
+    public boolean hasNonRefProps() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <code>.weaviate.v1.Properties non_ref_props = 11;</code>
+     * @return The nonRefProps.
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties getNonRefProps() {
+      return nonRefProps_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties.getDefaultInstance() : nonRefProps_;
+    }
+    /**
+     * <code>.weaviate.v1.Properties non_ref_props = 11;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PropertiesOrBuilder getNonRefPropsOrBuilder() {
+      return nonRefProps_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties.getDefaultInstance() : nonRefProps_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -31640,6 +32845,9 @@ public final class WeaviateProtoSearchGet {
       }
       for (int i = 0; i < objectArrayProperties_.size(); i++) {
         output.writeMessage(10, objectArrayProperties_.get(i));
+      }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        output.writeMessage(11, getNonRefProps());
       }
       getUnknownFields().writeTo(output);
     }
@@ -31689,6 +32897,10 @@ public final class WeaviateProtoSearchGet {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(10, objectArrayProperties_.get(i));
       }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(11, getNonRefProps());
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
@@ -31730,6 +32942,11 @@ public final class WeaviateProtoSearchGet {
           .equals(other.getObjectPropertiesList())) return false;
       if (!getObjectArrayPropertiesList()
           .equals(other.getObjectArrayPropertiesList())) return false;
+      if (hasNonRefProps() != other.hasNonRefProps()) return false;
+      if (hasNonRefProps()) {
+        if (!getNonRefProps()
+            .equals(other.getNonRefProps())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -31778,6 +32995,10 @@ public final class WeaviateProtoSearchGet {
       if (getObjectArrayPropertiesCount() > 0) {
         hash = (37 * hash) + OBJECT_ARRAY_PROPERTIES_FIELD_NUMBER;
         hash = (53 * hash) + getObjectArrayPropertiesList().hashCode();
+      }
+      if (hasNonRefProps()) {
+        hash = (37 * hash) + NON_REF_PROPS_FIELD_NUMBER;
+        hash = (53 * hash) + getNonRefProps().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -31918,6 +33139,7 @@ public final class WeaviateProtoSearchGet {
           getBooleanArrayPropertiesFieldBuilder();
           getObjectPropertiesFieldBuilder();
           getObjectArrayPropertiesFieldBuilder();
+          getNonRefPropsFieldBuilder();
         }
       }
       @java.lang.Override
@@ -31984,6 +33206,11 @@ public final class WeaviateProtoSearchGet {
           objectArrayPropertiesBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000200);
+        nonRefProps_ = null;
+        if (nonRefPropsBuilder_ != null) {
+          nonRefPropsBuilder_.dispose();
+          nonRefPropsBuilder_ = null;
+        }
         return this;
       }
 
@@ -32099,6 +33326,12 @@ public final class WeaviateProtoSearchGet {
               ? metadata_
               : metadataBuilder_.build();
           to_bitField0_ |= 0x00000002;
+        }
+        if (((from_bitField0_ & 0x00000400) != 0)) {
+          result.nonRefProps_ = nonRefPropsBuilder_ == null
+              ? nonRefProps_
+              : nonRefPropsBuilder_.build();
+          to_bitField0_ |= 0x00000004;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -32340,6 +33573,9 @@ public final class WeaviateProtoSearchGet {
             }
           }
         }
+        if (other.hasNonRefProps()) {
+          mergeNonRefProps(other.getNonRefProps());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -32476,6 +33712,13 @@ public final class WeaviateProtoSearchGet {
                 }
                 break;
               } // case 82
+              case 90: {
+                input.readMessage(
+                    getNonRefPropsFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000400;
+                break;
+              } // case 90
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -32497,17 +33740,21 @@ public final class WeaviateProtoSearchGet {
       private com.google.protobuf.SingleFieldBuilderV3<
           com.google.protobuf.Struct, com.google.protobuf.Struct.Builder, com.google.protobuf.StructOrBuilder> nonRefPropertiesBuilder_;
       /**
-       * <code>.google.protobuf.Struct non_ref_properties = 1;</code>
+       * <code>.google.protobuf.Struct non_ref_properties = 1 [deprecated = true];</code>
+       * @deprecated weaviate.v1.PropertiesResult.non_ref_properties is deprecated.
+       *     See v1/search_get.proto;l=274
        * @return Whether the nonRefProperties field is set.
        */
-      public boolean hasNonRefProperties() {
+      @java.lang.Deprecated public boolean hasNonRefProperties() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
-       * <code>.google.protobuf.Struct non_ref_properties = 1;</code>
+       * <code>.google.protobuf.Struct non_ref_properties = 1 [deprecated = true];</code>
+       * @deprecated weaviate.v1.PropertiesResult.non_ref_properties is deprecated.
+       *     See v1/search_get.proto;l=274
        * @return The nonRefProperties.
        */
-      public com.google.protobuf.Struct getNonRefProperties() {
+      @java.lang.Deprecated public com.google.protobuf.Struct getNonRefProperties() {
         if (nonRefPropertiesBuilder_ == null) {
           return nonRefProperties_ == null ? com.google.protobuf.Struct.getDefaultInstance() : nonRefProperties_;
         } else {
@@ -32515,9 +33762,9 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>.google.protobuf.Struct non_ref_properties = 1;</code>
+       * <code>.google.protobuf.Struct non_ref_properties = 1 [deprecated = true];</code>
        */
-      public Builder setNonRefProperties(com.google.protobuf.Struct value) {
+      @java.lang.Deprecated public Builder setNonRefProperties(com.google.protobuf.Struct value) {
         if (nonRefPropertiesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -32531,9 +33778,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>.google.protobuf.Struct non_ref_properties = 1;</code>
+       * <code>.google.protobuf.Struct non_ref_properties = 1 [deprecated = true];</code>
        */
-      public Builder setNonRefProperties(
+      @java.lang.Deprecated public Builder setNonRefProperties(
           com.google.protobuf.Struct.Builder builderForValue) {
         if (nonRefPropertiesBuilder_ == null) {
           nonRefProperties_ = builderForValue.build();
@@ -32545,9 +33792,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>.google.protobuf.Struct non_ref_properties = 1;</code>
+       * <code>.google.protobuf.Struct non_ref_properties = 1 [deprecated = true];</code>
        */
-      public Builder mergeNonRefProperties(com.google.protobuf.Struct value) {
+      @java.lang.Deprecated public Builder mergeNonRefProperties(com.google.protobuf.Struct value) {
         if (nonRefPropertiesBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0) &&
             nonRefProperties_ != null &&
@@ -32566,9 +33813,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>.google.protobuf.Struct non_ref_properties = 1;</code>
+       * <code>.google.protobuf.Struct non_ref_properties = 1 [deprecated = true];</code>
        */
-      public Builder clearNonRefProperties() {
+      @java.lang.Deprecated public Builder clearNonRefProperties() {
         bitField0_ = (bitField0_ & ~0x00000001);
         nonRefProperties_ = null;
         if (nonRefPropertiesBuilder_ != null) {
@@ -32579,17 +33826,17 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>.google.protobuf.Struct non_ref_properties = 1;</code>
+       * <code>.google.protobuf.Struct non_ref_properties = 1 [deprecated = true];</code>
        */
-      public com.google.protobuf.Struct.Builder getNonRefPropertiesBuilder() {
+      @java.lang.Deprecated public com.google.protobuf.Struct.Builder getNonRefPropertiesBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getNonRefPropertiesFieldBuilder().getBuilder();
       }
       /**
-       * <code>.google.protobuf.Struct non_ref_properties = 1;</code>
+       * <code>.google.protobuf.Struct non_ref_properties = 1 [deprecated = true];</code>
        */
-      public com.google.protobuf.StructOrBuilder getNonRefPropertiesOrBuilder() {
+      @java.lang.Deprecated public com.google.protobuf.StructOrBuilder getNonRefPropertiesOrBuilder() {
         if (nonRefPropertiesBuilder_ != null) {
           return nonRefPropertiesBuilder_.getMessageOrBuilder();
         } else {
@@ -32598,7 +33845,7 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>.google.protobuf.Struct non_ref_properties = 1;</code>
+       * <code>.google.protobuf.Struct non_ref_properties = 1 [deprecated = true];</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           com.google.protobuf.Struct, com.google.protobuf.Struct.Builder, com.google.protobuf.StructOrBuilder> 
@@ -33060,9 +34307,9 @@ public final class WeaviateProtoSearchGet {
           io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayPropertiesOrBuilder> numberArrayPropertiesBuilder_;
 
       /**
-       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5;</code>
+       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5 [deprecated = true];</code>
        */
-      public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties> getNumberArrayPropertiesList() {
+      @java.lang.Deprecated public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties> getNumberArrayPropertiesList() {
         if (numberArrayPropertiesBuilder_ == null) {
           return java.util.Collections.unmodifiableList(numberArrayProperties_);
         } else {
@@ -33070,9 +34317,9 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5;</code>
+       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5 [deprecated = true];</code>
        */
-      public int getNumberArrayPropertiesCount() {
+      @java.lang.Deprecated public int getNumberArrayPropertiesCount() {
         if (numberArrayPropertiesBuilder_ == null) {
           return numberArrayProperties_.size();
         } else {
@@ -33080,9 +34327,9 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5;</code>
+       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties getNumberArrayProperties(int index) {
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties getNumberArrayProperties(int index) {
         if (numberArrayPropertiesBuilder_ == null) {
           return numberArrayProperties_.get(index);
         } else {
@@ -33090,9 +34337,9 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5;</code>
+       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5 [deprecated = true];</code>
        */
-      public Builder setNumberArrayProperties(
+      @java.lang.Deprecated public Builder setNumberArrayProperties(
           int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties value) {
         if (numberArrayPropertiesBuilder_ == null) {
           if (value == null) {
@@ -33107,9 +34354,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5;</code>
+       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5 [deprecated = true];</code>
        */
-      public Builder setNumberArrayProperties(
+      @java.lang.Deprecated public Builder setNumberArrayProperties(
           int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties.Builder builderForValue) {
         if (numberArrayPropertiesBuilder_ == null) {
           ensureNumberArrayPropertiesIsMutable();
@@ -33121,9 +34368,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5;</code>
+       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5 [deprecated = true];</code>
        */
-      public Builder addNumberArrayProperties(io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties value) {
+      @java.lang.Deprecated public Builder addNumberArrayProperties(io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties value) {
         if (numberArrayPropertiesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -33137,9 +34384,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5;</code>
+       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5 [deprecated = true];</code>
        */
-      public Builder addNumberArrayProperties(
+      @java.lang.Deprecated public Builder addNumberArrayProperties(
           int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties value) {
         if (numberArrayPropertiesBuilder_ == null) {
           if (value == null) {
@@ -33154,9 +34401,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5;</code>
+       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5 [deprecated = true];</code>
        */
-      public Builder addNumberArrayProperties(
+      @java.lang.Deprecated public Builder addNumberArrayProperties(
           io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties.Builder builderForValue) {
         if (numberArrayPropertiesBuilder_ == null) {
           ensureNumberArrayPropertiesIsMutable();
@@ -33168,9 +34415,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5;</code>
+       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5 [deprecated = true];</code>
        */
-      public Builder addNumberArrayProperties(
+      @java.lang.Deprecated public Builder addNumberArrayProperties(
           int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties.Builder builderForValue) {
         if (numberArrayPropertiesBuilder_ == null) {
           ensureNumberArrayPropertiesIsMutable();
@@ -33182,9 +34429,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5;</code>
+       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5 [deprecated = true];</code>
        */
-      public Builder addAllNumberArrayProperties(
+      @java.lang.Deprecated public Builder addAllNumberArrayProperties(
           java.lang.Iterable<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties> values) {
         if (numberArrayPropertiesBuilder_ == null) {
           ensureNumberArrayPropertiesIsMutable();
@@ -33197,9 +34444,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5;</code>
+       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5 [deprecated = true];</code>
        */
-      public Builder clearNumberArrayProperties() {
+      @java.lang.Deprecated public Builder clearNumberArrayProperties() {
         if (numberArrayPropertiesBuilder_ == null) {
           numberArrayProperties_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000010);
@@ -33210,9 +34457,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5;</code>
+       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5 [deprecated = true];</code>
        */
-      public Builder removeNumberArrayProperties(int index) {
+      @java.lang.Deprecated public Builder removeNumberArrayProperties(int index) {
         if (numberArrayPropertiesBuilder_ == null) {
           ensureNumberArrayPropertiesIsMutable();
           numberArrayProperties_.remove(index);
@@ -33223,16 +34470,16 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5;</code>
+       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties.Builder getNumberArrayPropertiesBuilder(
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties.Builder getNumberArrayPropertiesBuilder(
           int index) {
         return getNumberArrayPropertiesFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5;</code>
+       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayPropertiesOrBuilder getNumberArrayPropertiesOrBuilder(
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayPropertiesOrBuilder getNumberArrayPropertiesOrBuilder(
           int index) {
         if (numberArrayPropertiesBuilder_ == null) {
           return numberArrayProperties_.get(index);  } else {
@@ -33240,9 +34487,9 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5;</code>
+       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5 [deprecated = true];</code>
        */
-      public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayPropertiesOrBuilder> 
+      @java.lang.Deprecated public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayPropertiesOrBuilder> 
            getNumberArrayPropertiesOrBuilderList() {
         if (numberArrayPropertiesBuilder_ != null) {
           return numberArrayPropertiesBuilder_.getMessageOrBuilderList();
@@ -33251,24 +34498,24 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5;</code>
+       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties.Builder addNumberArrayPropertiesBuilder() {
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties.Builder addNumberArrayPropertiesBuilder() {
         return getNumberArrayPropertiesFieldBuilder().addBuilder(
             io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties.getDefaultInstance());
       }
       /**
-       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5;</code>
+       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties.Builder addNumberArrayPropertiesBuilder(
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties.Builder addNumberArrayPropertiesBuilder(
           int index) {
         return getNumberArrayPropertiesFieldBuilder().addBuilder(
             index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties.getDefaultInstance());
       }
       /**
-       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5;</code>
+       * <code>repeated .weaviate.v1.NumberArrayProperties number_array_properties = 5 [deprecated = true];</code>
        */
-      public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties.Builder> 
+      @java.lang.Deprecated public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArrayProperties.Builder> 
            getNumberArrayPropertiesBuilderList() {
         return getNumberArrayPropertiesFieldBuilder().getBuilderList();
       }
@@ -33300,9 +34547,9 @@ public final class WeaviateProtoSearchGet {
           io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayPropertiesOrBuilder> intArrayPropertiesBuilder_;
 
       /**
-       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6;</code>
+       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6 [deprecated = true];</code>
        */
-      public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties> getIntArrayPropertiesList() {
+      @java.lang.Deprecated public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties> getIntArrayPropertiesList() {
         if (intArrayPropertiesBuilder_ == null) {
           return java.util.Collections.unmodifiableList(intArrayProperties_);
         } else {
@@ -33310,9 +34557,9 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6;</code>
+       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6 [deprecated = true];</code>
        */
-      public int getIntArrayPropertiesCount() {
+      @java.lang.Deprecated public int getIntArrayPropertiesCount() {
         if (intArrayPropertiesBuilder_ == null) {
           return intArrayProperties_.size();
         } else {
@@ -33320,9 +34567,9 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6;</code>
+       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties getIntArrayProperties(int index) {
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties getIntArrayProperties(int index) {
         if (intArrayPropertiesBuilder_ == null) {
           return intArrayProperties_.get(index);
         } else {
@@ -33330,9 +34577,9 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6;</code>
+       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6 [deprecated = true];</code>
        */
-      public Builder setIntArrayProperties(
+      @java.lang.Deprecated public Builder setIntArrayProperties(
           int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties value) {
         if (intArrayPropertiesBuilder_ == null) {
           if (value == null) {
@@ -33347,9 +34594,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6;</code>
+       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6 [deprecated = true];</code>
        */
-      public Builder setIntArrayProperties(
+      @java.lang.Deprecated public Builder setIntArrayProperties(
           int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties.Builder builderForValue) {
         if (intArrayPropertiesBuilder_ == null) {
           ensureIntArrayPropertiesIsMutable();
@@ -33361,9 +34608,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6;</code>
+       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6 [deprecated = true];</code>
        */
-      public Builder addIntArrayProperties(io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties value) {
+      @java.lang.Deprecated public Builder addIntArrayProperties(io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties value) {
         if (intArrayPropertiesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -33377,9 +34624,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6;</code>
+       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6 [deprecated = true];</code>
        */
-      public Builder addIntArrayProperties(
+      @java.lang.Deprecated public Builder addIntArrayProperties(
           int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties value) {
         if (intArrayPropertiesBuilder_ == null) {
           if (value == null) {
@@ -33394,9 +34641,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6;</code>
+       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6 [deprecated = true];</code>
        */
-      public Builder addIntArrayProperties(
+      @java.lang.Deprecated public Builder addIntArrayProperties(
           io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties.Builder builderForValue) {
         if (intArrayPropertiesBuilder_ == null) {
           ensureIntArrayPropertiesIsMutable();
@@ -33408,9 +34655,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6;</code>
+       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6 [deprecated = true];</code>
        */
-      public Builder addIntArrayProperties(
+      @java.lang.Deprecated public Builder addIntArrayProperties(
           int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties.Builder builderForValue) {
         if (intArrayPropertiesBuilder_ == null) {
           ensureIntArrayPropertiesIsMutable();
@@ -33422,9 +34669,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6;</code>
+       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6 [deprecated = true];</code>
        */
-      public Builder addAllIntArrayProperties(
+      @java.lang.Deprecated public Builder addAllIntArrayProperties(
           java.lang.Iterable<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties> values) {
         if (intArrayPropertiesBuilder_ == null) {
           ensureIntArrayPropertiesIsMutable();
@@ -33437,9 +34684,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6;</code>
+       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6 [deprecated = true];</code>
        */
-      public Builder clearIntArrayProperties() {
+      @java.lang.Deprecated public Builder clearIntArrayProperties() {
         if (intArrayPropertiesBuilder_ == null) {
           intArrayProperties_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000020);
@@ -33450,9 +34697,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6;</code>
+       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6 [deprecated = true];</code>
        */
-      public Builder removeIntArrayProperties(int index) {
+      @java.lang.Deprecated public Builder removeIntArrayProperties(int index) {
         if (intArrayPropertiesBuilder_ == null) {
           ensureIntArrayPropertiesIsMutable();
           intArrayProperties_.remove(index);
@@ -33463,16 +34710,16 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6;</code>
+       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties.Builder getIntArrayPropertiesBuilder(
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties.Builder getIntArrayPropertiesBuilder(
           int index) {
         return getIntArrayPropertiesFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6;</code>
+       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayPropertiesOrBuilder getIntArrayPropertiesOrBuilder(
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayPropertiesOrBuilder getIntArrayPropertiesOrBuilder(
           int index) {
         if (intArrayPropertiesBuilder_ == null) {
           return intArrayProperties_.get(index);  } else {
@@ -33480,9 +34727,9 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6;</code>
+       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6 [deprecated = true];</code>
        */
-      public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayPropertiesOrBuilder> 
+      @java.lang.Deprecated public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayPropertiesOrBuilder> 
            getIntArrayPropertiesOrBuilderList() {
         if (intArrayPropertiesBuilder_ != null) {
           return intArrayPropertiesBuilder_.getMessageOrBuilderList();
@@ -33491,24 +34738,24 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6;</code>
+       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties.Builder addIntArrayPropertiesBuilder() {
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties.Builder addIntArrayPropertiesBuilder() {
         return getIntArrayPropertiesFieldBuilder().addBuilder(
             io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties.getDefaultInstance());
       }
       /**
-       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6;</code>
+       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties.Builder addIntArrayPropertiesBuilder(
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties.Builder addIntArrayPropertiesBuilder(
           int index) {
         return getIntArrayPropertiesFieldBuilder().addBuilder(
             index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties.getDefaultInstance());
       }
       /**
-       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6;</code>
+       * <code>repeated .weaviate.v1.IntArrayProperties int_array_properties = 6 [deprecated = true];</code>
        */
-      public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties.Builder> 
+      @java.lang.Deprecated public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArrayProperties.Builder> 
            getIntArrayPropertiesBuilderList() {
         return getIntArrayPropertiesFieldBuilder().getBuilderList();
       }
@@ -33540,9 +34787,9 @@ public final class WeaviateProtoSearchGet {
           io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayPropertiesOrBuilder> textArrayPropertiesBuilder_;
 
       /**
-       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7;</code>
+       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7 [deprecated = true];</code>
        */
-      public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties> getTextArrayPropertiesList() {
+      @java.lang.Deprecated public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties> getTextArrayPropertiesList() {
         if (textArrayPropertiesBuilder_ == null) {
           return java.util.Collections.unmodifiableList(textArrayProperties_);
         } else {
@@ -33550,9 +34797,9 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7;</code>
+       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7 [deprecated = true];</code>
        */
-      public int getTextArrayPropertiesCount() {
+      @java.lang.Deprecated public int getTextArrayPropertiesCount() {
         if (textArrayPropertiesBuilder_ == null) {
           return textArrayProperties_.size();
         } else {
@@ -33560,9 +34807,9 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7;</code>
+       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties getTextArrayProperties(int index) {
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties getTextArrayProperties(int index) {
         if (textArrayPropertiesBuilder_ == null) {
           return textArrayProperties_.get(index);
         } else {
@@ -33570,9 +34817,9 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7;</code>
+       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7 [deprecated = true];</code>
        */
-      public Builder setTextArrayProperties(
+      @java.lang.Deprecated public Builder setTextArrayProperties(
           int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties value) {
         if (textArrayPropertiesBuilder_ == null) {
           if (value == null) {
@@ -33587,9 +34834,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7;</code>
+       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7 [deprecated = true];</code>
        */
-      public Builder setTextArrayProperties(
+      @java.lang.Deprecated public Builder setTextArrayProperties(
           int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties.Builder builderForValue) {
         if (textArrayPropertiesBuilder_ == null) {
           ensureTextArrayPropertiesIsMutable();
@@ -33601,9 +34848,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7;</code>
+       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7 [deprecated = true];</code>
        */
-      public Builder addTextArrayProperties(io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties value) {
+      @java.lang.Deprecated public Builder addTextArrayProperties(io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties value) {
         if (textArrayPropertiesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -33617,9 +34864,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7;</code>
+       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7 [deprecated = true];</code>
        */
-      public Builder addTextArrayProperties(
+      @java.lang.Deprecated public Builder addTextArrayProperties(
           int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties value) {
         if (textArrayPropertiesBuilder_ == null) {
           if (value == null) {
@@ -33634,9 +34881,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7;</code>
+       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7 [deprecated = true];</code>
        */
-      public Builder addTextArrayProperties(
+      @java.lang.Deprecated public Builder addTextArrayProperties(
           io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties.Builder builderForValue) {
         if (textArrayPropertiesBuilder_ == null) {
           ensureTextArrayPropertiesIsMutable();
@@ -33648,9 +34895,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7;</code>
+       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7 [deprecated = true];</code>
        */
-      public Builder addTextArrayProperties(
+      @java.lang.Deprecated public Builder addTextArrayProperties(
           int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties.Builder builderForValue) {
         if (textArrayPropertiesBuilder_ == null) {
           ensureTextArrayPropertiesIsMutable();
@@ -33662,9 +34909,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7;</code>
+       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7 [deprecated = true];</code>
        */
-      public Builder addAllTextArrayProperties(
+      @java.lang.Deprecated public Builder addAllTextArrayProperties(
           java.lang.Iterable<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties> values) {
         if (textArrayPropertiesBuilder_ == null) {
           ensureTextArrayPropertiesIsMutable();
@@ -33677,9 +34924,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7;</code>
+       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7 [deprecated = true];</code>
        */
-      public Builder clearTextArrayProperties() {
+      @java.lang.Deprecated public Builder clearTextArrayProperties() {
         if (textArrayPropertiesBuilder_ == null) {
           textArrayProperties_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000040);
@@ -33690,9 +34937,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7;</code>
+       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7 [deprecated = true];</code>
        */
-      public Builder removeTextArrayProperties(int index) {
+      @java.lang.Deprecated public Builder removeTextArrayProperties(int index) {
         if (textArrayPropertiesBuilder_ == null) {
           ensureTextArrayPropertiesIsMutable();
           textArrayProperties_.remove(index);
@@ -33703,16 +34950,16 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7;</code>
+       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties.Builder getTextArrayPropertiesBuilder(
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties.Builder getTextArrayPropertiesBuilder(
           int index) {
         return getTextArrayPropertiesFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7;</code>
+       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayPropertiesOrBuilder getTextArrayPropertiesOrBuilder(
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayPropertiesOrBuilder getTextArrayPropertiesOrBuilder(
           int index) {
         if (textArrayPropertiesBuilder_ == null) {
           return textArrayProperties_.get(index);  } else {
@@ -33720,9 +34967,9 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7;</code>
+       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7 [deprecated = true];</code>
        */
-      public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayPropertiesOrBuilder> 
+      @java.lang.Deprecated public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayPropertiesOrBuilder> 
            getTextArrayPropertiesOrBuilderList() {
         if (textArrayPropertiesBuilder_ != null) {
           return textArrayPropertiesBuilder_.getMessageOrBuilderList();
@@ -33731,24 +34978,24 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7;</code>
+       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties.Builder addTextArrayPropertiesBuilder() {
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties.Builder addTextArrayPropertiesBuilder() {
         return getTextArrayPropertiesFieldBuilder().addBuilder(
             io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties.getDefaultInstance());
       }
       /**
-       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7;</code>
+       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties.Builder addTextArrayPropertiesBuilder(
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties.Builder addTextArrayPropertiesBuilder(
           int index) {
         return getTextArrayPropertiesFieldBuilder().addBuilder(
             index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties.getDefaultInstance());
       }
       /**
-       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7;</code>
+       * <code>repeated .weaviate.v1.TextArrayProperties text_array_properties = 7 [deprecated = true];</code>
        */
-      public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties.Builder> 
+      @java.lang.Deprecated public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArrayProperties.Builder> 
            getTextArrayPropertiesBuilderList() {
         return getTextArrayPropertiesFieldBuilder().getBuilderList();
       }
@@ -33780,9 +35027,9 @@ public final class WeaviateProtoSearchGet {
           io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayPropertiesOrBuilder> booleanArrayPropertiesBuilder_;
 
       /**
-       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8;</code>
+       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8 [deprecated = true];</code>
        */
-      public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties> getBooleanArrayPropertiesList() {
+      @java.lang.Deprecated public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties> getBooleanArrayPropertiesList() {
         if (booleanArrayPropertiesBuilder_ == null) {
           return java.util.Collections.unmodifiableList(booleanArrayProperties_);
         } else {
@@ -33790,9 +35037,9 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8;</code>
+       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8 [deprecated = true];</code>
        */
-      public int getBooleanArrayPropertiesCount() {
+      @java.lang.Deprecated public int getBooleanArrayPropertiesCount() {
         if (booleanArrayPropertiesBuilder_ == null) {
           return booleanArrayProperties_.size();
         } else {
@@ -33800,9 +35047,9 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8;</code>
+       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties getBooleanArrayProperties(int index) {
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties getBooleanArrayProperties(int index) {
         if (booleanArrayPropertiesBuilder_ == null) {
           return booleanArrayProperties_.get(index);
         } else {
@@ -33810,9 +35057,9 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8;</code>
+       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8 [deprecated = true];</code>
        */
-      public Builder setBooleanArrayProperties(
+      @java.lang.Deprecated public Builder setBooleanArrayProperties(
           int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties value) {
         if (booleanArrayPropertiesBuilder_ == null) {
           if (value == null) {
@@ -33827,9 +35074,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8;</code>
+       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8 [deprecated = true];</code>
        */
-      public Builder setBooleanArrayProperties(
+      @java.lang.Deprecated public Builder setBooleanArrayProperties(
           int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties.Builder builderForValue) {
         if (booleanArrayPropertiesBuilder_ == null) {
           ensureBooleanArrayPropertiesIsMutable();
@@ -33841,9 +35088,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8;</code>
+       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8 [deprecated = true];</code>
        */
-      public Builder addBooleanArrayProperties(io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties value) {
+      @java.lang.Deprecated public Builder addBooleanArrayProperties(io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties value) {
         if (booleanArrayPropertiesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -33857,9 +35104,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8;</code>
+       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8 [deprecated = true];</code>
        */
-      public Builder addBooleanArrayProperties(
+      @java.lang.Deprecated public Builder addBooleanArrayProperties(
           int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties value) {
         if (booleanArrayPropertiesBuilder_ == null) {
           if (value == null) {
@@ -33874,9 +35121,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8;</code>
+       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8 [deprecated = true];</code>
        */
-      public Builder addBooleanArrayProperties(
+      @java.lang.Deprecated public Builder addBooleanArrayProperties(
           io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties.Builder builderForValue) {
         if (booleanArrayPropertiesBuilder_ == null) {
           ensureBooleanArrayPropertiesIsMutable();
@@ -33888,9 +35135,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8;</code>
+       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8 [deprecated = true];</code>
        */
-      public Builder addBooleanArrayProperties(
+      @java.lang.Deprecated public Builder addBooleanArrayProperties(
           int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties.Builder builderForValue) {
         if (booleanArrayPropertiesBuilder_ == null) {
           ensureBooleanArrayPropertiesIsMutable();
@@ -33902,9 +35149,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8;</code>
+       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8 [deprecated = true];</code>
        */
-      public Builder addAllBooleanArrayProperties(
+      @java.lang.Deprecated public Builder addAllBooleanArrayProperties(
           java.lang.Iterable<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties> values) {
         if (booleanArrayPropertiesBuilder_ == null) {
           ensureBooleanArrayPropertiesIsMutable();
@@ -33917,9 +35164,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8;</code>
+       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8 [deprecated = true];</code>
        */
-      public Builder clearBooleanArrayProperties() {
+      @java.lang.Deprecated public Builder clearBooleanArrayProperties() {
         if (booleanArrayPropertiesBuilder_ == null) {
           booleanArrayProperties_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000080);
@@ -33930,9 +35177,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8;</code>
+       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8 [deprecated = true];</code>
        */
-      public Builder removeBooleanArrayProperties(int index) {
+      @java.lang.Deprecated public Builder removeBooleanArrayProperties(int index) {
         if (booleanArrayPropertiesBuilder_ == null) {
           ensureBooleanArrayPropertiesIsMutable();
           booleanArrayProperties_.remove(index);
@@ -33943,16 +35190,16 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8;</code>
+       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties.Builder getBooleanArrayPropertiesBuilder(
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties.Builder getBooleanArrayPropertiesBuilder(
           int index) {
         return getBooleanArrayPropertiesFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8;</code>
+       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayPropertiesOrBuilder getBooleanArrayPropertiesOrBuilder(
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayPropertiesOrBuilder getBooleanArrayPropertiesOrBuilder(
           int index) {
         if (booleanArrayPropertiesBuilder_ == null) {
           return booleanArrayProperties_.get(index);  } else {
@@ -33960,9 +35207,9 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8;</code>
+       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8 [deprecated = true];</code>
        */
-      public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayPropertiesOrBuilder> 
+      @java.lang.Deprecated public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayPropertiesOrBuilder> 
            getBooleanArrayPropertiesOrBuilderList() {
         if (booleanArrayPropertiesBuilder_ != null) {
           return booleanArrayPropertiesBuilder_.getMessageOrBuilderList();
@@ -33971,24 +35218,24 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8;</code>
+       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties.Builder addBooleanArrayPropertiesBuilder() {
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties.Builder addBooleanArrayPropertiesBuilder() {
         return getBooleanArrayPropertiesFieldBuilder().addBuilder(
             io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties.getDefaultInstance());
       }
       /**
-       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8;</code>
+       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties.Builder addBooleanArrayPropertiesBuilder(
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties.Builder addBooleanArrayPropertiesBuilder(
           int index) {
         return getBooleanArrayPropertiesFieldBuilder().addBuilder(
             index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties.getDefaultInstance());
       }
       /**
-       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8;</code>
+       * <code>repeated .weaviate.v1.BooleanArrayProperties boolean_array_properties = 8 [deprecated = true];</code>
        */
-      public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties.Builder> 
+      @java.lang.Deprecated public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArrayProperties.Builder> 
            getBooleanArrayPropertiesBuilderList() {
         return getBooleanArrayPropertiesFieldBuilder().getBuilderList();
       }
@@ -34020,9 +35267,9 @@ public final class WeaviateProtoSearchGet {
           io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectPropertiesOrBuilder> objectPropertiesBuilder_;
 
       /**
-       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9;</code>
+       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9 [deprecated = true];</code>
        */
-      public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties> getObjectPropertiesList() {
+      @java.lang.Deprecated public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties> getObjectPropertiesList() {
         if (objectPropertiesBuilder_ == null) {
           return java.util.Collections.unmodifiableList(objectProperties_);
         } else {
@@ -34030,9 +35277,9 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9;</code>
+       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9 [deprecated = true];</code>
        */
-      public int getObjectPropertiesCount() {
+      @java.lang.Deprecated public int getObjectPropertiesCount() {
         if (objectPropertiesBuilder_ == null) {
           return objectProperties_.size();
         } else {
@@ -34040,9 +35287,9 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9;</code>
+       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties getObjectProperties(int index) {
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties getObjectProperties(int index) {
         if (objectPropertiesBuilder_ == null) {
           return objectProperties_.get(index);
         } else {
@@ -34050,9 +35297,9 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9;</code>
+       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9 [deprecated = true];</code>
        */
-      public Builder setObjectProperties(
+      @java.lang.Deprecated public Builder setObjectProperties(
           int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties value) {
         if (objectPropertiesBuilder_ == null) {
           if (value == null) {
@@ -34067,9 +35314,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9;</code>
+       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9 [deprecated = true];</code>
        */
-      public Builder setObjectProperties(
+      @java.lang.Deprecated public Builder setObjectProperties(
           int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties.Builder builderForValue) {
         if (objectPropertiesBuilder_ == null) {
           ensureObjectPropertiesIsMutable();
@@ -34081,9 +35328,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9;</code>
+       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9 [deprecated = true];</code>
        */
-      public Builder addObjectProperties(io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties value) {
+      @java.lang.Deprecated public Builder addObjectProperties(io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties value) {
         if (objectPropertiesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -34097,9 +35344,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9;</code>
+       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9 [deprecated = true];</code>
        */
-      public Builder addObjectProperties(
+      @java.lang.Deprecated public Builder addObjectProperties(
           int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties value) {
         if (objectPropertiesBuilder_ == null) {
           if (value == null) {
@@ -34114,9 +35361,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9;</code>
+       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9 [deprecated = true];</code>
        */
-      public Builder addObjectProperties(
+      @java.lang.Deprecated public Builder addObjectProperties(
           io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties.Builder builderForValue) {
         if (objectPropertiesBuilder_ == null) {
           ensureObjectPropertiesIsMutable();
@@ -34128,9 +35375,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9;</code>
+       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9 [deprecated = true];</code>
        */
-      public Builder addObjectProperties(
+      @java.lang.Deprecated public Builder addObjectProperties(
           int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties.Builder builderForValue) {
         if (objectPropertiesBuilder_ == null) {
           ensureObjectPropertiesIsMutable();
@@ -34142,9 +35389,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9;</code>
+       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9 [deprecated = true];</code>
        */
-      public Builder addAllObjectProperties(
+      @java.lang.Deprecated public Builder addAllObjectProperties(
           java.lang.Iterable<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties> values) {
         if (objectPropertiesBuilder_ == null) {
           ensureObjectPropertiesIsMutable();
@@ -34157,9 +35404,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9;</code>
+       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9 [deprecated = true];</code>
        */
-      public Builder clearObjectProperties() {
+      @java.lang.Deprecated public Builder clearObjectProperties() {
         if (objectPropertiesBuilder_ == null) {
           objectProperties_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000100);
@@ -34170,9 +35417,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9;</code>
+       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9 [deprecated = true];</code>
        */
-      public Builder removeObjectProperties(int index) {
+      @java.lang.Deprecated public Builder removeObjectProperties(int index) {
         if (objectPropertiesBuilder_ == null) {
           ensureObjectPropertiesIsMutable();
           objectProperties_.remove(index);
@@ -34183,16 +35430,16 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9;</code>
+       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties.Builder getObjectPropertiesBuilder(
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties.Builder getObjectPropertiesBuilder(
           int index) {
         return getObjectPropertiesFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9;</code>
+       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectPropertiesOrBuilder getObjectPropertiesOrBuilder(
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectPropertiesOrBuilder getObjectPropertiesOrBuilder(
           int index) {
         if (objectPropertiesBuilder_ == null) {
           return objectProperties_.get(index);  } else {
@@ -34200,9 +35447,9 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9;</code>
+       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9 [deprecated = true];</code>
        */
-      public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectPropertiesOrBuilder> 
+      @java.lang.Deprecated public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectPropertiesOrBuilder> 
            getObjectPropertiesOrBuilderList() {
         if (objectPropertiesBuilder_ != null) {
           return objectPropertiesBuilder_.getMessageOrBuilderList();
@@ -34211,24 +35458,24 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9;</code>
+       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties.Builder addObjectPropertiesBuilder() {
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties.Builder addObjectPropertiesBuilder() {
         return getObjectPropertiesFieldBuilder().addBuilder(
             io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties.getDefaultInstance());
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9;</code>
+       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties.Builder addObjectPropertiesBuilder(
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties.Builder addObjectPropertiesBuilder(
           int index) {
         return getObjectPropertiesFieldBuilder().addBuilder(
             index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties.getDefaultInstance());
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9;</code>
+       * <code>repeated .weaviate.v1.ObjectProperties object_properties = 9 [deprecated = true];</code>
        */
-      public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties.Builder> 
+      @java.lang.Deprecated public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectProperties.Builder> 
            getObjectPropertiesBuilderList() {
         return getObjectPropertiesFieldBuilder().getBuilderList();
       }
@@ -34260,9 +35507,9 @@ public final class WeaviateProtoSearchGet {
           io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayPropertiesOrBuilder> objectArrayPropertiesBuilder_;
 
       /**
-       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10;</code>
+       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10 [deprecated = true];</code>
        */
-      public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties> getObjectArrayPropertiesList() {
+      @java.lang.Deprecated public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties> getObjectArrayPropertiesList() {
         if (objectArrayPropertiesBuilder_ == null) {
           return java.util.Collections.unmodifiableList(objectArrayProperties_);
         } else {
@@ -34270,9 +35517,9 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10;</code>
+       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10 [deprecated = true];</code>
        */
-      public int getObjectArrayPropertiesCount() {
+      @java.lang.Deprecated public int getObjectArrayPropertiesCount() {
         if (objectArrayPropertiesBuilder_ == null) {
           return objectArrayProperties_.size();
         } else {
@@ -34280,9 +35527,9 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10;</code>
+       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties getObjectArrayProperties(int index) {
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties getObjectArrayProperties(int index) {
         if (objectArrayPropertiesBuilder_ == null) {
           return objectArrayProperties_.get(index);
         } else {
@@ -34290,9 +35537,9 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10;</code>
+       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10 [deprecated = true];</code>
        */
-      public Builder setObjectArrayProperties(
+      @java.lang.Deprecated public Builder setObjectArrayProperties(
           int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties value) {
         if (objectArrayPropertiesBuilder_ == null) {
           if (value == null) {
@@ -34307,9 +35554,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10;</code>
+       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10 [deprecated = true];</code>
        */
-      public Builder setObjectArrayProperties(
+      @java.lang.Deprecated public Builder setObjectArrayProperties(
           int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties.Builder builderForValue) {
         if (objectArrayPropertiesBuilder_ == null) {
           ensureObjectArrayPropertiesIsMutable();
@@ -34321,9 +35568,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10;</code>
+       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10 [deprecated = true];</code>
        */
-      public Builder addObjectArrayProperties(io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties value) {
+      @java.lang.Deprecated public Builder addObjectArrayProperties(io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties value) {
         if (objectArrayPropertiesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -34337,9 +35584,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10;</code>
+       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10 [deprecated = true];</code>
        */
-      public Builder addObjectArrayProperties(
+      @java.lang.Deprecated public Builder addObjectArrayProperties(
           int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties value) {
         if (objectArrayPropertiesBuilder_ == null) {
           if (value == null) {
@@ -34354,9 +35601,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10;</code>
+       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10 [deprecated = true];</code>
        */
-      public Builder addObjectArrayProperties(
+      @java.lang.Deprecated public Builder addObjectArrayProperties(
           io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties.Builder builderForValue) {
         if (objectArrayPropertiesBuilder_ == null) {
           ensureObjectArrayPropertiesIsMutable();
@@ -34368,9 +35615,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10;</code>
+       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10 [deprecated = true];</code>
        */
-      public Builder addObjectArrayProperties(
+      @java.lang.Deprecated public Builder addObjectArrayProperties(
           int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties.Builder builderForValue) {
         if (objectArrayPropertiesBuilder_ == null) {
           ensureObjectArrayPropertiesIsMutable();
@@ -34382,9 +35629,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10;</code>
+       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10 [deprecated = true];</code>
        */
-      public Builder addAllObjectArrayProperties(
+      @java.lang.Deprecated public Builder addAllObjectArrayProperties(
           java.lang.Iterable<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties> values) {
         if (objectArrayPropertiesBuilder_ == null) {
           ensureObjectArrayPropertiesIsMutable();
@@ -34397,9 +35644,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10;</code>
+       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10 [deprecated = true];</code>
        */
-      public Builder clearObjectArrayProperties() {
+      @java.lang.Deprecated public Builder clearObjectArrayProperties() {
         if (objectArrayPropertiesBuilder_ == null) {
           objectArrayProperties_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000200);
@@ -34410,9 +35657,9 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10;</code>
+       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10 [deprecated = true];</code>
        */
-      public Builder removeObjectArrayProperties(int index) {
+      @java.lang.Deprecated public Builder removeObjectArrayProperties(int index) {
         if (objectArrayPropertiesBuilder_ == null) {
           ensureObjectArrayPropertiesIsMutable();
           objectArrayProperties_.remove(index);
@@ -34423,16 +35670,16 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10;</code>
+       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties.Builder getObjectArrayPropertiesBuilder(
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties.Builder getObjectArrayPropertiesBuilder(
           int index) {
         return getObjectArrayPropertiesFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10;</code>
+       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayPropertiesOrBuilder getObjectArrayPropertiesOrBuilder(
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayPropertiesOrBuilder getObjectArrayPropertiesOrBuilder(
           int index) {
         if (objectArrayPropertiesBuilder_ == null) {
           return objectArrayProperties_.get(index);  } else {
@@ -34440,9 +35687,9 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10;</code>
+       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10 [deprecated = true];</code>
        */
-      public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayPropertiesOrBuilder> 
+      @java.lang.Deprecated public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayPropertiesOrBuilder> 
            getObjectArrayPropertiesOrBuilderList() {
         if (objectArrayPropertiesBuilder_ != null) {
           return objectArrayPropertiesBuilder_.getMessageOrBuilderList();
@@ -34451,24 +35698,24 @@ public final class WeaviateProtoSearchGet {
         }
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10;</code>
+       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties.Builder addObjectArrayPropertiesBuilder() {
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties.Builder addObjectArrayPropertiesBuilder() {
         return getObjectArrayPropertiesFieldBuilder().addBuilder(
             io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties.getDefaultInstance());
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10;</code>
+       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties.Builder addObjectArrayPropertiesBuilder(
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties.Builder addObjectArrayPropertiesBuilder(
           int index) {
         return getObjectArrayPropertiesFieldBuilder().addBuilder(
             index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties.getDefaultInstance());
       }
       /**
-       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10;</code>
+       * <code>repeated .weaviate.v1.ObjectArrayProperties object_array_properties = 10 [deprecated = true];</code>
        */
-      public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties.Builder> 
+      @java.lang.Deprecated public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayProperties.Builder> 
            getObjectArrayPropertiesBuilderList() {
         return getObjectArrayPropertiesFieldBuilder().getBuilderList();
       }
@@ -34485,6 +35732,127 @@ public final class WeaviateProtoSearchGet {
           objectArrayProperties_ = null;
         }
         return objectArrayPropertiesBuilder_;
+      }
+
+      private io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties nonRefProps_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PropertiesOrBuilder> nonRefPropsBuilder_;
+      /**
+       * <code>.weaviate.v1.Properties non_ref_props = 11;</code>
+       * @return Whether the nonRefProps field is set.
+       */
+      public boolean hasNonRefProps() {
+        return ((bitField0_ & 0x00000400) != 0);
+      }
+      /**
+       * <code>.weaviate.v1.Properties non_ref_props = 11;</code>
+       * @return The nonRefProps.
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties getNonRefProps() {
+        if (nonRefPropsBuilder_ == null) {
+          return nonRefProps_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties.getDefaultInstance() : nonRefProps_;
+        } else {
+          return nonRefPropsBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.Properties non_ref_props = 11;</code>
+       */
+      public Builder setNonRefProps(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties value) {
+        if (nonRefPropsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          nonRefProps_ = value;
+        } else {
+          nonRefPropsBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.Properties non_ref_props = 11;</code>
+       */
+      public Builder setNonRefProps(
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties.Builder builderForValue) {
+        if (nonRefPropsBuilder_ == null) {
+          nonRefProps_ = builderForValue.build();
+        } else {
+          nonRefPropsBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.Properties non_ref_props = 11;</code>
+       */
+      public Builder mergeNonRefProps(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties value) {
+        if (nonRefPropsBuilder_ == null) {
+          if (((bitField0_ & 0x00000400) != 0) &&
+            nonRefProps_ != null &&
+            nonRefProps_ != io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties.getDefaultInstance()) {
+            getNonRefPropsBuilder().mergeFrom(value);
+          } else {
+            nonRefProps_ = value;
+          }
+        } else {
+          nonRefPropsBuilder_.mergeFrom(value);
+        }
+        if (nonRefProps_ != null) {
+          bitField0_ |= 0x00000400;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.Properties non_ref_props = 11;</code>
+       */
+      public Builder clearNonRefProps() {
+        bitField0_ = (bitField0_ & ~0x00000400);
+        nonRefProps_ = null;
+        if (nonRefPropsBuilder_ != null) {
+          nonRefPropsBuilder_.dispose();
+          nonRefPropsBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.Properties non_ref_props = 11;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties.Builder getNonRefPropsBuilder() {
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return getNonRefPropsFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.weaviate.v1.Properties non_ref_props = 11;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PropertiesOrBuilder getNonRefPropsOrBuilder() {
+        if (nonRefPropsBuilder_ != null) {
+          return nonRefPropsBuilder_.getMessageOrBuilder();
+        } else {
+          return nonRefProps_ == null ?
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties.getDefaultInstance() : nonRefProps_;
+        }
+      }
+      /**
+       * <code>.weaviate.v1.Properties non_ref_props = 11;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PropertiesOrBuilder> 
+          getNonRefPropsFieldBuilder() {
+        if (nonRefPropsBuilder_ == null) {
+          nonRefPropsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PropertiesOrBuilder>(
+                  getNonRefProps(),
+                  getParentForChildren(),
+                  isClean());
+          nonRefProps_ = null;
+        }
+        return nonRefPropsBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -35526,6 +36894,11 @@ public final class WeaviateProtoSearchGet {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_weaviate_v1_Filters_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_weaviate_v1_GeoCoordinatesFilter_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_weaviate_v1_GeoCoordinatesFilter_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_weaviate_v1_MetadataRequest_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -35630,167 +37003,177 @@ public final class WeaviateProtoSearchGet {
   static {
     java.lang.String[] descriptorData = {
       "\n\023v1/search_get.proto\022\013weaviate.v1\032\034goog" +
-      "le/protobuf/struct.proto\032\rv1/base.proto\"" +
-      "\313\010\n\rSearchRequest\022\022\n\ncollection\030\001 \001(\t\022\016\n" +
-      "\006tenant\030\n \001(\t\022=\n\021consistency_level\030\013 \001(\016" +
-      "2\035.weaviate.v1.ConsistencyLevelH\000\210\001\001\0227\n\n" +
-      "properties\030\024 \001(\0132\036.weaviate.v1.Propertie" +
-      "sRequestH\001\210\001\001\0223\n\010metadata\030\025 \001(\0132\034.weavia" +
-      "te.v1.MetadataRequestH\002\210\001\001\022+\n\010group_by\030\026" +
-      " \001(\0132\024.weaviate.v1.GroupByH\003\210\001\001\022\r\n\005limit" +
-      "\030\036 \001(\r\022\016\n\006offset\030\037 \001(\r\022\017\n\007autocut\030  \001(\r\022" +
-      "\r\n\005after\030! \001(\t\022$\n\007sort_by\030\" \003(\0132\023.weavia" +
-      "te.v1.SortBy\022*\n\007filters\030( \001(\0132\024.weaviate" +
-      ".v1.FiltersH\004\210\001\001\022/\n\rhybrid_search\030) \001(\0132" +
-      "\023.weaviate.v1.HybridH\005\210\001\001\022+\n\013bm25_search" +
-      "\030* \001(\0132\021.weaviate.v1.BM25H\006\210\001\001\0221\n\013near_v" +
-      "ector\030+ \001(\0132\027.weaviate.v1.NearVectorH\007\210\001" +
-      "\001\0221\n\013near_object\030, \001(\0132\027.weaviate.v1.Nea" +
-      "rObjectH\010\210\001\001\0223\n\tnear_text\030- \001(\0132\033.weavia" +
-      "te.v1.NearTextSearchH\t\210\001\001\0225\n\nnear_image\030" +
-      ". \001(\0132\034.weaviate.v1.NearImageSearchH\n\210\001\001" +
-      "\0225\n\nnear_audio\030/ \001(\0132\034.weaviate.v1.NearA" +
-      "udioSearchH\013\210\001\001\0225\n\nnear_video\0300 \001(\0132\034.we" +
-      "aviate.v1.NearVideoSearchH\014\210\001\001\0226\n\ngenera" +
-      "tive\030< \001(\0132\035.weaviate.v1.GenerativeSearc" +
-      "hH\r\210\001\001B\024\n\022_consistency_levelB\r\n\013_propert" +
-      "iesB\013\n\t_metadataB\013\n\t_group_byB\n\n\010_filter" +
-      "sB\020\n\016_hybrid_searchB\016\n\014_bm25_searchB\016\n\014_" +
-      "near_vectorB\016\n\014_near_objectB\014\n\n_near_tex" +
-      "tB\r\n\013_near_imageB\r\n\013_near_audioB\r\n\013_near" +
-      "_videoB\r\n\013_generative\"L\n\007GroupBy\022\014\n\004path" +
-      "\030\001 \003(\t\022\030\n\020number_of_groups\030\002 \001(\005\022\031\n\021obje" +
-      "cts_per_group\030\003 \001(\005\")\n\006SortBy\022\021\n\tascendi" +
-      "ng\030\001 \001(\010\022\014\n\004path\030\002 \003(\t\"m\n\020GenerativeSear" +
-      "ch\022\036\n\026single_response_prompt\030\001 \001(\t\022\035\n\025gr" +
-      "ouped_response_task\030\002 \001(\t\022\032\n\022grouped_pro" +
-      "perties\030\003 \003(\t\"\033\n\tTextArray\022\016\n\006values\030\001 \003" +
-      "(\t\"\032\n\010IntArray\022\016\n\006values\030\001 \003(\003\"\035\n\013Number" +
-      "Array\022\016\n\006values\030\001 \003(\001\"\036\n\014BooleanArray\022\016\n" +
-      "\006values\030\001 \003(\010\"\225\006\n\007Filters\022/\n\010operator\030\001 " +
-      "\001(\0162\035.weaviate.v1.Filters.Operator\022\n\n\002on" +
-      "\030\002 \003(\t\022%\n\007filters\030\003 \003(\0132\024.weaviate.v1.Fi" +
-      "lters\022\024\n\nvalue_text\030\004 \001(\tH\000\022\023\n\tvalue_int" +
-      "\030\005 \001(\003H\000\022\027\n\rvalue_boolean\030\006 \001(\010H\000\022\026\n\014val" +
-      "ue_number\030\007 \001(\002H\000\0222\n\020value_text_array\030\t " +
-      "\001(\0132\026.weaviate.v1.TextArrayH\000\0220\n\017value_i" +
-      "nt_array\030\n \001(\0132\025.weaviate.v1.IntArrayH\000\022" +
-      "8\n\023value_boolean_array\030\013 \001(\0132\031.weaviate." +
-      "v1.BooleanArrayH\000\0226\n\022value_number_array\030" +
-      "\014 \001(\0132\030.weaviate.v1.NumberArrayH\000\"\343\002\n\010Op" +
-      "erator\022\030\n\024OPERATOR_UNSPECIFIED\020\000\022\022\n\016OPER" +
-      "ATOR_EQUAL\020\001\022\026\n\022OPERATOR_NOT_EQUAL\020\002\022\031\n\025" +
-      "OPERATOR_GREATER_THAN\020\003\022\037\n\033OPERATOR_GREA" +
-      "TER_THAN_EQUAL\020\004\022\026\n\022OPERATOR_LESS_THAN\020\005" +
-      "\022\034\n\030OPERATOR_LESS_THAN_EQUAL\020\006\022\020\n\014OPERAT" +
-      "OR_AND\020\007\022\017\n\013OPERATOR_OR\020\010\022\035\n\031OPERATOR_WI" +
-      "THIN_GEO_RANGE\020\t\022\021\n\rOPERATOR_LIKE\020\n\022\024\n\020O" +
-      "PERATOR_IS_NULL\020\013\022\031\n\025OPERATOR_CONTAINS_A" +
-      "NY\020\014\022\031\n\025OPERATOR_CONTAINS_ALL\020\rB\014\n\ntest_" +
-      "value\"\314\001\n\017MetadataRequest\022\014\n\004uuid\030\001 \001(\010\022" +
-      "\016\n\006vector\030\002 \001(\010\022\032\n\022creation_time_unix\030\003 " +
-      "\001(\010\022\035\n\025last_update_time_unix\030\004 \001(\010\022\020\n\010di" +
-      "stance\030\005 \001(\010\022\021\n\tcertainty\030\006 \001(\010\022\r\n\005score" +
-      "\030\007 \001(\010\022\025\n\rexplain_score\030\010 \001(\010\022\025\n\ris_cons" +
-      "istent\030\t \001(\010\"\253\001\n\021PropertiesRequest\022\032\n\022no" +
-      "n_ref_properties\030\001 \003(\t\0229\n\016ref_properties" +
-      "\030\002 \003(\0132!.weaviate.v1.RefPropertiesReques" +
-      "t\022?\n\021object_properties\030\003 \003(\0132$.weaviate." +
-      "v1.ObjectPropertiesRequest\"\213\001\n\027ObjectPro" +
-      "pertiesRequest\022\021\n\tprop_name\030\001 \001(\t\022\034\n\024pri" +
-      "mitive_properties\030\002 \003(\t\022?\n\021object_proper" +
+      "le/protobuf/struct.proto\032\rv1/base.proto\032" +
+      "\023v1/properties.proto\"\345\010\n\rSearchRequest\022\022" +
+      "\n\ncollection\030\001 \001(\t\022\016\n\006tenant\030\n \001(\t\022=\n\021co" +
+      "nsistency_level\030\013 \001(\0162\035.weaviate.v1.Cons" +
+      "istencyLevelH\000\210\001\001\0227\n\nproperties\030\024 \001(\0132\036." +
+      "weaviate.v1.PropertiesRequestH\001\210\001\001\0223\n\010me" +
+      "tadata\030\025 \001(\0132\034.weaviate.v1.MetadataReque" +
+      "stH\002\210\001\001\022+\n\010group_by\030\026 \001(\0132\024.weaviate.v1." +
+      "GroupByH\003\210\001\001\022\r\n\005limit\030\036 \001(\r\022\016\n\006offset\030\037 " +
+      "\001(\r\022\017\n\007autocut\030  \001(\r\022\r\n\005after\030! \001(\t\022$\n\007s" +
+      "ort_by\030\" \003(\0132\023.weaviate.v1.SortBy\022*\n\007fil" +
+      "ters\030( \001(\0132\024.weaviate.v1.FiltersH\004\210\001\001\022/\n" +
+      "\rhybrid_search\030) \001(\0132\023.weaviate.v1.Hybri" +
+      "dH\005\210\001\001\022+\n\013bm25_search\030* \001(\0132\021.weaviate.v" +
+      "1.BM25H\006\210\001\001\0221\n\013near_vector\030+ \001(\0132\027.weavi" +
+      "ate.v1.NearVectorH\007\210\001\001\0221\n\013near_object\030, " +
+      "\001(\0132\027.weaviate.v1.NearObjectH\010\210\001\001\0223\n\tnea" +
+      "r_text\030- \001(\0132\033.weaviate.v1.NearTextSearc" +
+      "hH\t\210\001\001\0225\n\nnear_image\030. \001(\0132\034.weaviate.v1" +
+      ".NearImageSearchH\n\210\001\001\0225\n\nnear_audio\030/ \001(" +
+      "\0132\034.weaviate.v1.NearAudioSearchH\013\210\001\001\0225\n\n" +
+      "near_video\0300 \001(\0132\034.weaviate.v1.NearVideo" +
+      "SearchH\014\210\001\001\0226\n\ngenerative\030< \001(\0132\035.weavia" +
+      "te.v1.GenerativeSearchH\r\210\001\001\022\030\n\014uses_123_" +
+      "api\030d \001(\010B\002\030\001B\024\n\022_consistency_levelB\r\n\013_" +
+      "propertiesB\013\n\t_metadataB\013\n\t_group_byB\n\n\010" +
+      "_filtersB\020\n\016_hybrid_searchB\016\n\014_bm25_sear" +
+      "chB\016\n\014_near_vectorB\016\n\014_near_objectB\014\n\n_n" +
+      "ear_textB\r\n\013_near_imageB\r\n\013_near_audioB\r" +
+      "\n\013_near_videoB\r\n\013_generative\"L\n\007GroupBy\022" +
+      "\014\n\004path\030\001 \003(\t\022\030\n\020number_of_groups\030\002 \001(\005\022" +
+      "\031\n\021objects_per_group\030\003 \001(\005\")\n\006SortBy\022\021\n\t" +
+      "ascending\030\001 \001(\010\022\014\n\004path\030\002 \003(\t\"m\n\020Generat" +
+      "iveSearch\022\036\n\026single_response_prompt\030\001 \001(" +
+      "\t\022\035\n\025grouped_response_task\030\002 \001(\t\022\032\n\022grou" +
+      "ped_properties\030\003 \003(\t\"\033\n\tTextArray\022\016\n\006val" +
+      "ues\030\001 \003(\t\"\032\n\010IntArray\022\016\n\006values\030\001 \003(\003\"\035\n" +
+      "\013NumberArray\022\016\n\006values\030\001 \003(\001\"\036\n\014BooleanA" +
+      "rray\022\016\n\006values\030\001 \003(\010\"\315\006\n\007Filters\022/\n\010oper" +
+      "ator\030\001 \001(\0162\035.weaviate.v1.Filters.Operato" +
+      "r\022\n\n\002on\030\002 \003(\t\022%\n\007filters\030\003 \003(\0132\024.weaviat" +
+      "e.v1.Filters\022\024\n\nvalue_text\030\004 \001(\tH\000\022\023\n\tva" +
+      "lue_int\030\005 \001(\003H\000\022\027\n\rvalue_boolean\030\006 \001(\010H\000" +
+      "\022\026\n\014value_number\030\007 \001(\001H\000\0222\n\020value_text_a" +
+      "rray\030\t \001(\0132\026.weaviate.v1.TextArrayH\000\0220\n\017" +
+      "value_int_array\030\n \001(\0132\025.weaviate.v1.IntA" +
+      "rrayH\000\0228\n\023value_boolean_array\030\013 \001(\0132\031.we" +
+      "aviate.v1.BooleanArrayH\000\0226\n\022value_number" +
+      "_array\030\014 \001(\0132\030.weaviate.v1.NumberArrayH\000" +
+      "\0226\n\tvalue_geo\030\r \001(\0132!.weaviate.v1.GeoCoo" +
+      "rdinatesFilterH\000\"\343\002\n\010Operator\022\030\n\024OPERATO" +
+      "R_UNSPECIFIED\020\000\022\022\n\016OPERATOR_EQUAL\020\001\022\026\n\022O" +
+      "PERATOR_NOT_EQUAL\020\002\022\031\n\025OPERATOR_GREATER_" +
+      "THAN\020\003\022\037\n\033OPERATOR_GREATER_THAN_EQUAL\020\004\022" +
+      "\026\n\022OPERATOR_LESS_THAN\020\005\022\034\n\030OPERATOR_LESS" +
+      "_THAN_EQUAL\020\006\022\020\n\014OPERATOR_AND\020\007\022\017\n\013OPERA" +
+      "TOR_OR\020\010\022\035\n\031OPERATOR_WITHIN_GEO_RANGE\020\t\022" +
+      "\021\n\rOPERATOR_LIKE\020\n\022\024\n\020OPERATOR_IS_NULL\020\013" +
+      "\022\031\n\025OPERATOR_CONTAINS_ANY\020\014\022\031\n\025OPERATOR_" +
+      "CONTAINS_ALL\020\rB\014\n\ntest_value\"M\n\024GeoCoord" +
+      "inatesFilter\022\020\n\010latitude\030\001 \001(\002\022\021\n\tlongit" +
+      "ude\030\002 \001(\002\022\020\n\010distance\030\003 \001(\002\"\314\001\n\017Metadata" +
+      "Request\022\014\n\004uuid\030\001 \001(\010\022\016\n\006vector\030\002 \001(\010\022\032\n" +
+      "\022creation_time_unix\030\003 \001(\010\022\035\n\025last_update" +
+      "_time_unix\030\004 \001(\010\022\020\n\010distance\030\005 \001(\010\022\021\n\tce" +
+      "rtainty\030\006 \001(\010\022\r\n\005score\030\007 \001(\010\022\025\n\rexplain_" +
+      "score\030\010 \001(\010\022\025\n\ris_consistent\030\t \001(\010\"\321\001\n\021P" +
+      "ropertiesRequest\022\032\n\022non_ref_properties\030\001" +
+      " \003(\t\0229\n\016ref_properties\030\002 \003(\0132!.weaviate." +
+      "v1.RefPropertiesRequest\022?\n\021object_proper" +
       "ties\030\003 \003(\0132$.weaviate.v1.ObjectPropertie" +
-      "sRequest\"\370\001\n\006Hybrid\022\r\n\005query\030\001 \001(\t\022\022\n\npr" +
-      "operties\030\002 \003(\t\022\016\n\006vector\030\003 \003(\002\022\r\n\005alpha\030" +
-      "\004 \001(\002\0223\n\013fusion_type\030\005 \001(\0162\036.weaviate.v1" +
-      ".Hybrid.FusionType\022\024\n\014vector_bytes\030\006 \001(\014" +
-      "\"a\n\nFusionType\022\033\n\027FUSION_TYPE_UNSPECIFIE" +
-      "D\020\000\022\026\n\022FUSION_TYPE_RANKED\020\001\022\036\n\032FUSION_TY" +
-      "PE_RELATIVE_SCORE\020\002\"\255\002\n\016NearTextSearch\022\r" +
-      "\n\005query\030\001 \003(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n" +
-      "\010distance\030\003 \001(\001H\001\210\001\001\0226\n\007move_to\030\004 \001(\0132 ." +
-      "weaviate.v1.NearTextSearch.MoveH\002\210\001\001\0228\n\t" +
-      "move_away\030\005 \001(\0132 .weaviate.v1.NearTextSe" +
-      "arch.MoveH\003\210\001\001\0326\n\004Move\022\r\n\005force\030\001 \001(\002\022\020\n" +
-      "\010concepts\030\002 \003(\t\022\r\n\005uuids\030\003 \003(\tB\014\n\n_certa" +
-      "intyB\013\n\t_distanceB\n\n\010_move_toB\014\n\n_move_a" +
-      "way\"j\n\017NearImageSearch\022\r\n\005image\030\001 \001(\t\022\026\n" +
+      "sRequest\022$\n\034return_all_nonref_properties" +
+      "\030\013 \001(\010\"\213\001\n\027ObjectPropertiesRequest\022\021\n\tpr" +
+      "op_name\030\001 \001(\t\022\034\n\024primitive_properties\030\002 " +
+      "\003(\t\022?\n\021object_properties\030\003 \003(\0132$.weaviat" +
+      "e.v1.ObjectPropertiesRequest\"\374\001\n\006Hybrid\022" +
+      "\r\n\005query\030\001 \001(\t\022\022\n\nproperties\030\002 \003(\t\022\022\n\006ve" +
+      "ctor\030\003 \003(\002B\002\030\001\022\r\n\005alpha\030\004 \001(\002\0223\n\013fusion_" +
+      "type\030\005 \001(\0162\036.weaviate.v1.Hybrid.FusionTy" +
+      "pe\022\024\n\014vector_bytes\030\006 \001(\014\"a\n\nFusionType\022\033" +
+      "\n\027FUSION_TYPE_UNSPECIFIED\020\000\022\026\n\022FUSION_TY" +
+      "PE_RANKED\020\001\022\036\n\032FUSION_TYPE_RELATIVE_SCOR" +
+      "E\020\002\"\255\002\n\016NearTextSearch\022\r\n\005query\030\001 \003(\t\022\026\n" +
       "\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H" +
-      "\001\210\001\001B\014\n\n_certaintyB\013\n\t_distance\"j\n\017NearA" +
-      "udioSearch\022\r\n\005audio\030\001 \001(\t\022\026\n\tcertainty\030\002" +
-      " \001(\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001B\014\n\n_cer" +
-      "taintyB\013\n\t_distance\"j\n\017NearVideoSearch\022\r" +
-      "\n\005video\030\001 \001(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n" +
-      "\010distance\030\003 \001(\001H\001\210\001\001B\014\n\n_certaintyB\013\n\t_d" +
-      "istance\")\n\004BM25\022\r\n\005query\030\001 \001(\t\022\022\n\nproper" +
-      "ties\030\002 \003(\t\"\261\001\n\024RefPropertiesRequest\022\032\n\022r" +
-      "eference_property\030\001 \001(\t\0222\n\nproperties\030\002 " +
-      "\001(\0132\036.weaviate.v1.PropertiesRequest\022.\n\010m" +
-      "etadata\030\003 \001(\0132\034.weaviate.v1.MetadataRequ" +
-      "est\022\031\n\021target_collection\030\004 \001(\t\"|\n\nNearVe" +
-      "ctor\022\016\n\006vector\030\001 \003(\002\022\026\n\tcertainty\030\002 \001(\001H" +
-      "\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001\022\024\n\014vector_by" +
-      "tes\030\004 \001(\014B\014\n\n_certaintyB\013\n\t_distance\"b\n\n" +
-      "NearObject\022\n\n\002id\030\001 \001(\t\022\026\n\tcertainty\030\002 \001(" +
-      "\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001B\014\n\n_certai" +
-      "ntyB\013\n\t_distance\"\303\001\n\013SearchReply\022\014\n\004took" +
-      "\030\001 \001(\002\022*\n\007results\030\002 \003(\0132\031.weaviate.v1.Se" +
-      "archResult\022&\n\031generative_grouped_result\030" +
-      "\003 \001(\tH\000\210\001\001\0224\n\020group_by_results\030\004 \003(\0132\032.w" +
-      "eaviate.v1.GroupByResultB\034\n\032_generative_" +
-      "grouped_result\"\220\001\n\rGroupByResult\022\014\n\004name" +
-      "\030\001 \001(\t\022\024\n\014min_distance\030\002 \001(\002\022\024\n\014max_dist" +
-      "ance\030\003 \001(\002\022\031\n\021number_of_objects\030\004 \001(\003\022*\n" +
-      "\007objects\030\005 \003(\0132\031.weaviate.v1.SearchResul" +
-      "t\"p\n\014SearchResult\0221\n\nproperties\030\001 \001(\0132\035." +
-      "weaviate.v1.PropertiesResult\022-\n\010metadata" +
-      "\030\002 \001(\0132\033.weaviate.v1.MetadataResult\"\373\003\n\016" +
-      "MetadataResult\022\n\n\002id\030\001 \001(\t\022\016\n\006vector\030\002 \003" +
-      "(\002\022\032\n\022creation_time_unix\030\003 \001(\003\022\"\n\032creati" +
-      "on_time_unix_present\030\004 \001(\010\022\035\n\025last_updat" +
-      "e_time_unix\030\005 \001(\003\022%\n\035last_update_time_un" +
-      "ix_present\030\006 \001(\010\022\020\n\010distance\030\007 \001(\002\022\030\n\020di" +
-      "stance_present\030\010 \001(\010\022\021\n\tcertainty\030\t \001(\002\022" +
-      "\031\n\021certainty_present\030\n \001(\010\022\r\n\005score\030\013 \001(" +
-      "\002\022\025\n\rscore_present\030\014 \001(\010\022\025\n\rexplain_scor" +
-      "e\030\r \001(\t\022\035\n\025explain_score_present\030\016 \001(\010\022\032" +
-      "\n\ris_consistent\030\017 \001(\010H\000\210\001\001\022\022\n\ngenerative" +
-      "\030\020 \001(\t\022\032\n\022generative_present\030\021 \001(\010\022\035\n\025is" +
-      "_consistent_present\030\022 \001(\010\022\024\n\014vector_byte" +
-      "s\030\023 \001(\014B\020\n\016_is_consistent\"\321\004\n\020Properties" +
-      "Result\0223\n\022non_ref_properties\030\001 \001(\0132\027.goo" +
-      "gle.protobuf.Struct\0223\n\tref_props\030\002 \003(\0132 " +
-      ".weaviate.v1.RefPropertiesResult\022\031\n\021targ" +
-      "et_collection\030\003 \001(\t\022-\n\010metadata\030\004 \001(\0132\033." +
-      "weaviate.v1.MetadataResult\022C\n\027number_arr" +
-      "ay_properties\030\005 \003(\0132\".weaviate.v1.Number" +
-      "ArrayProperties\022=\n\024int_array_properties\030" +
-      "\006 \003(\0132\037.weaviate.v1.IntArrayProperties\022?" +
-      "\n\025text_array_properties\030\007 \003(\0132 .weaviate" +
-      ".v1.TextArrayProperties\022E\n\030boolean_array" +
-      "_properties\030\010 \003(\0132#.weaviate.v1.BooleanA" +
-      "rrayProperties\0228\n\021object_properties\030\t \003(" +
-      "\0132\035.weaviate.v1.ObjectProperties\022C\n\027obje" +
-      "ct_array_properties\030\n \003(\0132\".weaviate.v1." +
-      "ObjectArrayProperties\"[\n\023RefPropertiesRe" +
-      "sult\0221\n\nproperties\030\001 \003(\0132\035.weaviate.v1.P" +
-      "ropertiesResult\022\021\n\tprop_name\030\002 \001(\tBs\n#io" +
-      ".weaviate.client.grpc.protocol.v1B\026Weavi" +
-      "ateProtoSearchGetZ4github.com/weaviate/w" +
-      "eaviate/grpc/generated;protocolb\006proto3"
+      "\001\210\001\001\0226\n\007move_to\030\004 \001(\0132 .weaviate.v1.Near" +
+      "TextSearch.MoveH\002\210\001\001\0228\n\tmove_away\030\005 \001(\0132" +
+      " .weaviate.v1.NearTextSearch.MoveH\003\210\001\001\0326" +
+      "\n\004Move\022\r\n\005force\030\001 \001(\002\022\020\n\010concepts\030\002 \003(\t\022" +
+      "\r\n\005uuids\030\003 \003(\tB\014\n\n_certaintyB\013\n\t_distanc" +
+      "eB\n\n\010_move_toB\014\n\n_move_away\"j\n\017NearImage" +
+      "Search\022\r\n\005image\030\001 \001(\t\022\026\n\tcertainty\030\002 \001(\001" +
+      "H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001B\014\n\n_certain" +
+      "tyB\013\n\t_distance\"j\n\017NearAudioSearch\022\r\n\005au" +
+      "dio\030\001 \001(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n\010dis" +
+      "tance\030\003 \001(\001H\001\210\001\001B\014\n\n_certaintyB\013\n\t_dista" +
+      "nce\"j\n\017NearVideoSearch\022\r\n\005video\030\001 \001(\t\022\026\n" +
+      "\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H" +
+      "\001\210\001\001B\014\n\n_certaintyB\013\n\t_distance\")\n\004BM25\022" +
+      "\r\n\005query\030\001 \001(\t\022\022\n\nproperties\030\002 \003(\t\"\261\001\n\024R" +
+      "efPropertiesRequest\022\032\n\022reference_propert" +
+      "y\030\001 \001(\t\0222\n\nproperties\030\002 \001(\0132\036.weaviate.v" +
+      "1.PropertiesRequest\022.\n\010metadata\030\003 \001(\0132\034." +
+      "weaviate.v1.MetadataRequest\022\031\n\021target_co" +
+      "llection\030\004 \001(\t\"\200\001\n\nNearVector\022\022\n\006vector\030" +
+      "\001 \003(\002B\002\030\001\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n\010dis" +
+      "tance\030\003 \001(\001H\001\210\001\001\022\024\n\014vector_bytes\030\004 \001(\014B\014" +
+      "\n\n_certaintyB\013\n\t_distance\"b\n\nNearObject\022" +
+      "\n\n\002id\030\001 \001(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n\010d" +
+      "istance\030\003 \001(\001H\001\210\001\001B\014\n\n_certaintyB\013\n\t_dis" +
+      "tance\"\303\001\n\013SearchReply\022\014\n\004took\030\001 \001(\002\022*\n\007r" +
+      "esults\030\002 \003(\0132\031.weaviate.v1.SearchResult\022" +
+      "&\n\031generative_grouped_result\030\003 \001(\tH\000\210\001\001\022" +
+      "4\n\020group_by_results\030\004 \003(\0132\032.weaviate.v1." +
+      "GroupByResultB\034\n\032_generative_grouped_res" +
+      "ult\"\220\001\n\rGroupByResult\022\014\n\004name\030\001 \001(\t\022\024\n\014m" +
+      "in_distance\030\002 \001(\002\022\024\n\014max_distance\030\003 \001(\002\022" +
+      "\031\n\021number_of_objects\030\004 \001(\003\022*\n\007objects\030\005 " +
+      "\003(\0132\031.weaviate.v1.SearchResult\"p\n\014Search" +
+      "Result\0221\n\nproperties\030\001 \001(\0132\035.weaviate.v1" +
+      ".PropertiesResult\022-\n\010metadata\030\002 \001(\0132\033.we" +
+      "aviate.v1.MetadataResult\"\224\004\n\016MetadataRes" +
+      "ult\022\n\n\002id\030\001 \001(\t\022\022\n\006vector\030\002 \003(\002B\002\030\001\022\032\n\022c" +
+      "reation_time_unix\030\003 \001(\003\022\"\n\032creation_time" +
+      "_unix_present\030\004 \001(\010\022\035\n\025last_update_time_" +
+      "unix\030\005 \001(\003\022%\n\035last_update_time_unix_pres" +
+      "ent\030\006 \001(\010\022\020\n\010distance\030\007 \001(\002\022\030\n\020distance_" +
+      "present\030\010 \001(\010\022\021\n\tcertainty\030\t \001(\002\022\031\n\021cert" +
+      "ainty_present\030\n \001(\010\022\r\n\005score\030\013 \001(\002\022\025\n\rsc" +
+      "ore_present\030\014 \001(\010\022\025\n\rexplain_score\030\r \001(\t" +
+      "\022\035\n\025explain_score_present\030\016 \001(\010\022\032\n\ris_co" +
+      "nsistent\030\017 \001(\010H\000\210\001\001\022\022\n\ngenerative\030\020 \001(\t\022" +
+      "\032\n\022generative_present\030\021 \001(\010\022\035\n\025is_consis" +
+      "tent_present\030\022 \001(\010\022\024\n\014vector_bytes\030\023 \001(\014" +
+      "\022\023\n\013id_as_bytes\030\024 \001(\014B\020\n\016_is_consistent\"" +
+      "\235\005\n\020PropertiesResult\0227\n\022non_ref_properti" +
+      "es\030\001 \001(\0132\027.google.protobuf.StructB\002\030\001\0223\n" +
+      "\tref_props\030\002 \003(\0132 .weaviate.v1.RefProper" +
+      "tiesResult\022\031\n\021target_collection\030\003 \001(\t\022-\n" +
+      "\010metadata\030\004 \001(\0132\033.weaviate.v1.MetadataRe" +
+      "sult\022G\n\027number_array_properties\030\005 \003(\0132\"." +
+      "weaviate.v1.NumberArrayPropertiesB\002\030\001\022A\n" +
+      "\024int_array_properties\030\006 \003(\0132\037.weaviate.v" +
+      "1.IntArrayPropertiesB\002\030\001\022C\n\025text_array_p" +
+      "roperties\030\007 \003(\0132 .weaviate.v1.TextArrayP" +
+      "ropertiesB\002\030\001\022I\n\030boolean_array_propertie" +
+      "s\030\010 \003(\0132#.weaviate.v1.BooleanArrayProper" +
+      "tiesB\002\030\001\022<\n\021object_properties\030\t \003(\0132\035.we" +
+      "aviate.v1.ObjectPropertiesB\002\030\001\022G\n\027object" +
+      "_array_properties\030\n \003(\0132\".weaviate.v1.Ob" +
+      "jectArrayPropertiesB\002\030\001\022.\n\rnon_ref_props" +
+      "\030\013 \001(\0132\027.weaviate.v1.Properties\"[\n\023RefPr" +
+      "opertiesResult\0221\n\nproperties\030\001 \003(\0132\035.wea" +
+      "viate.v1.PropertiesResult\022\021\n\tprop_name\030\002" +
+      " \001(\tBs\n#io.weaviate.client.grpc.protocol" +
+      ".v1B\026WeaviateProtoSearchGetZ4github.com/" +
+      "weaviate/weaviate/grpc/generated;protoco" +
+      "lb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.google.protobuf.StructProto.getDescriptor(),
           io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.getDescriptor(),
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.getDescriptor(),
         });
     internal_static_weaviate_v1_SearchRequest_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_weaviate_v1_SearchRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_SearchRequest_descriptor,
-        new java.lang.String[] { "Collection", "Tenant", "ConsistencyLevel", "Properties", "Metadata", "GroupBy", "Limit", "Offset", "Autocut", "After", "SortBy", "Filters", "HybridSearch", "Bm25Search", "NearVector", "NearObject", "NearText", "NearImage", "NearAudio", "NearVideo", "Generative", "ConsistencyLevel", "Properties", "Metadata", "GroupBy", "Filters", "HybridSearch", "Bm25Search", "NearVector", "NearObject", "NearText", "NearImage", "NearAudio", "NearVideo", "Generative", });
+        new java.lang.String[] { "Collection", "Tenant", "ConsistencyLevel", "Properties", "Metadata", "GroupBy", "Limit", "Offset", "Autocut", "After", "SortBy", "Filters", "HybridSearch", "Bm25Search", "NearVector", "NearObject", "NearText", "NearImage", "NearAudio", "NearVideo", "Generative", "Uses123Api", "ConsistencyLevel", "Properties", "Metadata", "GroupBy", "Filters", "HybridSearch", "Bm25Search", "NearVector", "NearObject", "NearText", "NearImage", "NearAudio", "NearVideo", "Generative", });
     internal_static_weaviate_v1_GroupBy_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_weaviate_v1_GroupBy_fieldAccessorTable = new
@@ -35838,33 +37221,39 @@ public final class WeaviateProtoSearchGet {
     internal_static_weaviate_v1_Filters_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_Filters_descriptor,
-        new java.lang.String[] { "Operator", "On", "Filters", "ValueText", "ValueInt", "ValueBoolean", "ValueNumber", "ValueTextArray", "ValueIntArray", "ValueBooleanArray", "ValueNumberArray", "TestValue", });
-    internal_static_weaviate_v1_MetadataRequest_descriptor =
+        new java.lang.String[] { "Operator", "On", "Filters", "ValueText", "ValueInt", "ValueBoolean", "ValueNumber", "ValueTextArray", "ValueIntArray", "ValueBooleanArray", "ValueNumberArray", "ValueGeo", "TestValue", });
+    internal_static_weaviate_v1_GeoCoordinatesFilter_descriptor =
       getDescriptor().getMessageTypes().get(9);
+    internal_static_weaviate_v1_GeoCoordinatesFilter_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_weaviate_v1_GeoCoordinatesFilter_descriptor,
+        new java.lang.String[] { "Latitude", "Longitude", "Distance", });
+    internal_static_weaviate_v1_MetadataRequest_descriptor =
+      getDescriptor().getMessageTypes().get(10);
     internal_static_weaviate_v1_MetadataRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_MetadataRequest_descriptor,
         new java.lang.String[] { "Uuid", "Vector", "CreationTimeUnix", "LastUpdateTimeUnix", "Distance", "Certainty", "Score", "ExplainScore", "IsConsistent", });
     internal_static_weaviate_v1_PropertiesRequest_descriptor =
-      getDescriptor().getMessageTypes().get(10);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_weaviate_v1_PropertiesRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_PropertiesRequest_descriptor,
-        new java.lang.String[] { "NonRefProperties", "RefProperties", "ObjectProperties", });
+        new java.lang.String[] { "NonRefProperties", "RefProperties", "ObjectProperties", "ReturnAllNonrefProperties", });
     internal_static_weaviate_v1_ObjectPropertiesRequest_descriptor =
-      getDescriptor().getMessageTypes().get(11);
+      getDescriptor().getMessageTypes().get(12);
     internal_static_weaviate_v1_ObjectPropertiesRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_ObjectPropertiesRequest_descriptor,
         new java.lang.String[] { "PropName", "PrimitiveProperties", "ObjectProperties", });
     internal_static_weaviate_v1_Hybrid_descriptor =
-      getDescriptor().getMessageTypes().get(12);
+      getDescriptor().getMessageTypes().get(13);
     internal_static_weaviate_v1_Hybrid_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_Hybrid_descriptor,
         new java.lang.String[] { "Query", "Properties", "Vector", "Alpha", "FusionType", "VectorBytes", });
     internal_static_weaviate_v1_NearTextSearch_descriptor =
-      getDescriptor().getMessageTypes().get(13);
+      getDescriptor().getMessageTypes().get(14);
     internal_static_weaviate_v1_NearTextSearch_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_NearTextSearch_descriptor,
@@ -35876,85 +37265,86 @@ public final class WeaviateProtoSearchGet {
         internal_static_weaviate_v1_NearTextSearch_Move_descriptor,
         new java.lang.String[] { "Force", "Concepts", "Uuids", });
     internal_static_weaviate_v1_NearImageSearch_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_weaviate_v1_NearImageSearch_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_NearImageSearch_descriptor,
         new java.lang.String[] { "Image", "Certainty", "Distance", "Certainty", "Distance", });
     internal_static_weaviate_v1_NearAudioSearch_descriptor =
-      getDescriptor().getMessageTypes().get(15);
+      getDescriptor().getMessageTypes().get(16);
     internal_static_weaviate_v1_NearAudioSearch_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_NearAudioSearch_descriptor,
         new java.lang.String[] { "Audio", "Certainty", "Distance", "Certainty", "Distance", });
     internal_static_weaviate_v1_NearVideoSearch_descriptor =
-      getDescriptor().getMessageTypes().get(16);
+      getDescriptor().getMessageTypes().get(17);
     internal_static_weaviate_v1_NearVideoSearch_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_NearVideoSearch_descriptor,
         new java.lang.String[] { "Video", "Certainty", "Distance", "Certainty", "Distance", });
     internal_static_weaviate_v1_BM25_descriptor =
-      getDescriptor().getMessageTypes().get(17);
+      getDescriptor().getMessageTypes().get(18);
     internal_static_weaviate_v1_BM25_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_BM25_descriptor,
         new java.lang.String[] { "Query", "Properties", });
     internal_static_weaviate_v1_RefPropertiesRequest_descriptor =
-      getDescriptor().getMessageTypes().get(18);
+      getDescriptor().getMessageTypes().get(19);
     internal_static_weaviate_v1_RefPropertiesRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_RefPropertiesRequest_descriptor,
         new java.lang.String[] { "ReferenceProperty", "Properties", "Metadata", "TargetCollection", });
     internal_static_weaviate_v1_NearVector_descriptor =
-      getDescriptor().getMessageTypes().get(19);
+      getDescriptor().getMessageTypes().get(20);
     internal_static_weaviate_v1_NearVector_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_NearVector_descriptor,
         new java.lang.String[] { "Vector", "Certainty", "Distance", "VectorBytes", "Certainty", "Distance", });
     internal_static_weaviate_v1_NearObject_descriptor =
-      getDescriptor().getMessageTypes().get(20);
+      getDescriptor().getMessageTypes().get(21);
     internal_static_weaviate_v1_NearObject_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_NearObject_descriptor,
         new java.lang.String[] { "Id", "Certainty", "Distance", "Certainty", "Distance", });
     internal_static_weaviate_v1_SearchReply_descriptor =
-      getDescriptor().getMessageTypes().get(21);
+      getDescriptor().getMessageTypes().get(22);
     internal_static_weaviate_v1_SearchReply_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_SearchReply_descriptor,
         new java.lang.String[] { "Took", "Results", "GenerativeGroupedResult", "GroupByResults", "GenerativeGroupedResult", });
     internal_static_weaviate_v1_GroupByResult_descriptor =
-      getDescriptor().getMessageTypes().get(22);
+      getDescriptor().getMessageTypes().get(23);
     internal_static_weaviate_v1_GroupByResult_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_GroupByResult_descriptor,
         new java.lang.String[] { "Name", "MinDistance", "MaxDistance", "NumberOfObjects", "Objects", });
     internal_static_weaviate_v1_SearchResult_descriptor =
-      getDescriptor().getMessageTypes().get(23);
+      getDescriptor().getMessageTypes().get(24);
     internal_static_weaviate_v1_SearchResult_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_SearchResult_descriptor,
         new java.lang.String[] { "Properties", "Metadata", });
     internal_static_weaviate_v1_MetadataResult_descriptor =
-      getDescriptor().getMessageTypes().get(24);
+      getDescriptor().getMessageTypes().get(25);
     internal_static_weaviate_v1_MetadataResult_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_MetadataResult_descriptor,
-        new java.lang.String[] { "Id", "Vector", "CreationTimeUnix", "CreationTimeUnixPresent", "LastUpdateTimeUnix", "LastUpdateTimeUnixPresent", "Distance", "DistancePresent", "Certainty", "CertaintyPresent", "Score", "ScorePresent", "ExplainScore", "ExplainScorePresent", "IsConsistent", "Generative", "GenerativePresent", "IsConsistentPresent", "VectorBytes", "IsConsistent", });
+        new java.lang.String[] { "Id", "Vector", "CreationTimeUnix", "CreationTimeUnixPresent", "LastUpdateTimeUnix", "LastUpdateTimeUnixPresent", "Distance", "DistancePresent", "Certainty", "CertaintyPresent", "Score", "ScorePresent", "ExplainScore", "ExplainScorePresent", "IsConsistent", "Generative", "GenerativePresent", "IsConsistentPresent", "VectorBytes", "IdAsBytes", "IsConsistent", });
     internal_static_weaviate_v1_PropertiesResult_descriptor =
-      getDescriptor().getMessageTypes().get(25);
+      getDescriptor().getMessageTypes().get(26);
     internal_static_weaviate_v1_PropertiesResult_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_PropertiesResult_descriptor,
-        new java.lang.String[] { "NonRefProperties", "RefProps", "TargetCollection", "Metadata", "NumberArrayProperties", "IntArrayProperties", "TextArrayProperties", "BooleanArrayProperties", "ObjectProperties", "ObjectArrayProperties", });
+        new java.lang.String[] { "NonRefProperties", "RefProps", "TargetCollection", "Metadata", "NumberArrayProperties", "IntArrayProperties", "TextArrayProperties", "BooleanArrayProperties", "ObjectProperties", "ObjectArrayProperties", "NonRefProps", });
     internal_static_weaviate_v1_RefPropertiesResult_descriptor =
-      getDescriptor().getMessageTypes().get(26);
+      getDescriptor().getMessageTypes().get(27);
     internal_static_weaviate_v1_RefPropertiesResult_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_RefPropertiesResult_descriptor,
         new java.lang.String[] { "Properties", "PropName", });
     com.google.protobuf.StructProto.getDescriptor();
     io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.getDescriptor();
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

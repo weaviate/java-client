@@ -950,29 +950,35 @@ public final class WeaviateProtoBatch {
      * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
      * </pre>
      *
-     * <code>repeated float vector = 2;</code>
+     * <code>repeated float vector = 2 [deprecated = true];</code>
+     * @deprecated weaviate.v1.BatchObject.vector is deprecated.
+     *     See v1/batch.proto;l=42
      * @return A list containing the vector.
      */
-    java.util.List<java.lang.Float> getVectorList();
+    @java.lang.Deprecated java.util.List<java.lang.Float> getVectorList();
     /**
      * <pre>
      * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
      * </pre>
      *
-     * <code>repeated float vector = 2;</code>
+     * <code>repeated float vector = 2 [deprecated = true];</code>
+     * @deprecated weaviate.v1.BatchObject.vector is deprecated.
+     *     See v1/batch.proto;l=42
      * @return The count of vector.
      */
-    int getVectorCount();
+    @java.lang.Deprecated int getVectorCount();
     /**
      * <pre>
      * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
      * </pre>
      *
-     * <code>repeated float vector = 2;</code>
+     * <code>repeated float vector = 2 [deprecated = true];</code>
+     * @deprecated weaviate.v1.BatchObject.vector is deprecated.
+     *     See v1/batch.proto;l=42
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
-    float getVector(int index);
+    @java.lang.Deprecated float getVector(int index);
 
     /**
      * <code>.weaviate.v1.BatchObject.Properties properties = 3;</code>
@@ -6404,11 +6410,13 @@ public final class WeaviateProtoBatch {
      * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
      * </pre>
      *
-     * <code>repeated float vector = 2;</code>
+     * <code>repeated float vector = 2 [deprecated = true];</code>
+     * @deprecated weaviate.v1.BatchObject.vector is deprecated.
+     *     See v1/batch.proto;l=42
      * @return A list containing the vector.
      */
     @java.lang.Override
-    public java.util.List<java.lang.Float>
+    @java.lang.Deprecated public java.util.List<java.lang.Float>
         getVectorList() {
       return vector_;
     }
@@ -6417,10 +6425,12 @@ public final class WeaviateProtoBatch {
      * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
      * </pre>
      *
-     * <code>repeated float vector = 2;</code>
+     * <code>repeated float vector = 2 [deprecated = true];</code>
+     * @deprecated weaviate.v1.BatchObject.vector is deprecated.
+     *     See v1/batch.proto;l=42
      * @return The count of vector.
      */
-    public int getVectorCount() {
+    @java.lang.Deprecated public int getVectorCount() {
       return vector_.size();
     }
     /**
@@ -6428,11 +6438,13 @@ public final class WeaviateProtoBatch {
      * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
      * </pre>
      *
-     * <code>repeated float vector = 2;</code>
+     * <code>repeated float vector = 2 [deprecated = true];</code>
+     * @deprecated weaviate.v1.BatchObject.vector is deprecated.
+     *     See v1/batch.proto;l=42
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
-    public float getVector(int index) {
+    @java.lang.Deprecated public float getVector(int index) {
       return vector_.getFloat(index);
     }
     private int vectorMemoizedSerializedSize = -1;
@@ -7142,10 +7154,12 @@ public final class WeaviateProtoBatch {
        * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
        * </pre>
        *
-       * <code>repeated float vector = 2;</code>
+       * <code>repeated float vector = 2 [deprecated = true];</code>
+       * @deprecated weaviate.v1.BatchObject.vector is deprecated.
+       *     See v1/batch.proto;l=42
        * @return A list containing the vector.
        */
-      public java.util.List<java.lang.Float>
+      @java.lang.Deprecated public java.util.List<java.lang.Float>
           getVectorList() {
         vector_.makeImmutable();
         return vector_;
@@ -7155,10 +7169,12 @@ public final class WeaviateProtoBatch {
        * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
        * </pre>
        *
-       * <code>repeated float vector = 2;</code>
+       * <code>repeated float vector = 2 [deprecated = true];</code>
+       * @deprecated weaviate.v1.BatchObject.vector is deprecated.
+       *     See v1/batch.proto;l=42
        * @return The count of vector.
        */
-      public int getVectorCount() {
+      @java.lang.Deprecated public int getVectorCount() {
         return vector_.size();
       }
       /**
@@ -7166,11 +7182,13 @@ public final class WeaviateProtoBatch {
        * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
        * </pre>
        *
-       * <code>repeated float vector = 2;</code>
+       * <code>repeated float vector = 2 [deprecated = true];</code>
+       * @deprecated weaviate.v1.BatchObject.vector is deprecated.
+       *     See v1/batch.proto;l=42
        * @param index The index of the element to return.
        * @return The vector at the given index.
        */
-      public float getVector(int index) {
+      @java.lang.Deprecated public float getVector(int index) {
         return vector_.getFloat(index);
       }
       /**
@@ -7178,12 +7196,14 @@ public final class WeaviateProtoBatch {
        * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
        * </pre>
        *
-       * <code>repeated float vector = 2;</code>
+       * <code>repeated float vector = 2 [deprecated = true];</code>
+       * @deprecated weaviate.v1.BatchObject.vector is deprecated.
+       *     See v1/batch.proto;l=42
        * @param index The index to set the value at.
        * @param value The vector to set.
        * @return This builder for chaining.
        */
-      public Builder setVector(
+      @java.lang.Deprecated public Builder setVector(
           int index, float value) {
 
         ensureVectorIsMutable();
@@ -7197,11 +7217,13 @@ public final class WeaviateProtoBatch {
        * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
        * </pre>
        *
-       * <code>repeated float vector = 2;</code>
+       * <code>repeated float vector = 2 [deprecated = true];</code>
+       * @deprecated weaviate.v1.BatchObject.vector is deprecated.
+       *     See v1/batch.proto;l=42
        * @param value The vector to add.
        * @return This builder for chaining.
        */
-      public Builder addVector(float value) {
+      @java.lang.Deprecated public Builder addVector(float value) {
 
         ensureVectorIsMutable();
         vector_.addFloat(value);
@@ -7214,11 +7236,13 @@ public final class WeaviateProtoBatch {
        * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
        * </pre>
        *
-       * <code>repeated float vector = 2;</code>
+       * <code>repeated float vector = 2 [deprecated = true];</code>
+       * @deprecated weaviate.v1.BatchObject.vector is deprecated.
+       *     See v1/batch.proto;l=42
        * @param values The vector to add.
        * @return This builder for chaining.
        */
-      public Builder addAllVector(
+      @java.lang.Deprecated public Builder addAllVector(
           java.lang.Iterable<? extends java.lang.Float> values) {
         ensureVectorIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -7232,10 +7256,12 @@ public final class WeaviateProtoBatch {
        * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
        * </pre>
        *
-       * <code>repeated float vector = 2;</code>
+       * <code>repeated float vector = 2 [deprecated = true];</code>
+       * @deprecated weaviate.v1.BatchObject.vector is deprecated.
+       *     See v1/batch.proto;l=42
        * @return This builder for chaining.
        */
-      public Builder clearVector() {
+      @java.lang.Deprecated public Builder clearVector() {
         vector_ = emptyFloatList();
         bitField0_ = (bitField0_ & ~0x00000002);
         onChanged();
@@ -9131,37 +9157,37 @@ public final class WeaviateProtoBatch {
       "atchObjectsRequest\022)\n\007objects\030\001 \003(\0132\030.we" +
       "aviate.v1.BatchObject\022=\n\021consistency_lev" +
       "el\030\002 \001(\0162\035.weaviate.v1.ConsistencyLevelH" +
-      "\000\210\001\001B\024\n\022_consistency_level\"\231\007\n\013BatchObje" +
-      "ct\022\014\n\004uuid\030\001 \001(\t\022\016\n\006vector\030\002 \003(\002\0227\n\nprop" +
-      "erties\030\003 \001(\0132#.weaviate.v1.BatchObject.P" +
-      "roperties\022\022\n\ncollection\030\004 \001(\t\022\016\n\006tenant\030" +
-      "\005 \001(\t\022\024\n\014vector_bytes\030\006 \001(\014\032\352\004\n\nProperti" +
-      "es\0223\n\022non_ref_properties\030\001 \001(\0132\027.google." +
-      "protobuf.Struct\022N\n\027single_target_ref_pro" +
-      "ps\030\002 \003(\0132-.weaviate.v1.BatchObject.Singl" +
-      "eTargetRefProps\022L\n\026multi_target_ref_prop" +
-      "s\030\003 \003(\0132,.weaviate.v1.BatchObject.MultiT" +
-      "argetRefProps\022C\n\027number_array_properties" +
-      "\030\004 \003(\0132\".weaviate.v1.NumberArrayProperti" +
-      "es\022=\n\024int_array_properties\030\005 \003(\0132\037.weavi" +
-      "ate.v1.IntArrayProperties\022?\n\025text_array_" +
-      "properties\030\006 \003(\0132 .weaviate.v1.TextArray" +
-      "Properties\022E\n\030boolean_array_properties\030\007" +
-      " \003(\0132#.weaviate.v1.BooleanArrayPropertie" +
-      "s\0228\n\021object_properties\030\010 \003(\0132\035.weaviate." +
-      "v1.ObjectProperties\022C\n\027object_array_prop" +
-      "erties\030\t \003(\0132\".weaviate.v1.ObjectArrayPr" +
-      "operties\0328\n\024SingleTargetRefProps\022\r\n\005uuid" +
-      "s\030\001 \003(\t\022\021\n\tprop_name\030\002 \001(\t\032R\n\023MultiTarge" +
-      "tRefProps\022\r\n\005uuids\030\001 \003(\t\022\021\n\tprop_name\030\002 " +
-      "\001(\t\022\031\n\021target_collection\030\003 \001(\t\"\210\001\n\021Batch" +
-      "ObjectsReply\022\014\n\004took\030\001 \001(\002\0229\n\006errors\030\002 \003" +
-      "(\0132).weaviate.v1.BatchObjectsReply.Batch" +
-      "Error\032*\n\nBatchError\022\r\n\005index\030\001 \001(\005\022\r\n\005er" +
-      "ror\030\002 \001(\tBo\n#io.weaviate.client.grpc.pro" +
-      "tocol.v1B\022WeaviateProtoBatchZ4github.com" +
-      "/weaviate/weaviate/grpc/generated;protoc" +
-      "olb\006proto3"
+      "\000\210\001\001B\024\n\022_consistency_level\"\235\007\n\013BatchObje" +
+      "ct\022\014\n\004uuid\030\001 \001(\t\022\022\n\006vector\030\002 \003(\002B\002\030\001\0227\n\n" +
+      "properties\030\003 \001(\0132#.weaviate.v1.BatchObje" +
+      "ct.Properties\022\022\n\ncollection\030\004 \001(\t\022\016\n\006ten" +
+      "ant\030\005 \001(\t\022\024\n\014vector_bytes\030\006 \001(\014\032\352\004\n\nProp" +
+      "erties\0223\n\022non_ref_properties\030\001 \001(\0132\027.goo" +
+      "gle.protobuf.Struct\022N\n\027single_target_ref" +
+      "_props\030\002 \003(\0132-.weaviate.v1.BatchObject.S" +
+      "ingleTargetRefProps\022L\n\026multi_target_ref_" +
+      "props\030\003 \003(\0132,.weaviate.v1.BatchObject.Mu" +
+      "ltiTargetRefProps\022C\n\027number_array_proper" +
+      "ties\030\004 \003(\0132\".weaviate.v1.NumberArrayProp" +
+      "erties\022=\n\024int_array_properties\030\005 \003(\0132\037.w" +
+      "eaviate.v1.IntArrayProperties\022?\n\025text_ar" +
+      "ray_properties\030\006 \003(\0132 .weaviate.v1.TextA" +
+      "rrayProperties\022E\n\030boolean_array_properti" +
+      "es\030\007 \003(\0132#.weaviate.v1.BooleanArrayPrope" +
+      "rties\0228\n\021object_properties\030\010 \003(\0132\035.weavi" +
+      "ate.v1.ObjectProperties\022C\n\027object_array_" +
+      "properties\030\t \003(\0132\".weaviate.v1.ObjectArr" +
+      "ayProperties\0328\n\024SingleTargetRefProps\022\r\n\005" +
+      "uuids\030\001 \003(\t\022\021\n\tprop_name\030\002 \001(\t\032R\n\023MultiT" +
+      "argetRefProps\022\r\n\005uuids\030\001 \003(\t\022\021\n\tprop_nam" +
+      "e\030\002 \001(\t\022\031\n\021target_collection\030\003 \001(\t\"\210\001\n\021B" +
+      "atchObjectsReply\022\014\n\004took\030\001 \001(\002\0229\n\006errors" +
+      "\030\002 \003(\0132).weaviate.v1.BatchObjectsReply.B" +
+      "atchError\032*\n\nBatchError\022\r\n\005index\030\001 \001(\005\022\r" +
+      "\n\005error\030\002 \001(\tBo\n#io.weaviate.client.grpc" +
+      ".protocol.v1B\022WeaviateProtoBatchZ4github" +
+      ".com/weaviate/weaviate/grpc/generated;pr" +
+      "otocolb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
