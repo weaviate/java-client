@@ -74,7 +74,7 @@
     <jackson.version>2.16.0</jackson.version>
     <protobuf.java.version>3.25.1</protobuf.java.version>
     <grpc-netty-shaded.version>1.59.1</grpc-netty-shaded.version>
-    <grpc-protobuf.version>1.59.1</grpc-protobuf.version>
+    <grpc-protobuf.version>1.60.0</grpc-protobuf.version>
     <grpc-stub.version>1.59.1</grpc-stub.version>
     <annotations-api.version>6.0.53</annotations-api.version>
   </properties>
