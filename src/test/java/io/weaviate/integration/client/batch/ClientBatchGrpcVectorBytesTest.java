@@ -29,6 +29,11 @@ public class ClientBatchGrpcVectorBytesTest {
     testWeaviate("semitechnologies/weaviate:1.22.6");
   }
 
+  @Test
+  public void shouldSendVectorWith_v1_23_0() {
+    testWeaviate("semitechnologies/weaviate:1.23.0");
+  }
+
   private void testWeaviate(String image) {
     WeaviateContainer.DockerContainer container = WeaviateContainer.create(image);
     try {

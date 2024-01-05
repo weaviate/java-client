@@ -864,6 +864,23 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
      */
     io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.GeoCoordinateOrBuilder getGeoValueOrBuilder();
 
+    /**
+     * <code>string blob_value = 10;</code>
+     * @return Whether the blobValue field is set.
+     */
+    boolean hasBlobValue();
+    /**
+     * <code>string blob_value = 10;</code>
+     * @return The blobValue.
+     */
+    java.lang.String getBlobValue();
+    /**
+     * <code>string blob_value = 10;</code>
+     * @return The bytes for blobValue.
+     */
+    com.google.protobuf.ByteString
+        getBlobValueBytes();
+
     io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value.KindCase getKindCase();
   }
   /**
@@ -916,6 +933,7 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
       UUID_VALUE(7),
       INT_VALUE(8),
       GEO_VALUE(9),
+      BLOB_VALUE(10),
       KIND_NOT_SET(0);
       private final int value;
       private KindCase(int value) {
@@ -942,6 +960,7 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
           case 7: return UUID_VALUE;
           case 8: return INT_VALUE;
           case 9: return GEO_VALUE;
+          case 10: return BLOB_VALUE;
           case 0: return KIND_NOT_SET;
           default: return null;
         }
@@ -1269,6 +1288,58 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
       return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.GeoCoordinate.getDefaultInstance();
     }
 
+    public static final int BLOB_VALUE_FIELD_NUMBER = 10;
+    /**
+     * <code>string blob_value = 10;</code>
+     * @return Whether the blobValue field is set.
+     */
+    public boolean hasBlobValue() {
+      return kindCase_ == 10;
+    }
+    /**
+     * <code>string blob_value = 10;</code>
+     * @return The blobValue.
+     */
+    public java.lang.String getBlobValue() {
+      java.lang.Object ref = "";
+      if (kindCase_ == 10) {
+        ref = kind_;
+      }
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (kindCase_ == 10) {
+          kind_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>string blob_value = 10;</code>
+     * @return The bytes for blobValue.
+     */
+    public com.google.protobuf.ByteString
+        getBlobValueBytes() {
+      java.lang.Object ref = "";
+      if (kindCase_ == 10) {
+        ref = kind_;
+      }
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        if (kindCase_ == 10) {
+          kind_ = b;
+        }
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -1312,6 +1383,9 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
       }
       if (kindCase_ == 9) {
         output.writeMessage(9, (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.GeoCoordinate) kind_);
+      }
+      if (kindCase_ == 10) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 10, kind_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -1357,6 +1431,9 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
       if (kindCase_ == 9) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(9, (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.GeoCoordinate) kind_);
+      }
+      if (kindCase_ == 10) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(10, kind_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -1412,6 +1489,10 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
           if (!getGeoValue()
               .equals(other.getGeoValue())) return false;
           break;
+        case 10:
+          if (!getBlobValue()
+              .equals(other.getBlobValue())) return false;
+          break;
         case 0:
         default:
       }
@@ -1465,6 +1546,10 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         case 9:
           hash = (37 * hash) + GEO_VALUE_FIELD_NUMBER;
           hash = (53 * hash) + getGeoValue().hashCode();
+          break;
+        case 10:
+          hash = (37 * hash) + BLOB_VALUE_FIELD_NUMBER;
+          hash = (53 * hash) + getBlobValue().hashCode();
           break;
         case 0:
         default:
@@ -1751,6 +1836,12 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
             mergeGeoValue(other.getGeoValue());
             break;
           }
+          case BLOB_VALUE: {
+            kindCase_ = 10;
+            kind_ = other.kind_;
+            onChanged();
+            break;
+          }
           case KIND_NOT_SET: {
             break;
           }
@@ -1835,6 +1926,12 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
                 kindCase_ = 9;
                 break;
               } // case 74
+              case 82: {
+                java.lang.String s = input.readStringRequireUtf8();
+                kindCase_ = 10;
+                kind_ = s;
+                break;
+              } // case 82
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -2696,6 +2793,99 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         kindCase_ = 9;
         onChanged();
         return geoValueBuilder_;
+      }
+
+      /**
+       * <code>string blob_value = 10;</code>
+       * @return Whether the blobValue field is set.
+       */
+      @java.lang.Override
+      public boolean hasBlobValue() {
+        return kindCase_ == 10;
+      }
+      /**
+       * <code>string blob_value = 10;</code>
+       * @return The blobValue.
+       */
+      @java.lang.Override
+      public java.lang.String getBlobValue() {
+        java.lang.Object ref = "";
+        if (kindCase_ == 10) {
+          ref = kind_;
+        }
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (kindCase_ == 10) {
+            kind_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string blob_value = 10;</code>
+       * @return The bytes for blobValue.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getBlobValueBytes() {
+        java.lang.Object ref = "";
+        if (kindCase_ == 10) {
+          ref = kind_;
+        }
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          if (kindCase_ == 10) {
+            kind_ = b;
+          }
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string blob_value = 10;</code>
+       * @param value The blobValue to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBlobValue(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        kindCase_ = 10;
+        kind_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string blob_value = 10;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBlobValue() {
+        if (kindCase_ == 10) {
+          kindCase_ = 0;
+          kind_ = null;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>string blob_value = 10;</code>
+       * @param value The bytes for blobValue to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBlobValueBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        kindCase_ = 10;
+        kind_ = value;
+        onChanged();
+        return this;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -4133,20 +4323,20 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
       "roperties\0223\n\006fields\030\001 \003(\0132#.weaviate.v1." +
       "Properties.FieldsEntry\032A\n\013FieldsEntry\022\013\n" +
       "\003key\030\001 \001(\t\022!\n\005value\030\002 \001(\0132\022.weaviate.v1." +
-      "Value:\0028\001\"\246\002\n\005Value\022\026\n\014number_value\030\001 \001(" +
+      "Value:\0028\001\"\274\002\n\005Value\022\026\n\014number_value\030\001 \001(" +
       "\001H\000\022\026\n\014string_value\030\002 \001(\tH\000\022\024\n\nbool_valu" +
       "e\030\003 \001(\010H\000\022/\n\014object_value\030\004 \001(\0132\027.weavia" +
       "te.v1.PropertiesH\000\022,\n\nlist_value\030\005 \001(\0132\026" +
       ".weaviate.v1.ListValueH\000\022\024\n\ndate_value\030\006" +
       " \001(\tH\000\022\024\n\nuuid_value\030\007 \001(\tH\000\022\023\n\tint_valu" +
       "e\030\010 \001(\003H\000\022/\n\tgeo_value\030\t \001(\0132\032.weaviate." +
-      "v1.GeoCoordinateH\000B\006\n\004kind\"/\n\tListValue\022" +
-      "\"\n\006values\030\001 \003(\0132\022.weaviate.v1.Value\"4\n\rG" +
-      "eoCoordinate\022\021\n\tlongitude\030\001 \001(\002\022\020\n\010latit" +
-      "ude\030\002 \001(\002Bt\n#io.weaviate.client.grpc.pro" +
-      "tocol.v1B\027WeaviateProtoPropertiesZ4githu" +
-      "b.com/weaviate/weaviate/grpc/generated;p" +
-      "rotocolb\006proto3"
+      "v1.GeoCoordinateH\000\022\024\n\nblob_value\030\n \001(\tH\000" +
+      "B\006\n\004kind\"/\n\tListValue\022\"\n\006values\030\001 \003(\0132\022." +
+      "weaviate.v1.Value\"4\n\rGeoCoordinate\022\021\n\tlo" +
+      "ngitude\030\001 \001(\002\022\020\n\010latitude\030\002 \001(\002Bt\n#io.we" +
+      "aviate.client.grpc.protocol.v1B\027Weaviate" +
+      "ProtoPropertiesZ4github.com/weaviate/wea" +
+      "viate/grpc/generated;protocolb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -4169,7 +4359,7 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
     internal_static_weaviate_v1_Value_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_Value_descriptor,
-        new java.lang.String[] { "NumberValue", "StringValue", "BoolValue", "ObjectValue", "ListValue", "DateValue", "UuidValue", "IntValue", "GeoValue", "Kind", });
+        new java.lang.String[] { "NumberValue", "StringValue", "BoolValue", "ObjectValue", "ListValue", "DateValue", "UuidValue", "IntValue", "GeoValue", "BlobValue", "Kind", });
     internal_static_weaviate_v1_ListValue_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_weaviate_v1_ListValue_fieldAccessorTable = new
