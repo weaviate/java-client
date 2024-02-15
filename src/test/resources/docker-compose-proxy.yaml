@@ -18,6 +18,7 @@ services:
       PERSISTENCE_DATA_PATH: "./data"
       VIRTUAL_HOST: weaviate.local
       VIRTUAL_PORT: 8080
+      DISABLE_TELEMETRY: 'true'
   proxy:
     image: nginxproxy/nginx-proxy:alpine
     volumes:
