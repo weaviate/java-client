@@ -48,9 +48,11 @@ public class ClientClusterTest {
   }
 
   @Test
-  public void testClusterNodesEndpointWithoutData() {
+  public void testClusterNodesEndpointWithoutDataWithOutputVerbose() {
     // when
-    Result<NodesStatusResponse> result = client.cluster().nodesStatusGetter().run();
+    Result<NodesStatusResponse> result = client.cluster().nodesStatusGetter()
+      .withOutput(NodeStatusOutput.VERBOSE)
+      .run();
 
     // then
     assertThat(result).isNotNull();
@@ -73,12 +75,15 @@ public class ClientClusterTest {
   }
 
   @Test
-  public void testClusterNodesEndpointWithData() {
+  public void testClusterNodesEndpointWithDataWithOutputVerbose() throws InterruptedException {
     // given
     testGenerics.createTestSchemaAndData(client);
+    Thread.sleep(3000); // makes sure data are flushed so nodes endpoint returns actual object/shard count
 
     // when
-    Result<NodesStatusResponse> result = client.cluster().nodesStatusGetter().withOutput(NodeStatusOutput.VERBOSE).run();
+    Result<NodesStatusResponse> result = client.cluster().nodesStatusGetter()
+      .withOutput(NodeStatusOutput.VERBOSE)
+      .run();
 
     // then
     assertThat(result).isNotNull();
@@ -116,13 +121,14 @@ public class ClientClusterTest {
   }
 
   @Test
-  public void shouldGetNodeStatusPerClass() {
+  public void shouldGetNodeStatusPerClassWithOutputVerbose() throws InterruptedException {
     List<String> pizzaIds = WeaviateTestGenerics.IDS_BY_CLASS.get("Pizza");
     List<String> soupIds = WeaviateTestGenerics.IDS_BY_CLASS.get("Soup");
     testGenerics.createSchemaPizza(client);
     testGenerics.createDataPizza(client);
     testGenerics.createSchemaSoup(client);
     testGenerics.createDataSoup(client);
+    Thread.sleep(3000); // makes sure data are flushed so nodes endpoint returns actual object/shard count
 
     Consumer<Result<NodesStatusResponse>> assertSingleNode = (Result<NodesStatusResponse> result) ->
       assertThat(result).isNotNull()
@@ -145,6 +151,7 @@ public class ClientClusterTest {
     // ALL
     Result<NodesStatusResponse> resultAll = client.cluster()
       .nodesStatusGetter()
+      .withOutput(NodeStatusOutput.VERBOSE)
       .run();
 
     assertSingleNode.accept(resultAll);
@@ -153,6 +160,7 @@ public class ClientClusterTest {
     // PIZZA
     Result<NodesStatusResponse> resultPizza = client.cluster()
       .nodesStatusGetter()
+      .withOutput(NodeStatusOutput.VERBOSE)
       .withClassName("Pizza")
       .run();
 
@@ -162,6 +170,7 @@ public class ClientClusterTest {
     // SOUP
     Result<NodesStatusResponse> resultSoup = client.cluster()
       .nodesStatusGetter()
+      .withOutput(NodeStatusOutput.VERBOSE)
       .withClassName("Soup")
       .run();
 
@@ -170,42 +179,10 @@ public class ClientClusterTest {
   }
 
   @Test
-  public void testClusterNodesEndpointWithDataWithOutputMinimal() {
-    // given
-    testGenerics.createTestSchemaAndData(client);
-
-    // when
-    Result<NodesStatusResponse> result = client.cluster().nodesStatusGetter().withOutput(NodeStatusOutput.MINIMAL).run();
-
-    // then
-    assertThat(result).isNotNull();
-    assertThat(result.hasErrors()).isFalse();
-
-    NodesStatusResponse nodes = result.getResult();
-    assertThat(nodes).isNotNull();
-    assertThat(nodes.getNodes()).hasSize(1);
-
-    NodesStatusResponse.NodeStatus nodeStatus = nodes.getNodes()[0];
-    assertThat(nodeStatus.getName()).isNotBlank();
-    assertThat(nodeStatus)
-      .returns(EXPECTED_WEAVIATE_VERSION, NodesStatusResponse.NodeStatus::getVersion)
-      .returns(EXPECTED_WEAVIATE_GIT_HASH, NodesStatusResponse.NodeStatus::getGitHash)
-      .returns(NodesStatusResponse.Status.HEALTHY, NodesStatusResponse.NodeStatus::getStatus)
-      .extracting(NodesStatusResponse.NodeStatus::getStats)
-      .returns(2L, NodesStatusResponse.Stats::getShardCount)
-      .returns(6L, NodesStatusResponse.Stats::getObjectCount);
-
-    assertThat(nodeStatus.getShards()).isNull();
-  }
-
-  @Test
-  public void testClusterNodesEndpointWithDataWithClassWithOutputMinimal() {
-    // given
-    testGenerics.createTestSchemaAndData(client);
-
+  public void testClusterNodesEndpointWithOutputMinimalImplicit() {
     // when
     Result<NodesStatusResponse> result = client.cluster().nodesStatusGetter()
-      .withClassName("Soup").withOutput(NodeStatusOutput.MINIMAL).run();
+      .run();
 
     // then
     assertThat(result).isNotNull();
@@ -221,10 +198,7 @@ public class ClientClusterTest {
       .returns(EXPECTED_WEAVIATE_VERSION, NodesStatusResponse.NodeStatus::getVersion)
       .returns(EXPECTED_WEAVIATE_GIT_HASH, NodesStatusResponse.NodeStatus::getGitHash)
       .returns(NodesStatusResponse.Status.HEALTHY, NodesStatusResponse.NodeStatus::getStatus)
-      .extracting(NodesStatusResponse.NodeStatus::getStats)
-      .returns(1L, NodesStatusResponse.Stats::getShardCount)
-      .returns(2L, NodesStatusResponse.Stats::getObjectCount);
-
-    assertThat(nodeStatus.getShards()).isNull();
+      .returns(null, NodesStatusResponse.NodeStatus::getStats)
+      .returns(null, NodesStatusResponse.NodeStatus::getShards);
   }
 }

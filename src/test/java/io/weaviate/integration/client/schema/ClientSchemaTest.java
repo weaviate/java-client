@@ -450,7 +450,7 @@ public class ClientSchemaTest {
     //then
     assertResultTrue(createStatus);
 
-    assertResultError("tokenization in body should be one of [word lowercase whitespace field]", notExistingTokenizationCreateStatus);
+    assertResultError("tokenization in body should be one of [word lowercase whitespace field trigram gse]", notExistingTokenizationCreateStatus);
     assertResultError("Tokenization is not allowed for data type 'int'", notSupportedTokenizationForIntCreateStatus);
   }
 
