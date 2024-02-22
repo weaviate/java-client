@@ -26,6 +26,7 @@ public class WeaviateObject {
   Map<String, Object> properties;
   Map<String, Object> additional;
   Float[] vector;
+  Map<String, Float[]> vectors;
   Object vectorWeights;
   String tenant;
 }

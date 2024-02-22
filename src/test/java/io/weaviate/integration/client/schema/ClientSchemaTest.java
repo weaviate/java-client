@@ -1505,4 +1505,127 @@ public class ClientSchemaTest {
       .returns(96, PQConfig::getSegments)
       .returns(99_999, PQConfig::getTrainingLimit);
   }
+
+  @Test
+  public void shouldCreateClassWithVectorConfig() {
+    Integer cleanupIntervalSeconds = 300;
+    // vector index config
+    Integer efConstruction = 128;
+    Integer maxConnections = 64;
+    Long vectorCacheMaxObjects = 500000L;
+    Integer ef = -1;
+    Boolean skip = false;
+    Integer dynamicEfFactor = 8;
+    Integer dynamicEfMax = 500;
+    Integer dynamicEfMin = 100;
+    Integer flatSearchCutoff = 40000;
+    String distance = DistanceType.DOT;
+    //pq config
+    Boolean enabled = true;
+    Boolean bitCompression = true;
+    Integer segments = 4;
+    Integer centroids = 8;
+    String encoderType = "tile";
+    String encoderDistribution = "normal";
+
+    VectorIndexConfig vectorIndexConfig = VectorIndexConfig.builder()
+      .cleanupIntervalSeconds(cleanupIntervalSeconds)
+      .efConstruction(efConstruction)
+      .maxConnections(maxConnections)
+      .vectorCacheMaxObjects(vectorCacheMaxObjects)
+      .ef(ef)
+      .skip(skip)
+      .dynamicEfFactor(dynamicEfFactor)
+      .dynamicEfMax(dynamicEfMax)
+      .dynamicEfMin(dynamicEfMin)
+      .flatSearchCutoff(flatSearchCutoff)
+      .distance(distance)
+      .pq(PQConfig.builder()
+        .enabled(enabled)
+        .bitCompression(bitCompression)
+        .segments(segments)
+        .centroids(centroids)
+        .encoder(PQConfig.Encoder.builder()
+          .type(encoderType)
+          .distribution(encoderDistribution)
+          .build())
+        .build())
+      .build();
+
+    Map<String, Object> contextionaryVectorizer = new HashMap<>();
+    contextionaryVectorizer.put("text2vec-contextionary", "some-setting");
+
+    Map<String, WeaviateClass.VectorConfig> vectorConfig = new HashMap<>();
+    vectorConfig.put("hnswVector", WeaviateClass.VectorConfig.builder()
+      .vectorIndexConfig(vectorIndexConfig)
+      .vectorIndexType("hnsw")
+      .vectorizer(contextionaryVectorizer)
+      .build());
+
+    WeaviateClass clazz = WeaviateClass.builder()
+      .className("Band")
+      .description("Band that plays and produces music")
+      .vectorConfig(vectorConfig)
+      .build();
+
+    Result<Boolean> createStatus = client.schema().classCreator()
+      .withClass(clazz)
+      .run();
+
+    assertThat(createStatus).isNotNull()
+      .returns(false, Result::hasErrors)
+      .returns(true, Result::getResult);
+
+    Result<WeaviateClass> bandClass = client.schema().classGetter()
+      .withClassName(clazz.getClassName())
+      .run();
+
+    assertThat(bandClass).isNotNull()
+      .returns(false, Result::hasErrors)
+      .extracting(Result::getResult).isNotNull()
+      .extracting(WeaviateClass::getVectorConfig)
+      .satisfies(vc ->
+        assertThat(vc).isNotNull()
+          .containsOnlyKeys("hnswVector")
+          .extracting(vcMap -> vcMap.get("hnswVector")).isNotNull()
+          .satisfies(hnswVectorConfig -> {
+            assertThat(hnswVectorConfig)
+              .extracting(WeaviateClass.VectorConfig::getVectorIndexType)
+              .isEqualTo("hnsw");
+
+            assertThat(hnswVectorConfig)
+              .extracting(WeaviateClass.VectorConfig::getVectorizer)
+              .satisfies(vectorizer ->
+                assertThat(vectorizer).isNotNull()
+                  .containsOnlyKeys("text2vec-contextionary")
+                  .extracting(vectorizerMap -> vectorizerMap.get("text2vec-contextionary")).isNotNull()
+                  .isEqualTo("some-setting")
+              );
+
+            assertThat(hnswVectorConfig)
+              .extracting(WeaviateClass.VectorConfig::getVectorIndexConfig)
+              .returns(cleanupIntervalSeconds, VectorIndexConfig::getCleanupIntervalSeconds)
+              .returns(efConstruction, VectorIndexConfig::getEfConstruction)
+              .returns(maxConnections, VectorIndexConfig::getMaxConnections)
+              .returns(vectorCacheMaxObjects, VectorIndexConfig::getVectorCacheMaxObjects)
+              .returns(ef, VectorIndexConfig::getEf)
+              .returns(skip, VectorIndexConfig::getSkip)
+              .returns(dynamicEfFactor, VectorIndexConfig::getDynamicEfFactor)
+              .returns(dynamicEfMax, VectorIndexConfig::getDynamicEfMax)
+              .returns(dynamicEfMin, VectorIndexConfig::getDynamicEfMin)
+              .returns(flatSearchCutoff, VectorIndexConfig::getFlatSearchCutoff)
+              .returns(distance, VectorIndexConfig::getDistance)
+
+              .extracting(VectorIndexConfig::getPq).isNotNull()
+              .returns(enabled, PQConfig::getEnabled)
+              .returns(bitCompression, PQConfig::getBitCompression)
+              .returns(segments, PQConfig::getSegments)
+              .returns(centroids, PQConfig::getCentroids)
+
+              .extracting(PQConfig::getEncoder)
+              .returns(encoderType, PQConfig.Encoder::getType)
+              .returns(encoderDistribution, PQConfig.Encoder::getDistribution);
+          })
+      );
+  }
 }

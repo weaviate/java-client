@@ -20,12 +20,14 @@ public class NearImuArgument implements Argument {
   File imuFile;
   Float certainty;
   Float distance;
+  String[] targetVectors;
 
   @Override
   public String build() {
     return NearMediaArgumentHelper.builder()
       .certainty(certainty)
       .distance(distance)
+      .targetVectors(targetVectors)
       .data(imu)
       .dataFile(imuFile)
       .mediaField("imu")

@@ -94,6 +94,18 @@ public class NearImuArgumentTest {
   }
 
   @Test
+  public void shouldBuildFromBase64WithTargetVectors() {
+    String imuBase64 = "iVBORw0KGgoAAAANS";
+
+    String nearImu = NearImuArgument.builder()
+      .imu(imuBase64)
+      .targetVectors(new String[]{"vector1"})
+      .build().build();
+
+    assertThat(nearImu).isEqualTo(String.format("nearIMU:{imu:\"%s\" targetVectors:[\"vector1\"]}", imuBase64));
+  }
+
+  @Test
   public void shouldBuildEmptyDueToBadFile() {
     File badFile = new File("");
 

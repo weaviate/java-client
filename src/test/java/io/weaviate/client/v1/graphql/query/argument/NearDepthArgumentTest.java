@@ -94,6 +94,18 @@ public class NearDepthArgumentTest {
   }
 
   @Test
+  public void shouldBuildFromBase64WithTargetVectors() {
+    String depthBase64 = "iVBORw0KGgoAAAANS";
+
+    String nearDepth = NearDepthArgument.builder()
+      .depth(depthBase64)
+      .targetVectors(new String[]{"vector1"})
+      .build().build();
+
+    assertThat(nearDepth).isEqualTo(String.format("nearDepth:{depth:\"%s\" targetVectors:[\"vector1\"]}", depthBase64));
+  }
+
+  @Test
   public void shouldBuildEmptyDueToBadFile() {
     File badFile = new File("");
 

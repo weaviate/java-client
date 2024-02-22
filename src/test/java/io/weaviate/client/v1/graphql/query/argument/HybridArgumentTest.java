@@ -33,6 +33,21 @@ public class HybridArgumentTest {
   }
 
   @Test
+  public void shouldCreateArgumentWithVectorAndTargetVectors() {
+    HybridArgument hybrid = HybridArgument.builder()
+      .query("I'm a simple string")
+      .vector(new Float[]{.1f, .2f, .3f})
+      .targetVectors(new String[]{"vector1"})
+      .build();
+
+    String str = hybrid.build();
+
+    assertThat(str).isEqualTo("hybrid:{query:\"I'm a simple string\" " +
+      "vector:[0.1,0.2,0.3] " +
+      "targetVectors:[\"vector1\"]}");
+  }
+
+  @Test
   public void shouldCreateArgumentWithChars() {
     HybridArgument hybrid = HybridArgument.builder()
       .query("\"I'm a complex string\" says the {'`:string:`'}")

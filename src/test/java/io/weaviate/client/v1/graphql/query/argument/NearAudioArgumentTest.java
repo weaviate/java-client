@@ -94,6 +94,18 @@ public class NearAudioArgumentTest {
   }
 
   @Test
+  public void shouldBuildFromBase64WithTargetVectors() {
+    String audioBase64 = "iVBORw0KGgoAAAANS";
+
+    String nearAudio = NearAudioArgument.builder()
+      .audio(audioBase64)
+      .targetVectors(new String[]{"vector1"})
+      .build().build();
+
+    assertThat(nearAudio).isEqualTo(String.format("nearAudio:{audio:\"%s\" targetVectors:[\"vector1\"]}", audioBase64));
+  }
+
+  @Test
   public void shouldBuildEmptyDueToBadFile() {
     File badFile = new File("");
 

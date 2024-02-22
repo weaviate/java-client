@@ -20,12 +20,14 @@ public class NearVideoArgument implements Argument {
   File videoFile;
   Float certainty;
   Float distance;
+  String[] targetVectors;
 
   @Override
   public String build() {
     return NearMediaArgumentHelper.builder()
       .certainty(certainty)
       .distance(distance)
+      .targetVectors(targetVectors)
       .data(video)
       .dataFile(videoFile)
       .mediaField("video")
