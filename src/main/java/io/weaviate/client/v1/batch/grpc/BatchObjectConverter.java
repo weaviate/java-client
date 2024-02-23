@@ -8,6 +8,12 @@ import io.weaviate.client.base.util.GrpcVersionSupport;
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase;
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch;
 import io.weaviate.client.v1.data.model.WeaviateObject;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.FieldDefaults;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -16,34 +22,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
-import lombok.experimental.FieldDefaults;
 
 @RequiredArgsConstructor
 public class BatchObjectConverter {
 
-  protected static final int BYTES_PER_FLOAT = Float.SIZE / 8;
   private final GrpcVersionSupport grpcVersionSupport;
 
   public WeaviateProtoBatch.BatchObject toBatchObject(WeaviateObject obj) {
     WeaviateProtoBatch.BatchObject.Builder builder = WeaviateProtoBatch.BatchObject.newBuilder();
+
     if (obj.getId() != null) {
       builder.setUuid(obj.getId());
     }
     if (obj.getClassName() != null) {
       builder.setCollection(obj.getClassName());
-    }
-    if (obj.getVector() != null) {
-      if (grpcVersionSupport.supportsVectorBytesField()) {
-        ByteBuffer buffer = ByteBuffer.allocate(obj.getVector().length * BYTES_PER_FLOAT).order(ByteOrder.LITTLE_ENDIAN);
-        Arrays.stream(obj.getVector()).forEach(buffer::putFloat);
-        builder.setVectorBytes(ByteString.copyFrom(buffer.array()));
-      } else {
-        builder.addAllVector(Arrays.asList(obj.getVector()));
-      }
     }
     if (obj.getTenant() != null) {
       builder.setTenant(obj.getTenant());
@@ -51,7 +43,34 @@ public class BatchObjectConverter {
     if (obj.getProperties() != null) {
       builder.setProperties(buildProperties(obj.getProperties()));
     }
+
+    Float[] vector = obj.getVector();
+    if (vector != null) {
+      if (grpcVersionSupport.supportsVectorBytesField()) {
+        builder.setVectorBytes(toByteString(vector));
+      } else {
+        builder.addAllVector(Arrays.asList(vector));
+      }
+    }
+
+    Map<String, Float[]> vectors = obj.getVectors();
+    if (vectors != null && !vectors.isEmpty()) {
+      List<WeaviateProtoBase.Vectors> protoVectors = vectors.entrySet().stream().map(entry ->
+        WeaviateProtoBase.Vectors.newBuilder()
+          .setName(entry.getKey())
+          .setVectorBytes(toByteString(entry.getValue()))
+          .build()
+      ).collect(Collectors.toList());
+      builder.addAllVectors(protoVectors);
+    }
+
     return builder.build();
+  }
+
+  private ByteString toByteString(Float[] vector) {
+    ByteBuffer buffer = ByteBuffer.allocate(vector.length * Float.BYTES).order(ByteOrder.LITTLE_ENDIAN);
+    Arrays.stream(vector).forEach(buffer::putFloat);
+    return ByteString.copyFrom(buffer.array());
   }
 
   @AllArgsConstructor

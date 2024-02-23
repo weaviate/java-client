@@ -25,6 +25,9 @@ message BatchObject {
     repeated BooleanArrayProperties boolean_array_properties = 7;
     repeated ObjectProperties object_properties = 8;
     repeated ObjectArrayProperties object_array_properties = 9;
+    // empty lists do not have a type in many languages and clients do not know which datatype the property has.
+    // Weaviate can get the datatype from its schema
+    repeated string empty_list_props = 10;
   }
 
   message SingleTargetRefProps {
@@ -45,6 +48,8 @@ message BatchObject {
   string collection = 4;
   string tenant = 5;
   bytes vector_bytes = 6;
+  // protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+  repeated Vectors vectors = 23;
 }
 
 message BatchObjectsReply {

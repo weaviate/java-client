@@ -24,22 +24,27 @@ public final class WeaviateProto {
   static {
     java.lang.String[] descriptorData = {
       "\n\021v1/weaviate.proto\022\013weaviate.v1\032\016v1/bat" +
-      "ch.proto\032\023v1/search_get.proto2\240\001\n\010Weavia" +
-      "te\022@\n\006Search\022\032.weaviate.v1.SearchRequest" +
-      "\032\030.weaviate.v1.SearchReply\"\000\022R\n\014BatchObj" +
-      "ects\022 .weaviate.v1.BatchObjectsRequest\032\036" +
-      ".weaviate.v1.BatchObjectsReply\"\000Bj\n#io.w" +
-      "eaviate.client.grpc.protocol.v1B\rWeaviat" +
-      "eProtoZ4github.com/weaviate/weaviate/grp" +
-      "c/generated;protocolb\006proto3"
+      "ch.proto\032\025v1/batch_delete.proto\032\023v1/sear" +
+      "ch_get.proto2\361\001\n\010Weaviate\022@\n\006Search\022\032.we" +
+      "aviate.v1.SearchRequest\032\030.weaviate.v1.Se" +
+      "archReply\"\000\022R\n\014BatchObjects\022 .weaviate.v" +
+      "1.BatchObjectsRequest\032\036.weaviate.v1.Batc" +
+      "hObjectsReply\"\000\022O\n\013BatchDelete\022\037.weaviat" +
+      "e.v1.BatchDeleteRequest\032\035.weaviate.v1.Ba" +
+      "tchDeleteReply\"\000Bj\n#io.weaviate.client.g" +
+      "rpc.protocol.v1B\rWeaviateProtoZ4github.c" +
+      "om/weaviate/weaviate/grpc/generated;prot" +
+      "ocolb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch.getDescriptor(),
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.getDescriptor(),
           io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.getDescriptor(),
         });
     io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch.getDescriptor();
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.getDescriptor();
     io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.getDescriptor();
   }
 

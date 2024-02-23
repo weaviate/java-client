@@ -77,6 +77,37 @@ public final class WeaviateGrpc {
     return getBatchObjectsMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.BatchDeleteRequest,
+      io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.BatchDeleteReply> getBatchDeleteMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "BatchDelete",
+      requestType = io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.BatchDeleteRequest.class,
+      responseType = io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.BatchDeleteReply.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.BatchDeleteRequest,
+      io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.BatchDeleteReply> getBatchDeleteMethod() {
+    io.grpc.MethodDescriptor<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.BatchDeleteRequest, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.BatchDeleteReply> getBatchDeleteMethod;
+    if ((getBatchDeleteMethod = WeaviateGrpc.getBatchDeleteMethod) == null) {
+      synchronized (WeaviateGrpc.class) {
+        if ((getBatchDeleteMethod = WeaviateGrpc.getBatchDeleteMethod) == null) {
+          WeaviateGrpc.getBatchDeleteMethod = getBatchDeleteMethod =
+              io.grpc.MethodDescriptor.<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.BatchDeleteRequest, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.BatchDeleteReply>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "BatchDelete"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.BatchDeleteRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.BatchDeleteReply.getDefaultInstance()))
+              .setSchemaDescriptor(new WeaviateMethodDescriptorSupplier("BatchDelete"))
+              .build();
+        }
+      }
+    }
+    return getBatchDeleteMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -138,6 +169,13 @@ public final class WeaviateGrpc {
         io.grpc.stub.StreamObserver<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch.BatchObjectsReply> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getBatchObjectsMethod(), responseObserver);
     }
+
+    /**
+     */
+    default void batchDelete(io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.BatchDeleteRequest request,
+        io.grpc.stub.StreamObserver<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.BatchDeleteReply> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getBatchDeleteMethod(), responseObserver);
+    }
   }
 
   /**
@@ -182,6 +220,14 @@ public final class WeaviateGrpc {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getBatchObjectsMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void batchDelete(io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.BatchDeleteRequest request,
+        io.grpc.stub.StreamObserver<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.BatchDeleteReply> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getBatchDeleteMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -212,6 +258,13 @@ public final class WeaviateGrpc {
     public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch.BatchObjectsReply batchObjects(io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch.BatchObjectsRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getBatchObjectsMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.BatchDeleteReply batchDelete(io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.BatchDeleteRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getBatchDeleteMethod(), getCallOptions(), request);
     }
   }
 
@@ -246,10 +299,19 @@ public final class WeaviateGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getBatchObjectsMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.BatchDeleteReply> batchDelete(
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.BatchDeleteRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getBatchDeleteMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_SEARCH = 0;
   private static final int METHODID_BATCH_OBJECTS = 1;
+  private static final int METHODID_BATCH_DELETE = 2;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -275,6 +337,10 @@ public final class WeaviateGrpc {
         case METHODID_BATCH_OBJECTS:
           serviceImpl.batchObjects((io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch.BatchObjectsRequest) request,
               (io.grpc.stub.StreamObserver<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch.BatchObjectsReply>) responseObserver);
+          break;
+        case METHODID_BATCH_DELETE:
+          serviceImpl.batchDelete((io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.BatchDeleteRequest) request,
+              (io.grpc.stub.StreamObserver<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.BatchDeleteReply>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -308,6 +374,13 @@ public final class WeaviateGrpc {
               io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch.BatchObjectsRequest,
               io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch.BatchObjectsReply>(
                 service, METHODID_BATCH_OBJECTS)))
+        .addMethod(
+          getBatchDeleteMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.BatchDeleteRequest,
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.BatchDeleteReply>(
+                service, METHODID_BATCH_DELETE)))
         .build();
   }
 
@@ -358,6 +431,7 @@ public final class WeaviateGrpc {
               .setSchemaDescriptor(new WeaviateFileDescriptorSupplier())
               .addMethod(getSearchMethod())
               .addMethod(getBatchObjectsMethod())
+              .addMethod(getBatchDeleteMethod())
               .build();
         }
       }
