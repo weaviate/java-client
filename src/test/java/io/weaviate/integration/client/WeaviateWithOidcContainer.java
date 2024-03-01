@@ -9,8 +9,6 @@ public class WeaviateWithOidcContainer extends WeaviateContainer {
     super(dockerImageName);
 
     waitingFor(Wait.forHttp("/v1/.well-known/openid-configuration").forPort(8080).forStatusCode(200));
-    withEnv("LIMIT_RESOURCES", "true");
-    withEnv("LOG_LEVEL", "debug");
     withEnv("AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED", "false");
     withEnv("AUTHENTICATION_OIDC_ENABLED", "true");
     withEnv("AUTHENTICATION_OIDC_CLIENT_ID", "wcs");
