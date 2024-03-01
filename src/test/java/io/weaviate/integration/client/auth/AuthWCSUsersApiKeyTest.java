@@ -13,63 +13,55 @@ import io.weaviate.client.v1.schema.model.DataType;
 import io.weaviate.client.v1.schema.model.Property;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
+
+import io.weaviate.integration.client.WeaviateWithOidcContainer;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.testcontainers.containers.DockerComposeContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
-
-import java.io.File;
 
 import static io.weaviate.integration.client.WeaviateVersion.EXPECTED_WEAVIATE_VERSION;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.annotation.JsonAppend;
+import org.testcontainers.weaviate.WeaviateContainer;
 
 public class AuthWCSUsersApiKeyTest {
 
-  private static String host;
-  private static Integer port;
+  private static String httpHostAddress;
   private static String grpcHost;
   private static Integer grpcPort;
   private static final String API_KEY = "my-secret-key";
   private static final String INVALID_API_KEY = "my-not-so-secret-key";
 
   @ClassRule
-  public static DockerComposeContainer compose = new DockerComposeContainer(
-    new File("src/test/resources/docker-compose-wcs.yaml")
-  ).withExposedService("weaviate-auth-wcs_1", 8085, Wait.forListeningPorts(8085))
-    .withExposedService("weaviate-auth-wcs_1", 50051, Wait.forListeningPorts(50051));
+  public static WeaviateContainer weaviate = new WeaviateWithOidcContainer("semitechnologies/weaviate:1.23.1");
 
   @Before
   public void before() {
-    host = compose.getServiceHost("weaviate-auth-wcs_1", 8085);
-    port = compose.getServicePort("weaviate-auth-wcs_1", 8085);
-    grpcHost = compose.getServiceHost("weaviate-auth-wcs_1", 50051);
-    grpcPort = compose.getServicePort("weaviate-auth-wcs_1", 50051);
+    httpHostAddress = weaviate.getHttpHostAddress();
+    grpcHost = weaviate.getHost();
+    grpcPort = weaviate.getMappedPort(50051);
   }
 
   @Test
   public void shouldAuthenticateWithValidApiKey() throws AuthException {
-    Config config = new Config("http", host + ":" + port);
+    Config config = new Config("http", httpHostAddress);
     WeaviateClient client = WeaviateAuthClient.apiKey(config, API_KEY);
     Result<Meta> meta = client.misc().metaGetter().run();
 
     assertThat(meta).isNotNull()
       .returns(false, Result::hasErrors)
       .extracting(Result::getResult).isNotNull()
-      .returns("http://[::]:8085", Meta::getHostname)
+      .returns("http://[::]:8080", Meta::getHostname)
       .returns(EXPECTED_WEAVIATE_VERSION, Meta::getVersion);
   }
 
   @Test
   public void shouldNotAuthenticateWithInvalidApiKey() throws AuthException {
-    Config config = new Config("http", host + ":" + port);
+    Config config = new Config("http", httpHostAddress);
     WeaviateClient client = WeaviateAuthClient.apiKey(config, INVALID_API_KEY);
     Result<Meta> meta = client.misc().metaGetter().run();
 
@@ -82,7 +74,7 @@ public class AuthWCSUsersApiKeyTest {
 
   @Test
   public void shouldAuthenticateWithValidApiKeyUsingGRPC() throws AuthException {
-    Config config = new Config("http", host + ":" + port);
+    Config config = new Config("http", httpHostAddress);
     config.setGRPCHost(grpcHost + ":" + grpcPort);
     WeaviateClient client = WeaviateAuthClient.apiKey(config, API_KEY);
 
