@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
 
+import io.weaviate.integration.client.WeaviateDockerImage;
 import io.weaviate.integration.client.WeaviateWithOidcContainer;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -37,7 +38,7 @@ public class AuthWCSUsersApiKeyTest {
   private static final String INVALID_API_KEY = "my-not-so-secret-key";
 
   @ClassRule
-  public static WeaviateContainer weaviate = new WeaviateWithOidcContainer("semitechnologies/weaviate:1.23.1");
+  public static WeaviateContainer weaviate = new WeaviateWithOidcContainer(WeaviateDockerImage.WEAVIATE_DOCKER_IMAGE);
 
   @Before
   public void before() {

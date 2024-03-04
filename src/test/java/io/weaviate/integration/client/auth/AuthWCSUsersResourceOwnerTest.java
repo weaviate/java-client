@@ -1,5 +1,6 @@
 package io.weaviate.integration.client.auth;
 
+import io.weaviate.integration.client.WeaviateDockerImage;
 import io.weaviate.integration.client.WeaviateWithOidcContainer;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
@@ -22,7 +23,7 @@ public class AuthWCSUsersResourceOwnerTest {
   private String address;
 
   @ClassRule
-  public static WeaviateContainer weaviate = new WeaviateWithOidcContainer("semitechnologies/weaviate:1.23.1");
+  public static WeaviateContainer weaviate = new WeaviateWithOidcContainer(WeaviateDockerImage.WEAVIATE_DOCKER_IMAGE);
 
   @Before
   public void before() {

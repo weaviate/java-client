@@ -1,5 +1,6 @@
 package io.weaviate.integration.client.auth.provider;
 
+import io.weaviate.integration.client.WeaviateDockerImage;
 import io.weaviate.integration.client.WeaviateVersion;
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +28,7 @@ public class NimbusAuthClientCredentialsRefreshTokenTest {
   private AccessTokenProvider tokenProvider;
 
   @ClassRule
-  public static WeaviateContainer weaviate = new WeaviateWithOktaCcContainer("semitechnologies/weaviate:1.23.1");
+  public static WeaviateContainer weaviate = new WeaviateWithOktaCcContainer(WeaviateDockerImage.WEAVIATE_DOCKER_IMAGE);
 
   @Before
   public void before() {

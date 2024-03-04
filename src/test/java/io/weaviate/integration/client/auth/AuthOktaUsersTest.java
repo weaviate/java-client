@@ -1,5 +1,6 @@
 package io.weaviate.integration.client.auth;
 
+import io.weaviate.integration.client.WeaviateDockerImage;
 import io.weaviate.integration.client.WeaviateWithOktaUsersContainer;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
@@ -22,7 +23,7 @@ public class AuthOktaUsersTest {
   private String address;
 
   @ClassRule
-  public static WeaviateContainer weaviate = new WeaviateWithOktaUsersContainer("semitechnologies/weaviate:1.23.1");
+  public static WeaviateContainer weaviate = new WeaviateWithOktaUsersContainer(WeaviateDockerImage.WEAVIATE_DOCKER_IMAGE);
 
   @Before
   public void before() {
