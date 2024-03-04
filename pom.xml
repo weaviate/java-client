@@ -63,9 +63,6 @@
     <junit.version>5.10.2</junit.version>
     <testcontainers.version>1.19.6</testcontainers.version>
     <assertj-core.version>3.25.3</assertj-core.version>
-    <junit.version>5.10.1</junit.version>
-    <testcontainers.version>1.19.3</testcontainers.version>
-    <assertj-core.version>3.25.1</assertj-core.version>
     <jparams.version>1.0.4</jparams.version>
     <mockito.version>5.11.0</mockito.version>
     <slf4j.version>2.0.12</slf4j.version>
