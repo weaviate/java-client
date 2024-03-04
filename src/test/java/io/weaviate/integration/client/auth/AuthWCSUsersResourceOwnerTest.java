@@ -41,7 +41,7 @@ public class AuthWCSUsersResourceOwnerTest {
       Result<Meta> meta = client.misc().metaGetter().run();
       assertNotNull(meta);
       assertNull(meta.getError());
-      assertEquals("http://[::]:8085", meta.getResult().getHostname());
+      assertEquals("http://[::]:8080", meta.getResult().getHostname());
       assertEquals(EXPECTED_WEAVIATE_VERSION, meta.getResult().getVersion());
     } else {
       System.out.println("Skipping WCS test, missing WCS_DUMMY_CI_PW");

@@ -41,7 +41,7 @@ public class AuthOktaUsersTest {
       Result<Meta> meta = client.misc().metaGetter().run();
       assertNotNull(meta);
       assertNull(meta.getError());
-      assertEquals("http://[::]:8083", meta.getResult().getHostname());
+      assertEquals("http://[::]:8080", meta.getResult().getHostname());
       assertEquals(EXPECTED_WEAVIATE_VERSION, meta.getResult().getVersion());
     } else {
       System.out.println("Skipping Okta test, missing OKTA_DUMMY_CI_PW");
