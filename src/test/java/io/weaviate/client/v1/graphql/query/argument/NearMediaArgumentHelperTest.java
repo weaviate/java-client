@@ -117,6 +117,20 @@ public class NearMediaArgumentHelperTest {
   }
 
   @Test
+  public void shouldBuildFromBase64WithTargetVectors() {
+    String mediaBase64 = "iVBORw0KGgoAAAANS";
+
+    String nearMedia = NearMediaArgumentHelper.builder()
+      .data(mediaBase64)
+      .targetVectors(new String[]{"vector1"})
+      .mediaField("media")
+      .mediaName("nearMedia")
+      .build().build();
+
+    assertThat(nearMedia).isEqualTo(String.format("nearMedia:{media:\"%s\" targetVectors:[\"vector1\"]}", mediaBase64));
+  }
+
+  @Test
   public void shouldBuildEmptyDueToBadFile() {
     File badFile = new File("");
 

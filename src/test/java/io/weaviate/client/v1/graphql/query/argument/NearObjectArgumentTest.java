@@ -2,6 +2,7 @@ package io.weaviate.client.v1.graphql.query.argument;
 
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 public class NearObjectArgumentTest {
@@ -100,5 +101,16 @@ public class NearObjectArgumentTest {
     // builder will return a faulty nearObject arg in order for Weaviate to error
     // so that user will know that something was wrong
     assertEquals("nearObject:{}", arg);
+  }
+
+  @Test
+  public void shouldBuildWithTargetVectors() {
+    String nearObject = NearObjectArgument.builder()
+      .id("id")
+      .beacon("beacon")
+      .targetVectors(new String[]{"vector1"})
+      .build().build();
+
+    assertThat(nearObject).isEqualTo("nearObject:{id:\"id\" beacon:\"beacon\" targetVectors:[\"vector1\"]}");
   }
 }

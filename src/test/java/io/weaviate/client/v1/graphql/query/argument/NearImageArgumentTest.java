@@ -94,6 +94,18 @@ public class NearImageArgumentTest {
   }
 
   @Test
+  public void shouldBuildFromBase64WithTargetVectors() {
+    String imageBase64 = "iVBORw0KGgoAAAANS";
+
+    String nearImage = NearImageArgument.builder()
+      .image(imageBase64)
+      .targetVectors(new String[]{"vector1"})
+      .build().build();
+
+    assertThat(nearImage).isEqualTo(String.format("nearImage:{image:\"%s\" targetVectors:[\"vector1\"]}", imageBase64));
+  }
+
+  @Test
   public void shouldBuildEmptyDueToBadFile() {
     File badFile = new File("");
 

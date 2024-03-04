@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.LinkedHashSet;
@@ -21,6 +22,7 @@ public class NearVectorArgument implements Argument {
   Float[] vector;
   Float certainty;
   Float distance;
+  String[] targetVectors;
 
   @Override
   public String build() {
@@ -34,6 +36,9 @@ public class NearVectorArgument implements Argument {
     }
     if (distance != null) {
       arg.add(String.format("distance:%s", distance));
+    }
+    if (ArrayUtils.isNotEmpty(targetVectors)) {
+      arg.add(String.format("targetVectors:%s",  Serializer.arrayWithQuotes(targetVectors)));
     }
 
     return String.format("nearVector:{%s}", String.join(" ", arg));

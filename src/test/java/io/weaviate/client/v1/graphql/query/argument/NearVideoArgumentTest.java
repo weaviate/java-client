@@ -94,6 +94,18 @@ public class NearVideoArgumentTest {
   }
 
   @Test
+  public void shouldBuildFromBase64WithTargetVectors() {
+    String videoBase64 = "iVBORw0KGgoAAAANS";
+
+    String nearVideo = NearVideoArgument.builder()
+      .video(videoBase64)
+      .targetVectors(new String[]{"vector1"})
+      .build().build();
+
+    assertThat(nearVideo).isEqualTo(String.format("nearVideo:{video:\"%s\" targetVectors:[\"vector1\"]}", videoBase64));
+  }
+
+  @Test
   public void shouldBuildEmptyDueToBadFile() {
     File badFile = new File("");
 

@@ -24,6 +24,8 @@ public class HybridArgument implements Argument {
   Float[] vector;
   String fusionType;
   String[] properties;
+  String[] targetVectors;
+
 
   @Override
   public String build() {
@@ -41,6 +43,9 @@ public class HybridArgument implements Argument {
     }
     if (StringUtils.isNotBlank(fusionType)) {
       arg.add(String.format("fusionType:%s", fusionType));
+    }
+    if (ArrayUtils.isNotEmpty(targetVectors)) {
+      arg.add(String.format("targetVectors:%s",  Serializer.arrayWithQuotes(targetVectors)));
     }
 
     return String.format("hybrid:{%s}", String.join(" ", arg));

@@ -20,12 +20,14 @@ public class NearThermalArgument implements Argument {
   File thermalFile;
   Float certainty;
   Float distance;
+  String[] targetVectors;
 
   @Override
   public String build() {
     return NearMediaArgumentHelper.builder()
       .certainty(certainty)
       .distance(distance)
+      .targetVectors(targetVectors)
       .data(thermal)
       .dataFile(thermalFile)
       .mediaField("thermal")

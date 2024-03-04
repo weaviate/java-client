@@ -20,12 +20,14 @@ public class NearDepthArgument implements Argument {
   File depthFile;
   Float certainty;
   Float distance;
+  String[] targetVectors;
 
   @Override
   public String build() {
     return NearMediaArgumentHelper.builder()
       .certainty(certainty)
       .distance(distance)
+      .targetVectors(targetVectors)
       .data(depth)
       .dataFile(depthFile)
       .mediaField("depth")

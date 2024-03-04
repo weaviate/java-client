@@ -20,12 +20,14 @@ public class NearAudioArgument implements Argument {
   File audioFile;
   Float certainty;
   Float distance;
+  String[] targetVectors;
 
   @Override
   public String build() {
     return NearMediaArgumentHelper.builder()
       .certainty(certainty)
       .distance(distance)
+      .targetVectors(targetVectors)
       .data(audio)
       .dataFile(audioFile)
       .mediaField("audio")

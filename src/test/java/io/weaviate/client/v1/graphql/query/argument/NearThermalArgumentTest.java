@@ -94,6 +94,18 @@ public class NearThermalArgumentTest {
   }
 
   @Test
+  public void shouldBuildFromBase64WithTargetVectors() {
+    String thermalBase64 = "iVBORw0KGgoAAAANS";
+
+    String nearThermal = NearThermalArgument.builder()
+      .thermal(thermalBase64)
+      .targetVectors(new String[]{"vector1"})
+      .build().build();
+
+    assertThat(nearThermal).isEqualTo(String.format("nearThermal:{thermal:\"%s\" targetVectors:[\"vector1\"]}", thermalBase64));
+  }
+
+  @Test
   public void shouldBuildEmptyDueToBadFile() {
     File badFile = new File("");
 

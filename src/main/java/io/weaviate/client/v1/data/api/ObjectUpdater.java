@@ -27,6 +27,8 @@ public class ObjectUpdater extends BaseClient<WeaviateObject> implements ClientR
   private String consistencyLevel;
   private String tenant;
   private Map<String, Object> properties;
+  private Float[] vector;
+  private Map<String, Float[]> vectors;
   private Boolean withMerge;
 
   public ObjectUpdater(HttpClient httpClient, Config config, ObjectsPath objectsPath) {
@@ -59,6 +61,16 @@ public class ObjectUpdater extends BaseClient<WeaviateObject> implements ClientR
     return this;
   }
 
+  public ObjectUpdater withVector(Float[] vector) {
+    this.vector = vector;
+    return this;
+  }
+
+  public ObjectUpdater withVectors(Map<String, Float[]> vectors) {
+    this.vectors = vectors;
+    return this;
+  }
+
   public ObjectUpdater withMerge() {
     this.withMerge = true;
     return this;
@@ -82,6 +94,8 @@ public class ObjectUpdater extends BaseClient<WeaviateObject> implements ClientR
       .className(className)
       .properties(properties)
       .id(id)
+      .vector(vector)
+      .vectors(vectors)
       .tenant(tenant)
       .build();
     if (BooleanUtils.isTrue(withMerge)) {

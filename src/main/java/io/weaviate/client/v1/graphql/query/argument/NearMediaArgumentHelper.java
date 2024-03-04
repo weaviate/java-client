@@ -4,6 +4,7 @@ import io.weaviate.client.v1.graphql.query.util.Serializer;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.experimental.FieldDefaults;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -11,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Builder
@@ -23,6 +25,7 @@ class NearMediaArgumentHelper {
   File dataFile;
   Float certainty;
   Float distance;
+  String[] targetVectors;
 
 
   public String build() {
@@ -37,6 +40,9 @@ class NearMediaArgumentHelper {
     }
     if (distance != null) {
       fields.add(String.format("distance:%s", distance));
+    }
+    if (ArrayUtils.isNotEmpty(targetVectors)) {
+      fields.add(String.format("targetVectors:%s",  Serializer.arrayWithQuotes(targetVectors)));
     }
 
     return String.format("%s:{%s}", mediaName, String.join(" ", fields));

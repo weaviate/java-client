@@ -952,7 +952,7 @@ public final class WeaviateProtoBatch {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.BatchObject.vector is deprecated.
-     *     See v1/batch.proto;l=42
+     *     See v1/batch.proto;l=45
      * @return A list containing the vector.
      */
     @java.lang.Deprecated java.util.List<java.lang.Float> getVectorList();
@@ -963,7 +963,7 @@ public final class WeaviateProtoBatch {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.BatchObject.vector is deprecated.
-     *     See v1/batch.proto;l=42
+     *     See v1/batch.proto;l=45
      * @return The count of vector.
      */
     @java.lang.Deprecated int getVectorCount();
@@ -974,7 +974,7 @@ public final class WeaviateProtoBatch {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.BatchObject.vector is deprecated.
-     *     See v1/batch.proto;l=42
+     *     See v1/batch.proto;l=45
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
@@ -1024,6 +1024,50 @@ public final class WeaviateProtoBatch {
      * @return The vectorBytes.
      */
     com.google.protobuf.ByteString getVectorBytes();
+
+    /**
+     * <pre>
+     * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+     * </pre>
+     *
+     * <code>repeated .weaviate.v1.Vectors vectors = 23;</code>
+     */
+    java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors> 
+        getVectorsList();
+    /**
+     * <pre>
+     * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+     * </pre>
+     *
+     * <code>repeated .weaviate.v1.Vectors vectors = 23;</code>
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors getVectors(int index);
+    /**
+     * <pre>
+     * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+     * </pre>
+     *
+     * <code>repeated .weaviate.v1.Vectors vectors = 23;</code>
+     */
+    int getVectorsCount();
+    /**
+     * <pre>
+     * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+     * </pre>
+     *
+     * <code>repeated .weaviate.v1.Vectors vectors = 23;</code>
+     */
+    java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.VectorsOrBuilder> 
+        getVectorsOrBuilderList();
+    /**
+     * <pre>
+     * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+     * </pre>
+     *
+     * <code>repeated .weaviate.v1.Vectors vectors = 23;</code>
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.VectorsOrBuilder getVectorsOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code weaviate.v1.BatchObject}
@@ -1043,6 +1087,7 @@ public final class WeaviateProtoBatch {
       collection_ = "";
       tenant_ = "";
       vectorBytes_ = com.google.protobuf.ByteString.EMPTY;
+      vectors_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -1275,6 +1320,51 @@ public final class WeaviateProtoBatch {
        */
       io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.ObjectArrayPropertiesOrBuilder getObjectArrayPropertiesOrBuilder(
           int index);
+
+      /**
+       * <pre>
+       * empty lists do not have a type in many languages and clients do not know which datatype the property has.
+       * Weaviate can get the datatype from its schema
+       * </pre>
+       *
+       * <code>repeated string empty_list_props = 10;</code>
+       * @return A list containing the emptyListProps.
+       */
+      java.util.List<java.lang.String>
+          getEmptyListPropsList();
+      /**
+       * <pre>
+       * empty lists do not have a type in many languages and clients do not know which datatype the property has.
+       * Weaviate can get the datatype from its schema
+       * </pre>
+       *
+       * <code>repeated string empty_list_props = 10;</code>
+       * @return The count of emptyListProps.
+       */
+      int getEmptyListPropsCount();
+      /**
+       * <pre>
+       * empty lists do not have a type in many languages and clients do not know which datatype the property has.
+       * Weaviate can get the datatype from its schema
+       * </pre>
+       *
+       * <code>repeated string empty_list_props = 10;</code>
+       * @param index The index of the element to return.
+       * @return The emptyListProps at the given index.
+       */
+      java.lang.String getEmptyListProps(int index);
+      /**
+       * <pre>
+       * empty lists do not have a type in many languages and clients do not know which datatype the property has.
+       * Weaviate can get the datatype from its schema
+       * </pre>
+       *
+       * <code>repeated string empty_list_props = 10;</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the emptyListProps at the given index.
+       */
+      com.google.protobuf.ByteString
+          getEmptyListPropsBytes(int index);
     }
     /**
      * Protobuf type {@code weaviate.v1.BatchObject.Properties}
@@ -1297,6 +1387,8 @@ public final class WeaviateProtoBatch {
         booleanArrayProperties_ = java.util.Collections.emptyList();
         objectProperties_ = java.util.Collections.emptyList();
         objectArrayProperties_ = java.util.Collections.emptyList();
+        emptyListProps_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
       }
 
       @java.lang.Override
@@ -1674,6 +1766,63 @@ public final class WeaviateProtoBatch {
         return objectArrayProperties_.get(index);
       }
 
+      public static final int EMPTY_LIST_PROPS_FIELD_NUMBER = 10;
+      @SuppressWarnings("serial")
+      private com.google.protobuf.LazyStringArrayList emptyListProps_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      /**
+       * <pre>
+       * empty lists do not have a type in many languages and clients do not know which datatype the property has.
+       * Weaviate can get the datatype from its schema
+       * </pre>
+       *
+       * <code>repeated string empty_list_props = 10;</code>
+       * @return A list containing the emptyListProps.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getEmptyListPropsList() {
+        return emptyListProps_;
+      }
+      /**
+       * <pre>
+       * empty lists do not have a type in many languages and clients do not know which datatype the property has.
+       * Weaviate can get the datatype from its schema
+       * </pre>
+       *
+       * <code>repeated string empty_list_props = 10;</code>
+       * @return The count of emptyListProps.
+       */
+      public int getEmptyListPropsCount() {
+        return emptyListProps_.size();
+      }
+      /**
+       * <pre>
+       * empty lists do not have a type in many languages and clients do not know which datatype the property has.
+       * Weaviate can get the datatype from its schema
+       * </pre>
+       *
+       * <code>repeated string empty_list_props = 10;</code>
+       * @param index The index of the element to return.
+       * @return The emptyListProps at the given index.
+       */
+      public java.lang.String getEmptyListProps(int index) {
+        return emptyListProps_.get(index);
+      }
+      /**
+       * <pre>
+       * empty lists do not have a type in many languages and clients do not know which datatype the property has.
+       * Weaviate can get the datatype from its schema
+       * </pre>
+       *
+       * <code>repeated string empty_list_props = 10;</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the emptyListProps at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getEmptyListPropsBytes(int index) {
+        return emptyListProps_.getByteString(index);
+      }
+
       private byte memoizedIsInitialized = -1;
       @java.lang.Override
       public final boolean isInitialized() {
@@ -1714,6 +1863,9 @@ public final class WeaviateProtoBatch {
         }
         for (int i = 0; i < objectArrayProperties_.size(); i++) {
           output.writeMessage(9, objectArrayProperties_.get(i));
+        }
+        for (int i = 0; i < emptyListProps_.size(); i++) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 10, emptyListProps_.getRaw(i));
         }
         getUnknownFields().writeTo(output);
       }
@@ -1760,6 +1912,14 @@ public final class WeaviateProtoBatch {
           size += com.google.protobuf.CodedOutputStream
             .computeMessageSize(9, objectArrayProperties_.get(i));
         }
+        {
+          int dataSize = 0;
+          for (int i = 0; i < emptyListProps_.size(); i++) {
+            dataSize += computeStringSizeNoTag(emptyListProps_.getRaw(i));
+          }
+          size += dataSize;
+          size += 1 * getEmptyListPropsList().size();
+        }
         size += getUnknownFields().getSerializedSize();
         memoizedSize = size;
         return size;
@@ -1796,6 +1956,8 @@ public final class WeaviateProtoBatch {
             .equals(other.getObjectPropertiesList())) return false;
         if (!getObjectArrayPropertiesList()
             .equals(other.getObjectArrayPropertiesList())) return false;
+        if (!getEmptyListPropsList()
+            .equals(other.getEmptyListPropsList())) return false;
         if (!getUnknownFields().equals(other.getUnknownFields())) return false;
         return true;
       }
@@ -1842,6 +2004,10 @@ public final class WeaviateProtoBatch {
         if (getObjectArrayPropertiesCount() > 0) {
           hash = (37 * hash) + OBJECT_ARRAY_PROPERTIES_FIELD_NUMBER;
           hash = (53 * hash) + getObjectArrayPropertiesList().hashCode();
+        }
+        if (getEmptyListPropsCount() > 0) {
+          hash = (37 * hash) + EMPTY_LIST_PROPS_FIELD_NUMBER;
+          hash = (53 * hash) + getEmptyListPropsList().hashCode();
         }
         hash = (29 * hash) + getUnknownFields().hashCode();
         memoizedHashCode = hash;
@@ -2049,6 +2215,8 @@ public final class WeaviateProtoBatch {
             objectArrayPropertiesBuilder_.clear();
           }
           bitField0_ = (bitField0_ & ~0x00000100);
+          emptyListProps_ =
+              com.google.protobuf.LazyStringArrayList.emptyList();
           return this;
         }
 
@@ -2164,6 +2332,10 @@ public final class WeaviateProtoBatch {
                 ? nonRefProperties_
                 : nonRefPropertiesBuilder_.build();
             to_bitField0_ |= 0x00000001;
+          }
+          if (((from_bitField0_ & 0x00000200) != 0)) {
+            emptyListProps_.makeImmutable();
+            result.emptyListProps_ = emptyListProps_;
           }
           result.bitField0_ |= to_bitField0_;
         }
@@ -2423,6 +2595,16 @@ public final class WeaviateProtoBatch {
               }
             }
           }
+          if (!other.emptyListProps_.isEmpty()) {
+            if (emptyListProps_.isEmpty()) {
+              emptyListProps_ = other.emptyListProps_;
+              bitField0_ |= 0x00000200;
+            } else {
+              ensureEmptyListPropsIsMutable();
+              emptyListProps_.addAll(other.emptyListProps_);
+            }
+            onChanged();
+          }
           this.mergeUnknownFields(other.getUnknownFields());
           onChanged();
           return this;
@@ -2560,6 +2742,12 @@ public final class WeaviateProtoBatch {
                   }
                   break;
                 } // case 74
+                case 82: {
+                  java.lang.String s = input.readStringRequireUtf8();
+                  ensureEmptyListPropsIsMutable();
+                  emptyListProps_.add(s);
+                  break;
+                } // case 82
                 default: {
                   if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                     done = true; // was an endgroup tag
@@ -4617,6 +4805,162 @@ public final class WeaviateProtoBatch {
           }
           return objectArrayPropertiesBuilder_;
         }
+
+        private com.google.protobuf.LazyStringArrayList emptyListProps_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+        private void ensureEmptyListPropsIsMutable() {
+          if (!emptyListProps_.isModifiable()) {
+            emptyListProps_ = new com.google.protobuf.LazyStringArrayList(emptyListProps_);
+          }
+          bitField0_ |= 0x00000200;
+        }
+        /**
+         * <pre>
+         * empty lists do not have a type in many languages and clients do not know which datatype the property has.
+         * Weaviate can get the datatype from its schema
+         * </pre>
+         *
+         * <code>repeated string empty_list_props = 10;</code>
+         * @return A list containing the emptyListProps.
+         */
+        public com.google.protobuf.ProtocolStringList
+            getEmptyListPropsList() {
+          emptyListProps_.makeImmutable();
+          return emptyListProps_;
+        }
+        /**
+         * <pre>
+         * empty lists do not have a type in many languages and clients do not know which datatype the property has.
+         * Weaviate can get the datatype from its schema
+         * </pre>
+         *
+         * <code>repeated string empty_list_props = 10;</code>
+         * @return The count of emptyListProps.
+         */
+        public int getEmptyListPropsCount() {
+          return emptyListProps_.size();
+        }
+        /**
+         * <pre>
+         * empty lists do not have a type in many languages and clients do not know which datatype the property has.
+         * Weaviate can get the datatype from its schema
+         * </pre>
+         *
+         * <code>repeated string empty_list_props = 10;</code>
+         * @param index The index of the element to return.
+         * @return The emptyListProps at the given index.
+         */
+        public java.lang.String getEmptyListProps(int index) {
+          return emptyListProps_.get(index);
+        }
+        /**
+         * <pre>
+         * empty lists do not have a type in many languages and clients do not know which datatype the property has.
+         * Weaviate can get the datatype from its schema
+         * </pre>
+         *
+         * <code>repeated string empty_list_props = 10;</code>
+         * @param index The index of the value to return.
+         * @return The bytes of the emptyListProps at the given index.
+         */
+        public com.google.protobuf.ByteString
+            getEmptyListPropsBytes(int index) {
+          return emptyListProps_.getByteString(index);
+        }
+        /**
+         * <pre>
+         * empty lists do not have a type in many languages and clients do not know which datatype the property has.
+         * Weaviate can get the datatype from its schema
+         * </pre>
+         *
+         * <code>repeated string empty_list_props = 10;</code>
+         * @param index The index to set the value at.
+         * @param value The emptyListProps to set.
+         * @return This builder for chaining.
+         */
+        public Builder setEmptyListProps(
+            int index, java.lang.String value) {
+          if (value == null) { throw new NullPointerException(); }
+          ensureEmptyListPropsIsMutable();
+          emptyListProps_.set(index, value);
+          bitField0_ |= 0x00000200;
+          onChanged();
+          return this;
+        }
+        /**
+         * <pre>
+         * empty lists do not have a type in many languages and clients do not know which datatype the property has.
+         * Weaviate can get the datatype from its schema
+         * </pre>
+         *
+         * <code>repeated string empty_list_props = 10;</code>
+         * @param value The emptyListProps to add.
+         * @return This builder for chaining.
+         */
+        public Builder addEmptyListProps(
+            java.lang.String value) {
+          if (value == null) { throw new NullPointerException(); }
+          ensureEmptyListPropsIsMutable();
+          emptyListProps_.add(value);
+          bitField0_ |= 0x00000200;
+          onChanged();
+          return this;
+        }
+        /**
+         * <pre>
+         * empty lists do not have a type in many languages and clients do not know which datatype the property has.
+         * Weaviate can get the datatype from its schema
+         * </pre>
+         *
+         * <code>repeated string empty_list_props = 10;</code>
+         * @param values The emptyListProps to add.
+         * @return This builder for chaining.
+         */
+        public Builder addAllEmptyListProps(
+            java.lang.Iterable<java.lang.String> values) {
+          ensureEmptyListPropsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, emptyListProps_);
+          bitField0_ |= 0x00000200;
+          onChanged();
+          return this;
+        }
+        /**
+         * <pre>
+         * empty lists do not have a type in many languages and clients do not know which datatype the property has.
+         * Weaviate can get the datatype from its schema
+         * </pre>
+         *
+         * <code>repeated string empty_list_props = 10;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearEmptyListProps() {
+          emptyListProps_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000200);;
+          onChanged();
+          return this;
+        }
+        /**
+         * <pre>
+         * empty lists do not have a type in many languages and clients do not know which datatype the property has.
+         * Weaviate can get the datatype from its schema
+         * </pre>
+         *
+         * <code>repeated string empty_list_props = 10;</code>
+         * @param value The bytes of the emptyListProps to add.
+         * @return This builder for chaining.
+         */
+        public Builder addEmptyListPropsBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) { throw new NullPointerException(); }
+          checkByteStringIsUtf8(value);
+          ensureEmptyListPropsIsMutable();
+          emptyListProps_.add(value);
+          bitField0_ |= 0x00000200;
+          onChanged();
+          return this;
+        }
         @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -6412,7 +6756,7 @@ public final class WeaviateProtoBatch {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.BatchObject.vector is deprecated.
-     *     See v1/batch.proto;l=42
+     *     See v1/batch.proto;l=45
      * @return A list containing the vector.
      */
     @java.lang.Override
@@ -6427,7 +6771,7 @@ public final class WeaviateProtoBatch {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.BatchObject.vector is deprecated.
-     *     See v1/batch.proto;l=42
+     *     See v1/batch.proto;l=45
      * @return The count of vector.
      */
     @java.lang.Deprecated public int getVectorCount() {
@@ -6440,7 +6784,7 @@ public final class WeaviateProtoBatch {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.BatchObject.vector is deprecated.
-     *     See v1/batch.proto;l=42
+     *     See v1/batch.proto;l=45
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
@@ -6564,6 +6908,67 @@ public final class WeaviateProtoBatch {
       return vectorBytes_;
     }
 
+    public static final int VECTORS_FIELD_NUMBER = 23;
+    @SuppressWarnings("serial")
+    private java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors> vectors_;
+    /**
+     * <pre>
+     * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+     * </pre>
+     *
+     * <code>repeated .weaviate.v1.Vectors vectors = 23;</code>
+     */
+    @java.lang.Override
+    public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors> getVectorsList() {
+      return vectors_;
+    }
+    /**
+     * <pre>
+     * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+     * </pre>
+     *
+     * <code>repeated .weaviate.v1.Vectors vectors = 23;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.VectorsOrBuilder> 
+        getVectorsOrBuilderList() {
+      return vectors_;
+    }
+    /**
+     * <pre>
+     * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+     * </pre>
+     *
+     * <code>repeated .weaviate.v1.Vectors vectors = 23;</code>
+     */
+    @java.lang.Override
+    public int getVectorsCount() {
+      return vectors_.size();
+    }
+    /**
+     * <pre>
+     * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+     * </pre>
+     *
+     * <code>repeated .weaviate.v1.Vectors vectors = 23;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors getVectors(int index) {
+      return vectors_.get(index);
+    }
+    /**
+     * <pre>
+     * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+     * </pre>
+     *
+     * <code>repeated .weaviate.v1.Vectors vectors = 23;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.VectorsOrBuilder getVectorsOrBuilder(
+        int index) {
+      return vectors_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -6600,6 +7005,9 @@ public final class WeaviateProtoBatch {
       }
       if (!vectorBytes_.isEmpty()) {
         output.writeBytes(6, vectorBytes_);
+      }
+      for (int i = 0; i < vectors_.size(); i++) {
+        output.writeMessage(23, vectors_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -6638,6 +7046,10 @@ public final class WeaviateProtoBatch {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(6, vectorBytes_);
       }
+      for (int i = 0; i < vectors_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(23, vectors_.get(i));
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
@@ -6668,6 +7080,8 @@ public final class WeaviateProtoBatch {
           .equals(other.getTenant())) return false;
       if (!getVectorBytes()
           .equals(other.getVectorBytes())) return false;
+      if (!getVectorsList()
+          .equals(other.getVectorsList())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -6695,6 +7109,10 @@ public final class WeaviateProtoBatch {
       hash = (53 * hash) + getTenant().hashCode();
       hash = (37 * hash) + VECTOR_BYTES_FIELD_NUMBER;
       hash = (53 * hash) + getVectorBytes().hashCode();
+      if (getVectorsCount() > 0) {
+        hash = (37 * hash) + VECTORS_FIELD_NUMBER;
+        hash = (53 * hash) + getVectorsList().hashCode();
+      }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -6826,6 +7244,7 @@ public final class WeaviateProtoBatch {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
           getPropertiesFieldBuilder();
+          getVectorsFieldBuilder();
         }
       }
       @java.lang.Override
@@ -6842,6 +7261,13 @@ public final class WeaviateProtoBatch {
         collection_ = "";
         tenant_ = "";
         vectorBytes_ = com.google.protobuf.ByteString.EMPTY;
+        if (vectorsBuilder_ == null) {
+          vectors_ = java.util.Collections.emptyList();
+        } else {
+          vectors_ = null;
+          vectorsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000040);
         return this;
       }
 
@@ -6868,9 +7294,22 @@ public final class WeaviateProtoBatch {
       @java.lang.Override
       public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch.BatchObject buildPartial() {
         io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch.BatchObject result = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch.BatchObject(this);
+        buildPartialRepeatedFields(result);
         if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
+      }
+
+      private void buildPartialRepeatedFields(io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch.BatchObject result) {
+        if (vectorsBuilder_ == null) {
+          if (((bitField0_ & 0x00000040) != 0)) {
+            vectors_ = java.util.Collections.unmodifiableList(vectors_);
+            bitField0_ = (bitField0_ & ~0x00000040);
+          }
+          result.vectors_ = vectors_;
+        } else {
+          result.vectors_ = vectorsBuilder_.build();
+        }
       }
 
       private void buildPartial0(io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch.BatchObject result) {
@@ -6977,6 +7416,32 @@ public final class WeaviateProtoBatch {
         if (other.getVectorBytes() != com.google.protobuf.ByteString.EMPTY) {
           setVectorBytes(other.getVectorBytes());
         }
+        if (vectorsBuilder_ == null) {
+          if (!other.vectors_.isEmpty()) {
+            if (vectors_.isEmpty()) {
+              vectors_ = other.vectors_;
+              bitField0_ = (bitField0_ & ~0x00000040);
+            } else {
+              ensureVectorsIsMutable();
+              vectors_.addAll(other.vectors_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.vectors_.isEmpty()) {
+            if (vectorsBuilder_.isEmpty()) {
+              vectorsBuilder_.dispose();
+              vectorsBuilder_ = null;
+              vectors_ = other.vectors_;
+              bitField0_ = (bitField0_ & ~0x00000040);
+              vectorsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getVectorsFieldBuilder() : null;
+            } else {
+              vectorsBuilder_.addAllMessages(other.vectors_);
+            }
+          }
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -7047,6 +7512,19 @@ public final class WeaviateProtoBatch {
                 bitField0_ |= 0x00000020;
                 break;
               } // case 50
+              case 186: {
+                io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors m =
+                    input.readMessage(
+                        io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors.parser(),
+                        extensionRegistry);
+                if (vectorsBuilder_ == null) {
+                  ensureVectorsIsMutable();
+                  vectors_.add(m);
+                } else {
+                  vectorsBuilder_.addMessage(m);
+                }
+                break;
+              } // case 186
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -7156,7 +7634,7 @@ public final class WeaviateProtoBatch {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.BatchObject.vector is deprecated.
-       *     See v1/batch.proto;l=42
+       *     See v1/batch.proto;l=45
        * @return A list containing the vector.
        */
       @java.lang.Deprecated public java.util.List<java.lang.Float>
@@ -7171,7 +7649,7 @@ public final class WeaviateProtoBatch {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.BatchObject.vector is deprecated.
-       *     See v1/batch.proto;l=42
+       *     See v1/batch.proto;l=45
        * @return The count of vector.
        */
       @java.lang.Deprecated public int getVectorCount() {
@@ -7184,7 +7662,7 @@ public final class WeaviateProtoBatch {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.BatchObject.vector is deprecated.
-       *     See v1/batch.proto;l=42
+       *     See v1/batch.proto;l=45
        * @param index The index of the element to return.
        * @return The vector at the given index.
        */
@@ -7198,7 +7676,7 @@ public final class WeaviateProtoBatch {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.BatchObject.vector is deprecated.
-       *     See v1/batch.proto;l=42
+       *     See v1/batch.proto;l=45
        * @param index The index to set the value at.
        * @param value The vector to set.
        * @return This builder for chaining.
@@ -7219,7 +7697,7 @@ public final class WeaviateProtoBatch {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.BatchObject.vector is deprecated.
-       *     See v1/batch.proto;l=42
+       *     See v1/batch.proto;l=45
        * @param value The vector to add.
        * @return This builder for chaining.
        */
@@ -7238,7 +7716,7 @@ public final class WeaviateProtoBatch {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.BatchObject.vector is deprecated.
-       *     See v1/batch.proto;l=42
+       *     See v1/batch.proto;l=45
        * @param values The vector to add.
        * @return This builder for chaining.
        */
@@ -7258,7 +7736,7 @@ public final class WeaviateProtoBatch {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.BatchObject.vector is deprecated.
-       *     See v1/batch.proto;l=42
+       *     See v1/batch.proto;l=45
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearVector() {
@@ -7563,6 +8041,318 @@ public final class WeaviateProtoBatch {
         vectorBytes_ = getDefaultInstance().getVectorBytes();
         onChanged();
         return this;
+      }
+
+      private java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors> vectors_ =
+        java.util.Collections.emptyList();
+      private void ensureVectorsIsMutable() {
+        if (!((bitField0_ & 0x00000040) != 0)) {
+          vectors_ = new java.util.ArrayList<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors>(vectors_);
+          bitField0_ |= 0x00000040;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.VectorsOrBuilder> vectorsBuilder_;
+
+      /**
+       * <pre>
+       * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+       * </pre>
+       *
+       * <code>repeated .weaviate.v1.Vectors vectors = 23;</code>
+       */
+      public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors> getVectorsList() {
+        if (vectorsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(vectors_);
+        } else {
+          return vectorsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+       * </pre>
+       *
+       * <code>repeated .weaviate.v1.Vectors vectors = 23;</code>
+       */
+      public int getVectorsCount() {
+        if (vectorsBuilder_ == null) {
+          return vectors_.size();
+        } else {
+          return vectorsBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+       * </pre>
+       *
+       * <code>repeated .weaviate.v1.Vectors vectors = 23;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors getVectors(int index) {
+        if (vectorsBuilder_ == null) {
+          return vectors_.get(index);
+        } else {
+          return vectorsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+       * </pre>
+       *
+       * <code>repeated .weaviate.v1.Vectors vectors = 23;</code>
+       */
+      public Builder setVectors(
+          int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors value) {
+        if (vectorsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureVectorsIsMutable();
+          vectors_.set(index, value);
+          onChanged();
+        } else {
+          vectorsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+       * </pre>
+       *
+       * <code>repeated .weaviate.v1.Vectors vectors = 23;</code>
+       */
+      public Builder setVectors(
+          int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors.Builder builderForValue) {
+        if (vectorsBuilder_ == null) {
+          ensureVectorsIsMutable();
+          vectors_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          vectorsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+       * </pre>
+       *
+       * <code>repeated .weaviate.v1.Vectors vectors = 23;</code>
+       */
+      public Builder addVectors(io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors value) {
+        if (vectorsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureVectorsIsMutable();
+          vectors_.add(value);
+          onChanged();
+        } else {
+          vectorsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+       * </pre>
+       *
+       * <code>repeated .weaviate.v1.Vectors vectors = 23;</code>
+       */
+      public Builder addVectors(
+          int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors value) {
+        if (vectorsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureVectorsIsMutable();
+          vectors_.add(index, value);
+          onChanged();
+        } else {
+          vectorsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+       * </pre>
+       *
+       * <code>repeated .weaviate.v1.Vectors vectors = 23;</code>
+       */
+      public Builder addVectors(
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors.Builder builderForValue) {
+        if (vectorsBuilder_ == null) {
+          ensureVectorsIsMutable();
+          vectors_.add(builderForValue.build());
+          onChanged();
+        } else {
+          vectorsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+       * </pre>
+       *
+       * <code>repeated .weaviate.v1.Vectors vectors = 23;</code>
+       */
+      public Builder addVectors(
+          int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors.Builder builderForValue) {
+        if (vectorsBuilder_ == null) {
+          ensureVectorsIsMutable();
+          vectors_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          vectorsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+       * </pre>
+       *
+       * <code>repeated .weaviate.v1.Vectors vectors = 23;</code>
+       */
+      public Builder addAllVectors(
+          java.lang.Iterable<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors> values) {
+        if (vectorsBuilder_ == null) {
+          ensureVectorsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, vectors_);
+          onChanged();
+        } else {
+          vectorsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+       * </pre>
+       *
+       * <code>repeated .weaviate.v1.Vectors vectors = 23;</code>
+       */
+      public Builder clearVectors() {
+        if (vectorsBuilder_ == null) {
+          vectors_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000040);
+          onChanged();
+        } else {
+          vectorsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+       * </pre>
+       *
+       * <code>repeated .weaviate.v1.Vectors vectors = 23;</code>
+       */
+      public Builder removeVectors(int index) {
+        if (vectorsBuilder_ == null) {
+          ensureVectorsIsMutable();
+          vectors_.remove(index);
+          onChanged();
+        } else {
+          vectorsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+       * </pre>
+       *
+       * <code>repeated .weaviate.v1.Vectors vectors = 23;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors.Builder getVectorsBuilder(
+          int index) {
+        return getVectorsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+       * </pre>
+       *
+       * <code>repeated .weaviate.v1.Vectors vectors = 23;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.VectorsOrBuilder getVectorsOrBuilder(
+          int index) {
+        if (vectorsBuilder_ == null) {
+          return vectors_.get(index);  } else {
+          return vectorsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+       * </pre>
+       *
+       * <code>repeated .weaviate.v1.Vectors vectors = 23;</code>
+       */
+      public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.VectorsOrBuilder> 
+           getVectorsOrBuilderList() {
+        if (vectorsBuilder_ != null) {
+          return vectorsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(vectors_);
+        }
+      }
+      /**
+       * <pre>
+       * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+       * </pre>
+       *
+       * <code>repeated .weaviate.v1.Vectors vectors = 23;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors.Builder addVectorsBuilder() {
+        return getVectorsFieldBuilder().addBuilder(
+            io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+       * </pre>
+       *
+       * <code>repeated .weaviate.v1.Vectors vectors = 23;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors.Builder addVectorsBuilder(
+          int index) {
+        return getVectorsFieldBuilder().addBuilder(
+            index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * protolint:disable:next REPEATED_FIELD_NAMES_PLURALIZED
+       * </pre>
+       *
+       * <code>repeated .weaviate.v1.Vectors vectors = 23;</code>
+       */
+      public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors.Builder> 
+           getVectorsBuilderList() {
+        return getVectorsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.VectorsOrBuilder> 
+          getVectorsFieldBuilder() {
+        if (vectorsBuilder_ == null) {
+          vectorsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.VectorsOrBuilder>(
+                  vectors_,
+                  ((bitField0_ & 0x00000040) != 0),
+                  getParentForChildren(),
+                  isClean());
+          vectors_ = null;
+        }
+        return vectorsBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -9157,37 +9947,38 @@ public final class WeaviateProtoBatch {
       "atchObjectsRequest\022)\n\007objects\030\001 \003(\0132\030.we" +
       "aviate.v1.BatchObject\022=\n\021consistency_lev" +
       "el\030\002 \001(\0162\035.weaviate.v1.ConsistencyLevelH" +
-      "\000\210\001\001B\024\n\022_consistency_level\"\235\007\n\013BatchObje" +
+      "\000\210\001\001B\024\n\022_consistency_level\"\336\007\n\013BatchObje" +
       "ct\022\014\n\004uuid\030\001 \001(\t\022\022\n\006vector\030\002 \003(\002B\002\030\001\0227\n\n" +
       "properties\030\003 \001(\0132#.weaviate.v1.BatchObje" +
       "ct.Properties\022\022\n\ncollection\030\004 \001(\t\022\016\n\006ten" +
-      "ant\030\005 \001(\t\022\024\n\014vector_bytes\030\006 \001(\014\032\352\004\n\nProp" +
-      "erties\0223\n\022non_ref_properties\030\001 \001(\0132\027.goo" +
-      "gle.protobuf.Struct\022N\n\027single_target_ref" +
-      "_props\030\002 \003(\0132-.weaviate.v1.BatchObject.S" +
-      "ingleTargetRefProps\022L\n\026multi_target_ref_" +
-      "props\030\003 \003(\0132,.weaviate.v1.BatchObject.Mu" +
-      "ltiTargetRefProps\022C\n\027number_array_proper" +
-      "ties\030\004 \003(\0132\".weaviate.v1.NumberArrayProp" +
-      "erties\022=\n\024int_array_properties\030\005 \003(\0132\037.w" +
-      "eaviate.v1.IntArrayProperties\022?\n\025text_ar" +
-      "ray_properties\030\006 \003(\0132 .weaviate.v1.TextA" +
-      "rrayProperties\022E\n\030boolean_array_properti" +
-      "es\030\007 \003(\0132#.weaviate.v1.BooleanArrayPrope" +
-      "rties\0228\n\021object_properties\030\010 \003(\0132\035.weavi" +
-      "ate.v1.ObjectProperties\022C\n\027object_array_" +
-      "properties\030\t \003(\0132\".weaviate.v1.ObjectArr" +
-      "ayProperties\0328\n\024SingleTargetRefProps\022\r\n\005" +
-      "uuids\030\001 \003(\t\022\021\n\tprop_name\030\002 \001(\t\032R\n\023MultiT" +
-      "argetRefProps\022\r\n\005uuids\030\001 \003(\t\022\021\n\tprop_nam" +
-      "e\030\002 \001(\t\022\031\n\021target_collection\030\003 \001(\t\"\210\001\n\021B" +
-      "atchObjectsReply\022\014\n\004took\030\001 \001(\002\0229\n\006errors" +
-      "\030\002 \003(\0132).weaviate.v1.BatchObjectsReply.B" +
-      "atchError\032*\n\nBatchError\022\r\n\005index\030\001 \001(\005\022\r" +
-      "\n\005error\030\002 \001(\tBo\n#io.weaviate.client.grpc" +
-      ".protocol.v1B\022WeaviateProtoBatchZ4github" +
-      ".com/weaviate/weaviate/grpc/generated;pr" +
-      "otocolb\006proto3"
+      "ant\030\005 \001(\t\022\024\n\014vector_bytes\030\006 \001(\014\022%\n\007vecto" +
+      "rs\030\027 \003(\0132\024.weaviate.v1.Vectors\032\204\005\n\nPrope" +
+      "rties\0223\n\022non_ref_properties\030\001 \001(\0132\027.goog" +
+      "le.protobuf.Struct\022N\n\027single_target_ref_" +
+      "props\030\002 \003(\0132-.weaviate.v1.BatchObject.Si" +
+      "ngleTargetRefProps\022L\n\026multi_target_ref_p" +
+      "rops\030\003 \003(\0132,.weaviate.v1.BatchObject.Mul" +
+      "tiTargetRefProps\022C\n\027number_array_propert" +
+      "ies\030\004 \003(\0132\".weaviate.v1.NumberArrayPrope" +
+      "rties\022=\n\024int_array_properties\030\005 \003(\0132\037.we" +
+      "aviate.v1.IntArrayProperties\022?\n\025text_arr" +
+      "ay_properties\030\006 \003(\0132 .weaviate.v1.TextAr" +
+      "rayProperties\022E\n\030boolean_array_propertie" +
+      "s\030\007 \003(\0132#.weaviate.v1.BooleanArrayProper" +
+      "ties\0228\n\021object_properties\030\010 \003(\0132\035.weavia" +
+      "te.v1.ObjectProperties\022C\n\027object_array_p" +
+      "roperties\030\t \003(\0132\".weaviate.v1.ObjectArra" +
+      "yProperties\022\030\n\020empty_list_props\030\n \003(\t\0328\n" +
+      "\024SingleTargetRefProps\022\r\n\005uuids\030\001 \003(\t\022\021\n\t" +
+      "prop_name\030\002 \001(\t\032R\n\023MultiTargetRefProps\022\r" +
+      "\n\005uuids\030\001 \003(\t\022\021\n\tprop_name\030\002 \001(\t\022\031\n\021targ" +
+      "et_collection\030\003 \001(\t\"\210\001\n\021BatchObjectsRepl" +
+      "y\022\014\n\004took\030\001 \001(\002\0229\n\006errors\030\002 \003(\0132).weavia" +
+      "te.v1.BatchObjectsReply.BatchError\032*\n\nBa" +
+      "tchError\022\r\n\005index\030\001 \001(\005\022\r\n\005error\030\002 \001(\tBo" +
+      "\n#io.weaviate.client.grpc.protocol.v1B\022W" +
+      "eaviateProtoBatchZ4github.com/weaviate/w" +
+      "eaviate/grpc/generated;protocolb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -9206,13 +9997,13 @@ public final class WeaviateProtoBatch {
     internal_static_weaviate_v1_BatchObject_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_BatchObject_descriptor,
-        new java.lang.String[] { "Uuid", "Vector", "Properties", "Collection", "Tenant", "VectorBytes", });
+        new java.lang.String[] { "Uuid", "Vector", "Properties", "Collection", "Tenant", "VectorBytes", "Vectors", });
     internal_static_weaviate_v1_BatchObject_Properties_descriptor =
       internal_static_weaviate_v1_BatchObject_descriptor.getNestedTypes().get(0);
     internal_static_weaviate_v1_BatchObject_Properties_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_BatchObject_Properties_descriptor,
-        new java.lang.String[] { "NonRefProperties", "SingleTargetRefProps", "MultiTargetRefProps", "NumberArrayProperties", "IntArrayProperties", "TextArrayProperties", "BooleanArrayProperties", "ObjectProperties", "ObjectArrayProperties", });
+        new java.lang.String[] { "NonRefProperties", "SingleTargetRefProps", "MultiTargetRefProps", "NumberArrayProperties", "IntArrayProperties", "TextArrayProperties", "BooleanArrayProperties", "ObjectProperties", "ObjectArrayProperties", "EmptyListProps", });
     internal_static_weaviate_v1_BatchObject_SingleTargetRefProps_descriptor =
       internal_static_weaviate_v1_BatchObject_descriptor.getNestedTypes().get(1);
     internal_static_weaviate_v1_BatchObject_SingleTargetRefProps_fieldAccessorTable = new

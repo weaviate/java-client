@@ -4,6 +4,7 @@ import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.util.TriConsumer;
+import io.weaviate.client.v1.cluster.model.NodeStatusOutput;
 import io.weaviate.client.v1.cluster.model.NodesStatusResponse;
 import io.weaviate.client.v1.schema.model.Tenant;
 import io.weaviate.integration.client.WeaviateTestGenerics;
@@ -50,7 +51,7 @@ public class ClientClusterMultiTenancyTest {
 
 
   @Test
-  public void shouldGetNodeStatusPerClass() {
+  public void shouldGetNodeStatusPerClass() throws InterruptedException {
     Tenant[] pizzaTenants = new Tenant[] {
       Tenant.builder().name("TenantPizza1").build(),
       Tenant.builder().name("TenantPizza2").build(),
@@ -71,6 +72,7 @@ public class ClientClusterMultiTenancyTest {
     testGenerics.createSchemaSoupForTenants(client);
     testGenerics.createTenantsSoup(client, soupTenants);
     testGenerics.createDataSoupForTenants(client, soupTenantNames);
+    Thread.sleep(3000); // makes sure data are flushed so nodes endpoint returns actual object/shard count
 
     Consumer<Result<NodesStatusResponse>> assertSingleNode = (Result<NodesStatusResponse> result) ->
       assertThat(result).isNotNull()
@@ -91,8 +93,8 @@ public class ClientClusterMultiTenancyTest {
     };
 
     // ALL
-    Result<NodesStatusResponse> resultAll = client.cluster()
-      .nodesStatusGetter()
+    Result<NodesStatusResponse> resultAll = client.cluster().nodesStatusGetter()
+      .withOutput(NodeStatusOutput.VERBOSE)
       .run();
 
     long expectedAllShardCount = pizzaTenants.length + soupTenants.length;
@@ -101,8 +103,8 @@ public class ClientClusterMultiTenancyTest {
     assertCounts.accept(resultAll.getResult().getNodes()[0], expectedAllShardCount, expectedAllObjectsCount);
 
     // PIZZA
-    Result<NodesStatusResponse> resultPizza = client.cluster()
-      .nodesStatusGetter()
+    Result<NodesStatusResponse> resultPizza = client.cluster().nodesStatusGetter()
+      .withOutput(NodeStatusOutput.VERBOSE)
       .withClassName("Pizza")
       .run();
 
@@ -112,8 +114,8 @@ public class ClientClusterMultiTenancyTest {
     assertCounts.accept(resultPizza.getResult().getNodes()[0], expectedPizzaShardCount, expectedPizzaObjectsCount);
 
     // SOUP
-    Result<NodesStatusResponse> resultSoup = client.cluster()
-      .nodesStatusGetter()
+    Result<NodesStatusResponse> resultSoup = client.cluster().nodesStatusGetter()
+      .withOutput(NodeStatusOutput.VERBOSE)
       .withClassName("Soup")
       .run();
 

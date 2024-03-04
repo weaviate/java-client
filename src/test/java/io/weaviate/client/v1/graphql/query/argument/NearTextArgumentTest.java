@@ -614,4 +614,14 @@ public class NearTextArgumentTest {
       "moveTo:{concepts:[\"\\\"I'm a another complex\\\" {'`:concept:`'}\",\"y2\"] force:0.8} " +
       "moveAwayFrom:{concepts:[\"\\\"I'm a yet another complex\\\" {'`:concept:`'}\",\"b2\"] force:0.1}}");
   }
+
+  @Test
+  public void shouldBuildWithTargetVectors() {
+    String nearText = NearTextArgument.builder()
+      .concepts(new String[]{ "a", "b", "c" })
+      .targetVectors(new String[]{"vector1"})
+      .build().build();
+
+    assertThat(nearText).isEqualTo("nearText:{concepts:[\"a\",\"b\",\"c\"] targetVectors:[\"vector1\"]}");
+  }
 }

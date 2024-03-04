@@ -881,6 +881,37 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
     com.google.protobuf.ByteString
         getBlobValueBytes();
 
+    /**
+     * <code>.weaviate.v1.PhoneNumber phone_value = 11;</code>
+     * @return Whether the phoneValue field is set.
+     */
+    boolean hasPhoneValue();
+    /**
+     * <code>.weaviate.v1.PhoneNumber phone_value = 11;</code>
+     * @return The phoneValue.
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber getPhoneValue();
+    /**
+     * <code>.weaviate.v1.PhoneNumber phone_value = 11;</code>
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumberOrBuilder getPhoneValueOrBuilder();
+
+    /**
+     * <code>.google.protobuf.NullValue null_value = 12;</code>
+     * @return Whether the nullValue field is set.
+     */
+    boolean hasNullValue();
+    /**
+     * <code>.google.protobuf.NullValue null_value = 12;</code>
+     * @return The enum numeric value on the wire for nullValue.
+     */
+    int getNullValueValue();
+    /**
+     * <code>.google.protobuf.NullValue null_value = 12;</code>
+     * @return The nullValue.
+     */
+    com.google.protobuf.NullValue getNullValue();
+
     io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value.KindCase getKindCase();
   }
   /**
@@ -934,6 +965,8 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
       INT_VALUE(8),
       GEO_VALUE(9),
       BLOB_VALUE(10),
+      PHONE_VALUE(11),
+      NULL_VALUE(12),
       KIND_NOT_SET(0);
       private final int value;
       private KindCase(int value) {
@@ -961,6 +994,8 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
           case 8: return INT_VALUE;
           case 9: return GEO_VALUE;
           case 10: return BLOB_VALUE;
+          case 11: return PHONE_VALUE;
+          case 12: return NULL_VALUE;
           case 0: return KIND_NOT_SET;
           default: return null;
         }
@@ -1340,6 +1375,68 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
       }
     }
 
+    public static final int PHONE_VALUE_FIELD_NUMBER = 11;
+    /**
+     * <code>.weaviate.v1.PhoneNumber phone_value = 11;</code>
+     * @return Whether the phoneValue field is set.
+     */
+    @java.lang.Override
+    public boolean hasPhoneValue() {
+      return kindCase_ == 11;
+    }
+    /**
+     * <code>.weaviate.v1.PhoneNumber phone_value = 11;</code>
+     * @return The phoneValue.
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber getPhoneValue() {
+      if (kindCase_ == 11) {
+         return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber) kind_;
+      }
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber.getDefaultInstance();
+    }
+    /**
+     * <code>.weaviate.v1.PhoneNumber phone_value = 11;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumberOrBuilder getPhoneValueOrBuilder() {
+      if (kindCase_ == 11) {
+         return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber) kind_;
+      }
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber.getDefaultInstance();
+    }
+
+    public static final int NULL_VALUE_FIELD_NUMBER = 12;
+    /**
+     * <code>.google.protobuf.NullValue null_value = 12;</code>
+     * @return Whether the nullValue field is set.
+     */
+    public boolean hasNullValue() {
+      return kindCase_ == 12;
+    }
+    /**
+     * <code>.google.protobuf.NullValue null_value = 12;</code>
+     * @return The enum numeric value on the wire for nullValue.
+     */
+    public int getNullValueValue() {
+      if (kindCase_ == 12) {
+        return (java.lang.Integer) kind_;
+      }
+      return 0;
+    }
+    /**
+     * <code>.google.protobuf.NullValue null_value = 12;</code>
+     * @return The nullValue.
+     */
+    public com.google.protobuf.NullValue getNullValue() {
+      if (kindCase_ == 12) {
+        com.google.protobuf.NullValue result = com.google.protobuf.NullValue.forNumber(
+            (java.lang.Integer) kind_);
+        return result == null ? com.google.protobuf.NullValue.UNRECOGNIZED : result;
+      }
+      return com.google.protobuf.NullValue.NULL_VALUE;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -1386,6 +1483,12 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
       }
       if (kindCase_ == 10) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 10, kind_);
+      }
+      if (kindCase_ == 11) {
+        output.writeMessage(11, (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber) kind_);
+      }
+      if (kindCase_ == 12) {
+        output.writeEnum(12, ((java.lang.Integer) kind_));
       }
       getUnknownFields().writeTo(output);
     }
@@ -1434,6 +1537,14 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
       }
       if (kindCase_ == 10) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(10, kind_);
+      }
+      if (kindCase_ == 11) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(11, (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber) kind_);
+      }
+      if (kindCase_ == 12) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(12, ((java.lang.Integer) kind_));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -1493,6 +1604,14 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
           if (!getBlobValue()
               .equals(other.getBlobValue())) return false;
           break;
+        case 11:
+          if (!getPhoneValue()
+              .equals(other.getPhoneValue())) return false;
+          break;
+        case 12:
+          if (getNullValueValue()
+              != other.getNullValueValue()) return false;
+          break;
         case 0:
         default:
       }
@@ -1550,6 +1669,14 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         case 10:
           hash = (37 * hash) + BLOB_VALUE_FIELD_NUMBER;
           hash = (53 * hash) + getBlobValue().hashCode();
+          break;
+        case 11:
+          hash = (37 * hash) + PHONE_VALUE_FIELD_NUMBER;
+          hash = (53 * hash) + getPhoneValue().hashCode();
+          break;
+        case 12:
+          hash = (37 * hash) + NULL_VALUE_FIELD_NUMBER;
+          hash = (53 * hash) + getNullValueValue();
           break;
         case 0:
         default:
@@ -1694,6 +1821,9 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         if (geoValueBuilder_ != null) {
           geoValueBuilder_.clear();
         }
+        if (phoneValueBuilder_ != null) {
+          phoneValueBuilder_.clear();
+        }
         kindCase_ = 0;
         kind_ = null;
         return this;
@@ -1746,6 +1876,10 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         if (kindCase_ == 9 &&
             geoValueBuilder_ != null) {
           result.kind_ = geoValueBuilder_.build();
+        }
+        if (kindCase_ == 11 &&
+            phoneValueBuilder_ != null) {
+          result.kind_ = phoneValueBuilder_.build();
         }
       }
 
@@ -1842,6 +1976,14 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
             onChanged();
             break;
           }
+          case PHONE_VALUE: {
+            mergePhoneValue(other.getPhoneValue());
+            break;
+          }
+          case NULL_VALUE: {
+            setNullValueValue(other.getNullValueValue());
+            break;
+          }
           case KIND_NOT_SET: {
             break;
           }
@@ -1932,6 +2074,19 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
                 kind_ = s;
                 break;
               } // case 82
+              case 90: {
+                input.readMessage(
+                    getPhoneValueFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                kindCase_ = 11;
+                break;
+              } // case 90
+              case 96: {
+                int rawValue = input.readEnum();
+                kindCase_ = 12;
+                kind_ = rawValue;
+                break;
+              } // case 96
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -2885,6 +3040,218 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         kindCase_ = 10;
         kind_ = value;
         onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumberOrBuilder> phoneValueBuilder_;
+      /**
+       * <code>.weaviate.v1.PhoneNumber phone_value = 11;</code>
+       * @return Whether the phoneValue field is set.
+       */
+      @java.lang.Override
+      public boolean hasPhoneValue() {
+        return kindCase_ == 11;
+      }
+      /**
+       * <code>.weaviate.v1.PhoneNumber phone_value = 11;</code>
+       * @return The phoneValue.
+       */
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber getPhoneValue() {
+        if (phoneValueBuilder_ == null) {
+          if (kindCase_ == 11) {
+            return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber) kind_;
+          }
+          return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber.getDefaultInstance();
+        } else {
+          if (kindCase_ == 11) {
+            return phoneValueBuilder_.getMessage();
+          }
+          return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.PhoneNumber phone_value = 11;</code>
+       */
+      public Builder setPhoneValue(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber value) {
+        if (phoneValueBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          kind_ = value;
+          onChanged();
+        } else {
+          phoneValueBuilder_.setMessage(value);
+        }
+        kindCase_ = 11;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.PhoneNumber phone_value = 11;</code>
+       */
+      public Builder setPhoneValue(
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber.Builder builderForValue) {
+        if (phoneValueBuilder_ == null) {
+          kind_ = builderForValue.build();
+          onChanged();
+        } else {
+          phoneValueBuilder_.setMessage(builderForValue.build());
+        }
+        kindCase_ = 11;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.PhoneNumber phone_value = 11;</code>
+       */
+      public Builder mergePhoneValue(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber value) {
+        if (phoneValueBuilder_ == null) {
+          if (kindCase_ == 11 &&
+              kind_ != io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber.getDefaultInstance()) {
+            kind_ = io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber.newBuilder((io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber) kind_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            kind_ = value;
+          }
+          onChanged();
+        } else {
+          if (kindCase_ == 11) {
+            phoneValueBuilder_.mergeFrom(value);
+          } else {
+            phoneValueBuilder_.setMessage(value);
+          }
+        }
+        kindCase_ = 11;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.PhoneNumber phone_value = 11;</code>
+       */
+      public Builder clearPhoneValue() {
+        if (phoneValueBuilder_ == null) {
+          if (kindCase_ == 11) {
+            kindCase_ = 0;
+            kind_ = null;
+            onChanged();
+          }
+        } else {
+          if (kindCase_ == 11) {
+            kindCase_ = 0;
+            kind_ = null;
+          }
+          phoneValueBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.PhoneNumber phone_value = 11;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber.Builder getPhoneValueBuilder() {
+        return getPhoneValueFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.weaviate.v1.PhoneNumber phone_value = 11;</code>
+       */
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumberOrBuilder getPhoneValueOrBuilder() {
+        if ((kindCase_ == 11) && (phoneValueBuilder_ != null)) {
+          return phoneValueBuilder_.getMessageOrBuilder();
+        } else {
+          if (kindCase_ == 11) {
+            return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber) kind_;
+          }
+          return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.PhoneNumber phone_value = 11;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumberOrBuilder> 
+          getPhoneValueFieldBuilder() {
+        if (phoneValueBuilder_ == null) {
+          if (!(kindCase_ == 11)) {
+            kind_ = io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber.getDefaultInstance();
+          }
+          phoneValueBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumberOrBuilder>(
+                  (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber) kind_,
+                  getParentForChildren(),
+                  isClean());
+          kind_ = null;
+        }
+        kindCase_ = 11;
+        onChanged();
+        return phoneValueBuilder_;
+      }
+
+      /**
+       * <code>.google.protobuf.NullValue null_value = 12;</code>
+       * @return Whether the nullValue field is set.
+       */
+      @java.lang.Override
+      public boolean hasNullValue() {
+        return kindCase_ == 12;
+      }
+      /**
+       * <code>.google.protobuf.NullValue null_value = 12;</code>
+       * @return The enum numeric value on the wire for nullValue.
+       */
+      @java.lang.Override
+      public int getNullValueValue() {
+        if (kindCase_ == 12) {
+          return ((java.lang.Integer) kind_).intValue();
+        }
+        return 0;
+      }
+      /**
+       * <code>.google.protobuf.NullValue null_value = 12;</code>
+       * @param value The enum numeric value on the wire for nullValue to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNullValueValue(int value) {
+        kindCase_ = 12;
+        kind_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.google.protobuf.NullValue null_value = 12;</code>
+       * @return The nullValue.
+       */
+      @java.lang.Override
+      public com.google.protobuf.NullValue getNullValue() {
+        if (kindCase_ == 12) {
+          com.google.protobuf.NullValue result = com.google.protobuf.NullValue.forNumber(
+              (java.lang.Integer) kind_);
+          return result == null ? com.google.protobuf.NullValue.UNRECOGNIZED : result;
+        }
+        return com.google.protobuf.NullValue.NULL_VALUE;
+      }
+      /**
+       * <code>.google.protobuf.NullValue null_value = 12;</code>
+       * @param value The nullValue to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNullValue(com.google.protobuf.NullValue value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        kindCase_ = 12;
+        kind_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.google.protobuf.NullValue null_value = 12;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNullValue() {
+        if (kindCase_ == 12) {
+          kindCase_ = 0;
+          kind_ = null;
+          onChanged();
+        }
         return this;
       }
       @java.lang.Override
@@ -4285,6 +4652,1221 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
 
   }
 
+  public interface PhoneNumberOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:weaviate.v1.PhoneNumber)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>uint64 country_code = 1;</code>
+     * @return The countryCode.
+     */
+    long getCountryCode();
+
+    /**
+     * <code>string default_country = 2;</code>
+     * @return The defaultCountry.
+     */
+    java.lang.String getDefaultCountry();
+    /**
+     * <code>string default_country = 2;</code>
+     * @return The bytes for defaultCountry.
+     */
+    com.google.protobuf.ByteString
+        getDefaultCountryBytes();
+
+    /**
+     * <code>string input = 3;</code>
+     * @return The input.
+     */
+    java.lang.String getInput();
+    /**
+     * <code>string input = 3;</code>
+     * @return The bytes for input.
+     */
+    com.google.protobuf.ByteString
+        getInputBytes();
+
+    /**
+     * <code>string international_formatted = 4;</code>
+     * @return The internationalFormatted.
+     */
+    java.lang.String getInternationalFormatted();
+    /**
+     * <code>string international_formatted = 4;</code>
+     * @return The bytes for internationalFormatted.
+     */
+    com.google.protobuf.ByteString
+        getInternationalFormattedBytes();
+
+    /**
+     * <code>uint64 national = 5;</code>
+     * @return The national.
+     */
+    long getNational();
+
+    /**
+     * <code>string national_formatted = 6;</code>
+     * @return The nationalFormatted.
+     */
+    java.lang.String getNationalFormatted();
+    /**
+     * <code>string national_formatted = 6;</code>
+     * @return The bytes for nationalFormatted.
+     */
+    com.google.protobuf.ByteString
+        getNationalFormattedBytes();
+
+    /**
+     * <code>bool valid = 7;</code>
+     * @return The valid.
+     */
+    boolean getValid();
+  }
+  /**
+   * Protobuf type {@code weaviate.v1.PhoneNumber}
+   */
+  public static final class PhoneNumber extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:weaviate.v1.PhoneNumber)
+      PhoneNumberOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use PhoneNumber.newBuilder() to construct.
+    private PhoneNumber(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PhoneNumber() {
+      defaultCountry_ = "";
+      input_ = "";
+      internationalFormatted_ = "";
+      nationalFormatted_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new PhoneNumber();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_PhoneNumber_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_PhoneNumber_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber.class, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber.Builder.class);
+    }
+
+    public static final int COUNTRY_CODE_FIELD_NUMBER = 1;
+    private long countryCode_ = 0L;
+    /**
+     * <code>uint64 country_code = 1;</code>
+     * @return The countryCode.
+     */
+    @java.lang.Override
+    public long getCountryCode() {
+      return countryCode_;
+    }
+
+    public static final int DEFAULT_COUNTRY_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object defaultCountry_ = "";
+    /**
+     * <code>string default_country = 2;</code>
+     * @return The defaultCountry.
+     */
+    @java.lang.Override
+    public java.lang.String getDefaultCountry() {
+      java.lang.Object ref = defaultCountry_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        defaultCountry_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string default_country = 2;</code>
+     * @return The bytes for defaultCountry.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getDefaultCountryBytes() {
+      java.lang.Object ref = defaultCountry_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        defaultCountry_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int INPUT_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object input_ = "";
+    /**
+     * <code>string input = 3;</code>
+     * @return The input.
+     */
+    @java.lang.Override
+    public java.lang.String getInput() {
+      java.lang.Object ref = input_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        input_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string input = 3;</code>
+     * @return The bytes for input.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getInputBytes() {
+      java.lang.Object ref = input_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        input_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int INTERNATIONAL_FORMATTED_FIELD_NUMBER = 4;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object internationalFormatted_ = "";
+    /**
+     * <code>string international_formatted = 4;</code>
+     * @return The internationalFormatted.
+     */
+    @java.lang.Override
+    public java.lang.String getInternationalFormatted() {
+      java.lang.Object ref = internationalFormatted_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        internationalFormatted_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string international_formatted = 4;</code>
+     * @return The bytes for internationalFormatted.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getInternationalFormattedBytes() {
+      java.lang.Object ref = internationalFormatted_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        internationalFormatted_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int NATIONAL_FIELD_NUMBER = 5;
+    private long national_ = 0L;
+    /**
+     * <code>uint64 national = 5;</code>
+     * @return The national.
+     */
+    @java.lang.Override
+    public long getNational() {
+      return national_;
+    }
+
+    public static final int NATIONAL_FORMATTED_FIELD_NUMBER = 6;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object nationalFormatted_ = "";
+    /**
+     * <code>string national_formatted = 6;</code>
+     * @return The nationalFormatted.
+     */
+    @java.lang.Override
+    public java.lang.String getNationalFormatted() {
+      java.lang.Object ref = nationalFormatted_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        nationalFormatted_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string national_formatted = 6;</code>
+     * @return The bytes for nationalFormatted.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getNationalFormattedBytes() {
+      java.lang.Object ref = nationalFormatted_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        nationalFormatted_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int VALID_FIELD_NUMBER = 7;
+    private boolean valid_ = false;
+    /**
+     * <code>bool valid = 7;</code>
+     * @return The valid.
+     */
+    @java.lang.Override
+    public boolean getValid() {
+      return valid_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (countryCode_ != 0L) {
+        output.writeUInt64(1, countryCode_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(defaultCountry_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, defaultCountry_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(input_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, input_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(internationalFormatted_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, internationalFormatted_);
+      }
+      if (national_ != 0L) {
+        output.writeUInt64(5, national_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(nationalFormatted_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 6, nationalFormatted_);
+      }
+      if (valid_ != false) {
+        output.writeBool(7, valid_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (countryCode_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(1, countryCode_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(defaultCountry_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, defaultCountry_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(input_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, input_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(internationalFormatted_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, internationalFormatted_);
+      }
+      if (national_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(5, national_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(nationalFormatted_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, nationalFormatted_);
+      }
+      if (valid_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(7, valid_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber)) {
+        return super.equals(obj);
+      }
+      io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber other = (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber) obj;
+
+      if (getCountryCode()
+          != other.getCountryCode()) return false;
+      if (!getDefaultCountry()
+          .equals(other.getDefaultCountry())) return false;
+      if (!getInput()
+          .equals(other.getInput())) return false;
+      if (!getInternationalFormatted()
+          .equals(other.getInternationalFormatted())) return false;
+      if (getNational()
+          != other.getNational()) return false;
+      if (!getNationalFormatted()
+          .equals(other.getNationalFormatted())) return false;
+      if (getValid()
+          != other.getValid()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + COUNTRY_CODE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getCountryCode());
+      hash = (37 * hash) + DEFAULT_COUNTRY_FIELD_NUMBER;
+      hash = (53 * hash) + getDefaultCountry().hashCode();
+      hash = (37 * hash) + INPUT_FIELD_NUMBER;
+      hash = (53 * hash) + getInput().hashCode();
+      hash = (37 * hash) + INTERNATIONAL_FORMATTED_FIELD_NUMBER;
+      hash = (53 * hash) + getInternationalFormatted().hashCode();
+      hash = (37 * hash) + NATIONAL_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getNational());
+      hash = (37 * hash) + NATIONAL_FORMATTED_FIELD_NUMBER;
+      hash = (53 * hash) + getNationalFormatted().hashCode();
+      hash = (37 * hash) + VALID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getValid());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code weaviate.v1.PhoneNumber}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:weaviate.v1.PhoneNumber)
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumberOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_PhoneNumber_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_PhoneNumber_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber.class, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber.Builder.class);
+      }
+
+      // Construct using io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        countryCode_ = 0L;
+        defaultCountry_ = "";
+        input_ = "";
+        internationalFormatted_ = "";
+        national_ = 0L;
+        nationalFormatted_ = "";
+        valid_ = false;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_PhoneNumber_descriptor;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber getDefaultInstanceForType() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber build() {
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber buildPartial() {
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber result = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.countryCode_ = countryCode_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.defaultCountry_ = defaultCountry_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.input_ = input_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.internationalFormatted_ = internationalFormatted_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.national_ = national_;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.nationalFormatted_ = nationalFormatted_;
+        }
+        if (((from_bitField0_ & 0x00000040) != 0)) {
+          result.valid_ = valid_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber) {
+          return mergeFrom((io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber other) {
+        if (other == io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber.getDefaultInstance()) return this;
+        if (other.getCountryCode() != 0L) {
+          setCountryCode(other.getCountryCode());
+        }
+        if (!other.getDefaultCountry().isEmpty()) {
+          defaultCountry_ = other.defaultCountry_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (!other.getInput().isEmpty()) {
+          input_ = other.input_;
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        if (!other.getInternationalFormatted().isEmpty()) {
+          internationalFormatted_ = other.internationalFormatted_;
+          bitField0_ |= 0x00000008;
+          onChanged();
+        }
+        if (other.getNational() != 0L) {
+          setNational(other.getNational());
+        }
+        if (!other.getNationalFormatted().isEmpty()) {
+          nationalFormatted_ = other.nationalFormatted_;
+          bitField0_ |= 0x00000020;
+          onChanged();
+        }
+        if (other.getValid() != false) {
+          setValid(other.getValid());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                countryCode_ = input.readUInt64();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              case 18: {
+                defaultCountry_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                input_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              case 34: {
+                internationalFormatted_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
+              case 40: {
+                national_ = input.readUInt64();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 40
+              case 50: {
+                nationalFormatted_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 50
+              case 56: {
+                valid_ = input.readBool();
+                bitField0_ |= 0x00000040;
+                break;
+              } // case 56
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private long countryCode_ ;
+      /**
+       * <code>uint64 country_code = 1;</code>
+       * @return The countryCode.
+       */
+      @java.lang.Override
+      public long getCountryCode() {
+        return countryCode_;
+      }
+      /**
+       * <code>uint64 country_code = 1;</code>
+       * @param value The countryCode to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCountryCode(long value) {
+
+        countryCode_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 country_code = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearCountryCode() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        countryCode_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object defaultCountry_ = "";
+      /**
+       * <code>string default_country = 2;</code>
+       * @return The defaultCountry.
+       */
+      public java.lang.String getDefaultCountry() {
+        java.lang.Object ref = defaultCountry_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          defaultCountry_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string default_country = 2;</code>
+       * @return The bytes for defaultCountry.
+       */
+      public com.google.protobuf.ByteString
+          getDefaultCountryBytes() {
+        java.lang.Object ref = defaultCountry_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          defaultCountry_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string default_country = 2;</code>
+       * @param value The defaultCountry to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDefaultCountry(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        defaultCountry_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string default_country = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDefaultCountry() {
+        defaultCountry_ = getDefaultInstance().getDefaultCountry();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string default_country = 2;</code>
+       * @param value The bytes for defaultCountry to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDefaultCountryBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        defaultCountry_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object input_ = "";
+      /**
+       * <code>string input = 3;</code>
+       * @return The input.
+       */
+      public java.lang.String getInput() {
+        java.lang.Object ref = input_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          input_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string input = 3;</code>
+       * @return The bytes for input.
+       */
+      public com.google.protobuf.ByteString
+          getInputBytes() {
+        java.lang.Object ref = input_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          input_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string input = 3;</code>
+       * @param value The input to set.
+       * @return This builder for chaining.
+       */
+      public Builder setInput(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        input_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string input = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearInput() {
+        input_ = getDefaultInstance().getInput();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string input = 3;</code>
+       * @param value The bytes for input to set.
+       * @return This builder for chaining.
+       */
+      public Builder setInputBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        input_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object internationalFormatted_ = "";
+      /**
+       * <code>string international_formatted = 4;</code>
+       * @return The internationalFormatted.
+       */
+      public java.lang.String getInternationalFormatted() {
+        java.lang.Object ref = internationalFormatted_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          internationalFormatted_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string international_formatted = 4;</code>
+       * @return The bytes for internationalFormatted.
+       */
+      public com.google.protobuf.ByteString
+          getInternationalFormattedBytes() {
+        java.lang.Object ref = internationalFormatted_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          internationalFormatted_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string international_formatted = 4;</code>
+       * @param value The internationalFormatted to set.
+       * @return This builder for chaining.
+       */
+      public Builder setInternationalFormatted(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        internationalFormatted_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string international_formatted = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearInternationalFormatted() {
+        internationalFormatted_ = getDefaultInstance().getInternationalFormatted();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string international_formatted = 4;</code>
+       * @param value The bytes for internationalFormatted to set.
+       * @return This builder for chaining.
+       */
+      public Builder setInternationalFormattedBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        internationalFormatted_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+
+      private long national_ ;
+      /**
+       * <code>uint64 national = 5;</code>
+       * @return The national.
+       */
+      @java.lang.Override
+      public long getNational() {
+        return national_;
+      }
+      /**
+       * <code>uint64 national = 5;</code>
+       * @param value The national to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNational(long value) {
+
+        national_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 national = 5;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNational() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        national_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object nationalFormatted_ = "";
+      /**
+       * <code>string national_formatted = 6;</code>
+       * @return The nationalFormatted.
+       */
+      public java.lang.String getNationalFormatted() {
+        java.lang.Object ref = nationalFormatted_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          nationalFormatted_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string national_formatted = 6;</code>
+       * @return The bytes for nationalFormatted.
+       */
+      public com.google.protobuf.ByteString
+          getNationalFormattedBytes() {
+        java.lang.Object ref = nationalFormatted_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          nationalFormatted_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string national_formatted = 6;</code>
+       * @param value The nationalFormatted to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNationalFormatted(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        nationalFormatted_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string national_formatted = 6;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNationalFormatted() {
+        nationalFormatted_ = getDefaultInstance().getNationalFormatted();
+        bitField0_ = (bitField0_ & ~0x00000020);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string national_formatted = 6;</code>
+       * @param value The bytes for nationalFormatted to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNationalFormattedBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        nationalFormatted_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+
+      private boolean valid_ ;
+      /**
+       * <code>bool valid = 7;</code>
+       * @return The valid.
+       */
+      @java.lang.Override
+      public boolean getValid() {
+        return valid_;
+      }
+      /**
+       * <code>bool valid = 7;</code>
+       * @param value The valid to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValid(boolean value) {
+
+        valid_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool valid = 7;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValid() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        valid_ = false;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:weaviate.v1.PhoneNumber)
+    }
+
+    // @@protoc_insertion_point(class_scope:weaviate.v1.PhoneNumber)
+    private static final io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber();
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PhoneNumber>
+        PARSER = new com.google.protobuf.AbstractParser<PhoneNumber>() {
+      @java.lang.Override
+      public PhoneNumber parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<PhoneNumber> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PhoneNumber> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PhoneNumber getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_weaviate_v1_Properties_descriptor;
   private static final 
@@ -4310,6 +5892,11 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_weaviate_v1_GeoCoordinate_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_weaviate_v1_PhoneNumber_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_weaviate_v1_PhoneNumber_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -4319,28 +5906,37 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\023v1/properties.proto\022\013weaviate.v1\"\204\001\n\nP" +
-      "roperties\0223\n\006fields\030\001 \003(\0132#.weaviate.v1." +
-      "Properties.FieldsEntry\032A\n\013FieldsEntry\022\013\n" +
-      "\003key\030\001 \001(\t\022!\n\005value\030\002 \001(\0132\022.weaviate.v1." +
-      "Value:\0028\001\"\274\002\n\005Value\022\026\n\014number_value\030\001 \001(" +
-      "\001H\000\022\026\n\014string_value\030\002 \001(\tH\000\022\024\n\nbool_valu" +
-      "e\030\003 \001(\010H\000\022/\n\014object_value\030\004 \001(\0132\027.weavia" +
-      "te.v1.PropertiesH\000\022,\n\nlist_value\030\005 \001(\0132\026" +
-      ".weaviate.v1.ListValueH\000\022\024\n\ndate_value\030\006" +
-      " \001(\tH\000\022\024\n\nuuid_value\030\007 \001(\tH\000\022\023\n\tint_valu" +
-      "e\030\010 \001(\003H\000\022/\n\tgeo_value\030\t \001(\0132\032.weaviate." +
-      "v1.GeoCoordinateH\000\022\024\n\nblob_value\030\n \001(\tH\000" +
-      "B\006\n\004kind\"/\n\tListValue\022\"\n\006values\030\001 \003(\0132\022." +
-      "weaviate.v1.Value\"4\n\rGeoCoordinate\022\021\n\tlo" +
-      "ngitude\030\001 \001(\002\022\020\n\010latitude\030\002 \001(\002Bt\n#io.we" +
-      "aviate.client.grpc.protocol.v1B\027Weaviate" +
-      "ProtoPropertiesZ4github.com/weaviate/wea" +
-      "viate/grpc/generated;protocolb\006proto3"
+      "\n\023v1/properties.proto\022\013weaviate.v1\032\034goog" +
+      "le/protobuf/struct.proto\"\204\001\n\nProperties\022" +
+      "3\n\006fields\030\001 \003(\0132#.weaviate.v1.Properties" +
+      ".FieldsEntry\032A\n\013FieldsEntry\022\013\n\003key\030\001 \001(\t" +
+      "\022!\n\005value\030\002 \001(\0132\022.weaviate.v1.Value:\0028\001\"" +
+      "\237\003\n\005Value\022\026\n\014number_value\030\001 \001(\001H\000\022\026\n\014str" +
+      "ing_value\030\002 \001(\tH\000\022\024\n\nbool_value\030\003 \001(\010H\000\022" +
+      "/\n\014object_value\030\004 \001(\0132\027.weaviate.v1.Prop" +
+      "ertiesH\000\022,\n\nlist_value\030\005 \001(\0132\026.weaviate." +
+      "v1.ListValueH\000\022\024\n\ndate_value\030\006 \001(\tH\000\022\024\n\n" +
+      "uuid_value\030\007 \001(\tH\000\022\023\n\tint_value\030\010 \001(\003H\000\022" +
+      "/\n\tgeo_value\030\t \001(\0132\032.weaviate.v1.GeoCoor" +
+      "dinateH\000\022\024\n\nblob_value\030\n \001(\tH\000\022/\n\013phone_" +
+      "value\030\013 \001(\0132\030.weaviate.v1.PhoneNumberH\000\022" +
+      "0\n\nnull_value\030\014 \001(\0162\032.google.protobuf.Nu" +
+      "llValueH\000B\006\n\004kind\"/\n\tListValue\022\"\n\006values" +
+      "\030\001 \003(\0132\022.weaviate.v1.Value\"4\n\rGeoCoordin" +
+      "ate\022\021\n\tlongitude\030\001 \001(\002\022\020\n\010latitude\030\002 \001(\002" +
+      "\"\251\001\n\013PhoneNumber\022\024\n\014country_code\030\001 \001(\004\022\027" +
+      "\n\017default_country\030\002 \001(\t\022\r\n\005input\030\003 \001(\t\022\037" +
+      "\n\027international_formatted\030\004 \001(\t\022\020\n\010natio" +
+      "nal\030\005 \001(\004\022\032\n\022national_formatted\030\006 \001(\t\022\r\n" +
+      "\005valid\030\007 \001(\010Bt\n#io.weaviate.client.grpc." +
+      "protocol.v1B\027WeaviateProtoPropertiesZ4gi" +
+      "thub.com/weaviate/weaviate/grpc/generate" +
+      "d;protocolb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
+          com.google.protobuf.StructProto.getDescriptor(),
         });
     internal_static_weaviate_v1_Properties_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -4359,7 +5955,7 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
     internal_static_weaviate_v1_Value_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_Value_descriptor,
-        new java.lang.String[] { "NumberValue", "StringValue", "BoolValue", "ObjectValue", "ListValue", "DateValue", "UuidValue", "IntValue", "GeoValue", "BlobValue", "Kind", });
+        new java.lang.String[] { "NumberValue", "StringValue", "BoolValue", "ObjectValue", "ListValue", "DateValue", "UuidValue", "IntValue", "GeoValue", "BlobValue", "PhoneValue", "NullValue", "Kind", });
     internal_static_weaviate_v1_ListValue_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_weaviate_v1_ListValue_fieldAccessorTable = new
@@ -4372,6 +5968,13 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_GeoCoordinate_descriptor,
         new java.lang.String[] { "Longitude", "Latitude", });
+    internal_static_weaviate_v1_PhoneNumber_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_weaviate_v1_PhoneNumber_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_weaviate_v1_PhoneNumber_descriptor,
+        new java.lang.String[] { "CountryCode", "DefaultCountry", "Input", "InternationalFormatted", "National", "NationalFormatted", "Valid", });
+    com.google.protobuf.StructProto.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

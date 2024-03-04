@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 @Getter
@@ -22,6 +23,7 @@ public class NearObjectArgument implements Argument {
   String beacon;
   Float certainty;
   Float distance;
+  String[] targetVectors;
 
   @Override
   public String build() {
@@ -38,6 +40,9 @@ public class NearObjectArgument implements Argument {
     }
     if (distance != null) {
       arg.add(String.format("distance:%s", distance));
+    }
+    if (ArrayUtils.isNotEmpty(targetVectors)) {
+      arg.add(String.format("targetVectors:%s",  Serializer.arrayWithQuotes(targetVectors)));
     }
 
     return String.format("nearObject:{%s}", String.join(" ", arg));
