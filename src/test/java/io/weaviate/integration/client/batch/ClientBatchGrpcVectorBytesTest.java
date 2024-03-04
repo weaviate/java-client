@@ -39,8 +39,7 @@ public class ClientBatchGrpcVectorBytesTest {
 
   @Test
   public void shouldSendVectorWith_v1_24_0() {
-    // TODO update image
-    testWeaviate("semitechnologies/weaviate:1.24.0-rc.1",
+    testWeaviate("semitechnologies/weaviate:1.24.1",
       this::batchSingleObjectWithVector,
       this::batchSingleObjectWithTargetVector
     );
