@@ -1,16 +1,16 @@
 package io.weaviate.integration.client.auth.provider;
 
+import io.weaviate.integration.client.WeaviateDockerImage;
 import io.weaviate.integration.client.WeaviateVersion;
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+
+import io.weaviate.integration.client.WeaviateWithOktaCcContainer;
 import org.apache.commons.lang3.StringUtils;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.testcontainers.containers.DockerComposeContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
@@ -21,21 +21,18 @@ import io.weaviate.client.v1.auth.nimbus.NimbusAuth;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.auth.provider.AuthClientCredentialsTokenProvider;
 import io.weaviate.client.v1.misc.model.Meta;
+import org.testcontainers.weaviate.WeaviateContainer;
 
 public class NimbusAuthClientCredentialsRefreshTokenTest {
   private String address;
   private AccessTokenProvider tokenProvider;
 
   @ClassRule
-  public static DockerComposeContainer compose = new DockerComposeContainer(
-    new File("src/test/resources/docker-compose-okta-cc.yaml")
-  ).withExposedService("weaviate-auth-okta-cc_1", 8082, Wait.forHttp("/v1/.well-known/openid-configuration").forStatusCode(200));
+  public static WeaviateContainer weaviate = new WeaviateWithOktaCcContainer(WeaviateDockerImage.WEAVIATE_DOCKER_IMAGE);
 
   @Before
   public void before() {
-    String host = compose.getServiceHost("weaviate-auth-okta-cc_1", 8082);
-    Integer port = compose.getServicePort("weaviate-auth-okta-cc_1", 8082);
-    address = host + ":" + port;
+    address = weaviate.getHttpHostAddress();
   }
 
   @Test

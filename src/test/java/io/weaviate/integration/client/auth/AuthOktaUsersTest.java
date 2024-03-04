@@ -1,6 +1,7 @@
 package io.weaviate.integration.client.auth;
 
-import java.io.File;
+import io.weaviate.integration.client.WeaviateDockerImage;
+import io.weaviate.integration.client.WeaviateWithOktaUsersContainer;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -8,29 +9,25 @@ import org.junit.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import org.testcontainers.containers.DockerComposeContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.auth.ResourceOwnerPasswordFlow;
 import io.weaviate.client.v1.auth.exception.AuthException;
 import io.weaviate.client.v1.misc.model.Meta;
+import org.testcontainers.weaviate.WeaviateContainer;
+
 import static io.weaviate.integration.client.WeaviateVersion.EXPECTED_WEAVIATE_VERSION;
 
 public class AuthOktaUsersTest {
   private String address;
 
   @ClassRule
-  public static DockerComposeContainer compose = new DockerComposeContainer(
-    new File("src/test/resources/docker-compose-okta-users.yaml")
-  ).withExposedService("weaviate-auth-okta-users_1", 8083, Wait.forHttp("/v1/.well-known/openid-configuration").forStatusCode(200));
+  public static WeaviateContainer weaviate = new WeaviateWithOktaUsersContainer(WeaviateDockerImage.WEAVIATE_DOCKER_IMAGE);
 
   @Before
   public void before() {
-    String host = compose.getServiceHost("weaviate-auth-okta-users_1", 8083);
-    Integer port = compose.getServicePort("weaviate-auth-okta-users_1", 8083);
-    address = host + ":" + port;
+    address = weaviate.getHttpHostAddress();
   }
 
   @Test

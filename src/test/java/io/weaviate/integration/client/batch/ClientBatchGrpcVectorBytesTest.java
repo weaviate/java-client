@@ -8,7 +8,6 @@ import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.schema.model.DataType;
 import io.weaviate.client.v1.schema.model.Property;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
-import io.weaviate.integration.client.WeaviateContainer;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
 
 import org.junit.Test;
+import org.testcontainers.weaviate.WeaviateContainer;
 
 public class ClientBatchGrpcVectorBytesTest {
 
@@ -46,7 +46,7 @@ public class ClientBatchGrpcVectorBytesTest {
   }
 
   private void testWeaviate(String image, BiConsumer<Integer, Integer>... scenarios) {
-    WeaviateContainer.DockerContainer container = WeaviateContainer.create(image);
+    WeaviateContainer container = new WeaviateContainer(image);
     try {
       container.start();
 
