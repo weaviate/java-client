@@ -5,7 +5,7 @@
   <groupId>io.weaviate</groupId>
   <artifactId>client</artifactId>
   <packaging>jar</packaging>
-  <version>4.6.0</version>
+  <version>4.6.1-SNAPSHOT</version>
 
   <name>Weaviate Java client</name>
   <description>A java client for Weaviate Vector Search Engine</description>
