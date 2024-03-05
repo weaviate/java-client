@@ -61,7 +61,7 @@ public class NimbusAuthClientCredentialsRefreshTokenTest {
       Result<Meta> meta = client.misc().metaGetter().run();
       assertThat(meta).isNotNull();
       assertThat(meta.getError()).isNull();
-      assertThat(meta.getResult().getHostname()).isEqualTo("http://[::]:8082");
+      assertThat(meta.getResult().getHostname()).isEqualTo("http://[::]:8080");
       assertThat(meta.getResult().getVersion()).isEqualTo(WeaviateVersion.EXPECTED_WEAVIATE_VERSION);
       Thread.sleep(3000l);
       // get the access token after refresh
@@ -70,7 +70,7 @@ public class NimbusAuthClientCredentialsRefreshTokenTest {
       meta = client.misc().metaGetter().run();
       assertThat(meta).isNotNull();
       assertThat(meta.getError()).isNull();
-      assertThat(meta.getResult().getHostname()).isEqualTo("http://[::]:8082");
+      assertThat(meta.getResult().getHostname()).isEqualTo("http://[::]:8080");
       assertThat(meta.getResult().getVersion()).isEqualTo(WeaviateVersion.EXPECTED_WEAVIATE_VERSION);
     } else {
       System.out.println("Skipping Okta Client Credentials refresh token test, missing OKTA_CLIENT_SECRET");

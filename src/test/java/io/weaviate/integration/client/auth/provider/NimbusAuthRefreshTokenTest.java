@@ -61,7 +61,7 @@ public class NimbusAuthRefreshTokenTest {
       Result<Meta> meta = client.misc().metaGetter().run();
       assertThat(meta).isNotNull();
       assertThat(meta.getError()).isNull();
-      assertThat(meta.getResult().getHostname()).isEqualTo("http://[::]:8085");
+      assertThat(meta.getResult().getHostname()).isEqualTo("http://[::]:8080");
       assertThat(meta.getResult().getVersion()).isEqualTo(WeaviateVersion.EXPECTED_WEAVIATE_VERSION);
       Thread.sleep(3000l);
       // get the access token after refresh
@@ -70,7 +70,7 @@ public class NimbusAuthRefreshTokenTest {
       meta = client.misc().metaGetter().run();
       assertThat(meta).isNotNull();
       assertThat(meta.getError()).isNull();
-      assertThat(meta.getResult().getHostname()).isEqualTo("http://[::]:8085");
+      assertThat(meta.getResult().getHostname()).isEqualTo("http://[::]:8080");
       assertThat(meta.getResult().getVersion()).isEqualTo(WeaviateVersion.EXPECTED_WEAVIATE_VERSION);
     } else {
       System.out.println("Skipping WCS Refresh Token test, missing WCS_DUMMY_CI_PW");
