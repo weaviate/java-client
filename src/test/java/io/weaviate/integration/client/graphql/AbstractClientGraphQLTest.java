@@ -117,7 +117,7 @@ public abstract class AbstractClientGraphQLTest {
   protected List<Group> getGroups(List<Map<String, Object>> result) {
     Serializer serializer = new Serializer();
     String jsonString = serializer.toJsonString(result);
-    AdditionalGroupByAdditional[] response = serializer.toObject(jsonString, AdditionalGroupByAdditional[].class);
+    AdditionalGroupByAdditional[] response = serializer.toResponse(jsonString, AdditionalGroupByAdditional[].class);
     Assertions.assertThat(response).isNotNull().hasSize(3);
     return Arrays.stream(response).map(AdditionalGroupByAdditional::get_additional).map(Additional::getGroup).collect(Collectors.toList());
   }

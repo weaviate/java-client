@@ -1,23 +1,40 @@
 package io.weaviate.client.v1.async.graphql.api;
 
 import io.weaviate.client.Config;
-import io.weaviate.client.base.AsyncBaseClient;
+import io.weaviate.client.base.AsyncBaseGraphQLClient;
 import io.weaviate.client.base.AsyncClientResult;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.filters.WhereFilter;
+import io.weaviate.client.v1.graphql.model.GraphQLGetBaseObject;
 import io.weaviate.client.v1.graphql.model.GraphQLQuery;
 import io.weaviate.client.v1.graphql.model.GraphQLResponse;
-import io.weaviate.client.v1.graphql.query.argument.*;
+import io.weaviate.client.v1.graphql.model.GraphQLTypedResponse;
+import io.weaviate.client.v1.graphql.query.argument.AskArgument;
+import io.weaviate.client.v1.graphql.query.argument.Bm25Argument;
+import io.weaviate.client.v1.graphql.query.argument.GroupArgument;
+import io.weaviate.client.v1.graphql.query.argument.GroupByArgument;
+import io.weaviate.client.v1.graphql.query.argument.HybridArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearAudioArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearDepthArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearImageArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearImuArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearObjectArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearTextArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearThermalArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearVectorArgument;
+import io.weaviate.client.v1.graphql.query.argument.NearVideoArgument;
+import io.weaviate.client.v1.graphql.query.argument.SortArgument;
+import io.weaviate.client.v1.graphql.query.argument.SortArguments;
+import io.weaviate.client.v1.graphql.query.argument.WhereArgument;
 import io.weaviate.client.v1.graphql.query.builder.GetBuilder;
 import io.weaviate.client.v1.graphql.query.fields.Field;
 import io.weaviate.client.v1.graphql.query.fields.Fields;
 import io.weaviate.client.v1.graphql.query.fields.GenerativeSearchBuilder;
+import java.util.concurrent.Future;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.core5.concurrent.FutureCallback;
 
-import java.util.concurrent.Future;
-
-public class Get extends AsyncBaseClient<GraphQLResponse> implements AsyncClientResult<GraphQLResponse> {
+public class Get extends AsyncBaseGraphQLClient<GraphQLResponse> implements AsyncClientResult<GraphQLResponse> {
   private final GetBuilder.GetBuilderBuilder getBuilder;
 
   public Get(CloseableHttpAsyncClient client, Config config) {
@@ -161,13 +178,99 @@ public class Get extends AsyncBaseClient<GraphQLResponse> implements AsyncClient
     return this;
   }
 
-  @Override
-  public Future<Result<GraphQLResponse>> run(FutureCallback<Result<GraphQLResponse>> callback) {
+  private GraphQLQuery getQuery() {
     String getQuery = getBuilder.build()
       .buildQuery();
-    GraphQLQuery query = GraphQLQuery.builder()
+    return GraphQLQuery.builder()
       .query(getQuery)
       .build();
-    return sendPostRequest("/graphql", query, GraphQLResponse.class, callback);
+  }
+
+  @Override
+  public Future<Result<GraphQLResponse>> run(FutureCallback<Result<GraphQLResponse>> callback) {
+    return sendPostRequest("/graphql", getQuery(), GraphQLResponse.class, callback);
+  }
+
+  /**
+   * This method provides a better way of serializing a GraphQL response using one's defined classes.
+   * Example:
+   * In Weaviate we have defined collection named Soup with name and price properties.
+   * For client to be able to properly serialize GraphQL response to an Object with
+   * convenient methods accessing GraphQL settings one can create a class, example:
+   * <pre>{@code
+   * import com.google.gson.annotations.SerializedName;
+   *
+   * public class Soups {
+   *   {@literal @}SerializedName(value = "Soup")
+   *   List<Soup> soups;
+   *
+   *   public List<Soup> getSoups() {
+   *     return soups;
+   *   }
+   *
+   *   public static class Soup extends GraphQLGetBaseObject {
+   *     String name;
+   *     Float price;
+   *
+   *     public String getName() {
+   *       return name;
+   *     }
+   *
+   *     public Float getPrice() {
+   *       return price;
+   *     }
+   *   }
+   * }
+   * }</pre>
+   *
+   * @param classOfC - class describing Weaviate object, example: Soups class
+   * @param <C>      - Class of C
+   * @return Result of GraphQLTypedResponse of a given class
+   * @see GraphQLGetBaseObject
+   */
+  public <C> Future<Result<GraphQLTypedResponse<C>>> run(final Class<C> classOfC) {
+    return run(classOfC, null);
+  }
+
+  /**
+   * This method provides a better way of serializing a GraphQL response using one's defined classes.
+   * Example:
+   * In Weaviate we have defined collection named Soup with name and price properties.
+   * For client to be able to properly serialize GraphQL response to an Object with
+   * convenient methods accessing GraphQL settings one can create a class, example:
+   * <pre>{@code
+   * import com.google.gson.annotations.SerializedName;
+   *
+   * public class Soups {
+   *   {@literal @}SerializedName(value = "Soup")
+   *   List<Soup> soups;
+   *
+   *   public List<Soup> getSoups() {
+   *     return soups;
+   *   }
+   *
+   *   public static class Soup extends GraphQLGetBaseObject {
+   *     String name;
+   *     Float price;
+   *
+   *     public String getName() {
+   *       return name;
+   *     }
+   *
+   *     public Float getPrice() {
+   *       return price;
+   *     }
+   *   }
+   * }
+   * }</pre>
+   *
+   * @param classOfC - class describing Weaviate object, example: Soups class
+   * @param callback - Result of GraphQLTypedResponse of a given class callback
+   * @param <C>      - Class of C
+   * @return Result of GraphQLTypedResponse of a given class
+   * @see GraphQLGetBaseObject
+   */
+  public <C> Future<Result<GraphQLTypedResponse<C>>> run(final Class<C> classOfC, FutureCallback<Result<GraphQLTypedResponse<C>>> callback) {
+    return sendGraphQLTypedRequest(getQuery(), classOfC, callback);
   }
 }
