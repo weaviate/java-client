@@ -438,6 +438,12 @@ public final class WeaviateProtoSearchGet {
      * @return The uses123Api.
      */
     @java.lang.Deprecated boolean getUses123Api();
+
+    /**
+     * <code>bool uses_125_api = 101;</code>
+     * @return The uses125Api.
+     */
+    boolean getUses125Api();
   }
   /**
    * Protobuf type {@code weaviate.v1.SearchRequest}
@@ -1215,6 +1221,17 @@ public final class WeaviateProtoSearchGet {
       return uses123Api_;
     }
 
+    public static final int USES_125_API_FIELD_NUMBER = 101;
+    private boolean uses125Api_ = false;
+    /**
+     * <code>bool uses_125_api = 101;</code>
+     * @return The uses125Api.
+     */
+    @java.lang.Override
+    public boolean getUses125Api() {
+      return uses125Api_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -1306,6 +1323,9 @@ public final class WeaviateProtoSearchGet {
       }
       if (uses123Api_ != false) {
         output.writeBool(100, uses123Api_);
+      }
+      if (uses125Api_ != false) {
+        output.writeBool(101, uses125Api_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -1416,6 +1436,10 @@ public final class WeaviateProtoSearchGet {
       if (uses123Api_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(100, uses123Api_);
+      }
+      if (uses125Api_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(101, uses125Api_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -1537,6 +1561,8 @@ public final class WeaviateProtoSearchGet {
       }
       if (getUses123Api()
           != other.getUses123Api()) return false;
+      if (getUses125Api()
+          != other.getUses125Api()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -1639,6 +1665,9 @@ public final class WeaviateProtoSearchGet {
       hash = (37 * hash) + USES_123_API_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getUses123Api());
+      hash = (37 * hash) + USES_125_API_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getUses125Api());
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1893,6 +1922,7 @@ public final class WeaviateProtoSearchGet {
           rerankBuilder_ = null;
         }
         uses123Api_ = false;
+        uses125Api_ = false;
         return this;
       }
 
@@ -2067,6 +2097,9 @@ public final class WeaviateProtoSearchGet {
         if (((from_bitField0_ & 0x02000000) != 0)) {
           result.uses123Api_ = uses123Api_;
         }
+        if (((from_bitField0_ & 0x04000000) != 0)) {
+          result.uses125Api_ = uses125Api_;
+        }
         result.bitField0_ |= to_bitField0_;
       }
 
@@ -2220,6 +2253,9 @@ public final class WeaviateProtoSearchGet {
         }
         if (other.getUses123Api() != false) {
           setUses123Api(other.getUses123Api());
+        }
+        if (other.getUses125Api() != false) {
+          setUses125Api(other.getUses125Api());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -2419,6 +2455,11 @@ public final class WeaviateProtoSearchGet {
                 bitField0_ |= 0x02000000;
                 break;
               } // case 800
+              case 808: {
+                uses125Api_ = input.readBool();
+                bitField0_ |= 0x04000000;
+                break;
+              } // case 808
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -5335,6 +5376,38 @@ public final class WeaviateProtoSearchGet {
       @java.lang.Deprecated public Builder clearUses123Api() {
         bitField0_ = (bitField0_ & ~0x02000000);
         uses123Api_ = false;
+        onChanged();
+        return this;
+      }
+
+      private boolean uses125Api_ ;
+      /**
+       * <code>bool uses_125_api = 101;</code>
+       * @return The uses125Api.
+       */
+      @java.lang.Override
+      public boolean getUses125Api() {
+        return uses125Api_;
+      }
+      /**
+       * <code>bool uses_125_api = 101;</code>
+       * @param value The uses125Api to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUses125Api(boolean value) {
+
+        uses125Api_ = value;
+        bitField0_ |= 0x04000000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool uses_125_api = 101;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearUses125Api() {
+        bitField0_ = (bitField0_ & ~0x04000000);
+        uses125Api_ = false;
         onChanged();
         return this;
       }
@@ -11900,7 +11973,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-     *     See v1/search_get.proto;l=107
+     *     See v1/search_get.proto;l=108
      * @return A list containing the vector.
      */
     @java.lang.Deprecated java.util.List<java.lang.Float> getVectorList();
@@ -11911,7 +11984,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-     *     See v1/search_get.proto;l=107
+     *     See v1/search_get.proto;l=108
      * @return The count of vector.
      */
     @java.lang.Deprecated int getVectorCount();
@@ -11922,7 +11995,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-     *     See v1/search_get.proto;l=107
+     *     See v1/search_get.proto;l=108
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
@@ -11975,6 +12048,60 @@ public final class WeaviateProtoSearchGet {
      */
     com.google.protobuf.ByteString
         getTargetVectorsBytes(int index);
+
+    /**
+     * <pre>
+     * target_vector in msg is ignored and should not be set for hybrid
+     * </pre>
+     *
+     * <code>.weaviate.v1.NearTextSearch near_text = 8;</code>
+     * @return Whether the nearText field is set.
+     */
+    boolean hasNearText();
+    /**
+     * <pre>
+     * target_vector in msg is ignored and should not be set for hybrid
+     * </pre>
+     *
+     * <code>.weaviate.v1.NearTextSearch near_text = 8;</code>
+     * @return The nearText.
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearTextSearch getNearText();
+    /**
+     * <pre>
+     * target_vector in msg is ignored and should not be set for hybrid
+     * </pre>
+     *
+     * <code>.weaviate.v1.NearTextSearch near_text = 8;</code>
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearTextSearchOrBuilder getNearTextOrBuilder();
+
+    /**
+     * <pre>
+     * same as above. Use the target vector in the hybrid message
+     * </pre>
+     *
+     * <code>.weaviate.v1.NearVector near_vector = 9;</code>
+     * @return Whether the nearVector field is set.
+     */
+    boolean hasNearVector();
+    /**
+     * <pre>
+     * same as above. Use the target vector in the hybrid message
+     * </pre>
+     *
+     * <code>.weaviate.v1.NearVector near_vector = 9;</code>
+     * @return The nearVector.
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector getNearVector();
+    /**
+     * <pre>
+     * same as above. Use the target vector in the hybrid message
+     * </pre>
+     *
+     * <code>.weaviate.v1.NearVector near_vector = 9;</code>
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVectorOrBuilder getNearVectorOrBuilder();
   }
   /**
    * Protobuf type {@code weaviate.v1.Hybrid}
@@ -12136,6 +12263,7 @@ public final class WeaviateProtoSearchGet {
       // @@protoc_insertion_point(enum_scope:weaviate.v1.Hybrid.FusionType)
     }
 
+    private int bitField0_;
     public static final int QUERY_FIELD_NUMBER = 1;
     @SuppressWarnings("serial")
     private volatile java.lang.Object query_ = "";
@@ -12223,7 +12351,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-     *     See v1/search_get.proto;l=107
+     *     See v1/search_get.proto;l=108
      * @return A list containing the vector.
      */
     @java.lang.Override
@@ -12238,7 +12366,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-     *     See v1/search_get.proto;l=107
+     *     See v1/search_get.proto;l=108
      * @return The count of vector.
      */
     @java.lang.Deprecated public int getVectorCount() {
@@ -12251,7 +12379,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-     *     See v1/search_get.proto;l=107
+     *     See v1/search_get.proto;l=108
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
@@ -12337,6 +12465,82 @@ public final class WeaviateProtoSearchGet {
       return targetVectors_.getByteString(index);
     }
 
+    public static final int NEAR_TEXT_FIELD_NUMBER = 8;
+    private io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearTextSearch nearText_;
+    /**
+     * <pre>
+     * target_vector in msg is ignored and should not be set for hybrid
+     * </pre>
+     *
+     * <code>.weaviate.v1.NearTextSearch near_text = 8;</code>
+     * @return Whether the nearText field is set.
+     */
+    @java.lang.Override
+    public boolean hasNearText() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <pre>
+     * target_vector in msg is ignored and should not be set for hybrid
+     * </pre>
+     *
+     * <code>.weaviate.v1.NearTextSearch near_text = 8;</code>
+     * @return The nearText.
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearTextSearch getNearText() {
+      return nearText_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearTextSearch.getDefaultInstance() : nearText_;
+    }
+    /**
+     * <pre>
+     * target_vector in msg is ignored and should not be set for hybrid
+     * </pre>
+     *
+     * <code>.weaviate.v1.NearTextSearch near_text = 8;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearTextSearchOrBuilder getNearTextOrBuilder() {
+      return nearText_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearTextSearch.getDefaultInstance() : nearText_;
+    }
+
+    public static final int NEAR_VECTOR_FIELD_NUMBER = 9;
+    private io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector nearVector_;
+    /**
+     * <pre>
+     * same as above. Use the target vector in the hybrid message
+     * </pre>
+     *
+     * <code>.weaviate.v1.NearVector near_vector = 9;</code>
+     * @return Whether the nearVector field is set.
+     */
+    @java.lang.Override
+    public boolean hasNearVector() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <pre>
+     * same as above. Use the target vector in the hybrid message
+     * </pre>
+     *
+     * <code>.weaviate.v1.NearVector near_vector = 9;</code>
+     * @return The nearVector.
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector getNearVector() {
+      return nearVector_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector.getDefaultInstance() : nearVector_;
+    }
+    /**
+     * <pre>
+     * same as above. Use the target vector in the hybrid message
+     * </pre>
+     *
+     * <code>.weaviate.v1.NearVector near_vector = 9;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVectorOrBuilder getNearVectorOrBuilder() {
+      return nearVector_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector.getDefaultInstance() : nearVector_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -12376,6 +12580,12 @@ public final class WeaviateProtoSearchGet {
       }
       for (int i = 0; i < targetVectors_.size(); i++) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 7, targetVectors_.getRaw(i));
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeMessage(8, getNearText());
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        output.writeMessage(9, getNearVector());
       }
       getUnknownFields().writeTo(output);
     }
@@ -12428,6 +12638,14 @@ public final class WeaviateProtoSearchGet {
         size += dataSize;
         size += 1 * getTargetVectorsList().size();
       }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(8, getNearText());
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(9, getNearVector());
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
@@ -12457,6 +12675,16 @@ public final class WeaviateProtoSearchGet {
           .equals(other.getVectorBytes())) return false;
       if (!getTargetVectorsList()
           .equals(other.getTargetVectorsList())) return false;
+      if (hasNearText() != other.hasNearText()) return false;
+      if (hasNearText()) {
+        if (!getNearText()
+            .equals(other.getNearText())) return false;
+      }
+      if (hasNearVector() != other.hasNearVector()) return false;
+      if (hasNearVector()) {
+        if (!getNearVector()
+            .equals(other.getNearVector())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -12488,6 +12716,14 @@ public final class WeaviateProtoSearchGet {
       if (getTargetVectorsCount() > 0) {
         hash = (37 * hash) + TARGET_VECTORS_FIELD_NUMBER;
         hash = (53 * hash) + getTargetVectorsList().hashCode();
+      }
+      if (hasNearText()) {
+        hash = (37 * hash) + NEAR_TEXT_FIELD_NUMBER;
+        hash = (53 * hash) + getNearText().hashCode();
+      }
+      if (hasNearVector()) {
+        hash = (37 * hash) + NEAR_VECTOR_FIELD_NUMBER;
+        hash = (53 * hash) + getNearVector().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -12608,13 +12844,20 @@ public final class WeaviateProtoSearchGet {
 
       // Construct using io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.Hybrid.newBuilder()
       private Builder() {
-
+        maybeForceBuilderInitialization();
       }
 
       private Builder(
           com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
-
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getNearTextFieldBuilder();
+          getNearVectorFieldBuilder();
+        }
       }
       @java.lang.Override
       public Builder clear() {
@@ -12629,6 +12872,16 @@ public final class WeaviateProtoSearchGet {
         vectorBytes_ = com.google.protobuf.ByteString.EMPTY;
         targetVectors_ =
             com.google.protobuf.LazyStringArrayList.emptyList();
+        nearText_ = null;
+        if (nearTextBuilder_ != null) {
+          nearTextBuilder_.dispose();
+          nearTextBuilder_ = null;
+        }
+        nearVector_ = null;
+        if (nearVectorBuilder_ != null) {
+          nearVectorBuilder_.dispose();
+          nearVectorBuilder_ = null;
+        }
         return this;
       }
 
@@ -12686,6 +12939,20 @@ public final class WeaviateProtoSearchGet {
           targetVectors_.makeImmutable();
           result.targetVectors_ = targetVectors_;
         }
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.nearText_ = nearTextBuilder_ == null
+              ? nearText_
+              : nearTextBuilder_.build();
+          to_bitField0_ |= 0x00000001;
+        }
+        if (((from_bitField0_ & 0x00000100) != 0)) {
+          result.nearVector_ = nearVectorBuilder_ == null
+              ? nearVector_
+              : nearVectorBuilder_.build();
+          to_bitField0_ |= 0x00000002;
+        }
+        result.bitField0_ |= to_bitField0_;
       }
 
       @java.lang.Override
@@ -12777,6 +13044,12 @@ public final class WeaviateProtoSearchGet {
           }
           onChanged();
         }
+        if (other.hasNearText()) {
+          mergeNearText(other.getNearText());
+        }
+        if (other.hasNearVector()) {
+          mergeNearVector(other.getNearVector());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -12852,6 +13125,20 @@ public final class WeaviateProtoSearchGet {
                 targetVectors_.add(s);
                 break;
               } // case 58
+              case 66: {
+                input.readMessage(
+                    getNearTextFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 66
+              case 74: {
+                input.readMessage(
+                    getNearVectorFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000100;
+                break;
+              } // case 74
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -13072,7 +13359,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-       *     See v1/search_get.proto;l=107
+       *     See v1/search_get.proto;l=108
        * @return A list containing the vector.
        */
       @java.lang.Deprecated public java.util.List<java.lang.Float>
@@ -13087,7 +13374,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-       *     See v1/search_get.proto;l=107
+       *     See v1/search_get.proto;l=108
        * @return The count of vector.
        */
       @java.lang.Deprecated public int getVectorCount() {
@@ -13100,7 +13387,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-       *     See v1/search_get.proto;l=107
+       *     See v1/search_get.proto;l=108
        * @param index The index of the element to return.
        * @return The vector at the given index.
        */
@@ -13114,7 +13401,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-       *     See v1/search_get.proto;l=107
+       *     See v1/search_get.proto;l=108
        * @param index The index to set the value at.
        * @param value The vector to set.
        * @return This builder for chaining.
@@ -13135,7 +13422,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-       *     See v1/search_get.proto;l=107
+       *     See v1/search_get.proto;l=108
        * @param value The vector to add.
        * @return This builder for chaining.
        */
@@ -13154,7 +13441,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-       *     See v1/search_get.proto;l=107
+       *     See v1/search_get.proto;l=108
        * @param values The vector to add.
        * @return This builder for chaining.
        */
@@ -13174,7 +13461,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-       *     See v1/search_get.proto;l=107
+       *     See v1/search_get.proto;l=108
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearVector() {
@@ -13410,6 +13697,320 @@ public final class WeaviateProtoSearchGet {
         bitField0_ |= 0x00000040;
         onChanged();
         return this;
+      }
+
+      private io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearTextSearch nearText_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearTextSearch, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearTextSearch.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearTextSearchOrBuilder> nearTextBuilder_;
+      /**
+       * <pre>
+       * target_vector in msg is ignored and should not be set for hybrid
+       * </pre>
+       *
+       * <code>.weaviate.v1.NearTextSearch near_text = 8;</code>
+       * @return Whether the nearText field is set.
+       */
+      public boolean hasNearText() {
+        return ((bitField0_ & 0x00000080) != 0);
+      }
+      /**
+       * <pre>
+       * target_vector in msg is ignored and should not be set for hybrid
+       * </pre>
+       *
+       * <code>.weaviate.v1.NearTextSearch near_text = 8;</code>
+       * @return The nearText.
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearTextSearch getNearText() {
+        if (nearTextBuilder_ == null) {
+          return nearText_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearTextSearch.getDefaultInstance() : nearText_;
+        } else {
+          return nearTextBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       * target_vector in msg is ignored and should not be set for hybrid
+       * </pre>
+       *
+       * <code>.weaviate.v1.NearTextSearch near_text = 8;</code>
+       */
+      public Builder setNearText(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearTextSearch value) {
+        if (nearTextBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          nearText_ = value;
+        } else {
+          nearTextBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * target_vector in msg is ignored and should not be set for hybrid
+       * </pre>
+       *
+       * <code>.weaviate.v1.NearTextSearch near_text = 8;</code>
+       */
+      public Builder setNearText(
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearTextSearch.Builder builderForValue) {
+        if (nearTextBuilder_ == null) {
+          nearText_ = builderForValue.build();
+        } else {
+          nearTextBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * target_vector in msg is ignored and should not be set for hybrid
+       * </pre>
+       *
+       * <code>.weaviate.v1.NearTextSearch near_text = 8;</code>
+       */
+      public Builder mergeNearText(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearTextSearch value) {
+        if (nearTextBuilder_ == null) {
+          if (((bitField0_ & 0x00000080) != 0) &&
+            nearText_ != null &&
+            nearText_ != io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearTextSearch.getDefaultInstance()) {
+            getNearTextBuilder().mergeFrom(value);
+          } else {
+            nearText_ = value;
+          }
+        } else {
+          nearTextBuilder_.mergeFrom(value);
+        }
+        if (nearText_ != null) {
+          bitField0_ |= 0x00000080;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * target_vector in msg is ignored and should not be set for hybrid
+       * </pre>
+       *
+       * <code>.weaviate.v1.NearTextSearch near_text = 8;</code>
+       */
+      public Builder clearNearText() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        nearText_ = null;
+        if (nearTextBuilder_ != null) {
+          nearTextBuilder_.dispose();
+          nearTextBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * target_vector in msg is ignored and should not be set for hybrid
+       * </pre>
+       *
+       * <code>.weaviate.v1.NearTextSearch near_text = 8;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearTextSearch.Builder getNearTextBuilder() {
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return getNearTextFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * target_vector in msg is ignored and should not be set for hybrid
+       * </pre>
+       *
+       * <code>.weaviate.v1.NearTextSearch near_text = 8;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearTextSearchOrBuilder getNearTextOrBuilder() {
+        if (nearTextBuilder_ != null) {
+          return nearTextBuilder_.getMessageOrBuilder();
+        } else {
+          return nearText_ == null ?
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearTextSearch.getDefaultInstance() : nearText_;
+        }
+      }
+      /**
+       * <pre>
+       * target_vector in msg is ignored and should not be set for hybrid
+       * </pre>
+       *
+       * <code>.weaviate.v1.NearTextSearch near_text = 8;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearTextSearch, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearTextSearch.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearTextSearchOrBuilder> 
+          getNearTextFieldBuilder() {
+        if (nearTextBuilder_ == null) {
+          nearTextBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearTextSearch, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearTextSearch.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearTextSearchOrBuilder>(
+                  getNearText(),
+                  getParentForChildren(),
+                  isClean());
+          nearText_ = null;
+        }
+        return nearTextBuilder_;
+      }
+
+      private io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector nearVector_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVectorOrBuilder> nearVectorBuilder_;
+      /**
+       * <pre>
+       * same as above. Use the target vector in the hybrid message
+       * </pre>
+       *
+       * <code>.weaviate.v1.NearVector near_vector = 9;</code>
+       * @return Whether the nearVector field is set.
+       */
+      public boolean hasNearVector() {
+        return ((bitField0_ & 0x00000100) != 0);
+      }
+      /**
+       * <pre>
+       * same as above. Use the target vector in the hybrid message
+       * </pre>
+       *
+       * <code>.weaviate.v1.NearVector near_vector = 9;</code>
+       * @return The nearVector.
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector getNearVector() {
+        if (nearVectorBuilder_ == null) {
+          return nearVector_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector.getDefaultInstance() : nearVector_;
+        } else {
+          return nearVectorBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       * same as above. Use the target vector in the hybrid message
+       * </pre>
+       *
+       * <code>.weaviate.v1.NearVector near_vector = 9;</code>
+       */
+      public Builder setNearVector(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector value) {
+        if (nearVectorBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          nearVector_ = value;
+        } else {
+          nearVectorBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * same as above. Use the target vector in the hybrid message
+       * </pre>
+       *
+       * <code>.weaviate.v1.NearVector near_vector = 9;</code>
+       */
+      public Builder setNearVector(
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector.Builder builderForValue) {
+        if (nearVectorBuilder_ == null) {
+          nearVector_ = builderForValue.build();
+        } else {
+          nearVectorBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * same as above. Use the target vector in the hybrid message
+       * </pre>
+       *
+       * <code>.weaviate.v1.NearVector near_vector = 9;</code>
+       */
+      public Builder mergeNearVector(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector value) {
+        if (nearVectorBuilder_ == null) {
+          if (((bitField0_ & 0x00000100) != 0) &&
+            nearVector_ != null &&
+            nearVector_ != io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector.getDefaultInstance()) {
+            getNearVectorBuilder().mergeFrom(value);
+          } else {
+            nearVector_ = value;
+          }
+        } else {
+          nearVectorBuilder_.mergeFrom(value);
+        }
+        if (nearVector_ != null) {
+          bitField0_ |= 0x00000100;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * same as above. Use the target vector in the hybrid message
+       * </pre>
+       *
+       * <code>.weaviate.v1.NearVector near_vector = 9;</code>
+       */
+      public Builder clearNearVector() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        nearVector_ = null;
+        if (nearVectorBuilder_ != null) {
+          nearVectorBuilder_.dispose();
+          nearVectorBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * same as above. Use the target vector in the hybrid message
+       * </pre>
+       *
+       * <code>.weaviate.v1.NearVector near_vector = 9;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector.Builder getNearVectorBuilder() {
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return getNearVectorFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * same as above. Use the target vector in the hybrid message
+       * </pre>
+       *
+       * <code>.weaviate.v1.NearVector near_vector = 9;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVectorOrBuilder getNearVectorOrBuilder() {
+        if (nearVectorBuilder_ != null) {
+          return nearVectorBuilder_.getMessageOrBuilder();
+        } else {
+          return nearVector_ == null ?
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector.getDefaultInstance() : nearVector_;
+        }
+      }
+      /**
+       * <pre>
+       * same as above. Use the target vector in the hybrid message
+       * </pre>
+       *
+       * <code>.weaviate.v1.NearVector near_vector = 9;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVectorOrBuilder> 
+          getNearVectorFieldBuilder() {
+        if (nearVectorBuilder_ == null) {
+          nearVectorBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVectorOrBuilder>(
+                  getNearVector(),
+                  getParentForChildren(),
+                  isClean());
+          nearVector_ = null;
+        }
+        return nearVectorBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -23602,7 +24203,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.vector is deprecated.
-     *     See v1/search_get.proto;l=191
+     *     See v1/search_get.proto;l=194
      * @return A list containing the vector.
      */
     @java.lang.Deprecated java.util.List<java.lang.Float> getVectorList();
@@ -23613,7 +24214,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.vector is deprecated.
-     *     See v1/search_get.proto;l=191
+     *     See v1/search_get.proto;l=194
      * @return The count of vector.
      */
     @java.lang.Deprecated int getVectorCount();
@@ -23624,7 +24225,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.vector is deprecated.
-     *     See v1/search_get.proto;l=191
+     *     See v1/search_get.proto;l=194
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
@@ -23734,7 +24335,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.vector is deprecated.
-     *     See v1/search_get.proto;l=191
+     *     See v1/search_get.proto;l=194
      * @return A list containing the vector.
      */
     @java.lang.Override
@@ -23749,7 +24350,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.vector is deprecated.
-     *     See v1/search_get.proto;l=191
+     *     See v1/search_get.proto;l=194
      * @return The count of vector.
      */
     @java.lang.Deprecated public int getVectorCount() {
@@ -23762,7 +24363,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.vector is deprecated.
-     *     See v1/search_get.proto;l=191
+     *     See v1/search_get.proto;l=194
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
@@ -24363,7 +24964,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.vector is deprecated.
-       *     See v1/search_get.proto;l=191
+       *     See v1/search_get.proto;l=194
        * @return A list containing the vector.
        */
       @java.lang.Deprecated public java.util.List<java.lang.Float>
@@ -24378,7 +24979,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.vector is deprecated.
-       *     See v1/search_get.proto;l=191
+       *     See v1/search_get.proto;l=194
        * @return The count of vector.
        */
       @java.lang.Deprecated public int getVectorCount() {
@@ -24391,7 +24992,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.vector is deprecated.
-       *     See v1/search_get.proto;l=191
+       *     See v1/search_get.proto;l=194
        * @param index The index of the element to return.
        * @return The vector at the given index.
        */
@@ -24405,7 +25006,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.vector is deprecated.
-       *     See v1/search_get.proto;l=191
+       *     See v1/search_get.proto;l=194
        * @param index The index to set the value at.
        * @param value The vector to set.
        * @return This builder for chaining.
@@ -24426,7 +25027,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.vector is deprecated.
-       *     See v1/search_get.proto;l=191
+       *     See v1/search_get.proto;l=194
        * @param value The vector to add.
        * @return This builder for chaining.
        */
@@ -24445,7 +25046,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.vector is deprecated.
-       *     See v1/search_get.proto;l=191
+       *     See v1/search_get.proto;l=194
        * @param values The vector to add.
        * @return This builder for chaining.
        */
@@ -24465,7 +25066,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.vector is deprecated.
-       *     See v1/search_get.proto;l=191
+       *     See v1/search_get.proto;l=194
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearVector() {
@@ -31293,7 +31894,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-     *     See v1/search_get.proto;l=243
+     *     See v1/search_get.proto;l=246
      * @return A list containing the vector.
      */
     @java.lang.Deprecated java.util.List<java.lang.Float> getVectorList();
@@ -31304,7 +31905,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-     *     See v1/search_get.proto;l=243
+     *     See v1/search_get.proto;l=246
      * @return The count of vector.
      */
     @java.lang.Deprecated int getVectorCount();
@@ -31315,7 +31916,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-     *     See v1/search_get.proto;l=243
+     *     See v1/search_get.proto;l=246
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
@@ -31575,7 +32176,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-     *     See v1/search_get.proto;l=243
+     *     See v1/search_get.proto;l=246
      * @return A list containing the vector.
      */
     @java.lang.Override
@@ -31590,7 +32191,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-     *     See v1/search_get.proto;l=243
+     *     See v1/search_get.proto;l=246
      * @return The count of vector.
      */
     @java.lang.Deprecated public int getVectorCount() {
@@ -31603,7 +32204,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-     *     See v1/search_get.proto;l=243
+     *     See v1/search_get.proto;l=246
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
@@ -32975,7 +33576,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-       *     See v1/search_get.proto;l=243
+       *     See v1/search_get.proto;l=246
        * @return A list containing the vector.
        */
       @java.lang.Deprecated public java.util.List<java.lang.Float>
@@ -32990,7 +33591,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-       *     See v1/search_get.proto;l=243
+       *     See v1/search_get.proto;l=246
        * @return The count of vector.
        */
       @java.lang.Deprecated public int getVectorCount() {
@@ -33003,7 +33604,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-       *     See v1/search_get.proto;l=243
+       *     See v1/search_get.proto;l=246
        * @param index The index of the element to return.
        * @return The vector at the given index.
        */
@@ -33017,7 +33618,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-       *     See v1/search_get.proto;l=243
+       *     See v1/search_get.proto;l=246
        * @param index The index to set the value at.
        * @param value The vector to set.
        * @return This builder for chaining.
@@ -33038,7 +33639,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-       *     See v1/search_get.proto;l=243
+       *     See v1/search_get.proto;l=246
        * @param value The vector to add.
        * @return This builder for chaining.
        */
@@ -33057,7 +33658,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-       *     See v1/search_get.proto;l=243
+       *     See v1/search_get.proto;l=246
        * @param values The vector to add.
        * @return This builder for chaining.
        */
@@ -33077,7 +33678,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-       *     See v1/search_get.proto;l=243
+       *     See v1/search_get.proto;l=246
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearVector() {
@@ -34125,14 +34726,14 @@ public final class WeaviateProtoSearchGet {
     /**
      * <code>.google.protobuf.Struct non_ref_properties = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.PropertiesResult.non_ref_properties is deprecated.
-     *     See v1/search_get.proto;l=268
+     *     See v1/search_get.proto;l=271
      * @return Whether the nonRefProperties field is set.
      */
     @java.lang.Deprecated boolean hasNonRefProperties();
     /**
      * <code>.google.protobuf.Struct non_ref_properties = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.PropertiesResult.non_ref_properties is deprecated.
-     *     See v1/search_get.proto;l=268
+     *     See v1/search_get.proto;l=271
      * @return The nonRefProperties.
      */
     @java.lang.Deprecated com.google.protobuf.Struct getNonRefProperties();
@@ -34406,7 +35007,7 @@ public final class WeaviateProtoSearchGet {
     /**
      * <code>.google.protobuf.Struct non_ref_properties = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.PropertiesResult.non_ref_properties is deprecated.
-     *     See v1/search_get.proto;l=268
+     *     See v1/search_get.proto;l=271
      * @return Whether the nonRefProperties field is set.
      */
     @java.lang.Override
@@ -34416,7 +35017,7 @@ public final class WeaviateProtoSearchGet {
     /**
      * <code>.google.protobuf.Struct non_ref_properties = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.PropertiesResult.non_ref_properties is deprecated.
-     *     See v1/search_get.proto;l=268
+     *     See v1/search_get.proto;l=271
      * @return The nonRefProperties.
      */
     @java.lang.Override
@@ -35784,7 +36385,7 @@ public final class WeaviateProtoSearchGet {
       /**
        * <code>.google.protobuf.Struct non_ref_properties = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.PropertiesResult.non_ref_properties is deprecated.
-       *     See v1/search_get.proto;l=268
+       *     See v1/search_get.proto;l=271
        * @return Whether the nonRefProperties field is set.
        */
       @java.lang.Deprecated public boolean hasNonRefProperties() {
@@ -35793,7 +36394,7 @@ public final class WeaviateProtoSearchGet {
       /**
        * <code>.google.protobuf.Struct non_ref_properties = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.PropertiesResult.non_ref_properties is deprecated.
-       *     See v1/search_get.proto;l=268
+       *     See v1/search_get.proto;l=271
        * @return The nonRefProperties.
        */
       @java.lang.Deprecated public com.google.protobuf.Struct getNonRefProperties() {
@@ -39078,7 +39679,7 @@ public final class WeaviateProtoSearchGet {
     java.lang.String[] descriptorData = {
       "\n\023v1/search_get.proto\022\013weaviate.v1\032\034goog" +
       "le/protobuf/struct.proto\032\rv1/base.proto\032" +
-      "\023v1/properties.proto\"\354\n\n\rSearchRequest\022\022" +
+      "\023v1/properties.proto\"\202\013\n\rSearchRequest\022\022" +
       "\n\ncollection\030\001 \001(\t\022\016\n\006tenant\030\n \001(\t\022=\n\021co" +
       "nsistency_level\030\013 \001(\0162\035.weaviate.v1.Cons" +
       "istencyLevelH\000\210\001\001\0227\n\nproperties\030\024 \001(\0132\036." +
@@ -39106,138 +39707,141 @@ public final class WeaviateProtoSearchGet {
       "arIMUSearchH\017\210\001\001\0226\n\ngenerative\030< \001(\0132\035.w" +
       "eaviate.v1.GenerativeSearchH\020\210\001\001\022(\n\006rera" +
       "nk\030= \001(\0132\023.weaviate.v1.RerankH\021\210\001\001\022\030\n\014us" +
-      "es_123_api\030d \001(\010B\002\030\001B\024\n\022_consistency_lev" +
-      "elB\r\n\013_propertiesB\013\n\t_metadataB\013\n\t_group" +
-      "_byB\n\n\010_filtersB\020\n\016_hybrid_searchB\016\n\014_bm" +
-      "25_searchB\016\n\014_near_vectorB\016\n\014_near_objec" +
-      "tB\014\n\n_near_textB\r\n\013_near_imageB\r\n\013_near_" +
-      "audioB\r\n\013_near_videoB\r\n\013_near_depthB\017\n\r_" +
-      "near_thermalB\013\n\t_near_imuB\r\n\013_generative" +
-      "B\t\n\007_rerank\"L\n\007GroupBy\022\014\n\004path\030\001 \003(\t\022\030\n\020" +
-      "number_of_groups\030\002 \001(\005\022\031\n\021objects_per_gr" +
-      "oup\030\003 \001(\005\")\n\006SortBy\022\021\n\tascending\030\001 \001(\010\022\014" +
-      "\n\004path\030\002 \003(\t\"m\n\020GenerativeSearch\022\036\n\026sing" +
-      "le_response_prompt\030\001 \001(\t\022\035\n\025grouped_resp" +
-      "onse_task\030\002 \001(\t\022\032\n\022grouped_properties\030\003 " +
-      "\003(\t\"\335\001\n\017MetadataRequest\022\014\n\004uuid\030\001 \001(\010\022\016\n" +
-      "\006vector\030\002 \001(\010\022\032\n\022creation_time_unix\030\003 \001(" +
-      "\010\022\035\n\025last_update_time_unix\030\004 \001(\010\022\020\n\010dist" +
-      "ance\030\005 \001(\010\022\021\n\tcertainty\030\006 \001(\010\022\r\n\005score\030\007" +
-      " \001(\010\022\025\n\rexplain_score\030\010 \001(\010\022\025\n\ris_consis" +
-      "tent\030\t \001(\010\022\017\n\007vectors\030\n \003(\t\"\321\001\n\021Properti" +
-      "esRequest\022\032\n\022non_ref_properties\030\001 \003(\t\0229\n" +
-      "\016ref_properties\030\002 \003(\0132!.weaviate.v1.RefP" +
-      "ropertiesRequest\022?\n\021object_properties\030\003 " +
-      "\003(\0132$.weaviate.v1.ObjectPropertiesReques" +
-      "t\022$\n\034return_all_nonref_properties\030\013 \001(\010\"" +
-      "\213\001\n\027ObjectPropertiesRequest\022\021\n\tprop_name" +
-      "\030\001 \001(\t\022\034\n\024primitive_properties\030\002 \003(\t\022?\n\021" +
-      "object_properties\030\003 \003(\0132$.weaviate.v1.Ob" +
-      "jectPropertiesRequest\"\224\002\n\006Hybrid\022\r\n\005quer" +
-      "y\030\001 \001(\t\022\022\n\nproperties\030\002 \003(\t\022\022\n\006vector\030\003 " +
-      "\003(\002B\002\030\001\022\r\n\005alpha\030\004 \001(\002\0223\n\013fusion_type\030\005 " +
-      "\001(\0162\036.weaviate.v1.Hybrid.FusionType\022\024\n\014v" +
-      "ector_bytes\030\006 \001(\014\022\026\n\016target_vectors\030\007 \003(" +
-      "\t\"a\n\nFusionType\022\033\n\027FUSION_TYPE_UNSPECIFI" +
-      "ED\020\000\022\026\n\022FUSION_TYPE_RANKED\020\001\022\036\n\032FUSION_T" +
-      "YPE_RELATIVE_SCORE\020\002\"\305\002\n\016NearTextSearch\022" +
-      "\r\n\005query\030\001 \003(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025" +
-      "\n\010distance\030\003 \001(\001H\001\210\001\001\0226\n\007move_to\030\004 \001(\0132 " +
-      ".weaviate.v1.NearTextSearch.MoveH\002\210\001\001\0228\n" +
-      "\tmove_away\030\005 \001(\0132 .weaviate.v1.NearTextS" +
-      "earch.MoveH\003\210\001\001\022\026\n\016target_vectors\030\006 \003(\t\032" +
-      "6\n\004Move\022\r\n\005force\030\001 \001(\002\022\020\n\010concepts\030\002 \003(\t" +
-      "\022\r\n\005uuids\030\003 \003(\tB\014\n\n_certaintyB\013\n\t_distan" +
-      "ceB\n\n\010_move_toB\014\n\n_move_away\"\202\001\n\017NearIma" +
-      "geSearch\022\r\n\005image\030\001 \001(\t\022\026\n\tcertainty\030\002 \001" +
-      "(\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001\022\026\n\016target" +
-      "_vectors\030\004 \003(\tB\014\n\n_certaintyB\013\n\t_distanc" +
-      "e\"\202\001\n\017NearAudioSearch\022\r\n\005audio\030\001 \001(\t\022\026\n\t" +
-      "certainty\030\002 \001(\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001" +
-      "\210\001\001\022\026\n\016target_vectors\030\004 \003(\tB\014\n\n_certaint" +
-      "yB\013\n\t_distance\"\202\001\n\017NearVideoSearch\022\r\n\005vi" +
-      "deo\030\001 \001(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n\010dis" +
-      "tance\030\003 \001(\001H\001\210\001\001\022\026\n\016target_vectors\030\004 \003(\t" +
-      "B\014\n\n_certaintyB\013\n\t_distance\"\202\001\n\017NearDept" +
-      "hSearch\022\r\n\005depth\030\001 \001(\t\022\026\n\tcertainty\030\002 \001(" +
-      "\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001\022\026\n\016target_" +
-      "vectors\030\004 \003(\tB\014\n\n_certaintyB\013\n\t_distance" +
-      "\"\206\001\n\021NearThermalSearch\022\017\n\007thermal\030\001 \001(\t\022" +
+      "es_123_api\030d \001(\010B\002\030\001\022\024\n\014uses_125_api\030e \001" +
+      "(\010B\024\n\022_consistency_levelB\r\n\013_propertiesB" +
+      "\013\n\t_metadataB\013\n\t_group_byB\n\n\010_filtersB\020\n" +
+      "\016_hybrid_searchB\016\n\014_bm25_searchB\016\n\014_near" +
+      "_vectorB\016\n\014_near_objectB\014\n\n_near_textB\r\n" +
+      "\013_near_imageB\r\n\013_near_audioB\r\n\013_near_vid" +
+      "eoB\r\n\013_near_depthB\017\n\r_near_thermalB\013\n\t_n" +
+      "ear_imuB\r\n\013_generativeB\t\n\007_rerank\"L\n\007Gro" +
+      "upBy\022\014\n\004path\030\001 \003(\t\022\030\n\020number_of_groups\030\002" +
+      " \001(\005\022\031\n\021objects_per_group\030\003 \001(\005\")\n\006SortB" +
+      "y\022\021\n\tascending\030\001 \001(\010\022\014\n\004path\030\002 \003(\t\"m\n\020Ge" +
+      "nerativeSearch\022\036\n\026single_response_prompt" +
+      "\030\001 \001(\t\022\035\n\025grouped_response_task\030\002 \001(\t\022\032\n" +
+      "\022grouped_properties\030\003 \003(\t\"\335\001\n\017MetadataRe" +
+      "quest\022\014\n\004uuid\030\001 \001(\010\022\016\n\006vector\030\002 \001(\010\022\032\n\022c" +
+      "reation_time_unix\030\003 \001(\010\022\035\n\025last_update_t" +
+      "ime_unix\030\004 \001(\010\022\020\n\010distance\030\005 \001(\010\022\021\n\tcert" +
+      "ainty\030\006 \001(\010\022\r\n\005score\030\007 \001(\010\022\025\n\rexplain_sc" +
+      "ore\030\010 \001(\010\022\025\n\ris_consistent\030\t \001(\010\022\017\n\007vect" +
+      "ors\030\n \003(\t\"\321\001\n\021PropertiesRequest\022\032\n\022non_r" +
+      "ef_properties\030\001 \003(\t\0229\n\016ref_properties\030\002 " +
+      "\003(\0132!.weaviate.v1.RefPropertiesRequest\022?" +
+      "\n\021object_properties\030\003 \003(\0132$.weaviate.v1." +
+      "ObjectPropertiesRequest\022$\n\034return_all_no" +
+      "nref_properties\030\013 \001(\010\"\213\001\n\027ObjectProperti" +
+      "esRequest\022\021\n\tprop_name\030\001 \001(\t\022\034\n\024primitiv" +
+      "e_properties\030\002 \003(\t\022?\n\021object_properties\030" +
+      "\003 \003(\0132$.weaviate.v1.ObjectPropertiesRequ" +
+      "est\"\362\002\n\006Hybrid\022\r\n\005query\030\001 \001(\t\022\022\n\npropert" +
+      "ies\030\002 \003(\t\022\022\n\006vector\030\003 \003(\002B\002\030\001\022\r\n\005alpha\030\004" +
+      " \001(\002\0223\n\013fusion_type\030\005 \001(\0162\036.weaviate.v1." +
+      "Hybrid.FusionType\022\024\n\014vector_bytes\030\006 \001(\014\022" +
+      "\026\n\016target_vectors\030\007 \003(\t\022.\n\tnear_text\030\010 \001" +
+      "(\0132\033.weaviate.v1.NearTextSearch\022,\n\013near_" +
+      "vector\030\t \001(\0132\027.weaviate.v1.NearVector\"a\n" +
+      "\nFusionType\022\033\n\027FUSION_TYPE_UNSPECIFIED\020\000" +
+      "\022\026\n\022FUSION_TYPE_RANKED\020\001\022\036\n\032FUSION_TYPE_" +
+      "RELATIVE_SCORE\020\002\"\305\002\n\016NearTextSearch\022\r\n\005q" +
+      "uery\030\001 \003(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n\010di" +
+      "stance\030\003 \001(\001H\001\210\001\001\0226\n\007move_to\030\004 \001(\0132 .wea" +
+      "viate.v1.NearTextSearch.MoveH\002\210\001\001\0228\n\tmov" +
+      "e_away\030\005 \001(\0132 .weaviate.v1.NearTextSearc" +
+      "h.MoveH\003\210\001\001\022\026\n\016target_vectors\030\006 \003(\t\0326\n\004M" +
+      "ove\022\r\n\005force\030\001 \001(\002\022\020\n\010concepts\030\002 \003(\t\022\r\n\005" +
+      "uuids\030\003 \003(\tB\014\n\n_certaintyB\013\n\t_distanceB\n" +
+      "\n\010_move_toB\014\n\n_move_away\"\202\001\n\017NearImageSe" +
+      "arch\022\r\n\005image\030\001 \001(\t\022\026\n\tcertainty\030\002 \001(\001H\000" +
+      "\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001\022\026\n\016target_vec" +
+      "tors\030\004 \003(\tB\014\n\n_certaintyB\013\n\t_distance\"\202\001" +
+      "\n\017NearAudioSearch\022\r\n\005audio\030\001 \001(\t\022\026\n\tcert" +
+      "ainty\030\002 \001(\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001\022" +
+      "\026\n\016target_vectors\030\004 \003(\tB\014\n\n_certaintyB\013\n" +
+      "\t_distance\"\202\001\n\017NearVideoSearch\022\r\n\005video\030" +
+      "\001 \001(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n\010distanc" +
+      "e\030\003 \001(\001H\001\210\001\001\022\026\n\016target_vectors\030\004 \003(\tB\014\n\n" +
+      "_certaintyB\013\n\t_distance\"\202\001\n\017NearDepthSea" +
+      "rch\022\r\n\005depth\030\001 \001(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210" +
+      "\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001\022\026\n\016target_vect" +
+      "ors\030\004 \003(\tB\014\n\n_certaintyB\013\n\t_distance\"\206\001\n" +
+      "\021NearThermalSearch\022\017\n\007thermal\030\001 \001(\t\022\026\n\tc" +
+      "ertainty\030\002 \001(\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210" +
+      "\001\001\022\026\n\016target_vectors\030\004 \003(\tB\014\n\n_certainty" +
+      "B\013\n\t_distance\"~\n\rNearIMUSearch\022\013\n\003imu\030\001 " +
+      "\001(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n\010distance\030" +
+      "\003 \001(\001H\001\210\001\001\022\026\n\016target_vectors\030\004 \003(\tB\014\n\n_c" +
+      "ertaintyB\013\n\t_distance\")\n\004BM25\022\r\n\005query\030\001" +
+      " \001(\t\022\022\n\nproperties\030\002 \003(\t\"\261\001\n\024RefProperti" +
+      "esRequest\022\032\n\022reference_property\030\001 \001(\t\0222\n" +
+      "\nproperties\030\002 \001(\0132\036.weaviate.v1.Properti" +
+      "esRequest\022.\n\010metadata\030\003 \001(\0132\034.weaviate.v" +
+      "1.MetadataRequest\022\031\n\021target_collection\030\004" +
+      " \001(\t\"\230\001\n\nNearVector\022\022\n\006vector\030\001 \003(\002B\002\030\001\022" +
       "\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n\010distance\030\003 \001(" +
-      "\001H\001\210\001\001\022\026\n\016target_vectors\030\004 \003(\tB\014\n\n_certa" +
-      "intyB\013\n\t_distance\"~\n\rNearIMUSearch\022\013\n\003im" +
-      "u\030\001 \001(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n\010dista" +
-      "nce\030\003 \001(\001H\001\210\001\001\022\026\n\016target_vectors\030\004 \003(\tB\014" +
-      "\n\n_certaintyB\013\n\t_distance\")\n\004BM25\022\r\n\005que" +
-      "ry\030\001 \001(\t\022\022\n\nproperties\030\002 \003(\t\"\261\001\n\024RefProp" +
-      "ertiesRequest\022\032\n\022reference_property\030\001 \001(" +
-      "\t\0222\n\nproperties\030\002 \001(\0132\036.weaviate.v1.Prop" +
-      "ertiesRequest\022.\n\010metadata\030\003 \001(\0132\034.weavia" +
-      "te.v1.MetadataRequest\022\031\n\021target_collecti" +
-      "on\030\004 \001(\t\"\230\001\n\nNearVector\022\022\n\006vector\030\001 \003(\002B" +
-      "\002\030\001\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n\010distance\030" +
-      "\003 \001(\001H\001\210\001\001\022\024\n\014vector_bytes\030\004 \001(\014\022\026\n\016targ" +
-      "et_vectors\030\005 \003(\tB\014\n\n_certaintyB\013\n\t_dista" +
-      "nce\"z\n\nNearObject\022\n\n\002id\030\001 \001(\t\022\026\n\tcertain" +
-      "ty\030\002 \001(\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001\022\026\n\016" +
-      "target_vectors\030\004 \003(\tB\014\n\n_certaintyB\013\n\t_d" +
-      "istance\"8\n\006Rerank\022\020\n\010property\030\001 \001(\t\022\022\n\005q" +
-      "uery\030\002 \001(\tH\000\210\001\001B\010\n\006_query\"\303\001\n\013SearchRepl" +
-      "y\022\014\n\004took\030\001 \001(\002\022*\n\007results\030\002 \003(\0132\031.weavi" +
-      "ate.v1.SearchResult\022&\n\031generative_groupe" +
-      "d_result\030\003 \001(\tH\000\210\001\001\0224\n\020group_by_results\030" +
-      "\004 \003(\0132\032.weaviate.v1.GroupByResultB\034\n\032_ge" +
-      "nerative_grouped_result\"\034\n\013RerankReply\022\r" +
-      "\n\005score\030\001 \001(\001\"!\n\017GenerativeReply\022\016\n\006resu" +
-      "lt\030\001 \001(\t\"\220\002\n\rGroupByResult\022\014\n\004name\030\001 \001(\t" +
-      "\022\024\n\014min_distance\030\002 \001(\002\022\024\n\014max_distance\030\003" +
-      " \001(\002\022\031\n\021number_of_objects\030\004 \001(\003\022*\n\007objec" +
-      "ts\030\005 \003(\0132\031.weaviate.v1.SearchResult\022-\n\006r" +
-      "erank\030\006 \001(\0132\030.weaviate.v1.RerankReplyH\000\210" +
-      "\001\001\0225\n\ngenerative\030\007 \001(\0132\034.weaviate.v1.Gen" +
-      "erativeReplyH\001\210\001\001B\t\n\007_rerankB\r\n\013_generat" +
-      "ive\"p\n\014SearchResult\0221\n\nproperties\030\001 \001(\0132" +
-      "\035.weaviate.v1.PropertiesResult\022-\n\010metada" +
-      "ta\030\002 \001(\0132\033.weaviate.v1.MetadataResult\"\357\004" +
-      "\n\016MetadataResult\022\n\n\002id\030\001 \001(\t\022\022\n\006vector\030\002" +
-      " \003(\002B\002\030\001\022\032\n\022creation_time_unix\030\003 \001(\003\022\"\n\032" +
-      "creation_time_unix_present\030\004 \001(\010\022\035\n\025last" +
-      "_update_time_unix\030\005 \001(\003\022%\n\035last_update_t" +
-      "ime_unix_present\030\006 \001(\010\022\020\n\010distance\030\007 \001(\002" +
-      "\022\030\n\020distance_present\030\010 \001(\010\022\021\n\tcertainty\030" +
-      "\t \001(\002\022\031\n\021certainty_present\030\n \001(\010\022\r\n\005scor" +
-      "e\030\013 \001(\002\022\025\n\rscore_present\030\014 \001(\010\022\025\n\rexplai" +
-      "n_score\030\r \001(\t\022\035\n\025explain_score_present\030\016" +
-      " \001(\010\022\032\n\ris_consistent\030\017 \001(\010H\000\210\001\001\022\022\n\ngene" +
-      "rative\030\020 \001(\t\022\032\n\022generative_present\030\021 \001(\010" +
-      "\022\035\n\025is_consistent_present\030\022 \001(\010\022\024\n\014vecto" +
-      "r_bytes\030\023 \001(\014\022\023\n\013id_as_bytes\030\024 \001(\014\022\024\n\014re" +
-      "rank_score\030\025 \001(\001\022\034\n\024rerank_score_present" +
-      "\030\026 \001(\010\022%\n\007vectors\030\027 \003(\0132\024.weaviate.v1.Ve" +
-      "ctorsB\020\n\016_is_consistent\"\272\005\n\020PropertiesRe" +
-      "sult\0227\n\022non_ref_properties\030\001 \001(\0132\027.googl" +
-      "e.protobuf.StructB\002\030\001\0223\n\tref_props\030\002 \003(\013" +
-      "2 .weaviate.v1.RefPropertiesResult\022\031\n\021ta" +
-      "rget_collection\030\003 \001(\t\022-\n\010metadata\030\004 \001(\0132" +
-      "\033.weaviate.v1.MetadataResult\022G\n\027number_a" +
-      "rray_properties\030\005 \003(\0132\".weaviate.v1.Numb" +
-      "erArrayPropertiesB\002\030\001\022A\n\024int_array_prope" +
-      "rties\030\006 \003(\0132\037.weaviate.v1.IntArrayProper" +
-      "tiesB\002\030\001\022C\n\025text_array_properties\030\007 \003(\0132" +
-      " .weaviate.v1.TextArrayPropertiesB\002\030\001\022I\n" +
-      "\030boolean_array_properties\030\010 \003(\0132#.weavia" +
-      "te.v1.BooleanArrayPropertiesB\002\030\001\022<\n\021obje" +
-      "ct_properties\030\t \003(\0132\035.weaviate.v1.Object" +
-      "PropertiesB\002\030\001\022G\n\027object_array_propertie" +
-      "s\030\n \003(\0132\".weaviate.v1.ObjectArrayPropert" +
-      "iesB\002\030\001\022.\n\rnon_ref_props\030\013 \001(\0132\027.weaviat" +
-      "e.v1.Properties\022\033\n\023ref_props_requested\030\014" +
-      " \001(\010\"[\n\023RefPropertiesResult\0221\n\npropertie" +
-      "s\030\001 \003(\0132\035.weaviate.v1.PropertiesResult\022\021" +
-      "\n\tprop_name\030\002 \001(\tBs\n#io.weaviate.client." +
-      "grpc.protocol.v1B\026WeaviateProtoSearchGet" +
-      "Z4github.com/weaviate/weaviate/grpc/gene" +
-      "rated;protocolb\006proto3"
+      "\001H\001\210\001\001\022\024\n\014vector_bytes\030\004 \001(\014\022\026\n\016target_v" +
+      "ectors\030\005 \003(\tB\014\n\n_certaintyB\013\n\t_distance\"" +
+      "z\n\nNearObject\022\n\n\002id\030\001 \001(\t\022\026\n\tcertainty\030\002" +
+      " \001(\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001\022\026\n\016targ" +
+      "et_vectors\030\004 \003(\tB\014\n\n_certaintyB\013\n\t_dista" +
+      "nce\"8\n\006Rerank\022\020\n\010property\030\001 \001(\t\022\022\n\005query" +
+      "\030\002 \001(\tH\000\210\001\001B\010\n\006_query\"\303\001\n\013SearchReply\022\014\n" +
+      "\004took\030\001 \001(\002\022*\n\007results\030\002 \003(\0132\031.weaviate." +
+      "v1.SearchResult\022&\n\031generative_grouped_re" +
+      "sult\030\003 \001(\tH\000\210\001\001\0224\n\020group_by_results\030\004 \003(" +
+      "\0132\032.weaviate.v1.GroupByResultB\034\n\032_genera" +
+      "tive_grouped_result\"\034\n\013RerankReply\022\r\n\005sc" +
+      "ore\030\001 \001(\001\"!\n\017GenerativeReply\022\016\n\006result\030\001" +
+      " \001(\t\"\220\002\n\rGroupByResult\022\014\n\004name\030\001 \001(\t\022\024\n\014" +
+      "min_distance\030\002 \001(\002\022\024\n\014max_distance\030\003 \001(\002" +
+      "\022\031\n\021number_of_objects\030\004 \001(\003\022*\n\007objects\030\005" +
+      " \003(\0132\031.weaviate.v1.SearchResult\022-\n\006reran" +
+      "k\030\006 \001(\0132\030.weaviate.v1.RerankReplyH\000\210\001\001\0225" +
+      "\n\ngenerative\030\007 \001(\0132\034.weaviate.v1.Generat" +
+      "iveReplyH\001\210\001\001B\t\n\007_rerankB\r\n\013_generative\"" +
+      "p\n\014SearchResult\0221\n\nproperties\030\001 \001(\0132\035.we" +
+      "aviate.v1.PropertiesResult\022-\n\010metadata\030\002" +
+      " \001(\0132\033.weaviate.v1.MetadataResult\"\357\004\n\016Me" +
+      "tadataResult\022\n\n\002id\030\001 \001(\t\022\022\n\006vector\030\002 \003(\002" +
+      "B\002\030\001\022\032\n\022creation_time_unix\030\003 \001(\003\022\"\n\032crea" +
+      "tion_time_unix_present\030\004 \001(\010\022\035\n\025last_upd" +
+      "ate_time_unix\030\005 \001(\003\022%\n\035last_update_time_" +
+      "unix_present\030\006 \001(\010\022\020\n\010distance\030\007 \001(\002\022\030\n\020" +
+      "distance_present\030\010 \001(\010\022\021\n\tcertainty\030\t \001(" +
+      "\002\022\031\n\021certainty_present\030\n \001(\010\022\r\n\005score\030\013 " +
+      "\001(\002\022\025\n\rscore_present\030\014 \001(\010\022\025\n\rexplain_sc" +
+      "ore\030\r \001(\t\022\035\n\025explain_score_present\030\016 \001(\010" +
+      "\022\032\n\ris_consistent\030\017 \001(\010H\000\210\001\001\022\022\n\ngenerati" +
+      "ve\030\020 \001(\t\022\032\n\022generative_present\030\021 \001(\010\022\035\n\025" +
+      "is_consistent_present\030\022 \001(\010\022\024\n\014vector_by" +
+      "tes\030\023 \001(\014\022\023\n\013id_as_bytes\030\024 \001(\014\022\024\n\014rerank" +
+      "_score\030\025 \001(\001\022\034\n\024rerank_score_present\030\026 \001" +
+      "(\010\022%\n\007vectors\030\027 \003(\0132\024.weaviate.v1.Vector" +
+      "sB\020\n\016_is_consistent\"\272\005\n\020PropertiesResult" +
+      "\0227\n\022non_ref_properties\030\001 \001(\0132\027.google.pr" +
+      "otobuf.StructB\002\030\001\0223\n\tref_props\030\002 \003(\0132 .w" +
+      "eaviate.v1.RefPropertiesResult\022\031\n\021target" +
+      "_collection\030\003 \001(\t\022-\n\010metadata\030\004 \001(\0132\033.we" +
+      "aviate.v1.MetadataResult\022G\n\027number_array" +
+      "_properties\030\005 \003(\0132\".weaviate.v1.NumberAr" +
+      "rayPropertiesB\002\030\001\022A\n\024int_array_propertie" +
+      "s\030\006 \003(\0132\037.weaviate.v1.IntArrayProperties" +
+      "B\002\030\001\022C\n\025text_array_properties\030\007 \003(\0132 .we" +
+      "aviate.v1.TextArrayPropertiesB\002\030\001\022I\n\030boo" +
+      "lean_array_properties\030\010 \003(\0132#.weaviate.v" +
+      "1.BooleanArrayPropertiesB\002\030\001\022<\n\021object_p" +
+      "roperties\030\t \003(\0132\035.weaviate.v1.ObjectProp" +
+      "ertiesB\002\030\001\022G\n\027object_array_properties\030\n " +
+      "\003(\0132\".weaviate.v1.ObjectArrayPropertiesB" +
+      "\002\030\001\022.\n\rnon_ref_props\030\013 \001(\0132\027.weaviate.v1" +
+      ".Properties\022\033\n\023ref_props_requested\030\014 \001(\010" +
+      "\"[\n\023RefPropertiesResult\0221\n\nproperties\030\001 " +
+      "\003(\0132\035.weaviate.v1.PropertiesResult\022\021\n\tpr" +
+      "op_name\030\002 \001(\tBs\n#io.weaviate.client.grpc" +
+      ".protocol.v1B\026WeaviateProtoSearchGetZ4gi" +
+      "thub.com/weaviate/weaviate/grpc/generate" +
+      "d;protocolb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -39251,7 +39855,7 @@ public final class WeaviateProtoSearchGet {
     internal_static_weaviate_v1_SearchRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_SearchRequest_descriptor,
-        new java.lang.String[] { "Collection", "Tenant", "ConsistencyLevel", "Properties", "Metadata", "GroupBy", "Limit", "Offset", "Autocut", "After", "SortBy", "Filters", "HybridSearch", "Bm25Search", "NearVector", "NearObject", "NearText", "NearImage", "NearAudio", "NearVideo", "NearDepth", "NearThermal", "NearImu", "Generative", "Rerank", "Uses123Api", "ConsistencyLevel", "Properties", "Metadata", "GroupBy", "Filters", "HybridSearch", "Bm25Search", "NearVector", "NearObject", "NearText", "NearImage", "NearAudio", "NearVideo", "NearDepth", "NearThermal", "NearImu", "Generative", "Rerank", });
+        new java.lang.String[] { "Collection", "Tenant", "ConsistencyLevel", "Properties", "Metadata", "GroupBy", "Limit", "Offset", "Autocut", "After", "SortBy", "Filters", "HybridSearch", "Bm25Search", "NearVector", "NearObject", "NearText", "NearImage", "NearAudio", "NearVideo", "NearDepth", "NearThermal", "NearImu", "Generative", "Rerank", "Uses123Api", "Uses125Api", "ConsistencyLevel", "Properties", "Metadata", "GroupBy", "Filters", "HybridSearch", "Bm25Search", "NearVector", "NearObject", "NearText", "NearImage", "NearAudio", "NearVideo", "NearDepth", "NearThermal", "NearImu", "Generative", "Rerank", });
     internal_static_weaviate_v1_GroupBy_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_weaviate_v1_GroupBy_fieldAccessorTable = new
@@ -39293,7 +39897,7 @@ public final class WeaviateProtoSearchGet {
     internal_static_weaviate_v1_Hybrid_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_Hybrid_descriptor,
-        new java.lang.String[] { "Query", "Properties", "Vector", "Alpha", "FusionType", "VectorBytes", "TargetVectors", });
+        new java.lang.String[] { "Query", "Properties", "Vector", "Alpha", "FusionType", "VectorBytes", "TargetVectors", "NearText", "NearVector", });
     internal_static_weaviate_v1_NearTextSearch_descriptor =
       getDescriptor().getMessageTypes().get(8);
     internal_static_weaviate_v1_NearTextSearch_fieldAccessorTable = new

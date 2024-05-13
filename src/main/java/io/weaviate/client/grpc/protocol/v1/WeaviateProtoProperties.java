@@ -747,20 +747,26 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
     double getNumberValue();
 
     /**
-     * <code>string string_value = 2;</code>
+     * <code>string string_value = 2 [deprecated = true];</code>
+     * @deprecated weaviate.v1.Value.string_value is deprecated.
+     *     See v1/properties.proto;l=17
      * @return Whether the stringValue field is set.
      */
-    boolean hasStringValue();
+    @java.lang.Deprecated boolean hasStringValue();
     /**
-     * <code>string string_value = 2;</code>
+     * <code>string string_value = 2 [deprecated = true];</code>
+     * @deprecated weaviate.v1.Value.string_value is deprecated.
+     *     See v1/properties.proto;l=17
      * @return The stringValue.
      */
-    java.lang.String getStringValue();
+    @java.lang.Deprecated java.lang.String getStringValue();
     /**
-     * <code>string string_value = 2;</code>
+     * <code>string string_value = 2 [deprecated = true];</code>
+     * @deprecated weaviate.v1.Value.string_value is deprecated.
+     *     See v1/properties.proto;l=17
      * @return The bytes for stringValue.
      */
-    com.google.protobuf.ByteString
+    @java.lang.Deprecated com.google.protobuf.ByteString
         getStringValueBytes();
 
     /**
@@ -912,6 +918,23 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
      */
     com.google.protobuf.NullValue getNullValue();
 
+    /**
+     * <code>string text_value = 13;</code>
+     * @return Whether the textValue field is set.
+     */
+    boolean hasTextValue();
+    /**
+     * <code>string text_value = 13;</code>
+     * @return The textValue.
+     */
+    java.lang.String getTextValue();
+    /**
+     * <code>string text_value = 13;</code>
+     * @return The bytes for textValue.
+     */
+    com.google.protobuf.ByteString
+        getTextValueBytes();
+
     io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value.KindCase getKindCase();
   }
   /**
@@ -956,7 +979,7 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         implements com.google.protobuf.Internal.EnumLite,
             com.google.protobuf.AbstractMessage.InternalOneOfEnum {
       NUMBER_VALUE(1),
-      STRING_VALUE(2),
+      @java.lang.Deprecated STRING_VALUE(2),
       BOOL_VALUE(3),
       OBJECT_VALUE(4),
       LIST_VALUE(5),
@@ -967,6 +990,7 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
       BLOB_VALUE(10),
       PHONE_VALUE(11),
       NULL_VALUE(12),
+      TEXT_VALUE(13),
       KIND_NOT_SET(0);
       private final int value;
       private KindCase(int value) {
@@ -996,6 +1020,7 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
           case 10: return BLOB_VALUE;
           case 11: return PHONE_VALUE;
           case 12: return NULL_VALUE;
+          case 13: return TEXT_VALUE;
           case 0: return KIND_NOT_SET;
           default: return null;
         }
@@ -1034,17 +1059,21 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
 
     public static final int STRING_VALUE_FIELD_NUMBER = 2;
     /**
-     * <code>string string_value = 2;</code>
+     * <code>string string_value = 2 [deprecated = true];</code>
+     * @deprecated weaviate.v1.Value.string_value is deprecated.
+     *     See v1/properties.proto;l=17
      * @return Whether the stringValue field is set.
      */
-    public boolean hasStringValue() {
+    @java.lang.Deprecated public boolean hasStringValue() {
       return kindCase_ == 2;
     }
     /**
-     * <code>string string_value = 2;</code>
+     * <code>string string_value = 2 [deprecated = true];</code>
+     * @deprecated weaviate.v1.Value.string_value is deprecated.
+     *     See v1/properties.proto;l=17
      * @return The stringValue.
      */
-    public java.lang.String getStringValue() {
+    @java.lang.Deprecated public java.lang.String getStringValue() {
       java.lang.Object ref = "";
       if (kindCase_ == 2) {
         ref = kind_;
@@ -1062,10 +1091,12 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
       }
     }
     /**
-     * <code>string string_value = 2;</code>
+     * <code>string string_value = 2 [deprecated = true];</code>
+     * @deprecated weaviate.v1.Value.string_value is deprecated.
+     *     See v1/properties.proto;l=17
      * @return The bytes for stringValue.
      */
-    public com.google.protobuf.ByteString
+    @java.lang.Deprecated public com.google.protobuf.ByteString
         getStringValueBytes() {
       java.lang.Object ref = "";
       if (kindCase_ == 2) {
@@ -1437,6 +1468,58 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
       return com.google.protobuf.NullValue.NULL_VALUE;
     }
 
+    public static final int TEXT_VALUE_FIELD_NUMBER = 13;
+    /**
+     * <code>string text_value = 13;</code>
+     * @return Whether the textValue field is set.
+     */
+    public boolean hasTextValue() {
+      return kindCase_ == 13;
+    }
+    /**
+     * <code>string text_value = 13;</code>
+     * @return The textValue.
+     */
+    public java.lang.String getTextValue() {
+      java.lang.Object ref = "";
+      if (kindCase_ == 13) {
+        ref = kind_;
+      }
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (kindCase_ == 13) {
+          kind_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>string text_value = 13;</code>
+     * @return The bytes for textValue.
+     */
+    public com.google.protobuf.ByteString
+        getTextValueBytes() {
+      java.lang.Object ref = "";
+      if (kindCase_ == 13) {
+        ref = kind_;
+      }
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        if (kindCase_ == 13) {
+          kind_ = b;
+        }
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -1489,6 +1572,9 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
       }
       if (kindCase_ == 12) {
         output.writeEnum(12, ((java.lang.Integer) kind_));
+      }
+      if (kindCase_ == 13) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 13, kind_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -1545,6 +1631,9 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
       if (kindCase_ == 12) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(12, ((java.lang.Integer) kind_));
+      }
+      if (kindCase_ == 13) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(13, kind_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -1612,6 +1701,10 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
           if (getNullValueValue()
               != other.getNullValueValue()) return false;
           break;
+        case 13:
+          if (!getTextValue()
+              .equals(other.getTextValue())) return false;
+          break;
         case 0:
         default:
       }
@@ -1677,6 +1770,10 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         case 12:
           hash = (37 * hash) + NULL_VALUE_FIELD_NUMBER;
           hash = (53 * hash) + getNullValueValue();
+          break;
+        case 13:
+          hash = (37 * hash) + TEXT_VALUE_FIELD_NUMBER;
+          hash = (53 * hash) + getTextValue().hashCode();
           break;
         case 0:
         default:
@@ -1984,6 +2081,12 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
             setNullValueValue(other.getNullValueValue());
             break;
           }
+          case TEXT_VALUE: {
+            kindCase_ = 13;
+            kind_ = other.kind_;
+            onChanged();
+            break;
+          }
           case KIND_NOT_SET: {
             break;
           }
@@ -2087,6 +2190,12 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
                 kind_ = rawValue;
                 break;
               } // case 96
+              case 106: {
+                java.lang.String s = input.readStringRequireUtf8();
+                kindCase_ = 13;
+                kind_ = s;
+                break;
+              } // case 106
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -2162,19 +2271,23 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
       }
 
       /**
-       * <code>string string_value = 2;</code>
+       * <code>string string_value = 2 [deprecated = true];</code>
+       * @deprecated weaviate.v1.Value.string_value is deprecated.
+       *     See v1/properties.proto;l=17
        * @return Whether the stringValue field is set.
        */
       @java.lang.Override
-      public boolean hasStringValue() {
+      @java.lang.Deprecated public boolean hasStringValue() {
         return kindCase_ == 2;
       }
       /**
-       * <code>string string_value = 2;</code>
+       * <code>string string_value = 2 [deprecated = true];</code>
+       * @deprecated weaviate.v1.Value.string_value is deprecated.
+       *     See v1/properties.proto;l=17
        * @return The stringValue.
        */
       @java.lang.Override
-      public java.lang.String getStringValue() {
+      @java.lang.Deprecated public java.lang.String getStringValue() {
         java.lang.Object ref = "";
         if (kindCase_ == 2) {
           ref = kind_;
@@ -2192,11 +2305,13 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         }
       }
       /**
-       * <code>string string_value = 2;</code>
+       * <code>string string_value = 2 [deprecated = true];</code>
+       * @deprecated weaviate.v1.Value.string_value is deprecated.
+       *     See v1/properties.proto;l=17
        * @return The bytes for stringValue.
        */
       @java.lang.Override
-      public com.google.protobuf.ByteString
+      @java.lang.Deprecated public com.google.protobuf.ByteString
           getStringValueBytes() {
         java.lang.Object ref = "";
         if (kindCase_ == 2) {
@@ -2215,11 +2330,13 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         }
       }
       /**
-       * <code>string string_value = 2;</code>
+       * <code>string string_value = 2 [deprecated = true];</code>
+       * @deprecated weaviate.v1.Value.string_value is deprecated.
+       *     See v1/properties.proto;l=17
        * @param value The stringValue to set.
        * @return This builder for chaining.
        */
-      public Builder setStringValue(
+      @java.lang.Deprecated public Builder setStringValue(
           java.lang.String value) {
         if (value == null) { throw new NullPointerException(); }
         kindCase_ = 2;
@@ -2228,10 +2345,12 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         return this;
       }
       /**
-       * <code>string string_value = 2;</code>
+       * <code>string string_value = 2 [deprecated = true];</code>
+       * @deprecated weaviate.v1.Value.string_value is deprecated.
+       *     See v1/properties.proto;l=17
        * @return This builder for chaining.
        */
-      public Builder clearStringValue() {
+      @java.lang.Deprecated public Builder clearStringValue() {
         if (kindCase_ == 2) {
           kindCase_ = 0;
           kind_ = null;
@@ -2240,11 +2359,13 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         return this;
       }
       /**
-       * <code>string string_value = 2;</code>
+       * <code>string string_value = 2 [deprecated = true];</code>
+       * @deprecated weaviate.v1.Value.string_value is deprecated.
+       *     See v1/properties.proto;l=17
        * @param value The bytes for stringValue to set.
        * @return This builder for chaining.
        */
-      public Builder setStringValueBytes(
+      @java.lang.Deprecated public Builder setStringValueBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) { throw new NullPointerException(); }
         checkByteStringIsUtf8(value);
@@ -3254,6 +3375,99 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         }
         return this;
       }
+
+      /**
+       * <code>string text_value = 13;</code>
+       * @return Whether the textValue field is set.
+       */
+      @java.lang.Override
+      public boolean hasTextValue() {
+        return kindCase_ == 13;
+      }
+      /**
+       * <code>string text_value = 13;</code>
+       * @return The textValue.
+       */
+      @java.lang.Override
+      public java.lang.String getTextValue() {
+        java.lang.Object ref = "";
+        if (kindCase_ == 13) {
+          ref = kind_;
+        }
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (kindCase_ == 13) {
+            kind_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string text_value = 13;</code>
+       * @return The bytes for textValue.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getTextValueBytes() {
+        java.lang.Object ref = "";
+        if (kindCase_ == 13) {
+          ref = kind_;
+        }
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          if (kindCase_ == 13) {
+            kind_ = b;
+          }
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string text_value = 13;</code>
+       * @param value The textValue to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTextValue(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        kindCase_ = 13;
+        kind_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string text_value = 13;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTextValue() {
+        if (kindCase_ == 13) {
+          kindCase_ = 0;
+          kind_ = null;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>string text_value = 13;</code>
+       * @param value The bytes for textValue to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTextValueBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        kindCase_ = 13;
+        kind_ = value;
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -3323,28 +3537,135 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>repeated .weaviate.v1.Value values = 1;</code>
+     * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
      */
-    java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value> 
+    @java.lang.Deprecated java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value> 
         getValuesList();
     /**
-     * <code>repeated .weaviate.v1.Value values = 1;</code>
+     * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
      */
-    io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value getValues(int index);
+    @java.lang.Deprecated io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value getValues(int index);
     /**
-     * <code>repeated .weaviate.v1.Value values = 1;</code>
+     * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
      */
-    int getValuesCount();
+    @java.lang.Deprecated int getValuesCount();
     /**
-     * <code>repeated .weaviate.v1.Value values = 1;</code>
+     * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
      */
-    java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ValueOrBuilder> 
+    @java.lang.Deprecated java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ValueOrBuilder> 
         getValuesOrBuilderList();
     /**
-     * <code>repeated .weaviate.v1.Value values = 1;</code>
+     * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
      */
-    io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ValueOrBuilder getValuesOrBuilder(
+    @java.lang.Deprecated io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ValueOrBuilder getValuesOrBuilder(
         int index);
+
+    /**
+     * <code>.weaviate.v1.NumberValues number_values = 2;</code>
+     * @return Whether the numberValues field is set.
+     */
+    boolean hasNumberValues();
+    /**
+     * <code>.weaviate.v1.NumberValues number_values = 2;</code>
+     * @return The numberValues.
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues getNumberValues();
+    /**
+     * <code>.weaviate.v1.NumberValues number_values = 2;</code>
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValuesOrBuilder getNumberValuesOrBuilder();
+
+    /**
+     * <code>.weaviate.v1.BoolValues bool_values = 3;</code>
+     * @return Whether the boolValues field is set.
+     */
+    boolean hasBoolValues();
+    /**
+     * <code>.weaviate.v1.BoolValues bool_values = 3;</code>
+     * @return The boolValues.
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues getBoolValues();
+    /**
+     * <code>.weaviate.v1.BoolValues bool_values = 3;</code>
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValuesOrBuilder getBoolValuesOrBuilder();
+
+    /**
+     * <code>.weaviate.v1.ObjectValues object_values = 4;</code>
+     * @return Whether the objectValues field is set.
+     */
+    boolean hasObjectValues();
+    /**
+     * <code>.weaviate.v1.ObjectValues object_values = 4;</code>
+     * @return The objectValues.
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues getObjectValues();
+    /**
+     * <code>.weaviate.v1.ObjectValues object_values = 4;</code>
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValuesOrBuilder getObjectValuesOrBuilder();
+
+    /**
+     * <code>.weaviate.v1.DateValues date_values = 5;</code>
+     * @return Whether the dateValues field is set.
+     */
+    boolean hasDateValues();
+    /**
+     * <code>.weaviate.v1.DateValues date_values = 5;</code>
+     * @return The dateValues.
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues getDateValues();
+    /**
+     * <code>.weaviate.v1.DateValues date_values = 5;</code>
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValuesOrBuilder getDateValuesOrBuilder();
+
+    /**
+     * <code>.weaviate.v1.UuidValues uuid_values = 6;</code>
+     * @return Whether the uuidValues field is set.
+     */
+    boolean hasUuidValues();
+    /**
+     * <code>.weaviate.v1.UuidValues uuid_values = 6;</code>
+     * @return The uuidValues.
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues getUuidValues();
+    /**
+     * <code>.weaviate.v1.UuidValues uuid_values = 6;</code>
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValuesOrBuilder getUuidValuesOrBuilder();
+
+    /**
+     * <code>.weaviate.v1.IntValues int_values = 7;</code>
+     * @return Whether the intValues field is set.
+     */
+    boolean hasIntValues();
+    /**
+     * <code>.weaviate.v1.IntValues int_values = 7;</code>
+     * @return The intValues.
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues getIntValues();
+    /**
+     * <code>.weaviate.v1.IntValues int_values = 7;</code>
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValuesOrBuilder getIntValuesOrBuilder();
+
+    /**
+     * <code>.weaviate.v1.TextValues text_values = 8;</code>
+     * @return Whether the textValues field is set.
+     */
+    boolean hasTextValues();
+    /**
+     * <code>.weaviate.v1.TextValues text_values = 8;</code>
+     * @return The textValues.
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues getTextValues();
+    /**
+     * <code>.weaviate.v1.TextValues text_values = 8;</code>
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValuesOrBuilder getTextValuesOrBuilder();
+
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ListValue.KindCase getKindCase();
   }
   /**
    * Protobuf type {@code weaviate.v1.ListValue}
@@ -3382,45 +3703,314 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
               io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ListValue.class, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ListValue.Builder.class);
     }
 
+    private int kindCase_ = 0;
+    @SuppressWarnings("serial")
+    private java.lang.Object kind_;
+    public enum KindCase
+        implements com.google.protobuf.Internal.EnumLite,
+            com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+      NUMBER_VALUES(2),
+      BOOL_VALUES(3),
+      OBJECT_VALUES(4),
+      DATE_VALUES(5),
+      UUID_VALUES(6),
+      INT_VALUES(7),
+      TEXT_VALUES(8),
+      KIND_NOT_SET(0);
+      private final int value;
+      private KindCase(int value) {
+        this.value = value;
+      }
+      /**
+       * @param value The number of the enum to look for.
+       * @return The enum associated with the given number.
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
+      public static KindCase valueOf(int value) {
+        return forNumber(value);
+      }
+
+      public static KindCase forNumber(int value) {
+        switch (value) {
+          case 2: return NUMBER_VALUES;
+          case 3: return BOOL_VALUES;
+          case 4: return OBJECT_VALUES;
+          case 5: return DATE_VALUES;
+          case 6: return UUID_VALUES;
+          case 7: return INT_VALUES;
+          case 8: return TEXT_VALUES;
+          case 0: return KIND_NOT_SET;
+          default: return null;
+        }
+      }
+      public int getNumber() {
+        return this.value;
+      }
+    };
+
+    public KindCase
+    getKindCase() {
+      return KindCase.forNumber(
+          kindCase_);
+    }
+
     public static final int VALUES_FIELD_NUMBER = 1;
     @SuppressWarnings("serial")
     private java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value> values_;
     /**
-     * <code>repeated .weaviate.v1.Value values = 1;</code>
+     * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
      */
     @java.lang.Override
-    public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value> getValuesList() {
+    @java.lang.Deprecated public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value> getValuesList() {
       return values_;
     }
     /**
-     * <code>repeated .weaviate.v1.Value values = 1;</code>
+     * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
      */
     @java.lang.Override
-    public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ValueOrBuilder> 
+    @java.lang.Deprecated public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ValueOrBuilder> 
         getValuesOrBuilderList() {
       return values_;
     }
     /**
-     * <code>repeated .weaviate.v1.Value values = 1;</code>
+     * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
      */
     @java.lang.Override
-    public int getValuesCount() {
+    @java.lang.Deprecated public int getValuesCount() {
       return values_.size();
     }
     /**
-     * <code>repeated .weaviate.v1.Value values = 1;</code>
+     * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
      */
     @java.lang.Override
-    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value getValues(int index) {
+    @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value getValues(int index) {
       return values_.get(index);
     }
     /**
-     * <code>repeated .weaviate.v1.Value values = 1;</code>
+     * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
      */
     @java.lang.Override
-    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ValueOrBuilder getValuesOrBuilder(
+    @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ValueOrBuilder getValuesOrBuilder(
         int index) {
       return values_.get(index);
+    }
+
+    public static final int NUMBER_VALUES_FIELD_NUMBER = 2;
+    /**
+     * <code>.weaviate.v1.NumberValues number_values = 2;</code>
+     * @return Whether the numberValues field is set.
+     */
+    @java.lang.Override
+    public boolean hasNumberValues() {
+      return kindCase_ == 2;
+    }
+    /**
+     * <code>.weaviate.v1.NumberValues number_values = 2;</code>
+     * @return The numberValues.
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues getNumberValues() {
+      if (kindCase_ == 2) {
+         return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues) kind_;
+      }
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues.getDefaultInstance();
+    }
+    /**
+     * <code>.weaviate.v1.NumberValues number_values = 2;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValuesOrBuilder getNumberValuesOrBuilder() {
+      if (kindCase_ == 2) {
+         return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues) kind_;
+      }
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues.getDefaultInstance();
+    }
+
+    public static final int BOOL_VALUES_FIELD_NUMBER = 3;
+    /**
+     * <code>.weaviate.v1.BoolValues bool_values = 3;</code>
+     * @return Whether the boolValues field is set.
+     */
+    @java.lang.Override
+    public boolean hasBoolValues() {
+      return kindCase_ == 3;
+    }
+    /**
+     * <code>.weaviate.v1.BoolValues bool_values = 3;</code>
+     * @return The boolValues.
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues getBoolValues() {
+      if (kindCase_ == 3) {
+         return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues) kind_;
+      }
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues.getDefaultInstance();
+    }
+    /**
+     * <code>.weaviate.v1.BoolValues bool_values = 3;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValuesOrBuilder getBoolValuesOrBuilder() {
+      if (kindCase_ == 3) {
+         return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues) kind_;
+      }
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues.getDefaultInstance();
+    }
+
+    public static final int OBJECT_VALUES_FIELD_NUMBER = 4;
+    /**
+     * <code>.weaviate.v1.ObjectValues object_values = 4;</code>
+     * @return Whether the objectValues field is set.
+     */
+    @java.lang.Override
+    public boolean hasObjectValues() {
+      return kindCase_ == 4;
+    }
+    /**
+     * <code>.weaviate.v1.ObjectValues object_values = 4;</code>
+     * @return The objectValues.
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues getObjectValues() {
+      if (kindCase_ == 4) {
+         return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues) kind_;
+      }
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues.getDefaultInstance();
+    }
+    /**
+     * <code>.weaviate.v1.ObjectValues object_values = 4;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValuesOrBuilder getObjectValuesOrBuilder() {
+      if (kindCase_ == 4) {
+         return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues) kind_;
+      }
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues.getDefaultInstance();
+    }
+
+    public static final int DATE_VALUES_FIELD_NUMBER = 5;
+    /**
+     * <code>.weaviate.v1.DateValues date_values = 5;</code>
+     * @return Whether the dateValues field is set.
+     */
+    @java.lang.Override
+    public boolean hasDateValues() {
+      return kindCase_ == 5;
+    }
+    /**
+     * <code>.weaviate.v1.DateValues date_values = 5;</code>
+     * @return The dateValues.
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues getDateValues() {
+      if (kindCase_ == 5) {
+         return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues) kind_;
+      }
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues.getDefaultInstance();
+    }
+    /**
+     * <code>.weaviate.v1.DateValues date_values = 5;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValuesOrBuilder getDateValuesOrBuilder() {
+      if (kindCase_ == 5) {
+         return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues) kind_;
+      }
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues.getDefaultInstance();
+    }
+
+    public static final int UUID_VALUES_FIELD_NUMBER = 6;
+    /**
+     * <code>.weaviate.v1.UuidValues uuid_values = 6;</code>
+     * @return Whether the uuidValues field is set.
+     */
+    @java.lang.Override
+    public boolean hasUuidValues() {
+      return kindCase_ == 6;
+    }
+    /**
+     * <code>.weaviate.v1.UuidValues uuid_values = 6;</code>
+     * @return The uuidValues.
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues getUuidValues() {
+      if (kindCase_ == 6) {
+         return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues) kind_;
+      }
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues.getDefaultInstance();
+    }
+    /**
+     * <code>.weaviate.v1.UuidValues uuid_values = 6;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValuesOrBuilder getUuidValuesOrBuilder() {
+      if (kindCase_ == 6) {
+         return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues) kind_;
+      }
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues.getDefaultInstance();
+    }
+
+    public static final int INT_VALUES_FIELD_NUMBER = 7;
+    /**
+     * <code>.weaviate.v1.IntValues int_values = 7;</code>
+     * @return Whether the intValues field is set.
+     */
+    @java.lang.Override
+    public boolean hasIntValues() {
+      return kindCase_ == 7;
+    }
+    /**
+     * <code>.weaviate.v1.IntValues int_values = 7;</code>
+     * @return The intValues.
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues getIntValues() {
+      if (kindCase_ == 7) {
+         return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues) kind_;
+      }
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues.getDefaultInstance();
+    }
+    /**
+     * <code>.weaviate.v1.IntValues int_values = 7;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValuesOrBuilder getIntValuesOrBuilder() {
+      if (kindCase_ == 7) {
+         return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues) kind_;
+      }
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues.getDefaultInstance();
+    }
+
+    public static final int TEXT_VALUES_FIELD_NUMBER = 8;
+    /**
+     * <code>.weaviate.v1.TextValues text_values = 8;</code>
+     * @return Whether the textValues field is set.
+     */
+    @java.lang.Override
+    public boolean hasTextValues() {
+      return kindCase_ == 8;
+    }
+    /**
+     * <code>.weaviate.v1.TextValues text_values = 8;</code>
+     * @return The textValues.
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues getTextValues() {
+      if (kindCase_ == 8) {
+         return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues) kind_;
+      }
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues.getDefaultInstance();
+    }
+    /**
+     * <code>.weaviate.v1.TextValues text_values = 8;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValuesOrBuilder getTextValuesOrBuilder() {
+      if (kindCase_ == 8) {
+         return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues) kind_;
+      }
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues.getDefaultInstance();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -3440,6 +4030,27 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
       for (int i = 0; i < values_.size(); i++) {
         output.writeMessage(1, values_.get(i));
       }
+      if (kindCase_ == 2) {
+        output.writeMessage(2, (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues) kind_);
+      }
+      if (kindCase_ == 3) {
+        output.writeMessage(3, (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues) kind_);
+      }
+      if (kindCase_ == 4) {
+        output.writeMessage(4, (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues) kind_);
+      }
+      if (kindCase_ == 5) {
+        output.writeMessage(5, (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues) kind_);
+      }
+      if (kindCase_ == 6) {
+        output.writeMessage(6, (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues) kind_);
+      }
+      if (kindCase_ == 7) {
+        output.writeMessage(7, (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues) kind_);
+      }
+      if (kindCase_ == 8) {
+        output.writeMessage(8, (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues) kind_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -3452,6 +4063,34 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
       for (int i = 0; i < values_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, values_.get(i));
+      }
+      if (kindCase_ == 2) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues) kind_);
+      }
+      if (kindCase_ == 3) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues) kind_);
+      }
+      if (kindCase_ == 4) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues) kind_);
+      }
+      if (kindCase_ == 5) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(5, (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues) kind_);
+      }
+      if (kindCase_ == 6) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(6, (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues) kind_);
+      }
+      if (kindCase_ == 7) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(7, (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues) kind_);
+      }
+      if (kindCase_ == 8) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(8, (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues) kind_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -3470,6 +4109,39 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
 
       if (!getValuesList()
           .equals(other.getValuesList())) return false;
+      if (!getKindCase().equals(other.getKindCase())) return false;
+      switch (kindCase_) {
+        case 2:
+          if (!getNumberValues()
+              .equals(other.getNumberValues())) return false;
+          break;
+        case 3:
+          if (!getBoolValues()
+              .equals(other.getBoolValues())) return false;
+          break;
+        case 4:
+          if (!getObjectValues()
+              .equals(other.getObjectValues())) return false;
+          break;
+        case 5:
+          if (!getDateValues()
+              .equals(other.getDateValues())) return false;
+          break;
+        case 6:
+          if (!getUuidValues()
+              .equals(other.getUuidValues())) return false;
+          break;
+        case 7:
+          if (!getIntValues()
+              .equals(other.getIntValues())) return false;
+          break;
+        case 8:
+          if (!getTextValues()
+              .equals(other.getTextValues())) return false;
+          break;
+        case 0:
+        default:
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -3484,6 +4156,38 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
       if (getValuesCount() > 0) {
         hash = (37 * hash) + VALUES_FIELD_NUMBER;
         hash = (53 * hash) + getValuesList().hashCode();
+      }
+      switch (kindCase_) {
+        case 2:
+          hash = (37 * hash) + NUMBER_VALUES_FIELD_NUMBER;
+          hash = (53 * hash) + getNumberValues().hashCode();
+          break;
+        case 3:
+          hash = (37 * hash) + BOOL_VALUES_FIELD_NUMBER;
+          hash = (53 * hash) + getBoolValues().hashCode();
+          break;
+        case 4:
+          hash = (37 * hash) + OBJECT_VALUES_FIELD_NUMBER;
+          hash = (53 * hash) + getObjectValues().hashCode();
+          break;
+        case 5:
+          hash = (37 * hash) + DATE_VALUES_FIELD_NUMBER;
+          hash = (53 * hash) + getDateValues().hashCode();
+          break;
+        case 6:
+          hash = (37 * hash) + UUID_VALUES_FIELD_NUMBER;
+          hash = (53 * hash) + getUuidValues().hashCode();
+          break;
+        case 7:
+          hash = (37 * hash) + INT_VALUES_FIELD_NUMBER;
+          hash = (53 * hash) + getIntValues().hashCode();
+          break;
+        case 8:
+          hash = (37 * hash) + TEXT_VALUES_FIELD_NUMBER;
+          hash = (53 * hash) + getTextValues().hashCode();
+          break;
+        case 0:
+        default:
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -3623,6 +4327,29 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
           valuesBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000001);
+        if (numberValuesBuilder_ != null) {
+          numberValuesBuilder_.clear();
+        }
+        if (boolValuesBuilder_ != null) {
+          boolValuesBuilder_.clear();
+        }
+        if (objectValuesBuilder_ != null) {
+          objectValuesBuilder_.clear();
+        }
+        if (dateValuesBuilder_ != null) {
+          dateValuesBuilder_.clear();
+        }
+        if (uuidValuesBuilder_ != null) {
+          uuidValuesBuilder_.clear();
+        }
+        if (intValuesBuilder_ != null) {
+          intValuesBuilder_.clear();
+        }
+        if (textValuesBuilder_ != null) {
+          textValuesBuilder_.clear();
+        }
+        kindCase_ = 0;
+        kind_ = null;
         return this;
       }
 
@@ -3651,6 +4378,7 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ListValue result = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ListValue(this);
         buildPartialRepeatedFields(result);
         if (bitField0_ != 0) { buildPartial0(result); }
+        buildPartialOneofs(result);
         onBuilt();
         return result;
       }
@@ -3669,6 +4397,39 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
 
       private void buildPartial0(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ListValue result) {
         int from_bitField0_ = bitField0_;
+      }
+
+      private void buildPartialOneofs(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ListValue result) {
+        result.kindCase_ = kindCase_;
+        result.kind_ = this.kind_;
+        if (kindCase_ == 2 &&
+            numberValuesBuilder_ != null) {
+          result.kind_ = numberValuesBuilder_.build();
+        }
+        if (kindCase_ == 3 &&
+            boolValuesBuilder_ != null) {
+          result.kind_ = boolValuesBuilder_.build();
+        }
+        if (kindCase_ == 4 &&
+            objectValuesBuilder_ != null) {
+          result.kind_ = objectValuesBuilder_.build();
+        }
+        if (kindCase_ == 5 &&
+            dateValuesBuilder_ != null) {
+          result.kind_ = dateValuesBuilder_.build();
+        }
+        if (kindCase_ == 6 &&
+            uuidValuesBuilder_ != null) {
+          result.kind_ = uuidValuesBuilder_.build();
+        }
+        if (kindCase_ == 7 &&
+            intValuesBuilder_ != null) {
+          result.kind_ = intValuesBuilder_.build();
+        }
+        if (kindCase_ == 8 &&
+            textValuesBuilder_ != null) {
+          result.kind_ = textValuesBuilder_.build();
+        }
       }
 
       @java.lang.Override
@@ -3741,6 +4502,39 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
             }
           }
         }
+        switch (other.getKindCase()) {
+          case NUMBER_VALUES: {
+            mergeNumberValues(other.getNumberValues());
+            break;
+          }
+          case BOOL_VALUES: {
+            mergeBoolValues(other.getBoolValues());
+            break;
+          }
+          case OBJECT_VALUES: {
+            mergeObjectValues(other.getObjectValues());
+            break;
+          }
+          case DATE_VALUES: {
+            mergeDateValues(other.getDateValues());
+            break;
+          }
+          case UUID_VALUES: {
+            mergeUuidValues(other.getUuidValues());
+            break;
+          }
+          case INT_VALUES: {
+            mergeIntValues(other.getIntValues());
+            break;
+          }
+          case TEXT_VALUES: {
+            mergeTextValues(other.getTextValues());
+            break;
+          }
+          case KIND_NOT_SET: {
+            break;
+          }
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -3780,6 +4574,55 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
                 }
                 break;
               } // case 10
+              case 18: {
+                input.readMessage(
+                    getNumberValuesFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                kindCase_ = 2;
+                break;
+              } // case 18
+              case 26: {
+                input.readMessage(
+                    getBoolValuesFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                kindCase_ = 3;
+                break;
+              } // case 26
+              case 34: {
+                input.readMessage(
+                    getObjectValuesFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                kindCase_ = 4;
+                break;
+              } // case 34
+              case 42: {
+                input.readMessage(
+                    getDateValuesFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                kindCase_ = 5;
+                break;
+              } // case 42
+              case 50: {
+                input.readMessage(
+                    getUuidValuesFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                kindCase_ = 6;
+                break;
+              } // case 50
+              case 58: {
+                input.readMessage(
+                    getIntValuesFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                kindCase_ = 7;
+                break;
+              } // case 58
+              case 66: {
+                input.readMessage(
+                    getTextValuesFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                kindCase_ = 8;
+                break;
+              } // case 66
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -3795,6 +4638,21 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         } // finally
         return this;
       }
+      private int kindCase_ = 0;
+      private java.lang.Object kind_;
+      public KindCase
+          getKindCase() {
+        return KindCase.forNumber(
+            kindCase_);
+      }
+
+      public Builder clearKind() {
+        kindCase_ = 0;
+        kind_ = null;
+        onChanged();
+        return this;
+      }
+
       private int bitField0_;
 
       private java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value> values_ =
@@ -3810,9 +4668,9 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
           io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ValueOrBuilder> valuesBuilder_;
 
       /**
-       * <code>repeated .weaviate.v1.Value values = 1;</code>
+       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
        */
-      public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value> getValuesList() {
+      @java.lang.Deprecated public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value> getValuesList() {
         if (valuesBuilder_ == null) {
           return java.util.Collections.unmodifiableList(values_);
         } else {
@@ -3820,9 +4678,9 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         }
       }
       /**
-       * <code>repeated .weaviate.v1.Value values = 1;</code>
+       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
        */
-      public int getValuesCount() {
+      @java.lang.Deprecated public int getValuesCount() {
         if (valuesBuilder_ == null) {
           return values_.size();
         } else {
@@ -3830,9 +4688,9 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         }
       }
       /**
-       * <code>repeated .weaviate.v1.Value values = 1;</code>
+       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value getValues(int index) {
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value getValues(int index) {
         if (valuesBuilder_ == null) {
           return values_.get(index);
         } else {
@@ -3840,9 +4698,9 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         }
       }
       /**
-       * <code>repeated .weaviate.v1.Value values = 1;</code>
+       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
        */
-      public Builder setValues(
+      @java.lang.Deprecated public Builder setValues(
           int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value value) {
         if (valuesBuilder_ == null) {
           if (value == null) {
@@ -3857,9 +4715,9 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.Value values = 1;</code>
+       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
        */
-      public Builder setValues(
+      @java.lang.Deprecated public Builder setValues(
           int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value.Builder builderForValue) {
         if (valuesBuilder_ == null) {
           ensureValuesIsMutable();
@@ -3871,9 +4729,9 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.Value values = 1;</code>
+       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
        */
-      public Builder addValues(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value value) {
+      @java.lang.Deprecated public Builder addValues(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value value) {
         if (valuesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -3887,9 +4745,9 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.Value values = 1;</code>
+       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
        */
-      public Builder addValues(
+      @java.lang.Deprecated public Builder addValues(
           int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value value) {
         if (valuesBuilder_ == null) {
           if (value == null) {
@@ -3904,9 +4762,9 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.Value values = 1;</code>
+       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
        */
-      public Builder addValues(
+      @java.lang.Deprecated public Builder addValues(
           io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value.Builder builderForValue) {
         if (valuesBuilder_ == null) {
           ensureValuesIsMutable();
@@ -3918,9 +4776,9 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.Value values = 1;</code>
+       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
        */
-      public Builder addValues(
+      @java.lang.Deprecated public Builder addValues(
           int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value.Builder builderForValue) {
         if (valuesBuilder_ == null) {
           ensureValuesIsMutable();
@@ -3932,9 +4790,9 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.Value values = 1;</code>
+       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
        */
-      public Builder addAllValues(
+      @java.lang.Deprecated public Builder addAllValues(
           java.lang.Iterable<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value> values) {
         if (valuesBuilder_ == null) {
           ensureValuesIsMutable();
@@ -3947,9 +4805,9 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.Value values = 1;</code>
+       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
        */
-      public Builder clearValues() {
+      @java.lang.Deprecated public Builder clearValues() {
         if (valuesBuilder_ == null) {
           values_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000001);
@@ -3960,9 +4818,9 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.Value values = 1;</code>
+       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
        */
-      public Builder removeValues(int index) {
+      @java.lang.Deprecated public Builder removeValues(int index) {
         if (valuesBuilder_ == null) {
           ensureValuesIsMutable();
           values_.remove(index);
@@ -3973,16 +4831,16 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         return this;
       }
       /**
-       * <code>repeated .weaviate.v1.Value values = 1;</code>
+       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value.Builder getValuesBuilder(
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value.Builder getValuesBuilder(
           int index) {
         return getValuesFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .weaviate.v1.Value values = 1;</code>
+       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ValueOrBuilder getValuesOrBuilder(
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ValueOrBuilder getValuesOrBuilder(
           int index) {
         if (valuesBuilder_ == null) {
           return values_.get(index);  } else {
@@ -3990,9 +4848,9 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         }
       }
       /**
-       * <code>repeated .weaviate.v1.Value values = 1;</code>
+       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
        */
-      public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ValueOrBuilder> 
+      @java.lang.Deprecated public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ValueOrBuilder> 
            getValuesOrBuilderList() {
         if (valuesBuilder_ != null) {
           return valuesBuilder_.getMessageOrBuilderList();
@@ -4001,24 +4859,24 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
         }
       }
       /**
-       * <code>repeated .weaviate.v1.Value values = 1;</code>
+       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value.Builder addValuesBuilder() {
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value.Builder addValuesBuilder() {
         return getValuesFieldBuilder().addBuilder(
             io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value.getDefaultInstance());
       }
       /**
-       * <code>repeated .weaviate.v1.Value values = 1;</code>
+       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value.Builder addValuesBuilder(
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value.Builder addValuesBuilder(
           int index) {
         return getValuesFieldBuilder().addBuilder(
             index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value.getDefaultInstance());
       }
       /**
-       * <code>repeated .weaviate.v1.Value values = 1;</code>
+       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
        */
-      public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value.Builder> 
+      @java.lang.Deprecated public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value.Builder> 
            getValuesBuilderList() {
         return getValuesFieldBuilder().getBuilderList();
       }
@@ -4035,6 +4893,1000 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
           values_ = null;
         }
         return valuesBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValuesOrBuilder> numberValuesBuilder_;
+      /**
+       * <code>.weaviate.v1.NumberValues number_values = 2;</code>
+       * @return Whether the numberValues field is set.
+       */
+      @java.lang.Override
+      public boolean hasNumberValues() {
+        return kindCase_ == 2;
+      }
+      /**
+       * <code>.weaviate.v1.NumberValues number_values = 2;</code>
+       * @return The numberValues.
+       */
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues getNumberValues() {
+        if (numberValuesBuilder_ == null) {
+          if (kindCase_ == 2) {
+            return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues) kind_;
+          }
+          return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues.getDefaultInstance();
+        } else {
+          if (kindCase_ == 2) {
+            return numberValuesBuilder_.getMessage();
+          }
+          return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.NumberValues number_values = 2;</code>
+       */
+      public Builder setNumberValues(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues value) {
+        if (numberValuesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          kind_ = value;
+          onChanged();
+        } else {
+          numberValuesBuilder_.setMessage(value);
+        }
+        kindCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.NumberValues number_values = 2;</code>
+       */
+      public Builder setNumberValues(
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues.Builder builderForValue) {
+        if (numberValuesBuilder_ == null) {
+          kind_ = builderForValue.build();
+          onChanged();
+        } else {
+          numberValuesBuilder_.setMessage(builderForValue.build());
+        }
+        kindCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.NumberValues number_values = 2;</code>
+       */
+      public Builder mergeNumberValues(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues value) {
+        if (numberValuesBuilder_ == null) {
+          if (kindCase_ == 2 &&
+              kind_ != io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues.getDefaultInstance()) {
+            kind_ = io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues.newBuilder((io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues) kind_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            kind_ = value;
+          }
+          onChanged();
+        } else {
+          if (kindCase_ == 2) {
+            numberValuesBuilder_.mergeFrom(value);
+          } else {
+            numberValuesBuilder_.setMessage(value);
+          }
+        }
+        kindCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.NumberValues number_values = 2;</code>
+       */
+      public Builder clearNumberValues() {
+        if (numberValuesBuilder_ == null) {
+          if (kindCase_ == 2) {
+            kindCase_ = 0;
+            kind_ = null;
+            onChanged();
+          }
+        } else {
+          if (kindCase_ == 2) {
+            kindCase_ = 0;
+            kind_ = null;
+          }
+          numberValuesBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.NumberValues number_values = 2;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues.Builder getNumberValuesBuilder() {
+        return getNumberValuesFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.weaviate.v1.NumberValues number_values = 2;</code>
+       */
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValuesOrBuilder getNumberValuesOrBuilder() {
+        if ((kindCase_ == 2) && (numberValuesBuilder_ != null)) {
+          return numberValuesBuilder_.getMessageOrBuilder();
+        } else {
+          if (kindCase_ == 2) {
+            return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues) kind_;
+          }
+          return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.NumberValues number_values = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValuesOrBuilder> 
+          getNumberValuesFieldBuilder() {
+        if (numberValuesBuilder_ == null) {
+          if (!(kindCase_ == 2)) {
+            kind_ = io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues.getDefaultInstance();
+          }
+          numberValuesBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValuesOrBuilder>(
+                  (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues) kind_,
+                  getParentForChildren(),
+                  isClean());
+          kind_ = null;
+        }
+        kindCase_ = 2;
+        onChanged();
+        return numberValuesBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValuesOrBuilder> boolValuesBuilder_;
+      /**
+       * <code>.weaviate.v1.BoolValues bool_values = 3;</code>
+       * @return Whether the boolValues field is set.
+       */
+      @java.lang.Override
+      public boolean hasBoolValues() {
+        return kindCase_ == 3;
+      }
+      /**
+       * <code>.weaviate.v1.BoolValues bool_values = 3;</code>
+       * @return The boolValues.
+       */
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues getBoolValues() {
+        if (boolValuesBuilder_ == null) {
+          if (kindCase_ == 3) {
+            return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues) kind_;
+          }
+          return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues.getDefaultInstance();
+        } else {
+          if (kindCase_ == 3) {
+            return boolValuesBuilder_.getMessage();
+          }
+          return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.BoolValues bool_values = 3;</code>
+       */
+      public Builder setBoolValues(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues value) {
+        if (boolValuesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          kind_ = value;
+          onChanged();
+        } else {
+          boolValuesBuilder_.setMessage(value);
+        }
+        kindCase_ = 3;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BoolValues bool_values = 3;</code>
+       */
+      public Builder setBoolValues(
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues.Builder builderForValue) {
+        if (boolValuesBuilder_ == null) {
+          kind_ = builderForValue.build();
+          onChanged();
+        } else {
+          boolValuesBuilder_.setMessage(builderForValue.build());
+        }
+        kindCase_ = 3;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BoolValues bool_values = 3;</code>
+       */
+      public Builder mergeBoolValues(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues value) {
+        if (boolValuesBuilder_ == null) {
+          if (kindCase_ == 3 &&
+              kind_ != io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues.getDefaultInstance()) {
+            kind_ = io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues.newBuilder((io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues) kind_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            kind_ = value;
+          }
+          onChanged();
+        } else {
+          if (kindCase_ == 3) {
+            boolValuesBuilder_.mergeFrom(value);
+          } else {
+            boolValuesBuilder_.setMessage(value);
+          }
+        }
+        kindCase_ = 3;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BoolValues bool_values = 3;</code>
+       */
+      public Builder clearBoolValues() {
+        if (boolValuesBuilder_ == null) {
+          if (kindCase_ == 3) {
+            kindCase_ = 0;
+            kind_ = null;
+            onChanged();
+          }
+        } else {
+          if (kindCase_ == 3) {
+            kindCase_ = 0;
+            kind_ = null;
+          }
+          boolValuesBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BoolValues bool_values = 3;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues.Builder getBoolValuesBuilder() {
+        return getBoolValuesFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.weaviate.v1.BoolValues bool_values = 3;</code>
+       */
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValuesOrBuilder getBoolValuesOrBuilder() {
+        if ((kindCase_ == 3) && (boolValuesBuilder_ != null)) {
+          return boolValuesBuilder_.getMessageOrBuilder();
+        } else {
+          if (kindCase_ == 3) {
+            return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues) kind_;
+          }
+          return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.BoolValues bool_values = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValuesOrBuilder> 
+          getBoolValuesFieldBuilder() {
+        if (boolValuesBuilder_ == null) {
+          if (!(kindCase_ == 3)) {
+            kind_ = io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues.getDefaultInstance();
+          }
+          boolValuesBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValuesOrBuilder>(
+                  (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues) kind_,
+                  getParentForChildren(),
+                  isClean());
+          kind_ = null;
+        }
+        kindCase_ = 3;
+        onChanged();
+        return boolValuesBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValuesOrBuilder> objectValuesBuilder_;
+      /**
+       * <code>.weaviate.v1.ObjectValues object_values = 4;</code>
+       * @return Whether the objectValues field is set.
+       */
+      @java.lang.Override
+      public boolean hasObjectValues() {
+        return kindCase_ == 4;
+      }
+      /**
+       * <code>.weaviate.v1.ObjectValues object_values = 4;</code>
+       * @return The objectValues.
+       */
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues getObjectValues() {
+        if (objectValuesBuilder_ == null) {
+          if (kindCase_ == 4) {
+            return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues) kind_;
+          }
+          return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues.getDefaultInstance();
+        } else {
+          if (kindCase_ == 4) {
+            return objectValuesBuilder_.getMessage();
+          }
+          return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.ObjectValues object_values = 4;</code>
+       */
+      public Builder setObjectValues(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues value) {
+        if (objectValuesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          kind_ = value;
+          onChanged();
+        } else {
+          objectValuesBuilder_.setMessage(value);
+        }
+        kindCase_ = 4;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.ObjectValues object_values = 4;</code>
+       */
+      public Builder setObjectValues(
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues.Builder builderForValue) {
+        if (objectValuesBuilder_ == null) {
+          kind_ = builderForValue.build();
+          onChanged();
+        } else {
+          objectValuesBuilder_.setMessage(builderForValue.build());
+        }
+        kindCase_ = 4;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.ObjectValues object_values = 4;</code>
+       */
+      public Builder mergeObjectValues(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues value) {
+        if (objectValuesBuilder_ == null) {
+          if (kindCase_ == 4 &&
+              kind_ != io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues.getDefaultInstance()) {
+            kind_ = io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues.newBuilder((io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues) kind_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            kind_ = value;
+          }
+          onChanged();
+        } else {
+          if (kindCase_ == 4) {
+            objectValuesBuilder_.mergeFrom(value);
+          } else {
+            objectValuesBuilder_.setMessage(value);
+          }
+        }
+        kindCase_ = 4;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.ObjectValues object_values = 4;</code>
+       */
+      public Builder clearObjectValues() {
+        if (objectValuesBuilder_ == null) {
+          if (kindCase_ == 4) {
+            kindCase_ = 0;
+            kind_ = null;
+            onChanged();
+          }
+        } else {
+          if (kindCase_ == 4) {
+            kindCase_ = 0;
+            kind_ = null;
+          }
+          objectValuesBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.ObjectValues object_values = 4;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues.Builder getObjectValuesBuilder() {
+        return getObjectValuesFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.weaviate.v1.ObjectValues object_values = 4;</code>
+       */
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValuesOrBuilder getObjectValuesOrBuilder() {
+        if ((kindCase_ == 4) && (objectValuesBuilder_ != null)) {
+          return objectValuesBuilder_.getMessageOrBuilder();
+        } else {
+          if (kindCase_ == 4) {
+            return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues) kind_;
+          }
+          return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.ObjectValues object_values = 4;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValuesOrBuilder> 
+          getObjectValuesFieldBuilder() {
+        if (objectValuesBuilder_ == null) {
+          if (!(kindCase_ == 4)) {
+            kind_ = io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues.getDefaultInstance();
+          }
+          objectValuesBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValuesOrBuilder>(
+                  (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues) kind_,
+                  getParentForChildren(),
+                  isClean());
+          kind_ = null;
+        }
+        kindCase_ = 4;
+        onChanged();
+        return objectValuesBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValuesOrBuilder> dateValuesBuilder_;
+      /**
+       * <code>.weaviate.v1.DateValues date_values = 5;</code>
+       * @return Whether the dateValues field is set.
+       */
+      @java.lang.Override
+      public boolean hasDateValues() {
+        return kindCase_ == 5;
+      }
+      /**
+       * <code>.weaviate.v1.DateValues date_values = 5;</code>
+       * @return The dateValues.
+       */
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues getDateValues() {
+        if (dateValuesBuilder_ == null) {
+          if (kindCase_ == 5) {
+            return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues) kind_;
+          }
+          return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues.getDefaultInstance();
+        } else {
+          if (kindCase_ == 5) {
+            return dateValuesBuilder_.getMessage();
+          }
+          return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.DateValues date_values = 5;</code>
+       */
+      public Builder setDateValues(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues value) {
+        if (dateValuesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          kind_ = value;
+          onChanged();
+        } else {
+          dateValuesBuilder_.setMessage(value);
+        }
+        kindCase_ = 5;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.DateValues date_values = 5;</code>
+       */
+      public Builder setDateValues(
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues.Builder builderForValue) {
+        if (dateValuesBuilder_ == null) {
+          kind_ = builderForValue.build();
+          onChanged();
+        } else {
+          dateValuesBuilder_.setMessage(builderForValue.build());
+        }
+        kindCase_ = 5;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.DateValues date_values = 5;</code>
+       */
+      public Builder mergeDateValues(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues value) {
+        if (dateValuesBuilder_ == null) {
+          if (kindCase_ == 5 &&
+              kind_ != io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues.getDefaultInstance()) {
+            kind_ = io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues.newBuilder((io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues) kind_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            kind_ = value;
+          }
+          onChanged();
+        } else {
+          if (kindCase_ == 5) {
+            dateValuesBuilder_.mergeFrom(value);
+          } else {
+            dateValuesBuilder_.setMessage(value);
+          }
+        }
+        kindCase_ = 5;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.DateValues date_values = 5;</code>
+       */
+      public Builder clearDateValues() {
+        if (dateValuesBuilder_ == null) {
+          if (kindCase_ == 5) {
+            kindCase_ = 0;
+            kind_ = null;
+            onChanged();
+          }
+        } else {
+          if (kindCase_ == 5) {
+            kindCase_ = 0;
+            kind_ = null;
+          }
+          dateValuesBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.DateValues date_values = 5;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues.Builder getDateValuesBuilder() {
+        return getDateValuesFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.weaviate.v1.DateValues date_values = 5;</code>
+       */
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValuesOrBuilder getDateValuesOrBuilder() {
+        if ((kindCase_ == 5) && (dateValuesBuilder_ != null)) {
+          return dateValuesBuilder_.getMessageOrBuilder();
+        } else {
+          if (kindCase_ == 5) {
+            return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues) kind_;
+          }
+          return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.DateValues date_values = 5;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValuesOrBuilder> 
+          getDateValuesFieldBuilder() {
+        if (dateValuesBuilder_ == null) {
+          if (!(kindCase_ == 5)) {
+            kind_ = io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues.getDefaultInstance();
+          }
+          dateValuesBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValuesOrBuilder>(
+                  (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues) kind_,
+                  getParentForChildren(),
+                  isClean());
+          kind_ = null;
+        }
+        kindCase_ = 5;
+        onChanged();
+        return dateValuesBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValuesOrBuilder> uuidValuesBuilder_;
+      /**
+       * <code>.weaviate.v1.UuidValues uuid_values = 6;</code>
+       * @return Whether the uuidValues field is set.
+       */
+      @java.lang.Override
+      public boolean hasUuidValues() {
+        return kindCase_ == 6;
+      }
+      /**
+       * <code>.weaviate.v1.UuidValues uuid_values = 6;</code>
+       * @return The uuidValues.
+       */
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues getUuidValues() {
+        if (uuidValuesBuilder_ == null) {
+          if (kindCase_ == 6) {
+            return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues) kind_;
+          }
+          return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues.getDefaultInstance();
+        } else {
+          if (kindCase_ == 6) {
+            return uuidValuesBuilder_.getMessage();
+          }
+          return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.UuidValues uuid_values = 6;</code>
+       */
+      public Builder setUuidValues(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues value) {
+        if (uuidValuesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          kind_ = value;
+          onChanged();
+        } else {
+          uuidValuesBuilder_.setMessage(value);
+        }
+        kindCase_ = 6;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.UuidValues uuid_values = 6;</code>
+       */
+      public Builder setUuidValues(
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues.Builder builderForValue) {
+        if (uuidValuesBuilder_ == null) {
+          kind_ = builderForValue.build();
+          onChanged();
+        } else {
+          uuidValuesBuilder_.setMessage(builderForValue.build());
+        }
+        kindCase_ = 6;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.UuidValues uuid_values = 6;</code>
+       */
+      public Builder mergeUuidValues(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues value) {
+        if (uuidValuesBuilder_ == null) {
+          if (kindCase_ == 6 &&
+              kind_ != io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues.getDefaultInstance()) {
+            kind_ = io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues.newBuilder((io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues) kind_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            kind_ = value;
+          }
+          onChanged();
+        } else {
+          if (kindCase_ == 6) {
+            uuidValuesBuilder_.mergeFrom(value);
+          } else {
+            uuidValuesBuilder_.setMessage(value);
+          }
+        }
+        kindCase_ = 6;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.UuidValues uuid_values = 6;</code>
+       */
+      public Builder clearUuidValues() {
+        if (uuidValuesBuilder_ == null) {
+          if (kindCase_ == 6) {
+            kindCase_ = 0;
+            kind_ = null;
+            onChanged();
+          }
+        } else {
+          if (kindCase_ == 6) {
+            kindCase_ = 0;
+            kind_ = null;
+          }
+          uuidValuesBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.UuidValues uuid_values = 6;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues.Builder getUuidValuesBuilder() {
+        return getUuidValuesFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.weaviate.v1.UuidValues uuid_values = 6;</code>
+       */
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValuesOrBuilder getUuidValuesOrBuilder() {
+        if ((kindCase_ == 6) && (uuidValuesBuilder_ != null)) {
+          return uuidValuesBuilder_.getMessageOrBuilder();
+        } else {
+          if (kindCase_ == 6) {
+            return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues) kind_;
+          }
+          return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.UuidValues uuid_values = 6;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValuesOrBuilder> 
+          getUuidValuesFieldBuilder() {
+        if (uuidValuesBuilder_ == null) {
+          if (!(kindCase_ == 6)) {
+            kind_ = io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues.getDefaultInstance();
+          }
+          uuidValuesBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValuesOrBuilder>(
+                  (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues) kind_,
+                  getParentForChildren(),
+                  isClean());
+          kind_ = null;
+        }
+        kindCase_ = 6;
+        onChanged();
+        return uuidValuesBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValuesOrBuilder> intValuesBuilder_;
+      /**
+       * <code>.weaviate.v1.IntValues int_values = 7;</code>
+       * @return Whether the intValues field is set.
+       */
+      @java.lang.Override
+      public boolean hasIntValues() {
+        return kindCase_ == 7;
+      }
+      /**
+       * <code>.weaviate.v1.IntValues int_values = 7;</code>
+       * @return The intValues.
+       */
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues getIntValues() {
+        if (intValuesBuilder_ == null) {
+          if (kindCase_ == 7) {
+            return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues) kind_;
+          }
+          return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues.getDefaultInstance();
+        } else {
+          if (kindCase_ == 7) {
+            return intValuesBuilder_.getMessage();
+          }
+          return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.IntValues int_values = 7;</code>
+       */
+      public Builder setIntValues(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues value) {
+        if (intValuesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          kind_ = value;
+          onChanged();
+        } else {
+          intValuesBuilder_.setMessage(value);
+        }
+        kindCase_ = 7;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.IntValues int_values = 7;</code>
+       */
+      public Builder setIntValues(
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues.Builder builderForValue) {
+        if (intValuesBuilder_ == null) {
+          kind_ = builderForValue.build();
+          onChanged();
+        } else {
+          intValuesBuilder_.setMessage(builderForValue.build());
+        }
+        kindCase_ = 7;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.IntValues int_values = 7;</code>
+       */
+      public Builder mergeIntValues(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues value) {
+        if (intValuesBuilder_ == null) {
+          if (kindCase_ == 7 &&
+              kind_ != io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues.getDefaultInstance()) {
+            kind_ = io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues.newBuilder((io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues) kind_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            kind_ = value;
+          }
+          onChanged();
+        } else {
+          if (kindCase_ == 7) {
+            intValuesBuilder_.mergeFrom(value);
+          } else {
+            intValuesBuilder_.setMessage(value);
+          }
+        }
+        kindCase_ = 7;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.IntValues int_values = 7;</code>
+       */
+      public Builder clearIntValues() {
+        if (intValuesBuilder_ == null) {
+          if (kindCase_ == 7) {
+            kindCase_ = 0;
+            kind_ = null;
+            onChanged();
+          }
+        } else {
+          if (kindCase_ == 7) {
+            kindCase_ = 0;
+            kind_ = null;
+          }
+          intValuesBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.IntValues int_values = 7;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues.Builder getIntValuesBuilder() {
+        return getIntValuesFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.weaviate.v1.IntValues int_values = 7;</code>
+       */
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValuesOrBuilder getIntValuesOrBuilder() {
+        if ((kindCase_ == 7) && (intValuesBuilder_ != null)) {
+          return intValuesBuilder_.getMessageOrBuilder();
+        } else {
+          if (kindCase_ == 7) {
+            return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues) kind_;
+          }
+          return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.IntValues int_values = 7;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValuesOrBuilder> 
+          getIntValuesFieldBuilder() {
+        if (intValuesBuilder_ == null) {
+          if (!(kindCase_ == 7)) {
+            kind_ = io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues.getDefaultInstance();
+          }
+          intValuesBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValuesOrBuilder>(
+                  (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues) kind_,
+                  getParentForChildren(),
+                  isClean());
+          kind_ = null;
+        }
+        kindCase_ = 7;
+        onChanged();
+        return intValuesBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValuesOrBuilder> textValuesBuilder_;
+      /**
+       * <code>.weaviate.v1.TextValues text_values = 8;</code>
+       * @return Whether the textValues field is set.
+       */
+      @java.lang.Override
+      public boolean hasTextValues() {
+        return kindCase_ == 8;
+      }
+      /**
+       * <code>.weaviate.v1.TextValues text_values = 8;</code>
+       * @return The textValues.
+       */
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues getTextValues() {
+        if (textValuesBuilder_ == null) {
+          if (kindCase_ == 8) {
+            return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues) kind_;
+          }
+          return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues.getDefaultInstance();
+        } else {
+          if (kindCase_ == 8) {
+            return textValuesBuilder_.getMessage();
+          }
+          return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.TextValues text_values = 8;</code>
+       */
+      public Builder setTextValues(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues value) {
+        if (textValuesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          kind_ = value;
+          onChanged();
+        } else {
+          textValuesBuilder_.setMessage(value);
+        }
+        kindCase_ = 8;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.TextValues text_values = 8;</code>
+       */
+      public Builder setTextValues(
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues.Builder builderForValue) {
+        if (textValuesBuilder_ == null) {
+          kind_ = builderForValue.build();
+          onChanged();
+        } else {
+          textValuesBuilder_.setMessage(builderForValue.build());
+        }
+        kindCase_ = 8;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.TextValues text_values = 8;</code>
+       */
+      public Builder mergeTextValues(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues value) {
+        if (textValuesBuilder_ == null) {
+          if (kindCase_ == 8 &&
+              kind_ != io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues.getDefaultInstance()) {
+            kind_ = io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues.newBuilder((io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues) kind_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            kind_ = value;
+          }
+          onChanged();
+        } else {
+          if (kindCase_ == 8) {
+            textValuesBuilder_.mergeFrom(value);
+          } else {
+            textValuesBuilder_.setMessage(value);
+          }
+        }
+        kindCase_ = 8;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.TextValues text_values = 8;</code>
+       */
+      public Builder clearTextValues() {
+        if (textValuesBuilder_ == null) {
+          if (kindCase_ == 8) {
+            kindCase_ = 0;
+            kind_ = null;
+            onChanged();
+          }
+        } else {
+          if (kindCase_ == 8) {
+            kindCase_ = 0;
+            kind_ = null;
+          }
+          textValuesBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.TextValues text_values = 8;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues.Builder getTextValuesBuilder() {
+        return getTextValuesFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.weaviate.v1.TextValues text_values = 8;</code>
+       */
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValuesOrBuilder getTextValuesOrBuilder() {
+        if ((kindCase_ == 8) && (textValuesBuilder_ != null)) {
+          return textValuesBuilder_.getMessageOrBuilder();
+        } else {
+          if (kindCase_ == 8) {
+            return (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues) kind_;
+          }
+          return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.TextValues text_values = 8;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValuesOrBuilder> 
+          getTextValuesFieldBuilder() {
+        if (textValuesBuilder_ == null) {
+          if (!(kindCase_ == 8)) {
+            kind_ = io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues.getDefaultInstance();
+          }
+          textValuesBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValuesOrBuilder>(
+                  (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues) kind_,
+                  getParentForChildren(),
+                  isClean());
+          kind_ = null;
+        }
+        kindCase_ = 8;
+        onChanged();
+        return textValuesBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -4095,6 +5947,4256 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
 
     @java.lang.Override
     public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ListValue getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface NumberValuesOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:weaviate.v1.NumberValues)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     **
+     * The values are stored as a byte array, where each 8 bytes represent a single float64 value.
+     * The byte array is stored in little-endian order using uint64 encoding.
+     * </pre>
+     *
+     * <code>bytes values = 1;</code>
+     * @return The values.
+     */
+    com.google.protobuf.ByteString getValues();
+  }
+  /**
+   * Protobuf type {@code weaviate.v1.NumberValues}
+   */
+  public static final class NumberValues extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:weaviate.v1.NumberValues)
+      NumberValuesOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use NumberValues.newBuilder() to construct.
+    private NumberValues(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private NumberValues() {
+      values_ = com.google.protobuf.ByteString.EMPTY;
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new NumberValues();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_NumberValues_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_NumberValues_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues.class, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues.Builder.class);
+    }
+
+    public static final int VALUES_FIELD_NUMBER = 1;
+    private com.google.protobuf.ByteString values_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <pre>
+     **
+     * The values are stored as a byte array, where each 8 bytes represent a single float64 value.
+     * The byte array is stored in little-endian order using uint64 encoding.
+     * </pre>
+     *
+     * <code>bytes values = 1;</code>
+     * @return The values.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getValues() {
+      return values_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!values_.isEmpty()) {
+        output.writeBytes(1, values_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!values_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, values_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues)) {
+        return super.equals(obj);
+      }
+      io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues other = (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues) obj;
+
+      if (!getValues()
+          .equals(other.getValues())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + VALUES_FIELD_NUMBER;
+      hash = (53 * hash) + getValues().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code weaviate.v1.NumberValues}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:weaviate.v1.NumberValues)
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValuesOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_NumberValues_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_NumberValues_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues.class, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues.Builder.class);
+      }
+
+      // Construct using io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        values_ = com.google.protobuf.ByteString.EMPTY;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_NumberValues_descriptor;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues getDefaultInstanceForType() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues build() {
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues buildPartial() {
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues result = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.values_ = values_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues) {
+          return mergeFrom((io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues other) {
+        if (other == io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues.getDefaultInstance()) return this;
+        if (other.getValues() != com.google.protobuf.ByteString.EMPTY) {
+          setValues(other.getValues());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                values_ = input.readBytes();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private com.google.protobuf.ByteString values_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <pre>
+       **
+       * The values are stored as a byte array, where each 8 bytes represent a single float64 value.
+       * The byte array is stored in little-endian order using uint64 encoding.
+       * </pre>
+       *
+       * <code>bytes values = 1;</code>
+       * @return The values.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getValues() {
+        return values_;
+      }
+      /**
+       * <pre>
+       **
+       * The values are stored as a byte array, where each 8 bytes represent a single float64 value.
+       * The byte array is stored in little-endian order using uint64 encoding.
+       * </pre>
+       *
+       * <code>bytes values = 1;</code>
+       * @param value The values to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValues(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        values_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * The values are stored as a byte array, where each 8 bytes represent a single float64 value.
+       * The byte array is stored in little-endian order using uint64 encoding.
+       * </pre>
+       *
+       * <code>bytes values = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValues() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        values_ = getDefaultInstance().getValues();
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:weaviate.v1.NumberValues)
+    }
+
+    // @@protoc_insertion_point(class_scope:weaviate.v1.NumberValues)
+    private static final io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues();
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<NumberValues>
+        PARSER = new com.google.protobuf.AbstractParser<NumberValues>() {
+      @java.lang.Override
+      public NumberValues parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<NumberValues> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<NumberValues> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.NumberValues getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface TextValuesOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:weaviate.v1.TextValues)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated string values = 1;</code>
+     * @return A list containing the values.
+     */
+    java.util.List<java.lang.String>
+        getValuesList();
+    /**
+     * <code>repeated string values = 1;</code>
+     * @return The count of values.
+     */
+    int getValuesCount();
+    /**
+     * <code>repeated string values = 1;</code>
+     * @param index The index of the element to return.
+     * @return The values at the given index.
+     */
+    java.lang.String getValues(int index);
+    /**
+     * <code>repeated string values = 1;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the values at the given index.
+     */
+    com.google.protobuf.ByteString
+        getValuesBytes(int index);
+  }
+  /**
+   * Protobuf type {@code weaviate.v1.TextValues}
+   */
+  public static final class TextValues extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:weaviate.v1.TextValues)
+      TextValuesOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use TextValues.newBuilder() to construct.
+    private TextValues(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private TextValues() {
+      values_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new TextValues();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_TextValues_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_TextValues_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues.class, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues.Builder.class);
+    }
+
+    public static final int VALUES_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private com.google.protobuf.LazyStringArrayList values_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+    /**
+     * <code>repeated string values = 1;</code>
+     * @return A list containing the values.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getValuesList() {
+      return values_;
+    }
+    /**
+     * <code>repeated string values = 1;</code>
+     * @return The count of values.
+     */
+    public int getValuesCount() {
+      return values_.size();
+    }
+    /**
+     * <code>repeated string values = 1;</code>
+     * @param index The index of the element to return.
+     * @return The values at the given index.
+     */
+    public java.lang.String getValues(int index) {
+      return values_.get(index);
+    }
+    /**
+     * <code>repeated string values = 1;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the values at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getValuesBytes(int index) {
+      return values_.getByteString(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < values_.size(); i++) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, values_.getRaw(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      {
+        int dataSize = 0;
+        for (int i = 0; i < values_.size(); i++) {
+          dataSize += computeStringSizeNoTag(values_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getValuesList().size();
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues)) {
+        return super.equals(obj);
+      }
+      io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues other = (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues) obj;
+
+      if (!getValuesList()
+          .equals(other.getValuesList())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getValuesCount() > 0) {
+        hash = (37 * hash) + VALUES_FIELD_NUMBER;
+        hash = (53 * hash) + getValuesList().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code weaviate.v1.TextValues}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:weaviate.v1.TextValues)
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValuesOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_TextValues_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_TextValues_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues.class, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues.Builder.class);
+      }
+
+      // Construct using io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        values_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_TextValues_descriptor;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues getDefaultInstanceForType() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues build() {
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues buildPartial() {
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues result = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          values_.makeImmutable();
+          result.values_ = values_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues) {
+          return mergeFrom((io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues other) {
+        if (other == io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues.getDefaultInstance()) return this;
+        if (!other.values_.isEmpty()) {
+          if (values_.isEmpty()) {
+            values_ = other.values_;
+            bitField0_ |= 0x00000001;
+          } else {
+            ensureValuesIsMutable();
+            values_.addAll(other.values_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                java.lang.String s = input.readStringRequireUtf8();
+                ensureValuesIsMutable();
+                values_.add(s);
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private com.google.protobuf.LazyStringArrayList values_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      private void ensureValuesIsMutable() {
+        if (!values_.isModifiable()) {
+          values_ = new com.google.protobuf.LazyStringArrayList(values_);
+        }
+        bitField0_ |= 0x00000001;
+      }
+      /**
+       * <code>repeated string values = 1;</code>
+       * @return A list containing the values.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getValuesList() {
+        values_.makeImmutable();
+        return values_;
+      }
+      /**
+       * <code>repeated string values = 1;</code>
+       * @return The count of values.
+       */
+      public int getValuesCount() {
+        return values_.size();
+      }
+      /**
+       * <code>repeated string values = 1;</code>
+       * @param index The index of the element to return.
+       * @return The values at the given index.
+       */
+      public java.lang.String getValues(int index) {
+        return values_.get(index);
+      }
+      /**
+       * <code>repeated string values = 1;</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the values at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getValuesBytes(int index) {
+        return values_.getByteString(index);
+      }
+      /**
+       * <code>repeated string values = 1;</code>
+       * @param index The index to set the value at.
+       * @param value The values to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValues(
+          int index, java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureValuesIsMutable();
+        values_.set(index, value);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string values = 1;</code>
+       * @param value The values to add.
+       * @return This builder for chaining.
+       */
+      public Builder addValues(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureValuesIsMutable();
+        values_.add(value);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string values = 1;</code>
+       * @param values The values to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllValues(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureValuesIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, values_);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string values = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValues() {
+        values_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string values = 1;</code>
+       * @param value The bytes of the values to add.
+       * @return This builder for chaining.
+       */
+      public Builder addValuesBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        ensureValuesIsMutable();
+        values_.add(value);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:weaviate.v1.TextValues)
+    }
+
+    // @@protoc_insertion_point(class_scope:weaviate.v1.TextValues)
+    private static final io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues();
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<TextValues>
+        PARSER = new com.google.protobuf.AbstractParser<TextValues>() {
+      @java.lang.Override
+      public TextValues parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<TextValues> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<TextValues> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.TextValues getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface BoolValuesOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:weaviate.v1.BoolValues)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated bool values = 1;</code>
+     * @return A list containing the values.
+     */
+    java.util.List<java.lang.Boolean> getValuesList();
+    /**
+     * <code>repeated bool values = 1;</code>
+     * @return The count of values.
+     */
+    int getValuesCount();
+    /**
+     * <code>repeated bool values = 1;</code>
+     * @param index The index of the element to return.
+     * @return The values at the given index.
+     */
+    boolean getValues(int index);
+  }
+  /**
+   * Protobuf type {@code weaviate.v1.BoolValues}
+   */
+  public static final class BoolValues extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:weaviate.v1.BoolValues)
+      BoolValuesOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use BoolValues.newBuilder() to construct.
+    private BoolValues(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private BoolValues() {
+      values_ = emptyBooleanList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new BoolValues();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_BoolValues_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_BoolValues_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues.class, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues.Builder.class);
+    }
+
+    public static final int VALUES_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private com.google.protobuf.Internal.BooleanList values_ =
+        emptyBooleanList();
+    /**
+     * <code>repeated bool values = 1;</code>
+     * @return A list containing the values.
+     */
+    @java.lang.Override
+    public java.util.List<java.lang.Boolean>
+        getValuesList() {
+      return values_;
+    }
+    /**
+     * <code>repeated bool values = 1;</code>
+     * @return The count of values.
+     */
+    public int getValuesCount() {
+      return values_.size();
+    }
+    /**
+     * <code>repeated bool values = 1;</code>
+     * @param index The index of the element to return.
+     * @return The values at the given index.
+     */
+    public boolean getValues(int index) {
+      return values_.getBoolean(index);
+    }
+    private int valuesMemoizedSerializedSize = -1;
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (getValuesList().size() > 0) {
+        output.writeUInt32NoTag(10);
+        output.writeUInt32NoTag(valuesMemoizedSerializedSize);
+      }
+      for (int i = 0; i < values_.size(); i++) {
+        output.writeBoolNoTag(values_.getBoolean(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      {
+        int dataSize = 0;
+        dataSize = 1 * getValuesList().size();
+        size += dataSize;
+        if (!getValuesList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        valuesMemoizedSerializedSize = dataSize;
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues)) {
+        return super.equals(obj);
+      }
+      io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues other = (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues) obj;
+
+      if (!getValuesList()
+          .equals(other.getValuesList())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getValuesCount() > 0) {
+        hash = (37 * hash) + VALUES_FIELD_NUMBER;
+        hash = (53 * hash) + getValuesList().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code weaviate.v1.BoolValues}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:weaviate.v1.BoolValues)
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValuesOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_BoolValues_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_BoolValues_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues.class, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues.Builder.class);
+      }
+
+      // Construct using io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        values_ = emptyBooleanList();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_BoolValues_descriptor;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues getDefaultInstanceForType() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues build() {
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues buildPartial() {
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues result = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          values_.makeImmutable();
+          result.values_ = values_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues) {
+          return mergeFrom((io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues other) {
+        if (other == io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues.getDefaultInstance()) return this;
+        if (!other.values_.isEmpty()) {
+          if (values_.isEmpty()) {
+            values_ = other.values_;
+            values_.makeImmutable();
+            bitField0_ |= 0x00000001;
+          } else {
+            ensureValuesIsMutable();
+            values_.addAll(other.values_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                boolean v = input.readBool();
+                ensureValuesIsMutable();
+                values_.addBoolean(v);
+                break;
+              } // case 8
+              case 10: {
+                int length = input.readRawVarint32();
+                int limit = input.pushLimit(length);
+                int alloc = length > 4096 ? 4096 : length;
+                ensureValuesIsMutable(alloc / 1);
+                while (input.getBytesUntilLimit() > 0) {
+                  values_.addBoolean(input.readBool());
+                }
+                input.popLimit(limit);
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private com.google.protobuf.Internal.BooleanList values_ = emptyBooleanList();
+      private void ensureValuesIsMutable() {
+        if (!values_.isModifiable()) {
+          values_ = makeMutableCopy(values_);
+        }
+        bitField0_ |= 0x00000001;
+      }
+      private void ensureValuesIsMutable(int capacity) {
+        if (!values_.isModifiable()) {
+          values_ = makeMutableCopy(values_, capacity);
+        }
+        bitField0_ |= 0x00000001;
+      }
+      /**
+       * <code>repeated bool values = 1;</code>
+       * @return A list containing the values.
+       */
+      public java.util.List<java.lang.Boolean>
+          getValuesList() {
+        values_.makeImmutable();
+        return values_;
+      }
+      /**
+       * <code>repeated bool values = 1;</code>
+       * @return The count of values.
+       */
+      public int getValuesCount() {
+        return values_.size();
+      }
+      /**
+       * <code>repeated bool values = 1;</code>
+       * @param index The index of the element to return.
+       * @return The values at the given index.
+       */
+      public boolean getValues(int index) {
+        return values_.getBoolean(index);
+      }
+      /**
+       * <code>repeated bool values = 1;</code>
+       * @param index The index to set the value at.
+       * @param value The values to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValues(
+          int index, boolean value) {
+
+        ensureValuesIsMutable();
+        values_.setBoolean(index, value);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated bool values = 1;</code>
+       * @param value The values to add.
+       * @return This builder for chaining.
+       */
+      public Builder addValues(boolean value) {
+
+        ensureValuesIsMutable();
+        values_.addBoolean(value);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated bool values = 1;</code>
+       * @param values The values to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllValues(
+          java.lang.Iterable<? extends java.lang.Boolean> values) {
+        ensureValuesIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, values_);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated bool values = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValues() {
+        values_ = emptyBooleanList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:weaviate.v1.BoolValues)
+    }
+
+    // @@protoc_insertion_point(class_scope:weaviate.v1.BoolValues)
+    private static final io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues();
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<BoolValues>
+        PARSER = new com.google.protobuf.AbstractParser<BoolValues>() {
+      @java.lang.Override
+      public BoolValues parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<BoolValues> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<BoolValues> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.BoolValues getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ObjectValuesOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:weaviate.v1.ObjectValues)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated .weaviate.v1.Properties values = 1;</code>
+     */
+    java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties> 
+        getValuesList();
+    /**
+     * <code>repeated .weaviate.v1.Properties values = 1;</code>
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties getValues(int index);
+    /**
+     * <code>repeated .weaviate.v1.Properties values = 1;</code>
+     */
+    int getValuesCount();
+    /**
+     * <code>repeated .weaviate.v1.Properties values = 1;</code>
+     */
+    java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PropertiesOrBuilder> 
+        getValuesOrBuilderList();
+    /**
+     * <code>repeated .weaviate.v1.Properties values = 1;</code>
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PropertiesOrBuilder getValuesOrBuilder(
+        int index);
+  }
+  /**
+   * Protobuf type {@code weaviate.v1.ObjectValues}
+   */
+  public static final class ObjectValues extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:weaviate.v1.ObjectValues)
+      ObjectValuesOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ObjectValues.newBuilder() to construct.
+    private ObjectValues(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ObjectValues() {
+      values_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new ObjectValues();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_ObjectValues_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_ObjectValues_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues.class, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues.Builder.class);
+    }
+
+    public static final int VALUES_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties> values_;
+    /**
+     * <code>repeated .weaviate.v1.Properties values = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties> getValuesList() {
+      return values_;
+    }
+    /**
+     * <code>repeated .weaviate.v1.Properties values = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PropertiesOrBuilder> 
+        getValuesOrBuilderList() {
+      return values_;
+    }
+    /**
+     * <code>repeated .weaviate.v1.Properties values = 1;</code>
+     */
+    @java.lang.Override
+    public int getValuesCount() {
+      return values_.size();
+    }
+    /**
+     * <code>repeated .weaviate.v1.Properties values = 1;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties getValues(int index) {
+      return values_.get(index);
+    }
+    /**
+     * <code>repeated .weaviate.v1.Properties values = 1;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PropertiesOrBuilder getValuesOrBuilder(
+        int index) {
+      return values_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < values_.size(); i++) {
+        output.writeMessage(1, values_.get(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < values_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, values_.get(i));
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues)) {
+        return super.equals(obj);
+      }
+      io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues other = (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues) obj;
+
+      if (!getValuesList()
+          .equals(other.getValuesList())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getValuesCount() > 0) {
+        hash = (37 * hash) + VALUES_FIELD_NUMBER;
+        hash = (53 * hash) + getValuesList().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code weaviate.v1.ObjectValues}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:weaviate.v1.ObjectValues)
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValuesOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_ObjectValues_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_ObjectValues_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues.class, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues.Builder.class);
+      }
+
+      // Construct using io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        if (valuesBuilder_ == null) {
+          values_ = java.util.Collections.emptyList();
+        } else {
+          values_ = null;
+          valuesBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_ObjectValues_descriptor;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues getDefaultInstanceForType() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues build() {
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues buildPartial() {
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues result = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues(this);
+        buildPartialRepeatedFields(result);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartialRepeatedFields(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues result) {
+        if (valuesBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            values_ = java.util.Collections.unmodifiableList(values_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.values_ = values_;
+        } else {
+          result.values_ = valuesBuilder_.build();
+        }
+      }
+
+      private void buildPartial0(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues result) {
+        int from_bitField0_ = bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues) {
+          return mergeFrom((io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues other) {
+        if (other == io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues.getDefaultInstance()) return this;
+        if (valuesBuilder_ == null) {
+          if (!other.values_.isEmpty()) {
+            if (values_.isEmpty()) {
+              values_ = other.values_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureValuesIsMutable();
+              values_.addAll(other.values_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.values_.isEmpty()) {
+            if (valuesBuilder_.isEmpty()) {
+              valuesBuilder_.dispose();
+              valuesBuilder_ = null;
+              values_ = other.values_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              valuesBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getValuesFieldBuilder() : null;
+            } else {
+              valuesBuilder_.addAllMessages(other.values_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties m =
+                    input.readMessage(
+                        io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties.parser(),
+                        extensionRegistry);
+                if (valuesBuilder_ == null) {
+                  ensureValuesIsMutable();
+                  values_.add(m);
+                } else {
+                  valuesBuilder_.addMessage(m);
+                }
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties> values_ =
+        java.util.Collections.emptyList();
+      private void ensureValuesIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          values_ = new java.util.ArrayList<io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties>(values_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PropertiesOrBuilder> valuesBuilder_;
+
+      /**
+       * <code>repeated .weaviate.v1.Properties values = 1;</code>
+       */
+      public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties> getValuesList() {
+        if (valuesBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(values_);
+        } else {
+          return valuesBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .weaviate.v1.Properties values = 1;</code>
+       */
+      public int getValuesCount() {
+        if (valuesBuilder_ == null) {
+          return values_.size();
+        } else {
+          return valuesBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .weaviate.v1.Properties values = 1;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties getValues(int index) {
+        if (valuesBuilder_ == null) {
+          return values_.get(index);
+        } else {
+          return valuesBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .weaviate.v1.Properties values = 1;</code>
+       */
+      public Builder setValues(
+          int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties value) {
+        if (valuesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureValuesIsMutable();
+          values_.set(index, value);
+          onChanged();
+        } else {
+          valuesBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.Properties values = 1;</code>
+       */
+      public Builder setValues(
+          int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties.Builder builderForValue) {
+        if (valuesBuilder_ == null) {
+          ensureValuesIsMutable();
+          values_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          valuesBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.Properties values = 1;</code>
+       */
+      public Builder addValues(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties value) {
+        if (valuesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureValuesIsMutable();
+          values_.add(value);
+          onChanged();
+        } else {
+          valuesBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.Properties values = 1;</code>
+       */
+      public Builder addValues(
+          int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties value) {
+        if (valuesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureValuesIsMutable();
+          values_.add(index, value);
+          onChanged();
+        } else {
+          valuesBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.Properties values = 1;</code>
+       */
+      public Builder addValues(
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties.Builder builderForValue) {
+        if (valuesBuilder_ == null) {
+          ensureValuesIsMutable();
+          values_.add(builderForValue.build());
+          onChanged();
+        } else {
+          valuesBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.Properties values = 1;</code>
+       */
+      public Builder addValues(
+          int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties.Builder builderForValue) {
+        if (valuesBuilder_ == null) {
+          ensureValuesIsMutable();
+          values_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          valuesBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.Properties values = 1;</code>
+       */
+      public Builder addAllValues(
+          java.lang.Iterable<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties> values) {
+        if (valuesBuilder_ == null) {
+          ensureValuesIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, values_);
+          onChanged();
+        } else {
+          valuesBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.Properties values = 1;</code>
+       */
+      public Builder clearValues() {
+        if (valuesBuilder_ == null) {
+          values_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          valuesBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.Properties values = 1;</code>
+       */
+      public Builder removeValues(int index) {
+        if (valuesBuilder_ == null) {
+          ensureValuesIsMutable();
+          values_.remove(index);
+          onChanged();
+        } else {
+          valuesBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.Properties values = 1;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties.Builder getValuesBuilder(
+          int index) {
+        return getValuesFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .weaviate.v1.Properties values = 1;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PropertiesOrBuilder getValuesOrBuilder(
+          int index) {
+        if (valuesBuilder_ == null) {
+          return values_.get(index);  } else {
+          return valuesBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .weaviate.v1.Properties values = 1;</code>
+       */
+      public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PropertiesOrBuilder> 
+           getValuesOrBuilderList() {
+        if (valuesBuilder_ != null) {
+          return valuesBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(values_);
+        }
+      }
+      /**
+       * <code>repeated .weaviate.v1.Properties values = 1;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties.Builder addValuesBuilder() {
+        return getValuesFieldBuilder().addBuilder(
+            io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .weaviate.v1.Properties values = 1;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties.Builder addValuesBuilder(
+          int index) {
+        return getValuesFieldBuilder().addBuilder(
+            index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .weaviate.v1.Properties values = 1;</code>
+       */
+      public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties.Builder> 
+           getValuesBuilderList() {
+        return getValuesFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PropertiesOrBuilder> 
+          getValuesFieldBuilder() {
+        if (valuesBuilder_ == null) {
+          valuesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Properties.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.PropertiesOrBuilder>(
+                  values_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          values_ = null;
+        }
+        return valuesBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:weaviate.v1.ObjectValues)
+    }
+
+    // @@protoc_insertion_point(class_scope:weaviate.v1.ObjectValues)
+    private static final io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues();
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ObjectValues>
+        PARSER = new com.google.protobuf.AbstractParser<ObjectValues>() {
+      @java.lang.Override
+      public ObjectValues parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<ObjectValues> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ObjectValues> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.ObjectValues getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface DateValuesOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:weaviate.v1.DateValues)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated string values = 1;</code>
+     * @return A list containing the values.
+     */
+    java.util.List<java.lang.String>
+        getValuesList();
+    /**
+     * <code>repeated string values = 1;</code>
+     * @return The count of values.
+     */
+    int getValuesCount();
+    /**
+     * <code>repeated string values = 1;</code>
+     * @param index The index of the element to return.
+     * @return The values at the given index.
+     */
+    java.lang.String getValues(int index);
+    /**
+     * <code>repeated string values = 1;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the values at the given index.
+     */
+    com.google.protobuf.ByteString
+        getValuesBytes(int index);
+  }
+  /**
+   * Protobuf type {@code weaviate.v1.DateValues}
+   */
+  public static final class DateValues extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:weaviate.v1.DateValues)
+      DateValuesOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use DateValues.newBuilder() to construct.
+    private DateValues(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private DateValues() {
+      values_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new DateValues();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_DateValues_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_DateValues_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues.class, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues.Builder.class);
+    }
+
+    public static final int VALUES_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private com.google.protobuf.LazyStringArrayList values_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+    /**
+     * <code>repeated string values = 1;</code>
+     * @return A list containing the values.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getValuesList() {
+      return values_;
+    }
+    /**
+     * <code>repeated string values = 1;</code>
+     * @return The count of values.
+     */
+    public int getValuesCount() {
+      return values_.size();
+    }
+    /**
+     * <code>repeated string values = 1;</code>
+     * @param index The index of the element to return.
+     * @return The values at the given index.
+     */
+    public java.lang.String getValues(int index) {
+      return values_.get(index);
+    }
+    /**
+     * <code>repeated string values = 1;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the values at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getValuesBytes(int index) {
+      return values_.getByteString(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < values_.size(); i++) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, values_.getRaw(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      {
+        int dataSize = 0;
+        for (int i = 0; i < values_.size(); i++) {
+          dataSize += computeStringSizeNoTag(values_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getValuesList().size();
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues)) {
+        return super.equals(obj);
+      }
+      io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues other = (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues) obj;
+
+      if (!getValuesList()
+          .equals(other.getValuesList())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getValuesCount() > 0) {
+        hash = (37 * hash) + VALUES_FIELD_NUMBER;
+        hash = (53 * hash) + getValuesList().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code weaviate.v1.DateValues}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:weaviate.v1.DateValues)
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValuesOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_DateValues_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_DateValues_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues.class, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues.Builder.class);
+      }
+
+      // Construct using io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        values_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_DateValues_descriptor;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues getDefaultInstanceForType() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues build() {
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues buildPartial() {
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues result = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          values_.makeImmutable();
+          result.values_ = values_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues) {
+          return mergeFrom((io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues other) {
+        if (other == io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues.getDefaultInstance()) return this;
+        if (!other.values_.isEmpty()) {
+          if (values_.isEmpty()) {
+            values_ = other.values_;
+            bitField0_ |= 0x00000001;
+          } else {
+            ensureValuesIsMutable();
+            values_.addAll(other.values_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                java.lang.String s = input.readStringRequireUtf8();
+                ensureValuesIsMutable();
+                values_.add(s);
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private com.google.protobuf.LazyStringArrayList values_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      private void ensureValuesIsMutable() {
+        if (!values_.isModifiable()) {
+          values_ = new com.google.protobuf.LazyStringArrayList(values_);
+        }
+        bitField0_ |= 0x00000001;
+      }
+      /**
+       * <code>repeated string values = 1;</code>
+       * @return A list containing the values.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getValuesList() {
+        values_.makeImmutable();
+        return values_;
+      }
+      /**
+       * <code>repeated string values = 1;</code>
+       * @return The count of values.
+       */
+      public int getValuesCount() {
+        return values_.size();
+      }
+      /**
+       * <code>repeated string values = 1;</code>
+       * @param index The index of the element to return.
+       * @return The values at the given index.
+       */
+      public java.lang.String getValues(int index) {
+        return values_.get(index);
+      }
+      /**
+       * <code>repeated string values = 1;</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the values at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getValuesBytes(int index) {
+        return values_.getByteString(index);
+      }
+      /**
+       * <code>repeated string values = 1;</code>
+       * @param index The index to set the value at.
+       * @param value The values to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValues(
+          int index, java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureValuesIsMutable();
+        values_.set(index, value);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string values = 1;</code>
+       * @param value The values to add.
+       * @return This builder for chaining.
+       */
+      public Builder addValues(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureValuesIsMutable();
+        values_.add(value);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string values = 1;</code>
+       * @param values The values to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllValues(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureValuesIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, values_);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string values = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValues() {
+        values_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string values = 1;</code>
+       * @param value The bytes of the values to add.
+       * @return This builder for chaining.
+       */
+      public Builder addValuesBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        ensureValuesIsMutable();
+        values_.add(value);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:weaviate.v1.DateValues)
+    }
+
+    // @@protoc_insertion_point(class_scope:weaviate.v1.DateValues)
+    private static final io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues();
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<DateValues>
+        PARSER = new com.google.protobuf.AbstractParser<DateValues>() {
+      @java.lang.Override
+      public DateValues parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<DateValues> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<DateValues> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.DateValues getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface UuidValuesOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:weaviate.v1.UuidValues)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated string values = 1;</code>
+     * @return A list containing the values.
+     */
+    java.util.List<java.lang.String>
+        getValuesList();
+    /**
+     * <code>repeated string values = 1;</code>
+     * @return The count of values.
+     */
+    int getValuesCount();
+    /**
+     * <code>repeated string values = 1;</code>
+     * @param index The index of the element to return.
+     * @return The values at the given index.
+     */
+    java.lang.String getValues(int index);
+    /**
+     * <code>repeated string values = 1;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the values at the given index.
+     */
+    com.google.protobuf.ByteString
+        getValuesBytes(int index);
+  }
+  /**
+   * Protobuf type {@code weaviate.v1.UuidValues}
+   */
+  public static final class UuidValues extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:weaviate.v1.UuidValues)
+      UuidValuesOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use UuidValues.newBuilder() to construct.
+    private UuidValues(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private UuidValues() {
+      values_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new UuidValues();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_UuidValues_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_UuidValues_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues.class, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues.Builder.class);
+    }
+
+    public static final int VALUES_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private com.google.protobuf.LazyStringArrayList values_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+    /**
+     * <code>repeated string values = 1;</code>
+     * @return A list containing the values.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getValuesList() {
+      return values_;
+    }
+    /**
+     * <code>repeated string values = 1;</code>
+     * @return The count of values.
+     */
+    public int getValuesCount() {
+      return values_.size();
+    }
+    /**
+     * <code>repeated string values = 1;</code>
+     * @param index The index of the element to return.
+     * @return The values at the given index.
+     */
+    public java.lang.String getValues(int index) {
+      return values_.get(index);
+    }
+    /**
+     * <code>repeated string values = 1;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the values at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getValuesBytes(int index) {
+      return values_.getByteString(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < values_.size(); i++) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, values_.getRaw(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      {
+        int dataSize = 0;
+        for (int i = 0; i < values_.size(); i++) {
+          dataSize += computeStringSizeNoTag(values_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getValuesList().size();
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues)) {
+        return super.equals(obj);
+      }
+      io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues other = (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues) obj;
+
+      if (!getValuesList()
+          .equals(other.getValuesList())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getValuesCount() > 0) {
+        hash = (37 * hash) + VALUES_FIELD_NUMBER;
+        hash = (53 * hash) + getValuesList().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code weaviate.v1.UuidValues}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:weaviate.v1.UuidValues)
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValuesOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_UuidValues_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_UuidValues_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues.class, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues.Builder.class);
+      }
+
+      // Construct using io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        values_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_UuidValues_descriptor;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues getDefaultInstanceForType() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues build() {
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues buildPartial() {
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues result = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          values_.makeImmutable();
+          result.values_ = values_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues) {
+          return mergeFrom((io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues other) {
+        if (other == io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues.getDefaultInstance()) return this;
+        if (!other.values_.isEmpty()) {
+          if (values_.isEmpty()) {
+            values_ = other.values_;
+            bitField0_ |= 0x00000001;
+          } else {
+            ensureValuesIsMutable();
+            values_.addAll(other.values_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                java.lang.String s = input.readStringRequireUtf8();
+                ensureValuesIsMutable();
+                values_.add(s);
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private com.google.protobuf.LazyStringArrayList values_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      private void ensureValuesIsMutable() {
+        if (!values_.isModifiable()) {
+          values_ = new com.google.protobuf.LazyStringArrayList(values_);
+        }
+        bitField0_ |= 0x00000001;
+      }
+      /**
+       * <code>repeated string values = 1;</code>
+       * @return A list containing the values.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getValuesList() {
+        values_.makeImmutable();
+        return values_;
+      }
+      /**
+       * <code>repeated string values = 1;</code>
+       * @return The count of values.
+       */
+      public int getValuesCount() {
+        return values_.size();
+      }
+      /**
+       * <code>repeated string values = 1;</code>
+       * @param index The index of the element to return.
+       * @return The values at the given index.
+       */
+      public java.lang.String getValues(int index) {
+        return values_.get(index);
+      }
+      /**
+       * <code>repeated string values = 1;</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the values at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getValuesBytes(int index) {
+        return values_.getByteString(index);
+      }
+      /**
+       * <code>repeated string values = 1;</code>
+       * @param index The index to set the value at.
+       * @param value The values to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValues(
+          int index, java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureValuesIsMutable();
+        values_.set(index, value);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string values = 1;</code>
+       * @param value The values to add.
+       * @return This builder for chaining.
+       */
+      public Builder addValues(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureValuesIsMutable();
+        values_.add(value);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string values = 1;</code>
+       * @param values The values to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllValues(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureValuesIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, values_);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string values = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValues() {
+        values_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string values = 1;</code>
+       * @param value The bytes of the values to add.
+       * @return This builder for chaining.
+       */
+      public Builder addValuesBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        ensureValuesIsMutable();
+        values_.add(value);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:weaviate.v1.UuidValues)
+    }
+
+    // @@protoc_insertion_point(class_scope:weaviate.v1.UuidValues)
+    private static final io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues();
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<UuidValues>
+        PARSER = new com.google.protobuf.AbstractParser<UuidValues>() {
+      @java.lang.Override
+      public UuidValues parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<UuidValues> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<UuidValues> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.UuidValues getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface IntValuesOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:weaviate.v1.IntValues)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     **
+     * The values are stored as a byte array, where each 8 bytes represent a single int64 value.
+     * The byte array is stored in little-endian order using uint64 encoding.
+     * </pre>
+     *
+     * <code>bytes values = 1;</code>
+     * @return The values.
+     */
+    com.google.protobuf.ByteString getValues();
+  }
+  /**
+   * Protobuf type {@code weaviate.v1.IntValues}
+   */
+  public static final class IntValues extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:weaviate.v1.IntValues)
+      IntValuesOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use IntValues.newBuilder() to construct.
+    private IntValues(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private IntValues() {
+      values_ = com.google.protobuf.ByteString.EMPTY;
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new IntValues();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_IntValues_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_IntValues_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues.class, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues.Builder.class);
+    }
+
+    public static final int VALUES_FIELD_NUMBER = 1;
+    private com.google.protobuf.ByteString values_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <pre>
+     **
+     * The values are stored as a byte array, where each 8 bytes represent a single int64 value.
+     * The byte array is stored in little-endian order using uint64 encoding.
+     * </pre>
+     *
+     * <code>bytes values = 1;</code>
+     * @return The values.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getValues() {
+      return values_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!values_.isEmpty()) {
+        output.writeBytes(1, values_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!values_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, values_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues)) {
+        return super.equals(obj);
+      }
+      io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues other = (io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues) obj;
+
+      if (!getValues()
+          .equals(other.getValues())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + VALUES_FIELD_NUMBER;
+      hash = (53 * hash) + getValues().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code weaviate.v1.IntValues}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:weaviate.v1.IntValues)
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValuesOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_IntValues_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_IntValues_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues.class, io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues.Builder.class);
+      }
+
+      // Construct using io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        values_ = com.google.protobuf.ByteString.EMPTY;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.internal_static_weaviate_v1_IntValues_descriptor;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues getDefaultInstanceForType() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues build() {
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues buildPartial() {
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues result = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.values_ = values_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues) {
+          return mergeFrom((io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues other) {
+        if (other == io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues.getDefaultInstance()) return this;
+        if (other.getValues() != com.google.protobuf.ByteString.EMPTY) {
+          setValues(other.getValues());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                values_ = input.readBytes();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private com.google.protobuf.ByteString values_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <pre>
+       **
+       * The values are stored as a byte array, where each 8 bytes represent a single int64 value.
+       * The byte array is stored in little-endian order using uint64 encoding.
+       * </pre>
+       *
+       * <code>bytes values = 1;</code>
+       * @return The values.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getValues() {
+        return values_;
+      }
+      /**
+       * <pre>
+       **
+       * The values are stored as a byte array, where each 8 bytes represent a single int64 value.
+       * The byte array is stored in little-endian order using uint64 encoding.
+       * </pre>
+       *
+       * <code>bytes values = 1;</code>
+       * @param value The values to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValues(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        values_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * The values are stored as a byte array, where each 8 bytes represent a single int64 value.
+       * The byte array is stored in little-endian order using uint64 encoding.
+       * </pre>
+       *
+       * <code>bytes values = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValues() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        values_ = getDefaultInstance().getValues();
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:weaviate.v1.IntValues)
+    }
+
+    // @@protoc_insertion_point(class_scope:weaviate.v1.IntValues)
+    private static final io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues();
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<IntValues>
+        PARSER = new com.google.protobuf.AbstractParser<IntValues>() {
+      @java.lang.Override
+      public IntValues parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<IntValues> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<IntValues> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.IntValues getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -5888,6 +11990,41 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_weaviate_v1_ListValue_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_weaviate_v1_NumberValues_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_weaviate_v1_NumberValues_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_weaviate_v1_TextValues_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_weaviate_v1_TextValues_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_weaviate_v1_BoolValues_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_weaviate_v1_BoolValues_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_weaviate_v1_ObjectValues_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_weaviate_v1_ObjectValues_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_weaviate_v1_DateValues_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_weaviate_v1_DateValues_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_weaviate_v1_UuidValues_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_weaviate_v1_UuidValues_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_weaviate_v1_IntValues_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_weaviate_v1_IntValues_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_weaviate_v1_GeoCoordinate_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -5911,27 +12048,42 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
       "3\n\006fields\030\001 \003(\0132#.weaviate.v1.Properties" +
       ".FieldsEntry\032A\n\013FieldsEntry\022\013\n\003key\030\001 \001(\t" +
       "\022!\n\005value\030\002 \001(\0132\022.weaviate.v1.Value:\0028\001\"" +
-      "\237\003\n\005Value\022\026\n\014number_value\030\001 \001(\001H\000\022\026\n\014str" +
-      "ing_value\030\002 \001(\tH\000\022\024\n\nbool_value\030\003 \001(\010H\000\022" +
-      "/\n\014object_value\030\004 \001(\0132\027.weaviate.v1.Prop" +
-      "ertiesH\000\022,\n\nlist_value\030\005 \001(\0132\026.weaviate." +
-      "v1.ListValueH\000\022\024\n\ndate_value\030\006 \001(\tH\000\022\024\n\n" +
-      "uuid_value\030\007 \001(\tH\000\022\023\n\tint_value\030\010 \001(\003H\000\022" +
-      "/\n\tgeo_value\030\t \001(\0132\032.weaviate.v1.GeoCoor" +
-      "dinateH\000\022\024\n\nblob_value\030\n \001(\tH\000\022/\n\013phone_" +
-      "value\030\013 \001(\0132\030.weaviate.v1.PhoneNumberH\000\022" +
-      "0\n\nnull_value\030\014 \001(\0162\032.google.protobuf.Nu" +
-      "llValueH\000B\006\n\004kind\"/\n\tListValue\022\"\n\006values" +
-      "\030\001 \003(\0132\022.weaviate.v1.Value\"4\n\rGeoCoordin" +
-      "ate\022\021\n\tlongitude\030\001 \001(\002\022\020\n\010latitude\030\002 \001(\002" +
-      "\"\251\001\n\013PhoneNumber\022\024\n\014country_code\030\001 \001(\004\022\027" +
-      "\n\017default_country\030\002 \001(\t\022\r\n\005input\030\003 \001(\t\022\037" +
-      "\n\027international_formatted\030\004 \001(\t\022\020\n\010natio" +
-      "nal\030\005 \001(\004\022\032\n\022national_formatted\030\006 \001(\t\022\r\n" +
-      "\005valid\030\007 \001(\010Bt\n#io.weaviate.client.grpc." +
-      "protocol.v1B\027WeaviateProtoPropertiesZ4gi" +
-      "thub.com/weaviate/weaviate/grpc/generate" +
-      "d;protocolb\006proto3"
+      "\271\003\n\005Value\022\026\n\014number_value\030\001 \001(\001H\000\022\032\n\014str" +
+      "ing_value\030\002 \001(\tB\002\030\001H\000\022\024\n\nbool_value\030\003 \001(" +
+      "\010H\000\022/\n\014object_value\030\004 \001(\0132\027.weaviate.v1." +
+      "PropertiesH\000\022,\n\nlist_value\030\005 \001(\0132\026.weavi" +
+      "ate.v1.ListValueH\000\022\024\n\ndate_value\030\006 \001(\tH\000" +
+      "\022\024\n\nuuid_value\030\007 \001(\tH\000\022\023\n\tint_value\030\010 \001(" +
+      "\003H\000\022/\n\tgeo_value\030\t \001(\0132\032.weaviate.v1.Geo" +
+      "CoordinateH\000\022\024\n\nblob_value\030\n \001(\tH\000\022/\n\013ph" +
+      "one_value\030\013 \001(\0132\030.weaviate.v1.PhoneNumbe" +
+      "rH\000\0220\n\nnull_value\030\014 \001(\0162\032.google.protobu" +
+      "f.NullValueH\000\022\024\n\ntext_value\030\r \001(\tH\000B\006\n\004k" +
+      "ind\"\221\003\n\tListValue\022&\n\006values\030\001 \003(\0132\022.weav" +
+      "iate.v1.ValueB\002\030\001\0222\n\rnumber_values\030\002 \001(\013" +
+      "2\031.weaviate.v1.NumberValuesH\000\022.\n\013bool_va" +
+      "lues\030\003 \001(\0132\027.weaviate.v1.BoolValuesH\000\0222\n" +
+      "\robject_values\030\004 \001(\0132\031.weaviate.v1.Objec" +
+      "tValuesH\000\022.\n\013date_values\030\005 \001(\0132\027.weaviat" +
+      "e.v1.DateValuesH\000\022.\n\013uuid_values\030\006 \001(\0132\027" +
+      ".weaviate.v1.UuidValuesH\000\022,\n\nint_values\030" +
+      "\007 \001(\0132\026.weaviate.v1.IntValuesH\000\022.\n\013text_" +
+      "values\030\010 \001(\0132\027.weaviate.v1.TextValuesH\000B" +
+      "\006\n\004kind\"\036\n\014NumberValues\022\016\n\006values\030\001 \001(\014\"" +
+      "\034\n\nTextValues\022\016\n\006values\030\001 \003(\t\"\034\n\nBoolVal" +
+      "ues\022\016\n\006values\030\001 \003(\010\"7\n\014ObjectValues\022\'\n\006v" +
+      "alues\030\001 \003(\0132\027.weaviate.v1.Properties\"\034\n\n" +
+      "DateValues\022\016\n\006values\030\001 \003(\t\"\034\n\nUuidValues" +
+      "\022\016\n\006values\030\001 \003(\t\"\033\n\tIntValues\022\016\n\006values\030" +
+      "\001 \001(\014\"4\n\rGeoCoordinate\022\021\n\tlongitude\030\001 \001(" +
+      "\002\022\020\n\010latitude\030\002 \001(\002\"\251\001\n\013PhoneNumber\022\024\n\014c" +
+      "ountry_code\030\001 \001(\004\022\027\n\017default_country\030\002 \001" +
+      "(\t\022\r\n\005input\030\003 \001(\t\022\037\n\027international_forma" +
+      "tted\030\004 \001(\t\022\020\n\010national\030\005 \001(\004\022\032\n\022national" +
+      "_formatted\030\006 \001(\t\022\r\n\005valid\030\007 \001(\010Bt\n#io.we" +
+      "aviate.client.grpc.protocol.v1B\027Weaviate" +
+      "ProtoPropertiesZ4github.com/weaviate/wea" +
+      "viate/grpc/generated;protocolb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -5955,21 +12107,63 @@ io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value defaultValue) 
     internal_static_weaviate_v1_Value_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_Value_descriptor,
-        new java.lang.String[] { "NumberValue", "StringValue", "BoolValue", "ObjectValue", "ListValue", "DateValue", "UuidValue", "IntValue", "GeoValue", "BlobValue", "PhoneValue", "NullValue", "Kind", });
+        new java.lang.String[] { "NumberValue", "StringValue", "BoolValue", "ObjectValue", "ListValue", "DateValue", "UuidValue", "IntValue", "GeoValue", "BlobValue", "PhoneValue", "NullValue", "TextValue", "Kind", });
     internal_static_weaviate_v1_ListValue_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_weaviate_v1_ListValue_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_ListValue_descriptor,
+        new java.lang.String[] { "Values", "NumberValues", "BoolValues", "ObjectValues", "DateValues", "UuidValues", "IntValues", "TextValues", "Kind", });
+    internal_static_weaviate_v1_NumberValues_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_weaviate_v1_NumberValues_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_weaviate_v1_NumberValues_descriptor,
+        new java.lang.String[] { "Values", });
+    internal_static_weaviate_v1_TextValues_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_weaviate_v1_TextValues_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_weaviate_v1_TextValues_descriptor,
+        new java.lang.String[] { "Values", });
+    internal_static_weaviate_v1_BoolValues_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_weaviate_v1_BoolValues_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_weaviate_v1_BoolValues_descriptor,
+        new java.lang.String[] { "Values", });
+    internal_static_weaviate_v1_ObjectValues_descriptor =
+      getDescriptor().getMessageTypes().get(6);
+    internal_static_weaviate_v1_ObjectValues_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_weaviate_v1_ObjectValues_descriptor,
+        new java.lang.String[] { "Values", });
+    internal_static_weaviate_v1_DateValues_descriptor =
+      getDescriptor().getMessageTypes().get(7);
+    internal_static_weaviate_v1_DateValues_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_weaviate_v1_DateValues_descriptor,
+        new java.lang.String[] { "Values", });
+    internal_static_weaviate_v1_UuidValues_descriptor =
+      getDescriptor().getMessageTypes().get(8);
+    internal_static_weaviate_v1_UuidValues_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_weaviate_v1_UuidValues_descriptor,
+        new java.lang.String[] { "Values", });
+    internal_static_weaviate_v1_IntValues_descriptor =
+      getDescriptor().getMessageTypes().get(9);
+    internal_static_weaviate_v1_IntValues_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_weaviate_v1_IntValues_descriptor,
         new java.lang.String[] { "Values", });
     internal_static_weaviate_v1_GeoCoordinate_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_weaviate_v1_GeoCoordinate_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_GeoCoordinate_descriptor,
         new java.lang.String[] { "Longitude", "Latitude", });
     internal_static_weaviate_v1_PhoneNumber_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_weaviate_v1_PhoneNumber_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_PhoneNumber_descriptor,
