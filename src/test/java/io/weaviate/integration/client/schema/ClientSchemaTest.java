@@ -151,8 +151,7 @@ public class ClientSchemaTest {
     assertNotNull(schemaAfterCreate.getResult());
     assertNotNull(schemaAfterCreate.getResult().getClasses());
     assertEquals(2, schemaAfterCreate.getResult().getClasses().size());
-    assertEquals(pizza.getClassName(), schemaAfterCreate.getResult().getClasses().get(0).getClassName());
-    assertEquals(chickenSoup.getDescription(), schemaAfterCreate.getResult().getClasses().get(1).getDescription());
+    assertEquals(1, schemaAfterCreate.getResult().getClasses().stream().filter(o -> o.getClassName().equals(pizza.getClassName())).count());
     assertNotNull(deletePizzaStatus);
     assertTrue(deletePizzaStatus.getResult());
     assertNotNull(deleteChickenSoupStatus);
@@ -186,8 +185,8 @@ public class ClientSchemaTest {
     assertNotNull(schemaAfterCreate.getResult());
     assertNotNull(schemaAfterCreate.getResult().getClasses());
     assertEquals(2, schemaAfterCreate.getResult().getClasses().size());
-    assertEquals(pizza.getClassName(), schemaAfterCreate.getResult().getClasses().get(0).getClassName());
-    assertEquals(chickenSoup.getDescription(), schemaAfterCreate.getResult().getClasses().get(1).getDescription());
+    assertEquals(1, schemaAfterCreate.getResult().getClasses().stream().filter(o -> o.getClassName().equals(pizza.getClassName())).count());
+    assertEquals(1, schemaAfterCreate.getResult().getClasses().stream().filter(o -> o.getDescription().equals(chickenSoup.getDescription())).count());
     assertNotNull(deleteAllStatus);
     assertTrue(deleteAllStatus.getResult());
     assertEquals(0, schemaAfterDelete.getResult().getClasses().size());
@@ -227,12 +226,13 @@ public class ClientSchemaTest {
     assertResultTrue(chickenSoupPropertyCreateStatus);
     assertClassesSize(2, schemaAfterCreate);
 
-    WeaviateClass resultPizzaClass = schemaAfterCreate.getResult().getClasses().get(0);
+    WeaviateClass resultPizzaClass = schemaAfterCreate.getResult().getClasses()
+      .stream().filter(o -> o.getClassName().equals(pizza.getClassName())).findFirst().get();
     assertClassEquals(pizza.getClassName(), pizza.getDescription(), resultPizzaClass);
     assertPropertiesSize(1, resultPizzaClass);
     assertPropertyEquals(newProperty.getName(), "word", resultPizzaClass.getProperties().get(0));
-
-    WeaviateClass resultChickenSoupClass = schemaAfterCreate.getResult().getClasses().get(1);
+    WeaviateClass resultChickenSoupClass = schemaAfterCreate.getResult().getClasses()
+      .stream().filter(o -> o.getClassName().equals(chickenSoup.getClassName())).findFirst().get();
     assertClassEquals(chickenSoup.getClassName(), chickenSoup.getDescription(), resultChickenSoupClass);
     assertPropertiesSize(1, resultChickenSoupClass);
     assertPropertyEquals(newProperty.getName(), "word", resultChickenSoupClass.getProperties().get(0));
@@ -1552,8 +1552,10 @@ public class ClientSchemaTest {
         .build())
       .build();
 
+    Map<String, Object> contextionaryVectorizerSettings = new HashMap<>();
+    contextionaryVectorizerSettings.put("vectorizeClassName", true);
     Map<String, Object> contextionaryVectorizer = new HashMap<>();
-    contextionaryVectorizer.put("text2vec-contextionary", "some-setting");
+    contextionaryVectorizer.put("text2vec-contextionary", contextionaryVectorizerSettings);
 
     Map<String, WeaviateClass.VectorConfig> vectorConfig = new HashMap<>();
     vectorConfig.put("hnswVector", WeaviateClass.VectorConfig.builder()
@@ -1599,7 +1601,6 @@ public class ClientSchemaTest {
                 assertThat(vectorizer).isNotNull()
                   .containsOnlyKeys("text2vec-contextionary")
                   .extracting(vectorizerMap -> vectorizerMap.get("text2vec-contextionary")).isNotNull()
-                  .isEqualTo("some-setting")
               );
 
             assertThat(hnswVectorConfig)

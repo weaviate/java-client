@@ -141,7 +141,7 @@ public class ClusterSchemaTest {
       .extracting(WeaviateError::getMessages).asList()
       .first()
       .extracting(m -> ((WeaviateErrorMessage) m).getMessage()).asInstanceOf(STRING)
-      .contains("not enough replicas");
+      .contains("not enough storage replicas");
   }@Test
   public void shouldAddObjectsWithNestedProperties_EntireSchema() {
     WeaviateClass schemaClass;

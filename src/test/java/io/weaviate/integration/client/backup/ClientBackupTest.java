@@ -420,7 +420,7 @@ public class ClientBackupTest {
       .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupRestoreResponse::getPath)
       .returns(BACKEND, BackupRestoreResponse::getBackend)
       .returns(RestoreStatus.FAILED, BackupRestoreResponse::getStatus)
-      .returns("restore class Pizza: already exists", BackupRestoreResponse::getError);
+      .returns("could not restore classes: [\"Pizza\": class name Pizza already exists]", BackupRestoreResponse::getError);
   }
 
   @Test

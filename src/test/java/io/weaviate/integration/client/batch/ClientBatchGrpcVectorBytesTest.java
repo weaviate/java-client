@@ -39,7 +39,7 @@ public class ClientBatchGrpcVectorBytesTest {
 
   @Test
   public void shouldSendVectorWith_v1_24_0() {
-    testWeaviate("semitechnologies/weaviate:1.24.1",
+    testWeaviate("semitechnologies/weaviate:1.24.0",
       this::batchSingleObjectWithVector,
       this::batchSingleObjectWithTargetVector
     );

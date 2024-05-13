@@ -610,17 +610,17 @@ public class ClientSchemaDefaultsAndMigrationTest {
       new Object[]{
         DataType.INT,
         null, null, Boolean.TRUE,
-        "`indexSearchable` is not allowed for other than text/text[] data types",
+        "`indexSearchable` is allowed only for text/text[] data types. For other data types set false or leave empty",
       },
       new Object[]{
         DataType.INT,
         null, Boolean.FALSE, Boolean.TRUE,
-        "`indexSearchable` is not allowed for other than text/text[] data types",
+        "`indexSearchable` is allowed only for text/text[] data types. For other data types set false or leave empty",
       },
       new Object[]{
         DataType.INT,
         null, Boolean.TRUE, Boolean.TRUE,
-        "`indexSearchable` is not allowed for other than text/text[] data types",
+        "`indexSearchable` is allowed only for text/text[] data types. For other data types set false or leave empty",
       },
     };
   }
