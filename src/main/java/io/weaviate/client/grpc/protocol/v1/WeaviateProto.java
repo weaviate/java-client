@@ -25,16 +25,18 @@ public final class WeaviateProto {
     java.lang.String[] descriptorData = {
       "\n\021v1/weaviate.proto\022\013weaviate.v1\032\016v1/bat" +
       "ch.proto\032\025v1/batch_delete.proto\032\023v1/sear" +
-      "ch_get.proto2\361\001\n\010Weaviate\022@\n\006Search\022\032.we" +
-      "aviate.v1.SearchRequest\032\030.weaviate.v1.Se" +
-      "archReply\"\000\022R\n\014BatchObjects\022 .weaviate.v" +
-      "1.BatchObjectsRequest\032\036.weaviate.v1.Batc" +
-      "hObjectsReply\"\000\022O\n\013BatchDelete\022\037.weaviat" +
-      "e.v1.BatchDeleteRequest\032\035.weaviate.v1.Ba" +
-      "tchDeleteReply\"\000Bj\n#io.weaviate.client.g" +
-      "rpc.protocol.v1B\rWeaviateProtoZ4github.c" +
-      "om/weaviate/weaviate/grpc/generated;prot" +
-      "ocolb\006proto3"
+      "ch_get.proto\032\020v1/tenants.proto2\277\002\n\010Weavi" +
+      "ate\022@\n\006Search\022\032.weaviate.v1.SearchReques" +
+      "t\032\030.weaviate.v1.SearchReply\"\000\022R\n\014BatchOb" +
+      "jects\022 .weaviate.v1.BatchObjectsRequest\032" +
+      "\036.weaviate.v1.BatchObjectsReply\"\000\022O\n\013Bat" +
+      "chDelete\022\037.weaviate.v1.BatchDeleteReques" +
+      "t\032\035.weaviate.v1.BatchDeleteReply\"\000\022L\n\nTe" +
+      "nantsGet\022\036.weaviate.v1.TenantsGetRequest" +
+      "\032\034.weaviate.v1.TenantsGetReply\"\000Bj\n#io.w" +
+      "eaviate.client.grpc.protocol.v1B\rWeaviat" +
+      "eProtoZ4github.com/weaviate/weaviate/grp" +
+      "c/generated;protocolb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -42,10 +44,12 @@ public final class WeaviateProto {
           io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch.getDescriptor(),
           io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.getDescriptor(),
           io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.getDescriptor(),
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoTenants.getDescriptor(),
         });
     io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch.getDescriptor();
     io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.getDescriptor();
     io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.getDescriptor();
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoTenants.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)
