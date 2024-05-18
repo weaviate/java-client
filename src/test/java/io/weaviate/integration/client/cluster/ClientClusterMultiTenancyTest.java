@@ -7,23 +7,19 @@ import io.weaviate.client.base.util.TriConsumer;
 import io.weaviate.client.v1.cluster.model.NodeStatusOutput;
 import io.weaviate.client.v1.cluster.model.NodesStatusResponse;
 import io.weaviate.client.v1.schema.model.Tenant;
+import io.weaviate.integration.client.WeaviateDockerCompose;
 import io.weaviate.integration.client.WeaviateTestGenerics;
+import static io.weaviate.integration.client.WeaviateVersion.EXPECTED_WEAVIATE_GIT_HASH;
+import static io.weaviate.integration.client.WeaviateVersion.EXPECTED_WEAVIATE_VERSION;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Consumer;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.testcontainers.containers.DockerComposeContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Consumer;
-
-import static io.weaviate.integration.client.WeaviateVersion.EXPECTED_WEAVIATE_GIT_HASH;
-import static io.weaviate.integration.client.WeaviateVersion.EXPECTED_WEAVIATE_VERSION;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
 
 public class ClientClusterMultiTenancyTest {
 
@@ -31,15 +27,12 @@ public class ClientClusterMultiTenancyTest {
   private final WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
 
   @ClassRule
-  public static DockerComposeContainer<?> compose = new DockerComposeContainer<>(
-    new File("src/test/resources/docker-compose-test.yaml")
-  ).withExposedService("weaviate_1", 8080, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200));
+  public static WeaviateDockerCompose compose = new WeaviateDockerCompose();
 
   @Before
   public void before() {
-    String host = compose.getServiceHost("weaviate_1", 8080);
-    Integer port = compose.getServicePort("weaviate_1", 8080);
-    Config config = new Config("http", host + ":" + port);
+    String httpHost = compose.getHttpHostAddress();
+    Config config = new Config("http", httpHost);
 
     client = new WeaviateClient(config);
   }

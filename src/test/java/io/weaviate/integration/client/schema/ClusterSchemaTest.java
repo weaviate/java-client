@@ -5,25 +5,19 @@ import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateError;
 import io.weaviate.client.base.WeaviateErrorMessage;
-import io.weaviate.client.v1.batch.model.ObjectGetResponse;
-import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.misc.model.ReplicationConfig;
 import io.weaviate.client.v1.schema.model.DataType;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
+import io.weaviate.integration.client.WeaviateDockerComposeCluster;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.http.HttpStatus;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.testcontainers.containers.DockerComposeContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
 
 
 public class ClusterSchemaTest {
@@ -32,22 +26,14 @@ public class ClusterSchemaTest {
   private final NestedObjectsUtils utils = new NestedObjectsUtils();
 
   @ClassRule
-  public static DockerComposeContainer<?> compose = new DockerComposeContainer<>(
-    new File("src/test/resources/docker-compose-cluster.yaml")
-  )
-    .withExposedService("weaviate-node-1_1", 8087, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200))
-    .withExposedService("weaviate-node-2_1", 8088, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200));
+  public static WeaviateDockerComposeCluster compose = new WeaviateDockerComposeCluster();
 
   @Before
   public void before() {
-    String host1 = compose.getServiceHost("weaviate-node-1_1", 8087);
-    Integer port1 = compose.getServicePort("weaviate-node-1_1", 8087);
-    Config config1 = new Config("http", host1 + ":" + port1);
+    Config config1 = new Config("http", compose.getHttpHost0Address());
     client1 = new WeaviateClient(config1);
 
-    String host2 = compose.getServiceHost("weaviate-node-2_1", 8088);
-    Integer port2 = compose.getServicePort("weaviate-node-2_1", 8088);
-    Config config2 = new Config("http", host2 + ":" + port2);
+    Config config2 = new Config("http", compose.getHttpHost1Address());
     client2 = new WeaviateClient(config2);
   }
 
@@ -141,7 +127,7 @@ public class ClusterSchemaTest {
       .extracting(WeaviateError::getMessages).asList()
       .first()
       .extracting(m -> ((WeaviateErrorMessage) m).getMessage()).asInstanceOf(STRING)
-      .contains("not enough replicas");
+      .contains("not enough storage replicas");
   }@Test
   public void shouldAddObjectsWithNestedProperties_EntireSchema() {
     WeaviateClass schemaClass;
