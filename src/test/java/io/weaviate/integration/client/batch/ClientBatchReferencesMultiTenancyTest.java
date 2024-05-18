@@ -10,21 +10,17 @@ import io.weaviate.client.v1.batch.model.BatchReferenceResponseStatus;
 import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.schema.model.Property;
 import io.weaviate.client.v1.schema.model.Tenant;
+import io.weaviate.integration.client.WeaviateDockerCompose;
 import io.weaviate.integration.client.WeaviateTestGenerics;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.testcontainers.containers.DockerComposeContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
 
 public class ClientBatchReferencesMultiTenancyTest {
 
@@ -32,15 +28,12 @@ public class ClientBatchReferencesMultiTenancyTest {
   private WeaviateTestGenerics testGenerics;
 
   @ClassRule
-  public static DockerComposeContainer<?> compose = new DockerComposeContainer<>(
-    new File("src/test/resources/docker-compose-test.yaml")
-  ).withExposedService("weaviate_1", 8080, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200));
+  public static WeaviateDockerCompose compose = new WeaviateDockerCompose();
 
   @Before
   public void before() {
-    String host = compose.getServiceHost("weaviate_1", 8080);
-    Integer port = compose.getServicePort("weaviate_1", 8080);
-    Config config = new Config("http", host + ":" + port);
+    String httpHost = compose.getHttpHostAddress();
+    Config config = new Config("http", httpHost);
 
     client = new WeaviateClient(config);
     testGenerics = new WeaviateTestGenerics();

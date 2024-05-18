@@ -1,14 +1,5 @@
 package io.weaviate.integration.client.data;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.testcontainers.containers.DockerComposeContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
@@ -16,26 +7,28 @@ import io.weaviate.client.v1.data.model.ObjectReference;
 import io.weaviate.client.v1.data.model.SingleRef;
 import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.data.replication.model.ConsistencyLevel;
+import io.weaviate.integration.client.WeaviateDockerCompose;
 import io.weaviate.integration.client.WeaviateTestGenerics;
-
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
 
 public class ClientReferencesTest {
   private String address;
 
   @ClassRule
-  public static DockerComposeContainer compose = new DockerComposeContainer(
-          new File("src/test/resources/docker-compose-test.yaml")
-  ).withExposedService("weaviate_1", 8080, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200));
+  public static WeaviateDockerCompose compose = new WeaviateDockerCompose();
 
   @Before
   public void before() {
-    String host = compose.getServiceHost("weaviate_1", 8080);
-    Integer port = compose.getServicePort("weaviate_1", 8080);
-    address = host + ":" + port;
+    address = compose.getHttpHostAddress();
   }
 
   private void checkReference(Result<List<WeaviateObject>> result, String className, String refID) {

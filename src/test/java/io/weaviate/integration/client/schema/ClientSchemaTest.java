@@ -22,13 +22,7 @@ import io.weaviate.client.v1.schema.model.ShardStatus;
 import io.weaviate.client.v1.schema.model.ShardStatuses;
 import io.weaviate.client.v1.schema.model.Tokenization;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.testcontainers.containers.DockerComposeContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
-
+import io.weaviate.integration.client.WeaviateDockerCompose;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
@@ -38,15 +32,18 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
+import org.junit.After;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
 
 
 public class ClientSchemaTest {
@@ -54,15 +51,12 @@ public class ClientSchemaTest {
   private final NestedObjectsUtils utils = new NestedObjectsUtils();
 
   @ClassRule
-  public static DockerComposeContainer compose = new DockerComposeContainer(
-    new File("src/test/resources/docker-compose-test.yaml")
-  ).withExposedService("weaviate_1", 8080, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200));
+  public static WeaviateDockerCompose compose = new WeaviateDockerCompose();
 
   @Before
   public void before() {
-    String host = compose.getServiceHost("weaviate_1", 8080);
-    Integer port = compose.getServicePort("weaviate_1", 8080);
-    Config config = new Config("http", host + ":" + port);
+    String httpHost = compose.getHttpHostAddress();
+    Config config = new Config("http", httpHost);
 
     client = new WeaviateClient(config);
   }

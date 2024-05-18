@@ -1,6 +1,15 @@
 package io.weaviate.integration.client.deprecated.data;
 
-import java.io.File;
+import io.weaviate.client.Config;
+import io.weaviate.client.WeaviateClient;
+import io.weaviate.client.base.Result;
+import io.weaviate.client.v1.data.model.WeaviateObject;
+import io.weaviate.client.v1.schema.model.DataType;
+import io.weaviate.client.v1.schema.model.Property;
+import io.weaviate.client.v1.schema.model.Schema;
+import io.weaviate.client.v1.schema.model.WeaviateClass;
+import io.weaviate.integration.client.WeaviateDockerCompose;
+import io.weaviate.integration.client.WeaviateTestGenerics;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,31 +23,16 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import org.testcontainers.containers.DockerComposeContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
-import io.weaviate.client.Config;
-import io.weaviate.client.WeaviateClient;
-import io.weaviate.client.base.Result;
-import io.weaviate.client.v1.data.model.WeaviateObject;
-import io.weaviate.client.v1.schema.model.DataType;
-import io.weaviate.client.v1.schema.model.Property;
-import io.weaviate.client.v1.schema.model.Schema;
-import io.weaviate.client.v1.schema.model.WeaviateClass;
-import io.weaviate.integration.client.WeaviateTestGenerics;
 
 public class ClientDataDeprecatedAPITest {
   private String address;
 
   @ClassRule
-  public static DockerComposeContainer compose = new DockerComposeContainer(
-          new File("src/test/resources/deprecated-api/docker-compose-deprecated-api-test.yaml")
-  ).withExposedService("weaviate_1", 8080, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200));
+  public static WeaviateDockerCompose compose = new WeaviateDockerCompose("1.13.2");
 
   @Before
   public void before() {
-    String host = compose.getServiceHost("weaviate_1", 8080);
-    Integer port = compose.getServicePort("weaviate_1", 8080);
-    address = host + ":" + port;
+    address = compose.getHttpHostAddress();
   }
 
   @Test

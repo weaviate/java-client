@@ -29,19 +29,8 @@ import io.weaviate.client.v1.graphql.query.fields.GenerativeSearchBuilder;
 import io.weaviate.client.v1.schema.model.DataType;
 import io.weaviate.client.v1.schema.model.Property;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
+import io.weaviate.integration.client.WeaviateDockerCompose;
 import io.weaviate.integration.client.WeaviateTestGenerics;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.testcontainers.containers.DockerComposeContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
-
-import java.io.File;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,11 +42,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
 import static org.junit.Assert.assertEquals;
@@ -66,22 +57,21 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Ignore;
+import org.junit.Test;
 
 public class ClientGraphQLTest {
   private String address;
   private String openAIApiKey;
 
   @ClassRule
-  public static DockerComposeContainer compose = new DockerComposeContainer(
-    new File("src/test/resources/docker-compose-test.yaml")
-  ).withExposedService("weaviate_1", 8080, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200));
+  public static WeaviateDockerCompose compose = new WeaviateDockerCompose();
 
   @Before
   public void before() {
-    String host = compose.getServiceHost("weaviate_1", 8080);
-    Integer port = compose.getServicePort("weaviate_1", 8080);
-    address = host + ":" + port;
-
+    address = compose.getHttpHostAddress();
     openAIApiKey = System.getenv("OPENAI_APIKEY");
   }
 

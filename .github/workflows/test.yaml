@@ -27,5 +27,4 @@ jobs:
         AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
         OPENAI_APIKEY: ${{ secrets.OPENAI_APIKEY }}
       run: |
-        docker-compose -f src/test/resources/docker-compose-test.yaml pull
         mvn clean test

@@ -1,11 +1,5 @@
 package io.weaviate.integration.client.backup;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.testcontainers.containers.DockerComposeContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
@@ -22,15 +16,17 @@ import io.weaviate.client.v1.backup.model.CreateStatus;
 import io.weaviate.client.v1.backup.model.RestoreStatus;
 import io.weaviate.client.v1.graphql.model.GraphQLResponse;
 import io.weaviate.client.v1.graphql.query.fields.Field;
+import io.weaviate.integration.client.WeaviateDockerCompose;
 import io.weaviate.integration.client.WeaviateTestGenerics;
-
-import java.io.File;
 import java.util.Map;
 import java.util.Random;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
 import static org.assertj.core.api.InstanceOfAssertFactories.CHAR_SEQUENCE;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
 
 public class ClientBackupTest {
 
@@ -47,17 +43,13 @@ public class ClientBackupTest {
 
   private final WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
 
-
   @ClassRule
-  public static DockerComposeContainer<?> compose = new DockerComposeContainer<>(
-    new File("src/test/resources/docker-compose-test.yaml")
-  ).withExposedService("weaviate_1", 8080, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200));
+  public static WeaviateDockerCompose compose = new WeaviateDockerCompose();
 
   @Before
   public void before() {
-    String host = compose.getServiceHost("weaviate_1", 8080);
-    Integer port = compose.getServicePort("weaviate_1", 8080);
-    Config config = new Config("http", host + ":" + port);
+    String httpHost = compose.getHttpHostAddress();
+    Config config = new Config("http", httpHost);
 
     backupId = "backup-" + new Random().nextInt(Integer.MAX_VALUE);
     notExistingBackupId = "not-existing-backup-" + new Random().nextInt(Integer.MAX_VALUE);

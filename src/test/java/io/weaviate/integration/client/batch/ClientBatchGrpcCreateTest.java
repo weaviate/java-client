@@ -9,8 +9,8 @@ import io.weaviate.client.v1.misc.model.BQConfig;
 import io.weaviate.client.v1.misc.model.VectorIndexConfig;
 import io.weaviate.client.v1.schema.model.Property;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
+import io.weaviate.integration.client.WeaviateDockerCompose;
 import io.weaviate.integration.client.WeaviateTestGenerics;
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,29 +19,19 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.platform.commons.util.StringUtils;
-import org.testcontainers.containers.ComposeContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
 
 public class ClientBatchGrpcCreateTest {
 
-  private static String host;
-  private static Integer port;
+  private static String httpHost;
   private static String grpcHost;
-  private static Integer grpcPort;
 
   @ClassRule
-  public static ComposeContainer compose = new ComposeContainer(
-    new File("src/test/resources/docker-compose-test.yaml")
-  ).withExposedService("weaviate-1", 8080, Wait.forListeningPorts(8080))
-    .withExposedService("weaviate-1", 50051, Wait.forListeningPorts(50051))
-    .withTailChildContainers(true);
+  public static WeaviateDockerCompose compose = new WeaviateDockerCompose();
 
   @Before
   public void before() {
-    host = compose.getServiceHost("weaviate-1", 8080);
-    port = compose.getServicePort("weaviate-1", 8080);
-    grpcHost = compose.getServiceHost("weaviate-1", 50051);
-    grpcPort = compose.getServicePort("weaviate-1", 50051);
+    httpHost = compose.getHttpHostAddress();
+    grpcHost = compose.getGrpcHostAddress();
   }
 
 
@@ -220,10 +210,10 @@ public class ClientBatchGrpcCreateTest {
   }
 
   private WeaviateClient createClient(Boolean useGRPC) {
-    Config config = new Config("http", host + ":" + port);
+    Config config = new Config("http", httpHost);
     if (useGRPC) {
       config.setGRPCSecured(false);
-      config.setGRPCHost(grpcHost + ":" + grpcPort);
+      config.setGRPCHost(grpcHost);
     }
     return new WeaviateClient(config);
   }

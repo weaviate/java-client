@@ -1,16 +1,13 @@
 package io.weaviate.integration.client.misc;
 
+import io.weaviate.integration.client.WeaviateDockerCompose;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.testcontainers.containers.DockerComposeContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.misc.model.Meta;
-
-import java.io.File;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -23,16 +20,11 @@ public class ClientMiscTest {
   private WeaviateClient client;
 
   @ClassRule
-  public static DockerComposeContainer<?> compose = new DockerComposeContainer<>(
-    new File("src/test/resources/docker-compose-test.yaml")
-  ).withExposedService("weaviate_1", 8080, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200));
+  public static WeaviateDockerCompose compose = new WeaviateDockerCompose();
 
   @Before
   public void before() {
-    String host = compose.getServiceHost("weaviate_1", 8080);
-    Integer port = compose.getServicePort("weaviate_1", 8080);
-    Config config = new Config("http", host + ":" + port);
-
+    Config config = new Config("http", compose.getHttpHostAddress());
     client = new WeaviateClient(config);
   }
 

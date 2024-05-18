@@ -8,38 +8,31 @@ import io.weaviate.client.v1.filters.WhereFilter;
 import io.weaviate.client.v1.graphql.model.GraphQLResponse;
 import io.weaviate.client.v1.graphql.query.argument.WhereArgument;
 import io.weaviate.client.v1.graphql.query.fields.Field;
+import io.weaviate.integration.client.WeaviateDockerCompose;
 import io.weaviate.integration.client.WeaviateTestGenerics;
+import static io.weaviate.integration.client.WeaviateTestGenerics.TENANT_1;
+import static io.weaviate.integration.client.WeaviateTestGenerics.TENANT_2;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.assertj.core.api.AbstractObjectAssert;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.testcontainers.containers.DockerComposeContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static io.weaviate.integration.client.WeaviateTestGenerics.TENANT_1;
-import static io.weaviate.integration.client.WeaviateTestGenerics.TENANT_2;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClientGraphQLMultiTenancyTest {
   private WeaviateClient client;
   private WeaviateTestGenerics testGenerics;
 
   @ClassRule
-  public static DockerComposeContainer<?> compose = new DockerComposeContainer<>(
-    new File("src/test/resources/docker-compose-test.yaml")
-  ).withExposedService("weaviate_1", 8080, Wait.forHttp("/v1/.well-known/ready").forStatusCode(200));
+  public static WeaviateDockerCompose compose = new WeaviateDockerCompose();
 
   @Before
   public void before() {
-    String host = compose.getServiceHost("weaviate_1", 8080);
-    Integer port = compose.getServicePort("weaviate_1", 8080);
-    Config config = new Config("http", host + ":" + port);
+    String httpHost = compose.getHttpHostAddress();
+    Config config = new Config("http", httpHost);
 
     client = new WeaviateClient(config);
     testGenerics = new WeaviateTestGenerics();
