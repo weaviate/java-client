@@ -21,10 +21,10 @@ public class WeaviateDockerCompose implements TestRule {
   }
 
   public class Weaviate extends WeaviateContainer {
-    public Weaviate(String dockerImageName, Network network) {
+    public Weaviate(String dockerImageName) {
       super(dockerImageName);
       waitingFor(Wait.forHttp("/v1/.well-known/ready").forPort(8080).forStatusCode(200));
-      withNetwork(network);
+      withNetwork(Network.SHARED);
       withEnv("LOG_LEVEL", "debug");
       withEnv("CONTEXTIONARY_URL", "contextionary:9999");
       withEnv("QUERY_DEFAULTS_LIMIT", "25");
@@ -38,9 +38,9 @@ public class WeaviateDockerCompose implements TestRule {
   }
 
   public class Contextionary extends GenericContainer<Contextionary> {
-    public Contextionary(Network network) {
+    public Contextionary() {
       super("semitechnologies/contextionary:en0.16.0-v1.2.1");
-      withNetwork(network);
+      withNetwork(Network.SHARED);
       withEnv("OCCURRENCE_WEIGHT_LINEAR_FACTOR", "true");
       withEnv("PERSISTENCE_DATA_PATH", "/var/lib/weaviate");
       withEnv("OCCURRENCE_WEIGHT_LINEAR_FACTOR", "0.75");
@@ -56,12 +56,10 @@ public class WeaviateDockerCompose implements TestRule {
   private static Weaviate weaviate;
 
   public void start() {
-    try (Network network = Network.newNetwork()) {
-      contextionary = new Contextionary(network);
-      contextionary.start();
-      weaviate = new Weaviate(this.weaviateVersion, network);
-      weaviate.start();
-    }
+    contextionary = new Contextionary();
+    contextionary.start();
+    weaviate = new Weaviate(this.weaviateVersion);
+    weaviate.start();
   }
 
   public String getHttpHostAddress() {

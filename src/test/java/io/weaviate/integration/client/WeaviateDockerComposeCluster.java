@@ -11,9 +11,9 @@ import org.testcontainers.weaviate.WeaviateContainer;
 public class WeaviateDockerComposeCluster implements TestRule {
 
   public class Weaviate extends WeaviateContainer {
-    public Weaviate(String dockerImageName, String hostname, Boolean isSecond, Network network) {
+    public Weaviate(String dockerImageName, String hostname, Boolean isJoining) {
       super(dockerImageName);
-      withNetwork(network);
+      withNetwork(Network.SHARED);
       withCreateContainerCmdModifier(cmd -> {
         cmd.withHostName(hostname);
       });
@@ -34,7 +34,7 @@ public class WeaviateDockerComposeCluster implements TestRule {
 
       withEnv("RAFT_BOOTSTRAP_EXPECT", "2");
       withEnv("RAFT_JOIN", "weaviate-0:8300,weaviate-1:8300");
-      if (isSecond) {
+      if (isJoining) {
         withEnv("CLUSTER_JOIN", "weaviate-0:7110");
         waitingFor(Wait.forHttp("/v1/.well-known/ready").forPort(8080).forStatusCode(200));
       }
@@ -42,9 +42,9 @@ public class WeaviateDockerComposeCluster implements TestRule {
   }
 
   public class Contextionary extends GenericContainer<WeaviateDockerCompose.Contextionary> {
-    public Contextionary(Network network) {
+    public Contextionary() {
       super("semitechnologies/contextionary:en0.16.0-v1.2.1");
-      withNetwork(network);
+      withNetwork(Network.SHARED);
       withCreateContainerCmdModifier(cmd -> cmd.withHostName("contextionary"));
       withEnv("OCCURRENCE_WEIGHT_LINEAR_FACTOR", "true");
       withEnv("PERSISTENCE_DATA_PATH", "/var/lib/weaviate");
@@ -61,14 +61,12 @@ public class WeaviateDockerComposeCluster implements TestRule {
   private static Weaviate weaviate1;
 
   public void start() {
-    try (Network network = Network.newNetwork()) {
-      contextionary = new Contextionary(network);
-      contextionary.start();
-      weaviate0 = new Weaviate(WeaviateDockerImage.WEAVIATE_DOCKER_IMAGE, "weaviate-0", false, network);
-      weaviate1 = new Weaviate(WeaviateDockerImage.WEAVIATE_DOCKER_IMAGE, "weaviate-1", true, network);
-      weaviate0.start();
-      weaviate1.start();
-    }
+    contextionary = new Contextionary();
+    contextionary.start();
+    weaviate0 = new Weaviate(WeaviateDockerImage.WEAVIATE_DOCKER_IMAGE, "weaviate-0", false);
+    weaviate1 = new Weaviate(WeaviateDockerImage.WEAVIATE_DOCKER_IMAGE, "weaviate-1", true);
+    weaviate0.start();
+    weaviate1.start();
   }
 
   public String getHttpHost0Address() {
