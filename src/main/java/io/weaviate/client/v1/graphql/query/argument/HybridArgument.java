@@ -4,6 +4,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import io.weaviate.client.v1.graphql.query.util.Serializer;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -25,6 +26,7 @@ public class HybridArgument implements Argument {
   String fusionType;
   String[] properties;
   String[] targetVectors;
+  Searches searches;
 
 
   @Override
@@ -47,7 +49,26 @@ public class HybridArgument implements Argument {
     if (ArrayUtils.isNotEmpty(targetVectors)) {
       arg.add(String.format("targetVectors:%s",  Serializer.arrayWithQuotes(targetVectors)));
     }
+    if (searches != null && (searches.nearVector != null || searches.nearText != null)) {
+      Set<String> searchesArgs = new LinkedHashSet<>();
+      if (searches.nearVector != null) {
+        searchesArgs.add(searches.nearVector.build());
+      }
+      if (searches.nearText != null) {
+        searchesArgs.add(searches.nearText.build());
+      }
+      arg.add(String.format("searches:{%s}", String.join(" ", searchesArgs)));
+    }
 
     return String.format("hybrid:{%s}", String.join(" ", arg));
+  }
+
+  @Getter
+  @Builder
+  @ToString
+  @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+  public static class Searches {
+    NearVectorArgument nearVector;
+    NearTextArgument nearText;
   }
 }

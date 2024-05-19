@@ -1551,7 +1551,7 @@ public class ClientGraphQLTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics.DocumentPassageSchema testData = new WeaviateTestGenerics.DocumentPassageSchema();
-    ;
+
     List<GroupHitOfDocument> ofDocumentA = Collections.singletonList(
       new GroupHitOfDocument(new AdditionalOfDocument(testData.DOCUMENT_IDS[0]))
     );
@@ -1628,6 +1628,68 @@ public class ClientGraphQLTest {
     }
     checkGroupElements(expectedHits1, groups.get(0).getHits());
     checkGroupElements(expectedHits2, groups.get(1).getHits());
+  }
+
+  @Test
+  public void testGraphQLGetWithGroupByWithHybrid() {
+    // given
+    Config config = new Config("http", address);
+    WeaviateClient client = new WeaviateClient(config);
+    WeaviateTestGenerics.DocumentPassageSchema testData = new WeaviateTestGenerics.DocumentPassageSchema();
+    // hits
+    Field[] hits = new Field[]{
+      Field.builder().name("content").build(),
+      Field.builder().name("_additional{id distance}").build(),
+    };
+    // group
+    Field group = Field.builder()
+      .name("group")
+      .fields(new Field[]{
+        Field.builder().name("id").build(),
+        Field.builder().name("groupedBy")
+          .fields(new Field[]{
+            Field.builder().name("value").build(),
+            Field.builder().name("path").build(),
+          }).build(),
+        Field.builder().name("count").build(),
+        Field.builder().name("maxDistance").build(),
+        Field.builder().name("minDistance").build(),
+        Field.builder().name("hits").fields(hits).build(),
+      }).build();
+    // _additional
+    Field _additional = Field.builder().name("_additional").fields(new Field[]{group}).build();
+    // filter arguments
+    GroupByArgument groupBy = client.graphQL().arguments().groupByArgBuilder()
+      .path(new String[]{"content"}).groups(3).objectsPerGroup(10).build();
+    NearTextArgument nearText = NearTextArgument.builder().concepts(new String[]{"Passage content 2"}).build();
+    HybridArgument hybrid = HybridArgument.builder()
+      .searches(HybridArgument.Searches.builder().nearText(nearText).build())
+      .query("Passage content 2")
+      .alpha(0.9f)
+      .build();
+    // when
+    testData.createAndInsertData(client);
+    Result<GraphQLResponse> groupByResult = client.graphQL().get()
+      .withClassName(testData.PASSAGE)
+      .withHybrid(hybrid)
+      .withGroupBy(groupBy)
+      .withFields(_additional).run();
+    testData.cleanupWeaviate(client);
+    // then
+    assertThat(groupByResult).isNotNull();
+    assertThat(groupByResult.getError()).isNull();
+    assertThat(groupByResult.getResult()).isNotNull();
+    List<Map<String, Object>> result = extractResult(groupByResult, testData.PASSAGE);
+    assertThat(result).isNotNull().hasSize(3);
+    List<Group> groups = getGroups(result);
+    assertThat(groups).isNotNull().hasSize(3);
+    for (int i = 0; i < 3; i++) {
+      if (i == 0) {
+        assertThat(groups.get(i).groupedBy.value).isEqualTo("Passage content 2");
+      }
+      assertThat(groups.get(i).minDistance).isEqualTo(groups.get(i).getHits().get(0).get_additional().getDistance());
+      assertThat(groups.get(i).maxDistance).isEqualTo(groups.get(i).getHits().get(groups.get(i).getHits().size() - 1).get_additional().getDistance());
+    }
   }
 
   private void checkGroupElements(List<GroupHit> expected, List<GroupHit> actual) {
