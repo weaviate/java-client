@@ -1,5 +1,6 @@
 package io.weaviate.client.v1.backup.api;
 
+import com.google.gson.annotations.SerializedName;
 import io.weaviate.client.v1.backup.model.BackupRestoreResponse;
 import io.weaviate.client.v1.backup.model.BackupRestoreStatusResponse;
 import io.weaviate.client.v1.backup.model.RestoreStatus;
@@ -21,6 +22,7 @@ public class BackupRestorer extends BaseClient<BackupRestoreResponse> implements
   private String[] excludeClassNames;
   private String backend;
   private String backupId;
+  private BackupRestoreConfig config;
   private boolean waitForCompletion;
 
   public BackupRestorer(HttpClient httpClient, Config config, BackupRestoreStatusGetter statusGetter) {
@@ -40,6 +42,11 @@ public class BackupRestorer extends BaseClient<BackupRestoreResponse> implements
 
   public BackupRestorer withBackend(String backend) {
     this.backend = backend;
+    return this;
+  }
+
+  public BackupRestorer withConfig(BackupRestoreConfig config) {
+    this.config = config;
     return this;
   }
 
@@ -64,6 +71,7 @@ public class BackupRestorer extends BaseClient<BackupRestoreResponse> implements
       .config(BackupRestoreConfig.builder().build())
       .include(includeClassNames)
       .exclude(excludeClassNames)
+      .config(config)
       .build();
 
     if (waitForCompletion) {
@@ -139,7 +147,8 @@ public class BackupRestorer extends BaseClient<BackupRestoreResponse> implements
 
   @Getter
   @Builder
-  private static class BackupRestoreConfig {
-    // TBD
+  public static class BackupRestoreConfig {
+    @SerializedName("CPUPercentage")
+    Integer cpuPercentage;
   }
 }
