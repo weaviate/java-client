@@ -96,4 +96,38 @@ public class HybridArgumentTest {
     assertThat(str).isEqualTo("hybrid:{query:\"I'm a simple string\" " +
       "properties:[\"prop1\",\"prop2\"]}");
   }
+
+  @Test
+  public void shouldCreateArgumentWithNearVectorSearches() {
+    NearVectorArgument nearVector = NearVectorArgument.builder()
+      .vector(new Float[]{ .1f, .2f, .3f })
+      .certainty(0.9f)
+      .build();
+
+    HybridArgument hybrid = HybridArgument.builder()
+      .query("I'm a simple string")
+      .searches(HybridArgument.Searches.builder().nearVector(nearVector).build())
+      .build();
+
+    String str = hybrid.build();
+
+    assertThat(str).isEqualTo("hybrid:{query:\"I'm a simple string\" searches:{nearVector:{vector:[0.1,0.2,0.3] certainty:0.9}}}");
+  }
+
+  @Test
+  public void shouldCreateArgumentWithNearTextSearches() {
+    NearTextArgument nearText = NearTextArgument.builder()
+      .concepts(new String[]{"concept"})
+      .certainty(0.9f)
+      .build();
+
+    HybridArgument hybrid = HybridArgument.builder()
+      .query("I'm a simple string")
+      .searches(HybridArgument.Searches.builder().nearText(nearText).build())
+      .build();
+
+    String str = hybrid.build();
+
+    assertThat(str).isEqualTo("hybrid:{query:\"I'm a simple string\" searches:{nearText:{concepts:[\"concept\"] certainty:0.9}}}");
+  }
 }
