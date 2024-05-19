@@ -4,16 +4,23 @@ import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateError;
+import io.weaviate.client.v1.batch.model.ObjectGetResponse;
 import io.weaviate.client.v1.data.model.WeaviateObject;
+import io.weaviate.client.v1.misc.model.MultiTenancyConfig;
+import io.weaviate.client.v1.schema.model.DataType;
+import io.weaviate.client.v1.schema.model.Property;
 import io.weaviate.client.v1.schema.model.Tenant;
+import io.weaviate.client.v1.schema.model.WeaviateClass;
 import io.weaviate.integration.client.AssertMultiTenancy;
 import io.weaviate.integration.client.WeaviateDockerCompose;
 import io.weaviate.integration.client.WeaviateTestGenerics;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -708,5 +715,90 @@ public class ClientDataMultiTenancyTest {
         .returns(3d, p -> p.get("price"))
         .returns("2022-06-07T08:09:10+06:00", p -> p.get("bestBefore"));
     });
+  }
+
+  @Test
+  public void shouldAutoCreateTenantsClassWithMultiTenancyConfig() {
+    String className = "MultiAutoCreateTenantClass";
+    String autoCreatedTenantName = "AutoTenant";
+    WeaviateClass clazz = WeaviateClass.builder()
+      .className(className)
+      .multiTenancyConfig(MultiTenancyConfig.builder()
+        .autoTenantCreation(true)
+        .enabled(true)
+        .build())
+      .properties(Collections.singletonList(
+        Property.builder()
+          .name("name")
+          .dataType(Collections.singletonList(DataType.TEXT))
+          .build()
+      ))
+      .build();
+
+    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
+    assertThat(createStatus.hasErrors()).isFalse();
+    assertThat(createStatus.getResult()).isTrue();
+
+    Result<WeaviateClass> classResult = client.schema().classGetter().withClassName(className).run();
+    assertThat(classResult.hasErrors()).isFalse();
+    assertThat(classResult.getResult()).isNotNull()
+      .extracting(WeaviateClass::getMultiTenancyConfig)
+      .isNotNull()
+      .returns(true, MultiTenancyConfig::getEnabled);
+
+    Result<Boolean> exists = client.schema().tenantsExists()
+      .withClassName(className)
+      .withTenant(autoCreatedTenantName)
+      .run();
+
+    assertThat(exists).isNotNull()
+      .returns(false, Result::hasErrors)
+      .returns(false, Result::getResult);
+
+    String id = "10000000-0000-0000-0000-000000000000";
+    Map<String, Object> properties1 = new HashMap<>();
+    properties1.put("name", "Some name");
+    Map<String, Object> properties2 = new HashMap<>();
+    properties2.put("name", "Some other name");
+
+    WeaviateObject obj1 = WeaviateObject.builder()
+      .className(className)
+      .id(id)
+      .properties(properties1)
+      .tenant(autoCreatedTenantName)
+      .build();
+
+    WeaviateObject obj2 = WeaviateObject.builder()
+      .className(className)
+      .properties(properties2)
+      .tenant(autoCreatedTenantName)
+      .build();
+
+    Result<ObjectGetResponse[]> run = client.batch().objectsBatcher().withObjects(obj1, obj2).run();
+
+    assertThat(run).isNotNull()
+      .returns(false, Result::hasErrors)
+      .extracting(Result::getResult).isNotNull()
+      .asInstanceOf(ARRAY).hasSize(2);
+
+    exists = client.schema().tenantsExists()
+      .withClassName(className)
+      .withTenant(autoCreatedTenantName)
+      .run();
+
+    assertThat(exists).isNotNull()
+      .returns(false, Result::hasErrors)
+      .returns(true, Result::getResult);
+
+    Result<List<WeaviateObject>> result = client.data().objectsGetter()
+      .withClassName(className)
+      .withID(id)
+      .withTenant(autoCreatedTenantName)
+      .run();
+
+    assertThat(result).isNotNull()
+      .returns(false, Result::hasErrors)
+      .extracting(Result::getResult).asList()
+      .hasSize(1);
   }
 }
