@@ -149,6 +149,17 @@ public class ClientSchemaMultiTenancyTest {
     assertThat(addResult).isNotNull()
       .returns(false, Result::hasErrors)
       .returns(true, Result::getResult);
+
+    for (String tenant: tenants) {
+      Result<Boolean> exists = client.schema().tenantsExists()
+        .withClassName("Pizza")
+        .withTenant(tenant)
+        .run();
+
+      assertThat(exists).isNotNull()
+        .returns(false, Result::hasErrors)
+        .returns(true, Result::getResult);
+    }
   }
 
   @Test
