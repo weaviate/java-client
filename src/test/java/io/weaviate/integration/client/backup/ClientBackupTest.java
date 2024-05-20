@@ -6,7 +6,9 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateError;
 import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.v1.backup.api.BackupCreateStatusGetter;
+import io.weaviate.client.v1.backup.api.BackupCreator;
 import io.weaviate.client.v1.backup.api.BackupRestoreStatusGetter;
+import io.weaviate.client.v1.backup.api.BackupRestorer;
 import io.weaviate.client.v1.backup.model.Backend;
 import io.weaviate.client.v1.backup.model.BackupCreateResponse;
 import io.weaviate.client.v1.backup.model.BackupCreateStatusResponse;
@@ -552,6 +554,137 @@ public class ClientBackupTest {
       .hasSizeGreaterThan(0)
       .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
       .first().asInstanceOf(CHAR_SEQUENCE).contains("include").contains("exclude");
+  }
+
+  @Test
+  public void shouldCreateAndRestoreBackupWithWaitingWithConfig() {
+    assertThatAllPizzasExist();
+
+    // Try to create with too high value
+    BackupCreator.BackupCreateConfig config = BackupCreator.BackupCreateConfig.builder()
+      .cpuPercentage(801)
+      .build();
+
+    Result<BackupCreateResponse> createResult = client.backup().creator()
+      .withIncludeClassNames(CLASS_NAME_PIZZA)
+      .withBackend(BACKEND)
+      .withBackupId(backupId)
+      .withConfig(config)
+      .withWaitForCompletion(true)
+      .run();
+
+    assertThat(createResult).isNotNull()
+      .extracting(Result::getError).isNotNull()
+      .extracting(WeaviateError::getMessages)
+      .satisfies(errors -> {
+        assertThat(errors.stream().filter(m -> m.getMessage().contains("CPUPercentage")).count()).isGreaterThanOrEqualTo(1);
+      });
+
+    // Pass backup config
+    config = BackupCreator.BackupCreateConfig.builder()
+      .cpuPercentage(80)
+      .chunkSize(512)
+      .compressionLevel(BackupCreator.BackupCompression.BEST_SPEED)
+      .build();
+
+    // Create backup
+    createResult = client.backup().creator()
+      .withIncludeClassNames(CLASS_NAME_PIZZA)
+      .withBackend(BACKEND)
+      .withBackupId(backupId)
+      .withConfig(config)
+      .withWaitForCompletion(true)
+      .run();
+
+    assertThat(createResult.hasErrors()).isFalse();
+    assertThat(createResult.getResult()).isNotNull()
+      .returns(backupId, BackupCreateResponse::getId)
+      .returns(new String[]{CLASS_NAME_PIZZA}, BackupCreateResponse::getClassNames)
+      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupCreateResponse::getPath)
+      .returns(BACKEND, BackupCreateResponse::getBackend)
+      .returns(CreateStatus.SUCCESS, BackupCreateResponse::getStatus)
+      .returns(null, BackupCreateResponse::getError);
+
+    assertThatAllPizzasExist();
+
+    // Check backup status
+    Result<BackupCreateStatusResponse> createStatusResult = client.backup().createStatusGetter()
+      .withBackend(BACKEND)
+      .withBackupId(backupId)
+      .run();
+
+    assertThat(createStatusResult.hasErrors()).isFalse();
+    assertThat(createStatusResult.getResult()).isNotNull()
+      .returns(backupId, BackupCreateStatusResponse::getId)
+      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupCreateStatusResponse::getPath)
+      .returns(BACKEND, BackupCreateStatusResponse::getBackend)
+      .returns(CreateStatus.SUCCESS, BackupCreateStatusResponse::getStatus)
+      .returns(null, BackupCreateStatusResponse::getError);
+
+    // Remove existing class
+    Result<Boolean> delete = client.schema().classDeleter()
+      .withClassName(CLASS_NAME_PIZZA)
+      .run();
+
+    assertThat(delete.hasErrors()).isFalse();
+    assertThat(delete.getResult()).isTrue();
+
+
+    // Try to restore with bad restore config
+    BackupRestorer.BackupRestoreConfig restoreConfig = BackupRestorer.BackupRestoreConfig.builder()
+      .cpuPercentage(90)
+      .build();
+
+    Result<BackupRestoreResponse> restoreResult = client.backup().restorer()
+      .withIncludeClassNames(CLASS_NAME_PIZZA)
+      .withBackend(BACKEND)
+      .withBackupId(backupId)
+      .withConfig(restoreConfig)
+      .withWaitForCompletion(true)
+      .run();
+
+    assertThat(restoreResult).isNotNull()
+      .extracting(Result::getError).isNotNull()
+      .extracting(WeaviateError::getMessages).isNotNull()
+      .satisfies(errors -> assertThat(errors.stream().filter(m -> m.getMessage().contains("CPUPercentage")).count()).isGreaterThanOrEqualTo(1));
+
+    restoreConfig = BackupRestorer.BackupRestoreConfig.builder()
+      .cpuPercentage(70)
+      .build();
+
+    // Restore backup
+    restoreResult = client.backup().restorer()
+      .withIncludeClassNames(CLASS_NAME_PIZZA)
+      .withBackend(BACKEND)
+      .withBackupId(backupId)
+      .withConfig(restoreConfig)
+      .withWaitForCompletion(true)
+      .run();
+
+    assertThat(restoreResult.hasErrors()).isFalse();
+    assertThat(restoreResult.getResult()).isNotNull()
+      .returns(backupId, BackupRestoreResponse::getId)
+      .returns(new String[]{CLASS_NAME_PIZZA}, BackupRestoreResponse::getClassNames)
+      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupRestoreResponse::getPath)
+      .returns(BACKEND, BackupRestoreResponse::getBackend)
+      .returns(RestoreStatus.SUCCESS, BackupRestoreResponse::getStatus)
+      .returns(null, BackupRestoreResponse::getError);
+
+    assertThatAllPizzasExist();
+
+    // Check restore backup
+    Result<BackupRestoreStatusResponse> restoreStatusResult = client.backup().restoreStatusGetter()
+      .withBackend(BACKEND)
+      .withBackupId(backupId)
+      .run();
+
+    assertThat(restoreStatusResult.hasErrors()).isFalse();
+    assertThat(restoreStatusResult.getResult()).isNotNull()
+      .returns(backupId, BackupRestoreStatusResponse::getId)
+      .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupRestoreStatusResponse::getPath)
+      .returns(BACKEND, BackupRestoreStatusResponse::getBackend)
+      .returns(RestoreStatus.SUCCESS, BackupRestoreStatusResponse::getStatus)
+      .returns(null, BackupRestoreStatusResponse::getError);
   }
 
 //  @Test

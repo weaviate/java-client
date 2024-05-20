@@ -1,5 +1,6 @@
 package io.weaviate.client.v1.backup.api;
 
+import com.google.gson.annotations.SerializedName;
 import io.weaviate.client.v1.backup.model.BackupCreateResponse;
 import io.weaviate.client.v1.backup.model.BackupCreateStatusResponse;
 import io.weaviate.client.v1.backup.model.CreateStatus;
@@ -21,6 +22,7 @@ public class BackupCreator extends BaseClient<BackupCreateResponse> implements C
   private String[] excludeClassNames;
   private String backend;
   private String backupId;
+  private BackupCreateConfig config;
   private boolean waitForCompletion;
 
   public BackupCreator(HttpClient httpClient, Config config, BackupCreateStatusGetter statusGetter) {
@@ -49,6 +51,11 @@ public class BackupCreator extends BaseClient<BackupCreateResponse> implements C
     return this;
   }
 
+  public BackupCreator withConfig(BackupCreateConfig config) {
+    this.config = config;
+    return this;
+  }
+
   public BackupCreator withWaitForCompletion(boolean waitForCompletion) {
     this.waitForCompletion = waitForCompletion;
     return this;
@@ -58,7 +65,7 @@ public class BackupCreator extends BaseClient<BackupCreateResponse> implements C
   public Result<BackupCreateResponse> run() {
     BackupCreate payload = BackupCreate.builder()
       .id(backupId)
-      .config(BackupCreateConfig.builder().build())
+      .config(config)
       .include(includeClassNames)
       .exclude(excludeClassNames)
       .build();
@@ -129,14 +136,25 @@ public class BackupCreator extends BaseClient<BackupCreateResponse> implements C
   @Builder
   private static class BackupCreate {
     String id;
-    BackupCreateConfig config;
     String[] include;
     String[] exclude;
+    BackupCreateConfig config;
   }
 
   @Getter
   @Builder
   public static class BackupCreateConfig {
-    // TBD
+    @SerializedName("CPUPercentage")
+    Integer cpuPercentage;
+    @SerializedName("ChunkSize")
+    Integer chunkSize;
+    @SerializedName("CompressionLevel")
+    String compressionLevel;
+  }
+
+  public interface BackupCompression {
+    String DEFAULT_COMPRESSION = "DefaultCompression";
+    String BEST_SPEED = "BestSpeed";
+    String BEST_COMPRESSION = "BestCompression";
   }
 }
