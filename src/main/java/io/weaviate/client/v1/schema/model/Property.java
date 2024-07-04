@@ -27,6 +27,7 @@ public class Property {
   Boolean indexInverted;
   Boolean indexFilterable;
   Boolean indexSearchable;
+  Boolean indexRangeFilters;
   Object moduleConfig;
   List<NestedProperty> nestedProperties;
 
@@ -43,6 +44,7 @@ public class Property {
     String tokenization;
     Boolean indexFilterable;
     Boolean indexSearchable;
+    Boolean indexRangeFilters;
     List<NestedProperty> nestedProperties;
   }
 }
