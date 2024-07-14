@@ -32,13 +32,41 @@ public final class WeaviateProtoTenants {
      */
     TENANT_ACTIVITY_STATUS_COLD(2),
     /**
-     * <code>TENANT_ACTIVITY_STATUS_WARM = 3;</code>
-     */
-    TENANT_ACTIVITY_STATUS_WARM(3),
-    /**
      * <code>TENANT_ACTIVITY_STATUS_FROZEN = 4;</code>
      */
     TENANT_ACTIVITY_STATUS_FROZEN(4),
+    /**
+     * <code>TENANT_ACTIVITY_STATUS_UNFREEZING = 5;</code>
+     */
+    TENANT_ACTIVITY_STATUS_UNFREEZING(5),
+    /**
+     * <code>TENANT_ACTIVITY_STATUS_FREEZING = 6;</code>
+     */
+    TENANT_ACTIVITY_STATUS_FREEZING(6),
+    /**
+     * <pre>
+     * not used yet - added to let the clients already add code to handle this in the future
+     * </pre>
+     *
+     * <code>TENANT_ACTIVITY_STATUS_ACTIVE = 7;</code>
+     */
+    TENANT_ACTIVITY_STATUS_ACTIVE(7),
+    /**
+     * <code>TENANT_ACTIVITY_STATUS_INACTIVE = 8;</code>
+     */
+    TENANT_ACTIVITY_STATUS_INACTIVE(8),
+    /**
+     * <code>TENANT_ACTIVITY_STATUS_OFFLOADED = 9;</code>
+     */
+    TENANT_ACTIVITY_STATUS_OFFLOADED(9),
+    /**
+     * <code>TENANT_ACTIVITY_STATUS_OFFLOADING = 10;</code>
+     */
+    TENANT_ACTIVITY_STATUS_OFFLOADING(10),
+    /**
+     * <code>TENANT_ACTIVITY_STATUS_ONLOADING = 11;</code>
+     */
+    TENANT_ACTIVITY_STATUS_ONLOADING(11),
     UNRECOGNIZED(-1),
     ;
 
@@ -55,13 +83,41 @@ public final class WeaviateProtoTenants {
      */
     public static final int TENANT_ACTIVITY_STATUS_COLD_VALUE = 2;
     /**
-     * <code>TENANT_ACTIVITY_STATUS_WARM = 3;</code>
-     */
-    public static final int TENANT_ACTIVITY_STATUS_WARM_VALUE = 3;
-    /**
      * <code>TENANT_ACTIVITY_STATUS_FROZEN = 4;</code>
      */
     public static final int TENANT_ACTIVITY_STATUS_FROZEN_VALUE = 4;
+    /**
+     * <code>TENANT_ACTIVITY_STATUS_UNFREEZING = 5;</code>
+     */
+    public static final int TENANT_ACTIVITY_STATUS_UNFREEZING_VALUE = 5;
+    /**
+     * <code>TENANT_ACTIVITY_STATUS_FREEZING = 6;</code>
+     */
+    public static final int TENANT_ACTIVITY_STATUS_FREEZING_VALUE = 6;
+    /**
+     * <pre>
+     * not used yet - added to let the clients already add code to handle this in the future
+     * </pre>
+     *
+     * <code>TENANT_ACTIVITY_STATUS_ACTIVE = 7;</code>
+     */
+    public static final int TENANT_ACTIVITY_STATUS_ACTIVE_VALUE = 7;
+    /**
+     * <code>TENANT_ACTIVITY_STATUS_INACTIVE = 8;</code>
+     */
+    public static final int TENANT_ACTIVITY_STATUS_INACTIVE_VALUE = 8;
+    /**
+     * <code>TENANT_ACTIVITY_STATUS_OFFLOADED = 9;</code>
+     */
+    public static final int TENANT_ACTIVITY_STATUS_OFFLOADED_VALUE = 9;
+    /**
+     * <code>TENANT_ACTIVITY_STATUS_OFFLOADING = 10;</code>
+     */
+    public static final int TENANT_ACTIVITY_STATUS_OFFLOADING_VALUE = 10;
+    /**
+     * <code>TENANT_ACTIVITY_STATUS_ONLOADING = 11;</code>
+     */
+    public static final int TENANT_ACTIVITY_STATUS_ONLOADING_VALUE = 11;
 
 
     public final int getNumber() {
@@ -91,8 +147,14 @@ public final class WeaviateProtoTenants {
         case 0: return TENANT_ACTIVITY_STATUS_UNSPECIFIED;
         case 1: return TENANT_ACTIVITY_STATUS_HOT;
         case 2: return TENANT_ACTIVITY_STATUS_COLD;
-        case 3: return TENANT_ACTIVITY_STATUS_WARM;
         case 4: return TENANT_ACTIVITY_STATUS_FROZEN;
+        case 5: return TENANT_ACTIVITY_STATUS_UNFREEZING;
+        case 6: return TENANT_ACTIVITY_STATUS_FREEZING;
+        case 7: return TENANT_ACTIVITY_STATUS_ACTIVE;
+        case 8: return TENANT_ACTIVITY_STATUS_INACTIVE;
+        case 9: return TENANT_ACTIVITY_STATUS_OFFLOADED;
+        case 10: return TENANT_ACTIVITY_STATUS_OFFLOADING;
+        case 11: return TENANT_ACTIVITY_STATUS_ONLOADING;
         default: return null;
       }
     }
@@ -3168,15 +3230,21 @@ public final class WeaviateProtoTenants {
       "TenantsGetReply\022\014\n\004took\030\001 \001(\002\022$\n\007tenants" +
       "\030\002 \003(\0132\023.weaviate.v1.Tenant\"R\n\006Tenant\022\014\n" +
       "\004name\030\001 \001(\t\022:\n\017activity_status\030\002 \001(\0162!.w" +
-      "eaviate.v1.TenantActivityStatus*\303\001\n\024Tena" +
+      "eaviate.v1.TenantActivityStatus*\257\003\n\024Tena" +
       "ntActivityStatus\022&\n\"TENANT_ACTIVITY_STAT" +
       "US_UNSPECIFIED\020\000\022\036\n\032TENANT_ACTIVITY_STAT" +
       "US_HOT\020\001\022\037\n\033TENANT_ACTIVITY_STATUS_COLD\020" +
-      "\002\022\037\n\033TENANT_ACTIVITY_STATUS_WARM\020\003\022!\n\035TE" +
-      "NANT_ACTIVITY_STATUS_FROZEN\020\004Bq\n#io.weav" +
-      "iate.client.grpc.protocol.v1B\024WeaviatePr" +
-      "otoTenantsZ4github.com/weaviate/weaviate" +
-      "/grpc/generated;protocolb\006proto3"
+      "\002\022!\n\035TENANT_ACTIVITY_STATUS_FROZEN\020\004\022%\n!" +
+      "TENANT_ACTIVITY_STATUS_UNFREEZING\020\005\022#\n\037T" +
+      "ENANT_ACTIVITY_STATUS_FREEZING\020\006\022!\n\035TENA" +
+      "NT_ACTIVITY_STATUS_ACTIVE\020\007\022#\n\037TENANT_AC" +
+      "TIVITY_STATUS_INACTIVE\020\010\022$\n TENANT_ACTIV" +
+      "ITY_STATUS_OFFLOADED\020\t\022%\n!TENANT_ACTIVIT" +
+      "Y_STATUS_OFFLOADING\020\n\022$\n TENANT_ACTIVITY" +
+      "_STATUS_ONLOADING\020\013\"\004\010\003\020\003Bq\n#io.weaviate" +
+      ".client.grpc.protocol.v1B\024WeaviateProtoT" +
+      "enantsZ4github.com/weaviate/weaviate/grp" +
+      "c/generated;protocolb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
