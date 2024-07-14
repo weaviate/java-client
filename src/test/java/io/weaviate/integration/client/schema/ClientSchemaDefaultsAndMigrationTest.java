@@ -12,8 +12,11 @@ import io.weaviate.client.v1.schema.model.Property;
 import io.weaviate.client.v1.schema.model.Tokenization;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
 import io.weaviate.integration.client.WeaviateDockerCompose;
+
 import java.util.Collections;
+
 import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -262,9 +265,11 @@ public class ClientSchemaDefaultsAndMigrationTest {
 
   @DataMethod(source = ClientSchemaDefaultsAndMigrationTest.class, method = "provideForDataTypeAndIndexing")
   @Test
-  public void shouldCreatePropertyWithDataTypeAndIndexing(String dataType, Boolean inverted, Boolean filterable,
-                                                          Boolean searchable, Boolean expectedInverted,
-                                                          Boolean expectedFilterable, Boolean expectedSearchable) {
+  public void shouldCreatePropertyWithDataTypeAndIndexing(String dataType,
+                                                          Boolean inverted, Boolean expectedInverted,
+                                                          Boolean filterable, Boolean expectedFilterable,
+                                                          Boolean searchable, Boolean expectedSearchable,
+                                                          Boolean rangeFilters, Boolean expectedRangeFilters) {
     WeaviateClass clazz = WeaviateClass.builder()
       .className("SomeClass")
       .description("some class description")
@@ -275,6 +280,7 @@ public class ClientSchemaDefaultsAndMigrationTest {
         .indexInverted(inverted)
         .indexFilterable(filterable)
         .indexSearchable(searchable)
+        .indexRangeFilters(rangeFilters)
         .build()
       ))
       .build();
@@ -299,106 +305,292 @@ public class ClientSchemaDefaultsAndMigrationTest {
       .first().extracting(prop -> (Property) prop)
       .returns(expectedInverted, Property::getIndexInverted)
       .returns(expectedFilterable, Property::getIndexFilterable)
-      .returns(expectedSearchable, Property::getIndexSearchable);
+      .returns(expectedSearchable, Property::getIndexSearchable)
+      .returns(expectedRangeFilters, Property::getIndexRangeFilters);
   }
 
   public static Object[][] provideForDataTypeAndIndexing() {
     return new Object[][]{
       new Object[]{
         DataType.TEXT,
-        null, null, null,
-        null, Boolean.TRUE, Boolean.TRUE,
+        null, null,
+        null, Boolean.TRUE,
+        null, Boolean.TRUE,
+        null, Boolean.FALSE,
       },
       new Object[]{
         DataType.TEXT,
-        null, null, Boolean.FALSE,
-        null, Boolean.TRUE, Boolean.FALSE,
+        null, null,
+        null, Boolean.TRUE,
+        null, Boolean.TRUE,
+        Boolean.FALSE, Boolean.FALSE,
       },
       new Object[]{
         DataType.TEXT,
-        null, null, Boolean.TRUE,
-        null, Boolean.TRUE, Boolean.TRUE,
+        null, null,
+        null, Boolean.TRUE,
+        Boolean.FALSE, Boolean.FALSE,
+        null, Boolean.FALSE,
       },
       new Object[]{
         DataType.TEXT,
-        null, Boolean.FALSE, null,
-        null, Boolean.FALSE, Boolean.TRUE,
+        null, null,
+        null, Boolean.TRUE,
+        Boolean.FALSE, Boolean.FALSE,
+        Boolean.FALSE, Boolean.FALSE,
       },
       new Object[]{
         DataType.TEXT,
-        null, Boolean.FALSE, Boolean.FALSE,
-        null, Boolean.FALSE, Boolean.FALSE,
+        null, null,
+        null, Boolean.TRUE,
+        Boolean.TRUE, Boolean.TRUE,
+        null, Boolean.FALSE,
       },
       new Object[]{
         DataType.TEXT,
-        null, Boolean.FALSE, Boolean.TRUE,
-        null, Boolean.FALSE, Boolean.TRUE,
+        null, null,
+        null, Boolean.TRUE,
+        Boolean.TRUE, Boolean.TRUE,
+        Boolean.FALSE, Boolean.FALSE,
       },
       new Object[]{
         DataType.TEXT,
-        null, Boolean.TRUE, null,
-        null, Boolean.TRUE, Boolean.TRUE,
+        null, null,
+        Boolean.FALSE, Boolean.FALSE,
+        null, Boolean.TRUE,
+        null, Boolean.FALSE,
       },
       new Object[]{
         DataType.TEXT,
-        null, Boolean.TRUE, Boolean.FALSE,
-        null, Boolean.TRUE, Boolean.FALSE,
+        null, null,
+        Boolean.FALSE, Boolean.FALSE,
+        null, Boolean.TRUE,
+        Boolean.FALSE, Boolean.FALSE,
       },
       new Object[]{
         DataType.TEXT,
-        null, Boolean.TRUE, Boolean.TRUE,
-        null, Boolean.TRUE, Boolean.TRUE,
+        null, null,
+        Boolean.FALSE, Boolean.FALSE,
+        Boolean.FALSE, Boolean.FALSE,
+        null, Boolean.FALSE,
       },
       new Object[]{
         DataType.TEXT,
-        Boolean.FALSE, null, null,
-        null, Boolean.FALSE, Boolean.FALSE,
+        null, null,
+        Boolean.FALSE, Boolean.FALSE,
+        Boolean.FALSE, Boolean.FALSE,
+        Boolean.FALSE, Boolean.FALSE,
       },
       new Object[]{
         DataType.TEXT,
-        Boolean.TRUE, null, null,
-        null, Boolean.TRUE, Boolean.TRUE,
+        null, null,
+        Boolean.FALSE, Boolean.FALSE,
+        Boolean.TRUE, Boolean.TRUE,
+        null, Boolean.FALSE,
+      },
+      new Object[]{
+        DataType.TEXT,
+        null, null,
+        Boolean.FALSE, Boolean.FALSE,
+        Boolean.TRUE, Boolean.TRUE,
+        Boolean.FALSE, Boolean.FALSE,
+      },
+      new Object[]{
+        DataType.TEXT,
+        null, null,
+        Boolean.TRUE, Boolean.TRUE,
+        null, Boolean.TRUE,
+        null, Boolean.FALSE,
+      },
+      new Object[]{
+        DataType.TEXT,
+        null, null,
+        Boolean.TRUE, Boolean.TRUE,
+        null, Boolean.TRUE,
+        Boolean.FALSE, Boolean.FALSE,
+      },
+      new Object[]{
+        DataType.TEXT,
+        null, null,
+        Boolean.TRUE, Boolean.TRUE,
+        Boolean.FALSE, Boolean.FALSE,
+        null, Boolean.FALSE,
+      },
+      new Object[]{
+        DataType.TEXT,
+        null, null,
+        Boolean.TRUE, Boolean.TRUE,
+        Boolean.FALSE, Boolean.FALSE,
+        Boolean.FALSE, Boolean.FALSE,
+      },
+      new Object[]{
+        DataType.TEXT,
+        null, null,
+        Boolean.TRUE, Boolean.TRUE,
+        Boolean.TRUE, Boolean.TRUE,
+        null, Boolean.FALSE,
+      },
+      new Object[]{
+        DataType.TEXT,
+        null, null,
+        Boolean.TRUE, Boolean.TRUE,
+        Boolean.TRUE, Boolean.TRUE,
+        Boolean.FALSE, Boolean.FALSE,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.FALSE, null,
+        null, Boolean.FALSE,
+        null, Boolean.FALSE,
+        null, Boolean.FALSE,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.TRUE, null,
+        null, Boolean.TRUE,
+        null, Boolean.TRUE,
+        null, Boolean.FALSE,
       },
 
       new Object[]{
         DataType.INT,
-        null, null, null,
-        null, Boolean.TRUE, Boolean.FALSE,
+        null, null,
+        null, Boolean.TRUE,
+        null, Boolean.FALSE,
+        null, Boolean.FALSE,
       },
       new Object[]{
         DataType.INT,
-        null, null, Boolean.FALSE,
-        null, Boolean.TRUE, Boolean.FALSE,
+        null, null,
+        null, Boolean.TRUE,
+        null, Boolean.FALSE,
+        Boolean.FALSE, Boolean.FALSE,
       },
       new Object[]{
         DataType.INT,
-        null, Boolean.FALSE, null,
-        null, Boolean.FALSE, Boolean.FALSE,
+        null, null,
+        null, Boolean.TRUE,
+        null, Boolean.FALSE,
+        Boolean.TRUE, Boolean.TRUE,
       },
       new Object[]{
         DataType.INT,
-        null, Boolean.FALSE, Boolean.FALSE,
-        null, Boolean.FALSE, Boolean.FALSE,
+        null, null,
+        null, Boolean.TRUE,
+        Boolean.FALSE, Boolean.FALSE,
+        null, Boolean.FALSE,
       },
       new Object[]{
         DataType.INT,
-        null, Boolean.TRUE, null,
-        null, Boolean.TRUE, Boolean.FALSE,
+        null, null,
+        null, Boolean.TRUE,
+        Boolean.FALSE, Boolean.FALSE,
+        Boolean.FALSE, Boolean.FALSE,
       },
       new Object[]{
         DataType.INT,
-        null, Boolean.TRUE, Boolean.FALSE,
-        null, Boolean.TRUE, Boolean.FALSE,
+        null, null,
+        null, Boolean.TRUE,
+        Boolean.FALSE, Boolean.FALSE,
+        Boolean.TRUE, Boolean.TRUE,
       },
       new Object[]{
         DataType.INT,
-        Boolean.FALSE, null, null,
-        null, Boolean.FALSE, Boolean.FALSE,
+        null, null,
+        Boolean.FALSE, Boolean.FALSE,
+        null, Boolean.FALSE,
+        null, Boolean.FALSE,
       },
       new Object[]{
         DataType.INT,
-        Boolean.TRUE, null, null,
-        null, Boolean.TRUE, Boolean.FALSE,
+        null, null,
+        Boolean.FALSE, Boolean.FALSE,
+        null, Boolean.FALSE,
+        Boolean.FALSE, Boolean.FALSE,
+      },
+      new Object[]{
+        DataType.INT,
+        null, null,
+        Boolean.FALSE, Boolean.FALSE,
+        null, Boolean.FALSE,
+        Boolean.TRUE, Boolean.TRUE,
+      },
+      new Object[]{
+        DataType.INT,
+        null, null,
+        Boolean.FALSE, Boolean.FALSE,
+        Boolean.FALSE, Boolean.FALSE,
+        null, Boolean.FALSE,
+      },
+      new Object[]{
+        DataType.INT,
+        null, null,
+        Boolean.FALSE, Boolean.FALSE,
+        Boolean.FALSE, Boolean.FALSE,
+        Boolean.FALSE, Boolean.FALSE,
+      },
+      new Object[]{
+        DataType.INT,
+        null, null,
+        Boolean.FALSE, Boolean.FALSE,
+        Boolean.FALSE, Boolean.FALSE,
+        Boolean.TRUE, Boolean.TRUE,
+      },
+      new Object[]{
+        DataType.INT,
+        null, null,
+        Boolean.TRUE, Boolean.TRUE,
+        null, Boolean.FALSE,
+        null, Boolean.FALSE,
+      },
+      new Object[]{
+        DataType.INT,
+        null, null,
+        Boolean.TRUE, Boolean.TRUE,
+        null, Boolean.FALSE,
+        Boolean.FALSE, Boolean.FALSE,
+      },
+      new Object[]{
+        DataType.INT,
+        null, null,
+        Boolean.TRUE, Boolean.TRUE,
+        null, Boolean.FALSE,
+        Boolean.TRUE, Boolean.TRUE,
+      },
+      new Object[]{
+        DataType.INT,
+        null, null,
+        Boolean.TRUE, Boolean.TRUE,
+        Boolean.FALSE, Boolean.FALSE,
+        null, Boolean.FALSE,
+      },
+      new Object[]{
+        DataType.INT,
+        null, null,
+        Boolean.TRUE, Boolean.TRUE,
+        Boolean.FALSE, Boolean.FALSE,
+        Boolean.FALSE, Boolean.FALSE,
+      },
+      new Object[]{
+        DataType.INT,
+        null, null,
+        Boolean.TRUE, Boolean.TRUE,
+        Boolean.FALSE, Boolean.FALSE,
+        Boolean.TRUE, Boolean.TRUE,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.FALSE, null,
+        null, Boolean.FALSE,
+        null, Boolean.FALSE,
+        null, Boolean.FALSE,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.TRUE, null,
+        null, Boolean.TRUE,
+        null, Boolean.FALSE,
+        null, Boolean.FALSE,
       },
     };
   }
@@ -406,8 +598,10 @@ public class ClientSchemaDefaultsAndMigrationTest {
 
   @DataMethod(source = ClientSchemaDefaultsAndMigrationTest.class, method = "provideInvalidForDataTypeAndIndexing")
   @Test
-  public void shouldNotCreatePropertyWithDataTypeAndIndexing(String dataType, Boolean inverted, Boolean filterable,
-                                                             Boolean searchable, String expectedErrMsg) {
+  public void shouldNotCreatePropertyWithDataTypeAndIndexing(String dataType,
+                                                             Boolean inverted, Boolean filterable,
+                                                             Boolean searchable, Boolean rangeFilters,
+                                                             String expectedErrMsg) {
     WeaviateClass clazz = WeaviateClass.builder()
       .className("SomeClass")
       .description("some class description")
@@ -418,6 +612,7 @@ public class ClientSchemaDefaultsAndMigrationTest {
         .indexInverted(inverted)
         .indexFilterable(filterable)
         .indexSearchable(searchable)
+        .indexRangeFilters(rangeFilters)
         .build()
       ))
       .build();
@@ -437,183 +632,623 @@ public class ClientSchemaDefaultsAndMigrationTest {
   }
 
   public static Object[][] provideInvalidForDataTypeAndIndexing() {
+    String errInverted = "`indexInverted` is deprecated and can not be set together with `indexFilterable`, `indexSearchable` or `indexRangeFilters`";
+    String errSearchable = "`indexSearchable` is allowed only for text/text[] data types. For other data types set false or leave empty";
+    String errRangeFilters = "`indexRangeFilters` is allowed only for number/int/date data types. For other data types set false or leave empty";
+
     return new Object[][]{
       new Object[]{
         DataType.TEXT,
-        Boolean.FALSE, null, Boolean.FALSE,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, null, Boolean.FALSE, null,
+        errInverted,
       },
       new Object[]{
         DataType.TEXT,
-        Boolean.FALSE, null, Boolean.TRUE,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, null, Boolean.FALSE, Boolean.FALSE,
+        errInverted,
       },
       new Object[]{
         DataType.TEXT,
-        Boolean.FALSE, Boolean.FALSE, null,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, null, Boolean.FALSE, Boolean.TRUE,
+        errInverted,
       },
       new Object[]{
         DataType.TEXT,
-        Boolean.FALSE, Boolean.FALSE, Boolean.FALSE,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, null, Boolean.TRUE, null,
+        errInverted,
       },
       new Object[]{
         DataType.TEXT,
-        Boolean.FALSE, Boolean.FALSE, Boolean.TRUE,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, null, Boolean.TRUE, Boolean.FALSE,
+        errInverted,
       },
       new Object[]{
         DataType.TEXT,
-        Boolean.FALSE, Boolean.TRUE, null,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, null, Boolean.TRUE, Boolean.TRUE,
+        errInverted,
       },
       new Object[]{
         DataType.TEXT,
-        Boolean.FALSE, Boolean.TRUE, Boolean.FALSE,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, Boolean.FALSE, null, null,
+        errInverted,
       },
       new Object[]{
         DataType.TEXT,
-        Boolean.FALSE, Boolean.TRUE, Boolean.TRUE,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, Boolean.FALSE, null, Boolean.FALSE,
+        errInverted,
       },
       new Object[]{
         DataType.TEXT,
-        Boolean.TRUE, null, Boolean.FALSE,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, Boolean.FALSE, null, Boolean.TRUE,
+        errInverted,
       },
       new Object[]{
         DataType.TEXT,
-        Boolean.TRUE, null, Boolean.TRUE,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, null,
+        errInverted,
       },
       new Object[]{
         DataType.TEXT,
-        Boolean.TRUE, Boolean.FALSE, null,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE,
+        errInverted,
       },
       new Object[]{
         DataType.TEXT,
-        Boolean.TRUE, Boolean.FALSE, Boolean.FALSE,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.TRUE,
+        errInverted,
       },
       new Object[]{
         DataType.TEXT,
-        Boolean.TRUE, Boolean.FALSE, Boolean.TRUE,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, Boolean.FALSE, Boolean.TRUE, null,
+        errInverted,
       },
       new Object[]{
         DataType.TEXT,
-        Boolean.TRUE, Boolean.TRUE, null,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, Boolean.FALSE, Boolean.TRUE, Boolean.FALSE,
+        errInverted,
       },
       new Object[]{
         DataType.TEXT,
-        Boolean.TRUE, Boolean.TRUE, Boolean.FALSE,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, Boolean.FALSE, Boolean.TRUE, Boolean.TRUE,
+        errInverted,
       },
       new Object[]{
         DataType.TEXT,
-        Boolean.TRUE, Boolean.TRUE, Boolean.TRUE,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, Boolean.TRUE, null, null,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.FALSE, Boolean.TRUE, null, Boolean.FALSE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.FALSE, Boolean.TRUE, null, Boolean.TRUE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.FALSE, Boolean.TRUE, Boolean.FALSE, null,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.FALSE, Boolean.TRUE, Boolean.FALSE, Boolean.FALSE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.FALSE, Boolean.TRUE, Boolean.FALSE, Boolean.TRUE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.FALSE, Boolean.TRUE, Boolean.TRUE, null,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.FALSE, Boolean.TRUE, Boolean.TRUE, Boolean.FALSE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.FALSE, Boolean.TRUE, Boolean.TRUE, Boolean.TRUE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.TRUE, null, Boolean.FALSE, null,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.TRUE, null, Boolean.FALSE, Boolean.FALSE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.TRUE, null, Boolean.FALSE, Boolean.TRUE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.TRUE, null, Boolean.TRUE, null,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.TRUE, null, Boolean.TRUE, Boolean.FALSE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.TRUE, null, Boolean.TRUE, Boolean.TRUE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.TRUE, Boolean.FALSE, null, null,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.TRUE, Boolean.FALSE, null, Boolean.FALSE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.TRUE, Boolean.FALSE, null, Boolean.TRUE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.TRUE, Boolean.FALSE, Boolean.FALSE, null,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.TRUE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.TRUE, Boolean.FALSE, Boolean.FALSE, Boolean.TRUE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.TRUE, Boolean.FALSE, Boolean.TRUE, null,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.TRUE, Boolean.FALSE, Boolean.TRUE, Boolean.FALSE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.TRUE, Boolean.FALSE, Boolean.TRUE, Boolean.TRUE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.TRUE, Boolean.TRUE, null, null,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.TRUE, Boolean.TRUE, null, Boolean.FALSE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.TRUE, Boolean.TRUE, null, Boolean.TRUE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.TRUE, Boolean.TRUE, Boolean.FALSE, null,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.TRUE, Boolean.TRUE, Boolean.FALSE, Boolean.FALSE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.TRUE, Boolean.TRUE, Boolean.FALSE, Boolean.TRUE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.TRUE, Boolean.TRUE, Boolean.TRUE, null,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.TRUE, Boolean.TRUE, Boolean.TRUE, Boolean.FALSE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.TRUE, Boolean.TRUE, Boolean.TRUE, Boolean.TRUE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.FALSE, null, null, Boolean.FALSE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.FALSE, null, null, Boolean.TRUE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.TRUE, null, null, Boolean.FALSE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.TEXT,
+        Boolean.TRUE, null, null, Boolean.TRUE,
+        errInverted,
       },
 
       new Object[]{
         DataType.INT,
-        Boolean.FALSE, null, Boolean.FALSE,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, null, Boolean.FALSE, null,
+        errInverted,
       },
       new Object[]{
         DataType.INT,
-        Boolean.FALSE, null, Boolean.TRUE,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, null, Boolean.FALSE, Boolean.FALSE,
+        errInverted,
       },
       new Object[]{
         DataType.INT,
-        Boolean.FALSE, Boolean.FALSE, null,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, null, Boolean.FALSE, Boolean.TRUE,
+        errInverted,
       },
       new Object[]{
         DataType.INT,
-        Boolean.FALSE, Boolean.FALSE, Boolean.FALSE,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, null, Boolean.TRUE, null,
+        errInverted,
       },
       new Object[]{
         DataType.INT,
-        Boolean.FALSE, Boolean.FALSE, Boolean.TRUE,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, null, Boolean.TRUE, Boolean.FALSE,
+        errInverted,
       },
       new Object[]{
         DataType.INT,
-        Boolean.FALSE, Boolean.TRUE, null,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, null, Boolean.TRUE, Boolean.TRUE,
+        errInverted,
       },
       new Object[]{
         DataType.INT,
-        Boolean.FALSE, Boolean.TRUE, Boolean.FALSE,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, Boolean.FALSE, null, null,
+        errInverted,
       },
       new Object[]{
         DataType.INT,
-        Boolean.FALSE, Boolean.TRUE, Boolean.TRUE,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, Boolean.FALSE, null, Boolean.FALSE,
+        errInverted,
       },
       new Object[]{
         DataType.INT,
-        Boolean.TRUE, null, Boolean.FALSE,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, Boolean.FALSE, null, Boolean.TRUE,
+        errInverted,
       },
       new Object[]{
         DataType.INT,
-        Boolean.TRUE, null, Boolean.TRUE,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, null,
+        errInverted,
       },
       new Object[]{
         DataType.INT,
-        Boolean.TRUE, Boolean.FALSE, null,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE,
+        errInverted,
       },
       new Object[]{
         DataType.INT,
-        Boolean.TRUE, Boolean.FALSE, Boolean.FALSE,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.TRUE,
+        errInverted,
       },
       new Object[]{
         DataType.INT,
-        Boolean.TRUE, Boolean.FALSE, Boolean.TRUE,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, Boolean.FALSE, Boolean.TRUE, null,
+        errInverted,
       },
       new Object[]{
         DataType.INT,
-        Boolean.TRUE, Boolean.TRUE, null,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, Boolean.FALSE, Boolean.TRUE, Boolean.FALSE,
+        errInverted,
       },
       new Object[]{
         DataType.INT,
-        Boolean.TRUE, Boolean.TRUE, Boolean.FALSE,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, Boolean.FALSE, Boolean.TRUE, Boolean.TRUE,
+        errInverted,
       },
       new Object[]{
         DataType.INT,
-        Boolean.TRUE, Boolean.TRUE, Boolean.TRUE,
-        "`indexInverted` is deprecated and can not be set together with `indexFilterable` or `indexSearchable`",
+        Boolean.FALSE, Boolean.TRUE, null, null,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.FALSE, Boolean.TRUE, null, Boolean.FALSE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.FALSE, Boolean.TRUE, null, Boolean.TRUE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.FALSE, Boolean.TRUE, Boolean.FALSE, null,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.FALSE, Boolean.TRUE, Boolean.FALSE, Boolean.FALSE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.FALSE, Boolean.TRUE, Boolean.FALSE, Boolean.TRUE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.FALSE, Boolean.TRUE, Boolean.TRUE, null,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.FALSE, Boolean.TRUE, Boolean.TRUE, Boolean.FALSE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.FALSE, Boolean.TRUE, Boolean.TRUE, Boolean.TRUE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.TRUE, null, Boolean.FALSE, null,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.TRUE, null, Boolean.FALSE, Boolean.FALSE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.TRUE, null, Boolean.FALSE, Boolean.TRUE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.TRUE, null, Boolean.TRUE, null,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.TRUE, null, Boolean.TRUE, Boolean.FALSE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.TRUE, null, Boolean.TRUE, Boolean.TRUE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.TRUE, Boolean.FALSE, null, null,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.TRUE, Boolean.FALSE, null, Boolean.FALSE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.TRUE, Boolean.FALSE, null, Boolean.TRUE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.TRUE, Boolean.FALSE, Boolean.FALSE, null,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.TRUE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.TRUE, Boolean.FALSE, Boolean.FALSE, Boolean.TRUE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.TRUE, Boolean.FALSE, Boolean.TRUE, null,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.TRUE, Boolean.FALSE, Boolean.TRUE, Boolean.FALSE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.TRUE, Boolean.FALSE, Boolean.TRUE, Boolean.TRUE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.TRUE, Boolean.TRUE, null, null,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.TRUE, Boolean.TRUE, null, Boolean.FALSE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.TRUE, Boolean.TRUE, null, Boolean.TRUE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.TRUE, Boolean.TRUE, Boolean.FALSE, null,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.TRUE, Boolean.TRUE, Boolean.FALSE, Boolean.FALSE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.TRUE, Boolean.TRUE, Boolean.FALSE, Boolean.TRUE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.TRUE, Boolean.TRUE, Boolean.TRUE, null,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.TRUE, Boolean.TRUE, Boolean.TRUE, Boolean.FALSE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.TRUE, Boolean.TRUE, Boolean.TRUE, Boolean.TRUE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.FALSE, null, null, Boolean.FALSE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.FALSE, null, null, Boolean.TRUE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.TRUE, null, null, Boolean.FALSE,
+        errInverted,
+      },
+      new Object[]{
+        DataType.INT,
+        Boolean.TRUE, null, null, Boolean.TRUE,
+        errInverted,
       },
 
       new Object[]{
         DataType.INT,
-        null, null, Boolean.TRUE,
-        "`indexSearchable` is allowed only for text/text[] data types. For other data types set false or leave empty",
+        null, null, Boolean.TRUE, null,
+        errSearchable,
       },
       new Object[]{
         DataType.INT,
-        null, Boolean.FALSE, Boolean.TRUE,
-        "`indexSearchable` is allowed only for text/text[] data types. For other data types set false or leave empty",
+        null, null, Boolean.TRUE, Boolean.FALSE,
+        errSearchable,
       },
       new Object[]{
         DataType.INT,
-        null, Boolean.TRUE, Boolean.TRUE,
-        "`indexSearchable` is allowed only for text/text[] data types. For other data types set false or leave empty",
+        null, null, Boolean.TRUE, Boolean.TRUE,
+        errSearchable,
+      },
+      new Object[]{
+        DataType.INT,
+        null, Boolean.FALSE, Boolean.TRUE, null,
+        errSearchable,
+      },
+      new Object[]{
+        DataType.INT,
+        null, Boolean.FALSE, Boolean.TRUE, Boolean.FALSE,
+        errSearchable,
+      },
+      new Object[]{
+        DataType.INT,
+        null, Boolean.FALSE, Boolean.TRUE, Boolean.TRUE,
+        errSearchable,
+      },
+      new Object[]{
+        DataType.INT,
+        null, Boolean.TRUE, Boolean.TRUE, null,
+        errSearchable,
+      },
+      new Object[]{
+        DataType.INT,
+        null, Boolean.TRUE, Boolean.TRUE, Boolean.FALSE,
+        errSearchable,
+      },
+      new Object[]{
+        DataType.INT,
+        null, Boolean.TRUE, Boolean.TRUE, Boolean.TRUE,
+        errSearchable,
+      },
+
+      new Object[]{
+        DataType.TEXT,
+        null, null, null, Boolean.TRUE,
+        errRangeFilters,
+      },
+      new Object[]{
+        DataType.TEXT,
+        null, Boolean.FALSE, null, Boolean.TRUE,
+        errRangeFilters,
+      },
+      new Object[]{
+        DataType.TEXT,
+        null, Boolean.TRUE, null, Boolean.TRUE,
+        errRangeFilters,
+      },
+      new Object[]{
+        DataType.TEXT,
+        null, null, Boolean.FALSE, Boolean.TRUE,
+        errRangeFilters,
+      },
+      new Object[]{
+        DataType.TEXT,
+        null, null, Boolean.TRUE, Boolean.TRUE,
+        errRangeFilters,
+      },
+      new Object[]{
+        DataType.TEXT,
+        null, Boolean.FALSE, Boolean.FALSE, Boolean.TRUE,
+        errRangeFilters,
+      },
+      new Object[]{
+        DataType.TEXT,
+        null, Boolean.FALSE, Boolean.TRUE, Boolean.TRUE,
+        errRangeFilters,
+      },
+      new Object[]{
+        DataType.TEXT,
+        null, Boolean.TRUE, Boolean.FALSE, Boolean.TRUE,
+        errRangeFilters,
+      },
+      new Object[]{
+        DataType.TEXT,
+        null, Boolean.TRUE, Boolean.TRUE, Boolean.TRUE,
+        errRangeFilters,
       },
     };
   }
