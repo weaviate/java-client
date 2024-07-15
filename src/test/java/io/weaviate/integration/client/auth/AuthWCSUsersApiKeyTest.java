@@ -74,10 +74,12 @@ public class AuthWCSUsersApiKeyTest {
   }
 
   @Test
-  public void shouldAuthenticateWithValidApiKeyUsingGRPC() throws AuthException {
+  public void shouldAuthenticateWithValidApiKeyUsingGRPC() throws AuthException, InterruptedException  {
     Config config = new Config("http", httpHostAddress);
     config.setGRPCHost(grpcHost + ":" + grpcPort);
     WeaviateClient client = WeaviateAuthClient.apiKey(config, API_KEY);
+    // TODO: temporary solution to make the tests pass
+    Thread.sleep(1000);
 
     Result<Boolean> deleteAll = client.schema().allDeleter().run();
     assertThat(deleteAll).isNotNull()
