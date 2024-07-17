@@ -26,4 +26,5 @@ public class VectorIndexConfig {
   Boolean skip;
   PQConfig pq;
   BQConfig bq;
+  SQConfig sq;
 }

@@ -6,6 +6,7 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.batch.model.ObjectGetResponse;
 import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.misc.model.BQConfig;
+import io.weaviate.client.v1.misc.model.SQConfig;
 import io.weaviate.client.v1.misc.model.VectorIndexConfig;
 import io.weaviate.client.v1.schema.model.Property;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
@@ -76,6 +77,11 @@ public class ClientBatchGrpcCreateTest {
   }
 
   @Test
+  public void shouldCreateBatchUsingGRPCWithHNSWSQConfig() {
+    testCreateBatchWithHNSWSQVectorIndex(true);
+  }
+
+  @Test
   public void shouldCreateBatchUsingRest() {
     testCreateBatch(false);
   }
@@ -113,6 +119,11 @@ public class ClientBatchGrpcCreateTest {
   @Test
   public void shouldCreateBatchUsingRestWithFlatBQConfig() {
     testCreateBatchWithFlatVectorIndex(false);
+  }
+
+  @Test
+  public void shouldCreateBatchUsingRestWithHNSWSQConfig() {
+    testCreateBatchWithHNSWSQVectorIndex(false);
   }
 
   private void testCreateBatchWithReferenceWithoutNested(Boolean useGRPC) {
@@ -185,6 +196,13 @@ public class ClientBatchGrpcCreateTest {
       .bq(BQConfig.builder().enabled(true).build())
       .build();
     testCreateBatch(useGRPC, "flat", vectorIndexConfig);
+  }
+
+  private void testCreateBatchWithHNSWSQVectorIndex(Boolean useGRPC) {
+    VectorIndexConfig vectorIndexConfig = VectorIndexConfig.builder()
+      .sq(SQConfig.builder().enabled(true).build())
+      .build();
+    testCreateBatch(useGRPC, "hnsw", vectorIndexConfig);
   }
 
   private void testCreateBatch(Boolean useGRPC) {
