@@ -10,7 +10,7 @@ import org.testcontainers.weaviate.WeaviateContainer;
 
 public class WeaviateDockerComposeCluster implements TestRule {
 
-  public class Weaviate extends WeaviateContainer {
+  public static class Weaviate extends WeaviateContainer {
     public Weaviate(String dockerImageName, String hostname, Boolean isJoining) {
       super(dockerImageName);
       withNetwork(Network.SHARED);
@@ -41,7 +41,7 @@ public class WeaviateDockerComposeCluster implements TestRule {
     }
   }
 
-  public class Contextionary extends GenericContainer<WeaviateDockerCompose.Contextionary> {
+  public static class Contextionary extends GenericContainer<WeaviateDockerCompose.Contextionary> {
     public Contextionary() {
       super("semitechnologies/contextionary:en0.16.0-v1.2.1");
       withNetwork(Network.SHARED);
