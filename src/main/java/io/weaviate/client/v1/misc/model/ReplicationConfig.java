@@ -13,5 +13,6 @@ import lombok.experimental.FieldDefaults;
 @EqualsAndHashCode
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ReplicationConfig {
+  Boolean asyncEnabled;
   Integer factor;
 }

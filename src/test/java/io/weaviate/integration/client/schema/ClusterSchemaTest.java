@@ -45,63 +45,22 @@ public class ClusterSchemaTest {
 
   @Test
   public void shouldCreateClassWithImplicitReplicationFactor() {
-    // given
-    int replicationFactor = 1;
-
-    String className = "Band";
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className(className)
-      .description("Band that plays and produces music")
-      .vectorIndexType("hnsw")
-      .vectorizer("text2vec-contextionary")
-      .build();
-
-    // when
-    Result<Boolean> createStatus = client1.schema().classCreator().withClass(clazz).run();
-    assertThat(createStatus).isNotNull()
-      .returns(false, Result::hasErrors)
-      .returns(true, Result::getResult);
-
-    // then
-    Result<WeaviateClass> classResult = client1.schema().classGetter().withClassName(className).run();
-    assertThat(classResult).isNotNull()
-      .returns(false, Result::hasErrors)
-      .extracting(Result::getResult).isNotNull()
-      .extracting(WeaviateClass::getReplicationConfig)
-      .isNotNull()
-      .extracting(ReplicationConfig::getFactor)
-      .isEqualTo(replicationFactor);
+    assertClassReplicationSettings(1, null);
   }
 
   @Test
   public void shouldCreateClassWithExplicitReplicationFactor() {
-    // given
-    int replicationFactor = 2;
+    assertClassReplicationSettings(2, null);
+  }
 
-    String className = "Band";
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className(className)
-      .description("Band that plays and produces music")
-      .vectorIndexType("hnsw")
-      .vectorizer("text2vec-contextionary")
-      .replicationConfig(ReplicationConfig.builder().factor(replicationFactor).build())
-      .build();
+  @Test
+  public void shouldCreateClassWithExplicitAsyncReplicationWithImplicitReplicationFactor() {
+    assertClassReplicationSettings(1, false);
+  }
 
-    // when
-    Result<Boolean> createStatus = client1.schema().classCreator().withClass(clazz).run();
-    assertThat(createStatus).isNotNull()
-      .returns(false, Result::hasErrors)
-      .returns(true, Result::getResult);
-
-    // then
-    Result<WeaviateClass> classResult = client1.schema().classGetter().withClassName(className).run();
-    assertThat(classResult).isNotNull()
-      .returns(false, Result::hasErrors)
-      .extracting(Result::getResult).isNotNull()
-      .extracting(WeaviateClass::getReplicationConfig)
-      .isNotNull()
-      .extracting(ReplicationConfig::getFactor)
-      .isEqualTo(replicationFactor);
+  @Test
+  public void shouldCreateClassWithExplicitAsyncReplicationAndExplicitReplicationFactor() {
+    assertClassReplicationSettings(2, true);
   }
 
   @Test
@@ -493,5 +452,43 @@ public class ClusterSchemaTest {
     utils.assertThatSchemaPropertiesHaveDataTypes(expectedProps, schemaClass);
     schemaClass = utils.getClass(client2, className);
     utils.assertThatSchemaPropertiesHaveDataTypes(expectedProps, schemaClass);
+  }
+
+  private void assertClassReplicationSettings(int replicationFactor, Boolean asyncEnabled) {
+    // given
+    ReplicationConfig.ReplicationConfigBuilder replicationConfigBuilder = ReplicationConfig.builder().factor(replicationFactor);
+    if (asyncEnabled != null) {
+      replicationConfigBuilder = replicationConfigBuilder.asyncEnabled(asyncEnabled);
+    }
+    String className = "Band";
+    WeaviateClass clazz = WeaviateClass.builder()
+      .className(className)
+      .description("Band that plays and produces music")
+      .vectorIndexType("hnsw")
+      .vectorizer("text2vec-contextionary")
+      .replicationConfig(replicationConfigBuilder.build())
+      .build();
+
+    // when
+    Result<Boolean> createStatus = client1.schema().classCreator().withClass(clazz).run();
+    assertThat(createStatus).isNotNull()
+      .returns(false, Result::hasErrors)
+      .returns(true, Result::getResult);
+
+    // then
+    Result<WeaviateClass> classResult = client1.schema().classGetter().withClassName(className).run();
+    assertThat(classResult).isNotNull()
+      .returns(false, Result::hasErrors)
+      .extracting(Result::getResult).isNotNull()
+      .extracting(WeaviateClass::getReplicationConfig)
+      .isNotNull()
+      .satisfies(rc -> {
+        assertThat(rc.getFactor()).isEqualTo(replicationFactor);
+        if (asyncEnabled != null) {
+          assertThat(rc.getAsyncEnabled()).isEqualTo(asyncEnabled);
+        } else {
+          assertThat(rc.getAsyncEnabled()).isEqualTo(false);
+        }
+      });
   }
 }
