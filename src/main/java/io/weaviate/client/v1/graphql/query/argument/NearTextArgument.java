@@ -26,6 +26,7 @@ public class NearTextArgument implements Argument {
   NearTextMoveParameters moveAwayFrom;
   Boolean autocorrect;
   String[] targetVectors;
+  Targets targets;
 
   private String buildMoveParam(String name, NearTextMoveParameters moveParam) {
     Set<String> arg = new LinkedHashSet<>();
@@ -80,6 +81,9 @@ public class NearTextArgument implements Argument {
     }
     if (ArrayUtils.isNotEmpty(targetVectors)) {
       arg.add(String.format("targetVectors:%s",  Serializer.arrayWithQuotes(targetVectors)));
+    }
+    if (targets != null) {
+      arg.add(String.format("%s", targets.build()));
     }
 
     return String.format("nearText:{%s}", String.join(" ", arg));

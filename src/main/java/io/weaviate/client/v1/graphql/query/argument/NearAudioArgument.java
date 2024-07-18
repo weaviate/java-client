@@ -21,6 +21,7 @@ public class NearAudioArgument implements Argument {
   Float certainty;
   Float distance;
   String[] targetVectors;
+  Targets targets;
 
   @Override
   public String build() {
@@ -30,6 +31,7 @@ public class NearAudioArgument implements Argument {
       .targetVectors(targetVectors)
       .data(audio)
       .dataFile(audioFile)
+      .targets(targets)
       .mediaField("audio")
       .mediaName("nearAudio")
       .build().build();

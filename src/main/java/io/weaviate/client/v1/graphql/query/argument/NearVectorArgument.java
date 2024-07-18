@@ -1,6 +1,7 @@
 package io.weaviate.client.v1.graphql.query.argument;
 
 import io.weaviate.client.v1.graphql.query.util.Serializer;
+import java.util.Map;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -23,6 +24,8 @@ public class NearVectorArgument implements Argument {
   Float certainty;
   Float distance;
   String[] targetVectors;
+  Map<String, Float[]> vectorPerTarget;
+  Targets targets;
 
   @Override
   public String build() {
@@ -39,6 +42,16 @@ public class NearVectorArgument implements Argument {
     }
     if (ArrayUtils.isNotEmpty(targetVectors)) {
       arg.add(String.format("targetVectors:%s",  Serializer.arrayWithQuotes(targetVectors)));
+    }
+    if (vectorPerTarget != null && !vectorPerTarget.isEmpty()) {
+      Set<String> vectorPerTargetArg = new LinkedHashSet<>();
+      for (Map.Entry<String, Float[]> entry : vectorPerTarget.entrySet()) {
+        vectorPerTargetArg.add(String.format("%s:%s", entry.getKey(), Serializer.array(entry.getValue())));
+      }
+      arg.add(String.format("vectorPerTarget:{%s}", String.join(" ", vectorPerTargetArg)));
+    }
+    if (targets != null) {
+      arg.add(String.format("%s", targets.build()));
     }
 
     return String.format("nearVector:{%s}", String.join(" ", arg));

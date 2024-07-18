@@ -26,6 +26,7 @@ class NearMediaArgumentHelper {
   Float certainty;
   Float distance;
   String[] targetVectors;
+  Targets targets;
 
 
   public String build() {
@@ -43,6 +44,9 @@ class NearMediaArgumentHelper {
     }
     if (ArrayUtils.isNotEmpty(targetVectors)) {
       fields.add(String.format("targetVectors:%s",  Serializer.arrayWithQuotes(targetVectors)));
+    }
+    if (targets != null) {
+      fields.add(String.format("%s", targets.build()));
     }
 
     return String.format("%s:{%s}", mediaName, String.join(" ", fields));

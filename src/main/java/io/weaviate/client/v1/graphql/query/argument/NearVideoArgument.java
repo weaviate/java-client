@@ -21,6 +21,7 @@ public class NearVideoArgument implements Argument {
   Float certainty;
   Float distance;
   String[] targetVectors;
+  Targets targets;
 
   @Override
   public String build() {
@@ -30,6 +31,7 @@ public class NearVideoArgument implements Argument {
       .targetVectors(targetVectors)
       .data(video)
       .dataFile(videoFile)
+      .targets(targets)
       .mediaField("video")
       .mediaName("nearVideo")
       .build().build();

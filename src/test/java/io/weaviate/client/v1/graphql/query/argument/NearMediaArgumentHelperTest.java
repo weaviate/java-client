@@ -1,5 +1,6 @@
 package io.weaviate.client.v1.graphql.query.argument;
 
+import java.util.LinkedHashMap;
 import org.junit.Test;
 
 import java.io.File;
@@ -151,5 +152,28 @@ public class NearMediaArgumentHelperTest {
       .build().build();
 
     assertThat(nearMedia).isEqualTo("nearMedia:{}");
+  }
+
+  @Test
+  public void shouldBuildFromBase64WithTargets() {
+    LinkedHashMap<String, Float> weights = new LinkedHashMap<>();
+    weights.put("t1", 0.8f);
+    weights.put("t2", 0.2f);
+    Targets targets = Targets.builder()
+      .targetVectors(new String[]{ "t1", "t2" })
+      .combinationMethod(Targets.CombinationMethod.manualWeights)
+      .weights(weights)
+      .build();
+
+    String mediaBase64 = "iVBORw0KGgoAAAANS";
+
+    String nearMedia = NearMediaArgumentHelper.builder()
+      .data(mediaBase64)
+      .mediaField("media")
+      .mediaName("nearMedia")
+      .targets(targets)
+      .build().build();
+
+    assertThat(nearMedia).isEqualTo(String.format("nearMedia:{media:\"%s\" targets:{combinationMethod:manualWeights targetVectors:[\"t1\",\"t2\"] weights:{t1:0.8 t2:0.2}}}", mediaBase64));
   }
 }

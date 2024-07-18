@@ -21,6 +21,7 @@ public class NearImageArgument implements Argument {
   Float certainty;
   Float distance;
   String[] targetVectors;
+  Targets targets;
 
   @Override
   public String build() {
@@ -30,6 +31,7 @@ public class NearImageArgument implements Argument {
       .targetVectors(targetVectors)
       .data(image)
       .dataFile(imageFile)
+      .targets(targets)
       .mediaField("image")
       .mediaName("nearImage")
       .build().build();

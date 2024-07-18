@@ -1,5 +1,6 @@
 package io.weaviate.client.v1.graphql.query.argument;
 
+import java.util.LinkedHashMap;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,5 +48,29 @@ public class NearVectorArgumentTest {
       .build().build();
 
     assertThat(nearVector).isEqualTo("nearVector:{vector:[1.0,2.0,3.0] targetVectors:[\"vector1\"]}");
+  }
+
+  @Test
+  public void testBuildWithTargets() {
+    // given
+    LinkedHashMap<String, Float[]> vectorPerTarget = new LinkedHashMap<>();
+    vectorPerTarget.put("t1", new Float[]{1f, 2f, 3f});
+    vectorPerTarget.put("t2", new Float[]{.1f, .2f, .3f});
+    LinkedHashMap<String, Float> weights = new LinkedHashMap<>();
+    weights.put("t1", 0.8f);
+    weights.put("t2", 0.2f);
+    Targets targets = Targets.builder()
+      .targetVectors(new String[]{ "t1", "t2" })
+      .combinationMethod(Targets.CombinationMethod.sum)
+      .weights(weights)
+      .build();
+    NearVectorArgument nearVector = NearVectorArgument.builder()
+      .vectorPerTarget(vectorPerTarget)
+      .targets(targets)
+      .build();
+    // when
+    String arg = nearVector.build();
+    // then
+    assertEquals("nearVector:{vectorPerTarget:{t1:[1.0,2.0,3.0] t2:[0.1,0.2,0.3]} targets:{combinationMethod:sum targetVectors:[\"t1\",\"t2\"] weights:{t1:0.8 t2:0.2}}}", arg);
   }
 }

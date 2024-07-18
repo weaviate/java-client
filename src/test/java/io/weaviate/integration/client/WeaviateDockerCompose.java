@@ -43,6 +43,7 @@ public class WeaviateDockerCompose implements TestRule {
       if (withOffloadS3) {
         enableModules.add("offload-s3");
         withEnv("OFFLOAD_S3_ENDPOINT", "http://minio:9000");
+        withEnv("OFFLOAD_S3_BUCKET_AUTO_CREATE", "true");
         withEnv("AWS_ACCESS_KEY_ID", MinIO.USER);
         withEnv("AWS_SECRET_KEY", MinIO.PASSWORD);
       }

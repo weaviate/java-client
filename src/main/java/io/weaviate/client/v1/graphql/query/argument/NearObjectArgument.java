@@ -24,6 +24,7 @@ public class NearObjectArgument implements Argument {
   Float certainty;
   Float distance;
   String[] targetVectors;
+  Targets targets;
 
   @Override
   public String build() {
@@ -43,6 +44,9 @@ public class NearObjectArgument implements Argument {
     }
     if (ArrayUtils.isNotEmpty(targetVectors)) {
       arg.add(String.format("targetVectors:%s",  Serializer.arrayWithQuotes(targetVectors)));
+    }
+    if (targets != null) {
+      arg.add(String.format("%s", targets.build()));
     }
 
     return String.format("nearObject:{%s}", String.join(" ", arg));

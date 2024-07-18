@@ -21,6 +21,7 @@ public class NearDepthArgument implements Argument {
   Float certainty;
   Float distance;
   String[] targetVectors;
+  Targets targets;
 
   @Override
   public String build() {
@@ -30,6 +31,7 @@ public class NearDepthArgument implements Argument {
       .targetVectors(targetVectors)
       .data(depth)
       .dataFile(depthFile)
+      .targets(targets)
       .mediaField("depth")
       .mediaName("nearDepth")
       .build().build();
