@@ -21,6 +21,7 @@ public class NearImuArgument implements Argument {
   Float certainty;
   Float distance;
   String[] targetVectors;
+  Targets targets;
 
   @Override
   public String build() {
@@ -30,6 +31,7 @@ public class NearImuArgument implements Argument {
       .targetVectors(targetVectors)
       .data(imu)
       .dataFile(imuFile)
+      .targets(targets)
       .mediaField("imu")
       .mediaName("nearIMU")
       .build().build();

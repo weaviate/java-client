@@ -74,7 +74,7 @@ public class ClientSchemaTenantOffloadingTest {
     // update tenants to FROZEN
     updateTenantStatus(className, tenants, ActivityStatus.FROZEN);
     // verify tenant status FREEZING
-    verifyEventuallyTenantStatus(className, ActivityStatus.FREEZING);
+    verifyEventuallyTenantStatus(className, ActivityStatus.FROZEN);
     // verify tenants does not exist
     for (String tenant : tenants) {
       Result<List<WeaviateObject>> result = client.data().objectsGetter().withClassName(className).withTenant(tenant).run();

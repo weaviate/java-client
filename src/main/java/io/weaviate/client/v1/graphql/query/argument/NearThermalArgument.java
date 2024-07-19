@@ -21,6 +21,7 @@ public class NearThermalArgument implements Argument {
   Float certainty;
   Float distance;
   String[] targetVectors;
+  Targets targets;
 
   @Override
   public String build() {
@@ -30,6 +31,7 @@ public class NearThermalArgument implements Argument {
       .targetVectors(targetVectors)
       .data(thermal)
       .dataFile(thermalFile)
+      .targets(targets)
       .mediaField("thermal")
       .mediaName("nearThermal")
       .build().build();

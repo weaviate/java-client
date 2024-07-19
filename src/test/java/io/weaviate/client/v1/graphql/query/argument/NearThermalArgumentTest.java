@@ -1,5 +1,6 @@
 package io.weaviate.client.v1.graphql.query.argument;
 
+import java.util.LinkedHashMap;
 import org.junit.Test;
 
 import java.io.File;
@@ -122,5 +123,26 @@ public class NearThermalArgumentTest {
       .build().build();
 
     assertThat(nearThermal).isEqualTo("nearThermal:{}");
+  }
+
+  @Test
+  public void shouldBuildFromBase64WithTargets() {
+    LinkedHashMap<String, Float> weights = new LinkedHashMap<>();
+    weights.put("t1", 0.8f);
+    weights.put("t2", 0.2f);
+    Targets targets = Targets.builder()
+      .targetVectors(new String[]{ "t1", "t2" })
+      .combinationMethod(Targets.CombinationMethod.minimum)
+      .weights(weights)
+      .build();
+
+    String thermalBase64 = "iVBORw0KGgoAAAANS";
+
+    String nearThermal = NearThermalArgument.builder()
+      .thermal(thermalBase64)
+      .targets(targets)
+      .build().build();
+
+    assertThat(nearThermal).isEqualTo(String.format("nearThermal:{thermal:\"%s\" targets:{combinationMethod:minimum targetVectors:[\"t1\",\"t2\"] weights:{t1:0.8 t2:0.2}}}", thermalBase64));
   }
 }

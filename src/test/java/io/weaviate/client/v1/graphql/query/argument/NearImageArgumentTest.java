@@ -1,5 +1,6 @@
 package io.weaviate.client.v1.graphql.query.argument;
 
+import java.util.LinkedHashMap;
 import org.junit.Test;
 
 import java.io.File;
@@ -122,5 +123,26 @@ public class NearImageArgumentTest {
       .build().build();
 
     assertThat(nearImage).isEqualTo("nearImage:{}");
+  }
+
+  @Test
+  public void shouldBuildFromBase64WithTargets() {
+    LinkedHashMap<String, Float> weights = new LinkedHashMap<>();
+    weights.put("t1", 0.8f);
+    weights.put("t2", 0.2f);
+    Targets targets = Targets.builder()
+      .targetVectors(new String[]{ "t1", "t2" })
+      .combinationMethod(Targets.CombinationMethod.average)
+      .weights(weights)
+      .build();
+
+    String imageBase64 = "iVBORw0KGgoAAAANS";
+
+    String nearImage = NearImageArgument.builder()
+      .image(imageBase64)
+      .targets(targets)
+      .build().build();
+
+    assertThat(nearImage).isEqualTo(String.format("nearImage:{image:\"%s\" targets:{combinationMethod:average targetVectors:[\"t1\",\"t2\"] weights:{t1:0.8 t2:0.2}}}", imageBase64));
   }
 }
