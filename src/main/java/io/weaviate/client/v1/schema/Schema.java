@@ -2,6 +2,8 @@ package io.weaviate.client.v1.schema;
 
 import io.weaviate.client.Config;
 import io.weaviate.client.base.http.HttpClient;
+import io.weaviate.client.base.util.DbVersionProvider;
+import io.weaviate.client.base.util.DbVersionSupport;
 import io.weaviate.client.v1.schema.api.ClassCreator;
 import io.weaviate.client.v1.schema.api.ClassDeleter;
 import io.weaviate.client.v1.schema.api.ClassExists;
@@ -22,10 +24,12 @@ import io.weaviate.client.v1.schema.api.TenantsUpdater;
 public class Schema {
   private final Config config;
   private final HttpClient httpClient;
+  private final DbVersionSupport dbVersionSupport;
 
-  public Schema(HttpClient httpClient, Config config) {
+  public Schema(HttpClient httpClient, Config config, DbVersionSupport dbVersionSupport) {
     this.config = config;
     this.httpClient = httpClient;
+    this.dbVersionSupport = dbVersionSupport;
   }
 
   public SchemaGetter getter() {
@@ -73,11 +77,11 @@ public class Schema {
   }
 
   public TenantsCreator tenantsCreator() {
-    return new TenantsCreator(httpClient, config);
+    return new TenantsCreator(httpClient, config, dbVersionSupport);
   }
 
   public TenantsUpdater tenantsUpdater() {
-    return new TenantsUpdater(httpClient, config);
+    return new TenantsUpdater(httpClient, config, dbVersionSupport);
   }
 
   public TenantsDeleter tenantsDeleter() {
