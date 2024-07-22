@@ -49,7 +49,7 @@ public class WeaviateClient {
   }
 
   public Schema schema() {
-    return new Schema(httpClient, config);
+    return new Schema(httpClient, config, dbVersionSupport);
   }
 
   public Data data() {

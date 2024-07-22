@@ -388,4 +388,62 @@ public class ClientSchemaMultiTenancyTest {
       .returns(false, Result::hasErrors)
       .returns(true, Result::getResult);
   }
+
+  @Test
+  public void shouldAddAndUpdateMoreThan100TenantsToMTClass() {
+    int numberOfTenants = 201;
+    String[] tenants = new String[numberOfTenants];
+    for (int i = 0; i < numberOfTenants; i++) {
+      tenants[i] = String.format("TenantNo%s", i);
+    }
+    testGenerics.createSchemaPizzaForTenants(client);
+
+    Tenant[] tenantObjs = Arrays.stream(tenants)
+      .map(tenant -> Tenant.builder().name(tenant).build())
+      .toArray(Tenant[]::new);
+
+    Result<Boolean> addResult = client.schema().tenantsCreator()
+      .withClassName("Pizza")
+      .withTenants(tenantObjs)
+      .run();
+
+    assertThat(addResult).isNotNull()
+      .returns(false, Result::hasErrors)
+      .returns(true, Result::getResult);
+
+    for (String tenant: tenants) {
+      Result<Boolean> exists = client.schema().tenantsExists()
+        .withClassName("Pizza")
+        .withTenant(tenant)
+        .run();
+
+      assertThat(exists).isNotNull()
+        .returns(false, Result::hasErrors)
+        .returns(true, Result::getResult);
+    }
+
+    tenantObjs = Arrays.stream(tenants)
+      .map(tenant -> Tenant.builder().name(tenant).activityStatus(ActivityStatus.COLD).build())
+      .toArray(Tenant[]::new);
+
+    Result<Boolean> updateResult = client.schema().tenantsUpdater()
+      .withClassName("Pizza")
+      .withTenants(tenantObjs)
+      .run();
+
+    assertThat(updateResult).isNotNull()
+      .returns(false, Result::hasErrors)
+      .returns(true, Result::getResult);
+
+    for (String tenant: tenants) {
+      Result<Boolean> exists = client.schema().tenantsExists()
+        .withClassName("Pizza")
+        .withTenant(tenant)
+        .run();
+
+      assertThat(exists).isNotNull()
+        .returns(false, Result::hasErrors)
+        .returns(true, Result::getResult);
+    }
+  }
 }

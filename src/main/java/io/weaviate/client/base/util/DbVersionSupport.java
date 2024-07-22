@@ -10,11 +10,19 @@ public class DbVersionSupport {
 
   // supported since 1.14
   public boolean supportsClassNameNamespacedEndpoints() {
+    return satisfiesVersion(1, 14);
+  }
+
+  public boolean supportsOnly100TenantsInOneRequest() {
+    return satisfiesVersion(1, 26);
+  }
+
+  private boolean satisfiesVersion(int major, int minor) {
     String[] versionNumbers = StringUtils.split(provider.getVersion(), ".");
     if (versionNumbers != null && versionNumbers.length >= 2) {
-      int major = Integer.parseInt(versionNumbers[0]);
-      int minor = Integer.parseInt(versionNumbers[1]);
-      return (major == 1 && minor >= 14) || major >= 2;
+      int parsedMajor = Integer.parseInt(versionNumbers[0]);
+      int parsedMinor = Integer.parseInt(versionNumbers[1]);
+      return (parsedMajor == major && parsedMinor >= minor) || parsedMajor >= 2;
     }
     return false;
   }
