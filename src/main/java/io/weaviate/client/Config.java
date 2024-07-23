@@ -35,8 +35,16 @@ public class Config {
     this(scheme, host, null, DEFAULT_TIMEOUT_SECONDS, DEFAULT_TIMEOUT_SECONDS, DEFAULT_TIMEOUT_SECONDS);
   }
 
+  public Config(String scheme, String host, boolean gRPCSecured, String gRPCHost) {
+    this(scheme, host, null, DEFAULT_TIMEOUT_SECONDS, gRPCSecured, gRPCHost);
+  }
+
   public Config(String scheme, String host, Map<String, String> headers) {
     this(scheme, host, headers, DEFAULT_TIMEOUT_SECONDS, DEFAULT_TIMEOUT_SECONDS, DEFAULT_TIMEOUT_SECONDS);
+  }
+
+  public Config(String scheme, String host, boolean gRPCSecured, String gRPCHost, Map<String, String> headers) {
+    this(scheme, host, headers, DEFAULT_TIMEOUT_SECONDS, gRPCSecured, gRPCHost);
   }
 
   public Config(String scheme, String host, Map<String, String> headers, int connectionTimeout, int connectionRequestTimeout, int socketTimeout) {
