@@ -2,7 +2,6 @@ package io.weaviate.client.v1.schema;
 
 import io.weaviate.client.Config;
 import io.weaviate.client.base.http.HttpClient;
-import io.weaviate.client.base.util.DbVersionProvider;
 import io.weaviate.client.base.util.DbVersionSupport;
 import io.weaviate.client.v1.schema.api.ClassCreator;
 import io.weaviate.client.v1.schema.api.ClassDeleter;
@@ -77,7 +76,7 @@ public class Schema {
   }
 
   public TenantsCreator tenantsCreator() {
-    return new TenantsCreator(httpClient, config, dbVersionSupport);
+    return new TenantsCreator(httpClient, config);
   }
 
   public TenantsUpdater tenantsUpdater() {
