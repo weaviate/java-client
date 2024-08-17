@@ -59,7 +59,7 @@
     <lombok.version>1.18.34</lombok.version>
     <gson.version>2.11.0</gson.version>
     <httpclient.version>4.5.14</httpclient.version>
-    <lang3.version>3.14.0</lang3.version>
+    <lang3.version>3.15.0</lang3.version>
     <junit.version>5.10.3</junit.version>
     <testcontainers.version>1.19.8</testcontainers.version>
     <assertj-core.version>3.26.3</assertj-core.version>
