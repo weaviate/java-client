@@ -1,5 +1,6 @@
 package io.weaviate.integration.client;
 
+import java.time.Duration;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -26,17 +27,15 @@ public class WeaviateDockerComposeCluster implements TestRule {
       withEnv("DISABLE_TELEMETRY", "true");
       withEnv("PERSISTENCE_FLUSH_IDLE_MEMTABLES_AFTER", "1");
 
-      withEnv("CLUSTER_HOSTNAME", hostname);
       withEnv("CLUSTER_GOSSIP_BIND_PORT", "7110");
       withEnv("CLUSTER_DATA_BIND_PORT", "7111");
       withEnv("RAFT_PORT", "8300");
-      withEnv("RAFT_INTERNAL_RPC_PORT", "8301");
 
-      withEnv("RAFT_BOOTSTRAP_EXPECT", "2");
-      withEnv("RAFT_JOIN", "weaviate-0:8300,weaviate-1:8300");
+      withEnv("RAFT_BOOTSTRAP_EXPECT", "1");
+      withEnv("RAFT_JOIN", "weaviate-0");
       if (isJoining) {
         withEnv("CLUSTER_JOIN", "weaviate-0:7110");
-        waitingFor(Wait.forHttp("/v1/.well-known/ready").forPort(8080).forStatusCode(200));
+        waitingFor(Wait.forHttp("/v1/.well-known/ready").forPort(8080).forStatusCode(200).withStartupTimeout(Duration.ofSeconds(10)));
       }
     }
   }
