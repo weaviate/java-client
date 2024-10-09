@@ -103,7 +103,18 @@ public class HybridArgumentTest {
                                                                         .build())
                                                                 // @formatter:on
                                                                 .build(),
-                                                "hybrid:{query:\"I'm a simple string\" targets:{combinationMethod:minimum targetVectors:[\"t1\",\"t2\"] weights:{t1:0.8 t2:0.2}}}"));
+                                                "hybrid:{query:\"I'm a simple string\" targets:{combinationMethod:minimum targetVectors:[\"t1\",\"t2\"] weights:{t1:0.8 t2:0.2}}}"),
+                                Arguments.of(
+                                                "max vector distance",
+                                                HybridArgument.builder().query("I'm a simple string")
+                                                // @formatter:off
+                                                .searches(HybridArgument.Searches.builder().nearText(
+                                                        NearTextArgument.builder().concepts(new String[]{"concept"}).build()).build()
+                                                )
+                                                .maxVectorDistance(.5f)
+                                                // @formatter:on
+                                                                .build(),
+                                                "hybrid:{query:\"I'm a simple string\" maxVectorDistance:0.5 searches:{nearText:{concepts:[\"concept\"]}}}"));
         }
 
         @ParameterizedTest
