@@ -130,7 +130,7 @@ public class HybridArgumentTest {
                 };
         }
 
-        @DataMethod(source = HybridArgumentTest.class, method = "provideData")
+        @DataMethod(source = HybridArgumentTest.class, method = "provideTestCases")
         @Test
         public void test(String name, HybridArgument hybrid, String expected) throws Exception {
                 String actual = hybrid.build();
