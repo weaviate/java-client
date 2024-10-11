@@ -3,16 +3,16 @@ package io.weaviate.client.v1.graphql.query.argument;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import io.weaviate.client.v1.graphql.query.util.Serializer;
-import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @Builder
@@ -22,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 public class HybridArgument implements Argument {
   String query;
   Float alpha;
+  Float maxVectorDistance;
   Float[] vector;
   String fusionType;
   String[] properties;
@@ -40,6 +41,9 @@ public class HybridArgument implements Argument {
     if (alpha != null) {
       arg.add(String.format("alpha:%s", alpha));
     }
+    if (maxVectorDistance != null) {
+      arg.add(String.format("maxVectorDistance:%s", maxVectorDistance));
+    }
     if (ArrayUtils.isNotEmpty(properties)) {
       arg.add(String.format("properties:%s", Serializer.arrayWithQuotes(properties)));
     }
@@ -47,7 +51,7 @@ public class HybridArgument implements Argument {
       arg.add(String.format("fusionType:%s", fusionType));
     }
     if (ArrayUtils.isNotEmpty(targetVectors)) {
-      arg.add(String.format("targetVectors:%s",  Serializer.arrayWithQuotes(targetVectors)));
+      arg.add(String.format("targetVectors:%s", Serializer.arrayWithQuotes(targetVectors)));
     }
     if (searches != null && (searches.nearVector != null || searches.nearText != null)) {
       Set<String> searchesArgs = new LinkedHashSet<>();
