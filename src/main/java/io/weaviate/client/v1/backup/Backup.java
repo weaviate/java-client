@@ -1,12 +1,9 @@
 package io.weaviate.client.v1.backup;
 
-import io.weaviate.client.base.http.HttpClient;
-import io.weaviate.client.v1.backup.api.BackupCreateStatusGetter;
-import io.weaviate.client.v1.backup.api.BackupCreator;
-import io.weaviate.client.v1.backup.api.BackupRestoreStatusGetter;
-import io.weaviate.client.v1.backup.api.BackupRestorer;
-import lombok.RequiredArgsConstructor;
 import io.weaviate.client.Config;
+import io.weaviate.client.base.http.HttpClient;
+import io.weaviate.client.v1.backup.api.*;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class Backup {
@@ -30,7 +27,11 @@ public class Backup {
     return new BackupRestoreStatusGetter(httpClient, config);
   }
 
-//  public BackupGetter getter() {
-//    return new BackupGetter(config);
-//  }
+  public BackupCanceler canceler() {
+    return new BackupCanceler(httpClient, config);
+  }
+  
+  //  public BackupGetter getter() {
+  //    return new BackupGetter(config);
+  //  }
 }
