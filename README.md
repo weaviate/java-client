@@ -1,19 +1,19 @@
 # Weaviate Java client  <img alt='Weaviate logo' src='https://raw.githubusercontent.com/weaviate/weaviate/19de0956c69b66c5552447e84d016f4fe29d12c9/docs/assets/weaviate-logo.png' width='180' align='right' />
 
-A Java native client for weaviate.
+A Java native client for Weaviate.
 
 ## Usage
 
-In order to get start using the java client one needs to add it's dependency:
+To start using Weaviate Java client add this dependency to `pom.xml`:
 
 ```xml
+
 <dependency>
-  <groupId>io.weaviate</groupId>
-  <artifactId>client</artifactId>
-  <version>4.8.3</version>
+    <groupId>io.weaviate</groupId>
+    <artifactId>client</artifactId>
+    <version>4.8.3</version>
 </dependency>
 ```
-
 
 ### For applications on Java 9 or above
 
@@ -21,6 +21,7 @@ The client utilizes Gson for JSON serialization/deserialization and Gson uses re
 to do it. This is not allowed by default in Java 9 and above.
 
 To work around this, it's necessary to add this JVM commandline argument:
+
 ```
 --add-opens=java.base/java.lang=ALL-UNNAMED
 ```
@@ -29,10 +30,9 @@ If you're using Gradle, you can add this instead to your `application` block in 
 
 ```kotlin
 applicationDefaultJvmArgs += listOf(
-  "--add-opens=java.base/java.lang=ALL-UNNAMED",
+    "--add-opens=java.base/java.lang=ALL-UNNAMED",
 )
 ```
-
 
 Here's a simple code to start up working with Java client:
 

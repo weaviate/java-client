@@ -7,4 +7,5 @@ public interface CreateStatus {
   String TRANSFERRED = "TRANSFERRED";
   String SUCCESS = "SUCCESS";
   String FAILED = "FAILED";
+  String CANCELED = "CANCELED";
 }

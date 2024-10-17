@@ -22,13 +22,18 @@ import io.weaviate.integration.client.WeaviateDockerCompose;
 import io.weaviate.integration.client.WeaviateTestGenerics;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicReference;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
 import static org.assertj.core.api.InstanceOfAssertFactories.CHAR_SEQUENCE;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 public class ClientBackupTest {
 
@@ -44,6 +49,10 @@ public class ClientBackupTest {
   private WeaviateClient client;
 
   private final WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
+  private final static Random rand = new Random();
+
+  @Rule
+  public TestName currentTest = new TestName();
 
   @ClassRule
   public static WeaviateDockerCompose compose = new WeaviateDockerCompose();
@@ -53,8 +62,8 @@ public class ClientBackupTest {
     String httpHost = compose.getHttpHostAddress();
     Config config = new Config("http", httpHost);
 
-    backupId = "backup-" + new Random().nextInt(Integer.MAX_VALUE);
-    notExistingBackupId = "not-existing-backup-" + new Random().nextInt(Integer.MAX_VALUE);
+    backupId = String.format("backup-%s-%s", currentTest.getMethodName().toLowerCase(), rand.nextInt(Integer.MAX_VALUE));
+    notExistingBackupId = "not-existing-backup-" + backupId;
 
     client = new WeaviateClient(config);
     testGenerics.createTestSchemaAndData(client);
@@ -78,10 +87,10 @@ public class ClientBackupTest {
       .withWaitForCompletion(true)
       .run();
 
-    assertThat(createResult.hasErrors()).isFalse();
+    assertThat(createResult.getError()).as("create backup").isNull();
     assertThat(createResult.getResult()).isNotNull()
       .returns(backupId, BackupCreateResponse::getId)
-      .returns(new String[]{CLASS_NAME_PIZZA}, BackupCreateResponse::getClassNames)
+      .returns(new String[]{ CLASS_NAME_PIZZA }, BackupCreateResponse::getClassNames)
       .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupCreateResponse::getPath)
       .returns(BACKEND, BackupCreateResponse::getBackend)
       .returns(CreateStatus.SUCCESS, BackupCreateResponse::getStatus)
@@ -95,7 +104,7 @@ public class ClientBackupTest {
       .withBackupId(backupId)
       .run();
 
-    assertThat(createStatusResult.hasErrors()).isFalse();
+    assertThat(createStatusResult.getError()).as("check backup creation status").isNull();
     assertThat(createStatusResult.getResult()).isNotNull()
       .returns(backupId, BackupCreateStatusResponse::getId)
       .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupCreateStatusResponse::getPath)
@@ -108,7 +117,7 @@ public class ClientBackupTest {
       .withClassName(CLASS_NAME_PIZZA)
       .run();
 
-    assertThat(delete.hasErrors()).isFalse();
+    assertThat(delete.getError()).as("drop Pizza collection").isNull();
     assertThat(delete.getResult()).isTrue();
 
     // Restore backup
@@ -119,10 +128,10 @@ public class ClientBackupTest {
       .withWaitForCompletion(true)
       .run();
 
-    assertThat(restoreResult.hasErrors()).isFalse();
+    assertThat(restoreResult.getError()).as("restore from backup").isNull();
     assertThat(restoreResult.getResult()).isNotNull()
       .returns(backupId, BackupRestoreResponse::getId)
-      .returns(new String[]{CLASS_NAME_PIZZA}, BackupRestoreResponse::getClassNames)
+      .returns(new String[]{ CLASS_NAME_PIZZA }, BackupRestoreResponse::getClassNames)
       .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupRestoreResponse::getPath)
       .returns(BACKEND, BackupRestoreResponse::getBackend)
       .returns(RestoreStatus.SUCCESS, BackupRestoreResponse::getStatus)
@@ -136,7 +145,7 @@ public class ClientBackupTest {
       .withBackupId(backupId)
       .run();
 
-    assertThat(restoreStatusResult.hasErrors()).isFalse();
+    assertThat(restoreStatusResult.getError()).as("get restore status").isNull();
     assertThat(restoreStatusResult.getResult()).isNotNull()
       .returns(backupId, BackupRestoreStatusResponse::getId)
       .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupRestoreStatusResponse::getPath)
@@ -156,10 +165,10 @@ public class ClientBackupTest {
       .withBackupId(backupId)
       .run();
 
-    assertThat(createResult.hasErrors()).isFalse();
+    assertThat(createResult.getError()).as("create backup").isNull();
     assertThat(createResult.getResult()).isNotNull()
       .returns(backupId, BackupCreateResponse::getId)
-      .returns(new String[]{CLASS_NAME_PIZZA}, BackupCreateResponse::getClassNames)
+      .returns(new String[]{ CLASS_NAME_PIZZA }, BackupCreateResponse::getClassNames)
       .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupCreateResponse::getPath)
       .returns(BACKEND, BackupCreateResponse::getBackend)
       .returns(CreateStatus.STARTED, BackupCreateResponse::getStatus)
@@ -174,14 +183,15 @@ public class ClientBackupTest {
     while (true) {
       createStatusResult = createStatusGetter.run();
 
-      assertThat(createStatusResult.hasErrors()).isFalse();
+      assertThat(createStatusResult.getError()).as("check backup creation status").isNull();
       assertThat(createStatusResult.getResult()).isNotNull()
         .returns(backupId, BackupCreateStatusResponse::getId)
         .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupCreateStatusResponse::getPath)
         .returns(BACKEND, BackupCreateStatusResponse::getBackend)
         .returns(null, BackupCreateStatusResponse::getError)
         .extracting(BackupCreateStatusResponse::getStatus).isIn(CreateStatus.STARTED, CreateStatus.TRANSFERRING,
-          CreateStatus.TRANSFERRED, CreateStatus.SUCCESS);
+          CreateStatus.TRANSFERRED, CreateStatus.SUCCESS
+        );
 
       if (CreateStatus.SUCCESS.equals(createStatusResult.getResult().getStatus())) {
         break;
@@ -196,7 +206,7 @@ public class ClientBackupTest {
       .withClassName(CLASS_NAME_PIZZA)
       .run();
 
-    assertThat(delete.hasErrors()).isFalse();
+    assertThat(delete.getError()).as("drop Pizza collection").isNull();
     assertThat(delete.getResult()).isTrue();
 
     // Start restoring backup
@@ -205,10 +215,10 @@ public class ClientBackupTest {
       .withBackupId(backupId)
       .run();
 
-    assertThat(restoreResult.hasErrors()).isFalse();
+    assertThat(restoreResult.getError()).as("restore from backup").isNull();
     assertThat(restoreResult.getResult()).isNotNull()
       .returns(backupId, BackupRestoreResponse::getId)
-      .returns(new String[]{CLASS_NAME_PIZZA}, BackupRestoreResponse::getClassNames)
+      .returns(new String[]{ CLASS_NAME_PIZZA }, BackupRestoreResponse::getClassNames)
       .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupRestoreResponse::getPath)
       .returns(BACKEND, BackupRestoreResponse::getBackend)
       .returns(RestoreStatus.STARTED, BackupRestoreResponse::getStatus)
@@ -223,14 +233,15 @@ public class ClientBackupTest {
     while (true) {
       restoreStatusResult = restoreStatusGetter.run();
 
-      assertThat(restoreStatusResult.hasErrors()).isFalse();
+      assertThat(restoreStatusResult.getError()).as("get restore status").isNull();
       assertThat(restoreStatusResult.getResult()).isNotNull()
         .returns(backupId, BackupRestoreStatusResponse::getId)
         .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupRestoreStatusResponse::getPath)
         .returns(BACKEND, BackupRestoreStatusResponse::getBackend)
         .returns(null, BackupRestoreStatusResponse::getError)
         .extracting(BackupRestoreStatusResponse::getStatus).isIn(RestoreStatus.STARTED, RestoreStatus.TRANSFERRING,
-          RestoreStatus.TRANSFERRED, RestoreStatus.SUCCESS);
+          RestoreStatus.TRANSFERRED, RestoreStatus.SUCCESS
+        );
 
       if (RestoreStatus.SUCCESS.equals(restoreStatusResult.getResult().getStatus())) {
         break;
@@ -299,7 +310,7 @@ public class ClientBackupTest {
     assertThat(restoreResult.hasErrors()).isFalse();
     assertThat(restoreResult.getResult()).isNotNull()
       .returns(backupId, BackupRestoreResponse::getId)
-      .returns(new String[]{CLASS_NAME_PIZZA}, BackupRestoreResponse::getClassNames)
+      .returns(new String[]{ CLASS_NAME_PIZZA }, BackupRestoreResponse::getClassNames)
       .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupRestoreResponse::getPath)
       .returns(BACKEND, BackupRestoreResponse::getBackend)
       .returns(RestoreStatus.SUCCESS, BackupRestoreResponse::getStatus)
@@ -336,7 +347,7 @@ public class ClientBackupTest {
       .returns(422, WeaviateError::getStatusCode)
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
-      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
+      .extracting(msg -> ((WeaviateErrorMessage) msg).getMessage())
       .first().asInstanceOf(CHAR_SEQUENCE).contains(NOT_EXISTING_BACKEND);
   }
 
@@ -352,7 +363,7 @@ public class ClientBackupTest {
       .returns(422, WeaviateError::getStatusCode)
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
-      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
+      .extracting(msg -> ((WeaviateErrorMessage) msg).getMessage())
       .first().asInstanceOf(CHAR_SEQUENCE).contains(NOT_EXISTING_BACKEND);
   }
 
@@ -369,7 +380,7 @@ public class ClientBackupTest {
       .returns(422, WeaviateError::getStatusCode)
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
-      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
+      .extracting(msg -> ((WeaviateErrorMessage) msg).getMessage())
       .first().asInstanceOf(CHAR_SEQUENCE).contains(NOT_EXISTING_BACKEND);
   }
 
@@ -386,7 +397,7 @@ public class ClientBackupTest {
       .returns(422, WeaviateError::getStatusCode)
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
-      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
+      .extracting(msg -> ((WeaviateErrorMessage) msg).getMessage())
       .first().asInstanceOf(CHAR_SEQUENCE).contains(NOT_EXISTING_CLASS_NAME);
   }
 
@@ -439,7 +450,7 @@ public class ClientBackupTest {
       .returns(422, WeaviateError::getStatusCode)
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
-      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
+      .extracting(msg -> ((WeaviateErrorMessage) msg).getMessage())
       .first().asInstanceOf(CHAR_SEQUENCE).contains(backupId);
   }
 
@@ -455,7 +466,7 @@ public class ClientBackupTest {
       .returns(404, WeaviateError::getStatusCode)
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
-      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
+      .extracting(msg -> ((WeaviateErrorMessage) msg).getMessage())
       .first().asInstanceOf(CHAR_SEQUENCE).contains(notExistingBackupId);
   }
 
@@ -472,7 +483,7 @@ public class ClientBackupTest {
       .returns(404, WeaviateError::getStatusCode)
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
-      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
+      .extracting(msg -> ((WeaviateErrorMessage) msg).getMessage())
       .first().asInstanceOf(CHAR_SEQUENCE).contains(notExistingBackupId);
   }
 
@@ -497,7 +508,7 @@ public class ClientBackupTest {
       .returns(404, WeaviateError::getStatusCode)
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
-      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
+      .extracting(msg -> ((WeaviateErrorMessage) msg).getMessage())
       .first().asInstanceOf(CHAR_SEQUENCE).contains(backupId);
   }
 
@@ -516,7 +527,7 @@ public class ClientBackupTest {
       .returns(422, WeaviateError::getStatusCode)
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
-      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
+      .extracting(msg -> ((WeaviateErrorMessage) msg).getMessage())
       .first().asInstanceOf(CHAR_SEQUENCE).contains("include").contains("exclude");
   }
 
@@ -552,7 +563,7 @@ public class ClientBackupTest {
       .returns(422, WeaviateError::getStatusCode)
       .extracting(WeaviateError::getMessages).asList()
       .hasSizeGreaterThan(0)
-      .extracting(msg -> ((WeaviateErrorMessage)msg).getMessage())
+      .extracting(msg -> ((WeaviateErrorMessage) msg).getMessage())
       .first().asInstanceOf(CHAR_SEQUENCE).contains("include").contains("exclude");
   }
 
@@ -599,7 +610,7 @@ public class ClientBackupTest {
     assertThat(createResult.hasErrors()).isFalse();
     assertThat(createResult.getResult()).isNotNull()
       .returns(backupId, BackupCreateResponse::getId)
-      .returns(new String[]{CLASS_NAME_PIZZA}, BackupCreateResponse::getClassNames)
+      .returns(new String[]{ CLASS_NAME_PIZZA }, BackupCreateResponse::getClassNames)
       .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupCreateResponse::getPath)
       .returns(BACKEND, BackupCreateResponse::getBackend)
       .returns(CreateStatus.SUCCESS, BackupCreateResponse::getStatus)
@@ -664,7 +675,7 @@ public class ClientBackupTest {
     assertThat(restoreResult.hasErrors()).isFalse();
     assertThat(restoreResult.getResult()).isNotNull()
       .returns(backupId, BackupRestoreResponse::getId)
-      .returns(new String[]{CLASS_NAME_PIZZA}, BackupRestoreResponse::getClassNames)
+      .returns(new String[]{ CLASS_NAME_PIZZA }, BackupRestoreResponse::getClassNames)
       .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupRestoreResponse::getPath)
       .returns(BACKEND, BackupRestoreResponse::getBackend)
       .returns(RestoreStatus.SUCCESS, BackupRestoreResponse::getStatus)
@@ -687,39 +698,24 @@ public class ClientBackupTest {
       .returns(null, BackupRestoreStatusResponse::getError);
   }
 
-//  @Test
-//  public void shouldGetAllExistingBackups() {
-//    String backupIdPizza = backupId + "-pizza";
-//    String backupIdSoup = backupId + "-soup";
-//
-//    Result<BackupCreateResponse> createResultPizza = client.backup().creator()
-//      .withIncludeClassNames(CLASS_NAME_PIZZA)
-//      .withBackend(BACKEND)
-//      .withBackupId(backupIdPizza)
-//      .withWaitForCompletion(true)
-//      .run();
-//
-//    assertThat(createResultPizza.hasErrors()).isFalse();
-//
-//    Result<BackupCreateResponse> createResultSoup = client.backup().creator()
-//      .withIncludeClassNames(CLASS_NAME_SOUP)
-//      .withBackend(BACKEND)
-//      .withBackupId(backupIdSoup)
-//      .withWaitForCompletion(true)
-//      .run();
-//
-//    assertThat(createResultSoup.hasErrors()).isFalse();
-//
-//    Result<BackupCreateResponse[]> allResult = client.backup().getter()
-//      .withBackend(BACKEND)
-//      .run();
-//
-//    assertThat(allResult.hasErrors()).isFalse();
-//    assertThat(allResult.getResult()).isNotNull()
-//      .hasSize(2)
-//      .extracting(BackupCreateResponse::getId)
-//      .containsExactlyInAnyOrder(backupIdPizza, backupIdSoup);
-//  }
+  @Test
+  public void shouldCancelBackup() throws InterruptedException {
+    Result<BackupCreateResponse> createResult = client.backup().creator()
+      .withIncludeClassNames(CLASS_NAME_PIZZA)
+      .withBackend(BACKEND)
+      .withBackupId(backupId)
+      .withWaitForCompletion(false) // this will allow us to "intercept" the backup in progress
+      .run();
+    assertThat(createResult.getError()).as("start backup").isNull();
+
+    Result<Void> cancelResult = client.backup().canceler()
+      .withBackend(BACKEND)
+      .withBackupId(backupId)
+      .run();
+    assertThat(cancelResult.getError()).as("cancel backup").isNull();
+
+    waitForCreateStatus(CreateStatus.CANCELED);
+  }
 
   private void assertThatAllPizzasExist() {
     assertThatAllFoodObjectsExist("Pizza", "Quattro Formaggi", "Frutti di Mare", "Hawaii", "Doener");
@@ -738,11 +734,45 @@ public class ClientBackupTest {
     assertThat(result.hasErrors()).isFalse();
     assertThat(result.getResult()).isNotNull()
       .extracting(GraphQLResponse::getData).isInstanceOf(Map.class)
-      .extracting(data -> ((Map<?, ?>)data).get("Get")).isInstanceOf(Map.class)
-      .extracting(get -> ((Map<?, ?>)get).get(className)).asList()
+      .extracting(data -> ((Map<?, ?>) data).get("Get")).isInstanceOf(Map.class)
+      .extracting(get -> ((Map<?, ?>) get).get(className)).asList()
       .hasSize(names.length).hasOnlyElementsOfType(Map.class)
-      .extracting(pizza -> ((Map<?,?>)pizza).get("name")).hasOnlyElementsOfType(String.class)
-      .extracting(name -> (String)name)
+      .extracting(pizza -> ((Map<?, ?>) pizza).get("name")).hasOnlyElementsOfType(String.class)
+      .extracting(name -> (String) name)
       .containsExactlyInAnyOrder(names);
+  }
+
+  /**
+   * Periodically polls backup creation status until it reaches the desired ({@code want}) state or the deadline expires.
+   *
+   * <br>Interval: 100ms
+   * <br>Timeout: 5s
+   */
+  private void waitForCreateStatus(String want) {
+    final int MAX_RETRIES = 5_000 / 100;
+    AtomicReference<String> status = new AtomicReference<>("");
+
+    Callable<Boolean> statusCheck = new Callable<Boolean>() {
+      @Override
+      public Boolean call() throws Exception {
+        Result<BackupCreateStatusResponse> check = client.backup().createStatusGetter().withBackupId(backupId).withBackend(BACKEND).run();
+        String current = check.getResult().getStatus();
+        status.set(current);
+        return current.equalsIgnoreCase(want);
+      }
+    };
+
+    try {
+      int retried = 0;
+      do {
+        if (statusCheck.call()) {
+          return;
+        }
+        retried++;
+        Thread.sleep(100);
+      } while (retried < MAX_RETRIES);
+    } catch (Exception ignored) {
+    }
+    fail(String.format("after 5s create status: want=%s, got=%s", want, status.get()));
   }
 }
