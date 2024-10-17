@@ -30,8 +30,4 @@ public class Backup {
   public BackupCanceler canceler() {
     return new BackupCanceler(httpClient, config);
   }
-  
-  //  public BackupGetter getter() {
-  //    return new BackupGetter(config);
-  //  }
 }

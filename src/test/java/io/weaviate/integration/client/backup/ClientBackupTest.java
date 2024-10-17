@@ -717,40 +717,6 @@ public class ClientBackupTest {
     waitForCreateStatus(CreateStatus.CANCELED);
   }
 
-  //  @Test
-  //  public void shouldGetAllExistingBackups() {
-  //    String backupIdPizza = backupId + "-pizza";
-  //    String backupIdSoup = backupId + "-soup";
-  //
-  //    Result<BackupCreateResponse> createResultPizza = client.backup().creator()
-  //      .withIncludeClassNames(CLASS_NAME_PIZZA)
-  //      .withBackend(BACKEND)
-  //      .withBackupId(backupIdPizza)
-  //      .withWaitForCompletion(true)
-  //      .run();
-  //
-  //    assertThat(createResultPizza.hasErrors()).isFalse();
-  //
-  //    Result<BackupCreateResponse> createResultSoup = client.backup().creator()
-  //      .withIncludeClassNames(CLASS_NAME_SOUP)
-  //      .withBackend(BACKEND)
-  //      .withBackupId(backupIdSoup)
-  //      .withWaitForCompletion(true)
-  //      .run();
-  //
-  //    assertThat(createResultSoup.hasErrors()).isFalse();
-  //
-  //    Result<BackupCreateResponse[]> allResult = client.backup().getter()
-  //      .withBackend(BACKEND)
-  //      .run();
-  //
-  //    assertThat(allResult.hasErrors()).isFalse();
-  //    assertThat(allResult.getResult()).isNotNull()
-  //      .hasSize(2)
-  //      .extracting(BackupCreateResponse::getId)
-  //      .containsExactlyInAnyOrder(backupIdPizza, backupIdSoup);
-  //  }
-
   private void assertThatAllPizzasExist() {
     assertThatAllFoodObjectsExist("Pizza", "Quattro Formaggi", "Frutti di Mare", "Hawaii", "Doener");
   }
