@@ -86,8 +86,10 @@ public class ClusterSchemaTest {
       .extracting(WeaviateError::getMessages).asList()
       .first()
       .extracting(m -> ((WeaviateErrorMessage) m).getMessage()).asInstanceOf(STRING)
-      .contains("not enough storage replicas");
-  }@Test
+      .contains("could not find enough weaviate nodes for replication");
+  }
+
+  @Test
   public void shouldAddObjectsWithNestedProperties_EntireSchema() {
     WeaviateClass schemaClass;
     String className = "ClassWithObjectProperty";
