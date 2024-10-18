@@ -23,8 +23,8 @@ if git rev-parse "$VERSION" >/dev/null 2>&1; then
 fi
 
 mvn versions:set -DnewVersion=$VERSION versions:commit
-sed -i '' "s/^    <tag>.*/    <tag>$VERSION<\/tag>/" pom.xml
-sed -i '' "s/^  <version>.*/  <version>$VERSION<\/version>/" README.md
+sed -i '' "s/^\([[:blank:]]*\)<tag>.*/\1<tag>$VERSION<\/tag>/" pom.xml
+sed -i '' "s/^\([[:blank:]]*\)<version>.*/\1<version>$VERSION<\/version>/" README.md
 
 git commit -a -m "Release $VERSION version"
 git tag -a "$VERSION" -m "$VERSION"
