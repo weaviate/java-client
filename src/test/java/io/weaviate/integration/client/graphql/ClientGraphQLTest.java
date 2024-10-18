@@ -61,7 +61,6 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.jupiter.api.Disabled;
 
 public class ClientGraphQLTest {
   private String address;
@@ -1632,7 +1631,7 @@ public class ClientGraphQLTest {
   }
 
   @Test
-  @Disabled("Returns fewer results with Weaviate v1.27+, needs investigation")
+  @Ignore("Returns fewer results with Weaviate v1.27+, needs investigation")
   public void testGraphQLGetWithGroupByWithHybrid() {
     // given
     Config config = new Config("http", address);
@@ -1894,9 +1893,9 @@ public class ClientGraphQLTest {
       .withFields(fieldId)
       .run();
 
-    assertIds(className, resultUuid, new String[]{ id });
-    assertIds(className, resultUuidArray1, new String[]{ id });
-    assertIds(className, resultUuidArray2, new String[]{ id });
+    assertIds(className, resultUuid, new String[]{id});
+    assertIds(className, resultUuidArray1, new String[]{id});
+    assertIds(className, resultUuidArray2, new String[]{id});
 
     Result<Boolean> deleteStatus = client.schema().allDeleter().run();
 
@@ -2099,9 +2098,9 @@ public class ClientGraphQLTest {
         .withClassName(className)
         .withWhere(WhereArgument.builder().filter(filter).build())
         .withFields(Field.builder()
-          .name("_additional")
-          .fields(Field.builder().name("id").build())
-          .build(),
+            .name("_additional")
+            .fields(Field.builder().name("id").build())
+            .build(),
           Field.builder().name("bool").build(),
           Field.builder().name("bools").build())
         .run();
@@ -2110,29 +2109,29 @@ public class ClientGraphQLTest {
     };
 
     // FIXME: 0 returned
-//    runAndAssertExpectedIds.accept(
-//      WhereFilter.builder().path("bools").operator(Operator.ContainsAll).valueBoolean(boolsArray[0]).build(),
-//      new String[]{id1, id2});
+    //    runAndAssertExpectedIds.accept(
+    //      WhereFilter.builder().path("bools").operator(Operator.ContainsAll).valueBoolean(boolsArray[0]).build(),
+    //      new String[]{id1, id2});
     // FIXME: 0 returned
-//    runAndAssertExpectedIds.accept(
-//      WhereFilter.builder().path("bools").operator(Operator.ContainsAll).valueBoolean(boolsArray[1]).build(),
-//      new String[]{id1, id2});
+    //    runAndAssertExpectedIds.accept(
+    //      WhereFilter.builder().path("bools").operator(Operator.ContainsAll).valueBoolean(boolsArray[1]).build(),
+    //      new String[]{id1, id2});
     // FIXME: 1 returned
-//    runAndAssertExpectedIds.accept(
-//      WhereFilter.builder().path("bools").operator(Operator.ContainsAll).valueBoolean(boolsArray[2]).build(),
-//      new String[]{id1, id2, id3});
+    //    runAndAssertExpectedIds.accept(
+    //      WhereFilter.builder().path("bools").operator(Operator.ContainsAll).valueBoolean(boolsArray[2]).build(),
+    //      new String[]{id1, id2, id3});
     // FIXME: 1 returned
-//    runAndAssertExpectedIds.accept(
-//      WhereFilter.builder().path("bools").operator(Operator.ContainsAny).valueBoolean(boolsArray[0]).build(),
-//      new String[]{id1, id2, id3});
+    //    runAndAssertExpectedIds.accept(
+    //      WhereFilter.builder().path("bools").operator(Operator.ContainsAny).valueBoolean(boolsArray[0]).build(),
+    //      new String[]{id1, id2, id3});
     // FIXME: 1 returned
-//    runAndAssertExpectedIds.accept(
-//      WhereFilter.builder().path("bools").operator(Operator.ContainsAny).valueBoolean(boolsArray[1]).build(),
-//      new String[]{id1, id2, id3});
+    //    runAndAssertExpectedIds.accept(
+    //      WhereFilter.builder().path("bools").operator(Operator.ContainsAny).valueBoolean(boolsArray[1]).build(),
+    //      new String[]{id1, id2, id3});
     // FIXME: 1 returned
-//    runAndAssertExpectedIds.accept(
-//      WhereFilter.builder().path("bools").operator(Operator.ContainsAny).valueBoolean(boolsArray[2]).build(),
-//      new String[]{id1, id2, id3});
+    //    runAndAssertExpectedIds.accept(
+    //      WhereFilter.builder().path("bools").operator(Operator.ContainsAny).valueBoolean(boolsArray[2]).build(),
+    //      new String[]{id1, id2, id3});
 
     runAndAssertExpectedIds.accept(
       WhereFilter.builder().path("ints").operator(Operator.ContainsAll).valueInt(intsArray[0]).build(),
@@ -2258,7 +2257,8 @@ public class ClientGraphQLTest {
       .extracting(get -> ((Map<String, Object>) get).get(className)).isInstanceOf(List.class).asList()
       .hasSize(expectedIds.length);
 
-    List<Map<String, Object>> results = (List<Map<String, Object>>) ((Map<String, Object>) (((Map<String, Object>) (gqlResult.getResult().getData())).get("Get"))).get(className);
+    List<Map<String, Object>> results = (List<Map<String, Object>>) ((Map<String, Object>) (((Map<String, Object>) (gqlResult.getResult().getData())).get(
+      "Get"))).get(className);
     String[] resultIds = results.stream()
       .map(m -> m.get("_additional"))
       .map(a -> ((Map<String, String>) a).get("id"))
