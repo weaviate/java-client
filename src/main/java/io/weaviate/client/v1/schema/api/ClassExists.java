@@ -7,7 +7,7 @@ import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.base.WeaviateErrorResponse;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpStatus;
+import org.apache.hc.core5.http.HttpStatus;
 
 import java.util.Collections;
 

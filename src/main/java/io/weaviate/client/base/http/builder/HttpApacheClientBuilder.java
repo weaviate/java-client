@@ -1,10 +1,12 @@
 package io.weaviate.client.base.http.builder;
 
-import org.apache.http.HttpHost;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.impl.client.HttpClientBuilder;
 import io.weaviate.client.Config;
 import io.weaviate.client.base.http.impl.CommonsHttpClientImpl;
+import java.util.concurrent.TimeUnit;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.core5.util.Timeout;
 
 public class HttpApacheClientBuilder {
 
@@ -12,12 +14,12 @@ public class HttpApacheClientBuilder {
 
   public static CommonsHttpClientImpl.CloseableHttpClientBuilder build(Config config) {
     RequestConfig.Builder requestConfigBuilder = RequestConfig.custom()
-      .setConnectTimeout(config.getConnectionTimeout() * 1000)
-      .setConnectionRequestTimeout(config.getConnectionRequestTimeout() * 1000)
-      .setSocketTimeout(config.getSocketTimeout() * 1000);
-      
+      .setConnectTimeout(Timeout.of(config.getConnectionTimeout(), TimeUnit.SECONDS))
+      .setConnectionRequestTimeout(Timeout.of(config.getConnectionRequestTimeout(), TimeUnit.SECONDS))
+      .setResponseTimeout(Timeout.of(config.getSocketTimeout(), TimeUnit.SECONDS));
+
     if (config.getProxyHost() != null) {
-      requestConfigBuilder.setProxy(new HttpHost(config.getProxyHost(), config.getProxyPort(), config.getProxyScheme()));
+      requestConfigBuilder.setProxy(new HttpHost(config.getProxyScheme(), config.getProxyHost(), config.getProxyPort()));
     }
 
     RequestConfig requestConfig = requestConfigBuilder.build();

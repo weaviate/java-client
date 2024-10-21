@@ -9,7 +9,7 @@ import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.base.util.DbVersionSupport;
 import io.weaviate.client.base.util.UrlEncoder;
 import io.weaviate.client.v1.schema.model.Tenant;
-import org.apache.http.HttpStatus;
+import org.apache.hc.core5.http.HttpStatus;
 
 public class TenantsCreator extends BaseClient<Tenant[]> implements ClientResult<Boolean> {
 

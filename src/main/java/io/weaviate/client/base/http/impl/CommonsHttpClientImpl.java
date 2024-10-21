@@ -1,28 +1,26 @@
 package io.weaviate.client.base.http.impl;
 
-import java.io.Closeable;
-import java.io.IOException;
-import org.apache.http.HttpHeaders;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpHead;
-import org.apache.http.client.methods.HttpPatch;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.util.EntityUtils;
 import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.base.http.HttpResponse;
-
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
+import java.io.Closeable;
+import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
+import org.apache.hc.client5.http.classic.methods.HttpDelete;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpHead;
+import org.apache.hc.client5.http.classic.methods.HttpPatch;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.classic.methods.HttpPut;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.HttpHeaders;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.apache.hc.core5.http.message.BasicClassicHttpRequest;
 
 public class CommonsHttpClientImpl implements HttpClient, Closeable {
   private final Map<String, String> headers;
@@ -72,19 +70,19 @@ public class CommonsHttpClientImpl implements HttpClient, Closeable {
     return sendRequestWithoutPayload(new HttpHead(url));
   }
 
-  private HttpResponse sendRequestWithoutPayload(HttpRequestBase request) throws Exception {
+  private HttpResponse sendRequestWithoutPayload(BasicClassicHttpRequest request) throws Exception {
     request.setHeader(HttpHeaders.ACCEPT, "*/*");
     return sendRequest(request);
   }
 
-  private HttpResponse sendRequestWithPayload(HttpEntityEnclosingRequestBase request, String jsonString) throws Exception {
+  private HttpResponse sendRequestWithPayload(BasicClassicHttpRequest request, String jsonString) throws Exception {
     request.setHeader(HttpHeaders.ACCEPT, "application/json");
     request.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
     request.setEntity(new StringEntity(jsonString, StandardCharsets.UTF_8));
     return sendRequest(request);
   }
 
-  private HttpResponse sendRequest(HttpUriRequest request) throws Exception {
+  private HttpResponse sendRequest(BasicClassicHttpRequest request) throws Exception {
     if (headers != null && headers.size() > 0) {
       headers.forEach(request::addHeader);
     }
@@ -95,7 +93,7 @@ public class CommonsHttpClientImpl implements HttpClient, Closeable {
     CloseableHttpClient client = clientBuilder.build();
     CloseableHttpResponse response = client.execute(request);
 
-    int statusCode = response.getStatusLine().getStatusCode();
+    int statusCode = response.getCode();
     String body = response.getEntity() != null
       ? EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8)
       : "";
@@ -111,24 +109,11 @@ public class CommonsHttpClientImpl implements HttpClient, Closeable {
     }
   }
 
-  private static class HttpDeleteWithBody extends HttpEntityEnclosingRequestBase {
-    public HttpDeleteWithBody() {
-    }
-
-    public HttpDeleteWithBody(URI uri) {
-      this.setURI(uri);
-    }
-
-    public HttpDeleteWithBody(String uri) {
-      this.setURI(URI.create(uri));
-    }
-
-    public String getMethod() {
-      return HttpDelete.METHOD_NAME;
+  private static class HttpDeleteWithBody extends HttpUriRequestBase {
+    public HttpDeleteWithBody(String url) {
+      super(HttpDelete.METHOD_NAME, URI.create(url));
     }
   }
-
-
 
   public interface CloseableHttpClientBuilder {
     CloseableHttpClient build();

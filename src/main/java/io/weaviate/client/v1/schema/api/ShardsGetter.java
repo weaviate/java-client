@@ -1,9 +1,5 @@
 package io.weaviate.client.v1.schema.api;
 
-import io.weaviate.client.v1.schema.model.Shard;
-import java.util.Collections;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpStatus;
 import io.weaviate.client.Config;
 import io.weaviate.client.base.BaseClient;
 import io.weaviate.client.base.ClientResult;
@@ -12,6 +8,10 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.base.WeaviateErrorResponse;
 import io.weaviate.client.base.http.HttpClient;
+import io.weaviate.client.v1.schema.model.Shard;
+import java.util.Collections;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.hc.core5.http.HttpStatus;
 
 public class ShardsGetter extends BaseClient<Shard[]> implements ClientResult<Shard[]> {
   private String className;

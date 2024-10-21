@@ -1,11 +1,5 @@
 package io.weaviate.client.v1.schema.api;
 
-import io.weaviate.client.v1.schema.model.ShardStatus;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpStatus;
 import io.weaviate.client.Config;
 import io.weaviate.client.base.BaseClient;
 import io.weaviate.client.base.ClientResult;
@@ -14,6 +8,12 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.base.WeaviateErrorResponse;
 import io.weaviate.client.base.http.HttpClient;
+import io.weaviate.client.v1.schema.model.ShardStatus;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.hc.core5.http.HttpStatus;
 
 public class ShardUpdater extends BaseClient<ShardStatus> implements ClientResult<ShardStatus> {
   private String className;
