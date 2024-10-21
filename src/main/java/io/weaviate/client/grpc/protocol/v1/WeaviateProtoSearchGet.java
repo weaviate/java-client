@@ -554,11 +554,11 @@ public final class WeaviateProtoSearchGet {
      * <code>optional .weaviate.v1.GenerativeSearch generative = 60;</code>
      * @return The generative.
      */
-    io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch getGenerative();
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeSearch getGenerative();
     /**
      * <code>optional .weaviate.v1.GenerativeSearch generative = 60;</code>
      */
-    io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearchOrBuilder getGenerativeOrBuilder();
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeSearchOrBuilder getGenerativeOrBuilder();
 
     /**
      * <code>optional .weaviate.v1.Rerank rerank = 61;</code>
@@ -578,16 +578,24 @@ public final class WeaviateProtoSearchGet {
     /**
      * <code>bool uses_123_api = 100 [deprecated = true];</code>
      * @deprecated weaviate.v1.SearchRequest.uses_123_api is deprecated.
-     *     See v1/search_get.proto;l=50
+     *     See v1/search_get.proto;l=51
      * @return The uses123Api.
      */
     @java.lang.Deprecated boolean getUses123Api();
 
     /**
-     * <code>bool uses_125_api = 101;</code>
+     * <code>bool uses_125_api = 101 [deprecated = true];</code>
+     * @deprecated weaviate.v1.SearchRequest.uses_125_api is deprecated.
+     *     See v1/search_get.proto;l=52
      * @return The uses125Api.
      */
-    boolean getUses125Api();
+    @java.lang.Deprecated boolean getUses125Api();
+
+    /**
+     * <code>bool uses_127_api = 102;</code>
+     * @return The uses127Api.
+     */
+    boolean getUses127Api();
   }
   /**
    * Protobuf type {@code weaviate.v1.SearchRequest}
@@ -1301,7 +1309,7 @@ public final class WeaviateProtoSearchGet {
     }
 
     public static final int GENERATIVE_FIELD_NUMBER = 60;
-    private io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch generative_;
+    private io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeSearch generative_;
     /**
      * <code>optional .weaviate.v1.GenerativeSearch generative = 60;</code>
      * @return Whether the generative field is set.
@@ -1315,15 +1323,15 @@ public final class WeaviateProtoSearchGet {
      * @return The generative.
      */
     @java.lang.Override
-    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch getGenerative() {
-      return generative_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch.getDefaultInstance() : generative_;
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeSearch getGenerative() {
+      return generative_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeSearch.getDefaultInstance() : generative_;
     }
     /**
      * <code>optional .weaviate.v1.GenerativeSearch generative = 60;</code>
      */
     @java.lang.Override
-    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearchOrBuilder getGenerativeOrBuilder() {
-      return generative_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch.getDefaultInstance() : generative_;
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeSearchOrBuilder getGenerativeOrBuilder() {
+      return generative_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeSearch.getDefaultInstance() : generative_;
     }
 
     public static final int RERANK_FIELD_NUMBER = 61;
@@ -1357,7 +1365,7 @@ public final class WeaviateProtoSearchGet {
     /**
      * <code>bool uses_123_api = 100 [deprecated = true];</code>
      * @deprecated weaviate.v1.SearchRequest.uses_123_api is deprecated.
-     *     See v1/search_get.proto;l=50
+     *     See v1/search_get.proto;l=51
      * @return The uses123Api.
      */
     @java.lang.Override
@@ -1368,12 +1376,25 @@ public final class WeaviateProtoSearchGet {
     public static final int USES_125_API_FIELD_NUMBER = 101;
     private boolean uses125Api_ = false;
     /**
-     * <code>bool uses_125_api = 101;</code>
+     * <code>bool uses_125_api = 101 [deprecated = true];</code>
+     * @deprecated weaviate.v1.SearchRequest.uses_125_api is deprecated.
+     *     See v1/search_get.proto;l=52
      * @return The uses125Api.
      */
     @java.lang.Override
-    public boolean getUses125Api() {
+    @java.lang.Deprecated public boolean getUses125Api() {
       return uses125Api_;
+    }
+
+    public static final int USES_127_API_FIELD_NUMBER = 102;
+    private boolean uses127Api_ = false;
+    /**
+     * <code>bool uses_127_api = 102;</code>
+     * @return The uses127Api.
+     */
+    @java.lang.Override
+    public boolean getUses127Api() {
+      return uses127Api_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -1470,6 +1491,9 @@ public final class WeaviateProtoSearchGet {
       }
       if (uses125Api_ != false) {
         output.writeBool(101, uses125Api_);
+      }
+      if (uses127Api_ != false) {
+        output.writeBool(102, uses127Api_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -1584,6 +1608,10 @@ public final class WeaviateProtoSearchGet {
       if (uses125Api_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(101, uses125Api_);
+      }
+      if (uses127Api_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(102, uses127Api_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -1707,6 +1735,8 @@ public final class WeaviateProtoSearchGet {
           != other.getUses123Api()) return false;
       if (getUses125Api()
           != other.getUses125Api()) return false;
+      if (getUses127Api()
+          != other.getUses127Api()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -1812,6 +1842,9 @@ public final class WeaviateProtoSearchGet {
       hash = (37 * hash) + USES_125_API_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getUses125Api());
+      hash = (37 * hash) + USES_127_API_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getUses127Api());
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -2067,6 +2100,7 @@ public final class WeaviateProtoSearchGet {
         }
         uses123Api_ = false;
         uses125Api_ = false;
+        uses127Api_ = false;
         return this;
       }
 
@@ -2244,6 +2278,9 @@ public final class WeaviateProtoSearchGet {
         if (((from_bitField0_ & 0x04000000) != 0)) {
           result.uses125Api_ = uses125Api_;
         }
+        if (((from_bitField0_ & 0x08000000) != 0)) {
+          result.uses127Api_ = uses127Api_;
+        }
         result.bitField0_ |= to_bitField0_;
       }
 
@@ -2400,6 +2437,9 @@ public final class WeaviateProtoSearchGet {
         }
         if (other.getUses125Api() != false) {
           setUses125Api(other.getUses125Api());
+        }
+        if (other.getUses127Api() != false) {
+          setUses127Api(other.getUses127Api());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -2604,6 +2644,11 @@ public final class WeaviateProtoSearchGet {
                 bitField0_ |= 0x04000000;
                 break;
               } // case 808
+              case 816: {
+                uses127Api_ = input.readBool();
+                bitField0_ |= 0x08000000;
+                break;
+              } // case 816
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -5244,9 +5289,9 @@ public final class WeaviateProtoSearchGet {
         return nearImuBuilder_;
       }
 
-      private io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch generative_;
+      private io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeSearch generative_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearchOrBuilder> generativeBuilder_;
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeSearch, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeSearch.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeSearchOrBuilder> generativeBuilder_;
       /**
        * <code>optional .weaviate.v1.GenerativeSearch generative = 60;</code>
        * @return Whether the generative field is set.
@@ -5258,9 +5303,9 @@ public final class WeaviateProtoSearchGet {
        * <code>optional .weaviate.v1.GenerativeSearch generative = 60;</code>
        * @return The generative.
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch getGenerative() {
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeSearch getGenerative() {
         if (generativeBuilder_ == null) {
-          return generative_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch.getDefaultInstance() : generative_;
+          return generative_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeSearch.getDefaultInstance() : generative_;
         } else {
           return generativeBuilder_.getMessage();
         }
@@ -5268,7 +5313,7 @@ public final class WeaviateProtoSearchGet {
       /**
        * <code>optional .weaviate.v1.GenerativeSearch generative = 60;</code>
        */
-      public Builder setGenerative(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch value) {
+      public Builder setGenerative(io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeSearch value) {
         if (generativeBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -5285,7 +5330,7 @@ public final class WeaviateProtoSearchGet {
        * <code>optional .weaviate.v1.GenerativeSearch generative = 60;</code>
        */
       public Builder setGenerative(
-          io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch.Builder builderForValue) {
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeSearch.Builder builderForValue) {
         if (generativeBuilder_ == null) {
           generative_ = builderForValue.build();
         } else {
@@ -5298,11 +5343,11 @@ public final class WeaviateProtoSearchGet {
       /**
        * <code>optional .weaviate.v1.GenerativeSearch generative = 60;</code>
        */
-      public Builder mergeGenerative(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch value) {
+      public Builder mergeGenerative(io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeSearch value) {
         if (generativeBuilder_ == null) {
           if (((bitField0_ & 0x00800000) != 0) &&
             generative_ != null &&
-            generative_ != io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch.getDefaultInstance()) {
+            generative_ != io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeSearch.getDefaultInstance()) {
             getGenerativeBuilder().mergeFrom(value);
           } else {
             generative_ = value;
@@ -5332,7 +5377,7 @@ public final class WeaviateProtoSearchGet {
       /**
        * <code>optional .weaviate.v1.GenerativeSearch generative = 60;</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch.Builder getGenerativeBuilder() {
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeSearch.Builder getGenerativeBuilder() {
         bitField0_ |= 0x00800000;
         onChanged();
         return getGenerativeFieldBuilder().getBuilder();
@@ -5340,23 +5385,23 @@ public final class WeaviateProtoSearchGet {
       /**
        * <code>optional .weaviate.v1.GenerativeSearch generative = 60;</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearchOrBuilder getGenerativeOrBuilder() {
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeSearchOrBuilder getGenerativeOrBuilder() {
         if (generativeBuilder_ != null) {
           return generativeBuilder_.getMessageOrBuilder();
         } else {
           return generative_ == null ?
-              io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch.getDefaultInstance() : generative_;
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeSearch.getDefaultInstance() : generative_;
         }
       }
       /**
        * <code>optional .weaviate.v1.GenerativeSearch generative = 60;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearchOrBuilder> 
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeSearch, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeSearch.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeSearchOrBuilder> 
           getGenerativeFieldBuilder() {
         if (generativeBuilder_ == null) {
           generativeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearchOrBuilder>(
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeSearch, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeSearch.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeSearchOrBuilder>(
                   getGenerative(),
                   getParentForChildren(),
                   isClean());
@@ -5490,7 +5535,7 @@ public final class WeaviateProtoSearchGet {
       /**
        * <code>bool uses_123_api = 100 [deprecated = true];</code>
        * @deprecated weaviate.v1.SearchRequest.uses_123_api is deprecated.
-       *     See v1/search_get.proto;l=50
+       *     See v1/search_get.proto;l=51
        * @return The uses123Api.
        */
       @java.lang.Override
@@ -5500,7 +5545,7 @@ public final class WeaviateProtoSearchGet {
       /**
        * <code>bool uses_123_api = 100 [deprecated = true];</code>
        * @deprecated weaviate.v1.SearchRequest.uses_123_api is deprecated.
-       *     See v1/search_get.proto;l=50
+       *     See v1/search_get.proto;l=51
        * @param value The uses123Api to set.
        * @return This builder for chaining.
        */
@@ -5514,7 +5559,7 @@ public final class WeaviateProtoSearchGet {
       /**
        * <code>bool uses_123_api = 100 [deprecated = true];</code>
        * @deprecated weaviate.v1.SearchRequest.uses_123_api is deprecated.
-       *     See v1/search_get.proto;l=50
+       *     See v1/search_get.proto;l=51
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearUses123Api() {
@@ -5526,19 +5571,23 @@ public final class WeaviateProtoSearchGet {
 
       private boolean uses125Api_ ;
       /**
-       * <code>bool uses_125_api = 101;</code>
+       * <code>bool uses_125_api = 101 [deprecated = true];</code>
+       * @deprecated weaviate.v1.SearchRequest.uses_125_api is deprecated.
+       *     See v1/search_get.proto;l=52
        * @return The uses125Api.
        */
       @java.lang.Override
-      public boolean getUses125Api() {
+      @java.lang.Deprecated public boolean getUses125Api() {
         return uses125Api_;
       }
       /**
-       * <code>bool uses_125_api = 101;</code>
+       * <code>bool uses_125_api = 101 [deprecated = true];</code>
+       * @deprecated weaviate.v1.SearchRequest.uses_125_api is deprecated.
+       *     See v1/search_get.proto;l=52
        * @param value The uses125Api to set.
        * @return This builder for chaining.
        */
-      public Builder setUses125Api(boolean value) {
+      @java.lang.Deprecated public Builder setUses125Api(boolean value) {
 
         uses125Api_ = value;
         bitField0_ |= 0x04000000;
@@ -5546,12 +5595,46 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>bool uses_125_api = 101;</code>
+       * <code>bool uses_125_api = 101 [deprecated = true];</code>
+       * @deprecated weaviate.v1.SearchRequest.uses_125_api is deprecated.
+       *     See v1/search_get.proto;l=52
        * @return This builder for chaining.
        */
-      public Builder clearUses125Api() {
+      @java.lang.Deprecated public Builder clearUses125Api() {
         bitField0_ = (bitField0_ & ~0x04000000);
         uses125Api_ = false;
+        onChanged();
+        return this;
+      }
+
+      private boolean uses127Api_ ;
+      /**
+       * <code>bool uses_127_api = 102;</code>
+       * @return The uses127Api.
+       */
+      @java.lang.Override
+      public boolean getUses127Api() {
+        return uses127Api_;
+      }
+      /**
+       * <code>bool uses_127_api = 102;</code>
+       * @param value The uses127Api to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUses127Api(boolean value) {
+
+        uses127Api_ = value;
+        bitField0_ |= 0x08000000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool uses_127_api = 102;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearUses127Api() {
+        bitField0_ = (bitField0_ & ~0x08000000);
+        uses127Api_ = false;
         onChanged();
         return this;
       }
@@ -7288,920 +7371,6 @@ public final class WeaviateProtoSearchGet {
 
     @java.lang.Override
     public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.SortBy getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface GenerativeSearchOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:weaviate.v1.GenerativeSearch)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>string single_response_prompt = 1;</code>
-     * @return The singleResponsePrompt.
-     */
-    java.lang.String getSingleResponsePrompt();
-    /**
-     * <code>string single_response_prompt = 1;</code>
-     * @return The bytes for singleResponsePrompt.
-     */
-    com.google.protobuf.ByteString
-        getSingleResponsePromptBytes();
-
-    /**
-     * <code>string grouped_response_task = 2;</code>
-     * @return The groupedResponseTask.
-     */
-    java.lang.String getGroupedResponseTask();
-    /**
-     * <code>string grouped_response_task = 2;</code>
-     * @return The bytes for groupedResponseTask.
-     */
-    com.google.protobuf.ByteString
-        getGroupedResponseTaskBytes();
-
-    /**
-     * <code>repeated string grouped_properties = 3;</code>
-     * @return A list containing the groupedProperties.
-     */
-    java.util.List<java.lang.String>
-        getGroupedPropertiesList();
-    /**
-     * <code>repeated string grouped_properties = 3;</code>
-     * @return The count of groupedProperties.
-     */
-    int getGroupedPropertiesCount();
-    /**
-     * <code>repeated string grouped_properties = 3;</code>
-     * @param index The index of the element to return.
-     * @return The groupedProperties at the given index.
-     */
-    java.lang.String getGroupedProperties(int index);
-    /**
-     * <code>repeated string grouped_properties = 3;</code>
-     * @param index The index of the value to return.
-     * @return The bytes of the groupedProperties at the given index.
-     */
-    com.google.protobuf.ByteString
-        getGroupedPropertiesBytes(int index);
-  }
-  /**
-   * Protobuf type {@code weaviate.v1.GenerativeSearch}
-   */
-  public static final class GenerativeSearch extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:weaviate.v1.GenerativeSearch)
-      GenerativeSearchOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use GenerativeSearch.newBuilder() to construct.
-    private GenerativeSearch(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private GenerativeSearch() {
-      singleResponsePrompt_ = "";
-      groupedResponseTask_ = "";
-      groupedProperties_ =
-          com.google.protobuf.LazyStringArrayList.emptyList();
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new GenerativeSearch();
-    }
-
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.internal_static_weaviate_v1_GenerativeSearch_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.internal_static_weaviate_v1_GenerativeSearch_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch.class, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch.Builder.class);
-    }
-
-    public static final int SINGLE_RESPONSE_PROMPT_FIELD_NUMBER = 1;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object singleResponsePrompt_ = "";
-    /**
-     * <code>string single_response_prompt = 1;</code>
-     * @return The singleResponsePrompt.
-     */
-    @java.lang.Override
-    public java.lang.String getSingleResponsePrompt() {
-      java.lang.Object ref = singleResponsePrompt_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        singleResponsePrompt_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string single_response_prompt = 1;</code>
-     * @return The bytes for singleResponsePrompt.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getSingleResponsePromptBytes() {
-      java.lang.Object ref = singleResponsePrompt_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        singleResponsePrompt_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int GROUPED_RESPONSE_TASK_FIELD_NUMBER = 2;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object groupedResponseTask_ = "";
-    /**
-     * <code>string grouped_response_task = 2;</code>
-     * @return The groupedResponseTask.
-     */
-    @java.lang.Override
-    public java.lang.String getGroupedResponseTask() {
-      java.lang.Object ref = groupedResponseTask_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        groupedResponseTask_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string grouped_response_task = 2;</code>
-     * @return The bytes for groupedResponseTask.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getGroupedResponseTaskBytes() {
-      java.lang.Object ref = groupedResponseTask_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        groupedResponseTask_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int GROUPED_PROPERTIES_FIELD_NUMBER = 3;
-    @SuppressWarnings("serial")
-    private com.google.protobuf.LazyStringArrayList groupedProperties_ =
-        com.google.protobuf.LazyStringArrayList.emptyList();
-    /**
-     * <code>repeated string grouped_properties = 3;</code>
-     * @return A list containing the groupedProperties.
-     */
-    public com.google.protobuf.ProtocolStringList
-        getGroupedPropertiesList() {
-      return groupedProperties_;
-    }
-    /**
-     * <code>repeated string grouped_properties = 3;</code>
-     * @return The count of groupedProperties.
-     */
-    public int getGroupedPropertiesCount() {
-      return groupedProperties_.size();
-    }
-    /**
-     * <code>repeated string grouped_properties = 3;</code>
-     * @param index The index of the element to return.
-     * @return The groupedProperties at the given index.
-     */
-    public java.lang.String getGroupedProperties(int index) {
-      return groupedProperties_.get(index);
-    }
-    /**
-     * <code>repeated string grouped_properties = 3;</code>
-     * @param index The index of the value to return.
-     * @return The bytes of the groupedProperties at the given index.
-     */
-    public com.google.protobuf.ByteString
-        getGroupedPropertiesBytes(int index) {
-      return groupedProperties_.getByteString(index);
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(singleResponsePrompt_)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, singleResponsePrompt_);
-      }
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(groupedResponseTask_)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, groupedResponseTask_);
-      }
-      for (int i = 0; i < groupedProperties_.size(); i++) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, groupedProperties_.getRaw(i));
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(singleResponsePrompt_)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, singleResponsePrompt_);
-      }
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(groupedResponseTask_)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, groupedResponseTask_);
-      }
-      {
-        int dataSize = 0;
-        for (int i = 0; i < groupedProperties_.size(); i++) {
-          dataSize += computeStringSizeNoTag(groupedProperties_.getRaw(i));
-        }
-        size += dataSize;
-        size += 1 * getGroupedPropertiesList().size();
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch)) {
-        return super.equals(obj);
-      }
-      io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch other = (io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch) obj;
-
-      if (!getSingleResponsePrompt()
-          .equals(other.getSingleResponsePrompt())) return false;
-      if (!getGroupedResponseTask()
-          .equals(other.getGroupedResponseTask())) return false;
-      if (!getGroupedPropertiesList()
-          .equals(other.getGroupedPropertiesList())) return false;
-      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + SINGLE_RESPONSE_PROMPT_FIELD_NUMBER;
-      hash = (53 * hash) + getSingleResponsePrompt().hashCode();
-      hash = (37 * hash) + GROUPED_RESPONSE_TASK_FIELD_NUMBER;
-      hash = (53 * hash) + getGroupedResponseTask().hashCode();
-      if (getGroupedPropertiesCount() > 0) {
-        hash = (37 * hash) + GROUPED_PROPERTIES_FIELD_NUMBER;
-        hash = (53 * hash) + getGroupedPropertiesList().hashCode();
-      }
-      hash = (29 * hash) + getUnknownFields().hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-
-    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code weaviate.v1.GenerativeSearch}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:weaviate.v1.GenerativeSearch)
-        io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearchOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.internal_static_weaviate_v1_GenerativeSearch_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.internal_static_weaviate_v1_GenerativeSearch_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch.class, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch.Builder.class);
-      }
-
-      // Construct using io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch.newBuilder()
-      private Builder() {
-
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        bitField0_ = 0;
-        singleResponsePrompt_ = "";
-        groupedResponseTask_ = "";
-        groupedProperties_ =
-            com.google.protobuf.LazyStringArrayList.emptyList();
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.internal_static_weaviate_v1_GenerativeSearch_descriptor;
-      }
-
-      @java.lang.Override
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch getDefaultInstanceForType() {
-        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch build() {
-        io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch buildPartial() {
-        io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch result = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch(this);
-        if (bitField0_ != 0) { buildPartial0(result); }
-        onBuilt();
-        return result;
-      }
-
-      private void buildPartial0(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch result) {
-        int from_bitField0_ = bitField0_;
-        if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.singleResponsePrompt_ = singleResponsePrompt_;
-        }
-        if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.groupedResponseTask_ = groupedResponseTask_;
-        }
-        if (((from_bitField0_ & 0x00000004) != 0)) {
-          groupedProperties_.makeImmutable();
-          result.groupedProperties_ = groupedProperties_;
-        }
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch) {
-          return mergeFrom((io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch other) {
-        if (other == io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch.getDefaultInstance()) return this;
-        if (!other.getSingleResponsePrompt().isEmpty()) {
-          singleResponsePrompt_ = other.singleResponsePrompt_;
-          bitField0_ |= 0x00000001;
-          onChanged();
-        }
-        if (!other.getGroupedResponseTask().isEmpty()) {
-          groupedResponseTask_ = other.groupedResponseTask_;
-          bitField0_ |= 0x00000002;
-          onChanged();
-        }
-        if (!other.groupedProperties_.isEmpty()) {
-          if (groupedProperties_.isEmpty()) {
-            groupedProperties_ = other.groupedProperties_;
-            bitField0_ |= 0x00000004;
-          } else {
-            ensureGroupedPropertiesIsMutable();
-            groupedProperties_.addAll(other.groupedProperties_);
-          }
-          onChanged();
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        if (extensionRegistry == null) {
-          throw new java.lang.NullPointerException();
-        }
-        try {
-          boolean done = false;
-          while (!done) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                done = true;
-                break;
-              case 10: {
-                singleResponsePrompt_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000001;
-                break;
-              } // case 10
-              case 18: {
-                groupedResponseTask_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000002;
-                break;
-              } // case 18
-              case 26: {
-                java.lang.String s = input.readStringRequireUtf8();
-                ensureGroupedPropertiesIsMutable();
-                groupedProperties_.add(s);
-                break;
-              } // case 26
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
-            } // switch (tag)
-          } // while (!done)
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.unwrapIOException();
-        } finally {
-          onChanged();
-        } // finally
-        return this;
-      }
-      private int bitField0_;
-
-      private java.lang.Object singleResponsePrompt_ = "";
-      /**
-       * <code>string single_response_prompt = 1;</code>
-       * @return The singleResponsePrompt.
-       */
-      public java.lang.String getSingleResponsePrompt() {
-        java.lang.Object ref = singleResponsePrompt_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          singleResponsePrompt_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string single_response_prompt = 1;</code>
-       * @return The bytes for singleResponsePrompt.
-       */
-      public com.google.protobuf.ByteString
-          getSingleResponsePromptBytes() {
-        java.lang.Object ref = singleResponsePrompt_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          singleResponsePrompt_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string single_response_prompt = 1;</code>
-       * @param value The singleResponsePrompt to set.
-       * @return This builder for chaining.
-       */
-      public Builder setSingleResponsePrompt(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        singleResponsePrompt_ = value;
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string single_response_prompt = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearSingleResponsePrompt() {
-        singleResponsePrompt_ = getDefaultInstance().getSingleResponsePrompt();
-        bitField0_ = (bitField0_ & ~0x00000001);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string single_response_prompt = 1;</code>
-       * @param value The bytes for singleResponsePrompt to set.
-       * @return This builder for chaining.
-       */
-      public Builder setSingleResponsePromptBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        singleResponsePrompt_ = value;
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object groupedResponseTask_ = "";
-      /**
-       * <code>string grouped_response_task = 2;</code>
-       * @return The groupedResponseTask.
-       */
-      public java.lang.String getGroupedResponseTask() {
-        java.lang.Object ref = groupedResponseTask_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          groupedResponseTask_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string grouped_response_task = 2;</code>
-       * @return The bytes for groupedResponseTask.
-       */
-      public com.google.protobuf.ByteString
-          getGroupedResponseTaskBytes() {
-        java.lang.Object ref = groupedResponseTask_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          groupedResponseTask_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string grouped_response_task = 2;</code>
-       * @param value The groupedResponseTask to set.
-       * @return This builder for chaining.
-       */
-      public Builder setGroupedResponseTask(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        groupedResponseTask_ = value;
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string grouped_response_task = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearGroupedResponseTask() {
-        groupedResponseTask_ = getDefaultInstance().getGroupedResponseTask();
-        bitField0_ = (bitField0_ & ~0x00000002);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string grouped_response_task = 2;</code>
-       * @param value The bytes for groupedResponseTask to set.
-       * @return This builder for chaining.
-       */
-      public Builder setGroupedResponseTaskBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        groupedResponseTask_ = value;
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-
-      private com.google.protobuf.LazyStringArrayList groupedProperties_ =
-          com.google.protobuf.LazyStringArrayList.emptyList();
-      private void ensureGroupedPropertiesIsMutable() {
-        if (!groupedProperties_.isModifiable()) {
-          groupedProperties_ = new com.google.protobuf.LazyStringArrayList(groupedProperties_);
-        }
-        bitField0_ |= 0x00000004;
-      }
-      /**
-       * <code>repeated string grouped_properties = 3;</code>
-       * @return A list containing the groupedProperties.
-       */
-      public com.google.protobuf.ProtocolStringList
-          getGroupedPropertiesList() {
-        groupedProperties_.makeImmutable();
-        return groupedProperties_;
-      }
-      /**
-       * <code>repeated string grouped_properties = 3;</code>
-       * @return The count of groupedProperties.
-       */
-      public int getGroupedPropertiesCount() {
-        return groupedProperties_.size();
-      }
-      /**
-       * <code>repeated string grouped_properties = 3;</code>
-       * @param index The index of the element to return.
-       * @return The groupedProperties at the given index.
-       */
-      public java.lang.String getGroupedProperties(int index) {
-        return groupedProperties_.get(index);
-      }
-      /**
-       * <code>repeated string grouped_properties = 3;</code>
-       * @param index The index of the value to return.
-       * @return The bytes of the groupedProperties at the given index.
-       */
-      public com.google.protobuf.ByteString
-          getGroupedPropertiesBytes(int index) {
-        return groupedProperties_.getByteString(index);
-      }
-      /**
-       * <code>repeated string grouped_properties = 3;</code>
-       * @param index The index to set the value at.
-       * @param value The groupedProperties to set.
-       * @return This builder for chaining.
-       */
-      public Builder setGroupedProperties(
-          int index, java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        ensureGroupedPropertiesIsMutable();
-        groupedProperties_.set(index, value);
-        bitField0_ |= 0x00000004;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string grouped_properties = 3;</code>
-       * @param value The groupedProperties to add.
-       * @return This builder for chaining.
-       */
-      public Builder addGroupedProperties(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        ensureGroupedPropertiesIsMutable();
-        groupedProperties_.add(value);
-        bitField0_ |= 0x00000004;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string grouped_properties = 3;</code>
-       * @param values The groupedProperties to add.
-       * @return This builder for chaining.
-       */
-      public Builder addAllGroupedProperties(
-          java.lang.Iterable<java.lang.String> values) {
-        ensureGroupedPropertiesIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, groupedProperties_);
-        bitField0_ |= 0x00000004;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string grouped_properties = 3;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearGroupedProperties() {
-        groupedProperties_ =
-          com.google.protobuf.LazyStringArrayList.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000004);;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string grouped_properties = 3;</code>
-       * @param value The bytes of the groupedProperties to add.
-       * @return This builder for chaining.
-       */
-      public Builder addGroupedPropertiesBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        ensureGroupedPropertiesIsMutable();
-        groupedProperties_.add(value);
-        bitField0_ |= 0x00000004;
-        onChanged();
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:weaviate.v1.GenerativeSearch)
-    }
-
-    // @@protoc_insertion_point(class_scope:weaviate.v1.GenerativeSearch)
-    private static final io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch();
-    }
-
-    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<GenerativeSearch>
-        PARSER = new com.google.protobuf.AbstractParser<GenerativeSearch>() {
-      @java.lang.Override
-      public GenerativeSearch parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (com.google.protobuf.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new com.google.protobuf.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
-
-    public static com.google.protobuf.Parser<GenerativeSearch> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<GenerativeSearch> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeSearch getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -12069,6 +11238,632 @@ public final class WeaviateProtoSearchGet {
 
   }
 
+  public interface WeightsForTargetOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:weaviate.v1.WeightsForTarget)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string target = 1;</code>
+     * @return The target.
+     */
+    java.lang.String getTarget();
+    /**
+     * <code>string target = 1;</code>
+     * @return The bytes for target.
+     */
+    com.google.protobuf.ByteString
+        getTargetBytes();
+
+    /**
+     * <code>float weight = 2;</code>
+     * @return The weight.
+     */
+    float getWeight();
+  }
+  /**
+   * Protobuf type {@code weaviate.v1.WeightsForTarget}
+   */
+  public static final class WeightsForTarget extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:weaviate.v1.WeightsForTarget)
+      WeightsForTargetOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use WeightsForTarget.newBuilder() to construct.
+    private WeightsForTarget(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private WeightsForTarget() {
+      target_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new WeightsForTarget();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.internal_static_weaviate_v1_WeightsForTarget_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.internal_static_weaviate_v1_WeightsForTarget_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget.class, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget.Builder.class);
+    }
+
+    public static final int TARGET_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object target_ = "";
+    /**
+     * <code>string target = 1;</code>
+     * @return The target.
+     */
+    @java.lang.Override
+    public java.lang.String getTarget() {
+      java.lang.Object ref = target_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        target_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string target = 1;</code>
+     * @return The bytes for target.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getTargetBytes() {
+      java.lang.Object ref = target_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        target_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int WEIGHT_FIELD_NUMBER = 2;
+    private float weight_ = 0F;
+    /**
+     * <code>float weight = 2;</code>
+     * @return The weight.
+     */
+    @java.lang.Override
+    public float getWeight() {
+      return weight_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(target_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, target_);
+      }
+      if (java.lang.Float.floatToRawIntBits(weight_) != 0) {
+        output.writeFloat(2, weight_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(target_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, target_);
+      }
+      if (java.lang.Float.floatToRawIntBits(weight_) != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(2, weight_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget)) {
+        return super.equals(obj);
+      }
+      io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget other = (io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget) obj;
+
+      if (!getTarget()
+          .equals(other.getTarget())) return false;
+      if (java.lang.Float.floatToIntBits(getWeight())
+          != java.lang.Float.floatToIntBits(
+              other.getWeight())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + TARGET_FIELD_NUMBER;
+      hash = (53 * hash) + getTarget().hashCode();
+      hash = (37 * hash) + WEIGHT_FIELD_NUMBER;
+      hash = (53 * hash) + java.lang.Float.floatToIntBits(
+          getWeight());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code weaviate.v1.WeightsForTarget}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:weaviate.v1.WeightsForTarget)
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTargetOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.internal_static_weaviate_v1_WeightsForTarget_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.internal_static_weaviate_v1_WeightsForTarget_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget.class, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget.Builder.class);
+      }
+
+      // Construct using io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        target_ = "";
+        weight_ = 0F;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.internal_static_weaviate_v1_WeightsForTarget_descriptor;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget getDefaultInstanceForType() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget build() {
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget buildPartial() {
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget result = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.target_ = target_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.weight_ = weight_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget) {
+          return mergeFrom((io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget other) {
+        if (other == io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget.getDefaultInstance()) return this;
+        if (!other.getTarget().isEmpty()) {
+          target_ = other.target_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (other.getWeight() != 0F) {
+          setWeight(other.getWeight());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                target_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 21: {
+                weight_ = input.readFloat();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 21
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object target_ = "";
+      /**
+       * <code>string target = 1;</code>
+       * @return The target.
+       */
+      public java.lang.String getTarget() {
+        java.lang.Object ref = target_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          target_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string target = 1;</code>
+       * @return The bytes for target.
+       */
+      public com.google.protobuf.ByteString
+          getTargetBytes() {
+        java.lang.Object ref = target_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          target_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string target = 1;</code>
+       * @param value The target to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTarget(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        target_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string target = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTarget() {
+        target_ = getDefaultInstance().getTarget();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string target = 1;</code>
+       * @param value The bytes for target to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTargetBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        target_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private float weight_ ;
+      /**
+       * <code>float weight = 2;</code>
+       * @return The weight.
+       */
+      @java.lang.Override
+      public float getWeight() {
+        return weight_;
+      }
+      /**
+       * <code>float weight = 2;</code>
+       * @param value The weight to set.
+       * @return This builder for chaining.
+       */
+      public Builder setWeight(float value) {
+
+        weight_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>float weight = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearWeight() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        weight_ = 0F;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:weaviate.v1.WeightsForTarget)
+    }
+
+    // @@protoc_insertion_point(class_scope:weaviate.v1.WeightsForTarget)
+    private static final io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget();
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<WeightsForTarget>
+        PARSER = new com.google.protobuf.AbstractParser<WeightsForTarget>() {
+      @java.lang.Override
+      public WeightsForTarget parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<WeightsForTarget> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<WeightsForTarget> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface TargetsOrBuilder extends
       // @@protoc_insertion_point(interface_extends:weaviate.v1.Targets)
       com.google.protobuf.MessageOrBuilder {
@@ -12110,13 +11905,21 @@ public final class WeaviateProtoSearchGet {
     io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.CombinationMethod getCombination();
 
     /**
-     * <code>map&lt;string, float&gt; weights = 3;</code>
+     * <pre>
+     * deprecated in 1.26.2 - use weights_for_targets
+     * </pre>
+     *
+     * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
      */
-    int getWeightsCount();
+    @java.lang.Deprecated int getWeightsCount();
     /**
-     * <code>map&lt;string, float&gt; weights = 3;</code>
+     * <pre>
+     * deprecated in 1.26.2 - use weights_for_targets
+     * </pre>
+     *
+     * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
      */
-    boolean containsWeights(
+    @java.lang.Deprecated boolean containsWeights(
         java.lang.String key);
     /**
      * Use {@link #getWeightsMap()} instead.
@@ -12125,21 +11928,57 @@ public final class WeaviateProtoSearchGet {
     java.util.Map<java.lang.String, java.lang.Float>
     getWeights();
     /**
-     * <code>map&lt;string, float&gt; weights = 3;</code>
+     * <pre>
+     * deprecated in 1.26.2 - use weights_for_targets
+     * </pre>
+     *
+     * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
      */
-    java.util.Map<java.lang.String, java.lang.Float>
+    @java.lang.Deprecated java.util.Map<java.lang.String, java.lang.Float>
     getWeightsMap();
     /**
-     * <code>map&lt;string, float&gt; weights = 3;</code>
+     * <pre>
+     * deprecated in 1.26.2 - use weights_for_targets
+     * </pre>
+     *
+     * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
      */
-    float getWeightsOrDefault(
+    @java.lang.Deprecated float getWeightsOrDefault(
         java.lang.String key,
         float defaultValue);
     /**
-     * <code>map&lt;string, float&gt; weights = 3;</code>
+     * <pre>
+     * deprecated in 1.26.2 - use weights_for_targets
+     * </pre>
+     *
+     * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
      */
-    float getWeightsOrThrow(
+    @java.lang.Deprecated float getWeightsOrThrow(
         java.lang.String key);
+
+    /**
+     * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
+     */
+    java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget> 
+        getWeightsForTargetsList();
+    /**
+     * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget getWeightsForTargets(int index);
+    /**
+     * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
+     */
+    int getWeightsForTargetsCount();
+    /**
+     * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
+     */
+    java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTargetOrBuilder> 
+        getWeightsForTargetsOrBuilderList();
+    /**
+     * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTargetOrBuilder getWeightsForTargetsOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code weaviate.v1.Targets}
@@ -12157,6 +11996,7 @@ public final class WeaviateProtoSearchGet {
       targetVectors_ =
           com.google.protobuf.LazyStringArrayList.emptyList();
       combination_ = 0;
+      weightsForTargets_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -12269,14 +12109,18 @@ public final class WeaviateProtoSearchGet {
       }
       return weights_;
     }
-    public int getWeightsCount() {
+    @java.lang.Deprecated public int getWeightsCount() {
       return internalGetWeights().getMap().size();
     }
     /**
-     * <code>map&lt;string, float&gt; weights = 3;</code>
+     * <pre>
+     * deprecated in 1.26.2 - use weights_for_targets
+     * </pre>
+     *
+     * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
      */
     @java.lang.Override
-    public boolean containsWeights(
+    @java.lang.Deprecated public boolean containsWeights(
         java.lang.String key) {
       if (key == null) { throw new NullPointerException("map key"); }
       return internalGetWeights().getMap().containsKey(key);
@@ -12290,17 +12134,25 @@ public final class WeaviateProtoSearchGet {
       return getWeightsMap();
     }
     /**
-     * <code>map&lt;string, float&gt; weights = 3;</code>
+     * <pre>
+     * deprecated in 1.26.2 - use weights_for_targets
+     * </pre>
+     *
+     * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
      */
     @java.lang.Override
-    public java.util.Map<java.lang.String, java.lang.Float> getWeightsMap() {
+    @java.lang.Deprecated public java.util.Map<java.lang.String, java.lang.Float> getWeightsMap() {
       return internalGetWeights().getMap();
     }
     /**
-     * <code>map&lt;string, float&gt; weights = 3;</code>
+     * <pre>
+     * deprecated in 1.26.2 - use weights_for_targets
+     * </pre>
+     *
+     * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
      */
     @java.lang.Override
-    public float getWeightsOrDefault(
+    @java.lang.Deprecated public float getWeightsOrDefault(
         java.lang.String key,
         float defaultValue) {
       if (key == null) { throw new NullPointerException("map key"); }
@@ -12309,10 +12161,14 @@ public final class WeaviateProtoSearchGet {
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
-     * <code>map&lt;string, float&gt; weights = 3;</code>
+     * <pre>
+     * deprecated in 1.26.2 - use weights_for_targets
+     * </pre>
+     *
+     * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
      */
     @java.lang.Override
-    public float getWeightsOrThrow(
+    @java.lang.Deprecated public float getWeightsOrThrow(
         java.lang.String key) {
       if (key == null) { throw new NullPointerException("map key"); }
       java.util.Map<java.lang.String, java.lang.Float> map =
@@ -12321,6 +12177,47 @@ public final class WeaviateProtoSearchGet {
         throw new java.lang.IllegalArgumentException();
       }
       return map.get(key);
+    }
+
+    public static final int WEIGHTS_FOR_TARGETS_FIELD_NUMBER = 4;
+    @SuppressWarnings("serial")
+    private java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget> weightsForTargets_;
+    /**
+     * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
+     */
+    @java.lang.Override
+    public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget> getWeightsForTargetsList() {
+      return weightsForTargets_;
+    }
+    /**
+     * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTargetOrBuilder> 
+        getWeightsForTargetsOrBuilderList() {
+      return weightsForTargets_;
+    }
+    /**
+     * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
+     */
+    @java.lang.Override
+    public int getWeightsForTargetsCount() {
+      return weightsForTargets_.size();
+    }
+    /**
+     * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget getWeightsForTargets(int index) {
+      return weightsForTargets_.get(index);
+    }
+    /**
+     * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTargetOrBuilder getWeightsForTargetsOrBuilder(
+        int index) {
+      return weightsForTargets_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -12349,6 +12246,9 @@ public final class WeaviateProtoSearchGet {
           internalGetWeights(),
           WeightsDefaultEntryHolder.defaultEntry,
           3);
+      for (int i = 0; i < weightsForTargets_.size(); i++) {
+        output.writeMessage(4, weightsForTargets_.get(i));
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -12380,6 +12280,10 @@ public final class WeaviateProtoSearchGet {
         size += com.google.protobuf.CodedOutputStream
             .computeMessageSize(3, weights__);
       }
+      for (int i = 0; i < weightsForTargets_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, weightsForTargets_.get(i));
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
@@ -12400,6 +12304,8 @@ public final class WeaviateProtoSearchGet {
       if (combination_ != other.combination_) return false;
       if (!internalGetWeights().equals(
           other.internalGetWeights())) return false;
+      if (!getWeightsForTargetsList()
+          .equals(other.getWeightsForTargetsList())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -12420,6 +12326,10 @@ public final class WeaviateProtoSearchGet {
       if (!internalGetWeights().getMap().isEmpty()) {
         hash = (37 * hash) + WEIGHTS_FIELD_NUMBER;
         hash = (53 * hash) + internalGetWeights().hashCode();
+      }
+      if (getWeightsForTargetsCount() > 0) {
+        hash = (37 * hash) + WEIGHTS_FOR_TARGETS_FIELD_NUMBER;
+        hash = (53 * hash) + getWeightsForTargetsList().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -12578,6 +12488,13 @@ public final class WeaviateProtoSearchGet {
             com.google.protobuf.LazyStringArrayList.emptyList();
         combination_ = 0;
         internalGetMutableWeights().clear();
+        if (weightsForTargetsBuilder_ == null) {
+          weightsForTargets_ = java.util.Collections.emptyList();
+        } else {
+          weightsForTargets_ = null;
+          weightsForTargetsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -12604,9 +12521,22 @@ public final class WeaviateProtoSearchGet {
       @java.lang.Override
       public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.Targets buildPartial() {
         io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.Targets result = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.Targets(this);
+        buildPartialRepeatedFields(result);
         if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
+      }
+
+      private void buildPartialRepeatedFields(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.Targets result) {
+        if (weightsForTargetsBuilder_ == null) {
+          if (((bitField0_ & 0x00000008) != 0)) {
+            weightsForTargets_ = java.util.Collections.unmodifiableList(weightsForTargets_);
+            bitField0_ = (bitField0_ & ~0x00000008);
+          }
+          result.weightsForTargets_ = weightsForTargets_;
+        } else {
+          result.weightsForTargets_ = weightsForTargetsBuilder_.build();
+        }
       }
 
       private void buildPartial0(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.Targets result) {
@@ -12684,6 +12614,32 @@ public final class WeaviateProtoSearchGet {
         internalGetMutableWeights().mergeFrom(
             other.internalGetWeights());
         bitField0_ |= 0x00000004;
+        if (weightsForTargetsBuilder_ == null) {
+          if (!other.weightsForTargets_.isEmpty()) {
+            if (weightsForTargets_.isEmpty()) {
+              weightsForTargets_ = other.weightsForTargets_;
+              bitField0_ = (bitField0_ & ~0x00000008);
+            } else {
+              ensureWeightsForTargetsIsMutable();
+              weightsForTargets_.addAll(other.weightsForTargets_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.weightsForTargets_.isEmpty()) {
+            if (weightsForTargetsBuilder_.isEmpty()) {
+              weightsForTargetsBuilder_.dispose();
+              weightsForTargetsBuilder_ = null;
+              weightsForTargets_ = other.weightsForTargets_;
+              bitField0_ = (bitField0_ & ~0x00000008);
+              weightsForTargetsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getWeightsForTargetsFieldBuilder() : null;
+            } else {
+              weightsForTargetsBuilder_.addAllMessages(other.weightsForTargets_);
+            }
+          }
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -12730,6 +12686,19 @@ public final class WeaviateProtoSearchGet {
                 bitField0_ |= 0x00000004;
                 break;
               } // case 26
+              case 34: {
+                io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget m =
+                    input.readMessage(
+                        io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget.parser(),
+                        extensionRegistry);
+                if (weightsForTargetsBuilder_ == null) {
+                  ensureWeightsForTargetsIsMutable();
+                  weightsForTargets_.add(m);
+                } else {
+                  weightsForTargetsBuilder_.addMessage(m);
+                }
+                break;
+              } // case 34
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -12913,7 +12882,7 @@ public final class WeaviateProtoSearchGet {
 
       private com.google.protobuf.MapField<
           java.lang.String, java.lang.Float> weights_;
-      private com.google.protobuf.MapField<java.lang.String, java.lang.Float>
+      @java.lang.Deprecated private com.google.protobuf.MapField<java.lang.String, java.lang.Float>
           internalGetWeights() {
         if (weights_ == null) {
           return com.google.protobuf.MapField.emptyMapField(
@@ -12921,7 +12890,7 @@ public final class WeaviateProtoSearchGet {
         }
         return weights_;
       }
-      private com.google.protobuf.MapField<java.lang.String, java.lang.Float>
+      @java.lang.Deprecated private com.google.protobuf.MapField<java.lang.String, java.lang.Float>
           internalGetMutableWeights() {
         if (weights_ == null) {
           weights_ = com.google.protobuf.MapField.newMapField(
@@ -12934,14 +12903,18 @@ public final class WeaviateProtoSearchGet {
         onChanged();
         return weights_;
       }
-      public int getWeightsCount() {
+      @java.lang.Deprecated public int getWeightsCount() {
         return internalGetWeights().getMap().size();
       }
       /**
-       * <code>map&lt;string, float&gt; weights = 3;</code>
+       * <pre>
+       * deprecated in 1.26.2 - use weights_for_targets
+       * </pre>
+       *
+       * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
        */
       @java.lang.Override
-      public boolean containsWeights(
+      @java.lang.Deprecated public boolean containsWeights(
           java.lang.String key) {
         if (key == null) { throw new NullPointerException("map key"); }
         return internalGetWeights().getMap().containsKey(key);
@@ -12955,17 +12928,25 @@ public final class WeaviateProtoSearchGet {
         return getWeightsMap();
       }
       /**
-       * <code>map&lt;string, float&gt; weights = 3;</code>
+       * <pre>
+       * deprecated in 1.26.2 - use weights_for_targets
+       * </pre>
+       *
+       * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
        */
       @java.lang.Override
-      public java.util.Map<java.lang.String, java.lang.Float> getWeightsMap() {
+      @java.lang.Deprecated public java.util.Map<java.lang.String, java.lang.Float> getWeightsMap() {
         return internalGetWeights().getMap();
       }
       /**
-       * <code>map&lt;string, float&gt; weights = 3;</code>
+       * <pre>
+       * deprecated in 1.26.2 - use weights_for_targets
+       * </pre>
+       *
+       * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
        */
       @java.lang.Override
-      public float getWeightsOrDefault(
+      @java.lang.Deprecated public float getWeightsOrDefault(
           java.lang.String key,
           float defaultValue) {
         if (key == null) { throw new NullPointerException("map key"); }
@@ -12974,10 +12955,14 @@ public final class WeaviateProtoSearchGet {
         return map.containsKey(key) ? map.get(key) : defaultValue;
       }
       /**
-       * <code>map&lt;string, float&gt; weights = 3;</code>
+       * <pre>
+       * deprecated in 1.26.2 - use weights_for_targets
+       * </pre>
+       *
+       * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
        */
       @java.lang.Override
-      public float getWeightsOrThrow(
+      @java.lang.Deprecated public float getWeightsOrThrow(
           java.lang.String key) {
         if (key == null) { throw new NullPointerException("map key"); }
         java.util.Map<java.lang.String, java.lang.Float> map =
@@ -12987,16 +12972,20 @@ public final class WeaviateProtoSearchGet {
         }
         return map.get(key);
       }
-      public Builder clearWeights() {
+      @java.lang.Deprecated public Builder clearWeights() {
         bitField0_ = (bitField0_ & ~0x00000004);
         internalGetMutableWeights().getMutableMap()
             .clear();
         return this;
       }
       /**
-       * <code>map&lt;string, float&gt; weights = 3;</code>
+       * <pre>
+       * deprecated in 1.26.2 - use weights_for_targets
+       * </pre>
+       *
+       * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
        */
-      public Builder removeWeights(
+      @java.lang.Deprecated public Builder removeWeights(
           java.lang.String key) {
         if (key == null) { throw new NullPointerException("map key"); }
         internalGetMutableWeights().getMutableMap()
@@ -13013,9 +13002,13 @@ public final class WeaviateProtoSearchGet {
         return internalGetMutableWeights().getMutableMap();
       }
       /**
-       * <code>map&lt;string, float&gt; weights = 3;</code>
+       * <pre>
+       * deprecated in 1.26.2 - use weights_for_targets
+       * </pre>
+       *
+       * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
        */
-      public Builder putWeights(
+      @java.lang.Deprecated public Builder putWeights(
           java.lang.String key,
           float value) {
         if (key == null) { throw new NullPointerException("map key"); }
@@ -13026,14 +13019,258 @@ public final class WeaviateProtoSearchGet {
         return this;
       }
       /**
-       * <code>map&lt;string, float&gt; weights = 3;</code>
+       * <pre>
+       * deprecated in 1.26.2 - use weights_for_targets
+       * </pre>
+       *
+       * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
        */
-      public Builder putAllWeights(
+      @java.lang.Deprecated public Builder putAllWeights(
           java.util.Map<java.lang.String, java.lang.Float> values) {
         internalGetMutableWeights().getMutableMap()
             .putAll(values);
         bitField0_ |= 0x00000004;
         return this;
+      }
+
+      private java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget> weightsForTargets_ =
+        java.util.Collections.emptyList();
+      private void ensureWeightsForTargetsIsMutable() {
+        if (!((bitField0_ & 0x00000008) != 0)) {
+          weightsForTargets_ = new java.util.ArrayList<io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget>(weightsForTargets_);
+          bitField0_ |= 0x00000008;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTargetOrBuilder> weightsForTargetsBuilder_;
+
+      /**
+       * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
+       */
+      public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget> getWeightsForTargetsList() {
+        if (weightsForTargetsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(weightsForTargets_);
+        } else {
+          return weightsForTargetsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
+       */
+      public int getWeightsForTargetsCount() {
+        if (weightsForTargetsBuilder_ == null) {
+          return weightsForTargets_.size();
+        } else {
+          return weightsForTargetsBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget getWeightsForTargets(int index) {
+        if (weightsForTargetsBuilder_ == null) {
+          return weightsForTargets_.get(index);
+        } else {
+          return weightsForTargetsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
+       */
+      public Builder setWeightsForTargets(
+          int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget value) {
+        if (weightsForTargetsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureWeightsForTargetsIsMutable();
+          weightsForTargets_.set(index, value);
+          onChanged();
+        } else {
+          weightsForTargetsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
+       */
+      public Builder setWeightsForTargets(
+          int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget.Builder builderForValue) {
+        if (weightsForTargetsBuilder_ == null) {
+          ensureWeightsForTargetsIsMutable();
+          weightsForTargets_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          weightsForTargetsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
+       */
+      public Builder addWeightsForTargets(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget value) {
+        if (weightsForTargetsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureWeightsForTargetsIsMutable();
+          weightsForTargets_.add(value);
+          onChanged();
+        } else {
+          weightsForTargetsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
+       */
+      public Builder addWeightsForTargets(
+          int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget value) {
+        if (weightsForTargetsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureWeightsForTargetsIsMutable();
+          weightsForTargets_.add(index, value);
+          onChanged();
+        } else {
+          weightsForTargetsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
+       */
+      public Builder addWeightsForTargets(
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget.Builder builderForValue) {
+        if (weightsForTargetsBuilder_ == null) {
+          ensureWeightsForTargetsIsMutable();
+          weightsForTargets_.add(builderForValue.build());
+          onChanged();
+        } else {
+          weightsForTargetsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
+       */
+      public Builder addWeightsForTargets(
+          int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget.Builder builderForValue) {
+        if (weightsForTargetsBuilder_ == null) {
+          ensureWeightsForTargetsIsMutable();
+          weightsForTargets_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          weightsForTargetsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
+       */
+      public Builder addAllWeightsForTargets(
+          java.lang.Iterable<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget> values) {
+        if (weightsForTargetsBuilder_ == null) {
+          ensureWeightsForTargetsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, weightsForTargets_);
+          onChanged();
+        } else {
+          weightsForTargetsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
+       */
+      public Builder clearWeightsForTargets() {
+        if (weightsForTargetsBuilder_ == null) {
+          weightsForTargets_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000008);
+          onChanged();
+        } else {
+          weightsForTargetsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
+       */
+      public Builder removeWeightsForTargets(int index) {
+        if (weightsForTargetsBuilder_ == null) {
+          ensureWeightsForTargetsIsMutable();
+          weightsForTargets_.remove(index);
+          onChanged();
+        } else {
+          weightsForTargetsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget.Builder getWeightsForTargetsBuilder(
+          int index) {
+        return getWeightsForTargetsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTargetOrBuilder getWeightsForTargetsOrBuilder(
+          int index) {
+        if (weightsForTargetsBuilder_ == null) {
+          return weightsForTargets_.get(index);  } else {
+          return weightsForTargetsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
+       */
+      public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTargetOrBuilder> 
+           getWeightsForTargetsOrBuilderList() {
+        if (weightsForTargetsBuilder_ != null) {
+          return weightsForTargetsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(weightsForTargets_);
+        }
+      }
+      /**
+       * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget.Builder addWeightsForTargetsBuilder() {
+        return getWeightsForTargetsFieldBuilder().addBuilder(
+            io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget.Builder addWeightsForTargetsBuilder(
+          int index) {
+        return getWeightsForTargetsFieldBuilder().addBuilder(
+            index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
+       */
+      public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget.Builder> 
+           getWeightsForTargetsBuilderList() {
+        return getWeightsForTargetsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTargetOrBuilder> 
+          getWeightsForTargetsFieldBuilder() {
+        if (weightsForTargetsBuilder_ == null) {
+          weightsForTargetsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTarget.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.WeightsForTargetOrBuilder>(
+                  weightsForTargets_,
+                  ((bitField0_ & 0x00000008) != 0),
+                  getParentForChildren(),
+                  isClean());
+          weightsForTargets_ = null;
+        }
+        return weightsForTargetsBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -13147,7 +13384,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-     *     See v1/search_get.proto;l=123
+     *     See v1/search_get.proto;l=127
      * @return A list containing the vector.
      */
     @java.lang.Deprecated java.util.List<java.lang.Float> getVectorList();
@@ -13158,7 +13395,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-     *     See v1/search_get.proto;l=123
+     *     See v1/search_get.proto;l=127
      * @return The count of vector.
      */
     @java.lang.Deprecated int getVectorCount();
@@ -13169,7 +13406,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-     *     See v1/search_get.proto;l=123
+     *     See v1/search_get.proto;l=127
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
@@ -13205,7 +13442,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 7 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=132
+     *     See v1/search_get.proto;l=136
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated java.util.List<java.lang.String>
@@ -13217,7 +13454,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 7 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=132
+     *     See v1/search_get.proto;l=136
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated int getTargetVectorsCount();
@@ -13228,7 +13465,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 7 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=132
+     *     See v1/search_get.proto;l=136
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -13240,7 +13477,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 7 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=132
+     *     See v1/search_get.proto;l=136
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -13315,6 +13552,19 @@ public final class WeaviateProtoSearchGet {
      * <code>.weaviate.v1.Targets targets = 10;</code>
      */
     io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.TargetsOrBuilder getTargetsOrBuilder();
+
+    /**
+     * <code>float vector_distance = 20;</code>
+     * @return Whether the vectorDistance field is set.
+     */
+    boolean hasVectorDistance();
+    /**
+     * <code>float vector_distance = 20;</code>
+     * @return The vectorDistance.
+     */
+    float getVectorDistance();
+
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.Hybrid.ThresholdCase getThresholdCase();
   }
   /**
    * Protobuf type {@code weaviate.v1.Hybrid}
@@ -13477,6 +13727,46 @@ public final class WeaviateProtoSearchGet {
     }
 
     private int bitField0_;
+    private int thresholdCase_ = 0;
+    @SuppressWarnings("serial")
+    private java.lang.Object threshold_;
+    public enum ThresholdCase
+        implements com.google.protobuf.Internal.EnumLite,
+            com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+      VECTOR_DISTANCE(20),
+      THRESHOLD_NOT_SET(0);
+      private final int value;
+      private ThresholdCase(int value) {
+        this.value = value;
+      }
+      /**
+       * @param value The number of the enum to look for.
+       * @return The enum associated with the given number.
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
+      public static ThresholdCase valueOf(int value) {
+        return forNumber(value);
+      }
+
+      public static ThresholdCase forNumber(int value) {
+        switch (value) {
+          case 20: return VECTOR_DISTANCE;
+          case 0: return THRESHOLD_NOT_SET;
+          default: return null;
+        }
+      }
+      public int getNumber() {
+        return this.value;
+      }
+    };
+
+    public ThresholdCase
+    getThresholdCase() {
+      return ThresholdCase.forNumber(
+          thresholdCase_);
+    }
+
     public static final int QUERY_FIELD_NUMBER = 1;
     @SuppressWarnings("serial")
     private volatile java.lang.Object query_ = "";
@@ -13564,7 +13854,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-     *     See v1/search_get.proto;l=123
+     *     See v1/search_get.proto;l=127
      * @return A list containing the vector.
      */
     @java.lang.Override
@@ -13579,7 +13869,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-     *     See v1/search_get.proto;l=123
+     *     See v1/search_get.proto;l=127
      * @return The count of vector.
      */
     @java.lang.Deprecated public int getVectorCount() {
@@ -13592,7 +13882,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-     *     See v1/search_get.proto;l=123
+     *     See v1/search_get.proto;l=127
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
@@ -13652,7 +13942,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 7 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=132
+     *     See v1/search_get.proto;l=136
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -13666,7 +13956,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 7 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=132
+     *     See v1/search_get.proto;l=136
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -13679,7 +13969,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 7 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=132
+     *     See v1/search_get.proto;l=136
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -13693,7 +13983,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 7 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=132
+     *     See v1/search_get.proto;l=136
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -13804,6 +14094,27 @@ public final class WeaviateProtoSearchGet {
       return targets_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.Targets.getDefaultInstance() : targets_;
     }
 
+    public static final int VECTOR_DISTANCE_FIELD_NUMBER = 20;
+    /**
+     * <code>float vector_distance = 20;</code>
+     * @return Whether the vectorDistance field is set.
+     */
+    @java.lang.Override
+    public boolean hasVectorDistance() {
+      return thresholdCase_ == 20;
+    }
+    /**
+     * <code>float vector_distance = 20;</code>
+     * @return The vectorDistance.
+     */
+    @java.lang.Override
+    public float getVectorDistance() {
+      if (thresholdCase_ == 20) {
+        return (java.lang.Float) threshold_;
+      }
+      return 0F;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -13852,6 +14163,10 @@ public final class WeaviateProtoSearchGet {
       }
       if (((bitField0_ & 0x00000004) != 0)) {
         output.writeMessage(10, getTargets());
+      }
+      if (thresholdCase_ == 20) {
+        output.writeFloat(
+            20, (float)((java.lang.Float) threshold_));
       }
       getUnknownFields().writeTo(output);
     }
@@ -13916,6 +14231,11 @@ public final class WeaviateProtoSearchGet {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(10, getTargets());
       }
+      if (thresholdCase_ == 20) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(
+              20, (float)((java.lang.Float) threshold_));
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
@@ -13960,6 +14280,16 @@ public final class WeaviateProtoSearchGet {
         if (!getTargets()
             .equals(other.getTargets())) return false;
       }
+      if (!getThresholdCase().equals(other.getThresholdCase())) return false;
+      switch (thresholdCase_) {
+        case 20:
+          if (java.lang.Float.floatToIntBits(getVectorDistance())
+              != java.lang.Float.floatToIntBits(
+                  other.getVectorDistance())) return false;
+          break;
+        case 0:
+        default:
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -14003,6 +14333,15 @@ public final class WeaviateProtoSearchGet {
       if (hasTargets()) {
         hash = (37 * hash) + TARGETS_FIELD_NUMBER;
         hash = (53 * hash) + getTargets().hashCode();
+      }
+      switch (thresholdCase_) {
+        case 20:
+          hash = (37 * hash) + VECTOR_DISTANCE_FIELD_NUMBER;
+          hash = (53 * hash) + java.lang.Float.floatToIntBits(
+              getVectorDistance());
+          break;
+        case 0:
+        default:
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -14167,6 +14506,8 @@ public final class WeaviateProtoSearchGet {
           targetsBuilder_.dispose();
           targetsBuilder_ = null;
         }
+        thresholdCase_ = 0;
+        threshold_ = null;
         return this;
       }
 
@@ -14194,6 +14535,7 @@ public final class WeaviateProtoSearchGet {
       public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.Hybrid buildPartial() {
         io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.Hybrid result = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.Hybrid(this);
         if (bitField0_ != 0) { buildPartial0(result); }
+        buildPartialOneofs(result);
         onBuilt();
         return result;
       }
@@ -14244,6 +14586,11 @@ public final class WeaviateProtoSearchGet {
           to_bitField0_ |= 0x00000004;
         }
         result.bitField0_ |= to_bitField0_;
+      }
+
+      private void buildPartialOneofs(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.Hybrid result) {
+        result.thresholdCase_ = thresholdCase_;
+        result.threshold_ = this.threshold_;
       }
 
       @java.lang.Override
@@ -14344,6 +14691,15 @@ public final class WeaviateProtoSearchGet {
         if (other.hasTargets()) {
           mergeTargets(other.getTargets());
         }
+        switch (other.getThresholdCase()) {
+          case VECTOR_DISTANCE: {
+            setVectorDistance(other.getVectorDistance());
+            break;
+          }
+          case THRESHOLD_NOT_SET: {
+            break;
+          }
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -14440,6 +14796,11 @@ public final class WeaviateProtoSearchGet {
                 bitField0_ |= 0x00000200;
                 break;
               } // case 82
+              case 165: {
+                threshold_ = input.readFloat();
+                thresholdCase_ = 20;
+                break;
+              } // case 165
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -14455,6 +14816,21 @@ public final class WeaviateProtoSearchGet {
         } // finally
         return this;
       }
+      private int thresholdCase_ = 0;
+      private java.lang.Object threshold_;
+      public ThresholdCase
+          getThresholdCase() {
+        return ThresholdCase.forNumber(
+            thresholdCase_);
+      }
+
+      public Builder clearThreshold() {
+        thresholdCase_ = 0;
+        threshold_ = null;
+        onChanged();
+        return this;
+      }
+
       private int bitField0_;
 
       private java.lang.Object query_ = "";
@@ -14660,7 +15036,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-       *     See v1/search_get.proto;l=123
+       *     See v1/search_get.proto;l=127
        * @return A list containing the vector.
        */
       @java.lang.Deprecated public java.util.List<java.lang.Float>
@@ -14675,7 +15051,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-       *     See v1/search_get.proto;l=123
+       *     See v1/search_get.proto;l=127
        * @return The count of vector.
        */
       @java.lang.Deprecated public int getVectorCount() {
@@ -14688,7 +15064,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-       *     See v1/search_get.proto;l=123
+       *     See v1/search_get.proto;l=127
        * @param index The index of the element to return.
        * @return The vector at the given index.
        */
@@ -14702,7 +15078,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-       *     See v1/search_get.proto;l=123
+       *     See v1/search_get.proto;l=127
        * @param index The index to set the value at.
        * @param value The vector to set.
        * @return This builder for chaining.
@@ -14723,7 +15099,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-       *     See v1/search_get.proto;l=123
+       *     See v1/search_get.proto;l=127
        * @param value The vector to add.
        * @return This builder for chaining.
        */
@@ -14742,7 +15118,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-       *     See v1/search_get.proto;l=123
+       *     See v1/search_get.proto;l=127
        * @param values The vector to add.
        * @return This builder for chaining.
        */
@@ -14762,7 +15138,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-       *     See v1/search_get.proto;l=123
+       *     See v1/search_get.proto;l=127
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearVector() {
@@ -14904,7 +15280,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 7 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=132
+       *     See v1/search_get.proto;l=136
        * @return A list containing the targetVectors.
        */
       @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -14919,7 +15295,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 7 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=132
+       *     See v1/search_get.proto;l=136
        * @return The count of targetVectors.
        */
       @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -14932,7 +15308,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 7 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=132
+       *     See v1/search_get.proto;l=136
        * @param index The index of the element to return.
        * @return The targetVectors at the given index.
        */
@@ -14946,7 +15322,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 7 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=132
+       *     See v1/search_get.proto;l=136
        * @param index The index of the value to return.
        * @return The bytes of the targetVectors at the given index.
        */
@@ -14961,7 +15337,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 7 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=132
+       *     See v1/search_get.proto;l=136
        * @param index The index to set the value at.
        * @param value The targetVectors to set.
        * @return This builder for chaining.
@@ -14982,7 +15358,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 7 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=132
+       *     See v1/search_get.proto;l=136
        * @param value The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -15002,7 +15378,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 7 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=132
+       *     See v1/search_get.proto;l=136
        * @param values The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -15022,7 +15398,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 7 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=132
+       *     See v1/search_get.proto;l=136
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearTargetVectors() {
@@ -15039,7 +15415,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 7 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=132
+       *     See v1/search_get.proto;l=136
        * @param value The bytes of the targetVectors to add.
        * @return This builder for chaining.
        */
@@ -15488,6 +15864,48 @@ public final class WeaviateProtoSearchGet {
         }
         return targetsBuilder_;
       }
+
+      /**
+       * <code>float vector_distance = 20;</code>
+       * @return Whether the vectorDistance field is set.
+       */
+      public boolean hasVectorDistance() {
+        return thresholdCase_ == 20;
+      }
+      /**
+       * <code>float vector_distance = 20;</code>
+       * @return The vectorDistance.
+       */
+      public float getVectorDistance() {
+        if (thresholdCase_ == 20) {
+          return (java.lang.Float) threshold_;
+        }
+        return 0F;
+      }
+      /**
+       * <code>float vector_distance = 20;</code>
+       * @param value The vectorDistance to set.
+       * @return This builder for chaining.
+       */
+      public Builder setVectorDistance(float value) {
+
+        thresholdCase_ = 20;
+        threshold_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>float vector_distance = 20;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearVectorDistance() {
+        if (thresholdCase_ == 20) {
+          thresholdCase_ = 0;
+          threshold_ = null;
+          onChanged();
+        }
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -15656,7 +16074,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 6 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=151
+     *     See v1/search_get.proto;l=161
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated java.util.List<java.lang.String>
@@ -15668,7 +16086,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 6 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=151
+     *     See v1/search_get.proto;l=161
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated int getTargetVectorsCount();
@@ -15679,7 +16097,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 6 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=151
+     *     See v1/search_get.proto;l=161
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -15691,7 +16109,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 6 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=151
+     *     See v1/search_get.proto;l=161
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -16813,7 +17231,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 6 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=151
+     *     See v1/search_get.proto;l=161
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -16827,7 +17245,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 6 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=151
+     *     See v1/search_get.proto;l=161
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -16840,7 +17258,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 6 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=151
+     *     See v1/search_get.proto;l=161
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -16854,7 +17272,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 6 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=151
+     *     See v1/search_get.proto;l=161
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -17936,7 +18354,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 6 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=151
+       *     See v1/search_get.proto;l=161
        * @return A list containing the targetVectors.
        */
       @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -17951,7 +18369,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 6 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=151
+       *     See v1/search_get.proto;l=161
        * @return The count of targetVectors.
        */
       @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -17964,7 +18382,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 6 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=151
+       *     See v1/search_get.proto;l=161
        * @param index The index of the element to return.
        * @return The targetVectors at the given index.
        */
@@ -17978,7 +18396,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 6 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=151
+       *     See v1/search_get.proto;l=161
        * @param index The index of the value to return.
        * @return The bytes of the targetVectors at the given index.
        */
@@ -17993,7 +18411,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 6 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=151
+       *     See v1/search_get.proto;l=161
        * @param index The index to set the value at.
        * @param value The targetVectors to set.
        * @return This builder for chaining.
@@ -18014,7 +18432,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 6 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=151
+       *     See v1/search_get.proto;l=161
        * @param value The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -18034,7 +18452,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 6 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=151
+       *     See v1/search_get.proto;l=161
        * @param values The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -18054,7 +18472,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 6 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=151
+       *     See v1/search_get.proto;l=161
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearTargetVectors() {
@@ -18071,7 +18489,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 6 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=151
+       *     See v1/search_get.proto;l=161
        * @param value The bytes of the targetVectors to add.
        * @return This builder for chaining.
        */
@@ -18315,7 +18733,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=159
+     *     See v1/search_get.proto;l=169
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated java.util.List<java.lang.String>
@@ -18327,7 +18745,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=159
+     *     See v1/search_get.proto;l=169
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated int getTargetVectorsCount();
@@ -18338,7 +18756,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=159
+     *     See v1/search_get.proto;l=169
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -18350,7 +18768,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=159
+     *     See v1/search_get.proto;l=169
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -18499,7 +18917,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=159
+     *     See v1/search_get.proto;l=169
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -18513,7 +18931,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=159
+     *     See v1/search_get.proto;l=169
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -18526,7 +18944,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=159
+     *     See v1/search_get.proto;l=169
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -18540,7 +18958,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=159
+     *     See v1/search_get.proto;l=169
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -19214,7 +19632,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=159
+       *     See v1/search_get.proto;l=169
        * @return A list containing the targetVectors.
        */
       @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -19229,7 +19647,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=159
+       *     See v1/search_get.proto;l=169
        * @return The count of targetVectors.
        */
       @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -19242,7 +19660,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=159
+       *     See v1/search_get.proto;l=169
        * @param index The index of the element to return.
        * @return The targetVectors at the given index.
        */
@@ -19256,7 +19674,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=159
+       *     See v1/search_get.proto;l=169
        * @param index The index of the value to return.
        * @return The bytes of the targetVectors at the given index.
        */
@@ -19271,7 +19689,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=159
+       *     See v1/search_get.proto;l=169
        * @param index The index to set the value at.
        * @param value The targetVectors to set.
        * @return This builder for chaining.
@@ -19292,7 +19710,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=159
+       *     See v1/search_get.proto;l=169
        * @param value The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -19312,7 +19730,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=159
+       *     See v1/search_get.proto;l=169
        * @param values The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -19332,7 +19750,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=159
+       *     See v1/search_get.proto;l=169
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearTargetVectors() {
@@ -19349,7 +19767,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=159
+       *     See v1/search_get.proto;l=169
        * @param value The bytes of the targetVectors to add.
        * @return This builder for chaining.
        */
@@ -19593,7 +20011,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=167
+     *     See v1/search_get.proto;l=177
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated java.util.List<java.lang.String>
@@ -19605,7 +20023,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=167
+     *     See v1/search_get.proto;l=177
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated int getTargetVectorsCount();
@@ -19616,7 +20034,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=167
+     *     See v1/search_get.proto;l=177
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -19628,7 +20046,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=167
+     *     See v1/search_get.proto;l=177
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -19777,7 +20195,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=167
+     *     See v1/search_get.proto;l=177
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -19791,7 +20209,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=167
+     *     See v1/search_get.proto;l=177
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -19804,7 +20222,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=167
+     *     See v1/search_get.proto;l=177
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -19818,7 +20236,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=167
+     *     See v1/search_get.proto;l=177
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -20492,7 +20910,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=167
+       *     See v1/search_get.proto;l=177
        * @return A list containing the targetVectors.
        */
       @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -20507,7 +20925,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=167
+       *     See v1/search_get.proto;l=177
        * @return The count of targetVectors.
        */
       @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -20520,7 +20938,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=167
+       *     See v1/search_get.proto;l=177
        * @param index The index of the element to return.
        * @return The targetVectors at the given index.
        */
@@ -20534,7 +20952,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=167
+       *     See v1/search_get.proto;l=177
        * @param index The index of the value to return.
        * @return The bytes of the targetVectors at the given index.
        */
@@ -20549,7 +20967,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=167
+       *     See v1/search_get.proto;l=177
        * @param index The index to set the value at.
        * @param value The targetVectors to set.
        * @return This builder for chaining.
@@ -20570,7 +20988,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=167
+       *     See v1/search_get.proto;l=177
        * @param value The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -20590,7 +21008,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=167
+       *     See v1/search_get.proto;l=177
        * @param values The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -20610,7 +21028,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=167
+       *     See v1/search_get.proto;l=177
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearTargetVectors() {
@@ -20627,7 +21045,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=167
+       *     See v1/search_get.proto;l=177
        * @param value The bytes of the targetVectors to add.
        * @return This builder for chaining.
        */
@@ -20871,7 +21289,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=175
+     *     See v1/search_get.proto;l=185
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated java.util.List<java.lang.String>
@@ -20883,7 +21301,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=175
+     *     See v1/search_get.proto;l=185
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated int getTargetVectorsCount();
@@ -20894,7 +21312,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=175
+     *     See v1/search_get.proto;l=185
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -20906,7 +21324,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=175
+     *     See v1/search_get.proto;l=185
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -21055,7 +21473,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=175
+     *     See v1/search_get.proto;l=185
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -21069,7 +21487,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=175
+     *     See v1/search_get.proto;l=185
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -21082,7 +21500,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=175
+     *     See v1/search_get.proto;l=185
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -21096,7 +21514,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=175
+     *     See v1/search_get.proto;l=185
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -21770,7 +22188,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=175
+       *     See v1/search_get.proto;l=185
        * @return A list containing the targetVectors.
        */
       @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -21785,7 +22203,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=175
+       *     See v1/search_get.proto;l=185
        * @return The count of targetVectors.
        */
       @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -21798,7 +22216,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=175
+       *     See v1/search_get.proto;l=185
        * @param index The index of the element to return.
        * @return The targetVectors at the given index.
        */
@@ -21812,7 +22230,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=175
+       *     See v1/search_get.proto;l=185
        * @param index The index of the value to return.
        * @return The bytes of the targetVectors at the given index.
        */
@@ -21827,7 +22245,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=175
+       *     See v1/search_get.proto;l=185
        * @param index The index to set the value at.
        * @param value The targetVectors to set.
        * @return This builder for chaining.
@@ -21848,7 +22266,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=175
+       *     See v1/search_get.proto;l=185
        * @param value The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -21868,7 +22286,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=175
+       *     See v1/search_get.proto;l=185
        * @param values The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -21888,7 +22306,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=175
+       *     See v1/search_get.proto;l=185
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearTargetVectors() {
@@ -21905,7 +22323,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=175
+       *     See v1/search_get.proto;l=185
        * @param value The bytes of the targetVectors to add.
        * @return This builder for chaining.
        */
@@ -22149,7 +22567,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=183
+     *     See v1/search_get.proto;l=193
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated java.util.List<java.lang.String>
@@ -22161,7 +22579,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=183
+     *     See v1/search_get.proto;l=193
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated int getTargetVectorsCount();
@@ -22172,7 +22590,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=183
+     *     See v1/search_get.proto;l=193
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -22184,7 +22602,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=183
+     *     See v1/search_get.proto;l=193
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -22333,7 +22751,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=183
+     *     See v1/search_get.proto;l=193
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -22347,7 +22765,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=183
+     *     See v1/search_get.proto;l=193
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -22360,7 +22778,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=183
+     *     See v1/search_get.proto;l=193
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -22374,7 +22792,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=183
+     *     See v1/search_get.proto;l=193
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -23048,7 +23466,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=183
+       *     See v1/search_get.proto;l=193
        * @return A list containing the targetVectors.
        */
       @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -23063,7 +23481,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=183
+       *     See v1/search_get.proto;l=193
        * @return The count of targetVectors.
        */
       @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -23076,7 +23494,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=183
+       *     See v1/search_get.proto;l=193
        * @param index The index of the element to return.
        * @return The targetVectors at the given index.
        */
@@ -23090,7 +23508,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=183
+       *     See v1/search_get.proto;l=193
        * @param index The index of the value to return.
        * @return The bytes of the targetVectors at the given index.
        */
@@ -23105,7 +23523,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=183
+       *     See v1/search_get.proto;l=193
        * @param index The index to set the value at.
        * @param value The targetVectors to set.
        * @return This builder for chaining.
@@ -23126,7 +23544,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=183
+       *     See v1/search_get.proto;l=193
        * @param value The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -23146,7 +23564,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=183
+       *     See v1/search_get.proto;l=193
        * @param values The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -23166,7 +23584,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=183
+       *     See v1/search_get.proto;l=193
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearTargetVectors() {
@@ -23183,7 +23601,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=183
+       *     See v1/search_get.proto;l=193
        * @param value The bytes of the targetVectors to add.
        * @return This builder for chaining.
        */
@@ -23427,7 +23845,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=191
+     *     See v1/search_get.proto;l=201
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated java.util.List<java.lang.String>
@@ -23439,7 +23857,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=191
+     *     See v1/search_get.proto;l=201
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated int getTargetVectorsCount();
@@ -23450,7 +23868,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=191
+     *     See v1/search_get.proto;l=201
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -23462,7 +23880,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=191
+     *     See v1/search_get.proto;l=201
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -23611,7 +24029,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=191
+     *     See v1/search_get.proto;l=201
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -23625,7 +24043,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=191
+     *     See v1/search_get.proto;l=201
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -23638,7 +24056,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=191
+     *     See v1/search_get.proto;l=201
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -23652,7 +24070,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=191
+     *     See v1/search_get.proto;l=201
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -24326,7 +24744,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=191
+       *     See v1/search_get.proto;l=201
        * @return A list containing the targetVectors.
        */
       @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -24341,7 +24759,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=191
+       *     See v1/search_get.proto;l=201
        * @return The count of targetVectors.
        */
       @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -24354,7 +24772,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=191
+       *     See v1/search_get.proto;l=201
        * @param index The index of the element to return.
        * @return The targetVectors at the given index.
        */
@@ -24368,7 +24786,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=191
+       *     See v1/search_get.proto;l=201
        * @param index The index of the value to return.
        * @return The bytes of the targetVectors at the given index.
        */
@@ -24383,7 +24801,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=191
+       *     See v1/search_get.proto;l=201
        * @param index The index to set the value at.
        * @param value The targetVectors to set.
        * @return This builder for chaining.
@@ -24404,7 +24822,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=191
+       *     See v1/search_get.proto;l=201
        * @param value The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -24424,7 +24842,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=191
+       *     See v1/search_get.proto;l=201
        * @param values The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -24444,7 +24862,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=191
+       *     See v1/search_get.proto;l=201
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearTargetVectors() {
@@ -24461,7 +24879,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=191
+       *     See v1/search_get.proto;l=201
        * @param value The bytes of the targetVectors to add.
        * @return This builder for chaining.
        */
@@ -24705,7 +25123,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=199
+     *     See v1/search_get.proto;l=209
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated java.util.List<java.lang.String>
@@ -24717,7 +25135,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=199
+     *     See v1/search_get.proto;l=209
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated int getTargetVectorsCount();
@@ -24728,7 +25146,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=199
+     *     See v1/search_get.proto;l=209
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -24740,7 +25158,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=199
+     *     See v1/search_get.proto;l=209
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -24889,7 +25307,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=199
+     *     See v1/search_get.proto;l=209
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -24903,7 +25321,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=199
+     *     See v1/search_get.proto;l=209
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -24916,7 +25334,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=199
+     *     See v1/search_get.proto;l=209
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -24930,7 +25348,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=199
+     *     See v1/search_get.proto;l=209
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -25604,7 +26022,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=199
+       *     See v1/search_get.proto;l=209
        * @return A list containing the targetVectors.
        */
       @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -25619,7 +26037,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=199
+       *     See v1/search_get.proto;l=209
        * @return The count of targetVectors.
        */
       @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -25632,7 +26050,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=199
+       *     See v1/search_get.proto;l=209
        * @param index The index of the element to return.
        * @return The targetVectors at the given index.
        */
@@ -25646,7 +26064,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=199
+       *     See v1/search_get.proto;l=209
        * @param index The index of the value to return.
        * @return The bytes of the targetVectors at the given index.
        */
@@ -25661,7 +26079,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=199
+       *     See v1/search_get.proto;l=209
        * @param index The index to set the value at.
        * @param value The targetVectors to set.
        * @return This builder for chaining.
@@ -25682,7 +26100,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=199
+       *     See v1/search_get.proto;l=209
        * @param value The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -25702,7 +26120,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=199
+       *     See v1/search_get.proto;l=209
        * @param values The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -25722,7 +26140,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=199
+       *     See v1/search_get.proto;l=209
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearTargetVectors() {
@@ -25739,7 +26157,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=199
+       *     See v1/search_get.proto;l=209
        * @param value The bytes of the targetVectors to add.
        * @return This builder for chaining.
        */
@@ -27812,6 +28230,631 @@ public final class WeaviateProtoSearchGet {
 
   }
 
+  public interface VectorForTargetOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:weaviate.v1.VectorForTarget)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string name = 1;</code>
+     * @return The name.
+     */
+    java.lang.String getName();
+    /**
+     * <code>string name = 1;</code>
+     * @return The bytes for name.
+     */
+    com.google.protobuf.ByteString
+        getNameBytes();
+
+    /**
+     * <code>bytes vector_bytes = 2;</code>
+     * @return The vectorBytes.
+     */
+    com.google.protobuf.ByteString getVectorBytes();
+  }
+  /**
+   * Protobuf type {@code weaviate.v1.VectorForTarget}
+   */
+  public static final class VectorForTarget extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:weaviate.v1.VectorForTarget)
+      VectorForTargetOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use VectorForTarget.newBuilder() to construct.
+    private VectorForTarget(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private VectorForTarget() {
+      name_ = "";
+      vectorBytes_ = com.google.protobuf.ByteString.EMPTY;
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new VectorForTarget();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.internal_static_weaviate_v1_VectorForTarget_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.internal_static_weaviate_v1_VectorForTarget_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget.class, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget.Builder.class);
+    }
+
+    public static final int NAME_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object name_ = "";
+    /**
+     * <code>string name = 1;</code>
+     * @return The name.
+     */
+    @java.lang.Override
+    public java.lang.String getName() {
+      java.lang.Object ref = name_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        name_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string name = 1;</code>
+     * @return The bytes for name.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getNameBytes() {
+      java.lang.Object ref = name_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        name_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int VECTOR_BYTES_FIELD_NUMBER = 2;
+    private com.google.protobuf.ByteString vectorBytes_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <code>bytes vector_bytes = 2;</code>
+     * @return The vectorBytes.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getVectorBytes() {
+      return vectorBytes_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
+      }
+      if (!vectorBytes_.isEmpty()) {
+        output.writeBytes(2, vectorBytes_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
+      }
+      if (!vectorBytes_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, vectorBytes_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget)) {
+        return super.equals(obj);
+      }
+      io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget other = (io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget) obj;
+
+      if (!getName()
+          .equals(other.getName())) return false;
+      if (!getVectorBytes()
+          .equals(other.getVectorBytes())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getName().hashCode();
+      hash = (37 * hash) + VECTOR_BYTES_FIELD_NUMBER;
+      hash = (53 * hash) + getVectorBytes().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code weaviate.v1.VectorForTarget}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:weaviate.v1.VectorForTarget)
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTargetOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.internal_static_weaviate_v1_VectorForTarget_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.internal_static_weaviate_v1_VectorForTarget_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget.class, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget.Builder.class);
+      }
+
+      // Construct using io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        name_ = "";
+        vectorBytes_ = com.google.protobuf.ByteString.EMPTY;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.internal_static_weaviate_v1_VectorForTarget_descriptor;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget getDefaultInstanceForType() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget build() {
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget buildPartial() {
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget result = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.name_ = name_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.vectorBytes_ = vectorBytes_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget) {
+          return mergeFrom((io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget other) {
+        if (other == io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget.getDefaultInstance()) return this;
+        if (!other.getName().isEmpty()) {
+          name_ = other.name_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (other.getVectorBytes() != com.google.protobuf.ByteString.EMPTY) {
+          setVectorBytes(other.getVectorBytes());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                name_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                vectorBytes_ = input.readBytes();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object name_ = "";
+      /**
+       * <code>string name = 1;</code>
+       * @return The name.
+       */
+      public java.lang.String getName() {
+        java.lang.Object ref = name_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          name_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string name = 1;</code>
+       * @return The bytes for name.
+       */
+      public com.google.protobuf.ByteString
+          getNameBytes() {
+        java.lang.Object ref = name_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          name_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string name = 1;</code>
+       * @param value The name to set.
+       * @return This builder for chaining.
+       */
+      public Builder setName(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        name_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string name = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearName() {
+        name_ = getDefaultInstance().getName();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string name = 1;</code>
+       * @param value The bytes for name to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        name_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString vectorBytes_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes vector_bytes = 2;</code>
+       * @return The vectorBytes.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getVectorBytes() {
+        return vectorBytes_;
+      }
+      /**
+       * <code>bytes vector_bytes = 2;</code>
+       * @param value The vectorBytes to set.
+       * @return This builder for chaining.
+       */
+      public Builder setVectorBytes(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        vectorBytes_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes vector_bytes = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearVectorBytes() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        vectorBytes_ = getDefaultInstance().getVectorBytes();
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:weaviate.v1.VectorForTarget)
+    }
+
+    // @@protoc_insertion_point(class_scope:weaviate.v1.VectorForTarget)
+    private static final io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget();
+    }
+
+    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<VectorForTarget>
+        PARSER = new com.google.protobuf.AbstractParser<VectorForTarget>() {
+      @java.lang.Override
+      public VectorForTarget parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<VectorForTarget> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<VectorForTarget> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface NearVectorOrBuilder extends
       // @@protoc_insertion_point(interface_extends:weaviate.v1.NearVector)
       com.google.protobuf.MessageOrBuilder {
@@ -27823,7 +28866,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.vector is deprecated.
-     *     See v1/search_get.proto;l=217
+     *     See v1/search_get.proto;l=232
      * @return A list containing the vector.
      */
     @java.lang.Deprecated java.util.List<java.lang.Float> getVectorList();
@@ -27834,7 +28877,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.vector is deprecated.
-     *     See v1/search_get.proto;l=217
+     *     See v1/search_get.proto;l=232
      * @return The count of vector.
      */
     @java.lang.Deprecated int getVectorCount();
@@ -27845,7 +28888,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.vector is deprecated.
-     *     See v1/search_get.proto;l=217
+     *     See v1/search_get.proto;l=232
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
@@ -27886,7 +28929,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 5 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=221
+     *     See v1/search_get.proto;l=236
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated java.util.List<java.lang.String>
@@ -27898,7 +28941,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 5 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=221
+     *     See v1/search_get.proto;l=236
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated int getTargetVectorsCount();
@@ -27909,7 +28952,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 5 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=221
+     *     See v1/search_get.proto;l=236
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -27921,7 +28964,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated string target_vectors = 5 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=221
+     *     See v1/search_get.proto;l=236
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -27944,13 +28987,21 @@ public final class WeaviateProtoSearchGet {
     io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.TargetsOrBuilder getTargetsOrBuilder();
 
     /**
-     * <code>map&lt;string, bytes&gt; vector_per_target = 7;</code>
+     * <pre>
+     * deprecated in 1.26.2 - use vector_for_targets
+     * </pre>
+     *
+     * <code>map&lt;string, bytes&gt; vector_per_target = 7 [deprecated = true];</code>
      */
-    int getVectorPerTargetCount();
+    @java.lang.Deprecated int getVectorPerTargetCount();
     /**
-     * <code>map&lt;string, bytes&gt; vector_per_target = 7;</code>
+     * <pre>
+     * deprecated in 1.26.2 - use vector_for_targets
+     * </pre>
+     *
+     * <code>map&lt;string, bytes&gt; vector_per_target = 7 [deprecated = true];</code>
      */
-    boolean containsVectorPerTarget(
+    @java.lang.Deprecated boolean containsVectorPerTarget(
         java.lang.String key);
     /**
      * Use {@link #getVectorPerTargetMap()} instead.
@@ -27959,23 +29010,59 @@ public final class WeaviateProtoSearchGet {
     java.util.Map<java.lang.String, com.google.protobuf.ByteString>
     getVectorPerTarget();
     /**
-     * <code>map&lt;string, bytes&gt; vector_per_target = 7;</code>
+     * <pre>
+     * deprecated in 1.26.2 - use vector_for_targets
+     * </pre>
+     *
+     * <code>map&lt;string, bytes&gt; vector_per_target = 7 [deprecated = true];</code>
      */
-    java.util.Map<java.lang.String, com.google.protobuf.ByteString>
+    @java.lang.Deprecated java.util.Map<java.lang.String, com.google.protobuf.ByteString>
     getVectorPerTargetMap();
     /**
-     * <code>map&lt;string, bytes&gt; vector_per_target = 7;</code>
+     * <pre>
+     * deprecated in 1.26.2 - use vector_for_targets
+     * </pre>
+     *
+     * <code>map&lt;string, bytes&gt; vector_per_target = 7 [deprecated = true];</code>
      */
-    /* nullable */
+    @java.lang.Deprecated /* nullable */
 com.google.protobuf.ByteString getVectorPerTargetOrDefault(
         java.lang.String key,
         /* nullable */
 com.google.protobuf.ByteString defaultValue);
     /**
-     * <code>map&lt;string, bytes&gt; vector_per_target = 7;</code>
+     * <pre>
+     * deprecated in 1.26.2 - use vector_for_targets
+     * </pre>
+     *
+     * <code>map&lt;string, bytes&gt; vector_per_target = 7 [deprecated = true];</code>
      */
-    com.google.protobuf.ByteString getVectorPerTargetOrThrow(
+    @java.lang.Deprecated com.google.protobuf.ByteString getVectorPerTargetOrThrow(
         java.lang.String key);
+
+    /**
+     * <code>repeated .weaviate.v1.VectorForTarget vector_for_targets = 8;</code>
+     */
+    java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget> 
+        getVectorForTargetsList();
+    /**
+     * <code>repeated .weaviate.v1.VectorForTarget vector_for_targets = 8;</code>
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget getVectorForTargets(int index);
+    /**
+     * <code>repeated .weaviate.v1.VectorForTarget vector_for_targets = 8;</code>
+     */
+    int getVectorForTargetsCount();
+    /**
+     * <code>repeated .weaviate.v1.VectorForTarget vector_for_targets = 8;</code>
+     */
+    java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTargetOrBuilder> 
+        getVectorForTargetsOrBuilderList();
+    /**
+     * <code>repeated .weaviate.v1.VectorForTarget vector_for_targets = 8;</code>
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTargetOrBuilder getVectorForTargetsOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code weaviate.v1.NearVector}
@@ -27994,6 +29081,7 @@ com.google.protobuf.ByteString defaultValue);
       vectorBytes_ = com.google.protobuf.ByteString.EMPTY;
       targetVectors_ =
           com.google.protobuf.LazyStringArrayList.emptyList();
+      vectorForTargets_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -28040,7 +29128,7 @@ com.google.protobuf.ByteString defaultValue);
      *
      * <code>repeated float vector = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.vector is deprecated.
-     *     See v1/search_get.proto;l=217
+     *     See v1/search_get.proto;l=232
      * @return A list containing the vector.
      */
     @java.lang.Override
@@ -28055,7 +29143,7 @@ com.google.protobuf.ByteString defaultValue);
      *
      * <code>repeated float vector = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.vector is deprecated.
-     *     See v1/search_get.proto;l=217
+     *     See v1/search_get.proto;l=232
      * @return The count of vector.
      */
     @java.lang.Deprecated public int getVectorCount() {
@@ -28068,7 +29156,7 @@ com.google.protobuf.ByteString defaultValue);
      *
      * <code>repeated float vector = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.vector is deprecated.
-     *     See v1/search_get.proto;l=217
+     *     See v1/search_get.proto;l=232
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
@@ -28137,7 +29225,7 @@ com.google.protobuf.ByteString defaultValue);
      *
      * <code>repeated string target_vectors = 5 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=221
+     *     See v1/search_get.proto;l=236
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -28151,7 +29239,7 @@ com.google.protobuf.ByteString defaultValue);
      *
      * <code>repeated string target_vectors = 5 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=221
+     *     See v1/search_get.proto;l=236
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -28164,7 +29252,7 @@ com.google.protobuf.ByteString defaultValue);
      *
      * <code>repeated string target_vectors = 5 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=221
+     *     See v1/search_get.proto;l=236
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -28178,7 +29266,7 @@ com.google.protobuf.ByteString defaultValue);
      *
      * <code>repeated string target_vectors = 5 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=221
+     *     See v1/search_get.proto;l=236
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -28236,14 +29324,18 @@ com.google.protobuf.ByteString defaultValue);
       }
       return vectorPerTarget_;
     }
-    public int getVectorPerTargetCount() {
+    @java.lang.Deprecated public int getVectorPerTargetCount() {
       return internalGetVectorPerTarget().getMap().size();
     }
     /**
-     * <code>map&lt;string, bytes&gt; vector_per_target = 7;</code>
+     * <pre>
+     * deprecated in 1.26.2 - use vector_for_targets
+     * </pre>
+     *
+     * <code>map&lt;string, bytes&gt; vector_per_target = 7 [deprecated = true];</code>
      */
     @java.lang.Override
-    public boolean containsVectorPerTarget(
+    @java.lang.Deprecated public boolean containsVectorPerTarget(
         java.lang.String key) {
       if (key == null) { throw new NullPointerException("map key"); }
       return internalGetVectorPerTarget().getMap().containsKey(key);
@@ -28257,17 +29349,25 @@ com.google.protobuf.ByteString defaultValue);
       return getVectorPerTargetMap();
     }
     /**
-     * <code>map&lt;string, bytes&gt; vector_per_target = 7;</code>
+     * <pre>
+     * deprecated in 1.26.2 - use vector_for_targets
+     * </pre>
+     *
+     * <code>map&lt;string, bytes&gt; vector_per_target = 7 [deprecated = true];</code>
      */
     @java.lang.Override
-    public java.util.Map<java.lang.String, com.google.protobuf.ByteString> getVectorPerTargetMap() {
+    @java.lang.Deprecated public java.util.Map<java.lang.String, com.google.protobuf.ByteString> getVectorPerTargetMap() {
       return internalGetVectorPerTarget().getMap();
     }
     /**
-     * <code>map&lt;string, bytes&gt; vector_per_target = 7;</code>
+     * <pre>
+     * deprecated in 1.26.2 - use vector_for_targets
+     * </pre>
+     *
+     * <code>map&lt;string, bytes&gt; vector_per_target = 7 [deprecated = true];</code>
      */
     @java.lang.Override
-    public /* nullable */
+    @java.lang.Deprecated public /* nullable */
 com.google.protobuf.ByteString getVectorPerTargetOrDefault(
         java.lang.String key,
         /* nullable */
@@ -28278,10 +29378,14 @@ com.google.protobuf.ByteString defaultValue) {
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
-     * <code>map&lt;string, bytes&gt; vector_per_target = 7;</code>
+     * <pre>
+     * deprecated in 1.26.2 - use vector_for_targets
+     * </pre>
+     *
+     * <code>map&lt;string, bytes&gt; vector_per_target = 7 [deprecated = true];</code>
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString getVectorPerTargetOrThrow(
+    @java.lang.Deprecated public com.google.protobuf.ByteString getVectorPerTargetOrThrow(
         java.lang.String key) {
       if (key == null) { throw new NullPointerException("map key"); }
       java.util.Map<java.lang.String, com.google.protobuf.ByteString> map =
@@ -28290,6 +29394,47 @@ com.google.protobuf.ByteString defaultValue) {
         throw new java.lang.IllegalArgumentException();
       }
       return map.get(key);
+    }
+
+    public static final int VECTOR_FOR_TARGETS_FIELD_NUMBER = 8;
+    @SuppressWarnings("serial")
+    private java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget> vectorForTargets_;
+    /**
+     * <code>repeated .weaviate.v1.VectorForTarget vector_for_targets = 8;</code>
+     */
+    @java.lang.Override
+    public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget> getVectorForTargetsList() {
+      return vectorForTargets_;
+    }
+    /**
+     * <code>repeated .weaviate.v1.VectorForTarget vector_for_targets = 8;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTargetOrBuilder> 
+        getVectorForTargetsOrBuilderList() {
+      return vectorForTargets_;
+    }
+    /**
+     * <code>repeated .weaviate.v1.VectorForTarget vector_for_targets = 8;</code>
+     */
+    @java.lang.Override
+    public int getVectorForTargetsCount() {
+      return vectorForTargets_.size();
+    }
+    /**
+     * <code>repeated .weaviate.v1.VectorForTarget vector_for_targets = 8;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget getVectorForTargets(int index) {
+      return vectorForTargets_.get(index);
+    }
+    /**
+     * <code>repeated .weaviate.v1.VectorForTarget vector_for_targets = 8;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTargetOrBuilder getVectorForTargetsOrBuilder(
+        int index) {
+      return vectorForTargets_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -28335,6 +29480,9 @@ com.google.protobuf.ByteString defaultValue) {
           internalGetVectorPerTarget(),
           VectorPerTargetDefaultEntryHolder.defaultEntry,
           7);
+      for (int i = 0; i < vectorForTargets_.size(); i++) {
+        output.writeMessage(8, vectorForTargets_.get(i));
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -28389,6 +29537,10 @@ com.google.protobuf.ByteString defaultValue) {
         size += com.google.protobuf.CodedOutputStream
             .computeMessageSize(7, vectorPerTarget__);
       }
+      for (int i = 0; i < vectorForTargets_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(8, vectorForTargets_.get(i));
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
@@ -28429,6 +29581,8 @@ com.google.protobuf.ByteString defaultValue) {
       }
       if (!internalGetVectorPerTarget().equals(
           other.internalGetVectorPerTarget())) return false;
+      if (!getVectorForTargetsList()
+          .equals(other.getVectorForTargetsList())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -28467,6 +29621,10 @@ com.google.protobuf.ByteString defaultValue) {
       if (!internalGetVectorPerTarget().getMap().isEmpty()) {
         hash = (37 * hash) + VECTOR_PER_TARGET_FIELD_NUMBER;
         hash = (53 * hash) + internalGetVectorPerTarget().hashCode();
+      }
+      if (getVectorForTargetsCount() > 0) {
+        hash = (37 * hash) + VECTOR_FOR_TARGETS_FIELD_NUMBER;
+        hash = (53 * hash) + getVectorForTargetsList().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -28621,6 +29779,7 @@ com.google.protobuf.ByteString defaultValue) {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
           getTargetsFieldBuilder();
+          getVectorForTargetsFieldBuilder();
         }
       }
       @java.lang.Override
@@ -28639,6 +29798,13 @@ com.google.protobuf.ByteString defaultValue) {
           targetsBuilder_ = null;
         }
         internalGetMutableVectorPerTarget().clear();
+        if (vectorForTargetsBuilder_ == null) {
+          vectorForTargets_ = java.util.Collections.emptyList();
+        } else {
+          vectorForTargets_ = null;
+          vectorForTargetsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000080);
         return this;
       }
 
@@ -28665,9 +29831,22 @@ com.google.protobuf.ByteString defaultValue) {
       @java.lang.Override
       public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector buildPartial() {
         io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector result = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector(this);
+        buildPartialRepeatedFields(result);
         if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
+      }
+
+      private void buildPartialRepeatedFields(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector result) {
+        if (vectorForTargetsBuilder_ == null) {
+          if (((bitField0_ & 0x00000080) != 0)) {
+            vectorForTargets_ = java.util.Collections.unmodifiableList(vectorForTargets_);
+            bitField0_ = (bitField0_ & ~0x00000080);
+          }
+          result.vectorForTargets_ = vectorForTargets_;
+        } else {
+          result.vectorForTargets_ = vectorForTargetsBuilder_.build();
+        }
       }
 
       private void buildPartial0(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector result) {
@@ -28785,6 +29964,32 @@ com.google.protobuf.ByteString defaultValue) {
         internalGetMutableVectorPerTarget().mergeFrom(
             other.internalGetVectorPerTarget());
         bitField0_ |= 0x00000040;
+        if (vectorForTargetsBuilder_ == null) {
+          if (!other.vectorForTargets_.isEmpty()) {
+            if (vectorForTargets_.isEmpty()) {
+              vectorForTargets_ = other.vectorForTargets_;
+              bitField0_ = (bitField0_ & ~0x00000080);
+            } else {
+              ensureVectorForTargetsIsMutable();
+              vectorForTargets_.addAll(other.vectorForTargets_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.vectorForTargets_.isEmpty()) {
+            if (vectorForTargetsBuilder_.isEmpty()) {
+              vectorForTargetsBuilder_.dispose();
+              vectorForTargetsBuilder_ = null;
+              vectorForTargets_ = other.vectorForTargets_;
+              bitField0_ = (bitField0_ & ~0x00000080);
+              vectorForTargetsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getVectorForTargetsFieldBuilder() : null;
+            } else {
+              vectorForTargetsBuilder_.addAllMessages(other.vectorForTargets_);
+            }
+          }
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -28865,6 +30070,19 @@ com.google.protobuf.ByteString defaultValue) {
                 bitField0_ |= 0x00000040;
                 break;
               } // case 58
+              case 66: {
+                io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget m =
+                    input.readMessage(
+                        io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget.parser(),
+                        extensionRegistry);
+                if (vectorForTargetsBuilder_ == null) {
+                  ensureVectorForTargetsIsMutable();
+                  vectorForTargets_.add(m);
+                } else {
+                  vectorForTargetsBuilder_.addMessage(m);
+                }
+                break;
+              } // case 66
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -28902,7 +30120,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated float vector = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.vector is deprecated.
-       *     See v1/search_get.proto;l=217
+       *     See v1/search_get.proto;l=232
        * @return A list containing the vector.
        */
       @java.lang.Deprecated public java.util.List<java.lang.Float>
@@ -28917,7 +30135,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated float vector = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.vector is deprecated.
-       *     See v1/search_get.proto;l=217
+       *     See v1/search_get.proto;l=232
        * @return The count of vector.
        */
       @java.lang.Deprecated public int getVectorCount() {
@@ -28930,7 +30148,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated float vector = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.vector is deprecated.
-       *     See v1/search_get.proto;l=217
+       *     See v1/search_get.proto;l=232
        * @param index The index of the element to return.
        * @return The vector at the given index.
        */
@@ -28944,7 +30162,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated float vector = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.vector is deprecated.
-       *     See v1/search_get.proto;l=217
+       *     See v1/search_get.proto;l=232
        * @param index The index to set the value at.
        * @param value The vector to set.
        * @return This builder for chaining.
@@ -28965,7 +30183,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated float vector = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.vector is deprecated.
-       *     See v1/search_get.proto;l=217
+       *     See v1/search_get.proto;l=232
        * @param value The vector to add.
        * @return This builder for chaining.
        */
@@ -28984,7 +30202,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated float vector = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.vector is deprecated.
-       *     See v1/search_get.proto;l=217
+       *     See v1/search_get.proto;l=232
        * @param values The vector to add.
        * @return This builder for chaining.
        */
@@ -29004,7 +30222,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated float vector = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.vector is deprecated.
-       *     See v1/search_get.proto;l=217
+       *     See v1/search_get.proto;l=232
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearVector() {
@@ -29141,7 +30359,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 5 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=221
+       *     See v1/search_get.proto;l=236
        * @return A list containing the targetVectors.
        */
       @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -29156,7 +30374,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 5 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=221
+       *     See v1/search_get.proto;l=236
        * @return The count of targetVectors.
        */
       @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -29169,7 +30387,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 5 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=221
+       *     See v1/search_get.proto;l=236
        * @param index The index of the element to return.
        * @return The targetVectors at the given index.
        */
@@ -29183,7 +30401,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 5 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=221
+       *     See v1/search_get.proto;l=236
        * @param index The index of the value to return.
        * @return The bytes of the targetVectors at the given index.
        */
@@ -29198,7 +30416,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 5 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=221
+       *     See v1/search_get.proto;l=236
        * @param index The index to set the value at.
        * @param value The targetVectors to set.
        * @return This builder for chaining.
@@ -29219,7 +30437,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 5 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=221
+       *     See v1/search_get.proto;l=236
        * @param value The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -29239,7 +30457,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 5 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=221
+       *     See v1/search_get.proto;l=236
        * @param values The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -29259,7 +30477,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 5 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=221
+       *     See v1/search_get.proto;l=236
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearTargetVectors() {
@@ -29276,7 +30494,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 5 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=221
+       *     See v1/search_get.proto;l=236
        * @param value The bytes of the targetVectors to add.
        * @return This builder for chaining.
        */
@@ -29414,7 +30632,7 @@ com.google.protobuf.ByteString defaultValue) {
 
       private com.google.protobuf.MapField<
           java.lang.String, com.google.protobuf.ByteString> vectorPerTarget_;
-      private com.google.protobuf.MapField<java.lang.String, com.google.protobuf.ByteString>
+      @java.lang.Deprecated private com.google.protobuf.MapField<java.lang.String, com.google.protobuf.ByteString>
           internalGetVectorPerTarget() {
         if (vectorPerTarget_ == null) {
           return com.google.protobuf.MapField.emptyMapField(
@@ -29422,7 +30640,7 @@ com.google.protobuf.ByteString defaultValue) {
         }
         return vectorPerTarget_;
       }
-      private com.google.protobuf.MapField<java.lang.String, com.google.protobuf.ByteString>
+      @java.lang.Deprecated private com.google.protobuf.MapField<java.lang.String, com.google.protobuf.ByteString>
           internalGetMutableVectorPerTarget() {
         if (vectorPerTarget_ == null) {
           vectorPerTarget_ = com.google.protobuf.MapField.newMapField(
@@ -29435,14 +30653,18 @@ com.google.protobuf.ByteString defaultValue) {
         onChanged();
         return vectorPerTarget_;
       }
-      public int getVectorPerTargetCount() {
+      @java.lang.Deprecated public int getVectorPerTargetCount() {
         return internalGetVectorPerTarget().getMap().size();
       }
       /**
-       * <code>map&lt;string, bytes&gt; vector_per_target = 7;</code>
+       * <pre>
+       * deprecated in 1.26.2 - use vector_for_targets
+       * </pre>
+       *
+       * <code>map&lt;string, bytes&gt; vector_per_target = 7 [deprecated = true];</code>
        */
       @java.lang.Override
-      public boolean containsVectorPerTarget(
+      @java.lang.Deprecated public boolean containsVectorPerTarget(
           java.lang.String key) {
         if (key == null) { throw new NullPointerException("map key"); }
         return internalGetVectorPerTarget().getMap().containsKey(key);
@@ -29456,17 +30678,25 @@ com.google.protobuf.ByteString defaultValue) {
         return getVectorPerTargetMap();
       }
       /**
-       * <code>map&lt;string, bytes&gt; vector_per_target = 7;</code>
+       * <pre>
+       * deprecated in 1.26.2 - use vector_for_targets
+       * </pre>
+       *
+       * <code>map&lt;string, bytes&gt; vector_per_target = 7 [deprecated = true];</code>
        */
       @java.lang.Override
-      public java.util.Map<java.lang.String, com.google.protobuf.ByteString> getVectorPerTargetMap() {
+      @java.lang.Deprecated public java.util.Map<java.lang.String, com.google.protobuf.ByteString> getVectorPerTargetMap() {
         return internalGetVectorPerTarget().getMap();
       }
       /**
-       * <code>map&lt;string, bytes&gt; vector_per_target = 7;</code>
+       * <pre>
+       * deprecated in 1.26.2 - use vector_for_targets
+       * </pre>
+       *
+       * <code>map&lt;string, bytes&gt; vector_per_target = 7 [deprecated = true];</code>
        */
       @java.lang.Override
-      public /* nullable */
+      @java.lang.Deprecated public /* nullable */
 com.google.protobuf.ByteString getVectorPerTargetOrDefault(
           java.lang.String key,
           /* nullable */
@@ -29477,10 +30707,14 @@ com.google.protobuf.ByteString defaultValue) {
         return map.containsKey(key) ? map.get(key) : defaultValue;
       }
       /**
-       * <code>map&lt;string, bytes&gt; vector_per_target = 7;</code>
+       * <pre>
+       * deprecated in 1.26.2 - use vector_for_targets
+       * </pre>
+       *
+       * <code>map&lt;string, bytes&gt; vector_per_target = 7 [deprecated = true];</code>
        */
       @java.lang.Override
-      public com.google.protobuf.ByteString getVectorPerTargetOrThrow(
+      @java.lang.Deprecated public com.google.protobuf.ByteString getVectorPerTargetOrThrow(
           java.lang.String key) {
         if (key == null) { throw new NullPointerException("map key"); }
         java.util.Map<java.lang.String, com.google.protobuf.ByteString> map =
@@ -29490,16 +30724,20 @@ com.google.protobuf.ByteString defaultValue) {
         }
         return map.get(key);
       }
-      public Builder clearVectorPerTarget() {
+      @java.lang.Deprecated public Builder clearVectorPerTarget() {
         bitField0_ = (bitField0_ & ~0x00000040);
         internalGetMutableVectorPerTarget().getMutableMap()
             .clear();
         return this;
       }
       /**
-       * <code>map&lt;string, bytes&gt; vector_per_target = 7;</code>
+       * <pre>
+       * deprecated in 1.26.2 - use vector_for_targets
+       * </pre>
+       *
+       * <code>map&lt;string, bytes&gt; vector_per_target = 7 [deprecated = true];</code>
        */
-      public Builder removeVectorPerTarget(
+      @java.lang.Deprecated public Builder removeVectorPerTarget(
           java.lang.String key) {
         if (key == null) { throw new NullPointerException("map key"); }
         internalGetMutableVectorPerTarget().getMutableMap()
@@ -29516,9 +30754,13 @@ com.google.protobuf.ByteString defaultValue) {
         return internalGetMutableVectorPerTarget().getMutableMap();
       }
       /**
-       * <code>map&lt;string, bytes&gt; vector_per_target = 7;</code>
+       * <pre>
+       * deprecated in 1.26.2 - use vector_for_targets
+       * </pre>
+       *
+       * <code>map&lt;string, bytes&gt; vector_per_target = 7 [deprecated = true];</code>
        */
-      public Builder putVectorPerTarget(
+      @java.lang.Deprecated public Builder putVectorPerTarget(
           java.lang.String key,
           com.google.protobuf.ByteString value) {
         if (key == null) { throw new NullPointerException("map key"); }
@@ -29529,14 +30771,258 @@ com.google.protobuf.ByteString defaultValue) {
         return this;
       }
       /**
-       * <code>map&lt;string, bytes&gt; vector_per_target = 7;</code>
+       * <pre>
+       * deprecated in 1.26.2 - use vector_for_targets
+       * </pre>
+       *
+       * <code>map&lt;string, bytes&gt; vector_per_target = 7 [deprecated = true];</code>
        */
-      public Builder putAllVectorPerTarget(
+      @java.lang.Deprecated public Builder putAllVectorPerTarget(
           java.util.Map<java.lang.String, com.google.protobuf.ByteString> values) {
         internalGetMutableVectorPerTarget().getMutableMap()
             .putAll(values);
         bitField0_ |= 0x00000040;
         return this;
+      }
+
+      private java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget> vectorForTargets_ =
+        java.util.Collections.emptyList();
+      private void ensureVectorForTargetsIsMutable() {
+        if (!((bitField0_ & 0x00000080) != 0)) {
+          vectorForTargets_ = new java.util.ArrayList<io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget>(vectorForTargets_);
+          bitField0_ |= 0x00000080;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTargetOrBuilder> vectorForTargetsBuilder_;
+
+      /**
+       * <code>repeated .weaviate.v1.VectorForTarget vector_for_targets = 8;</code>
+       */
+      public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget> getVectorForTargetsList() {
+        if (vectorForTargetsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(vectorForTargets_);
+        } else {
+          return vectorForTargetsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .weaviate.v1.VectorForTarget vector_for_targets = 8;</code>
+       */
+      public int getVectorForTargetsCount() {
+        if (vectorForTargetsBuilder_ == null) {
+          return vectorForTargets_.size();
+        } else {
+          return vectorForTargetsBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .weaviate.v1.VectorForTarget vector_for_targets = 8;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget getVectorForTargets(int index) {
+        if (vectorForTargetsBuilder_ == null) {
+          return vectorForTargets_.get(index);
+        } else {
+          return vectorForTargetsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .weaviate.v1.VectorForTarget vector_for_targets = 8;</code>
+       */
+      public Builder setVectorForTargets(
+          int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget value) {
+        if (vectorForTargetsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureVectorForTargetsIsMutable();
+          vectorForTargets_.set(index, value);
+          onChanged();
+        } else {
+          vectorForTargetsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.VectorForTarget vector_for_targets = 8;</code>
+       */
+      public Builder setVectorForTargets(
+          int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget.Builder builderForValue) {
+        if (vectorForTargetsBuilder_ == null) {
+          ensureVectorForTargetsIsMutable();
+          vectorForTargets_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          vectorForTargetsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.VectorForTarget vector_for_targets = 8;</code>
+       */
+      public Builder addVectorForTargets(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget value) {
+        if (vectorForTargetsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureVectorForTargetsIsMutable();
+          vectorForTargets_.add(value);
+          onChanged();
+        } else {
+          vectorForTargetsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.VectorForTarget vector_for_targets = 8;</code>
+       */
+      public Builder addVectorForTargets(
+          int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget value) {
+        if (vectorForTargetsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureVectorForTargetsIsMutable();
+          vectorForTargets_.add(index, value);
+          onChanged();
+        } else {
+          vectorForTargetsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.VectorForTarget vector_for_targets = 8;</code>
+       */
+      public Builder addVectorForTargets(
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget.Builder builderForValue) {
+        if (vectorForTargetsBuilder_ == null) {
+          ensureVectorForTargetsIsMutable();
+          vectorForTargets_.add(builderForValue.build());
+          onChanged();
+        } else {
+          vectorForTargetsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.VectorForTarget vector_for_targets = 8;</code>
+       */
+      public Builder addVectorForTargets(
+          int index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget.Builder builderForValue) {
+        if (vectorForTargetsBuilder_ == null) {
+          ensureVectorForTargetsIsMutable();
+          vectorForTargets_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          vectorForTargetsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.VectorForTarget vector_for_targets = 8;</code>
+       */
+      public Builder addAllVectorForTargets(
+          java.lang.Iterable<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget> values) {
+        if (vectorForTargetsBuilder_ == null) {
+          ensureVectorForTargetsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, vectorForTargets_);
+          onChanged();
+        } else {
+          vectorForTargetsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.VectorForTarget vector_for_targets = 8;</code>
+       */
+      public Builder clearVectorForTargets() {
+        if (vectorForTargetsBuilder_ == null) {
+          vectorForTargets_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000080);
+          onChanged();
+        } else {
+          vectorForTargetsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.VectorForTarget vector_for_targets = 8;</code>
+       */
+      public Builder removeVectorForTargets(int index) {
+        if (vectorForTargetsBuilder_ == null) {
+          ensureVectorForTargetsIsMutable();
+          vectorForTargets_.remove(index);
+          onChanged();
+        } else {
+          vectorForTargetsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.VectorForTarget vector_for_targets = 8;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget.Builder getVectorForTargetsBuilder(
+          int index) {
+        return getVectorForTargetsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .weaviate.v1.VectorForTarget vector_for_targets = 8;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTargetOrBuilder getVectorForTargetsOrBuilder(
+          int index) {
+        if (vectorForTargetsBuilder_ == null) {
+          return vectorForTargets_.get(index);  } else {
+          return vectorForTargetsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .weaviate.v1.VectorForTarget vector_for_targets = 8;</code>
+       */
+      public java.util.List<? extends io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTargetOrBuilder> 
+           getVectorForTargetsOrBuilderList() {
+        if (vectorForTargetsBuilder_ != null) {
+          return vectorForTargetsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(vectorForTargets_);
+        }
+      }
+      /**
+       * <code>repeated .weaviate.v1.VectorForTarget vector_for_targets = 8;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget.Builder addVectorForTargetsBuilder() {
+        return getVectorForTargetsFieldBuilder().addBuilder(
+            io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .weaviate.v1.VectorForTarget vector_for_targets = 8;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget.Builder addVectorForTargetsBuilder(
+          int index) {
+        return getVectorForTargetsFieldBuilder().addBuilder(
+            index, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .weaviate.v1.VectorForTarget vector_for_targets = 8;</code>
+       */
+      public java.util.List<io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget.Builder> 
+           getVectorForTargetsBuilderList() {
+        return getVectorForTargetsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTargetOrBuilder> 
+          getVectorForTargetsFieldBuilder() {
+        if (vectorForTargetsBuilder_ == null) {
+          vectorForTargetsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTarget.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.VectorForTargetOrBuilder>(
+                  vectorForTargets_,
+                  ((bitField0_ & 0x00000080) != 0),
+                  getParentForChildren(),
+                  isClean());
+          vectorForTargets_ = null;
+        }
+        return vectorForTargetsBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -29647,7 +31133,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=230
+     *     See v1/search_get.proto;l=246
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated java.util.List<java.lang.String>
@@ -29659,7 +31145,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=230
+     *     See v1/search_get.proto;l=246
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated int getTargetVectorsCount();
@@ -29670,7 +31156,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=230
+     *     See v1/search_get.proto;l=246
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -29682,7 +31168,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=230
+     *     See v1/search_get.proto;l=246
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -29831,7 +31317,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=230
+     *     See v1/search_get.proto;l=246
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -29845,7 +31331,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=230
+     *     See v1/search_get.proto;l=246
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -29858,7 +31344,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=230
+     *     See v1/search_get.proto;l=246
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -29872,7 +31358,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-     *     See v1/search_get.proto;l=230
+     *     See v1/search_get.proto;l=246
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -30546,7 +32032,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=230
+       *     See v1/search_get.proto;l=246
        * @return A list containing the targetVectors.
        */
       @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -30561,7 +32047,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=230
+       *     See v1/search_get.proto;l=246
        * @return The count of targetVectors.
        */
       @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -30574,7 +32060,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=230
+       *     See v1/search_get.proto;l=246
        * @param index The index of the element to return.
        * @return The targetVectors at the given index.
        */
@@ -30588,7 +32074,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=230
+       *     See v1/search_get.proto;l=246
        * @param index The index of the value to return.
        * @return The bytes of the targetVectors at the given index.
        */
@@ -30603,7 +32089,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=230
+       *     See v1/search_get.proto;l=246
        * @param index The index to set the value at.
        * @param value The targetVectors to set.
        * @return This builder for chaining.
@@ -30624,7 +32110,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=230
+       *     See v1/search_get.proto;l=246
        * @param value The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -30644,7 +32130,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=230
+       *     See v1/search_get.proto;l=246
        * @param values The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -30664,7 +32150,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=230
+       *     See v1/search_get.proto;l=246
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearTargetVectors() {
@@ -30681,7 +32167,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-       *     See v1/search_get.proto;l=230
+       *     See v1/search_get.proto;l=246
        * @param value The bytes of the targetVectors to add.
        * @return This builder for chaining.
        */
@@ -31644,20 +33130,26 @@ com.google.protobuf.ByteString defaultValue) {
         int index);
 
     /**
-     * <code>optional string generative_grouped_result = 3;</code>
+     * <code>optional string generative_grouped_result = 3 [deprecated = true];</code>
+     * @deprecated weaviate.v1.SearchReply.generative_grouped_result is deprecated.
+     *     See v1/search_get.proto;l=258
      * @return Whether the generativeGroupedResult field is set.
      */
-    boolean hasGenerativeGroupedResult();
+    @java.lang.Deprecated boolean hasGenerativeGroupedResult();
     /**
-     * <code>optional string generative_grouped_result = 3;</code>
+     * <code>optional string generative_grouped_result = 3 [deprecated = true];</code>
+     * @deprecated weaviate.v1.SearchReply.generative_grouped_result is deprecated.
+     *     See v1/search_get.proto;l=258
      * @return The generativeGroupedResult.
      */
-    java.lang.String getGenerativeGroupedResult();
+    @java.lang.Deprecated java.lang.String getGenerativeGroupedResult();
     /**
-     * <code>optional string generative_grouped_result = 3;</code>
+     * <code>optional string generative_grouped_result = 3 [deprecated = true];</code>
+     * @deprecated weaviate.v1.SearchReply.generative_grouped_result is deprecated.
+     *     See v1/search_get.proto;l=258
      * @return The bytes for generativeGroupedResult.
      */
-    com.google.protobuf.ByteString
+    @java.lang.Deprecated com.google.protobuf.ByteString
         getGenerativeGroupedResultBytes();
 
     /**
@@ -31683,6 +33175,21 @@ com.google.protobuf.ByteString defaultValue) {
      */
     io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GroupByResultOrBuilder getGroupByResultsOrBuilder(
         int index);
+
+    /**
+     * <code>optional .weaviate.v1.GenerativeResult generative_grouped_results = 5;</code>
+     * @return Whether the generativeGroupedResults field is set.
+     */
+    boolean hasGenerativeGroupedResults();
+    /**
+     * <code>optional .weaviate.v1.GenerativeResult generative_grouped_results = 5;</code>
+     * @return The generativeGroupedResults.
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult getGenerativeGroupedResults();
+    /**
+     * <code>optional .weaviate.v1.GenerativeResult generative_grouped_results = 5;</code>
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResultOrBuilder getGenerativeGroupedResultsOrBuilder();
   }
   /**
    * Protobuf type {@code weaviate.v1.SearchReply}
@@ -31779,19 +33286,23 @@ com.google.protobuf.ByteString defaultValue) {
     @SuppressWarnings("serial")
     private volatile java.lang.Object generativeGroupedResult_ = "";
     /**
-     * <code>optional string generative_grouped_result = 3;</code>
+     * <code>optional string generative_grouped_result = 3 [deprecated = true];</code>
+     * @deprecated weaviate.v1.SearchReply.generative_grouped_result is deprecated.
+     *     See v1/search_get.proto;l=258
      * @return Whether the generativeGroupedResult field is set.
      */
     @java.lang.Override
-    public boolean hasGenerativeGroupedResult() {
+    @java.lang.Deprecated public boolean hasGenerativeGroupedResult() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>optional string generative_grouped_result = 3;</code>
+     * <code>optional string generative_grouped_result = 3 [deprecated = true];</code>
+     * @deprecated weaviate.v1.SearchReply.generative_grouped_result is deprecated.
+     *     See v1/search_get.proto;l=258
      * @return The generativeGroupedResult.
      */
     @java.lang.Override
-    public java.lang.String getGenerativeGroupedResult() {
+    @java.lang.Deprecated public java.lang.String getGenerativeGroupedResult() {
       java.lang.Object ref = generativeGroupedResult_;
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
@@ -31804,11 +33315,13 @@ com.google.protobuf.ByteString defaultValue) {
       }
     }
     /**
-     * <code>optional string generative_grouped_result = 3;</code>
+     * <code>optional string generative_grouped_result = 3 [deprecated = true];</code>
+     * @deprecated weaviate.v1.SearchReply.generative_grouped_result is deprecated.
+     *     See v1/search_get.proto;l=258
      * @return The bytes for generativeGroupedResult.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
+    @java.lang.Deprecated public com.google.protobuf.ByteString
         getGenerativeGroupedResultBytes() {
       java.lang.Object ref = generativeGroupedResult_;
       if (ref instanceof java.lang.String) {
@@ -31863,6 +33376,32 @@ com.google.protobuf.ByteString defaultValue) {
       return groupByResults_.get(index);
     }
 
+    public static final int GENERATIVE_GROUPED_RESULTS_FIELD_NUMBER = 5;
+    private io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult generativeGroupedResults_;
+    /**
+     * <code>optional .weaviate.v1.GenerativeResult generative_grouped_results = 5;</code>
+     * @return Whether the generativeGroupedResults field is set.
+     */
+    @java.lang.Override
+    public boolean hasGenerativeGroupedResults() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>optional .weaviate.v1.GenerativeResult generative_grouped_results = 5;</code>
+     * @return The generativeGroupedResults.
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult getGenerativeGroupedResults() {
+      return generativeGroupedResults_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.getDefaultInstance() : generativeGroupedResults_;
+    }
+    /**
+     * <code>optional .weaviate.v1.GenerativeResult generative_grouped_results = 5;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResultOrBuilder getGenerativeGroupedResultsOrBuilder() {
+      return generativeGroupedResults_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.getDefaultInstance() : generativeGroupedResults_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -31889,6 +33428,9 @@ com.google.protobuf.ByteString defaultValue) {
       for (int i = 0; i < groupByResults_.size(); i++) {
         output.writeMessage(4, groupByResults_.get(i));
       }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        output.writeMessage(5, getGenerativeGroupedResults());
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -31912,6 +33454,10 @@ com.google.protobuf.ByteString defaultValue) {
       for (int i = 0; i < groupByResults_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(4, groupByResults_.get(i));
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(5, getGenerativeGroupedResults());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -31940,6 +33486,11 @@ com.google.protobuf.ByteString defaultValue) {
       }
       if (!getGroupByResultsList()
           .equals(other.getGroupByResultsList())) return false;
+      if (hasGenerativeGroupedResults() != other.hasGenerativeGroupedResults()) return false;
+      if (hasGenerativeGroupedResults()) {
+        if (!getGenerativeGroupedResults()
+            .equals(other.getGenerativeGroupedResults())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -31965,6 +33516,10 @@ com.google.protobuf.ByteString defaultValue) {
       if (getGroupByResultsCount() > 0) {
         hash = (37 * hash) + GROUP_BY_RESULTS_FIELD_NUMBER;
         hash = (53 * hash) + getGroupByResultsList().hashCode();
+      }
+      if (hasGenerativeGroupedResults()) {
+        hash = (37 * hash) + GENERATIVE_GROUPED_RESULTS_FIELD_NUMBER;
+        hash = (53 * hash) + getGenerativeGroupedResults().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -32085,13 +33640,21 @@ com.google.protobuf.ByteString defaultValue) {
 
       // Construct using io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.SearchReply.newBuilder()
       private Builder() {
-
+        maybeForceBuilderInitialization();
       }
 
       private Builder(
           com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
-
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getResultsFieldBuilder();
+          getGroupByResultsFieldBuilder();
+          getGenerativeGroupedResultsFieldBuilder();
+        }
       }
       @java.lang.Override
       public Builder clear() {
@@ -32113,6 +33676,11 @@ com.google.protobuf.ByteString defaultValue) {
           groupByResultsBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000008);
+        generativeGroupedResults_ = null;
+        if (generativeGroupedResultsBuilder_ != null) {
+          generativeGroupedResultsBuilder_.dispose();
+          generativeGroupedResultsBuilder_ = null;
+        }
         return this;
       }
 
@@ -32175,6 +33743,12 @@ com.google.protobuf.ByteString defaultValue) {
         if (((from_bitField0_ & 0x00000004) != 0)) {
           result.generativeGroupedResult_ = generativeGroupedResult_;
           to_bitField0_ |= 0x00000001;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.generativeGroupedResults_ = generativeGroupedResultsBuilder_ == null
+              ? generativeGroupedResults_
+              : generativeGroupedResultsBuilder_.build();
+          to_bitField0_ |= 0x00000002;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -32283,6 +33857,9 @@ com.google.protobuf.ByteString defaultValue) {
             }
           }
         }
+        if (other.hasGenerativeGroupedResults()) {
+          mergeGenerativeGroupedResults(other.getGenerativeGroupedResults());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -32345,6 +33922,13 @@ com.google.protobuf.ByteString defaultValue) {
                 }
                 break;
               } // case 34
+              case 42: {
+                input.readMessage(
+                    getGenerativeGroupedResultsFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 42
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -32636,17 +34220,21 @@ com.google.protobuf.ByteString defaultValue) {
 
       private java.lang.Object generativeGroupedResult_ = "";
       /**
-       * <code>optional string generative_grouped_result = 3;</code>
+       * <code>optional string generative_grouped_result = 3 [deprecated = true];</code>
+       * @deprecated weaviate.v1.SearchReply.generative_grouped_result is deprecated.
+       *     See v1/search_get.proto;l=258
        * @return Whether the generativeGroupedResult field is set.
        */
-      public boolean hasGenerativeGroupedResult() {
+      @java.lang.Deprecated public boolean hasGenerativeGroupedResult() {
         return ((bitField0_ & 0x00000004) != 0);
       }
       /**
-       * <code>optional string generative_grouped_result = 3;</code>
+       * <code>optional string generative_grouped_result = 3 [deprecated = true];</code>
+       * @deprecated weaviate.v1.SearchReply.generative_grouped_result is deprecated.
+       *     See v1/search_get.proto;l=258
        * @return The generativeGroupedResult.
        */
-      public java.lang.String getGenerativeGroupedResult() {
+      @java.lang.Deprecated public java.lang.String getGenerativeGroupedResult() {
         java.lang.Object ref = generativeGroupedResult_;
         if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
@@ -32659,10 +34247,12 @@ com.google.protobuf.ByteString defaultValue) {
         }
       }
       /**
-       * <code>optional string generative_grouped_result = 3;</code>
+       * <code>optional string generative_grouped_result = 3 [deprecated = true];</code>
+       * @deprecated weaviate.v1.SearchReply.generative_grouped_result is deprecated.
+       *     See v1/search_get.proto;l=258
        * @return The bytes for generativeGroupedResult.
        */
-      public com.google.protobuf.ByteString
+      @java.lang.Deprecated public com.google.protobuf.ByteString
           getGenerativeGroupedResultBytes() {
         java.lang.Object ref = generativeGroupedResult_;
         if (ref instanceof String) {
@@ -32676,11 +34266,13 @@ com.google.protobuf.ByteString defaultValue) {
         }
       }
       /**
-       * <code>optional string generative_grouped_result = 3;</code>
+       * <code>optional string generative_grouped_result = 3 [deprecated = true];</code>
+       * @deprecated weaviate.v1.SearchReply.generative_grouped_result is deprecated.
+       *     See v1/search_get.proto;l=258
        * @param value The generativeGroupedResult to set.
        * @return This builder for chaining.
        */
-      public Builder setGenerativeGroupedResult(
+      @java.lang.Deprecated public Builder setGenerativeGroupedResult(
           java.lang.String value) {
         if (value == null) { throw new NullPointerException(); }
         generativeGroupedResult_ = value;
@@ -32689,21 +34281,25 @@ com.google.protobuf.ByteString defaultValue) {
         return this;
       }
       /**
-       * <code>optional string generative_grouped_result = 3;</code>
+       * <code>optional string generative_grouped_result = 3 [deprecated = true];</code>
+       * @deprecated weaviate.v1.SearchReply.generative_grouped_result is deprecated.
+       *     See v1/search_get.proto;l=258
        * @return This builder for chaining.
        */
-      public Builder clearGenerativeGroupedResult() {
+      @java.lang.Deprecated public Builder clearGenerativeGroupedResult() {
         generativeGroupedResult_ = getDefaultInstance().getGenerativeGroupedResult();
         bitField0_ = (bitField0_ & ~0x00000004);
         onChanged();
         return this;
       }
       /**
-       * <code>optional string generative_grouped_result = 3;</code>
+       * <code>optional string generative_grouped_result = 3 [deprecated = true];</code>
+       * @deprecated weaviate.v1.SearchReply.generative_grouped_result is deprecated.
+       *     See v1/search_get.proto;l=258
        * @param value The bytes for generativeGroupedResult to set.
        * @return This builder for chaining.
        */
-      public Builder setGenerativeGroupedResultBytes(
+      @java.lang.Deprecated public Builder setGenerativeGroupedResultBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) { throw new NullPointerException(); }
         checkByteStringIsUtf8(value);
@@ -32951,6 +34547,127 @@ com.google.protobuf.ByteString defaultValue) {
           groupByResults_ = null;
         }
         return groupByResultsBuilder_;
+      }
+
+      private io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult generativeGroupedResults_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResultOrBuilder> generativeGroupedResultsBuilder_;
+      /**
+       * <code>optional .weaviate.v1.GenerativeResult generative_grouped_results = 5;</code>
+       * @return Whether the generativeGroupedResults field is set.
+       */
+      public boolean hasGenerativeGroupedResults() {
+        return ((bitField0_ & 0x00000010) != 0);
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeResult generative_grouped_results = 5;</code>
+       * @return The generativeGroupedResults.
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult getGenerativeGroupedResults() {
+        if (generativeGroupedResultsBuilder_ == null) {
+          return generativeGroupedResults_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.getDefaultInstance() : generativeGroupedResults_;
+        } else {
+          return generativeGroupedResultsBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeResult generative_grouped_results = 5;</code>
+       */
+      public Builder setGenerativeGroupedResults(io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult value) {
+        if (generativeGroupedResultsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          generativeGroupedResults_ = value;
+        } else {
+          generativeGroupedResultsBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeResult generative_grouped_results = 5;</code>
+       */
+      public Builder setGenerativeGroupedResults(
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.Builder builderForValue) {
+        if (generativeGroupedResultsBuilder_ == null) {
+          generativeGroupedResults_ = builderForValue.build();
+        } else {
+          generativeGroupedResultsBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeResult generative_grouped_results = 5;</code>
+       */
+      public Builder mergeGenerativeGroupedResults(io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult value) {
+        if (generativeGroupedResultsBuilder_ == null) {
+          if (((bitField0_ & 0x00000010) != 0) &&
+            generativeGroupedResults_ != null &&
+            generativeGroupedResults_ != io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.getDefaultInstance()) {
+            getGenerativeGroupedResultsBuilder().mergeFrom(value);
+          } else {
+            generativeGroupedResults_ = value;
+          }
+        } else {
+          generativeGroupedResultsBuilder_.mergeFrom(value);
+        }
+        if (generativeGroupedResults_ != null) {
+          bitField0_ |= 0x00000010;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeResult generative_grouped_results = 5;</code>
+       */
+      public Builder clearGenerativeGroupedResults() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        generativeGroupedResults_ = null;
+        if (generativeGroupedResultsBuilder_ != null) {
+          generativeGroupedResultsBuilder_.dispose();
+          generativeGroupedResultsBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeResult generative_grouped_results = 5;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.Builder getGenerativeGroupedResultsBuilder() {
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return getGenerativeGroupedResultsFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeResult generative_grouped_results = 5;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResultOrBuilder getGenerativeGroupedResultsOrBuilder() {
+        if (generativeGroupedResultsBuilder_ != null) {
+          return generativeGroupedResultsBuilder_.getMessageOrBuilder();
+        } else {
+          return generativeGroupedResults_ == null ?
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.getDefaultInstance() : generativeGroupedResults_;
+        }
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeResult generative_grouped_results = 5;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResultOrBuilder> 
+          getGenerativeGroupedResultsFieldBuilder() {
+        if (generativeGroupedResultsBuilder_ == null) {
+          generativeGroupedResultsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResultOrBuilder>(
+                  getGenerativeGroupedResults(),
+                  getParentForChildren(),
+                  isClean());
+          generativeGroupedResults_ = null;
+        }
+        return generativeGroupedResultsBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -33494,558 +35211,6 @@ com.google.protobuf.ByteString defaultValue) {
 
   }
 
-  public interface GenerativeReplyOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:weaviate.v1.GenerativeReply)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>string result = 1;</code>
-     * @return The result.
-     */
-    java.lang.String getResult();
-    /**
-     * <code>string result = 1;</code>
-     * @return The bytes for result.
-     */
-    com.google.protobuf.ByteString
-        getResultBytes();
-  }
-  /**
-   * Protobuf type {@code weaviate.v1.GenerativeReply}
-   */
-  public static final class GenerativeReply extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:weaviate.v1.GenerativeReply)
-      GenerativeReplyOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use GenerativeReply.newBuilder() to construct.
-    private GenerativeReply(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private GenerativeReply() {
-      result_ = "";
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new GenerativeReply();
-    }
-
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.internal_static_weaviate_v1_GenerativeReply_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.internal_static_weaviate_v1_GenerativeReply_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply.class, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply.Builder.class);
-    }
-
-    public static final int RESULT_FIELD_NUMBER = 1;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object result_ = "";
-    /**
-     * <code>string result = 1;</code>
-     * @return The result.
-     */
-    @java.lang.Override
-    public java.lang.String getResult() {
-      java.lang.Object ref = result_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        result_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string result = 1;</code>
-     * @return The bytes for result.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getResultBytes() {
-      java.lang.Object ref = result_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        result_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(result_)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, result_);
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(result_)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, result_);
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply)) {
-        return super.equals(obj);
-      }
-      io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply other = (io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply) obj;
-
-      if (!getResult()
-          .equals(other.getResult())) return false;
-      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + RESULT_FIELD_NUMBER;
-      hash = (53 * hash) + getResult().hashCode();
-      hash = (29 * hash) + getUnknownFields().hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-
-    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code weaviate.v1.GenerativeReply}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:weaviate.v1.GenerativeReply)
-        io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReplyOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.internal_static_weaviate_v1_GenerativeReply_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.internal_static_weaviate_v1_GenerativeReply_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply.class, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply.Builder.class);
-      }
-
-      // Construct using io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply.newBuilder()
-      private Builder() {
-
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        bitField0_ = 0;
-        result_ = "";
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.internal_static_weaviate_v1_GenerativeReply_descriptor;
-      }
-
-      @java.lang.Override
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply getDefaultInstanceForType() {
-        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply build() {
-        io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply buildPartial() {
-        io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply result = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply(this);
-        if (bitField0_ != 0) { buildPartial0(result); }
-        onBuilt();
-        return result;
-      }
-
-      private void buildPartial0(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply result) {
-        int from_bitField0_ = bitField0_;
-        if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.result_ = result_;
-        }
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply) {
-          return mergeFrom((io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply other) {
-        if (other == io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply.getDefaultInstance()) return this;
-        if (!other.getResult().isEmpty()) {
-          result_ = other.result_;
-          bitField0_ |= 0x00000001;
-          onChanged();
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        if (extensionRegistry == null) {
-          throw new java.lang.NullPointerException();
-        }
-        try {
-          boolean done = false;
-          while (!done) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                done = true;
-                break;
-              case 10: {
-                result_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000001;
-                break;
-              } // case 10
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
-            } // switch (tag)
-          } // while (!done)
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.unwrapIOException();
-        } finally {
-          onChanged();
-        } // finally
-        return this;
-      }
-      private int bitField0_;
-
-      private java.lang.Object result_ = "";
-      /**
-       * <code>string result = 1;</code>
-       * @return The result.
-       */
-      public java.lang.String getResult() {
-        java.lang.Object ref = result_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          result_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string result = 1;</code>
-       * @return The bytes for result.
-       */
-      public com.google.protobuf.ByteString
-          getResultBytes() {
-        java.lang.Object ref = result_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          result_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string result = 1;</code>
-       * @param value The result to set.
-       * @return This builder for chaining.
-       */
-      public Builder setResult(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        result_ = value;
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string result = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearResult() {
-        result_ = getDefaultInstance().getResult();
-        bitField0_ = (bitField0_ & ~0x00000001);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string result = 1;</code>
-       * @param value The bytes for result to set.
-       * @return This builder for chaining.
-       */
-      public Builder setResultBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        result_ = value;
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:weaviate.v1.GenerativeReply)
-    }
-
-    // @@protoc_insertion_point(class_scope:weaviate.v1.GenerativeReply)
-    private static final io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply();
-    }
-
-    public static io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<GenerativeReply>
-        PARSER = new com.google.protobuf.AbstractParser<GenerativeReply>() {
-      @java.lang.Override
-      public GenerativeReply parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (com.google.protobuf.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new com.google.protobuf.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
-
-    public static com.google.protobuf.Parser<GenerativeReply> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<GenerativeReply> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
   public interface GroupByResultOrBuilder extends
       // @@protoc_insertion_point(interface_extends:weaviate.v1.GroupByResult)
       com.google.protobuf.MessageOrBuilder {
@@ -34120,19 +35285,38 @@ com.google.protobuf.ByteString defaultValue) {
     io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.RerankReplyOrBuilder getRerankOrBuilder();
 
     /**
-     * <code>optional .weaviate.v1.GenerativeReply generative = 7;</code>
+     * <code>optional .weaviate.v1.GenerativeReply generative = 7 [deprecated = true];</code>
+     * @deprecated weaviate.v1.GroupByResult.generative is deprecated.
+     *     See v1/search_get.proto;l=274
      * @return Whether the generative field is set.
      */
-    boolean hasGenerative();
+    @java.lang.Deprecated boolean hasGenerative();
     /**
-     * <code>optional .weaviate.v1.GenerativeReply generative = 7;</code>
+     * <code>optional .weaviate.v1.GenerativeReply generative = 7 [deprecated = true];</code>
+     * @deprecated weaviate.v1.GroupByResult.generative is deprecated.
+     *     See v1/search_get.proto;l=274
      * @return The generative.
      */
-    io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply getGenerative();
+    @java.lang.Deprecated io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeReply getGenerative();
     /**
-     * <code>optional .weaviate.v1.GenerativeReply generative = 7;</code>
+     * <code>optional .weaviate.v1.GenerativeReply generative = 7 [deprecated = true];</code>
      */
-    io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReplyOrBuilder getGenerativeOrBuilder();
+    @java.lang.Deprecated io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeReplyOrBuilder getGenerativeOrBuilder();
+
+    /**
+     * <code>optional .weaviate.v1.GenerativeResult generative_result = 8;</code>
+     * @return Whether the generativeResult field is set.
+     */
+    boolean hasGenerativeResult();
+    /**
+     * <code>optional .weaviate.v1.GenerativeResult generative_result = 8;</code>
+     * @return The generativeResult.
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult getGenerativeResult();
+    /**
+     * <code>optional .weaviate.v1.GenerativeResult generative_result = 8;</code>
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResultOrBuilder getGenerativeResultOrBuilder();
   }
   /**
    * Protobuf type {@code weaviate.v1.GroupByResult}
@@ -34312,29 +35496,59 @@ com.google.protobuf.ByteString defaultValue) {
     }
 
     public static final int GENERATIVE_FIELD_NUMBER = 7;
-    private io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply generative_;
+    private io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeReply generative_;
     /**
-     * <code>optional .weaviate.v1.GenerativeReply generative = 7;</code>
+     * <code>optional .weaviate.v1.GenerativeReply generative = 7 [deprecated = true];</code>
+     * @deprecated weaviate.v1.GroupByResult.generative is deprecated.
+     *     See v1/search_get.proto;l=274
      * @return Whether the generative field is set.
      */
     @java.lang.Override
-    public boolean hasGenerative() {
+    @java.lang.Deprecated public boolean hasGenerative() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>optional .weaviate.v1.GenerativeReply generative = 7;</code>
+     * <code>optional .weaviate.v1.GenerativeReply generative = 7 [deprecated = true];</code>
+     * @deprecated weaviate.v1.GroupByResult.generative is deprecated.
+     *     See v1/search_get.proto;l=274
      * @return The generative.
      */
     @java.lang.Override
-    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply getGenerative() {
-      return generative_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply.getDefaultInstance() : generative_;
+    @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeReply getGenerative() {
+      return generative_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeReply.getDefaultInstance() : generative_;
     }
     /**
-     * <code>optional .weaviate.v1.GenerativeReply generative = 7;</code>
+     * <code>optional .weaviate.v1.GenerativeReply generative = 7 [deprecated = true];</code>
      */
     @java.lang.Override
-    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReplyOrBuilder getGenerativeOrBuilder() {
-      return generative_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply.getDefaultInstance() : generative_;
+    @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeReplyOrBuilder getGenerativeOrBuilder() {
+      return generative_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeReply.getDefaultInstance() : generative_;
+    }
+
+    public static final int GENERATIVE_RESULT_FIELD_NUMBER = 8;
+    private io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult generativeResult_;
+    /**
+     * <code>optional .weaviate.v1.GenerativeResult generative_result = 8;</code>
+     * @return Whether the generativeResult field is set.
+     */
+    @java.lang.Override
+    public boolean hasGenerativeResult() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <code>optional .weaviate.v1.GenerativeResult generative_result = 8;</code>
+     * @return The generativeResult.
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult getGenerativeResult() {
+      return generativeResult_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.getDefaultInstance() : generativeResult_;
+    }
+    /**
+     * <code>optional .weaviate.v1.GenerativeResult generative_result = 8;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResultOrBuilder getGenerativeResultOrBuilder() {
+      return generativeResult_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.getDefaultInstance() : generativeResult_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -34372,6 +35586,9 @@ com.google.protobuf.ByteString defaultValue) {
       if (((bitField0_ & 0x00000002) != 0)) {
         output.writeMessage(7, getGenerative());
       }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        output.writeMessage(8, getGenerativeResult());
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -34407,6 +35624,10 @@ com.google.protobuf.ByteString defaultValue) {
       if (((bitField0_ & 0x00000002) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(7, getGenerative());
+      }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(8, getGenerativeResult());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -34445,6 +35666,11 @@ com.google.protobuf.ByteString defaultValue) {
         if (!getGenerative()
             .equals(other.getGenerative())) return false;
       }
+      if (hasGenerativeResult() != other.hasGenerativeResult()) return false;
+      if (hasGenerativeResult()) {
+        if (!getGenerativeResult()
+            .equals(other.getGenerativeResult())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -34478,6 +35704,10 @@ com.google.protobuf.ByteString defaultValue) {
       if (hasGenerative()) {
         hash = (37 * hash) + GENERATIVE_FIELD_NUMBER;
         hash = (53 * hash) + getGenerative().hashCode();
+      }
+      if (hasGenerativeResult()) {
+        hash = (37 * hash) + GENERATIVE_RESULT_FIELD_NUMBER;
+        hash = (53 * hash) + getGenerativeResult().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -34612,6 +35842,7 @@ com.google.protobuf.ByteString defaultValue) {
           getObjectsFieldBuilder();
           getRerankFieldBuilder();
           getGenerativeFieldBuilder();
+          getGenerativeResultFieldBuilder();
         }
       }
       @java.lang.Override
@@ -34638,6 +35869,11 @@ com.google.protobuf.ByteString defaultValue) {
         if (generativeBuilder_ != null) {
           generativeBuilder_.dispose();
           generativeBuilder_ = null;
+        }
+        generativeResult_ = null;
+        if (generativeResultBuilder_ != null) {
+          generativeResultBuilder_.dispose();
+          generativeResultBuilder_ = null;
         }
         return this;
       }
@@ -34709,6 +35945,12 @@ com.google.protobuf.ByteString defaultValue) {
               ? generative_
               : generativeBuilder_.build();
           to_bitField0_ |= 0x00000002;
+        }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.generativeResult_ = generativeResultBuilder_ == null
+              ? generativeResult_
+              : generativeResultBuilder_.build();
+          to_bitField0_ |= 0x00000004;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -34803,6 +36045,9 @@ com.google.protobuf.ByteString defaultValue) {
         if (other.hasGenerative()) {
           mergeGenerative(other.getGenerative());
         }
+        if (other.hasGenerativeResult()) {
+          mergeGenerativeResult(other.getGenerativeResult());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -34876,6 +36121,13 @@ com.google.protobuf.ByteString defaultValue) {
                 bitField0_ |= 0x00000040;
                 break;
               } // case 58
+              case 66: {
+                input.readMessage(
+                    getGenerativeResultFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 66
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -35422,31 +36674,35 @@ com.google.protobuf.ByteString defaultValue) {
         return rerankBuilder_;
       }
 
-      private io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply generative_;
+      private io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeReply generative_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReplyOrBuilder> generativeBuilder_;
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeReply, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeReply.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeReplyOrBuilder> generativeBuilder_;
       /**
-       * <code>optional .weaviate.v1.GenerativeReply generative = 7;</code>
+       * <code>optional .weaviate.v1.GenerativeReply generative = 7 [deprecated = true];</code>
+       * @deprecated weaviate.v1.GroupByResult.generative is deprecated.
+       *     See v1/search_get.proto;l=274
        * @return Whether the generative field is set.
        */
-      public boolean hasGenerative() {
+      @java.lang.Deprecated public boolean hasGenerative() {
         return ((bitField0_ & 0x00000040) != 0);
       }
       /**
-       * <code>optional .weaviate.v1.GenerativeReply generative = 7;</code>
+       * <code>optional .weaviate.v1.GenerativeReply generative = 7 [deprecated = true];</code>
+       * @deprecated weaviate.v1.GroupByResult.generative is deprecated.
+       *     See v1/search_get.proto;l=274
        * @return The generative.
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply getGenerative() {
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeReply getGenerative() {
         if (generativeBuilder_ == null) {
-          return generative_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply.getDefaultInstance() : generative_;
+          return generative_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeReply.getDefaultInstance() : generative_;
         } else {
           return generativeBuilder_.getMessage();
         }
       }
       /**
-       * <code>optional .weaviate.v1.GenerativeReply generative = 7;</code>
+       * <code>optional .weaviate.v1.GenerativeReply generative = 7 [deprecated = true];</code>
        */
-      public Builder setGenerative(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply value) {
+      @java.lang.Deprecated public Builder setGenerative(io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeReply value) {
         if (generativeBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -35460,10 +36716,10 @@ com.google.protobuf.ByteString defaultValue) {
         return this;
       }
       /**
-       * <code>optional .weaviate.v1.GenerativeReply generative = 7;</code>
+       * <code>optional .weaviate.v1.GenerativeReply generative = 7 [deprecated = true];</code>
        */
-      public Builder setGenerative(
-          io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply.Builder builderForValue) {
+      @java.lang.Deprecated public Builder setGenerative(
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeReply.Builder builderForValue) {
         if (generativeBuilder_ == null) {
           generative_ = builderForValue.build();
         } else {
@@ -35474,13 +36730,13 @@ com.google.protobuf.ByteString defaultValue) {
         return this;
       }
       /**
-       * <code>optional .weaviate.v1.GenerativeReply generative = 7;</code>
+       * <code>optional .weaviate.v1.GenerativeReply generative = 7 [deprecated = true];</code>
        */
-      public Builder mergeGenerative(io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply value) {
+      @java.lang.Deprecated public Builder mergeGenerative(io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeReply value) {
         if (generativeBuilder_ == null) {
           if (((bitField0_ & 0x00000040) != 0) &&
             generative_ != null &&
-            generative_ != io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply.getDefaultInstance()) {
+            generative_ != io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeReply.getDefaultInstance()) {
             getGenerativeBuilder().mergeFrom(value);
           } else {
             generative_ = value;
@@ -35495,9 +36751,9 @@ com.google.protobuf.ByteString defaultValue) {
         return this;
       }
       /**
-       * <code>optional .weaviate.v1.GenerativeReply generative = 7;</code>
+       * <code>optional .weaviate.v1.GenerativeReply generative = 7 [deprecated = true];</code>
        */
-      public Builder clearGenerative() {
+      @java.lang.Deprecated public Builder clearGenerative() {
         bitField0_ = (bitField0_ & ~0x00000040);
         generative_ = null;
         if (generativeBuilder_ != null) {
@@ -35508,39 +36764,160 @@ com.google.protobuf.ByteString defaultValue) {
         return this;
       }
       /**
-       * <code>optional .weaviate.v1.GenerativeReply generative = 7;</code>
+       * <code>optional .weaviate.v1.GenerativeReply generative = 7 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply.Builder getGenerativeBuilder() {
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeReply.Builder getGenerativeBuilder() {
         bitField0_ |= 0x00000040;
         onChanged();
         return getGenerativeFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .weaviate.v1.GenerativeReply generative = 7;</code>
+       * <code>optional .weaviate.v1.GenerativeReply generative = 7 [deprecated = true];</code>
        */
-      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReplyOrBuilder getGenerativeOrBuilder() {
+      @java.lang.Deprecated public io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeReplyOrBuilder getGenerativeOrBuilder() {
         if (generativeBuilder_ != null) {
           return generativeBuilder_.getMessageOrBuilder();
         } else {
           return generative_ == null ?
-              io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply.getDefaultInstance() : generative_;
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeReply.getDefaultInstance() : generative_;
         }
       }
       /**
-       * <code>optional .weaviate.v1.GenerativeReply generative = 7;</code>
+       * <code>optional .weaviate.v1.GenerativeReply generative = 7 [deprecated = true];</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReplyOrBuilder> 
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeReply, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeReply.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeReplyOrBuilder> 
           getGenerativeFieldBuilder() {
         if (generativeBuilder_ == null) {
           generativeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReply.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.GenerativeReplyOrBuilder>(
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeReply, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeReply.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeReplyOrBuilder>(
                   getGenerative(),
                   getParentForChildren(),
                   isClean());
           generative_ = null;
         }
         return generativeBuilder_;
+      }
+
+      private io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult generativeResult_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResultOrBuilder> generativeResultBuilder_;
+      /**
+       * <code>optional .weaviate.v1.GenerativeResult generative_result = 8;</code>
+       * @return Whether the generativeResult field is set.
+       */
+      public boolean hasGenerativeResult() {
+        return ((bitField0_ & 0x00000080) != 0);
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeResult generative_result = 8;</code>
+       * @return The generativeResult.
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult getGenerativeResult() {
+        if (generativeResultBuilder_ == null) {
+          return generativeResult_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.getDefaultInstance() : generativeResult_;
+        } else {
+          return generativeResultBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeResult generative_result = 8;</code>
+       */
+      public Builder setGenerativeResult(io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult value) {
+        if (generativeResultBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          generativeResult_ = value;
+        } else {
+          generativeResultBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeResult generative_result = 8;</code>
+       */
+      public Builder setGenerativeResult(
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.Builder builderForValue) {
+        if (generativeResultBuilder_ == null) {
+          generativeResult_ = builderForValue.build();
+        } else {
+          generativeResultBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeResult generative_result = 8;</code>
+       */
+      public Builder mergeGenerativeResult(io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult value) {
+        if (generativeResultBuilder_ == null) {
+          if (((bitField0_ & 0x00000080) != 0) &&
+            generativeResult_ != null &&
+            generativeResult_ != io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.getDefaultInstance()) {
+            getGenerativeResultBuilder().mergeFrom(value);
+          } else {
+            generativeResult_ = value;
+          }
+        } else {
+          generativeResultBuilder_.mergeFrom(value);
+        }
+        if (generativeResult_ != null) {
+          bitField0_ |= 0x00000080;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeResult generative_result = 8;</code>
+       */
+      public Builder clearGenerativeResult() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        generativeResult_ = null;
+        if (generativeResultBuilder_ != null) {
+          generativeResultBuilder_.dispose();
+          generativeResultBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeResult generative_result = 8;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.Builder getGenerativeResultBuilder() {
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return getGenerativeResultFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeResult generative_result = 8;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResultOrBuilder getGenerativeResultOrBuilder() {
+        if (generativeResultBuilder_ != null) {
+          return generativeResultBuilder_.getMessageOrBuilder();
+        } else {
+          return generativeResult_ == null ?
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.getDefaultInstance() : generativeResult_;
+        }
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeResult generative_result = 8;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResultOrBuilder> 
+          getGenerativeResultFieldBuilder() {
+        if (generativeResultBuilder_ == null) {
+          generativeResultBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResultOrBuilder>(
+                  getGenerativeResult(),
+                  getParentForChildren(),
+                  isClean());
+          generativeResult_ = null;
+        }
+        return generativeResultBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -35639,6 +37016,21 @@ com.google.protobuf.ByteString defaultValue) {
      * <code>.weaviate.v1.MetadataResult metadata = 2;</code>
      */
     io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.MetadataResultOrBuilder getMetadataOrBuilder();
+
+    /**
+     * <code>optional .weaviate.v1.GenerativeResult generative = 3;</code>
+     * @return Whether the generative field is set.
+     */
+    boolean hasGenerative();
+    /**
+     * <code>optional .weaviate.v1.GenerativeResult generative = 3;</code>
+     * @return The generative.
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult getGenerative();
+    /**
+     * <code>optional .weaviate.v1.GenerativeResult generative = 3;</code>
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResultOrBuilder getGenerativeOrBuilder();
   }
   /**
    * Protobuf type {@code weaviate.v1.SearchResult}
@@ -35728,6 +37120,32 @@ com.google.protobuf.ByteString defaultValue) {
       return metadata_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.MetadataResult.getDefaultInstance() : metadata_;
     }
 
+    public static final int GENERATIVE_FIELD_NUMBER = 3;
+    private io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult generative_;
+    /**
+     * <code>optional .weaviate.v1.GenerativeResult generative = 3;</code>
+     * @return Whether the generative field is set.
+     */
+    @java.lang.Override
+    public boolean hasGenerative() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <code>optional .weaviate.v1.GenerativeResult generative = 3;</code>
+     * @return The generative.
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult getGenerative() {
+      return generative_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.getDefaultInstance() : generative_;
+    }
+    /**
+     * <code>optional .weaviate.v1.GenerativeResult generative = 3;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResultOrBuilder getGenerativeOrBuilder() {
+      return generative_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.getDefaultInstance() : generative_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -35748,6 +37166,9 @@ com.google.protobuf.ByteString defaultValue) {
       if (((bitField0_ & 0x00000002) != 0)) {
         output.writeMessage(2, getMetadata());
       }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        output.writeMessage(3, getGenerative());
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -35764,6 +37185,10 @@ com.google.protobuf.ByteString defaultValue) {
       if (((bitField0_ & 0x00000002) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, getMetadata());
+      }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, getGenerative());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -35790,6 +37215,11 @@ com.google.protobuf.ByteString defaultValue) {
         if (!getMetadata()
             .equals(other.getMetadata())) return false;
       }
+      if (hasGenerative() != other.hasGenerative()) return false;
+      if (hasGenerative()) {
+        if (!getGenerative()
+            .equals(other.getGenerative())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -35808,6 +37238,10 @@ com.google.protobuf.ByteString defaultValue) {
       if (hasMetadata()) {
         hash = (37 * hash) + METADATA_FIELD_NUMBER;
         hash = (53 * hash) + getMetadata().hashCode();
+      }
+      if (hasGenerative()) {
+        hash = (37 * hash) + GENERATIVE_FIELD_NUMBER;
+        hash = (53 * hash) + getGenerative().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -35941,6 +37375,7 @@ com.google.protobuf.ByteString defaultValue) {
                 .alwaysUseFieldBuilders) {
           getPropertiesFieldBuilder();
           getMetadataFieldBuilder();
+          getGenerativeFieldBuilder();
         }
       }
       @java.lang.Override
@@ -35956,6 +37391,11 @@ com.google.protobuf.ByteString defaultValue) {
         if (metadataBuilder_ != null) {
           metadataBuilder_.dispose();
           metadataBuilder_ = null;
+        }
+        generative_ = null;
+        if (generativeBuilder_ != null) {
+          generativeBuilder_.dispose();
+          generativeBuilder_ = null;
         }
         return this;
       }
@@ -36002,6 +37442,12 @@ com.google.protobuf.ByteString defaultValue) {
               ? metadata_
               : metadataBuilder_.build();
           to_bitField0_ |= 0x00000002;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.generative_ = generativeBuilder_ == null
+              ? generative_
+              : generativeBuilder_.build();
+          to_bitField0_ |= 0x00000004;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -36056,6 +37502,9 @@ com.google.protobuf.ByteString defaultValue) {
         if (other.hasMetadata()) {
           mergeMetadata(other.getMetadata());
         }
+        if (other.hasGenerative()) {
+          mergeGenerative(other.getGenerative());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -36096,6 +37545,13 @@ com.google.protobuf.ByteString defaultValue) {
                 bitField0_ |= 0x00000002;
                 break;
               } // case 18
+              case 26: {
+                input.readMessage(
+                    getGenerativeFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -36354,6 +37810,127 @@ com.google.protobuf.ByteString defaultValue) {
         }
         return metadataBuilder_;
       }
+
+      private io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult generative_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResultOrBuilder> generativeBuilder_;
+      /**
+       * <code>optional .weaviate.v1.GenerativeResult generative = 3;</code>
+       * @return Whether the generative field is set.
+       */
+      public boolean hasGenerative() {
+        return ((bitField0_ & 0x00000004) != 0);
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeResult generative = 3;</code>
+       * @return The generative.
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult getGenerative() {
+        if (generativeBuilder_ == null) {
+          return generative_ == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.getDefaultInstance() : generative_;
+        } else {
+          return generativeBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeResult generative = 3;</code>
+       */
+      public Builder setGenerative(io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult value) {
+        if (generativeBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          generative_ = value;
+        } else {
+          generativeBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeResult generative = 3;</code>
+       */
+      public Builder setGenerative(
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.Builder builderForValue) {
+        if (generativeBuilder_ == null) {
+          generative_ = builderForValue.build();
+        } else {
+          generativeBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeResult generative = 3;</code>
+       */
+      public Builder mergeGenerative(io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult value) {
+        if (generativeBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) != 0) &&
+            generative_ != null &&
+            generative_ != io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.getDefaultInstance()) {
+            getGenerativeBuilder().mergeFrom(value);
+          } else {
+            generative_ = value;
+          }
+        } else {
+          generativeBuilder_.mergeFrom(value);
+        }
+        if (generative_ != null) {
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeResult generative = 3;</code>
+       */
+      public Builder clearGenerative() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        generative_ = null;
+        if (generativeBuilder_ != null) {
+          generativeBuilder_.dispose();
+          generativeBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeResult generative = 3;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.Builder getGenerativeBuilder() {
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return getGenerativeFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeResult generative = 3;</code>
+       */
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResultOrBuilder getGenerativeOrBuilder() {
+        if (generativeBuilder_ != null) {
+          return generativeBuilder_.getMessageOrBuilder();
+        } else {
+          return generative_ == null ?
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.getDefaultInstance() : generative_;
+        }
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeResult generative = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResultOrBuilder> 
+          getGenerativeFieldBuilder() {
+        if (generativeBuilder_ == null) {
+          generativeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResult.Builder, io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.GenerativeResultOrBuilder>(
+                  getGenerative(),
+                  getParentForChildren(),
+                  isClean());
+          generative_ = null;
+        }
+        return generativeBuilder_;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -36441,7 +38018,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-     *     See v1/search_get.proto;l=272
+     *     See v1/search_get.proto;l=288
      * @return A list containing the vector.
      */
     @java.lang.Deprecated java.util.List<java.lang.Float> getVectorList();
@@ -36452,7 +38029,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-     *     See v1/search_get.proto;l=272
+     *     See v1/search_get.proto;l=288
      * @return The count of vector.
      */
     @java.lang.Deprecated int getVectorCount();
@@ -36463,7 +38040,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-     *     See v1/search_get.proto;l=272
+     *     See v1/search_get.proto;l=288
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
@@ -36559,22 +38136,28 @@ com.google.protobuf.ByteString defaultValue) {
     boolean getIsConsistent();
 
     /**
-     * <code>string generative = 16;</code>
+     * <code>string generative = 16 [deprecated = true];</code>
+     * @deprecated weaviate.v1.MetadataResult.generative is deprecated.
+     *     See v1/search_get.proto;l=302
      * @return The generative.
      */
-    java.lang.String getGenerative();
+    @java.lang.Deprecated java.lang.String getGenerative();
     /**
-     * <code>string generative = 16;</code>
+     * <code>string generative = 16 [deprecated = true];</code>
+     * @deprecated weaviate.v1.MetadataResult.generative is deprecated.
+     *     See v1/search_get.proto;l=302
      * @return The bytes for generative.
      */
-    com.google.protobuf.ByteString
+    @java.lang.Deprecated com.google.protobuf.ByteString
         getGenerativeBytes();
 
     /**
-     * <code>bool generative_present = 17;</code>
+     * <code>bool generative_present = 17 [deprecated = true];</code>
+     * @deprecated weaviate.v1.MetadataResult.generative_present is deprecated.
+     *     See v1/search_get.proto;l=303
      * @return The generativePresent.
      */
-    boolean getGenerativePresent();
+    @java.lang.Deprecated boolean getGenerativePresent();
 
     /**
      * <code>bool is_consistent_present = 18;</code>
@@ -36723,7 +38306,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-     *     See v1/search_get.proto;l=272
+     *     See v1/search_get.proto;l=288
      * @return A list containing the vector.
      */
     @java.lang.Override
@@ -36738,7 +38321,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-     *     See v1/search_get.proto;l=272
+     *     See v1/search_get.proto;l=288
      * @return The count of vector.
      */
     @java.lang.Deprecated public int getVectorCount() {
@@ -36751,7 +38334,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-     *     See v1/search_get.proto;l=272
+     *     See v1/search_get.proto;l=288
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
@@ -36943,11 +38526,13 @@ com.google.protobuf.ByteString defaultValue) {
     @SuppressWarnings("serial")
     private volatile java.lang.Object generative_ = "";
     /**
-     * <code>string generative = 16;</code>
+     * <code>string generative = 16 [deprecated = true];</code>
+     * @deprecated weaviate.v1.MetadataResult.generative is deprecated.
+     *     See v1/search_get.proto;l=302
      * @return The generative.
      */
     @java.lang.Override
-    public java.lang.String getGenerative() {
+    @java.lang.Deprecated public java.lang.String getGenerative() {
       java.lang.Object ref = generative_;
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
@@ -36960,11 +38545,13 @@ com.google.protobuf.ByteString defaultValue) {
       }
     }
     /**
-     * <code>string generative = 16;</code>
+     * <code>string generative = 16 [deprecated = true];</code>
+     * @deprecated weaviate.v1.MetadataResult.generative is deprecated.
+     *     See v1/search_get.proto;l=302
      * @return The bytes for generative.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
+    @java.lang.Deprecated public com.google.protobuf.ByteString
         getGenerativeBytes() {
       java.lang.Object ref = generative_;
       if (ref instanceof java.lang.String) {
@@ -36981,11 +38568,13 @@ com.google.protobuf.ByteString defaultValue) {
     public static final int GENERATIVE_PRESENT_FIELD_NUMBER = 17;
     private boolean generativePresent_ = false;
     /**
-     * <code>bool generative_present = 17;</code>
+     * <code>bool generative_present = 17 [deprecated = true];</code>
+     * @deprecated weaviate.v1.MetadataResult.generative_present is deprecated.
+     *     See v1/search_get.proto;l=303
      * @return The generativePresent.
      */
     @java.lang.Override
-    public boolean getGenerativePresent() {
+    @java.lang.Deprecated public boolean getGenerativePresent() {
       return generativePresent_;
     }
 
@@ -38123,7 +39712,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-       *     See v1/search_get.proto;l=272
+       *     See v1/search_get.proto;l=288
        * @return A list containing the vector.
        */
       @java.lang.Deprecated public java.util.List<java.lang.Float>
@@ -38138,7 +39727,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-       *     See v1/search_get.proto;l=272
+       *     See v1/search_get.proto;l=288
        * @return The count of vector.
        */
       @java.lang.Deprecated public int getVectorCount() {
@@ -38151,7 +39740,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-       *     See v1/search_get.proto;l=272
+       *     See v1/search_get.proto;l=288
        * @param index The index of the element to return.
        * @return The vector at the given index.
        */
@@ -38165,7 +39754,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-       *     See v1/search_get.proto;l=272
+       *     See v1/search_get.proto;l=288
        * @param index The index to set the value at.
        * @param value The vector to set.
        * @return This builder for chaining.
@@ -38186,7 +39775,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-       *     See v1/search_get.proto;l=272
+       *     See v1/search_get.proto;l=288
        * @param value The vector to add.
        * @return This builder for chaining.
        */
@@ -38205,7 +39794,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-       *     See v1/search_get.proto;l=272
+       *     See v1/search_get.proto;l=288
        * @param values The vector to add.
        * @return This builder for chaining.
        */
@@ -38225,7 +39814,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-       *     See v1/search_get.proto;l=272
+       *     See v1/search_get.proto;l=288
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearVector() {
@@ -38701,10 +40290,12 @@ com.google.protobuf.ByteString defaultValue) {
 
       private java.lang.Object generative_ = "";
       /**
-       * <code>string generative = 16;</code>
+       * <code>string generative = 16 [deprecated = true];</code>
+       * @deprecated weaviate.v1.MetadataResult.generative is deprecated.
+       *     See v1/search_get.proto;l=302
        * @return The generative.
        */
-      public java.lang.String getGenerative() {
+      @java.lang.Deprecated public java.lang.String getGenerative() {
         java.lang.Object ref = generative_;
         if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
@@ -38717,10 +40308,12 @@ com.google.protobuf.ByteString defaultValue) {
         }
       }
       /**
-       * <code>string generative = 16;</code>
+       * <code>string generative = 16 [deprecated = true];</code>
+       * @deprecated weaviate.v1.MetadataResult.generative is deprecated.
+       *     See v1/search_get.proto;l=302
        * @return The bytes for generative.
        */
-      public com.google.protobuf.ByteString
+      @java.lang.Deprecated public com.google.protobuf.ByteString
           getGenerativeBytes() {
         java.lang.Object ref = generative_;
         if (ref instanceof String) {
@@ -38734,11 +40327,13 @@ com.google.protobuf.ByteString defaultValue) {
         }
       }
       /**
-       * <code>string generative = 16;</code>
+       * <code>string generative = 16 [deprecated = true];</code>
+       * @deprecated weaviate.v1.MetadataResult.generative is deprecated.
+       *     See v1/search_get.proto;l=302
        * @param value The generative to set.
        * @return This builder for chaining.
        */
-      public Builder setGenerative(
+      @java.lang.Deprecated public Builder setGenerative(
           java.lang.String value) {
         if (value == null) { throw new NullPointerException(); }
         generative_ = value;
@@ -38747,21 +40342,25 @@ com.google.protobuf.ByteString defaultValue) {
         return this;
       }
       /**
-       * <code>string generative = 16;</code>
+       * <code>string generative = 16 [deprecated = true];</code>
+       * @deprecated weaviate.v1.MetadataResult.generative is deprecated.
+       *     See v1/search_get.proto;l=302
        * @return This builder for chaining.
        */
-      public Builder clearGenerative() {
+      @java.lang.Deprecated public Builder clearGenerative() {
         generative_ = getDefaultInstance().getGenerative();
         bitField0_ = (bitField0_ & ~0x00008000);
         onChanged();
         return this;
       }
       /**
-       * <code>string generative = 16;</code>
+       * <code>string generative = 16 [deprecated = true];</code>
+       * @deprecated weaviate.v1.MetadataResult.generative is deprecated.
+       *     See v1/search_get.proto;l=302
        * @param value The bytes for generative to set.
        * @return This builder for chaining.
        */
-      public Builder setGenerativeBytes(
+      @java.lang.Deprecated public Builder setGenerativeBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) { throw new NullPointerException(); }
         checkByteStringIsUtf8(value);
@@ -38773,19 +40372,23 @@ com.google.protobuf.ByteString defaultValue) {
 
       private boolean generativePresent_ ;
       /**
-       * <code>bool generative_present = 17;</code>
+       * <code>bool generative_present = 17 [deprecated = true];</code>
+       * @deprecated weaviate.v1.MetadataResult.generative_present is deprecated.
+       *     See v1/search_get.proto;l=303
        * @return The generativePresent.
        */
       @java.lang.Override
-      public boolean getGenerativePresent() {
+      @java.lang.Deprecated public boolean getGenerativePresent() {
         return generativePresent_;
       }
       /**
-       * <code>bool generative_present = 17;</code>
+       * <code>bool generative_present = 17 [deprecated = true];</code>
+       * @deprecated weaviate.v1.MetadataResult.generative_present is deprecated.
+       *     See v1/search_get.proto;l=303
        * @param value The generativePresent to set.
        * @return This builder for chaining.
        */
-      public Builder setGenerativePresent(boolean value) {
+      @java.lang.Deprecated public Builder setGenerativePresent(boolean value) {
 
         generativePresent_ = value;
         bitField0_ |= 0x00010000;
@@ -38793,10 +40396,12 @@ com.google.protobuf.ByteString defaultValue) {
         return this;
       }
       /**
-       * <code>bool generative_present = 17;</code>
+       * <code>bool generative_present = 17 [deprecated = true];</code>
+       * @deprecated weaviate.v1.MetadataResult.generative_present is deprecated.
+       *     See v1/search_get.proto;l=303
        * @return This builder for chaining.
        */
-      public Builder clearGenerativePresent() {
+      @java.lang.Deprecated public Builder clearGenerativePresent() {
         bitField0_ = (bitField0_ & ~0x00010000);
         generativePresent_ = false;
         onChanged();
@@ -39273,14 +40878,14 @@ com.google.protobuf.ByteString defaultValue) {
     /**
      * <code>.google.protobuf.Struct non_ref_properties = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.PropertiesResult.non_ref_properties is deprecated.
-     *     See v1/search_get.proto;l=297
+     *     See v1/search_get.proto;l=313
      * @return Whether the nonRefProperties field is set.
      */
     @java.lang.Deprecated boolean hasNonRefProperties();
     /**
      * <code>.google.protobuf.Struct non_ref_properties = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.PropertiesResult.non_ref_properties is deprecated.
-     *     See v1/search_get.proto;l=297
+     *     See v1/search_get.proto;l=313
      * @return The nonRefProperties.
      */
     @java.lang.Deprecated com.google.protobuf.Struct getNonRefProperties();
@@ -39554,7 +41159,7 @@ com.google.protobuf.ByteString defaultValue) {
     /**
      * <code>.google.protobuf.Struct non_ref_properties = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.PropertiesResult.non_ref_properties is deprecated.
-     *     See v1/search_get.proto;l=297
+     *     See v1/search_get.proto;l=313
      * @return Whether the nonRefProperties field is set.
      */
     @java.lang.Override
@@ -39564,7 +41169,7 @@ com.google.protobuf.ByteString defaultValue) {
     /**
      * <code>.google.protobuf.Struct non_ref_properties = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.PropertiesResult.non_ref_properties is deprecated.
-     *     See v1/search_get.proto;l=297
+     *     See v1/search_get.proto;l=313
      * @return The nonRefProperties.
      */
     @java.lang.Override
@@ -40932,7 +42537,7 @@ com.google.protobuf.ByteString defaultValue) {
       /**
        * <code>.google.protobuf.Struct non_ref_properties = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.PropertiesResult.non_ref_properties is deprecated.
-       *     See v1/search_get.proto;l=297
+       *     See v1/search_get.proto;l=313
        * @return Whether the nonRefProperties field is set.
        */
       @java.lang.Deprecated public boolean hasNonRefProperties() {
@@ -40941,7 +42546,7 @@ com.google.protobuf.ByteString defaultValue) {
       /**
        * <code>.google.protobuf.Struct non_ref_properties = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.PropertiesResult.non_ref_properties is deprecated.
-       *     See v1/search_get.proto;l=297
+       *     See v1/search_get.proto;l=313
        * @return The nonRefProperties.
        */
       @java.lang.Deprecated public com.google.protobuf.Struct getNonRefProperties() {
@@ -44086,11 +45691,6 @@ com.google.protobuf.ByteString defaultValue) {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_weaviate_v1_SortBy_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_weaviate_v1_GenerativeSearch_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_weaviate_v1_GenerativeSearch_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_weaviate_v1_MetadataRequest_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -44105,6 +45705,11 @@ com.google.protobuf.ByteString defaultValue) {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_weaviate_v1_ObjectPropertiesRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_weaviate_v1_WeightsForTarget_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_weaviate_v1_WeightsForTarget_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_weaviate_v1_Targets_descriptor;
   private static final 
@@ -44171,6 +45776,11 @@ com.google.protobuf.ByteString defaultValue) {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_weaviate_v1_RefPropertiesRequest_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_weaviate_v1_VectorForTarget_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_weaviate_v1_VectorForTarget_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_weaviate_v1_NearVector_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -44200,11 +45810,6 @@ com.google.protobuf.ByteString defaultValue) {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_weaviate_v1_RerankReply_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_weaviate_v1_GenerativeReply_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_weaviate_v1_GenerativeReply_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_weaviate_v1_GroupByResult_descriptor;
   private static final 
@@ -44241,200 +45846,212 @@ com.google.protobuf.ByteString defaultValue) {
     java.lang.String[] descriptorData = {
       "\n\023v1/search_get.proto\022\013weaviate.v1\032\034goog" +
       "le/protobuf/struct.proto\032\rv1/base.proto\032" +
-      "\023v1/properties.proto\"\202\013\n\rSearchRequest\022\022" +
-      "\n\ncollection\030\001 \001(\t\022\016\n\006tenant\030\n \001(\t\022=\n\021co" +
-      "nsistency_level\030\013 \001(\0162\035.weaviate.v1.Cons" +
-      "istencyLevelH\000\210\001\001\0227\n\nproperties\030\024 \001(\0132\036." +
-      "weaviate.v1.PropertiesRequestH\001\210\001\001\0223\n\010me" +
-      "tadata\030\025 \001(\0132\034.weaviate.v1.MetadataReque" +
-      "stH\002\210\001\001\022+\n\010group_by\030\026 \001(\0132\024.weaviate.v1." +
-      "GroupByH\003\210\001\001\022\r\n\005limit\030\036 \001(\r\022\016\n\006offset\030\037 " +
-      "\001(\r\022\017\n\007autocut\030  \001(\r\022\r\n\005after\030! \001(\t\022$\n\007s" +
-      "ort_by\030\" \003(\0132\023.weaviate.v1.SortBy\022*\n\007fil" +
-      "ters\030( \001(\0132\024.weaviate.v1.FiltersH\004\210\001\001\022/\n" +
-      "\rhybrid_search\030) \001(\0132\023.weaviate.v1.Hybri" +
-      "dH\005\210\001\001\022+\n\013bm25_search\030* \001(\0132\021.weaviate.v" +
-      "1.BM25H\006\210\001\001\0221\n\013near_vector\030+ \001(\0132\027.weavi" +
-      "ate.v1.NearVectorH\007\210\001\001\0221\n\013near_object\030, " +
-      "\001(\0132\027.weaviate.v1.NearObjectH\010\210\001\001\0223\n\tnea" +
-      "r_text\030- \001(\0132\033.weaviate.v1.NearTextSearc" +
-      "hH\t\210\001\001\0225\n\nnear_image\030. \001(\0132\034.weaviate.v1" +
-      ".NearImageSearchH\n\210\001\001\0225\n\nnear_audio\030/ \001(" +
-      "\0132\034.weaviate.v1.NearAudioSearchH\013\210\001\001\0225\n\n" +
-      "near_video\0300 \001(\0132\034.weaviate.v1.NearVideo" +
-      "SearchH\014\210\001\001\0225\n\nnear_depth\0301 \001(\0132\034.weavia" +
-      "te.v1.NearDepthSearchH\r\210\001\001\0229\n\014near_therm" +
-      "al\0302 \001(\0132\036.weaviate.v1.NearThermalSearch" +
-      "H\016\210\001\001\0221\n\010near_imu\0303 \001(\0132\032.weaviate.v1.Ne" +
-      "arIMUSearchH\017\210\001\001\0226\n\ngenerative\030< \001(\0132\035.w" +
-      "eaviate.v1.GenerativeSearchH\020\210\001\001\022(\n\006rera" +
-      "nk\030= \001(\0132\023.weaviate.v1.RerankH\021\210\001\001\022\030\n\014us" +
-      "es_123_api\030d \001(\010B\002\030\001\022\024\n\014uses_125_api\030e \001" +
-      "(\010B\024\n\022_consistency_levelB\r\n\013_propertiesB" +
-      "\013\n\t_metadataB\013\n\t_group_byB\n\n\010_filtersB\020\n" +
-      "\016_hybrid_searchB\016\n\014_bm25_searchB\016\n\014_near" +
-      "_vectorB\016\n\014_near_objectB\014\n\n_near_textB\r\n" +
-      "\013_near_imageB\r\n\013_near_audioB\r\n\013_near_vid" +
-      "eoB\r\n\013_near_depthB\017\n\r_near_thermalB\013\n\t_n" +
-      "ear_imuB\r\n\013_generativeB\t\n\007_rerank\"L\n\007Gro" +
-      "upBy\022\014\n\004path\030\001 \003(\t\022\030\n\020number_of_groups\030\002" +
-      " \001(\005\022\031\n\021objects_per_group\030\003 \001(\005\")\n\006SortB" +
-      "y\022\021\n\tascending\030\001 \001(\010\022\014\n\004path\030\002 \003(\t\"m\n\020Ge" +
-      "nerativeSearch\022\036\n\026single_response_prompt" +
-      "\030\001 \001(\t\022\035\n\025grouped_response_task\030\002 \001(\t\022\032\n" +
-      "\022grouped_properties\030\003 \003(\t\"\335\001\n\017MetadataRe" +
-      "quest\022\014\n\004uuid\030\001 \001(\010\022\016\n\006vector\030\002 \001(\010\022\032\n\022c" +
-      "reation_time_unix\030\003 \001(\010\022\035\n\025last_update_t" +
-      "ime_unix\030\004 \001(\010\022\020\n\010distance\030\005 \001(\010\022\021\n\tcert" +
-      "ainty\030\006 \001(\010\022\r\n\005score\030\007 \001(\010\022\025\n\rexplain_sc" +
-      "ore\030\010 \001(\010\022\025\n\ris_consistent\030\t \001(\010\022\017\n\007vect" +
-      "ors\030\n \003(\t\"\321\001\n\021PropertiesRequest\022\032\n\022non_r" +
-      "ef_properties\030\001 \003(\t\0229\n\016ref_properties\030\002 " +
-      "\003(\0132!.weaviate.v1.RefPropertiesRequest\022?" +
-      "\n\021object_properties\030\003 \003(\0132$.weaviate.v1." +
-      "ObjectPropertiesRequest\022$\n\034return_all_no" +
-      "nref_properties\030\013 \001(\010\"\213\001\n\027ObjectProperti" +
-      "esRequest\022\021\n\tprop_name\030\001 \001(\t\022\034\n\024primitiv" +
-      "e_properties\030\002 \003(\t\022?\n\021object_properties\030" +
-      "\003 \003(\0132$.weaviate.v1.ObjectPropertiesRequ" +
-      "est\"\272\001\n\007Targets\022\026\n\016target_vectors\030\001 \003(\t\022" +
-      "3\n\013combination\030\002 \001(\0162\036.weaviate.v1.Combi" +
-      "nationMethod\0222\n\007weights\030\003 \003(\0132!.weaviate" +
-      ".v1.Targets.WeightsEntry\032.\n\014WeightsEntry" +
-      "\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\002:\0028\001\"\235\003\n\006Hyb" +
-      "rid\022\r\n\005query\030\001 \001(\t\022\022\n\nproperties\030\002 \003(\t\022\022" +
-      "\n\006vector\030\003 \003(\002B\002\030\001\022\r\n\005alpha\030\004 \001(\002\0223\n\013fus" +
-      "ion_type\030\005 \001(\0162\036.weaviate.v1.Hybrid.Fusi" +
-      "onType\022\024\n\014vector_bytes\030\006 \001(\014\022\032\n\016target_v" +
-      "ectors\030\007 \003(\tB\002\030\001\022.\n\tnear_text\030\010 \001(\0132\033.we" +
-      "aviate.v1.NearTextSearch\022,\n\013near_vector\030" +
-      "\t \001(\0132\027.weaviate.v1.NearVector\022%\n\007target" +
-      "s\030\n \001(\0132\024.weaviate.v1.Targets\"a\n\nFusionT" +
-      "ype\022\033\n\027FUSION_TYPE_UNSPECIFIED\020\000\022\026\n\022FUSI" +
-      "ON_TYPE_RANKED\020\001\022\036\n\032FUSION_TYPE_RELATIVE" +
-      "_SCORE\020\002\"\360\002\n\016NearTextSearch\022\r\n\005query\030\001 \003" +
-      "(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n\010distance\030\003" +
-      " \001(\001H\001\210\001\001\0226\n\007move_to\030\004 \001(\0132 .weaviate.v1" +
-      ".NearTextSearch.MoveH\002\210\001\001\0228\n\tmove_away\030\005" +
-      " \001(\0132 .weaviate.v1.NearTextSearch.MoveH\003" +
-      "\210\001\001\022\032\n\016target_vectors\030\006 \003(\tB\002\030\001\022%\n\007targe" +
-      "ts\030\007 \001(\0132\024.weaviate.v1.Targets\0326\n\004Move\022\r" +
-      "\n\005force\030\001 \001(\002\022\020\n\010concepts\030\002 \003(\t\022\r\n\005uuids" +
-      "\030\003 \003(\tB\014\n\n_certaintyB\013\n\t_distanceB\n\n\010_mo" +
-      "ve_toB\014\n\n_move_away\"\255\001\n\017NearImageSearch\022" +
-      "\r\n\005image\030\001 \001(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025" +
-      "\n\010distance\030\003 \001(\001H\001\210\001\001\022\032\n\016target_vectors\030" +
-      "\004 \003(\tB\002\030\001\022%\n\007targets\030\005 \001(\0132\024.weaviate.v1" +
-      ".TargetsB\014\n\n_certaintyB\013\n\t_distance\"\255\001\n\017" +
-      "NearAudioSearch\022\r\n\005audio\030\001 \001(\t\022\026\n\tcertai" +
-      "nty\030\002 \001(\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001\022\032\n" +
-      "\016target_vectors\030\004 \003(\tB\002\030\001\022%\n\007targets\030\005 \001" +
-      "(\0132\024.weaviate.v1.TargetsB\014\n\n_certaintyB\013" +
-      "\n\t_distance\"\255\001\n\017NearVideoSearch\022\r\n\005video" +
-      "\030\001 \001(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n\010distan" +
-      "ce\030\003 \001(\001H\001\210\001\001\022\032\n\016target_vectors\030\004 \003(\tB\002\030" +
-      "\001\022%\n\007targets\030\005 \001(\0132\024.weaviate.v1.Targets" +
-      "B\014\n\n_certaintyB\013\n\t_distance\"\255\001\n\017NearDept" +
-      "hSearch\022\r\n\005depth\030\001 \001(\t\022\026\n\tcertainty\030\002 \001(" +
-      "\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001\022\032\n\016target_" +
-      "vectors\030\004 \003(\tB\002\030\001\022%\n\007targets\030\005 \001(\0132\024.wea" +
-      "viate.v1.TargetsB\014\n\n_certaintyB\013\n\t_dista" +
-      "nce\"\261\001\n\021NearThermalSearch\022\017\n\007thermal\030\001 \001" +
+      "\023v1/generative.proto\032\023v1/properties.prot" +
+      "o\"\234\013\n\rSearchRequest\022\022\n\ncollection\030\001 \001(\t\022" +
+      "\016\n\006tenant\030\n \001(\t\022=\n\021consistency_level\030\013 \001" +
+      "(\0162\035.weaviate.v1.ConsistencyLevelH\000\210\001\001\0227" +
+      "\n\nproperties\030\024 \001(\0132\036.weaviate.v1.Propert" +
+      "iesRequestH\001\210\001\001\0223\n\010metadata\030\025 \001(\0132\034.weav" +
+      "iate.v1.MetadataRequestH\002\210\001\001\022+\n\010group_by" +
+      "\030\026 \001(\0132\024.weaviate.v1.GroupByH\003\210\001\001\022\r\n\005lim" +
+      "it\030\036 \001(\r\022\016\n\006offset\030\037 \001(\r\022\017\n\007autocut\030  \001(" +
+      "\r\022\r\n\005after\030! \001(\t\022$\n\007sort_by\030\" \003(\0132\023.weav" +
+      "iate.v1.SortBy\022*\n\007filters\030( \001(\0132\024.weavia" +
+      "te.v1.FiltersH\004\210\001\001\022/\n\rhybrid_search\030) \001(" +
+      "\0132\023.weaviate.v1.HybridH\005\210\001\001\022+\n\013bm25_sear" +
+      "ch\030* \001(\0132\021.weaviate.v1.BM25H\006\210\001\001\0221\n\013near" +
+      "_vector\030+ \001(\0132\027.weaviate.v1.NearVectorH\007" +
+      "\210\001\001\0221\n\013near_object\030, \001(\0132\027.weaviate.v1.N" +
+      "earObjectH\010\210\001\001\0223\n\tnear_text\030- \001(\0132\033.weav" +
+      "iate.v1.NearTextSearchH\t\210\001\001\0225\n\nnear_imag" +
+      "e\030. \001(\0132\034.weaviate.v1.NearImageSearchH\n\210" +
+      "\001\001\0225\n\nnear_audio\030/ \001(\0132\034.weaviate.v1.Nea" +
+      "rAudioSearchH\013\210\001\001\0225\n\nnear_video\0300 \001(\0132\034." +
+      "weaviate.v1.NearVideoSearchH\014\210\001\001\0225\n\nnear" +
+      "_depth\0301 \001(\0132\034.weaviate.v1.NearDepthSear" +
+      "chH\r\210\001\001\0229\n\014near_thermal\0302 \001(\0132\036.weaviate" +
+      ".v1.NearThermalSearchH\016\210\001\001\0221\n\010near_imu\0303" +
+      " \001(\0132\032.weaviate.v1.NearIMUSearchH\017\210\001\001\0226\n" +
+      "\ngenerative\030< \001(\0132\035.weaviate.v1.Generati" +
+      "veSearchH\020\210\001\001\022(\n\006rerank\030= \001(\0132\023.weaviate" +
+      ".v1.RerankH\021\210\001\001\022\030\n\014uses_123_api\030d \001(\010B\002\030" +
+      "\001\022\030\n\014uses_125_api\030e \001(\010B\002\030\001\022\024\n\014uses_127_" +
+      "api\030f \001(\010B\024\n\022_consistency_levelB\r\n\013_prop" +
+      "ertiesB\013\n\t_metadataB\013\n\t_group_byB\n\n\010_fil" +
+      "tersB\020\n\016_hybrid_searchB\016\n\014_bm25_searchB\016" +
+      "\n\014_near_vectorB\016\n\014_near_objectB\014\n\n_near_" +
+      "textB\r\n\013_near_imageB\r\n\013_near_audioB\r\n\013_n" +
+      "ear_videoB\r\n\013_near_depthB\017\n\r_near_therma" +
+      "lB\013\n\t_near_imuB\r\n\013_generativeB\t\n\007_rerank" +
+      "\"L\n\007GroupBy\022\014\n\004path\030\001 \003(\t\022\030\n\020number_of_g" +
+      "roups\030\002 \001(\005\022\031\n\021objects_per_group\030\003 \001(\005\")" +
+      "\n\006SortBy\022\021\n\tascending\030\001 \001(\010\022\014\n\004path\030\002 \003(" +
+      "\t\"\335\001\n\017MetadataRequest\022\014\n\004uuid\030\001 \001(\010\022\016\n\006v" +
+      "ector\030\002 \001(\010\022\032\n\022creation_time_unix\030\003 \001(\010\022" +
+      "\035\n\025last_update_time_unix\030\004 \001(\010\022\020\n\010distan" +
+      "ce\030\005 \001(\010\022\021\n\tcertainty\030\006 \001(\010\022\r\n\005score\030\007 \001" +
+      "(\010\022\025\n\rexplain_score\030\010 \001(\010\022\025\n\ris_consiste" +
+      "nt\030\t \001(\010\022\017\n\007vectors\030\n \003(\t\"\321\001\n\021Properties" +
+      "Request\022\032\n\022non_ref_properties\030\001 \003(\t\0229\n\016r" +
+      "ef_properties\030\002 \003(\0132!.weaviate.v1.RefPro" +
+      "pertiesRequest\022?\n\021object_properties\030\003 \003(" +
+      "\0132$.weaviate.v1.ObjectPropertiesRequest\022" +
+      "$\n\034return_all_nonref_properties\030\013 \001(\010\"\213\001" +
+      "\n\027ObjectPropertiesRequest\022\021\n\tprop_name\030\001" +
+      " \001(\t\022\034\n\024primitive_properties\030\002 \003(\t\022?\n\021ob" +
+      "ject_properties\030\003 \003(\0132$.weaviate.v1.Obje" +
+      "ctPropertiesRequest\"2\n\020WeightsForTarget\022" +
+      "\016\n\006target\030\001 \001(\t\022\016\n\006weight\030\002 \001(\002\"\372\001\n\007Targ" +
+      "ets\022\026\n\016target_vectors\030\001 \003(\t\0223\n\013combinati" +
+      "on\030\002 \001(\0162\036.weaviate.v1.CombinationMethod" +
+      "\0226\n\007weights\030\003 \003(\0132!.weaviate.v1.Targets." +
+      "WeightsEntryB\002\030\001\022:\n\023weights_for_targets\030" +
+      "\004 \003(\0132\035.weaviate.v1.WeightsForTarget\032.\n\014" +
+      "WeightsEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\002" +
+      ":\0028\001\"\305\003\n\006Hybrid\022\r\n\005query\030\001 \001(\t\022\022\n\nproper" +
+      "ties\030\002 \003(\t\022\022\n\006vector\030\003 \003(\002B\002\030\001\022\r\n\005alpha\030" +
+      "\004 \001(\002\0223\n\013fusion_type\030\005 \001(\0162\036.weaviate.v1" +
+      ".Hybrid.FusionType\022\024\n\014vector_bytes\030\006 \001(\014" +
+      "\022\032\n\016target_vectors\030\007 \003(\tB\002\030\001\022.\n\tnear_tex" +
+      "t\030\010 \001(\0132\033.weaviate.v1.NearTextSearch\022,\n\013" +
+      "near_vector\030\t \001(\0132\027.weaviate.v1.NearVect" +
+      "or\022%\n\007targets\030\n \001(\0132\024.weaviate.v1.Target" +
+      "s\022\031\n\017vector_distance\030\024 \001(\002H\000\"a\n\nFusionTy" +
+      "pe\022\033\n\027FUSION_TYPE_UNSPECIFIED\020\000\022\026\n\022FUSIO" +
+      "N_TYPE_RANKED\020\001\022\036\n\032FUSION_TYPE_RELATIVE_" +
+      "SCORE\020\002B\013\n\tthreshold\"\360\002\n\016NearTextSearch\022" +
+      "\r\n\005query\030\001 \003(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025" +
+      "\n\010distance\030\003 \001(\001H\001\210\001\001\0226\n\007move_to\030\004 \001(\0132 " +
+      ".weaviate.v1.NearTextSearch.MoveH\002\210\001\001\0228\n" +
+      "\tmove_away\030\005 \001(\0132 .weaviate.v1.NearTextS" +
+      "earch.MoveH\003\210\001\001\022\032\n\016target_vectors\030\006 \003(\tB" +
+      "\002\030\001\022%\n\007targets\030\007 \001(\0132\024.weaviate.v1.Targe" +
+      "ts\0326\n\004Move\022\r\n\005force\030\001 \001(\002\022\020\n\010concepts\030\002 " +
+      "\003(\t\022\r\n\005uuids\030\003 \003(\tB\014\n\n_certaintyB\013\n\t_dis" +
+      "tanceB\n\n\010_move_toB\014\n\n_move_away\"\255\001\n\017Near" +
+      "ImageSearch\022\r\n\005image\030\001 \001(\t\022\026\n\tcertainty\030" +
+      "\002 \001(\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001\022\032\n\016tar" +
+      "get_vectors\030\004 \003(\tB\002\030\001\022%\n\007targets\030\005 \001(\0132\024" +
+      ".weaviate.v1.TargetsB\014\n\n_certaintyB\013\n\t_d" +
+      "istance\"\255\001\n\017NearAudioSearch\022\r\n\005audio\030\001 \001" +
       "(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n\010distance\030\003" +
       " \001(\001H\001\210\001\001\022\032\n\016target_vectors\030\004 \003(\tB\002\030\001\022%\n" +
       "\007targets\030\005 \001(\0132\024.weaviate.v1.TargetsB\014\n\n" +
-      "_certaintyB\013\n\t_distance\"\251\001\n\rNearIMUSearc" +
-      "h\022\013\n\003imu\030\001 \001(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025" +
+      "_certaintyB\013\n\t_distance\"\255\001\n\017NearVideoSea" +
+      "rch\022\r\n\005video\030\001 \001(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210" +
+      "\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001\022\032\n\016target_vect" +
+      "ors\030\004 \003(\tB\002\030\001\022%\n\007targets\030\005 \001(\0132\024.weaviat" +
+      "e.v1.TargetsB\014\n\n_certaintyB\013\n\t_distance\"" +
+      "\255\001\n\017NearDepthSearch\022\r\n\005depth\030\001 \001(\t\022\026\n\tce" +
+      "rtainty\030\002 \001(\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001" +
+      "\001\022\032\n\016target_vectors\030\004 \003(\tB\002\030\001\022%\n\007targets" +
+      "\030\005 \001(\0132\024.weaviate.v1.TargetsB\014\n\n_certain" +
+      "tyB\013\n\t_distance\"\261\001\n\021NearThermalSearch\022\017\n" +
+      "\007thermal\030\001 \001(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025" +
       "\n\010distance\030\003 \001(\001H\001\210\001\001\022\032\n\016target_vectors\030" +
       "\004 \003(\tB\002\030\001\022%\n\007targets\030\005 \001(\0132\024.weaviate.v1" +
-      ".TargetsB\014\n\n_certaintyB\013\n\t_distance\")\n\004B" +
-      "M25\022\r\n\005query\030\001 \001(\t\022\022\n\nproperties\030\002 \003(\t\"\261" +
-      "\001\n\024RefPropertiesRequest\022\032\n\022reference_pro" +
-      "perty\030\001 \001(\t\0222\n\nproperties\030\002 \001(\0132\036.weavia" +
-      "te.v1.PropertiesRequest\022.\n\010metadata\030\003 \001(" +
-      "\0132\034.weaviate.v1.MetadataRequest\022\031\n\021targe" +
-      "t_collection\030\004 \001(\t\"\304\002\n\nNearVector\022\022\n\006vec" +
-      "tor\030\001 \003(\002B\002\030\001\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n" +
-      "\010distance\030\003 \001(\001H\001\210\001\001\022\024\n\014vector_bytes\030\004 \001" +
-      "(\014\022\032\n\016target_vectors\030\005 \003(\tB\002\030\001\022%\n\007target" +
-      "s\030\006 \001(\0132\024.weaviate.v1.Targets\022G\n\021vector_" +
-      "per_target\030\007 \003(\0132,.weaviate.v1.NearVecto" +
-      "r.VectorPerTargetEntry\0326\n\024VectorPerTarge" +
-      "tEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\014:\0028\001B\014" +
-      "\n\n_certaintyB\013\n\t_distance\"\245\001\n\nNearObject" +
-      "\022\n\n\002id\030\001 \001(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n\010" +
-      "distance\030\003 \001(\001H\001\210\001\001\022\032\n\016target_vectors\030\004 " +
-      "\003(\tB\002\030\001\022%\n\007targets\030\005 \001(\0132\024.weaviate.v1.T" +
-      "argetsB\014\n\n_certaintyB\013\n\t_distance\"8\n\006Rer" +
-      "ank\022\020\n\010property\030\001 \001(\t\022\022\n\005query\030\002 \001(\tH\000\210\001" +
-      "\001B\010\n\006_query\"\303\001\n\013SearchReply\022\014\n\004took\030\001 \001(" +
-      "\002\022*\n\007results\030\002 \003(\0132\031.weaviate.v1.SearchR" +
-      "esult\022&\n\031generative_grouped_result\030\003 \001(\t" +
-      "H\000\210\001\001\0224\n\020group_by_results\030\004 \003(\0132\032.weavia" +
-      "te.v1.GroupByResultB\034\n\032_generative_group" +
-      "ed_result\"\034\n\013RerankReply\022\r\n\005score\030\001 \001(\001\"" +
-      "!\n\017GenerativeReply\022\016\n\006result\030\001 \001(\t\"\220\002\n\rG" +
-      "roupByResult\022\014\n\004name\030\001 \001(\t\022\024\n\014min_distan" +
-      "ce\030\002 \001(\002\022\024\n\014max_distance\030\003 \001(\002\022\031\n\021number" +
-      "_of_objects\030\004 \001(\003\022*\n\007objects\030\005 \003(\0132\031.wea" +
-      "viate.v1.SearchResult\022-\n\006rerank\030\006 \001(\0132\030." +
-      "weaviate.v1.RerankReplyH\000\210\001\001\0225\n\ngenerati" +
-      "ve\030\007 \001(\0132\034.weaviate.v1.GenerativeReplyH\001" +
-      "\210\001\001B\t\n\007_rerankB\r\n\013_generative\"p\n\014SearchR" +
-      "esult\0221\n\nproperties\030\001 \001(\0132\035.weaviate.v1." +
-      "PropertiesResult\022-\n\010metadata\030\002 \001(\0132\033.wea" +
-      "viate.v1.MetadataResult\"\357\004\n\016MetadataResu" +
-      "lt\022\n\n\002id\030\001 \001(\t\022\022\n\006vector\030\002 \003(\002B\002\030\001\022\032\n\022cr" +
-      "eation_time_unix\030\003 \001(\003\022\"\n\032creation_time_" +
-      "unix_present\030\004 \001(\010\022\035\n\025last_update_time_u" +
-      "nix\030\005 \001(\003\022%\n\035last_update_time_unix_prese" +
-      "nt\030\006 \001(\010\022\020\n\010distance\030\007 \001(\002\022\030\n\020distance_p" +
-      "resent\030\010 \001(\010\022\021\n\tcertainty\030\t \001(\002\022\031\n\021certa" +
-      "inty_present\030\n \001(\010\022\r\n\005score\030\013 \001(\002\022\025\n\rsco" +
-      "re_present\030\014 \001(\010\022\025\n\rexplain_score\030\r \001(\t\022" +
-      "\035\n\025explain_score_present\030\016 \001(\010\022\032\n\ris_con" +
-      "sistent\030\017 \001(\010H\000\210\001\001\022\022\n\ngenerative\030\020 \001(\t\022\032" +
-      "\n\022generative_present\030\021 \001(\010\022\035\n\025is_consist" +
-      "ent_present\030\022 \001(\010\022\024\n\014vector_bytes\030\023 \001(\014\022" +
-      "\023\n\013id_as_bytes\030\024 \001(\014\022\024\n\014rerank_score\030\025 \001" +
-      "(\001\022\034\n\024rerank_score_present\030\026 \001(\010\022%\n\007vect" +
-      "ors\030\027 \003(\0132\024.weaviate.v1.VectorsB\020\n\016_is_c" +
-      "onsistent\"\272\005\n\020PropertiesResult\0227\n\022non_re" +
-      "f_properties\030\001 \001(\0132\027.google.protobuf.Str" +
-      "uctB\002\030\001\0223\n\tref_props\030\002 \003(\0132 .weaviate.v1" +
-      ".RefPropertiesResult\022\031\n\021target_collectio" +
-      "n\030\003 \001(\t\022-\n\010metadata\030\004 \001(\0132\033.weaviate.v1." +
-      "MetadataResult\022G\n\027number_array_propertie" +
-      "s\030\005 \003(\0132\".weaviate.v1.NumberArrayPropert" +
-      "iesB\002\030\001\022A\n\024int_array_properties\030\006 \003(\0132\037." +
-      "weaviate.v1.IntArrayPropertiesB\002\030\001\022C\n\025te" +
-      "xt_array_properties\030\007 \003(\0132 .weaviate.v1." +
-      "TextArrayPropertiesB\002\030\001\022I\n\030boolean_array" +
-      "_properties\030\010 \003(\0132#.weaviate.v1.BooleanA" +
-      "rrayPropertiesB\002\030\001\022<\n\021object_properties\030" +
-      "\t \003(\0132\035.weaviate.v1.ObjectPropertiesB\002\030\001" +
-      "\022G\n\027object_array_properties\030\n \003(\0132\".weav" +
-      "iate.v1.ObjectArrayPropertiesB\002\030\001\022.\n\rnon" +
-      "_ref_props\030\013 \001(\0132\027.weaviate.v1.Propertie" +
-      "s\022\033\n\023ref_props_requested\030\014 \001(\010\"[\n\023RefPro" +
-      "pertiesResult\0221\n\nproperties\030\001 \003(\0132\035.weav" +
-      "iate.v1.PropertiesResult\022\021\n\tprop_name\030\002 " +
-      "\001(\t*\356\001\n\021CombinationMethod\022\"\n\036COMBINATION" +
-      "_METHOD_UNSPECIFIED\020\000\022\037\n\033COMBINATION_MET" +
-      "HOD_TYPE_SUM\020\001\022\037\n\033COMBINATION_METHOD_TYP" +
-      "E_MIN\020\002\022#\n\037COMBINATION_METHOD_TYPE_AVERA" +
-      "GE\020\003\022*\n&COMBINATION_METHOD_TYPE_RELATIVE" +
-      "_SCORE\020\004\022\"\n\036COMBINATION_METHOD_TYPE_MANU" +
-      "AL\020\005Bs\n#io.weaviate.client.grpc.protocol" +
-      ".v1B\026WeaviateProtoSearchGetZ4github.com/" +
-      "weaviate/weaviate/grpc/generated;protoco" +
-      "lb\006proto3"
+      ".TargetsB\014\n\n_certaintyB\013\n\t_distance\"\251\001\n\r" +
+      "NearIMUSearch\022\013\n\003imu\030\001 \001(\t\022\026\n\tcertainty\030" +
+      "\002 \001(\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001\022\032\n\016tar" +
+      "get_vectors\030\004 \003(\tB\002\030\001\022%\n\007targets\030\005 \001(\0132\024" +
+      ".weaviate.v1.TargetsB\014\n\n_certaintyB\013\n\t_d" +
+      "istance\")\n\004BM25\022\r\n\005query\030\001 \001(\t\022\022\n\nproper" +
+      "ties\030\002 \003(\t\"\261\001\n\024RefPropertiesRequest\022\032\n\022r" +
+      "eference_property\030\001 \001(\t\0222\n\nproperties\030\002 " +
+      "\001(\0132\036.weaviate.v1.PropertiesRequest\022.\n\010m" +
+      "etadata\030\003 \001(\0132\034.weaviate.v1.MetadataRequ" +
+      "est\022\031\n\021target_collection\030\004 \001(\t\"5\n\017Vector" +
+      "ForTarget\022\014\n\004name\030\001 \001(\t\022\024\n\014vector_bytes\030" +
+      "\002 \001(\014\"\202\003\n\nNearVector\022\022\n\006vector\030\001 \003(\002B\002\030\001" +
+      "\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n\010distance\030\003 \001" +
+      "(\001H\001\210\001\001\022\024\n\014vector_bytes\030\004 \001(\014\022\032\n\016target_" +
+      "vectors\030\005 \003(\tB\002\030\001\022%\n\007targets\030\006 \001(\0132\024.wea" +
+      "viate.v1.Targets\022K\n\021vector_per_target\030\007 " +
+      "\003(\0132,.weaviate.v1.NearVector.VectorPerTa" +
+      "rgetEntryB\002\030\001\0228\n\022vector_for_targets\030\010 \003(" +
+      "\0132\034.weaviate.v1.VectorForTarget\0326\n\024Vecto" +
+      "rPerTargetEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 " +
+      "\001(\014:\0028\001B\014\n\n_certaintyB\013\n\t_distance\"\245\001\n\nN" +
+      "earObject\022\n\n\002id\030\001 \001(\t\022\026\n\tcertainty\030\002 \001(\001" +
+      "H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001\022\032\n\016target_v" +
+      "ectors\030\004 \003(\tB\002\030\001\022%\n\007targets\030\005 \001(\0132\024.weav" +
+      "iate.v1.TargetsB\014\n\n_certaintyB\013\n\t_distan" +
+      "ce\"8\n\006Rerank\022\020\n\010property\030\001 \001(\t\022\022\n\005query\030" +
+      "\002 \001(\tH\000\210\001\001B\010\n\006_query\"\256\002\n\013SearchReply\022\014\n\004" +
+      "took\030\001 \001(\002\022*\n\007results\030\002 \003(\0132\031.weaviate.v" +
+      "1.SearchResult\022*\n\031generative_grouped_res" +
+      "ult\030\003 \001(\tB\002\030\001H\000\210\001\001\0224\n\020group_by_results\030\004" +
+      " \003(\0132\032.weaviate.v1.GroupByResult\022F\n\032gene" +
+      "rative_grouped_results\030\005 \001(\0132\035.weaviate." +
+      "v1.GenerativeResultH\001\210\001\001B\034\n\032_generative_" +
+      "grouped_resultB\035\n\033_generative_grouped_re" +
+      "sults\"\034\n\013RerankReply\022\r\n\005score\030\001 \001(\001\"\351\002\n\r" +
+      "GroupByResult\022\014\n\004name\030\001 \001(\t\022\024\n\014min_dista" +
+      "nce\030\002 \001(\002\022\024\n\014max_distance\030\003 \001(\002\022\031\n\021numbe" +
+      "r_of_objects\030\004 \001(\003\022*\n\007objects\030\005 \003(\0132\031.we" +
+      "aviate.v1.SearchResult\022-\n\006rerank\030\006 \001(\0132\030" +
+      ".weaviate.v1.RerankReplyH\000\210\001\001\0229\n\ngenerat" +
+      "ive\030\007 \001(\0132\034.weaviate.v1.GenerativeReplyB" +
+      "\002\030\001H\001\210\001\001\022=\n\021generative_result\030\010 \001(\0132\035.we" +
+      "aviate.v1.GenerativeResultH\002\210\001\001B\t\n\007_rera" +
+      "nkB\r\n\013_generativeB\024\n\022_generative_result\"" +
+      "\267\001\n\014SearchResult\0221\n\nproperties\030\001 \001(\0132\035.w" +
+      "eaviate.v1.PropertiesResult\022-\n\010metadata\030" +
+      "\002 \001(\0132\033.weaviate.v1.MetadataResult\0226\n\nge" +
+      "nerative\030\003 \001(\0132\035.weaviate.v1.GenerativeR" +
+      "esultH\000\210\001\001B\r\n\013_generative\"\367\004\n\016MetadataRe" +
+      "sult\022\n\n\002id\030\001 \001(\t\022\022\n\006vector\030\002 \003(\002B\002\030\001\022\032\n\022" +
+      "creation_time_unix\030\003 \001(\003\022\"\n\032creation_tim" +
+      "e_unix_present\030\004 \001(\010\022\035\n\025last_update_time" +
+      "_unix\030\005 \001(\003\022%\n\035last_update_time_unix_pre" +
+      "sent\030\006 \001(\010\022\020\n\010distance\030\007 \001(\002\022\030\n\020distance" +
+      "_present\030\010 \001(\010\022\021\n\tcertainty\030\t \001(\002\022\031\n\021cer" +
+      "tainty_present\030\n \001(\010\022\r\n\005score\030\013 \001(\002\022\025\n\rs" +
+      "core_present\030\014 \001(\010\022\025\n\rexplain_score\030\r \001(" +
+      "\t\022\035\n\025explain_score_present\030\016 \001(\010\022\032\n\ris_c" +
+      "onsistent\030\017 \001(\010H\000\210\001\001\022\026\n\ngenerative\030\020 \001(\t" +
+      "B\002\030\001\022\036\n\022generative_present\030\021 \001(\010B\002\030\001\022\035\n\025" +
+      "is_consistent_present\030\022 \001(\010\022\024\n\014vector_by" +
+      "tes\030\023 \001(\014\022\023\n\013id_as_bytes\030\024 \001(\014\022\024\n\014rerank" +
+      "_score\030\025 \001(\001\022\034\n\024rerank_score_present\030\026 \001" +
+      "(\010\022%\n\007vectors\030\027 \003(\0132\024.weaviate.v1.Vector" +
+      "sB\020\n\016_is_consistent\"\272\005\n\020PropertiesResult" +
+      "\0227\n\022non_ref_properties\030\001 \001(\0132\027.google.pr" +
+      "otobuf.StructB\002\030\001\0223\n\tref_props\030\002 \003(\0132 .w" +
+      "eaviate.v1.RefPropertiesResult\022\031\n\021target" +
+      "_collection\030\003 \001(\t\022-\n\010metadata\030\004 \001(\0132\033.we" +
+      "aviate.v1.MetadataResult\022G\n\027number_array" +
+      "_properties\030\005 \003(\0132\".weaviate.v1.NumberAr" +
+      "rayPropertiesB\002\030\001\022A\n\024int_array_propertie" +
+      "s\030\006 \003(\0132\037.weaviate.v1.IntArrayProperties" +
+      "B\002\030\001\022C\n\025text_array_properties\030\007 \003(\0132 .we" +
+      "aviate.v1.TextArrayPropertiesB\002\030\001\022I\n\030boo" +
+      "lean_array_properties\030\010 \003(\0132#.weaviate.v" +
+      "1.BooleanArrayPropertiesB\002\030\001\022<\n\021object_p" +
+      "roperties\030\t \003(\0132\035.weaviate.v1.ObjectProp" +
+      "ertiesB\002\030\001\022G\n\027object_array_properties\030\n " +
+      "\003(\0132\".weaviate.v1.ObjectArrayPropertiesB" +
+      "\002\030\001\022.\n\rnon_ref_props\030\013 \001(\0132\027.weaviate.v1" +
+      ".Properties\022\033\n\023ref_props_requested\030\014 \001(\010" +
+      "\"[\n\023RefPropertiesResult\0221\n\nproperties\030\001 " +
+      "\003(\0132\035.weaviate.v1.PropertiesResult\022\021\n\tpr" +
+      "op_name\030\002 \001(\t*\356\001\n\021CombinationMethod\022\"\n\036C" +
+      "OMBINATION_METHOD_UNSPECIFIED\020\000\022\037\n\033COMBI" +
+      "NATION_METHOD_TYPE_SUM\020\001\022\037\n\033COMBINATION_" +
+      "METHOD_TYPE_MIN\020\002\022#\n\037COMBINATION_METHOD_" +
+      "TYPE_AVERAGE\020\003\022*\n&COMBINATION_METHOD_TYP" +
+      "E_RELATIVE_SCORE\020\004\022\"\n\036COMBINATION_METHOD" +
+      "_TYPE_MANUAL\020\005Bs\n#io.weaviate.client.grp" +
+      "c.protocol.v1B\026WeaviateProtoSearchGetZ4g" +
+      "ithub.com/weaviate/weaviate/grpc/generat" +
+      "ed;protocolb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.google.protobuf.StructProto.getDescriptor(),
           io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.getDescriptor(),
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.getDescriptor(),
           io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.getDescriptor(),
         });
     internal_static_weaviate_v1_SearchRequest_descriptor =
@@ -44442,7 +46059,7 @@ com.google.protobuf.ByteString defaultValue) {
     internal_static_weaviate_v1_SearchRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_SearchRequest_descriptor,
-        new java.lang.String[] { "Collection", "Tenant", "ConsistencyLevel", "Properties", "Metadata", "GroupBy", "Limit", "Offset", "Autocut", "After", "SortBy", "Filters", "HybridSearch", "Bm25Search", "NearVector", "NearObject", "NearText", "NearImage", "NearAudio", "NearVideo", "NearDepth", "NearThermal", "NearImu", "Generative", "Rerank", "Uses123Api", "Uses125Api", "ConsistencyLevel", "Properties", "Metadata", "GroupBy", "Filters", "HybridSearch", "Bm25Search", "NearVector", "NearObject", "NearText", "NearImage", "NearAudio", "NearVideo", "NearDepth", "NearThermal", "NearImu", "Generative", "Rerank", });
+        new java.lang.String[] { "Collection", "Tenant", "ConsistencyLevel", "Properties", "Metadata", "GroupBy", "Limit", "Offset", "Autocut", "After", "SortBy", "Filters", "HybridSearch", "Bm25Search", "NearVector", "NearObject", "NearText", "NearImage", "NearAudio", "NearVideo", "NearDepth", "NearThermal", "NearImu", "Generative", "Rerank", "Uses123Api", "Uses125Api", "Uses127Api", "ConsistencyLevel", "Properties", "Metadata", "GroupBy", "Filters", "HybridSearch", "Bm25Search", "NearVector", "NearObject", "NearText", "NearImage", "NearAudio", "NearVideo", "NearDepth", "NearThermal", "NearImu", "Generative", "Rerank", });
     internal_static_weaviate_v1_GroupBy_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_weaviate_v1_GroupBy_fieldAccessorTable = new
@@ -44455,36 +46072,36 @@ com.google.protobuf.ByteString defaultValue) {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_SortBy_descriptor,
         new java.lang.String[] { "Ascending", "Path", });
-    internal_static_weaviate_v1_GenerativeSearch_descriptor =
-      getDescriptor().getMessageTypes().get(3);
-    internal_static_weaviate_v1_GenerativeSearch_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_weaviate_v1_GenerativeSearch_descriptor,
-        new java.lang.String[] { "SingleResponsePrompt", "GroupedResponseTask", "GroupedProperties", });
     internal_static_weaviate_v1_MetadataRequest_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(3);
     internal_static_weaviate_v1_MetadataRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_MetadataRequest_descriptor,
         new java.lang.String[] { "Uuid", "Vector", "CreationTimeUnix", "LastUpdateTimeUnix", "Distance", "Certainty", "Score", "ExplainScore", "IsConsistent", "Vectors", });
     internal_static_weaviate_v1_PropertiesRequest_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(4);
     internal_static_weaviate_v1_PropertiesRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_PropertiesRequest_descriptor,
         new java.lang.String[] { "NonRefProperties", "RefProperties", "ObjectProperties", "ReturnAllNonrefProperties", });
     internal_static_weaviate_v1_ObjectPropertiesRequest_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(5);
     internal_static_weaviate_v1_ObjectPropertiesRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_ObjectPropertiesRequest_descriptor,
         new java.lang.String[] { "PropName", "PrimitiveProperties", "ObjectProperties", });
+    internal_static_weaviate_v1_WeightsForTarget_descriptor =
+      getDescriptor().getMessageTypes().get(6);
+    internal_static_weaviate_v1_WeightsForTarget_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_weaviate_v1_WeightsForTarget_descriptor,
+        new java.lang.String[] { "Target", "Weight", });
     internal_static_weaviate_v1_Targets_descriptor =
       getDescriptor().getMessageTypes().get(7);
     internal_static_weaviate_v1_Targets_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_Targets_descriptor,
-        new java.lang.String[] { "TargetVectors", "Combination", "Weights", });
+        new java.lang.String[] { "TargetVectors", "Combination", "Weights", "WeightsForTargets", });
     internal_static_weaviate_v1_Targets_WeightsEntry_descriptor =
       internal_static_weaviate_v1_Targets_descriptor.getNestedTypes().get(0);
     internal_static_weaviate_v1_Targets_WeightsEntry_fieldAccessorTable = new
@@ -44496,7 +46113,7 @@ com.google.protobuf.ByteString defaultValue) {
     internal_static_weaviate_v1_Hybrid_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_Hybrid_descriptor,
-        new java.lang.String[] { "Query", "Properties", "Vector", "Alpha", "FusionType", "VectorBytes", "TargetVectors", "NearText", "NearVector", "Targets", });
+        new java.lang.String[] { "Query", "Properties", "Vector", "Alpha", "FusionType", "VectorBytes", "TargetVectors", "NearText", "NearVector", "Targets", "VectorDistance", "Threshold", });
     internal_static_weaviate_v1_NearTextSearch_descriptor =
       getDescriptor().getMessageTypes().get(9);
     internal_static_weaviate_v1_NearTextSearch_fieldAccessorTable = new
@@ -44557,12 +46174,18 @@ com.google.protobuf.ByteString defaultValue) {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_RefPropertiesRequest_descriptor,
         new java.lang.String[] { "ReferenceProperty", "Properties", "Metadata", "TargetCollection", });
-    internal_static_weaviate_v1_NearVector_descriptor =
+    internal_static_weaviate_v1_VectorForTarget_descriptor =
       getDescriptor().getMessageTypes().get(18);
+    internal_static_weaviate_v1_VectorForTarget_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_weaviate_v1_VectorForTarget_descriptor,
+        new java.lang.String[] { "Name", "VectorBytes", });
+    internal_static_weaviate_v1_NearVector_descriptor =
+      getDescriptor().getMessageTypes().get(19);
     internal_static_weaviate_v1_NearVector_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_NearVector_descriptor,
-        new java.lang.String[] { "Vector", "Certainty", "Distance", "VectorBytes", "TargetVectors", "Targets", "VectorPerTarget", "Certainty", "Distance", });
+        new java.lang.String[] { "Vector", "Certainty", "Distance", "VectorBytes", "TargetVectors", "Targets", "VectorPerTarget", "VectorForTargets", "Certainty", "Distance", });
     internal_static_weaviate_v1_NearVector_VectorPerTargetEntry_descriptor =
       internal_static_weaviate_v1_NearVector_descriptor.getNestedTypes().get(0);
     internal_static_weaviate_v1_NearVector_VectorPerTargetEntry_fieldAccessorTable = new
@@ -44570,47 +46193,41 @@ com.google.protobuf.ByteString defaultValue) {
         internal_static_weaviate_v1_NearVector_VectorPerTargetEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_weaviate_v1_NearObject_descriptor =
-      getDescriptor().getMessageTypes().get(19);
+      getDescriptor().getMessageTypes().get(20);
     internal_static_weaviate_v1_NearObject_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_NearObject_descriptor,
         new java.lang.String[] { "Id", "Certainty", "Distance", "TargetVectors", "Targets", "Certainty", "Distance", });
     internal_static_weaviate_v1_Rerank_descriptor =
-      getDescriptor().getMessageTypes().get(20);
+      getDescriptor().getMessageTypes().get(21);
     internal_static_weaviate_v1_Rerank_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_Rerank_descriptor,
         new java.lang.String[] { "Property", "Query", "Query", });
     internal_static_weaviate_v1_SearchReply_descriptor =
-      getDescriptor().getMessageTypes().get(21);
+      getDescriptor().getMessageTypes().get(22);
     internal_static_weaviate_v1_SearchReply_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_SearchReply_descriptor,
-        new java.lang.String[] { "Took", "Results", "GenerativeGroupedResult", "GroupByResults", "GenerativeGroupedResult", });
+        new java.lang.String[] { "Took", "Results", "GenerativeGroupedResult", "GroupByResults", "GenerativeGroupedResults", "GenerativeGroupedResult", "GenerativeGroupedResults", });
     internal_static_weaviate_v1_RerankReply_descriptor =
-      getDescriptor().getMessageTypes().get(22);
+      getDescriptor().getMessageTypes().get(23);
     internal_static_weaviate_v1_RerankReply_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_RerankReply_descriptor,
         new java.lang.String[] { "Score", });
-    internal_static_weaviate_v1_GenerativeReply_descriptor =
-      getDescriptor().getMessageTypes().get(23);
-    internal_static_weaviate_v1_GenerativeReply_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_weaviate_v1_GenerativeReply_descriptor,
-        new java.lang.String[] { "Result", });
     internal_static_weaviate_v1_GroupByResult_descriptor =
       getDescriptor().getMessageTypes().get(24);
     internal_static_weaviate_v1_GroupByResult_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_GroupByResult_descriptor,
-        new java.lang.String[] { "Name", "MinDistance", "MaxDistance", "NumberOfObjects", "Objects", "Rerank", "Generative", "Rerank", "Generative", });
+        new java.lang.String[] { "Name", "MinDistance", "MaxDistance", "NumberOfObjects", "Objects", "Rerank", "Generative", "GenerativeResult", "Rerank", "Generative", "GenerativeResult", });
     internal_static_weaviate_v1_SearchResult_descriptor =
       getDescriptor().getMessageTypes().get(25);
     internal_static_weaviate_v1_SearchResult_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_SearchResult_descriptor,
-        new java.lang.String[] { "Properties", "Metadata", });
+        new java.lang.String[] { "Properties", "Metadata", "Generative", "Generative", });
     internal_static_weaviate_v1_MetadataResult_descriptor =
       getDescriptor().getMessageTypes().get(26);
     internal_static_weaviate_v1_MetadataResult_fieldAccessorTable = new
@@ -44631,6 +46248,7 @@ com.google.protobuf.ByteString defaultValue) {
         new java.lang.String[] { "Properties", "PropName", });
     com.google.protobuf.StructProto.getDescriptor();
     io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.getDescriptor();
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoGenerative.getDescriptor();
     io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.getDescriptor();
   }
 
