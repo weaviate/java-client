@@ -7,7 +7,7 @@ import io.weaviate.client.base.Response;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.base.util.UrlEncoder;
-import org.apache.http.HttpStatus;
+import org.apache.hc.core5.http.HttpStatus;
 
 public class TenantsDeleter extends BaseClient<Object> implements ClientResult<Boolean> {
 

@@ -1,28 +1,6 @@
 package io.weaviate.client.base.http.impl;
 
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpHeaders;
-import org.apache.http.StatusLine;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpHead;
-import org.apache.http.client.methods.HttpPatch;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.message.BasicHeader;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import io.weaviate.client.base.http.HttpResponse;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -32,14 +10,33 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
-
+import org.apache.hc.client5.http.classic.methods.HttpDelete;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpHead;
+import org.apache.hc.client5.http.classic.methods.HttpPatch;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.classic.methods.HttpPut;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.HttpHeaders;
+import org.apache.hc.core5.http.message.BasicHeader;
 import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CommonsHttpClientImplTest {
 
-  private static final String URL = "http://example.weaviate";
+  private static final String URL = "http://example.weaviate/";
   private static final int STATUS = 200;
   private static final String JSON_PAYLOAD = "[123]";
   private static final Map<String, String> ADDITIONAL_HEADERS = new HashMap<String, String>() {{
@@ -53,17 +50,12 @@ public class CommonsHttpClientImplTest {
   private CloseableHttpClient clientMock;
   @Mock
   private CloseableHttpResponse responseMock;
-  @Mock
-  private StatusLine statusLineMock;
-
 
   @Before
   public void before() throws IOException {
     Mockito.when(clientMock.execute(any(HttpUriRequest.class)))
       .thenReturn(responseMock);
-    Mockito.when(responseMock.getStatusLine())
-      .thenReturn(statusLineMock);
-    Mockito.when(statusLineMock.getStatusCode())
+    Mockito.when(responseMock.getCode())
       .thenReturn(STATUS);
   }
 
@@ -79,7 +71,7 @@ public class CommonsHttpClientImplTest {
     Mockito.verify(clientMock).execute(captor.capture());
     HttpUriRequest request = captor.getValue();
     assertThat(request.getMethod()).isEqualTo(HttpGet.METHOD_NAME);
-    assertThat(request.getURI()).isEqualByComparingTo(URI.create(URL));
+    assertThat(request.getUri()).isEqualByComparingTo(URI.create(URL));
     assertHeadersMatch(request, expectedHeaders);
     assertContentEmpty(request);
   }
@@ -96,7 +88,7 @@ public class CommonsHttpClientImplTest {
     Mockito.verify(clientMock).execute(captor.capture());
     HttpUriRequest request = captor.getValue();
     assertThat(request.getMethod()).isEqualTo(HttpHead.METHOD_NAME);
-    assertThat(request.getURI()).isEqualByComparingTo(URI.create(URL));
+    assertThat(request.getUri()).isEqualByComparingTo(URI.create(URL));
     assertHeadersMatch(request, expectedHeaders);
     assertContentEmpty(request);
   }
@@ -114,7 +106,7 @@ public class CommonsHttpClientImplTest {
     Mockito.verify(clientMock).execute(captor.capture());
     HttpUriRequest request = captor.getValue();
     assertThat(request.getMethod()).isEqualTo(HttpPost.METHOD_NAME);
-    assertThat(request.getURI()).isEqualByComparingTo(URI.create(URL));
+    assertThat(request.getUri()).isEqualByComparingTo(URI.create(URL));
     assertHeadersMatch(request, expectedHeaders);
     assertContentEqual(request, JSON_PAYLOAD);
   }
@@ -132,7 +124,7 @@ public class CommonsHttpClientImplTest {
     Mockito.verify(clientMock).execute(captor.capture());
     HttpUriRequest request = captor.getValue();
     assertThat(request.getMethod()).isEqualTo(HttpPatch.METHOD_NAME);
-    assertThat(request.getURI()).isEqualByComparingTo(URI.create(URL));
+    assertThat(request.getUri()).isEqualByComparingTo(URI.create(URL));
     assertHeadersMatch(request, expectedHeaders);
     assertContentEqual(request, JSON_PAYLOAD);
   }
@@ -150,7 +142,7 @@ public class CommonsHttpClientImplTest {
     Mockito.verify(clientMock).execute(captor.capture());
     HttpUriRequest request = captor.getValue();
     assertThat(request.getMethod()).isEqualTo(HttpPut.METHOD_NAME);
-    assertThat(request.getURI()).isEqualByComparingTo(URI.create(URL));
+    assertThat(request.getUri()).isEqualByComparingTo(URI.create(URL));
     assertHeadersMatch(request, expectedHeaders);
     assertContentEqual(request, JSON_PAYLOAD);
   }
@@ -168,7 +160,7 @@ public class CommonsHttpClientImplTest {
     Mockito.verify(clientMock).execute(captor.capture());
     HttpUriRequest request = captor.getValue();
     assertThat(request.getMethod()).isEqualTo(HttpDelete.METHOD_NAME);
-    assertThat(request.getURI()).isEqualByComparingTo(URI.create(URL));
+    assertThat(request.getUri()).isEqualByComparingTo(URI.create(URL));
     assertHeadersMatch(request, expectedHeaders);
     assertContentEqual(request, JSON_PAYLOAD);
   }
@@ -185,13 +177,13 @@ public class CommonsHttpClientImplTest {
     Mockito.verify(clientMock).execute(captor.capture());
     HttpUriRequest request = captor.getValue();
     assertThat(request.getMethod()).isEqualTo(HttpDelete.METHOD_NAME);
-    assertThat(request.getURI()).isEqualByComparingTo(URI.create(URL));
+    assertThat(request.getUri()).isEqualByComparingTo(URI.create(URL));
     assertHeadersMatch(request, expectedHeaders);
     assertContentEmpty(request);
   }
 
   private void assertHeadersMatch(HttpUriRequest request, Map<String, String> expectedHeaders) {
-    Map<String, String> headers = Arrays.stream(request.getAllHeaders())
+    Map<String, String> headers = Arrays.stream(request.getHeaders())
       .map(BasicHeader.class::cast)
       .collect(Collectors.toMap(BasicHeader::getName, BasicHeader::getValue));
 
@@ -200,15 +192,15 @@ public class CommonsHttpClientImplTest {
   }
 
   private void assertContentEqual(HttpUriRequest request, String expectedContent) throws IOException {
-    assertThat(request).isInstanceOf(HttpEntityEnclosingRequest.class);
+    assertThat(request).isInstanceOf(HttpUriRequestBase.class);
 
-    InputStreamReader inputStreamReader = new InputStreamReader(((HttpEntityEnclosingRequest) request).getEntity().getContent(), StandardCharsets.UTF_8);
+    InputStreamReader inputStreamReader = new InputStreamReader(((HttpUriRequestBase) request).getEntity().getContent(), StandardCharsets.UTF_8);
     String content = new BufferedReader(inputStreamReader).readLine();
 
     assertThat(content).isEqualTo(expectedContent);
   }
 
   private void assertContentEmpty(HttpUriRequest request) {
-    assertThat(request).isNotInstanceOf(HttpEntityEnclosingRequest.class);
+    assertThat(request).isInstanceOfAny(HttpGet.class, HttpHead.class, HttpDelete.class);
   }
 }

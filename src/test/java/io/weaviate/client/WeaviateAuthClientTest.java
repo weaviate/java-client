@@ -115,7 +115,7 @@ public class WeaviateAuthClientTest {
       .verify(
         request()
           .withPath(OIDC_PATH),
-        VerificationTimes.exactly(3)
+        VerificationTimes.exactly(6)
       );
   }
 
