@@ -7,13 +7,13 @@ import org.junit.Test;
 public class SerializerTest extends TestCase {
 
   @Test
-  public void testToResponse() {
+  public void testToObject() {
     // given
     Serializer s = new Serializer();
     String description = "test äüëö";
     String jsonString = "{\"description\":\""+description+"\"}";
     // when
-    TestObj deserialized = s.toResponse(jsonString, TestObj.class);
+    TestObj deserialized = s.toObject(jsonString, TestObj.class);
     // then
     Assert.assertNotNull(deserialized);
     Assert.assertEquals(description, deserialized.getDescription());
@@ -37,7 +37,7 @@ public class SerializerTest extends TestCase {
     Serializer s = new Serializer();
     String jsonString = "{\"error\":[{\"message\":\"get extend: unknown capability: featureProjection\"}]}";
     // when
-    WeaviateErrorResponse deserialized = s.toResponse(jsonString, WeaviateErrorResponse.class);
+    WeaviateErrorResponse deserialized = s.toObject(jsonString, WeaviateErrorResponse.class);
     // then
     Assert.assertNotNull(deserialized);
     Assert.assertNull(deserialized.getMessage());
@@ -53,7 +53,7 @@ public class SerializerTest extends TestCase {
     Serializer s = new Serializer();
     String jsonString = "{\"code\":601,\"message\":\"id in body must be of type uuid: \\\"TODO_4\\\"\"}";
     // when
-    WeaviateErrorResponse deserialized = s.toResponse(jsonString, WeaviateErrorResponse.class);
+    WeaviateErrorResponse deserialized = s.toObject(jsonString, WeaviateErrorResponse.class);
     // then
     Assert.assertNotNull(deserialized);
     Assert.assertNull(deserialized.getError());

@@ -6,6 +6,7 @@ import io.weaviate.client.base.http.impl.CommonsHttpClientImpl;
 import io.weaviate.client.base.util.DbVersionProvider;
 import io.weaviate.client.base.util.DbVersionSupport;
 import io.weaviate.client.base.util.GrpcVersionSupport;
+import io.weaviate.client.v1.async.WeaviateAsyncClient;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.backup.Backup;
 import io.weaviate.client.v1.batch.Batch;
@@ -42,6 +43,10 @@ public class WeaviateClient {
     dbVersionSupport = new DbVersionSupport(dbVersionProvider);
     grpcVersionSupport = new GrpcVersionSupport(dbVersionProvider);
     this.tokenProvider = tokenProvider;
+  }
+
+  public WeaviateAsyncClient async() {
+    return new WeaviateAsyncClient(config);
   }
 
   public Misc misc() {
