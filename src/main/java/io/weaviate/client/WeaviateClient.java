@@ -44,6 +44,10 @@ public class WeaviateClient {
     this.tokenProvider = tokenProvider;
   }
 
+  public WeaviateAsyncClient async() {
+    return new WeaviateAsyncClient(config);
+  }
+
   public Misc misc() {
     return new Misc(httpClient, config, dbVersionProvider);
   }
