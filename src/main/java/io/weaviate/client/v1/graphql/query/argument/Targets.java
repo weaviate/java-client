@@ -74,7 +74,7 @@ public class Targets {
     Map<String, Float[]> weights = new LinkedHashMap<>();
 
     public TargetsBuilder weights(Map<String, Float> weights) {
-      this.weights.clear(); // We want to overwrite the existing entries each time this is called.
+      this.weights.clear(); // Overwrite the existing entries each time this is called.
       for (Map.Entry<String, Float> e : weights.entrySet()) {
         this.weights.put(e.getKey(), new Float[]{e.getValue()});
       }
