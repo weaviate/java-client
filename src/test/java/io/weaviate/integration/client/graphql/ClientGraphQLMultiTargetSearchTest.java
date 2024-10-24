@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
+import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;

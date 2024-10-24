@@ -1,10 +1,12 @@
 package io.weaviate.client.base;
 
+import io.weaviate.client.Config;
 import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.base.http.HttpResponse;
+import io.weaviate.client.v1.graphql.model.GraphQLResponse;
 import java.util.Collections;
-
-import io.weaviate.client.Config;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class BaseClient<T> {
   private final HttpClient client;
@@ -51,7 +53,14 @@ public abstract class BaseClient<T> {
 
       if (statusCode < 399) {
         T body = toResponse(responseBody, classOfT);
-        return new Response<>(statusCode, body, null);
+        WeaviateErrorResponse errors = null;
+
+        // GraphQL returns query parsing errors in the response body with HTTP 200.
+        // We need to handle this separately and extract the error message.
+        if (body != null && classOfT.equals(GraphQLResponse.class)) {
+          errors = getWeaviateGraphQLErrorResponse(statusCode, (GraphQLResponse) body);
+        }
+        return new Response<>(statusCode, body, errors);
       }
 
       WeaviateErrorResponse error = toResponse(responseBody, WeaviateErrorResponse.class);
@@ -95,5 +104,21 @@ public abstract class BaseClient<T> {
       .throwable(e)
       .build();
     return WeaviateErrorResponse.builder().error(Collections.singletonList(error)).build();
+  }
+
+  /**
+   * Extract error message from the GraphQL response, if any, and build a WeaviateErrorResponse containing them.
+   */
+  private WeaviateErrorResponse getWeaviateGraphQLErrorResponse(int code, GraphQLResponse body) {
+    List<String> messages = body.getErrorMessages();
+    if (messages == null || messages.isEmpty()) {
+      return null;
+    }
+
+    List<WeaviateErrorMessage> errors = messages.stream().map(msg -> {
+      return new WeaviateErrorMessage(msg, null);
+    }).collect(Collectors.toList());
+
+    return WeaviateErrorResponse.builder().code(code).error(errors).build();
   }
 }
