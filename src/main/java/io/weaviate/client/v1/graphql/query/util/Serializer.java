@@ -1,16 +1,15 @@
 package io.weaviate.client.v1.graphql.query.util;
 
+import java.util.Arrays;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 public class Serializer {
 
-  private Serializer() {}
+  private Serializer() {
+  }
 
   /**
    * Creates graphql safe string
@@ -69,7 +68,7 @@ public class Serializer {
    * Creates array string
    * It is up to user to make elements json safe
    *
-   * @param input array of arbitrary elements
+   * @param input  array of arbitrary elements
    * @param mapper maps single element before building array
    * @return array string
    */
@@ -78,7 +77,12 @@ public class Serializer {
     if (input != null) {
       inner = Arrays.stream(input)
         .map(mapper)
-        .map(Objects::toString)
+        .map(obj -> {
+          if (obj.getClass().isArray()) {
+            return array((Object[]) obj);
+          }
+          return obj.toString();
+        })
         .collect(Collectors.joining(","));
     }
 
