@@ -1602,6 +1602,8 @@ public class ClientGraphQLTest {
       }).build();
     // _additional
     Field _additional = Field.builder().name("_additional").fields(new Field[]{group}).build();
+    // Property that we group by
+    Field ofDocument = Field.builder().name("ofDocument{__typename}").build();
     // filter arguments
     GroupByArgument groupBy = client.graphQL().arguments().groupByArgBuilder()
       .path(new String[]{"ofDocument"}).groups(3).objectsPerGroup(10).build();
@@ -1612,7 +1614,8 @@ public class ClientGraphQLTest {
       .withClassName(testData.PASSAGE)
       .withNearObject(nearObject)
       .withGroupBy(groupBy)
-      .withFields(_additional).run();
+      .withFields()
+      .withFields(ofDocument, _additional).run();
     testData.cleanupWeaviate(client);
     // then
     assertThat(groupByResult).isNotNull();
