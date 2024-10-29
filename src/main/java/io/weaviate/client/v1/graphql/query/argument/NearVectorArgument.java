@@ -1,8 +1,10 @@
 package io.weaviate.client.v1.graphql.query.argument;
 
 import io.weaviate.client.v1.graphql.query.util.Serializer;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import lombok.AccessLevel;
@@ -51,13 +53,48 @@ public class NearVectorArgument implements Argument {
       arg.add(String.format("vectorPerTarget:{%s}", String.join(" ", vectorPerTargetArg)));
     }
     if (targets != null) {
-      arg.add(String.format("%s", targets.build()));
+      arg.add(String.format("%s", withValidTargetVectors(this.targets).build()));
     }
 
     return String.format("nearVector:{%s}", String.join(" ", arg));
   }
 
-  // Extend lombok's builder to overload some methods.
+  /**
+   * withValidTargetVectors makes sure the target names are repeated for each target vector,
+   * which is required by server, but may be easily overlooked by the user.
+   *
+   * <p>
+   * Note, too, that in case the user fails to pass a value in targetVectors altogether, it will not be added to the query.
+   *
+   * @return A copy of the Targets with validated target vectors.
+   */
+  private Targets withValidTargetVectors(Targets targets) {
+    return Targets.builder().
+      combinationMethod(targets.getCombinationMethod()).
+      weightsMulti(targets.getWeights()).
+      targetVectors(prepareTargetVectors(targets.getTargetVectors())).
+      build();
+  }
+
+  /**
+   * prepareTargetVectors adds appends the target name for each target vector associated with it.
+   */
+  private String[] prepareTargetVectors(String[] targets) {
+    List<String> out = new ArrayList<>();
+    for (String target : targets) {
+      if (this.vectorsPerTarget.containsKey(target)) {
+        int l = this.vectorsPerTarget.get(target).length;
+        for (int i = 0; i < l; i++) {
+          out.add(target);
+        }
+        continue;
+      }
+      out.add(target);
+    }
+    return out.toArray(new String[0]);
+  }
+
+  // Extend Lombok's builder to overload some methods.
   public static class NearVectorArgumentBuilder {
     Map<String, Float[][]> vectorsPerTarget = new LinkedHashMap<>();
 

@@ -95,7 +95,7 @@ public class ClientGraphQLMultiTargetSearchTest {
     weightsMulti.put(bringYourOwnVector, new Float[]{0.5f, 0.5f});
     weightsMulti.put(bringYourOwnVector2, new Float[]{0.6f});
     targets =
-      Targets.builder().targetVectors(new String[]{bringYourOwnVector, bringYourOwnVector, bringYourOwnVector2}).combinationMethod(Targets.CombinationMethod.manualWeights).weightsMulti(weightsMulti).build();
+      Targets.builder().targetVectors(new String[]{bringYourOwnVector, bringYourOwnVector2}).combinationMethod(Targets.CombinationMethod.manualWeights).weightsMulti(weightsMulti).build();
     NearVectorArgument nearVector = client.graphQL().arguments().nearVectorArgBuilder().vectorsPerTarget(vectorsPerTarget).targets(targets).build();
     response = client.graphQL().get().withClassName(className).withNearVector(nearVector).withFields(_additional).run();
     assertNull("check error in response:", response.getError());

@@ -87,6 +87,6 @@ public class NearVectorArgumentTest {
 
     String got = nearVector.build();
 
-    assertEquals("nearVector:{vectorPerTarget:{t1:[[1.0,2.0,3.0],[4.0,5.0,6.0]] t2:[0.1,0.2,0.3]} targets:{targetVectors:[\"t1\",\"t2\"]}}", got);
+    assertEquals("nearVector:{vectorPerTarget:{t1:[[1.0,2.0,3.0],[4.0,5.0,6.0]] t2:[0.1,0.2,0.3]} targets:{targetVectors:[\"t1\",\"t1\",\"t2\"]}}", got);
   }
 }
