@@ -87,9 +87,9 @@ public class NearVectorArgument implements Argument {
         for (int i = 0; i < l; i++) {
           out.add(target);
         }
-        continue;
+      } else {
+        out.add(target);
       }
-      out.add(target);
     }
     return out.toArray(new String[0]);
   }
