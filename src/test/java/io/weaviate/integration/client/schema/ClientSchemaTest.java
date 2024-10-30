@@ -1466,6 +1466,7 @@ public class ClientSchemaTest {
       .vectorizer("text2vec-contextionary")
       .properties(properties)
       .vectorIndexConfig(VectorIndexConfig.builder()
+        .filterStrategy(VectorIndexConfig.FilterStrategyHNSW.ACORN)
         .pq(PQConfig.builder()
           .enabled(true)
           .trainingLimit(99_999)
@@ -1494,6 +1495,7 @@ public class ClientSchemaTest {
       .withFailMessage(null)
       .extracting(Result::getResult).isNotNull()
       .extracting(WeaviateClass::getVectorIndexConfig).isNotNull()
+      .returns(VectorIndexConfig.FilterStrategyHNSW.ACORN, VectorIndexConfig::getFilterStrategy)
       .extracting(VectorIndexConfig::getPq).isNotNull()
       .returns(true, PQConfig::getEnabled)
       .returns(96, PQConfig::getSegments)
@@ -1602,6 +1604,7 @@ public class ClientSchemaTest {
               .returns(cleanupIntervalSeconds, VectorIndexConfig::getCleanupIntervalSeconds)
               .returns(efConstruction, VectorIndexConfig::getEfConstruction)
               .returns(maxConnections, VectorIndexConfig::getMaxConnections)
+              .returns(VectorIndexConfig.FilterStrategyHNSW.SWEEPING, VectorIndexConfig::getFilterStrategy) // default filtering strategy
               .returns(vectorCacheMaxObjects, VectorIndexConfig::getVectorCacheMaxObjects)
               .returns(ef, VectorIndexConfig::getEf)
               .returns(skip, VectorIndexConfig::getSkip)
