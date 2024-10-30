@@ -70,7 +70,7 @@ public class WeaviateClassTest {
 
     assertThat(result).isEqualTo("{\"class\":\"Band\",\"description\":\"Band that plays and produces music\"," +
       "\"moduleConfig\":{\"text2vec-contextionary\":{\"vectorizeClassName\":false}}," +
-      "\"vectorIndexConfig\":{\"filterStrategy\":\"sweeping\",\"bq\":{\"enabled\":true,\"rescoreLimit\":100}},\"vectorIndexType\":\"flat\"," +
+      "\"vectorIndexConfig\":{\"bq\":{\"enabled\":true,\"rescoreLimit\":100}},\"vectorIndexType\":\"flat\"," +
       "\"vectorizer\":\"text2vec-contextionary\"}");
   }
 
@@ -108,14 +108,14 @@ public class WeaviateClassTest {
         "\"moduleConfig\":{\"text2vec-contextionary\":{\"vectorizeClassName\":false}}," +
         "\"vectorConfig\":{" +
         "\"hnswVector\":{\"vectorIndexType\":\"hnsw\",\"vectorizer\":{\"text2vec-contextionary\":\"some-setting\"}}," +
-        "\"flatVector\":{\"vectorIndexConfig\":{\"filterStrategy\":\"sweeping\",\"bq\":{\"enabled\":true,\"rescoreLimit\":100}},\"vectorIndexType\":\"flat\"," +
+        "\"flatVector\":{\"vectorIndexConfig\":{\"bq\":{\"enabled\":true,\"rescoreLimit\":100}},\"vectorIndexType\":\"flat\"," +
         "\"vectorizer\":{\"text2vec-contextionary\":\"some-setting\"}}" +
         "}}"),
       serialized -> assertThat(serialized).isEqualTo("{\"class\":\"Band\"," +
         "\"description\":\"Band that plays and produces music\"," +
         "\"moduleConfig\":{\"text2vec-contextionary\":{\"vectorizeClassName\":false}}," +
         "\"vectorConfig\":{" +
-        "\"flatVector\":{\"vectorIndexConfig\":{\"filterStrategy\":\"sweeping\",\"bq\":{\"enabled\":true,\"rescoreLimit\":100}},\"vectorIndexType\":\"flat\"," +
+        "\"flatVector\":{\"vectorIndexConfig\":{\"bq\":{\"enabled\":true,\"rescoreLimit\":100}},\"vectorIndexType\":\"flat\"," +
         "\"vectorizer\":{\"text2vec-contextionary\":\"some-setting\"}}" +
         "\"hnswVector\":{\"vectorIndexType\":\"hnsw\",\"vectorizer\":{\"text2vec-contextionary\":\"some-setting\"}}," +
         "}}")
