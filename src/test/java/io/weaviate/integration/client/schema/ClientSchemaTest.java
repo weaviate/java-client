@@ -1467,7 +1467,7 @@ public class ClientSchemaTest {
       .vectorizer("text2vec-contextionary")
       .properties(properties)
       .vectorIndexConfig(VectorIndexConfig.builder()
-        .filterStrategy(VectorIndexConfig.FilterStrategyHNSW.ACORN)
+        .filterStrategy(VectorIndexConfig.FilterStrategy.ACORN)
         .pq(PQConfig.builder()
           .enabled(true)
           .trainingLimit(99_999)
@@ -1499,7 +1499,7 @@ public class ClientSchemaTest {
       .withFailMessage(null)
       .extracting(Result::getResult).isNotNull()
       .extracting(WeaviateClass::getVectorIndexConfig).isNotNull()
-      .returns(VectorIndexConfig.FilterStrategyHNSW.ACORN, VectorIndexConfig::getFilterStrategy)
+      .returns(VectorIndexConfig.FilterStrategy.ACORN, VectorIndexConfig::getFilterStrategy)
       .extracting(VectorIndexConfig::getPq).isNotNull()
       .returns(true, PQConfig::getEnabled)
       .returns(96, PQConfig::getSegments)
@@ -1542,6 +1542,7 @@ public class ClientSchemaTest {
       .vectorCacheMaxObjects(vectorCacheMaxObjects)
       .ef(ef)
       .skip(skip)
+      .filterStrategy(VectorIndexConfig.FilterStrategy.SWEEPING)
       .dynamicEfFactor(dynamicEfFactor)
       .dynamicEfMax(dynamicEfMax)
       .dynamicEfMin(dynamicEfMin)
@@ -1562,6 +1563,7 @@ public class ClientSchemaTest {
     ReplicationConfig replicationConfig = ReplicationConfig.builder()
       .factor(replicationFactor)
       .asyncEnabled(asyncEnabled)
+      .deletionStrategy(ReplicationConfig.DeletionStrategy.NO_AUTOMATED_RESOLUTION)
       .build();
 
     Map<String, Object> contextionaryVectorizerSettings = new HashMap<>();
@@ -1621,7 +1623,7 @@ public class ClientSchemaTest {
               .returns(cleanupIntervalSeconds, VectorIndexConfig::getCleanupIntervalSeconds)
               .returns(efConstruction, VectorIndexConfig::getEfConstruction)
               .returns(maxConnections, VectorIndexConfig::getMaxConnections)
-              .returns(VectorIndexConfig.FilterStrategyHNSW.SWEEPING, VectorIndexConfig::getFilterStrategy) // default filtering strategy
+              .returns(VectorIndexConfig.FilterStrategy.SWEEPING, VectorIndexConfig::getFilterStrategy)
               .returns(vectorCacheMaxObjects, VectorIndexConfig::getVectorCacheMaxObjects)
               .returns(ef, VectorIndexConfig::getEf)
               .returns(skip, VectorIndexConfig::getSkip)

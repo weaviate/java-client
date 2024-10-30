@@ -21,8 +21,7 @@ public class VectorIndexConfig {
   Integer dynamicEfMin;
   Integer dynamicEfMax;
   Integer dynamicEfFactor;
-  @Builder.Default
-  FilterStrategyHNSW filterStrategy = FilterStrategyHNSW.SWEEPING;
+  FilterStrategy filterStrategy;
   Long vectorCacheMaxObjects;
   Integer flatSearchCutoff;
   Integer cleanupIntervalSeconds;
@@ -31,7 +30,7 @@ public class VectorIndexConfig {
   BQConfig bq;
   SQConfig sq;
 
-  public enum FilterStrategyHNSW {
+  public enum FilterStrategy {
     @SerializedName("sweeping")
     SWEEPING,
     @SerializedName("acorn")

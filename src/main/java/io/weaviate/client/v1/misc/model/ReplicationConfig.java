@@ -16,9 +16,7 @@ import lombok.experimental.FieldDefaults;
 public class ReplicationConfig {
   Boolean asyncEnabled;
   Integer factor;
-  
-  @Builder.Default
-  DeletionStrategy deletionStrategy = DeletionStrategy.NO_AUTOMATED_RESOLUTION;
+  DeletionStrategy deletionStrategy;
 
   public enum DeletionStrategy {
     @SerializedName("DeleteOnConflict")
