@@ -102,8 +102,7 @@ public class ClientGraphQLMultiTargetSearchTest {
         .build();
     NearVectorArgument nearVector = client.graphQL().arguments().nearVectorArgBuilder()
       .vectorsPerTarget(vectorsPerTarget)
-      .targets(targets)
-      .build();
+      .targets(targets).build();
     response = client.graphQL().get()
       .withClassName(className)
       .withNearVector(nearVector)
