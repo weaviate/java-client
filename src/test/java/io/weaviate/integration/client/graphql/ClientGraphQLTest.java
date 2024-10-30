@@ -1614,7 +1614,6 @@ public class ClientGraphQLTest {
       .withClassName(testData.PASSAGE)
       .withNearObject(nearObject)
       .withGroupBy(groupBy)
-      .withFields()
       .withFields(ofDocument, _additional).run();
     testData.cleanupWeaviate(client);
     // then

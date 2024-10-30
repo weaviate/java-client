@@ -71,7 +71,9 @@ public class NearVectorArgumentTest {
     // when
     String arg = nearVector.build();
     // then
-    assertEquals("nearVector:{vectorPerTarget:{t1:[1.0,2.0,3.0] t2:[0.1,0.2,0.3]} targets:{combinationMethod:sum targetVectors:[\"t1\",\"t2\"] weights:{t1:0" + ".8 t2:0.2}}}", arg);
+    assertEquals(
+      "nearVector:{vectorPerTarget:{t1:[1.0,2.0,3.0] t2:[0.1,0.2,0.3]} targets:{combinationMethod:sum targetVectors:[\"t1\",\"t2\"] weights:{t1:0.8 t2:0.2}}}",
+      arg);
   }
 
   @Test

@@ -95,16 +95,34 @@ public class ClientGraphQLMultiTargetSearchTest {
     weightsMulti.put(bringYourOwnVector, new Float[]{0.5f, 0.5f});
     weightsMulti.put(bringYourOwnVector2, new Float[]{0.6f});
     targets =
-      Targets.builder().targetVectors(new String[]{bringYourOwnVector, bringYourOwnVector2}).combinationMethod(Targets.CombinationMethod.manualWeights).weightsMulti(weightsMulti).build();
-    NearVectorArgument nearVector = client.graphQL().arguments().nearVectorArgBuilder().vectorsPerTarget(vectorsPerTarget).targets(targets).build();
-    response = client.graphQL().get().withClassName(className).withNearVector(nearVector).withFields(_additional).run();
+      Targets.builder()
+        .targetVectors(new String[]{bringYourOwnVector, bringYourOwnVector2})
+        .combinationMethod(Targets.CombinationMethod.manualWeights)
+        .weightsMulti(weightsMulti)
+        .build();
+    NearVectorArgument nearVector = client.graphQL().arguments().nearVectorArgBuilder()
+      .vectorsPerTarget(vectorsPerTarget)
+      .targets(targets)
+      .build();
+    response = client.graphQL().get()
+      .withClassName(className)
+      .withNearVector(nearVector)
+      .withFields(_additional)
+      .run();
     assertNull("check error in response:", response.getError());
     assertGetContainsIds(response, className, id2, id3);
     // nearObject
-    targets =
-      Targets.builder().targetVectors(new String[]{bringYourOwnVector, bringYourOwnVector2, titleAndContent, title1, title2}).combinationMethod(Targets.CombinationMethod.average).build();
-    NearObjectArgument nearObject = client.graphQL().arguments().nearObjectArgBuilder().id(id3).targets(targets).build();
-    response = client.graphQL().get().withClassName(className).withNearObject(nearObject).withFields(_additional).run();
+    targets = Targets.builder()
+      .targetVectors(new String[]{bringYourOwnVector, bringYourOwnVector2, titleAndContent, title1, title2})
+      .combinationMethod(Targets.CombinationMethod.average)
+      .build();
+    NearObjectArgument nearObject = client.graphQL().arguments().nearObjectArgBuilder()
+      .id(id3).targets(targets).build();
+    response = client.graphQL().get()
+      .withClassName(className)
+      .withNearObject(nearObject)
+      .withFields(_additional)
+      .run();
     assertGetContainsIds(response, className, id2, id3);
   }
 
