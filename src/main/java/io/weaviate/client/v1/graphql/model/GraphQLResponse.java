@@ -1,6 +1,5 @@
 package io.weaviate.client.v1.graphql.model;
 
-import io.weaviate.client.base.SneakyError;
 import io.weaviate.client.base.WeaviateErrorMessage;
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +16,7 @@ import lombok.experimental.FieldDefaults;
 @ToString
 @EqualsAndHashCode
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class GraphQLResponse implements SneakyError {
+public class GraphQLResponse {
   Object data;
   GraphQLError[] errors;
 
@@ -31,8 +30,8 @@ public class GraphQLResponse implements SneakyError {
     if (errors == null || errors.length == 0) {
       return null;
     }
-    return Arrays.stream(errors).map(err -> {
-      return new WeaviateErrorMessage(err.getMessage(), null);
-    }).collect(Collectors.toList());
+    return Arrays.stream(errors)
+      .map(err -> new WeaviateErrorMessage(err.getMessage(), null))
+      .collect(Collectors.toList());
   }
 }

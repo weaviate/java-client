@@ -1,10 +1,12 @@
 package io.weaviate.client.base;
 
-import java.util.Collections;
-
 import io.weaviate.client.Config;
 import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.base.http.HttpResponse;
+import io.weaviate.client.v1.graphql.GraphQL;
+import io.weaviate.client.v1.graphql.model.GraphQLResponse;
+import java.util.Collections;
+import java.util.List;
 
 public abstract class BaseClient<T> {
   private final HttpClient client;
@@ -53,8 +55,8 @@ public abstract class BaseClient<T> {
         T body = toResponse(responseBody, classOfT);
         WeaviateErrorResponse errors = null;
 
-        if (SneakyError.class.isAssignableFrom(classOfT)) {
-          errors = fromSneakyError((SneakyError) body, statusCode);
+        if (body != null && classOfT.equals(GraphQL.class)) {
+          errors = getWeaviateGraphQLErrorResponse((GraphQLResponse) body, statusCode);
         }
         return new Response<>(statusCode, body, errors);
       }
@@ -100,13 +102,17 @@ public abstract class BaseClient<T> {
   }
 
   /**
-   * Build {@link WeaviateErrorResponse} from a response body with a "sneaky error".
-   * 
-   * @param sneaky Response body containing error messages.
-   * @param code   HTTP status code to pass in the {@link WeaviateErrorResponse}.
+   * Extract errors from {@link WeaviateErrorResponse} from a GraphQL response body.
+   *
+   * @param gql  GraphQL response body.
+   * @param code HTTP status code to pass in the {@link WeaviateErrorResponse}.
    * @return Error response to be returned to the caller.
    */
-  private WeaviateErrorResponse fromSneakyError(SneakyError sneaky, int code) {
-    return WeaviateErrorResponse.builder().code(code).error(sneaky.errorMessages()).build();
+  private WeaviateErrorResponse getWeaviateGraphQLErrorResponse(GraphQLResponse gql, int code) {
+    List<WeaviateErrorMessage> messages = gql.errorMessages();
+    if (messages == null || messages.isEmpty()) {
+      return null;
+    }
+    return WeaviateErrorResponse.builder().code(code).error(gql.errorMessages()).build();
   }
 }
