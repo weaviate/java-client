@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * Describes a response body that might contain error messages even if returned with a "good" status code.
- * 
+ *
  * <p>
  * Notably, GraphQL APIs conventionally return HTTP 200 for all requests which they were able to parse,
  * even if the request itself is a "bad request". Other classes used for deserializing such response bodies
@@ -12,5 +12,5 @@ import java.util.List;
  * in the response.
  */
 public interface SneakyError {
-    List<WeaviateErrorMessage> errorMessages();
+  List<WeaviateErrorMessage> errorMessages();
 }
