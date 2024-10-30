@@ -1,12 +1,10 @@
 package io.weaviate.client.base;
 
+import java.util.Collections;
+
 import io.weaviate.client.Config;
 import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.base.http.HttpResponse;
-import io.weaviate.client.v1.graphql.model.GraphQLResponse;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class BaseClient<T> {
   private final HttpClient client;
@@ -55,10 +53,8 @@ public abstract class BaseClient<T> {
         T body = toResponse(responseBody, classOfT);
         WeaviateErrorResponse errors = null;
 
-        // GraphQL returns query parsing errors in the response body with HTTP 200.
-        // We need to handle this separately and extract the error message.
-        if (body != null && classOfT.equals(GraphQLResponse.class)) {
-          errors = getWeaviateGraphQLErrorResponse(statusCode, (GraphQLResponse) body);
+        if (SneakyError.class.isAssignableFrom(classOfT)) {
+          errors = fromSneakyError((SneakyError) body, statusCode);
         }
         return new Response<>(statusCode, body, errors);
       }
@@ -99,26 +95,18 @@ public abstract class BaseClient<T> {
   }
 
   private WeaviateErrorResponse getWeaviateErrorResponse(Exception e) {
-    WeaviateErrorMessage error = WeaviateErrorMessage.builder()
-      .message(e.getMessage())
-      .throwable(e)
-      .build();
+    WeaviateErrorMessage error = WeaviateErrorMessage.builder().message(e.getMessage()).throwable(e).build();
     return WeaviateErrorResponse.builder().error(Collections.singletonList(error)).build();
   }
 
   /**
-   * Extract error message from the GraphQL response, if any, and build a WeaviateErrorResponse containing them.
+   * Build {@link WeaviateErrorResponse} from a response body with a "sneaky error".
+   * 
+   * @param sneaky Response body containing error messages.
+   * @param code   HTTP status code to pass in the {@link WeaviateErrorResponse}.
+   * @return Error response to be returned to the caller.
    */
-  private WeaviateErrorResponse getWeaviateGraphQLErrorResponse(int code, GraphQLResponse body) {
-    List<String> messages = body.getErrorMessages();
-    if (messages == null || messages.isEmpty()) {
-      return null;
-    }
-
-    List<WeaviateErrorMessage> errors = messages.stream().map(msg -> {
-      return new WeaviateErrorMessage(msg, null);
-    }).collect(Collectors.toList());
-
-    return WeaviateErrorResponse.builder().code(code).error(errors).build();
+  private WeaviateErrorResponse fromSneakyError(SneakyError sneaky, int code) {
+    return WeaviateErrorResponse.builder().code(code).error(sneaky.errorMessages()).build();
   }
 }
