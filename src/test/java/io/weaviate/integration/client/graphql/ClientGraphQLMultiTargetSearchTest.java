@@ -95,12 +95,11 @@ public class ClientGraphQLMultiTargetSearchTest {
       this.put(bringYourOwnVector, 0.1f);
       this.put(bringYourOwnVector2, 0.6f);
     }};
-    targets =
-      Targets.builder()
-        .targetVectors(new String[]{bringYourOwnVector, bringYourOwnVector2})
-        .combinationMethod(Targets.CombinationMethod.manualWeights)
-        .weights(weights)
-        .build();
+    targets = Targets.builder()
+      .targetVectors(new String[]{bringYourOwnVector, bringYourOwnVector2})
+      .combinationMethod(Targets.CombinationMethod.manualWeights)
+      .weights(weights)
+      .build();
     NearVectorArgument nearVector = client.graphQL().arguments().nearVectorArgBuilder()
       .vectorPerTarget(vectorPerTarget)
       .targets(targets).build();
@@ -118,12 +117,11 @@ public class ClientGraphQLMultiTargetSearchTest {
     Map<String, Float[]> weightsMulti = new HashMap<>();
     weightsMulti.put(bringYourOwnVector, new Float[]{0.5f, 0.5f});
     weightsMulti.put(bringYourOwnVector2, new Float[]{0.6f});
-    targets =
-      Targets.builder()
-        .targetVectors(new String[]{bringYourOwnVector, bringYourOwnVector2})
-        .combinationMethod(Targets.CombinationMethod.manualWeights)
-        .weightsMulti(weightsMulti)
-        .build();
+    targets = Targets.builder()
+      .targetVectors(new String[]{bringYourOwnVector, bringYourOwnVector2})
+      .combinationMethod(Targets.CombinationMethod.manualWeights)
+      .weightsMulti(weightsMulti)
+      .build();
     nearVector = client.graphQL().arguments().nearVectorArgBuilder()
       .vectorsPerTarget(vectorsPerTarget)
       .targets(targets).build();
