@@ -3,13 +3,11 @@ package io.weaviate.client.v1.schema.model;
 import com.google.gson.GsonBuilder;
 import io.weaviate.client.v1.misc.model.BQConfig;
 import io.weaviate.client.v1.misc.model.VectorIndexConfig;
-import org.junit.Test;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
+import org.junit.Test;
 
 public class WeaviateClassTest {
 
@@ -72,7 +70,7 @@ public class WeaviateClassTest {
 
     assertThat(result).isEqualTo("{\"class\":\"Band\",\"description\":\"Band that plays and produces music\"," +
       "\"moduleConfig\":{\"text2vec-contextionary\":{\"vectorizeClassName\":false}}," +
-      "\"vectorIndexConfig\":{\"bq\":{\"enabled\":true,\"rescoreLimit\":100}},\"vectorIndexType\":\"flat\"," +
+      "\"vectorIndexConfig\":{\"filterStrategy\":\"sweeping\",\"bq\":{\"enabled\":true,\"rescoreLimit\":100}},\"vectorIndexType\":\"flat\"," +
       "\"vectorizer\":\"text2vec-contextionary\"}");
   }
 
@@ -110,13 +108,15 @@ public class WeaviateClassTest {
         "\"moduleConfig\":{\"text2vec-contextionary\":{\"vectorizeClassName\":false}}," +
         "\"vectorConfig\":{" +
         "\"hnswVector\":{\"vectorIndexType\":\"hnsw\",\"vectorizer\":{\"text2vec-contextionary\":\"some-setting\"}}," +
-        "\"flatVector\":{\"vectorIndexConfig\":{\"bq\":{\"enabled\":true,\"rescoreLimit\":100}},\"vectorIndexType\":\"flat\",\"vectorizer\":{\"text2vec-contextionary\":\"some-setting\"}}" +
+        "\"flatVector\":{\"vectorIndexConfig\":{\"filterStrategy\":\"sweeping\",\"bq\":{\"enabled\":true,\"rescoreLimit\":100}},\"vectorIndexType\":\"flat\"," +
+        "\"vectorizer\":{\"text2vec-contextionary\":\"some-setting\"}}" +
         "}}"),
       serialized -> assertThat(serialized).isEqualTo("{\"class\":\"Band\"," +
         "\"description\":\"Band that plays and produces music\"," +
         "\"moduleConfig\":{\"text2vec-contextionary\":{\"vectorizeClassName\":false}}," +
         "\"vectorConfig\":{" +
-        "\"flatVector\":{\"vectorIndexConfig\":{\"bq\":{\"enabled\":true,\"rescoreLimit\":100}},\"vectorIndexType\":\"flat\",\"vectorizer\":{\"text2vec-contextionary\":\"some-setting\"}}" +
+        "\"flatVector\":{\"vectorIndexConfig\":{\"filterStrategy\":\"sweeping\",\"bq\":{\"enabled\":true,\"rescoreLimit\":100}},\"vectorIndexType\":\"flat\"," +
+        "\"vectorizer\":{\"text2vec-contextionary\":\"some-setting\"}}" +
         "\"hnswVector\":{\"vectorIndexType\":\"hnsw\",\"vectorizer\":{\"text2vec-contextionary\":\"some-setting\"}}," +
         "}}")
     );
