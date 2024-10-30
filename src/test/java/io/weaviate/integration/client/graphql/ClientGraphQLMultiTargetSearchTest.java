@@ -87,7 +87,31 @@ public class ClientGraphQLMultiTargetSearchTest {
       .withFields(_additional)
       .run();
     assertGetContainsIds(response, className, id1, id2, id3);
-    // nearVector
+    // nearVector with single vector-per-target
+    Map<String, Float[]> vectorPerTarget = new HashMap<>();
+    vectorPerTarget.put(bringYourOwnVector, new Float[]{.99f, .88f, .77f});
+    vectorPerTarget.put(bringYourOwnVector2, new Float[]{.11f, .22f, .33f});
+    weights = new HashMap<String, Float>() {{
+      this.put(bringYourOwnVector, 0.1f);
+      this.put(bringYourOwnVector2, 0.6f);
+    }};
+    targets =
+      Targets.builder()
+        .targetVectors(new String[]{bringYourOwnVector, bringYourOwnVector2})
+        .combinationMethod(Targets.CombinationMethod.manualWeights)
+        .weights(weights)
+        .build();
+    NearVectorArgument nearVector = client.graphQL().arguments().nearVectorArgBuilder()
+      .vectorPerTarget(vectorPerTarget)
+      .targets(targets).build();
+    response = client.graphQL().get()
+      .withClassName(className)
+      .withNearVector(nearVector)
+      .withFields(_additional)
+      .run();
+    assertNull("check error in response:", response.getError());
+    assertGetContainsIds(response, className, id2, id3);
+    // nearVector with multiple vector-per-target
     Map<String, Float[][]> vectorsPerTarget = new HashMap<>();
     vectorsPerTarget.put(bringYourOwnVector, new Float[][]{new Float[]{.99f, .88f, .77f}, new Float[]{.99f, .88f, .77f}});
     vectorsPerTarget.put(bringYourOwnVector2, new Float[][]{new Float[]{.11f, .22f, .33f}});
@@ -100,7 +124,7 @@ public class ClientGraphQLMultiTargetSearchTest {
         .combinationMethod(Targets.CombinationMethod.manualWeights)
         .weightsMulti(weightsMulti)
         .build();
-    NearVectorArgument nearVector = client.graphQL().arguments().nearVectorArgBuilder()
+    nearVector = client.graphQL().arguments().nearVectorArgBuilder()
       .vectorsPerTarget(vectorsPerTarget)
       .targets(targets).build();
     response = client.graphQL().get()

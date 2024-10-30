@@ -1,11 +1,10 @@
 package io.weaviate.client.v1.graphql.model;
 
+import io.weaviate.client.base.SneakyError;
+import io.weaviate.client.base.WeaviateErrorMessage;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import io.weaviate.client.base.SneakyError;
-import io.weaviate.client.base.WeaviateErrorMessage;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -25,8 +24,8 @@ public class GraphQLResponse implements SneakyError {
 
   /**
    * Extract the 'message' portion of every error in the response, omitting 'path' and 'location'.
-   * 
-   * @returns Non-throwable WeaviateErrorMessages
+   *
+   * @return Non-throwable WeaviateErrorMessages
    */
   public List<WeaviateErrorMessage> errorMessages() {
     if (errors == null || errors.length == 0) {
