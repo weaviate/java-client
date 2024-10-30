@@ -11,6 +11,7 @@ import io.weaviate.client.v1.misc.model.BM25Config;
 import io.weaviate.client.v1.misc.model.DistanceType;
 import io.weaviate.client.v1.misc.model.InvertedIndexConfig;
 import io.weaviate.client.v1.misc.model.PQConfig;
+import io.weaviate.client.v1.misc.model.ReplicationConfig;
 import io.weaviate.client.v1.misc.model.ShardingConfig;
 import io.weaviate.client.v1.misc.model.StopwordConfig;
 import io.weaviate.client.v1.misc.model.VectorIndexConfig;
@@ -1473,6 +1474,9 @@ public class ClientSchemaTest {
           .segments(96)
           .build())
         .build())
+      .replicationConfig(ReplicationConfig.builder()
+        .deletionStrategy(ReplicationConfig.DeletionStrategy.DELETE_ON_CONFLICT)
+        .build())
       .build();
 
     Result<Boolean> updateResult = client.schema().classUpdater()
@@ -1500,10 +1504,14 @@ public class ClientSchemaTest {
       .returns(true, PQConfig::getEnabled)
       .returns(96, PQConfig::getSegments)
       .returns(99_999, PQConfig::getTrainingLimit);
+
+    assertThat(updatedClassResult.getResult())
+      .extracting(WeaviateClass::getReplicationConfig).isNotNull()
+      .returns(ReplicationConfig.DeletionStrategy.DELETE_ON_CONFLICT, ReplicationConfig::getDeletionStrategy);
   }
 
   @Test
-  public void shouldCreateClassWithVectorConfig() {
+  public void shouldCreateClassWithVectorAndReplicationConfig() {
     Integer cleanupIntervalSeconds = 300;
     // vector index config
     Integer efConstruction = 128;
@@ -1523,6 +1531,9 @@ public class ClientSchemaTest {
     Integer centroids = 8;
     String encoderType = "tile";
     String encoderDistribution = "normal";
+    // replication config
+    Boolean asyncEnabled = true;
+    Integer replicationFactor = 1;
 
     VectorIndexConfig vectorIndexConfig = VectorIndexConfig.builder()
       .cleanupIntervalSeconds(cleanupIntervalSeconds)
@@ -1548,6 +1559,11 @@ public class ClientSchemaTest {
         .build())
       .build();
 
+    ReplicationConfig replicationConfig = ReplicationConfig.builder()
+      .factor(replicationFactor)
+      .asyncEnabled(asyncEnabled)
+      .build();
+
     Map<String, Object> contextionaryVectorizerSettings = new HashMap<>();
     contextionaryVectorizerSettings.put("vectorizeClassName", true);
     Map<String, Object> contextionaryVectorizer = new HashMap<>();
@@ -1564,6 +1580,7 @@ public class ClientSchemaTest {
       .className("Band")
       .description("Band that plays and produces music")
       .vectorConfig(vectorConfig)
+      .replicationConfig(replicationConfig)
       .build();
 
     Result<Boolean> createStatus = client.schema().classCreator()
@@ -1625,5 +1642,11 @@ public class ClientSchemaTest {
               .returns(encoderDistribution, PQConfig.Encoder::getDistribution);
           })
       );
+
+    assertThat(bandClass.getResult())
+      .extracting(WeaviateClass::getReplicationConfig).isNotNull()
+      .returns(replicationFactor, ReplicationConfig::getFactor)
+      .returns(asyncEnabled, ReplicationConfig::getAsyncEnabled)
+      .returns(ReplicationConfig.DeletionStrategy.NO_AUTOMATED_RESOLUTION, ReplicationConfig::getDeletionStrategy);
   }
 }
