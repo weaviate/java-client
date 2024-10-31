@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
+import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -64,7 +65,7 @@ public class ClientGraphQLMultiTargetSearchTest {
     setupDB(className);
     Field _additional = Field.builder()
       .name("_additional")
-      .fields(new Field[]{ Field.builder().name("id").build(), Field.builder().name("distance").build() })
+      .fields(new Field[]{Field.builder().name("id").build(), Field.builder().name("distance").build()})
       .build();
     // nearText
     Map<String, Float> weights = new HashMap<>();
@@ -72,12 +73,12 @@ public class ClientGraphQLMultiTargetSearchTest {
     weights.put(title1, 0.6f);
     weights.put(title2, 0.3f);
     Targets targets = Targets.builder()
-      .targetVectors(new String[]{ titleAndContent, title1, title2 })
+      .targetVectors(new String[]{titleAndContent, title1, title2})
       .combinationMethod(Targets.CombinationMethod.manualWeights)
       .weights(weights)
       .build();
     NearTextArgument nearText = client.graphQL().arguments().nearTextArgBuilder()
-      .concepts(new String[]{ "Water black" })
+      .concepts(new String[]{"Water black"})
       .targets(targets)
       .build();
     Result<GraphQLResponse> response = client.graphQL().get()
@@ -86,15 +87,16 @@ public class ClientGraphQLMultiTargetSearchTest {
       .withFields(_additional)
       .run();
     assertGetContainsIds(response, className, id1, id2, id3);
-    // nearVector
+    // nearVector with single vector-per-target
     Map<String, Float[]> vectorPerTarget = new HashMap<>();
-    vectorPerTarget.put(bringYourOwnVector, new Float[]{ .99f, .88f, .77f });
-    vectorPerTarget.put(bringYourOwnVector2, new Float[]{ .11f, .22f, .33f });
-    weights = new HashMap<>();
-    weights.put(bringYourOwnVector, 0.1f);
-    weights.put(bringYourOwnVector2, 0.6f);
+    vectorPerTarget.put(bringYourOwnVector, new Float[]{.99f, .88f, .77f});
+    vectorPerTarget.put(bringYourOwnVector2, new Float[]{.11f, .22f, .33f});
+    weights = new HashMap<String, Float>() {{
+      this.put(bringYourOwnVector, 0.1f);
+      this.put(bringYourOwnVector2, 0.6f);
+    }};
     targets = Targets.builder()
-      .targetVectors(new String[]{ bringYourOwnVector, bringYourOwnVector2 })
+      .targetVectors(new String[]{bringYourOwnVector, bringYourOwnVector2})
       .combinationMethod(Targets.CombinationMethod.manualWeights)
       .weights(weights)
       .build();
@@ -106,10 +108,33 @@ public class ClientGraphQLMultiTargetSearchTest {
       .withNearVector(nearVector)
       .withFields(_additional)
       .run();
+    assertNull("check error in response:", response.getError());
+    assertGetContainsIds(response, className, id2, id3);
+    // nearVector with multiple vector-per-target
+    Map<String, Float[][]> vectorsPerTarget = new HashMap<>();
+    vectorsPerTarget.put(bringYourOwnVector, new Float[][]{new Float[]{.99f, .88f, .77f}, new Float[]{.99f, .88f, .77f}});
+    vectorsPerTarget.put(bringYourOwnVector2, new Float[][]{new Float[]{.11f, .22f, .33f}});
+    Map<String, Float[]> weightsMulti = new HashMap<>();
+    weightsMulti.put(bringYourOwnVector, new Float[]{0.5f, 0.5f});
+    weightsMulti.put(bringYourOwnVector2, new Float[]{0.6f});
+    targets = Targets.builder()
+      .targetVectors(new String[]{bringYourOwnVector, bringYourOwnVector2})
+      .combinationMethod(Targets.CombinationMethod.manualWeights)
+      .weightsMulti(weightsMulti)
+      .build();
+    nearVector = client.graphQL().arguments().nearVectorArgBuilder()
+      .vectorsPerTarget(vectorsPerTarget)
+      .targets(targets).build();
+    response = client.graphQL().get()
+      .withClassName(className)
+      .withNearVector(nearVector)
+      .withFields(_additional)
+      .run();
+    assertNull("check error in response:", response.getError());
     assertGetContainsIds(response, className, id2, id3);
     // nearObject
     targets = Targets.builder()
-      .targetVectors(new String[]{ bringYourOwnVector, bringYourOwnVector2, titleAndContent, title1, title2 })
+      .targetVectors(new String[]{bringYourOwnVector, bringYourOwnVector2, titleAndContent, title1, title2})
       .combinationMethod(Targets.CombinationMethod.average)
       .build();
     NearObjectArgument nearObject = client.graphQL().arguments().nearObjectArgBuilder()
@@ -170,7 +195,7 @@ public class ClientGraphQLMultiTargetSearchTest {
     props1.put("content", "A great fantasy novel");
     props1.put("title1", "J.R.R. Tolkien The Lord of the Rings");
     props1.put("title2", "Rings");
-    Float[] vector1a = new Float[]{ 0.77f, 0.88f, 0.77f };
+    Float[] vector1a = new Float[]{0.77f, 0.88f, 0.77f};
     Map<String, Float[]> vectors1 = new HashMap<>();
     vectors1.put("bringYourOwnVector", vector1a);
     // don't add vector for bringYourOwnVector2
@@ -180,8 +205,8 @@ public class ClientGraphQLMultiTargetSearchTest {
     props2.put("content", "A great science fiction book");
     props2.put("title1", "Jacek Dukaj Black Oceans");
     props2.put("title2", "Water");
-    Float[] vector2a = new Float[]{ 0.11f, 0.22f, 0.33f };
-    Float[] vector2b = new Float[]{ 0.11f, 0.11f, 0.11f };
+    Float[] vector2a = new Float[]{0.11f, 0.22f, 0.33f};
+    Float[] vector2b = new Float[]{0.11f, 0.11f, 0.11f};
     Map<String, Float[]> vectors2 = new HashMap<>();
     vectors2.put("bringYourOwnVector", vector2a);
     vectors2.put("bringYourOwnVector2", vector2b);
@@ -191,8 +216,8 @@ public class ClientGraphQLMultiTargetSearchTest {
     props3.put("content", "New York Times bestseller and global phenomenon The Girl on the Train returns with Into the Water");
     props3.put("title1", "Paula Hawkins Into the Water");
     props3.put("title2", "Water go into it");
-    Float[] vector3a = new Float[]{ 0.99f, 0.88f, 0.77f };
-    Float[] vector3b = new Float[]{ 0.99f, 0.88f, 0.77f };
+    Float[] vector3a = new Float[]{0.99f, 0.88f, 0.77f};
+    Float[] vector3b = new Float[]{0.99f, 0.88f, 0.77f};
     Map<String, Float[]> vectors3 = new HashMap<>();
     vectors3.put("bringYourOwnVector", vector3a);
     vectors3.put("bringYourOwnVector2", vector3b);
@@ -214,7 +239,7 @@ public class ClientGraphQLMultiTargetSearchTest {
     Map<String, Object> titleAndContent = new HashMap<>();
     Map<String, Object> text2vecContextionarySettings = new HashMap<>();
     text2vecContextionarySettings.put("vectorizeClassName", false);
-    text2vecContextionarySettings.put("properties", new String[]{ "title", "content" });
+    text2vecContextionarySettings.put("properties", new String[]{"title", "content"});
     titleAndContent.put("text2vec-contextionary", text2vecContextionarySettings);
     return getHNSWSQVectorConfig(titleAndContent);
   }
@@ -223,7 +248,7 @@ public class ClientGraphQLMultiTargetSearchTest {
     Map<String, Object> titleAndContent = new HashMap<>();
     Map<String, Object> text2vecContextionarySettings = new HashMap<>();
     text2vecContextionarySettings.put("vectorizeClassName", false);
-    text2vecContextionarySettings.put("properties", new String[]{ "title1" });
+    text2vecContextionarySettings.put("properties", new String[]{"title1"});
     titleAndContent.put("text2vec-contextionary", text2vecContextionarySettings);
     return getHNSWPQVectorConfig(titleAndContent);
   }
@@ -232,7 +257,7 @@ public class ClientGraphQLMultiTargetSearchTest {
     Map<String, Object> titleAndContent = new HashMap<>();
     Map<String, Object> text2vecContextionarySettings = new HashMap<>();
     text2vecContextionarySettings.put("vectorizeClassName", false);
-    text2vecContextionarySettings.put("properties", new String[]{ "title2" });
+    text2vecContextionarySettings.put("properties", new String[]{"title2"});
     titleAndContent.put("text2vec-contextionary", text2vecContextionarySettings);
     return getHNSWVectorConfig(titleAndContent);
   }

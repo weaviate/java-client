@@ -11,6 +11,7 @@ import io.weaviate.client.v1.misc.model.BM25Config;
 import io.weaviate.client.v1.misc.model.DistanceType;
 import io.weaviate.client.v1.misc.model.InvertedIndexConfig;
 import io.weaviate.client.v1.misc.model.PQConfig;
+import io.weaviate.client.v1.misc.model.ReplicationConfig;
 import io.weaviate.client.v1.misc.model.ShardingConfig;
 import io.weaviate.client.v1.misc.model.StopwordConfig;
 import io.weaviate.client.v1.misc.model.VectorIndexConfig;
@@ -1466,11 +1467,15 @@ public class ClientSchemaTest {
       .vectorizer("text2vec-contextionary")
       .properties(properties)
       .vectorIndexConfig(VectorIndexConfig.builder()
+        .filterStrategy(VectorIndexConfig.FilterStrategy.ACORN)
         .pq(PQConfig.builder()
           .enabled(true)
           .trainingLimit(99_999)
           .segments(96)
           .build())
+        .build())
+      .replicationConfig(ReplicationConfig.builder()
+        .deletionStrategy(ReplicationConfig.DeletionStrategy.DELETE_ON_CONFLICT)
         .build())
       .build();
 
@@ -1494,14 +1499,19 @@ public class ClientSchemaTest {
       .withFailMessage(null)
       .extracting(Result::getResult).isNotNull()
       .extracting(WeaviateClass::getVectorIndexConfig).isNotNull()
+      .returns(VectorIndexConfig.FilterStrategy.ACORN, VectorIndexConfig::getFilterStrategy)
       .extracting(VectorIndexConfig::getPq).isNotNull()
       .returns(true, PQConfig::getEnabled)
       .returns(96, PQConfig::getSegments)
       .returns(99_999, PQConfig::getTrainingLimit);
+
+    assertThat(updatedClassResult.getResult())
+      .extracting(WeaviateClass::getReplicationConfig).isNotNull()
+      .returns(ReplicationConfig.DeletionStrategy.DELETE_ON_CONFLICT, ReplicationConfig::getDeletionStrategy);
   }
 
   @Test
-  public void shouldCreateClassWithVectorConfig() {
+  public void shouldCreateClassWithVectorAndReplicationConfig() {
     Integer cleanupIntervalSeconds = 300;
     // vector index config
     Integer efConstruction = 128;
@@ -1521,6 +1531,9 @@ public class ClientSchemaTest {
     Integer centroids = 8;
     String encoderType = "tile";
     String encoderDistribution = "normal";
+    // replication config
+    Boolean asyncEnabled = true;
+    Integer replicationFactor = 1;
 
     VectorIndexConfig vectorIndexConfig = VectorIndexConfig.builder()
       .cleanupIntervalSeconds(cleanupIntervalSeconds)
@@ -1529,6 +1542,7 @@ public class ClientSchemaTest {
       .vectorCacheMaxObjects(vectorCacheMaxObjects)
       .ef(ef)
       .skip(skip)
+      .filterStrategy(VectorIndexConfig.FilterStrategy.SWEEPING)
       .dynamicEfFactor(dynamicEfFactor)
       .dynamicEfMax(dynamicEfMax)
       .dynamicEfMin(dynamicEfMin)
@@ -1544,6 +1558,12 @@ public class ClientSchemaTest {
           .distribution(encoderDistribution)
           .build())
         .build())
+      .build();
+
+    ReplicationConfig replicationConfig = ReplicationConfig.builder()
+      .factor(replicationFactor)
+      .asyncEnabled(asyncEnabled)
+      .deletionStrategy(ReplicationConfig.DeletionStrategy.NO_AUTOMATED_RESOLUTION)
       .build();
 
     Map<String, Object> contextionaryVectorizerSettings = new HashMap<>();
@@ -1562,6 +1582,7 @@ public class ClientSchemaTest {
       .className("Band")
       .description("Band that plays and produces music")
       .vectorConfig(vectorConfig)
+      .replicationConfig(replicationConfig)
       .build();
 
     Result<Boolean> createStatus = client.schema().classCreator()
@@ -1602,6 +1623,7 @@ public class ClientSchemaTest {
               .returns(cleanupIntervalSeconds, VectorIndexConfig::getCleanupIntervalSeconds)
               .returns(efConstruction, VectorIndexConfig::getEfConstruction)
               .returns(maxConnections, VectorIndexConfig::getMaxConnections)
+              .returns(VectorIndexConfig.FilterStrategy.SWEEPING, VectorIndexConfig::getFilterStrategy)
               .returns(vectorCacheMaxObjects, VectorIndexConfig::getVectorCacheMaxObjects)
               .returns(ef, VectorIndexConfig::getEf)
               .returns(skip, VectorIndexConfig::getSkip)
@@ -1622,5 +1644,11 @@ public class ClientSchemaTest {
               .returns(encoderDistribution, PQConfig.Encoder::getDistribution);
           })
       );
+
+    assertThat(bandClass.getResult())
+      .extracting(WeaviateClass::getReplicationConfig).isNotNull()
+      .returns(replicationFactor, ReplicationConfig::getFactor)
+      .returns(asyncEnabled, ReplicationConfig::getAsyncEnabled)
+      .returns(ReplicationConfig.DeletionStrategy.NO_AUTOMATED_RESOLUTION, ReplicationConfig::getDeletionStrategy);
   }
 }

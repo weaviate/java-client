@@ -1,10 +1,12 @@
 package io.weaviate.client.base;
 
+import io.weaviate.client.Config;
 import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.base.http.HttpResponse;
+import io.weaviate.client.v1.graphql.GraphQL;
+import io.weaviate.client.v1.graphql.model.GraphQLResponse;
 import java.util.Collections;
-
-import io.weaviate.client.Config;
+import java.util.List;
 
 public abstract class BaseClient<T> {
   private final HttpClient client;
@@ -51,7 +53,12 @@ public abstract class BaseClient<T> {
 
       if (statusCode < 399) {
         T body = toResponse(responseBody, classOfT);
-        return new Response<>(statusCode, body, null);
+        WeaviateErrorResponse errors = null;
+
+        if (body != null && classOfT.equals(GraphQL.class)) {
+          errors = getWeaviateGraphQLErrorResponse((GraphQLResponse) body, statusCode);
+        }
+        return new Response<>(statusCode, body, errors);
       }
 
       WeaviateErrorResponse error = toResponse(responseBody, WeaviateErrorResponse.class);
@@ -90,10 +97,22 @@ public abstract class BaseClient<T> {
   }
 
   private WeaviateErrorResponse getWeaviateErrorResponse(Exception e) {
-    WeaviateErrorMessage error = WeaviateErrorMessage.builder()
-      .message(e.getMessage())
-      .throwable(e)
-      .build();
+    WeaviateErrorMessage error = WeaviateErrorMessage.builder().message(e.getMessage()).throwable(e).build();
     return WeaviateErrorResponse.builder().error(Collections.singletonList(error)).build();
+  }
+
+  /**
+   * Extract errors from {@link WeaviateErrorResponse} from a GraphQL response body.
+   *
+   * @param gql  GraphQL response body.
+   * @param code HTTP status code to pass in the {@link WeaviateErrorResponse}.
+   * @return Error response to be returned to the caller.
+   */
+  private WeaviateErrorResponse getWeaviateGraphQLErrorResponse(GraphQLResponse gql, int code) {
+    List<WeaviateErrorMessage> messages = gql.errorMessages();
+    if (messages == null || messages.isEmpty()) {
+      return null;
+    }
+    return WeaviateErrorResponse.builder().code(code).error(gql.errorMessages()).build();
   }
 }

@@ -1,5 +1,6 @@
 package io.weaviate.client.v1.misc.model;
 
+import com.google.gson.annotations.SerializedName;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -20,6 +21,7 @@ public class VectorIndexConfig {
   Integer dynamicEfMin;
   Integer dynamicEfMax;
   Integer dynamicEfFactor;
+  FilterStrategy filterStrategy;
   Long vectorCacheMaxObjects;
   Integer flatSearchCutoff;
   Integer cleanupIntervalSeconds;
@@ -27,4 +29,11 @@ public class VectorIndexConfig {
   PQConfig pq;
   BQConfig bq;
   SQConfig sq;
+
+  public enum FilterStrategy {
+    @SerializedName("sweeping")
+    SWEEPING,
+    @SerializedName("acorn")
+    ACORN;
+  }
 }
