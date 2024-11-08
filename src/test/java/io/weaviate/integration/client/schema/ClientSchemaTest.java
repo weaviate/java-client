@@ -24,6 +24,7 @@ import io.weaviate.client.v1.schema.model.ShardStatuses;
 import io.weaviate.client.v1.schema.model.Tokenization;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
 import io.weaviate.integration.client.WeaviateDockerCompose;
+import io.weaviate.integration.tests.schema.SchemaTestSuite;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
@@ -71,65 +72,33 @@ public class ClientSchemaTest {
   @Test
   public void testSchemaCreateBandClass() {
     // given
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className("Band")
-      .description("Band that plays and produces music")
-      .vectorIndexType("hnsw")
-      .vectorizer("text2vec-contextionary")
-      .build();
+    WeaviateClass clazz = SchemaTestSuite.testSchemaCreateBandClass.clazz;
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
     Result<Schema> schema = client.schema().getter().run();
     // then
-    assertNotNull(createStatus);
-    assertTrue(createStatus.getResult());
-    assertNotNull(schema);
-    assertNotNull(schema.getResult());
-    assertEquals(1, schema.getResult().getClasses().size());
-
-    WeaviateClass resultClass = schema.getResult().getClasses().get(0);
-    assertEquals(clazz.getClassName(), resultClass.getClassName());
-    assertEquals(clazz.getDescription(), resultClass.getDescription());
+    SchemaTestSuite.testSchemaCreateBandClass.assertResults(createStatus, schema);
   }
 
   @Test
   public void testSchemaCreateRunClass() {
     // given
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className("Run")
-      .description("Running from the fuzz")
-      .vectorIndexType("hnsw")
-      .vectorizer("text2vec-contextionary")
-      .build();
+    WeaviateClass clazz = SchemaTestSuite.testSchemaCreateRunClass.clazz;
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
     Result<Schema> schemaAfterCreate = client.schema().getter().run();
     Result<Boolean> deleteStatus = client.schema().allDeleter().run();
     Result<Schema> schemaAfterDelete = client.schema().getter().run();
     // then
-    assertNotNull(createStatus);
-    assertTrue(createStatus.getResult());
-    assertNotNull(schemaAfterCreate);
-    assertNotNull(schemaAfterCreate.getResult());
-    assertEquals(1, schemaAfterCreate.getResult().getClasses().size());
-    assertEquals(clazz.getClassName(), schemaAfterCreate.getResult().getClasses().get(0).getClassName());
-    assertEquals(clazz.getDescription(), schemaAfterCreate.getResult().getClasses().get(0).getDescription());
-    assertNotNull(deleteStatus);
-    assertTrue(deleteStatus.getResult());
-    assertEquals(0, schemaAfterDelete.getResult().getClasses().size());
+    SchemaTestSuite.testSchemaCreateRunClass
+      .assertResults(createStatus, schemaAfterCreate, deleteStatus, schemaAfterDelete);
   }
 
   @Test
   public void testSchemaDeleteClasses() {
     // given
-    WeaviateClass pizza = WeaviateClass.builder()
-      .className("Pizza")
-      .description("A delicious religion like food and arguably the best export of Italy.")
-      .build();
-    WeaviateClass chickenSoup = WeaviateClass.builder()
-      .className("ChickenSoup")
-      .description("A soup made in part out of chicken, not for chicken.")
-      .build();
+    WeaviateClass pizza = SchemaTestSuite.testSchemaDeleteClasses.pizza;
+    WeaviateClass chickenSoup = SchemaTestSuite.testSchemaDeleteClasses.chickenSoup;
     // when
     Result<Boolean> pizzaCreateStatus = client.schema().classCreator().withClass(pizza).run();
     Result<Boolean> chickenSoupCreateStatus = client.schema().classCreator().withClass(chickenSoup).run();
@@ -138,33 +107,19 @@ public class ClientSchemaTest {
     Result<Boolean> deleteChickenSoupStatus = client.schema().classDeleter().withClassName(chickenSoup.getClassName()).run();
     Result<Schema> schemaAfterDelete = client.schema().getter().run();
     // then
-    assertNotNull(pizzaCreateStatus);
-    assertTrue(pizzaCreateStatus.getResult());
-    assertNotNull(chickenSoupCreateStatus);
-    assertTrue(chickenSoupCreateStatus.getResult());
-    assertNotNull(schemaAfterCreate);
-    assertNotNull(schemaAfterCreate.getResult());
-    assertNotNull(schemaAfterCreate.getResult().getClasses());
-    assertEquals(2, schemaAfterCreate.getResult().getClasses().size());
-    assertEquals(1, schemaAfterCreate.getResult().getClasses().stream().filter(o -> o.getClassName().equals(pizza.getClassName())).count());
-    assertNotNull(deletePizzaStatus);
-    assertTrue(deletePizzaStatus.getResult());
-    assertNotNull(deleteChickenSoupStatus);
-    assertTrue(deleteChickenSoupStatus.getResult());
-    assertEquals(0, schemaAfterDelete.getResult().getClasses().size());
+    SchemaTestSuite.testSchemaDeleteClasses.assertResults(pizzaCreateStatus,
+      chickenSoupCreateStatus,
+      schemaAfterCreate,
+      deletePizzaStatus,
+      deleteChickenSoupStatus,
+      schemaAfterDelete);
   }
 
   @Test
   public void testSchemaDeleteAllSchema() {
     // given
-    WeaviateClass pizza = WeaviateClass.builder()
-      .className("Pizza")
-      .description("A delicious religion like food and arguably the best export of Italy.")
-      .build();
-    WeaviateClass chickenSoup = WeaviateClass.builder()
-      .className("ChickenSoup")
-      .description("A soup made in part out of chicken, not for chicken.")
-      .build();
+    WeaviateClass pizza = SchemaTestSuite.testSchemaDeleteAllSchema.pizza;
+    WeaviateClass chickenSoup = SchemaTestSuite.testSchemaDeleteAllSchema.chickenSoup;
     // when
     Result<Boolean> pizzaCreateStatus = client.schema().classCreator().withClass(pizza).run();
     Result<Boolean> chickenSoupCreateStatus = client.schema().classCreator().withClass(chickenSoup).run();
@@ -172,37 +127,16 @@ public class ClientSchemaTest {
     Result<Boolean> deleteAllStatus = client.schema().allDeleter().run();
     Result<Schema> schemaAfterDelete = client.schema().getter().run();
     // then
-    assertNotNull(pizzaCreateStatus);
-    assertTrue(pizzaCreateStatus.getResult());
-    assertNotNull(chickenSoupCreateStatus);
-    assertTrue(chickenSoupCreateStatus.getResult());
-    assertNotNull(schemaAfterCreate);
-    assertNotNull(schemaAfterCreate.getResult());
-    assertNotNull(schemaAfterCreate.getResult().getClasses());
-    assertEquals(2, schemaAfterCreate.getResult().getClasses().size());
-    assertEquals(1, schemaAfterCreate.getResult().getClasses().stream().filter(o -> o.getClassName().equals(pizza.getClassName())).count());
-    assertEquals(1, schemaAfterCreate.getResult().getClasses().stream().filter(o -> o.getDescription().equals(chickenSoup.getDescription())).count());
-    assertNotNull(deleteAllStatus);
-    assertTrue(deleteAllStatus.getResult());
-    assertEquals(0, schemaAfterDelete.getResult().getClasses().size());
+    SchemaTestSuite.testSchemaDeleteAllSchema.assertResults(pizzaCreateStatus, chickenSoupCreateStatus,
+      schemaAfterCreate, deleteAllStatus, schemaAfterDelete);
   }
 
   @Test
   public void testSchemaCreateClassesAddProperties() {
     // given
-    WeaviateClass pizza = WeaviateClass.builder()
-      .className("Pizza")
-      .description("A delicious religion like food and arguably the best export of Italy.")
-      .build();
-    WeaviateClass chickenSoup = WeaviateClass.builder()
-      .className("ChickenSoup")
-      .description("A soup made in part out of chicken, not for chicken.")
-      .build();
-    Property newProperty = Property.builder()
-      .dataType(Arrays.asList(DataType.TEXT))
-      .description("name")
-      .name("name")
-      .build();
+    WeaviateClass pizza = SchemaTestSuite.testSchemaCreateClassesAddProperties.pizza;
+    WeaviateClass chickenSoup = SchemaTestSuite.testSchemaCreateClassesAddProperties.chickenSoup;
+    Property newProperty = SchemaTestSuite.testSchemaCreateClassesAddProperties.newProperty;
     // when
     Result<Boolean> pizzaCreateStatus = client.schema().classCreator().withClass(pizza).run();
     Result<Boolean> chickenSoupCreateStatus = client.schema().classCreator().withClass(chickenSoup).run();
@@ -213,27 +147,9 @@ public class ClientSchemaTest {
     Result<Schema> schemaAfterCreate = client.schema().getter().run();
     Result<Boolean> deleteAllStatus = client.schema().allDeleter().run();
     Result<Schema> schemaAfterDelete = client.schema().getter().run();
-
     // then
-    assertResultTrue(pizzaCreateStatus);
-    assertResultTrue(chickenSoupCreateStatus);
-    assertResultTrue(pizzaPropertyCreateStatus);
-    assertResultTrue(chickenSoupPropertyCreateStatus);
-    assertClassesSize(2, schemaAfterCreate);
-
-    WeaviateClass resultPizzaClass = schemaAfterCreate.getResult().getClasses()
-      .stream().filter(o -> o.getClassName().equals(pizza.getClassName())).findFirst().get();
-    assertClassEquals(pizza.getClassName(), pizza.getDescription(), resultPizzaClass);
-    assertPropertiesSize(1, resultPizzaClass);
-    assertPropertyEquals(newProperty.getName(), "word", resultPizzaClass.getProperties().get(0));
-    WeaviateClass resultChickenSoupClass = schemaAfterCreate.getResult().getClasses()
-      .stream().filter(o -> o.getClassName().equals(chickenSoup.getClassName())).findFirst().get();
-    assertClassEquals(chickenSoup.getClassName(), chickenSoup.getDescription(), resultChickenSoupClass);
-    assertPropertiesSize(1, resultChickenSoupClass);
-    assertPropertyEquals(newProperty.getName(), "word", resultChickenSoupClass.getProperties().get(0));
-
-    assertResultTrue(deleteAllStatus);
-    assertClassesSize(0, schemaAfterDelete);
+    SchemaTestSuite.testSchemaCreateClassesAddProperties.assertResults(pizzaCreateStatus, chickenSoupCreateStatus, pizzaPropertyCreateStatus,
+      chickenSoupPropertyCreateStatus, schemaAfterCreate, deleteAllStatus, schemaAfterDelete);
   }
 
   @Test

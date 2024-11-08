@@ -1707,7 +1707,7 @@ public class ClientGraphQLTest {
   private List<Group> getGroups(List<Map<String, Object>> result) {
     Serializer serializer = new Serializer();
     String jsonString = serializer.toJsonString(result);
-    AdditionalGroupByAdditional[] response = serializer.toResponse(jsonString, AdditionalGroupByAdditional[].class);
+    AdditionalGroupByAdditional[] response = serializer.toObject(jsonString, AdditionalGroupByAdditional[].class);
     assertThat(response).isNotNull().hasSize(3);
     return Arrays.stream(response)
       .map(AdditionalGroupByAdditional::get_additional)
