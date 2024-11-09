@@ -1,5 +1,6 @@
 package io.weaviate.client.base.grpc;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import io.grpc.ManagedChannel;
 import io.grpc.Metadata;
 import io.grpc.stub.MetadataUtils;
@@ -12,16 +13,16 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class GrpcClient extends BaseGrpcClient {
-  WeaviateGrpc.WeaviateBlockingStub client;
+public class AsyncGrpcClient extends BaseGrpcClient {
+  WeaviateGrpc.WeaviateFutureStub client;
   ManagedChannel channel;
 
-  private GrpcClient(WeaviateGrpc.WeaviateBlockingStub client, ManagedChannel channel) {
+  private AsyncGrpcClient(WeaviateGrpc.WeaviateFutureStub client, ManagedChannel channel) {
     this.client = client;
     this.channel = channel;
   }
 
-  public WeaviateProtoBatch.BatchObjectsReply batchObjects(WeaviateProtoBatch.BatchObjectsRequest request) {
+  public ListenableFuture<WeaviateProtoBatch.BatchObjectsReply> batchObjects(WeaviateProtoBatch.BatchObjectsRequest request) {
     return this.client.batchObjects(request);
   }
 
@@ -29,11 +30,11 @@ public class GrpcClient extends BaseGrpcClient {
     this.channel.shutdown();
   }
 
-  public static GrpcClient create(Config config, AccessTokenProvider tokenProvider) {
+  public static AsyncGrpcClient create(Config config, AccessTokenProvider tokenProvider) {
     Metadata headers = getHeaders(config, tokenProvider);
     ManagedChannel channel = buildChannel(config);
-    WeaviateGrpc.WeaviateBlockingStub blockingStub = WeaviateGrpc.newBlockingStub(channel);
-    WeaviateGrpc.WeaviateBlockingStub client = blockingStub.withInterceptors(MetadataUtils.newAttachHeadersInterceptor(headers));
-    return new GrpcClient(client, channel);
+    WeaviateGrpc.WeaviateFutureStub stub = WeaviateGrpc.newFutureStub(channel);
+    WeaviateGrpc.WeaviateFutureStub client = stub.withInterceptors(MetadataUtils.newAttachHeadersInterceptor(headers));
+    return new AsyncGrpcClient(client, channel);
   }
 }

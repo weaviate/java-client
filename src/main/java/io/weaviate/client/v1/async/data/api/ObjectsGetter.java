@@ -90,11 +90,6 @@ public class ObjectsGetter extends AsyncBaseClient<List<WeaviateObject>> impleme
   }
 
   @Override
-  public Future<Result<List<WeaviateObject>>> run() {
-    return run(null);
-  }
-
-  @Override
   public Future<Result<List<WeaviateObject>>> run(FutureCallback<Result<List<WeaviateObject>>> callback) {
     ObjectsPath.Params params = ObjectsPath.Params.builder()
       .id(id)
