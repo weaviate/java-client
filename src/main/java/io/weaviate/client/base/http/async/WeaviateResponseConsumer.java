@@ -25,7 +25,7 @@ public class WeaviateResponseConsumer<T> extends AbstractAsyncResponseConsumer<R
 
   @Override
   protected Result<T> buildResult(HttpResponse response, byte[] entity, ContentType contentType) {
-    String body = new String(entity, StandardCharsets.UTF_8);
+    String body = (entity != null) ? new String(entity, StandardCharsets.UTF_8) : "";
     if (this.parser != null) {
       return this.parser.parse(response, body, contentType);
     }

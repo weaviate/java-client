@@ -11,6 +11,7 @@ import io.weaviate.client.v1.schema.model.Schema;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
 import io.weaviate.integration.client.WeaviateDockerCompose;
 import io.weaviate.integration.client.WeaviateTestGenerics;
+import io.weaviate.integration.tests.data.DataTestSuite;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,14 +46,10 @@ public class ClientDataTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-    String objTID = "abefd256-8574-442b-9293-9205193737ee";
-    String objAID = "565da3b6-60b3-40e5-ba21-e6bfe5dbba91";
-    Map<String, java.lang.Object> propertiesSchemaT = new HashMap<>();
-    propertiesSchemaT.put("name", "Hawaii");
-    propertiesSchemaT.put("description", "Universally accepted to be the best pizza ever created.");
-    Map<String, java.lang.Object> propertiesSchemaA = new HashMap<>();
-    propertiesSchemaA.put("name", "ChickenSoup");
-    propertiesSchemaA.put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
+    String objTID = DataTestSuite.testDataCreate.objTID;
+    String objAID = DataTestSuite.testDataCreate.objAID;
+    Map<String, java.lang.Object> propertiesSchemaT = DataTestSuite.testDataCreate.propertiesSchemaT();
+    Map<String, java.lang.Object> propertiesSchemaA = DataTestSuite.testDataCreate.propertiesSchemaA();
     // when
     testGenerics.createWeaviateTestSchemaFood(client);
     Result<WeaviateObject> objectT = client.data().creator()
@@ -71,28 +68,7 @@ public class ClientDataTest {
     Result<List<WeaviateObject>> objectsA = client.data().objectsGetter().withClassName("Soup").withID(objAID).run();
     testGenerics.cleanupWeaviate(client);
     // then
-    assertNotNull(objectT);
-    assertNotNull(objectT.getResult());
-    assertEquals(objTID, objectT.getResult().getId());
-    assertNotNull(objectA);
-    assertNotNull(objectA.getResult());
-    assertEquals(objAID, objectA.getResult().getId());
-    assertNotNull(objectsT);
-    assertNotNull(objectsT.getResult());
-    assertEquals(1, objectsT.getResult().size());
-    assertEquals(objTID, objectsT.getResult().get(0).getId());
-    assertNotNull(objectsT.getResult().get(0).getProperties());
-    assertEquals(2, objectsT.getResult().get(0).getProperties().size());
-    assertEquals("Pizza", objectsT.getResult().get(0).getClassName());
-    assertEquals("Hawaii", objectsT.getResult().get(0).getProperties().get("name"));
-    assertNotNull(objectsA);
-    assertNotNull(objectsA.getResult());
-    assertEquals(1, objectsA.getResult().size());
-    assertEquals(objAID, objectsA.getResult().get(0).getId());
-    assertNotNull(objectsA.getResult().get(0).getProperties());
-    assertEquals(2, objectsA.getResult().get(0).getProperties().size());
-    assertEquals("Soup", objectsA.getResult().get(0).getClassName());
-    assertEquals("ChickenSoup", objectsA.getResult().get(0).getProperties().get("name"));
+    DataTestSuite.testDataCreate.assertResults(objectT, objectA, objectsT, objectsA);
   }
 
   @Test
@@ -101,12 +77,10 @@ public class ClientDataTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-    String objTID = "abefd256-8574-442b-9293-9205193737ee";
-    String name = "Zażółć gęślą jaźń";
-    String description = "test äüëö";
-    Map<String, java.lang.Object> propertiesSchemaT = new HashMap<>();
-    propertiesSchemaT.put("name", name);
-    propertiesSchemaT.put("description", description);
+    String objTID = DataTestSuite.testDataCreateWithSpecialCharacters.objTID;
+    String name = DataTestSuite.testDataCreateWithSpecialCharacters.name;
+    String description = DataTestSuite.testDataCreateWithSpecialCharacters.description;
+    Map<String, java.lang.Object> propertiesSchemaT = DataTestSuite.testDataCreateWithSpecialCharacters.propertiesSchemaT();
     // when
     testGenerics.createWeaviateTestSchemaFood(client);
     Result<WeaviateObject> objectT = client.data().creator()
@@ -117,18 +91,7 @@ public class ClientDataTest {
     Result<List<WeaviateObject>> objectsT = client.data().objectsGetter().withClassName("Pizza").withID(objTID).run();
     testGenerics.cleanupWeaviate(client);
     // then
-    assertNotNull(objectT);
-    assertNotNull(objectT.getResult());
-    assertEquals(objTID, objectT.getResult().getId());
-    assertNotNull(objectsT);
-    assertNotNull(objectsT.getResult());
-    assertEquals(1, objectsT.getResult().size());
-    assertEquals(objTID, objectsT.getResult().get(0).getId());
-    assertNotNull(objectsT.getResult().get(0).getProperties());
-    assertEquals(2, objectsT.getResult().get(0).getProperties().size());
-    assertEquals("Pizza", objectsT.getResult().get(0).getClassName());
-    assertEquals(name, objectsT.getResult().get(0).getProperties().get("name"));
-    assertEquals(description, objectsT.getResult().get(0).getProperties().get("description"));
+    DataTestSuite.testDataCreateWithSpecialCharacters.assertResults(objectT, objectsT);
   }
 
   @Test
@@ -167,15 +130,7 @@ public class ClientDataTest {
 
     testGenerics.cleanupWeaviate(client);
     // then
-    assertCreated(pizzaObj1);
-    assertCreated(pizzaObj2);
-    assertCreated(soupObj1);
-    assertCreated(soupObj2);
-    assertNotNull(objects);
-    assertNotNull(objects.getResult());
-    assertEquals(4, objects.getResult().size());
-    assertNull(afterFirstPizzaObjects.getError());
-    assertEquals(1l, afterFirstPizzaObjects.getResult().size());
+    DataTestSuite.testDataGetActionsThings.assertResults(pizzaObj1, pizzaObj2, soupObj1, soupObj2, objects, afterFirstPizzaObjects);
   }
 
   @Test
@@ -184,14 +139,10 @@ public class ClientDataTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-    String objTID = "abefd256-8574-442b-9293-9205193737ee";
-    String objAID = "565da3b6-60b3-40e5-ba21-e6bfe5dbba91";
-    Map<String, java.lang.Object> propertiesSchemaT = new HashMap<>();
-    propertiesSchemaT.put("name", "Hawaii");
-    propertiesSchemaT.put("description", "Universally accepted to be the best pizza ever created.");
-    Map<String, java.lang.Object> propertiesSchemaA = new HashMap<>();
-    propertiesSchemaA.put("name", "ChickenSoup");
-    propertiesSchemaA.put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
+    String objTID = DataTestSuite.testDataGetWithAdditional.objTID;
+    String objAID = DataTestSuite.testDataGetWithAdditional.objAID;
+    Map<String, java.lang.Object> propertiesSchemaT = DataTestSuite.testDataGetWithAdditional.propertiesSchemaT();
+    Map<String, java.lang.Object> propertiesSchemaA = DataTestSuite.testDataGetWithAdditional.propertiesSchemaA();
     // when
     testGenerics.createWeaviateTestSchemaFood(client);
     Result<WeaviateObject> objectT = client.data().creator()
@@ -236,47 +187,9 @@ public class ClientDataTest {
       .run();
     testGenerics.cleanupWeaviate(client);
     // then
-    assertNotNull(objectT);
-    assertNotNull(objectT.getResult());
-    assertEquals(objTID, objectT.getResult().getId());
-    assertNotNull(objectA);
-    assertNotNull(objectA.getResult());
-    assertEquals(objAID, objectA.getResult().getId());
-    assertNotNull(objectsT);
-    assertNotNull(objectsT.getResult());
-    assertEquals(1, objectsT.getResult().size());
-    assertNull(objectsT.getResult().get(0).getAdditional());
-    assertNotNull(objectsA);
-    assertNotNull(objectsA.getResult());
-    assertEquals(1, objectsA.getResult().size());
-    assertNull(objectsA.getResult().get(0).getAdditional());
-    assertNotNull(objsAdditionalT);
-    assertNotNull(objsAdditionalT.getResult());
-    assertEquals(1, objsAdditionalT.getResult().size());
-    assertNotNull(objsAdditionalT.getResult().get(0).getAdditional());
-    assertEquals(2, objsAdditionalT.getResult().get(0).getAdditional().size());
-    assertNull(objsAdditionalT.getResult().get(0).getAdditional().get("classification"));
-    assertNotNull(objsAdditionalT.getResult().get(0).getAdditional().get("nearestNeighbors"));
-    assertNotNull(objsAdditionalT.getResult().get(0).getVector());
-    assertNotNull(objsAdditionalA);
-    assertNotNull(objsAdditionalA.getResult());
-    assertEquals(1, objsAdditionalA.getResult().size());
-    assertNotNull(objsAdditionalA.getResult().get(0).getAdditional());
-    assertEquals(3, objsAdditionalA.getResult().get(0).getAdditional().size());
-    assertNull(objsAdditionalA.getResult().get(0).getAdditional().get("classification"));
-    assertNotNull(objsAdditionalA.getResult().get(0).getAdditional().get("nearestNeighbors"));
-    assertNotNull(objsAdditionalA.getResult().get(0).getAdditional().get("interpretation"));
-    assertNotNull(objsAdditionalA.getResult().get(0).getVector());
-    assertNotNull(objsAdditionalA1.getResult());
-    assertEquals(1, objsAdditionalA1.getResult().size());
-    assertNull(objsAdditionalA1.getResult().get(0).getAdditional());
-    assertNotNull(objsAdditionalA2.getResult());
-    assertEquals(1, objsAdditionalA2.getResult().size());
-    assertNotNull(objsAdditionalA2.getResult().get(0).getAdditional());
-    assertEquals(1, objsAdditionalA2.getResult().get(0).getAdditional().size());
-    assertNotNull(objsAdditionalA2.getResult().get(0).getAdditional().get("interpretation"));
-    assertNotNull(objsAdditionalAError);
-    assertNull(objsAdditionalAError.getResult());
+    DataTestSuite.testDataGetWithAdditional.assertResults(objectT, objectA, objectsT, objectsA,
+      objsAdditionalT, objsAdditionalA, objsAdditionalA1, objsAdditionalA2,
+      objsAdditionalAError);
   }
 
   @Test
@@ -285,14 +198,10 @@ public class ClientDataTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-    String objTID = "abefd256-8574-442b-9293-9205193737ee";
-    String objAID = "565da3b6-60b3-40e5-ba21-e6bfe5dbba91";
-    Map<String, java.lang.Object> propertiesSchemaT = new HashMap<>();
-    propertiesSchemaT.put("name", "Hawaii");
-    propertiesSchemaT.put("description", "Universally accepted to be the best pizza ever created.");
-    Map<String, java.lang.Object> propertiesSchemaA = new HashMap<>();
-    propertiesSchemaA.put("name", "ChickenSoup");
-    propertiesSchemaA.put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
+    String objTID = DataTestSuite.testDataDelete.objTID;
+    String objAID = DataTestSuite.testDataDelete.objAID;
+    Map<String, java.lang.Object> propertiesSchemaT = DataTestSuite.testDataDelete.propertiesSchemaT();
+    Map<String, java.lang.Object> propertiesSchemaA = DataTestSuite.testDataDelete.propertiesSchemaA();
     // when
     testGenerics.createWeaviateTestSchemaFood(client);
     Result<WeaviateObject> objectT = client.data().creator()
@@ -319,20 +228,7 @@ public class ClientDataTest {
     Result<List<WeaviateObject>> objAlist = client.data().objectsGetter().withClassName("Soup").withID(objAID).run();
     testGenerics.cleanupWeaviate(client);
     // then
-    assertNotNull(objectT);
-    assertNotNull(objectT.getResult());
-    assertEquals(objTID, objectT.getResult().getId());
-    assertNotNull(objectA);
-    assertNotNull(objectA.getResult());
-    assertEquals(objAID, objectA.getResult().getId());
-    assertNotNull(deleteObjT);
-    assertTrue(deleteObjT.getResult());
-    assertNotNull(objTlist);
-    assertNull(objTlist.getResult());
-    assertNotNull(deleteObjA);
-    assertTrue(deleteObjA.getResult());
-    assertNotNull(objAlist);
-    assertNull(objAlist.getResult());
+    DataTestSuite.testDataDelete.assertResults(objectT, objectA, deleteObjT, objTlist, deleteObjA, objAlist);
   }
 
   @Test
@@ -341,14 +237,10 @@ public class ClientDataTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-    String objTID = "abefd256-8574-442b-9293-9205193737ee";
-    String objAID = "565da3b6-60b3-40e5-ba21-e6bfe5dbba91";
-    Map<String, java.lang.Object> propertiesSchemaT = new HashMap<>();
-    propertiesSchemaT.put("name", "Random");
-    propertiesSchemaT.put("description", "Missing description");
-    Map<String, java.lang.Object> propertiesSchemaA = new HashMap<>();
-    propertiesSchemaA.put("name", "water");
-    propertiesSchemaA.put("description", "missing description");
+    String objTID = DataTestSuite.testDataUpdate.objTID;
+    String objAID = DataTestSuite.testDataUpdate.objAID;
+    Map<String, java.lang.Object> propertiesSchemaT = DataTestSuite.testDataUpdate.propertiesSchemaT();
+    Map<String, java.lang.Object> propertiesSchemaA = DataTestSuite.testDataUpdate.propertiesSchemaA();
     // when
     testGenerics.createWeaviateTestSchemaFood(client);
     Result<WeaviateObject> objectT = client.data().creator()
@@ -383,27 +275,7 @@ public class ClientDataTest {
     Result<List<WeaviateObject>> updatedObjsA = client.data().objectsGetter().withClassName("Soup").withID(objAID).run();
     testGenerics.cleanupWeaviate(client);
     // then
-    assertNotNull(objectT);
-    assertNotNull(objectT.getResult());
-    assertEquals(objTID, objectT.getResult().getId());
-    assertNotNull(objectA);
-    assertNotNull(objectA.getResult());
-    assertEquals(objAID, objectA.getResult().getId());
-    assertNotNull(updateObjectT);
-    assertTrue(updateObjectT.getResult());
-    assertNotNull(updateObjectA);
-    assertTrue(updateObjectA.getResult());
-    assertNotNull(updatedObjsT);
-    assertNotNull(updatedObjsT.getResult());
-    assertEquals(1, updatedObjsT.getResult().size());
-    assertEquals("Hawaii", updatedObjsT.getResult().get(0).getProperties().get("name"));
-    assertEquals("Universally accepted to be the best pizza ever created.", updatedObjsT.getResult().get(0).getProperties().get("description"));
-    assertNotNull(updatedObjsA);
-    assertNotNull(updatedObjsA.getResult());
-    assertEquals(1, updatedObjsA.getResult().size());
-    assertEquals("ChickenSoup", updatedObjsA.getResult().get(0).getProperties().get("name"));
-    assertEquals("Used by humans when their inferior genetics are attacked by microscopic organisms.", updatedObjsA.getResult().get(0).getProperties().get(
-      "description"));
+    DataTestSuite.testDataUpdate.assertResults(objectT, objectA, updateObjectT, updateObjectA, updatedObjsT, updatedObjsA);
   }
 
   @Test
@@ -412,14 +284,10 @@ public class ClientDataTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-    String objTID = "abefd256-8574-442b-9293-9205193737ee";
-    String objAID = "565da3b6-60b3-40e5-ba21-e6bfe5dbba91";
-    Map<String, java.lang.Object> propertiesSchemaT = new HashMap<>();
-    propertiesSchemaT.put("name", "Hawaii");
-    propertiesSchemaT.put("description", "Missing description");
-    Map<String, java.lang.Object> propertiesSchemaA = new HashMap<>();
-    propertiesSchemaA.put("name", "ChickenSoup");
-    propertiesSchemaA.put("description", "missing description");
+    String objTID = DataTestSuite.testDataMerge.objTID;
+    String objAID = DataTestSuite.testDataMerge.objAID;
+    Map<String, java.lang.Object> propertiesSchemaT = DataTestSuite.testDataMerge.propertiesSchemaT();
+    Map<String, java.lang.Object> propertiesSchemaA = DataTestSuite.testDataMerge.propertiesSchemaA();
     // when
     testGenerics.createWeaviateTestSchemaFood(client);
     Result<WeaviateObject> objectT = client.data().creator()
@@ -452,27 +320,7 @@ public class ClientDataTest {
     Result<List<WeaviateObject>> mergeddObjsA = client.data().objectsGetter().withClassName("Soup").withID(objAID).run();
     testGenerics.cleanupWeaviate(client);
     // then
-    assertNotNull(objectT);
-    assertNotNull(objectT.getResult());
-    assertEquals(objTID, objectT.getResult().getId());
-    assertNotNull(objectA);
-    assertNotNull(objectA.getResult());
-    assertEquals(objAID, objectA.getResult().getId());
-    assertNotNull(mergeObjectT);
-    assertTrue(mergeObjectT.getResult());
-    assertNotNull(mergeObjectA);
-    assertTrue(mergeObjectA.getResult());
-    assertNotNull(mergedObjsT);
-    assertNotNull(mergedObjsT.getResult());
-    assertEquals(1, mergedObjsT.getResult().size());
-    assertEquals("Hawaii", mergedObjsT.getResult().get(0).getProperties().get("name"));
-    assertEquals("Universally accepted to be the best pizza ever created.", mergedObjsT.getResult().get(0).getProperties().get("description"));
-    assertNotNull(mergeddObjsA);
-    assertNotNull(mergeddObjsA.getResult());
-    assertEquals(1, mergeddObjsA.getResult().size());
-    assertEquals("ChickenSoup", mergeddObjsA.getResult().get(0).getProperties().get("name"));
-    assertEquals("Used by humans when their inferior genetics are attacked by microscopic organisms.", mergeddObjsA.getResult().get(0).getProperties().get(
-      "description"));
+    DataTestSuite.testDataMerge.assertResults(objectT, objectA, mergeObjectT, mergeObjectA, mergedObjsT, mergeddObjsA);
   }
 
   @Test
@@ -481,14 +329,10 @@ public class ClientDataTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-    String objTID = "abefd256-8574-442b-9293-9205193737ee";
-    String objAID = "565da3b6-60b3-40e5-ba21-e6bfe5dbba91";
-    Map<String, java.lang.Object> propertiesSchemaT = new HashMap<>();
-    propertiesSchemaT.put("name", "Hawaii");
-    propertiesSchemaT.put("description", "Universally accepted to be the best pizza ever created.");
-    Map<String, java.lang.Object> propertiesSchemaA = new HashMap<>();
-    propertiesSchemaA.put("name", "ChickenSoup");
-    propertiesSchemaA.put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
+    String objTID = DataTestSuite.testDataValidate.objTID;
+    String objAID = DataTestSuite.testDataValidate.objAID;
+    Map<String, java.lang.Object> propertiesSchemaT = DataTestSuite.testDataValidate.propertiesSchemaT();
+    Map<String, java.lang.Object> propertiesSchemaA = DataTestSuite.testDataValidate.propertiesSchemaA();
     // when
     testGenerics.createWeaviateTestSchemaFood(client);
     Result<Boolean> validateObjT = client.data().validator()
@@ -515,20 +359,7 @@ public class ClientDataTest {
       .run();
     testGenerics.cleanupWeaviate(client);
     // then
-    assertNotNull(validateObjT);
-    assertTrue(validateObjT.getResult());
-    assertNotNull(validateObjA);
-    assertTrue(validateObjA.getResult());
-    assertNotNull(validateObjT1);
-    assertNotNull(validateObjT1.getError());
-    assertEquals("invalid object: no such prop with name 'test' found in class 'Pizza' in the schema." +
-        " Check your schema files for which properties in this class are available",
-      validateObjT1.getError().getMessages().get(0).getMessage());
-    assertNotNull(validateObjA1);
-    assertNotNull(validateObjA1.getError());
-    assertEquals("invalid object: no such prop with name 'test' found in class 'Pizza' in the schema." +
-        " Check your schema files for which properties in this class are available",
-      validateObjA1.getError().getMessages().get(0).getMessage());
+    DataTestSuite.testDataValidate.assertResults(validateObjT, validateObjA, validateObjT1, validateObjA1);
   }
 
   @Test
@@ -537,14 +368,10 @@ public class ClientDataTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-    String objTID = "abefd256-8574-442b-9293-9205193737ee";
-    String objAID = "565da3b6-60b3-40e5-ba21-e6bfe5dbba91";
-    Map<String, Object> propertiesSchemaT = new HashMap<>();
-    propertiesSchemaT.put("name", "Hawaii");
-    propertiesSchemaT.put("description", "Universally accepted to be the best pizza ever created.");
-    Map<String, Object> propertiesSchemaA = new HashMap<>();
-    propertiesSchemaA.put("name", "ChickenSoup");
-    propertiesSchemaA.put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
+    String objTID = DataTestSuite.testDataGetWithAdditionalError.objTID;
+    String objAID = DataTestSuite.testDataGetWithAdditionalError.objAID;
+    Map<String, Object> propertiesSchemaT = DataTestSuite.testDataGetWithAdditionalError.propertiesSchemaT();
+    Map<String, Object> propertiesSchemaA = DataTestSuite.testDataGetWithAdditionalError.propertiesSchemaA();
     // when
     testGenerics.createWeaviateTestSchemaFood(client);
     Result<WeaviateObject> objectT = client.data().creator()
@@ -566,14 +393,7 @@ public class ClientDataTest {
       .run();
     testGenerics.cleanupWeaviate(client);
     // then
-    assertNotNull(objectT);
-    assertNotNull(objectT.getResult());
-    assertNotNull(objectA);
-    assertNotNull(objectA.getResult());
-    assertNotNull(objsAdditionalT);
-    assertNotNull(objsAdditionalT.getError());
-    assertNotNull(objsAdditionalT.getError().getMessages());
-    assertEquals("get extend: unknown capability: featureProjection", objsAdditionalT.getError().getMessages().get(0).getMessage());
+    DataTestSuite.testDataGetWithAdditionalError.assertResults(objectT, objectA, objsAdditionalT);
   }
 
   @Test
@@ -581,51 +401,9 @@ public class ClientDataTest {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className("ClassArrays")
-      .description("Class which properties are all array properties")
-      .vectorIndexType("hnsw")
-      .vectorizer("text2vec-contextionary")
-      .properties(new ArrayList() {{
-        add(Property.builder()
-          .dataType(new ArrayList() {{
-            add(DataType.TEXT_ARRAY);
-          }})
-          .name("stringArray")
-          .build());
-        add(Property.builder()
-          .dataType(new ArrayList() {{
-            add(DataType.TEXT_ARRAY);
-          }})
-          .name("textArray")
-          .build());
-        add(Property.builder()
-          .dataType(new ArrayList() {{
-            add(DataType.INT_ARRAY);
-          }})
-          .name("intArray")
-          .build());
-        add(Property.builder()
-          .dataType(new ArrayList() {{
-            add(DataType.NUMBER_ARRAY);
-          }})
-          .name("numberArray")
-          .build());
-        add(Property.builder()
-          .dataType(new ArrayList() {{
-            add(DataType.BOOLEAN_ARRAY);
-          }})
-          .name("booleanArray")
-          .build());
-      }})
-      .build();
-    String objTID = "abefd256-8574-442b-9293-9205193737ee";
-    Map<String, java.lang.Object> propertiesSchemaT = new HashMap<>();
-    propertiesSchemaT.put("stringArray", new String[]{"a", "b"});
-    propertiesSchemaT.put("textArray", new String[]{"c", "d"});
-    propertiesSchemaT.put("intArray", new Integer[]{1, 2});
-    propertiesSchemaT.put("numberArray", new Float[]{3.3f, 4.4f});
-    propertiesSchemaT.put("booleanArray", new Boolean[]{true, false});
+    WeaviateClass clazz = DataTestSuite.testDataCreateWithArrayType.clazz;
+    String objTID = DataTestSuite.testDataCreateWithArrayType.objTID;
+    Map<String, java.lang.Object> propertiesSchemaT = DataTestSuite.testDataCreateWithArrayType.propertiesSchemaT();
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
     Result<Schema> schemaAfterCreate = client.schema().getter().run();
@@ -638,30 +416,7 @@ public class ClientDataTest {
     Result<Boolean> deleteStatus = client.schema().allDeleter().run();
     Result<Schema> schemaAfterDelete = client.schema().getter().run();
     // then
-    assertNotNull(createStatus);
-    assertTrue(createStatus.getResult());
-    assertNotNull(schemaAfterCreate);
-    assertNotNull(schemaAfterCreate.getResult());
-    assertEquals(1, schemaAfterCreate.getResult().getClasses().size());
-    // data check
-    assertNotNull(objectT);
-    assertNotNull(objectT.getResult());
-    assertEquals(objTID, objectT.getResult().getId());
-    assertNotNull(objectsT);
-    assertNotNull(objectsT.getResult());
-    assertEquals(1, objectsT.getResult().size());
-    assertEquals(objTID, objectsT.getResult().get(0).getId());
-    assertNotNull(objectsT.getResult().get(0).getProperties());
-    assertEquals(5, objectsT.getResult().get(0).getProperties().size());
-    assertEquals("ClassArrays", objectsT.getResult().get(0).getClassName());
-    checkArrays(objectsT.getResult().get(0).getProperties().get("stringArray"), 2, "a", "b");
-    checkArrays(objectsT.getResult().get(0).getProperties().get("textArray"), 2, "c", "d");
-    checkArrays(objectsT.getResult().get(0).getProperties().get("intArray"), 2, 1.0, 2.0);
-    checkArrays(objectsT.getResult().get(0).getProperties().get("numberArray"), 2, 3.3, 4.4);
-    checkArrays(objectsT.getResult().get(0).getProperties().get("booleanArray"), 2, true, false);
-    assertNotNull(deleteStatus);
-    assertTrue(deleteStatus.getResult());
-    assertEquals(0, schemaAfterDelete.getResult().getClasses().size());
+    DataTestSuite.testDataCreateWithArrayType.assertResults(createStatus, schemaAfterCreate, objectT, objectsT, deleteStatus, schemaAfterDelete);
   }
 
   @Test
@@ -669,23 +424,10 @@ public class ClientDataTest {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className("ClassCustomVector")
-      .description("Class with custom vector")
-      .vectorizer("none")
-      .properties(new ArrayList() {{
-        add(Property.builder()
-          .dataType(new ArrayList() {{
-            add(DataType.TEXT);
-          }})
-          .name("foo")
-          .build());
-      }})
-      .build();
-    String objTID = "addfd256-8574-442b-9293-9205193737ee";
-    Map<String, Object> propertiesSchemaT = new HashMap<>();
-    propertiesSchemaT.put("foo", "bar");
-    Float[] vectorObjT = new Float[]{-0.26736435f, -0.112380296f, 0.29648793f, 0.39212644f, 0.0033650293f, -0.07112332f, 0.07513781f, 0.22459874f};
+    WeaviateClass clazz = DataTestSuite.testDataGetWithVector.clazz;
+    String objTID = DataTestSuite.testDataGetWithVector.objTID;
+    Map<String, Object> propertiesSchemaT = DataTestSuite.testDataGetWithVector.propertiesSchemaT();
+    Float[] vectorObjT = DataTestSuite.testDataGetWithVector.vectorObjT;
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
     Result<Schema> schemaAfterCreate = client.schema().getter().run();
@@ -703,23 +445,7 @@ public class ClientDataTest {
     Result<Boolean> deleteStatus = client.schema().allDeleter().run();
     Result<Schema> schemaAfterDelete = client.schema().getter().run();
     // then
-    assertNotNull(createStatus);
-    assertTrue(createStatus.getResult());
-    assertNotNull(schemaAfterCreate);
-    assertNotNull(schemaAfterCreate.getResult());
-    assertEquals(1, schemaAfterCreate.getResult().getClasses().size());
-    // check the object
-    assertNotNull(objectT);
-    assertNotNull(objectT.getResult());
-    assertNotNull(objT);
-    assertNull(objT.getError());
-    assertNotNull(objT.getResult());
-    assertEquals(objT.getResult().size(), 1);
-    assertArrayEquals(objT.getResult().get(0).getVector(), vectorObjT);
-    // clean up
-    assertNotNull(deleteStatus);
-    assertTrue(deleteStatus.getResult());
-    assertEquals(0, schemaAfterDelete.getResult().getClasses().size());
+    DataTestSuite.testDataGetWithVector.assertResults(createStatus, schemaAfterCreate, objectT, objT, deleteStatus, schemaAfterDelete);
   }
 
   @Test
@@ -728,15 +454,11 @@ public class ClientDataTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-    String objTID = "abefd256-8574-442b-9293-9205193737ee";
-    String objAID = "565da3b6-60b3-40e5-ba21-e6bfe5dbba91";
-    String nonExistentObjectID = "11111111-1111-1111-aaaa-aaaaaaaaaaaa";
-    Map<String, java.lang.Object> propertiesSchemaT = new HashMap<>();
-    propertiesSchemaT.put("name", "Hawaii");
-    propertiesSchemaT.put("description", "Universally accepted to be the best pizza ever created.");
-    Map<String, java.lang.Object> propertiesSchemaA = new HashMap<>();
-    propertiesSchemaA.put("name", "ChickenSoup");
-    propertiesSchemaA.put("description", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
+    String objTID = DataTestSuite.testObjectCheck.objTID;
+    String objAID = DataTestSuite.testObjectCheck.objAID;
+    String nonExistentObjectID = DataTestSuite.testObjectCheck.nonExistentObjectID;
+    Map<String, java.lang.Object> propertiesSchemaT = DataTestSuite.testObjectCheck.propertiesSchemaT();
+    Map<String, java.lang.Object> propertiesSchemaA = DataTestSuite.testObjectCheck.propertiesSchemaA();
     // when
     testGenerics.createWeaviateTestSchemaFood(client);
     Result<WeaviateObject> objectT = client.data().creator()
@@ -772,32 +494,8 @@ public class ClientDataTest {
     Result<Boolean> checkObjAAfterDelete = client.data().checker().withClassName("Soup").withID(objAID).run();
     testGenerics.cleanupWeaviate(client);
     // then
-    assertNotNull(objectT);
-    assertNotNull(objectT.getResult());
-    assertEquals(objTID, objectT.getResult().getId());
-    assertNotNull(objectA);
-    assertNotNull(objectA.getResult());
-    assertEquals(objAID, objectA.getResult().getId());
-    assertNotNull(checkObjT);
-    assertTrue(checkObjT.getResult());
-    assertNotNull(checkObjA);
-    assertTrue(checkObjA.getResult());
-    assertNotNull(objA.getResult());
-    assertEquals(objA.getResult().size(), 1);
-    assertEquals(objA.getResult().get(0).getId(), objAID);
-    assertNotNull(objT.getResult());
-    assertEquals(objT.getResult().size(), 1);
-    assertEquals(objT.getResult().get(0).getId(), objTID);
-    assertNotNull(checkNonexistentObject);
-    assertFalse(checkNonexistentObject.getResult());
-    assertNotNull(deleteStatus);
-    assertTrue(deleteStatus.getResult());
-    assertNotNull(checkObjTAfterDelete);
-    assertFalse(checkObjTAfterDelete.getResult());
-    assertNull(checkObjTAfterDelete.getError());
-    assertNotNull(checkObjAAfterDelete);
-    assertFalse(checkObjAAfterDelete.getResult());
-    assertNull(checkObjAAfterDelete.getError());
+    DataTestSuite.testObjectCheck
+      .assertResults(objectT, objectA, checkObjT, checkObjA, objA, objT, checkNonexistentObject, deleteStatus, checkObjTAfterDelete, checkObjAAfterDelete);
   }
 
   @Test
@@ -805,10 +503,8 @@ public class ClientDataTest {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
-    String objID = "TODO_4";
-    Map<String, java.lang.Object> propertiesSchemaT = new HashMap<>();
-    propertiesSchemaT.put("name", "name");
-    propertiesSchemaT.put("description", "description");
+    String objID = DataTestSuite.testDataCreateWithIDInNotUUIDFormat.objID;
+    Map<String, java.lang.Object> propertiesSchemaT = DataTestSuite.testDataCreateWithIDInNotUUIDFormat.propertiesSchemaT();
     // when
     Result<WeaviateObject> objectT = client.data().creator()
       .withID(objID)
@@ -819,18 +515,7 @@ public class ClientDataTest {
     Result<Boolean> deleteStatus = client.schema().allDeleter().run();
     Result<Schema> schemaAfterDelete = client.schema().getter().run();
     // then
-    assertNotNull(objectT);
-    assertNull(objectT.getResult());
-    assertNotNull(objectT.getError());
-    assertNotNull(objectT.getError().getMessages());
-    assertNotNull(objectT.getError().getMessages().get(0));
-    assertEquals(422, objectT.getError().getStatusCode());
-    assertEquals("id in body must be of type uuid: \"TODO_4\"", objectT.getError().getMessages().get(0).getMessage());
-    assertNotNull(objectsT);
-    assertNull(objectsT.getResult());
-    assertNotNull(deleteStatus);
-    assertTrue(deleteStatus.getResult());
-    assertEquals(0, schemaAfterDelete.getResult().getClasses().size());
+    DataTestSuite.testDataCreateWithIDInNotUUIDFormat.assertResults(objectT, objectsT, deleteStatus, schemaAfterDelete);
   }
 
   @Test
@@ -862,19 +547,7 @@ public class ClientDataTest {
     Result<List<WeaviateObject>> soupObjects = client.data().objectsGetter().withClassName("Soup").run();
     testGenerics.cleanupWeaviate(client);
     // then
-    assertCreated(pizzaObj1);
-    assertCreated(pizzaObj2);
-    assertCreated(soupObj1);
-    assertCreated(soupObj2);
-    assertNotNull(objects);
-    assertNotNull(objects.getResult());
-    assertEquals(4, objects.getResult().size());
-    assertNotNull(pizzaObjects);
-    assertNotNull(pizzaObjects.getResult());
-    assertEquals(2, pizzaObjects.getResult().size());
-    assertNotNull(soupObjects);
-    assertNotNull(soupObjects.getResult());
-    assertEquals(2, soupObjects.getResult().size());
+    DataTestSuite.testDataGetUsingClassParameter.assertResults(pizzaObj1, pizzaObj2, soupObj1, soupObj2, objects, pizzaObjects, soupObjects);
   }
 
   private void assertCreated(Result<WeaviateObject> obj) {

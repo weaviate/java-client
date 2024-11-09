@@ -3,6 +3,7 @@ package io.weaviate.integration.client;
 import com.google.gson.Gson;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
+import io.weaviate.client.v1.async.WeaviateAsyncClient;
 import io.weaviate.client.v1.batch.model.ObjectGetResponse;
 import io.weaviate.client.v1.data.model.SingleRef;
 import io.weaviate.client.v1.data.model.WeaviateObject;
@@ -29,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -86,7 +88,23 @@ public class WeaviateTestGenerics {
     createWeaviateTestSchemaFood(client, false);
   }
 
+  public void createWeaviateTestSchemaFoodAsync(WeaviateAsyncClient client) throws ExecutionException, InterruptedException {
+    createWeaviateTestSchemaFoodAsync(client, false);
+  }
+
   public void createWeaviateTestSchemaFood(WeaviateClient client, boolean deprecatedMode) {
+    try {
+      createWeaviateTestSchemaFoodWithClients(client, null, deprecatedMode);
+    } catch (ExecutionException | InterruptedException e) {
+      // ignoring bc there are no exceptions from sync client
+    }
+  }
+
+  public void createWeaviateTestSchemaFoodAsync(WeaviateAsyncClient client, boolean deprecatedMode) throws ExecutionException, InterruptedException {
+    createWeaviateTestSchemaFoodWithClients(null, client, deprecatedMode);
+  }
+
+  private void createWeaviateTestSchemaFoodWithClients(WeaviateClient client, WeaviateAsyncClient asyncClient, boolean deprecatedMode) throws ExecutionException, InterruptedException {
     // classes
     WeaviateClass pizza = WeaviateClass.builder()
       .className("Pizza")
@@ -98,11 +116,21 @@ public class WeaviateTestGenerics {
       .description("Mostly water based brew of sustenance for humans.")
       .build();
     // create Pizza class
-    Result<Boolean> pizzaCreateStatus = client.schema().classCreator().withClass(pizza).run();
+    Result<Boolean> pizzaCreateStatus;
+    if (asyncClient != null) {
+      pizzaCreateStatus = asyncClient.schema().classCreator().withClass(pizza).run().get();
+    } else {
+      pizzaCreateStatus = client.schema().classCreator().withClass(pizza).run();
+    }
     assertNotNull(pizzaCreateStatus);
     assertTrue(pizzaCreateStatus.getResult());
     // create Soup class
-    Result<Boolean> soupCreateStatus = client.schema().classCreator().withClass(soup).run();
+    Result<Boolean> soupCreateStatus;
+    if (asyncClient != null) {
+      soupCreateStatus = asyncClient.schema().classCreator().withClass(soup).run().get();
+    } else {
+      soupCreateStatus = client.schema().classCreator().withClass(soup).run();
+    }
     assertNotNull(soupCreateStatus);
     assertTrue(soupCreateStatus.getResult());
 
@@ -142,37 +170,85 @@ public class WeaviateTestGenerics {
       .moduleConfig(moduleConfig)
       .build();
     // Add name and description properties to Pizza
-    Result<Boolean> pizzaPropertyNameStatus = client.schema().propertyCreator()
-      .withProperty(nameProperty).withClassName(pizza.getClassName()).run();
+    Result<Boolean> pizzaPropertyNameStatus;
+    if (asyncClient != null) {
+      pizzaPropertyNameStatus = asyncClient.schema().propertyCreator()
+        .withProperty(nameProperty).withClassName(pizza.getClassName()).run().get();
+    } else {
+      pizzaPropertyNameStatus = client.schema().propertyCreator()
+        .withProperty(nameProperty).withClassName(pizza.getClassName()).run();
+    }
     assertNotNull(pizzaPropertyNameStatus);
     assertTrue(pizzaPropertyNameStatus.getResult());
-    Result<Boolean> pizzaPropertyDescriptionStatus = client.schema().propertyCreator()
-      .withProperty(descriptionProperty).withClassName(pizza.getClassName()).run();
+    Result<Boolean> pizzaPropertyDescriptionStatus;
+    if (asyncClient != null) {
+      pizzaPropertyDescriptionStatus = asyncClient.schema().propertyCreator()
+        .withProperty(descriptionProperty).withClassName(pizza.getClassName()).run().get();
+    } else {
+      pizzaPropertyDescriptionStatus = client.schema().propertyCreator()
+        .withProperty(descriptionProperty).withClassName(pizza.getClassName()).run();
+    }
     assertNotNull(pizzaPropertyDescriptionStatus);
     assertTrue(pizzaPropertyDescriptionStatus.getResult());
-    Result<Boolean> pizzaPropertyBestBeforeStatus = client.schema().propertyCreator()
-      .withProperty(bestBeforeProperty).withClassName(pizza.getClassName()).run();
+    Result<Boolean> pizzaPropertyBestBeforeStatus;
+    if (asyncClient != null) {
+      pizzaPropertyBestBeforeStatus = asyncClient.schema().propertyCreator()
+        .withProperty(bestBeforeProperty).withClassName(pizza.getClassName()).run().get();
+    } else {
+      pizzaPropertyBestBeforeStatus = client.schema().propertyCreator()
+        .withProperty(bestBeforeProperty).withClassName(pizza.getClassName()).run();
+    }
     assertNotNull(pizzaPropertyBestBeforeStatus);
     assertTrue(pizzaPropertyBestBeforeStatus.getResult());
-    Result<Boolean> pizzaPropertyPriceStatus = client.schema().propertyCreator()
-      .withProperty(priceProperty).withClassName(pizza.getClassName()).run();
+    Result<Boolean> pizzaPropertyPriceStatus;
+    if (asyncClient != null) {
+      pizzaPropertyPriceStatus = asyncClient.schema().propertyCreator()
+        .withProperty(priceProperty).withClassName(pizza.getClassName()).run().get();
+    } else {
+      pizzaPropertyPriceStatus = client.schema().propertyCreator()
+        .withProperty(priceProperty).withClassName(pizza.getClassName()).run();
+    }
     assertNotNull(pizzaPropertyPriceStatus);
     assertTrue(pizzaPropertyPriceStatus.getResult());
     // Add name and description properties to Soup
-    Result<Boolean> soupPropertyNameStatus = client.schema().propertyCreator()
-      .withProperty(nameProperty).withClassName(soup.getClassName()).run();
+    Result<Boolean> soupPropertyNameStatus;
+    if (asyncClient != null) {
+      soupPropertyNameStatus = asyncClient.schema().propertyCreator()
+        .withProperty(nameProperty).withClassName(soup.getClassName()).run().get();
+    } else {
+      soupPropertyNameStatus = client.schema().propertyCreator()
+        .withProperty(nameProperty).withClassName(soup.getClassName()).run();
+    }
     assertNotNull(soupPropertyNameStatus);
     assertTrue(soupPropertyNameStatus.getResult());
-    Result<Boolean> soupPropertyDescriptionStatus = client.schema().propertyCreator()
-      .withProperty(descriptionProperty).withClassName(soup.getClassName()).run();
+    Result<Boolean> soupPropertyDescriptionStatus;
+    if (asyncClient != null) {
+      soupPropertyDescriptionStatus = asyncClient.schema().propertyCreator()
+        .withProperty(descriptionProperty).withClassName(soup.getClassName()).run().get();
+    } else {
+      soupPropertyDescriptionStatus = client.schema().propertyCreator()
+        .withProperty(descriptionProperty).withClassName(soup.getClassName()).run();
+    }
     assertNotNull(soupPropertyDescriptionStatus);
     assertTrue(soupPropertyDescriptionStatus.getResult());
-    Result<Boolean> soupPropertyBestBeforeStatus = client.schema().propertyCreator()
-      .withProperty(bestBeforeProperty).withClassName(soup.getClassName()).run();
+    Result<Boolean> soupPropertyBestBeforeStatus;
+    if (asyncClient != null) {
+      soupPropertyBestBeforeStatus = asyncClient.schema().propertyCreator()
+        .withProperty(bestBeforeProperty).withClassName(soup.getClassName()).run().get();
+    } else {
+      soupPropertyBestBeforeStatus = client.schema().propertyCreator()
+        .withProperty(bestBeforeProperty).withClassName(soup.getClassName()).run();
+    }
     assertNotNull(soupPropertyBestBeforeStatus);
     assertTrue(soupPropertyBestBeforeStatus.getResult());
-    Result<Boolean> soupPropertyPriceStatus = client.schema().propertyCreator()
-      .withProperty(priceProperty).withClassName(soup.getClassName()).run();
+    Result<Boolean> soupPropertyPriceStatus;
+    if (asyncClient != null) {
+      soupPropertyPriceStatus = asyncClient.schema().propertyCreator()
+        .withProperty(priceProperty).withClassName(soup.getClassName()).run().get();
+    } else {
+      soupPropertyPriceStatus = client.schema().propertyCreator()
+        .withProperty(priceProperty).withClassName(soup.getClassName()).run();
+    }
     assertNotNull(soupPropertyPriceStatus);
     assertTrue(soupPropertyPriceStatus.getResult());
   }
@@ -353,6 +429,11 @@ public class WeaviateTestGenerics {
     assertTrue(deleteAllStatus.getResult());
   }
 
+  public void cleanupWeaviateAsync(WeaviateAsyncClient client) throws ExecutionException, InterruptedException {
+    Result<Boolean> deleteAllStatus = client.schema().allDeleter().run().get();
+    assertNotNull(deleteAllStatus);
+    assertTrue(deleteAllStatus.getResult());
+  }
 
   public void createSchemaPizza(WeaviateClient client) {
     createSchema(client, classPizza());

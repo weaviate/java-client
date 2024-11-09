@@ -1,8 +1,7 @@
 package io.weaviate.client.v1.data.builder;
 
-import io.weaviate.client.v1.data.model.SingleRef;
 import io.weaviate.client.base.util.BeaconPath;
-
+import io.weaviate.client.v1.data.model.SingleRef;
 import java.util.Objects;
 
 public class ReferencePayloadBuilder {
@@ -35,9 +34,9 @@ public class ReferencePayloadBuilder {
     String beacon;
     if (beaconPath != null) {
       beacon = beaconPath.buildSingle(BeaconPath.Params.builder()
-              .id(id)
-              .className(className)
-              .build());
+        .id(id)
+        .className(className)
+        .build());
     } else {
       beacon = beaconDeprecated();
     }
