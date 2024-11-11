@@ -46,6 +46,14 @@ public abstract class AsyncBaseClient<T> {
     return sendRequest(endpoint, payload, "PUT", null, callback, parser);
   }
 
+  protected Future<Result<T>> sendPatchRequest(String endpoint, Object payload, Class<T> classOfT, FutureCallback<Result<T>> callback) {
+    return sendRequest(endpoint, payload, "PATCH", classOfT, callback, null);
+  }
+
+  protected Future<Result<T>> sendPatchRequest(String endpoint, Object payload, FutureCallback<Result<T>> callback, ResponseParser<T> parser) {
+    return sendRequest(endpoint, payload, "PATCH", null, callback, parser);
+  }
+
   protected Future<Result<T>> sendDeleteRequest(String endpoint, Object payload, Class<T> classOfT, FutureCallback<Result<T>> callback) {
     return sendRequest(endpoint, payload, "DELETE", classOfT, callback, null);
   }
@@ -62,8 +70,7 @@ public abstract class AsyncBaseClient<T> {
     return sendRequest(endpoint, null, "HEAD", null, callback, parser);
   }
 
-  private Future<Result<T>> sendRequest(String endpoint, Object payload, String method, Class<T> classOfT, FutureCallback<Result<T>> callback,
-    ResponseParser<T> parser) {
+  private Future<Result<T>> sendRequest(String endpoint, Object payload, String method, Class<T> classOfT, FutureCallback<Result<T>> callback, ResponseParser<T> parser) {
     SimpleHttpRequest req = new SimpleHttpRequest(method, String.format("%s%s", config.getBaseURL(), endpoint));
     req.addHeader(HttpHeaders.ACCEPT, "*/*");
     req.addHeader(HttpHeaders.CONTENT_TYPE, "application/json");
