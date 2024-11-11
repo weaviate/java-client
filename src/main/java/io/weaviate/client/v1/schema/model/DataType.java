@@ -17,6 +17,7 @@ public interface DataType {
   String PHONE_NUMBER = "phoneNumber";
   String UUID = "uuid";
   String OBJECT = "object";
+  String BLOB = "blob";
 
   /**
    * As of Weaviate v1.19 'string[]' is deprecated and replaced by 'text[]'.<br>
