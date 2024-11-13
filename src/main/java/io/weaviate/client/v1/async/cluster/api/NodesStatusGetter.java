@@ -33,11 +33,6 @@ public class NodesStatusGetter extends AsyncBaseClient<NodesStatusResponse>
   }
 
   @Override
-  public Future<Result<NodesStatusResponse>> run() {
-    return run(null);
-  }
-
-  @Override
   public Future<Result<NodesStatusResponse>> run(FutureCallback<Result<NodesStatusResponse>> callback) {
     return sendGetRequest(path(), NodesStatusResponse.class, callback);
   }
