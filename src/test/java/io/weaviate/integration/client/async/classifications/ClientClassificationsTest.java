@@ -45,23 +45,25 @@ public class ClientClassificationsTest {
     String[] classifyProperties = new String[]{"tagged"};
     String[] basedOnProperties = new String[]{"description"};
 
-    Supplier<Result<Classification>> resultSupplier = createSupplierScheduler(
-      scheduler -> scheduler
-        .withType(ClassificationType.Contextual)
-        .withClassName("Pizza")
-        .withClassifyProperties(classifyProperties)
-        .withBasedOnProperties(basedOnProperties)
-    );
-    Supplier<Result<Classification>> resultSupplierComplete = createSupplierScheduler(
-      scheduler -> scheduler
-        .withType(ClassificationType.Contextual)
-        .withClassName("Pizza")
-        .withClassifyProperties(classifyProperties)
-        .withBasedOnProperties(basedOnProperties)
-        .withWaitForCompletion()
-    );
+    try (WeaviateAsyncClient asyncClient = client.async()) {
+      Supplier<Result<Classification>> resultSupplier = createSupplierScheduler(
+        asyncClient, scheduler -> scheduler
+          .withType(ClassificationType.Contextual)
+          .withClassName("Pizza")
+          .withClassifyProperties(classifyProperties)
+          .withBasedOnProperties(basedOnProperties)
+      );
+      Supplier<Result<Classification>> resultSupplierComplete = createSupplierScheduler(
+        asyncClient, scheduler -> scheduler
+          .withType(ClassificationType.Contextual)
+          .withClassName("Pizza")
+          .withClassifyProperties(classifyProperties)
+          .withBasedOnProperties(basedOnProperties)
+          .withWaitForCompletion()
+      );
 
-    ClassificationsTestSuite.testScheduler(resultSupplier, resultSupplierComplete, testGenerics, client);
+      ClassificationsTestSuite.testScheduler(resultSupplier, resultSupplierComplete, testGenerics, client);
+    }
   }
 
   @Test
@@ -70,22 +72,25 @@ public class ClientClassificationsTest {
     String[] basedOnProperties = new String[]{"description"};
     ParamsKNN paramsKNN = ParamsKNN.builder().k(3).build();
 
-    Supplier<Result<Classification>> resultSupplierScheduler = createSupplierScheduler(
-      scheduler -> scheduler
-        .withType(ClassificationType.KNN)
-        .withClassName("Pizza")
-        .withClassifyProperties(classifyProperties)
-        .withBasedOnProperties(basedOnProperties)
-        .withSettings(paramsKNN)
-    );
-    Function<String, Result<Classification>> resultSupplierGetter = createSupplierGetter();
+    try (WeaviateAsyncClient asyncClient = client.async()) {
+      Supplier<Result<Classification>> resultSupplierScheduler = createSupplierScheduler(
+        asyncClient, scheduler -> scheduler
+          .withType(ClassificationType.KNN)
+          .withClassName("Pizza")
+          .withClassifyProperties(classifyProperties)
+          .withBasedOnProperties(basedOnProperties)
+          .withSettings(paramsKNN)
+      );
+      Function<String, Result<Classification>> resultSupplierGetter = createSupplierGetter(asyncClient);
 
-    ClassificationsTestSuite.testGetter(resultSupplierScheduler, resultSupplierGetter, testGenerics, client);
+      ClassificationsTestSuite.testGetter(resultSupplierScheduler, resultSupplierGetter, testGenerics, client);
+    }
   }
 
-  private Supplier<Result<Classification>> createSupplierScheduler(Consumer<Scheduler> configure) {
+  private Supplier<Result<Classification>> createSupplierScheduler(WeaviateAsyncClient asyncClient,
+                                                                   Consumer<Scheduler> configure) {
     return () -> {
-      try (WeaviateAsyncClient asyncClient = client.async()) {
+      try {
         Scheduler scheduler = asyncClient.classifications().scheduler();
         configure.accept(scheduler);
         return scheduler.run().get();
@@ -95,9 +100,9 @@ public class ClientClassificationsTest {
     };
   }
 
-  private Function<String, Result<Classification>> createSupplierGetter() {
+  private Function<String, Result<Classification>> createSupplierGetter(WeaviateAsyncClient asyncClient) {
     return (String id) -> {
-      try (WeaviateAsyncClient asyncClient = client.async()) {
+      try {
         return asyncClient.classifications().getter()
           .withID(id)
           .run().get();

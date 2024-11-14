@@ -41,28 +41,31 @@ public class ClientClusterMultiTenancyTest {
 
   @Test
   public void shouldGetNodeStatusPerClass() throws InterruptedException {
-    Supplier<Result<NodesStatusResponse>> resultSupplierAll = createSupplier(
-      nodesStatusGetter -> nodesStatusGetter
-        .withOutput(NodeStatusOutput.VERBOSE)
-    );
-    Supplier<Result<NodesStatusResponse>> resultSupplierPizza = createSupplier(
-      nodesStatusGetter -> nodesStatusGetter
-        .withOutput(NodeStatusOutput.VERBOSE)
-        .withClassName("Pizza")
-    );
-    Supplier<Result<NodesStatusResponse>> resultSupplierSoup = createSupplier(
-      nodesStatusGetter -> nodesStatusGetter
-        .withOutput(NodeStatusOutput.VERBOSE)
-        .withClassName("Soup")
-    );
+    try (WeaviateAsyncClient asyncClient = client.async()) {
+      Supplier<Result<NodesStatusResponse>> resultSupplierAll = createSupplier(
+        asyncClient, nodesStatusGetter -> nodesStatusGetter
+          .withOutput(NodeStatusOutput.VERBOSE)
+      );
+      Supplier<Result<NodesStatusResponse>> resultSupplierPizza = createSupplier(
+        asyncClient, nodesStatusGetter -> nodesStatusGetter
+          .withOutput(NodeStatusOutput.VERBOSE)
+          .withClassName("Pizza")
+      );
+      Supplier<Result<NodesStatusResponse>> resultSupplierSoup = createSupplier(
+        asyncClient, nodesStatusGetter -> nodesStatusGetter
+          .withOutput(NodeStatusOutput.VERBOSE)
+          .withClassName("Soup")
+      );
 
-    ClusterMultiTenancyTestSuite.testMultiTenancyDataPerClassOutputVerbose(resultSupplierAll, resultSupplierPizza, resultSupplierSoup,
-      testGenerics, client);
+      ClusterMultiTenancyTestSuite.testMultiTenancyDataPerClassOutputVerbose(resultSupplierAll, resultSupplierPizza, resultSupplierSoup,
+        testGenerics, client);
+    }
   }
 
-  private Supplier<Result<NodesStatusResponse>> createSupplier(Consumer<NodesStatusGetter> configure) {
+  private Supplier<Result<NodesStatusResponse>> createSupplier(WeaviateAsyncClient asyncClient,
+                                                               Consumer<NodesStatusGetter> configure) {
     return () -> {
-      try (WeaviateAsyncClient asyncClient = client.async()) {
+      try {
         NodesStatusGetter nodesStatusGetter = asyncClient.cluster().nodesStatusGetter();
         configure.accept(nodesStatusGetter);
         return nodesStatusGetter.run().get();

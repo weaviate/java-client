@@ -40,57 +40,66 @@ public class ClientClusterTest {
 
   @Test
   public void testClusterNodesEndpointWithoutDataWithOutputVerbose() {
-    Supplier<Result<NodesStatusResponse>> resultSupplier = createSupplier(
-      nodesStatusGetter -> nodesStatusGetter
-        .withOutput(NodeStatusOutput.VERBOSE)
-    );
+    try (WeaviateAsyncClient asyncClient = client.async()) {
+      Supplier<Result<NodesStatusResponse>> resultSupplier = createSupplier(
+        asyncClient, nodesStatusGetter -> nodesStatusGetter
+          .withOutput(NodeStatusOutput.VERBOSE)
+      );
 
-    ClusterTestSuite.testNoDataOutputVerbose(resultSupplier);
+      ClusterTestSuite.testNoDataOutputVerbose(resultSupplier);
+    }
   }
 
   @Test
   public void testClusterNodesEndpointWithDataWithOutputVerbose() throws InterruptedException {
-    Supplier<Result<NodesStatusResponse>> resultSupplier = createSupplier(
-      nodesStatusGetter -> nodesStatusGetter
-        .withOutput(NodeStatusOutput.VERBOSE)
-    );
+    try (WeaviateAsyncClient asyncClient = client.async()) {
+      Supplier<Result<NodesStatusResponse>> resultSupplier = createSupplier(
+        asyncClient, nodesStatusGetter -> nodesStatusGetter
+          .withOutput(NodeStatusOutput.VERBOSE)
+      );
 
-    ClusterTestSuite.testDataOutputVerbose(resultSupplier, testGenerics, client);
+      ClusterTestSuite.testDataOutputVerbose(resultSupplier, testGenerics, client);
+    }
   }
 
   @Test
   public void shouldGetNodeStatusPerClassWithOutputVerbose() throws InterruptedException {
-    Supplier<Result<NodesStatusResponse>> resultSupplierAll = createSupplier(
-      nodesStatusGetter -> nodesStatusGetter
-        .withOutput(NodeStatusOutput.VERBOSE)
-    );
-    Supplier<Result<NodesStatusResponse>> resultSupplierPizza = createSupplier(
-      nodesStatusGetter -> nodesStatusGetter
-        .withOutput(NodeStatusOutput.VERBOSE)
-        .withClassName("Pizza")
-    );
-    Supplier<Result<NodesStatusResponse>> resultSupplierSoup = createSupplier(
-      nodesStatusGetter -> nodesStatusGetter
-        .withOutput(NodeStatusOutput.VERBOSE)
-        .withClassName("Soup")
-    );
+    try (WeaviateAsyncClient asyncClient = client.async()) {
+      Supplier<Result<NodesStatusResponse>> resultSupplierAll = createSupplier(
+        asyncClient, nodesStatusGetter -> nodesStatusGetter
+          .withOutput(NodeStatusOutput.VERBOSE)
+      );
+      Supplier<Result<NodesStatusResponse>> resultSupplierPizza = createSupplier(
+        asyncClient, nodesStatusGetter -> nodesStatusGetter
+          .withOutput(NodeStatusOutput.VERBOSE)
+          .withClassName("Pizza")
+      );
+      Supplier<Result<NodesStatusResponse>> resultSupplierSoup = createSupplier(
+        asyncClient, nodesStatusGetter -> nodesStatusGetter
+          .withOutput(NodeStatusOutput.VERBOSE)
+          .withClassName("Soup")
+      );
 
-    ClusterTestSuite.testDataPerClassOutputVerbose(resultSupplierAll, resultSupplierPizza, resultSupplierSoup,
-      testGenerics, client);
+      ClusterTestSuite.testDataPerClassOutputVerbose(resultSupplierAll, resultSupplierPizza, resultSupplierSoup,
+        testGenerics, client);
+    }
   }
 
   @Test
   public void testClusterNodesEndpointWithOutputMinimalImplicit() {
-    Supplier<Result<NodesStatusResponse>> resultSupplier = createSupplier(
-      nodesStatusGetter->{}
-    );
+    try (WeaviateAsyncClient asyncClient = client.async()) {
+      Supplier<Result<NodesStatusResponse>> resultSupplier = createSupplier(
+        asyncClient, nodesStatusGetter -> {}
+      );
 
-    ClusterTestSuite.testNoDataOutputMinimalImplicit(resultSupplier);
+      ClusterTestSuite.testNoDataOutputMinimalImplicit(resultSupplier);
+    }
   }
 
-  private Supplier<Result<NodesStatusResponse>> createSupplier(Consumer<NodesStatusGetter> configure) {
+  private Supplier<Result<NodesStatusResponse>> createSupplier(WeaviateAsyncClient asyncClient,
+                                                               Consumer<NodesStatusGetter> configure) {
     return () -> {
-      try (WeaviateAsyncClient asyncClient = client.async()) {
+      try {
         NodesStatusGetter nodesStatusGetter = asyncClient.cluster().nodesStatusGetter();
         configure.accept(nodesStatusGetter);
         return nodesStatusGetter.run().get();
