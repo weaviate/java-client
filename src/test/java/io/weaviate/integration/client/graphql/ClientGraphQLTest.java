@@ -110,7 +110,6 @@ public class ClientGraphQLTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-    Field name = Field.builder().name("name").build();
     // when
     testGenerics.createTestSchemaAndData(client);
     Result<GraphQLResponse> result = client.graphQL().raw().withQuery("{Get{Pizza{_additional{id}}}}").run();
