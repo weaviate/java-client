@@ -5,6 +5,7 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.async.AsyncHttpClient;
 import io.weaviate.client.base.util.DbVersionProvider;
 import io.weaviate.client.base.util.DbVersionSupport;
+import io.weaviate.client.v1.async.batch.Batch;
 import io.weaviate.client.v1.async.classifications.Classifications;
 import io.weaviate.client.v1.async.cluster.Cluster;
 import io.weaviate.client.v1.async.data.Data;
@@ -40,6 +41,10 @@ public class WeaviateAsyncClient implements AutoCloseable {
 
   public Data data() {
     return new Data(client, config, dbVersionSupport);
+  }
+
+  public Batch batch() {
+    return new Batch(client, config, dbVersionSupport, data());
   }
 
   public Cluster cluster() {

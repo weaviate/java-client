@@ -28,11 +28,6 @@ public class ClassUpdater extends AsyncBaseClient<Boolean> implements AsyncClien
   }
 
   @Override
-  public Future<Result<Boolean>> run() {
-    return run(null);
-  }
-
-  @Override
   public Future<Result<Boolean>> run(FutureCallback<Result<Boolean>> callback) {
     String path = String.format("/schema/%s", UrlEncoder.encodePathParam(clazz.getClassName()));
     return sendPutRequest(path, clazz, callback, new ResponseParser<Boolean>() {

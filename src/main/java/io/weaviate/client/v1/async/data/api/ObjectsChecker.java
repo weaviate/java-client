@@ -48,11 +48,6 @@ public class ObjectsChecker extends AsyncBaseClient<Boolean> implements AsyncCli
   }
 
   @Override
-  public Future<Result<Boolean>> run() {
-    return run(null);
-  }
-
-  @Override
   public Future<Result<Boolean>> run(FutureCallback<Result<Boolean>> callback) {
     if (StringUtils.isEmpty(this.id)) {
       WeaviateErrorMessage errorMessage = WeaviateErrorMessage.builder()

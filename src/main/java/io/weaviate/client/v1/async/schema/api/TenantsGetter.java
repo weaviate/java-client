@@ -25,11 +25,6 @@ public class TenantsGetter extends AsyncBaseClient<List<Tenant>> implements Asyn
   }
 
   @Override
-  public Future<Result<List<Tenant>>> run() {
-    return run(null);
-  }
-
-  @Override
   public Future<Result<List<Tenant>>> run(FutureCallback<Result<List<Tenant>>> callback) {
     String path = String.format("/schema/%s/tenants", UrlEncoder.encodePathParam(className));
     return sendGetRequest(path, callback, new ResponseParser<List<Tenant>>() {

@@ -27,11 +27,6 @@ public class ClassCreator extends AsyncBaseClient<Boolean> implements AsyncClien
   }
 
   @Override
-  public Future<Result<Boolean>> run() {
-    return run(null);
-  }
-
-  @Override
   public Future<Result<Boolean>> run(FutureCallback<Result<Boolean>> callback) {
     return sendPostRequest("/schema", clazz, callback, new ResponseParser<Boolean>() {
       @Override

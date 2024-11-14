@@ -42,11 +42,6 @@ public class ShardsUpdater extends AsyncBaseClient<ShardStatus> implements Async
   }
 
   @Override
-  public Future<Result<ShardStatus>> run() {
-    return run(null);
-  }
-
-  @Override
   public Future<Result<ShardStatus>> run(FutureCallback<Result<ShardStatus>> callback) {
     List<String> emptyFieldNames = new ArrayList<>();
     if (StringUtils.isEmpty(this.className)) {

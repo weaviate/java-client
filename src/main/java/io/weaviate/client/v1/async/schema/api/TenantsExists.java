@@ -33,11 +33,6 @@ public class TenantsExists extends AsyncBaseClient<Boolean> implements AsyncClie
   }
 
   @Override
-  public Future<Result<Boolean>> run() {
-    return run(null);
-  }
-
-  @Override
   public Future<Result<Boolean>> run(FutureCallback<Result<Boolean>> callback) {
     String path = String.format("/schema/%s/tenants/%s", UrlEncoder.encodePathParam(className), UrlEncoder.encodePathParam(tenant));
     return sendHeadRequest(path, callback, new ResponseParser<Boolean>() {

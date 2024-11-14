@@ -33,11 +33,6 @@ public class ClassExists extends AsyncBaseClient<Boolean> implements AsyncClient
   }
 
   @Override
-  public Future<Result<Boolean>> run() {
-    return run(null);
-  }
-
-  @Override
   public Future<Result<Boolean>> run(FutureCallback<Result<Boolean>> callback) {
     if (StringUtils.isEmpty(this.className)) {
       WeaviateErrorMessage errorMessage = WeaviateErrorMessage.builder()

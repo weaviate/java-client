@@ -29,11 +29,6 @@ public class ClassGetter extends AsyncBaseClient<WeaviateClass> implements Async
   }
 
   @Override
-  public Future<Result<WeaviateClass>> run() {
-    return run(null);
-  }
-
-  @Override
   public Future<Result<WeaviateClass>> run(FutureCallback<Result<WeaviateClass>> callback) {
     if (StringUtils.isEmpty(this.className)) {
       WeaviateErrorMessage errorMessage = WeaviateErrorMessage.builder()

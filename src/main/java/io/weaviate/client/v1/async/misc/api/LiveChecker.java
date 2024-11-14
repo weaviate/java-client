@@ -19,11 +19,6 @@ public class LiveChecker extends AsyncBaseClient<Boolean> implements AsyncClient
   }
 
   @Override
-  public Future<Result<Boolean>> run() {
-    return run(null);
-  }
-
-  @Override
   public Future<Result<Boolean>> run(FutureCallback<Result<Boolean>> callback) {
     return sendGetRequest("/.well-known/live", callback, new ResponseParser<Boolean>() {
       @Override

@@ -28,11 +28,6 @@ public class ShardsGetter extends AsyncBaseClient<Shard[]> implements AsyncClien
   }
 
   @Override
-  public Future<Result<Shard[]>> run() {
-    return run(null);
-  }
-
-  @Override
   public Future<Result<Shard[]>> run(FutureCallback<Result<Shard[]>> callback) {
     if (StringUtils.isEmpty(this.className)) {
       WeaviateErrorMessage errorMessage = WeaviateErrorMessage.builder()

@@ -60,11 +60,6 @@ public class ReferenceDeleter extends AsyncBaseClient<Boolean> implements AsyncC
   }
 
   @Override
-  public Future<Result<Boolean>> run() {
-    return run(null);
-  }
-
-  @Override
   public Future<Result<Boolean>> run(FutureCallback<Result<Boolean>> callback) {
     String path = referencesPath.buildDelete(ReferencesPath.Params.builder()
       .id(id)

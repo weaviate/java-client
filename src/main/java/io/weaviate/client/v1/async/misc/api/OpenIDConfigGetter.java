@@ -16,11 +16,6 @@ public class OpenIDConfigGetter extends AsyncBaseClient<OpenIDConfiguration> imp
   }
 
   @Override
-  public Future<Result<OpenIDConfiguration>> run() {
-    return run(null);
-  }
-
-  @Override
   public Future<Result<OpenIDConfiguration>> run(FutureCallback<Result<OpenIDConfiguration>> callback) {
     return sendGetRequest("/meta", OpenIDConfiguration.class, callback);
   }

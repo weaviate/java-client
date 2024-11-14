@@ -1,20 +1,17 @@
-package io.weaviate.client.v1.batch.api;
+package io.weaviate.client.v1.async.batch.api;
 
-import com.google.gson.annotations.SerializedName;
+import io.weaviate.client.Config;
+import io.weaviate.client.base.AsyncBaseClient;
+import io.weaviate.client.base.AsyncClientResult;
+import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.batch.model.BatchDeleteResponse;
 import io.weaviate.client.v1.batch.util.ObjectsPath;
-import lombok.Builder;
-import lombok.Getter;
-import io.weaviate.client.Config;
-import io.weaviate.client.base.BaseClient;
-import io.weaviate.client.base.ClientResult;
-import io.weaviate.client.base.Response;
-import io.weaviate.client.base.Result;
-import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.v1.filters.WhereFilter;
+import java.util.concurrent.Future;
+import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
+import org.apache.hc.core5.concurrent.FutureCallback;
 
-public class ObjectsBatchDeleter extends BaseClient<BatchDeleteResponse> implements ClientResult<BatchDeleteResponse> {
-
+public class ObjectsBatchDeleter extends AsyncBaseClient<BatchDeleteResponse> implements AsyncClientResult<BatchDeleteResponse> {
   private final ObjectsPath objectsPath;
   private String className;
   private String consistencyLevel;
@@ -23,12 +20,10 @@ public class ObjectsBatchDeleter extends BaseClient<BatchDeleteResponse> impleme
   private String output;
   private Boolean dryRun;
 
-
-  public ObjectsBatchDeleter(HttpClient httpClient, Config config, ObjectsPath objectsPath) {
-    super(httpClient, config);
+  public ObjectsBatchDeleter(CloseableHttpAsyncClient client, Config config, ObjectsPath objectsPath) {
+    super(client, config);
     this.objectsPath = objectsPath;
   }
-
 
   public ObjectsBatchDeleter withClassName(String className) {
     this.className = className;
@@ -60,14 +55,18 @@ public class ObjectsBatchDeleter extends BaseClient<BatchDeleteResponse> impleme
     return this;
   }
 
+  @Override
+  public Future<Result<BatchDeleteResponse>> run() {
+    return run(null);
+  }
 
   @Override
-  public Result<BatchDeleteResponse> run() {
-    BatchDeleteMatch match = BatchDeleteMatch.builder()
+  public Future<Result<BatchDeleteResponse>> run(FutureCallback<Result<BatchDeleteResponse>> callback) {
+    io.weaviate.client.v1.batch.api.ObjectsBatchDeleter.BatchDeleteMatch match = io.weaviate.client.v1.batch.api.ObjectsBatchDeleter.BatchDeleteMatch.builder()
       .className(className)
       .whereFilter(where)
       .build();
-    BatchDelete batchDelete = BatchDelete.builder()
+    io.weaviate.client.v1.batch.api.ObjectsBatchDeleter.BatchDelete batchDelete = io.weaviate.client.v1.batch.api.ObjectsBatchDeleter.BatchDelete.builder()
       .dryRun(dryRun)
       .output(output)
       .match(match)
@@ -76,27 +75,6 @@ public class ObjectsBatchDeleter extends BaseClient<BatchDeleteResponse> impleme
       .consistencyLevel(consistencyLevel)
       .tenant(tenant)
       .build());
-    Response<BatchDeleteResponse> resp = sendDeleteRequest(path, batchDelete, BatchDeleteResponse.class);
-    return new Result<>(resp);
-  }
-
-
-  @Getter
-  @Builder
-  public static class BatchDelete {
-
-    BatchDeleteMatch match;
-    String output;
-    Boolean dryRun;
-  }
-
-  @Getter
-  @Builder
-  public static class BatchDeleteMatch {
-
-    @SerializedName("class")
-    String className;
-    @SerializedName("where")
-    WhereFilter whereFilter;
+    return sendDeleteRequest(path, batchDelete, BatchDeleteResponse.class, callback);
   }
 }

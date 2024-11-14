@@ -10,11 +10,15 @@ import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.data.replication.model.ConsistencyLevel;
 import io.weaviate.integration.client.WeaviateDockerCompose;
 import io.weaviate.integration.client.WeaviateTestGenerics;
+import io.weaviate.integration.tests.batch.BatchTestSuite;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.After;
 import org.junit.Before;
@@ -54,74 +58,40 @@ public class ClientBatchCreateTest {
 
   @Test
   public void shouldCreateBatch() {
-    // when
-    Result<WeaviateObject> resPizza1 = client.data().creator()
+    Supplier<Result<WeaviateObject>> resPizza1 = () -> client.data().creator()
       .withClassName("Pizza")
-      .withID(PIZZA_1_ID)
-      .withProperties(PIZZA_1_PROPS)
+      .withID(BatchTestSuite.PIZZA_1_ID)
+      .withProperties(BatchTestSuite.PIZZA_1_PROPS)
       .run();
-    Result<WeaviateObject> resSoup1 = client.data().creator()
+    Supplier<Result<WeaviateObject>> resSoup1 = () -> client.data().creator()
       .withClassName("Soup")
-      .withID(SOUP_1_ID)
-      .withProperties(SOUP_1_PROPS)
+      .withID(BatchTestSuite.SOUP_1_ID)
+      .withProperties(BatchTestSuite.SOUP_1_PROPS)
       .run();
 
-    assertThat(resPizza1).isNotNull()
-      .returns(false, Result::hasErrors)
-      .extracting(Result::getResult).isNotNull();
-    assertThat(resSoup1).isNotNull()
-      .returns(false, Result::hasErrors)
-      .extracting(Result::getResult).isNotNull();
+    Function<Result<WeaviateObject>, Result<ObjectGetResponse[]>> resBatchPizzas = (pizza1) -> client.batch().objectsBatcher()
+        .withObjects(
+          pizza1.getResult(),
+          WeaviateObject.builder().className("Pizza").id(BatchTestSuite.PIZZA_2_ID).properties(BatchTestSuite.PIZZA_2_PROPS).build()
+        )
+        .withConsistencyLevel(ConsistencyLevel.QUORUM)
+        .run();
 
-    Result<ObjectGetResponse[]> resBatchPizzas = client.batch().objectsBatcher()
-      .withObjects(
-        resPizza1.getResult(),
-        WeaviateObject.builder().className("Pizza").id(PIZZA_2_ID).properties(PIZZA_2_PROPS).build()
-      )
-      .withConsistencyLevel(ConsistencyLevel.QUORUM)
-      .run();
-    Result<ObjectGetResponse[]> resBatchSoups = client.batch().objectsBatcher()
-      .withObjects(
-        resSoup1.getResult(),
-        WeaviateObject.builder().className("Soup").id(SOUP_2_ID).properties(SOUP_2_PROPS).build()
-      )
-      .withConsistencyLevel(ConsistencyLevel.QUORUM)
-      .run();
+    Function<Result<WeaviateObject>, Result<ObjectGetResponse[]>> resBatchSoups = (soup1) -> client.batch().objectsBatcher()
+        .withObjects(
+          soup1.getResult(),
+          WeaviateObject.builder().className("Soup").id(BatchTestSuite.SOUP_2_ID).properties(BatchTestSuite.SOUP_2_PROPS).build()
+        )
+        .withConsistencyLevel(ConsistencyLevel.QUORUM)
+        .run();
 
     // check if created objects exist
-    Result<List<WeaviateObject>> resGetPizza1 = client.data().objectsGetter().withID(PIZZA_1_ID).withClassName("Pizza").run();
-    Result<List<WeaviateObject>> resGetPizza2 = client.data().objectsGetter().withID(PIZZA_2_ID).withClassName("Pizza").run();
-    Result<List<WeaviateObject>> resGetSoup1 = client.data().objectsGetter().withID(SOUP_1_ID).withClassName("Soup").run();
-    Result<List<WeaviateObject>> resGetSoup2 = client.data().objectsGetter().withID(SOUP_2_ID).withClassName("Soup").run();
+    Supplier<Result<List<WeaviateObject>>> resGetPizza1 = () -> client.data().objectsGetter().withID(PIZZA_1_ID).withClassName("Pizza").run();
+    Supplier<Result<List<WeaviateObject>>> resGetPizza2 = () -> client.data().objectsGetter().withID(PIZZA_2_ID).withClassName("Pizza").run();
+    Supplier<Result<List<WeaviateObject>>> resGetSoup1 = () -> client.data().objectsGetter().withID(SOUP_1_ID).withClassName("Soup").run();
+    Supplier<Result<List<WeaviateObject>>> resGetSoup2 = () -> client.data().objectsGetter().withID(SOUP_2_ID).withClassName("Soup").run();
 
-    // then
-    assertThat(resBatchPizzas).isNotNull()
-      .returns(false, Result::hasErrors);
-    assertThat(resBatchPizzas.getResult()).hasSize(2);
-
-    assertThat(resBatchSoups).isNotNull()
-      .returns(false, Result::hasErrors);
-    assertThat(resBatchSoups.getResult()).hasSize(2);
-
-    assertThat(resGetPizza1).isNotNull()
-      .returns(false, Result::hasErrors)
-      .extracting(Result::getResult).asList().hasSize(1)
-      .extracting(o -> ((WeaviateObject)o).getId()).first().isEqualTo(PIZZA_1_ID);
-
-    assertThat(resGetPizza2).isNotNull()
-      .returns(false, Result::hasErrors)
-      .extracting(Result::getResult).asList().hasSize(1)
-      .extracting(o -> ((WeaviateObject)o).getId()).first().isEqualTo(PIZZA_2_ID);
-
-    assertThat(resGetSoup1).isNotNull()
-      .returns(false, Result::hasErrors)
-      .extracting(Result::getResult).asList().hasSize(1)
-      .extracting(o -> ((WeaviateObject)o).getId()).first().isEqualTo(SOUP_1_ID);
-
-    assertThat(resGetSoup2).isNotNull()
-      .returns(false, Result::hasErrors)
-      .extracting(Result::getResult).asList().hasSize(1)
-      .extracting(o -> ((WeaviateObject)o).getId()).first().isEqualTo(SOUP_2_ID);
+    BatchTestSuite.shouldCreateBatch(resPizza1, resSoup1, resBatchPizzas, resBatchSoups, resGetPizza1, resGetPizza2, resGetSoup1, resGetSoup2);
   }
 
   @Test

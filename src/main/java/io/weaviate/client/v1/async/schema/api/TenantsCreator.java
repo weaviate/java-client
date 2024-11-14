@@ -29,11 +29,6 @@ public class TenantsCreator extends AsyncBaseClient<Tenant[]> implements AsyncCl
   }
 
   @Override
-  public Future<Result<Tenant[]>> run() {
-    return run(null);
-  }
-
-  @Override
   public Future<Result<Tenant[]>> run(FutureCallback<Result<Tenant[]>> callback) {
     String path = String.format("/schema/%s/tenants", UrlEncoder.encodePathParam(className));
     return sendPostRequest(path, tenants, Tenant[].class, callback);
