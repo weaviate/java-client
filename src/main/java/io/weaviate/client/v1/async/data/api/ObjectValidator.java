@@ -45,11 +45,6 @@ public class ObjectValidator extends AsyncBaseClient<Boolean> implements AsyncCl
   }
 
   @Override
-  public Future<Result<Boolean>> run() {
-    return run(null);
-  }
-
-  @Override
   public Future<Result<Boolean>> run(FutureCallback<Result<Boolean>> callback) {
     if (StringUtils.isEmpty(id)) {
       WeaviateErrorMessage errorMessage = WeaviateErrorMessage.builder()

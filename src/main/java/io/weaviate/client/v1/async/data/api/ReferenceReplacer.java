@@ -60,11 +60,6 @@ public class ReferenceReplacer extends AsyncBaseClient<Boolean> implements Async
   }
 
   @Override
-  public Future<Result<Boolean>> run() {
-    return run(null);
-  }
-
-  @Override
   public Future<Result<Boolean>> run(FutureCallback<Result<Boolean>> callback) {
     String path = referencesPath.buildReplace(ReferencesPath.Params.builder()
       .id(id)

@@ -19,11 +19,6 @@ public class ReadyChecker extends AsyncBaseClient<Boolean> implements AsyncClien
   }
 
   @Override
-  public Future<Result<Boolean>> run() {
-    return run(null);
-  }
-
-  @Override
   public Future<Result<Boolean>> run(FutureCallback<Result<Boolean>> callback) {
     return sendGetRequest("/.well-known/ready", callback, new ResponseParser<Boolean>() {
       @Override

@@ -31,11 +31,6 @@ public class ClassDeleter extends AsyncBaseClient<Boolean> implements AsyncClien
   }
 
   @Override
-  public Future<Result<Boolean>> run() {
-    return run(null);
-  }
-
-  @Override
   public Future<Result<Boolean>> run(FutureCallback<Result<Boolean>> callback) {
     if (StringUtils.isEmpty(this.className)) {
       WeaviateErrorMessage errorMessage = WeaviateErrorMessage.builder()

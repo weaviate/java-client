@@ -16,11 +16,6 @@ public class MetaGetter extends AsyncBaseClient<Meta> implements AsyncClientResu
   }
 
   @Override
-  public Future<Result<Meta>> run() {
-    return run(null);
-  }
-
-  @Override
   public Future<Result<Meta>> run(FutureCallback<Result<Meta>> callback) {
     return sendGetRequest("/meta", Meta.class, callback);
   }

@@ -16,11 +16,6 @@ public class SchemaGetter extends AsyncBaseClient<Schema> implements AsyncClient
   }
 
   @Override
-  public Future<Result<Schema>> run() {
-    return run(null);
-  }
-
-  @Override
   public Future<Result<Schema>> run(FutureCallback<Result<Schema>> callback) {
     return sendGetRequest("/schema", Schema.class, callback);
   }

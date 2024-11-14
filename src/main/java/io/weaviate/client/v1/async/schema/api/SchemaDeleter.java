@@ -25,11 +25,6 @@ public class SchemaDeleter implements AsyncClientResult<Boolean> {
   }
 
   @Override
-  public Future<Result<Boolean>> run() {
-    return run(null);
-  }
-
-  @Override
   public Future<Result<Boolean>> run(FutureCallback<Result<Boolean>> callback) {
     CompletableFuture<Result<Schema>> getSchema = CompletableFuture.supplyAsync(() -> {
       try {

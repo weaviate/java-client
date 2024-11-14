@@ -71,11 +71,6 @@ public class ObjectCreator extends AsyncBaseClient<WeaviateObject> implements As
   }
 
   @Override
-  public Future<Result<WeaviateObject>> run() {
-    return run(null);
-  }
-
-  @Override
   public Future<Result<WeaviateObject>> run(FutureCallback<Result<WeaviateObject>> callback) {
     String path = objectsPath.buildCreate(ObjectsPath.Params.builder()
       .consistencyLevel(consistencyLevel)
