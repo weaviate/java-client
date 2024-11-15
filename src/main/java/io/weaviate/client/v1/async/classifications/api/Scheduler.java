@@ -4,23 +4,22 @@ import io.weaviate.client.Config;
 import io.weaviate.client.base.AsyncBaseClient;
 import io.weaviate.client.base.AsyncClientResult;
 import io.weaviate.client.base.Result;
-import io.weaviate.client.base.http.async.ResponseParser;
 import io.weaviate.client.v1.classifications.model.Classification;
 import io.weaviate.client.v1.classifications.model.ClassificationFilters;
 import io.weaviate.client.v1.filters.WhereFilter;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.core5.concurrent.FutureCallback;
-import org.apache.hc.core5.http.ContentType;
-import org.apache.hc.core5.http.HttpResponse;
-import org.apache.hc.core5.http.HttpStatus;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.Future;
 
-public class Scheduler extends AsyncBaseClient<Classification> implements AsyncClientResult<Classification> {
+public class Scheduler extends AsyncBaseClient<Classification>
+  implements AsyncClientResult<Classification> {
+
+  private static final long WAIT_INTERVAL = 2000;
 
   private String classificationType;
   private String className;
@@ -34,10 +33,12 @@ public class Scheduler extends AsyncBaseClient<Classification> implements AsyncC
 
   private final Getter getter;
 
+
   public Scheduler(CloseableHttpAsyncClient client, Config config, Getter getter) {
     super(client, config);
     this.getter = getter;
   }
+
 
   public Scheduler withType(String classificationType) {
     this.classificationType = classificationType;
@@ -84,8 +85,16 @@ public class Scheduler extends AsyncBaseClient<Classification> implements AsyncC
     return this;
   }
 
+
   @Override
   public Future<Result<Classification>> run(FutureCallback<Result<Classification>> callback) {
+    if (waitForCompletion) {
+      return scheduleAndWaitForCompletion(callback);
+    }
+    return schedule(callback);
+  }
+
+  private Future<Result<Classification>> schedule(FutureCallback<Result<Classification>> callback) {
     Classification config = Classification.builder()
       .basedOnProperties(basedOnProperties)
       .className(className)
@@ -94,11 +103,10 @@ public class Scheduler extends AsyncBaseClient<Classification> implements AsyncC
       .settings(settings)
       .filters(getClassificationFilters(sourceWhereFilter, targetWhereFilter, trainingSetWhereFilter))
       .build();
+    return sendPostRequest("/classifications", config, Classification.class, callback);
+  }
 
-    if (!waitForCompletion) {
-      return sendPostRequest("/classifications", config, Classification.class, callback);
-    }
-
+  private Future<Result<Classification>> scheduleAndWaitForCompletion(FutureCallback<Result<Classification>> callback) {
     CompletableFuture<Result<Classification>> future = new CompletableFuture<>();
     FutureCallback<Result<Classification>> internalCallback = new FutureCallback<Result<Classification>>() {
       @Override
@@ -120,17 +128,10 @@ public class Scheduler extends AsyncBaseClient<Classification> implements AsyncC
       }
     };
 
-    int[] httpCode = new int[1];
-    sendPostRequest("/classifications", config, internalCallback, new ResponseParser<Classification>() {
-      @Override
-      public Result<Classification> parse(HttpResponse response, String body, ContentType contentType) {
-        httpCode[0] = response.getCode();
-        return new Result<>(serializer.toResponse(response.getCode(), body, Classification.class));
-      }
-    });
+    schedule(internalCallback);
 
     return future.thenCompose(classificationResult -> {
-        if (httpCode[0] != HttpStatus.SC_CREATED) {
+        if (classificationResult.hasErrors()) {
           return CompletableFuture.completedFuture(classificationResult);
         }
         return getByIdRecursively(classificationResult.getResult().getId());
@@ -176,7 +177,7 @@ public class Scheduler extends AsyncBaseClient<Classification> implements AsyncC
 
       if (isRunning) {
         try {
-          Thread.sleep(2000);
+          Thread.sleep(WAIT_INTERVAL);
           return getByIdRecursively(id);
         } catch (InterruptedException e) {
           throw new CompletionException(e);

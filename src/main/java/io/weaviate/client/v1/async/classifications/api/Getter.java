@@ -13,18 +13,22 @@ import org.apache.hc.core5.concurrent.FutureCallback;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
-public class Getter extends AsyncBaseClient<Classification> implements AsyncClientResult<Classification> {
+public class Getter extends AsyncBaseClient<Classification>
+  implements AsyncClientResult<Classification> {
 
   private String id;
+
 
   public Getter(CloseableHttpAsyncClient client, Config config) {
     super(client, config);
   }
 
+
   public Getter withID(String id) {
     this.id = id;
     return this;
   }
+
 
   @Override
   public Future<Result<Classification>> run(FutureCallback<Result<Classification>> callback) {

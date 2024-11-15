@@ -18,9 +18,11 @@ public class NodesStatusGetter extends AsyncBaseClient<NodesStatusResponse>
   private String className;
   private String output;
 
+
   public NodesStatusGetter(CloseableHttpAsyncClient client, Config config) {
     super(client, config);
   }
+
 
   public NodesStatusGetter withClassName(String className) {
     this.className = className;
@@ -31,6 +33,7 @@ public class NodesStatusGetter extends AsyncBaseClient<NodesStatusResponse>
     this.output = output;
     return this;
   }
+
 
   @Override
   public Future<Result<NodesStatusResponse>> run(FutureCallback<Result<NodesStatusResponse>> callback) {
