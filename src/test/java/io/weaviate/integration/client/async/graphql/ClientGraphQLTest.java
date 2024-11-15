@@ -1092,27 +1092,6 @@ public class ClientGraphQLTest extends AbstractAsyncClientTest {
     }
   }
 
-
-  private static WhereArgument whereText(String property, String operator, String... valueText) {
-    return WhereArgument.builder()
-      .filter(WhereFilter.builder()
-        .path(property)
-        .operator(operator)
-        .valueText(valueText)
-        .build())
-      .build();
-  }
-
-  private static WhereArgument whereDate(String property, String operator, Date... valueDate) {
-    return WhereArgument.builder()
-      .filter(WhereFilter.builder()
-        .path(property)
-        .operator(operator)
-        .valueDate(valueDate)
-        .build())
-      .build();
-  }
-
   private SortArgument sort(SortOrder ord, String... properties) {
     return gql.arguments()
       .sortArgBuilder()

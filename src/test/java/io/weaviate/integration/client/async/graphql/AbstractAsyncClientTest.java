@@ -1,10 +1,13 @@
 package io.weaviate.integration.client.async.graphql;
 
 import io.weaviate.client.base.Result;
+import io.weaviate.client.v1.filters.WhereFilter;
 import io.weaviate.client.v1.graphql.model.GraphQLResponse;
+import io.weaviate.client.v1.graphql.query.argument.WhereArgument;
 import io.weaviate.client.v1.graphql.query.fields.Field;
 import io.weaviate.integration.client.graphql.AbstractClientGraphQLTest;
 
+import java.util.Date;
 import java.util.Map;
 
 import static org.junit.Assert.assertNull;
@@ -29,6 +32,37 @@ class AbstractAsyncClientTest extends AbstractClientGraphQLTest {
 
   static Field meta(String... fieldNames) {
     return Field.builder().name("meta").fields(fields(fieldNames)).build();
+  }
+
+
+  static WhereArgument whereText(String property, String operator, String... valueText) {
+    return WhereArgument.builder()
+      .filter(WhereFilter.builder()
+        .path(property)
+        .operator(operator)
+        .valueText(valueText)
+        .build())
+      .build();
+  }
+
+  static WhereArgument whereDate(String property, String operator, Date... valueDate) {
+    return WhereArgument.builder()
+      .filter(WhereFilter.builder()
+        .path(property)
+        .operator(operator)
+        .valueDate(valueDate)
+        .build())
+      .build();
+  }
+
+  static WhereArgument whereNumber(String property, String operator, Double... valueNumber) {
+    return WhereArgument.builder()
+      .filter(WhereFilter.builder()
+        .path(property)
+        .operator(operator)
+        .valueNumber(valueNumber)
+        .build())
+      .build();
   }
 
   /**

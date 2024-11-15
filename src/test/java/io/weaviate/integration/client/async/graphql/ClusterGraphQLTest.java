@@ -48,15 +48,15 @@ public class ClusterGraphQLTest extends AbstractAsyncClientTest {
     client = syncClient.async();
     gql = client.graphQL();
   }
-
-  public static Object[][] provideConsistencyLevels() {
-    return new Object[][]{ { ConsistencyLevel.ALL }, { ConsistencyLevel.QUORUM }, { ConsistencyLevel.ONE } };
-  }
-
+  
   @After
   public void after() {
     testGenerics.cleanupWeaviate(syncClient);
     client.close();
+  }
+  
+  public static Object[][] provideConsistencyLevels() {
+    return new Object[][]{ { ConsistencyLevel.ALL }, { ConsistencyLevel.QUORUM }, { ConsistencyLevel.ONE } };
   }
 
   @DataMethod(source = ClusterGraphQLTest.class, method = "provideConsistencyLevels")
