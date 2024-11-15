@@ -22,7 +22,6 @@ import io.weaviate.client.v1.schema.model.DataType;
 import io.weaviate.client.v1.schema.model.Property;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
 import io.weaviate.integration.client.WeaviateDockerCompose;
-import io.weaviate.integration.client.WeaviateTestGenerics;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -38,7 +37,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class ClientGraphQLMultiTargetSearchTest extends AbstractAsyncClientTest {
-  private static final WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
   private String httpHost;
   private String grpcHost;
 
@@ -57,7 +55,6 @@ public class ClientGraphQLMultiTargetSearchTest extends AbstractAsyncClientTest 
     config.setGRPCSecured(false);
     config.setGRPCHost(grpcHost);
     syncClient = new WeaviateClient(config);
-    testGenerics.createReplicatedTestSchemaAndData(syncClient);
 
     client = syncClient.async();
     gql = client.graphQL();
@@ -65,7 +62,6 @@ public class ClientGraphQLMultiTargetSearchTest extends AbstractAsyncClientTest 
 
   @After
   public void after() {
-    testGenerics.cleanupWeaviate(syncClient);
     client.close();
   }
 
