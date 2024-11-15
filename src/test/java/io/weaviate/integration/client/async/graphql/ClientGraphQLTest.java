@@ -22,7 +22,6 @@ import io.weaviate.client.v1.schema.model.Property;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
 import io.weaviate.integration.client.WeaviateDockerCompose;
 import io.weaviate.integration.client.WeaviateTestGenerics;
-import io.weaviate.integration.client.graphql.AbstractClientGraphQLTest;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
@@ -33,17 +32,15 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ClientGraphQLTest extends AbstractClientGraphQLTest {
-  private String address;
+public class ClientGraphQLTest extends AbstractAsyncClientTest {
   private final WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-  WeaviateTestGenerics.DocumentPassageSchema passageSchema = new WeaviateTestGenerics.DocumentPassageSchema();
+  private final WeaviateTestGenerics.DocumentPassageSchema passageSchema = new WeaviateTestGenerics.DocumentPassageSchema();
 
-
+  private String address;
   private WeaviateClient syncClient;
   private WeaviateAsyncClient client;
   private GraphQL gql;
@@ -794,18 +791,6 @@ public class ClientGraphQLTest extends AbstractClientGraphQLTest {
     assertEquals(1, pizzas.size(), "wrong number of pizzas");
   }
 
-  private Result<GraphQLResponse> doGet(Consumer<Get> build) {
-    Get get = gql.get();
-    build.accept(get);
-    try {
-      return get.run()
-        .get();
-    } catch (InterruptedException | ExecutionException e) {
-      fail("graphQL.get(): " + e.getMessage());
-      return null;
-    }
-  }
-
   @Test
   public void testGraphQLGetWithGroupBy() {
     Field[] hits = new Field[]{ Field.builder()
@@ -1059,6 +1044,18 @@ public class ClientGraphQLTest extends AbstractClientGraphQLTest {
       .returns(true, Result::getResult);
   }
 
+  private Result<GraphQLResponse> doGet(Consumer<Get> build) {
+    Get get = gql.get();
+    build.accept(get);
+    try {
+      return get.run()
+        .get();
+    } catch (InterruptedException | ExecutionException e) {
+      fail("graphQL.get(): " + e.getMessage());
+      return null;
+    }
+  }
+
   private Result<GraphQLResponse> doRaw(Consumer<Raw> build) {
     Raw raw = gql.raw();
     build.accept(raw);
@@ -1095,68 +1092,6 @@ public class ClientGraphQLTest extends AbstractClientGraphQLTest {
     }
   }
 
-  /**
-   * Check that request was processed successfully and no errors are returned. Extract the part of the response body for the specified query type.
-   *
-   * @param result    Result of a GraphQL query.
-   * @param queryType "Get", "Explore", or "Aggregate".
-   * @return "data" portion of the response
-   */
-  @SuppressWarnings("unchecked")
-  private <T> T extractQueryResult(Result<GraphQLResponse> result, String queryType) {
-    assertNotNull(result, "graphQL request returned null");
-    assertNull("GraphQL error in the response", result.getError());
-
-    GraphQLResponse resp = result.getResult();
-    assertNotNull(resp, "GraphQL response not returned");
-
-    Map<String, Object> data = (Map<String, Object>) resp.getData();
-    assertNotNull(data, "GraphQL response has no data");
-
-    T queryResult = (T) data.get(queryType);
-    assertNotNull(queryResult, String.format("%s query returned no result", queryType));
-
-    return queryResult;
-  }
-
-  private <T> T extractClass(Result<GraphQLResponse> result, String queryType, String className) {
-    Map<String, T> queryResult = extractQueryResult(result, queryType);
-    return extractClass(queryResult, className);
-  }
-
-  private <T> T extractClass(Map<String, T> queryResult, String className) {
-    T objects = queryResult.get(className);
-    assertNotNull(objects, String.format("no %ss returned", className.toLowerCase()));
-    return objects;
-  }
-
-  private static Field field(String name) {
-    return Field.builder()
-      .name(name)
-      .build();
-  }
-
-  private static Field[] fields(String... fieldNames) {
-    Field[] fields = new Field[fieldNames.length];
-    for (int i = 0; i < fieldNames.length; i++) {
-      fields[i] = field(fieldNames[i]);
-    }
-    return fields;
-  }
-
-  private static Field _additional(String... fieldNames) {
-    return Field.builder()
-      .name("_additional")
-      .fields(fields(fieldNames))
-      .build();
-  }
-
-  private static Field meta(String... fieldNames) {
-    return Field.builder()
-      .name("meta")
-      .fields(fields(fieldNames))
-      .build();
-  }
 
   private static WhereArgument whereText(String property, String operator, String... valueText) {
     return WhereArgument.builder()
