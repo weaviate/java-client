@@ -17,8 +17,12 @@ import io.weaviate.client.v1.graphql.model.ExploreFields;
 import io.weaviate.client.v1.graphql.model.GraphQLResponse;
 import io.weaviate.client.v1.graphql.query.argument.*;
 import io.weaviate.client.v1.graphql.query.fields.Field;
+import io.weaviate.client.v1.schema.model.DataType;
+import io.weaviate.client.v1.schema.model.Property;
+import io.weaviate.client.v1.schema.model.WeaviateClass;
 import io.weaviate.integration.client.WeaviateDockerCompose;
 import io.weaviate.integration.client.WeaviateTestGenerics;
+import io.weaviate.integration.client.graphql.AbstractClientGraphQLTest;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
@@ -34,11 +38,11 @@ import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ClientGraphQLTest {
+public class ClientGraphQLTest extends AbstractClientGraphQLTest {
   private String address;
-  private String openAIApiKey;
   private final WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-  ;
+  WeaviateTestGenerics.DocumentPassageSchema passageSchema = new WeaviateTestGenerics.DocumentPassageSchema();
+
 
   private WeaviateClient syncClient;
   private WeaviateAsyncClient client;
@@ -50,7 +54,6 @@ public class ClientGraphQLTest {
   @Before
   public void before() {
     address = compose.getHttpHostAddress();
-    openAIApiKey = System.getenv("OPENAI_APIKEY");
 
     syncClient = new WeaviateClient(new Config("http", address));
     testGenerics.createTestSchemaAndData(syncClient);
@@ -503,7 +506,7 @@ public class ClientGraphQLTest {
     Result<GraphQLResponse> result = doAggregate(aggregate -> aggregate.withFields(meta("count"))
       .withClassName("Pizza"));
 
-    checkAggregateMetaCount(result, "Pizza", 1, 4.0d);
+    assertAggregateMetaCount(result, "Pizza", 1, 4.0d);
   }
 
   @Test
@@ -531,7 +534,7 @@ public class ClientGraphQLTest {
       .withClassName("Pizza")
       .withWhere(whereText("id", Operator.Equal, newObjID)));
 
-    checkAggregateMetaCount(result, "Pizza", 1, 1.0d);
+    assertAggregateMetaCount(result, "Pizza", 1, 1.0d);
   }
 
   @Test
@@ -561,7 +564,234 @@ public class ClientGraphQLTest {
       .withGroupBy("name")
       .withWhere(whereText("id", Operator.Equal, newObjID)));
 
-    checkAggregateMetaCount(result, "Pizza", 1, 1.0d);
+    assertAggregateMetaCount(result, "Pizza", 1, 1.0d);
+  }
+
+  @Test
+  public void testGraphQLAggregateWithGroupedBy() {
+    String newObjID = "6baed48e-2afe-4be4-a09d-b00a955d96ee";
+    WeaviateObject pizzaWithID = WeaviateObject.builder()
+      .className("Pizza")
+      .id(newObjID)
+      .properties(new HashMap<String, java.lang.Object>() {
+        {
+          put("name", "JustPizza");
+          put("description", "pizza with id");
+        }
+      })
+      .build();
+
+    // Insert additional test data
+    Result<ObjectGetResponse[]> insert = syncClient.batch()
+      .objectsBatcher()
+      .withObjects(pizzaWithID)
+      .run();
+    assumeTrue("all test objects inserted successfully", insert.getResult().length == 1);
+
+    Result<GraphQLResponse> result = doAggregate(aggregate -> aggregate.withClassName("Pizza")
+      .withFields(meta("count"))
+      .withGroupBy("name"));
+
+    assertAggregateMetaCount(result, "Pizza", 5, 1.0d);
+  }
+
+  @Test
+  public void testGraphQLAggregateWithNearVector() {
+    Result<GraphQLResponse> getVector = doGet(get -> get.withClassName("Pizza")
+      .withFields(_additional("vector")));
+    Float[] vector = extractVector(getVector, "Get", "Pizza");
+    NearVectorArgument nearVector = NearVectorArgument.builder()
+      .certainty(0.7f)
+      .vector(vector)
+      .build();
+
+    Result<GraphQLResponse> result = doAggregate(aggregate -> aggregate.withClassName("Pizza")
+      .withFields(meta("count"))
+      .withNearVector(nearVector));
+
+    assertAggregateMetaCount(result, "Pizza", 1, 4.0d);
+  }
+
+  @Test
+  public void testGraphQLAggregateWithNearObjectAndCertainty() {
+    Result<GraphQLResponse> getId = doGet(get -> get.withClassName("Pizza")
+      .withFields(_additional("id")));
+    String id = extractAdditional(getId, "Get", "Pizza", "id");
+
+    // when
+    NearObjectArgument nearObject = NearObjectArgument.builder()
+      .certainty(0.7f)
+      .id(id)
+      .build();
+    Result<GraphQLResponse> result = doAggregate(aggregate -> aggregate.withClassName("Pizza")
+      .withFields(meta("count"))
+      .withNearObject(nearObject));
+
+    assertAggregateMetaCount(result, "Pizza", 1, 4.0d);
+  }
+
+  @Test
+  public void testGraphQLAggregateWithNearObjectAndDistance() {
+    Result<GraphQLResponse> getId = doGet(get -> get.withClassName("Pizza")
+      .withFields(_additional("id")));
+    String id = extractAdditional(getId, "Get", "Pizza", "id");
+
+    NearObjectArgument nearObject = NearObjectArgument.builder()
+      .distance(0.3f)
+      .id(id)
+      .build();
+    Result<GraphQLResponse> result = doAggregate(aggregate -> aggregate.withFields(meta("count"))
+      .withClassName("Pizza")
+      .withNearObject(nearObject));
+
+    assertAggregateMetaCount(result, "Pizza", 1, 4.0d);
+  }
+
+  @Test
+  public void testGraphQLAggregateWithNearTextAndCertainty() {
+    NearTextArgument nearText = NearTextArgument.builder()
+      .certainty(0.7f)
+      .concepts(new String[]{ "pizza" })
+      .build();
+
+    Result<GraphQLResponse> result = doAggregate(aggregate -> aggregate.withClassName("Pizza")
+      .withFields(meta("count"))
+      .withNearText(nearText));
+
+    assertAggregateMetaCount(result, "Pizza", 1, 4.0d);
+  }
+
+  @Test
+  public void testGraphQLAggregateWithNearTextAndDistance() {
+    NearTextArgument nearText = NearTextArgument.builder()
+      .distance(0.6f)
+      .concepts(new String[]{ "pizza" })
+      .build();
+
+    Result<GraphQLResponse> result = doAggregate(aggregate -> aggregate.withClassName("Pizza")
+      .withFields(meta("count"))
+      .withNearText(nearText));
+
+    assertAggregateMetaCount(result, "Pizza", 1, 4.0d);
+  }
+
+  @Test
+  public void testGraphQLAggregateWithObjectLimitAndCertainty() {
+    int limit = 1;
+    NearTextArgument nearText = NearTextArgument.builder()
+      .certainty(0.7f)
+      .concepts(new String[]{ "pizza" })
+      .build();
+
+    Result<GraphQLResponse> result = doAggregate(aggregate -> aggregate.withClassName("Pizza")
+      .withFields(meta("count"))
+      .withNearText(nearText)
+      .withObjectLimit(limit));
+
+    assertAggregateMetaCount(result, "Pizza", 1, (double) limit);
+  }
+
+  @Test
+  public void testGraphQLAggregateWithObjectLimitAndDistance() {
+    int limit = 1;
+    NearTextArgument nearText = NearTextArgument.builder()
+      .distance(0.3f)
+      .concepts(new String[]{ "pizza" })
+      .build();
+
+    Result<GraphQLResponse> result = doAggregate(aggregate -> aggregate.withClassName("Pizza")
+      .withFields(meta("count"))
+      .withNearText(nearText)
+      .withObjectLimit(limit));
+
+    assertAggregateMetaCount(result, "Pizza", 1, (double) limit);
+  }
+
+  @Test
+  public void testGraphQLGetWithGroup() {
+    GroupArgument group = gql.arguments()
+      .groupArgBuilder()
+      .type(GroupType.merge)
+      .force(1.0f)
+      .build();
+
+    Result<GraphQLResponse> result = doGet(get -> get.withClassName("Soup")
+      .withFields(field("name"))
+      .withGroup(group)
+      .withLimit(7));
+
+    List<?> soups = extractClass(result, "Get", "Soup");
+    assertEquals(1, soups.size(), "wrong number of soups");
+  }
+
+  @Test
+  public void testGraphQLGetWithSort() {
+    SortArgument byNameDesc = sort(SortOrder.desc, "name");
+    String[] expectedByNameDesc = new String[]{ "Quattro Formaggi", "Hawaii", "Frutti di Mare", "Doener" };
+
+    SortArgument byPriceAsc = sort(SortOrder.asc, "price");
+    String[] expectedByPriceAsc = new String[]{ "Hawaii", "Doener", "Quattro Formaggi", "Frutti di Mare" };
+
+    Field name = field("name");
+
+    Result<GraphQLResponse> resultByNameDesc = doGet(get -> get.withClassName("Pizza")
+      .withSort(byNameDesc)
+      .withFields(name));
+    Result<GraphQLResponse> resultByDescriptionAsc = doGet(get -> get.withClassName("Pizza")
+      .withSort(byPriceAsc)
+      .withFields(name));
+    Result<GraphQLResponse> resultByNameDescByPriceAsc = doGet(get -> get.withClassName("Pizza")
+      .withSort(byNameDesc, byPriceAsc)
+      .withFields(name));
+
+    assertObjectNamesEqual(resultByNameDesc, "Get", "Pizza", expectedByNameDesc);
+    assertObjectNamesEqual(resultByDescriptionAsc, "Get", "Pizza", expectedByPriceAsc);
+    assertObjectNamesEqual(resultByNameDescByPriceAsc, "Get", "Pizza", expectedByNameDesc);
+  }
+
+  @Test
+  public void testGraphQLGetWithTimestampFilters() {
+    Field additional = _additional("id", "creationTimeUnix", "lastUpdateTimeUnix");
+    Result<GraphQLResponse> expected = doGet(get -> get.withClassName("Pizza")
+      .withFields(additional));
+
+    String expectedCreateTime = extractAdditional(expected, "Get", "Pizza", "creationTimeUnix");
+    String expectedUpdateTime = extractAdditional(expected, "Get", "Pizza", "lastUpdateTimeUnix");
+
+    Result<GraphQLResponse> createTimeResult = doGet(get -> get.withClassName("Pizza")
+      .withWhere(whereText("_creationTimeUnix", Operator.Equal, expectedCreateTime))
+      .withFields(additional));
+    Result<GraphQLResponse> updateTimeResult = doGet(get -> get.withClassName("Pizza")
+      .withWhere(whereText("_lastUpdateTimeUnix", Operator.Equal, expectedCreateTime))
+      .withFields(additional));
+
+    String resultCreateTime = extractAdditional(createTimeResult, "Get", "Pizza", "creationTimeUnix");
+    assertEquals(expectedCreateTime, resultCreateTime);
+
+    String resultUpdateTime = extractAdditional(updateTimeResult, "Get", "Pizza", "lastUpdateTimeUnix");
+    assertEquals(expectedUpdateTime, resultUpdateTime);
+  }
+
+  @Test
+  public void testGraphQLGetUsingCursorAPI() {
+    Result<GraphQLResponse> result = doGet(get -> get.withClassName("Pizza")
+      .withAfter("00000000-0000-0000-0000-000000000000")
+      .withLimit(10)
+      .withFields(field("name")));
+
+    List<?> pizzas = extractClass(result, "Get", "Pizza");
+    assertEquals(3, pizzas.size(), "wrong number of pizzas");
+  }
+
+  @Test
+  public void testGraphQLGetUsingLimitAndOffset() {
+    Result<GraphQLResponse> result = doGet(get -> get.withClassName("Pizza")
+      .withOffset(3)
+      .withLimit(4)
+      .withFields(field("name")));
+
+    List<?> pizzas = extractClass(result, "Get", "Pizza");
+    assertEquals(1, pizzas.size(), "wrong number of pizzas");
   }
 
   private Result<GraphQLResponse> doGet(Consumer<Get> build) {
@@ -574,6 +804,259 @@ public class ClientGraphQLTest {
       fail("graphQL.get(): " + e.getMessage());
       return null;
     }
+  }
+
+  @Test
+  public void testGraphQLGetWithGroupBy() {
+    Field[] hits = new Field[]{ Field.builder()
+      .name("ofDocument")
+      .fields(new Field[]{ Field.builder()
+        .name("... on Document")
+        .fields(new Field[]{ Field.builder()
+          .name("_additional{id}").build() }).build()
+      }).build(), Field.builder()
+      .name("_additional{id distance}").build(),
+    };
+
+    Field group = Field.builder()
+      .name("group")
+      .fields(new Field[]{ Field.builder()
+        .name("id").build(), Field.builder()
+        .name("groupedBy")
+        .fields(new Field[]{ Field.builder()
+          .name("value").build(), Field.builder()
+          .name("path").build(),
+        }).build(), Field.builder()
+        .name("count").build(), Field.builder()
+        .name("maxDistance").build(), Field.builder()
+        .name("minDistance").build(), Field.builder()
+        .name("hits")
+        .fields(hits).build(),
+      })
+      .build();
+
+    Field _additional = Field.builder()
+      .name("_additional")
+      .fields(new Field[]{ group })
+      .build();
+    Field ofDocument = Field.builder()
+      .name("ofDocument{__typename}")
+      .build(); // Property that we group by
+
+    GroupByArgument groupBy = client.graphQL()
+      .arguments()
+      .groupByArgBuilder()
+      .path(new String[]{ "ofDocument" })
+      .groups(3)
+      .objectsPerGroup(10)
+      .build();
+    NearObjectArgument nearObject = client.graphQL()
+      .arguments()
+      .nearObjectArgBuilder()
+      .id("00000000-0000-0000-0000-000000000001")
+      .build();
+
+    passageSchema.createAndInsertData(syncClient);
+
+    try {
+      Result<GraphQLResponse> result = doGet(get -> get.withClassName(passageSchema.PASSAGE)
+        .withNearObject(nearObject)
+        .withGroupBy(groupBy)
+        .withFields(ofDocument, _additional));
+
+      List<Map<String, Object>> passages = extractClass(result, "Get", passageSchema.PASSAGE);
+      assertEquals(3, passages.size(), "wrong number of passages");
+
+      // This part of assertions is almost verbatim from package io.weaviate.integration.client.graphql.ClientGraphQLTest
+      // because it involves a lot of inner classes that we don't won't to redefine here.
+      List<Group> groups = getGroups(passages);
+      Assertions.assertThat(groups)
+        .isNotNull()
+        .hasSize(3);
+      for (int i = 0; i < 3; i++) {
+        Assertions.assertThat(groups.get(i).minDistance)
+          .isEqualTo(groups.get(i)
+            .getHits()
+            .get(0)
+            .get_additional()
+            .getDistance());
+        Assertions.assertThat(groups.get(i).maxDistance)
+          .isEqualTo(groups.get(i)
+            .getHits()
+            .get(groups.get(i)
+              .getHits()
+              .size() - 1)
+            .get_additional()
+            .getDistance());
+      }
+      checkGroupElements(expectedHitsA, groups.get(0)
+        .getHits());
+      checkGroupElements(expectedHitsB, groups.get(1)
+        .getHits());
+    } finally {
+      passageSchema.cleanupWeaviate(syncClient);
+    }
+  }
+
+  @Test
+  public void testGraphQLGetWithGroupByWithHybrid() {
+    Field[] hits = new Field[]{ Field.builder()
+      .name("content").build(), Field.builder()
+      .name("_additional{id distance}").build(),
+    };
+    Field group = Field.builder()
+      .name("group")
+      .fields(new Field[]{ Field.builder()
+        .name("id").build(), Field.builder()
+        .name("groupedBy")
+        .fields(new Field[]{ Field.builder()
+          .name("value").build(), Field.builder()
+          .name("path").build(),
+        }).build(), Field.builder()
+        .name("count").build(), Field.builder()
+        .name("maxDistance").build(), Field.builder()
+        .name("minDistance").build(), Field.builder()
+        .name("hits")
+        .fields(hits).build(),
+      })
+      .build();
+    Field _additional = Field.builder()
+      .name("_additional")
+      .fields(new Field[]{ group })
+      .build();
+    Field content = Field.builder()
+      .name("content")
+      .build(); // Property that we group by
+    GroupByArgument groupBy = client.graphQL()
+      .arguments()
+      .groupByArgBuilder()
+      .path(new String[]{ "content" })
+      .groups(3)
+      .objectsPerGroup(10)
+      .build();
+
+    NearTextArgument nearText = NearTextArgument.builder()
+      .concepts(new String[]{ "Passage content 2" })
+      .build();
+    HybridArgument hybrid = HybridArgument.builder()
+      .searches(HybridArgument.Searches.builder()
+        .nearText(nearText)
+        .build())
+      .query("Passage content 2")
+      .alpha(0.9f)
+      .build();
+
+    passageSchema.createAndInsertData(syncClient);
+
+    try {
+      Result<GraphQLResponse> groupByResult = doGet(get -> get.withClassName(passageSchema.PASSAGE)
+        .withHybrid(hybrid)
+        .withGroupBy(groupBy)
+        .withFields(content, _additional));
+
+      List<Map<String, Object>> result = extractClass(groupByResult, "Get", passageSchema.PASSAGE);
+      Assertions.assertThat(result)
+        .isNotNull()
+        .hasSize(3);
+      List<Group> groups = getGroups(result);
+      Assertions.assertThat(groups)
+        .isNotNull()
+        .hasSize(3);
+      for (int i = 0; i < 3; i++) {
+        if (i == 0) {
+          Assertions.assertThat(groups.get(i).groupedBy.value)
+            .isEqualTo("Passage content 2");
+        }
+        Assertions.assertThat(groups.get(i).minDistance)
+          .isEqualTo(groups.get(i)
+            .getHits()
+            .get(0)
+            .get_additional()
+            .getDistance());
+        Assertions.assertThat(groups.get(i).maxDistance)
+          .isEqualTo(groups.get(i)
+            .getHits()
+            .get(groups.get(i)
+              .getHits()
+              .size() - 1)
+            .get_additional()
+            .getDistance());
+      }
+    } finally {
+      passageSchema.cleanupWeaviate(syncClient);
+    }
+  }
+
+  @Test
+  public void shouldSupportSearchByUUID() {
+    String className = "ClassUUID";
+    WeaviateClass clazz = WeaviateClass.builder()
+      .className(className)
+      .description("class with uuid properties")
+      .properties(Arrays.asList(
+        Property.builder()
+          .dataType(Collections.singletonList(DataType.UUID))
+          .name("uuidProp")
+          .build(), Property.builder()
+          .dataType(Collections.singletonList(DataType.UUID_ARRAY))
+          .name("uuidArrayProp")
+          .build()
+      ))
+      .build();
+
+    String id = "abefd256-8574-442b-9293-9205193737ee";
+    Map<String, Object> properties = new HashMap<>();
+    properties.put("uuidProp", "7aaa79d3-a564-45db-8fa8-c49e20b8a39a");
+    properties.put("uuidArrayProp", new String[]{ "f70512a3-26cb-4ae4-9369-204555917f15", "9e516f40-fd54-4083-a476-f4675b2b5f92"
+    });
+
+    Result<Boolean> createStatus = syncClient.schema()
+      .classCreator()
+      .withClass(clazz)
+      .run();
+    Assertions.assertThat(createStatus)
+      .isNotNull()
+      .returns(false, Result::hasErrors)
+      .returns(true, Result::getResult);
+
+    Result<WeaviateObject> objectStatus = syncClient.data()
+      .creator()
+      .withClassName(className)
+      .withID(id)
+      .withProperties(properties)
+      .run();
+    Assertions.assertThat(objectStatus)
+      .isNotNull()
+      .returns(false, Result::hasErrors)
+      .extracting(Result::getResult)
+      .isNotNull();
+
+    Field fieldId = _additional("id");
+    WhereArgument whereUuid = whereText("uuidProp", Operator.Equal, "7aaa79d3-a564-45db-8fa8-c49e20b8a39a");
+    WhereArgument whereUuidArray1 = whereText("uuidArrayProp", Operator.Equal, "f70512a3-26cb-4ae4-9369-204555917f15");
+    WhereArgument whereUuidArray2 = whereText("uuidArrayProp", Operator.Equal, "9e516f40-fd54-4083-a476-f4675b2b5f92");
+
+    Result<GraphQLResponse> resultUuid = doGet(get -> get.withWhere(whereUuid)
+      .withClassName(className)
+      .withFields(fieldId));
+    Result<GraphQLResponse> resultUuidArray1 = doGet(get -> get.withWhere(whereUuidArray1)
+      .withClassName(className)
+      .withFields(fieldId));
+    Result<GraphQLResponse> resultUuidArray2 = doGet(get -> get.withWhere(whereUuidArray2)
+      .withClassName(className)
+      .withFields(fieldId));
+
+    assertIds(className, resultUuid, new String[]{ id });
+    assertIds(className, resultUuidArray1, new String[]{ id });
+    assertIds(className, resultUuidArray2, new String[]{ id });
+
+    Result<Boolean> deleteStatus = syncClient.schema()
+      .allDeleter()
+      .run();
+    Assertions.assertThat(deleteStatus)
+      .isNotNull()
+      .returns(false, Result::hasErrors)
+      .returns(true, Result::getResult);
   }
 
   private Result<GraphQLResponse> doRaw(Consumer<Raw> build) {
@@ -695,18 +1178,56 @@ public class ClientGraphQLTest {
       .build();
   }
 
+  private SortArgument sort(SortOrder ord, String... properties) {
+    return gql.arguments()
+      .sortArgBuilder()
+      .path(properties)
+      .order(ord)
+      .build();
+  }
+
   private void assertWhereResultSize(int expectedSize, Result<GraphQLResponse> result, String className) {
     List<?> getClass = extractClass(result, "Get", className);
     assertEquals(expectedSize, getClass.size());
   }
 
+
   @SuppressWarnings("unchecked")
-  private void checkAggregateMetaCount(Result<GraphQLResponse> result, String className, int wantObjects, Double wantCount) {
+  private <T> T extractAdditional(Result<GraphQLResponse> result, String queryType, String className, String fieldName) {
+    List<?> objects = extractClass(result, queryType, className);
+
+    Map<String, Map<String, Object>> firstObject = (Map<String, Map<String, Object>>) objects.get(0);
+    Map<String, Object> additional = firstObject.get("_additional");
+
+    return (T) additional.get(fieldName);
+  }
+
+  private Float[] extractVector(Result<GraphQLResponse> result, String queryType, String className) {
+    ArrayList<Double> vector = extractAdditional(result, queryType, className, "vector");
+    Float[] out = new Float[vector.size()];
+    for (int i = 0; i < vector.size(); i++) {
+      out[i] = vector.get(i)
+        .floatValue();
+    }
+    return out;
+  }
+
+  @SuppressWarnings("unchecked")
+  private void assertAggregateMetaCount(Result<GraphQLResponse> result, String className, int wantObjects, Double wantCount) {
     List<?> objects = extractClass(result, "Aggregate", className);
 
     assertEquals(wantObjects, objects.size(), "wrong number of objects");
     Map<String, Map<String, Object>> firstObject = (Map<String, Map<String, Object>>) objects.get(0);
     Map<String, Object> meta = firstObject.get("meta");
     assertEquals(wantCount, meta.get("count"), "wrong meta:count");
+  }
+
+  private void assertObjectNamesEqual(Result<GraphQLResponse> result, String queryType, String className, String[] want) {
+    List<Map<String, String>> objects = extractClass(result, queryType, className);
+    assertEquals(want.length, objects.size());
+    for (int i = 0; i < want.length; i++) {
+      assertEquals(want[i], objects.get(i)
+        .get("name"), String.format("%s[%d] has wrong name", className.toLowerCase(), i));
+    }
   }
 }
