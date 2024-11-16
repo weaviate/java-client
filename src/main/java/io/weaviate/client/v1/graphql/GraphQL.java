@@ -27,7 +27,7 @@ public class GraphQL {
   private Config config;
   private HttpClient httpClient;
 
-  public class Arguments {
+  public static class Arguments {
     public NearTextArgument.NearTextArgumentBuilder nearTextArgBuilder() {
       return NearTextArgument.builder();
     }

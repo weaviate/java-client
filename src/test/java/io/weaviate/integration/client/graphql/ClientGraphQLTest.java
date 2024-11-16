@@ -62,9 +62,10 @@ import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class ClientGraphQLTest {
+public class ClientGraphQLTest extends AbstractClientGraphQLTest {
   private String address;
   private String openAIApiKey;
+  private static final WeaviateTestGenerics.DocumentPassageSchema testData = new WeaviateTestGenerics.DocumentPassageSchema();
 
   @ClassRule
   public static WeaviateDockerCompose compose = new WeaviateDockerCompose();
@@ -110,7 +111,6 @@ public class ClientGraphQLTest {
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
     WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
-    Field name = Field.builder().name("name").build();
     // when
     testGenerics.createTestSchemaAndData(client);
     Result<GraphQLResponse> result = client.graphQL().raw().withQuery("{Get{Pizza{_additional{id}}}}").run();
@@ -1491,89 +1491,12 @@ public class ClientGraphQLTest {
     }
   }
 
-  @Getter
-  @AllArgsConstructor
-  private static class AdditionalGroupHit {
-    String id;
-    Float distance;
-  }
-
-  @Getter
-  @AllArgsConstructor
-  private static class AdditionalOfDocument {
-    String id;
-  }
-
-  @Getter
-  @AllArgsConstructor
-  private static class GroupHitOfDocument {
-    AdditionalOfDocument _additional;
-  }
-
-  @Getter
-  @AllArgsConstructor
-  private static class GroupHit {
-    AdditionalGroupHit _additional;
-    List<GroupHitOfDocument> ofDocument;
-  }
-
-  @Getter
-  @AllArgsConstructor
-  private static class GroupedBy {
-    String value;
-    String[] path;
-  }
-
-  @Getter
-  @AllArgsConstructor
-  private static class Group {
-    String id;
-    GroupedBy groupedBy;
-    Integer count;
-    Float maxDistance;
-    Float minDistance;
-    List<GroupHit> hits;
-  }
-
-  @Getter
-  private static class Additional {
-    Group group;
-  }
-
-  @Getter
-  private static class AdditionalGroupByAdditional {
-    Additional _additional;
-  }
-
   @Test
   public void testGraphQLGetWithGroupBy() {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
-    WeaviateTestGenerics.DocumentPassageSchema testData = new WeaviateTestGenerics.DocumentPassageSchema();
 
-    List<GroupHitOfDocument> ofDocumentA = Collections.singletonList(
-      new GroupHitOfDocument(new AdditionalOfDocument(testData.DOCUMENT_IDS[0]))
-    );
-    List<GroupHitOfDocument> ofDocumentB = Collections.singletonList(
-      new GroupHitOfDocument(new AdditionalOfDocument(testData.DOCUMENT_IDS[1]))
-    );
-    List<GroupHit> expectedHits1 = new ArrayList<>();
-    expectedHits1.add(new GroupHit(new AdditionalGroupHit(testData.PASSAGE_IDS[0], 4.172325e-7f), ofDocumentA));
-    expectedHits1.add(new GroupHit(new AdditionalGroupHit(testData.PASSAGE_IDS[8], 0.0023148656f), ofDocumentA));
-    expectedHits1.add(new GroupHit(new AdditionalGroupHit(testData.PASSAGE_IDS[6], 0.0023562312f), ofDocumentA));
-    expectedHits1.add(new GroupHit(new AdditionalGroupHit(testData.PASSAGE_IDS[7], 0.0025092363f), ofDocumentA));
-    expectedHits1.add(new GroupHit(new AdditionalGroupHit(testData.PASSAGE_IDS[5], 0.002709806f), ofDocumentA));
-    expectedHits1.add(new GroupHit(new AdditionalGroupHit(testData.PASSAGE_IDS[9], 0.002762556f), ofDocumentA));
-    expectedHits1.add(new GroupHit(new AdditionalGroupHit(testData.PASSAGE_IDS[4], 0.0028533936f), ofDocumentA));
-    expectedHits1.add(new GroupHit(new AdditionalGroupHit(testData.PASSAGE_IDS[3], 0.0033442378f), ofDocumentA));
-    expectedHits1.add(new GroupHit(new AdditionalGroupHit(testData.PASSAGE_IDS[2], 0.004181564f), ofDocumentA));
-    expectedHits1.add(new GroupHit(new AdditionalGroupHit(testData.PASSAGE_IDS[1], 0.0057129264f), ofDocumentA));
-    List<GroupHit> expectedHits2 = new ArrayList<>();
-    expectedHits2.add(new GroupHit(new AdditionalGroupHit(testData.PASSAGE_IDS[10], 0.0025351048f), ofDocumentB));
-    expectedHits2.add(new GroupHit(new AdditionalGroupHit(testData.PASSAGE_IDS[12], 0.00288558f), ofDocumentB));
-    expectedHits2.add(new GroupHit(new AdditionalGroupHit(testData.PASSAGE_IDS[11], 0.0033002496f), ofDocumentB));
-    expectedHits2.add(new GroupHit(new AdditionalGroupHit(testData.PASSAGE_IDS[13], 0.004168868f), ofDocumentB));
     // hits
     Field[] hits = new Field[]{
       Field.builder()
@@ -1628,8 +1551,8 @@ public class ClientGraphQLTest {
       assertThat(groups.get(i).minDistance).isEqualTo(groups.get(i).getHits().get(0).get_additional().getDistance());
       assertThat(groups.get(i).maxDistance).isEqualTo(groups.get(i).getHits().get(groups.get(i).getHits().size() - 1).get_additional().getDistance());
     }
-    checkGroupElements(expectedHits1, groups.get(0).getHits());
-    checkGroupElements(expectedHits2, groups.get(1).getHits());
+    checkGroupElements(expectedHitsA, groups.get(0).getHits());
+    checkGroupElements(expectedHitsB, groups.get(1).getHits());
   }
 
   @Test
@@ -1637,7 +1560,7 @@ public class ClientGraphQLTest {
     // given
     Config config = new Config("http", address);
     WeaviateClient client = new WeaviateClient(config);
-    WeaviateTestGenerics.DocumentPassageSchema testData = new WeaviateTestGenerics.DocumentPassageSchema();
+
     // hits
     Field[] hits = new Field[]{
       Field.builder().name("content").build(),
@@ -1694,25 +1617,6 @@ public class ClientGraphQLTest {
       assertThat(groups.get(i).minDistance).isEqualTo(groups.get(i).getHits().get(0).get_additional().getDistance());
       assertThat(groups.get(i).maxDistance).isEqualTo(groups.get(i).getHits().get(groups.get(i).getHits().size() - 1).get_additional().getDistance());
     }
-  }
-
-  private void checkGroupElements(List<GroupHit> expected, List<GroupHit> actual) {
-    assertThat(expected).hasSameSizeAs(actual);
-    for (int i = 0; i < actual.size(); i++) {
-      assertThat(actual.get(i).get_additional().getId()).isEqualTo(expected.get(i).get_additional().getId());
-      assertThat(actual.get(i).getOfDocument().get(0).get_additional().getId()).isEqualTo(expected.get(i).getOfDocument().get(0).get_additional().getId());
-    }
-  }
-
-  private List<Group> getGroups(List<Map<String, Object>> result) {
-    Serializer serializer = new Serializer();
-    String jsonString = serializer.toJsonString(result);
-    AdditionalGroupByAdditional[] response = serializer.toObject(jsonString, AdditionalGroupByAdditional[].class);
-    assertThat(response).isNotNull().hasSize(3);
-    return Arrays.stream(response)
-      .map(AdditionalGroupByAdditional::get_additional)
-      .map(Additional::getGroup)
-      .collect(Collectors.toList());
   }
 
   private void assertPizzaName(String name, List pizzas, int position) {
@@ -2251,7 +2155,7 @@ public class ClientGraphQLTest {
       new String[]{id1, id2, id3});
   }
 
-  private void assertIds(String className, Result<GraphQLResponse> gqlResult, String[] expectedIds) {
+  protected void assertIds(String className, Result<GraphQLResponse> gqlResult, String[] expectedIds) {
     assertThat(gqlResult).isNotNull()
       .returns(false, Result::hasErrors)
       .extracting(Result::getResult).isNotNull()
