@@ -24,10 +24,12 @@ public class Misc {
     return new OpenIDConfigGetter(client, config);
   }
 
+  // TODO:async add support for dbVersionProvider
   public LiveChecker liveChecker() {
     return new LiveChecker(client, config);
   }
 
+  // TODO:async add support for dbVersionProvider
   public ReadyChecker readyChecker() {
     return new ReadyChecker(client, config);
   }

@@ -30,7 +30,7 @@ public class Batch {
   }
 
   public ObjectsBatcher objectsBatcher(ObjectsBatcher.BatchRetriesConfig batchRetriesConfig) {
-    // TODO: add support for missing arguments
+    // TODO:async add support for missing arguments (tokenProvider and grpcVersionSupport)
     // return ObjectsBatcher.create(client, config, data, objectsPath, tokenProvider, grpcVersionSupport, batchRetriesConfig);
     return ObjectsBatcher.create(client, config, data, objectsPath, null, null, batchRetriesConfig);
   }
