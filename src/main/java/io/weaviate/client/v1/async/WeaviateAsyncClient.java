@@ -38,7 +38,7 @@ public class WeaviateAsyncClient implements AutoCloseable {
   }
 
   public Schema schema() {
-    return new Schema(client, config);
+    return new Schema(client, config, dbVersionSupport);
   }
 
   public Data data() {

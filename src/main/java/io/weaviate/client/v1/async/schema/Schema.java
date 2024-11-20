@@ -1,6 +1,7 @@
 package io.weaviate.client.v1.async.schema;
 
 import io.weaviate.client.Config;
+import io.weaviate.client.base.util.DbVersionSupport;
 import io.weaviate.client.v1.async.schema.api.ClassCreator;
 import io.weaviate.client.v1.async.schema.api.ClassDeleter;
 import io.weaviate.client.v1.async.schema.api.ClassExists;
@@ -13,15 +14,18 @@ import io.weaviate.client.v1.async.schema.api.ShardsGetter;
 import io.weaviate.client.v1.async.schema.api.ShardsUpdater;
 import io.weaviate.client.v1.async.schema.api.TenantsCreator;
 import io.weaviate.client.v1.async.schema.api.TenantsGetter;
+import io.weaviate.client.v1.async.schema.api.TenantsUpdater;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 
 public class Schema {
   private final CloseableHttpAsyncClient client;
   private final Config config;
+  private final DbVersionSupport dbVersionSupport;
 
-  public Schema(CloseableHttpAsyncClient client, Config config) {
+  public Schema(CloseableHttpAsyncClient client, Config config, DbVersionSupport dbVersionSupport) {
     this.client = client;
     this.config = config;
+    this.dbVersionSupport = dbVersionSupport;
   }
 
   public SchemaGetter getter() {
@@ -68,11 +72,9 @@ public class Schema {
     return new TenantsCreator(client, config);
   }
 
-  // TODO:async implement tenants updater and dbVersionSupport
-  // which is being used here
-//  public TenantsUpdater tenantsUpdater() {
-//    return new TenantsUpdater(client, config, dbVersionSupport);
-//  }
+  public TenantsUpdater tenantsUpdater() {
+    return new TenantsUpdater(client, config, dbVersionSupport);
+  }
 
   public TenantsGetter tenantsGetter() {
     return new TenantsGetter(client, config);
