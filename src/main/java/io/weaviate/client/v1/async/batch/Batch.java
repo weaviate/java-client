@@ -3,9 +3,11 @@ package io.weaviate.client.v1.async.batch;
 import io.weaviate.client.Config;
 import io.weaviate.client.base.util.BeaconPath;
 import io.weaviate.client.base.util.DbVersionSupport;
+import io.weaviate.client.base.util.GrpcVersionSupport;
 import io.weaviate.client.v1.async.batch.api.ObjectsBatchDeleter;
 import io.weaviate.client.v1.async.batch.api.ObjectsBatcher;
 import io.weaviate.client.v1.async.data.Data;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.batch.api.ReferencePayloadBuilder;
 import io.weaviate.client.v1.batch.util.ObjectsPath;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
@@ -16,12 +18,17 @@ public class Batch {
   private final ObjectsPath objectsPath;
   private final BeaconPath beaconPath;
   private final Data data;
+  private final GrpcVersionSupport grpcVersionSupport;
+  private final AccessTokenProvider tokenProvider;
 
-  public Batch(CloseableHttpAsyncClient client, Config config, DbVersionSupport dbVersionSupport, Data data) {
+  public Batch(CloseableHttpAsyncClient client, Config config, DbVersionSupport dbVersionSupport,
+    GrpcVersionSupport grpcVersionSupport, AccessTokenProvider tokenProvider, Data data) {
     this.client = client;
     this.config = config;
     this.objectsPath = new ObjectsPath();
     this.beaconPath = new BeaconPath(dbVersionSupport);
+    this.grpcVersionSupport = grpcVersionSupport;
+    this.tokenProvider = tokenProvider;
     this.data = data;
   }
 
@@ -30,9 +37,7 @@ public class Batch {
   }
 
   public ObjectsBatcher objectsBatcher(ObjectsBatcher.BatchRetriesConfig batchRetriesConfig) {
-    // TODO:async add support for missing arguments (tokenProvider and grpcVersionSupport)
-    // return ObjectsBatcher.create(client, config, data, objectsPath, tokenProvider, grpcVersionSupport, batchRetriesConfig);
-    return ObjectsBatcher.create(client, config, data, objectsPath, null, null, batchRetriesConfig);
+    return ObjectsBatcher.create(client, config, data, objectsPath, tokenProvider, grpcVersionSupport, batchRetriesConfig);
   }
 
   public ObjectsBatcher objectsAutoBatcher() {
@@ -58,9 +63,7 @@ public class Batch {
 
   public ObjectsBatcher objectsAutoBatcher(ObjectsBatcher.BatchRetriesConfig batchRetriesConfig,
     ObjectsBatcher.AutoBatchConfig autoBatchConfig) {
-    // TODO: add support for missing arguments
-    // return ObjectsBatcher.create(client, config, data, objectsPath, tokenProvider, grpcVersionSupport, batchRetriesConfig);
-    return ObjectsBatcher.createAuto(client, config, data, objectsPath, null, null, batchRetriesConfig, autoBatchConfig);
+    return ObjectsBatcher.createAuto(client, config, data, objectsPath, tokenProvider, grpcVersionSupport, batchRetriesConfig, autoBatchConfig);
   }
 
   public ObjectsBatchDeleter objectsBatchDeleter() {
