@@ -1,11 +1,12 @@
-package io.weaviate.integration.client.batch;
+package io.weaviate.integration.client.async.batch;
 
 import com.jparams.junit4.JParamsTestRunner;
 import com.jparams.junit4.data.DataMethod;
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
-import io.weaviate.client.v1.batch.api.ReferencesBatcher;
+import io.weaviate.client.v1.async.WeaviateAsyncClient;
+import io.weaviate.client.v1.async.batch.api.ReferencesBatcher;
 import io.weaviate.client.v1.batch.model.BatchReference;
 import io.weaviate.client.v1.batch.model.BatchReferenceResponse;
 import io.weaviate.integration.tests.batch.BatchReferencesMockServerTestSuite;
@@ -18,6 +19,7 @@ import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.Delay;
 import org.mockserver.verify.VerificationTimes;
 
+import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -80,12 +82,21 @@ public class ClientBatchReferencesCreateMockServerTest {
     // stop server to simulate connection issues
     mockServer.stop();
 
-    Supplier<Result<BatchReferenceResponse[]>> supplierReferencesBatcher = () -> client.batch().referencesBatcher(batchRetriesConfig)
-      .withReferences(refPizzaToSoup, refSoupToPizza, refPizzaToPizza, refSoupToSoup)
-      .run();
+    try (WeaviateAsyncClient asyncClient = client.async()) {
+      Supplier<Result<BatchReferenceResponse[]>> supplierReferencesBatcher = () -> {
+        try {
+          return asyncClient.batch().referencesBatcher(batchRetriesConfig)
+            .withReferences(refPizzaToSoup, refSoupToPizza, refPizzaToPizza, refSoupToSoup)
+            .run()
+            .get();
+        } catch (InterruptedException | ExecutionException e) {
+          throw new RuntimeException(e);
+        }
+      };
 
-    BatchReferencesMockServerTestSuite.testNotCreateBatchReferencesDueToConnectionIssue(supplierReferencesBatcher,
-      execMin, execMax);
+      BatchReferencesMockServerTestSuite.testNotCreateBatchReferencesDueToConnectionIssue(supplierReferencesBatcher,
+        execMin, execMax);
+    }
   }
 
   @Test
@@ -96,20 +107,26 @@ public class ClientBatchReferencesCreateMockServerTest {
     // stop server to simulate connection issues
     mockServer.stop();
 
-    Consumer<Consumer<Result<BatchReferenceResponse[]>>> supplierReferencesBatcher = callback -> {
-      ReferencesBatcher.AutoBatchConfig autoBatchConfig = ReferencesBatcher.AutoBatchConfig.defaultConfig()
-        .batchSize(2)
-        .poolSize(1)
-        .callback(callback)
-        .build();
+    try (WeaviateAsyncClient asyncClient = client.async()) {
+      Consumer<Consumer<Result<BatchReferenceResponse[]>>> supplierReferencesBatcher = callback -> {
+        ReferencesBatcher.AutoBatchConfig autoBatchConfig = ReferencesBatcher.AutoBatchConfig.defaultConfig()
+          .batchSize(2)
+          .callback(callback)
+          .build();
 
-      client.batch().referencesAutoBatcher(batchRetriesConfig, autoBatchConfig)
-        .withReferences(refPizzaToSoup, refSoupToPizza, refPizzaToPizza, refSoupToSoup)
-        .flush();
-    };
+        try {
+          asyncClient.batch().referencesAutoBatcher(batchRetriesConfig, autoBatchConfig)
+            .withReferences(refPizzaToSoup, refSoupToPizza, refPizzaToPizza, refSoupToSoup)
+            .run()
+            .get();
+        } catch (InterruptedException | ExecutionException e) {
+          throw new RuntimeException(e);
+        }
+      };
 
-    BatchReferencesMockServerTestSuite.testNotCreateAutoBatchReferencesDueToConnectionIssue(supplierReferencesBatcher,
-      execMin, execMax);
+      BatchReferencesMockServerTestSuite.testNotCreateAutoBatchReferencesDueToConnectionIssue(supplierReferencesBatcher,
+        execMin, execMax);
+    }
   }
 
   public static Object[][] provideForNotCreateBatchReferencesDueToConnectionIssue() {
@@ -162,16 +179,25 @@ public class ClientBatchReferencesCreateMockServerTest {
       response().withDelay(Delay.seconds(2)).withStatusCode(200)
     );
 
-    Supplier<Result<BatchReferenceResponse[]>> supplierReferencesBatcher = () -> client.batch().referencesBatcher(batchRetriesConfig)
-      .withReferences(refPizzaToSoup, refSoupToPizza, refPizzaToPizza, refSoupToSoup)
-      .run();
-    Consumer<Integer> assertBatchCallsTimes = count -> mockServerClient.verify(
-      request().withMethod("POST").withPath("/v1/batch/references"),
-      VerificationTimes.exactly(count)
-    );
+    try (WeaviateAsyncClient asyncClient = client.async()) {
+      Supplier<Result<BatchReferenceResponse[]>> supplierReferencesBatcher = () -> {
+        try {
+          return asyncClient.batch().referencesBatcher(batchRetriesConfig)
+            .withReferences(refPizzaToSoup, refSoupToPizza, refPizzaToPizza, refSoupToSoup)
+            .run()
+            .get();
+        } catch (InterruptedException | ExecutionException e) {
+          throw new RuntimeException(e);
+        }
+      };
+      Consumer<Integer> assertBatchCallsTimes = count -> mockServerClient.verify(
+        request().withMethod("POST").withPath("/v1/batch/references"),
+        VerificationTimes.exactly(count)
+      );
 
-    BatchReferencesMockServerTestSuite.testNotCreateBatchReferencesDueToTimeoutIssue(supplierReferencesBatcher,
-      assertBatchCallsTimes, expectedBatchCalls, "Read timed out");
+      BatchReferencesMockServerTestSuite.testNotCreateBatchReferencesDueToTimeoutIssue(supplierReferencesBatcher,
+        assertBatchCallsTimes, expectedBatchCalls, "1 SECONDS");
+    }
   }
 
   @Test
@@ -187,24 +213,30 @@ public class ClientBatchReferencesCreateMockServerTest {
       response().withDelay(Delay.seconds(2)).withStatusCode(200)
     );
 
-    Consumer<Consumer<Result<BatchReferenceResponse[]>>> supplierReferencesBatcher = callback -> {
-      ReferencesBatcher.AutoBatchConfig autoBatchConfig = ReferencesBatcher.AutoBatchConfig.defaultConfig()
-        .batchSize(2)
-        .poolSize(1)
-        .callback(callback)
-        .build();
+    try (WeaviateAsyncClient asyncClient = client.async()) {
+      Consumer<Consumer<Result<BatchReferenceResponse[]>>> supplierReferencesBatcher = callback -> {
+        ReferencesBatcher.AutoBatchConfig autoBatchConfig = ReferencesBatcher.AutoBatchConfig.defaultConfig()
+          .batchSize(2)
+          .callback(callback)
+          .build();
 
-      client.batch().referencesAutoBatcher(batchRetriesConfig, autoBatchConfig)
-        .withReferences(refPizzaToSoup, refSoupToPizza, refPizzaToPizza, refSoupToSoup)
-        .flush();
-    };
-    Consumer<Integer> assertBatchCallsTimes = count -> mockServerClient.verify(
-      request().withMethod("POST").withPath("/v1/batch/references"),
-      VerificationTimes.exactly(count)
-    );
+        try {
+          asyncClient.batch().referencesAutoBatcher(batchRetriesConfig, autoBatchConfig)
+            .withReferences(refPizzaToSoup, refSoupToPizza, refPizzaToPizza, refSoupToSoup)
+            .run()
+            .get();
+        } catch (InterruptedException | ExecutionException e) {
+          throw new RuntimeException(e);
+        }
+      };
+      Consumer<Integer> assertBatchCallsTimes = count -> mockServerClient.verify(
+        request().withMethod("POST").withPath("/v1/batch/references"),
+        VerificationTimes.exactly(count)
+      );
 
-    BatchReferencesMockServerTestSuite.testNotCreateAutoBatchReferencesDueToTimeoutIssue(supplierReferencesBatcher,
-      assertBatchCallsTimes, expectedBatchCalls, "Read timed out");
+      BatchReferencesMockServerTestSuite.testNotCreateAutoBatchReferencesDueToTimeoutIssue(supplierReferencesBatcher,
+        assertBatchCallsTimes, expectedBatchCalls, "1 SECONDS");
+    }
   }
 
   public static Object[][] provideForNotCreateBatchReferencesDueToTimeoutIssue() {

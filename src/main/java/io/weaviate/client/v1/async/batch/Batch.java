@@ -6,16 +6,19 @@ import io.weaviate.client.base.util.DbVersionSupport;
 import io.weaviate.client.base.util.GrpcVersionSupport;
 import io.weaviate.client.v1.async.batch.api.ObjectsBatchDeleter;
 import io.weaviate.client.v1.async.batch.api.ObjectsBatcher;
+import io.weaviate.client.v1.async.batch.api.ReferencesBatcher;
 import io.weaviate.client.v1.async.data.Data;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.batch.api.ReferencePayloadBuilder;
 import io.weaviate.client.v1.batch.util.ObjectsPath;
+import io.weaviate.client.v1.batch.util.ReferencesPath;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 
 public class Batch {
   private final CloseableHttpAsyncClient client;
   private final Config config;
   private final ObjectsPath objectsPath;
+  private final ReferencesPath referencesPath;
   private final BeaconPath beaconPath;
   private final Data data;
   private final GrpcVersionSupport grpcVersionSupport;
@@ -26,6 +29,7 @@ public class Batch {
     this.client = client;
     this.config = config;
     this.objectsPath = new ObjectsPath();
+    this.referencesPath = new ReferencesPath();
     this.beaconPath = new BeaconPath(dbVersionSupport);
     this.grpcVersionSupport = grpcVersionSupport;
     this.tokenProvider = tokenProvider;
@@ -75,33 +79,37 @@ public class Batch {
   }
 
   // TODO: implement async ReferencesBatcher
-//  public ReferencesBatcher referencesBatcher(ReferencesBatcher.BatchRetriesConfig batchRetriesConfig) {
-//    return ReferencesBatcher.create(httpClient, config, referencesPath, batchRetriesConfig);
-//  }
-//
-//  public ReferencesBatcher referencesAutoBatcher() {
-//    return referencesAutoBatcher(
-//      ReferencesBatcher.BatchRetriesConfig.defaultConfig().build(),
-//      ReferencesBatcher.AutoBatchConfig.defaultConfig().build()
-//    );
-//  }
-//
-//  public ReferencesBatcher referencesAutoBatcher(ReferencesBatcher.BatchRetriesConfig batchRetriesConfig) {
-//    return referencesAutoBatcher(
-//      batchRetriesConfig,
-//      ReferencesBatcher.AutoBatchConfig.defaultConfig().build()
-//    );
-//  }
-//
-//  public ReferencesBatcher referencesAutoBatcher(ReferencesBatcher.AutoBatchConfig autoBatchConfig) {
-//    return referencesAutoBatcher(
-//      ReferencesBatcher.BatchRetriesConfig.defaultConfig().build(),
-//      autoBatchConfig
-//    );
-//  }
-//
-//  public ReferencesBatcher referencesAutoBatcher(ReferencesBatcher.BatchRetriesConfig batchRetriesConfig,
-//    ReferencesBatcher.AutoBatchConfig autoBatchConfig) {
-//    return ReferencesBatcher.createAuto(httpClient, config, referencesPath, batchRetriesConfig, autoBatchConfig);
-//  }
+  public ReferencesBatcher referencesBatcher() {
+    return referencesBatcher(ReferencesBatcher.BatchRetriesConfig.defaultConfig().build());
+  }
+
+  public ReferencesBatcher referencesBatcher(ReferencesBatcher.BatchRetriesConfig batchRetriesConfig) {
+    return ReferencesBatcher.create(client, config, referencesPath, batchRetriesConfig);
+  }
+
+  public ReferencesBatcher referencesAutoBatcher() {
+    return referencesAutoBatcher(
+      ReferencesBatcher.BatchRetriesConfig.defaultConfig().build(),
+      ReferencesBatcher.AutoBatchConfig.defaultConfig().build()
+    );
+  }
+
+  public ReferencesBatcher referencesAutoBatcher(ReferencesBatcher.BatchRetriesConfig batchRetriesConfig) {
+    return referencesAutoBatcher(
+      batchRetriesConfig,
+      ReferencesBatcher.AutoBatchConfig.defaultConfig().build()
+    );
+  }
+
+  public ReferencesBatcher referencesAutoBatcher(ReferencesBatcher.AutoBatchConfig autoBatchConfig) {
+    return referencesAutoBatcher(
+      ReferencesBatcher.BatchRetriesConfig.defaultConfig().build(),
+      autoBatchConfig
+    );
+  }
+
+  public ReferencesBatcher referencesAutoBatcher(ReferencesBatcher.BatchRetriesConfig batchRetriesConfig,
+    ReferencesBatcher.AutoBatchConfig autoBatchConfig) {
+    return ReferencesBatcher.createAuto(client, config, referencesPath, batchRetriesConfig, autoBatchConfig);
+  }
 }
