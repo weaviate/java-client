@@ -46,7 +46,7 @@ public class WeaviateClient {
   }
 
   public WeaviateAsyncClient async() {
-    return new WeaviateAsyncClient(config);
+    return new WeaviateAsyncClient(config, tokenProvider);
   }
 
   public Misc misc() {

@@ -5,6 +5,7 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.async.AsyncHttpClient;
 import io.weaviate.client.base.util.DbVersionProvider;
 import io.weaviate.client.base.util.DbVersionSupport;
+import io.weaviate.client.base.util.GrpcVersionSupport;
 import io.weaviate.client.v1.async.backup.Backup;
 import io.weaviate.client.v1.async.batch.Batch;
 import io.weaviate.client.v1.async.classifications.Classifications;
@@ -13,6 +14,7 @@ import io.weaviate.client.v1.async.data.Data;
 import io.weaviate.client.v1.async.graphql.GraphQL;
 import io.weaviate.client.v1.async.misc.Misc;
 import io.weaviate.client.v1.async.schema.Schema;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.misc.model.Meta;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -23,14 +25,19 @@ public class WeaviateAsyncClient implements AutoCloseable {
   private final Config config;
   private final CloseableHttpAsyncClient client;
   private final DbVersionSupport dbVersionSupport;
+  private final GrpcVersionSupport grpcVersionSupport;
+  private final AccessTokenProvider tokenProvider;
 
-  public WeaviateAsyncClient(Config config) {
+  public WeaviateAsyncClient(Config config, AccessTokenProvider tokenProvider) {
     this.config = config;
     this.client = AsyncHttpClient.create(config);
     // auto start the client
     this.start();
     // init the db version provider and get the version info
-    this.dbVersionSupport = new DbVersionSupport(initDbVersionProvider());
+    DbVersionProvider dbVersionProvider = initDbVersionProvider();
+    this.dbVersionSupport = new DbVersionSupport(dbVersionProvider);
+    this.grpcVersionSupport = new GrpcVersionSupport(dbVersionProvider);
+    this.tokenProvider = tokenProvider;
   }
 
   public Misc misc() {
@@ -38,7 +45,7 @@ public class WeaviateAsyncClient implements AutoCloseable {
   }
 
   public Schema schema() {
-    return new Schema(client, config);
+    return new Schema(client, config, dbVersionSupport);
   }
 
   public Data data() {
@@ -46,7 +53,7 @@ public class WeaviateAsyncClient implements AutoCloseable {
   }
 
   public Batch batch() {
-    return new Batch(client, config, dbVersionSupport, data());
+    return new Batch(client, config, dbVersionSupport, grpcVersionSupport, tokenProvider, data());
   }
 
   public Cluster cluster() {
