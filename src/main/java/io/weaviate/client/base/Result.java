@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.ToString;
@@ -32,6 +33,16 @@ public class Result<T> {
       this.result = body;
       this.error = null;
     }
+  }
+
+  /**
+   * Copy the Result object with a null body, preserving only the status code and the error message.
+   * 
+   * @param <NULL> Would-be response type. It's required for type safety, but can be anything since the body is always set to null.
+   * @return Result
+   */
+  public <NULL> Result<NULL> toErrorResult() {
+    return new Result<>(this.error.getStatusCode(), null, WeaviateErrorResponse.builder().error(this.error.getMessages()).build());
   }
 
   public boolean hasErrors() {

@@ -630,58 +630,57 @@ public class ClientSchemaTest {
   }
 
   @Test
-  @Ignore("ShardsUpdater needs fixing")
   public void testSchemaUpdateShards()  throws ExecutionException, InterruptedException {
     try (WeaviateAsyncClient client = syncClient.async()) {
-      // // given
-      // String className = "Band";
-      // int shardCount = 3;
-      // ShardingConfig shardingConfig = ShardingConfig.builder()
-      //   .actualCount(shardCount)
-      //   .actualVirtualCount(128)
-      //   .desiredCount(shardCount)
-      //   .desiredVirtualCount(128)
-      //   .function("murmur3")
-      //   .key("_id")
-      //   .strategy("hash")
-      //   .virtualPerPhysical(128)
-      //   .build();
-      // WeaviateClass clazz = WeaviateClass.builder()
-      //   .className(className)
-      //   .description("Band that plays and produces music")
-      //   .vectorIndexType("hnsw")
-      //   .vectorizer("text2vec-contextionary")
-      //   .shardingConfig(shardingConfig)
-      //   .build();
-      // // when
-      // Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run().get();
-      // assertResultTrue(createStatus);
-      // // then
-      // Result<Shard[]> shards = client.schema().shardsGetter().withClassName(className).run().get();
-      // assertNotNull(shards);
-      // assertNull(shards.getError());
-      // assertNotNull(shards.getResult());
-      // assertEquals(3, shards.getResult().length);
-      // // update shard status to READONLY
-      // Result<ShardStatus[]> updateToREADONLY = client.schema().shardsUpdater()
-      //   .withClassName(className)
-      //   .withStatus(ShardStatuses.READONLY)
-      //   .run().get();
-      // assertNotNull(updateToREADONLY.getResult());
-      // assertEquals(3, updateToREADONLY.getResult().length);
-      // for (ShardStatus s : updateToREADONLY.getResult()) {
-      //   assertEquals(ShardStatuses.READONLY, s.getStatus());
-      // }
-      // // update shard status to READY
-      // Result<ShardStatus[]> updateToREADY = client.schema().shardsUpdater()
-      //   .withClassName(className)
-      //   .withStatus(ShardStatuses.READY)
-      //   .run().get();
-      // assertNotNull(updateToREADY.getResult());
-      // assertEquals(3, updateToREADY.getResult().length);
-      // for (ShardStatus s : updateToREADY.getResult()) {
-      //   assertEquals(ShardStatuses.READY, s.getStatus());
-      // }
+      // given
+      String className = "Band";
+      int shardCount = 3;
+      ShardingConfig shardingConfig = ShardingConfig.builder()
+        .actualCount(shardCount)
+        .actualVirtualCount(128)
+        .desiredCount(shardCount)
+        .desiredVirtualCount(128)
+        .function("murmur3")
+        .key("_id")
+        .strategy("hash")
+        .virtualPerPhysical(128)
+        .build();
+      WeaviateClass clazz = WeaviateClass.builder()
+        .className(className)
+        .description("Band that plays and produces music")
+        .vectorIndexType("hnsw")
+        .vectorizer("text2vec-contextionary")
+        .shardingConfig(shardingConfig)
+        .build();
+      // when
+      Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run().get();
+      assertResultTrue(createStatus);
+      // then
+      Result<Shard[]> shards = client.schema().shardsGetter().withClassName(className).run().get();
+      assertNotNull(shards);
+      assertNull(shards.getError());
+      assertNotNull(shards.getResult());
+      assertEquals(3, shards.getResult().length);
+      // update shard status to READONLY
+      Result<ShardStatus[]> updateToREADONLY = client.schema().shardsUpdater()
+        .withClassName(className)
+        .withStatus(ShardStatuses.READONLY)
+        .run().get();
+      assertNotNull(updateToREADONLY.getResult());
+      assertEquals(3, updateToREADONLY.getResult().length);
+      for (ShardStatus s : updateToREADONLY.getResult()) {
+        assertEquals(ShardStatuses.READONLY, s.getStatus());
+      }
+      // update shard status to READY
+      Result<ShardStatus[]> updateToREADY = client.schema().shardsUpdater()
+        .withClassName(className)
+        .withStatus(ShardStatuses.READY)
+        .run().get();
+      assertNotNull(updateToREADY.getResult());
+      assertEquals(3, updateToREADY.getResult().length);
+      for (ShardStatus s : updateToREADY.getResult()) {
+        assertEquals(ShardStatuses.READY, s.getStatus());
+      }
     }
   }
 
