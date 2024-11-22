@@ -64,11 +64,11 @@ public class Schema {
     return new ShardsGetter(client, config);
   }
 
-  public ShardsUpdater shardsUpdater() {
+  public ShardsUpdater shardsUpdater() { // TODO
     return new ShardsUpdater(client, config);
   }
 
-  public TenantsCreator tenantsCreator() {
+  public TenantsCreator tenantsCreator() { // TODO
     return new TenantsCreator(client, config);
   }
 
@@ -76,7 +76,7 @@ public class Schema {
     return new TenantsUpdater(client, config, dbVersionSupport);
   }
 
-  public TenantsGetter tenantsGetter() {
+  public TenantsGetter tenantsGetter() { // TODO
     return new TenantsGetter(client, config);
   }
 }

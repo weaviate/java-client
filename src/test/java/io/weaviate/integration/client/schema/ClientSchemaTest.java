@@ -724,14 +724,14 @@ public class ClientSchemaTest {
       .build();
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    Result<Boolean> bandClassStatus = client.schema().exists().withClassName(clazz.getClassName()).run();
-    Result<Boolean> nonExistentClassStatus = client.schema().exists().withClassName("nonExistentClass").run();
+    Result<Boolean> bandClassExists = client.schema().exists().withClassName(clazz.getClassName()).run();
+    Result<Boolean> nonExistentClassExists = client.schema().exists().withClassName("nonExistentClass").run();
     // then
     assertResultTrue(createStatus);
-    assertResultTrue(bandClassStatus);
-    assertNotNull(nonExistentClassStatus);
-    assertFalse(nonExistentClassStatus.getResult());
-    assertNull(nonExistentClassStatus.getError());
+    assertResultTrue(bandClassExists);
+    assertNotNull(nonExistentClassExists);
+    assertFalse(nonExistentClassExists.getResult());
+    assertNull(nonExistentClassExists.getError());
     Result<Shard[]> shards = client.schema().shardsGetter()
       .withClassName(clazz.getClassName()).run();
     assertNotNull(shards);

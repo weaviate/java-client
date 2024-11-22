@@ -6,6 +6,7 @@ import io.weaviate.client.base.AsyncClientResult;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.base.WeaviateErrorResponse;
+import io.weaviate.client.v1.schema.model.Shard;
 import io.weaviate.client.v1.schema.model.ShardStatus;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,6 +42,7 @@ public class ShardsUpdater extends AsyncBaseClient<ShardStatus> implements Async
     return this;
   }
 
+  // FIXME: must update all shards and return ShardStatus[] like the sync.ShardsUpdater does.
   @Override
   public Future<Result<ShardStatus>> run(FutureCallback<Result<ShardStatus>> callback) {
     List<String> emptyFieldNames = new ArrayList<>();
@@ -61,6 +63,20 @@ public class ShardsUpdater extends AsyncBaseClient<ShardStatus> implements Async
         .error(Collections.singletonList(errorMessage)).build();
       return CompletableFuture.completedFuture(new Result<>(HttpStatus.SC_BAD_REQUEST, null, errors));
     }
+
+    // List<ShardStatus> shardStatuses = new ArrayList<>();
+    // for (Shard shard : shards.getResult()) {
+    //   Result<ShardStatus> update = this.shardUpdater
+    //           .withClassName(this.className)
+    //           .withShardName(shard.getName())
+    //           .withStatus(this.status)
+    //           .run();
+    //   if (update.hasErrors()) {
+    //     return toResult(update.getError());
+    //   }
+    //   shardStatuses.add(update.getResult());
+    // }
+
     String path = String.format("/schema/%s/shards/%s", this.className, this.shardName);
     return sendPostRequest(path, status, ShardStatus.class, callback);
   }

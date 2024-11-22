@@ -29,6 +29,7 @@ public class TenantsCreator extends AsyncBaseClient<Tenant[]> implements AsyncCl
   }
 
   @Override
+  // FIXME: must return Boolean, like the sync.TenantsCreator does
   public Future<Result<Tenant[]>> run(FutureCallback<Result<Tenant[]>> callback) {
     String path = String.format("/schema/%s/tenants", UrlEncoder.encodePathParam(className));
     return sendPostRequest(path, tenants, Tenant[].class, callback);
