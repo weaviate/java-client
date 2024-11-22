@@ -5,36 +5,24 @@ import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.batch.api.ObjectsBatcher;
 import io.weaviate.client.v1.batch.model.ObjectGetResponse;
-import io.weaviate.client.v1.batch.model.ObjectsGetResponseAO2Result;
 import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.data.replication.model.ConsistencyLevel;
 import io.weaviate.integration.client.WeaviateDockerCompose;
 import io.weaviate.integration.client.WeaviateTestGenerics;
-import io.weaviate.integration.tests.batch.BatchTestSuite;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import static org.assertj.core.api.Assertions.assertThat;
+import io.weaviate.integration.tests.batch.BatchObjectsTestSuite;
+import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-public class ClientBatchCreateTest {
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
-  private static final String PIZZA_1_ID = "abefd256-8574-442b-9293-9205193737ee";
-  private static final Map<String, Object> PIZZA_1_PROPS = createFoodProperties("Hawaii", "Universally accepted to be the best pizza ever created.");
-  private static final String PIZZA_2_ID = "97fa5147-bdad-4d74-9a81-f8babc811b09";
-  private static final Map<String, Object> PIZZA_2_PROPS = createFoodProperties("Doener", "A innovation, some say revolution, in the pizza industry.");
-  private static final String SOUP_1_ID = "565da3b6-60b3-40e5-ba21-e6bfe5dbba91";
-  private static final Map<String, Object> SOUP_1_PROPS = createFoodProperties("ChickenSoup", "Used by humans when their inferior genetics are attacked by microscopic organisms.");
-  private static final String SOUP_2_ID = "07473b34-0ab2-4120-882d-303d9e13f7af";
-  private static final Map<String, Object> SOUP_2_PROPS = createFoodProperties("Beautiful", "Putting the game of letter soups to a whole new level.");
+public class ClientBatchCreateTest {
 
   private WeaviateClient client;
   private final WeaviateTestGenerics testGenerics = new WeaviateTestGenerics();
@@ -44,9 +32,7 @@ public class ClientBatchCreateTest {
 
   @Before
   public void before() {
-    String httpHost = compose.getHttpHostAddress();
-    Config config = new Config("http", httpHost);
-
+    Config config = new Config("http", compose.getHttpHostAddress());
     client = new WeaviateClient(config);
     testGenerics.createWeaviateTestSchemaFood(client);
   }
@@ -58,172 +44,135 @@ public class ClientBatchCreateTest {
 
   @Test
   public void shouldCreateBatch() {
-    Supplier<Result<WeaviateObject>> resPizza1 = () -> client.data().creator()
-      .withClassName("Pizza")
-      .withID(BatchTestSuite.PIZZA_1_ID)
-      .withProperties(BatchTestSuite.PIZZA_1_PROPS)
+    Function<WeaviateObject, Result<ObjectGetResponse[]>> supplierObjectsBatcherPizzas = pizza -> client.batch().objectsBatcher()
+      .withObjects(pizza, WeaviateObject.builder()
+        .className("Pizza")
+        .id(BatchObjectsTestSuite.PIZZA_2_ID)
+        .properties(BatchObjectsTestSuite.PIZZA_2_PROPS)
+        .build())
+      .withConsistencyLevel(ConsistencyLevel.QUORUM)
       .run();
-    Supplier<Result<WeaviateObject>> resSoup1 = () -> client.data().creator()
-      .withClassName("Soup")
-      .withID(BatchTestSuite.SOUP_1_ID)
-      .withProperties(BatchTestSuite.SOUP_1_PROPS)
+    Function<WeaviateObject, Result<ObjectGetResponse[]>> supplierObjectsBatcherSoups = soup -> client.batch().objectsBatcher()
+      .withObjects(soup, WeaviateObject.builder()
+        .className("Soup")
+        .id(BatchObjectsTestSuite.SOUP_2_ID)
+        .properties(BatchObjectsTestSuite.SOUP_2_PROPS)
+        .build())
+      .withConsistencyLevel(ConsistencyLevel.QUORUM)
       .run();
 
-    Function<Result<WeaviateObject>, Result<ObjectGetResponse[]>> resBatchPizzas = (pizza1) -> client.batch().objectsBatcher()
-        .withObjects(
-          pizza1.getResult(),
-          WeaviateObject.builder().className("Pizza").id(BatchTestSuite.PIZZA_2_ID).properties(BatchTestSuite.PIZZA_2_PROPS).build()
-        )
-        .withConsistencyLevel(ConsistencyLevel.QUORUM)
-        .run();
-
-    Function<Result<WeaviateObject>, Result<ObjectGetResponse[]>> resBatchSoups = (soup1) -> client.batch().objectsBatcher()
-        .withObjects(
-          soup1.getResult(),
-          WeaviateObject.builder().className("Soup").id(BatchTestSuite.SOUP_2_ID).properties(BatchTestSuite.SOUP_2_PROPS).build()
-        )
-        .withConsistencyLevel(ConsistencyLevel.QUORUM)
-        .run();
-
-    // check if created objects exist
-    Supplier<Result<List<WeaviateObject>>> resGetPizza1 = () -> client.data().objectsGetter().withID(PIZZA_1_ID).withClassName("Pizza").run();
-    Supplier<Result<List<WeaviateObject>>> resGetPizza2 = () -> client.data().objectsGetter().withID(PIZZA_2_ID).withClassName("Pizza").run();
-    Supplier<Result<List<WeaviateObject>>> resGetSoup1 = () -> client.data().objectsGetter().withID(SOUP_1_ID).withClassName("Soup").run();
-    Supplier<Result<List<WeaviateObject>>> resGetSoup2 = () -> client.data().objectsGetter().withID(SOUP_2_ID).withClassName("Soup").run();
-
-    BatchTestSuite.shouldCreateBatch(resPizza1, resSoup1, resBatchPizzas, resBatchSoups, resGetPizza1, resGetPizza2, resGetSoup1, resGetSoup2);
+    BatchObjectsTestSuite.testCreateBatch(supplierObjectsBatcherPizzas, supplierObjectsBatcherSoups,
+      createSupplierDataPizza1(), createSupplierDataSoup1(),
+      createSupplierGetterPizza1(), createSupplierGetterPizza2(),
+      createSupplierGetterSoup1(), createSupplierGetterSoup2());
   }
 
   @Test
   public void shouldCreateAutoBatch() {
-    // when
-    Result<WeaviateObject> resPizza1 = client.data().creator()
-      .withClassName("Pizza")
-      .withID(PIZZA_1_ID)
-      .withProperties(PIZZA_1_PROPS)
-      .run();
-    Result<WeaviateObject> resSoup1 = client.data().creator()
-      .withClassName("Soup")
-      .withID(SOUP_1_ID)
-      .withProperties(SOUP_1_PROPS)
-      .run();
+    BiConsumer<WeaviateObject, Consumer<Result<ObjectGetResponse[]>>> supplierObjectsBatcherPizzas = (pizza, callback) -> {
+      ObjectsBatcher.AutoBatchConfig autoBatchConfig = ObjectsBatcher.AutoBatchConfig.defaultConfig()
+        .batchSize(2)
+        .callback(callback)
+        .build();
 
-    assertThat(resPizza1).isNotNull()
-      .returns(false, Result::hasErrors)
-      .extracting(Result::getResult).isNotNull();
-    assertThat(resSoup1).isNotNull()
-      .returns(false, Result::hasErrors)
-      .extracting(Result::getResult).isNotNull();
+      client.batch().objectsAutoBatcher(autoBatchConfig)
+        .withObjects(pizza, WeaviateObject.builder().className("Pizza")
+          .id(BatchObjectsTestSuite.PIZZA_2_ID)
+          .properties(BatchObjectsTestSuite.PIZZA_2_PROPS)
+          .build())
+        .flush();
+    };
+    BiConsumer<WeaviateObject, Consumer<Result<ObjectGetResponse[]>>> supplierObjectsBatcherSoups = (soup, callback) -> {
+      ObjectsBatcher.AutoBatchConfig autoBatchConfig = ObjectsBatcher.AutoBatchConfig.defaultConfig()
+        .batchSize(2)
+        .callback(callback)
+        .build();
 
-    List<Result<ObjectGetResponse[]>> resBatches = Collections.synchronizedList(new ArrayList<>(2));
-    ObjectsBatcher.AutoBatchConfig autoBatchConfig = ObjectsBatcher.AutoBatchConfig.defaultConfig()
-      .batchSize(2)
-      .callback(resBatches::add)
-      .build();
+      client.batch().objectsAutoBatcher(autoBatchConfig)
+        .withObjects(soup, WeaviateObject.builder()
+          .className("Soup")
+          .id(BatchObjectsTestSuite.SOUP_2_ID)
+          .properties(BatchObjectsTestSuite.SOUP_2_PROPS)
+          .build())
+        .flush();
+    };
 
-    client.batch().objectsAutoBatcher(autoBatchConfig)
-      .withObjects(
-        resPizza1.getResult(),
-        WeaviateObject.builder().className("Pizza").id(PIZZA_2_ID).properties(PIZZA_2_PROPS).build()
-      ).flush();
-    client.batch().objectsAutoBatcher(autoBatchConfig)
-      .withObjects(
-        resSoup1.getResult(),
-        WeaviateObject.builder().className("Soup").id(SOUP_2_ID).properties(SOUP_2_PROPS).build()
-      ).flush();
-
-    // check if created objects exist
-    Result<List<WeaviateObject>> resGetPizza1 = client.data().objectsGetter().withID(PIZZA_1_ID).withClassName("Pizza").run();
-    Result<List<WeaviateObject>> resGetPizza2 = client.data().objectsGetter().withID(PIZZA_2_ID).withClassName("Pizza").run();
-    Result<List<WeaviateObject>> resGetSoup1 = client.data().objectsGetter().withID(SOUP_1_ID).withClassName("Soup").run();
-    Result<List<WeaviateObject>> resGetSoup2 = client.data().objectsGetter().withID(SOUP_2_ID).withClassName("Soup").run();
-
-    // then
-    assertThat(resBatches.get(0)).isNotNull()
-      .returns(false, Result::hasErrors);
-    assertThat(resBatches.get(0).getResult()).hasSize(2);
-
-    assertThat(resBatches.get(1)).isNotNull()
-      .returns(false, Result::hasErrors);
-    assertThat(resBatches.get(1).getResult()).hasSize(2);
-
-    assertThat(resGetPizza1).isNotNull()
-      .returns(false, Result::hasErrors)
-      .extracting(Result::getResult).asList().hasSize(1)
-      .extracting(o -> ((WeaviateObject)o).getId()).first().isEqualTo(PIZZA_1_ID);
-
-    assertThat(resGetPizza2).isNotNull()
-      .returns(false, Result::hasErrors)
-      .extracting(Result::getResult).asList().hasSize(1)
-      .extracting(o -> ((WeaviateObject)o).getId()).first().isEqualTo(PIZZA_2_ID);
-
-    assertThat(resGetSoup1).isNotNull()
-      .returns(false, Result::hasErrors)
-      .extracting(Result::getResult).asList().hasSize(1)
-      .extracting(o -> ((WeaviateObject)o).getId()).first().isEqualTo(SOUP_1_ID);
-
-    assertThat(resGetSoup2).isNotNull()
-      .returns(false, Result::hasErrors)
-      .extracting(Result::getResult).asList().hasSize(1)
-      .extracting(o -> ((WeaviateObject)o).getId()).first().isEqualTo(SOUP_2_ID);
+    BatchObjectsTestSuite.testCreateAutoBatch(supplierObjectsBatcherPizzas, supplierObjectsBatcherSoups,
+      createSupplierDataPizza1(), createSupplierDataSoup1(),
+      createSupplierGetterPizza1(), createSupplierGetterPizza2(),
+      createSupplierGetterSoup1(), createSupplierGetterSoup2());
   }
 
   @Test
   public void shouldCreateBatchWithPartialError() {
-    WeaviateObject pizzaWithError = WeaviateObject.builder()
-      .className("Pizza")
-      .id(PIZZA_1_ID)
-      .properties(createFoodProperties(1, "This pizza should throw a invalid name error"))
-      .build();
-    WeaviateObject pizza = WeaviateObject.builder()
-      .className("Pizza")
-      .id(PIZZA_2_ID)
-      .properties(PIZZA_2_PROPS)
-      .build();
+    Supplier<Result<ObjectGetResponse[]>> supplierObjectsBatcherPizzas = () -> {
+      WeaviateObject pizzaWithError = WeaviateObject.builder()
+        .className("Pizza")
+        .id(BatchObjectsTestSuite.PIZZA_1_ID)
+        .properties(BatchObjectsTestSuite.createFoodProperties(1, "This pizza should throw a invalid name error"))
+        .build();
+      WeaviateObject pizza = WeaviateObject.builder()
+        .className("Pizza")
+        .id(BatchObjectsTestSuite.PIZZA_2_ID)
+        .properties(BatchObjectsTestSuite.PIZZA_2_PROPS)
+        .build();
 
-    Result<ObjectGetResponse[]> resBatch = client.batch().objectsBatcher()
-      .withObjects(pizzaWithError, pizza)
-      .run();
+      return client.batch().objectsBatcher()
+        .withObjects(pizzaWithError, pizza)
+        .run();
+    };
 
-    assertThat(resBatch).isNotNull()
-      .returns(false, Result::hasErrors);
-    assertThat(resBatch.getResult()).hasSize(2);
-
-    ObjectGetResponse resPizzaWithError = resBatch.getResult()[0];
-    assertThat(resPizzaWithError.getId()).isEqualTo(PIZZA_1_ID);
-    assertThat(resPizzaWithError.getResult().getErrors())
-      .extracting(ObjectsGetResponseAO2Result.ErrorResponse::getError).asList()
-      .first()
-      .extracting(i -> ((ObjectsGetResponseAO2Result.ErrorItem) i).getMessage()).asString()
-      .contains("invalid text property 'name' on class 'Pizza': not a string, but json.Number");
-    ObjectGetResponse resPizza = resBatch.getResult()[1];
-    assertThat(resPizza.getId()).isEqualTo(PIZZA_2_ID);
-    assertThat(resPizza.getResult().getErrors()).isNull();
-
-    Result<List<WeaviateObject>> resGetPizzaWithError = client.data().objectsGetter()
-      .withClassName("Pizza")
-      .withID(PIZZA_1_ID)
-      .run();
-    Result<List<WeaviateObject>> resGetPizza = client.data().objectsGetter()
-      .withClassName("Pizza")
-      .withID(PIZZA_2_ID)
-      .run();
-
-    assertThat(resGetPizzaWithError).isNotNull()
-      .returns(false, Result::hasErrors);
-    assertThat(resGetPizzaWithError.getResult()).isNull();
-
-    assertThat(resGetPizza).isNotNull()
-      .returns(false, Result::hasErrors);
-    assertThat(resGetPizza.getResult()).hasSize(1);
+    BatchObjectsTestSuite.testCreateBatchWithPartialError(supplierObjectsBatcherPizzas,
+      createSupplierGetterPizza1(), createSupplierGetterPizza2());
   }
 
+  @NotNull
+  private Supplier<Result<WeaviateObject>> createSupplierDataSoup1() {
+    return () -> client.data().creator()
+      .withClassName("Soup")
+      .withID(BatchObjectsTestSuite.SOUP_1_ID)
+      .withProperties(BatchObjectsTestSuite.SOUP_1_PROPS)
+      .run();
+  }
 
-  private static Map<String, Object> createFoodProperties(Object name, Object description) {
-    Map<String, Object> props = new HashMap<>();
-    props.put("name", name);
-    props.put("description", description);
+  @NotNull
+  private Supplier<Result<WeaviateObject>> createSupplierDataPizza1() {
+    return () -> client.data().creator()
+      .withClassName("Pizza")
+      .withID(BatchObjectsTestSuite.PIZZA_1_ID)
+      .withProperties(BatchObjectsTestSuite.PIZZA_1_PROPS)
+      .run();
+  }
 
-    return props;
+  @NotNull
+  private Supplier<Result<List<WeaviateObject>>> createSupplierGetterPizza1() {
+    return () -> client.data().objectsGetter()
+      .withID(BatchObjectsTestSuite.PIZZA_1_ID)
+      .withClassName("Pizza")
+      .run();
+  }
+
+  @NotNull
+  private Supplier<Result<List<WeaviateObject>>> createSupplierGetterPizza2() {
+    return () -> client.data().objectsGetter()
+      .withID(BatchObjectsTestSuite.PIZZA_2_ID)
+      .withClassName("Pizza")
+      .run();
+  }
+
+  @NotNull
+  private Supplier<Result<List<WeaviateObject>>> createSupplierGetterSoup1() {
+    return () -> client.data().objectsGetter()
+      .withID(BatchObjectsTestSuite.SOUP_1_ID)
+      .withClassName("Soup")
+      .run();
+  }
+
+  @NotNull
+  private Supplier<Result<List<WeaviateObject>>> createSupplierGetterSoup2() {
+    return () -> client.data().objectsGetter()
+      .withID(BatchObjectsTestSuite.SOUP_2_ID)
+      .withClassName("Soup")
+      .run();
   }
 }
