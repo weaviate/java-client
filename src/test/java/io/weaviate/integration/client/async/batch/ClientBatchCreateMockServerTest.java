@@ -82,35 +82,35 @@ public class ClientBatchCreateMockServerTest {
     }
   }
 
-//  @Test
-//  @DataMethod(source = ClientBatchCreateMockServerTest.class, method = "provideForNotCreateBatchDueToConnectionIssue")
-//  public void shouldNotCreateAutoBatchDueToConnectionIssue(ObjectsBatcher.BatchRetriesConfig batchRetriesConfig,
-//                                                           long expectedExecMinMillis, long expectedExecMaxMillis) {
-//    // stop server to simulate connection issues
-//    mockServer.stop();
-//
-//    try (WeaviateAsyncClient asyncClient = client.async()) {
-//      Consumer<Consumer<Result<ObjectGetResponse[]>>> supplierObjectsBatcher = callback -> {
-//        ObjectsBatcher.AutoBatchConfig autoBatchConfig = ObjectsBatcher.AutoBatchConfig.defaultConfig()
-//          .batchSize(2)
-//          .callback(callback)
-//          .build();
-//
-//        try {
-//          asyncClient.batch().objectsAutoBatcher(batchRetriesConfig, autoBatchConfig)
-//            .withObjects(BatchObjectsMockServerTestSuite.PIZZA_1, BatchObjectsMockServerTestSuite.PIZZA_2,
-//              BatchObjectsMockServerTestSuite.SOUP_1, BatchObjectsMockServerTestSuite.SOUP_2)
-//            .run()
-//            .get();
-//        } catch (InterruptedException | ExecutionException e) {
-//          throw new RuntimeException(e);
-//        }
-//      };
-//
-//      BatchObjectsMockServerTestSuite.testNotCreateAutoBatchDueToConnectionIssue(supplierObjectsBatcher,
-//        expectedExecMinMillis, expectedExecMaxMillis);
-//    }
-//  }
+  @Test
+  @DataMethod(source = ClientBatchCreateMockServerTest.class, method = "provideForNotCreateBatchDueToConnectionIssue")
+  public void shouldNotCreateAutoBatchDueToConnectionIssue(ObjectsBatcher.BatchRetriesConfig batchRetriesConfig,
+                                                           long expectedExecMinMillis, long expectedExecMaxMillis) {
+    // stop server to simulate connection issues
+    mockServer.stop();
+
+    try (WeaviateAsyncClient asyncClient = client.async()) {
+      Consumer<Consumer<Result<ObjectGetResponse[]>>> supplierObjectsBatcher = callback -> {
+        ObjectsBatcher.AutoBatchConfig autoBatchConfig = ObjectsBatcher.AutoBatchConfig.defaultConfig()
+          .batchSize(2)
+          .callback(callback)
+          .build();
+
+        try {
+          asyncClient.batch().objectsAutoBatcher(batchRetriesConfig, autoBatchConfig)
+            .withObjects(BatchObjectsMockServerTestSuite.PIZZA_1, BatchObjectsMockServerTestSuite.PIZZA_2,
+              BatchObjectsMockServerTestSuite.SOUP_1, BatchObjectsMockServerTestSuite.SOUP_2)
+            .run()
+            .get();
+        } catch (InterruptedException | ExecutionException e) {
+          throw new RuntimeException(e);
+        }
+      };
+
+      BatchObjectsMockServerTestSuite.testNotCreateAutoBatchDueToConnectionIssue(supplierObjectsBatcher,
+        expectedExecMinMillis, expectedExecMaxMillis);
+    }
+  }
 
   public static Object[][] provideForNotCreateBatchDueToConnectionIssue() {
     return new Object[][]{
