@@ -25,7 +25,7 @@ public class Batch {
   private final AccessTokenProvider tokenProvider;
 
   public Batch(CloseableHttpAsyncClient client, Config config, DbVersionSupport dbVersionSupport,
-    GrpcVersionSupport grpcVersionSupport, AccessTokenProvider tokenProvider, Data data) {
+               GrpcVersionSupport grpcVersionSupport, AccessTokenProvider tokenProvider, Data data) {
     this.client = client;
     this.config = config;
     this.objectsPath = new ObjectsPath();
@@ -65,8 +65,9 @@ public class Batch {
     );
   }
 
+
   public ObjectsBatcher objectsAutoBatcher(ObjectsBatcher.BatchRetriesConfig batchRetriesConfig,
-    ObjectsBatcher.AutoBatchConfig autoBatchConfig) {
+                                           ObjectsBatcher.AutoBatchConfig autoBatchConfig) {
     return ObjectsBatcher.createAuto(client, config, data, objectsPath, tokenProvider, grpcVersionSupport, batchRetriesConfig, autoBatchConfig);
   }
 
@@ -109,7 +110,7 @@ public class Batch {
   }
 
   public ReferencesBatcher referencesAutoBatcher(ReferencesBatcher.BatchRetriesConfig batchRetriesConfig,
-    ReferencesBatcher.AutoBatchConfig autoBatchConfig) {
+                                                 ReferencesBatcher.AutoBatchConfig autoBatchConfig) {
     return ReferencesBatcher.createAuto(client, config, referencesPath, batchRetriesConfig, autoBatchConfig);
   }
 }
