@@ -18,11 +18,15 @@ import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.HttpResponse;
 
 public class TenantsGetter extends AsyncBaseClient<List<Tenant>> implements AsyncClientResult<List<Tenant>> {
-  // FIXME: add builder method withClassName
   private String className;
 
   public TenantsGetter(CloseableHttpAsyncClient client, Config config) {
     super(client, config);
+  }
+
+  public TenantsGetter withClassName(String className) {
+    this.className = className;
+    return this;
   }
 
   @Override

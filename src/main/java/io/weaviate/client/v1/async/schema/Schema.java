@@ -76,7 +76,7 @@ public class Schema {
     return new TenantsUpdater(client, config, dbVersionSupport);
   }
 
-  public TenantsGetter tenantsGetter() { // TODO
+  public TenantsGetter tenantsGetter() {
     return new TenantsGetter(client, config);
   }
 }

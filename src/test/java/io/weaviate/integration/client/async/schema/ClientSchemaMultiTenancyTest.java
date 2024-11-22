@@ -47,7 +47,6 @@ public class ClientSchemaMultiTenancyTest {
   }
 
   @Test
-  @Ignore("TenantGetter needs fixing")
   public void shouldGetTenantsFromMTClass() throws ExecutionException, InterruptedException {
     Tenant[] tenants = new Tenant[]{TENANT_1, TENANT_2};
     String[] tenantNames = Arrays.stream(tenants).map(Tenant::getName).toArray(String[]::new);
@@ -56,7 +55,7 @@ public class ClientSchemaMultiTenancyTest {
 
     try (WeaviateAsyncClient client = syncClient.async()) {
       Result<List<Tenant>> getResult = client.schema().tenantsGetter()
-        // .withClassName("Pizza") FIXME
+        .withClassName("Pizza")
         .run().get();
 
       assertThat(getResult).isNotNull()
