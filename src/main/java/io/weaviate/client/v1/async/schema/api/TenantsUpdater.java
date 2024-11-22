@@ -49,7 +49,7 @@ public class TenantsUpdater extends AsyncBaseClient<Boolean> implements AsyncCli
   @Override
   public Future<Result<Boolean>> run(FutureCallback<Result<Boolean>> callback) {
     if (dbVersionSupport.supportsOnly100TenantsInOneRequest() && tenants != null && tenants.length > BATCH_SIZE) {
-      CompletableFuture<Result<Boolean>> updateALl = CompletableFuture.supplyAsync(() -> chunkTenants(tenants, BATCH_SIZE)).thenApplyAsync(tenants -> {
+      CompletableFuture<Result<Boolean>> updateAll = CompletableFuture.supplyAsync(() -> chunkTenants(tenants, BATCH_SIZE)).thenApplyAsync(tenants -> {
         for (List<Tenant> batch : tenants) {
           try {
             Result<Boolean> resp = updateTenants(batch.toArray(new Tenant[0]), null).get();
@@ -63,14 +63,14 @@ public class TenantsUpdater extends AsyncBaseClient<Boolean> implements AsyncCli
         return new Result<>(200, true, null);
       });
       if (callback != null) {
-        return updateALl.whenComplete((booleanResult, e) -> {
+        return updateAll.whenComplete((booleanResult, e) -> {
           callback.completed(booleanResult);
           if (e != null) {
             callback.failed(new Exception(e));
           }
         });
       }
-      return updateALl;
+      return updateAll;
     }
     return updateTenants(tenants, callback);
   }
