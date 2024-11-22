@@ -14,52 +14,50 @@ import io.weaviate.client.base.AsyncBaseClient;
 import io.weaviate.client.base.AsyncClientResult;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.util.UrlEncoder;
-import io.weaviate.client.v1.schema.model.Tenant;
 
-public class TenantsCreator extends AsyncBaseClient<Tenant[]> implements AsyncClientResult<Boolean> {
+public class TenantExists extends AsyncBaseClient<Object> implements AsyncClientResult<Boolean> {
   private String className;
-  private Tenant[] tenants;
+  private String tenant;
 
-  public TenantsCreator(CloseableHttpAsyncClient client, Config config) {
+  public TenantExists(CloseableHttpAsyncClient client, Config config) {
     super(client, config);
   }
 
-  public TenantsCreator withClassName(String className) {
+  public TenantExists withClassName(String className) {
     this.className = className;
     return this;
   }
 
-  public TenantsCreator withTenants(Tenant... tenants) {
-    this.tenants = tenants;
+  public TenantExists withTenant(String tenant) {
+    this.tenant = tenant;
     return this;
   }
 
   @Override
   public Future<Result<Boolean>> run(FutureCallback<Result<Boolean>> callback) {
-    String path = String.format("/schema/%s/tenants", UrlEncoder.encodePathParam(className));
-
-    final FutureCallback<Result<Tenant[]>> tennantCb = callback == null ? null : new FutureCallback<Result<Tenant[]>>() {
+    String path = String.format("/schema/%s/tenants/%s", UrlEncoder.encodePathParam(className), UrlEncoder.encodePathParam(tenant));
+    final FutureCallback<Result<Object>> objectCb = callback == null ? null : new FutureCallback<Result<Object>>() {
       @Override
-      public void completed(Result<Tenant[]> tenants) {
-        callback.completed(tenants.<Boolean> withNewResult(tenants.getStatusCode() == HttpStatus.SC_OK));
-      }
-
-      @Override
-      public void failed(Exception ex) {
-          callback.failed(ex);
+      public void completed(Result<Object> result) {
+          callback.completed(result.withNewResult(result.getStatusCode() == HttpStatus.SC_OK));
       }
 
       @Override
       public void cancelled() {
           callback.cancelled();
       }
+
+      @Override
+      public void failed(Exception ex) {
+          callback.failed(ex);
+      }
     };
 
     return CompletableFuture.supplyAsync(() -> {
       try {
-        Result<Tenant[]> result = sendPostRequest(path, tenants, Tenant[].class, tennantCb).get();
+        Result<Object> result = sendHeadRequest(path, Object.class, objectCb).get();
         return result.withNewResult(result.getStatusCode() == HttpStatus.SC_OK);
-      } catch (ExecutionException | InterruptedException e) {
+      }catch (ExecutionException | InterruptedException e) {
         throw new CompletionException(e);
       }
     });

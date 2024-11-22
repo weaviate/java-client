@@ -16,6 +16,7 @@ import io.weaviate.client.v1.async.schema.api.ShardsUpdater;
 import io.weaviate.client.v1.async.schema.api.TenantsCreator;
 import io.weaviate.client.v1.async.schema.api.TenantsGetter;
 import io.weaviate.client.v1.async.schema.api.TenantsUpdater;
+import io.weaviate.client.v1.async.schema.api.TenantsExists;
 
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 
@@ -74,12 +75,16 @@ public class Schema {
     return new ShardsUpdater(client, config);
   }
 
-  public TenantsCreator tenantsCreator() { // TODO
+  public TenantsCreator tenantsCreator() {
     return new TenantsCreator(client, config);
   }
 
   public TenantsUpdater tenantsUpdater() {
     return new TenantsUpdater(client, config, dbVersionSupport);
+  }
+
+  public TenantsExists tenantsExists() {
+    return new TenantsExists(client, config);
   }
 
   public TenantsGetter tenantsGetter() {

@@ -71,36 +71,35 @@ public class ClientSchemaMultiTenancyTest {
   }
 
   @Test
-  @Ignore("TenantCreator needs fixing")
   public void shouldAddTenantsToMTClass() throws ExecutionException, InterruptedException {
-    // String[] tenants = new String[]{"TenantNo1", "TenantNo2"};
-    // testGenerics.createSchemaPizzaForTenants(syncClient);
+    String[] tenants = new String[]{"TenantNo1", "TenantNo2"};
+    testGenerics.createSchemaPizzaForTenants(syncClient);
 
-    // Tenant[] tenantObjs = Arrays.stream(tenants)
-    //   .map(tenant -> Tenant.builder().name(tenant).build())
-    //   .toArray(Tenant[]::new);
+    Tenant[] tenantObjs = Arrays.stream(tenants)
+      .map(tenant -> Tenant.builder().name(tenant).build())
+      .toArray(Tenant[]::new);
 
-    // try (WeaviateAsyncClient client = syncClient.async()) {
-    //   Result<Boolean> addResult = client.schema().tenantsCreator()
-    //     .withClassName("Pizza")
-    //     .withTenants(tenantObjs)
-    //     .run().get();
+    try (WeaviateAsyncClient client = syncClient.async()) {
+      Result<Boolean> addResult = client.schema().tenantsCreator()
+        .withClassName("Pizza")
+        .withTenants(tenantObjs)
+        .run().get();
 
-    //   assertThat(addResult).isNotNull()
-    //     .returns(false, Result::hasErrors)
-    //     .returns(true, Result::getResult);
+      assertThat(addResult).isNotNull()
+        .returns(false, Result::hasErrors)
+        .returns(true, Result::getResult);
 
-    //   for (String tenant: tenants) {
-    //     Result<Boolean> exists = client.schema().tenantsExists()
-    //       .withClassName("Pizza")
-    //       .withTenant(tenant)
-    //       .run().get();
+      for (String tenant: tenants) {
+        Result<Boolean> exists = client.schema().tenantsExists()
+          .withClassName("Pizza")
+          .withTenant(tenant)
+          .run().get();
 
-    //     assertThat(exists).isNotNull()
-    //       .returns(false, Result::hasErrors)
-    //       .returns(true, Result::getResult);
-    //   }
-    // }
+        assertThat(exists).isNotNull()
+          .returns(false, Result::hasErrors)
+          .returns(true, Result::getResult);
+      }
+    }
   }
 
   @Test
