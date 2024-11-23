@@ -214,79 +214,79 @@ public class ClientBatchCreateMockServerTest {
         assertGetSoup1CallsCount, assertGetSoup2CallsCount, expectedBatchCallsCount, "1 SECONDS");
     }
   }
-//
-//  @Test
-//  @DataMethod(source = ClientBatchCreateMockServerTest.class, method = "provideForNotCreateBatchDueToTimeoutIssue")
-//  public void shouldNotCreateAutoBatchDueToTimeoutIssue(ObjectsBatcher.BatchRetriesConfig batchRetriesConfig,
-//                                                        int expectedBatchCallsCount) {
-//    // given client times out after 1s
-//
-//    Serializer serializer = new Serializer();
-//    String pizza1Str = serializer.toJsonString(BatchObjectsMockServerTestSuite.PIZZA_1);
-//    String soup1Str = serializer.toJsonString(BatchObjectsMockServerTestSuite.SOUP_1);
-//
-//    // batch request should end up with timeout exception, but Pizza1 and Soup1 should be "added" and available by get
-//    mockServerClient.when(
-//      request().withMethod("POST").withPath("/v1/batch/objects")
-//    ).respond(
-//      response().withDelay(Delay.seconds(2)).withStatusCode(200)
-//    );
-//    mockServerClient.when(
-//      request().withMethod("GET").withPath(String.format("/v1/objects/%s/%s", "Pizza", BatchObjectsMockServerTestSuite.PIZZA_1_ID))
-//    ).respond(
-//      response().withBody(pizza1Str)
-//    );
-//    mockServerClient.when(
-//      request().withMethod("GET").withPath(String.format("/v1/objects/%s/%s", "Soup", BatchObjectsMockServerTestSuite.SOUP_1_ID))
-//    ).respond(
-//      response().withBody(soup1Str)
-//    );
-//
-//    try (WeaviateAsyncClient asyncClient = client.async()) {
-//      Consumer<Consumer<Result<ObjectGetResponse[]>>> supplierObjectsBatcher = callback -> {
-//        ObjectsBatcher.AutoBatchConfig autoBatchConfig = ObjectsBatcher.AutoBatchConfig.defaultConfig()
-//          .batchSize(2)
-//          .callback(callback)
-//          .build();
-//
-//        try {
-//          asyncClient.batch().objectsAutoBatcher(batchRetriesConfig, autoBatchConfig)
-//            .withObjects(BatchObjectsMockServerTestSuite.PIZZA_1, BatchObjectsMockServerTestSuite.PIZZA_2,
-//              BatchObjectsMockServerTestSuite.SOUP_1, BatchObjectsMockServerTestSuite.SOUP_2)
-//            .run()
-//            .get();
-//        } catch (InterruptedException | ExecutionException e) {
-//          throw new RuntimeException(e);
-//        }
-//      };
-//
-//      Consumer<Integer> assertPostObjectsCallsCount = count -> mockServerClient.verify(
-//        request().withMethod("POST").withPath("/v1/batch/objects"),
-//        VerificationTimes.exactly(count)
-//      );
-//      Consumer<Integer> assertGetPizza1CallsCount = count -> mockServerClient.verify(
-//        request().withMethod("GET").withPath(String.format("/v1/objects/%s/%s", "Pizza", BatchObjectsMockServerTestSuite.PIZZA_1_ID)),
-//        VerificationTimes.exactly(count)
-//      );
-//      Consumer<Integer> assertGetPizza2CallsCount = count -> mockServerClient.verify(
-//        request().withMethod("GET").withPath(String.format("/v1/objects/%s/%s", "Pizza", BatchObjectsMockServerTestSuite.PIZZA_2_ID)),
-//        VerificationTimes.exactly(count)
-//      );
-//      Consumer<Integer> assertGetSoup1CallsCount = count -> mockServerClient.verify(
-//        request().withMethod("GET").withPath(String.format("/v1/objects/%s/%s", "Soup", BatchObjectsMockServerTestSuite.SOUP_1_ID)),
-//        VerificationTimes.exactly(count)
-//      );
-//      Consumer<Integer> assertGetSoup2CallsCount = count -> mockServerClient.verify(
-//        request().withMethod("GET").withPath(String.format("/v1/objects/%s/%s", "Soup", BatchObjectsMockServerTestSuite.SOUP_2_ID)),
-//        VerificationTimes.exactly(count)
-//      );
-//
-//      BatchObjectsMockServerTestSuite.testNotCreateAutoBatchDueToTimeoutIssue(supplierObjectsBatcher,
-//        assertPostObjectsCallsCount, assertGetPizza1CallsCount, assertGetPizza2CallsCount,
-//        assertGetSoup1CallsCount, assertGetSoup2CallsCount, expectedBatchCallsCount, "1 SECONDS");
-//    }
-//  }
-//
+
+  @Test
+  @DataMethod(source = ClientBatchCreateMockServerTest.class, method = "provideForNotCreateBatchDueToTimeoutIssue")
+  public void shouldNotCreateAutoBatchDueToTimeoutIssue(ObjectsBatcher.BatchRetriesConfig batchRetriesConfig,
+                                                        int expectedBatchCallsCount) {
+    // given client times out after 1s
+
+    Serializer serializer = new Serializer();
+    String pizza1Str = serializer.toJsonString(BatchObjectsMockServerTestSuite.PIZZA_1);
+    String soup1Str = serializer.toJsonString(BatchObjectsMockServerTestSuite.SOUP_1);
+
+    // batch request should end up with timeout exception, but Pizza1 and Soup1 should be "added" and available by get
+    mockServerClient.when(
+      request().withMethod("POST").withPath("/v1/batch/objects")
+    ).respond(
+      response().withDelay(Delay.seconds(2)).withStatusCode(200)
+    );
+    mockServerClient.when(
+      request().withMethod("GET").withPath(String.format("/v1/objects/%s/%s", "Pizza", BatchObjectsMockServerTestSuite.PIZZA_1_ID))
+    ).respond(
+      response().withBody(pizza1Str)
+    );
+    mockServerClient.when(
+      request().withMethod("GET").withPath(String.format("/v1/objects/%s/%s", "Soup", BatchObjectsMockServerTestSuite.SOUP_1_ID))
+    ).respond(
+      response().withBody(soup1Str)
+    );
+
+    try (WeaviateAsyncClient asyncClient = client.async()) {
+      Consumer<Consumer<Result<ObjectGetResponse[]>>> supplierObjectsBatcher = callback -> {
+        ObjectsBatcher.AutoBatchConfig autoBatchConfig = ObjectsBatcher.AutoBatchConfig.defaultConfig()
+          .batchSize(2)
+          .callback(callback)
+          .build();
+
+        try {
+          asyncClient.batch().objectsAutoBatcher(batchRetriesConfig, autoBatchConfig)
+            .withObjects(BatchObjectsMockServerTestSuite.PIZZA_1, BatchObjectsMockServerTestSuite.PIZZA_2,
+              BatchObjectsMockServerTestSuite.SOUP_1, BatchObjectsMockServerTestSuite.SOUP_2)
+            .run()
+            .get();
+        } catch (InterruptedException | ExecutionException e) {
+          throw new RuntimeException(e);
+        }
+      };
+
+      Consumer<Integer> assertPostObjectsCallsCount = count -> mockServerClient.verify(
+        request().withMethod("POST").withPath("/v1/batch/objects"),
+        VerificationTimes.exactly(count)
+      );
+      Consumer<Integer> assertGetPizza1CallsCount = count -> mockServerClient.verify(
+        request().withMethod("GET").withPath(String.format("/v1/objects/%s/%s", "Pizza", BatchObjectsMockServerTestSuite.PIZZA_1_ID)),
+        VerificationTimes.exactly(count)
+      );
+      Consumer<Integer> assertGetPizza2CallsCount = count -> mockServerClient.verify(
+        request().withMethod("GET").withPath(String.format("/v1/objects/%s/%s", "Pizza", BatchObjectsMockServerTestSuite.PIZZA_2_ID)),
+        VerificationTimes.exactly(count)
+      );
+      Consumer<Integer> assertGetSoup1CallsCount = count -> mockServerClient.verify(
+        request().withMethod("GET").withPath(String.format("/v1/objects/%s/%s", "Soup", BatchObjectsMockServerTestSuite.SOUP_1_ID)),
+        VerificationTimes.exactly(count)
+      );
+      Consumer<Integer> assertGetSoup2CallsCount = count -> mockServerClient.verify(
+        request().withMethod("GET").withPath(String.format("/v1/objects/%s/%s", "Soup", BatchObjectsMockServerTestSuite.SOUP_2_ID)),
+        VerificationTimes.exactly(count)
+      );
+
+      BatchObjectsMockServerTestSuite.testNotCreateAutoBatchDueToTimeoutIssue(supplierObjectsBatcher,
+        assertPostObjectsCallsCount, assertGetPizza1CallsCount, assertGetPizza2CallsCount,
+        assertGetSoup1CallsCount, assertGetSoup2CallsCount, expectedBatchCallsCount, "1 SECONDS");
+    }
+  }
+
   public static Object[][] provideForNotCreateBatchDueToTimeoutIssue() {
     return new Object[][]{
 //      new Object[]{
@@ -305,14 +305,14 @@ public class ClientBatchCreateMockServerTest {
           .build(),
         2
       },
-//      new Object[]{
-//        // final response should be available after 2 retries (200 + 400 ms)
-//        ObjectsBatcher.BatchRetriesConfig.defaultConfig()
-//          .retriesIntervalMs(200)
-//          .maxTimeoutRetries(2)
-//          .build(),
-//        3
-//      },
+      new Object[]{
+        // final response should be available after 2 retries (200 + 400 ms)
+        ObjectsBatcher.BatchRetriesConfig.defaultConfig()
+          .retriesIntervalMs(200)
+          .maxTimeoutRetries(2)
+          .build(),
+        3
+      },
     };
   }
 
