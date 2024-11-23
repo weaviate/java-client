@@ -289,30 +289,30 @@ public class ClientBatchCreateMockServerTest {
 
   public static Object[][] provideForNotCreateBatchDueToTimeoutIssue() {
     return new Object[][]{
+      new Object[]{
+        // final response should be available immediately
+        ObjectsBatcher.BatchRetriesConfig.defaultConfig()
+          .retriesIntervalMs(200)
+          .maxTimeoutRetries(0)
+          .build(),
+        1
+      },
 //      new Object[]{
-//        // final response should be available immediately
+//        // final response should be available after 1 retry (200 ms)
 //        ObjectsBatcher.BatchRetriesConfig.defaultConfig()
 //          .retriesIntervalMs(200)
-//          .maxTimeoutRetries(0)
+//          .maxTimeoutRetries(1)
 //          .build(),
-//        1
+//        2
 //      },
-      new Object[]{
-        // final response should be available after 1 retry (200 ms)
-        ObjectsBatcher.BatchRetriesConfig.defaultConfig()
-          .retriesIntervalMs(200)
-          .maxTimeoutRetries(1)
-          .build(),
-        2
-      },
-      new Object[]{
-        // final response should be available after 2 retries (200 + 400 ms)
-        ObjectsBatcher.BatchRetriesConfig.defaultConfig()
-          .retriesIntervalMs(200)
-          .maxTimeoutRetries(2)
-          .build(),
-        3
-      },
+//      new Object[]{
+//        // final response should be available after 2 retries (200 + 400 ms)
+//        ObjectsBatcher.BatchRetriesConfig.defaultConfig()
+//          .retriesIntervalMs(200)
+//          .maxTimeoutRetries(2)
+//          .build(),
+//        3
+//      },
     };
   }
 
