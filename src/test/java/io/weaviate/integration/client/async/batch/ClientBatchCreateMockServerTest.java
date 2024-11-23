@@ -185,6 +185,7 @@ public class ClientBatchCreateMockServerTest {
             .run()
             .get();
         } catch (InterruptedException | ExecutionException e) {
+          System.out.println("runtime exception");
           throw new RuntimeException(e);
         }
       };

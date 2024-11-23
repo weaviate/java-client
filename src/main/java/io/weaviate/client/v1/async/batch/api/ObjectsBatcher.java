@@ -252,7 +252,8 @@ public class ObjectsBatcher extends AsyncBaseClient<ObjectGetResponse[]>
             Pair<List<ObjectGetResponse>, List<WeaviateObject>> pair = fetchCreatedAndBuildBatchToReRun(lambdaBatch);
             lambdaCombinedSingleResponses = combineSingleResponses(lambdaCombinedSingleResponses, pair.getLeft());
             lambdaBatch = pair.getRight();
-
+            System.out.println(lambdaCombinedSingleResponses);
+            System.out.println(lambdaBatch);
             if (ObjectUtils.isNotEmpty(lambdaBatch) && lambdaTimeErrorCount++ < batchRetriesConfig.maxTimeoutRetries) {
               executeAgain = true;
               delay = lambdaTimeErrorCount * batchRetriesConfig.retriesIntervalMs;
@@ -499,6 +500,11 @@ public class ObjectsBatcher extends AsyncBaseClient<ObjectGetResponse[]>
                                                                                                 Throwable throwable,
                                                                                                 List<ObjectGetResponse> combinedSingleResponses,
                                                                                                 List<WeaviateObject> failedBatch) {
+    System.out.println(lastResult);
+    System.out.println(throwable);
+    System.out.println(combinedSingleResponses);
+    System.out.println(failedBatch);
+
     int statusCode = 0;
     if (throwable != null && lastResult == null) {
       lastResult = new Result<>(statusCode, null, WeaviateErrorResponse.builder()
