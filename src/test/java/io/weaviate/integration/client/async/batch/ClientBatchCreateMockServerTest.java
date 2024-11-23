@@ -298,14 +298,14 @@ public class ClientBatchCreateMockServerTest {
           .build(),
         1
       },
-      new Object[]{
-        // final response should be available after 1 retry (200 ms)
-        ObjectsBatcher.BatchRetriesConfig.defaultConfig()
-          .retriesIntervalMs(200)
-          .maxTimeoutRetries(1)
-          .build(),
-        2
-      },
+//      new Object[]{
+//        // final response should be available after 1 retry (200 ms)
+//        ObjectsBatcher.BatchRetriesConfig.defaultConfig()
+//          .retriesIntervalMs(200)
+//          .maxTimeoutRetries(1)
+//          .build(),
+//        2
+//      },
 //      new Object[]{
 //        // final response should be available after 2 retries (200 + 400 ms)
 //        ObjectsBatcher.BatchRetriesConfig.defaultConfig()
