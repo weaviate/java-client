@@ -97,7 +97,11 @@ public class BatchObjectsMockServerTestSuite {
                                                          Consumer<Integer> assertGetSoup1CallsCount,
                                                          Consumer<Integer> assertGetSoup2CallsCount,
                                                          int expectedBatchCallsCount, String expectedErr) {
+    System.out.println("shouldNotCreateBatchDueToTimeoutIssue test suite starting");
+
     Result<ObjectGetResponse[]> resBatch = supplierObjectsBatcher.get();
+
+    System.out.println("shouldNotCreateBatchDueToTimeoutIssue test suite supplier get");
 
     assertPostObjectsCallsCount.accept(expectedBatchCallsCount);
     assertGetPizza2CallsCount.accept(expectedBatchCallsCount);
@@ -105,8 +109,14 @@ public class BatchObjectsMockServerTestSuite {
     assertGetPizza1CallsCount.accept(1);
     assertGetSoup1CallsCount.accept(1);
 
+    System.out.println("shouldNotCreateBatchDueToTimeoutIssue test suite calls count");
+
+
     assertThat(resBatch.getResult()).hasSize(2);
     assertThat(resBatch.hasErrors()).isTrue();
+
+    System.out.println("shouldNotCreateBatchDueToTimeoutIssue test suite results 1");
+
 
     List<WeaviateErrorMessage> errorMessages = resBatch.getError().getMessages();
     assertThat(errorMessages).hasSize(2);
@@ -114,6 +124,9 @@ public class BatchObjectsMockServerTestSuite {
     assertThat(errorMessages.get(0).getMessage()).contains(expectedErr);
     assertThat(errorMessages.get(1).getThrowable()).isNull();
     assertThat(errorMessages.get(1).getMessage()).contains(PIZZA_2_ID, SOUP_2_ID).doesNotContain(PIZZA_1_ID, SOUP_1_ID);
+
+    System.out.println("shouldNotCreateBatchDueToTimeoutIssue test suite results 2");
+
 
     assertThat(resBatch.getResult()[0])
       .returns(PIZZA_1_ID, ObjectGetResponse::getId)
@@ -125,6 +138,9 @@ public class BatchObjectsMockServerTestSuite {
       .extracting(ObjectGetResponse::getResult).isNotNull()
       .returns(ObjectGetResponseStatus.SUCCESS, ObjectsGetResponseAO2Result::getStatus)
       .returns(null, ObjectsGetResponseAO2Result::getErrors);
+
+    System.out.println("shouldNotCreateBatchDueToTimeoutIssue test suite finished");
+
   }
 
   public static void testNotCreateAutoBatchDueToTimeoutIssue(Consumer<Consumer<Result<ObjectGetResponse[]>>> supplierObjectsBatcher,

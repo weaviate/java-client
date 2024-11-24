@@ -20,6 +20,7 @@ import org.mockserver.model.Delay;
 import org.mockserver.verify.VerificationTimes;
 
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -154,10 +155,12 @@ public class ClientBatchCreateMockServerTest {
   public void shouldNotCreateBatchDueToTimeoutIssue(ObjectsBatcher.BatchRetriesConfig batchRetriesConfig,
                                                     int expectedBatchCallsCount) {
     // given client times out after 1s
-
+    System.out.println("shouldNotCreateBatchDueToTimeoutIssue starting");
     Serializer serializer = new Serializer();
     String pizza1Str = serializer.toJsonString(BatchObjectsMockServerTestSuite.PIZZA_1);
     String soup1Str = serializer.toJsonString(BatchObjectsMockServerTestSuite.SOUP_1);
+
+    System.out.println("shouldNotCreateBatchDueToTimeoutIssue serialized");
 
     // batch request should end up with timeout exception, but Pizza1 and Soup1 should be "added" and available by get
     mockServerClient.when(
@@ -176,19 +179,27 @@ public class ClientBatchCreateMockServerTest {
       response().withBody(soup1Str)
     );
 
+    System.out.println("shouldNotCreateBatchDueToTimeoutIssue mocked");
+
     try (WeaviateAsyncClient asyncClient = client.async()) {
+      System.out.println("shouldNotCreateBatchDueToTimeoutIssue async created");
+
       Supplier<Result<ObjectGetResponse[]>> supplierObjectsBatcher = () -> {
         try {
-          return asyncClient.batch().objectsBatcher(batchRetriesConfig)
+          Future<Result<ObjectGetResponse[]>> run = asyncClient.batch().objectsBatcher(batchRetriesConfig)
             .withObjects(BatchObjectsMockServerTestSuite.PIZZA_1, BatchObjectsMockServerTestSuite.PIZZA_2,
               BatchObjectsMockServerTestSuite.SOUP_1, BatchObjectsMockServerTestSuite.SOUP_2)
-            .run()
+            .run();
+          System.out.println("shouldNotCreateBatchDueToTimeoutIssue async run");
+          return run
             .get();
         } catch (InterruptedException | ExecutionException e) {
           System.out.println("runtime exception");
           throw new RuntimeException(e);
         }
       };
+      System.out.println("shouldNotCreateBatchDueToTimeoutIssue supplier");
+
       Consumer<Integer> assertPostObjectsCallsCount = count -> mockServerClient.verify(
         request().withMethod("POST").withPath("/v1/batch/objects"),
         VerificationTimes.exactly(count)
@@ -210,10 +221,14 @@ public class ClientBatchCreateMockServerTest {
         VerificationTimes.exactly(count)
       );
 
+      System.out.println("shouldNotCreateBatchDueToTimeoutIssue consumers");
+
+
       BatchObjectsMockServerTestSuite.testNotCreateBatchDueToTimeoutIssue(supplierObjectsBatcher,
         assertPostObjectsCallsCount, assertGetPizza1CallsCount, assertGetPizza2CallsCount,
         assertGetSoup1CallsCount, assertGetSoup2CallsCount, expectedBatchCallsCount, "1 SECONDS");
     }
+    System.out.println("shouldNotCreateBatchDueToTimeoutIssue finished");
   }
 
 //  @Test
