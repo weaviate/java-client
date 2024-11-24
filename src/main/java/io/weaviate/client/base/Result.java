@@ -47,22 +47,6 @@ public class Result<T> {
     return new Result<>(this.error.getStatusCode(), null, WeaviateErrorResponse.builder().error(this.error.getMessages()).build());
   }
 
-  /**
-   * Copy the Result object with a new body, keeping the status code and the error if any.
-   * 
-   * <p>
-   * Useful in cases where the client exposes a "facade" method and wishes to return a Result
-   * derived from the Result of the original request.
-   * 
-   * @param <R> New result type.
-   * @param result New result value.
-   * @return A copy of this Result.
-   */
-  public <R> Result<R> withNewResult(R result) {
-    WeaviateErrorResponse error = this.error == null ? null : WeaviateErrorResponse.builder().error(this.error.getMessages()).build();
-    return new Result<R>(this.statusCode, result, error);
-  }
-
   public boolean hasErrors() {
     return this.error != null;
   }
