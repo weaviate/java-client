@@ -414,44 +414,59 @@ public class ObjectsBatcher extends AsyncBaseClient<ObjectGetResponse[]>
     List<ObjectGetResponse> createdResponses = new ArrayList<>(batch.size());
     List<CompletableFuture<Result<List<WeaviateObject>>>> futures = new ArrayList<>(batch.size());
 
+    System.out.println("batcher fetchCreatedAndBuildBatchToReRun started");
+
     for (WeaviateObject batchObject : batch) {
       futures.add(fetchExistingObject(batchObject));
     }
+    System.out.println("batcher fetchCreatedAndBuildBatchToReRun futures created");
 
     CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).whenComplete((v, t) -> {
+      System.out.println("batcher fetchCreatedAndBuildBatchToReRun when complete");
       try {
         for (int i = 0; i < batch.size(); i++) {
+          System.out.printf("batcher fetchCreatedAndBuildBatchToReRun loop %d\n", i);
+
           CompletableFuture<Result<List<WeaviateObject>>> future = futures.get(i);
           WeaviateObject batchObject = batch.get(i);
 
+          System.out.printf("batcher fetchCreatedAndBuildBatchToReRun loop %d, batch object\n", i);
+
           if (future.isCompletedExceptionally()) {
+            System.out.printf("batcher fetchCreatedAndBuildBatchToReRun loop %d, isCompletedExceptionally\n", i);
             rerunBatch.add(batchObject);
             continue;
           }
 
           Result<List<WeaviateObject>> existingResult = future.get();
           if (existingResult.hasErrors() || ObjectUtils.isEmpty(existingResult.getResult())) {
+            System.out.printf("batcher fetchCreatedAndBuildBatchToReRun loop %d, has errors || empty\n", i);
             rerunBatch.add(batchObject);
             continue;
           }
 
           WeaviateObject existingObject = existingResult.getResult().get(0);
           if (isDifferentObject(batchObject, existingObject)) {
+            System.out.printf("batcher fetchCreatedAndBuildBatchToReRun loop %d, is different\n", i);
             rerunBatch.add(batchObject);
             continue;
           }
 
+          System.out.printf("batcher fetchCreatedAndBuildBatchToReRun loop %d, createResponseFromExistingObject\n", i);
           createdResponses.add(createResponseFromExistingObject(existingObject));
         }
       } catch (InterruptedException | ExecutionException e) {
         throw new CompletionException(e);
       }
     }).join();
+    System.out.println("batcher fetchCreatedAndBuildBatchToReRun join");
 
     return Pair.of(createdResponses, rerunBatch);
   }
 
   private CompletableFuture<Result<List<WeaviateObject>>> fetchExistingObject(WeaviateObject batchObject) {
+    System.out.printf("batcher fetchExistingObject started %s\n", batchObject);
+
     CompletableFuture<Result<List<WeaviateObject>>> future = new CompletableFuture<>();
     data.objectsGetter()
       .withID(batchObject.getId())
@@ -460,18 +475,26 @@ public class ObjectsBatcher extends AsyncBaseClient<ObjectGetResponse[]>
       .run(new FutureCallback<Result<List<WeaviateObject>>>() {
         @Override
         public void completed(Result<List<WeaviateObject>> objectsResult) {
+
+          System.out.printf("batcher fetchExistingObject completed %s\n", batchObject);
           future.complete(objectsResult);
         }
 
         @Override
         public void failed(Exception e) {
+
+          System.out.printf("batcher fetchExistingObject failed %s\n", batchObject);
           future.completeExceptionally(e);
         }
 
         @Override
         public void cancelled() {
+          System.out.printf("batcher fetchExistingObject cancelled %s\n", batchObject);
+
         }
       });
+
+    System.out.printf("batcher fetchExistingObject finished %s\n", batchObject);
 
     return future;
   }
