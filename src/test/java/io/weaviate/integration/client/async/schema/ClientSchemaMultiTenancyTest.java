@@ -121,4 +121,23 @@ public class ClientSchemaMultiTenancyTest {
         .returns(true, Result::getResult);
     }
   }
+
+
+  @Test
+  public void shouldDeleteTenantsFromMTClass() throws ExecutionException, InterruptedException {
+    Tenant[] tenants = new Tenant[]{TENANT_1, TENANT_2};
+    testGenerics.createSchemaPizzaForTenants(syncClient);
+    testGenerics.createTenantsPizza(syncClient, tenants);
+
+    try (WeaviateAsyncClient client = syncClient.async()) {
+      Result<Boolean> deleteResult = client.schema().tenantsDeleter()
+        .withClassName("Pizza")
+        .withTenants(TENANT_1.getName(), TENANT_2.getName(), "nonExistentTenant")
+        .run().get();
+
+      assertThat(deleteResult).isNotNull()
+        .returns(false, Result::hasErrors)
+        .returns(true, Result::getResult);
+    }
+  }
 }
