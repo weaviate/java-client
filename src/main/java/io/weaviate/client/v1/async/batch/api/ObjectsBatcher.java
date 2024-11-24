@@ -155,7 +155,9 @@ public class ObjectsBatcher extends AsyncBaseClient<ObjectGetResponse[]>
 
   @Override
   public Future<Result<ObjectGetResponse[]>> run(FutureCallback<Result<ObjectGetResponse[]>> callback) {
+    System.out.println("batcher run started");
     CompletableFuture<Result<ObjectGetResponse[]>> future = runAll();
+    System.out.println("batcher run add callback");
     if (callback != null) {
       future = future.whenComplete((result, throwable) -> {
         if (throwable != null) {
@@ -165,16 +167,21 @@ public class ObjectsBatcher extends AsyncBaseClient<ObjectGetResponse[]>
         }
       });
     }
+    System.out.println("batcher run finished");
     return future;
   }
 
   private CompletableFuture<Result<ObjectGetResponse[]>> runAll() {
     if (!autoRunEnabled) {
+      System.out.println("batcher runAll started");
       if (objects.isEmpty()) {
+        System.out.println("batcher runAll objects empty");
         return CompletableFuture.completedFuture(new Result<>(0, new ObjectGetResponse[0], null));
       }
 
+      System.out.println("batcher runAll extract batch");
       List<WeaviateObject> batch = extractBatch(objects.size());
+      System.out.println("batcher runAll runBatchRecursively");
       return runBatchRecursively(batch, 0, 0, null);
     }
 
@@ -233,22 +240,32 @@ public class ObjectsBatcher extends AsyncBaseClient<ObjectGetResponse[]>
   private CompletableFuture<Result<ObjectGetResponse[]>> runBatchRecursively(List<WeaviateObject> batch,
                                                                              int connectionErrorCount, int timeoutErrorCount,
                                                                              List<ObjectGetResponse> combinedSingleResponses) {
+    System.out.println("batcher runBatchRecursively started");
+
     return internalRun(batch).handle((Result<ObjectGetResponse[]> result, Throwable throwable) -> {
+        System.out.println("batcher runBatchRecursively handle started");
+
         int lambdaConnectionErrorCount = connectionErrorCount;
         int lambdaTimeErrorCount = timeoutErrorCount;
         List<ObjectGetResponse> lambdaCombinedSingleResponses = combinedSingleResponses;
         List<WeaviateObject> lambdaBatch = batch;
 
         if (throwable != null) {
+          System.out.println("batcher runBatchRecursively handle throwable != null");
+
           boolean executeAgain = false;
           int delay = 0;
 
           if (throwable instanceof ConnectException) {
+            System.out.println("batcher runBatchRecursively handle ConnectException");
+
             if (lambdaConnectionErrorCount++ < batchRetriesConfig.maxConnectionRetries) {
               executeAgain = true;
               delay = lambdaConnectionErrorCount * batchRetriesConfig.retriesIntervalMs;
             }
           } else if (throwable instanceof SocketTimeoutException) {
+            System.out.println("batcher runBatchRecursively handle SocketTimeoutException");
+
             Pair<List<ObjectGetResponse>, List<WeaviateObject>> pair = fetchCreatedAndBuildBatchToReRun(lambdaBatch);
             lambdaCombinedSingleResponses = combineSingleResponses(lambdaCombinedSingleResponses, pair.getLeft());
             lambdaBatch = pair.getRight();
@@ -260,6 +277,7 @@ public class ObjectsBatcher extends AsyncBaseClient<ObjectGetResponse[]>
             }
           }
           if (executeAgain) {
+            System.out.println("batcher runBatchRecursively handle executeAgain");
             try {
               Thread.sleep(delay);
               return runBatchRecursively(lambdaBatch, lambdaConnectionErrorCount, lambdaTimeErrorCount, lambdaCombinedSingleResponses);
@@ -268,20 +286,28 @@ public class ObjectsBatcher extends AsyncBaseClient<ObjectGetResponse[]>
             }
           }
         } else if (!result.hasErrors()) {
+          System.out.println("batcher runBatchRecursively handle !result.hasErrors()");
+
           lambdaBatch = null;
         }
 
+        System.out.println("batcher runBatchRecursively handle return");
         return CompletableFuture.completedFuture(createFinalResultFromLastResultAndCombinedSingleResponses(result,
           throwable, lambdaCombinedSingleResponses, lambdaBatch));
       })
-      .thenCompose(f -> f);
+      .thenCompose(f -> {
+        System.out.println("batcher runBatchRecursively compose");
+        return f;
+      });
   }
 
   private CompletableFuture<Result<ObjectGetResponse[]>> internalRun(List<WeaviateObject> batch) {
+    System.out.println("batcher internalRun started");
     return config.useGRPC() ? internalGrpcRun(batch) : internalHttpRun(batch);
   }
 
   private CompletableFuture<Result<ObjectGetResponse[]>> internalGrpcRun(List<WeaviateObject> batch) {
+    System.out.println("batcher internalGrpcRun started");
     BatchObjectConverter batchObjectConverter = new BatchObjectConverter(grpcVersionSupport);
     List<WeaviateProtoBatch.BatchObject> batchObjects = batch.stream()
       .map(batchObjectConverter::toBatchObject)
@@ -347,6 +373,8 @@ public class ObjectsBatcher extends AsyncBaseClient<ObjectGetResponse[]>
   }
 
   private CompletableFuture<Result<ObjectGetResponse[]>> internalHttpRun(List<WeaviateObject> batch) {
+    System.out.println("batcher internalHttpRun started");
+
     CompletableFuture<Result<ObjectGetResponse[]>> future = new CompletableFuture<>();
     ObjectsBatchRequestBody payload = ObjectsBatchRequestBody.builder()
       .objects(batch.toArray(new WeaviateObject[0]))
@@ -355,19 +383,27 @@ public class ObjectsBatcher extends AsyncBaseClient<ObjectGetResponse[]>
     String path = objectsPath.buildCreate(ObjectsPath.Params.builder()
       .consistencyLevel(consistencyLevel)
       .build());
+    System.out.println("batcher internalHttpRun sendPostRequest");
     sendPostRequest(path, payload, ObjectGetResponse[].class, new FutureCallback<Result<ObjectGetResponse[]>>() {
       @Override
       public void completed(Result<ObjectGetResponse[]> batchResult) {
+        System.out.println("batcher internalHttpRun sendPostRequest completed");
+
         future.complete(batchResult);
       }
 
       @Override
       public void failed(Exception e) {
+
+        System.out.println("batcher internalHttpRun sendPostRequest failed");
+
         future.completeExceptionally(e);
       }
 
       @Override
       public void cancelled() {
+        System.out.println("batcher internalHttpRun sendPostRequest cancelled");
+
       }
     });
     return future;
