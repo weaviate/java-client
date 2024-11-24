@@ -39,7 +39,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.junit.Before;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class ClientSchemaTest {
@@ -112,12 +111,12 @@ public class ClientSchemaTest {
 
   @Test
   public void testSchemaDeleteClasses() throws ExecutionException, InterruptedException {
-    try (WeaviateAsyncClient asyncClient = syncClient.async()) {
+    try (WeaviateAsyncClient client = syncClient.async()) {
       // given
       WeaviateClass pizza = SchemaTestSuite.testSchemaDeleteClasses.pizza;
       WeaviateClass chickenSoup = SchemaTestSuite.testSchemaDeleteClasses.chickenSoup;
       // when
-      asyncClient.schema().classCreator().withClass(pizza).run(new FutureCallback<Result<Boolean>>() {
+      client.schema().classCreator().withClass(pizza).run(new FutureCallback<Result<Boolean>>() {
         @Override
         public void completed(Result<Boolean> pizzaCreateStatus) {
           assertNotNull(pizzaCreateStatus);
@@ -133,7 +132,7 @@ public class ClientSchemaTest {
         public void cancelled() {
         }
       }).get();
-      asyncClient.schema().classCreator().withClass(chickenSoup).run(new FutureCallback<Result<Boolean>>() {
+      client.schema().classCreator().withClass(chickenSoup).run(new FutureCallback<Result<Boolean>>() {
         @Override
         public void completed(Result<Boolean> chickenSoupCreateStatus) {
           assertNotNull(chickenSoupCreateStatus);
@@ -150,7 +149,7 @@ public class ClientSchemaTest {
 
         }
       }).get();
-      asyncClient.schema().getter().run(new FutureCallback<Result<Schema>>() {
+      client.schema().getter().run(new FutureCallback<Result<Schema>>() {
         @Override
         public void completed(Result<Schema> schemaAfterCreate) {
           assertNotNull(schemaAfterCreate);
@@ -171,7 +170,7 @@ public class ClientSchemaTest {
         }
       }).get();
 
-      asyncClient.schema().allDeleter().run(new FutureCallback<Result<Boolean>>() {
+      client.schema().allDeleter().run(new FutureCallback<Result<Boolean>>() {
         @Override
         public void completed(Result<Boolean> result) {
           assertNotNull(result);
@@ -190,7 +189,7 @@ public class ClientSchemaTest {
       }).get();
 
 
-      asyncClient.schema().getter().run(new FutureCallback<Result<Schema>>() {
+      client.schema().getter().run(new FutureCallback<Result<Schema>>() {
         @Override
         public void completed(Result<Schema> schemaResult) {
           assertNotNull(schemaResult);
@@ -268,9 +267,9 @@ public class ClientSchemaTest {
         .vectorIndexType("hnsw")
         .vectorizer("text2vec-contextionary")
         .moduleConfig(moduleConfig)
-        .properties(new ArrayList() {{
+        .properties(new ArrayList<Property>() {{
           add(Property.builder()
-            .dataType(new ArrayList() {{
+            .dataType(new ArrayList<String>() {{
               add(DataType.TEXT);
             }})
             .description("Title of the article")
@@ -278,7 +277,7 @@ public class ClientSchemaTest {
             .tokenization(Tokenization.FIELD)
             .build());
           add(Property.builder()
-            .dataType(new ArrayList() {{
+            .dataType(new ArrayList<String>() {{
               add(DataType.TEXT);
             }})
             .description("The content of the article")
@@ -327,41 +326,41 @@ public class ClientSchemaTest {
         .description("Class which properties are all array properties")
         .vectorIndexType("hnsw")
         .vectorizer("text2vec-contextionary")
-        .properties(new ArrayList() {{
+        .properties(new ArrayList<Property>() {{
           add(Property.builder()
-            .dataType(new ArrayList() {{
+            .dataType(new ArrayList<String>() {{
               add(DataType.TEXT_ARRAY);
             }})
             .name("stringArray")
             .tokenization(Tokenization.FIELD)
             .build());
           add(Property.builder()
-            .dataType(new ArrayList() {{
+            .dataType(new ArrayList<String>() {{
               add(DataType.TEXT_ARRAY);
             }})
             .name("textArray")
             .tokenization(Tokenization.WORD)
             .build());
           add(Property.builder()
-            .dataType(new ArrayList() {{
+            .dataType(new ArrayList<String>() {{
               add(DataType.INT_ARRAY);
             }})
             .name("intArray")
             .build());
           add(Property.builder()
-            .dataType(new ArrayList() {{
+            .dataType(new ArrayList<String>() {{
               add(DataType.NUMBER_ARRAY);
             }})
             .name("numberArray")
             .build());
           add(Property.builder()
-            .dataType(new ArrayList() {{
+            .dataType(new ArrayList<String>() {{
               add(DataType.BOOLEAN_ARRAY);
             }})
             .name("booleanArray")
             .build());
           add(Property.builder()
-            .dataType(new ArrayList() {{
+            .dataType(new ArrayList<String>() {{
               add(DataType.DATE_ARRAY);
             }})
             .name("dateArray")
@@ -400,16 +399,16 @@ public class ClientSchemaTest {
       WeaviateClass clazz = WeaviateClass.builder()
         .className("Article")
         .description("A written text, for example a news article or blog post")
-        .properties(new ArrayList() {{
+        .properties(new ArrayList<Property>() {{
           add(Property.builder()
-            .dataType(new ArrayList() {{
+            .dataType(new ArrayList<String>() {{
               add(DataType.TEXT);
             }})
             .description("Title of the article")
             .name("title")
             .build());
           add(Property.builder()
-            .dataType(new ArrayList() {{
+            .dataType(new ArrayList<String>() {{
               add(DataType.TEXT);
             }})
             .description("The content of the article")
