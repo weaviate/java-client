@@ -178,6 +178,16 @@ public class ClientBatchCreateMockServerTest {
     ).respond(
       response().withBody(soup1Str)
     );
+    mockServerClient.when(
+      request().withMethod("GET").withPath(String.format("/v1/objects/%s/%s", "Pizza", BatchObjectsMockServerTestSuite.PIZZA_2_ID))
+    ).respond(
+      response().withStatusCode(404)
+    );
+    mockServerClient.when(
+      request().withMethod("GET").withPath(String.format("/v1/objects/%s/%s", "Soup", BatchObjectsMockServerTestSuite.SOUP_2_ID))
+    ).respond(
+      response().withStatusCode(404)
+    );
 
     System.out.println("shouldNotCreateBatchDueToTimeoutIssue mocked");
 
