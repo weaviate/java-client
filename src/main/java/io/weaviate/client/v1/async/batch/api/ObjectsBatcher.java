@@ -465,7 +465,7 @@ public class ObjectsBatcher extends AsyncBaseClient<ObjectGetResponse[]>
   }
 
   private CompletableFuture<Result<List<WeaviateObject>>> fetchExistingObject(WeaviateObject batchObject) {
-    System.out.printf("batcher fetchExistingObject started %s\n", batchObject);
+    System.out.printf("batcher fetchExistingObject started [%s]\n", batchObject.getId());
 
     CompletableFuture<Result<List<WeaviateObject>>> future = new CompletableFuture<>();
     data.objectsGetter()
@@ -476,25 +476,25 @@ public class ObjectsBatcher extends AsyncBaseClient<ObjectGetResponse[]>
         @Override
         public void completed(Result<List<WeaviateObject>> objectsResult) {
 
-          System.out.printf("batcher fetchExistingObject completed %s\n", batchObject);
+          System.out.printf("batcher fetchExistingObject completed [%s]\n -> result [%s]\n", batchObject.getId(), objectsResult);
           future.complete(objectsResult);
         }
 
         @Override
         public void failed(Exception e) {
 
-          System.out.printf("batcher fetchExistingObject failed %s\n", batchObject);
+          System.out.printf("batcher fetchExistingObject failed [%s]\n -> exception [%s]\n", batchObject.getId(), e);
           future.completeExceptionally(e);
         }
 
         @Override
         public void cancelled() {
-          System.out.printf("batcher fetchExistingObject cancelled %s\n", batchObject);
+          System.out.printf("batcher fetchExistingObject cancelled [%s]\n", batchObject.getId());
 
         }
       });
 
-    System.out.printf("batcher fetchExistingObject finished %s\n", batchObject);
+    System.out.printf("batcher fetchExistingObject finished [%s]\n", batchObject.getId());
 
     return future;
   }
