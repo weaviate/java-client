@@ -8,6 +8,7 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateError;
 import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.base.WeaviateErrorResponse;
+import io.weaviate.client.base.util.Futures;
 import io.weaviate.client.base.util.UrlEncoder;
 import io.weaviate.client.v1.backup.model.BackupCreateResponse;
 import io.weaviate.client.v1.backup.model.BackupCreateStatusResponse;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 
 public class BackupCreator extends AsyncBaseClient<BackupCreateResponse>
@@ -36,11 +38,13 @@ public class BackupCreator extends AsyncBaseClient<BackupCreateResponse>
   private String backupId;
   private BackupCreateConfig config;
   private boolean waitForCompletion;
+  private final Executor executor;
 
 
-  public BackupCreator(CloseableHttpAsyncClient client, Config config, BackupCreateStatusGetter statusGetter) {
+  public BackupCreator(CloseableHttpAsyncClient client, Config config, BackupCreateStatusGetter statusGetter, Executor executor) {
     super(client, config);
     this.statusGetter = statusGetter;
+    this.executor = executor;
   }
 
 
@@ -158,7 +162,7 @@ public class BackupCreator extends AsyncBaseClient<BackupCreateResponse>
 
   private CompletableFuture<Result<BackupCreateResponse>> getStatusRecursively(String backend, String backupId,
                                                                                Result<BackupCreateResponse> createResult) {
-    return getStatus(backend, backupId).thenCompose(createStatusResult -> {
+    return Futures.thenComposeAsync(getStatus(backend, backupId), createStatusResult -> {
       boolean isRunning = Optional.of(createStatusResult)
         .filter(r -> !r.hasErrors())
         .map(Result::getResult)
@@ -176,14 +180,13 @@ public class BackupCreator extends AsyncBaseClient<BackupCreateResponse>
 
       if (isRunning) {
         try {
-          Thread.sleep(WAIT_INTERVAL);
-          return getStatusRecursively(backend, backupId, createResult);
+          return Futures.supplyDelayed(() -> getStatusRecursively(backend, backupId, createResult), WAIT_INTERVAL, executor);
         } catch (InterruptedException e) {
           throw new CompletionException(e);
         }
       }
       return CompletableFuture.completedFuture(merge(createStatusResult, createResult));
-    });
+    }, executor);
   }
 
   private Result<BackupCreateResponse> merge(Result<BackupCreateStatusResponse> createStatusResult,

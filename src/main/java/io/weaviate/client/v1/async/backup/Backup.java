@@ -10,6 +10,8 @@ import io.weaviate.client.v1.async.backup.api.BackupRestorer;
 import lombok.RequiredArgsConstructor;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 
+import java.util.concurrent.Executor;
+
 @RequiredArgsConstructor
 public class Backup {
 
@@ -18,7 +20,11 @@ public class Backup {
 
 
   public BackupCreator creator() {
-    return new BackupCreator(client, config, createStatusGetter());
+    return creator(null);
+  }
+
+  public BackupCreator creator(Executor executor) {
+    return new BackupCreator(client, config, createStatusGetter(), executor);
   }
 
   public BackupCreateStatusGetter createStatusGetter() {
@@ -26,7 +32,11 @@ public class Backup {
   }
 
   public BackupRestorer restorer() {
-    return new BackupRestorer(client, config, restoreStatusGetter());
+    return restorer(null);
+  }
+
+  public BackupRestorer restorer(Executor executor) {
+    return new BackupRestorer(client, config, restoreStatusGetter(), executor);
   }
 
   public BackupRestoreStatusGetter restoreStatusGetter() {
