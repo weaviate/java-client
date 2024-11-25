@@ -65,7 +65,7 @@ public class ShardsUpdater extends AsyncBaseClient<ShardStatus> implements Async
       try {
         Result<Shard[]> shards = this.shardsGetter.withClassName(this.className).run().get();
         if (shards.hasErrors()) {
-          return shards.<ShardStatus[]>toErrorResult();
+          return shards.toErrorResult();
         }
 
         List<ShardStatus> shardStatuses = new ArrayList<>();
@@ -75,12 +75,12 @@ public class ShardsUpdater extends AsyncBaseClient<ShardStatus> implements Async
             .withShardName(shard.getName())
             .withStatus(this.status).run().get();
           if (update.hasErrors()) {
-            return update.<ShardStatus[]>toErrorResult();
+            return update.toErrorResult();
           }
           shardStatuses.add(update.getResult());
         }
 
-        return new Result<ShardStatus[]>(HttpStatus.SC_OK, shardStatuses.toArray(new ShardStatus[shardStatuses.size()]), null);
+        return new Result<>(HttpStatus.SC_OK, shardStatuses.toArray(new ShardStatus[shardStatuses.size()]), null);
       } catch (ExecutionException | InterruptedException e) {
         throw new CompletionException(e);
       }
