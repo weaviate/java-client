@@ -11,6 +11,7 @@ public class AsyncHttpClient {
   public static CloseableHttpAsyncClient create(Config config) {
     IOReactorConfig ioReactorConfig = IOReactorConfig.custom()
       .setSoTimeout(Timeout.ofSeconds(config.getSocketTimeout()))
+      .setIoThreadCount(3)
       .build();
 
     return HttpAsyncClients.custom()

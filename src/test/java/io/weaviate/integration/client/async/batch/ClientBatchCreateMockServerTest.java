@@ -9,7 +9,9 @@ import io.weaviate.client.base.Serializer;
 import io.weaviate.client.v1.async.WeaviateAsyncClient;
 import io.weaviate.client.v1.async.batch.api.ObjectsBatcher;
 import io.weaviate.client.v1.batch.model.ObjectGetResponse;
+import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.integration.tests.batch.BatchObjectsMockServerTestSuite;
+import org.apache.hc.core5.concurrent.FutureCallback;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,11 +21,18 @@ import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.Delay;
 import org.mockserver.verify.VerificationTimes;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
@@ -149,6 +158,78 @@ public class ClientBatchCreateMockServerTest {
 //      },
 //    };
 //  }
+
+  @Test
+  public void shouldHandleMultipleRequests() {
+    Serializer serializer = new Serializer();
+    String[] objectStrings = new String[]{
+      serializer.toJsonString(BatchObjectsMockServerTestSuite.PIZZA_1),
+      serializer.toJsonString(BatchObjectsMockServerTestSuite.PIZZA_2),
+    };
+
+    Map<String, String> idToObjStr = new HashMap<>();
+
+    int count = 50;
+    for (int i = 0; i < count; i++) {
+      String id = UUID.randomUUID().toString();
+      String objectString = objectStrings[i % objectStrings.length];
+
+      idToObjStr.put(id, objectString);
+
+      mockServerClient.when(
+        request().withMethod("GET").withPath(String.format("/v1/objects/%s/%s", "Pizza", id))
+      ).respond(
+        response().withDelay(TimeUnit.MILLISECONDS, 500).withBody(objectString)
+      );
+    }
+
+    try (WeaviateAsyncClient asyncClient = client.async()) {
+      List<Future<Result<List<WeaviateObject>>>> futures = idToObjStr.keySet().stream()
+        .map(id -> {
+          System.out.printf("[%s] future creating\n", id);
+
+          Future<Result<List<WeaviateObject>>> future = asyncClient.data().objectsGetter()
+            .withClassName("Pizza")
+            .withID(id)
+            .run(new FutureCallback<Result<List<WeaviateObject>>>() {
+              @Override
+              public void completed(Result<List<WeaviateObject>> listResult) {
+                System.out.printf("[%s] future completed\n", id);
+              }
+
+              @Override
+              public void failed(Exception e) {
+                System.out.printf("[%s] future failed\n", id);
+              }
+
+              @Override
+              public void cancelled() {
+                System.out.printf("[%s] future cancelled\n", id);
+              }
+            });
+          System.out.printf("[%s] future created\n", id);
+
+          return future;
+          }
+        ).collect(Collectors.toList());
+
+      System.out.println("before sleep");
+      Thread.sleep(2000);
+      System.out.println("after sleep");
+
+      for (Future<Result<List<WeaviateObject>>> future : futures) {
+        Result<List<WeaviateObject>> result = future.get();
+        assertThat(result).isNotNull()
+          .returns(false, Result::hasErrors)
+          .extracting(Result::getResult).isNotNull();
+        System.out.println(result.getResult());
+      }
+
+    } catch (InterruptedException | ExecutionException e) {
+      System.out.println("runtime exception");
+      throw new RuntimeException(e);
+    }
+  }
 
   @Test
   @DataMethod(source = ClientBatchCreateMockServerTest.class, method = "provideForNotCreateBatchDueToTimeoutIssue")
