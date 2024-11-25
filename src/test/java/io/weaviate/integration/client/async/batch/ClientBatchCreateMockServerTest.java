@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -186,30 +187,30 @@ public class ClientBatchCreateMockServerTest {
     try (WeaviateAsyncClient asyncClient = client.async()) {
       List<Future<Result<List<WeaviateObject>>>> futures = idToObjStr.keySet().stream()
         .map(id -> {
-          System.out.printf("[%s] future creating\n", id);
+            System.out.printf("[%s] future creating\n", id);
 
-          Future<Result<List<WeaviateObject>>> future = asyncClient.data().objectsGetter()
-            .withClassName("Pizza")
-            .withID(id)
-            .run(new FutureCallback<Result<List<WeaviateObject>>>() {
-              @Override
-              public void completed(Result<List<WeaviateObject>> listResult) {
-                System.out.printf("[%s] future completed\n", id);
-              }
+            Future<Result<List<WeaviateObject>>> future = asyncClient.data().objectsGetter()
+              .withClassName("Pizza")
+              .withID(id)
+              .run(new FutureCallback<Result<List<WeaviateObject>>>() {
+                @Override
+                public void completed(Result<List<WeaviateObject>> listResult) {
+                  System.out.printf("[%s] future completed\n", id);
+                }
 
-              @Override
-              public void failed(Exception e) {
-                System.out.printf("[%s] future failed\n", id);
-              }
+                @Override
+                public void failed(Exception e) {
+                  System.out.printf("[%s] future failed\n", id);
+                }
 
-              @Override
-              public void cancelled() {
-                System.out.printf("[%s] future cancelled\n", id);
-              }
-            });
-          System.out.printf("[%s] future created\n", id);
+                @Override
+                public void cancelled() {
+                  System.out.printf("[%s] future cancelled\n", id);
+                }
+              });
+            System.out.printf("[%s] future created\n", id);
 
-          return future;
+            return future;
           }
         ).collect(Collectors.toList());
 
@@ -228,6 +229,153 @@ public class ClientBatchCreateMockServerTest {
     } catch (InterruptedException | ExecutionException e) {
       System.out.println("runtime exception");
       throw new RuntimeException(e);
+    }
+  }
+
+  @Test
+  public void shouldHandleMultipleRequestsCompletableFuture() {
+    Serializer serializer = new Serializer();
+    String[] objectStrings = new String[]{
+      serializer.toJsonString(BatchObjectsMockServerTestSuite.PIZZA_1),
+      serializer.toJsonString(BatchObjectsMockServerTestSuite.PIZZA_2),
+    };
+
+    Map<String, String> idToObjStr = new HashMap<>();
+
+    int count = 50;
+    for (int i = 0; i < count; i++) {
+      String id = UUID.randomUUID().toString();
+      String objectString = objectStrings[i % objectStrings.length];
+
+      idToObjStr.put(id, objectString);
+
+      mockServerClient.when(
+        request().withMethod("GET").withPath(String.format("/v1/objects/%s/%s", "Pizza", id))
+      ).respond(
+        response().withDelay(TimeUnit.MILLISECONDS, 500).withBody(objectString)
+      );
+    }
+
+    try (WeaviateAsyncClient asyncClient = client.async()) {
+      List<Future<Result<List<WeaviateObject>>>> futures = idToObjStr.keySet().stream()
+        .map(id -> {
+            System.out.printf("[%s] future creating\n", id);
+            CompletableFuture<Result<List<WeaviateObject>>> future = new CompletableFuture<>();
+            asyncClient.data().objectsGetter()
+              .withClassName("Pizza")
+              .withID(id)
+              .run(new FutureCallback<Result<List<WeaviateObject>>>() {
+                @Override
+                public void completed(Result<List<WeaviateObject>> listResult) {
+                  System.out.printf("[%s] future completed\n", id);
+                  future.complete(listResult);
+                }
+
+                @Override
+                public void failed(Exception e) {
+                  System.out.printf("[%s] future failed\n    -> exception %s\n", id, e);
+                  future.completeExceptionally(e);
+                }
+
+                @Override
+                public void cancelled() {
+                  System.out.printf("[%s] future cancelled\n", id);
+                }
+              });
+            System.out.printf("[%s] future created\n", id);
+
+            return future;
+          }
+        ).collect(Collectors.toList());
+
+      System.out.println("before sleep");
+      Thread.sleep(2000);
+      System.out.println("after sleep");
+
+      for (Future<Result<List<WeaviateObject>>> future : futures) {
+        Result<List<WeaviateObject>> result = future.get();
+        assertThat(result).isNotNull()
+          .returns(false, Result::hasErrors)
+          .extracting(Result::getResult).isNotNull();
+        System.out.println(result.getResult());
+      }
+
+    } catch (InterruptedException | ExecutionException e) {
+      System.out.println("runtime exception");
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Test
+  public void shouldHandleMultipleRequestsCompletableFutureAllOf() {
+    Serializer serializer = new Serializer();
+    String[] objectStrings = new String[]{
+      serializer.toJsonString(BatchObjectsMockServerTestSuite.PIZZA_1),
+      serializer.toJsonString(BatchObjectsMockServerTestSuite.PIZZA_2),
+    };
+
+    Map<String, String> idToObjStr = new HashMap<>();
+
+    int count = 50;
+    for (int i = 0; i < count; i++) {
+      String id = UUID.randomUUID().toString();
+      String objectString = objectStrings[i % objectStrings.length];
+
+      idToObjStr.put(id, objectString);
+
+      mockServerClient.when(
+        request().withMethod("GET").withPath(String.format("/v1/objects/%s/%s", "Pizza", id))
+      ).respond(
+        response().withDelay(TimeUnit.MILLISECONDS, 500).withBody(objectString)
+      );
+    }
+
+    try (WeaviateAsyncClient asyncClient = client.async()) {
+      List<CompletableFuture<Result<List<WeaviateObject>>>> futures = idToObjStr.keySet().stream()
+        .map(id -> {
+            System.out.printf("[%s] future creating\n", id);
+            CompletableFuture<Result<List<WeaviateObject>>> future = new CompletableFuture<>();
+            asyncClient.data().objectsGetter()
+              .withClassName("Pizza")
+              .withID(id)
+              .run(new FutureCallback<Result<List<WeaviateObject>>>() {
+                @Override
+                public void completed(Result<List<WeaviateObject>> listResult) {
+                  System.out.printf("[%s] future completed\n", id);
+                  future.complete(listResult);
+                }
+
+                @Override
+                public void failed(Exception e) {
+                  System.out.printf("[%s] future failed\n    -> exception %s\n", id, e);
+                  future.completeExceptionally(e);
+                }
+
+                @Override
+                public void cancelled() {
+                  System.out.printf("[%s] future cancelled\n", id);
+                }
+              });
+            System.out.printf("[%s] future created\n", id);
+
+            return future;
+          }
+        ).collect(Collectors.toList());
+
+      CompletableFuture<Result<List<WeaviateObject>>>[] completableFutures = futures.toArray(new CompletableFuture[0]);
+      CompletableFuture.allOf(completableFutures).whenComplete((v, t) -> {
+        try {
+          for (Future<Result<List<WeaviateObject>>> future : futures) {
+            Result<List<WeaviateObject>> result = future.get();
+            assertThat(result).isNotNull()
+              .returns(false, Result::hasErrors)
+              .extracting(Result::getResult).isNotNull();
+            System.out.println(result.getResult());
+          }
+        } catch (ExecutionException | InterruptedException e) {
+          throw new RuntimeException(e);
+        }
+      });
     }
   }
 
