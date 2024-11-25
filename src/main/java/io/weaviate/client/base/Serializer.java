@@ -3,6 +3,8 @@ package io.weaviate.client.base;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import io.weaviate.client.base.util.GroupHitDeserializer;
+import io.weaviate.client.v1.graphql.model.GraphQLGetBaseObject;
 import io.weaviate.client.v1.graphql.model.GraphQLTypedResponse;
 import java.lang.reflect.Type;
 
@@ -14,7 +16,11 @@ public class Serializer {
   }
 
   public <C> GraphQLTypedResponse<C> toGraphQLTypedResponse(String response, Class<C> classOfT) {
-    return gson.fromJson(response,
+    Gson gsonTyped = new GsonBuilder()
+      .disableHtmlEscaping()
+      .registerTypeAdapter(GraphQLGetBaseObject.Additional.Group.GroupHit.class, new GroupHitDeserializer())
+      .create();
+    return gsonTyped.fromJson(response,
       TypeToken.getParameterized(GraphQLTypedResponse.class, classOfT).getType());
   }
 

@@ -47,14 +47,19 @@ public class GraphQLTypedResponseTest {
   public void testGraphQLGetResponseSoups2() throws IOException {
     // given
     Serializer s = new Serializer();
-    String json = new String(Files.readAllBytes(Paths.get("src/test/resources/json/graphql-response.json")));
+    String json = new String(Files.readAllBytes(Paths.get("src/test/resources/json/graphql-group-by-response.json")));
     // when
-    GraphQLTypedResponse<Soups2> resp = s.toGraphQLTypedResponse(json, Soups2.class);
+    GraphQLTypedResponse<Passages> resp = s.toGraphQLTypedResponse(json, Passages.class);
     // then
     assertThat(resp).isNotNull()
-      .extracting(o -> o.getData().getObjects().getSoups())
+      .extracting(o -> o.getData().getObjects().getPassages())
       .extracting(o -> o.get(0)).isNotNull()
-      .extracting(Soups2.Soup::getName).isEqualTo("JustSoup");
+      .extracting(GraphQLGetBaseObject::getAdditional).isNotNull()
+      .extracting(GraphQLGetBaseObject.Additional::getGroup).isNotNull()
+      .extracting(GraphQLGetBaseObject.Additional.Group::getHits).isNotNull()
+      .extracting(o -> o.get(0)).isNotNull()
+      .extracting(GraphQLGetBaseObject.Additional.Group.GroupHit::getProperties).isNotNull()
+      .extracting(o -> o.get("name")).isEqualTo("test-name");
   }
 }
 
@@ -69,25 +74,13 @@ class Soups {
   }
 }
 
+@Getter
+class Passages {
+  @SerializedName(value = "Passage")
+  List<Passage> passages;
 
-class Soups2 {
-  @SerializedName(value = "Soup")
-  List<Soup> soups;
-
-  public List<Soup> getSoups() {
-    return soups;
-  }
-
-  public static class Soup extends GraphQLGetBaseObject {
+  @Getter
+  public static class Passage extends GraphQLGetBaseObject {
     String name;
-    Float price;
-
-    public String getName() {
-      return name;
-    }
-
-    public Float getPrice() {
-      return price;
-    }
   }
 }
