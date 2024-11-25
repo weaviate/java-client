@@ -492,11 +492,29 @@ public class ClientBatchCreateMockServerTest {
   CompletableFuture<Result<List<WeaviateObject>>> getByIdRecursively(WeaviateAsyncClient asyncClient,
                                                                      List<WeaviateObject> accumulator,
                                                                      String[] ids, int counter) {
-    return getById(asyncClient, ids[counter]).handle((r, t) -> {
+    return getById(asyncClient, ids[counter], "main", counter).handle((r, t) -> {
         System.out.printf("[%s] future handling\n", ids[counter]);
 
         if (!r.hasErrors()) {
           accumulator.addAll(r.getResult());
+        }
+
+        List<String> nestIds = new ArrayList<>();
+        nestIds.add(ids[(counter + 1) % ids.length]);
+        nestIds.add(ids[(counter + 2) % ids.length]);
+        nestIds.add(ids[(counter + 3) % ids.length]);
+        nestIds.add(ids[(counter + 4) % ids.length]);
+
+        List<CompletableFuture<Result<List<WeaviateObject>>>> futures = nestIds.stream()
+          .map(id -> getById(asyncClient, id, "nested", counter))
+          .collect(Collectors.toList());
+
+        try {
+          for (CompletableFuture<Result<List<WeaviateObject>>> f : futures) {
+            f.get();
+          }
+        } catch (InterruptedException | ExecutionException e) {
+          throw new RuntimeException(e);
         }
 
         if (counter + 1 < ids.length) {
@@ -509,8 +527,8 @@ public class ClientBatchCreateMockServerTest {
       .thenCompose(f -> f);
   }
 
-  CompletableFuture<Result<List<WeaviateObject>>> getById(WeaviateAsyncClient asyncClient, String id) {
-    System.out.printf("[%s] future creating\n", id);
+  CompletableFuture<Result<List<WeaviateObject>>> getById(WeaviateAsyncClient asyncClient, String id, String comment, int counter) {
+    System.out.printf("[%s] future creating (%s %d)\n", id, comment, counter);
 
     CompletableFuture<Result<List<WeaviateObject>>> future = new CompletableFuture<>();
     asyncClient.data().objectsGetter()
@@ -519,22 +537,22 @@ public class ClientBatchCreateMockServerTest {
       .run(new FutureCallback<Result<List<WeaviateObject>>>() {
         @Override
         public void completed(Result<List<WeaviateObject>> listResult) {
-          System.out.printf("[%s] future completed\n", id);
+          System.out.printf("[%s] future completed (%s %d)\n", id, comment, counter);
           future.complete(listResult);
         }
 
         @Override
         public void failed(Exception e) {
-          System.out.printf("[%s] future failed\n    -> exception %s\n", id, e);
+          System.out.printf("[%s] future failed (%s %d)\n    -> exception %s\n", id, comment, counter, e);
           future.completeExceptionally(e);
         }
 
         @Override
         public void cancelled() {
-          System.out.printf("[%s] future cancelled\n", id);
+          System.out.printf("[%s] future cancelled (%s %d)\n", id, comment, counter);
         }
       });
-    System.out.printf("[%s] future created\n", id);
+    System.out.printf("[%s] future created (%s %d)\n", id, comment, counter);
 
     return future;
   }
