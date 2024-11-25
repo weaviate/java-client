@@ -481,6 +481,10 @@ public class ClientBatchCreateMockServerTest {
       );
     }
 
+    String threadName = Thread.currentThread().getName();
+    System.out.printf("test starting (%s)\n", threadName);
+
+
     try (WeaviateAsyncClient asyncClient = client.async()) {
       ArrayList<WeaviateObject> accumulator = new ArrayList<>(ids.length);
       getByIdRecursively(asyncClient, accumulator, ids, 0).join();
@@ -492,8 +496,9 @@ public class ClientBatchCreateMockServerTest {
   CompletableFuture<Result<List<WeaviateObject>>> getByIdRecursively(WeaviateAsyncClient asyncClient,
                                                                      List<WeaviateObject> accumulator,
                                                                      String[] ids, int counter) {
-    return getById(asyncClient, ids[counter], "main", counter).handle((r, t) -> {
-        System.out.printf("[%s] future handling\n", ids[counter]);
+    return getById(asyncClient, ids[counter], "main", counter).handleAsync((r, t) -> {
+        String threadName = Thread.currentThread().getName();
+        System.out.printf("[%s] future handling (%s)\n", ids[counter], threadName);
 
         if (!r.hasErrors()) {
           accumulator.addAll(r.getResult());
@@ -508,6 +513,9 @@ public class ClientBatchCreateMockServerTest {
         List<CompletableFuture<Result<List<WeaviateObject>>>> futures = nestIds.stream()
           .map(id -> getById(asyncClient, id, "nested", counter))
           .collect(Collectors.toList());
+        CompletableFuture<Result<List<WeaviateObject>>>[] completableFutures = futures.toArray(new CompletableFuture[0]);
+        CompletableFuture.allOf(completableFutures).join();
+
 
         try {
           for (CompletableFuture<Result<List<WeaviateObject>>> f : futures) {
@@ -517,9 +525,9 @@ public class ClientBatchCreateMockServerTest {
           throw new RuntimeException(e);
         }
 
-        if (counter + 1 < ids.length) {
-          return getByIdRecursively(asyncClient, accumulator, ids, counter + 1);
-        }
+//        if (counter + 1 < ids.length) {
+//          return getByIdRecursively(asyncClient, accumulator, ids, counter + 1);
+//        }
 
         Result<List<WeaviateObject>> result = new Result<>(200, accumulator, null);
         return CompletableFuture.completedFuture(result);
@@ -528,7 +536,8 @@ public class ClientBatchCreateMockServerTest {
   }
 
   CompletableFuture<Result<List<WeaviateObject>>> getById(WeaviateAsyncClient asyncClient, String id, String comment, int counter) {
-    System.out.printf("[%s] future creating (%s %d)\n", id, comment, counter);
+    String threadName = Thread.currentThread().getName();
+    System.out.printf("[%s] future creating (%s %d %s)\n", id, comment, counter, threadName);
 
     CompletableFuture<Result<List<WeaviateObject>>> future = new CompletableFuture<>();
     asyncClient.data().objectsGetter()
@@ -537,22 +546,25 @@ public class ClientBatchCreateMockServerTest {
       .run(new FutureCallback<Result<List<WeaviateObject>>>() {
         @Override
         public void completed(Result<List<WeaviateObject>> listResult) {
-          System.out.printf("[%s] future completed (%s %d)\n", id, comment, counter);
+          String threadName = Thread.currentThread().getName();
+          System.out.printf("[%s] future completed (%s %d %s)\n", id, comment, counter, threadName);
           future.complete(listResult);
         }
 
         @Override
         public void failed(Exception e) {
-          System.out.printf("[%s] future failed (%s %d)\n    -> exception %s\n", id, comment, counter, e);
+          String threadName = Thread.currentThread().getName();
+          System.out.printf("[%s] future failed (%s %d %s)\n    -> exception %s\n", id, comment, counter, threadName, e);
           future.completeExceptionally(e);
         }
 
         @Override
         public void cancelled() {
-          System.out.printf("[%s] future cancelled (%s %d)\n", id, comment, counter);
+          String threadName = Thread.currentThread().getName();
+          System.out.printf("[%s] future cancelled (%s %d %s)\n", id, comment, counter, threadName);
         }
       });
-    System.out.printf("[%s] future created (%s %d)\n", id, comment, counter);
+    System.out.printf("[%s] future created (%s %d %s)\n", id, comment, counter, threadName);
 
     return future;
   }
