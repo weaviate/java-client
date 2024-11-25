@@ -307,7 +307,7 @@ public class ClientBatchCreateMockServerTest {
   }
 
   @Test
-  public void shouldHandleMultipleRequestsCompletableFutureAllOf() {
+  public void shouldHandleMultipleRequestsCompletableFutureAllOf() throws InterruptedException {
     Serializer serializer = new Serializer();
     String[] objectStrings = new String[]{
       serializer.toJsonString(BatchObjectsMockServerTestSuite.PIZZA_1),
@@ -363,7 +363,29 @@ public class ClientBatchCreateMockServerTest {
         ).collect(Collectors.toList());
 
       CompletableFuture<Result<List<WeaviateObject>>>[] completableFutures = futures.toArray(new CompletableFuture[0]);
-      CompletableFuture.allOf(completableFutures).whenComplete((v, t) -> {
+
+//      System.out.println("before sleep");
+//      Thread.sleep(1000);
+//      System.out.println("after sleep");
+
+//      CompletableFuture.allOf(completableFutures).whenComplete((v, t) -> {
+//        try {
+//          for (Future<Result<List<WeaviateObject>>> future : futures) {
+//            Result<List<WeaviateObject>> result = future.get();
+//            assertThat(result).isNotNull()
+//              .returns(false, Result::hasErrors)
+//              .extracting(Result::getResult).isNotNull();
+//            System.out.println(result.getResult());
+//          }
+//        } catch (ExecutionException | InterruptedException e) {
+//          throw new RuntimeException(e);
+//        }
+//      });
+
+      CompletableFuture.allOf(completableFutures).join();
+
+
+//        .whenComplete((v, t) -> {
         try {
           for (Future<Result<List<WeaviateObject>>> future : futures) {
             Result<List<WeaviateObject>> result = future.get();
@@ -375,7 +397,7 @@ public class ClientBatchCreateMockServerTest {
         } catch (ExecutionException | InterruptedException e) {
           throw new RuntimeException(e);
         }
-      });
+//      });
     }
   }
 
