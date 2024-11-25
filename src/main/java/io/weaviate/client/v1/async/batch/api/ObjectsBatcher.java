@@ -242,7 +242,7 @@ public class ObjectsBatcher extends AsyncBaseClient<ObjectGetResponse[]>
                                                                              List<ObjectGetResponse> combinedSingleResponses) {
     System.out.println("batcher runBatchRecursively started");
 
-    return internalRun(batch).handle((Result<ObjectGetResponse[]> result, Throwable throwable) -> {
+    return internalRun(batch).handleAsync((Result<ObjectGetResponse[]> result, Throwable throwable) -> {
         System.out.println("batcher runBatchRecursively handle started");
 
         int lambdaConnectionErrorCount = connectionErrorCount;
