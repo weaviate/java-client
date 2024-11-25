@@ -37,7 +37,7 @@ public class Backup {
     return new BackupCanceler(client, config);
   }
 
-  public BackupGetter getter() {
+  public BackupGetter getter() { // TODO: add test
     return new BackupGetter(client, config);
   }
 }

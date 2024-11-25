@@ -3,6 +3,7 @@ package io.weaviate.integration.client.backup;
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
+import io.weaviate.client.v1.async.WeaviateAsyncClient;
 import io.weaviate.client.v1.backup.api.BackupCreator;
 import io.weaviate.client.v1.backup.api.BackupRestorer;
 import io.weaviate.client.v1.backup.model.BackupCreateResponse;
@@ -22,6 +23,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -142,6 +145,30 @@ public class ClientBackupTest {
 
     BackupTestSuite.testCreateAndRestore1Of2Classes(supplierCreateResult, supplierCreateStatusResult,
       supplierRestoreResult, supplierRestoreStatusResult, supplierDeleteClass, createSupplierGQLOfClass(), backupId);
+  }
+
+  @Test
+  public void shouldListCreatedBackups() {
+    List<Supplier<Result<BackupCreateResponse>>> createSuppliers = new ArrayList<Supplier<Result<BackupCreateResponse>>>() {{
+      this.add(() -> client.backup().creator()
+          .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
+          .withBackend(BackupTestSuite.BACKEND)
+          .withBackupId(backupId+"-1")
+          .withWaitForCompletion(true)
+          .run()
+      );
+      this.add(() -> client.backup().creator()
+          .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
+          .withBackend(BackupTestSuite.BACKEND)
+          .withBackupId(backupId+"-2")
+          .withWaitForCompletion(true)
+          .run()
+      );
+    }};
+
+    Supplier<Result<BackupCreateResponse[]>> supplierGetResult = () -> client.backup().getter().withBackend(BackupTestSuite.BACKEND).run();
+
+    BackupTestSuite.testListExistingBackups(createSuppliers, supplierGetResult);
   }
 
   @Test

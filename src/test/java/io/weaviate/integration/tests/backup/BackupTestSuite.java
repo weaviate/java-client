@@ -1,5 +1,20 @@
 package io.weaviate.integration.tests.backup;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
+import static org.assertj.core.api.InstanceOfAssertFactories.CHAR_SEQUENCE;
+import static org.junit.Assume.assumeTrue;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import org.apache.http.HttpStatus;
+
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateError;
 import io.weaviate.client.base.WeaviateErrorMessage;
@@ -11,18 +26,6 @@ import io.weaviate.client.v1.backup.model.BackupRestoreStatusResponse;
 import io.weaviate.client.v1.backup.model.CreateStatus;
 import io.weaviate.client.v1.backup.model.RestoreStatus;
 import io.weaviate.client.v1.graphql.model.GraphQLResponse;
-import org.apache.http.HttpStatus;
-
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
-import static org.assertj.core.api.InstanceOfAssertFactories.CHAR_SEQUENCE;
 
 public class BackupTestSuite {
 
@@ -253,6 +256,20 @@ public class BackupTestSuite {
       .returns(BACKEND, BackupRestoreStatusResponse::getBackend)
       .returns(RestoreStatus.SUCCESS, BackupRestoreStatusResponse::getStatus)
       .returns(null, BackupRestoreStatusResponse::getError);
+  }
+
+  public static void testListExistingBackups(List<Supplier<Result<BackupCreateResponse>>> createSuppliers,
+                                             Supplier<Result<BackupCreateResponse[]>> supplierGet) {
+    // Create backups
+    createSuppliers.forEach(Supplier::get);
+
+    // List backups
+    Result<BackupCreateResponse[]> listResult = supplierGet.get();
+    skipIfNotImplemented(listResult);
+
+    assertThat(listResult.getError()).isNull();
+    assertThat(listResult.getResult()).isNotNull()
+      .hasSize(2);
   }
 
   public static void testFailOnCreateBackupOnNotExistingBackend(Supplier<Result<BackupCreateResponse>> supplierCreate) {
@@ -568,5 +585,21 @@ public class BackupTestSuite {
     } catch (Exception ignored) {
     }
     fail(String.format("after 5s create status: want=%s, got=%s", want, status.get()));
+  }
+
+  /**
+   * Skip a test if the operation is not implemented on the server.
+   *
+   * <p>
+   * We assume that in such cases the server will return an response with body "not implemented";
+   * this is not a good reason to fail the client's test.
+   * @param result Any Result object from a request.
+   */
+  private static void skipIfNotImplemented(Result<?> result) {
+    assumeTrue(
+      "this operation is not implemented on the server", 
+      result.getError().getMessages().stream()
+        .noneMatch(err -> err.getMessage().toLowerCase().contains("not implemented"))
+    );
   }
 }
