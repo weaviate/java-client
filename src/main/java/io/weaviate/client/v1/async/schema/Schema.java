@@ -11,10 +11,14 @@ import io.weaviate.client.v1.async.schema.api.SchemaGetter;
 import io.weaviate.client.v1.async.schema.api.PropertyCreator;
 import io.weaviate.client.v1.async.schema.api.SchemaDeleter;
 import io.weaviate.client.v1.async.schema.api.ShardsGetter;
+import io.weaviate.client.v1.async.schema.api.ShardUpdater;
 import io.weaviate.client.v1.async.schema.api.ShardsUpdater;
 import io.weaviate.client.v1.async.schema.api.TenantsCreator;
 import io.weaviate.client.v1.async.schema.api.TenantsGetter;
 import io.weaviate.client.v1.async.schema.api.TenantsUpdater;
+import io.weaviate.client.v1.async.schema.api.TenantsDeleter;
+import io.weaviate.client.v1.async.schema.api.TenantsExists;
+
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 
 public class Schema {
@@ -64,6 +68,10 @@ public class Schema {
     return new ShardsGetter(client, config);
   }
 
+  public ShardUpdater shardUpdater() {
+    return new ShardUpdater(client, config);
+  }
+
   public ShardsUpdater shardsUpdater() {
     return new ShardsUpdater(client, config);
   }
@@ -76,7 +84,15 @@ public class Schema {
     return new TenantsUpdater(client, config, dbVersionSupport);
   }
 
+  public TenantsExists tenantsExists() {
+    return new TenantsExists(client, config);
+  }
+
   public TenantsGetter tenantsGetter() {
     return new TenantsGetter(client, config);
+  }
+
+  public TenantsDeleter tenantsDeleter() {
+    return new TenantsDeleter(client, config);
   }
 }

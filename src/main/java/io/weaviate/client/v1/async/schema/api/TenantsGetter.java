@@ -24,6 +24,11 @@ public class TenantsGetter extends AsyncBaseClient<List<Tenant>> implements Asyn
     super(client, config);
   }
 
+  public TenantsGetter withClassName(String className) {
+    this.className = className;
+    return this;
+  }
+
   @Override
   public Future<Result<List<Tenant>>> run(FutureCallback<Result<List<Tenant>>> callback) {
     String path = String.format("/schema/%s/tenants", UrlEncoder.encodePathParam(className));

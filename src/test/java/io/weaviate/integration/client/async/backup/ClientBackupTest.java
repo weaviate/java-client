@@ -1,5 +1,21 @@
 package io.weaviate.integration.client.async.backup;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import org.jetbrains.annotations.NotNull;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
+
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
@@ -7,6 +23,7 @@ import io.weaviate.client.v1.async.WeaviateAsyncClient;
 import io.weaviate.client.v1.async.backup.api.BackupCanceler;
 import io.weaviate.client.v1.async.backup.api.BackupCreateStatusGetter;
 import io.weaviate.client.v1.async.backup.api.BackupCreator;
+import io.weaviate.client.v1.async.backup.api.BackupGetter;
 import io.weaviate.client.v1.async.backup.api.BackupRestoreStatusGetter;
 import io.weaviate.client.v1.async.backup.api.BackupRestorer;
 import io.weaviate.client.v1.backup.model.BackupCreateResponse;
@@ -18,19 +35,6 @@ import io.weaviate.client.v1.graphql.query.fields.Field;
 import io.weaviate.integration.client.WeaviateDockerCompose;
 import io.weaviate.integration.client.WeaviateTestGenerics;
 import io.weaviate.integration.tests.backup.BackupTestSuite;
-import org.jetbrains.annotations.NotNull;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
-
-import java.util.Random;
-import java.util.concurrent.ExecutionException;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class ClientBackupTest {
 
@@ -159,6 +163,35 @@ public class ClientBackupTest {
       BackupTestSuite.testCreateAndRestore1Of2Classes(supplierCreateResult, supplierCreateStatusResult,
         supplierRestoreResult, supplierRestoreStatusResult,
         createSupplierDeletePizza(), createSupplierGQLOfClass(), backupId);
+    }
+  }
+
+  @Test
+  public void shouldListCreatedBackups() {
+    try (WeaviateAsyncClient asyncClient = client.async()) {
+      List<Supplier<Result<BackupCreateResponse>>> createSuppliers = new ArrayList<Supplier<Result<BackupCreateResponse>>>() {{
+        this.add(createSupplierCreate(
+          asyncClient, creator -> creator
+            .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
+            .withBackend(BackupTestSuite.BACKEND)
+            .withBackupId(backupId+"-1")
+            .withWaitForCompletion(true)
+        ));
+        this.add(createSupplierCreate(
+          asyncClient, creator -> creator
+            .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
+            .withBackend(BackupTestSuite.BACKEND)
+            .withBackupId(backupId+"-2")
+            .withWaitForCompletion(true)
+        ));
+      }};
+
+      Supplier<Result<BackupCreateResponse[]>> supplierGetResult = createSupplierGet(
+        asyncClient, creator -> creator
+          .withBackend(BackupTestSuite.BACKEND)
+      );
+
+      BackupTestSuite.testListExistingBackups(createSuppliers, supplierGetResult);
     }
   }
 
@@ -473,6 +506,19 @@ public class ClientBackupTest {
         throw new RuntimeException(e);
       }
     };
+  }
+
+  private Supplier<Result<BackupCreateResponse[]>> createSupplierGet(WeaviateAsyncClient asyncClient,
+                                                                     Consumer<BackupGetter> configure) {
+    return () -> {
+      try {
+        BackupGetter getter = asyncClient.backup().getter();
+        configure.accept(getter);
+        return getter.run().get();
+      } catch (InterruptedException | ExecutionException e) {
+        throw new RuntimeException(e);
+      }
+    };                              
   }
 
   private Supplier<Result<BackupCreateStatusResponse>> createSupplierCreateStatus(WeaviateAsyncClient asyncClient,
