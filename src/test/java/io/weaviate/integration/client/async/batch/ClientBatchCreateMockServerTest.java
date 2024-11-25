@@ -21,6 +21,7 @@ import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.Delay;
 import org.mockserver.verify.VerificationTimes;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -381,7 +382,7 @@ public class ClientBatchCreateMockServerTest {
   }
 
   @Test
-  public void shouldHandleMultipleRequestsCompletableFutureAllOfFailing() throws InterruptedException {
+  public void shouldHandleMultipleRequestsCompletableFutureAllOf2() throws InterruptedException {
     Serializer serializer = new Serializer();
     String[] objectStrings = new String[]{
       serializer.toJsonString(BatchObjectsMockServerTestSuite.PIZZA_1),
@@ -449,9 +450,95 @@ public class ClientBatchCreateMockServerTest {
         } catch (ExecutionException | InterruptedException e) {
           throw new RuntimeException(e);
         }
-      });
+      }).join();
     }
   }
+
+
+  @Test
+  public void shouldHandleMultipleRequestsCompletableFutureNested() {
+    Serializer serializer = new Serializer();
+    String[] objectStrings = new String[]{
+      serializer.toJsonString(BatchObjectsMockServerTestSuite.PIZZA_1),
+      serializer.toJsonString(BatchObjectsMockServerTestSuite.PIZZA_2),
+    };
+
+    int count = 50;
+    Map<String, String> idToObjStr = new HashMap<>();
+    String[] ids = new String[count];
+
+    for (int i = 0; i < count; i++) {
+      String id = UUID.randomUUID().toString();
+      String objectString = objectStrings[i % objectStrings.length];
+
+      idToObjStr.put(id, objectString);
+      ids[i] = id;
+
+      mockServerClient.when(
+        request().withMethod("GET").withPath(String.format("/v1/objects/%s/%s", "Pizza", id))
+      ).respond(
+        response().withDelay(TimeUnit.MILLISECONDS, 500).withBody(objectString)
+      );
+    }
+
+    try (WeaviateAsyncClient asyncClient = client.async()) {
+      ArrayList<WeaviateObject> accumulator = new ArrayList<>(ids.length);
+      getByIdRecursively(asyncClient, accumulator, ids, 0).join();
+
+      System.out.printf("accumulator %s\n", accumulator);
+    }
+  }
+
+  CompletableFuture<Result<List<WeaviateObject>>> getByIdRecursively(WeaviateAsyncClient asyncClient,
+                                                                     List<WeaviateObject> accumulator,
+                                                                     String[] ids, int counter) {
+    return getById(asyncClient, ids[counter]).handle((r, t) -> {
+        System.out.printf("[%s] future handling\n", ids[counter]);
+
+        if (!r.hasErrors()) {
+          accumulator.addAll(r.getResult());
+        }
+
+        if (counter + 1 < ids.length) {
+          return getByIdRecursively(asyncClient, accumulator, ids, counter + 1);
+        }
+
+        Result<List<WeaviateObject>> result = new Result<>(200, accumulator, null);
+        return CompletableFuture.completedFuture(result);
+      })
+      .thenCompose(f -> f);
+  }
+
+  CompletableFuture<Result<List<WeaviateObject>>> getById(WeaviateAsyncClient asyncClient, String id) {
+    System.out.printf("[%s] future creating\n", id);
+
+    CompletableFuture<Result<List<WeaviateObject>>> future = new CompletableFuture<>();
+    asyncClient.data().objectsGetter()
+      .withClassName("Pizza")
+      .withID(id)
+      .run(new FutureCallback<Result<List<WeaviateObject>>>() {
+        @Override
+        public void completed(Result<List<WeaviateObject>> listResult) {
+          System.out.printf("[%s] future completed\n", id);
+          future.complete(listResult);
+        }
+
+        @Override
+        public void failed(Exception e) {
+          System.out.printf("[%s] future failed\n    -> exception %s\n", id, e);
+          future.completeExceptionally(e);
+        }
+
+        @Override
+        public void cancelled() {
+          System.out.printf("[%s] future cancelled\n", id);
+        }
+      });
+    System.out.printf("[%s] future created\n", id);
+
+    return future;
+  }
+
 
 //  @Test
 //  @DataMethod(source = ClientBatchCreateMockServerTest.class, method = "provideForNotCreateBatchDueToTimeoutIssue")
