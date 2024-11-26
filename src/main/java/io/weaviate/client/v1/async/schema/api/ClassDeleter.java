@@ -8,6 +8,7 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.base.WeaviateErrorResponse;
 import io.weaviate.client.base.http.async.ResponseParser;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
@@ -21,8 +22,8 @@ import org.apache.hc.core5.http.HttpResponse;
 public class ClassDeleter extends AsyncBaseClient<Boolean> implements AsyncClientResult<Boolean> {
   private String className;
 
-  public ClassDeleter(CloseableHttpAsyncClient client, Config config) {
-    super(client, config);
+  public ClassDeleter(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider) {
+    super(client, config, tokenProvider);
   }
 
   public ClassDeleter withClassName(String className) {

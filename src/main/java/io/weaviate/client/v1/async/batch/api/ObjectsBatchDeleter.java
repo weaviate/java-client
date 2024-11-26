@@ -4,6 +4,7 @@ import io.weaviate.client.Config;
 import io.weaviate.client.base.AsyncBaseClient;
 import io.weaviate.client.base.AsyncClientResult;
 import io.weaviate.client.base.Result;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.batch.model.BatchDeleteResponse;
 import io.weaviate.client.v1.batch.util.ObjectsPath;
 import io.weaviate.client.v1.filters.WhereFilter;
@@ -20,8 +21,8 @@ public class ObjectsBatchDeleter extends AsyncBaseClient<BatchDeleteResponse> im
   private String output;
   private Boolean dryRun;
 
-  public ObjectsBatchDeleter(CloseableHttpAsyncClient client, Config config, ObjectsPath objectsPath) {
-    super(client, config);
+  public ObjectsBatchDeleter(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider, ObjectsPath objectsPath) {
+    super(client, config, tokenProvider);
     this.objectsPath = objectsPath;
   }
 

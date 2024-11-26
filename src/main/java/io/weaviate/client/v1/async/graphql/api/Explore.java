@@ -4,6 +4,7 @@ import io.weaviate.client.Config;
 import io.weaviate.client.base.AsyncBaseClient;
 import io.weaviate.client.base.AsyncClientResult;
 import io.weaviate.client.base.Result;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.graphql.model.ExploreFields;
 import io.weaviate.client.v1.graphql.model.GraphQLQuery;
 import io.weaviate.client.v1.graphql.model.GraphQLResponse;
@@ -17,8 +18,8 @@ import java.util.concurrent.Future;
 public class Explore extends AsyncBaseClient<GraphQLResponse> implements AsyncClientResult<GraphQLResponse> {
   private final ExploreBuilder.ExploreBuilderBuilder exploreBuilder;
 
-  public Explore(CloseableHttpAsyncClient client, Config config) {
-    super(client, config);
+  public Explore(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider) {
+    super(client, config, tokenProvider);
     exploreBuilder = ExploreBuilder.builder();
   }
 

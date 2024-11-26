@@ -5,6 +5,7 @@ import io.weaviate.client.base.AsyncBaseClient;
 import io.weaviate.client.base.AsyncClientResult;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.util.UrlEncoder;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.backup.model.BackupCreateStatusResponse;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.core5.concurrent.FutureCallback;
@@ -18,8 +19,8 @@ public class BackupCreateStatusGetter extends AsyncBaseClient<BackupCreateStatus
   private String backupId;
 
 
-  public BackupCreateStatusGetter(CloseableHttpAsyncClient client, Config config) {
-    super(client, config);
+  public BackupCreateStatusGetter(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider) {
+    super(client, config, tokenProvider);
   }
 
 

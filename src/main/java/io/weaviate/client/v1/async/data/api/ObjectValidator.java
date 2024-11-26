@@ -8,6 +8,7 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.base.WeaviateErrorResponse;
 import io.weaviate.client.base.http.async.ResponseParser;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.data.model.WeaviateObject;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -25,8 +26,8 @@ public class ObjectValidator extends AsyncBaseClient<Boolean> implements AsyncCl
   private String className;
   private Map<String, Object> properties;
 
-  public ObjectValidator(CloseableHttpAsyncClient client, Config config) {
-    super(client, config);
+  public ObjectValidator(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider) {
+    super(client, config, tokenProvider);
   }
 
   public ObjectValidator withID(String id) {

@@ -6,6 +6,7 @@ import io.weaviate.client.base.AsyncClientResult;
 import io.weaviate.client.base.Response;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.async.ResponseParser;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.data.model.SingleRef;
 import io.weaviate.client.v1.data.util.ReferencesPath;
 import java.util.Objects;
@@ -24,8 +25,8 @@ public class ReferenceDeleter extends AsyncBaseClient<Boolean> implements AsyncC
   private String referenceProperty;
   private SingleRef referencePayload;
 
-  public ReferenceDeleter(CloseableHttpAsyncClient client, Config config, ReferencesPath referencesPath) {
-    super(client, config);
+  public ReferenceDeleter(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider, ReferencesPath referencesPath) {
+    super(client, config, tokenProvider);
     this.referencesPath = Objects.requireNonNull(referencesPath);
   }
 

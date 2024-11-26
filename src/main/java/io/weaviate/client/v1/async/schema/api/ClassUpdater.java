@@ -7,6 +7,7 @@ import io.weaviate.client.base.Response;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.async.ResponseParser;
 import io.weaviate.client.base.util.UrlEncoder;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
 import java.util.concurrent.Future;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
@@ -18,8 +19,8 @@ public class ClassUpdater extends AsyncBaseClient<Boolean> implements AsyncClien
 
   private WeaviateClass clazz;
 
-  public ClassUpdater(CloseableHttpAsyncClient client, Config config) {
-    super(client, config);
+  public ClassUpdater(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider) {
+    super(client, config, tokenProvider);
   }
 
   public ClassUpdater withClass(WeaviateClass clazz) {

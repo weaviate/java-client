@@ -8,6 +8,7 @@ import io.weaviate.client.base.WeaviateError;
 import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.base.WeaviateErrorResponse;
 import io.weaviate.client.base.http.async.ResponseParser;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -23,8 +24,8 @@ import org.apache.hc.core5.http.HttpStatus;
 public class ClassExists extends AsyncBaseClient<Boolean> implements AsyncClientResult<Boolean> {
   private String className;
 
-  public ClassExists(CloseableHttpAsyncClient client, Config config) {
-    super(client, config);
+  public ClassExists(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider) {
+    super(client, config, tokenProvider);
   }
 
   public ClassExists withClassName(String className) {

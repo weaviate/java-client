@@ -7,6 +7,7 @@ import io.weaviate.client.v1.async.backup.api.BackupCreator;
 import io.weaviate.client.v1.async.backup.api.BackupGetter;
 import io.weaviate.client.v1.async.backup.api.BackupRestoreStatusGetter;
 import io.weaviate.client.v1.async.backup.api.BackupRestorer;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 
@@ -17,18 +18,18 @@ public class Backup {
 
   private final CloseableHttpAsyncClient client;
   private final Config config;
-
+  private final AccessTokenProvider tokenProvider;
 
   public BackupCreator creator() {
     return creator(null);
   }
 
   public BackupCreator creator(Executor executor) {
-    return new BackupCreator(client, config, createStatusGetter(), executor);
+    return new BackupCreator(client, config, tokenProvider, createStatusGetter(), executor);
   }
 
   public BackupCreateStatusGetter createStatusGetter() {
-    return new BackupCreateStatusGetter(client, config);
+    return new BackupCreateStatusGetter(client, config, tokenProvider);
   }
 
   public BackupRestorer restorer() {
@@ -36,18 +37,18 @@ public class Backup {
   }
 
   public BackupRestorer restorer(Executor executor) {
-    return new BackupRestorer(client, config, restoreStatusGetter(), executor);
+    return new BackupRestorer(client, config, tokenProvider, restoreStatusGetter(), executor);
   }
 
   public BackupRestoreStatusGetter restoreStatusGetter() {
-    return new BackupRestoreStatusGetter(client, config);
+    return new BackupRestoreStatusGetter(client, config, tokenProvider);
   }
 
   public BackupCanceler canceler() {
-    return new BackupCanceler(client, config);
+    return new BackupCanceler(client, config, tokenProvider);
   }
 
   public BackupGetter getter() { // TODO: add test
-    return new BackupGetter(client, config);
+    return new BackupGetter(client, config, tokenProvider);
   }
 }

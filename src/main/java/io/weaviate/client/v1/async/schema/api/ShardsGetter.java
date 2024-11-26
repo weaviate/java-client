@@ -6,6 +6,7 @@ import io.weaviate.client.base.AsyncClientResult;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.base.WeaviateErrorResponse;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.schema.model.Shard;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
@@ -18,8 +19,8 @@ import org.apache.hc.core5.http.HttpStatus;
 public class ShardsGetter extends AsyncBaseClient<Shard[]> implements AsyncClientResult<Shard[]> {
   private String className;
 
-  public ShardsGetter(CloseableHttpAsyncClient client, Config config) {
-    super(client, config);
+  public ShardsGetter(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider) {
+    super(client, config, tokenProvider);
   }
 
   public ShardsGetter withClassName(String className) {

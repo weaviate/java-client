@@ -9,6 +9,7 @@ import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.base.WeaviateErrorResponse;
 import io.weaviate.client.base.util.Assert;
 import io.weaviate.client.base.util.Futures;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.batch.model.BatchReference;
 import io.weaviate.client.v1.batch.model.BatchReferenceResponse;
 import io.weaviate.client.v1.batch.util.ReferencesPath;
@@ -52,10 +53,10 @@ public class ReferencesBatcher extends AsyncBaseClient<BatchReferenceResponse[]>
   private String consistencyLevel;
 
 
-  private ReferencesBatcher(CloseableHttpAsyncClient client, Config config, ReferencesPath referencesPath,
+  private ReferencesBatcher(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider, ReferencesPath referencesPath,
                             BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig,
                             Executor executor) {
-    super(client, config);
+    super(client, config, tokenProvider);
     this.referencesPath = referencesPath;
     this.futures = Collections.synchronizedList(new ArrayList<>());
     this.references = Collections.synchronizedList(new ArrayList<>());
@@ -71,18 +72,18 @@ public class ReferencesBatcher extends AsyncBaseClient<BatchReferenceResponse[]>
     }
   }
 
-  public static ReferencesBatcher create(CloseableHttpAsyncClient client, Config config, ReferencesPath referencesPath,
+  public static ReferencesBatcher create(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider, ReferencesPath referencesPath,
                                          BatchRetriesConfig batchRetriesConfig, Executor executor) {
     Assert.requiredNotNull(batchRetriesConfig, "batchRetriesConfig");
-    return new ReferencesBatcher(client, config, referencesPath, batchRetriesConfig, null, executor);
+    return new ReferencesBatcher(client, config, tokenProvider, referencesPath, batchRetriesConfig, null, executor);
   }
 
-  public static ReferencesBatcher createAuto(CloseableHttpAsyncClient client, Config config, ReferencesPath referencesPath,
+  public static ReferencesBatcher createAuto(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider, ReferencesPath referencesPath,
                                              BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig,
                                              Executor executor) {
     Assert.requiredNotNull(batchRetriesConfig, "batchRetriesConfig");
     Assert.requiredNotNull(autoBatchConfig, "autoBatchConfig");
-    return new ReferencesBatcher(client, config, referencesPath, batchRetriesConfig, autoBatchConfig, executor);
+    return new ReferencesBatcher(client, config, tokenProvider, referencesPath, batchRetriesConfig, autoBatchConfig, executor);
   }
 
 

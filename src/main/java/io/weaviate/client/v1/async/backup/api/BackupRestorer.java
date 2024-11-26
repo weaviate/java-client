@@ -10,6 +10,7 @@ import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.base.WeaviateErrorResponse;
 import io.weaviate.client.base.util.Futures;
 import io.weaviate.client.base.util.UrlEncoder;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.backup.model.BackupRestoreResponse;
 import io.weaviate.client.v1.backup.model.BackupRestoreStatusResponse;
 import io.weaviate.client.v1.backup.model.RestoreStatus;
@@ -41,8 +42,8 @@ public class BackupRestorer extends AsyncBaseClient<BackupRestoreResponse>
   private final Executor executor;
 
 
-  public BackupRestorer(CloseableHttpAsyncClient client, Config config, BackupRestoreStatusGetter statusGetter, Executor executor) {
-    super(client, config);
+  public BackupRestorer(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider, BackupRestoreStatusGetter statusGetter, Executor executor) {
+    super(client, config, tokenProvider);
     this.statusGetter = statusGetter;
     this.executor = executor;
   }

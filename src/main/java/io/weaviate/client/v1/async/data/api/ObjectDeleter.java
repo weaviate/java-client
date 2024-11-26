@@ -8,6 +8,7 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.base.WeaviateErrorResponse;
 import io.weaviate.client.base.http.async.ResponseParser;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.data.util.ObjectsPath;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -26,8 +27,8 @@ public class ObjectDeleter extends AsyncBaseClient<Boolean> implements AsyncClie
   private String consistencyLevel;
   private String tenant;
 
-  public ObjectDeleter(CloseableHttpAsyncClient client, Config config, ObjectsPath objectsPath) {
-    super(client, config);
+  public ObjectDeleter(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider, ObjectsPath objectsPath) {
+    super(client, config, tokenProvider);
     this.objectsPath = objectsPath;
   }
 

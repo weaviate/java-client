@@ -79,7 +79,7 @@ public class ObjectsBatcher extends AsyncBaseClient<ObjectGetResponse[]>
                          AccessTokenProvider tokenProvider, GrpcVersionSupport grpcVersionSupport,
                          ObjectsBatcher.BatchRetriesConfig batchRetriesConfig, ObjectsBatcher.AutoBatchConfig autoBatchConfig,
                          Executor executor) {
-    super(client, config);
+    super(client, config, tokenProvider);
     this.config = config;
     this.tokenProvider = tokenProvider;
     this.data = data;

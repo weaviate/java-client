@@ -5,6 +5,7 @@ import io.weaviate.client.base.AsyncBaseClient;
 import io.weaviate.client.base.AsyncClientResult;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.util.UrlEncoder;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.classifications.model.Classification;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
@@ -19,8 +20,8 @@ public class Getter extends AsyncBaseClient<Classification>
   private String id;
 
 
-  public Getter(CloseableHttpAsyncClient client, Config config) {
-    super(client, config);
+  public Getter(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider) {
+    super(client, config, tokenProvider);
   }
 
 
