@@ -56,12 +56,12 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <lombok.version>1.18.34</lombok.version>
+    <lombok.version>1.18.36</lombok.version>
     <gson.version>2.11.0</gson.version>
     <httpclient.version>5.4.1</httpclient.version>
     <lang3.version>3.17.0</lang3.version>
     <junit.version>5.11.3</junit.version>
-    <testcontainers.version>1.20.3</testcontainers.version>
+    <testcontainers.version>1.20.4</testcontainers.version>
     <assertj-core.version>3.26.3</assertj-core.version>
     <jparams.version>1.0.4</jparams.version>
     <mockito.version>5.14.2</mockito.version>
