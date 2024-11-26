@@ -16,8 +16,8 @@ import lombok.experimental.FieldDefaults;
 @ToString
 @EqualsAndHashCode
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class GraphQLResponse {
-  Object data;
+public class GraphQLResponse<T> {
+  T data;
   GraphQLError[] errors;
 
 

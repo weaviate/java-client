@@ -1,5 +1,16 @@
 package io.weaviate.client.v1.graphql.query;
 
+import io.weaviate.client.Config;
+import io.weaviate.client.base.BaseGraphQLClient;
+import io.weaviate.client.base.ClientResult;
+import io.weaviate.client.base.Response;
+import io.weaviate.client.base.Result;
+import io.weaviate.client.base.http.HttpClient;
+import io.weaviate.client.v1.filters.WhereFilter;
+import io.weaviate.client.v1.graphql.model.GraphQLGetBaseObject;
+import io.weaviate.client.v1.graphql.model.GraphQLQuery;
+import io.weaviate.client.v1.graphql.model.GraphQLResponse;
+import io.weaviate.client.v1.graphql.model.GraphQLTypedResponse;
 import io.weaviate.client.v1.graphql.query.argument.AskArgument;
 import io.weaviate.client.v1.graphql.query.argument.Bm25Argument;
 import io.weaviate.client.v1.graphql.query.argument.GroupArgument;
@@ -21,17 +32,8 @@ import io.weaviate.client.v1.graphql.query.builder.GetBuilder;
 import io.weaviate.client.v1.graphql.query.fields.Field;
 import io.weaviate.client.v1.graphql.query.fields.Fields;
 import io.weaviate.client.v1.graphql.query.fields.GenerativeSearchBuilder;
-import io.weaviate.client.Config;
-import io.weaviate.client.base.BaseClient;
-import io.weaviate.client.base.ClientResult;
-import io.weaviate.client.base.Response;
-import io.weaviate.client.base.Result;
-import io.weaviate.client.base.http.HttpClient;
-import io.weaviate.client.v1.filters.WhereFilter;
-import io.weaviate.client.v1.graphql.model.GraphQLQuery;
-import io.weaviate.client.v1.graphql.model.GraphQLResponse;
 
-public class Get extends BaseClient<GraphQLResponse> implements ClientResult<GraphQLResponse> {
+public class Get extends BaseGraphQLClient<GraphQLResponse> implements ClientResult<GraphQLResponse> {
   private final GetBuilder.GetBuilderBuilder getBuilder;
 
   public Get(HttpClient httpClient, Config config) {
@@ -174,6 +176,50 @@ public class Get extends BaseClient<GraphQLResponse> implements ClientResult<Gra
     String getQuery = getBuilder.build().buildQuery();
     GraphQLQuery query = GraphQLQuery.builder().query(getQuery).build();
     Response<GraphQLResponse> resp = sendPostRequest("/graphql", query, GraphQLResponse.class);
+    return new Result<>(resp);
+  }
+
+  /**
+   * This method provides a better way of serializing a GraphQL response using one's defined classes.
+   * Example:
+   * In Weaviate we have defined collection named Soup with name and price properties.
+   * For client to be able to properly serialize GraphQL response to an Object with
+   * convenient methods accessing GraphQL settings one can create a class, example:
+   * <pre>{@code
+   * import com.google.gson.annotations.SerializedName;
+   *
+   * public class Soups {
+   *   {@literal @}SerializedName(value = "Soup")
+   *   List<Soup> soups;
+   *
+   *   public List<Soup> getSoups() {
+   *     return soups;
+   *   }
+   *
+   *   public static class Soup extends GraphQLGetBaseObject {
+   *     String name;
+   *     Float price;
+   *
+   *     public String getName() {
+   *       return name;
+   *     }
+   *
+   *     public Float getPrice() {
+   *       return price;
+   *     }
+   *   }
+   * }
+   * }</pre>
+   *
+   * @param classOfC - class describing Weaviate object, example: Soups class
+   * @param <C>      - Class of C
+   * @return Result of GraphQLTypedResponse of a given class
+   * @see GraphQLGetBaseObject
+   */
+  public <C> Result<GraphQLTypedResponse<C>> run(Class<C> classOfC) {
+    String getQuery = getBuilder.build().buildQuery();
+    GraphQLQuery query = GraphQLQuery.builder().query(getQuery).build();
+    Response<GraphQLTypedResponse<C>> resp = sendGraphQLTypedRequest(query, classOfC);
     return new Result<>(resp);
   }
 }

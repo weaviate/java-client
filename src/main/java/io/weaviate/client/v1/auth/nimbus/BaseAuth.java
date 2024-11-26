@@ -44,7 +44,7 @@ public class BaseAuth {
         log(msg);
         throw new AuthException(msg);
       case 200:
-        OIDCConfig oidcConfig = serializer.toObject(response.getBody(), OIDCConfig.class);
+        OIDCConfig oidcConfig = serializer.toResponse(response.getBody(), OIDCConfig.class);
         HttpResponse resp = sendGetRequest(client, oidcConfig.getHref());
         if (resp.getStatusCode() != 200) {
           String errorMessage = String.format("OIDC configuration url %s returned status code %s", oidcConfig.getHref(), resp.getStatusCode());

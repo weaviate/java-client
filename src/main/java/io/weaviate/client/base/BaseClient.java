@@ -8,7 +8,7 @@ import java.util.Collections;
 public abstract class BaseClient<T> {
   private final HttpClient client;
   private final Config config;
-  private final Serializer serializer;
+  protected final Serializer serializer;
 
   public BaseClient(HttpClient client, Config config) {
     this.config = config;
@@ -42,9 +42,7 @@ public abstract class BaseClient<T> {
 
   private Response<T> sendRequest(String endpoint, Object payload, String method, Class<T> classOfT) {
     try {
-      String url = config.getBaseURL() + endpoint;
-      String json = toJsonString(payload);
-      HttpResponse response = this.sendHttpRequest(url, json, method);
+      HttpResponse response = this.sendHttpRequest(endpoint, payload, method);
       int statusCode = response.getStatusCode();
       String responseBody = response.getBody();
 
@@ -61,7 +59,9 @@ public abstract class BaseClient<T> {
     }
   }
 
-  private HttpResponse sendHttpRequest(String address, String json, String method) throws Exception {
+  protected HttpResponse sendHttpRequest(String endpoint, Object payload, String method) throws Exception {
+    String address = config.getBaseURL() + endpoint;
+    String json = toJsonString(payload);
     if (method.equals("POST")) {
       return client.sendPostRequest(address, json);
     }
@@ -80,15 +80,15 @@ public abstract class BaseClient<T> {
     return client.sendGetRequest(address);
   }
 
-  private <C> C toResponse(String response, Class<C> classOfT) {
-    return serializer.toObject(response, classOfT);
+  protected <C> C toResponse(String response, Class<C> classOfT) {
+    return serializer.toResponse(response, classOfT);
   }
 
   private String toJsonString(Object object) {
     return serializer.toJsonString(object);
   }
 
-  private WeaviateErrorResponse getWeaviateErrorResponse(Exception e) {
+  protected WeaviateErrorResponse getWeaviateErrorResponse(Exception e) {
     WeaviateErrorMessage error = WeaviateErrorMessage.builder().message(e.getMessage()).throwable(e).build();
     return WeaviateErrorResponse.builder().error(Collections.singletonList(error)).build();
   }
