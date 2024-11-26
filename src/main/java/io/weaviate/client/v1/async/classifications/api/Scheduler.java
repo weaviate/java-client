@@ -4,6 +4,7 @@ import io.weaviate.client.Config;
 import io.weaviate.client.base.AsyncBaseClient;
 import io.weaviate.client.base.AsyncClientResult;
 import io.weaviate.client.base.Result;
+import io.weaviate.client.base.util.Futures;
 import io.weaviate.client.v1.classifications.model.Classification;
 import io.weaviate.client.v1.classifications.model.ClassificationFilters;
 import io.weaviate.client.v1.filters.WhereFilter;
@@ -14,6 +15,7 @@ import org.apache.hc.core5.concurrent.FutureCallback;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 
 public class Scheduler extends AsyncBaseClient<Classification>
@@ -32,11 +34,13 @@ public class Scheduler extends AsyncBaseClient<Classification>
   private Object settings;
 
   private final Getter getter;
+  private final Executor executor;
 
 
-  public Scheduler(CloseableHttpAsyncClient client, Config config, Getter getter) {
+  public Scheduler(CloseableHttpAsyncClient client, Config config, Getter getter, Executor executor) {
     super(client, config);
     this.getter = getter;
+    this.executor = executor;
   }
 
 
@@ -168,7 +172,7 @@ public class Scheduler extends AsyncBaseClient<Classification>
   }
 
   private CompletableFuture<Result<Classification>> getByIdRecursively(String id) {
-    return getById(id).thenCompose(classificationResult -> {
+    return Futures.thenComposeAsync(getById(id), classificationResult -> {
       boolean isRunning = Optional.ofNullable(classificationResult)
         .map(Result::getResult)
         .map(Classification::getStatus)
@@ -177,14 +181,13 @@ public class Scheduler extends AsyncBaseClient<Classification>
 
       if (isRunning) {
         try {
-          Thread.sleep(WAIT_INTERVAL);
-          return getByIdRecursively(id);
+          return Futures.supplyDelayed(() -> getByIdRecursively(id), WAIT_INTERVAL, executor);
         } catch (InterruptedException e) {
           throw new CompletionException(e);
         }
       }
       return CompletableFuture.completedFuture(classificationResult);
-    });
+    }, executor);
   }
 
   private ClassificationFilters getClassificationFilters(WhereFilter sourceWhere, WhereFilter targetWhere, WhereFilter trainingSetWhere) {

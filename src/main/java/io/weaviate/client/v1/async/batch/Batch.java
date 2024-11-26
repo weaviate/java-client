@@ -14,6 +14,8 @@ import io.weaviate.client.v1.batch.util.ObjectsPath;
 import io.weaviate.client.v1.batch.util.ReferencesPath;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 
+import java.util.concurrent.Executor;
+
 public class Batch {
   private final CloseableHttpAsyncClient client;
   private final Config config;
@@ -25,7 +27,7 @@ public class Batch {
   private final AccessTokenProvider tokenProvider;
 
   public Batch(CloseableHttpAsyncClient client, Config config, DbVersionSupport dbVersionSupport,
-    GrpcVersionSupport grpcVersionSupport, AccessTokenProvider tokenProvider, Data data) {
+               GrpcVersionSupport grpcVersionSupport, AccessTokenProvider tokenProvider, Data data) {
     this.client = client;
     this.config = config;
     this.objectsPath = new ObjectsPath();
@@ -37,37 +39,86 @@ public class Batch {
   }
 
   public ObjectsBatcher objectsBatcher() {
-    return objectsBatcher(ObjectsBatcher.BatchRetriesConfig.defaultConfig().build());
+    return objectsBatcher(ObjectsBatcher.BatchRetriesConfig.defaultConfig().build(), null);
+  }
+
+  public ObjectsBatcher objectsBatcher(Executor executor) {
+    return objectsBatcher(ObjectsBatcher.BatchRetriesConfig.defaultConfig().build(), executor);
   }
 
   public ObjectsBatcher objectsBatcher(ObjectsBatcher.BatchRetriesConfig batchRetriesConfig) {
-    return ObjectsBatcher.create(client, config, data, objectsPath, tokenProvider, grpcVersionSupport, batchRetriesConfig);
+    return objectsBatcher(batchRetriesConfig, null);
+  }
+
+  public ObjectsBatcher objectsBatcher(ObjectsBatcher.BatchRetriesConfig batchRetriesConfig, Executor executor) {
+    return ObjectsBatcher.create(client, config, data, objectsPath, tokenProvider, grpcVersionSupport,
+      batchRetriesConfig, executor);
   }
 
   public ObjectsBatcher objectsAutoBatcher() {
     return objectsAutoBatcher(
       ObjectsBatcher.BatchRetriesConfig.defaultConfig().build(),
-      ObjectsBatcher.AutoBatchConfig.defaultConfig().build()
+      ObjectsBatcher.AutoBatchConfig.defaultConfig().build(),
+      null
+    );
+  }
+
+  public ObjectsBatcher objectsAutoBatcher(Executor executor) {
+    return objectsAutoBatcher(
+      ObjectsBatcher.BatchRetriesConfig.defaultConfig().build(),
+      ObjectsBatcher.AutoBatchConfig.defaultConfig().build(),
+      executor
     );
   }
 
   public ObjectsBatcher objectsAutoBatcher(ObjectsBatcher.BatchRetriesConfig batchRetriesConfig) {
     return objectsAutoBatcher(
       batchRetriesConfig,
-      ObjectsBatcher.AutoBatchConfig.defaultConfig().build()
+      ObjectsBatcher.AutoBatchConfig.defaultConfig().build(),
+      null
+    );
+  }
+
+  public ObjectsBatcher objectsAutoBatcher(ObjectsBatcher.BatchRetriesConfig batchRetriesConfig,
+                                           Executor executor) {
+    return objectsAutoBatcher(
+      batchRetriesConfig,
+      ObjectsBatcher.AutoBatchConfig.defaultConfig().build(),
+      executor
     );
   }
 
   public ObjectsBatcher objectsAutoBatcher(ObjectsBatcher.AutoBatchConfig autoBatchConfig) {
     return objectsAutoBatcher(
       ObjectsBatcher.BatchRetriesConfig.defaultConfig().build(),
-      autoBatchConfig
+      autoBatchConfig,
+      null
+    );
+  }
+
+  public ObjectsBatcher objectsAutoBatcher(ObjectsBatcher.AutoBatchConfig autoBatchConfig,
+                                           Executor executor) {
+    return objectsAutoBatcher(
+      ObjectsBatcher.BatchRetriesConfig.defaultConfig().build(),
+      autoBatchConfig,
+      executor
     );
   }
 
   public ObjectsBatcher objectsAutoBatcher(ObjectsBatcher.BatchRetriesConfig batchRetriesConfig,
-    ObjectsBatcher.AutoBatchConfig autoBatchConfig) {
-    return ObjectsBatcher.createAuto(client, config, data, objectsPath, tokenProvider, grpcVersionSupport, batchRetriesConfig, autoBatchConfig);
+                                           ObjectsBatcher.AutoBatchConfig autoBatchConfig) {
+    return objectsAutoBatcher(
+      batchRetriesConfig,
+      autoBatchConfig,
+      null
+    );
+  }
+
+  public ObjectsBatcher objectsAutoBatcher(ObjectsBatcher.BatchRetriesConfig batchRetriesConfig,
+                                           ObjectsBatcher.AutoBatchConfig autoBatchConfig,
+                                           Executor executor) {
+    return ObjectsBatcher.createAuto(client, config, data, objectsPath, tokenProvider, grpcVersionSupport,
+      batchRetriesConfig, autoBatchConfig, executor);
   }
 
   public ObjectsBatchDeleter objectsBatchDeleter() {
@@ -78,38 +129,85 @@ public class Batch {
     return new ReferencePayloadBuilder(beaconPath);
   }
 
-  // TODO: implement async ReferencesBatcher
   public ReferencesBatcher referencesBatcher() {
-    return referencesBatcher(ReferencesBatcher.BatchRetriesConfig.defaultConfig().build());
+    return referencesBatcher(ReferencesBatcher.BatchRetriesConfig.defaultConfig().build(), null);
+  }
+
+  public ReferencesBatcher referencesBatcher(Executor executor) {
+    return referencesBatcher(ReferencesBatcher.BatchRetriesConfig.defaultConfig().build(), executor);
   }
 
   public ReferencesBatcher referencesBatcher(ReferencesBatcher.BatchRetriesConfig batchRetriesConfig) {
-    return ReferencesBatcher.create(client, config, referencesPath, batchRetriesConfig);
+    return referencesBatcher(batchRetriesConfig, null);
+  }
+
+  public ReferencesBatcher referencesBatcher(ReferencesBatcher.BatchRetriesConfig batchRetriesConfig,
+                                             Executor executor) {
+    return ReferencesBatcher.create(client, config, referencesPath, batchRetriesConfig, executor);
   }
 
   public ReferencesBatcher referencesAutoBatcher() {
     return referencesAutoBatcher(
       ReferencesBatcher.BatchRetriesConfig.defaultConfig().build(),
-      ReferencesBatcher.AutoBatchConfig.defaultConfig().build()
+      ReferencesBatcher.AutoBatchConfig.defaultConfig().build(),
+      null
+    );
+  }
+
+  public ReferencesBatcher referencesAutoBatcher(Executor executor) {
+    return referencesAutoBatcher(
+      ReferencesBatcher.BatchRetriesConfig.defaultConfig().build(),
+      ReferencesBatcher.AutoBatchConfig.defaultConfig().build(),
+      executor
     );
   }
 
   public ReferencesBatcher referencesAutoBatcher(ReferencesBatcher.BatchRetriesConfig batchRetriesConfig) {
     return referencesAutoBatcher(
       batchRetriesConfig,
-      ReferencesBatcher.AutoBatchConfig.defaultConfig().build()
+      ReferencesBatcher.AutoBatchConfig.defaultConfig().build(),
+      null
+    );
+  }
+
+  public ReferencesBatcher referencesAutoBatcher(ReferencesBatcher.BatchRetriesConfig batchRetriesConfig,
+                                                 Executor executor) {
+    return referencesAutoBatcher(
+      batchRetriesConfig,
+      ReferencesBatcher.AutoBatchConfig.defaultConfig().build(),
+      executor
     );
   }
 
   public ReferencesBatcher referencesAutoBatcher(ReferencesBatcher.AutoBatchConfig autoBatchConfig) {
     return referencesAutoBatcher(
       ReferencesBatcher.BatchRetriesConfig.defaultConfig().build(),
-      autoBatchConfig
+      autoBatchConfig,
+      null
+    );
+  }
+
+  public ReferencesBatcher referencesAutoBatcher(ReferencesBatcher.AutoBatchConfig autoBatchConfig,
+                                                 Executor executor) {
+    return referencesAutoBatcher(
+      ReferencesBatcher.BatchRetriesConfig.defaultConfig().build(),
+      autoBatchConfig,
+      executor
     );
   }
 
   public ReferencesBatcher referencesAutoBatcher(ReferencesBatcher.BatchRetriesConfig batchRetriesConfig,
-    ReferencesBatcher.AutoBatchConfig autoBatchConfig) {
-    return ReferencesBatcher.createAuto(client, config, referencesPath, batchRetriesConfig, autoBatchConfig);
+                                                 ReferencesBatcher.AutoBatchConfig autoBatchConfig) {
+    return referencesAutoBatcher(
+      batchRetriesConfig,
+      autoBatchConfig,
+      null
+    );
+  }
+
+  public ReferencesBatcher referencesAutoBatcher(ReferencesBatcher.BatchRetriesConfig batchRetriesConfig,
+                                                 ReferencesBatcher.AutoBatchConfig autoBatchConfig,
+                                                 Executor executor) {
+    return ReferencesBatcher.createAuto(client, config, referencesPath, batchRetriesConfig, autoBatchConfig, executor);
   }
 }

@@ -8,6 +8,7 @@ import io.weaviate.client.base.WeaviateError;
 import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.base.WeaviateErrorResponse;
 import io.weaviate.client.base.util.Assert;
+import io.weaviate.client.base.util.Futures;
 import io.weaviate.client.v1.batch.model.BatchReference;
 import io.weaviate.client.v1.batch.model.BatchReferenceResponse;
 import io.weaviate.client.v1.batch.util.ReferencesPath;
@@ -31,6 +32,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -39,21 +41,26 @@ public class ReferencesBatcher extends AsyncBaseClient<BatchReferenceResponse[]>
   implements AsyncClientResult<BatchReferenceResponse[]> {
 
   private final ReferencesPath referencesPath;
+
   private final BatchRetriesConfig batchRetriesConfig;
   private final AutoBatchConfig autoBatchConfig;
   private final boolean autoRunEnabled;
+  private final Executor executor;
   private final List<CompletableFuture<Result<BatchReferenceResponse[]>>> futures;
+
   private final List<BatchReference> references;
   private String consistencyLevel;
 
 
   private ReferencesBatcher(CloseableHttpAsyncClient client, Config config, ReferencesPath referencesPath,
-                            BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig) {
+                            BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig,
+                            Executor executor) {
     super(client, config);
     this.referencesPath = referencesPath;
     this.futures = Collections.synchronizedList(new ArrayList<>());
     this.references = Collections.synchronizedList(new ArrayList<>());
     this.batchRetriesConfig = batchRetriesConfig;
+    this.executor = executor;
 
     if (autoBatchConfig != null) {
       this.autoRunEnabled = true;
@@ -65,16 +72,17 @@ public class ReferencesBatcher extends AsyncBaseClient<BatchReferenceResponse[]>
   }
 
   public static ReferencesBatcher create(CloseableHttpAsyncClient client, Config config, ReferencesPath referencesPath,
-                                         BatchRetriesConfig batchRetriesConfig) {
+                                         BatchRetriesConfig batchRetriesConfig, Executor executor) {
     Assert.requiredNotNull(batchRetriesConfig, "batchRetriesConfig");
-    return new ReferencesBatcher(client, config, referencesPath, batchRetriesConfig, null);
+    return new ReferencesBatcher(client, config, referencesPath, batchRetriesConfig, null, executor);
   }
 
   public static ReferencesBatcher createAuto(CloseableHttpAsyncClient client, Config config, ReferencesPath referencesPath,
-                                             BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig) {
+                                             BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig,
+                                             Executor executor) {
     Assert.requiredNotNull(batchRetriesConfig, "batchRetriesConfig");
     Assert.requiredNotNull(autoBatchConfig, "autoBatchConfig");
-    return new ReferencesBatcher(client, config, referencesPath, batchRetriesConfig, autoBatchConfig);
+    return new ReferencesBatcher(client, config, referencesPath, batchRetriesConfig, autoBatchConfig, executor);
   }
 
 
@@ -193,38 +201,37 @@ public class ReferencesBatcher extends AsyncBaseClient<BatchReferenceResponse[]>
 
   private CompletableFuture<Result<BatchReferenceResponse[]>> runBatchRecursively(List<BatchReference> batch,
                                                                                   int connectionErrorCount, int timeoutErrorCount) {
-    return internalRun(batch).handle((Result<BatchReferenceResponse[]> result, Throwable throwable) -> {
-        int lambdaConnectionErrorCount = connectionErrorCount;
-        int lambdaTimeErrorCount = timeoutErrorCount;
+    return Futures.handleAsync(internalRun(batch), (result, throwable) -> {
+      if (throwable != null) {
+        boolean executeAgain = false;
+        int tempConnCount = connectionErrorCount;
+        int tempTimeCount = timeoutErrorCount;
+        int delay = 0;
 
-        if (throwable != null) {
-          boolean executeAgain = false;
-          int delay = 0;
-
-          if (throwable instanceof ConnectException) {
-            if (lambdaConnectionErrorCount++ < batchRetriesConfig.maxConnectionRetries) {
-              executeAgain = true;
-              delay = lambdaConnectionErrorCount * batchRetriesConfig.retriesIntervalMs;
-            }
-          } else if (throwable instanceof SocketTimeoutException) {
-            if (lambdaTimeErrorCount++ < batchRetriesConfig.maxTimeoutRetries) {
-              executeAgain = true;
-              delay = lambdaTimeErrorCount * batchRetriesConfig.retriesIntervalMs;
-            }
+        if (throwable instanceof ConnectException) {
+          if (tempConnCount++ < batchRetriesConfig.maxConnectionRetries) {
+            executeAgain = true;
+            delay = tempConnCount * batchRetriesConfig.retriesIntervalMs;
           }
-          if (executeAgain) {
-            try {
-              Thread.sleep(delay);
-              return runBatchRecursively(batch, lambdaConnectionErrorCount, lambdaTimeErrorCount);
-            } catch (InterruptedException e) {
-              throw new CompletionException(e);
-            }
+        } else if (throwable instanceof SocketTimeoutException) {
+          if (tempTimeCount++ < batchRetriesConfig.maxTimeoutRetries) {
+            executeAgain = true;
+            delay = tempTimeCount * batchRetriesConfig.retriesIntervalMs;
           }
         }
+        if (executeAgain) {
+          int finalConnCount = tempConnCount;
+          int finalTimeCount = tempTimeCount;
+          try {
+            return Futures.supplyDelayed(() -> runBatchRecursively(batch, finalConnCount, finalTimeCount), delay, executor);
+          } catch (InterruptedException e) {
+            throw new CompletionException(e);
+          }
+        }
+      }
 
-        return CompletableFuture.completedFuture(createFinalResultFromLastResult(result, throwable, batch));
-      })
-      .thenCompose(f -> f);
+      return CompletableFuture.completedFuture(createFinalResultFromLastResult(result, throwable, batch));
+    }, executor);
   }
 
   private CompletableFuture<Result<BatchReferenceResponse[]>> internalRun(List<BatchReference> batch) {

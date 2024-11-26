@@ -8,6 +8,7 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateError;
 import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.base.WeaviateErrorResponse;
+import io.weaviate.client.base.util.Futures;
 import io.weaviate.client.base.util.UrlEncoder;
 import io.weaviate.client.v1.backup.model.BackupRestoreResponse;
 import io.weaviate.client.v1.backup.model.BackupRestoreStatusResponse;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 
 public class BackupRestorer extends AsyncBaseClient<BackupRestoreResponse>
@@ -36,11 +38,13 @@ public class BackupRestorer extends AsyncBaseClient<BackupRestoreResponse>
   private String backupId;
   private BackupRestoreConfig config;
   private boolean waitForCompletion;
+  private final Executor executor;
 
 
-  public BackupRestorer(CloseableHttpAsyncClient client, Config config, BackupRestoreStatusGetter statusGetter) {
+  public BackupRestorer(CloseableHttpAsyncClient client, Config config, BackupRestoreStatusGetter statusGetter, Executor executor) {
     super(client, config);
     this.statusGetter = statusGetter;
+    this.executor = executor;
   }
 
 
@@ -158,7 +162,7 @@ public class BackupRestorer extends AsyncBaseClient<BackupRestoreResponse>
 
   private CompletableFuture<Result<BackupRestoreResponse>> getStatusRecursively(String backend, String backupId,
                                                                                 Result<BackupRestoreResponse> restoreResult) {
-    return getStatus(backend, backupId).thenCompose(restoreStatusResult -> {
+    return Futures.thenComposeAsync(getStatus(backend, backupId), restoreStatusResult -> {
       boolean isRunning = Optional.of(restoreStatusResult)
         .filter(r -> !r.hasErrors())
         .map(Result::getResult)
@@ -176,14 +180,13 @@ public class BackupRestorer extends AsyncBaseClient<BackupRestoreResponse>
 
       if (isRunning) {
         try {
-          Thread.sleep(WAIT_INTERVAL);
-          return getStatusRecursively(backend, backupId, restoreResult);
+          return Futures.supplyDelayed(() -> getStatusRecursively(backend, backupId, restoreResult), WAIT_INTERVAL, executor);
         } catch (InterruptedException e) {
           throw new CompletionException(e);
         }
       }
       return CompletableFuture.completedFuture(merge(restoreStatusResult, restoreResult));
-    });
+    }, executor);
   }
 
   private Result<BackupRestoreResponse> merge(Result<BackupRestoreStatusResponse> restoreStatusResult,
