@@ -5,6 +5,7 @@ import io.weaviate.client.base.AsyncBaseClient;
 import io.weaviate.client.base.AsyncClientResult;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.util.Futures;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.classifications.model.Classification;
 import io.weaviate.client.v1.classifications.model.ClassificationFilters;
 import io.weaviate.client.v1.filters.WhereFilter;
@@ -37,8 +38,8 @@ public class Scheduler extends AsyncBaseClient<Classification>
   private final Executor executor;
 
 
-  public Scheduler(CloseableHttpAsyncClient client, Config config, Getter getter, Executor executor) {
-    super(client, config);
+  public Scheduler(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider, Getter getter, Executor executor) {
+    super(client, config, tokenProvider);
     this.getter = getter;
     this.executor = executor;
   }

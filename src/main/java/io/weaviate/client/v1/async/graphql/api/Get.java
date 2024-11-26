@@ -4,6 +4,7 @@ import io.weaviate.client.Config;
 import io.weaviate.client.base.AsyncBaseGraphQLClient;
 import io.weaviate.client.base.AsyncClientResult;
 import io.weaviate.client.base.Result;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.filters.WhereFilter;
 import io.weaviate.client.v1.graphql.model.GraphQLGetBaseObject;
 import io.weaviate.client.v1.graphql.model.GraphQLQuery;
@@ -37,8 +38,8 @@ import org.apache.hc.core5.concurrent.FutureCallback;
 public class Get extends AsyncBaseGraphQLClient<GraphQLResponse> implements AsyncClientResult<GraphQLResponse> {
   private final GetBuilder.GetBuilderBuilder getBuilder;
 
-  public Get(CloseableHttpAsyncClient client, Config config) {
-    super(client, config);
+  public Get(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider) {
+    super(client, config, tokenProvider);
     getBuilder = GetBuilder.builder();
   }
 

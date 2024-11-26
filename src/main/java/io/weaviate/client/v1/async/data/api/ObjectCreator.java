@@ -4,6 +4,7 @@ import io.weaviate.client.Config;
 import io.weaviate.client.base.AsyncBaseClient;
 import io.weaviate.client.base.AsyncClientResult;
 import io.weaviate.client.base.Result;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.data.util.ObjectsPath;
 import java.util.Map;
@@ -23,8 +24,8 @@ public class ObjectCreator extends AsyncBaseClient<WeaviateObject> implements As
   private Float[] vector;
   private Map<String, Float[]> vectors;
 
-  public ObjectCreator(CloseableHttpAsyncClient client, Config config, ObjectsPath objectsPath) {
-    super(client, config);
+  public ObjectCreator(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider, ObjectsPath objectsPath) {
+    super(client, config, tokenProvider);
     this.objectsPath = objectsPath;
   }
 

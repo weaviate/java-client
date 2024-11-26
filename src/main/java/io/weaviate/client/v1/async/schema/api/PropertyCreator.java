@@ -8,6 +8,7 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.base.WeaviateErrorResponse;
 import io.weaviate.client.base.http.async.ResponseParser;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.schema.model.Property;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -24,8 +25,8 @@ public class PropertyCreator extends AsyncBaseClient<Boolean> implements AsyncCl
   private String className;
   private Property property;
 
-  public PropertyCreator(CloseableHttpAsyncClient client, Config config) {
-    super(client, config);
+  public PropertyCreator(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider) {
+    super(client, config, tokenProvider);
   }
 
   public PropertyCreator withClassName(String className) {

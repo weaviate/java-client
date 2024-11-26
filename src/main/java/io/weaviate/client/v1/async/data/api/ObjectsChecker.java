@@ -8,6 +8,7 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.base.WeaviateErrorResponse;
 import io.weaviate.client.base.http.async.ResponseParser;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.data.util.ObjectsPath;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
@@ -27,8 +28,8 @@ public class ObjectsChecker extends AsyncBaseClient<Boolean> implements AsyncCli
   private String className;
   private String tenant;
 
-  public ObjectsChecker(CloseableHttpAsyncClient client, Config config, ObjectsPath objectsPath) {
-    super(client, config);
+  public ObjectsChecker(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider, ObjectsPath objectsPath) {
+    super(client, config, tokenProvider);
     this.objectsPath = objectsPath;
   }
 

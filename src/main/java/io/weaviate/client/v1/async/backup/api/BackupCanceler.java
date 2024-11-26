@@ -5,6 +5,7 @@ import io.weaviate.client.base.AsyncBaseClient;
 import io.weaviate.client.base.AsyncClientResult;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.util.UrlEncoder;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.core5.concurrent.FutureCallback;
 
@@ -23,8 +24,8 @@ public class BackupCanceler extends AsyncBaseClient<Void>
   private String backupId;
 
 
-  public BackupCanceler(CloseableHttpAsyncClient client, Config config) {
-    super(client, config);
+  public BackupCanceler(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider) {
+    super(client, config, tokenProvider);
   }
 
 

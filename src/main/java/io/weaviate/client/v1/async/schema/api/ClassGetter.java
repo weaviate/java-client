@@ -6,6 +6,7 @@ import io.weaviate.client.base.AsyncClientResult;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.base.WeaviateErrorResponse;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -19,8 +20,8 @@ public class ClassGetter extends AsyncBaseClient<WeaviateClass> implements Async
 
   private String className;
 
-  public ClassGetter(CloseableHttpAsyncClient client, Config config) {
-    super(client, config);
+  public ClassGetter(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider) {
+    super(client, config, tokenProvider);
   }
 
   public ClassGetter withClassName(String className) {

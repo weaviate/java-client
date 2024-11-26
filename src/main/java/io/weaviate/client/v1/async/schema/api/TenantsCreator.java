@@ -1,5 +1,6 @@
 package io.weaviate.client.v1.async.schema.api;
 
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import java.util.concurrent.Future;
 
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
@@ -21,8 +22,8 @@ public class TenantsCreator extends AsyncBaseClient<Boolean> implements AsyncCli
   private String className;
   private Tenant[] tenants;
 
-  public TenantsCreator(CloseableHttpAsyncClient client, Config config) {
-    super(client, config);
+  public TenantsCreator(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider) {
+    super(client, config, tokenProvider);
   }
 
   public TenantsCreator withClassName(String className) {

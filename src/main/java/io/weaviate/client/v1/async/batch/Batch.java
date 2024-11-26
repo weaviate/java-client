@@ -122,7 +122,7 @@ public class Batch {
   }
 
   public ObjectsBatchDeleter objectsBatchDeleter() {
-    return new ObjectsBatchDeleter(client, config, objectsPath);
+    return new ObjectsBatchDeleter(client, config, tokenProvider, objectsPath);
   }
 
   public ReferencePayloadBuilder referencePayloadBuilder() {
@@ -143,7 +143,7 @@ public class Batch {
 
   public ReferencesBatcher referencesBatcher(ReferencesBatcher.BatchRetriesConfig batchRetriesConfig,
                                              Executor executor) {
-    return ReferencesBatcher.create(client, config, referencesPath, batchRetriesConfig, executor);
+    return ReferencesBatcher.create(client, config, tokenProvider, referencesPath, batchRetriesConfig, executor);
   }
 
   public ReferencesBatcher referencesAutoBatcher() {
@@ -208,6 +208,6 @@ public class Batch {
   public ReferencesBatcher referencesAutoBatcher(ReferencesBatcher.BatchRetriesConfig batchRetriesConfig,
                                                  ReferencesBatcher.AutoBatchConfig autoBatchConfig,
                                                  Executor executor) {
-    return ReferencesBatcher.createAuto(client, config, referencesPath, batchRetriesConfig, autoBatchConfig, executor);
+    return ReferencesBatcher.createAuto(client, config, tokenProvider, referencesPath, batchRetriesConfig, autoBatchConfig, executor);
   }
 }

@@ -1,5 +1,6 @@
 package io.weaviate.client.v1.async.schema.api;
 
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,8 +25,8 @@ public class ShardUpdater extends AsyncBaseClient<ShardStatus> implements AsyncC
   private String shardName;
   private ShardStatus status;
 
-  public ShardUpdater(CloseableHttpAsyncClient client, Config config) {
-    super(client, config);
+  public ShardUpdater(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider) {
+    super(client, config, tokenProvider);
   }
 
   public ShardUpdater withClassName(String className) {

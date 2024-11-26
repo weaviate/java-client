@@ -6,6 +6,7 @@ import io.weaviate.client.base.AsyncClientResult;
 import io.weaviate.client.base.Response;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.async.ResponseParser;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.data.model.ObjectsListResponse;
 import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.data.util.ObjectsPath;
@@ -33,8 +34,8 @@ public class ObjectsGetter extends AsyncBaseClient<List<WeaviateObject>> impleme
   private String tenant;
   private String nodeName;
 
-  public ObjectsGetter(CloseableHttpAsyncClient client, Config config, ObjectsPath objectsPath) {
-    super(client, config);
+  public ObjectsGetter(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider, ObjectsPath objectsPath) {
+    super(client, config, tokenProvider);
     this.objectsPath = objectsPath;
     this.additional = new HashSet<>();
   }

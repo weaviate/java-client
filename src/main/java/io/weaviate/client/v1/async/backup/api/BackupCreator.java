@@ -10,6 +10,7 @@ import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.base.WeaviateErrorResponse;
 import io.weaviate.client.base.util.Futures;
 import io.weaviate.client.base.util.UrlEncoder;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.backup.model.BackupCreateResponse;
 import io.weaviate.client.v1.backup.model.BackupCreateStatusResponse;
 import io.weaviate.client.v1.backup.model.CreateStatus;
@@ -41,8 +42,8 @@ public class BackupCreator extends AsyncBaseClient<BackupCreateResponse>
   private final Executor executor;
 
 
-  public BackupCreator(CloseableHttpAsyncClient client, Config config, BackupCreateStatusGetter statusGetter, Executor executor) {
-    super(client, config);
+  public BackupCreator(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider, BackupCreateStatusGetter statusGetter, Executor executor) {
+    super(client, config, tokenProvider);
     this.statusGetter = statusGetter;
     this.executor = executor;
   }

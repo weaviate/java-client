@@ -7,6 +7,7 @@ import io.weaviate.client.base.Response;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.async.ResponseParser;
 import io.weaviate.client.base.util.UrlEncoder;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.schema.model.Tenant;
 import java.util.Arrays;
 import java.util.List;
@@ -20,8 +21,8 @@ import org.apache.hc.core5.http.HttpResponse;
 public class TenantsGetter extends AsyncBaseClient<List<Tenant>> implements AsyncClientResult<List<Tenant>> {
   private String className;
 
-  public TenantsGetter(CloseableHttpAsyncClient client, Config config) {
-    super(client, config);
+  public TenantsGetter(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider) {
+    super(client, config, tokenProvider);
   }
 
   public TenantsGetter withClassName(String className) {

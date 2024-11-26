@@ -8,6 +8,7 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.async.ResponseParser;
 import io.weaviate.client.base.util.DbVersionSupport;
 import io.weaviate.client.base.util.UrlEncoder;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.schema.model.Tenant;
 import java.util.Collection;
 import java.util.List;
@@ -31,8 +32,8 @@ public class TenantsUpdater extends AsyncBaseClient<Boolean> implements AsyncCli
   private String className;
   private Tenant[] tenants;
 
-  public TenantsUpdater(CloseableHttpAsyncClient client, Config config, DbVersionSupport dbVersionSupport) {
-    super(client, config);
+  public TenantsUpdater(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider, DbVersionSupport dbVersionSupport) {
+    super(client, config, tokenProvider);
     this.dbVersionSupport = dbVersionSupport;
   }
 

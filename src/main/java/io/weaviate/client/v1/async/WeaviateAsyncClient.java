@@ -41,15 +41,15 @@ public class WeaviateAsyncClient implements AutoCloseable {
   }
 
   public Misc misc() {
-    return new Misc(client, config);
+    return new Misc(client, config, tokenProvider);
   }
 
   public Schema schema() {
-    return new Schema(client, config, dbVersionSupport);
+    return new Schema(client, config, tokenProvider, dbVersionSupport);
   }
 
   public Data data() {
-    return new Data(client, config, dbVersionSupport);
+    return new Data(client, config, tokenProvider, dbVersionSupport);
   }
 
   public Batch batch() {
@@ -57,19 +57,19 @@ public class WeaviateAsyncClient implements AutoCloseable {
   }
 
   public Cluster cluster() {
-    return new Cluster(client, config);
+    return new Cluster(client, config, tokenProvider);
   }
 
   public Classifications classifications() {
-    return new Classifications(client, config);
+    return new Classifications(client, config, tokenProvider);
   }
 
   public Backup backup() {
-    return new Backup(client, config);
+    return new Backup(client, config, tokenProvider);
   }
 
   public GraphQL graphQL() {
-    return new GraphQL(client, config);
+    return new GraphQL(client, config, tokenProvider);
   }
 
   private DbVersionProvider initDbVersionProvider() {
@@ -83,7 +83,7 @@ public class WeaviateAsyncClient implements AutoCloseable {
 
   private Result<Meta> getMeta() {
     try {
-      return new Misc(client, config).metaGetter().run().get();
+      return new Misc(client, config, tokenProvider).metaGetter().run().get();
     } catch (InterruptedException | ExecutionException e) {
       // we can't connect to Weaviate, metaResult will be null
       return null;

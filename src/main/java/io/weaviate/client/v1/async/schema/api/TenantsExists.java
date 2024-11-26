@@ -7,6 +7,7 @@ import io.weaviate.client.base.Response;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.async.ResponseParser;
 import io.weaviate.client.base.util.UrlEncoder;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import java.util.concurrent.Future;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.core5.concurrent.FutureCallback;
@@ -18,8 +19,8 @@ public class TenantsExists extends AsyncBaseClient<Boolean> implements AsyncClie
   private String className;
   private String tenant;
 
-  public TenantsExists(CloseableHttpAsyncClient client, Config config) {
-    super(client, config);
+  public TenantsExists(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider) {
+    super(client, config, tokenProvider);
   }
 
   public TenantsExists withClassName(String className) {
