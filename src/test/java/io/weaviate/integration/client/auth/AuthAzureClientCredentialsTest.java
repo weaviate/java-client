@@ -7,6 +7,7 @@ import io.weaviate.integration.client.WeaviateWithAzureContainer;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -33,6 +34,7 @@ public class AuthAzureClientCredentialsTest {
   }
 
   @Test
+  @Ignore("client secret expired")
   public void testAuthAzure() throws AuthException {
     String clientSecret = System.getenv("AZURE_CLIENT_SECRET");
     if (StringUtils.isNotBlank(clientSecret)) {
@@ -50,6 +52,7 @@ public class AuthAzureClientCredentialsTest {
   }
 
   @Test
+  @Ignore("client secret expired")
   public void testAuthAzureHardcodedScope() throws AuthException {
     String clientSecret = System.getenv("AZURE_CLIENT_SECRET");
     if (StringUtils.isNotBlank(clientSecret)) {
