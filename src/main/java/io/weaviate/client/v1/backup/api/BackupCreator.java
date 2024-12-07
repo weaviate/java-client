@@ -150,6 +150,10 @@ public class BackupCreator extends BaseClient<BackupCreateResponse> implements C
     Integer chunkSize;
     @SerializedName("CompressionLevel")
     String compressionLevel;
+    @SerializedName("Bucket")
+    String bucket;
+    @SerializedName("Path")
+    String path;
   }
 
   public interface BackupCompression {

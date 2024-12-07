@@ -237,5 +237,9 @@ public class BackupRestorer extends AsyncBaseClient<BackupRestoreResponse>
   public static class BackupRestoreConfig {
     @SerializedName("CPUPercentage")
     Integer cpuPercentage;
+    @SerializedName("Bucket")
+    String bucket;
+    @SerializedName("Path")
+    String path;
   }
 }

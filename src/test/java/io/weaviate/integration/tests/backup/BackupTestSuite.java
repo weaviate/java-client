@@ -6,6 +6,7 @@ import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
 import static org.assertj.core.api.InstanceOfAssertFactories.CHAR_SEQUENCE;
 import static org.junit.Assume.assumeTrue;
 
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -100,6 +101,73 @@ public class BackupTestSuite {
       .returns(BACKEND, BackupRestoreStatusResponse::getBackend)
       .returns(RestoreStatus.SUCCESS, BackupRestoreStatusResponse::getStatus)
       .returns(null, BackupRestoreStatusResponse::getError);
+  }
+
+  public static void testCreateWithDynamicLocation(Supplier<Result<BackupCreateResponse>> supplierCreate,
+                                            Supplier<Result<BackupCreateStatusResponse>> supplierCreateStatus,
+                                            Supplier<Result<BackupRestoreResponse>> supplierRestore,
+                                            Supplier<Result<BackupRestoreStatusResponse>> supplierRestoreStatus,
+                                            Supplier<Result<Boolean>> supplierDeleteClass,
+                                            Function<String, Result<GraphQLResponse>> supplierGQLOfClass,
+                                            String backupId, String bucket, String path) throws InterruptedException {
+    assertThatAllPizzasExist(supplierGQLOfClass);
+    String wantFullPath = Paths.get(path, backupId).toString();
+
+    Result<BackupCreateResponse> createResult = supplierCreate.get();
+    assertThat(createResult.getError()).as("create backup").isNull();
+    assertThat(createResult.getResult()).isNotNull()
+      .returns(backupId, BackupCreateResponse::getId)
+      .returns(wantFullPath, BackupCreateResponse::getPath).as("path in BackupCreateResponse");
+
+    // Wait until created
+    Result<BackupCreateStatusResponse> createStatusResult;
+    while (true) {
+      createStatusResult = supplierCreateStatus.get();
+
+      assertThat(createStatusResult.getError()).as("check backup creation status").isNull();
+      assertThat(createStatusResult.getResult()).isNotNull()
+        .returns(backupId, BackupCreateStatusResponse::getId)
+        .returns(wantFullPath, BackupCreateStatusResponse::getPath)
+        .extracting(BackupCreateStatusResponse::getStatus)
+        .isIn(CreateStatus.STARTED, CreateStatus.TRANSFERRING, CreateStatus.TRANSFERRED, CreateStatus.SUCCESS);
+
+      if (CreateStatus.SUCCESS.equals(createStatusResult.getResult().getStatus())) {
+        break;
+      }
+      Thread.sleep(100);
+    }
+
+    // Delete all data to then restore it from backup.
+    Result<Boolean> delete = supplierDeleteClass.get();
+    assertThat(delete.getError()).as("drop Pizza collection").isNull();
+    assertThat(delete.getResult()).isTrue();
+
+    
+    Result<BackupRestoreResponse> restoreResult = supplierRestore.get();
+    assertThat(restoreResult.getError()).as("restore from backup").isNull();
+    assertThat(restoreResult.getResult()).isNotNull()
+      .returns(backupId, BackupRestoreResponse::getId)
+      .returns(wantFullPath, BackupRestoreResponse::getPath);
+
+    // Wait until restored
+    Result<BackupRestoreStatusResponse> restoreStatusResult;
+    while (true) {
+      restoreStatusResult = supplierRestoreStatus.get();
+
+      assertThat(restoreStatusResult.getError()).as("get restore status").isNull();
+      assertThat(restoreStatusResult.getResult()).isNotNull()
+        .returns(backupId, BackupRestoreStatusResponse::getId)
+        .returns(wantFullPath, BackupRestoreStatusResponse::getPath)
+        .extracting(BackupRestoreStatusResponse::getStatus)
+        .isIn(RestoreStatus.STARTED, RestoreStatus.TRANSFERRING, RestoreStatus.TRANSFERRED, RestoreStatus.SUCCESS);
+
+      if (RestoreStatus.SUCCESS.equals(restoreStatusResult.getResult().getStatus())) {
+        break;
+      }
+      Thread.sleep(100);
+    }
+
+    assertThatAllPizzasExist(supplierGQLOfClass);
   }
 
   public static void testCreateAndRestoreBackupWithoutWaiting(Supplier<Result<BackupCreateResponse>> supplierCreate,
