@@ -1,7 +1,5 @@
 package io.weaviate.client.v1.backup.api;
 
-import io.weaviate.client.v1.backup.model.BackupCreateStatusResponse;
-
 import java.net.URISyntaxException;
 
 import org.apache.hc.core5.net.URIBuilder;
@@ -12,6 +10,7 @@ import io.weaviate.client.base.ClientResult;
 import io.weaviate.client.base.Response;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.HttpClient;
+import io.weaviate.client.v1.backup.model.BackupCreateStatusResponse;
 
 public class BackupCreateStatusGetter extends BaseClient<BackupCreateStatusResponse> implements ClientResult<BackupCreateStatusResponse> {
 
