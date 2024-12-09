@@ -242,6 +242,10 @@ public class BackupCreator extends AsyncBaseClient<BackupCreateResponse>
     Integer chunkSize;
     @SerializedName("CompressionLevel")
     String compressionLevel;
+    @SerializedName("Bucket")
+    String bucket;
+    @SerializedName("Path")
+    String path;
   }
 
   public interface BackupCompression {

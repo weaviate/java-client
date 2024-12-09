@@ -3,7 +3,6 @@ package io.weaviate.integration.client.backup;
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
-import io.weaviate.client.v1.async.WeaviateAsyncClient;
 import io.weaviate.client.v1.backup.api.BackupCreator;
 import io.weaviate.client.v1.backup.api.BackupRestorer;
 import io.weaviate.client.v1.backup.model.BackupCreateResponse;
@@ -116,6 +115,43 @@ public class ClientBackupTest {
 
     BackupTestSuite.testCreateAndRestoreBackupWithoutWaiting(supplierCreateResult, supplierCreateStatusResult,
       supplierRestoreResult, supplierRestoreStatusResult, supplierDeleteClass, createSupplierGQLOfClass(), backupId);
+  }
+
+  @Test
+  public void shouldCreateAndRestoreBackupWithDynamicLocation() throws InterruptedException {
+    String bucket = "test-bucket"; // irrelevant for "filesystem" backend, here only to illustrate
+    String path = "/custom/backup/location";
+
+    Supplier<Result<BackupCreateResponse>> supplierCreateResult = () -> client.backup().creator()
+      .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
+      .withBackend(BackupTestSuite.BACKEND)
+      .withBackupId(backupId)
+      .withConfig(BackupCreator.BackupCreateConfig.builder().bucket(bucket).path(path).build())
+      .run();
+    Supplier<Result<BackupCreateStatusResponse>> supplierCreateStatusResult = () -> client.backup().createStatusGetter()
+      .withBackend(BackupTestSuite.BACKEND)
+      .withBackupId(backupId)
+      .withBucket(bucket)
+      .withPath(path)
+      .run();
+    Supplier<Result<Boolean>> supplierDeleteClass = () -> client.schema().classDeleter()
+      .withClassName(BackupTestSuite.CLASS_NAME_PIZZA)
+      .run();
+    Supplier<Result<BackupRestoreResponse>> supplierRestoreResult = () -> client.backup().restorer()
+      .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
+      .withBackend(BackupTestSuite.BACKEND)
+      .withBackupId(backupId)
+      .withConfig(BackupRestorer.BackupRestoreConfig.builder().bucket(bucket).path(path).build())
+      .run();
+    Supplier<Result<BackupRestoreStatusResponse>> supplierRestoreStatusResult = () -> client.backup().restoreStatusGetter()
+      .withBackend(BackupTestSuite.BACKEND)
+      .withBackupId(backupId)
+      .withBucket(bucket)
+      .withPath(path)
+      .run();
+
+    BackupTestSuite.testCreateWithDynamicLocation(supplierCreateResult, supplierCreateStatusResult,
+      supplierRestoreResult, supplierRestoreStatusResult, supplierDeleteClass, createSupplierGQLOfClass(), backupId, bucket, path);
   }
 
   @Test
