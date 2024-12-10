@@ -1,8 +1,7 @@
 package io.weaviate.client.v1.backup.api;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import io.weaviate.client.Config;
 import io.weaviate.client.base.BaseClient;
@@ -18,7 +17,7 @@ public class BackupCreateStatusGetter extends BaseClient<BackupCreateStatusRespo
   private String backend;
   private String backupId;
   private String bucket;
-  private String path;
+  private String backupPath;
 
   public BackupCreateStatusGetter(HttpClient httpClient, Config config) {
     super(httpClient, config);
@@ -40,7 +39,7 @@ public class BackupCreateStatusGetter extends BaseClient<BackupCreateStatusRespo
   }
 
   public BackupCreateStatusGetter withPath(String path) {
-    this.path = path;
+    this.backupPath = path;
     return this;
   }
 
@@ -54,17 +53,19 @@ public class BackupCreateStatusGetter extends BaseClient<BackupCreateStatusRespo
   }
 
   private String path() {
-    String base = String.format("/backups/%s/%s", backend, backupId);
+    String path = String.format("/backups/%s/%s", backend, backupId);
 
-    List<String> queryParams = Arrays.asList(
-      UrlEncoder.encodeQueryParam("bucket", this.bucket),
-      UrlEncoder.encodeQueryParam("path", this.path)
-    );
-    queryParams.removeIf(Objects::isNull);
-    if (!queryParams.isEmpty()) {
-      base = base + "?" + String.join("&", queryParams);
+    List<String> queryParams = new ArrayList<>();
+    if (this.bucket != null){
+      queryParams.add(UrlEncoder.encodeQueryParam("bucket", this.bucket));
+    }
+    if (this.backupPath != null){
+      queryParams.add(UrlEncoder.encodeQueryParam("path", this.backupPath));
     }
 
-    return base;
+    if (!queryParams.isEmpty()) {
+      path += "?" + String.join("&", queryParams);
+    }
+    return path;
   }
 }

@@ -1,8 +1,7 @@
 package io.weaviate.client.v1.async.backup.api;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.Future;
 
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
@@ -27,7 +26,7 @@ public class BackupCanceler extends AsyncBaseClient<Void>
   private String backend;
   private String backupId;
   private String bucket;
-  private String path;
+  private String backupPath;
 
 
   public BackupCanceler(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider) {
@@ -50,7 +49,7 @@ public class BackupCanceler extends AsyncBaseClient<Void>
   }
 
   public BackupCanceler withPath(String path) {
-    this.path = path;
+    this.backupPath = path;
     return this;
   }
 
@@ -59,15 +58,17 @@ public class BackupCanceler extends AsyncBaseClient<Void>
   public Future<Result<Void>> run(FutureCallback<Result<Void>> callback) {
     String path = String.format("/backups/%s/%s", UrlEncoder.encodePathParam(backend), UrlEncoder.encodePathParam(backupId));
 
-    List<String> queryParams = Arrays.asList(
-      UrlEncoder.encodeQueryParam("bucket", this.bucket),
-      UrlEncoder.encodeQueryParam("path", this.path)
-    );
-    queryParams.removeIf(Objects::isNull);
-    if (!queryParams.isEmpty()) {
-      path = path + "?" + String.join("&", queryParams);
+    List<String> queryParams = new ArrayList<>();
+    if (this.bucket != null){
+      queryParams.add(UrlEncoder.encodeQueryParam("bucket", this.bucket));
+    }
+    if (this.backupPath != null){
+      queryParams.add(UrlEncoder.encodeQueryParam("path", this.backupPath));
     }
 
+    if (!queryParams.isEmpty()) {
+      path += "?" + String.join("&", queryParams);
+    }
     return sendDeleteRequest(path, null, Void.class, callback);
   }
 }

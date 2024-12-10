@@ -1,8 +1,7 @@
 package io.weaviate.client.v1.async.backup.api;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.Future;
 
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
@@ -22,7 +21,7 @@ public class BackupRestoreStatusGetter extends AsyncBaseClient<BackupRestoreStat
   private String backend;
   private String backupId;
   private String bucket;
-  private String path;
+  private String backupPath;
 
   public BackupRestoreStatusGetter(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider) {
     super(client, config, tokenProvider);
@@ -45,7 +44,7 @@ public class BackupRestoreStatusGetter extends AsyncBaseClient<BackupRestoreStat
   }
 
   public BackupRestoreStatusGetter withPath(String path) {
-    this.path = path;
+    this.backupPath = path;
     return this;
   }
 
@@ -53,15 +52,17 @@ public class BackupRestoreStatusGetter extends AsyncBaseClient<BackupRestoreStat
   public Future<Result<BackupRestoreStatusResponse>> run(FutureCallback<Result<BackupRestoreStatusResponse>> callback) {
     String path = String.format("/backups/%s/%s/restore", UrlEncoder.encodePathParam(backend), UrlEncoder.encodePathParam(backupId));
 
-    List<String> queryParams = Arrays.asList(
-      UrlEncoder.encodeQueryParam("bucket", this.bucket),
-      UrlEncoder.encodeQueryParam("path", this.path)
-    );
-    queryParams.removeIf(Objects::isNull);
-    if (!queryParams.isEmpty()) {
-      path = path + "?" + String.join("&", queryParams);
+    List<String> queryParams = new ArrayList<>();
+    if (this.bucket != null){
+      queryParams.add(UrlEncoder.encodeQueryParam("bucket", this.bucket));
+    }
+    if (this.backupPath != null){
+      queryParams.add(UrlEncoder.encodeQueryParam("path", this.backupPath));
     }
 
+    if (!queryParams.isEmpty()) {
+      path += "?" + String.join("&", queryParams);
+    }
     return sendGetRequest(path, BackupRestoreStatusResponse.class, callback);
   }
 }
