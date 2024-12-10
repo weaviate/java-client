@@ -134,6 +134,47 @@ public class ClientBackupTest {
   }
 
   @Test
+  public void shouldCreateAndRestoreBackupWithDynamicLocation() throws InterruptedException {
+    String bucket = "test-bucket"; // irrelevant for "filesystem" backend, here only to illustrate
+    String path = "/custom/backup/location";
+
+    try (WeaviateAsyncClient asyncClient = client.async()) {
+      Supplier<Result<BackupCreateResponse>> supplierCreateResult = createSupplierCreate(
+        asyncClient, creator -> creator
+          .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
+          .withBackend(BackupTestSuite.BACKEND)
+          .withBackupId(backupId)
+          .withConfig(BackupCreator.BackupCreateConfig.builder().bucket(bucket).path(path).build())
+      );
+      Supplier<Result<BackupCreateStatusResponse>> supplierCreateStatusResult = createSupplierCreateStatus(
+        asyncClient, createStatusGetter -> createStatusGetter
+          .withBackend(BackupTestSuite.BACKEND)
+          .withBackupId(backupId)
+          .withBucket(bucket)
+          .withPath(path)
+      );
+      Supplier<Result<BackupRestoreResponse>> supplierRestoreResult = createSupplierRestore(
+        asyncClient, restorer -> restorer
+          .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
+          .withBackend(BackupTestSuite.BACKEND)
+          .withBackupId(backupId)
+          .withConfig(BackupRestorer.BackupRestoreConfig.builder().bucket(bucket).path(path).build())
+      );
+      Supplier<Result<BackupRestoreStatusResponse>> supplierRestoreStatusResult = createSupplierRestoreStatus(
+        asyncClient, restoreStatusGetter -> restoreStatusGetter
+          .withBackend(BackupTestSuite.BACKEND)
+          .withBackupId(backupId)
+          .withBucket(bucket)
+          .withPath(path)
+      );
+
+      BackupTestSuite.testCreateWithDynamicLocation(supplierCreateResult, supplierCreateStatusResult,
+        supplierRestoreResult, supplierRestoreStatusResult,
+        createSupplierDeletePizza(), createSupplierGQLOfClass(), backupId, bucket, path);
+    }
+  }
+
+  @Test
   public void shouldCreateAndRestore1Of2Classes() {
     try (WeaviateAsyncClient asyncClient = client.async()) {
       Supplier<Result<BackupCreateResponse>> supplierCreateResult = createSupplierCreate(

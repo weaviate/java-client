@@ -150,5 +150,9 @@ public class BackupRestorer extends BaseClient<BackupRestoreResponse> implements
   public static class BackupRestoreConfig {
     @SerializedName("CPUPercentage")
     Integer cpuPercentage;
+    @SerializedName("Bucket")
+    String bucket;
+    @SerializedName("Path")
+    String path;
   }
 }
