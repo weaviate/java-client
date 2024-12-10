@@ -68,14 +68,13 @@
     <slf4j.version>2.0.16</slf4j.version>
     <logback.version>1.5.12</logback.version>
     <mock-server.version>5.14.0</mock-server.version>
-    <jackson.version>2.18.1</jackson.version>
+    <jackson.version>2.18.2</jackson.version>
     <oauth2-oidc-sdk.version>11.20.1</oauth2-oidc-sdk.version>
     <mock-server.version>5.15.0</mock-server.version>
-    <jackson.version>2.16.1</jackson.version>
-    <protobuf.java.version>4.28.3</protobuf.java.version>
-    <grpc-netty-shaded.version>1.68.1</grpc-netty-shaded.version>
-    <grpc-protobuf.version>1.68.1</grpc-protobuf.version>
-    <grpc-stub.version>1.68.1</grpc-stub.version>
+    <protobuf.java.version>4.29.1</protobuf.java.version>
+    <grpc-netty-shaded.version>1.68.2</grpc-netty-shaded.version>
+    <grpc-protobuf.version>1.68.2</grpc-protobuf.version>
+    <grpc-stub.version>1.68.2</grpc-stub.version>
     <annotations-api.version>6.0.53</annotations-api.version>
   </properties>
 
