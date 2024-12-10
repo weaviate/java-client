@@ -1,17 +1,19 @@
 package io.weaviate.client.v1.async.backup.api;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.Future;
+
+import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
+import org.apache.hc.core5.concurrent.FutureCallback;
+
 import io.weaviate.client.Config;
 import io.weaviate.client.base.AsyncBaseClient;
 import io.weaviate.client.base.AsyncClientResult;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.util.UrlEncoder;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
-import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
-import org.apache.hc.core5.concurrent.FutureCallback;
-import org.apache.hc.core5.net.URIBuilder;
-
-import java.net.URISyntaxException;
-import java.util.concurrent.Future;
 
 /**
  * BackupCanceler can cancel an in-progress backup by ID.
@@ -56,13 +58,16 @@ public class BackupCanceler extends AsyncBaseClient<Void>
   @Override
   public Future<Result<Void>> run(FutureCallback<Result<Void>> callback) {
     String path = String.format("/backups/%s/%s", UrlEncoder.encodePathParam(backend), UrlEncoder.encodePathParam(backupId));
-    try {
-      path = new URIBuilder(path)
-      .addParameter("bucket", bucket)
-      .addParameter("path", this.path)
-      .toString();
-    } catch (URISyntaxException e) {
+
+    List<String> queryParams = Arrays.asList(
+      UrlEncoder.encodeQueryParam("bucket", this.bucket),
+      UrlEncoder.encodeQueryParam("path", this.path)
+    );
+    queryParams.removeIf(Objects::isNull);
+    if (!queryParams.isEmpty()) {
+      path = path + "?" + String.join("&", queryParams);
     }
+
     return sendDeleteRequest(path, null, Void.class, callback);
   }
 }

@@ -1,11 +1,12 @@
 package io.weaviate.client.v1.async.backup.api;
 
-import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Future;
 
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.core5.concurrent.FutureCallback;
-import org.apache.hc.core5.net.URIBuilder;
 
 import io.weaviate.client.Config;
 import io.weaviate.client.base.AsyncBaseClient;
@@ -51,13 +52,16 @@ public class BackupCreateStatusGetter extends AsyncBaseClient<BackupCreateStatus
   @Override
   public Future<Result<BackupCreateStatusResponse>> run(FutureCallback<Result<BackupCreateStatusResponse>> callback) {
     String path = String.format("/backups/%s/%s", UrlEncoder.encodePathParam(backend), UrlEncoder.encodePathParam(backupId));
-    try {
-      path =  new URIBuilder(path)
-      .addParameter("bucket", bucket)
-      .addParameter("path", this.path)
-      .toString();
-    } catch (URISyntaxException e) {
+
+    List<String> queryParams = Arrays.asList(
+      UrlEncoder.encodeQueryParam("bucket", this.bucket),
+      UrlEncoder.encodeQueryParam("path", this.path)
+    );
+    queryParams.removeIf(Objects::isNull);
+    if (!queryParams.isEmpty()) {
+      path = path + "?" + String.join("&", queryParams);
     }
+
     return sendGetRequest(path, BackupCreateStatusResponse.class, callback);
   }
 }
