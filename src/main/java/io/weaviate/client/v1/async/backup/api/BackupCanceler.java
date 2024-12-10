@@ -59,10 +59,10 @@ public class BackupCanceler extends AsyncBaseClient<Void>
     String path = String.format("/backups/%s/%s", UrlEncoder.encodePathParam(backend), UrlEncoder.encodePathParam(backupId));
 
     List<String> queryParams = new ArrayList<>();
-    if (this.bucket != null){
+    if (this.bucket != null) {
       queryParams.add(UrlEncoder.encodeQueryParam("bucket", this.bucket));
     }
-    if (this.backupPath != null){
+    if (this.backupPath != null) {
       queryParams.add(UrlEncoder.encodeQueryParam("path", this.backupPath));
     }
 
