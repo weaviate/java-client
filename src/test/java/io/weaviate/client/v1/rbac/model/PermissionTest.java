@@ -1,0 +1,118 @@
+package io.weaviate.client.v1.rbac.model;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.ArrayList;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.testcontainers.shaded.org.hamcrest.Matcher;
+import org.testcontainers.shaded.org.hamcrest.MatcherAssert;
+import org.testcontainers.shaded.org.hamcrest.beans.SamePropertyValuesAs;
+
+import com.jparams.junit4.JParamsTestRunner;
+import com.jparams.junit4.data.DataMethod;
+
+import io.weaviate.client.v1.rbac.api.WeaviatePermission;
+import io.weaviate.client.v1.rbac.model.NodesPermission.Verbosity;
+
+@RunWith(JParamsTestRunner.class)
+public class PermissionTest {
+  public static Object[][] toWeaviateTestCases() {
+    UsersPermission users = new UsersPermission(UsersPermission.Action.MANAGE);
+    BackupsPermission backups = new BackupsPermission(BackupsPermission.Action.MANAGE, "Pizza");
+    DataPermission data = new DataPermission(DataPermission.Action.MANAGE, "Pizza");
+    NodesPermission nodes = new NodesPermission(NodesPermission.Action.READ, Verbosity.MINIMAL, "Pizza");
+    RolesPermission roles = new RolesPermission(RolesPermission.Action.MANAGE, "TestWriter");
+    CollectionsPermission collections = new CollectionsPermission(CollectionsPermission.Action.MANAGE, "Pizza");
+    ClusterPermission cluster = new ClusterPermission(ClusterPermission.Action.READ);
+    TenantsPermission tenants = new TenantsPermission(TenantsPermission.Action.READ);
+
+    return new Object[][] {
+        {
+            "user permission",
+            (Supplier<Permission<?>>) () -> users,
+            new WeaviatePermission("manage_users"),
+        },
+        {
+            "backup permission",
+            (Supplier<Permission<?>>) () -> backups,
+            new WeaviatePermission("manage_backups", backups),
+        },
+        {
+            "data permission",
+            (Supplier<Permission<?>>) () -> data,
+            new WeaviatePermission("manage_data", data),
+        },
+        {
+            "nodes permission",
+            (Supplier<Permission<?>>) () -> nodes,
+            new WeaviatePermission("read_nodes", nodes),
+        },
+        {
+            "roles permission",
+            (Supplier<Permission<?>>) () -> roles,
+            new WeaviatePermission("manage_roles", roles),
+        },
+        {
+            "collections permission",
+            (Supplier<Permission<?>>) () -> collections,
+            new WeaviatePermission("manage_collections", collections),
+        },
+        {
+            "cluster permission",
+            (Supplier<Permission<?>>) () -> cluster,
+            new WeaviatePermission("read_cluster"),
+        },
+        {
+            "tenants permission",
+            (Supplier<Permission<?>>) () -> tenants,
+            new WeaviatePermission("read_tenants", tenants),
+        },
+    };
+  }
+
+  @DataMethod(source = PermissionTest.class, method = "toWeaviateTestCases")
+  @Test
+  public void testToWeaviate(String name, Supplier<Permission<?>> permFunc, WeaviatePermission expected)
+      throws Exception {
+    Permission<?> perm = permFunc.get();
+    MatcherAssert.assertThat(name, perm.toWeaviate(), sameAs(expected));
+  }
+
+  private static <T> Matcher<T> sameAs(T expected) {
+    return new SamePropertyValuesAs<T>(expected, new ArrayList<>());
+  }
+
+  @Test
+  public void testDefaultDataPermissions() {
+    DataPermission perm = new DataPermission(DataPermission.Action.MANAGE, "Pizza");
+    assertThat(perm).as("data permission must have object=* and tenant=*")
+        .returns("*", DataPermission::getObject)
+        .returns("*", DataPermission::getTenant);
+  }
+
+  @Test
+  public void testDefaultCollectionsPermissions() {
+    CollectionsPermission perm = new CollectionsPermission(CollectionsPermission.Action.MANAGE, "Pizza");
+    assertThat(perm).as("collection permission must have tenant=*")
+        .returns("*", CollectionsPermission::getTenant);
+  }
+
+  @Test
+  public void testDefaultNodesPermissions() {
+    NodesPermission perm = new NodesPermission(NodesPermission.Action.READ, NodesPermission.Verbosity.MINIMAL);
+    assertThat(perm).as("nodes permission should affect all collections if one is not specified")
+        .returns("*", NodesPermission::getCollection);
+  }
+
+  @Test
+  public void testDefaultTenantsPermissions() {
+    TenantsPermission perm = new TenantsPermission(TenantsPermission.Action.READ);
+    assertThat(perm).as("tenants permission must have tenant=*")
+        .returns("*", TenantsPermission::getTenant);
+  }
+}
