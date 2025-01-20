@@ -15,6 +15,10 @@ public class DataPermission implements Permission<DataPermission> {
     this(action, collection, "*", "*");
   }
 
+  DataPermission(String action, String collection) {
+    this(CustomAction.fromString(Action.class, action), collection);
+  }
+
   private DataPermission(Action action, String collection, String object, String tenant) {
     this.action = action.getValue();
     this.collection = collection;
@@ -27,13 +31,8 @@ public class DataPermission implements Permission<DataPermission> {
     return new WeaviatePermission(this.action, this);
   }
 
-  @Override
-  public DataPermission fromWeaviate(WeaviatePermission perm) {
-    return null;
-  }
-
   @AllArgsConstructor
-  public enum Action {
+  public enum Action implements CustomAction {
     CREATE("create_data"),
     READ("read_data"),
     UPDATE("update_data"),

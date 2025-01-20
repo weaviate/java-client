@@ -13,6 +13,7 @@ import org.testcontainers.shaded.org.hamcrest.Matcher;
 import org.testcontainers.shaded.org.hamcrest.MatcherAssert;
 import org.testcontainers.shaded.org.hamcrest.beans.SamePropertyValuesAs;
 
+import com.google.gson.Gson;
 import com.jparams.junit4.JParamsTestRunner;
 import com.jparams.junit4.data.DataMethod;
 
@@ -21,7 +22,7 @@ import io.weaviate.client.v1.rbac.model.NodesPermission.Verbosity;
 
 @RunWith(JParamsTestRunner.class)
 public class PermissionTest {
-  public static Object[][] toWeaviateTestCases() {
+  public static Object[][] serializationTestCases() {
     UsersPermission users = new UsersPermission(UsersPermission.Action.MANAGE);
     BackupsPermission backups = new BackupsPermission(BackupsPermission.Action.MANAGE, "Pizza");
     DataPermission data = new DataPermission(DataPermission.Action.MANAGE, "Pizza");
@@ -75,7 +76,7 @@ public class PermissionTest {
     };
   }
 
-  @DataMethod(source = PermissionTest.class, method = "toWeaviateTestCases")
+  @DataMethod(source = PermissionTest.class, method = "serializationTestCases")
   @Test
   public void testToWeaviate(String name, Supplier<Permission<?>> permFunc, WeaviatePermission expected)
       throws Exception {
@@ -88,7 +89,7 @@ public class PermissionTest {
   }
 
   @Test
-  public void testDefaultDataPermissions() {
+  public void testDefaultDataPermission() {
     DataPermission perm = new DataPermission(DataPermission.Action.MANAGE, "Pizza");
     assertThat(perm).as("data permission must have object=* and tenant=*")
         .returns("*", DataPermission::getObject)
@@ -96,23 +97,33 @@ public class PermissionTest {
   }
 
   @Test
-  public void testDefaultCollectionsPermissions() {
+  public void testDefaultCollectionsPermission() {
     CollectionsPermission perm = new CollectionsPermission(CollectionsPermission.Action.MANAGE, "Pizza");
     assertThat(perm).as("collection permission must have tenant=*")
         .returns("*", CollectionsPermission::getTenant);
   }
 
   @Test
-  public void testDefaultNodesPermissions() {
+  public void testDefaultNodesPermission() {
     NodesPermission perm = new NodesPermission(NodesPermission.Action.READ, NodesPermission.Verbosity.MINIMAL);
     assertThat(perm).as("nodes permission should affect all collections if one is not specified")
         .returns("*", NodesPermission::getCollection);
   }
 
   @Test
-  public void testDefaultTenantsPermissions() {
+  public void testDefaultTenantsPermission() {
     TenantsPermission perm = new TenantsPermission(TenantsPermission.Action.READ);
     assertThat(perm).as("tenants permission must have tenant=*")
         .returns("*", TenantsPermission::getTenant);
+  }
+
+  @DataMethod(source = PermissionTest.class, method = "serializationTestCases")
+  @Test
+  public void testFromWeaviate(String name,
+      Supplier<Permission<?>> expectedFunc, WeaviatePermission input)
+      throws Exception {
+    Permission<?> expected = expectedFunc.get();
+    Permission<?> actual = Permission.fromWeaviate(input);
+    MatcherAssert.assertThat(name, actual, sameAs(expected));
   }
 }

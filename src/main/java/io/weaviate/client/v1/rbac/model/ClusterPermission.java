@@ -4,6 +4,7 @@ import io.weaviate.client.v1.rbac.api.WeaviatePermission;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+@Getter
 public class ClusterPermission implements Permission<ClusterPermission> {
   final String action;
 
@@ -11,18 +12,17 @@ public class ClusterPermission implements Permission<ClusterPermission> {
     this.action = action.getValue();
   }
 
+  ClusterPermission(String action) {
+    this(CustomAction.fromString(Action.class, action));
+  }
+
   @Override
   public WeaviatePermission toWeaviate() {
     return new WeaviatePermission(this.action);
   }
 
-  @Override
-  public ClusterPermission fromWeaviate(WeaviatePermission perm) {
-    return null;
-  }
-
   @AllArgsConstructor
-  public enum Action {
+  public enum Action implements CustomAction {
     READ("read_cluster");
 
     @Getter

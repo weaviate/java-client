@@ -1,5 +1,7 @@
 package io.weaviate.client.v1.rbac.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import io.weaviate.client.v1.rbac.api.WeaviatePermission;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,6 +16,14 @@ public class NodesPermission implements Permission<NodesPermission> {
     this(action, verbosity, "*");
   }
 
+  NodesPermission(String action, Verbosity verbosity) {
+    this(CustomAction.fromString(Action.class, action), verbosity);
+  }
+
+  NodesPermission(String action, Verbosity verbosity, String collection) {
+    this(CustomAction.fromString(Action.class, action), verbosity, collection);
+  }
+
   public NodesPermission(Action action, Verbosity verbosity, String collection) {
     this.action = action.getValue();
     this.collection = collection;
@@ -25,13 +35,8 @@ public class NodesPermission implements Permission<NodesPermission> {
     return new WeaviatePermission(this.action, this);
   }
 
-  @Override
-  public NodesPermission fromWeaviate(WeaviatePermission perm) {
-    return null;
-  }
-
   @AllArgsConstructor
-  public enum Action {
+  public enum Action implements CustomAction {
     READ("read_nodes");
 
     @Getter
@@ -40,11 +45,10 @@ public class NodesPermission implements Permission<NodesPermission> {
 
   @AllArgsConstructor
   public enum Verbosity {
-    MINIMAL("minimal"),
-    VERBOSE("verbose");
-
-    @Getter
-    private final String value;
+    @SerializedName("minimal")
+    MINIMAL,
+    @SerializedName("verbose")
+    VERBOSE;
   }
 
 }

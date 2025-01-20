@@ -12,18 +12,17 @@ public class UsersPermission implements Permission<UsersPermission> {
     this.action = action.getValue();
   }
 
+  UsersPermission(String action) {
+    this(CustomAction.fromString(Action.class, action));
+  }
+
   @Override
   public WeaviatePermission toWeaviate() {
     return new WeaviatePermission(this.action);
   }
 
-  @Override
-  public UsersPermission fromWeaviate(WeaviatePermission perm) {
-    return null;
-  }
-
   @AllArgsConstructor
-  public enum Action {
+  public enum Action implements CustomAction {
     MANAGE("manage_users");
 
     @Getter

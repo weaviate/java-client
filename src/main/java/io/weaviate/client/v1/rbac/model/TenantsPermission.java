@@ -13,6 +13,10 @@ public class TenantsPermission implements Permission<TenantsPermission> {
     this(action, "*");
   }
 
+  TenantsPermission(String action) {
+    this(CustomAction.fromString(Action.class, action));
+  }
+
   private TenantsPermission(Action action, String tenant) {
     this.action = action.getValue();
     this.tenant = tenant;
@@ -23,13 +27,8 @@ public class TenantsPermission implements Permission<TenantsPermission> {
     return new WeaviatePermission(this.action, this);
   }
 
-  @Override
-  public TenantsPermission fromWeaviate(WeaviatePermission perm) {
-    return null;
-  }
-
   @AllArgsConstructor
-  public enum Action {
+  public enum Action implements CustomAction {
     CREATE("create_tenants"),
     READ("read_tenants"),
     UPDATE("update_tenants"),
