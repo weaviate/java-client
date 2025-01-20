@@ -1,5 +1,25 @@
 package io.weaviate.client.v1.graphql.query.builder;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase;
+import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Filters;
+import io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.MetadataRequest;
+import io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.PropertiesRequest;
+import io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.SearchRequest;
+import io.weaviate.client.v1.filters.Operator;
 import io.weaviate.client.v1.filters.WhereFilter;
 import io.weaviate.client.v1.graphql.query.argument.Argument;
 import io.weaviate.client.v1.graphql.query.argument.AskArgument;
@@ -28,18 +48,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Getter
 @Builder
@@ -75,9 +83,14 @@ public class GetBuilder implements Query {
 
   private Stream<Argument> buildableArguments() {
     return Stream.of(withWhereFilter, withAskArgument, withNearTextFilter, withNearObjectFilter,
-      withNearVectorFilter, withGroupArgument, withBm25Filter, withHybridFilter, withSortArguments, withGroupByArgument,
-      withNearImageFilter, withNearAudioFilter, withNearVideoFilter, withNearDepthFilter, withNearThermalFilter,
-      withNearImuFilter);
+        withNearVectorFilter, withGroupArgument, withBm25Filter, withHybridFilter, withSortArguments,
+        withGroupByArgument,
+        withNearImageFilter, withNearAudioFilter, withNearVideoFilter, withNearDepthFilter, withNearThermalFilter,
+        withNearImuFilter);
+  }
+
+  private Stream<Argument> buildableGrpcArguments() {
+    return Stream.of(withWhereFilter, withNearVectorFilter);
   }
 
   private Stream<Object> nonStringArguments() {
@@ -90,8 +103,8 @@ public class GetBuilder implements Query {
 
   private boolean includesFilterClause() {
     return buildableArguments().anyMatch(Objects::nonNull)
-      || nonStringArguments().anyMatch(Objects::nonNull)
-      || stringArguments().anyMatch(StringUtils::isNotBlank);
+        || nonStringArguments().anyMatch(Objects::nonNull)
+        || stringArguments().anyMatch(StringUtils::isNotBlank);
   }
 
   private String createFilterClause() {
@@ -103,9 +116,9 @@ public class GetBuilder implements Query {
       }
 
       buildableArguments()
-        .filter(Objects::nonNull)
-        .map(Argument::build)
-        .forEach(filters::add);
+          .filter(Objects::nonNull)
+          .map(Argument::build)
+          .forEach(filters::add);
 
       if (limit != null) {
         filters.add(String.format("limit:%s", limit));
@@ -139,44 +152,42 @@ public class GetBuilder implements Query {
 
     Field generate = withGenerativeSearch.build();
     Field generateAdditional = Field.builder()
-      .name("_additional")
-      .fields(new Field[]{generate})
-      .build();
+        .name("_additional")
+        .fields(new Field[] { generate })
+        .build();
 
     if (fields == null) {
       return generateAdditional.build();
     }
 
-    // check if _additional field exists. If missing just add new _additional with generate,
+    // check if _additional field exists. If missing just add new _additional with
+    // generate,
     // if exists merge generate into present one
     Map<Boolean, List<Field>> grouped = Arrays.stream(fields.getFields())
-      .collect(Collectors.groupingBy(f -> "_additional".equals(f.getName())));
+        .collect(Collectors.groupingBy(f -> "_additional".equals(f.getName())));
 
     List<Field> additionals = grouped.getOrDefault(true, new ArrayList<>());
     if (additionals.isEmpty()) {
       additionals.add(generateAdditional);
     } else {
       Field[] mergedInternalFields = Stream.concat(
-        Arrays.stream(additionals.get(0).getFields()),
-        Stream.of(generate)
-      ).toArray(Field[]::new);
+          Arrays.stream(additionals.get(0).getFields()),
+          Stream.of(generate)).toArray(Field[]::new);
 
       additionals.set(0, Field.builder()
-        .name("_additional")
-        .fields(mergedInternalFields)
-        .build()
-      );
+          .name("_additional")
+          .fields(mergedInternalFields)
+          .build());
     }
 
     Field[] allFields = Stream.concat(
-      grouped.getOrDefault(false, new ArrayList<>()).stream(),
-      additionals.stream()
-    ).toArray(Field[]::new);
+        grouped.getOrDefault(false, new ArrayList<>()).stream(),
+        additionals.stream()).toArray(Field[]::new);
 
     return Fields.builder()
-      .fields(allFields)
-      .build()
-      .build();
+        .fields(allFields)
+        .build()
+        .build();
   }
 
   @Override
@@ -184,8 +195,98 @@ public class GetBuilder implements Query {
     return String.format("{Get{%s%s{%s}}}", Serializer.escape(className), createFilterClause(), createFields());
   }
 
+  public SearchRequest buildSearchRequest() {
+    SearchRequest.Builder search = SearchRequest.newBuilder();
 
-  // created to support both types of setters: WhereArgument and deprecated WhereFilter
+    search.setCollection(this.className);
+
+    if (StringUtils.isNotBlank(tenant)) {
+      search.setTenant(this.tenant);
+    }
+
+    // TODO: Create filter clause
+    if (includesFilterClause()) {
+
+      Filters.Builder filters = Filters.newBuilder();
+      if (this.withWhereFilter != null) {
+        WhereFilter f = this.withWhereFilter.getFilter();
+        switch (f.getOperator()) {
+          case Operator.And:
+            filters.setOperator(WeaviateProtoBase.Filters.Operator.OPERATOR_AND);
+            break;
+        }
+
+        WhereFilter[] operands = f.getOperands();
+        if (operands != null && operands.length > 0) {
+        }
+      }
+
+      search.setFilters(filters.build());
+
+      // withWhereFilter, withNearVectorFilter
+      //
+      buildableGrpcArguments()
+          .filter(Objects::nonNull)
+          .forEach(arg -> arg.addToSearch(search));
+
+      if (limit != null) {
+        search.setLimit(limit);
+      }
+      if (offset != null) {
+        search.setOffset(offset);
+      }
+      if (StringUtils.isNotBlank(after)) {
+        search.setAfter(after);
+      }
+      if (StringUtils.isNotBlank(withConsistencyLevel)) {
+        search.setConsistencyLevelValue(Integer.valueOf(withConsistencyLevel));
+      }
+      if (autocut != null) {
+        search.setAutocut(autocut);
+      }
+    }
+
+    // Create fields
+    if (fields != null) {
+
+      // Metadata
+      Optional<Field> _additional = Arrays.stream(fields.getFields())
+          .filter(f -> "_additional".equals(f.getName())).findFirst();
+      if (_additional.isPresent()) {
+        MetadataRequest.Builder metadata = MetadataRequest.newBuilder();
+        for (Field f : _additional.get().getFields()) {
+          switch (f.getName()) {
+            case "id":
+              metadata.setUuid(true);
+              break;
+            case "vector":
+              metadata.setVector(true);
+              break;
+            case "distance":
+              metadata.setDistance(true);
+              break;
+          }
+        }
+        search.setMetadata(metadata.build());
+      }
+
+      // Properties
+      Optional<Field> props = Arrays.stream(fields.getFields())
+          .filter(f -> !"_additional".equals(f.getName())).findFirst();
+      if (props.isPresent()) {
+        PropertiesRequest.Builder properties = PropertiesRequest.newBuilder();
+        int i = 0;
+        for (Field f : props.get().getFields()) {
+          properties.setNonRefProperties(i++, f.getName());
+        }
+        search.setProperties(properties.build());
+      }
+    }
+    return search.build();
+  }
+
+  // created to support both types of setters: WhereArgument and deprecated
+  // WhereFilter
   public static class GetBuilderBuilder {
     private WhereArgument withWhereFilter;
 

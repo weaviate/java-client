@@ -1,13 +1,14 @@
 package io.weaviate.client.base;
 
+import java.util.Collections;
+
 import io.weaviate.client.Config;
 import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.base.http.HttpResponse;
-import java.util.Collections;
 
 public abstract class BaseClient<T> {
   private final HttpClient client;
-  private final Config config;
+  protected final Config config;
   protected final Serializer serializer;
 
   public BaseClient(HttpClient client, Config config) {

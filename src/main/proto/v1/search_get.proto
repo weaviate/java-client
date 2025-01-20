@@ -51,7 +51,7 @@ message SearchRequest {
 
   bool uses_123_api = 100 [deprecated = true];
   bool uses_125_api = 101 [deprecated = true];
-  bool uses_127_api = 102; 
+  bool uses_127_api = 102;
 }
 
 message GroupBy {

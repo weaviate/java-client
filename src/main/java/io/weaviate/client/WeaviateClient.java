@@ -1,5 +1,7 @@
 package io.weaviate.client;
 
+import java.util.Optional;
+
 import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.base.http.builder.HttpApacheClientBuilder;
 import io.weaviate.client.base.http.impl.CommonsHttpClientImpl;
@@ -15,10 +17,10 @@ import io.weaviate.client.v1.cluster.Cluster;
 import io.weaviate.client.v1.contextionary.Contextionary;
 import io.weaviate.client.v1.data.Data;
 import io.weaviate.client.v1.graphql.GraphQL;
+import io.weaviate.client.v1.grpc.GRPC;
 import io.weaviate.client.v1.misc.Misc;
 import io.weaviate.client.v1.misc.api.MetaGetter;
 import io.weaviate.client.v1.schema.Schema;
-import java.util.Optional;
 
 public class WeaviateClient {
   private final Config config;
@@ -33,7 +35,8 @@ public class WeaviateClient {
   }
 
   public WeaviateClient(Config config, AccessTokenProvider tokenProvider) {
-    this(config, new CommonsHttpClientImpl(config.getHeaders(), tokenProvider, HttpApacheClientBuilder.build(config)), tokenProvider);
+    this(config, new CommonsHttpClientImpl(config.getHeaders(), tokenProvider, HttpApacheClientBuilder.build(config)),
+        tokenProvider);
   }
 
   public WeaviateClient(Config config, HttpClient httpClient, AccessTokenProvider tokenProvider) {
@@ -87,10 +90,13 @@ public class WeaviateClient {
     return new GraphQL(httpClient, config);
   }
 
+  public GRPC gRPC() {
+    return new GRPC(httpClient, config, tokenProvider);
+  }
+
   private DbVersionProvider initDbVersionProvider() {
     MetaGetter metaGetter = new Misc(httpClient, config, null).metaGetter();
-    DbVersionProvider.VersionGetter getter = () ->
-      Optional.ofNullable(metaGetter.run())
+    DbVersionProvider.VersionGetter getter = () -> Optional.ofNullable(metaGetter.run())
         .filter(result -> !result.hasErrors())
         .map(result -> result.getResult().getVersion());
 

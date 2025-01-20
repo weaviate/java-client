@@ -9,16 +9,14 @@ import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.v1.graphql.model.GraphQLQuery;
 import io.weaviate.client.v1.graphql.model.GraphQLResponse;
 
-
-
 public class Raw extends BaseClient<GraphQLResponse> implements ClientResult<GraphQLResponse> {
-  private  String query;
- 
+  private String query;
+
   public Raw(HttpClient httpClient, Config config) {
     super(httpClient, config);
   }
 
-  public Raw withQuery (String query)  {
+  public Raw withQuery(String query) {
     this.query = query;
     return this;
   }
