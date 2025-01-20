@@ -8,7 +8,6 @@ import io.weaviate.client.v1.rbac.model.NodesPermission;
 import io.weaviate.client.v1.rbac.model.Permission;
 import io.weaviate.client.v1.rbac.model.RolesPermission;
 import io.weaviate.client.v1.rbac.model.TenantsPermission;
-import io.weaviate.client.v1.rbac.model.UsersPermission;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,13 +18,11 @@ import lombok.Getter;
 public class WeaviatePermission {
   String action;
   BackupsPermission backups;
-  ClusterPermission cluster;
   CollectionsPermission collections;
   DataPermission data;
   NodesPermission nodes;
   RolesPermission roles;
   TenantsPermission tenants;
-  UsersPermission users;
 
   public WeaviatePermission(String action) {
     this.action = action;
@@ -35,8 +32,6 @@ public class WeaviatePermission {
     this.action = action;
     if (perm instanceof BackupsPermission) {
       this.backups = (BackupsPermission) perm;
-    } else if (perm instanceof ClusterPermission) {
-      this.cluster = (ClusterPermission) perm;
     } else if (perm instanceof CollectionsPermission) {
       this.collections = (CollectionsPermission) perm;
     } else if (perm instanceof DataPermission) {
@@ -47,8 +42,6 @@ public class WeaviatePermission {
       this.roles = (RolesPermission) perm;
     } else if (perm instanceof TenantsPermission) {
       this.tenants = (TenantsPermission) perm;
-    } else if (perm instanceof UsersPermission) {
-      this.users = (UsersPermission) perm;
     }
   }
 }

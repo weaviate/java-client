@@ -14,6 +14,10 @@ public class CollectionsPermission implements Permission<CollectionsPermission> 
     this(action, collection, "*");
   }
 
+  CollectionsPermission(String action, String collection) {
+    this(CustomAction.fromString(Action.class, action), collection);
+  }
+
   private CollectionsPermission(Action action, String collection, String tenant) {
     this.action = action.getValue();
     this.collection = collection;
@@ -25,13 +29,8 @@ public class CollectionsPermission implements Permission<CollectionsPermission> 
     return new WeaviatePermission(this.action, this);
   }
 
-  @Override
-  public CollectionsPermission fromWeaviate(WeaviatePermission perm) {
-    return null;
-  }
-
   @AllArgsConstructor
-  public enum Action {
+  public enum Action implements CustomAction {
     CREATE("create_collections"),
     READ("read_collections"),
     UPDATE("update_collections"),

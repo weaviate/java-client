@@ -4,6 +4,7 @@ import io.weaviate.client.v1.rbac.api.WeaviatePermission;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+@Getter
 public class RolesPermission implements Permission<RolesPermission> {
   final transient String action;
   final String role;
@@ -13,18 +14,17 @@ public class RolesPermission implements Permission<RolesPermission> {
     this.role = role;
   }
 
+  RolesPermission(String action, String role) {
+    this(CustomAction.fromString(Action.class, action), role);
+  }
+
   @Override
   public WeaviatePermission toWeaviate() {
     return new WeaviatePermission(this.action, this);
   }
 
-  @Override
-  public RolesPermission fromWeaviate(WeaviatePermission perm) {
-    return null;
-  }
-
   @AllArgsConstructor
-  public enum Action {
+  public enum Action implements CustomAction {
     READ("read_roles"),
     MANAGE("manage_roles");
 
