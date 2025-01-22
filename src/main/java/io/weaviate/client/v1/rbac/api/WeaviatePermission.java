@@ -1,7 +1,8 @@
 package io.weaviate.client.v1.rbac.api;
 
+import java.util.List;
+
 import io.weaviate.client.v1.rbac.model.BackupsPermission;
-import io.weaviate.client.v1.rbac.model.ClusterPermission;
 import io.weaviate.client.v1.rbac.model.CollectionsPermission;
 import io.weaviate.client.v1.rbac.model.DataPermission;
 import io.weaviate.client.v1.rbac.model.NodesPermission;
@@ -43,5 +44,9 @@ public class WeaviatePermission {
     } else if (perm instanceof TenantsPermission) {
       this.tenants = (TenantsPermission) perm;
     }
+  }
+
+  public static List<WeaviatePermission> mergePermissions(List<Permission<?>> permissions) {
+    return permissions.stream().map(perm -> perm.toWeaviate()).toList();
   }
 }

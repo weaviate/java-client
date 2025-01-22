@@ -5,8 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-public class CollectionsPermission implements Permission<CollectionsPermission> {
-  final transient String action;
+public class CollectionsPermission extends Permission<CollectionsPermission> {
   final String collection;
   final String tenant;
 
@@ -19,7 +18,7 @@ public class CollectionsPermission implements Permission<CollectionsPermission> 
   }
 
   private CollectionsPermission(Action action, String collection, String tenant) {
-    this.action = action.getValue();
+    super(action);
     this.collection = collection;
     this.tenant = tenant;
   }
@@ -34,8 +33,10 @@ public class CollectionsPermission implements Permission<CollectionsPermission> 
     CREATE("create_collections"),
     READ("read_collections"),
     UPDATE("update_collections"),
-    DELETE("delete_collections"),
-    MANAGE("manage_collections");
+    DELETE("delete_collections");
+
+    // Not part of the public API yet.
+    // MANAGE("manage_collections");
 
     @Getter
     private final String value;

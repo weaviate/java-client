@@ -1,32 +1,24 @@
 package io.weaviate.client.v1.rbac.api;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import io.weaviate.client.v1.rbac.model.Permission;
 import io.weaviate.client.v1.rbac.model.Role;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@Builder
-@AllArgsConstructor
 public class WeaviateRole {
   String name;
-  List<Map<String, Map<String, ?>>> permissions;
+  List<WeaviatePermission> permissions;
 
-  public WeaviateRole(Role role) {
-    this.name = role.name;
-    this.permissions = mergePermissions(role.permissions);
-  }
-
-  private static List<Map<String, Map<String, ?>>> mergePermissions(List<Permission<?>> permissions) {
-    return null;
+  public WeaviateRole(String name, List<Permission<?>> permissions) {
+    this.name = name;
+    this.permissions = WeaviatePermission.mergePermissions(permissions);
   }
 
   public Role toRole() {
-    return null;
+    List<Permission<?>> permissions = this.permissions.stream()
+        .<Permission<?>>map(perm -> Permission.fromWeaviate(perm)).toList();
+    return new Role(this.name, permissions);
   }
 }

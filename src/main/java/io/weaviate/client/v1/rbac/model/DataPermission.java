@@ -5,8 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-public class DataPermission implements Permission<DataPermission> {
-  final transient String action;
+public class DataPermission extends Permission<DataPermission> {
   final String collection;
   final String object;
   final String tenant;
@@ -20,7 +19,7 @@ public class DataPermission implements Permission<DataPermission> {
   }
 
   private DataPermission(Action action, String collection, String object, String tenant) {
-    this.action = action.getValue();
+    super(action);
     this.collection = collection;
     this.object = object;
     this.tenant = tenant;

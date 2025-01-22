@@ -15,7 +15,8 @@ import io.weaviate.client.base.util.UrlEncoder;
  * BackupCanceler can cancel an in-progress backup by ID.
  *
  * <p>
- * Canceling backups which have successfully completed before being interrupted is not supported and will result in an error.
+ * Canceling backups which have successfully completed before being interrupted
+ * is not supported and will result in an error.
  */
 public class BackupCanceler extends BaseClient<Void> implements ClientResult<Void> {
   private String backend;
@@ -70,4 +71,3 @@ public class BackupCanceler extends BaseClient<Void> implements ClientResult<Voi
     return path;
   }
 }
-

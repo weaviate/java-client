@@ -5,12 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-public class RolesPermission implements Permission<RolesPermission> {
-  final transient String action;
+public class RolesPermission extends Permission<RolesPermission> {
   final String role;
 
   public RolesPermission(Action action, String role) {
-    this.action = action.getValue();
+    super(action);
     this.role = role;
   }
 

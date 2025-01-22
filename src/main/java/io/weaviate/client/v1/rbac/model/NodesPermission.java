@@ -7,8 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-public class NodesPermission implements Permission<NodesPermission> {
-  final transient String action;
+public class NodesPermission extends Permission<NodesPermission> {
   final String collection;
   final Verbosity verbosity;
 
@@ -25,7 +24,7 @@ public class NodesPermission implements Permission<NodesPermission> {
   }
 
   public NodesPermission(Action action, Verbosity verbosity, String collection) {
-    this.action = action.getValue();
+    super(action);
     this.collection = collection;
     this.verbosity = verbosity;
   }

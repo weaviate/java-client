@@ -5,11 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-public class ClusterPermission implements Permission<ClusterPermission> {
-  final String action;
-
+public class ClusterPermission extends Permission<ClusterPermission> {
   public ClusterPermission(Action action) {
-    this.action = action.getValue();
+    super(action);
   }
 
   ClusterPermission(String action) {

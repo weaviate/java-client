@@ -1,76 +1,80 @@
 package io.weaviate.client.v1.rbac.model;
 
 import io.weaviate.client.v1.rbac.api.WeaviatePermission;
+import lombok.Getter;
 
-public interface Permission<P extends Permission<P>> {
-  WeaviatePermission toWeaviate();
+public abstract class Permission<P extends Permission<P>> {
+  @Getter
+  final transient String action;
 
-  @SuppressWarnings("unchecked")
-  static <P extends Permission<P>> P fromWeaviate(WeaviatePermission perm) {
+  Permission(CustomAction action) {
+    this.action = action.getValue();
+  }
+
+  public abstract WeaviatePermission toWeaviate();
+
+  public static Permission<?> fromWeaviate(WeaviatePermission perm) {
     String action = perm.getAction();
     if (perm.getBackups() != null) {
-      return (P) new BackupsPermission(action, perm.getBackups().getCollection());
+      return new BackupsPermission(action, perm.getBackups().getCollection());
     } else if (perm.getCollections() != null) {
-      return (P) new CollectionsPermission(action, perm.getCollections().getCollection());
+      return new CollectionsPermission(action, perm.getCollections().getCollection());
     } else if (perm.getData() != null) {
-      return (P) new DataPermission(action, perm.getData().getCollection());
+      return new DataPermission(action, perm.getData().getCollection());
     } else if (perm.getNodes() != null) {
-      NodesPermission out;
       NodesPermission nodes = perm.getNodes();
       if (nodes.getCollection() != null) {
-        out = new NodesPermission(action, perm.getNodes().getVerbosity(), nodes.getCollection());
-      } else {
-        out = new NodesPermission(action, perm.getNodes().getVerbosity());
+        return new NodesPermission(action, perm.getNodes().getVerbosity(), nodes.getCollection());
       }
-      return (P) out;
+      return new NodesPermission(action, perm.getNodes().getVerbosity());
     } else if (perm.getRoles() != null) {
-      return (P) new RolesPermission(action, perm.getRoles().getRole());
+      return new RolesPermission(action, perm.getRoles().getRole());
     } else if (perm.getTenants() != null) {
-      return (P) new TenantsPermission(action);
+      return new TenantsPermission(action);
     } else if (CustomAction.isValid(ClusterPermission.Action.class, action)) {
-      System.out.println("cluster:" + action);
-      return (P) new ClusterPermission(action);
+      return new ClusterPermission(action);
     } else if (CustomAction.isValid(UsersPermission.Action.class, action)) {
-      return (P) new UsersPermission(action);
+      return new UsersPermission(action);
     }
     return null;
   };
 
-  static BackupsPermission backups(BackupsPermission.Action action, String collection) {
+  public static BackupsPermission backups(BackupsPermission.Action action, String collection) {
     return new BackupsPermission(action, collection);
   }
 
-  static ClusterPermission cluster(ClusterPermission.Action action) {
+  public static ClusterPermission cluster(ClusterPermission.Action action) {
     return new ClusterPermission(action);
   }
 
-  static CollectionsPermission collections(CollectionsPermission.Action action, String collection) {
+  public static CollectionsPermission collections(CollectionsPermission.Action action, String collection) {
     return new CollectionsPermission(action, collection);
   }
 
-  static DataPermission data(DataPermission.Action action, String collection) {
+  public static DataPermission data(DataPermission.Action action, String collection) {
     return new DataPermission(action, collection);
   }
 
-  static NodesPermission nodes(NodesPermission.Action action, NodesPermission.Verbosity verbosity) {
+  public static NodesPermission nodes(NodesPermission.Action action, NodesPermission.Verbosity verbosity) {
     return new NodesPermission(action, verbosity);
   }
 
-  static NodesPermission nodes(NodesPermission.Action action, NodesPermission.Verbosity verbosity, String collection) {
+  public static NodesPermission nodes(NodesPermission.Action action, NodesPermission.Verbosity verbosity,
+      String collection) {
     return new NodesPermission(action, verbosity, collection);
   }
 
-  static RolesPermission roles(RolesPermission.Action action, String role) {
+  public static RolesPermission roles(RolesPermission.Action action, String role) {
     return new RolesPermission(action, role);
   }
 
-  static TenantsPermission tenants(TenantsPermission.Action action) {
+  public static TenantsPermission tenants(TenantsPermission.Action action) {
     return new TenantsPermission(action);
   }
 
-  static UsersPermission users(UsersPermission.Action action) {
-    return new UsersPermission(action);
-  }
+  // public static UsersPermission users(UsersPermission.Action action) {
+  // return new UsersPermission(action);
+  // }
 }
 
 interface CustomAction {
