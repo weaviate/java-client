@@ -1,10 +1,8 @@
 package io.weaviate.client.v1.rbac.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.junit.Test;
@@ -13,7 +11,6 @@ import org.testcontainers.shaded.org.hamcrest.Matcher;
 import org.testcontainers.shaded.org.hamcrest.MatcherAssert;
 import org.testcontainers.shaded.org.hamcrest.beans.SamePropertyValuesAs;
 
-import com.google.gson.Gson;
 import com.jparams.junit4.JParamsTestRunner;
 import com.jparams.junit4.data.DataMethod;
 
@@ -28,7 +25,7 @@ public class PermissionTest {
     DataPermission data = new DataPermission(DataPermission.Action.MANAGE, "Pizza");
     NodesPermission nodes = new NodesPermission(NodesPermission.Action.READ, Verbosity.MINIMAL, "Pizza");
     RolesPermission roles = new RolesPermission(RolesPermission.Action.MANAGE, "TestWriter");
-    CollectionsPermission collections = new CollectionsPermission(CollectionsPermission.Action.MANAGE, "Pizza");
+    CollectionsPermission collections = new CollectionsPermission(CollectionsPermission.Action.CREATE, "Pizza");
     ClusterPermission cluster = new ClusterPermission(ClusterPermission.Action.READ);
     TenantsPermission tenants = new TenantsPermission(TenantsPermission.Action.READ);
 
@@ -98,7 +95,7 @@ public class PermissionTest {
 
   @Test
   public void testDefaultCollectionsPermission() {
-    CollectionsPermission perm = new CollectionsPermission(CollectionsPermission.Action.MANAGE, "Pizza");
+    CollectionsPermission perm = new CollectionsPermission(CollectionsPermission.Action.CREATE, "Pizza");
     assertThat(perm).as("collection permission must have tenant=*")
         .returns("*", CollectionsPermission::getTenant);
   }

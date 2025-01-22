@@ -20,6 +20,7 @@ import io.weaviate.client.v1.graphql.GraphQL;
 import io.weaviate.client.v1.grpc.GRPC;
 import io.weaviate.client.v1.misc.Misc;
 import io.weaviate.client.v1.misc.api.MetaGetter;
+import io.weaviate.client.v1.rbac.Roles;
 import io.weaviate.client.v1.schema.Schema;
 
 public class WeaviateClient {
@@ -99,6 +100,10 @@ public class WeaviateClient {
 
   public GRPC gRPC() {
     return new GRPC(httpClient, config, tokenProvider);
+  }
+
+  public Roles roles() {
+    return new Roles(httpClient, config);
   }
 
   private DbVersionProvider initDbVersionProvider() {

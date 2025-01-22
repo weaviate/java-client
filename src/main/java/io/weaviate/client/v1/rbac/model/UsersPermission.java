@@ -5,11 +5,14 @@ import io.weaviate.client.v1.rbac.api.WeaviatePermission;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-public class UsersPermission implements Permission<UsersPermission> {
-  final String action;
-
+/**
+ * UsersPermission controls access to dynamic user management capabilities.
+ * These will be introduced in v1.30. Until then the class will remain
+ * package-private.
+ */
+class UsersPermission extends Permission<UsersPermission> {
   public UsersPermission(Action action) {
-    this.action = action.getValue();
+    super(action);
   }
 
   UsersPermission(String action) {

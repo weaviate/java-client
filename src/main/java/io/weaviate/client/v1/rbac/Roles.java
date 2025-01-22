@@ -1,57 +1,90 @@
 package io.weaviate.client.v1.rbac;
 
+import io.weaviate.client.Config;
+import io.weaviate.client.base.http.HttpClient;
+import io.weaviate.client.v1.rbac.api.AssignedUsersGetter;
+import io.weaviate.client.v1.rbac.api.PermissionAdder;
+import io.weaviate.client.v1.rbac.api.PermissionChecker;
+import io.weaviate.client.v1.rbac.api.PermissionRemover;
+import io.weaviate.client.v1.rbac.api.RoleAllGetter;
+import io.weaviate.client.v1.rbac.api.RoleAssigner;
+import io.weaviate.client.v1.rbac.api.RoleCreator;
+import io.weaviate.client.v1.rbac.api.RoleDeleter;
+import io.weaviate.client.v1.rbac.api.RoleExists;
+import io.weaviate.client.v1.rbac.api.RoleGetter;
+import io.weaviate.client.v1.rbac.api.RoleRevoker;
+import io.weaviate.client.v1.rbac.api.UserRolesGetter;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class Roles {
-  public Roles() {
+
+  private final HttpClient httpClient;
+  private final Config config;
+
+  public RoleCreator creator() {
+    return new RoleCreator(httpClient, config);
   }
 
-  // public Role create(String name, Permission... permissions) {
-  // }
-  //
-  /// ** Get all existing roles. */
-  // public void delete(String role) {
-  // }
-  //
-  /// **
-  // * Add permissions to an existing role.
-  // * Note: This method is an upsert operation. If the permission already exists,
-  // * it will be updated. If it does not exist, it will be created.
-  // */
-  // public void addPermissions(String role, Permission... permissions) {
-  // }
-  //
-  /// **
-  // * Remove permissions from a role.
-  // * Note: This method is a downsert operation. If the permission does not
-  // exist,
-  // * it will be ignored. If these permissions are the only permissions of the
-  // * role, the role will be deleted.
-  // */
-  // public void removePermissions(String role, Permission... permissions) {
-  // }
-  //
-  /// ** Get all existing roles. */
-  // public void getAll() {
-  // };
-  //
-  /// ** Get permissions associated with a role. */
-  // public List<Permission> getRolePermissions(String role) {
-  // };
-  //
-  /// ** Get roles assigned to the current user. */
-  // public List<Role> getUserRoles() {
-  // };
-  //
-  /// ** Get roles assigned to a user. */
-  // public List<Role> getUserRoles(String user) {
-  // };
-  //
-  /// ** Check if a role exists. */
-  // public boolean exists(String role) {
-  // }
-  //
-  // public void assign(String user, String... roles) {
-  // }
-  //
-  // public void revoke(String user, String... roles) {
-  // }
+  /** Get all existing roles. */
+  public RoleDeleter deleter() {
+    return new RoleDeleter(httpClient, config);
+  }
+
+  /**
+   * Add permissions to an existing role.
+   * Note: This method is an upsert operation. If the permission already exists,
+   * it will be updated. If it does not exist, it will be created.
+   */
+  public PermissionAdder permissionAdder() {
+    return new PermissionAdder(httpClient, config);
+  }
+
+  /**
+   * Remove permissions from a role.
+   * Note: This method is a downsert operation. If the permission does not
+   * exist, it will be ignored. If these permissions are the only permissions of
+   * the role, the role will be deleted.
+   */
+  public PermissionRemover permissionRemover() {
+    return new PermissionRemover(httpClient, config);
+  }
+
+  /** Check if a role has a permission. */
+  public PermissionChecker permissionChecker() {
+    return new PermissionChecker(httpClient, config);
+  }
+
+  /** Get all existing roles. */
+  public RoleAllGetter allGetter() {
+    return new RoleAllGetter(httpClient, config);
+  };
+
+  /** Get role and its assiciated permissions. */
+  public RoleGetter getter() {
+    return new RoleGetter(httpClient, config);
+  };
+
+  /** Get roles assigned to a user. */
+  public UserRolesGetter userRolesGetter() {
+    return new UserRolesGetter(httpClient, config);
+  };
+
+  /** Get users assigned to a role. */
+  public AssignedUsersGetter assignedUsersGetter() {
+    return new AssignedUsersGetter(httpClient, config);
+  };
+
+  /** Check if a role exists. */
+  public RoleExists exists() {
+    return new RoleExists(httpClient, config);
+  }
+
+  public RoleAssigner assigner() {
+    return new RoleAssigner(httpClient, config);
+  }
+
+  public RoleRevoker revoker() {
+    return new RoleRevoker(httpClient, config);
+  }
 }

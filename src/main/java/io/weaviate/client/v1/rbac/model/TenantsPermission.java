@@ -5,8 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-public class TenantsPermission implements Permission<TenantsPermission> {
-  final transient String action;
+public class TenantsPermission extends Permission<TenantsPermission> {
   final String tenant;
 
   public TenantsPermission(Action action) {
@@ -18,7 +17,7 @@ public class TenantsPermission implements Permission<TenantsPermission> {
   }
 
   private TenantsPermission(Action action, String tenant) {
-    this.action = action.getValue();
+    super(action);
     this.tenant = tenant;
   }
 

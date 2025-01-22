@@ -1,15 +1,22 @@
 package io.weaviate.client.v1.rbac.model;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public class Role {
   public final String name;
-  public final List<Permission<?>> permissions;
+  public List<? extends Permission<?>> permissions = new ArrayList<>();
 
-  public Role(String name, Permission<?>... permissions) {
-    this.name = name;
-    this.permissions = Arrays.asList(permissions);
+  public String toString() {
+    return String.format(
+        "Role<name='%s', permissions=[%s]>",
+        this.name, permissions.isEmpty()
+            ? "none"
+            : String.join(", ", permissions.stream().map(Permission::getAction).toList()));
   }
-
 }

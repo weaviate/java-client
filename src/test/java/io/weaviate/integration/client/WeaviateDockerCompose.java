@@ -15,20 +15,30 @@ public class WeaviateDockerCompose implements TestRule {
 
   private final String weaviateVersion;
   private final boolean withOffloadS3;
+  private final boolean localServer;
 
   public WeaviateDockerCompose() {
     this.weaviateVersion = WeaviateDockerImage.WEAVIATE_DOCKER_IMAGE;
     this.withOffloadS3 = false;
+    this.localServer = false;
+  }
+
+  public WeaviateDockerCompose(boolean localServer) {
+    this.weaviateVersion = WeaviateDockerImage.WEAVIATE_DOCKER_IMAGE;
+    this.withOffloadS3 = false;
+    this.localServer = localServer;
   }
 
   public WeaviateDockerCompose(String version) {
     this.weaviateVersion = String.format("semitechnologies/weaviate:%s", version);
     this.withOffloadS3 = false;
+    this.localServer = false;
   }
 
   public WeaviateDockerCompose(String version, boolean withOffloadS3) {
     this.weaviateVersion = String.format("semitechnologies/weaviate:%s", version);
     this.withOffloadS3 = withOffloadS3;
+    this.localServer = false;
   }
 
   public static class Weaviate extends WeaviateContainer {
@@ -99,19 +109,29 @@ public class WeaviateDockerCompose implements TestRule {
     contextionary = new Contextionary();
     contextionary.start();
     weaviate = new Weaviate(this.weaviateVersion, withOffloadS3);
-    weaviate.start();
+    if (!localServer) {
+      weaviate.start();
+    }
   }
 
   public String getHttpHostAddress() {
+    if (localServer) {
+      return "127.0.0.1:8080";
+    }
     return weaviate.getHttpHostAddress();
   }
 
   public String getGrpcHostAddress() {
+    if (localServer) {
+      return "127.0.0.1:50051";
+    }
     return weaviate.getGrpcHostAddress();
   }
 
   public void stop() {
-    weaviate.stop();
+    if (!localServer) {
+      weaviate.stop();
+    }
     contextionary.stop();
     if (withOffloadS3) {
       minio.stop();

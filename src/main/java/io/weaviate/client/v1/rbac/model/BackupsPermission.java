@@ -5,12 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-public class BackupsPermission implements Permission<BackupsPermission> {
-  final transient String action;
+public class BackupsPermission extends Permission<BackupsPermission> {
   final String collection;
 
   public BackupsPermission(Action action, String collection) {
-    this.action = action.getValue();
+    super(action);
     this.collection = collection;
   }
 
