@@ -2,7 +2,11 @@ package io.weaviate.integration.client.rbac;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.list;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.util.List;
 
@@ -14,6 +18,7 @@ import org.junit.rules.TestName;
 
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateAuthClient;
+import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.auth.exception.AuthException;
 import io.weaviate.client.v1.rbac.Roles;
@@ -73,39 +78,94 @@ public class ClientRbacTest {
   // paramter
 
   @Test
-  public void testCreateAndList() {
+  public void testCreate() {
     String myRole = roleName("VectorOwner");
     String myCollection = "Pizza";
+
+    Permission<?>[] wantPermissions = new Permission<?>[] {
+        Permission.backups(BackupsPermission.Action.MANAGE, myCollection),
+        Permission.cluster(ClusterPermission.Action.READ),
+        Permission.nodes(NodesPermission.Action.READ, Verbosity.MINIMAL, myCollection),
+        Permission.roles(RolesPermission.Action.MANAGE, viewerRole),
+        Permission.collections(CollectionsPermission.Action.CREATE, myCollection),
+        Permission.data(DataPermission.Action.UPDATE, myCollection),
+        Permission.tenants(TenantsPermission.Action.DELETE),
+    };
 
     try {
       // Arrange
       roles.deleter().withName(myRole).run();
+
+      // Act
       roles.creator().withName(myRole)
-          .withPermissions(
-              Permission.backups(BackupsPermission.Action.MANAGE, myCollection),
-              Permission.cluster(ClusterPermission.Action.READ),
-              Permission.nodes(NodesPermission.Action.READ, Verbosity.MINIMAL, myCollection),
-              Permission.roles(RolesPermission.Action.MANAGE, viewerRole),
-              Permission.collections(CollectionsPermission.Action.CREATE, myCollection),
-              Permission.data(DataPermission.Action.UPDATE, myCollection),
-              Permission.tenants(TenantsPermission.Action.DELETE))
+          .withPermissions(wantPermissions)
           .run();
+      assumeTrue(checkRoleExists(myRole), "role should exist after creation");
 
       Result<Role> response = roles.getter().withName(myRole).run();
       Role role = response.getResult();
-      assertThat(response.getError()).as("result had errors").isNull();
+      assertNull("error fetching a role", response.getError());
       assertThat(role).as("wrong role name").returns(myRole, Role::getName);
 
-      List<? extends Permission<?>> permissions = role.getPermissions();
-      assertTrue(hasPermissionWithAction(permissions, BackupsPermission.Action.MANAGE.getValue()));
-      assertTrue(hasPermissionWithAction(permissions, ClusterPermission.Action.READ.getValue()));
-      assertTrue(hasPermissionWithAction(permissions, NodesPermission.Action.READ.getValue()));
-      assertTrue(hasPermissionWithAction(permissions, RolesPermission.Action.MANAGE.getValue()));
-      assertTrue(hasPermissionWithAction(permissions, CollectionsPermission.Action.CREATE.getValue()));
-      assertTrue(hasPermissionWithAction(permissions, DataPermission.Action.UPDATE.getValue()));
-      assertTrue(hasPermissionWithAction(permissions, TenantsPermission.Action.DELETE.getValue()));
+      for (int i = 0; i < wantPermissions.length; i++) {
+        Permission<?> perm = wantPermissions[i];
+        assertTrue("should have permission " + perm, hasPermission(myRole, perm));
+      }
     } finally {
       roles.deleter().withName(myRole).run();
+      assertFalse("should not exist after deletion", checkRoleExists(myRole));
+    }
+  }
+
+  @Test
+  public void testAddPermissions() {
+    String myRole = roleName("VectorOwner");
+    Permission<?> toAdd = Permission.cluster(ClusterPermission.Action.READ);
+    try {
+      // Arrange
+      roles.creator().withName(myRole)
+          .withPermissions(Permission.tenants(TenantsPermission.Action.DELETE))
+          .run();
+      assumeTrue(checkRoleExists(myRole), "role should exist after creation");
+
+      // Act
+      Result<?> addResult = roles.permissionAdder().withRole(myRole)
+          .withPermissions(toAdd)
+          .run();
+      assertNull("add-permissions operation error", addResult.getError());
+
+      // Assert
+      assertTrue("should have permission " + toAdd, hasPermission(myRole, toAdd));
+    } finally {
+      roles.deleter().withName(myRole).run();
+      assertFalse("should not exist after deletion", checkRoleExists(myRole));
+    }
+  }
+
+  @Test
+  public void testRemovePermissions() {
+    String myRole = roleName("VectorOwner");
+    Permission<?> toRemove = Permission.tenants(TenantsPermission.Action.DELETE);
+    try {
+      // Arrange
+      roles.creator().withName(myRole)
+          .withPermissions(
+              Permission.cluster(ClusterPermission.Action.READ),
+              Permission.tenants(TenantsPermission.Action.DELETE))
+          .run();
+      assumeTrue(checkRoleExists(myRole), "role should exist after creation");
+
+      // Act
+      Result<?> addResult = roles.permissionRemover().withRole(myRole)
+          .withPermissions(toRemove)
+          .run();
+      assertNull("remove-permissions operation error", addResult.getError());
+
+      // Assert
+      assertFalse("should not have permission " + toRemove, hasPermission(myRole, toRemove));
+    } finally {
+      roles.deleter().withName(myRole).run();
+      assertFalse("should not exist after deletion", checkRoleExists(myRole));
     }
   }
 
@@ -114,9 +174,17 @@ public class ClientRbacTest {
     return String.format("%s-%s", currentTest.getMethodName(), name);
   }
 
+  private boolean hasPermission(String role, Permission<? extends Permission<?>> perm) {
+    return roles.permissionChecker().withRole(role).withPermission(perm).run().getResult();
+  }
+
   private boolean hasPermissionWithAction(List<? extends Permission<?>> permissions, String action) {
     return permissions.stream()
         .filter(perm -> perm.getAction().equals(action))
         .findFirst().isPresent();
+  }
+
+  private boolean checkRoleExists(String role) {
+    return roles.exists().withName(role).run().getResult();
   }
 }

@@ -10,17 +10,18 @@ import io.weaviate.client.base.ClientResult;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.v1.rbac.model.Permission;
+import lombok.AllArgsConstructor;
 
 public class PermissionRemover extends BaseClient<Void> implements ClientResult<Void> {
-  private String name;
+  private String role;
   private List<Permission<?>> permissions = new ArrayList<>();
 
   public PermissionRemover(HttpClient httpClient, Config config) {
     super(httpClient, config);
   }
 
-  public PermissionRemover withName(String name) {
-    this.name = name;
+  public PermissionRemover withRole(String role) {
+    this.role = role;
     return this;
   }
 
@@ -29,13 +30,18 @@ public class PermissionRemover extends BaseClient<Void> implements ClientResult<
     return this;
   }
 
+  @AllArgsConstructor
+  private static class Body {
+    public final List<?> permissions;
+  }
+
   @Override
   public Result<Void> run() {
     List<WeaviatePermission> permissions = WeaviatePermission.mergePermissions(this.permissions);
-    return new Result<Void>(sendPostRequest(path(), permissions, Void.class));
+    return new Result<Void>(sendPostRequest(path(), new Body(permissions), Void.class));
   }
 
   private String path() {
-    return String.format("/authz/roles/%s/remove-permissions", this.name);
+    return String.format("/authz/roles/%s/remove-permissions", this.role);
   }
 }
