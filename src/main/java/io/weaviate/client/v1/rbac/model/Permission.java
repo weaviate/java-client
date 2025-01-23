@@ -1,8 +1,10 @@
 package io.weaviate.client.v1.rbac.model;
 
 import io.weaviate.client.v1.rbac.api.WeaviatePermission;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+@EqualsAndHashCode
 public abstract class Permission<P extends Permission<P>> {
   @Getter
   final transient String action;
@@ -79,7 +81,6 @@ public abstract class Permission<P extends Permission<P>> {
   public String toString() {
     return String.format("Permission<action=%s>", this.action);
   }
-
 }
 
 interface CustomAction {

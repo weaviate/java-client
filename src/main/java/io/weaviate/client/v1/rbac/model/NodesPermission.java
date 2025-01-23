@@ -4,9 +4,11 @@ import com.google.gson.annotations.SerializedName;
 
 import io.weaviate.client.v1.rbac.api.WeaviatePermission;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
+@EqualsAndHashCode(callSuper = true)
 public class NodesPermission extends Permission<NodesPermission> {
   final String collection;
   final Verbosity verbosity;
