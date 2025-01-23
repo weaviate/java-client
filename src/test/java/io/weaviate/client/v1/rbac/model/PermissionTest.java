@@ -58,7 +58,7 @@ public class PermissionTest {
         {
             "collections permission",
             (Supplier<Permission<?>>) () -> collections,
-            new WeaviatePermission("manage_collections", collections),
+            new WeaviatePermission("create_collections", collections),
         },
         {
             "cluster permission",
