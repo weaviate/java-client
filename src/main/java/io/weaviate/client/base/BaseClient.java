@@ -46,9 +46,6 @@ public abstract class BaseClient<T> {
       HttpResponse response = this.sendHttpRequest(endpoint, payload, method);
       int statusCode = response.getStatusCode();
       String responseBody = response.getBody();
-      System.out.println("response: " + responseBody);
-      System.out.println("Status Code: " + String.valueOf(response.getStatusCode()));
-
       if (statusCode < 399) {
         T body = toResponse(responseBody, classOfT);
         return new Response<>(statusCode, body, null);
@@ -64,9 +61,7 @@ public abstract class BaseClient<T> {
 
   protected HttpResponse sendHttpRequest(String endpoint, Object payload, String method) throws Exception {
     String address = config.getBaseURL() + endpoint;
-    System.out.println(method + " request: " + address);
     String json = toJsonString(payload);
-    System.out.println("with body: " + json);
     if (method.equals("POST")) {
       return client.sendPostRequest(address, json);
     }
