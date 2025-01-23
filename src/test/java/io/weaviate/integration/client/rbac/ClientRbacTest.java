@@ -116,13 +116,10 @@ public class ClientRbacTest {
 
     try {
       // Arrange
-      roles.deleter().withName(myRole).run();
+      deleteRole(myRole);
 
       // Act
-      roles.creator().withName(myRole)
-          .withPermissions(wantPermissions)
-          .run();
-      assumeTrue(checkRoleExists(myRole), "role should exist after creation");
+      createRole(myRole, wantPermissions);
 
       Result<Role> response = roles.getter().withName(myRole).run();
       Role role = response.getResult();
@@ -134,8 +131,7 @@ public class ClientRbacTest {
         assertTrue("should have permission " + perm, checkHasPermission(myRole, perm));
       }
     } finally {
-      roles.deleter().withName(myRole).run();
-      assertFalse("role should not exist after deletion", checkRoleExists(myRole));
+      deleteRole(myRole);
     }
   }
 
@@ -145,10 +141,7 @@ public class ClientRbacTest {
     Permission<?> toAdd = Permission.cluster(ClusterPermission.Action.READ);
     try {
       // Arrange
-      roles.creator().withName(myRole)
-          .withPermissions(Permission.tenants(TenantsPermission.Action.DELETE))
-          .run();
-      assumeTrue(checkRoleExists(myRole), "role should exist after creation");
+      createRole(myRole, Permission.tenants(TenantsPermission.Action.DELETE));
 
       // Act
       Result<?> response = roles.permissionAdder().withRole(myRole)
@@ -159,8 +152,7 @@ public class ClientRbacTest {
       // Assert
       assertTrue("should have permission " + toAdd, checkHasPermission(myRole, toAdd));
     } finally {
-      roles.deleter().withName(myRole).run();
-      assertFalse("role should not exist after deletion", checkRoleExists(myRole));
+      deleteRole(myRole);
     }
   }
 
@@ -170,12 +162,9 @@ public class ClientRbacTest {
     Permission<?> toRemove = Permission.tenants(TenantsPermission.Action.DELETE);
     try {
       // Arrange
-      roles.creator().withName(myRole)
-          .withPermissions(
-              Permission.cluster(ClusterPermission.Action.READ),
-              Permission.tenants(TenantsPermission.Action.DELETE))
-          .run();
-      assumeTrue(checkRoleExists(myRole), "role should exist after creation");
+      createRole(myRole,
+          Permission.cluster(ClusterPermission.Action.READ),
+          Permission.tenants(TenantsPermission.Action.DELETE));
 
       // Act
       Result<?> response = roles.permissionRemover().withRole(myRole)
@@ -186,8 +175,7 @@ public class ClientRbacTest {
       // Assert
       assertFalse("should not have permission " + toRemove, checkHasPermission(myRole, toRemove));
     } finally {
-      roles.deleter().withName(myRole).run();
-      assertFalse("role should not exist after deletion", checkRoleExists(myRole));
+      deleteRole(myRole);
     }
   }
 
@@ -196,11 +184,7 @@ public class ClientRbacTest {
     String myRole = roleName("VectorOwner");
     try {
       // Arrange
-      roles.creator().withName(myRole)
-          .withPermissions(Permission.tenants(TenantsPermission.Action.DELETE))
-          .run();
-      assumeTrue(checkRoleExists(myRole), "role should exist after creation");
-
+      createRole(myRole, Permission.tenants(TenantsPermission.Action.DELETE));
       roles.assigner().withUser(adminUser).witRoles(myRole).run();
       assumeTrue(checkHasRole(adminUser, myRole), adminUser + " should have the assigned role");
 
@@ -211,8 +195,7 @@ public class ClientRbacTest {
       // Assert
       assertFalse("should not have " + myRole + "role", checkHasRole(adminUser, myRole));
     } finally {
-      roles.deleter().withName(myRole).run();
-      assertFalse("role should not exist after deletion", checkRoleExists(myRole));
+      deleteRole(myRole);
     }
   }
 
@@ -221,10 +204,7 @@ public class ClientRbacTest {
     String myRole = roleName("VectorOwner");
     try {
       // Arrange
-      roles.creator().withName(myRole)
-          .withPermissions(Permission.tenants(TenantsPermission.Action.DELETE))
-          .run();
-      assumeTrue(checkRoleExists(myRole), "role should exist after creation");
+      createRole(myRole, Permission.tenants(TenantsPermission.Action.DELETE));
       assumeFalse(checkHasRole(adminUser, myRole), adminUser + " should not have the new role");
 
       // Act
@@ -234,8 +214,7 @@ public class ClientRbacTest {
       // Assert
       assertTrue("should have " + myRole + "role", checkHasRole(adminUser, myRole));
     } finally {
-      roles.deleter().withName(myRole).run();
-      assertFalse("role should not exist after deletion", checkRoleExists(myRole));
+      deleteRole(myRole);
     }
   }
 
@@ -254,5 +233,17 @@ public class ClientRbacTest {
 
   private boolean checkHasRole(String user, String role) {
     return roles.assignedUsersGetter().withRole(role).run().getResult().contains(user);
+  }
+
+  private void createRole(String role, Permission<?>... permissions) {
+    roles.creator().withName(role).withPermissions(permissions).run();
+    assumeTrue(checkRoleExists(role), "role should exist after creation");
+
+  }
+
+  private void deleteRole(String role) {
+    roles.deleter().withName(role).run();
+    assertFalse("role should not exist after deletion", checkRoleExists(role));
+
   }
 }
