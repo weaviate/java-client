@@ -25,7 +25,7 @@ public class RoleGetter extends BaseClient<WeaviateRole> implements ClientResult
   @Override
   public Result<Role> run() {
     Response<WeaviateRole> resp = sendGetRequest("/authz/roles/" + this.name, WeaviateRole.class);
-    WeaviateRole role = Optional.ofNullable(resp.getBody()).orElse(null);
-    return new Result<Role>(resp.getStatusCode(), role.toRole(), resp.getErrors());
+    Role role = Optional.ofNullable(resp.getBody()).map(WeaviateRole::toRole).orElse(null);
+    return new Result<Role>(resp.getStatusCode(), role, resp.getErrors());
   }
 }

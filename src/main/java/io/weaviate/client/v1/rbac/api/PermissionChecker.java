@@ -8,15 +8,15 @@ import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.v1.rbac.model.Permission;
 
 public class PermissionChecker extends BaseClient<Boolean> implements ClientResult<Boolean> {
-  private String name;
+  private String role;
   private Permission<?> permission;
 
   public PermissionChecker(HttpClient httpClient, Config config) {
     super(httpClient, config);
   }
 
-  public PermissionChecker withName(String name) {
-    this.name = name;
+  public PermissionChecker withRole(String role) {
+    this.role = role;
     return this;
   }
 
@@ -27,10 +27,10 @@ public class PermissionChecker extends BaseClient<Boolean> implements ClientResu
 
   @Override
   public Result<Boolean> run() {
-    return new Result<Boolean>(sendPostRequest(path(), permission, Boolean.class));
+    return new Result<Boolean>(sendPostRequest(path(), permission.toWeaviate(), Boolean.class));
   }
 
   private String path() {
-    return String.format("/authz/roles/%s/has-permission", this.name);
+    return String.format("/authz/roles/%s/has-permission", this.role);
   }
 }

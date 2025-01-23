@@ -37,7 +37,7 @@ public abstract class Permission<P extends Permission<P>> {
       return new UsersPermission(action);
     }
     return null;
-  };
+  }
 
   public static BackupsPermission backups(BackupsPermission.Action action, String collection) {
     return new BackupsPermission(action, collection);
@@ -75,6 +75,11 @@ public abstract class Permission<P extends Permission<P>> {
   // public static UsersPermission users(UsersPermission.Action action) {
   // return new UsersPermission(action);
   // }
+
+  public String toString() {
+    return String.format("Permission<action=%s>", this.action);
+  }
+
 }
 
 interface CustomAction {
