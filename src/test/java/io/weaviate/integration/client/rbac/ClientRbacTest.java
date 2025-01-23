@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.rules.TestName;
 
 import io.weaviate.client.Config;
@@ -74,6 +75,19 @@ public class ClientRbacTest {
     assertThat(all.get(1)).returns(viewerRole, Role::getName);
   }
 
+  @Test
+  public void testGetUserRoles() {
+    Result<List<Role>> responseCurrent = roles.userRolesGetter().run();
+    assertThat(responseCurrent.getError()).as("result had errors").isNull();
+    Result<List<Role>> responseAdminUser = roles.userRolesGetter().withUser(adminUser).run();
+    assertThat(responseAdminUser.getError()).as("result had errors").isNull();
+
+    List<Role> currentRoles = responseCurrent.getResult();
+    List<Role> adminRoles = responseAdminUser.getResult();
+
+    Assertions.assertArrayEquals(currentRoles.toArray(), adminRoles.toArray(), "expect same set of roles");
+  }
+
   // TODO: check if I can create a role with a name that's not a valid URL
   // paramter
 
@@ -109,7 +123,7 @@ public class ClientRbacTest {
 
       for (int i = 0; i < wantPermissions.length; i++) {
         Permission<?> perm = wantPermissions[i];
-        assertTrue("should have permission " + perm, hasPermission(myRole, perm));
+        assertTrue("should have permission " + perm, checkHasPermission(myRole, perm));
       }
     } finally {
       roles.deleter().withName(myRole).run();
@@ -135,7 +149,7 @@ public class ClientRbacTest {
       assertNull("add-permissions operation error", addResult.getError());
 
       // Assert
-      assertTrue("should have permission " + toAdd, hasPermission(myRole, toAdd));
+      assertTrue("should have permission " + toAdd, checkHasPermission(myRole, toAdd));
     } finally {
       roles.deleter().withName(myRole).run();
       assertFalse("should not exist after deletion", checkRoleExists(myRole));
@@ -162,7 +176,7 @@ public class ClientRbacTest {
       assertNull("remove-permissions operation error", addResult.getError());
 
       // Assert
-      assertFalse("should not have permission " + toRemove, hasPermission(myRole, toRemove));
+      assertFalse("should not have permission " + toRemove, checkHasPermission(myRole, toRemove));
     } finally {
       roles.deleter().withName(myRole).run();
       assertFalse("should not exist after deletion", checkRoleExists(myRole));
@@ -174,14 +188,8 @@ public class ClientRbacTest {
     return String.format("%s-%s", currentTest.getMethodName(), name);
   }
 
-  private boolean hasPermission(String role, Permission<? extends Permission<?>> perm) {
+  private boolean checkHasPermission(String role, Permission<? extends Permission<?>> perm) {
     return roles.permissionChecker().withRole(role).withPermission(perm).run().getResult();
-  }
-
-  private boolean hasPermissionWithAction(List<? extends Permission<?>> permissions, String action) {
-    return permissions.stream()
-        .filter(perm -> perm.getAction().equals(action))
-        .findFirst().isPresent();
   }
 
   private boolean checkRoleExists(String role) {

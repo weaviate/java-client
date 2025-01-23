@@ -2,9 +2,11 @@ package io.weaviate.client.v1.rbac.model;
 
 import io.weaviate.client.v1.rbac.api.WeaviatePermission;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
+@EqualsAndHashCode(callSuper = true)
 public class CollectionsPermission extends Permission<CollectionsPermission> {
   final String collection;
   final String tenant;
