@@ -28,10 +28,12 @@ import io.weaviate.client.v1.rbac.model.Role;
 import io.weaviate.client.v1.rbac.model.RolesPermission;
 import io.weaviate.client.v1.rbac.model.TenantsPermission;
 import io.weaviate.integration.client.WeaviateDockerCompose;
+import io.weaviate.integration.client.WeaviateDockerCompose.Weaviate;
 
 public class ClientRbacTest {
   private static final String adminRole = "admin";
   private static final String viewerRole = "viewer";
+  private static final String adminUser = "john-doe";
 
   private Roles roles;
 
@@ -39,12 +41,12 @@ public class ClientRbacTest {
   public TestName currentTest = new TestName();
 
   @ClassRule
-  public static WeaviateDockerCompose compose = new WeaviateDockerCompose(true);
+  public static WeaviateDockerCompose compose = WeaviateDockerCompose.rbac(adminUser);
 
   @Before
   public void before() throws AuthException {
     Config config = new Config("http", compose.getHttpHostAddress());
-    roles = WeaviateAuthClient.apiKey(config, "jp-secret-key").roles();
+    roles = WeaviateAuthClient.apiKey(config, Weaviate.makeSecret(adminUser)).roles();
   }
 
   public static Object[][] rolesToCreate() {
@@ -78,7 +80,6 @@ public class ClientRbacTest {
     try {
       // Arrange
       roles.deleter().withName(myRole).run();
-
       roles.creator().withName(myRole)
           .withPermissions(
               Permission.backups(BackupsPermission.Action.MANAGE, myCollection),
