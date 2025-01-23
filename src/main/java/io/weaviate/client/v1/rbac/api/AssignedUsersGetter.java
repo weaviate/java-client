@@ -13,14 +13,14 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.HttpClient;
 
 public class AssignedUsersGetter extends BaseClient<String[]> implements ClientResult<List<String>> {
-  private String name;
+  private String role;
 
   public AssignedUsersGetter(HttpClient httpClient, Config config) {
     super(httpClient, config);
   }
 
-  public AssignedUsersGetter withName(String name) {
-    this.name = name;
+  public AssignedUsersGetter withRole(String role) {
+    this.role = role;
     return this;
   }
 
@@ -34,6 +34,6 @@ public class AssignedUsersGetter extends BaseClient<String[]> implements ClientR
   }
 
   private String path() {
-    return String.format("/authz/roles/%s/users", this.name);
+    return String.format("/authz/roles/%s/users", this.role);
   }
 }
