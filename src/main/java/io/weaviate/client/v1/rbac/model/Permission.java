@@ -41,6 +41,9 @@ public abstract class Permission<P extends Permission<P>> {
     return null;
   }
 
+  // TODO: add overloaded methods for creating multiple permissions (actions) for
+  // the same collection/tenant/user etc.
+
   public static BackupsPermission backups(BackupsPermission.Action action, String collection) {
     return new BackupsPermission(action, collection);
   }

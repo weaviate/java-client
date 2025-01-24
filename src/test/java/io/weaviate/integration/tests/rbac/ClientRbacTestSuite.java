@@ -22,7 +22,6 @@ import com.jparams.junit4.data.DataMethod;
 
 import io.weaviate.client.Config;
 import io.weaviate.client.base.Result;
-import io.weaviate.client.v1.auth.exception.AuthException;
 import io.weaviate.client.v1.rbac.model.BackupsPermission;
 import io.weaviate.client.v1.rbac.model.ClusterPermission;
 import io.weaviate.client.v1.rbac.model.CollectionsPermission;
@@ -56,14 +55,12 @@ public class ClientRbacTestSuite {
 
   public static Object[][] clients() {
     try {
-      Object[][] r = new Object[][] {
-          {
-              (Supplier<Rbac>) () -> new io.weaviate.integration.client.rbac.ClientRbacTest(config(), API_KEY) },
+      return new Object[][] {
+          { (Supplier<Rbac>) () -> new io.weaviate.integration.client.rbac.ClientRbacTest(config(), API_KEY) },
+          { (Supplier<Rbac>) () -> new io.weaviate.integration.client.async.rbac.ClientRbacTest(config(), API_KEY) }
       };
-      return r;
     } catch (Exception e) {
-      System.out.println(e.getMessage());
-      return null;
+      throw new RuntimeException(e);
     }
   }
 
