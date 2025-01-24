@@ -1,5 +1,11 @@
 package io.weaviate.client.v1.async;
 
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+
+import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
+import org.apache.hc.core5.io.CloseMode;
+
 import io.weaviate.client.Config;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.async.AsyncHttpClient;
@@ -13,13 +19,10 @@ import io.weaviate.client.v1.async.cluster.Cluster;
 import io.weaviate.client.v1.async.data.Data;
 import io.weaviate.client.v1.async.graphql.GraphQL;
 import io.weaviate.client.v1.async.misc.Misc;
+import io.weaviate.client.v1.async.rbac.Roles;
 import io.weaviate.client.v1.async.schema.Schema;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.misc.model.Meta;
-import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
-import org.apache.hc.core5.io.CloseMode;
 
 public class WeaviateAsyncClient implements AutoCloseable {
   private final Config config;
@@ -72,9 +75,12 @@ public class WeaviateAsyncClient implements AutoCloseable {
     return new GraphQL(client, config, tokenProvider);
   }
 
+  public Roles roles() {
+    return new Roles(client, config, tokenProvider);
+  }
+
   private DbVersionProvider initDbVersionProvider() {
-    DbVersionProvider.VersionGetter getter = () ->
-      Optional.ofNullable(this.getMeta())
+    DbVersionProvider.VersionGetter getter = () -> Optional.ofNullable(this.getMeta())
         .filter(result -> !result.hasErrors())
         .map(result -> result.getResult().getVersion());
 

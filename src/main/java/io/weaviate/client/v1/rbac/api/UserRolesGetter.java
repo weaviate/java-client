@@ -28,12 +28,8 @@ public class UserRolesGetter extends BaseClient<WeaviateRole[]> implements Clien
 
   @Override
   public Result<List<Role>> run() {
-    Response<WeaviateRole[]> resp;
-    if (this.user == null) {
-      resp = sendGetRequest("/authz/users/own-roles", WeaviateRole[].class);
-    } else {
-      resp = sendGetRequest(path(), WeaviateRole[].class);
-    }
+    String path = this.user == null ? "/authz/users/own-roles" : this.path();
+    Response<WeaviateRole[]> resp = sendGetRequest(path, WeaviateRole[].class);
     List<Role> roles = Optional.ofNullable(resp.getBody())
         .map(Arrays::asList)
         .orElse(new ArrayList<>())
