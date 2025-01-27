@@ -30,6 +30,15 @@ public class PermissionRemover extends BaseClient<Void> implements ClientResult<
     return this;
   }
 
+  public PermissionRemover withPermissions(Permission<?>[]... permissions) {
+    List<Permission<?>> all = new ArrayList<>();
+    for (Permission<?>[] perm : permissions) {
+      all.addAll(Arrays.asList(perm));
+    }
+    this.permissions = all;
+    return this;
+  }
+
   @AllArgsConstructor
   private static class Body {
     public final List<?> permissions;

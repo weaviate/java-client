@@ -10,13 +10,13 @@ import lombok.Getter;
 public class RolesPermission extends Permission<RolesPermission> {
   final String role;
 
-  public RolesPermission(Action action, String role) {
+  public RolesPermission(String role, Action action) {
     super(action);
     this.role = role;
   }
 
-  RolesPermission(String action, String role) {
-    this(CustomAction.fromString(Action.class, action), role);
+  RolesPermission(String role, String action) {
+    this(role, CustomAction.fromString(Action.class, action));
   }
 
   @Override

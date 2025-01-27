@@ -11,15 +11,15 @@ public class CollectionsPermission extends Permission<CollectionsPermission> {
   final String collection;
   final String tenant;
 
-  public CollectionsPermission(Action action, String collection) {
-    this(action, collection, "*");
+  public CollectionsPermission(String collection, Action action) {
+    this(collection, "*", action);
   }
 
-  CollectionsPermission(String action, String collection) {
-    this(CustomAction.fromString(Action.class, action), collection);
+  CollectionsPermission(String collection, String action) {
+    this(collection, CustomAction.fromString(Action.class, action));
   }
 
-  private CollectionsPermission(Action action, String collection, String tenant) {
+  private CollectionsPermission(String collection, String tenant, Action action) {
     super(action);
     this.collection = collection;
     this.tenant = tenant;

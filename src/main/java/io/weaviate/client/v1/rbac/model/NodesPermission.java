@@ -13,19 +13,21 @@ public class NodesPermission extends Permission<NodesPermission> {
   final String collection;
   final Verbosity verbosity;
 
-  public NodesPermission(Action action, Verbosity verbosity) {
-    this(action, verbosity, "*");
+  /** NodesPermission for all collections. */
+  public NodesPermission(Verbosity verbosity, Action action) {
+    this("*", verbosity, action);
   }
 
-  NodesPermission(String action, Verbosity verbosity) {
-    this(CustomAction.fromString(Action.class, action), verbosity);
+  NodesPermission(Verbosity verbosity, String action) {
+    this(verbosity, CustomAction.fromString(Action.class, action));
   }
 
-  NodesPermission(String action, Verbosity verbosity, String collection) {
-    this(CustomAction.fromString(Action.class, action), verbosity, collection);
+  NodesPermission(String collection, Verbosity verbosity, String action) {
+    this(collection, verbosity, CustomAction.fromString(Action.class, action));
   }
 
-  public NodesPermission(Action action, Verbosity verbosity, String collection) {
+  /** NodesPermission for a defined collection. */
+  public NodesPermission(String collection, Verbosity verbosity, Action action) {
     super(action);
     this.collection = collection;
     this.verbosity = verbosity;

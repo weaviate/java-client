@@ -10,13 +10,13 @@ import lombok.Getter;
 public class BackupsPermission extends Permission<BackupsPermission> {
   final String collection;
 
-  public BackupsPermission(Action action, String collection) {
+  public BackupsPermission(String collection, Action action) {
     super(action);
     this.collection = collection;
   }
 
-  BackupsPermission(String action, String collection) {
-    this(CustomAction.fromString(Action.class, action), collection);
+  BackupsPermission(String collection, String action) {
+    this(collection, CustomAction.fromString(Action.class, action));
   }
 
   @Override

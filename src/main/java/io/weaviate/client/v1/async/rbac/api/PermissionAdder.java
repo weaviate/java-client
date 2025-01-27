@@ -35,6 +35,15 @@ public class PermissionAdder extends AsyncBaseClient<Void> implements AsyncClien
     return this;
   }
 
+  public PermissionAdder withPermissions(Permission<?>[]... permissions) {
+    List<Permission<?>> all = new ArrayList<>();
+    for (Permission<?>[] perm : permissions) {
+      all.addAll(Arrays.asList(perm));
+    }
+    this.permissions = all;
+    return this;
+  }
+
   /** The API signature for this method is { "permissions": [...] } */
   @AllArgsConstructor
   private static class Body {

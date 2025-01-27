@@ -12,15 +12,15 @@ public class DataPermission extends Permission<DataPermission> {
   final String object;
   final String tenant;
 
-  public DataPermission(Action action, String collection) {
-    this(action, collection, "*", "*");
+  public DataPermission(String collection, Action action) {
+    this(collection, "*", "*", action);
   }
 
-  DataPermission(String action, String collection) {
-    this(CustomAction.fromString(Action.class, action), collection);
+  DataPermission(String collection, String action) {
+    this(collection, CustomAction.fromString(Action.class, action));
   }
 
-  private DataPermission(Action action, String collection, String object, String tenant) {
+  private DataPermission(String collection, String object, String tenant, Action action) {
     super(action);
     this.collection = collection;
     this.object = object;

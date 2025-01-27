@@ -29,6 +29,15 @@ public class RoleCreator extends BaseClient<Void> implements ClientResult<Void> 
     return this;
   }
 
+  public RoleCreator withPermissions(Permission<?>[]... permissions) {
+    List<Permission<?>> all = new ArrayList<>();
+    for (Permission<?>[] perm : permissions) {
+      all.addAll(Arrays.asList(perm));
+    }
+    this.permissions = all;
+    return this;
+  }
+
   @Override
   public Result<Void> run() {
     WeaviateRole role = new WeaviateRole(this.name, this.permissions);
