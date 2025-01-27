@@ -2,6 +2,7 @@ package io.weaviate.integration.client;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -84,7 +85,6 @@ public class WeaviateDockerCompose implements TestRule {
       withEnv("AUTHORIZATION_RBAC_ENABLED", "true");
       withEnv("AUTHENTICATION_APIKEY_USERS", adminUser);
       withEnv("AUTHENTICATION_APIKEY_ALLOWED_KEYS", makeSecret(adminUser));
-      withEnv("AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED", "false");
       withEnv("AUTHORIZATION_ADMIN_USERS", adminUser);
     }
 
