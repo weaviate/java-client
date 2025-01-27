@@ -1,8 +1,10 @@
 package io.weaviate.client.v1.rbac.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.function.Supplier;
 
 import org.junit.Test;
@@ -20,21 +22,15 @@ import io.weaviate.client.v1.rbac.model.NodesPermission.Verbosity;
 @RunWith(JParamsTestRunner.class)
 public class PermissionTest {
   public static Object[][] serializationTestCases() {
-    UsersPermission users = new UsersPermission(UsersPermission.Action.MANAGE);
-    BackupsPermission backups = new BackupsPermission(BackupsPermission.Action.MANAGE, "Pizza");
-    DataPermission data = new DataPermission(DataPermission.Action.MANAGE, "Pizza");
-    NodesPermission nodes = new NodesPermission(NodesPermission.Action.READ, Verbosity.MINIMAL, "Pizza");
-    RolesPermission roles = new RolesPermission(RolesPermission.Action.MANAGE, "TestWriter");
-    CollectionsPermission collections = new CollectionsPermission(CollectionsPermission.Action.CREATE, "Pizza");
+    BackupsPermission backups = new BackupsPermission("Pizza", BackupsPermission.Action.MANAGE);
+    DataPermission data = new DataPermission("Pizza", DataPermission.Action.MANAGE);
+    NodesPermission nodes = new NodesPermission("Pizza", Verbosity.MINIMAL, NodesPermission.Action.READ);
+    RolesPermission roles = new RolesPermission("TestWriter", RolesPermission.Action.MANAGE);
+    CollectionsPermission collections = new CollectionsPermission("Pizza", CollectionsPermission.Action.CREATE);
     ClusterPermission cluster = new ClusterPermission(ClusterPermission.Action.READ);
     TenantsPermission tenants = new TenantsPermission(TenantsPermission.Action.READ);
 
     return new Object[][] {
-        {
-            "user permission",
-            (Supplier<Permission<?>>) () -> users,
-            new WeaviatePermission("manage_users"),
-        },
         {
             "backup permission",
             (Supplier<Permission<?>>) () -> backups,
@@ -87,7 +83,7 @@ public class PermissionTest {
 
   @Test
   public void testDefaultDataPermission() {
-    DataPermission perm = new DataPermission(DataPermission.Action.MANAGE, "Pizza");
+    DataPermission perm = new DataPermission("Pizza", DataPermission.Action.MANAGE);
     assertThat(perm).as("data permission must have object=* and tenant=*")
         .returns("*", DataPermission::getObject)
         .returns("*", DataPermission::getTenant);
@@ -95,14 +91,14 @@ public class PermissionTest {
 
   @Test
   public void testDefaultCollectionsPermission() {
-    CollectionsPermission perm = new CollectionsPermission(CollectionsPermission.Action.CREATE, "Pizza");
+    CollectionsPermission perm = new CollectionsPermission("Pizza", CollectionsPermission.Action.CREATE);
     assertThat(perm).as("collection permission must have tenant=*")
         .returns("*", CollectionsPermission::getTenant);
   }
 
   @Test
   public void testDefaultNodesPermission() {
-    NodesPermission perm = new NodesPermission(NodesPermission.Action.READ, NodesPermission.Verbosity.MINIMAL);
+    NodesPermission perm = new NodesPermission(NodesPermission.Verbosity.MINIMAL, NodesPermission.Action.READ);
     assertThat(perm).as("nodes permission should affect all collections if one is not specified")
         .returns("*", NodesPermission::getCollection);
   }
@@ -119,8 +115,60 @@ public class PermissionTest {
   public void testFromWeaviate(String name,
       Supplier<Permission<?>> expectedFunc, WeaviatePermission input)
       throws Exception {
+    System.out.println("fromWeaviate: " + name);
     Permission<?> expected = expectedFunc.get();
     Permission<?> actual = Permission.fromWeaviate(input);
     MatcherAssert.assertThat(name, actual, sameAs(expected));
+  }
+
+  /**
+   * groupedConstructors returns test cases for overloaded factory methods, which
+   * allow creating multiple permission entries for the same resource.
+   *
+   * Permission types which only have 1 possible action (e.g. backup/cluster
+   * permissions) are omitted.
+   */
+  public static Object[][] groupedConstructors() {
+    return new Object[][] {
+        {
+            Permission.collections("Pizza",
+                CollectionsPermission.Action.CREATE,
+                CollectionsPermission.Action.READ,
+                CollectionsPermission.Action.DELETE),
+            new String[] {
+                "create_collections",
+                "read_collections",
+                "delete_collections",
+            },
+        },
+        {
+            Permission.data("Pizza",
+                DataPermission.Action.CREATE,
+                DataPermission.Action.READ,
+                DataPermission.Action.DELETE),
+            new String[] {
+                "create_data",
+                "read_data",
+                "delete_data",
+            },
+        },
+        {
+            Permission.roles("TestRole",
+                RolesPermission.Action.READ,
+                RolesPermission.Action.MANAGE),
+            new String[] {
+                "read_roles",
+                "manage_roles",
+            },
+        },
+    };
+  }
+
+  @DataMethod(source = PermissionTest.class, method = "groupedConstructors")
+  @Test
+  public void testGroupedConstructors(Permission<? extends Permission<?>>[] permissions, String[] expectedActions) {
+    Arrays.stream(permissions).map(Permission::getAction).forEach(a -> System.out.println(a));
+    Object[] actualActions = Arrays.stream(permissions).map(Permission::getAction).toArray();
+    assertArrayEquals(expectedActions, actualActions, "set of allowed actions do not match");
   }
 }

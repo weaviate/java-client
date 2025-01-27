@@ -34,6 +34,15 @@ public class RoleCreator extends AsyncBaseClient<Void> implements AsyncClientRes
     return this;
   }
 
+  public RoleCreator withPermissions(Permission<?>[]... permissions) {
+    List<Permission<?>> all = new ArrayList<>();
+    for (Permission<?>[] perm : permissions) {
+      all.addAll(Arrays.asList(perm));
+    }
+    this.permissions = all;
+    return this;
+  }
+
   @Override
   public Future<Result<Void>> run(FutureCallback<Result<Void>> callback) {
     WeaviateRole role = new WeaviateRole(this.name, this.permissions);
