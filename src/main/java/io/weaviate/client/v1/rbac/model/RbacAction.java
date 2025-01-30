@@ -24,7 +24,8 @@ package io.weaviate.client.v1.rbac.model;
 interface RbacAction {
   String getValue();
 
-  static <E extends Enum<E> & RbacAction> E fromString(Class<E> enumClass, String value) {
+  static <E extends Enum<E> & RbacAction> E fromString(Class<E> enumClass, String value)
+      throws IllegalArgumentException {
     for (E action : enumClass.getEnumConstants()) {
       if (action.getValue().equals(value)) {
         return action;
