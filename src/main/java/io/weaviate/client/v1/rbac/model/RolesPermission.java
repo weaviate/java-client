@@ -16,7 +16,7 @@ public class RolesPermission extends Permission<RolesPermission> {
   }
 
   RolesPermission(String role, String action) {
-    this(role, CustomAction.fromString(Action.class, action));
+    this(role, RbacAction.fromString(Action.class, action));
   }
 
   @Override
@@ -25,7 +25,7 @@ public class RolesPermission extends Permission<RolesPermission> {
   }
 
   @AllArgsConstructor
-  public enum Action implements CustomAction {
+  public enum Action implements RbacAction {
     READ("read_roles"),
     MANAGE("manage_roles");
 

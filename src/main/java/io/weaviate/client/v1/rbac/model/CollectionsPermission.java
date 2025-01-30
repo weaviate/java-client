@@ -16,7 +16,7 @@ public class CollectionsPermission extends Permission<CollectionsPermission> {
   }
 
   CollectionsPermission(String collection, String action) {
-    this(collection, CustomAction.fromString(Action.class, action));
+    this(collection, RbacAction.fromString(Action.class, action));
   }
 
   private CollectionsPermission(String collection, String tenant, Action action) {
@@ -31,7 +31,7 @@ public class CollectionsPermission extends Permission<CollectionsPermission> {
   }
 
   @AllArgsConstructor
-  public enum Action implements CustomAction {
+  public enum Action implements RbacAction {
     CREATE("create_collections"),
     READ("read_collections"),
     UPDATE("update_collections"),

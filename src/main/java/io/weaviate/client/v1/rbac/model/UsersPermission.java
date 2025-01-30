@@ -16,7 +16,7 @@ class UsersPermission extends Permission<UsersPermission> {
   }
 
   UsersPermission(String action) {
-    this(CustomAction.fromString(Action.class, action));
+    this(RbacAction.fromString(Action.class, action));
   }
 
   @Override
@@ -25,7 +25,7 @@ class UsersPermission extends Permission<UsersPermission> {
   }
 
   @AllArgsConstructor
-  public enum Action implements CustomAction {
+  public enum Action implements RbacAction {
     MANAGE("manage_users");
 
     @Getter

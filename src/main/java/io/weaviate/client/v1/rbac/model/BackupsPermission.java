@@ -16,7 +16,7 @@ public class BackupsPermission extends Permission<BackupsPermission> {
   }
 
   BackupsPermission(String collection, String action) {
-    this(collection, CustomAction.fromString(Action.class, action));
+    this(collection, RbacAction.fromString(Action.class, action));
   }
 
   @Override
@@ -25,7 +25,7 @@ public class BackupsPermission extends Permission<BackupsPermission> {
   }
 
   @AllArgsConstructor
-  public enum Action implements CustomAction {
+  public enum Action implements RbacAction {
     MANAGE("manage_backups");
 
     @Getter
