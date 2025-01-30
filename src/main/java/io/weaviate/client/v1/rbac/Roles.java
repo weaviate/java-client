@@ -22,11 +22,12 @@ public class Roles {
   private final HttpClient httpClient;
   private final Config config;
 
+  /** Create a new role. */
   public RoleCreator creator() {
     return new RoleCreator(httpClient, config);
   }
 
-  /** Get all existing roles. */
+  /** Delete a role. */
   public RoleDeleter deleter() {
     return new RoleDeleter(httpClient, config);
   }
@@ -60,7 +61,7 @@ public class Roles {
     return new RoleAllGetter(httpClient, config);
   };
 
-  /** Get role and its assiciated permissions. */
+  /** Get role and its associated permissions. */
   public RoleGetter getter() {
     return new RoleGetter(httpClient, config);
   };
@@ -80,10 +81,12 @@ public class Roles {
     return new RoleExists(httpClient, config);
   }
 
+  /** Assign a role to a user. Note that 'root' cannot be assigned. */
   public RoleAssigner assigner() {
     return new RoleAssigner(httpClient, config);
   }
 
+  /** Revoke a role from a user. Note that 'root' cannot be revoked. */
   public RoleRevoker revoker() {
     return new RoleRevoker(httpClient, config);
   }
