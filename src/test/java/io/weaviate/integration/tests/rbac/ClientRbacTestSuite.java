@@ -101,6 +101,8 @@ public class ClientRbacTestSuite {
   }
 
   /** Admin user should have the admin role assigned to them. */
+  @DataMethod(source = ClientRbacTestSuite.class, method = "clients")
+  @Test
   public void testGetAssignedUsers(Supplier<Rbac> rbac) {
     Rbac roles = rbac.get();
     Result<List<String>> response = roles.getAssignedUsers(adminRole);
@@ -227,6 +229,8 @@ public class ClientRbacTestSuite {
     try {
       // Arrange
       roles.createRole(myRole,
+          // Create an extra permission so that the role would not be
+          // deleted with its otherwise only permission is removed.
           Permission.cluster(ClusterPermission.Action.READ),
           Permission.tenants(TenantsPermission.Action.DELETE));
 

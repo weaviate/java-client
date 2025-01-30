@@ -17,7 +17,7 @@ public class DataPermission extends Permission<DataPermission> {
   }
 
   DataPermission(String collection, String action) {
-    this(collection, CustomAction.fromString(Action.class, action));
+    this(collection, RbacAction.fromString(Action.class, action));
   }
 
   private DataPermission(String collection, String object, String tenant, Action action) {
@@ -33,7 +33,7 @@ public class DataPermission extends Permission<DataPermission> {
   }
 
   @AllArgsConstructor
-  public enum Action implements CustomAction {
+  public enum Action implements RbacAction {
     CREATE("create_data"),
     READ("read_data"),
     UPDATE("update_data"),

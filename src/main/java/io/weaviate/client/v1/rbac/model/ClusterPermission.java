@@ -13,7 +13,7 @@ public class ClusterPermission extends Permission<ClusterPermission> {
   }
 
   ClusterPermission(String action) {
-    this(CustomAction.fromString(Action.class, action));
+    this(RbacAction.fromString(Action.class, action));
   }
 
   @Override
@@ -22,7 +22,7 @@ public class ClusterPermission extends Permission<ClusterPermission> {
   }
 
   @AllArgsConstructor
-  public enum Action implements CustomAction {
+  public enum Action implements RbacAction {
     READ("read_cluster");
 
     @Getter

@@ -15,7 +15,7 @@ public class TenantsPermission extends Permission<TenantsPermission> {
   }
 
   TenantsPermission(String action) {
-    this(CustomAction.fromString(Action.class, action));
+    this(RbacAction.fromString(Action.class, action));
   }
 
   private TenantsPermission(Action action, String tenant) {
@@ -29,7 +29,7 @@ public class TenantsPermission extends Permission<TenantsPermission> {
   }
 
   @AllArgsConstructor
-  public enum Action implements CustomAction {
+  public enum Action implements RbacAction {
     CREATE("create_tenants"),
     READ("read_tenants"),
     UPDATE("update_tenants"),

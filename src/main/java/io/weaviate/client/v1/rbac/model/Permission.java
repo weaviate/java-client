@@ -9,12 +9,16 @@ public abstract class Permission<P extends Permission<P>> {
   @Getter
   final transient String action;
 
-  Permission(CustomAction action) {
+  Permission(RbacAction action) {
     this.action = action.getValue();
   }
 
+  /** Convert the permission to {@link WeaviatePermission}. */
   public abstract WeaviatePermission toWeaviate();
 
+  /**
+   * Convert {@link WeaviatePermission} to concrete {@link Permission}.
+   */
   public static Permission<?> fromWeaviate(WeaviatePermission perm) {
     String action = perm.getAction();
     if (perm.getBackups() != null) {
@@ -33,14 +37,11 @@ public abstract class Permission<P extends Permission<P>> {
       return new RolesPermission(perm.getRoles().getRole(), action);
     } else if (perm.getTenants() != null) {
       return new TenantsPermission(action);
-    } else if (CustomAction.isValid(ClusterPermission.Action.class, action)) {
+    } else if (RbacAction.isValid(ClusterPermission.Action.class, action)) {
       return new ClusterPermission(action);
     }
     return null;
   }
-
-  // TODO: add overloaded methods for creating multiple permissions (actions) for
-  // the same collection/tenant/user etc.
 
   public static BackupsPermission[] backups(BackupsPermission.Action action, String collection) {
     return new BackupsPermission[] { new BackupsPermission(collection, action) };
@@ -101,27 +102,5 @@ public abstract class Permission<P extends Permission<P>> {
 
   public String toString() {
     return String.format("Permission<action=%s>", this.action);
-  }
-}
-
-interface CustomAction {
-  String getValue();
-
-  static <E extends Enum<E> & CustomAction> E fromString(Class<E> enumClass, String value) {
-    for (E action : enumClass.getEnumConstants()) {
-      if (action.getValue().equals(value)) {
-        return action;
-      }
-    }
-    throw new IllegalArgumentException("No enum constant for value: " + value);
-  }
-
-  static <A extends CustomAction> boolean isValid(Class<A> enumClass, String value) {
-    for (CustomAction action : enumClass.getEnumConstants()) {
-      if (action.getValue().equals(value)) {
-        return true;
-      }
-    }
-    return false;
   }
 }

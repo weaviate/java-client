@@ -19,11 +19,11 @@ public class NodesPermission extends Permission<NodesPermission> {
   }
 
   NodesPermission(Verbosity verbosity, String action) {
-    this(verbosity, CustomAction.fromString(Action.class, action));
+    this(verbosity, RbacAction.fromString(Action.class, action));
   }
 
   NodesPermission(String collection, Verbosity verbosity, String action) {
-    this(collection, verbosity, CustomAction.fromString(Action.class, action));
+    this(collection, verbosity, RbacAction.fromString(Action.class, action));
   }
 
   /** NodesPermission for a defined collection. */
@@ -39,7 +39,7 @@ public class NodesPermission extends Permission<NodesPermission> {
   }
 
   @AllArgsConstructor
-  public enum Action implements CustomAction {
+  public enum Action implements RbacAction {
     READ("read_nodes");
 
     @Getter

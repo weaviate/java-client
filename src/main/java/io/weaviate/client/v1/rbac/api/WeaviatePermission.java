@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+/** API model for serializing/deserializing permissions. */
 @Getter
 @Builder
 @AllArgsConstructor
