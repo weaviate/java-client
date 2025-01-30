@@ -18,36 +18,19 @@ public class WeaviateDockerCompose implements TestRule {
   private final String weaviateVersion;
   private final boolean withOffloadS3;
 
-  /** Username of the admin user for instances using RBAC. */
-  private final String adminUser;
-
   public WeaviateDockerCompose() {
     this.weaviateVersion = WeaviateDockerImage.WEAVIATE_DOCKER_IMAGE;
     this.withOffloadS3 = false;
-    this.adminUser = null;
   }
 
   public WeaviateDockerCompose(String version) {
     this.weaviateVersion = String.format("semitechnologies/weaviate:%s", version);
     this.withOffloadS3 = false;
-    this.adminUser = null;
   }
 
   public WeaviateDockerCompose(String version, boolean withOffloadS3) {
     this.weaviateVersion = String.format("semitechnologies/weaviate:%s", version);
     this.withOffloadS3 = withOffloadS3;
-    this.adminUser = null;
-  }
-
-  public WeaviateDockerCompose(String version, String adminUser) {
-    this.weaviateVersion = WeaviateDockerImage.WEAVIATE_DOCKER_IMAGE;
-    this.withOffloadS3 = false;
-    this.adminUser = adminUser;
-  }
-
-  /** Create docker-compose deployment with auth and RBAC-authz enabled. */
-  public static WeaviateDockerCompose rbac(String adminUser) {
-    return new WeaviateDockerCompose(WeaviateDockerImage.WEAVIATE_DOCKER_IMAGE, adminUser);
   }
 
   public static class Weaviate extends WeaviateContainer {
@@ -75,27 +58,6 @@ public class WeaviateDockerCompose implements TestRule {
       withEnv("PERSISTENCE_FLUSH_IDLE_MEMTABLES_AFTER", "1");
       withEnv("ENABLE_MODULES", String.join(",", enableModules));
       withCreateContainerCmdModifier(cmd -> cmd.withHostName("weaviate"));
-    }
-
-    /** Create Weaviate container with RBAC authz and an admin user. */
-    public Weaviate(String dockerImageName, boolean withOffloadS3, String adminUser) {
-      this(dockerImageName, withOffloadS3);
-      withEnv("AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED", "false");
-      withEnv("AUTHENTICATION_APIKEY_ENABLED", "true");
-      withEnv("AUTHORIZATION_RBAC_ENABLED", "true");
-      withEnv("AUTHENTICATION_APIKEY_USERS", adminUser);
-      withEnv("AUTHENTICATION_APIKEY_ALLOWED_KEYS", makeSecret(adminUser));
-      withEnv("AUTHORIZATION_ADMIN_USERS", adminUser);
-    }
-
-    /**
-     * Generate API secret for a username. When running an instance with
-     * authentication enabled, {@link Weaviate} will use this method to generate
-     * secrets for all users.
-     * Use this method to get a valid API key for a test client.
-     */
-    public static String makeSecret(String user) {
-      return user + "-secret";
     }
   }
 
@@ -138,11 +100,7 @@ public class WeaviateDockerCompose implements TestRule {
     }
     contextionary = new Contextionary();
     contextionary.start();
-    if (adminUser == null) {
-      weaviate = new Weaviate(this.weaviateVersion, this.withOffloadS3);
-    } else {
-      weaviate = new Weaviate(this.weaviateVersion, this.withOffloadS3, this.adminUser);
-    }
+    weaviate = new Weaviate(this.weaviateVersion, this.withOffloadS3);
     weaviate.start();
   }
 

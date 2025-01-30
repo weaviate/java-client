@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
+import org.testcontainers.weaviate.WeaviateContainer;
 
 import com.jparams.junit4.JParamsTestRunner;
 import com.jparams.junit4.data.DataMethod;
@@ -32,8 +33,8 @@ import io.weaviate.client.v1.rbac.model.Permission;
 import io.weaviate.client.v1.rbac.model.Role;
 import io.weaviate.client.v1.rbac.model.RolesPermission;
 import io.weaviate.client.v1.rbac.model.TenantsPermission;
-import io.weaviate.integration.client.WeaviateDockerCompose;
-import io.weaviate.integration.client.WeaviateDockerCompose.Weaviate;
+import io.weaviate.integration.client.WeaviateDockerImage;
+import io.weaviate.integration.client.WeaviateWithRbacContainer;
 
 @RunWith(JParamsTestRunner.class)
 public class ClientRbacTestSuite {
@@ -41,16 +42,18 @@ public class ClientRbacTestSuite {
   private static final String adminRole = "admin";
   private static final String viewerRole = "viewer";
   private static final String adminUser = "john-doe";
-  private static final String API_KEY = Weaviate.makeSecret(adminUser);
+  private static final String API_KEY = WeaviateWithRbacContainer.makeSecret(adminUser);
 
   @Rule
   public TestName currentTest = new TestName();
 
   @ClassRule
-  public static WeaviateDockerCompose compose = WeaviateDockerCompose.rbac(adminUser);
+  public static WeaviateContainer weaviate = new WeaviateWithRbacContainer(
+      WeaviateDockerImage.WEAVIATE_DOCKER_IMAGE,
+      adminUser);
 
   public static Config config() {
-    return new Config("http", compose.getHttpHostAddress());
+    return new Config("http", weaviate.getHttpHostAddress());
   }
 
   public static Object[][] clients() {
@@ -112,9 +115,6 @@ public class ClientRbacTestSuite {
     assertThat(users).as("users assigned to " + adminRole + " role").hasSize(1);
     assertEquals(adminUser, users.get(0), "wrong user assinged to " + adminRole + " role");
   }
-
-  // TODO: check if I can create a role with a name that's not a valid URL
-  // paramter
 
   /**
    * Created role should have all of the permissions it was created with.
