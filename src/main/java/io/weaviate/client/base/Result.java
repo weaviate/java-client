@@ -61,7 +61,7 @@ public class Result<T> {
 
   /**
    * Convert {@code Result<Void>} response to a {@code Result<Boolean>}.
-   * Returns true if response status code is 200.
+   * The result contains true if status code is 200.
    *
    * @param response Response from a call that does not return a value, like
    *                 {@link BaseClient#sendDeleteRequest}.
@@ -74,10 +74,8 @@ public class Result<T> {
 
   /**
    * Get a custom parser to convert {@code Result<Void>} response as to a
-   * {@code Result<Void>}. Result is true if response status code is 200.
+   * {@code Result<Void>}. The result contains true if status code is 200.
    *
-   * @param response Response from an async call that does not return a value,
-   *                 like {@link AsyncBaseClient#sendDeleteRequest}.
    * @return {@code Result<Boolean>}
    */
   public static ResponseParser<Boolean> voidToBooleanParser() {
