@@ -17,7 +17,7 @@ import io.weaviate.client.v1.rbac.api.WeaviatePermission;
 import io.weaviate.client.v1.rbac.model.Permission;
 import lombok.AllArgsConstructor;
 
-public class PermissionRemover extends AsyncBaseClient<Void> implements AsyncClientResult<Void> {
+public class PermissionRemover extends AsyncBaseClient<Boolean> implements AsyncClientResult<Boolean> {
   private String role;
   private List<Permission<?>> permissions = new ArrayList<>();
 
@@ -51,9 +51,9 @@ public class PermissionRemover extends AsyncBaseClient<Void> implements AsyncCli
   }
 
   @Override
-  public Future<Result<Void>> run(FutureCallback<Result<Void>> callback) {
+  public Future<Result<Boolean>> run(FutureCallback<Result<Boolean>> callback) {
     List<WeaviatePermission> permissions = WeaviatePermission.mergePermissions(this.permissions);
-    return sendPostRequest(path(), new Body(permissions), Void.class, callback);
+    return sendPostRequest(path(), new Body(permissions), callback, Result.voidToBooleanParser());
   }
 
   private String path() {

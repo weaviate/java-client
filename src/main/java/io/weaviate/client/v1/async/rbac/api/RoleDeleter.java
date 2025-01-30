@@ -11,7 +11,7 @@ import io.weaviate.client.base.AsyncClientResult;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 
-public class RoleDeleter extends AsyncBaseClient<Void> implements AsyncClientResult<Void> {
+public class RoleDeleter extends AsyncBaseClient<Boolean> implements AsyncClientResult<Boolean> {
   private String name;
 
   public RoleDeleter(CloseableHttpAsyncClient httpClient, Config config, AccessTokenProvider tokenProvider) {
@@ -24,7 +24,7 @@ public class RoleDeleter extends AsyncBaseClient<Void> implements AsyncClientRes
   }
 
   @Override
-  public Future<Result<Void>> run(FutureCallback<Result<Void>> callback) {
-    return sendDeleteRequest("/authz/roles/" + this.name, null, Void.class, callback);
+  public Future<Result<Boolean>> run(FutureCallback<Result<Boolean>> callback) {
+    return sendDeleteRequest("/authz/roles/" + this.name, null, callback, Result.voidToBooleanParser());
   }
 }

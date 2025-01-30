@@ -12,7 +12,7 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.HttpClient;
 import lombok.AllArgsConstructor;
 
-public class RoleRevoker extends BaseClient<Void> implements ClientResult<Void> {
+public class RoleRevoker extends BaseClient<Void> implements ClientResult<Boolean> {
   private String user;
   private List<String> roles = new ArrayList<>();
 
@@ -37,8 +37,8 @@ public class RoleRevoker extends BaseClient<Void> implements ClientResult<Void> 
   }
 
   @Override
-  public Result<Void> run() {
-    return new Result<Void>(sendPostRequest(path(), new Body(this.roles), Void.class));
+  public Result<Boolean> run() {
+    return Result.voidToBoolean(sendPostRequest(path(), new Body(this.roles), Void.class));
   }
 
   private String path() {

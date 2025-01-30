@@ -7,12 +7,13 @@ import java.util.List;
 import io.weaviate.client.Config;
 import io.weaviate.client.base.BaseClient;
 import io.weaviate.client.base.ClientResult;
+import io.weaviate.client.base.Response;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.v1.rbac.model.Permission;
 import lombok.AllArgsConstructor;
 
-public class PermissionAdder extends BaseClient<Void> implements ClientResult<Void> {
+public class PermissionAdder extends BaseClient<Void> implements ClientResult<Boolean> {
   private String role;
   private List<Permission<?>> permissions = new ArrayList<>();
 
@@ -45,9 +46,9 @@ public class PermissionAdder extends BaseClient<Void> implements ClientResult<Vo
   }
 
   @Override
-  public Result<Void> run() {
+  public Result<Boolean> run() {
     List<WeaviatePermission> permissions = WeaviatePermission.mergePermissions(this.permissions);
-    return new Result<Void>(sendPostRequest(path(), new Body(permissions), Void.class));
+    return Result.voidToBoolean(sendPostRequest(path(), new Body(permissions), Void.class));
   }
 
   private String path() {
