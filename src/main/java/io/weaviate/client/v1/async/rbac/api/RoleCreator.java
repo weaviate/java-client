@@ -16,7 +16,7 @@ import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.rbac.api.WeaviateRole;
 import io.weaviate.client.v1.rbac.model.Permission;
 
-public class RoleCreator extends AsyncBaseClient<Void> implements AsyncClientResult<Void> {
+public class RoleCreator extends AsyncBaseClient<Boolean> implements AsyncClientResult<Boolean> {
   private String name;
   private List<Permission<?>> permissions = new ArrayList<>();
 
@@ -44,8 +44,8 @@ public class RoleCreator extends AsyncBaseClient<Void> implements AsyncClientRes
   }
 
   @Override
-  public Future<Result<Void>> run(FutureCallback<Result<Void>> callback) {
+  public Future<Result<Boolean>> run(FutureCallback<Result<Boolean>> callback) {
     WeaviateRole role = new WeaviateRole(this.name, this.permissions);
-    return sendPostRequest("/authz/roles", role, Void.class, callback);
+    return sendPostRequest("/authz/roles", role, callback, Result.voidToBooleanParser());
   }
 }

@@ -6,7 +6,7 @@ import io.weaviate.client.base.ClientResult;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.HttpClient;
 
-public class RoleDeleter extends BaseClient<Void> implements ClientResult<Void> {
+public class RoleDeleter extends BaseClient<Void> implements ClientResult<Boolean> {
   private String name;
 
   public RoleDeleter(HttpClient httpClient, Config config) {
@@ -19,7 +19,7 @@ public class RoleDeleter extends BaseClient<Void> implements ClientResult<Void> 
   }
 
   @Override
-  public Result<Void> run() {
-    return new Result<Void>(sendDeleteRequest("/authz/roles/" + this.name, null, Void.class));
+  public Result<Boolean> run() {
+    return Result.voidToBoolean(sendDeleteRequest("/authz/roles/" + this.name, null, Void.class));
   }
 }

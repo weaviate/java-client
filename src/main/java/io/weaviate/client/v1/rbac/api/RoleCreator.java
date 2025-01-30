@@ -11,7 +11,7 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.v1.rbac.model.Permission;
 
-public class RoleCreator extends BaseClient<Void> implements ClientResult<Void> {
+public class RoleCreator extends BaseClient<Void> implements ClientResult<Boolean> {
   private String name;
   private List<Permission<?>> permissions = new ArrayList<>();
 
@@ -39,8 +39,8 @@ public class RoleCreator extends BaseClient<Void> implements ClientResult<Void> 
   }
 
   @Override
-  public Result<Void> run() {
+  public Result<Boolean> run() {
     WeaviateRole role = new WeaviateRole(this.name, this.permissions);
-    return new Result<Void>(sendPostRequest("/authz/roles", role, Void.class));
+    return Result.voidToBoolean(sendPostRequest("/authz/roles", role, Void.class));
   }
 }

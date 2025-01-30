@@ -7,11 +7,12 @@ import java.util.List;
 import io.weaviate.client.Config;
 import io.weaviate.client.base.BaseClient;
 import io.weaviate.client.base.ClientResult;
+import io.weaviate.client.base.Response;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.HttpClient;
 import lombok.AllArgsConstructor;
 
-public class RoleAssigner extends BaseClient<Void> implements ClientResult<Void> {
+public class RoleAssigner extends BaseClient<Void> implements ClientResult<Boolean> {
   private String user;
   private List<String> roles = new ArrayList<>();
 
@@ -36,8 +37,10 @@ public class RoleAssigner extends BaseClient<Void> implements ClientResult<Void>
   }
 
   @Override
-  public Result<Void> run() {
-    return new Result<Void>(sendPostRequest(path(), new Body(this.roles), Void.class));
+  public Result<Boolean> run() {
+    Response<Void> resp = sendPostRequest(path(), new Body(this.roles), Void.class);
+    int status = resp.getStatusCode();
+    return new Result<Boolean>(status, status == 200, resp.getErrors());
   }
 
   private String path() {

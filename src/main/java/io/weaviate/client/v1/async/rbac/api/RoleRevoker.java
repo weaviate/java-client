@@ -16,7 +16,7 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import lombok.AllArgsConstructor;
 
-public class RoleRevoker extends AsyncBaseClient<Void> implements AsyncClientResult<Void> {
+public class RoleRevoker extends AsyncBaseClient<Boolean> implements AsyncClientResult<Boolean> {
   private String user;
   private List<String> roles = new ArrayList<>();
 
@@ -41,8 +41,8 @@ public class RoleRevoker extends AsyncBaseClient<Void> implements AsyncClientRes
   }
 
   @Override
-  public Future<Result<Void>> run(FutureCallback<Result<Void>> callback) {
-    return sendPostRequest(path(), new Body(this.roles), Void.class, callback);
+  public Future<Result<Boolean>> run(FutureCallback<Result<Boolean>> callback) {
+    return sendPostRequest(path(), new Body(this.roles), callback, Result.voidToBooleanParser());
   }
 
   private String path() {
