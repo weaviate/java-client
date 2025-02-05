@@ -48,7 +48,7 @@ public class GRPCBenchTest {
 
   @Before
   public void before() {
-    Config config = new Config("http", compose.getHttpHostAddress());
+    Config config = new Config("http", compose.getHttpHostAddress(), false, compose.getGrpcHostAddress());
     client = new WeaviateClient(config);
 
     assertTrue(write(testData), "error loading test data");
@@ -91,6 +91,7 @@ public class GRPCBenchTest {
   private int searchKNN(Float[] query, int k,
       Map<String, Object> filter, Function<GetBuilder.GetBuilderBuilder, Integer> search) {
 
+    System.out.printf("search vector length: %d\n", query.length);
     NearVectorArgument nearVector = NearVectorArgument.builder().vector(query).build();
 
     Field[] fields = new Field[this.fields.size() + 1];
@@ -151,6 +152,7 @@ public class GRPCBenchTest {
   public boolean write(List<Float[]> embeddings) {
     ObjectsBatcher batcher = client.batch().objectsBatcher();
     for (Float[] e : embeddings) {
+      System.out.printf("insert vector length: %d\n", e.length);
       batcher.withObject(WeaviateObject.builder()
           .className(this.className)
           .vector(e)

@@ -11,12 +11,20 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.protobuf.ByteString;
+
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase;
+import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArray;
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Filters;
+import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.IntArray;
+import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.NumberArray;
+import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.TextArray;
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.MetadataRequest;
+import io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector;
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.PropertiesRequest;
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.SearchRequest;
 import io.weaviate.client.v1.filters.Operator;
@@ -87,10 +95,6 @@ public class GetBuilder implements Query {
         withGroupByArgument,
         withNearImageFilter, withNearAudioFilter, withNearVideoFilter, withNearDepthFilter, withNearThermalFilter,
         withNearImuFilter);
-  }
-
-  private Stream<Argument> buildableGrpcArguments() {
-    return Stream.of(withWhereFilter, withNearVectorFilter);
   }
 
   private Stream<Object> nonStringArguments() {
@@ -204,49 +208,51 @@ public class GetBuilder implements Query {
       search.setTenant(this.tenant);
     }
 
-    // TODO: Create filter clause
-    if (includesFilterClause()) {
-
+    if (this.withWhereFilter != null) {
       Filters.Builder filters = Filters.newBuilder();
-      if (this.withWhereFilter != null) {
-        WhereFilter f = this.withWhereFilter.getFilter();
-        switch (f.getOperator()) {
-          case Operator.And:
-            filters.setOperator(WeaviateProtoBase.Filters.Operator.OPERATOR_AND);
-            break;
-        }
-
-        WhereFilter[] operands = f.getOperands();
-        if (operands != null && operands.length > 0) {
-        }
-      }
-
+      addWhereFilters(filters, this.withWhereFilter.getFilter());
       search.setFilters(filters.build());
-
-      // withWhereFilter, withNearVectorFilter
-      //
-      buildableGrpcArguments()
-          .filter(Objects::nonNull)
-          .forEach(arg -> arg.addToSearch(search));
-
-      if (limit != null) {
-        search.setLimit(limit);
-      }
-      if (offset != null) {
-        search.setOffset(offset);
-      }
-      if (StringUtils.isNotBlank(after)) {
-        search.setAfter(after);
-      }
-      if (StringUtils.isNotBlank(withConsistencyLevel)) {
-        search.setConsistencyLevelValue(Integer.valueOf(withConsistencyLevel));
-      }
-      if (autocut != null) {
-        search.setAutocut(autocut);
-      }
     }
 
-    // Create fields
+    if (this.withNearVectorFilter != null) {
+      NearVector.Builder nearVector = NearVector.newBuilder();
+      NearVectorArgument f = this.withNearVectorFilter;
+
+      Float[] vector = f.getVector();
+      if (vector != null) {
+        byte[] vec = new byte[vector.length];
+        for (int i = 0; i < vector.length; i++) {
+          vec[i] = vector[i].byteValue();
+        }
+        nearVector.setVectorBytes(ByteString.copyFrom(vec));
+        System.out.printf("near vector bytes has size: %d\n", nearVector.getVectorBytes().size());
+      }
+
+      if (f.getCertainty() != null) {
+        nearVector.setCertainty(f.getCertainty());
+      } else if (f.getDistance() != null) {
+        nearVector.setDistance(f.getDistance());
+      }
+
+      search.setNearVector(nearVector.build());
+    }
+
+    if (limit != null) {
+      search.setLimit(limit);
+    }
+    if (offset != null) {
+      search.setOffset(offset);
+    }
+    if (StringUtils.isNotBlank(after)) {
+      search.setAfter(after);
+    }
+    if (StringUtils.isNotBlank(withConsistencyLevel)) {
+      search.setConsistencyLevelValue(Integer.valueOf(withConsistencyLevel));
+    }
+    if (autocut != null) {
+      search.setAutocut(autocut);
+    }
+
     if (fields != null) {
 
       // Metadata
@@ -283,6 +289,54 @@ public class GetBuilder implements Query {
       }
     }
     return search.build();
+  }
+
+  private void addWhereFilters(Filters.Builder where, WhereFilter f) {
+    WhereFilter[] operands = f.getOperands();
+
+    if (ArrayUtils.isNotEmpty(operands)) { // Nested filters
+      for (WhereFilter op : operands) {
+        addWhereFilters(where, op);
+      }
+    } else { // Individual where clauses (leaves)
+      if (ArrayUtils.isNotEmpty(f.getPath())) {
+        // Deprecated, but the current proto doesn't have 'path'.
+        where.addOn(f.getPath()[0]);
+      }
+      if (f.getValueBoolean() != null) {
+      } else if (f.getValueBooleanArray() != null) {
+        BooleanArray.Builder arr = BooleanArray.newBuilder();
+        Arrays.stream(f.getValueBooleanArray()).forEach(v -> arr.addValues(v));
+        where.setValueBooleanArray(arr.build());
+      } else if (f.getValueInt() != null) {
+        where.setValueInt(f.getValueInt());
+      } else if (f.getValueIntArray() != null) {
+        IntArray.Builder arr = IntArray.newBuilder();
+        Arrays.stream(f.getValueIntArray()).forEach(v -> arr.addValues(v));
+        where.setValueIntArray(arr.build());
+      } else if (f.getValueNumber() != null) {
+        where.setValueNumber(f.getValueNumber());
+      } else if (f.getValueNumberArray() != null) {
+        NumberArray.Builder arr = NumberArray.newBuilder();
+        Arrays.stream(f.getValueNumberArray()).forEach(v -> arr.addValues(v));
+        where.setValueNumberArray(arr.build());
+      } else if (f.getValueText() != null) {
+        where.setValueText(f.getValueText());
+      } else if (f.getValueTextArray() != null) {
+        TextArray.Builder arr = TextArray.newBuilder();
+        Arrays.stream(f.getValueTextArray()).forEach(v -> arr.addValues(v));
+        where.setValueTextArray(arr.build());
+      }
+    }
+
+    switch (f.getOperator()) {
+      case Operator.And:
+        where.setOperator(WeaviateProtoBase.Filters.Operator.OPERATOR_AND);
+        break;
+      case Operator.Or:
+        where.setOperator(WeaviateProtoBase.Filters.Operator.OPERATOR_OR);
+        break;
+    }
   }
 
   // created to support both types of setters: WhereArgument and deprecated
