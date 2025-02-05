@@ -1,5 +1,6 @@
 package io.weaviate.client.v1.grpc.query;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -16,7 +17,7 @@ import io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.SearchReply;
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.SearchRequest;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 
-public class Raw extends BaseClient<Map<String, Object>> implements ClientResult<Map<String, Object>> {
+public class Raw extends BaseClient<List<Map<String, Object>>> implements ClientResult<List<Map<String, Object>>> {
   private final AccessTokenProvider tokenProvider;
   private SearchRequest search;
 
@@ -31,18 +32,19 @@ public class Raw extends BaseClient<Map<String, Object>> implements ClientResult
   }
 
   @Override
-  public Result<Map<String, Object>> run() {
+  public Result<List<Map<String, Object>>> run() {
     GrpcClient grpcClient = GrpcClient.create(this.config, this.tokenProvider);
     try {
       SearchReply reply = grpcClient.search(this.search);
-      Map<String, Object> result = reply.getResultsList().get(0).getAllFields()
-          .entrySet().stream().collect(Collectors.toMap(
-              e -> e.getKey().getJsonName(),
-              e -> e.getValue()));
+      List<Map<String, Object>> result = reply.getResultsList().stream()
+          .map(list -> list.getAllFields().entrySet().stream()
+              .collect(Collectors.toMap(
+                  e -> e.getKey().getJsonName(),
+                  e -> e.getValue())))
+          .toList();
       return new Result<>(HttpStatus.SC_SUCCESS, result, WeaviateErrorResponse.builder().build());
     } finally {
       grpcClient.shutdown();
     }
-
   }
 }

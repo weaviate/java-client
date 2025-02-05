@@ -15,8 +15,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.protobuf.ByteString;
-
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase;
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.BooleanArray;
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Filters;
@@ -50,6 +48,7 @@ import io.weaviate.client.v1.graphql.query.fields.Field;
 import io.weaviate.client.v1.graphql.query.fields.Fields;
 import io.weaviate.client.v1.graphql.query.fields.GenerativeSearchBuilder;
 import io.weaviate.client.v1.graphql.query.util.Serializer;
+import io.weaviate.client.v1.grpc.GRPC;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -220,12 +219,7 @@ public class GetBuilder implements Query {
 
       Float[] vector = f.getVector();
       if (vector != null) {
-        byte[] vec = new byte[vector.length];
-        for (int i = 0; i < vector.length; i++) {
-          vec[i] = vector[i].byteValue();
-        }
-        nearVector.setVectorBytes(ByteString.copyFrom(vec));
-        System.out.printf("near vector bytes has size: %d\n", nearVector.getVectorBytes().size());
+        nearVector.setVectorBytes(GRPC.toByteString(f.getVector()));
       }
 
       if (f.getCertainty() != null) {
@@ -288,6 +282,10 @@ public class GetBuilder implements Query {
         search.setProperties(properties.build());
       }
     }
+
+    search.setUses123Api(true);
+    search.setUses125Api(true);
+    search.setUses127Api(true);
     return search.build();
   }
 

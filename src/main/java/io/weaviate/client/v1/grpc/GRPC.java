@@ -1,5 +1,11 @@
 package io.weaviate.client.v1.grpc;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.Arrays;
+
+import com.google.protobuf.ByteString;
+
 import io.weaviate.client.Config;
 import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
@@ -30,4 +36,11 @@ public class GRPC {
   public GRPC.Arguments arguments() {
     return new GRPC.Arguments();
   }
+
+  public static ByteString toByteString(Float[] vector) {
+    ByteBuffer buffer = ByteBuffer.allocate(vector.length * Float.BYTES).order(ByteOrder.LITTLE_ENDIAN);
+    Arrays.stream(vector).forEach(buffer::putFloat);
+    return ByteString.copyFrom(buffer.array());
+  }
+
 }

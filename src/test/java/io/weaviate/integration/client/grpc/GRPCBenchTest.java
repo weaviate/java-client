@@ -74,7 +74,7 @@ public class GRPCBenchTest {
   @Test
   public void testGRPC() {
     int count = searchKNN(query, K, filters, builder -> {
-      Result<Map<String, Object>> result = client
+      Result<List<Map<String, Object>>> result = client
           .gRPC().raw()
           .withSearch(builder.build().buildSearchRequest())
           .run();
@@ -136,17 +136,18 @@ public class GRPCBenchTest {
     int count = 0;
     final Map<String, Map<String, Object>> data = (Map<String, Map<String, Object>>) result.getResult().getData();
     List<Map<String, Object>> list = (List<Map<String, Object>>) data.get("Get").get(this.className);
+    return list.size();
 
-    for (Map<String, Object> item : list) {
-      final Map<String, Object> a = (Map<String, Object>) item.get("_additional");
-      final List<Double> vector = (List<Double>) a.get("vector");
-      count++;
-    }
-    return count;
+    // for (Map<String, Object> item : list) {
+    // final Map<String, Object> a = (Map<String, Object>) item.get("_additional");
+    // final List<Double> vector = (List<Double>) a.get("vector");
+    // count++;
+    // }
+    // return count;
   }
 
-  private int convertGRPC(Result<Map<String, Object>> result) {
-    return 0;
+  private int convertGRPC(Result<List<Map<String, Object>>> result) {
+    return result.getResult().size();
   }
 
   public boolean write(List<Float[]> embeddings) {
