@@ -11,7 +11,12 @@ import java.util.function.Function;
 
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
+
+import com.carrotsearch.junitbenchmarks.BenchmarkOptions;
+import com.carrotsearch.junitbenchmarks.BenchmarkRule;
 
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
@@ -32,6 +37,9 @@ import io.weaviate.integration.client.WeaviateDockerCompose;
 public class GRPCBenchTest {
   @ClassRule
   public static final WeaviateDockerCompose compose = new WeaviateDockerCompose();
+
+  @Rule
+  public TestRule benchmarkRun = new BenchmarkRule();
 
   private WeaviateClient client;
 
@@ -55,6 +63,7 @@ public class GRPCBenchTest {
   }
 
   @Test
+  @BenchmarkOptions(concurrency = 1, warmupRounds = 3, benchmarkRounds = 10)
   public void testGraphQL() {
     int count = searchKNN(query, K, filters, builder -> {
       Result<GraphQLResponse> result = client
@@ -72,6 +81,7 @@ public class GRPCBenchTest {
   }
 
   @Test
+  @BenchmarkOptions(concurrency = 1, warmupRounds = 3, benchmarkRounds = 10)
   public void testGRPC() {
     int count = searchKNN(query, K, filters, builder -> {
       Result<List<Map<String, Object>>> result = client
@@ -91,7 +101,6 @@ public class GRPCBenchTest {
   private int searchKNN(Float[] query, int k,
       Map<String, Object> filter, Function<GetBuilder.GetBuilderBuilder, Integer> search) {
 
-    System.out.printf("search vector length: %d\n", query.length);
     NearVectorArgument nearVector = NearVectorArgument.builder().vector(query).build();
 
     Field[] fields = new Field[this.fields.size() + 1];
@@ -153,7 +162,6 @@ public class GRPCBenchTest {
   public boolean write(List<Float[]> embeddings) {
     ObjectsBatcher batcher = client.batch().objectsBatcher();
     for (Float[] e : embeddings) {
-      System.out.printf("insert vector length: %d\n", e.length);
       batcher.withObject(WeaviateObject.builder()
           .className(this.className)
           .vector(e)
