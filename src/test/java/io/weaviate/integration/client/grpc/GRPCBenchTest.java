@@ -2,6 +2,8 @@ package io.weaviate.integration.client.grpc;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,12 +14,7 @@ import java.util.function.Function;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestRule;
-
-import com.carrotsearch.junitbenchmarks.BenchmarkOptions;
-import com.carrotsearch.junitbenchmarks.BenchmarkRule;
 
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
@@ -38,9 +35,6 @@ import io.weaviate.integration.client.WeaviateDockerCompose;
 public class GRPCBenchTest {
   @ClassRule
   public static final WeaviateDockerCompose compose = new WeaviateDockerCompose();
-
-  @Rule
-  public TestRule benchmarkRun = new BenchmarkRule();
 
   private static final Random rand = new Random();
 
@@ -70,7 +64,7 @@ public class GRPCBenchTest {
     System.arraycopy(queryVector, 0, query, 0, vectorLength);
 
     System.out.printf("Dataset size (n. vectors): %d\n", datasetSize);
-    System.out.printf("Vectors in range %.4f-%.4f with length: %d\n", vectorOrigin, vectorBound, vectorLength);
+    System.out.printf("Vectors with length: %d in range %.4f-%.4f \n", vectorLength, vectorOrigin, vectorBound);
     System.out.println("===========================================");
   }
 
@@ -84,39 +78,78 @@ public class GRPCBenchTest {
   }
 
   @Test
-  @BenchmarkOptions(concurrency = 1, warmupRounds = 3, benchmarkRounds = 10)
   public void testGraphQL() {
-    int count = searchKNN(query, K, filters, builder -> {
-      Result<GraphQLResponse> result = client
-          .graphQL().raw()
-          .withQuery(builder.build().buildQuery())
-          .run();
+    bench("GraphQL", () -> {
+      int count = searchKNN(query, K, filters, builder -> {
+        Result<GraphQLResponse> result = client
+            .graphQL().raw()
+            .withQuery(builder.build().buildQuery())
+            .run();
 
-      if (result.getResult() == null || result.getResult().getErrors() != null) {
-        return 0;
-      }
-      return convertGraphQL(result);
-    });
+        if (result.getResult() == null || result.getResult().getErrors() != null) {
+          return 0;
+        }
+        return convertGraphQL(result);
+      });
 
-    assertTrue(count > 0, "query returned 1+ vectors");
+      assertTrue(count > 0, "query returned 1+ vectors");
+    }, 3, 10);
   }
 
   @Test
-  @BenchmarkOptions(concurrency = 1, warmupRounds = 3, benchmarkRounds = 10)
   public void testGRPC() {
-    int count = searchKNN(query, K, filters, builder -> {
-      Result<List<Map<String, Object>>> result = client
-          .gRPC().raw()
-          .withSearch(builder.build().buildSearchRequest())
-          .run();
+    bench("GRPC", () -> {
+      int count = searchKNN(query, K, filters, builder -> {
+        Result<List<Map<String, Object>>> result = client
+            .gRPC().raw()
+            .withSearch(builder.build().buildSearchRequest())
+            .run();
 
-      if (result.getResult() == null) {
-        return 0;
-      }
-      return convertGRPC(result);
-    });
+        if (result.getResult() == null) {
+          return 0;
+        }
+        return countGRPC(result);
+      });
 
-    assertTrue(count > 0, "search returned 1+ vectors");
+      assertTrue(count > 0, "search returned 1+ vectors");
+    }, 3, 10);
+
+  }
+
+  private void bench(String label, Runnable test, int warmupRounds, int benchmarkRounds) {
+    Instant start = Instant.now();
+
+    // Warmup rounds to let JVM optimise execution.
+    // ---------------------------------------
+    Instant startWarm = start;
+    for (int i = 0; i < warmupRounds; i++) {
+      test.run();
+    }
+    Instant finishWarm = Instant.now();
+    long elapsedWarm = Duration.between(startWarm, finishWarm).toMillis();
+    float avgWarm = elapsedWarm / warmupRounds;
+
+    // Benchmarking: measure total time and divide by the number of live rounds.
+    // ---------------------------------------
+    Instant startBench = Instant.now();
+    for (int i = 0; i < benchmarkRounds; i++) {
+      test.run();
+    }
+    Instant finishBench = Instant.now();
+    Instant finish = finishBench;
+
+    long elapsedBench = Duration.between(startBench, finishBench).toMillis();
+    float avgBench = elapsedBench / benchmarkRounds;
+
+    long elapsed = Duration.between(start, finish).toMillis();
+
+    // Print results
+    // ---------------------------------------
+
+    System.out.printf("%s\t(%d warmup, %d benchmark): \u001B[1m%.1fms\033[0m\n", label, warmupRounds, benchmarkRounds,
+        avgBench);
+    System.out.printf("\twarmup.round: %.1fms", avgWarm);
+    System.out.printf("\t total: %dms\n", elapsed);
   }
 
   private int searchKNN(Float[] query, int k,
@@ -161,9 +194,9 @@ public class GRPCBenchTest {
     return search.apply(builder);
   }
 
+  /* Count the number of results in the GraphQL result. */
   @SuppressWarnings("unchecked")
   private int convertGraphQL(Result<GraphQLResponse> result) {
-    int count = 0;
     final Map<String, Map<String, Object>> data = (Map<String, Map<String, Object>>) result.getResult().getData();
     List<Map<String, Object>> list = (List<Map<String, Object>>) data.get("Get").get(this.className);
     return list.size();
@@ -176,7 +209,8 @@ public class GRPCBenchTest {
     // return count;
   }
 
-  private int convertGRPC(Result<List<Map<String, Object>>> result) {
+  /* Count the number of results in the gRPC result. */
+  private int countGRPC(Result<List<Map<String, Object>>> result) {
     return result.getResult().size();
   }
 
