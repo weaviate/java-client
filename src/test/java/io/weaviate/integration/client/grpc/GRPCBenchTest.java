@@ -3,13 +3,14 @@ package io.weaviate.integration.client.grpc;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.function.Function;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -41,6 +42,8 @@ public class GRPCBenchTest {
   @Rule
   public TestRule benchmarkRun = new BenchmarkRule();
 
+  private static final Random rand = new Random();
+
   private WeaviateClient client;
 
   private List<String> fields = new ArrayList<>();
@@ -48,18 +51,36 @@ public class GRPCBenchTest {
 
   private static final int K = 10;
   private static final Map<String, Object> filters = new HashMap<>();
-  private static final Float[] query = new Float[] { .3f, .2f, .1f, -.1f, -.2f, -.3f };
 
-  private static final List<Float[]> testData = Arrays.asList(
-      new Float[] { .3f, .2f, .1f, -.1f, -.2f, -.3f },
-      new Float[] { .32f, .22f, .12f, -.12f, -.22f, -.32f });
+  private static final int datasetSize = 10;
+  private static final int vectorLength = 5000;
+  private static final float vectorOrigin = .0001f;
+  private static final float vectorBound = .001f;
+  private static final List<Float[]> testData = new ArrayList<>(datasetSize);
+  private static final Float[] query = new Float[vectorLength];
+
+  @BeforeClass
+  public static void beforeAll() {
+    for (int i = 0; i < datasetSize; i++) {
+      testData.add(genVector(vectorLength, vectorOrigin, vectorBound));
+    }
+
+    // Query random vector from the dataset.
+    Float[] queryVector = testData.get(rand.nextInt(0, datasetSize));
+    System.arraycopy(queryVector, 0, query, 0, vectorLength);
+
+    System.out.printf("Dataset size (n. vectors): %d\n", datasetSize);
+    System.out.printf("Vectors in range %.4f-%.4f with length: %d\n", vectorOrigin, vectorBound, vectorLength);
+    System.out.println("===========================================");
+  }
 
   @Before
   public void before() {
     Config config = new Config("http", compose.getHttpHostAddress(), false, compose.getGrpcHostAddress());
     client = new WeaviateClient(config);
 
-    assertTrue(write(testData), "error loading test data");
+    assertTrue(dropSchema(), "successfully dropped schema");
+    assertTrue(write(testData), "loaded test data successfully");
   }
 
   @Test
@@ -159,7 +180,11 @@ public class GRPCBenchTest {
     return result.getResult().size();
   }
 
-  public boolean write(List<Float[]> embeddings) {
+  private boolean dropSchema() {
+    return !client.schema().allDeleter().run().hasErrors();
+  }
+
+  private boolean write(List<Float[]> embeddings) {
     ObjectsBatcher batcher = client.batch().objectsBatcher();
     for (Float[] e : embeddings) {
       batcher.withObject(WeaviateObject.builder()
@@ -173,5 +198,13 @@ public class GRPCBenchTest {
     batcher.close();
 
     return !run.hasErrors();
+  }
+
+  private static Float[] genVector(int length, float origin, float bound) {
+    Float[] vec = new Float[length];
+    for (int i = 0; i < length; i++) {
+      vec[i] = rand.nextFloat(origin, bound);
+    }
+    return vec;
   }
 }
