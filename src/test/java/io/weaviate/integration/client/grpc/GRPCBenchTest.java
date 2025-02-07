@@ -25,6 +25,7 @@ import io.weaviate.client.v1.batch.model.ObjectGetResponse;
 import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.experimental.Collection;
 import io.weaviate.client.v1.experimental.MetadataField;
+import io.weaviate.client.v1.experimental.Where;
 import io.weaviate.client.v1.filters.Operator;
 import io.weaviate.client.v1.filters.WhereFilter;
 import io.weaviate.client.v1.graphql.model.GraphQLResponse;
@@ -122,12 +123,12 @@ public class GRPCBenchTest {
   public void testNewClient() {
     final float[] vector = ArrayUtils.toPrimitive(queryVector);
     bench("GRPC.new", () -> {
-      Collection things = client.collections.use(this.className);
+      Collection things = client.collections.use(className);
       Result<List<Map<String, Object>>> result = things.query.nearVector(
           vector,
           opt -> opt
               .limit(K)
-              .returnProperties(this.fields)
+              .returnProperties(fields)
               .returnMetadata(MetadataField.ID, MetadataField.VECTOR, MetadataField.DISTANCE));
 
       int count = countGRPC(result);

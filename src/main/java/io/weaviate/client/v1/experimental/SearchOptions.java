@@ -17,6 +17,7 @@ public abstract class SearchOptions<SELF extends SearchOptions<SELF>> {
   private Integer autocut;
   private String after;
   private String consistencyLevel;
+  private Where where;
   private List<String> returnProperties = new ArrayList<>();
   private List<Metadata> returnMetadata = new ArrayList<>();
 
@@ -75,6 +76,11 @@ public abstract class SearchOptions<SELF extends SearchOptions<SELF>> {
 
   public final SELF consistencyLevel(String consistencyLevel) {
     this.consistencyLevel = consistencyLevel;
+    return (SELF) this;
+  }
+
+  public final SELF where(Where where) {
+    this.where = where;
     return (SELF) this;
   }
 

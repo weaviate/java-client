@@ -2,6 +2,7 @@ package io.weaviate.client.v1.experimental;
 
 import java.util.function.Consumer;
 
+import io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet;
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.SearchRequest;
 import io.weaviate.client.v1.grpc.GRPC;
 
@@ -10,7 +11,7 @@ public class NearVector {
   private final Options opt;
 
   void append(SearchRequest.Builder search) {
-    io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector.Builder nearVector = io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector
+    WeaviateProtoSearchGet.NearVector.Builder nearVector = WeaviateProtoSearchGet.NearVector
         .newBuilder();
     nearVector.setVectorBytes(GRPC.toByteString(vector));
     opt.append(search, nearVector);
@@ -37,8 +38,7 @@ public class NearVector {
       return this;
     }
 
-    void append(SearchRequest.Builder search,
-        io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.NearVector.Builder nearVector) {
+    void append(SearchRequest.Builder search, WeaviateProtoSearchGet.NearVector.Builder nearVector) {
       if (certainty != null) {
         nearVector.setCertainty(certainty);
       } else if (distance != null) {
