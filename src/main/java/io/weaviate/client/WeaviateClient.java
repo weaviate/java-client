@@ -30,6 +30,8 @@ public class WeaviateClient {
   private final HttpClient httpClient;
   private final AccessTokenProvider tokenProvider;
 
+  public final io.weaviate.client.v1.experimental.Collections collections;
+
   public WeaviateClient(Config config) {
     this(config, new CommonsHttpClientImpl(config.getHeaders(), null, HttpApacheClientBuilder.build(config)), null);
   }
@@ -46,6 +48,8 @@ public class WeaviateClient {
     dbVersionSupport = new DbVersionSupport(dbVersionProvider);
     grpcVersionSupport = new GrpcVersionSupport(dbVersionProvider);
     this.tokenProvider = tokenProvider;
+
+    this.collections = new io.weaviate.client.v1.experimental.Collections(config, tokenProvider);
   }
 
   public WeaviateAsyncClient async() {

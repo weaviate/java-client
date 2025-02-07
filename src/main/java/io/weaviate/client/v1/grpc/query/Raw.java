@@ -7,8 +7,6 @@ import java.util.stream.Collectors;
 import org.apache.hc.core5.http.HttpStatus;
 
 import io.weaviate.client.Config;
-import io.weaviate.client.base.BaseClient;
-import io.weaviate.client.base.ClientResult;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateErrorResponse;
 import io.weaviate.client.base.grpc.GrpcClient;
@@ -17,12 +15,13 @@ import io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.SearchReply;
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.SearchRequest;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 
-public class Raw extends BaseClient<List<Map<String, Object>>> implements ClientResult<List<Map<String, Object>>> {
+public class Raw {
   private final AccessTokenProvider tokenProvider;
+  private final Config config;
   private SearchRequest search;
 
   public Raw(HttpClient httpClient, Config config, AccessTokenProvider tokenProvider) {
-    super(httpClient, config);
+    this.config = config;
     this.tokenProvider = tokenProvider;
   }
 
@@ -31,7 +30,6 @@ public class Raw extends BaseClient<List<Map<String, Object>>> implements Client
     return this;
   }
 
-  @Override
   public Result<List<Map<String, Object>>> run() {
     GrpcClient grpcClient = GrpcClient.create(this.config, this.tokenProvider);
     try {

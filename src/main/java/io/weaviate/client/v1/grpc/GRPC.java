@@ -43,4 +43,11 @@ public class GRPC {
     return ByteString.copyFrom(buffer.array());
   }
 
+  public static ByteString toByteString(float[] vector) {
+    ByteBuffer buffer = ByteBuffer.allocate(vector.length * Float.BYTES).order(ByteOrder.LITTLE_ENDIAN);
+    for (float f : vector) {
+      buffer.putFloat(f);
+    }
+    return ByteString.copyFrom(buffer.array());
+  }
 }

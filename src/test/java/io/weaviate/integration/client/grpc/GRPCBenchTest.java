@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Function;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -22,6 +23,8 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.batch.api.ObjectsBatcher;
 import io.weaviate.client.v1.batch.model.ObjectGetResponse;
 import io.weaviate.client.v1.data.model.WeaviateObject;
+import io.weaviate.client.v1.experimental.Collection;
+import io.weaviate.client.v1.experimental.MetadataField;
 import io.weaviate.client.v1.filters.Operator;
 import io.weaviate.client.v1.filters.WhereFilter;
 import io.weaviate.client.v1.graphql.model.GraphQLResponse;
@@ -40,7 +43,7 @@ public class GRPCBenchTest {
 
   private WeaviateClient client;
 
-  private List<String> fields = new ArrayList<>();
+  private String[] fields = {};
   private final String className = "Things";
 
   private static final int K = 10;
@@ -51,7 +54,7 @@ public class GRPCBenchTest {
   private static final float vectorOrigin = .0001f;
   private static final float vectorBound = .001f;
   private static final List<Float[]> testData = new ArrayList<>(datasetSize);
-  private static final Float[] query = new Float[vectorLength];
+  private static final Float[] queryVector = new Float[vectorLength];
 
   @BeforeClass
   public static void beforeAll() {
@@ -60,8 +63,8 @@ public class GRPCBenchTest {
     }
 
     // Query random vector from the dataset.
-    Float[] queryVector = testData.get(rand.nextInt(0, datasetSize));
-    System.arraycopy(queryVector, 0, query, 0, vectorLength);
+    Float[] randomVector = testData.get(rand.nextInt(0, datasetSize));
+    System.arraycopy(randomVector, 0, queryVector, 0, vectorLength);
 
     System.out.printf("Dataset size (n. vectors): %d\n", datasetSize);
     System.out.printf("Vectors with length: %d in range %.4f-%.4f \n", vectorLength, vectorOrigin, vectorBound);
@@ -80,7 +83,7 @@ public class GRPCBenchTest {
   @Test
   public void testGraphQL() {
     bench("GraphQL", () -> {
-      int count = searchKNN(query, K, filters, builder -> {
+      int count = searchKNN(queryVector, K, filters, builder -> {
         Result<GraphQLResponse> result = client
             .graphQL().raw()
             .withQuery(builder.build().buildQuery())
@@ -99,7 +102,7 @@ public class GRPCBenchTest {
   @Test
   public void testGRPC() {
     bench("GRPC", () -> {
-      int count = searchKNN(query, K, filters, builder -> {
+      int count = searchKNN(queryVector, K, filters, builder -> {
         Result<List<Map<String, Object>>> result = client
             .gRPC().raw()
             .withSearch(builder.build().buildSearchRequest())
@@ -113,7 +116,23 @@ public class GRPCBenchTest {
 
       assertTrue(count > 0, "search returned 1+ vectors");
     }, 3, 10);
+  }
 
+  @Test
+  public void testNewClient() {
+    final float[] vector = ArrayUtils.toPrimitive(queryVector);
+    bench("GRPC.new", () -> {
+      Collection things = client.collections.use(this.className);
+      Result<List<Map<String, Object>>> result = things.query.nearVector(
+          vector,
+          opt -> opt
+              .limit(K)
+              .returnProperties(this.fields)
+              .returnMetadata(MetadataField.ID, MetadataField.VECTOR, MetadataField.DISTANCE));
+
+      int count = countGRPC(result);
+      assertTrue(count > 0, "search returned 1+ vectors");
+    }, 3, 10);
   }
 
   private void bench(String label, Runnable test, int warmupRounds, int benchmarkRounds) {
@@ -157,9 +176,9 @@ public class GRPCBenchTest {
 
     NearVectorArgument nearVector = NearVectorArgument.builder().vector(query).build();
 
-    Field[] fields = new Field[this.fields.size() + 1];
-    for (int i = 0; i < this.fields.size(); i++) {
-      fields[i] = Field.builder().name(this.fields.get(i)).build();
+    Field[] fields = new Field[this.fields.length + 1];
+    for (int i = 0; i < this.fields.length; i++) {
+      fields[i] = Field.builder().name(this.fields[i]).build();
     }
 
     Field additional = Field.builder().name("_additional").fields(new Field[] {
@@ -167,7 +186,7 @@ public class GRPCBenchTest {
         Field.builder().name("vector").build(),
         Field.builder().name("distance").build()
     }).build();
-    fields[this.fields.size()] = additional;
+    fields[this.fields.length] = additional;
 
     final GetBuilder.GetBuilderBuilder builder = GetBuilder.builder()
         .className(this.className)
