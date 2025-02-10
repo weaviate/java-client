@@ -9,7 +9,7 @@ public class Collections {
   private final Config config;
   private final AccessTokenProvider tokenProvider;
 
-  public Collection use(String collection) {
-    return new Collection(config, tokenProvider, collection);
+  public <T> Collection<T> use(String collection, Class<T> cls) {
+    return new Collection<T>(config, tokenProvider, collection, cls);
   }
 }

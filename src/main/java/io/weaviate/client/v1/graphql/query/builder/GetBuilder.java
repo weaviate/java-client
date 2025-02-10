@@ -271,13 +271,12 @@ public class GetBuilder implements Query {
       }
 
       // Properties
-      Optional<Field> props = Arrays.stream(fields.getFields())
-          .filter(f -> !"_additional".equals(f.getName())).findFirst();
-      if (props.isPresent()) {
+      List<Field> props = Arrays.stream(fields.getFields())
+          .filter(f -> !"_additional".equals(f.getName())).toList();
+      if (!props.isEmpty()) {
         PropertiesRequest.Builder properties = PropertiesRequest.newBuilder();
-        int i = 0;
-        for (Field f : props.get().getFields()) {
-          properties.setNonRefProperties(i++, f.getName());
+        for (Field f : props) {
+          properties.addNonRefProperties(f.getName());
         }
         search.setProperties(properties.build());
       }

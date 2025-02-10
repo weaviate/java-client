@@ -2,9 +2,9 @@ package io.weaviate.integration.client.grpc;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +25,7 @@ import io.weaviate.client.v1.batch.model.ObjectGetResponse;
 import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.experimental.Collection;
 import io.weaviate.client.v1.experimental.MetadataField;
-import io.weaviate.client.v1.experimental.Where;
+import io.weaviate.client.v1.experimental.SearchResult;
 import io.weaviate.client.v1.filters.Operator;
 import io.weaviate.client.v1.filters.WhereFilter;
 import io.weaviate.client.v1.graphql.model.GraphQLResponse;
@@ -35,6 +35,7 @@ import io.weaviate.client.v1.graphql.query.builder.GetBuilder;
 import io.weaviate.client.v1.graphql.query.fields.Field;
 import io.weaviate.client.v1.graphql.query.fields.Fields;
 import io.weaviate.integration.client.WeaviateDockerCompose;
+import lombok.AllArgsConstructor;
 
 public class GRPCBenchTest {
   @ClassRule
@@ -44,31 +45,34 @@ public class GRPCBenchTest {
 
   private WeaviateClient client;
 
-  private String[] fields = {};
+  private String[] fields = { "description", "price", "bestBefore" };
   private final String className = "Things";
 
   private static final int K = 10;
   private static final Map<String, Object> filters = new HashMap<>();
 
-  private static final int datasetSize = 10;
-  private static final int vectorLength = 5000;
-  private static final float vectorOrigin = .0001f;
-  private static final float vectorBound = .001f;
-  private static final List<Float[]> testData = new ArrayList<>(datasetSize);
-  private static final Float[] queryVector = new Float[vectorLength];
+  private static final int DATASET_SIZE = 10;
+  private static final int VECTOR_LEN = 5000;
+  private static final float VECTOR_ORIGIN = .0001f;
+  private static final float VECTOR_BOUND = .001f;
+  private static final List<Float[]> testData = new ArrayList<>(DATASET_SIZE);
+  private static final Float[] queryVector = new Float[VECTOR_LEN];
+
+  private static final int WARMUP_ROUNDS = 3;
+  private static final int BENCHMARK_ROUNDS = 10;
 
   @BeforeClass
   public static void beforeAll() {
-    for (int i = 0; i < datasetSize; i++) {
-      testData.add(genVector(vectorLength, vectorOrigin, vectorBound));
+    for (int i = 0; i < DATASET_SIZE; i++) {
+      testData.add(genVector(VECTOR_LEN, VECTOR_ORIGIN, VECTOR_BOUND));
     }
 
     // Query random vector from the dataset.
-    Float[] randomVector = testData.get(rand.nextInt(0, datasetSize));
-    System.arraycopy(randomVector, 0, queryVector, 0, vectorLength);
+    Float[] randomVector = testData.get(rand.nextInt(0, DATASET_SIZE));
+    System.arraycopy(randomVector, 0, queryVector, 0, VECTOR_LEN);
 
-    System.out.printf("Dataset size (n. vectors): %d\n", datasetSize);
-    System.out.printf("Vectors with length: %d in range %.4f-%.4f \n", vectorLength, vectorOrigin, vectorBound);
+    System.out.printf("Dataset size (n. vectors): %d\n", DATASET_SIZE);
+    System.out.printf("Vectors with length: %d in range %.4f-%.4f \n", VECTOR_LEN, VECTOR_ORIGIN, VECTOR_BOUND);
     System.out.println("===========================================");
   }
 
@@ -97,7 +101,7 @@ public class GRPCBenchTest {
       });
 
       assertTrue(count > 0, "query returned 1+ vectors");
-    }, 3, 10);
+    }, WARMUP_ROUNDS, BENCHMARK_ROUNDS);
   }
 
   @Test
@@ -116,15 +120,15 @@ public class GRPCBenchTest {
       });
 
       assertTrue(count > 0, "search returned 1+ vectors");
-    }, 3, 10);
+    }, WARMUP_ROUNDS, BENCHMARK_ROUNDS);
   }
 
   @Test
   public void testNewClient() {
     final float[] vector = ArrayUtils.toPrimitive(queryVector);
+    final Collection<Object> things = client.collections.use(className, Object.class);
     bench("GRPC.new", () -> {
-      Collection things = client.collections.use(className);
-      Result<List<Map<String, Object>>> result = things.query.nearVector(
+      Result<List<Map<String, Object>>> result = things.query.nearVectorUntyped(
           vector,
           opt -> opt
               .limit(K)
@@ -133,43 +137,67 @@ public class GRPCBenchTest {
 
       int count = countGRPC(result);
       assertTrue(count > 0, "search returned 1+ vectors");
-    }, 3, 10);
+    }, WARMUP_ROUNDS, BENCHMARK_ROUNDS);
+  }
+
+  @AllArgsConstructor
+  public static class Thing {
+    public String description;
+    public Double price;
+    public String bestBefore;
+  }
+
+  @Test
+  public void testORMClient() {
+    final float[] vector = ArrayUtils.toPrimitive(queryVector);
+    bench("GRPC.orm", () -> {
+      Collection<Thing> things = client.collections.use(className, Thing.class);
+      SearchResult<Thing> result = things.query.nearVector(
+          vector,
+          opt -> opt
+              .limit(K)
+              .returnProperties(fields)
+              .returnMetadata(MetadataField.ID, MetadataField.VECTOR, MetadataField.DISTANCE));
+
+      int count = countORM(result);
+      assertTrue(count > 0, "search returned 1+ vectors");
+    }, WARMUP_ROUNDS, BENCHMARK_ROUNDS);
   }
 
   private void bench(String label, Runnable test, int warmupRounds, int benchmarkRounds) {
-    Instant start = Instant.now();
+    long start = System.nanoTime();
 
     // Warmup rounds to let JVM optimise execution.
     // ---------------------------------------
-    Instant startWarm = start;
+    long startWarm = start;
     for (int i = 0; i < warmupRounds; i++) {
       test.run();
     }
-    Instant finishWarm = Instant.now();
-    long elapsedWarm = Duration.between(startWarm, finishWarm).toMillis();
-    float avgWarm = elapsedWarm / warmupRounds;
+    long finishWarm = System.nanoTime();
+    double elapsedWarmNano = (finishWarm - startWarm) / 1000_000L;
+    double avgWarm = elapsedWarmNano / warmupRounds;
 
     // Benchmarking: measure total time and divide by the number of live rounds.
     // ---------------------------------------
-    Instant startBench = Instant.now();
+    long startBench = System.nanoTime();
     for (int i = 0; i < benchmarkRounds; i++) {
       test.run();
     }
-    Instant finishBench = Instant.now();
-    Instant finish = finishBench;
+    long finishBench = System.nanoTime();
+    long finish = finishBench;
 
-    long elapsedBench = Duration.between(startBench, finishBench).toMillis();
-    float avgBench = elapsedBench / benchmarkRounds;
+    double elapsedBench = (finishBench - startBench) / 1000_000L;
+    double avgBench = elapsedBench / benchmarkRounds;
 
-    long elapsed = Duration.between(start, finish).toMillis();
+    double elapsed = (finish - start) / 1000_000L;
 
     // Print results
     // ---------------------------------------
 
-    System.out.printf("%s\t(%d warmup, %d benchmark): \u001B[1m%.1fms\033[0m\n", label, warmupRounds, benchmarkRounds,
-        avgBench);
-    System.out.printf("\twarmup.round: %.1fms", avgWarm);
-    System.out.printf("\t total: %dms\n", elapsed);
+    System.out.printf("%s\t(%d warmup, %d benchmark): \u001B[1m%.2fms\033[0m\n",
+        label, warmupRounds, benchmarkRounds, avgBench);
+    System.out.printf("\twarmup.round: %.2fms", avgWarm);
+    System.out.printf("\t total: %.2fms\n", elapsed);
   }
 
   private int searchKNN(Float[] query, int k,
@@ -220,18 +248,16 @@ public class GRPCBenchTest {
     final Map<String, Map<String, Object>> data = (Map<String, Map<String, Object>>) result.getResult().getData();
     List<Map<String, Object>> list = (List<Map<String, Object>>) data.get("Get").get(this.className);
     return list.size();
-
-    // for (Map<String, Object> item : list) {
-    // final Map<String, Object> a = (Map<String, Object>) item.get("_additional");
-    // final List<Double> vector = (List<Double>) a.get("vector");
-    // count++;
-    // }
-    // return count;
   }
 
   /* Count the number of results in the gRPC result. */
   private int countGRPC(Result<List<Map<String, Object>>> result) {
     return result.getResult().size();
+  }
+
+  /* Count the number of results in the mapped gRPC result. */
+  private <T> int countORM(SearchResult<T> result) {
+    return result.objects.size();
   }
 
   private boolean dropSchema() {
@@ -240,11 +266,21 @@ public class GRPCBenchTest {
 
   private boolean write(List<Float[]> embeddings) {
     ObjectsBatcher batcher = client.batch().objectsBatcher();
+    int count = 0;
     for (Float[] e : embeddings) {
+      int i = count++;
       batcher.withObject(WeaviateObject.builder()
           .className(this.className)
           .vector(e)
-          // .properties(meta) -> no properties, only vector
+          .properties(new HashMap<String, Object>() {
+            {
+              this.put("description", "Thing-" + String.valueOf(i));
+              this.put("price", i);
+              // FIXME(?): somehow this field is ignored if I pass Date instance here
+              // and "bestBefore" cannot be requested in returnProperties.
+              this.put("bestBefore", Date.from(Instant.now()).toString());
+            }
+          })
           // .id(getUuid(e)) -> use generated UUID
           .build());
     }

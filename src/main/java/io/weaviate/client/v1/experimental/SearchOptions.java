@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Filters;
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.MetadataRequest;
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.PropertiesRequest;
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.SearchRequest;
@@ -38,6 +39,12 @@ public abstract class SearchOptions<SELF extends SearchOptions<SELF>> {
       search.setAutocut(autocut);
     }
 
+    if (where != null) {
+      Filters.Builder filters = Filters.newBuilder();
+      where.append(filters);
+      search.setFilters(filters.build());
+    }
+
     if (!returnMetadata.isEmpty()) {
       MetadataRequest.Builder metadata = MetadataRequest.newBuilder();
       returnMetadata.forEach(m -> m.append(metadata));
@@ -46,9 +53,8 @@ public abstract class SearchOptions<SELF extends SearchOptions<SELF>> {
 
     if (!returnProperties.isEmpty()) {
       PropertiesRequest.Builder properties = PropertiesRequest.newBuilder();
-      int i = 0;
       for (String property : returnProperties) {
-        properties.setNonRefProperties(i++, property);
+        properties.addNonRefProperties(property);
       }
       search.setProperties(properties.build());
     }
