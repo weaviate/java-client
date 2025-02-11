@@ -8,7 +8,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Set;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -26,7 +28,9 @@ import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.experimental.Batcher;
 import io.weaviate.client.v1.experimental.Collection;
 import io.weaviate.client.v1.experimental.MetadataField;
+import io.weaviate.client.v1.experimental.Operand;
 import io.weaviate.client.v1.experimental.SearchResult;
+import io.weaviate.client.v1.experimental.Where;
 import io.weaviate.client.v1.filters.Operator;
 import io.weaviate.client.v1.filters.WhereFilter;
 import io.weaviate.client.v1.graphql.model.GraphQLResponse;
@@ -133,7 +137,7 @@ public class GRPCBenchTest {
           vector,
           opt -> opt
               .limit(K)
-              .returnProperties(fields)
+              .returnProperties(fields) // Optional: skip this field to retrieve ALL properties
               .returnMetadata(MetadataField.ID, MetadataField.VECTOR, MetadataField.DISTANCE));
 
       int count = countGRPC(result);
@@ -143,7 +147,7 @@ public class GRPCBenchTest {
 
   @AllArgsConstructor
   public static class Thing {
-    public String description;
+    public String title;
     public Double price;
     public String bestBefore;
   }
@@ -153,10 +157,59 @@ public class GRPCBenchTest {
     final float[] vector = ArrayUtils.toPrimitive(queryVector);
     bench("GRPC.orm", () -> {
       Collection<Thing> things = client.collections.use(className, Thing.class);
+
       SearchResult<Thing> result = things.query.nearVector(
           vector,
           opt -> opt
               .limit(K)
+              .returnProperties(fields)
+              .returnMetadata(MetadataField.ID, MetadataField.VECTOR, MetadataField.DISTANCE));
+
+      int count = countORM(result);
+      assertTrue(count > 0, "search returned 1+ vectors");
+    }, WARMUP_ROUNDS, BENCHMARK_ROUNDS);
+  }
+
+  @Test
+  public void testORMClient_filters() {
+    final float[] vector = ArrayUtils.toPrimitive(queryVector);
+    bench("GRPC.filters", () -> {
+      Collection<Thing> things = client.collections.use(className, Thing.class);
+
+      Operand[] whereFilters = {
+          Where.property("title").eq("BigThing"),
+      };
+      SearchResult<Thing> result = things.query.nearVector(
+          vector,
+          opt -> opt
+              .limit(K)
+              .where(Where.and(whereFilters))
+              .returnProperties(fields)
+              .returnMetadata(MetadataField.ID, MetadataField.VECTOR, MetadataField.DISTANCE));
+
+      int count = countORM(result);
+      assertTrue(count > 0, "search returned 1+ vectors");
+    }, WARMUP_ROUNDS, BENCHMARK_ROUNDS);
+  }
+
+  @Test
+  public void testORMClient_dynamicFilters() {
+    final float[] vector = ArrayUtils.toPrimitive(queryVector);
+    bench("GRPC.dynamicFilters", () -> {
+      Collection<Thing> things = client.collections.use(className, Thing.class);
+
+      Set<Entry<String, Object>> entries = filters.entrySet();
+      Operand[] whereFilters = new Operand[entries.size()];
+      int i = 0;
+      for (Entry<String, Object> entry : entries) {
+        whereFilters[i++] = Where.property(entry.getKey()).eq((String) entry.getValue());
+      }
+
+      SearchResult<Thing> result = things.query.nearVector(
+          vector,
+          opt -> opt
+              .limit(K)
+              .where(Where.and(whereFilters))
               .returnProperties(fields)
               .returnMetadata(MetadataField.ID, MetadataField.VECTOR, MetadataField.DISTANCE));
 
