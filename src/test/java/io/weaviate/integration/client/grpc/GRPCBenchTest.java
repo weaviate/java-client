@@ -23,6 +23,7 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.batch.api.ObjectsBatcher;
 import io.weaviate.client.v1.batch.model.ObjectGetResponse;
 import io.weaviate.client.v1.data.model.WeaviateObject;
+import io.weaviate.client.v1.experimental.Batcher;
 import io.weaviate.client.v1.experimental.Collection;
 import io.weaviate.client.v1.experimental.MetadataField;
 import io.weaviate.client.v1.experimental.SearchResult;
@@ -82,7 +83,7 @@ public class GRPCBenchTest {
     client = new WeaviateClient(config);
 
     assertTrue(dropSchema(), "successfully dropped schema");
-    assertTrue(write(testData), "loaded test data successfully");
+    assertTrue(writeORM(testData), "loaded test data successfully");
   }
 
   @Test
@@ -288,6 +289,22 @@ public class GRPCBenchTest {
     batcher.close();
 
     return !run.hasErrors();
+  }
+
+  /** writeORM creates {@link Thing} objects and inserts them in a batch. */
+  private boolean writeORM(List<Float[]> embeddings) {
+    try (Batcher<Thing> batch = client.datax.batch(Thing.class)) {
+      return batch.insert(b -> {
+        int i = 0;
+        for (Float[] e : embeddings) {
+          Thing thing = new Thing(
+              "Thing-" + String.valueOf(i),
+              (double) i++,
+              Date.from(Instant.now()).toString());
+          b.add(thing, e);
+        }
+      });
+    }
   }
 
   private static Float[] genVector(int length, float origin, float bound) {
