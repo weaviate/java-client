@@ -170,52 +170,47 @@ public class GRPCBenchTest {
     }, WARMUP_ROUNDS, BENCHMARK_ROUNDS);
   }
 
-  @Test
-  public void testORMClient_filters() {
+  public void exampleORMWithHardcodedFilters() {
     final float[] vector = ArrayUtils.toPrimitive(queryVector);
-    bench("GRPC.filters", () -> {
-      Collection<Thing> things = client.collections.use(className, Thing.class);
+    Operand[] whereFilters = {
+        Where.property("title").eq("Thing A"),
+        Where.property("title").eq("Thing B"),
+    };
 
-      Operand[] whereFilters = {
-          Where.property("title").eq("BigThing"),
-      };
-      SearchResult<Thing> result = things.query.nearVector(
-          vector,
-          opt -> opt
-              .limit(K)
-              .where(Where.and(whereFilters))
-              .returnProperties(fields)
-              .returnMetadata(MetadataField.ID, MetadataField.VECTOR, MetadataField.DISTANCE));
+    Collection<Thing> things = client.collections.use(className, Thing.class);
+    SearchResult<Thing> result = things.query.nearVector(
+        vector,
+        opt -> opt
+            .limit(K)
+            .where(Where.and(whereFilters))
+            .returnProperties(fields)
+            .returnMetadata(MetadataField.ID, MetadataField.VECTOR, MetadataField.DISTANCE));
 
-      int count = countORM(result);
-      assertTrue(count > 0, "search returned 1+ vectors");
-    }, WARMUP_ROUNDS, BENCHMARK_ROUNDS);
+    int count = countORM(result);
+    assertTrue(count > 0, "search returned 1+ vectors");
   }
 
-  @Test
-  public void testORMClient_dynamicFilters() {
+  public void exampleORMWithDynamicFilters() {
     final float[] vector = ArrayUtils.toPrimitive(queryVector);
-    bench("GRPC.dynamicFilters", () -> {
-      Collection<Thing> things = client.collections.use(className, Thing.class);
 
-      Set<Entry<String, Object>> entries = filters.entrySet();
-      Operand[] whereFilters = new Operand[entries.size()];
-      int i = 0;
-      for (Entry<String, Object> entry : entries) {
-        whereFilters[i++] = Where.property(entry.getKey()).eq((String) entry.getValue());
-      }
+    Set<Entry<String, Object>> entries = filters.entrySet();
+    Operand[] whereFilters = new Operand[entries.size()];
+    int i = 0;
+    for (Entry<String, Object> entry : entries) {
+      whereFilters[i++] = Where.property(entry.getKey()).eq((String) entry.getValue());
+    }
 
-      SearchResult<Thing> result = things.query.nearVector(
-          vector,
-          opt -> opt
-              .limit(K)
-              .where(Where.and(whereFilters))
-              .returnProperties(fields)
-              .returnMetadata(MetadataField.ID, MetadataField.VECTOR, MetadataField.DISTANCE));
+    Collection<Thing> things = client.collections.use(className, Thing.class);
+    SearchResult<Thing> result = things.query.nearVector(
+        vector,
+        opt -> opt
+            .limit(K)
+            .where(Where.and(whereFilters))
+            .returnProperties(fields)
+            .returnMetadata(MetadataField.ID, MetadataField.VECTOR, MetadataField.DISTANCE));
 
-      int count = countORM(result);
-      assertTrue(count > 0, "search returned 1+ vectors");
-    }, WARMUP_ROUNDS, BENCHMARK_ROUNDS);
+    int count = countORM(result);
+    assertTrue(count > 0, "search returned 1+ vectors");
   }
 
   private void bench(String label, Runnable test, int warmupRounds, int benchmarkRounds) {
