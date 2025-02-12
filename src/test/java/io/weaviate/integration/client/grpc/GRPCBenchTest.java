@@ -174,7 +174,10 @@ public class GRPCBenchTest {
     final float[] vector = ArrayUtils.toPrimitive(queryVector);
     Operand[] whereFilters = {
         Where.property("title").eq("Thing A"),
-        Where.property("title").eq("Thing B"),
+        Where.property("price").gte(145.94f),
+        Where.or(
+            Where.property("bestBefore").lte(Date.from(Instant.now())),
+            Where.property("bestBefore").ne(Date.from(Instant.now().plusSeconds(20)))),
     };
 
     Collection<Thing> things = client.collections.use(className, Thing.class);
@@ -183,6 +186,7 @@ public class GRPCBenchTest {
         opt -> opt
             .limit(K)
             .where(Where.and(whereFilters))
+            // .where(Where.and()) -> ignored, because no filters are applied
             .returnProperties(fields)
             .returnMetadata(MetadataField.ID, MetadataField.VECTOR, MetadataField.DISTANCE));
 

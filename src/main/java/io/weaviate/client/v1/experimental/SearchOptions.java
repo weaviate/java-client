@@ -39,7 +39,7 @@ public abstract class SearchOptions<SELF extends SearchOptions<SELF>> {
       search.setAutocut(autocut);
     }
 
-    if (where != null) {
+    if (where != null && !where.isEmpty()) {
       Filters.Builder filters = Filters.newBuilder();
       where.append(filters);
       search.setFilters(filters.build());

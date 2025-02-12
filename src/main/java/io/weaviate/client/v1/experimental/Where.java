@@ -2,27 +2,57 @@ package io.weaviate.client.v1.experimental;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.lang3.time.DateFormatUtils;
 
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase;
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Filters;
 import lombok.RequiredArgsConstructor;
 
 public class Where implements Operand {
-  // Logical operators
-  private static final String AND = "And";
-  private static final String OR = "Or";
 
-  // Comparison operators
-  private static final String EQUAL = "Equals";
-  private static final String LESS_THAN = "LessThan";
-  private static final String GREATER_THAN = "GreaterThan";
+  @RequiredArgsConstructor
+  private enum Operator {
+    // Logical operators
+    AND("And", Filters.Operator.OPERATOR_AND),
+    OR("Or", Filters.Operator.OPERATOR_OR),
 
-  private final String operator;
+    // Comparison operators
+    EQUAL("Equal", Filters.Operator.OPERATOR_EQUAL),
+    NOT_EQUAL("NotEqual", Filters.Operator.OPERATOR_EQUAL),
+    LESS_THAN("LessThen", Filters.Operator.OPERATOR_LESS_THAN),
+    LESS_THAN_EQUAL("LessThenEqual", Filters.Operator.OPERATOR_LESS_THAN_EQUAL),
+    GREATER_THAN("GreaterThen", Filters.Operator.OPERATOR_GREATER_THAN),
+    GREATER_THAN_EQUAL("GreaterThenEqual", Filters.Operator.OPERATOR_GREATER_THAN_EQUAL),
+    LIKE("Like", Filters.Operator.OPERATOR_LIKE),
+    CONTAINS_ANY("ContainsAny", Filters.Operator.OPERATOR_LIKE),
+    CONTAINS_ALL("ContainsAll", Filters.Operator.OPERATOR_CONTAINS_ALL),
+    WITHIN_GEO_RANGE("WithinGeoRange", Filters.Operator.OPERATOR_WITHIN_GEO_RANGE);
+
+    /** String representation for better debug logs. */
+    private final String string;
+
+    /** gRPC operator value . */
+    private final Filters.Operator grpc;
+
+    public void append(Filters.Builder where) {
+      where.setOperator(grpc);
+    }
+  }
+
+  private final Operator operator;
   private List<Operand> operands = new ArrayList<>();
 
+  public boolean isEmpty() {
+    // TODO: if operands not empty, we need to check that each operand is not empty
+    // either. Guard against Where.and(Where.or(), Where.and()) situation.
+    return operands.isEmpty();
+  }
+
   @SafeVarargs
-  private Where(String operator, Operand... operands) {
+  private Where(Operator operator, Operand... operands) {
     this.operator = operator;
     this.operands = Arrays.asList(operands);
   }
@@ -30,11 +60,11 @@ public class Where implements Operand {
   // Logical operators return a complete operand.
   // --------------------------------------------
   public static Where and(Operand... operands) {
-    return new Where(AND, operands);
+    return new Where(Operator.AND, operands);
   }
 
   public static Where or(Operand... operands) {
-    return new Where(OR, operands);
+    return new Where(Operator.OR, operands);
   }
 
   // Comparison operators return fluid builder.
@@ -55,32 +85,357 @@ public class Where implements Operand {
       this.left = left;
     }
 
+    // Equal
+    // ------------------------------------------
     public Where eq(String value) {
-      return new Where(EQUAL, left, new Text(value));
+      return new Where(Operator.EQUAL, left, new $Text(value));
     }
 
-    public Where eq(String... value) {
-      return new Where(EQUAL, left, new TextArray(value));
+    public Where eq(String... values) {
+      return new Where(Operator.EQUAL, left, new $TextArray(values));
     }
 
+    public Where eq(Boolean value) {
+      return new Where(Operator.EQUAL, left, new $Boolean(value));
+    }
+
+    public Where eq(Boolean... values) {
+      return new Where(Operator.EQUAL, left, new $BooleanArray(values));
+    }
+
+    public Where eq(Integer value) {
+      return new Where(Operator.EQUAL, left, new $Integer(value));
+    }
+
+    public Where eq(Integer... values) {
+      return new Where(Operator.EQUAL, left, new $IntegerArray(values));
+    }
+
+    public Where eq(Number value) {
+      return new Where(Operator.EQUAL, left, new $Number(value.doubleValue()));
+    }
+
+    public Where eq(Number... values) {
+      return new Where(Operator.EQUAL, left, new $NumberArray(values));
+    }
+
+    public Where eq(Date value) {
+      return new Where(Operator.EQUAL, left, new $Date(value));
+    }
+
+    public Where eq(Date... values) {
+      return new Where(Operator.EQUAL, left, new $DateArray(values));
+    }
+
+    // NotEqual
+    // ------------------------------------------
+    public Where ne(String value) {
+      return new Where(Operator.NOT_EQUAL, left, new $Text(value));
+    }
+
+    public Where ne(String... values) {
+      return new Where(Operator.NOT_EQUAL, left, new $TextArray(values));
+    }
+
+    public Where ne(Boolean value) {
+      return new Where(Operator.NOT_EQUAL, left, new $Boolean(value));
+    }
+
+    public Where ne(Boolean... values) {
+      return new Where(Operator.NOT_EQUAL, left, new $BooleanArray(values));
+    }
+
+    public Where ne(Integer value) {
+      return new Where(Operator.NOT_EQUAL, left, new $Integer(value));
+    }
+
+    public Where ne(Integer... values) {
+      return new Where(Operator.NOT_EQUAL, left, new $IntegerArray(values));
+    }
+
+    public Where ne(Number value) {
+      return new Where(Operator.NOT_EQUAL, left, new $Number(value.doubleValue()));
+    }
+
+    public Where ne(Number... values) {
+      return new Where(Operator.NOT_EQUAL, left, new $NumberArray(values));
+    }
+
+    public Where ne(Date value) {
+      return new Where(Operator.NOT_EQUAL, left, new $Date(value));
+    }
+
+    public Where ne(Date... values) {
+      return new Where(Operator.NOT_EQUAL, left, new $DateArray(values));
+    }
+
+    // LessThan
+    // ------------------------------------------
     public Where lt(String value) {
-      return new Where(LESS_THAN, left, new Text(value));
+      return new Where(Operator.LESS_THAN, left, new $Text(value));
     }
 
-    public Where lt(String... value) {
-      return new Where(LESS_THAN, left, new TextArray(value));
+    public Where lt(String... values) {
+      return new Where(Operator.LESS_THAN, left, new $TextArray(values));
     }
 
+    public Where lt(Boolean value) {
+      return new Where(Operator.LESS_THAN, left, new $Boolean(value));
+    }
+
+    public Where lt(Boolean... values) {
+      return new Where(Operator.LESS_THAN, left, new $BooleanArray(values));
+    }
+
+    public Where lt(Integer value) {
+      return new Where(Operator.LESS_THAN, left, new $Integer(value));
+    }
+
+    public Where lt(Integer... values) {
+      return new Where(Operator.LESS_THAN, left, new $IntegerArray(values));
+    }
+
+    public Where lt(Number value) {
+      return new Where(Operator.LESS_THAN, left, new $Number(value.doubleValue()));
+    }
+
+    public Where lt(Number... values) {
+      return new Where(Operator.LESS_THAN, left, new $NumberArray(values));
+    }
+
+    public Where lt(Date value) {
+      return new Where(Operator.LESS_THAN, left, new $Date(value));
+    }
+
+    public Where lt(Date... values) {
+      return new Where(Operator.LESS_THAN, left, new $DateArray(values));
+    }
+
+    // LessThanEqual
+    // ------------------------------------------
+    public Where lte(String value) {
+      return new Where(Operator.LESS_THAN_EQUAL, left, new $Text(value));
+    }
+
+    public Where lte(String... values) {
+      return new Where(Operator.LESS_THAN_EQUAL, left, new $TextArray(values));
+    }
+
+    public Where lte(Boolean value) {
+      return new Where(Operator.LESS_THAN_EQUAL, left, new $Boolean(value));
+    }
+
+    public Where lte(Boolean... values) {
+      return new Where(Operator.LESS_THAN_EQUAL, left, new $BooleanArray(values));
+    }
+
+    public Where lte(Integer value) {
+      return new Where(Operator.LESS_THAN_EQUAL, left, new $Integer(value));
+    }
+
+    public Where lte(Integer... values) {
+      return new Where(Operator.LESS_THAN_EQUAL, left, new $IntegerArray(values));
+    }
+
+    public Where lte(Number value) {
+      return new Where(Operator.LESS_THAN_EQUAL, left, new $Number(value.doubleValue()));
+    }
+
+    public Where lte(Number... values) {
+      return new Where(Operator.LESS_THAN_EQUAL, left, new $NumberArray(values));
+    }
+
+    public Where lte(Date value) {
+      return new Where(Operator.LESS_THAN_EQUAL, left, new $Date(value));
+    }
+
+    public Where lte(Date... values) {
+      return new Where(Operator.LESS_THAN_EQUAL, left, new $DateArray(values));
+    }
+
+    // GreaterThan
+    // ------------------------------------------
     public Where gt(String value) {
-      return new Where(GREATER_THAN, left, new Text(value));
+      return new Where(Operator.GREATER_THAN, left, new $Text(value));
     }
 
-    public Where gt(String... value) {
-      return new Where(GREATER_THAN, left, new TextArray(value));
+    public Where gt(String... values) {
+      return new Where(Operator.GREATER_THAN, left, new $TextArray(values));
     }
 
-    // TODO: there need to be overloaded operators for all possible combinations.
-    // Verbose? Yes, but that's the way of Java. Plus it gives super nice syntax.
+    public Where gt(Boolean value) {
+      return new Where(Operator.GREATER_THAN, left, new $Boolean(value));
+    }
+
+    public Where gt(Boolean... values) {
+      return new Where(Operator.GREATER_THAN, left, new $BooleanArray(values));
+    }
+
+    public Where gt(Integer value) {
+      return new Where(Operator.GREATER_THAN, left, new $Integer(value));
+    }
+
+    public Where gt(Integer... values) {
+      return new Where(Operator.GREATER_THAN, left, new $IntegerArray(values));
+    }
+
+    public Where gt(Number value) {
+      return new Where(Operator.GREATER_THAN, left, new $Number(value.doubleValue()));
+    }
+
+    public Where gt(Number... values) {
+      return new Where(Operator.GREATER_THAN, left, new $NumberArray(values));
+    }
+
+    public Where gt(Date value) {
+      return new Where(Operator.GREATER_THAN, left, new $Date(value));
+    }
+
+    public Where gt(Date... values) {
+      return new Where(Operator.GREATER_THAN, left, new $DateArray(values));
+    }
+
+    // GreaterThanEqual
+    // ------------------------------------------
+    public Where gte(String value) {
+      return new Where(Operator.GREATER_THAN_EQUAL, left, new $Text(value));
+    }
+
+    public Where gte(String... values) {
+      return new Where(Operator.GREATER_THAN, left, new $TextArray(values));
+    }
+
+    public Where gte(Boolean value) {
+      return new Where(Operator.GREATER_THAN, left, new $Boolean(value));
+    }
+
+    public Where gte(Boolean... values) {
+      return new Where(Operator.GREATER_THAN, left, new $BooleanArray(values));
+    }
+
+    public Where gte(Integer value) {
+      return new Where(Operator.GREATER_THAN, left, new $Integer(value));
+    }
+
+    public Where gte(Integer... values) {
+      return new Where(Operator.GREATER_THAN, left, new $IntegerArray(values));
+    }
+
+    public Where gte(Number value) {
+      return new Where(Operator.GREATER_THAN, left, new $Number(value.doubleValue()));
+    }
+
+    public Where gte(Number... values) {
+      return new Where(Operator.GREATER_THAN, left, new $NumberArray(values));
+    }
+
+    public Where gte(Date value) {
+      return new Where(Operator.GREATER_THAN, left, new $Date(value));
+    }
+
+    public Where gte(Date... values) {
+      return new Where(Operator.GREATER_THAN, left, new $DateArray(values));
+    }
+
+    // Like
+    // ------------------------------------------
+    public Where like(String value) {
+      return new Where(Operator.LIKE, left, new $Text(value));
+    }
+
+    public Where like(String... values) {
+      return new Where(Operator.LIKE, left, new $TextArray(values));
+    }
+
+    public Where like(Boolean value) {
+      return new Where(Operator.LIKE, left, new $Boolean(value));
+    }
+
+    public Where like(Boolean... values) {
+      return new Where(Operator.LIKE, left, new $BooleanArray(values));
+    }
+
+    public Where like(Integer value) {
+      return new Where(Operator.LIKE, left, new $Integer(value));
+    }
+
+    public Where like(Integer... values) {
+      return new Where(Operator.LIKE, left, new $IntegerArray(values));
+    }
+
+    public Where like(Number value) {
+      return new Where(Operator.LIKE, left, new $Number(value.doubleValue()));
+    }
+
+    public Where like(Number... values) {
+      return new Where(Operator.LIKE, left, new $NumberArray(values));
+    }
+
+    public Where like(Date value) {
+      return new Where(Operator.LIKE, left, new $Date(value));
+    }
+
+    public Where like(Date... values) {
+      return new Where(Operator.LIKE, left, new $DateArray(values));
+    }
+
+    // ContainsAny
+    // ------------------------------------------
+    public Where containsAny(String value) {
+      return new Where(Operator.CONTAINS_ANY, left, new $Text(value));
+    }
+
+    public Where containsAny(String... values) {
+      return new Where(Operator.CONTAINS_ANY, left, new $TextArray(values));
+    }
+
+    public Where containsAny(Boolean... values) {
+      return new Where(Operator.CONTAINS_ANY, left, new $BooleanArray(values));
+    }
+
+    public Where containsAny(Integer... values) {
+      return new Where(Operator.CONTAINS_ANY, left, new $IntegerArray(values));
+    }
+
+    public Where containsAny(Number... values) {
+      return new Where(Operator.CONTAINS_ANY, left, new $NumberArray(values));
+    }
+
+    public Where containsAny(Date... values) {
+      return new Where(Operator.CONTAINS_ANY, left, new $DateArray(values));
+    }
+
+    // ContainsAll
+    // ------------------------------------------
+    public Where containsAll(String value) {
+      return new Where(Operator.CONTAINS_ALL, left, new $Text(value));
+    }
+
+    public Where containsAll(String... values) {
+      return new Where(Operator.CONTAINS_ALL, left, new $TextArray(values));
+    }
+
+    public Where containsAll(Boolean... values) {
+      return new Where(Operator.CONTAINS_ALL, left, new $BooleanArray(values));
+    }
+
+    public Where containsAll(Integer... values) {
+      return new Where(Operator.CONTAINS_ALL, left, new $IntegerArray(values));
+    }
+
+    public Where containsAll(Number... values) {
+      return new Where(Operator.CONTAINS_ALL, left, new $NumberArray(values));
+    }
+
+    public Where containsAll(Date... values) {
+      return new Where(Operator.CONTAINS_ALL, left, new $DateArray(values));
+    }
+
+    // WithinGeoRange
+    // ------------------------------------------
+    public Where withinGeoRange(float lat, float lon, float maxDistance) {
+      return new Where(Operator.WITHIN_GEO_RANGE, left, new $GeoRange(lat, lon, maxDistance));
+    }
   }
 
   @Override
@@ -94,23 +449,7 @@ public class Where implements Operand {
     }
 
     this.operands.forEach(op -> op.append(where));
-    switch (operator) {
-      case AND:
-        where.setOperator(Filters.Operator.OPERATOR_AND);
-        break;
-      case OR:
-        where.setOperator(Filters.Operator.OPERATOR_OR);
-        break;
-      case EQUAL:
-        where.setOperator(Filters.Operator.OPERATOR_EQUAL);
-        break;
-      case GREATER_THAN:
-        where.setOperator(Filters.Operator.OPERATOR_GREATER_THAN);
-        break;
-      case LESS_THAN:
-        where.setOperator(Filters.Operator.OPERATOR_LESS_THAN);
-        break;
-    }
+    operator.append(where);
   }
 
   private static class Path implements Operand {
@@ -132,7 +471,7 @@ public class Where implements Operand {
   }
 
   @RequiredArgsConstructor
-  private static class Text implements Operand {
+  private static class $Text implements Operand {
     private final String value;
 
     @Override
@@ -141,17 +480,148 @@ public class Where implements Operand {
     }
   }
 
-  private static class TextArray implements Operand {
+  private static class $TextArray implements Operand {
     private List<String> value;
 
     @SafeVarargs
-    private TextArray(String... value) {
-      this.value = Arrays.asList(value);
+    private $TextArray(String... values) {
+      this.value = Arrays.asList(values);
+      ;
     }
 
     @Override
     public void append(Filters.Builder where) {
-      where.setValueTextArray(WeaviateProtoBase.TextArray.newBuilder().addAllValues(value).build());
+      where.setValueTextArray(WeaviateProtoBase.TextArray.newBuilder().addAllValues(value));
+    }
+  }
+
+  @RequiredArgsConstructor
+  private static class $Boolean implements Operand {
+    private final Boolean value;
+
+    @Override
+    public void append(Filters.Builder where) {
+      where.setValueBoolean(value);
+    }
+  }
+
+  private static class $BooleanArray implements Operand {
+    private List<Boolean> value;
+
+    @SafeVarargs
+    private $BooleanArray(Boolean... values) {
+      this.value = Arrays.asList(values);
+      ;
+    }
+
+    @Override
+    public void append(Filters.Builder where) {
+      where.setValueBooleanArray(WeaviateProtoBase.BooleanArray.newBuilder().addAllValues(value));
+    }
+  }
+
+  @RequiredArgsConstructor
+  private static class $Integer implements Operand {
+    private final Integer value;
+
+    @Override
+    public void append(Filters.Builder where) {
+      where.setValueInt(value);
+    }
+  }
+
+  private static class $IntegerArray implements Operand {
+    private List<Integer> value;
+
+    @SafeVarargs
+    private $IntegerArray(Integer... values) {
+      this.value = Arrays.asList(values);
+      ;
+    }
+
+    private List<Long> toLongs() {
+      return value.stream().map(Integer::longValue).toList();
+    }
+
+    @Override
+    public void append(Filters.Builder where) {
+      where.setValueIntArray(WeaviateProtoBase.IntArray.newBuilder().addAllValues(toLongs()).build());
+    }
+  }
+
+  @RequiredArgsConstructor
+  private static class $Number implements Operand {
+    private final Double value;
+
+    @Override
+    public void append(Filters.Builder where) {
+      where.setValueNumber(value);
+    }
+  }
+
+  @RequiredArgsConstructor
+  private static class $NumberArray implements Operand {
+    private List<Double> value;
+
+    @SafeVarargs
+    private $NumberArray(Number... values) {
+      this.value = toDoubles(values);
+    }
+
+    private static List<Double> toDoubles(Number... values) {
+      return Arrays.stream(values).map(Number::doubleValue).toList();
+    }
+
+    @Override
+    public void append(Filters.Builder where) {
+      where.setValueNumberArray(WeaviateProtoBase.NumberArray.newBuilder().addAllValues(value));
+    }
+  }
+
+  @RequiredArgsConstructor
+  private static class $Date implements Operand {
+    private final Date value;
+
+    private static String format(Date date) {
+      return DateFormatUtils.format(date, "yyyy-MM-dd'T'HH:mm:ssZZZZZ");
+    }
+
+    @Override
+    public void append(Filters.Builder where) {
+      where.setValueText(format(value));
+    }
+  }
+
+  private static class $DateArray implements Operand {
+    private List<Date> value;
+
+    @SafeVarargs
+    private $DateArray(Date... values) {
+      this.value = Arrays.asList(values);
+      ;
+    }
+
+    private List<String> formatted() {
+      return value.stream().map(date -> $Date.format(date)).toList();
+
+    }
+
+    @Override
+    public void append(Filters.Builder where) {
+      where.setValueTextArray(WeaviateProtoBase.TextArray.newBuilder().addAllValues(formatted()));
+    }
+  }
+
+  @RequiredArgsConstructor
+  private static class $GeoRange implements Operand {
+    private final Float lat;
+    private final Float lon;
+    private final Float distance;
+
+    @Override
+    public void append(Filters.Builder where) {
+      where.setValueGeo(WeaviateProtoBase.GeoCoordinatesFilter.newBuilder()
+          .setLatitude(lat).setLongitude(lon).setDistance(distance));
     }
   }
 }
