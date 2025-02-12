@@ -85,6 +85,10 @@ public class Where implements Operand {
   }
 
   public static List<Operand> fromMap(Map<String, Object> filters, Operator operator) {
+    if (operator.equals(Operator.AND) || operator.equals(Operator.OR)) {
+      // TODO: we will avoid this by not exposing AND/OR operators to the user.
+      throw new IllegalArgumentException("AND/OR operators are not comparison operators");
+    }
     return filters.entrySet().stream()
         .<Operand>map(entry -> new Where(
             operator,
@@ -508,9 +512,19 @@ public class Where implements Operand {
       case 1: // no need for operator
         operands.getFirst().append(where);
         return;
-    }
+      case 2: // Comparison operators: eq, gt, lt, like, etc.
+        operands.forEach(op -> op.append(where));
+        break;
+      default:
+        assert operator.equals(Operator.AND) || operator.equals(Operator.OR)
+            : "comparison operators must have max 2 operands";
 
-    this.operands.forEach(op -> op.append(where));
+        operands.forEach(op -> {
+          Filters.Builder nested = Filters.newBuilder();
+          op.append(nested);
+          where.addFilters(nested);
+        });
+    }
     operator.append(where);
   }
 
@@ -609,7 +623,7 @@ public class Where implements Operand {
 
     @Override
     public void append(Filters.Builder where) {
-      where.setValueIntArray(WeaviateProtoBase.IntArray.newBuilder().addAllValues(toLongs()).build());
+      where.setValueIntArray(WeaviateProtoBase.IntArray.newBuilder().addAllValues(toLongs()));
     }
   }
 

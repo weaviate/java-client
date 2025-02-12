@@ -293,7 +293,10 @@ public class GetBuilder implements Query {
 
     if (ArrayUtils.isNotEmpty(operands)) { // Nested filters
       for (WhereFilter op : operands) {
-        addWhereFilters(where, op);
+        Filters.Builder nested = Filters.newBuilder();
+        addWhereFilters(nested, op);
+        where.addFilters(nested);
+        // addWhereFilters(where, op);
       }
     } else { // Individual where clauses (leaves)
       if (ArrayUtils.isNotEmpty(f.getPath())) {
@@ -310,19 +313,27 @@ public class GetBuilder implements Query {
       } else if (f.getValueIntArray() != null) {
         IntArray.Builder arr = IntArray.newBuilder();
         Arrays.stream(f.getValueIntArray()).forEach(v -> arr.addValues(v));
-        where.setValueIntArray(arr.build());
+        where.setValueIntArray(arr);
       } else if (f.getValueNumber() != null) {
         where.setValueNumber(f.getValueNumber());
       } else if (f.getValueNumberArray() != null) {
         NumberArray.Builder arr = NumberArray.newBuilder();
         Arrays.stream(f.getValueNumberArray()).forEach(v -> arr.addValues(v));
-        where.setValueNumberArray(arr.build());
+        where.setValueNumberArray(arr);
       } else if (f.getValueText() != null) {
         where.setValueText(f.getValueText());
       } else if (f.getValueTextArray() != null) {
         TextArray.Builder arr = TextArray.newBuilder();
         Arrays.stream(f.getValueTextArray()).forEach(v -> arr.addValues(v));
-        where.setValueTextArray(arr.build());
+        where.setValueTextArray(arr);
+      } else if (f.getValueString() != null) {
+        where.setValueText(f.getValueString());
+      } else if (f.getValueStringArray() != null) {
+        TextArray.Builder arr = TextArray.newBuilder();
+        Arrays.stream(f.getValueStringArray()).forEach(v -> arr.addValues(v));
+        where.setValueTextArray(arr);
+      } else {
+        assert false : "unexpected WhereFilter value";
       }
     }
 
@@ -333,6 +344,11 @@ public class GetBuilder implements Query {
       case Operator.Or:
         where.setOperator(WeaviateProtoBase.Filters.Operator.OPERATOR_OR);
         break;
+      case Operator.Equal:
+        where.setOperator(WeaviateProtoBase.Filters.Operator.OPERATOR_EQUAL);
+        break;
+      default:
+        assert false : "unexpected operator: " + f.getOperator();
     }
   }
 

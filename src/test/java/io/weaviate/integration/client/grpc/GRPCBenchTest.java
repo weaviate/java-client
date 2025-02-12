@@ -8,12 +8,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
-import java.util.Set;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -50,13 +49,20 @@ public class GRPCBenchTest {
 
   private WeaviateClient client;
 
-  private String[] fields = { "description", "price", "bestBefore" };
-  private final String className = "Things";
+  private static final String[] returnProperties = { "title", "price", "bestBefore" };
+  private static final String className = "Things";
+  private static final Date NOW = Date.from(Instant.now());
 
   private static final int K = 10;
-  private static final Map<String, Object> filters = new HashMap<>();
+  private static final Map<String, Object> filters = new HashMap<String, Object>() {
+    {
+      this.put("title", "Thing-0");
+      this.put("price", 8);
+      this.put("bestBefore", NOW);
+    }
+  };
 
-  private static final int DATASET_SIZE = 10;
+  private static final int DATASET_SIZE = 30;
   private static final int VECTOR_LEN = 5000;
   private static final float VECTOR_ORIGIN = .0001f;
   private static final float VECTOR_BOUND = .001f;
@@ -137,7 +143,7 @@ public class GRPCBenchTest {
           vector,
           opt -> opt
               .limit(K)
-              .returnProperties(fields) // Optional: skip this field to retrieve ALL properties
+              .returnProperties(returnProperties) // Optional: skip this field to retrieve ALL properties
               .returnMetadata(MetadataField.ID, MetadataField.VECTOR, MetadataField.DISTANCE));
 
       int count = countGRPC(result);
@@ -149,7 +155,7 @@ public class GRPCBenchTest {
   public static class Thing {
     public String title;
     public Double price;
-    public String bestBefore;
+    public Date bestBefore;
   }
 
   @Test
@@ -162,7 +168,27 @@ public class GRPCBenchTest {
           vector,
           opt -> opt
               .limit(K)
-              .returnProperties(fields)
+              .returnProperties(returnProperties)
+              .returnMetadata(MetadataField.ID, MetadataField.VECTOR, MetadataField.DISTANCE));
+
+      int count = countORM(result);
+      assertTrue(count > 0, "search returned 1+ vectors");
+    }, WARMUP_ROUNDS, BENCHMARK_ROUNDS);
+  }
+
+  @Test
+  public void testORMClientMapFilter() {
+    final float[] vector = ArrayUtils.toPrimitive(queryVector);
+    bench("GRPC.map-filter", () -> {
+      Collection<Thing> things = client.collections.use(className, Thing.class);
+
+      SearchResult<Thing> result = things.query.nearVector(
+          vector,
+          opt -> opt
+              .limit(K)
+              .where(Where.or(filters, Where.Operator.EQUAL)) // Constructed from a Map<String, Object>!
+              // .where(Where.or(Where.property("title").eq("Thing-0")))
+              .returnProperties(returnProperties)
               .returnMetadata(MetadataField.ID, MetadataField.VECTOR, MetadataField.DISTANCE));
 
       int count = countORM(result);
@@ -174,63 +200,21 @@ public class GRPCBenchTest {
     final float[] vector = ArrayUtils.toPrimitive(queryVector);
     Operand[] whereFilters = {
         Where.property("title").eq("Thing A"),
-        Where.property("price").gte(145.94f),
+        Where.property("price").gte(1.94f),
         Where.or(
             Where.property("bestBefore").lte(Date.from(Instant.now())),
             Where.property("bestBefore").ne(Date.from(Instant.now().plusSeconds(20)))),
     };
 
     Collection<Thing> things = client.collections.use(className, Thing.class);
-    SearchResult<Thing> result = things.query.nearVector(
+    things.query.nearVector(
         vector,
         opt -> opt
             .limit(K)
             .where(Where.and(whereFilters))
             // .where(Where.and()) -> ignored, because no filters are applied
-            .returnProperties(fields)
+            .returnProperties(returnProperties)
             .returnMetadata(MetadataField.ID, MetadataField.VECTOR, MetadataField.DISTANCE));
-
-    int count = countORM(result);
-    assertTrue(count > 0, "search returned 1+ vectors");
-  }
-
-  public void exampleORMWithDynamicFilters() {
-    final float[] vector = ArrayUtils.toPrimitive(queryVector);
-
-    Set<Entry<String, Object>> entries = filters.entrySet();
-    Operand[] whereFilters = new Operand[entries.size()];
-    int i = 0;
-    for (Entry<String, Object> entry : entries) {
-      whereFilters[i++] = Where.property(entry.getKey()).eq((String) entry.getValue());
-    }
-
-    Collection<Thing> things = client.collections.use(className, Thing.class);
-    SearchResult<Thing> result = things.query.nearVector(
-        vector,
-        opt -> opt
-            .limit(K)
-            .where(Where.and(whereFilters))
-            .returnProperties(fields)
-            .returnMetadata(MetadataField.ID, MetadataField.VECTOR, MetadataField.DISTANCE));
-
-    int count = countORM(result);
-    assertTrue(count > 0, "search returned 1+ vectors");
-  }
-
-  public void exampleORMWithMapFilters() {
-    final float[] vector = ArrayUtils.toPrimitive(queryVector);
-
-    Collection<Thing> things = client.collections.use(className, Thing.class);
-    SearchResult<Thing> result = things.query.nearVector(
-        vector,
-        opt -> opt
-            .limit(K)
-            .where(Where.and(filters, Where.Operator.EQUAL))
-            .returnProperties(fields)
-            .returnMetadata(MetadataField.ID, MetadataField.VECTOR, MetadataField.DISTANCE));
-
-    int count = countORM(result);
-    assertTrue(count > 0, "search returned 1+ vectors");
   }
 
   private void bench(String label, Runnable test, int warmupRounds, int benchmarkRounds) {
@@ -274,9 +258,9 @@ public class GRPCBenchTest {
 
     NearVectorArgument nearVector = NearVectorArgument.builder().vector(query).build();
 
-    Field[] fields = new Field[this.fields.length + 1];
-    for (int i = 0; i < this.fields.length; i++) {
-      fields[i] = Field.builder().name(this.fields[i]).build();
+    Field[] fields = new Field[returnProperties.length + 1];
+    for (int i = 0; i < returnProperties.length; i++) {
+      fields[i] = Field.builder().name(returnProperties[i]).build();
     }
 
     Field additional = Field.builder().name("_additional").fields(new Field[] {
@@ -284,10 +268,10 @@ public class GRPCBenchTest {
         Field.builder().name("vector").build(),
         Field.builder().name("distance").build()
     }).build();
-    fields[this.fields.length] = additional;
+    fields[returnProperties.length] = additional;
 
     final GetBuilder.GetBuilderBuilder builder = GetBuilder.builder()
-        .className(this.className)
+        .className(className)
         .withNearVectorFilter(nearVector)
         .fields(Fields.builder().fields(fields).build())
         .limit(k);
@@ -297,6 +281,10 @@ public class GRPCBenchTest {
 
       List<WhereFilter> operands = new ArrayList<>();
       for (String key : filter.keySet()) {
+        Object filterValue = filter.get(key);
+        if (!(filterValue instanceof String)) {
+          continue; // This method only supports filtering on strings.
+        }
         WhereFilter wf = WhereFilter.builder().operator(Operator.Equal)
             .valueString((String) filter.get(key))
             .path(key).build();
@@ -315,7 +303,7 @@ public class GRPCBenchTest {
   @SuppressWarnings("unchecked")
   private int convertGraphQL(Result<GraphQLResponse> result) {
     final Map<String, Map<String, Object>> data = (Map<String, Map<String, Object>>) result.getResult().getData();
-    List<Map<String, Object>> list = (List<Map<String, Object>>) data.get("Get").get(this.className);
+    List<Map<String, Object>> list = (List<Map<String, Object>>) data.get("Get").get(className);
     return list.size();
   }
 
@@ -339,15 +327,15 @@ public class GRPCBenchTest {
     for (Float[] e : embeddings) {
       int i = count++;
       batcher.withObject(WeaviateObject.builder()
-          .className(this.className)
+          .className(className)
           .vector(e)
           .properties(new HashMap<String, Object>() {
             {
-              this.put("description", "Thing-" + String.valueOf(i));
+              this.put("title", "Thing-" + String.valueOf(i));
               this.put("price", i);
               // FIXME(?): somehow this field is ignored if I pass Date instance here
               // and "bestBefore" cannot be requested in returnProperties.
-              this.put("bestBefore", Date.from(Instant.now()).toString());
+              this.put("bestBefore", DateFormatUtils.format(NOW, "yyyy-MM-dd'T'HH:mm:ssZZZZZ"));
             }
           })
           // .id(getUuid(e)) -> use generated UUID
@@ -366,9 +354,12 @@ public class GRPCBenchTest {
         int i = 0;
         for (Float[] e : embeddings) {
           Thing thing = new Thing(
-              "Thing-" + String.valueOf(i),
-              (double) i++,
-              Date.from(Instant.now()).toString());
+              /* title */ "Thing-" + String.valueOf(i),
+              /* price */ (double) i++,
+
+              // Notice how the ORM is able to handle a raw Date object
+              // and convert it to the correct format behind the scenes.
+              /* bestBefore */ NOW);
           b.add(thing, e);
         }
       });

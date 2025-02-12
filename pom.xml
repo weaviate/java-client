@@ -72,6 +72,7 @@
     <oauth2-oidc-sdk.version>11.20.1</oauth2-oidc-sdk.version>
     <mock-server.version>5.15.0</mock-server.version>
     <protobuf.java.version>4.29.1</protobuf.java.version>
+    <protobuf.java-util.version>4.29.1</protobuf.java-util.version>
     <grpc-netty-shaded.version>1.68.2</grpc-netty-shaded.version>
     <grpc-protobuf.version>1.68.2</grpc-protobuf.version>
     <grpc-stub.version>1.68.2</grpc-stub.version>
@@ -83,6 +84,11 @@
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
       <version>${protobuf.java.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java-util</artifactId>
+      <version>${protobuf.java-util.version}</version>
     </dependency>
     <dependency>
         <groupId>io.grpc</groupId>

@@ -1,5 +1,7 @@
 package io.weaviate.client.v1.experimental;
 
+import java.time.OffsetDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -152,6 +154,9 @@ public class SearchClient<T> {
       return value.getIntValue();
     } else if (value.hasNumberValue()) {
       return value.getNumberValue();
+    } else if (value.hasDateValue()) {
+      OffsetDateTime offsetDateTime = OffsetDateTime.parse(value.getDateValue());
+      return Date.from(offsetDateTime.toInstant());
     } else {
       assert false : "branch not covered";
     }

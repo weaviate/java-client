@@ -2,10 +2,13 @@ package io.weaviate.client.v1.experimental;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+
+import org.apache.commons.lang3.time.DateFormatUtils;
 
 import io.weaviate.client.Config;
 import io.weaviate.client.base.Result;
@@ -85,9 +88,15 @@ public class Batcher<T> implements AutoCloseable {
       for (Field field : cls.getDeclaredFields()) {
         field.setAccessible(true);
         try {
-          fieldMap.put(field.getName(), field.get(properties));
+          Object value = field.get(properties);
+          // TODO: there will need to be a more delicate way of handling these things
+          // but this will suffice to demostrate the idea.
+          if (value instanceof Date) {
+            value = DateFormatUtils.format((Date) value, "yyyy-MM-dd'T'HH:mm:ssZZZZZ");
+          }
+          fieldMap.put(field.getName(), value);
         } catch (IllegalAccessException e) {
-          // Ignore
+          // Ignore for now
         }
       }
       return fieldMap;
