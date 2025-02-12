@@ -217,6 +217,22 @@ public class GRPCBenchTest {
     assertTrue(count > 0, "search returned 1+ vectors");
   }
 
+  public void exampleORMWithMapFilters() {
+    final float[] vector = ArrayUtils.toPrimitive(queryVector);
+
+    Collection<Thing> things = client.collections.use(className, Thing.class);
+    SearchResult<Thing> result = things.query.nearVector(
+        vector,
+        opt -> opt
+            .limit(K)
+            .where(Where.and(filters, Where.Operator.EQUAL))
+            .returnProperties(fields)
+            .returnMetadata(MetadataField.ID, MetadataField.VECTOR, MetadataField.DISTANCE));
+
+    int count = countORM(result);
+    assertTrue(count > 0, "search returned 1+ vectors");
+  }
+
   private void bench(String label, Runnable test, int warmupRounds, int benchmarkRounds) {
     long start = System.nanoTime();
 

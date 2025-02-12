@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 
@@ -14,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 public class Where implements Operand {
 
   @RequiredArgsConstructor
-  private enum Operator {
+  public enum Operator {
     // Logical operators
     AND("And", Filters.Operator.OPERATOR_AND),
     OR("Or", Filters.Operator.OPERATOR_OR),
@@ -40,6 +41,10 @@ public class Where implements Operand {
     public void append(Filters.Builder where) {
       where.setOperator(grpc);
     }
+
+    public String toString() {
+      return string;
+    }
   }
 
   private final Operator operator;
@@ -53,8 +58,12 @@ public class Where implements Operand {
 
   @SafeVarargs
   private Where(Operator operator, Operand... operands) {
+    this(operator, Arrays.asList(operands));
+  }
+
+  private Where(Operator operator, List<Operand> operands) {
     this.operator = operator;
-    this.operands = Arrays.asList(operands);
+    this.operands = operands;
   }
 
   // Logical operators return a complete operand.
@@ -63,8 +72,25 @@ public class Where implements Operand {
     return new Where(Operator.AND, operands);
   }
 
+  public static Where and(Map<String, Object> filters, Operator operator) {
+    return new Where(Operator.AND, fromMap(filters, operator));
+  }
+
   public static Where or(Operand... operands) {
     return new Where(Operator.OR, operands);
+  }
+
+  public static Where or(Map<String, Object> filters, Operator operator) {
+    return new Where(Operator.OR, fromMap(filters, operator));
+  }
+
+  public static List<Operand> fromMap(Map<String, Object> filters, Operator operator) {
+    return filters.entrySet().stream()
+        .<Operand>map(entry -> new Where(
+            operator,
+            new Path(entry.getKey()),
+            ComparisonBuilder.fromObject(entry.getValue())))
+        .toList();
   }
 
   // Comparison operators return fluid builder.
@@ -83,6 +109,37 @@ public class Where implements Operand {
 
     private ComparisonBuilder(Operand left) {
       this.left = left;
+    }
+
+    @SuppressWarnings("unchecked")
+    static Operand fromObject(Object value) {
+      if (value instanceof String) {
+        return new $Text((String) value);
+      } else if (value instanceof Boolean) {
+        return new $Boolean((Boolean) value);
+      } else if (value instanceof Integer) {
+        return new $Integer((Integer) value);
+      } else if (value instanceof Number) {
+        return new $Number((Number) value);
+      } else if (value instanceof Date) {
+        return new $Date((Date) value);
+      } else if (value instanceof List) {
+        assert ((List<?>) value).isEmpty() : "list must not be empty";
+
+        Object first = ((List<?>) value).getFirst();
+        if (first instanceof String) {
+          return new $TextArray((List<String>) value);
+        } else if (first instanceof Boolean) {
+          return new $BooleanArray((List<Boolean>) value);
+        } else if (first instanceof Integer) {
+          return new $IntegerArray((List<Integer>) value);
+        } else if (first instanceof Number) {
+          return new $NumberArray((List<Number>) value);
+        } else if (first instanceof Date) {
+          return new $DateArray((List<Date>) value);
+        }
+      }
+      throw new IllegalArgumentException("value must be either of String, Boolean, Date, Integer, Number, List");
     }
 
     // Equal
@@ -125,6 +182,10 @@ public class Where implements Operand {
 
     public Where eq(Date... values) {
       return new Where(Operator.EQUAL, left, new $DateArray(values));
+    }
+
+    public Where eq(Object value) {
+      return new Where(Operator.EQUAL, left, fromObject(value));
     }
 
     // NotEqual
@@ -436,6 +497,7 @@ public class Where implements Operand {
     public Where withinGeoRange(float lat, float lon, float maxDistance) {
       return new Where(Operator.WITHIN_GEO_RANGE, left, new $GeoRange(lat, lon, maxDistance));
     }
+
   }
 
   @Override
@@ -480,13 +542,13 @@ public class Where implements Operand {
     }
   }
 
+  @RequiredArgsConstructor
   private static class $TextArray implements Operand {
-    private List<String> value;
+    private final List<String> value;
 
     @SafeVarargs
     private $TextArray(String... values) {
       this.value = Arrays.asList(values);
-      ;
     }
 
     @Override
@@ -505,8 +567,9 @@ public class Where implements Operand {
     }
   }
 
+  @RequiredArgsConstructor
   private static class $BooleanArray implements Operand {
-    private List<Boolean> value;
+    private final List<Boolean> value;
 
     @SafeVarargs
     private $BooleanArray(Boolean... values) {
@@ -530,8 +593,9 @@ public class Where implements Operand {
     }
   }
 
+  @RequiredArgsConstructor
   private static class $IntegerArray implements Operand {
-    private List<Integer> value;
+    private final List<Integer> value;
 
     @SafeVarargs
     private $IntegerArray(Integer... values) {
@@ -551,30 +615,30 @@ public class Where implements Operand {
 
   @RequiredArgsConstructor
   private static class $Number implements Operand {
-    private final Double value;
+    private final Number value;
 
     @Override
     public void append(Filters.Builder where) {
-      where.setValueNumber(value);
+      where.setValueNumber(value.doubleValue());
     }
   }
 
   @RequiredArgsConstructor
   private static class $NumberArray implements Operand {
-    private List<Double> value;
+    private final List<Number> value;
 
     @SafeVarargs
     private $NumberArray(Number... values) {
-      this.value = toDoubles(values);
+      this.value = Arrays.asList(values);
     }
 
-    private static List<Double> toDoubles(Number... values) {
-      return Arrays.stream(values).map(Number::doubleValue).toList();
+    private List<Double> toDoubles() {
+      return value.stream().map(Number::doubleValue).toList();
     }
 
     @Override
     public void append(Filters.Builder where) {
-      where.setValueNumberArray(WeaviateProtoBase.NumberArray.newBuilder().addAllValues(value));
+      where.setValueNumberArray(WeaviateProtoBase.NumberArray.newBuilder().addAllValues(toDoubles()));
     }
   }
 
@@ -592,8 +656,9 @@ public class Where implements Operand {
     }
   }
 
+  @RequiredArgsConstructor
   private static class $DateArray implements Operand {
-    private List<Date> value;
+    private final List<Date> value;
 
     @SafeVarargs
     private $DateArray(Date... values) {
