@@ -130,7 +130,7 @@ public class Where implements Operand {
       } else if (value instanceof List) {
         assert ((List<?>) value).isEmpty() : "list must not be empty";
 
-        Object first = ((List<?>) value).getFirst();
+        Object first = ((List<?>) value).get(0);
         if (first instanceof String) {
           return new $TextArray((List<String>) value);
         } else if (first instanceof Boolean) {
@@ -510,7 +510,7 @@ public class Where implements Operand {
       case 0:
         return;
       case 1: // no need for operator
-        operands.getFirst().append(where);
+        operands.get(0).append(where);
         return;
       case 2: // Comparison operators: eq, gt, lt, like, etc.
         operands.forEach(op -> op.append(where));
@@ -540,7 +540,7 @@ public class Where implements Operand {
     public void append(Filters.Builder where) {
       // Deprecated, but the current proto doesn't have 'path'.
       if (!path.isEmpty()) {
-        where.addOn(path.getFirst());
+        where.addOn(path.get(0));
       }
       // FIXME: no way to reference objects rn?
     }
