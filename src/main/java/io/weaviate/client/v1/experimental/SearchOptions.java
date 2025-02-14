@@ -42,13 +42,13 @@ public abstract class SearchOptions<SELF extends SearchOptions<SELF>> {
     if (where != null && !where.isEmpty()) {
       Filters.Builder filters = Filters.newBuilder();
       where.append(filters);
-      search.setFilters(filters.build());
+      search.setFilters(filters);
     }
 
     if (!returnMetadata.isEmpty()) {
       MetadataRequest.Builder metadata = MetadataRequest.newBuilder();
       returnMetadata.forEach(m -> m.append(metadata));
-      search.setMetadata(metadata.build());
+      search.setMetadata(metadata);
     }
 
     if (!returnProperties.isEmpty()) {
@@ -56,7 +56,7 @@ public abstract class SearchOptions<SELF extends SearchOptions<SELF>> {
       for (String property : returnProperties) {
         properties.addNonRefProperties(property);
       }
-      search.setProperties(properties.build());
+      search.setProperties(properties);
     }
   }
 

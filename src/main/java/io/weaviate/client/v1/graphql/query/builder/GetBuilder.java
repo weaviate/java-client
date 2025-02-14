@@ -347,6 +347,9 @@ public class GetBuilder implements Query {
       case Operator.Equal:
         where.setOperator(WeaviateProtoBase.Filters.Operator.OPERATOR_EQUAL);
         break;
+      case Operator.NotEqual:
+        where.setOperator(WeaviateProtoBase.Filters.Operator.OPERATOR_NOT_EQUAL);
+        break;
       default:
         assert false : "unexpected operator: " + f.getOperator();
     }

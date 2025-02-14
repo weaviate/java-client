@@ -1,5 +1,7 @@
 package io.weaviate.integration.client.grpc;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
@@ -13,6 +15,7 @@ import java.util.function.Function;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -40,6 +43,7 @@ import io.weaviate.client.v1.graphql.query.fields.Field;
 import io.weaviate.client.v1.graphql.query.fields.Fields;
 import io.weaviate.integration.client.WeaviateDockerCompose;
 import lombok.AllArgsConstructor;
+import lombok.ToString;
 
 public class GRPCBenchTest {
   @ClassRule
@@ -56,9 +60,9 @@ public class GRPCBenchTest {
   private static final int K = 10;
   private static final Map<String, Object> filters = new HashMap<String, Object>() {
     {
-      this.put("title", "Thing-0");
+      this.put("title", "SomeThing");
       this.put("price", 8);
-      this.put("bestBefore", NOW);
+      this.put("bestBefore", DateUtils.addDays(NOW, 5));
     }
   };
 
@@ -79,11 +83,13 @@ public class GRPCBenchTest {
     }
 
     // Query random vector from the dataset.
-    Float[] randomVector = testData.get(rand.nextInt(0, DATASET_SIZE));
+    int randomIdx = rand.nextInt(0, DATASET_SIZE);
+    Float[] randomVector = testData.get(randomIdx);
     System.arraycopy(randomVector, 0, queryVector, 0, VECTOR_LEN);
 
     System.out.printf("Dataset size (n. vectors): %d\n", DATASET_SIZE);
-    System.out.printf("Vectors with length: %d in range %.4f-%.4f \n", VECTOR_LEN, VECTOR_ORIGIN, VECTOR_BOUND);
+    System.out.printf("Vectors with length: %d in range %.4f-%.4f\n", VECTOR_LEN, VECTOR_ORIGIN, VECTOR_BOUND);
+    System.out.printf("Search vector #%d\n", randomIdx);
     System.out.println("===========================================");
   }
 
@@ -111,7 +117,7 @@ public class GRPCBenchTest {
         return convertGraphQL(result);
       });
 
-      assertTrue(count > 0, "query returned 1+ vectors");
+      assertEquals(K, count, String.format("must return K=%d results", K));
     }, WARMUP_ROUNDS, BENCHMARK_ROUNDS);
   }
 
@@ -119,27 +125,24 @@ public class GRPCBenchTest {
   public void testGRPC() {
     bench("GRPC", () -> {
       int count = searchKNN(queryVector, K, filters, builder -> {
-        Result<List<Map<String, Object>>> result = client
+        SearchResult<Map<String, Object>> result = client
             .gRPC().raw()
             .withSearch(builder.build().buildSearchRequest())
             .run();
 
-        if (result.getResult() == null) {
-          return 0;
-        }
         return countGRPC(result);
       });
 
-      assertTrue(count > 0, "search returned 1+ vectors");
+      assertEquals(K, count, String.format("must return K=%d results", K));
     }, WARMUP_ROUNDS, BENCHMARK_ROUNDS);
   }
 
   @Test
   public void testNewClient() {
     final float[] vector = ArrayUtils.toPrimitive(queryVector);
-    final Collection<Object> things = client.collections.use(className, Object.class);
+    final Collection<Map> things = client.collections.use(className, Map.class);
     bench("GRPC.new", () -> {
-      Result<List<Map<String, Object>>> result = things.query.nearVectorUntyped(
+      SearchResult<Map<String, Object>> result = things.query.nearVectorUntyped(
           vector,
           opt -> opt
               .limit(K)
@@ -147,11 +150,12 @@ public class GRPCBenchTest {
               .returnMetadata(MetadataField.ID, MetadataField.VECTOR, MetadataField.DISTANCE));
 
       int count = countGRPC(result);
-      assertTrue(count > 0, "search returned 1+ vectors");
+      assertEquals(K, count, String.format("must return K=%d results", K));
     }, WARMUP_ROUNDS, BENCHMARK_ROUNDS);
   }
 
   @AllArgsConstructor
+  @ToString
   public static class Thing {
     public String title;
     public Double price;
@@ -171,8 +175,8 @@ public class GRPCBenchTest {
               .returnProperties(returnProperties)
               .returnMetadata(MetadataField.ID, MetadataField.VECTOR, MetadataField.DISTANCE));
 
-      int count = countORM(result);
-      assertTrue(count > 0, "search returned 1+ vectors");
+      int count = countGRPC(result);
+      assertEquals(K, count, String.format("must return K=%d results", K));
     }, WARMUP_ROUNDS, BENCHMARK_ROUNDS);
   }
 
@@ -186,13 +190,19 @@ public class GRPCBenchTest {
           vector,
           opt -> opt
               .limit(K)
-              .where(Where.or(filters, Where.Operator.EQUAL)) // Constructed from a Map<String, Object>!
-              // .where(Where.or(Where.property("title").eq("Thing-0")))
+              .where(Where.and(filters, Where.Operator.NOT_EQUAL)) // Constructed from a Map<String, Object>!
               .returnProperties(returnProperties)
               .returnMetadata(MetadataField.ID, MetadataField.VECTOR, MetadataField.DISTANCE));
 
-      int count = countORM(result);
-      assertTrue(count > 0, "search returned 1+ vectors");
+      int count = countGRPC(result);
+      assertEquals(K, count, String.format("must return K=%d results", K));
+
+      // Check that filtering works
+      assertFalse(result.objects.stream().anyMatch(obj -> obj.properties.title.equals(filters.get("title"))),
+          "expected title to not be in result set: " + filters.get("title"));
+
+      assertFalse(result.objects.stream().anyMatch(obj -> obj.properties.price.equals(filters.get("price"))),
+          "expected price to not be in result set: " + filters.get("price"));
     }, WARMUP_ROUNDS, BENCHMARK_ROUNDS);
   }
 
@@ -285,7 +295,7 @@ public class GRPCBenchTest {
         if (!(filterValue instanceof String)) {
           continue; // This method only supports filtering on strings.
         }
-        WhereFilter wf = WhereFilter.builder().operator(Operator.Equal)
+        WhereFilter wf = WhereFilter.builder().operator(Operator.NotEqual)
             .valueString((String) filter.get(key))
             .path(key).build();
         operands.add(wf);
@@ -313,7 +323,7 @@ public class GRPCBenchTest {
   }
 
   /* Count the number of results in the mapped gRPC result. */
-  private <T> int countORM(SearchResult<T> result) {
+  private <T> int countGRPC(SearchResult<T> result) {
     return result.objects.size();
   }
 
@@ -333,9 +343,7 @@ public class GRPCBenchTest {
             {
               this.put("title", "Thing-" + String.valueOf(i));
               this.put("price", i);
-              // FIXME(?): somehow this field is ignored if I pass Date instance here
-              // and "bestBefore" cannot be requested in returnProperties.
-              this.put("bestBefore", DateFormatUtils.format(NOW, "yyyy-MM-dd'T'HH:mm:ssZZZZZ"));
+              this.put("bestBefore", DateFormatUtils.format(DateUtils.addDays(NOW, i), "yyyy-MM-dd'T'HH:mm:ssZZZZZ"));
             }
           })
           // .id(getUuid(e)) -> use generated UUID
@@ -355,12 +363,13 @@ public class GRPCBenchTest {
         for (Float[] e : embeddings) {
           Thing thing = new Thing(
               /* title */ "Thing-" + String.valueOf(i),
-              /* price */ (double) i++,
+              /* price */ (double) i,
 
               // Notice how the ORM is able to handle a raw Date object
               // and convert it to the correct format behind the scenes.
-              /* bestBefore */ NOW);
+              /* bestBefore */ DateUtils.addDays(NOW, i));
           b.add(thing, e);
+          i++;
         }
       });
     }

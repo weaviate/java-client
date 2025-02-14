@@ -22,7 +22,7 @@ public class Where implements Operand {
 
     // Comparison operators
     EQUAL("Equal", Filters.Operator.OPERATOR_EQUAL),
-    NOT_EQUAL("NotEqual", Filters.Operator.OPERATOR_EQUAL),
+    NOT_EQUAL("NotEqual", Filters.Operator.OPERATOR_NOT_EQUAL),
     LESS_THAN("LessThen", Filters.Operator.OPERATOR_LESS_THAN),
     LESS_THAN_EQUAL("LessThenEqual", Filters.Operator.OPERATOR_LESS_THAN_EQUAL),
     GREATER_THAN("GreaterThen", Filters.Operator.OPERATOR_GREATER_THAN),
@@ -512,18 +512,17 @@ public class Where implements Operand {
       case 1: // no need for operator
         operands.get(0).append(where);
         return;
-      case 2: // Comparison operators: eq, gt, lt, like, etc.
-        operands.forEach(op -> op.append(where));
-        break;
       default:
-        assert operator.equals(Operator.AND) || operator.equals(Operator.OR)
-            : "comparison operators must have max 2 operands";
-
-        operands.forEach(op -> {
-          Filters.Builder nested = Filters.newBuilder();
-          op.append(nested);
-          where.addFilters(nested);
-        });
+        if (operator.equals(Operator.AND) || operator.equals(Operator.OR)) {
+          operands.forEach(op -> {
+            Filters.Builder nested = Filters.newBuilder();
+            op.append(nested);
+            where.addFilters(nested);
+          });
+        } else {
+          // Comparison operators: eq, gt, lt, like, etc.
+          operands.forEach(op -> op.append(where));
+        }
     }
     operator.append(where);
   }

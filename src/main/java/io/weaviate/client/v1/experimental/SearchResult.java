@@ -3,6 +3,7 @@ package io.weaviate.client.v1.experimental;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
+import lombok.ToString;
 
 @AllArgsConstructor
 public class SearchResult<T> {
@@ -14,6 +15,7 @@ public class SearchResult<T> {
     public final SearchMetadata metadata;
 
     @AllArgsConstructor
+    @ToString
     public static class SearchMetadata {
       String id;
       Float distance;

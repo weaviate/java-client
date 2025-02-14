@@ -7,14 +7,10 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import org.apache.hc.core5.http.HttpStatus;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
 import io.weaviate.client.Config;
-import io.weaviate.client.base.Result;
-import io.weaviate.client.base.WeaviateErrorResponse;
 import io.weaviate.client.base.grpc.GrpcClient;
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoProperties.Value;
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.MetadataResult;
@@ -40,12 +36,12 @@ public class SearchClient<T> {
   // probably be POJOs rathen than List<MyClass<Something>>.
   private final Class<T> cls;
 
-  public Result<List<Map<String, Object>>> nearVectorUntyped(float[] vector) {
+  public SearchResult<Map<String, Object>> nearVectorUntyped(float[] vector) {
     return nearVectorUntyped(vector, nop -> {
     });
   }
 
-  public Result<List<Map<String, Object>>> nearVectorUntyped(float[] vector, Consumer<Options> options) {
+  public SearchResult<Map<String, Object>> nearVectorUntyped(float[] vector, Consumer<Options> options) {
     NearVector operator = new NearVector(vector, options);
     SearchRequest.Builder req = SearchRequest.newBuilder();
     req.setCollection(collection);
@@ -56,23 +52,36 @@ public class SearchClient<T> {
     return searchUntyped(req.build());
   }
 
-  private Result<List<Map<String, Object>>> searchUntyped(SearchRequest req) {
+  private SearchResult<Map<String, Object>> searchUntyped(SearchRequest req) {
     GrpcClient grpc = GrpcClient.create(config, tokenProvider);
     try {
-      SearchReply reply = grpc.search(req);
-      return new Result<>(HttpStatus.SC_SUCCESS, deserializeUntyped(reply), WeaviateErrorResponse.builder().build());
+      return deserializeUntyped(grpc.search(req));
     } finally {
       grpc.shutdown();
     }
   }
 
-  private List<Map<String, Object>> deserializeUntyped(SearchReply reply) {
-    return reply.getResultsList().stream()
-        .map(list -> list.getAllFields().entrySet().stream()
-            .collect(Collectors.toMap(
-                e -> e.getKey().getJsonName(),
-                e -> e.getValue())))
-        .toList();
+  public static SearchResult<Map<String, Object>> deserializeUntyped(SearchReply reply) {
+    List<SearchResult.SearchObject<Map<String, Object>>> objects = reply.getResultsList().stream()
+        .map(res -> {
+          Map<String, Object> properties = convertProtoMap(res.getProperties().getNonRefProps().getFieldsMap());
+
+          MetadataResult meta = res.getMetadata();
+          SearchResult.SearchObject.SearchMetadata metadata = new SearchResult.SearchObject.SearchMetadata(
+              meta.getId(),
+              meta.getDistancePresent() ? meta.getDistance() : null,
+              GRPC.fromByteString(meta.getVectorBytes()));
+
+          return new SearchResult.SearchObject<Map<String, Object>>(properties, metadata);
+        }).toList();
+
+    return new SearchResult<Map<String, Object>>(objects);
+    // return reply.getResultsList().stream()
+    // .map(list -> list.getAllFields().entrySet().stream()
+    // .collect(Collectors.toMap(
+    // e -> e.getKey().getJsonName(),
+    // e -> e.getValue())))
+    // .toList();
   }
 
   public SearchResult<T> nearVector(float[] vector) {
@@ -94,8 +103,7 @@ public class SearchClient<T> {
   private SearchResult<T> search(SearchRequest req) {
     GrpcClient grpc = GrpcClient.create(config, tokenProvider);
     try {
-      SearchReply reply = grpc.search(req);
-      return deserialize(reply);
+      return deserialize(grpc.search(req));
     } finally {
       grpc.shutdown();
     }
