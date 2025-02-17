@@ -52,7 +52,7 @@ public class WeaviateClient {
 
     this.collections = new io.weaviate.client.v1.experimental.Collections(config, tokenProvider);
     this.datax = new io.weaviate.client.v1.experimental.DataClient(config, httpClient, tokenProvider, dbVersionSupport,
-        grpcVersionSupport, this.data());
+        grpcVersionSupport, new Data(httpClient, config, dbVersionSupport));
   }
 
   public WeaviateAsyncClient async() {
