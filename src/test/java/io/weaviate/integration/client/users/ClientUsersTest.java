@@ -8,6 +8,7 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.auth.exception.AuthException;
 import io.weaviate.client.v1.rbac.model.Role;
 import io.weaviate.client.v1.users.Users;
+import io.weaviate.client.v1.users.model.User;
 import io.weaviate.integration.client.rbac.ClientRbacTest;
 import io.weaviate.integration.tests.users.ClientUsersTestSuite;
 
@@ -21,6 +22,11 @@ public class ClientUsersTest extends ClientRbacTest implements ClientUsersTestSu
     } catch (AuthException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  @Override
+  public Result<User> getMyUser() {
+    return users.myUserGetter().run();
   }
 
   @Override

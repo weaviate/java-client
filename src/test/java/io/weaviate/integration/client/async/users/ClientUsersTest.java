@@ -8,6 +8,7 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.async.users.Users;
 import io.weaviate.client.v1.auth.exception.AuthException;
 import io.weaviate.client.v1.rbac.model.Role;
+import io.weaviate.client.v1.users.model.User;
 import io.weaviate.integration.client.async.rbac.ClientRbacTest;
 import io.weaviate.integration.tests.users.ClientUsersTestSuite;
 
@@ -29,17 +30,22 @@ public class ClientUsersTest extends ClientRbacTest implements ClientUsersTestSu
   }
 
   @Override
+  public Result<User> getMyUser() {
+    return rethrow(() -> users.myUserGetter().run());
+  }
+
+  @Override
   public Result<List<Role>> getUserRoles(String user) {
-    return rethrow(() -> users.userRolesGetter().withUser(user).run().get());
+    return rethrow(() -> users.userRolesGetter().withUser(user).run());
   }
 
   @Override
   public Result<?> assignRoles(String user, String... roles) {
-    return rethrow(() -> this.users.assigner().withUser(user).witRoles(roles).run().get());
+    return rethrow(() -> this.users.assigner().withUser(user).witRoles(roles).run());
   }
 
   @Override
   public Result<?> revokeRoles(String user, String... roles) {
-    return rethrow(() -> this.users.revoker().withUser(user).witRoles(roles).run().get());
+    return rethrow(() -> this.users.revoker().withUser(user).witRoles(roles).run());
   }
 }
