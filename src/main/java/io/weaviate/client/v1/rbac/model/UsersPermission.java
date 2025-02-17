@@ -5,12 +5,7 @@ import io.weaviate.client.v1.rbac.api.WeaviatePermission;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-/**
- * UsersPermission controls access to dynamic user management capabilities.
- * These will be introduced in v1.30. Until then the class will remain
- * package-private.
- */
-class UsersPermission extends Permission<UsersPermission> {
+public class UsersPermission extends Permission<UsersPermission> {
   public UsersPermission(Action action) {
     super(action);
   }
@@ -26,7 +21,8 @@ class UsersPermission extends Permission<UsersPermission> {
 
   @AllArgsConstructor
   public enum Action implements RbacAction {
-    MANAGE("manage_users");
+    READ("read_users"),
+    ASSIGN_AND_REVOKE("assign_and_revoke_users");
 
     @Getter
     private final String value;

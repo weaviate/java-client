@@ -17,18 +17,18 @@ import com.jparams.junit4.JParamsTestRunner;
 import com.jparams.junit4.data.DataMethod;
 
 import io.weaviate.client.v1.rbac.api.WeaviatePermission;
-import io.weaviate.client.v1.rbac.model.NodesPermission.Verbosity;
 
 @RunWith(JParamsTestRunner.class)
 public class PermissionTest {
   public static Object[][] serializationTestCases() {
     BackupsPermission backups = new BackupsPermission("Pizza", BackupsPermission.Action.MANAGE);
     DataPermission data = new DataPermission("Pizza", DataPermission.Action.MANAGE);
-    NodesPermission nodes = new NodesPermission("Pizza", Verbosity.MINIMAL, NodesPermission.Action.READ);
+    NodesPermission nodes = new NodesPermission("Pizza", NodesPermission.Action.READ);
     RolesPermission roles = new RolesPermission("TestWriter", RolesPermission.Action.MANAGE);
     CollectionsPermission collections = new CollectionsPermission("Pizza", CollectionsPermission.Action.CREATE);
     ClusterPermission cluster = new ClusterPermission(ClusterPermission.Action.READ);
     TenantsPermission tenants = new TenantsPermission(TenantsPermission.Action.READ);
+    UsersPermission users = new UsersPermission(UsersPermission.Action.READ);
 
     return new Object[][] {
         {
@@ -65,6 +65,11 @@ public class PermissionTest {
             "tenants permission",
             (Supplier<Permission<?>>) () -> tenants,
             new WeaviatePermission("read_tenants", tenants),
+        },
+        {
+            "users permission",
+            (Supplier<Permission<?>>) () -> users,
+            new WeaviatePermission("read_users"),
         },
     };
   }
@@ -110,12 +115,18 @@ public class PermissionTest {
         .returns("*", TenantsPermission::getTenant);
   }
 
+  @Test
+  public void testDefaultRolesPermission() {
+    RolesPermission perm = new RolesPermission("ExampleRole", RolesPermission.Action.READ);
+    assertThat(perm).as("tenants permission must have scope=null")
+        .returns(null, RolesPermission::getScope);
+  }
+
   @DataMethod(source = PermissionTest.class, method = "serializationTestCases")
   @Test
   public void testFromWeaviate(String name,
       Supplier<Permission<?>> expectedFunc, WeaviatePermission input)
       throws Exception {
-    System.out.println("fromWeaviate: " + name);
     Permission<?> expected = expectedFunc.get();
     Permission<?> actual = Permission.fromWeaviate(input);
     MatcherAssert.assertThat(name, actual, sameAs(expected));
@@ -155,10 +166,10 @@ public class PermissionTest {
         {
             Permission.roles("TestRole",
                 RolesPermission.Action.READ,
-                RolesPermission.Action.MANAGE),
+                RolesPermission.Action.UPDATE),
             new String[] {
                 "read_roles",
-                "manage_roles",
+                "update_roles",
             },
         },
     };
@@ -167,7 +178,6 @@ public class PermissionTest {
   @DataMethod(source = PermissionTest.class, method = "groupedConstructors")
   @Test
   public void testGroupedConstructors(Permission<? extends Permission<?>>[] permissions, String[] expectedActions) {
-    Arrays.stream(permissions).map(Permission::getAction).forEach(a -> System.out.println(a));
     Object[] actualActions = Arrays.stream(permissions).map(Permission::getAction).toArray();
     assertArrayEquals(expectedActions, actualActions, "set of allowed actions do not match");
   }

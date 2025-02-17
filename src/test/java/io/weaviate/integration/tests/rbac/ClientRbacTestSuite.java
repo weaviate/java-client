@@ -130,7 +130,7 @@ public class ClientRbacTestSuite {
     Permission<?>[][] wantPermissions = new Permission<?>[][] {
         Permission.backups(BackupsPermission.Action.MANAGE, myCollection),
         Permission.cluster(ClusterPermission.Action.READ),
-        Permission.nodes(myCollection, Verbosity.MINIMAL, NodesPermission.Action.READ),
+        Permission.nodes(myCollection, NodesPermission.Action.READ),
         Permission.roles(viewerRole, RolesPermission.Action.MANAGE),
         Permission.collections(myCollection, CollectionsPermission.Action.CREATE),
         Permission.data(myCollection, DataPermission.Action.UPDATE),
