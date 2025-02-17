@@ -5,7 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -13,7 +12,6 @@ import java.util.function.Supplier;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.testcontainers.weaviate.WeaviateContainer;
@@ -28,7 +26,6 @@ import io.weaviate.client.v1.rbac.model.ClusterPermission;
 import io.weaviate.client.v1.rbac.model.CollectionsPermission;
 import io.weaviate.client.v1.rbac.model.DataPermission;
 import io.weaviate.client.v1.rbac.model.NodesPermission;
-import io.weaviate.client.v1.rbac.model.NodesPermission.Verbosity;
 import io.weaviate.client.v1.rbac.model.Permission;
 import io.weaviate.client.v1.rbac.model.Role;
 import io.weaviate.client.v1.rbac.model.RolesPermission;
@@ -82,25 +79,6 @@ public class ClientRbacTestSuite {
     assertThat(all).hasSize(2).as("wrong number of roles");
     assertThat(all.get(0)).returns(adminRole, Role::getName);
     assertThat(all.get(1)).returns(viewerRole, Role::getName);
-  }
-
-  /**
-   * Roles retrieved for "current user" should be identical to the ones
-   * retrieved for them explicitly (by passing the username).
-   */
-  @DataMethod(source = ClientRbacTestSuite.class, method = "clients")
-  @Test
-  public void testGetUserRoles(Supplier<Rbac> rbac) {
-    Rbac roles = rbac.get();
-    Result<List<Role>> responseCurrent = roles.getUserRoles();
-    assertThat(responseCurrent.getError()).as("get roles for current user error").isNull();
-    Result<List<Role>> responseAdminUser = roles.getUserRoles(adminUser);
-    assertThat(responseAdminUser.getError()).as("get roles for user error").isNull();
-
-    List<Role> currentRoles = responseCurrent.getResult();
-    List<Role> adminRoles = responseAdminUser.getResult();
-
-    Assertions.assertArrayEquals(currentRoles.toArray(), adminRoles.toArray(), "expect same set of roles");
   }
 
   /** Admin user should have the admin role assigned to them. */
@@ -281,31 +259,6 @@ public class ClientRbacTestSuite {
     }
   }
 
-  /** User can be assigned a role and the role can be revoked. */
-  @DataMethod(source = ClientRbacTestSuite.class, method = "clients")
-  @Test
-  public void testAssignRevokeRole(Supplier<Rbac> rbac) {
-    Rbac roles = rbac.get();
-    String myRole = roleName("VectorOwner");
-    try {
-      // Arrange
-      roles.createRole(myRole, Permission.tenants(TenantsPermission.Action.DELETE));
-
-      // Act: Assign
-      roles.assignRoles(adminUser, myRole);
-      assumeTrue(checkHasRole(roles, adminUser, myRole), adminUser + " should have the assigned role");
-
-      // Act: Revoke
-      Result<?> response = roles.revokeRoles(adminUser, myRole);
-      assertNull("revoke operation error", response.getError());
-
-      // Assert
-      assertFalse("should not have " + myRole + " role", checkHasRole(roles, adminUser, myRole));
-    } finally {
-      roles.deleteRole(myRole);
-    }
-  }
-
   /** Prefix the role with the name of the current test for easier debugging */
   private String roleName(String name) {
     return String.format("%s-%s", currentTest.getMethodName(), name);
@@ -329,10 +282,6 @@ public class ClientRbacTestSuite {
 
     Result<List<Role>> getAll();
 
-    Result<List<Role>> getUserRoles();
-
-    Result<List<Role>> getUserRoles(String user);
-
     Result<List<String>> getAssignedUsers(String role);
 
     void createRole(String role, Permission<?>... permissions);
@@ -352,10 +301,6 @@ public class ClientRbacTestSuite {
     Result<?> removePermissions(String role, Permission<?>... permissions);
 
     Result<?> removePermissions(String role, Permission<?>[]... permissions);
-
-    Result<?> assignRoles(String user, String... roles);
-
-    Result<?> revokeRoles(String user, String... roles);
   }
 
 }

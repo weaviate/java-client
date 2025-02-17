@@ -21,6 +21,7 @@ import io.weaviate.client.v1.async.graphql.GraphQL;
 import io.weaviate.client.v1.async.misc.Misc;
 import io.weaviate.client.v1.async.rbac.Roles;
 import io.weaviate.client.v1.async.schema.Schema;
+import io.weaviate.client.v1.async.users.Users;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.misc.model.Meta;
 
@@ -77,6 +78,10 @@ public class WeaviateAsyncClient implements AutoCloseable {
 
   public Roles roles() {
     return new Roles(client, config, tokenProvider);
+  }
+
+  public Users users() {
+    return new Users(client, config, tokenProvider);
   }
 
   private DbVersionProvider initDbVersionProvider() {

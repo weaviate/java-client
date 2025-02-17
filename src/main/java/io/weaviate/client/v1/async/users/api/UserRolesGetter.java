@@ -1,4 +1,4 @@
-package io.weaviate.client.v1.async.rbac.api;
+package io.weaviate.client.v1.async.users.api;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,8 +36,7 @@ public class UserRolesGetter extends AsyncBaseClient<List<Role>> implements Asyn
 
   @Override
   public Future<Result<List<Role>>> run(FutureCallback<Result<List<Role>>> callback) {
-    String path = this.user == null ? "/authz/users/own-roles" : this.path();
-    return sendGetRequest(path, callback, new ResponseParser<List<Role>>() {
+    return sendGetRequest(path(), callback, new ResponseParser<List<Role>>() {
       @Override
       public Result<List<Role>> parse(HttpResponse response, String body, ContentType contentType) {
         Response<WeaviateRole[]> resp = this.serializer.toResponse(response.getCode(), body, WeaviateRole[].class);

@@ -33,7 +33,7 @@ public class ClientRbacTest implements ClientRbacTestSuite.Rbac {
    * methods without clashing with {@link ClientRbacTestSuite.Rbac} method
    * signatures.
    */
-  private <T> T rethrow(Callable<T> c) {
+  protected <T> T rethrow(Callable<T> c) {
     try {
       return c.call();
     } catch (Exception e) {
@@ -49,16 +49,6 @@ public class ClientRbacTest implements ClientRbacTestSuite.Rbac {
   @Override
   public Result<List<Role>> getAll() {
     return rethrow(() -> roles.allGetter().run().get());
-  }
-
-  @Override
-  public Result<List<Role>> getUserRoles() {
-    return rethrow(() -> roles.userRolesGetter().run().get());
-  }
-
-  @Override
-  public Result<List<Role>> getUserRoles(String user) {
-    return rethrow(() -> roles.userRolesGetter().withUser(user).run().get());
   }
 
   @Override
@@ -109,15 +99,5 @@ public class ClientRbacTest implements ClientRbacTestSuite.Rbac {
   @Override
   public Result<?> removePermissions(String role, Permission<?>[]... permissions) {
     return rethrow(() -> roles.permissionRemover().withRole(role).withPermissions(permissions).run().get());
-  }
-
-  @Override
-  public Result<?> assignRoles(String user, String... roles) {
-    return rethrow(() -> this.roles.assigner().withUser(user).witRoles(roles).run().get());
-  }
-
-  @Override
-  public Result<?> revokeRoles(String user, String... roles) {
-    return rethrow(() -> this.roles.revoker().withUser(user).witRoles(roles).run().get());
   }
 }
