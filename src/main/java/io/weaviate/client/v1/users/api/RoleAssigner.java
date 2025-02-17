@@ -1,32 +1,32 @@
-package io.weaviate.client.v1.rbac.api;
+package io.weaviate.client.v1.users.api;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import io.weaviate.client.Config;
 import io.weaviate.client.base.BaseClient;
 import io.weaviate.client.base.ClientResult;
+import io.weaviate.client.base.Response;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.HttpClient;
 import lombok.AllArgsConstructor;
 
-public class RoleRevoker extends BaseClient<Void> implements ClientResult<Boolean> {
+public class RoleAssigner extends BaseClient<Void> implements ClientResult<Boolean> {
   private String user;
   private List<String> roles = new ArrayList<>();
 
-  public RoleRevoker(HttpClient httpClient, Config config) {
+  public RoleAssigner(HttpClient httpClient, Config config) {
     super(httpClient, config);
   }
 
-  public RoleRevoker withUser(String user) {
+  public RoleAssigner withUser(String user) {
     this.user = user;
     return this;
   }
 
-  public RoleRevoker witRoles(String... roles) {
-    this.roles = Collections.unmodifiableList(Arrays.asList(roles));
+  public RoleAssigner witRoles(String... roles) {
+    this.roles = Arrays.asList(roles);
     return this;
   }
 
@@ -38,10 +38,12 @@ public class RoleRevoker extends BaseClient<Void> implements ClientResult<Boolea
 
   @Override
   public Result<Boolean> run() {
-    return Result.voidToBoolean(sendPostRequest(path(), new Body(this.roles), Void.class));
+    Response<Void> resp = sendPostRequest(path(), new Body(this.roles), Void.class);
+    int status = resp.getStatusCode();
+    return new Result<Boolean>(status, status == 200, resp.getErrors());
   }
 
   private String path() {
-    return String.format("/authz/users/%s/revoke", this.user);
+    return String.format("/authz/users/%s/assign", this.user);
   }
 }

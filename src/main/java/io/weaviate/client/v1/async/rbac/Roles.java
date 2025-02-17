@@ -8,13 +8,10 @@ import io.weaviate.client.v1.async.rbac.api.PermissionAdder;
 import io.weaviate.client.v1.async.rbac.api.PermissionChecker;
 import io.weaviate.client.v1.async.rbac.api.PermissionRemover;
 import io.weaviate.client.v1.async.rbac.api.RoleAllGetter;
-import io.weaviate.client.v1.async.rbac.api.RoleAssigner;
 import io.weaviate.client.v1.async.rbac.api.RoleCreator;
 import io.weaviate.client.v1.async.rbac.api.RoleDeleter;
 import io.weaviate.client.v1.async.rbac.api.RoleExists;
 import io.weaviate.client.v1.async.rbac.api.RoleGetter;
-import io.weaviate.client.v1.async.rbac.api.RoleRevoker;
-import io.weaviate.client.v1.async.rbac.api.UserRolesGetter;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import lombok.RequiredArgsConstructor;
 
@@ -68,11 +65,6 @@ public class Roles {
     return new RoleGetter(client, config, tokenProvider);
   };
 
-  /** Get roles assigned to a user. */
-  public UserRolesGetter userRolesGetter() {
-    return new UserRolesGetter(client, config, tokenProvider);
-  };
-
   /** Get users assigned to a role. */
   public AssignedUsersGetter assignedUsersGetter() {
     return new AssignedUsersGetter(client, config, tokenProvider);
@@ -81,13 +73,5 @@ public class Roles {
   /** Check if a role exists. */
   public RoleExists exists() {
     return new RoleExists(client, config, tokenProvider);
-  }
-
-  public RoleAssigner assigner() {
-    return new RoleAssigner(client, config, tokenProvider);
-  }
-
-  public RoleRevoker revoker() {
-    return new RoleRevoker(client, config, tokenProvider);
   }
 }

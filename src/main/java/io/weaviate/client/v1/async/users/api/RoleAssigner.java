@@ -1,8 +1,7 @@
-package io.weaviate.client.v1.async.rbac.api;
+package io.weaviate.client.v1.async.users.api;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -16,21 +15,21 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import lombok.AllArgsConstructor;
 
-public class RoleRevoker extends AsyncBaseClient<Boolean> implements AsyncClientResult<Boolean> {
+public class RoleAssigner extends AsyncBaseClient<Boolean> implements AsyncClientResult<Boolean> {
   private String user;
   private List<String> roles = new ArrayList<>();
 
-  public RoleRevoker(CloseableHttpAsyncClient httpClient, Config config, AccessTokenProvider tokenProvider) {
+  public RoleAssigner(CloseableHttpAsyncClient httpClient, Config config, AccessTokenProvider tokenProvider) {
     super(httpClient, config, tokenProvider);
   }
 
-  public RoleRevoker withUser(String user) {
+  public RoleAssigner withUser(String user) {
     this.user = user;
     return this;
   }
 
-  public RoleRevoker witRoles(String... roles) {
-    this.roles = Collections.unmodifiableList(Arrays.asList(roles));
+  public RoleAssigner witRoles(String... roles) {
+    this.roles = Arrays.asList(roles);
     return this;
   }
 
@@ -46,6 +45,6 @@ public class RoleRevoker extends AsyncBaseClient<Boolean> implements AsyncClient
   }
 
   private String path() {
-    return String.format("/authz/users/%s/revoke", this.user);
+    return String.format("/authz/users/%s/assign", this.user);
   }
 }

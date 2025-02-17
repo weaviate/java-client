@@ -1,4 +1,4 @@
-package io.weaviate.client.v1.rbac.api;
+package io.weaviate.client.v1.users.api;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +11,7 @@ import io.weaviate.client.base.ClientResult;
 import io.weaviate.client.base.Response;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.HttpClient;
+import io.weaviate.client.v1.rbac.api.WeaviateRole;
 import io.weaviate.client.v1.rbac.model.Role;
 
 public class UserRolesGetter extends BaseClient<WeaviateRole[]> implements ClientResult<List<Role>> {
@@ -28,8 +29,7 @@ public class UserRolesGetter extends BaseClient<WeaviateRole[]> implements Clien
 
   @Override
   public Result<List<Role>> run() {
-    String path = this.user == null ? "/authz/users/own-roles" : this.path();
-    Response<WeaviateRole[]> resp = sendGetRequest(path, WeaviateRole[].class);
+    Response<WeaviateRole[]> resp = sendGetRequest(path(), WeaviateRole[].class);
     List<Role> roles = Optional.ofNullable(resp.getBody())
         .map(Arrays::asList)
         .orElse(new ArrayList<>())

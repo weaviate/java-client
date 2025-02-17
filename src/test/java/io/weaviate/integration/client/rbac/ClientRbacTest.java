@@ -33,16 +33,6 @@ public class ClientRbacTest implements ClientRbacTestSuite.Rbac {
   }
 
   @Override
-  public Result<List<Role>> getUserRoles() {
-    return roles.userRolesGetter().run();
-  }
-
-  @Override
-  public Result<List<Role>> getUserRoles(String user) {
-    return roles.userRolesGetter().withUser(user).run();
-  }
-
-  @Override
   public Result<List<String>> getAssignedUsers(String role) {
     return roles.assignedUsersGetter().withRole(role).run();
   }
@@ -90,15 +80,5 @@ public class ClientRbacTest implements ClientRbacTestSuite.Rbac {
   @Override
   public Result<?> removePermissions(String role, Permission<?>[]... permissions) {
     return roles.permissionRemover().withRole(role).withPermissions(permissions).run();
-  }
-
-  @Override
-  public Result<?> assignRoles(String user, String... roles) {
-    return this.roles.assigner().withUser(user).witRoles(roles).run();
-  }
-
-  @Override
-  public Result<?> revokeRoles(String user, String... roles) {
-    return this.roles.revoker().withUser(user).witRoles(roles).run();
   }
 }

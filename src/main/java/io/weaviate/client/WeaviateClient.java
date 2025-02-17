@@ -21,6 +21,7 @@ import io.weaviate.client.v1.misc.Misc;
 import io.weaviate.client.v1.misc.api.MetaGetter;
 import io.weaviate.client.v1.rbac.Roles;
 import io.weaviate.client.v1.schema.Schema;
+import io.weaviate.client.v1.users.Users;
 
 public class WeaviateClient {
   private final Config config;
@@ -92,6 +93,10 @@ public class WeaviateClient {
 
   public Roles roles() {
     return new Roles(httpClient, config);
+  }
+
+  public Users users() {
+    return new Users(httpClient, config);
   }
 
   private DbVersionProvider initDbVersionProvider() {

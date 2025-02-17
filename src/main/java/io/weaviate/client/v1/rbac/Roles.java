@@ -7,13 +7,10 @@ import io.weaviate.client.v1.rbac.api.PermissionAdder;
 import io.weaviate.client.v1.rbac.api.PermissionChecker;
 import io.weaviate.client.v1.rbac.api.PermissionRemover;
 import io.weaviate.client.v1.rbac.api.RoleAllGetter;
-import io.weaviate.client.v1.rbac.api.RoleAssigner;
 import io.weaviate.client.v1.rbac.api.RoleCreator;
 import io.weaviate.client.v1.rbac.api.RoleDeleter;
 import io.weaviate.client.v1.rbac.api.RoleExists;
 import io.weaviate.client.v1.rbac.api.RoleGetter;
-import io.weaviate.client.v1.rbac.api.RoleRevoker;
-import io.weaviate.client.v1.rbac.api.UserRolesGetter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -66,11 +63,6 @@ public class Roles {
     return new RoleGetter(httpClient, config);
   };
 
-  /** Get roles assigned to a user. */
-  public UserRolesGetter userRolesGetter() {
-    return new UserRolesGetter(httpClient, config);
-  };
-
   /** Get users assigned to a role. */
   public AssignedUsersGetter assignedUsersGetter() {
     return new AssignedUsersGetter(httpClient, config);
@@ -79,15 +71,5 @@ public class Roles {
   /** Check if a role exists. */
   public RoleExists exists() {
     return new RoleExists(httpClient, config);
-  }
-
-  /** Assign a role to a user. Note that 'root' cannot be assigned. */
-  public RoleAssigner assigner() {
-    return new RoleAssigner(httpClient, config);
-  }
-
-  /** Revoke a role from a user. Note that 'root' cannot be revoked. */
-  public RoleRevoker revoker() {
-    return new RoleRevoker(httpClient, config);
   }
 }
