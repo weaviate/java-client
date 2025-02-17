@@ -13,9 +13,16 @@ public class NodesPermission extends Permission<NodesPermission> {
   final String collection;
   final Verbosity verbosity;
 
-  /** NodesPermission for all collections. */
+  /** Create permission scoped to all collections. */
   public NodesPermission(Verbosity verbosity, Action action) {
     this("*", verbosity, action);
+  }
+
+  /**
+   * Permission scoped to a collection with {@link Verbosity#VERBOSE}.
+   */
+  public NodesPermission(String collection, Action action) {
+    this(collection, Verbosity.VERBOSE, action);
   }
 
   NodesPermission(Verbosity verbosity, String action) {
@@ -26,8 +33,7 @@ public class NodesPermission extends Permission<NodesPermission> {
     this(collection, verbosity, RbacAction.fromString(Action.class, action));
   }
 
-  /** NodesPermission for a defined collection. */
-  public NodesPermission(String collection, Verbosity verbosity, Action action) {
+  NodesPermission(String collection, Verbosity verbosity, Action action) {
     super(action);
     this.collection = collection;
     this.verbosity = verbosity;
