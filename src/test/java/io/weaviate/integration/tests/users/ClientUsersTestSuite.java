@@ -1,16 +1,16 @@
 package io.weaviate.integration.tests.users;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.util.List;
 import java.util.function.Supplier;
 
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.testcontainers.weaviate.WeaviateContainer;
@@ -23,6 +23,7 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.rbac.model.Permission;
 import io.weaviate.client.v1.rbac.model.Role;
 import io.weaviate.client.v1.rbac.model.TenantsPermission;
+import io.weaviate.client.v1.users.model.User;
 import io.weaviate.integration.client.WeaviateDockerImage;
 import io.weaviate.integration.client.WeaviateWithRbacContainer;
 import io.weaviate.integration.tests.rbac.ClientRbacTestSuite;
@@ -60,30 +61,27 @@ public class ClientUsersTestSuite {
    * Roles retrieved for "current user" should be identical to the ones
    * retrieved for them explicitly (by passing the username).
    */
-  @Ignore // wip
   @DataMethod(source = ClientUsersTestSuite.class, method = "clients")
   @Test
-  public void testGetUserRoles(Supplier<Users> rbac) {
-    Users roles = rbac.get();
-    // Result<List<Role>> responseCurrent = roles.getUserRoles();
-    // assertThat(responseCurrent.getError()).as("get roles for current user
-    // error").isNull();
-    // Result<List<Role>> responseAdminUser = roles.getUserRoles(adminUser);
-    // assertThat(responseAdminUser.getError()).as("get roles for user
-    // error").isNull();
-    //
-    // List<Role> currentRoles = responseCurrent.getResult();
-    // List<Role> adminRoles = responseAdminUser.getResult();
-    //
-    // Assertions.assertArrayEquals(currentRoles.toArray(), adminRoles.toArray(),
-    // "expect same set of roles");
+  public void testGetUserRoles(Supplier<Users> userHandle) {
+    Users users = userHandle.get();
+    Result<User> myUser = users.getMyUser();
+    assertNull("get my user error", myUser.getError());
+    Result<List<Role>> responseAdminUser = users.getUserRoles(adminUser);
+    assertNull("get roles for user error", responseAdminUser.getError());
+
+    List<Role> currentRoles = myUser.getResult().getRoles().values().stream().toList();
+    List<Role> adminRoles = responseAdminUser.getResult();
+
+    Assertions.assertArrayEquals(currentRoles.toArray(), adminRoles.toArray(),
+        "expect same set of roles");
   }
 
   /** User can be assigned a role and the role can be revoked. */
   @DataMethod(source = ClientUsersTestSuite.class, method = "clients")
   @Test
-  public void testAssignRevokeRole(Supplier<Users> rbac) {
-    Users roles = rbac.get();
+  public void testAssignRevokeRole(Supplier<Users> userHandle) {
+    Users roles = userHandle.get();
     String myRole = roleName("VectorOwner");
     try {
       // Arrange
@@ -98,7 +96,7 @@ public class ClientUsersTestSuite {
       assertNull("revoke operation error", response.getError());
 
       // Assert
-      assertFalse("should not have " + myRole + " role", checkHasRole(roles, adminUser, myRole));
+      assertFalse(checkHasRole(roles, adminUser, myRole), "should not have " + myRole + " role");
     } finally {
       roles.deleteRole(myRole);
     }
@@ -122,11 +120,12 @@ public class ClientUsersTestSuite {
    * functionality for creating / deleting / verifying roles.
    */
   public interface Users extends ClientRbacTestSuite.Rbac {
+    Result<User> getMyUser();
+
     Result<List<Role>> getUserRoles(String user);
 
     Result<?> assignRoles(String user, String... roles);
 
     Result<?> revokeRoles(String user, String... roles);
   }
-
 }

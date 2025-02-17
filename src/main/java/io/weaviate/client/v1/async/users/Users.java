@@ -3,6 +3,7 @@ package io.weaviate.client.v1.async.users;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 
 import io.weaviate.client.Config;
+import io.weaviate.client.v1.async.users.api.MyUserGetter;
 import io.weaviate.client.v1.async.users.api.RoleAssigner;
 import io.weaviate.client.v1.async.users.api.RoleRevoker;
 import io.weaviate.client.v1.async.users.api.UserRolesGetter;
@@ -15,6 +16,11 @@ public class Users {
   private final CloseableHttpAsyncClient client;
   private final Config config;
   private final AccessTokenProvider tokenProvider;
+
+  /** Get information about the current user. */
+  public MyUserGetter myUserGetter() {
+    return new MyUserGetter(client, config, tokenProvider);
+  };
 
   /** Get roles assigned to a user. */
   public UserRolesGetter userRolesGetter() {
