@@ -24,6 +24,19 @@ package io.weaviate.client.v1.rbac.model;
 interface RbacAction {
   String getValue();
 
+  /**
+   * Returns true if the action is hard deprecated.
+   *
+   * <p>
+   * Override default return for a deprecated enum value like so:
+   *
+   * <pre>{@code
+   * OLD_ACTION("old_action") {
+   *  &#64;Override
+   *  public boolean isDeprecated() { return true; }
+   * };
+   * }</pre>
+   */
   default boolean isDeprecated() {
     return false;
   }
