@@ -87,7 +87,7 @@ public class GRPCBenchTest {
     }
 
     // Query random vector from the dataset.
-    int randomIdx = rand.nextInt(0, DATASET_SIZE);
+    int randomIdx = Math.abs(rand.nextInt()) % DATASET_SIZE;
     Float[] randomVector = testData.get(randomIdx);
     System.arraycopy(randomVector, 0, queryVector, 0, VECTOR_LEN);
 
@@ -399,7 +399,7 @@ public class GRPCBenchTest {
   private static Float[] genVector(int length, float origin, float bound) {
     Float[] vec = new Float[length];
     for (int i = 0; i < length; i++) {
-      vec[i] = rand.nextFloat(origin, bound);
+      vec[i] = (Math.abs(rand.nextFloat()) % (bound - origin + 1)) + origin;
     }
     return vec;
   }
