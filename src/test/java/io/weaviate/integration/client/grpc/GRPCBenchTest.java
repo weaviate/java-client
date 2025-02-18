@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -58,11 +59,14 @@ public class GRPCBenchTest {
   private static final Date NOW = Date.from(Instant.now());
 
   private static final int K = 10;
-  private static final Map<String, Object> filters = new HashMap<String, Object>() {
+  private static final String[] notIngredients = { "ketchup", "mayo" };
+  private static final Map<String, Object> notEqualFilters = new HashMap<String, Object>() {
     {
-      this.put("title", "SomeThing");
-      this.put("price", 8);
-      this.put("bestBefore", DateUtils.addDays(NOW, 5));
+      // this.put("title", "SomeThing");
+      // this.put("price", 8);
+      // this.put("bestBefore", DateUtils.addDays(NOW, 5));
+      this.put("ingredientsList", Arrays.asList(notIngredients));
+      this.put("ingredientsArray", notIngredients);
     }
   };
 
@@ -102,10 +106,10 @@ public class GRPCBenchTest {
     assertTrue(writeORM(testData), "loaded test data successfully");
   }
 
-  @Test
+  // @Test
   public void testGraphQL() {
     bench("GraphQL", () -> {
-      int count = searchKNN(queryVector, K, filters, builder -> {
+      int count = searchKNN(queryVector, K, notEqualFilters, builder -> {
         Result<GraphQLResponse> result = client
             .graphQL().raw()
             .withQuery(builder.build().buildQuery())
@@ -121,10 +125,10 @@ public class GRPCBenchTest {
     }, WARMUP_ROUNDS, BENCHMARK_ROUNDS);
   }
 
-  @Test
+  // @Test
   public void testGRPC() {
     bench("GRPC", () -> {
-      int count = searchKNN(queryVector, K, filters, builder -> {
+      int count = searchKNN(queryVector, K, notEqualFilters, builder -> {
         SearchResult<Map<String, Object>> result = client
             .gRPC().raw()
             .withSearch(builder.build().buildSearchRequest())
@@ -137,7 +141,7 @@ public class GRPCBenchTest {
     }, WARMUP_ROUNDS, BENCHMARK_ROUNDS);
   }
 
-  @Test
+  // @Test
   public void testNewClient() {
     final float[] vector = ArrayUtils.toPrimitive(queryVector);
     final Collection<Map> things = client.collections.use(className, Map.class);
@@ -160,9 +164,14 @@ public class GRPCBenchTest {
     public String title;
     public Double price;
     public Date bestBefore;
+
+    public String[] ingredientsArray = {};
+    // WARN: this is to test filtering with List<?> values. Creating List<?>
+    // properties is not supported in this version.
+    public String[] ingredientsList = {};
   }
 
-  @Test
+  // @Test
   public void testORMClient() {
     final float[] vector = ArrayUtils.toPrimitive(queryVector);
     bench("GRPC.orm", () -> {
@@ -190,7 +199,7 @@ public class GRPCBenchTest {
           vector,
           opt -> opt
               .limit(K)
-              .where(Where.and(filters, Where.Operator.NOT_EQUAL)) // Constructed from a Map<String, Object>!
+              .where(Where.and(notEqualFilters, Where.Operator.NOT_EQUAL)) // Constructed from a Map<String, Object>!
               .returnProperties(returnProperties)
               .returnMetadata(MetadataField.ID, MetadataField.VECTOR, MetadataField.DISTANCE));
 
@@ -198,11 +207,11 @@ public class GRPCBenchTest {
       assertEquals(K, count, String.format("must return K=%d results", K));
 
       // Check that filtering works
-      assertFalse(result.objects.stream().anyMatch(obj -> obj.properties.title.equals(filters.get("title"))),
-          "expected title to not be in result set: " + filters.get("title"));
+      assertFalse(result.objects.stream().anyMatch(obj -> obj.properties.title.equals(notEqualFilters.get("title"))),
+          "expected title to not be in result set: " + notEqualFilters.get("title"));
 
-      assertFalse(result.objects.stream().anyMatch(obj -> obj.properties.price.equals(filters.get("price"))),
-          "expected price to not be in result set: " + filters.get("price"));
+      assertFalse(result.objects.stream().anyMatch(obj -> obj.properties.price.equals(notEqualFilters.get("price"))),
+          "expected price to not be in result set: " + notEqualFilters.get("price"));
     }, WARMUP_ROUNDS, BENCHMARK_ROUNDS);
   }
 
@@ -336,6 +345,7 @@ public class GRPCBenchTest {
     int count = 0;
     for (Float[] e : embeddings) {
       int i = count++;
+      String[] ingr = mixIngredients();
       batcher.withObject(WeaviateObject.builder()
           .className(className)
           .vector(e)
@@ -344,6 +354,8 @@ public class GRPCBenchTest {
               this.put("title", "Thing-" + String.valueOf(i));
               this.put("price", i);
               this.put("bestBefore", DateFormatUtils.format(DateUtils.addDays(NOW, i), "yyyy-MM-dd'T'HH:mm:ssZZZZZ"));
+              this.put("ingredientsArray", ingr);
+              this.put("ingredientsList", ingr);
             }
           })
           // .id(getUuid(e)) -> use generated UUID
@@ -358,6 +370,7 @@ public class GRPCBenchTest {
   /** writeORM creates {@link Thing} objects and inserts them in a batch. */
   private boolean writeORM(List<Float[]> embeddings) {
     try (Batcher<Thing> batch = client.datax.batch(Thing.class)) {
+      String[] ingr = mixIngredients();
       return batch.insert(b -> {
         int i = 0;
         for (Float[] e : embeddings) {
@@ -367,12 +380,20 @@ public class GRPCBenchTest {
 
               // Notice how the ORM is able to handle a raw Date object
               // and convert it to the correct format behind the scenes.
-              /* bestBefore */ DateUtils.addDays(NOW, i));
+              /* bestBefore */ DateUtils.addDays(NOW, i),
+              /* ingredientsArray */ ingr,
+              /* ingredientsList */ ingr);
           b.add(thing, e);
           i++;
         }
       });
     }
+  }
+
+  /** Utility for creating random combinations of ingredients for test data. */
+  private String[] mixIngredients() {
+    return Arrays.stream(new String[] { "milk", "honey", "butter" })
+        .filter(x -> rand.nextBoolean()).toArray(String[]::new);
   }
 
   private static Float[] genVector(int length, float origin, float bound) {

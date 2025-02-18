@@ -73,7 +73,6 @@ public class Batcher<T> implements AutoCloseable {
 
     void append(ObjectsBatcher batcher) {
       for ($WeaviateObject<T> object : objects) {
-
         batcher.withObject(WeaviateObject.builder()
             .className(cls.getSimpleName() + "s")
             .vector(object.vector)

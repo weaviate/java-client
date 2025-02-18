@@ -127,8 +127,21 @@ public class Where implements Operand {
         return new $Number((Number) value);
       } else if (value instanceof Date) {
         return new $Date((Date) value);
+      } else if (value instanceof String[]) {
+        return new $TextArray((String[]) value);
+      } else if (value instanceof Boolean[]) {
+        return new $BooleanArray((Boolean[]) value);
+      } else if (value instanceof Integer[]) {
+        return new $IntegerArray((Integer[]) value);
+      } else if (value instanceof Number[]) {
+        return new $NumberArray((Number[]) value);
+      } else if (value instanceof Date[]) {
+        return new $DateArray((Date[]) value);
       } else if (value instanceof List) {
-        assert ((List<?>) value).isEmpty() : "list must not be empty";
+        if (((List<?>) value).isEmpty()) {
+          throw new IllegalArgumentException(
+              "Filter with non-reifiable type (List<T>) cannot be empty, use an array instead");
+        }
 
         Object first = ((List<?>) value).get(0);
         if (first instanceof String) {
@@ -143,7 +156,8 @@ public class Where implements Operand {
           return new $DateArray((List<Date>) value);
         }
       }
-      throw new IllegalArgumentException("value must be either of String, Boolean, Date, Integer, Number, List");
+      throw new IllegalArgumentException(
+          "value must be either of String, Boolean, Date, Integer, Number, Array/List of these types");
     }
 
     // Equal
