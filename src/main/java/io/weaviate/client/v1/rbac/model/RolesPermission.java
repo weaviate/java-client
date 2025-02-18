@@ -39,7 +39,11 @@ public class RolesPermission extends Permission<RolesPermission> {
     UPDATE("update_roles"),
     DELETE("delete_roles"),
 
-    /* Backward compatibility with 1.28. */
+    /*
+     * DO NOT CREATE NEW PERMISSIONS WITH THIS ACTION.
+     * It is preserved for backward compatibility with 1.28
+     * and should only be used internally to read legacy permissions.
+     */
     @Deprecated
     MANAGE("manage_roles");
 

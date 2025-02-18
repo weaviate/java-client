@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.HttpResponse;
-import org.apache.hc.core5.http.HttpStatus;
 
 import io.weaviate.client.base.http.async.ResponseParser;
 import lombok.AccessLevel;
@@ -69,7 +68,7 @@ public class Result<T> {
    */
   public static Result<Boolean> voidToBoolean(Response<Void> response) {
     int status = response.getStatusCode();
-    return new Result<>(status, status == 200, response.getErrors());
+    return new Result<>(status, status < 299, response.getErrors());
   }
 
   /**
@@ -83,7 +82,7 @@ public class Result<T> {
       @Override
       public Result<Boolean> parse(HttpResponse response, String body, ContentType contentType) {
         Response<Object> resp = this.serializer.toResponse(response.getCode(), body, Object.class);
-        return new Result<>(resp.getStatusCode(), resp.getStatusCode() == HttpStatus.SC_OK, resp.getErrors());
+        return new Result<>(resp.getStatusCode(), resp.getStatusCode() < 299, resp.getErrors());
       }
     };
   }
