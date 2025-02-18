@@ -9,3 +9,5 @@
 *.iml
 # Maven
 target/
+# maven-lombok-plugin
+.factorypath
