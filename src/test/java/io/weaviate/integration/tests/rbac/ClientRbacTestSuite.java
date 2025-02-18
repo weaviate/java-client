@@ -18,6 +18,7 @@ import org.testcontainers.weaviate.WeaviateContainer;
 
 import com.jparams.junit4.JParamsTestRunner;
 import com.jparams.junit4.data.DataMethod;
+import com.jparams.junit4.description.Name;
 
 import io.weaviate.client.Config;
 import io.weaviate.client.base.Result;
@@ -37,6 +38,7 @@ import io.weaviate.integration.client.WeaviateWithRbacContainer;
 public class ClientRbacTestSuite {
 
   private static final String adminRole = "admin";
+  private static final String rootRole = "root";
   private static final String viewerRole = "viewer";
   private static final String adminUser = "john-doe";
   private static final String API_KEY = WeaviateWithRbacContainer.makeSecret(adminUser);
@@ -56,8 +58,10 @@ public class ClientRbacTestSuite {
   public static Object[][] clients() {
     try {
       return new Object[][] {
-          { (Supplier<Rbac>) () -> new io.weaviate.integration.client.rbac.ClientRbacTest(config(), API_KEY) },
-          { (Supplier<Rbac>) () -> new io.weaviate.integration.client.async.rbac.ClientRbacTest(config(), API_KEY) }
+          { "sync",
+              (Supplier<Rbac>) () -> new io.weaviate.integration.client.rbac.ClientRbacTest(config(), API_KEY) },
+          { "async",
+              (Supplier<Rbac>) () -> new io.weaviate.integration.client.async.rbac.ClientRbacTest(config(), API_KEY) }
       };
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -69,29 +73,32 @@ public class ClientRbacTestSuite {
    * will have 'admin' and 'viewer' roles.
    */
   @DataMethod(source = ClientRbacTestSuite.class, method = "clients")
+  @Name("{class}/client={0} ")
   @Test
-  public void testGetAll(Supplier<Rbac> rbac) {
+  public void testGetAll(String _name, Supplier<Rbac> rbac) {
     Rbac roles = rbac.get();
     Result<List<Role>> response = roles.getAll();
     List<Role> all = response.getResult();
 
     assertThat(response.getError()).as("get all roles error").isNull();
-    assertThat(all).hasSize(2).as("wrong number of roles");
+    assertThat(all).hasSize(3).as("wrong number of roles");
     assertThat(all.get(0)).returns(adminRole, Role::getName);
-    assertThat(all.get(1)).returns(viewerRole, Role::getName);
+    assertThat(all.get(1)).returns(rootRole, Role::getName);
+    assertThat(all.get(2)).returns(viewerRole, Role::getName);
   }
 
   /** Admin user should have the admin role assigned to them. */
   @DataMethod(source = ClientRbacTestSuite.class, method = "clients")
+  @Name("{class}/client={0} ")
   @Test
-  public void testGetAssignedUsers(Supplier<Rbac> rbac) {
+  public void testGetAssignedUsers(String _name, Supplier<Rbac> rbac) {
     Rbac roles = rbac.get();
-    Result<List<String>> response = roles.getAssignedUsers(adminRole);
+    Result<List<String>> response = roles.getAssignedUsers(rootRole);
     assertThat(response.getError()).as("get assigned users error").isNull();
 
     List<String> users = response.getResult();
-    assertThat(users).as("users assigned to " + adminRole + " role").hasSize(1);
-    assertEquals(adminUser, users.get(0), "wrong user assinged to " + adminRole + " role");
+    assertThat(users).as("users assigned to " + rootRole + " role").hasSize(1);
+    assertEquals(adminUser, users.get(0), "wrong user assinged to " + rootRole + " role");
   }
 
   /**
@@ -99,8 +106,9 @@ public class ClientRbacTestSuite {
    * Tests addition and fetching the role to.
    */
   @DataMethod(source = ClientRbacTestSuite.class, method = "clients")
+  @Name("{class}/client={0} ")
   @Test
-  public void testCreate(Supplier<Rbac> rbac) {
+  public void testCreate(String _name, Supplier<Rbac> rbac) {
     Rbac roles = rbac.get();
     String myRole = roleName("VectorOwner");
     String myCollection = "Pizza";
@@ -109,7 +117,7 @@ public class ClientRbacTestSuite {
         Permission.backups(BackupsPermission.Action.MANAGE, myCollection),
         Permission.cluster(ClusterPermission.Action.READ),
         Permission.nodes(myCollection, NodesPermission.Action.READ),
-        Permission.roles(viewerRole, RolesPermission.Action.MANAGE),
+        Permission.roles(viewerRole, RolesPermission.Action.CREATE),
         Permission.collections(myCollection, CollectionsPermission.Action.CREATE),
         Permission.data(myCollection, DataPermission.Action.UPDATE),
         Permission.tenants(TenantsPermission.Action.DELETE),
@@ -120,7 +128,9 @@ public class ClientRbacTestSuite {
       roles.deleteRole(myRole);
 
       // Act
-      roles.createRole(myRole, wantPermissions);
+      Result<Boolean> create = roles.createRole(myRole, wantPermissions);
+      assertNull("error creating role", create.getError());
+      assertTrue("created successfully", create.getResult());
 
       Result<Role> response = roles.getRole(myRole);
       Role role = response.getResult();
@@ -141,8 +151,9 @@ public class ClientRbacTestSuite {
    * behavior because it is the server's responsibility.
    */
   @DataMethod(source = ClientRbacTestSuite.class, method = "clients")
+  @Name("{class}/client={0} ")
   @Test
-  public void testAddPermissions(Supplier<Rbac> rbac) {
+  public void testAddPermissions(String _name, Supplier<Rbac> rbac) {
     Rbac roles = rbac.get();
     String myRole = roleName("VectorOwner");
     Permission<?> toAdd = Permission.cluster(ClusterPermission.Action.READ)[0];
@@ -167,8 +178,9 @@ public class ClientRbacTestSuite {
    * with multiple actions.
    */
   @DataMethod(source = ClientRbacTestSuite.class, method = "clients")
+  @Name("{class}/client={0} ")
   @Test
-  public void testAddPermissionsMultipleActions(Supplier<Rbac> rbac) {
+  public void testAddPermissionsMultipleActions(String _name, Supplier<Rbac> rbac) {
     Rbac roles = rbac.get();
     String myRole = roleName("VectorOwner");
     Permission<?>[] toAdd = Permission.data("Pizza",
@@ -199,8 +211,9 @@ public class ClientRbacTestSuite {
    * responsibility.
    */
   @DataMethod(source = ClientRbacTestSuite.class, method = "clients")
+  @Name("{class}/client={0} ")
   @Test
-  public void testRemovePermissions(Supplier<Rbac> rbac) {
+  public void testRemovePermissions(String _name, Supplier<Rbac> rbac) {
     Rbac roles = rbac.get();
     String myRole = roleName("VectorOwner");
     Permission<?> toRemove = Permission.tenants(TenantsPermission.Action.DELETE)[0];
@@ -229,8 +242,9 @@ public class ClientRbacTestSuite {
    * with multiple actions.
    */
   @DataMethod(source = ClientRbacTestSuite.class, method = "clients")
+  @Name("{class}/client={0} ")
   @Test
-  public void testRemovePermissionsMultipleAction(Supplier<Rbac> rbac) {
+  public void testRemovePermissionsMultipleAction(String _name, Supplier<Rbac> rbac) {
     Rbac roles = rbac.get();
     String myRole = roleName("VectorOwner");
     Permission<?>[] toRemove = Permission.data("Pizza",
@@ -268,10 +282,6 @@ public class ClientRbacTestSuite {
     return roles.hasPermission(role, perm).getResult();
   }
 
-  private boolean checkHasRole(Rbac roles, String user, String role) {
-    return roles.getAssignedUsers(role).getResult().contains(user);
-  }
-
   /**
    * Sync and async test suits should provide an implementation of this interface.
    * This way the test suite can be written once with very little
@@ -284,9 +294,9 @@ public class ClientRbacTestSuite {
 
     Result<List<String>> getAssignedUsers(String role);
 
-    void createRole(String role, Permission<?>... permissions);
+    Result<Boolean> createRole(String role, Permission<?>... permissions);
 
-    void createRole(String role, Permission<?>[]... permissions);
+    Result<Boolean> createRole(String role, Permission<?>[]... permissions);
 
     void deleteRole(String role);
 

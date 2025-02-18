@@ -60,13 +60,13 @@ public class ClientRbacTest implements ClientRbacTestSuite.Rbac {
   }
 
   @Override
-  public void createRole(String role, Permission<?>... permissions) {
-    rethrow(() -> roles.creator().withName(role).withPermissions(permissions).run());
+  public Result<Boolean> createRole(String role, Permission<?>... permissions) {
+    return rethrow(() -> roles.creator().withName(role).withPermissions(permissions).run());
   }
 
   @Override
-  public void createRole(String role, Permission<?>[]... permissions) {
-    rethrow(() -> roles.creator().withName(role).withPermissions(permissions).run());
+  public Result<Boolean> createRole(String role, Permission<?>[]... permissions) {
+    return rethrow(() -> roles.creator().withName(role).withPermissions(permissions).run());
   }
 
   @Override
