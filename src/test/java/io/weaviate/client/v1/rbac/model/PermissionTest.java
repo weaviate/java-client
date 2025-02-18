@@ -1,6 +1,7 @@
 package io.weaviate.client.v1.rbac.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.Arrays;
 import java.util.function.Supplier;
 
 import org.junit.Test;
+import org.junit.function.ThrowingRunnable;
 import org.junit.runner.RunWith;
 import org.testcontainers.shaded.org.hamcrest.Matcher;
 import org.testcontainers.shaded.org.hamcrest.MatcherAssert;
@@ -24,7 +26,7 @@ public class PermissionTest {
     BackupsPermission backups = new BackupsPermission("Pizza", BackupsPermission.Action.MANAGE);
     DataPermission data = new DataPermission("Pizza", DataPermission.Action.MANAGE);
     NodesPermission nodes = new NodesPermission("Pizza", NodesPermission.Action.READ);
-    RolesPermission roles = new RolesPermission("TestWriter", RolesPermission.Action.MANAGE);
+    RolesPermission roles = new RolesPermission("TestWriter", RolesPermission.Action.CREATE);
     CollectionsPermission collections = new CollectionsPermission("Pizza", CollectionsPermission.Action.CREATE);
     ClusterPermission cluster = new ClusterPermission(ClusterPermission.Action.READ);
     TenantsPermission tenants = new TenantsPermission(TenantsPermission.Action.READ);
@@ -49,7 +51,7 @@ public class PermissionTest {
         {
             "roles permission",
             (Supplier<Permission<?>>) () -> roles,
-            new WeaviatePermission("manage_roles", roles),
+            new WeaviatePermission("create_roles", roles),
         },
         {
             "collections permission",
@@ -180,5 +182,22 @@ public class PermissionTest {
   public void testGroupedConstructors(Permission<? extends Permission<?>>[] permissions, String[] expectedActions) {
     Object[] actualActions = Arrays.stream(permissions).map(Permission::getAction).toArray();
     assertArrayEquals(expectedActions, actualActions, "set of allowed actions do not match");
+  }
+
+  public static Object[][] deprecatedActions() {
+    return new Object[][] {
+        { (ThrowingRunnable) () -> Permission.roles("AnyRole", RolesPermission.Action.MANAGE) },
+    };
+  }
+
+  /**
+   * Passing deprecated actions, e.g {@link RolesPermission.Action.MANAGE}, will
+   * result in an error, and we can prevent that sooner.
+   */
+  @DataMethod(source = PermissionTest.class, method = "deprecatedActions")
+  @Test
+  public void testDeprecatedActions(ThrowingRunnable r) {
+    assertThrows(IllegalArgumentException.class, r);
+
   }
 }

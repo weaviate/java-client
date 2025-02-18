@@ -24,6 +24,10 @@ package io.weaviate.client.v1.rbac.model;
 interface RbacAction {
   String getValue();
 
+  default boolean isDeprecated() {
+    return false;
+  }
+
   static <E extends Enum<E> & RbacAction> E fromString(Class<E> enumClass, String value)
       throws IllegalArgumentException {
     for (E action : enumClass.getEnumConstants()) {

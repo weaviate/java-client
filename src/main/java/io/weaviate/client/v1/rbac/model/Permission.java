@@ -54,6 +54,7 @@ public abstract class Permission<P extends Permission<P>> {
    * {@code Permission.backups(BackupsPermission.Action.MANAGE, "Pizza") }
    */
   public static BackupsPermission[] backups(BackupsPermission.Action action, String collection) {
+    checkDeprecation(action);
     return new BackupsPermission[] { new BackupsPermission(collection, action) };
   }
 
@@ -63,17 +64,8 @@ public abstract class Permission<P extends Permission<P>> {
    * Example: {@code Permission.cluster(ClusterPermission.Action.READ, "Pizza") }
    */
   public static ClusterPermission[] cluster(ClusterPermission.Action action) {
+    checkDeprecation(action);
     return new ClusterPermission[] { new ClusterPermission(action) };
-  }
-
-  /**
-   * Create permission for managing collection's configuration.
-   * <p>
-   * Example:
-   * {@code Permission.collections("Pizza", CollectionsPermission.Action.READ) }
-   */
-  public static CollectionsPermission[] collections(String collection, CollectionsPermission.Action action) {
-    return new CollectionsPermission[] { new CollectionsPermission(collection, action) };
   }
 
   /**
@@ -85,19 +77,10 @@ public abstract class Permission<P extends Permission<P>> {
   public static CollectionsPermission[] collections(String collection, CollectionsPermission.Action... actions) {
     CollectionsPermission[] permissions = new CollectionsPermission[actions.length];
     for (int i = 0; i < actions.length; i++) {
+      checkDeprecation(actions[i]);
       permissions[i] = new CollectionsPermission(collection, actions[i]);
     }
     return permissions;
-  }
-
-  /**
-   * Create permissions for multiple actions for managing collection's data.
-   * <p>
-   * Example:
-   * {@code Permission.data("Pizza", DataPermission.Action.READ, DataPermission.Action.UPDATE) }
-   */
-  public static DataPermission[] data(String collection, DataPermission.Action action) {
-    return new DataPermission[] { new DataPermission(collection, action) };
   }
 
   /**
@@ -110,6 +93,7 @@ public abstract class Permission<P extends Permission<P>> {
   public static DataPermission[] data(String collection, DataPermission.Action... actions) {
     DataPermission[] permissions = new DataPermission[actions.length];
     for (int i = 0; i < actions.length; i++) {
+      checkDeprecation(actions[i]);
       permissions[i] = new DataPermission(collection, actions[i]);
     }
     return permissions;
@@ -133,17 +117,8 @@ public abstract class Permission<P extends Permission<P>> {
    * {@code Permission.nodes("Pizza", NodesPermission.Action.READ) }
    */
   public static NodesPermission[] nodes(String collection, NodesPermission.Action action) {
+    checkDeprecation(action);
     return new NodesPermission[] { new NodesPermission(collection, action) };
-  }
-
-  /**
-   * Create {@link RolesPermission} for a role.
-   * <p>
-   * Example:
-   * {@code Permission.roles("MyRole", RolesPermission.Action.READ) }
-   */
-  public static RolesPermission[] roles(String role, RolesPermission.Action action) {
-    return new RolesPermission[] { new RolesPermission(role, action) };
   }
 
   /**
@@ -155,6 +130,7 @@ public abstract class Permission<P extends Permission<P>> {
   public static RolesPermission[] roles(String role, RolesPermission.Action... actions) {
     RolesPermission[] permissions = new RolesPermission[actions.length];
     for (int i = 0; i < actions.length; i++) {
+      checkDeprecation(actions[i]);
       permissions[i] = new RolesPermission(role, actions[i]);
     }
     return permissions;
@@ -167,6 +143,7 @@ public abstract class Permission<P extends Permission<P>> {
    * {@code Permission.tenants(TenantsPermission.Action.READ) }
    */
   public static TenantsPermission[] tenants(TenantsPermission.Action action) {
+    checkDeprecation(action);
     return new TenantsPermission[] { new TenantsPermission(action) };
   }
 
@@ -177,10 +154,19 @@ public abstract class Permission<P extends Permission<P>> {
    * {@code Permission.users(UsersPermission.Action.READ) }
    */
   public static UsersPermission[] users(UsersPermission.Action action) {
+    checkDeprecation(action);
     return new UsersPermission[] { new UsersPermission(action) };
+  }
+
+  private static void checkDeprecation(RbacAction action) throws IllegalArgumentException {
+    if (action.isDeprecated()) {
+      throw new IllegalArgumentException(action.getValue()
+          + " is hard-deprecated and should only be used to read legacy permissions created in v1.28");
+    }
   }
 
   public String toString() {
     return String.format("Permission<action=%s>", this.action);
   }
+
 }
