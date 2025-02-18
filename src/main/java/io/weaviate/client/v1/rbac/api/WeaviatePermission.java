@@ -1,6 +1,7 @@
 package io.weaviate.client.v1.rbac.api;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.weaviate.client.v1.rbac.model.BackupsPermission;
 import io.weaviate.client.v1.rbac.model.CollectionsPermission;
@@ -48,6 +49,6 @@ public class WeaviatePermission {
   }
 
   public static List<WeaviatePermission> mergePermissions(List<Permission<?>> permissions) {
-    return permissions.stream().map(perm -> perm.toWeaviate()).toList();
+    return permissions.stream().map(perm -> perm.toWeaviate()).collect(Collectors.toList());
   }
 }

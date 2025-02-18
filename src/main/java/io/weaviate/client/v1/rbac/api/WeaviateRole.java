@@ -1,6 +1,7 @@
 package io.weaviate.client.v1.rbac.api;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.weaviate.client.v1.rbac.model.Permission;
 import io.weaviate.client.v1.rbac.model.Role;
@@ -20,7 +21,7 @@ public class WeaviateRole {
   /** Create {@link Role} from the API response object. */
   public Role toRole() {
     List<Permission<?>> permissions = this.permissions.stream()
-        .<Permission<?>>map(perm -> Permission.fromWeaviate(perm)).toList();
+        .<Permission<?>>map(perm -> Permission.fromWeaviate(perm)).collect(Collectors.toList());
     return new Role(this.name, permissions);
   }
 }

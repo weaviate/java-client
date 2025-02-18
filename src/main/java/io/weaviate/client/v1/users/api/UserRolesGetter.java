@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import io.weaviate.client.Config;
 import io.weaviate.client.base.BaseClient;
@@ -35,7 +36,7 @@ public class UserRolesGetter extends BaseClient<WeaviateRole[]> implements Clien
         .orElse(new ArrayList<>())
         .stream()
         .map(w -> w.toRole())
-        .toList();
+        .collect(Collectors.toList());
     return new Result<>(resp.getStatusCode(), roles, resp.getErrors());
   }
 
