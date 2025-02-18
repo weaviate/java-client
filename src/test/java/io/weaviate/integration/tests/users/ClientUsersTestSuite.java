@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -70,7 +71,7 @@ public class ClientUsersTestSuite {
     Result<List<Role>> responseAdminUser = users.getUserRoles(adminUser);
     assertNull("get roles for user error", responseAdminUser.getError());
 
-    List<Role> currentRoles = myUser.getResult().getRoles().values().stream().toList();
+    List<Role> currentRoles = myUser.getResult().getRoles().values().stream().collect(Collectors.toList());
     List<Role> adminRoles = responseAdminUser.getResult();
 
     Assertions.assertArrayEquals(currentRoles.toArray(), adminRoles.toArray(),

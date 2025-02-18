@@ -2,6 +2,7 @@ package io.weaviate.client.v1.rbac.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -19,6 +20,7 @@ public class Role {
         "Role<name='%s', permissions=[%s]>",
         this.name, permissions.isEmpty()
             ? "none"
-            : String.join(", ", permissions.stream().map(Permission::getAction).toList()));
+            : String.join(", ", permissions.stream().map(Permission::getAction)
+                .collect(Collectors.toList())));
   }
 }

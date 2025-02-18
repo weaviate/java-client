@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.core5.concurrent.FutureCallback;
@@ -38,7 +39,7 @@ public class RoleAllGetter extends AsyncBaseClient<List<Role>> implements AsyncC
             .orElse(new ArrayList<>())
             .stream()
             .map(w -> w.toRole())
-            .toList();
+            .collect(Collectors.toList());
         return new Result<>(resp.getStatusCode(), roles, resp.getErrors());
       }
     });
