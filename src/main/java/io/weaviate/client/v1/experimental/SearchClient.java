@@ -76,12 +76,6 @@ public class SearchClient<T> {
         }).toList();
 
     return new SearchResult<Map<String, Object>>(objects);
-    // return reply.getResultsList().stream()
-    // .map(list -> list.getAllFields().entrySet().stream()
-    // .collect(Collectors.toMap(
-    // e -> e.getKey().getJsonName(),
-    // e -> e.getValue())))
-    // .toList();
   }
 
   public SearchResult<T> nearVector(float[] vector) {
