@@ -45,20 +45,15 @@ public class RolesPermission extends Permission<RolesPermission> {
      * and should only be used internally to read legacy permissions.
      */
     @Deprecated
-    MANAGE("manage_roles", true);
-
-    Action(String value) {
-      this(value, false);
-    }
+    MANAGE("manage_roles") {
+      @Override
+      public boolean isDeprecated() {
+        return true;
+      };
+    };
 
     @Getter
     private final String value;
-
-    private final boolean deprecated;
-
-    public boolean isDeprecated() {
-      return deprecated;
-    }
   }
 
   public enum Scope {
