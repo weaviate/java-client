@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 
@@ -94,7 +95,7 @@ public class Where implements Operand {
             operator,
             new Path(entry.getKey()),
             ComparisonBuilder.fromObject(entry.getValue())))
-        .toList();
+        .collect(Collectors.toList());
   }
 
   // Comparison operators return fluid builder.
@@ -631,7 +632,7 @@ public class Where implements Operand {
     }
 
     private List<Long> toLongs() {
-      return value.stream().map(Integer::longValue).toList();
+      return value.stream().map(Integer::longValue).collect(Collectors.toList());
     }
 
     @Override
@@ -660,7 +661,7 @@ public class Where implements Operand {
     }
 
     private List<Double> toDoubles() {
-      return value.stream().map(Number::doubleValue).toList();
+      return value.stream().map(Number::doubleValue).collect(Collectors.toList());
     }
 
     @Override
@@ -694,7 +695,7 @@ public class Where implements Operand {
     }
 
     private List<String> formatted() {
-      return value.stream().map(date -> $Date.format(date)).toList();
+      return value.stream().map(date -> $Date.format(date)).collect(Collectors.toList());
 
     }
 

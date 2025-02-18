@@ -272,7 +272,7 @@ public class GetBuilder implements Query {
 
       // Properties
       List<Field> props = Arrays.stream(fields.getFields())
-          .filter(f -> !"_additional".equals(f.getName())).toList();
+          .filter(f -> !"_additional".equals(f.getName())).collect(Collectors.toList());
       if (!props.isEmpty()) {
         PropertiesRequest.Builder properties = PropertiesRequest.newBuilder();
         for (Field f : props) {

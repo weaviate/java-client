@@ -73,7 +73,7 @@ public class SearchClient<T> {
               GRPC.fromByteString(meta.getVectorBytes()));
 
           return new SearchResult.SearchObject<Map<String, Object>>(properties, metadata);
-        }).toList();
+        }).collect(Collectors.toList());
 
     return new SearchResult<Map<String, Object>>(objects);
   }
@@ -128,7 +128,7 @@ public class SearchClient<T> {
               GRPC.fromByteString(meta.getVectorBytes()));
 
           return new SearchResult.SearchObject<T>(properties, metadata);
-        }).toList();
+        }).collect(Collectors.toList());
 
     return new SearchResult<T>(objects);
   }
