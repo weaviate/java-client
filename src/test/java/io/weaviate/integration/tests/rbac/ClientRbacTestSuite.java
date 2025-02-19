@@ -114,7 +114,7 @@ public class ClientRbacTestSuite {
     String myCollection = "Pizza";
 
     Permission<?>[][] wantPermissions = new Permission<?>[][] {
-        Permission.backups(BackupsPermission.Action.MANAGE, myCollection),
+        Permission.backups(myCollection, BackupsPermission.Action.MANAGE),
         Permission.cluster(ClusterPermission.Action.READ),
         Permission.nodes(myCollection, NodesPermission.Action.READ),
         Permission.roles(viewerRole, RolesPermission.Action.CREATE),
