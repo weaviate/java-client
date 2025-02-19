@@ -27,7 +27,7 @@ jobs:
           mvn -DskipTests clean package
           mvn -s settings.xml deploy
       - name: Archive artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: jar-files
           path: "target/*.jar"
@@ -39,7 +39,7 @@ jobs:
     needs: [ release ]
     steps:
       - name: Download artifacts to append to release
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: jar-files
           path: target
