@@ -6,8 +6,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.protobuf.util.JsonFormat;
-
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Filters;
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.MetadataRequest;
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.PropertiesRequest;
@@ -45,10 +43,6 @@ public abstract class SearchOptions<SELF extends SearchOptions<SELF>> {
       Filters.Builder filters = Filters.newBuilder();
       where.append(filters);
       search.setFilters(filters);
-      try {
-        System.out.println(JsonFormat.printer().print(filters));
-      } catch (Exception e) {
-      }
     }
 
     if (!returnMetadata.isEmpty()) {

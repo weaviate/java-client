@@ -62,9 +62,13 @@ public class GRPCBenchTest {
   private static final String[] notIngredients = { "ketchup", "mayo" };
   private static final Map<String, Object> notEqualFilters = new HashMap<String, Object>() {
     {
-      // this.put("title", "SomeThing");
-      // this.put("price", 8);
-      // this.put("bestBefore", DateUtils.addDays(NOW, 5));
+      this.put("title", "SomeThing");
+      this.put("price", 8);
+      this.put("bestBefore", DateUtils.addDays(NOW, 5));
+    }
+  };
+  private static final Map<String, Object> arrayListFilters = new HashMap<String, Object>() {
+    {
       this.put("ingredientsList", Arrays.asList(notIngredients));
       this.put("ingredientsArray", notIngredients);
     }
@@ -199,7 +203,10 @@ public class GRPCBenchTest {
           vector,
           opt -> opt
               .limit(K)
-              .where(Where.and(notEqualFilters, Where.Operator.NOT_EQUAL)) // Constructed from a Map<String, Object>!
+              .where(Where.or(
+                  // Constructed from a Map<String, Object>!
+                  Where.and(notEqualFilters, Where.Operator.NOT_EQUAL),
+                  Where.and(arrayListFilters, Where.Operator.CONTAINS_ALL)))
               .returnProperties(returnProperties)
               .returnMetadata(MetadataField.ID, MetadataField.VECTOR, MetadataField.DISTANCE));
 
