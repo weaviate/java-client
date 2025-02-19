@@ -1,15 +1,16 @@
 package io.weaviate.client.v1.filters;
 
+import java.util.Date;
+import java.util.function.Consumer;
+
+import org.apache.commons.lang3.ArrayUtils;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
-import org.apache.commons.lang3.ArrayUtils;
-
-import java.util.Date;
-import java.util.function.Consumer;
 
 @Getter
 @ToString
@@ -31,11 +32,15 @@ public class WhereFilter {
   Double valueNumber;
   Double[] valueNumberArray;
   /**
-   * As of Weaviate v1.19 'valueString' is deprecated and replaced by 'valueText'.<br>
-   * See <a href="https://weaviate.io/developers/weaviate/config-refs/datatypes#introduction">data types</a>
+   * As of Weaviate v1.19 'valueString' is deprecated and replaced by
+   * 'valueText'.<br>
+   * See <a href=
+   * "https://weaviate.io/developers/weaviate/config-refs/datatypes#introduction">data
+   * types</a>
    */
   @Deprecated
   String valueString;
+  @Deprecated
   String[] valueStringArray;
   String valueText;
   String[] valueTextArray;
@@ -43,7 +48,6 @@ public class WhereFilter {
   public static WhereFilterBuilder builder() {
     return new WhereFilterBuilder();
   }
-
 
   public static class WhereFilterBuilder {
     private WhereFilter[] operands;
@@ -62,38 +66,49 @@ public class WhereFilter {
       this.operands = operands;
       return this;
     }
+
     public WhereFilterBuilder operator(String operator) {
       this.operator = operator;
       return this;
     }
+
     public WhereFilterBuilder path(String... path) {
       this.path = path;
       return this;
     }
+
     public WhereFilterBuilder valueBoolean(Boolean... valueBoolean) {
       valueBooleanArray = valueBoolean;
       return this;
     }
+
     public WhereFilterBuilder valueDate(Date... valueDate) {
       valueDateArray = valueDate;
       return this;
     }
+
     public WhereFilterBuilder valueInt(Integer... valueInt) {
       valueIntArray = valueInt;
       return this;
     }
+
     public WhereFilterBuilder valueNumber(Double... valueNumber) {
       valueNumberArray = valueNumber;
       return this;
     }
+
+    /** Deprecated: use {@link valueText} instead. */
+    @Deprecated
     public WhereFilterBuilder valueString(String... valueString) {
       valueStringArray = valueString;
       return this;
     }
+
     public WhereFilterBuilder valueText(String... valueText) {
       valueTextArray = valueText;
       return this;
     }
+
     public WhereFilterBuilder valueGeoRange(GeoRange valueGeoRange) {
       this.valueGeoRange = valueGeoRange;
       return this;
@@ -125,7 +140,6 @@ public class WhereFilter {
       }
     }
   }
-
 
   @Getter
   @Builder

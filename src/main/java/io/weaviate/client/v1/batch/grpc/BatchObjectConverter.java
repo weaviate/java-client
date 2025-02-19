@@ -1,27 +1,26 @@
 package io.weaviate.client.v1.batch.grpc;
 
-import com.google.protobuf.ByteString;
-import com.google.protobuf.Struct;
-import com.google.protobuf.Value;
-import io.weaviate.client.base.util.CrossReference;
-import io.weaviate.client.base.util.GrpcVersionSupport;
-import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase;
-import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch;
-import io.weaviate.client.v1.data.model.WeaviateObject;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
-import lombok.experimental.FieldDefaults;
-
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.google.protobuf.Struct;
+import com.google.protobuf.Value;
+
+import io.weaviate.client.base.util.CrossReference;
+import io.weaviate.client.base.util.GrpcVersionSupport;
+import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase;
+import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch;
+import io.weaviate.client.v1.data.model.WeaviateObject;
+import io.weaviate.client.v1.grpc.GRPC;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 
 @RequiredArgsConstructor
 public class BatchObjectConverter {
@@ -47,7 +46,7 @@ public class BatchObjectConverter {
     Float[] vector = obj.getVector();
     if (vector != null) {
       if (grpcVersionSupport.supportsVectorBytesField()) {
-        builder.setVectorBytes(toByteString(vector));
+        builder.setVectorBytes(GRPC.toByteString(vector));
       } else {
         builder.addAllVector(Arrays.asList(vector));
       }
@@ -55,22 +54,16 @@ public class BatchObjectConverter {
 
     Map<String, Float[]> vectors = obj.getVectors();
     if (vectors != null && !vectors.isEmpty()) {
-      List<WeaviateProtoBase.Vectors> protoVectors = vectors.entrySet().stream().map(entry ->
-        WeaviateProtoBase.Vectors.newBuilder()
-          .setName(entry.getKey())
-          .setVectorBytes(toByteString(entry.getValue()))
-          .build()
-      ).collect(Collectors.toList());
+      List<WeaviateProtoBase.Vectors> protoVectors = vectors.entrySet().stream()
+          .map(entry -> WeaviateProtoBase.Vectors.newBuilder()
+              .setName(entry.getKey())
+              .setVectorBytes(GRPC.toByteString(entry.getValue()))
+              .build())
+          .collect(Collectors.toList());
       builder.addAllVectors(protoVectors);
     }
 
     return builder.build();
-  }
-
-  private ByteString toByteString(Float[] vector) {
-    ByteBuffer buffer = ByteBuffer.allocate(vector.length * Float.BYTES).order(ByteOrder.LITTLE_ENDIAN);
-    Arrays.stream(vector).forEach(buffer::putFloat);
-    return ByteString.copyFrom(buffer.array());
   }
 
   @AllArgsConstructor
@@ -146,48 +139,51 @@ public class BatchObjectConverter {
       if (propValue instanceof String[]) {
         // TODO: handle ref properties
         WeaviateProtoBase.TextArrayProperties textArrayProps = WeaviateProtoBase.TextArrayProperties.newBuilder()
-          .setPropName(propName).addAllValues(Arrays.asList((String[]) propValue)).build();
+            .setPropName(propName).addAllValues(Arrays.asList((String[]) propValue)).build();
         textArrayProperties.add(textArrayProps);
         continue;
       }
       if (propValue instanceof Boolean[]) {
-        WeaviateProtoBase.BooleanArrayProperties booleanArrayProps = WeaviateProtoBase.BooleanArrayProperties.newBuilder()
-          .setPropName(propName).addAllValues(Arrays.asList((Boolean[]) propValue)).build();
+        WeaviateProtoBase.BooleanArrayProperties booleanArrayProps = WeaviateProtoBase.BooleanArrayProperties
+            .newBuilder()
+            .setPropName(propName).addAllValues(Arrays.asList((Boolean[]) propValue)).build();
         booleanArrayProperties.add(booleanArrayProps);
         continue;
       }
       if (propValue instanceof Integer[]) {
         List<Long> value = Arrays.stream((Integer[]) propValue).map(Integer::longValue).collect(Collectors.toList());
         WeaviateProtoBase.IntArrayProperties intArrayProps = WeaviateProtoBase.IntArrayProperties.newBuilder()
-          .setPropName(propName).addAllValues(value).build();
+            .setPropName(propName).addAllValues(value).build();
         intArrayProperties.add(intArrayProps);
         continue;
       }
       if (propValue instanceof Long[]) {
         WeaviateProtoBase.IntArrayProperties intArrayProps = WeaviateProtoBase.IntArrayProperties.newBuilder()
-          .setPropName(propName)
-          .addAllValues(Arrays.asList((Long[]) propValue))
-          .build();
+            .setPropName(propName)
+            .addAllValues(Arrays.asList((Long[]) propValue))
+            .build();
         intArrayProperties.add(intArrayProps);
         continue;
       }
       if (propValue instanceof Float[]) {
         List<Double> value = Arrays.stream((Float[]) propValue).map(Float::doubleValue).collect(Collectors.toList());
         WeaviateProtoBase.NumberArrayProperties numberArrayProps = WeaviateProtoBase.NumberArrayProperties.newBuilder()
-          .setPropName(propName).addAllValues(value).build();
+            .setPropName(propName).addAllValues(value).build();
         numberArrayProperties.add(numberArrayProps);
         continue;
       }
       if (propValue instanceof Double[]) {
         WeaviateProtoBase.NumberArrayProperties numberArrayProps = WeaviateProtoBase.NumberArrayProperties.newBuilder()
-          .setPropName(propName).addAllValues(Arrays.asList((Double[]) propValue)).build();
+            .setPropName(propName).addAllValues(Arrays.asList((Double[]) propValue)).build();
         numberArrayProperties.add(numberArrayProps);
         continue;
       }
       if (propValue instanceof Map) {
         Properties extractedProperties = extractProperties((Map<String, Object>) propValue, false);
-        WeaviateProtoBase.ObjectPropertiesValue.Builder objectPropertiesValue = WeaviateProtoBase.ObjectPropertiesValue.newBuilder();
-        objectPropertiesValue.setNonRefProperties(Struct.newBuilder().putAllFields(extractedProperties.nonRefProperties).build());
+        WeaviateProtoBase.ObjectPropertiesValue.Builder objectPropertiesValue = WeaviateProtoBase.ObjectPropertiesValue
+            .newBuilder();
+        objectPropertiesValue
+            .setNonRefProperties(Struct.newBuilder().putAllFields(extractedProperties.nonRefProperties).build());
         extractedProperties.numberArrayProperties.forEach(objectPropertiesValue::addNumberArrayProperties);
         extractedProperties.intArrayProperties.forEach(objectPropertiesValue::addIntArrayProperties);
         extractedProperties.textArrayProperties.forEach(objectPropertiesValue::addTextArrayProperties);
@@ -196,7 +192,7 @@ public class BatchObjectConverter {
         extractedProperties.objectArrayProperties.forEach(objectPropertiesValue::addObjectArrayProperties);
 
         WeaviateProtoBase.ObjectProperties objectProps = WeaviateProtoBase.ObjectProperties.newBuilder()
-          .setPropName(propName).setValue(objectPropertiesValue.build()).build();
+            .setPropName(propName).setValue(objectPropertiesValue.build()).build();
 
         objectProperties.add(objectProps);
         continue;
@@ -206,8 +202,8 @@ public class BatchObjectConverter {
           // it's a cross reference
           List<String> beacons = extractBeacons((List<?>) propValue);
           List<CrossReference> crossReferences = beacons.stream()
-            .map(CrossReference::fromBeacon)
-            .collect(Collectors.toList());
+              .map(CrossReference::fromBeacon)
+              .collect(Collectors.toList());
 
           Map<String, List<String>> crefs = new HashMap<>();
           for (CrossReference cref : crossReferences) {
@@ -221,15 +217,18 @@ public class BatchObjectConverter {
 
           if (crefs.size() == 1) {
             for (Map.Entry<String, List<String>> crefEntry : crefs.entrySet()) {
-              WeaviateProtoBatch.BatchObject.SingleTargetRefProps singleTargetCrossRefs = WeaviateProtoBatch.BatchObject.SingleTargetRefProps.newBuilder()
-                .setPropName(propName).addAllUuids(crefEntry.getValue()).build();
+              WeaviateProtoBatch.BatchObject.SingleTargetRefProps singleTargetCrossRefs = WeaviateProtoBatch.BatchObject.SingleTargetRefProps
+                  .newBuilder()
+                  .setPropName(propName).addAllUuids(crefEntry.getValue()).build();
               singleTargetRefProps.add(singleTargetCrossRefs);
             }
           }
           if (crefs.size() > 1) {
             for (Map.Entry<String, List<String>> crefEntry : crefs.entrySet()) {
-              WeaviateProtoBatch.BatchObject.MultiTargetRefProps multiTargetCrossRefs = WeaviateProtoBatch.BatchObject.MultiTargetRefProps.newBuilder()
-                .setPropName(propName).addAllUuids(crefEntry.getValue()).setTargetCollection(crefEntry.getKey()).build();
+              WeaviateProtoBatch.BatchObject.MultiTargetRefProps multiTargetCrossRefs = WeaviateProtoBatch.BatchObject.MultiTargetRefProps
+                  .newBuilder()
+                  .setPropName(propName).addAllUuids(crefEntry.getValue()).setTargetCollection(crefEntry.getKey())
+                  .build();
               multiTargetRefProps.add(multiTargetCrossRefs);
             }
           }
@@ -239,8 +238,10 @@ public class BatchObjectConverter {
           for (Object propValueObject : (List) propValue) {
             if (propValueObject instanceof Map) {
               Properties extractedProperties = extractProperties((Map<String, Object>) propValueObject, false);
-              WeaviateProtoBase.ObjectPropertiesValue.Builder objectPropertiesValue = WeaviateProtoBase.ObjectPropertiesValue.newBuilder();
-              objectPropertiesValue.setNonRefProperties(Struct.newBuilder().putAllFields(extractedProperties.nonRefProperties).build());
+              WeaviateProtoBase.ObjectPropertiesValue.Builder objectPropertiesValue = WeaviateProtoBase.ObjectPropertiesValue
+                  .newBuilder();
+              objectPropertiesValue
+                  .setNonRefProperties(Struct.newBuilder().putAllFields(extractedProperties.nonRefProperties).build());
               extractedProperties.numberArrayProperties.forEach(objectPropertiesValue::addNumberArrayProperties);
               extractedProperties.intArrayProperties.forEach(objectPropertiesValue::addIntArrayProperties);
               extractedProperties.textArrayProperties.forEach(objectPropertiesValue::addTextArrayProperties);
@@ -252,15 +253,16 @@ public class BatchObjectConverter {
             }
           }
 
-          WeaviateProtoBase.ObjectArrayProperties objectArrayProps = WeaviateProtoBase.ObjectArrayProperties.newBuilder()
-            .setPropName(propName).addAllValues(objectPropertiesValues).build();
+          WeaviateProtoBase.ObjectArrayProperties objectArrayProps = WeaviateProtoBase.ObjectArrayProperties
+              .newBuilder()
+              .setPropName(propName).addAllValues(objectPropertiesValues).build();
 
           objectArrayProperties.add(objectArrayProps);
         }
       }
     }
     return new Properties(nonRefProperties, numberArrayProperties, intArrayProperties, textArrayProperties,
-      booleanArrayProperties, objectProperties, objectArrayProperties, singleTargetRefProps, multiTargetRefProps);
+        booleanArrayProperties, objectProperties, objectArrayProperties, singleTargetRefProps, multiTargetRefProps);
   }
 
   private static boolean isCrossReference(List<?> propValue, boolean rootLevel) {
@@ -268,7 +270,8 @@ public class BatchObjectConverter {
       for (Object element : propValue) {
         if (element instanceof Map) {
           Map<?, ?> valueMap = ((Map<?, ?>) element);
-          if (valueMap.size() > 1 || (valueMap.size() == 1 && (valueMap.get("beacon") == null || !(valueMap.get("beacon") instanceof String)))) {
+          if (valueMap.size() > 1 || (valueMap.size() == 1
+              && (valueMap.get("beacon") == null || !(valueMap.get("beacon") instanceof String)))) {
             return false;
           }
         }

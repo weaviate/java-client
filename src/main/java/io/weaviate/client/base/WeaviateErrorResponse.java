@@ -1,6 +1,8 @@
 package io.weaviate.client.base;
 
+import java.util.ArrayList;
 import java.util.List;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,5 +16,7 @@ import lombok.experimental.FieldDefaults;
 public class WeaviateErrorResponse {
   Integer code;
   String message;
-  List<WeaviateErrorMessage> error;
+
+  @Builder.Default
+  List<WeaviateErrorMessage> error = new ArrayList<>();
 }

@@ -56,6 +56,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.release>8</maven.compiler.release>
     <lombok.version>1.18.36</lombok.version>
     <gson.version>2.11.0</gson.version>
     <httpclient.version>5.4.1</httpclient.version>
@@ -72,6 +73,7 @@
     <oauth2-oidc-sdk.version>11.20.1</oauth2-oidc-sdk.version>
     <mock-server.version>5.15.0</mock-server.version>
     <protobuf.java.version>4.29.1</protobuf.java.version>
+    <protobuf.java-util.version>4.29.1</protobuf.java-util.version>
     <grpc-netty-shaded.version>1.68.2</grpc-netty-shaded.version>
     <grpc-protobuf.version>1.68.2</grpc-protobuf.version>
     <grpc-stub.version>1.68.2</grpc-stub.version>
@@ -83,6 +85,11 @@
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
       <version>${protobuf.java.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java-util</artifactId>
+      <version>${protobuf.java-util.version}</version>
     </dependency>
     <dependency>
         <groupId>io.grpc</groupId>
@@ -237,7 +244,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.1</version>
+          <version>3.13.0</version>
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
@@ -273,6 +280,13 @@
               </configuration>
             </execution>
           </executions>
+          <dependencies>
+            <dependency>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <version>${lombok.version}</version>
+            </dependency>
+          </dependencies>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>

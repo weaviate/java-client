@@ -7,6 +7,7 @@ import io.weaviate.client.Config;
 import io.weaviate.client.base.grpc.base.BaseGrpcClient;
 import io.weaviate.client.grpc.protocol.v1.WeaviateGrpc;
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch;
+import io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -25,6 +26,10 @@ public class GrpcClient extends BaseGrpcClient {
     return this.client.batchObjects(request);
   }
 
+  public WeaviateProtoSearchGet.SearchReply search(WeaviateProtoSearchGet.SearchRequest request) {
+    return this.client.search(request);
+  }
+
   public void shutdown() {
     this.channel.shutdown();
   }
@@ -33,7 +38,8 @@ public class GrpcClient extends BaseGrpcClient {
     Metadata headers = getHeaders(config, tokenProvider);
     ManagedChannel channel = buildChannel(config);
     WeaviateGrpc.WeaviateBlockingStub blockingStub = WeaviateGrpc.newBlockingStub(channel);
-    WeaviateGrpc.WeaviateBlockingStub client = blockingStub.withInterceptors(MetadataUtils.newAttachHeadersInterceptor(headers));
+    WeaviateGrpc.WeaviateBlockingStub client = blockingStub
+        .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(headers));
     return new GrpcClient(client, channel);
   }
 }
