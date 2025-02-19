@@ -29,7 +29,7 @@ public class Where implements Operand {
     GREATER_THAN("GreaterThen", Filters.Operator.OPERATOR_GREATER_THAN),
     GREATER_THAN_EQUAL("GreaterThenEqual", Filters.Operator.OPERATOR_GREATER_THAN_EQUAL),
     LIKE("Like", Filters.Operator.OPERATOR_LIKE),
-    CONTAINS_ANY("ContainsAny", Filters.Operator.OPERATOR_LIKE),
+    CONTAINS_ANY("ContainsAny", Filters.Operator.OPERATOR_CONTAINS_ANY),
     CONTAINS_ALL("ContainsAll", Filters.Operator.OPERATOR_CONTAINS_ALL),
     WITHIN_GEO_RANGE("WithinGeoRange", Filters.Operator.OPERATOR_WITHIN_GEO_RANGE);
 
