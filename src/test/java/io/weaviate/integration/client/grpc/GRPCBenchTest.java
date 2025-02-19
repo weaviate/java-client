@@ -110,7 +110,7 @@ public class GRPCBenchTest {
     assertTrue(writeORM(testData), "loaded test data successfully");
   }
 
-  // @Test
+  @Test
   public void testGraphQL() {
     bench("GraphQL", () -> {
       int count = searchKNN(queryVector, K, notEqualFilters, builder -> {
@@ -129,7 +129,7 @@ public class GRPCBenchTest {
     }, WARMUP_ROUNDS, BENCHMARK_ROUNDS);
   }
 
-  // @Test
+  @Test
   public void testGRPC() {
     bench("GRPC", () -> {
       int count = searchKNN(queryVector, K, notEqualFilters, builder -> {
@@ -145,7 +145,7 @@ public class GRPCBenchTest {
     }, WARMUP_ROUNDS, BENCHMARK_ROUNDS);
   }
 
-  // @Test
+  @Test
   public void testNewClient() {
     final float[] vector = ArrayUtils.toPrimitive(queryVector);
     final Collection<Map> things = client.collections.use(className, Map.class);
@@ -175,7 +175,7 @@ public class GRPCBenchTest {
     public String[] ingredientsList = {};
   }
 
-  // @Test
+  @Test
   public void testORMClient() {
     final float[] vector = ArrayUtils.toPrimitive(queryVector);
     bench("GRPC.orm", () -> {
