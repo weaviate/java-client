@@ -53,7 +53,7 @@ public abstract class Permission<P extends Permission<P>> {
    * Example:
    * {@code Permission.backups(BackupsPermission.Action.MANAGE, "Pizza") }
    */
-  public static BackupsPermission[] backups(BackupsPermission.Action action, String collection) {
+  public static BackupsPermission[] backups(String collection, BackupsPermission.Action action) {
     checkDeprecation(action);
     return new BackupsPermission[] { new BackupsPermission(collection, action) };
   }
