@@ -24,6 +24,7 @@ jobs:
           OKTA_CLIENT_SECRET: ${{ secrets.OKTA_CLIENT_SECRET }}
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
         run: |
+          export GPG_TTY=$(tty)
           mvn -DskipTests clean package
           mvn -s settings.xml deploy
       - name: Archive artifacts
