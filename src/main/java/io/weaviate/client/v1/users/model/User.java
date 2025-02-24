@@ -1,5 +1,6 @@
 package io.weaviate.client.v1.users.model;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -9,12 +10,10 @@ import lombok.Getter;
 
 @Getter
 public class User {
-  String name;
   String userId;
-  Map<String, Role> roles;
+  Map<String, Role> roles = new HashMap<>();
 
-  public User(String name, String id, List<Role> roles) {
-    this.name = name;
+  public User(String id, List<Role> roles) {
     this.userId = id;
     this.roles = roles.stream().collect(Collectors.toMap(Role::getName, r -> r));
   }
