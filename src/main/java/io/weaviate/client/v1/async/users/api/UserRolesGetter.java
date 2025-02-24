@@ -23,15 +23,15 @@ import io.weaviate.client.v1.rbac.api.WeaviateRole;
 import io.weaviate.client.v1.rbac.model.Role;
 
 public class UserRolesGetter extends AsyncBaseClient<List<Role>> implements AsyncClientResult<List<Role>> {
-  private String user;
+  private String userId;
 
   public UserRolesGetter(CloseableHttpAsyncClient httpClient, Config config, AccessTokenProvider tokenProvider) {
     super(httpClient, config, tokenProvider);
   }
 
   /** Leave unset to fetch roles assigned to the current user. */
-  public UserRolesGetter withUser(String user) {
-    this.user = user;
+  public UserRolesGetter withUserId(String id) {
+    this.userId = id;
     return this;
   }
 
@@ -53,6 +53,6 @@ public class UserRolesGetter extends AsyncBaseClient<List<Role>> implements Asyn
   }
 
   private String path() {
-    return String.format("/authz/users/%s/roles", this.user);
+    return String.format("/authz/users/%s/roles", this.userId);
   }
 }

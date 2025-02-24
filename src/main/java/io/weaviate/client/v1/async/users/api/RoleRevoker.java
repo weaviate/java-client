@@ -17,15 +17,15 @@ import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import lombok.AllArgsConstructor;
 
 public class RoleRevoker extends AsyncBaseClient<Boolean> implements AsyncClientResult<Boolean> {
-  private String user;
+  private String userId;
   private List<String> roles = new ArrayList<>();
 
   public RoleRevoker(CloseableHttpAsyncClient httpClient, Config config, AccessTokenProvider tokenProvider) {
     super(httpClient, config, tokenProvider);
   }
 
-  public RoleRevoker withUser(String user) {
-    this.user = user;
+  public RoleRevoker withUserId(String id) {
+    this.userId = id;
     return this;
   }
 
@@ -46,6 +46,6 @@ public class RoleRevoker extends AsyncBaseClient<Boolean> implements AsyncClient
   }
 
   private String path() {
-    return String.format("/authz/users/%s/revoke", this.user);
+    return String.format("/authz/users/%s/revoke", this.userId);
   }
 }
