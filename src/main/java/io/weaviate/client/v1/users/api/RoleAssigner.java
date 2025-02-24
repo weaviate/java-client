@@ -13,15 +13,15 @@ import io.weaviate.client.base.http.HttpClient;
 import lombok.AllArgsConstructor;
 
 public class RoleAssigner extends BaseClient<Void> implements ClientResult<Boolean> {
-  private String user;
+  private String userId;
   private List<String> roles = new ArrayList<>();
 
   public RoleAssigner(HttpClient httpClient, Config config) {
     super(httpClient, config);
   }
 
-  public RoleAssigner withUser(String user) {
-    this.user = user;
+  public RoleAssigner withUserId(String id) {
+    this.userId = id;
     return this;
   }
 
@@ -44,6 +44,6 @@ public class RoleAssigner extends BaseClient<Void> implements ClientResult<Boole
   }
 
   private String path() {
-    return String.format("/authz/users/%s/assign", this.user);
+    return String.format("/authz/users/%s/assign", this.userId);
   }
 }

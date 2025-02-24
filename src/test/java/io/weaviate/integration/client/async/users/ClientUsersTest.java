@@ -36,16 +36,16 @@ public class ClientUsersTest extends ClientRbacTest implements ClientUsersTestSu
 
   @Override
   public Result<List<Role>> getUserRoles(String user) {
-    return rethrow(() -> users.userRolesGetter().withUser(user).run());
+    return rethrow(() -> users.userRolesGetter().withUserId(user).run());
   }
 
   @Override
   public Result<?> assignRoles(String user, String... roles) {
-    return rethrow(() -> this.users.assigner().withUser(user).witRoles(roles).run());
+    return rethrow(() -> this.users.assigner().withUserId(user).witRoles(roles).run());
   }
 
   @Override
   public Result<?> revokeRoles(String user, String... roles) {
-    return rethrow(() -> this.users.revoker().withUser(user).witRoles(roles).run());
+    return rethrow(() -> this.users.revoker().withUserId(user).witRoles(roles).run());
   }
 }

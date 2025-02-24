@@ -13,15 +13,15 @@ import io.weaviate.client.base.http.HttpClient;
 import lombok.AllArgsConstructor;
 
 public class RoleRevoker extends BaseClient<Void> implements ClientResult<Boolean> {
-  private String user;
+  private String userId;
   private List<String> roles = new ArrayList<>();
 
   public RoleRevoker(HttpClient httpClient, Config config) {
     super(httpClient, config);
   }
 
-  public RoleRevoker withUser(String user) {
-    this.user = user;
+  public RoleRevoker withUserId(String id) {
+    this.userId = id;
     return this;
   }
 
@@ -42,6 +42,6 @@ public class RoleRevoker extends BaseClient<Void> implements ClientResult<Boolea
   }
 
   private String path() {
-    return String.format("/authz/users/%s/revoke", this.user);
+    return String.format("/authz/users/%s/revoke", this.userId);
   }
 }
