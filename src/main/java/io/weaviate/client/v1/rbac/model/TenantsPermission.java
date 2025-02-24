@@ -8,19 +8,13 @@ import lombok.Getter;
 @Getter
 @EqualsAndHashCode(callSuper = true)
 public class TenantsPermission extends Permission<TenantsPermission> {
-  final String tenant;
 
   public TenantsPermission(Action action) {
-    this(action, "*");
+    super(action);
   }
 
   TenantsPermission(String action) {
     this(RbacAction.fromString(Action.class, action));
-  }
-
-  private TenantsPermission(Action action, String tenant) {
-    super(action);
-    this.tenant = tenant;
   }
 
   @Override

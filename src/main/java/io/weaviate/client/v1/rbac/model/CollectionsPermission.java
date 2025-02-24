@@ -9,20 +9,14 @@ import lombok.Getter;
 @EqualsAndHashCode(callSuper = true)
 public class CollectionsPermission extends Permission<CollectionsPermission> {
   final String collection;
-  final String tenant;
 
   public CollectionsPermission(String collection, Action action) {
-    this(collection, "*", action);
+    super(action);
+    this.collection = collection;
   }
 
   CollectionsPermission(String collection, String action) {
     this(collection, RbacAction.fromString(Action.class, action));
-  }
-
-  private CollectionsPermission(String collection, String tenant, Action action) {
-    super(action);
-    this.collection = collection;
-    this.tenant = tenant;
   }
 
   @Override

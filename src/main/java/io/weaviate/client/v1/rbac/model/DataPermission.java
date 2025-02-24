@@ -9,22 +9,14 @@ import lombok.Getter;
 @EqualsAndHashCode(callSuper = true)
 public class DataPermission extends Permission<DataPermission> {
   final String collection;
-  final String object;
-  final String tenant;
 
   public DataPermission(String collection, Action action) {
-    this(collection, "*", "*", action);
+    super(action);
+    this.collection = collection;
   }
 
   DataPermission(String collection, String action) {
     this(collection, RbacAction.fromString(Action.class, action));
-  }
-
-  private DataPermission(String collection, String object, String tenant, Action action) {
-    super(action);
-    this.collection = collection;
-    this.object = object;
-    this.tenant = tenant;
   }
 
   @Override

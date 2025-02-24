@@ -89,21 +89,6 @@ public class PermissionTest {
   }
 
   @Test
-  public void testDefaultDataPermission() {
-    DataPermission perm = new DataPermission("Pizza", DataPermission.Action.MANAGE);
-    assertThat(perm).as("data permission must have object=* and tenant=*")
-        .returns("*", DataPermission::getObject)
-        .returns("*", DataPermission::getTenant);
-  }
-
-  @Test
-  public void testDefaultCollectionsPermission() {
-    CollectionsPermission perm = new CollectionsPermission("Pizza", CollectionsPermission.Action.CREATE);
-    assertThat(perm).as("collection permission must have tenant=*")
-        .returns("*", CollectionsPermission::getTenant);
-  }
-
-  @Test
   public void testDefaultNodesPermission() {
     NodesPermission perm = new NodesPermission(NodesPermission.Verbosity.MINIMAL, NodesPermission.Action.READ);
     assertThat(perm).as("nodes permission should affect all collections if one is not specified")
@@ -111,16 +96,9 @@ public class PermissionTest {
   }
 
   @Test
-  public void testDefaultTenantsPermission() {
-    TenantsPermission perm = new TenantsPermission(TenantsPermission.Action.READ);
-    assertThat(perm).as("tenants permission must have tenant=*")
-        .returns("*", TenantsPermission::getTenant);
-  }
-
-  @Test
   public void testDefaultRolesPermission() {
     RolesPermission perm = new RolesPermission("ExampleRole", RolesPermission.Action.READ);
-    assertThat(perm).as("tenants permission must have scope=null")
+    assertThat(perm).as("roles permission must have scope=null")
         .returns(null, RolesPermission::getScope);
   }
 
