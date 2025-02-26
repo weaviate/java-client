@@ -1,6 +1,8 @@
 package io.weaviate.client;
 
+import java.util.HashMap;
 import java.util.Map;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +15,7 @@ public class Config {
   private final String host;
   private final String version;
   @Getter
-  private final Map<String, String> headers;
+  private final Map<String, String> headers = new HashMap<>();
   @Getter
   private final int connectionTimeout;
   @Getter
@@ -26,9 +28,11 @@ public class Config {
   private int proxyPort;
   @Getter
   private String proxyScheme;
-  @Getter @Setter
+  @Getter
+  @Setter
   private boolean gRPCSecured;
-  @Getter @Setter
+  @Getter
+  @Setter
   private String gRPCHost;
 
   public Config(String scheme, String host) {
@@ -47,11 +51,12 @@ public class Config {
     this(scheme, host, headers, DEFAULT_TIMEOUT_SECONDS, gRPCSecured, gRPCHost);
   }
 
-  public Config(String scheme, String host, Map<String, String> headers, int connectionTimeout, int connectionRequestTimeout, int socketTimeout) {
+  public Config(String scheme, String host, Map<String, String> headers, int connectionTimeout,
+      int connectionRequestTimeout, int socketTimeout) {
     this.scheme = scheme;
     this.host = host;
     this.version = "v1";
-    this.headers = headers;
+    this.headers.putAll(headers);
     this.connectionTimeout = connectionTimeout;
     this.connectionRequestTimeout = connectionRequestTimeout;
     this.socketTimeout = socketTimeout;
@@ -61,16 +66,20 @@ public class Config {
     this(scheme, host, headers, timeout, false, null);
   }
 
-  public Config(String scheme, String host, Map<String, String> headers, int timeout, boolean gRPCSecured, String gRPCHost) {
+  public Config(String scheme, String host, Map<String, String> headers, int timeout, boolean gRPCSecured,
+      String gRPCHost) {
     this.scheme = scheme;
     this.host = host;
     this.version = "v1";
-    this.headers = headers;
     this.connectionTimeout = timeout;
     this.connectionRequestTimeout = timeout;
     this.socketTimeout = timeout;
     this.gRPCSecured = gRPCSecured;
     this.gRPCHost = gRPCHost;
+
+    if (headers != null) {
+      this.headers.putAll(headers);
+    }
   }
 
   public String getBaseURL() {
@@ -85,5 +94,9 @@ public class Config {
 
   public boolean useGRPC() {
     return this.gRPCHost != null && !this.gRPCHost.trim().isEmpty();
+  }
+
+  void addHeader(String key, String value) {
+    this.headers.put(key, value);
   }
 }
