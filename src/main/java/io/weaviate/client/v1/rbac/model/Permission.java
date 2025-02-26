@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import io.weaviate.client.v1.async.rbac.api.PermissionChecker;
 import io.weaviate.client.v1.rbac.api.WeaviatePermission;
 import io.weaviate.client.v1.rbac.model.NodesPermission.Verbosity;
 import lombok.EqualsAndHashCode;
@@ -38,7 +39,12 @@ public abstract class Permission<P extends Permission<P>> {
             .collect(Collectors.toList()));
   }
 
-  /** Convert the permission to a list of {@link WeaviatePermission}. */
+  /**
+   * Create {@link WeaviatePermission} with the first action in the actions list.
+   *
+   * This is meant to be used with {@link PermissionChecker}, which can only
+   * include a permission with a single action in the request.
+   */
   public WeaviatePermission firstToWeaviate() {
     if (actions.isEmpty()) {
       return null;
@@ -46,6 +52,7 @@ public abstract class Permission<P extends Permission<P>> {
     return this.toWeaviate(actions.iterator().next());
   };
 
+  /** Convert the permission to a list of {@link WeaviatePermission}. */
   public List<WeaviatePermission> toWeaviate() {
     return this.actions.stream().map(this::toWeaviate).collect(Collectors.toList());
   }
