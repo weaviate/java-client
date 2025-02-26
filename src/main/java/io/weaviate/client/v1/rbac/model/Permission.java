@@ -1,23 +1,51 @@
 package io.weaviate.client.v1.rbac.model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import io.weaviate.client.v1.rbac.api.WeaviatePermission;
 import io.weaviate.client.v1.rbac.model.NodesPermission.Verbosity;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @EqualsAndHashCode
+@ToString
 public abstract class Permission<P extends Permission<P>> {
   @Getter
-  final transient String action;
+  final transient List<String> actions = new ArrayList<>();
 
-  Permission(RbacAction action) {
-    this.action = action.getValue();
+  Permission(RbacAction... actions) {
+    this.actions.addAll(
+        Arrays.stream(actions)
+            .map(RbacAction::getValue)
+            .collect(Collectors.toList()));
   }
 
-  /** Convert the permission to {@link WeaviatePermission}. */
-  public WeaviatePermission toWeaviate() {
-    return new WeaviatePermission(this.action, this);
+  /** Convert the permission to a list of {@link WeaviatePermission}. */
+  public WeaviatePermission firstToWeaviate() {
+    if (actions.isEmpty()) {
+      return null;
+    }
+    return this.toWeaviate(actions.get(0));
   };
+
+  public List<WeaviatePermission> toWeaviate() {
+    return this.actions.stream().map(this::toWeaviate).collect(Collectors.toList());
+  }
+
+  private WeaviatePermission toWeaviate(String action) {
+    return new WeaviatePermission(action, this);
+  }
 
   /**
    * Convert {@link WeaviatePermission} to concrete {@link Permission}.
@@ -49,15 +77,40 @@ public abstract class Permission<P extends Permission<P>> {
     return null;
   }
 
+  public static final List<Permission<?>> merge(List<Permission<?>> permissions) {
+    @RequiredArgsConstructor
+    @EqualsAndHashCode
+    class Key {
+      final int hash;
+      final Class<?> cls;
+    }
+
+    Map<Key, Permission<?>> result = new LinkedHashMap<>(); // preserve insertion order
+    for (Permission<?> perm : permissions) {
+      int hash = HashCodeBuilder.reflectionHashCode(perm, "actions");
+      Key key = new Key(hash, perm.getClass());
+      Permission<?> stored = result.putIfAbsent(key, perm);
+      if (stored != null) {
+        stored.actions.addAll(perm.actions);
+      }
+    }
+    return result.values().stream().<Permission<?>>map(perm -> {
+      Set<String> actions = new HashSet<>(perm.actions);
+      perm.actions.clear();
+      perm.actions.addAll(actions);
+      return perm;
+    }).collect(Collectors.toList());
+  }
+
   /**
    * Create {@link BackupsPermission} for a collection.
    * <p>
    * Example:
    * {@code Permission.backups(BackupsPermission.Action.MANAGE, "Pizza") }
    */
-  public static BackupsPermission[] backups(String collection, BackupsPermission.Action action) {
-    checkDeprecation(action);
-    return new BackupsPermission[] { new BackupsPermission(collection, action) };
+  public static BackupsPermission backups(String collection, BackupsPermission.Action... actions) {
+    checkDeprecation(actions);
+    return new BackupsPermission(collection, actions);
   }
 
   /**
@@ -65,9 +118,9 @@ public abstract class Permission<P extends Permission<P>> {
    * <p>
    * Example: {@code Permission.cluster(ClusterPermission.Action.READ, "Pizza") }
    */
-  public static ClusterPermission[] cluster(ClusterPermission.Action action) {
-    checkDeprecation(action);
-    return new ClusterPermission[] { new ClusterPermission(action) };
+  public static ClusterPermission cluster(ClusterPermission.Action... actions) {
+    checkDeprecation(actions);
+    return new ClusterPermission(actions);
   }
 
   /**
@@ -76,13 +129,9 @@ public abstract class Permission<P extends Permission<P>> {
    * Example:
    * {@code Permission.collections("Pizza", CollectionsPermission.Action.READ, CollectionsPermission.Action.UPDATE) }
    */
-  public static CollectionsPermission[] collections(String collection, CollectionsPermission.Action... actions) {
-    CollectionsPermission[] permissions = new CollectionsPermission[actions.length];
-    for (int i = 0; i < actions.length; i++) {
-      checkDeprecation(actions[i]);
-      permissions[i] = new CollectionsPermission(collection, actions[i]);
-    }
-    return permissions;
+  public static CollectionsPermission collections(String collection, CollectionsPermission.Action... actions) {
+    checkDeprecation(actions);
+    return new CollectionsPermission(collection, actions);
   }
 
   /**
@@ -92,13 +141,9 @@ public abstract class Permission<P extends Permission<P>> {
    * Example:
    * {@code Permission.data("Pizza", DataPermission.Action.READ, DataPermission.Action.UPDATE) }
    */
-  public static DataPermission[] data(String collection, DataPermission.Action... actions) {
-    DataPermission[] permissions = new DataPermission[actions.length];
-    for (int i = 0; i < actions.length; i++) {
-      checkDeprecation(actions[i]);
-      permissions[i] = new DataPermission(collection, actions[i]);
-    }
-    return permissions;
+  public static DataPermission data(String collection, DataPermission.Action... actions) {
+    checkDeprecation(actions);
+    return new DataPermission(collection, actions);
   }
 
   /**
@@ -107,8 +152,9 @@ public abstract class Permission<P extends Permission<P>> {
    * Example:
    * {@code Permission.nodes(NodesPermission.Verbosity.MINIMAL, NodesPermission.Action.READ) }
    */
-  public static NodesPermission[] nodes(NodesPermission.Verbosity verbosity, NodesPermission.Action action) {
-    return new NodesPermission[] { new NodesPermission(verbosity, action) };
+  public static NodesPermission nodes(NodesPermission.Verbosity verbosity, NodesPermission.Action... actions) {
+    checkDeprecation(actions);
+    return new NodesPermission(verbosity, actions);
   }
 
   /**
@@ -118,9 +164,9 @@ public abstract class Permission<P extends Permission<P>> {
    * Example:
    * {@code Permission.nodes("Pizza", NodesPermission.Action.READ) }
    */
-  public static NodesPermission[] nodes(String collection, NodesPermission.Action action) {
-    checkDeprecation(action);
-    return new NodesPermission[] { new NodesPermission(collection, action) };
+  public static NodesPermission nodes(String collection, NodesPermission.Action... actions) {
+    checkDeprecation(actions);
+    return new NodesPermission(collection, actions);
   }
 
   /**
@@ -129,13 +175,9 @@ public abstract class Permission<P extends Permission<P>> {
    * Example:
    * {@code Permission.roles("MyRole", RolesPermission.Action.READ, RolesPermission.Action.UPDATE) }
    */
-  public static RolesPermission[] roles(String role, RolesPermission.Action... actions) {
-    RolesPermission[] permissions = new RolesPermission[actions.length];
-    for (int i = 0; i < actions.length; i++) {
-      checkDeprecation(actions[i]);
-      permissions[i] = new RolesPermission(role, actions[i]);
-    }
-    return permissions;
+  public static RolesPermission roles(String role, RolesPermission.Action... actions) {
+    checkDeprecation(actions);
+    return new RolesPermission(role, actions);
   }
 
   /**
@@ -144,9 +186,9 @@ public abstract class Permission<P extends Permission<P>> {
    * Example:
    * {@code Permission.tenants(TenantsPermission.Action.READ) }
    */
-  public static TenantsPermission[] tenants(TenantsPermission.Action action) {
-    checkDeprecation(action);
-    return new TenantsPermission[] { new TenantsPermission(action) };
+  public static TenantsPermission tenants(TenantsPermission.Action... actions) {
+    checkDeprecation(actions);
+    return new TenantsPermission(actions);
   }
 
   /**
@@ -155,20 +197,17 @@ public abstract class Permission<P extends Permission<P>> {
    * Example:
    * {@code Permission.users(UsersPermission.Action.READ) }
    */
-  public static UsersPermission[] users(UsersPermission.Action action) {
-    checkDeprecation(action);
-    return new UsersPermission[] { new UsersPermission(action) };
+  public static UsersPermission users(UsersPermission.Action... actions) {
+    checkDeprecation(actions);
+    return new UsersPermission(actions);
   }
 
-  private static void checkDeprecation(RbacAction action) throws IllegalArgumentException {
-    if (action.isDeprecated()) {
-      throw new IllegalArgumentException(action.getValue()
-          + " is hard-deprecated and should only be used to read legacy permissions created in v1.28");
+  private static void checkDeprecation(RbacAction... actions) throws IllegalArgumentException {
+    for (RbacAction action : actions) {
+      if (action.isDeprecated()) {
+        throw new IllegalArgumentException(action.getValue()
+            + " is hard-deprecated and should only be used to read legacy permissions created in v1.28");
+      }
     }
   }
-
-  public String toString() {
-    return String.format("Permission<action=%s>", this.action);
-  }
-
 }

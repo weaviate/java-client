@@ -27,7 +27,7 @@ public class PermissionChecker extends BaseClient<Boolean> implements ClientResu
 
   @Override
   public Result<Boolean> run() {
-    return new Result<Boolean>(sendPostRequest(path(), permission.toWeaviate(), Boolean.class));
+    return new Result<Boolean>(sendPostRequest(path(), permission.firstToWeaviate(), Boolean.class));
   }
 
   private String path() {

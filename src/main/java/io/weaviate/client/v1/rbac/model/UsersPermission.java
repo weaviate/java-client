@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 public class UsersPermission extends Permission<UsersPermission> {
-  public UsersPermission(Action action) {
-    super(action);
+  public UsersPermission(Action... actions) {
+    super(actions);
   }
 
   UsersPermission(String action) {

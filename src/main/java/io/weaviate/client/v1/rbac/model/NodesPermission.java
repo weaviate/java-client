@@ -13,15 +13,15 @@ public class NodesPermission extends Permission<NodesPermission> {
   final Verbosity verbosity;
 
   /** Create permission scoped to all collections. */
-  public NodesPermission(Verbosity verbosity, Action action) {
-    this("*", verbosity, action);
+  public NodesPermission(Verbosity verbosity, Action... actions) {
+    this("*", verbosity, actions);
   }
 
   /**
    * Permission scoped to a collection with {@link Verbosity#VERBOSE}.
    */
-  public NodesPermission(String collection, Action action) {
-    this(collection, Verbosity.VERBOSE, action);
+  public NodesPermission(String collection, Action... actions) {
+    this(collection, Verbosity.VERBOSE, actions);
   }
 
   NodesPermission(Verbosity verbosity, String action) {
@@ -32,8 +32,8 @@ public class NodesPermission extends Permission<NodesPermission> {
     this(collection, verbosity, RbacAction.fromString(Action.class, action));
   }
 
-  NodesPermission(String collection, Verbosity verbosity, Action action) {
-    super(action);
+  NodesPermission(String collection, Verbosity verbosity, Action... actions) {
+    super(actions);
     this.collection = collection;
     this.verbosity = verbosity;
   }

@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -113,7 +114,7 @@ public class ClientRbacTestSuite {
     String myRole = roleName("VectorOwner");
     String myCollection = "Pizza";
 
-    Permission<?>[][] wantPermissions = new Permission<?>[][] {
+    Permission<?>[] wantPermissions = new Permission<?>[] {
         Permission.backups(myCollection, BackupsPermission.Action.MANAGE),
         Permission.cluster(ClusterPermission.Action.READ),
         Permission.nodes(myCollection, NodesPermission.Action.READ),
@@ -137,10 +138,9 @@ public class ClientRbacTestSuite {
       assertNull("error fetching a role", response.getError());
       assertThat(role).as("wrong role name").returns(myRole, Role::getName);
 
-      for (int i = 0; i < wantPermissions.length; i++) {
-        Permission<?> perm = wantPermissions[i][0]; // We create each permission group with only 1 action
+      Arrays.stream(wantPermissions).forEach(perm -> {
         assertTrue("should have permission " + perm, checkHasPermission(roles, myRole, perm));
-      }
+      });
     } finally {
       roles.deleteRole(myRole);
     }
@@ -156,7 +156,7 @@ public class ClientRbacTestSuite {
   public void testAddPermissions(String _name, Supplier<Rbac> rbac) {
     Rbac roles = rbac.get();
     String myRole = roleName("VectorOwner");
-    Permission<?> toAdd = Permission.cluster(ClusterPermission.Action.READ)[0];
+    Permission<?> toAdd = Permission.cluster(ClusterPermission.Action.READ);
     try {
       // Arrange
       roles.createRole(myRole, Permission.tenants(TenantsPermission.Action.DELETE));
@@ -183,7 +183,7 @@ public class ClientRbacTestSuite {
   public void testAddPermissionsMultipleActions(String _name, Supplier<Rbac> rbac) {
     Rbac roles = rbac.get();
     String myRole = roleName("VectorOwner");
-    Permission<?>[] toAdd = Permission.data("Pizza",
+    Permission<?> toAdd = Permission.data("Pizza",
         DataPermission.Action.READ,
         DataPermission.Action.CREATE);
     try {
@@ -197,10 +197,10 @@ public class ClientRbacTestSuite {
       assertNull("add-permissions operation error", response.getError());
 
       // Assert
-      for (Permission<?> perm : toAdd) {
-        assertTrue("should have permission " + perm, checkHasPermission(roles, myRole, perm));
-      }
-    } finally {
+      assertTrue("should have permission " + toAdd, checkHasPermission(roles, myRole, toAdd));
+    } finally
+
+    {
       roles.deleteRole(myRole);
     }
   }
@@ -216,7 +216,7 @@ public class ClientRbacTestSuite {
   public void testRemovePermissions(String _name, Supplier<Rbac> rbac) {
     Rbac roles = rbac.get();
     String myRole = roleName("VectorOwner");
-    Permission<?> toRemove = Permission.tenants(TenantsPermission.Action.DELETE)[0];
+    Permission<?> toRemove = Permission.tenants(TenantsPermission.Action.DELETE);
     try {
       // Arrange
       roles.createRole(myRole,
@@ -247,7 +247,7 @@ public class ClientRbacTestSuite {
   public void testRemovePermissionsMultipleAction(String _name, Supplier<Rbac> rbac) {
     Rbac roles = rbac.get();
     String myRole = roleName("VectorOwner");
-    Permission<?>[] toRemove = Permission.data("Pizza",
+    Permission<?> toRemove = Permission.data("Pizza",
         DataPermission.Action.READ,
         DataPermission.Action.CREATE);
     try {
@@ -265,9 +265,7 @@ public class ClientRbacTestSuite {
       assertNull("remove-permissions operation error", response.getError());
 
       // Assert
-      for (Permission<?> perm : toRemove) {
-        assertFalse("should not have permission " + toRemove, checkHasPermission(roles, myRole, perm));
-      }
+      assertFalse("should not have permission " + toRemove, checkHasPermission(roles, myRole, toRemove));
     } finally {
       roles.deleteRole(myRole);
     }
@@ -296,8 +294,6 @@ public class ClientRbacTestSuite {
 
     Result<Boolean> createRole(String role, Permission<?>... permissions);
 
-    Result<Boolean> createRole(String role, Permission<?>[]... permissions);
-
     void deleteRole(String role);
 
     Result<Boolean> hasPermission(String role, Permission<?> perm);
@@ -306,11 +302,7 @@ public class ClientRbacTestSuite {
 
     Result<?> addPermissions(String role, Permission<?>... permissions);
 
-    Result<?> addPermissions(String role, Permission<?>[]... permissions);
-
     Result<?> removePermissions(String role, Permission<?>... permissions);
 
-    Result<?> removePermissions(String role, Permission<?>[]... permissions);
   }
-
 }

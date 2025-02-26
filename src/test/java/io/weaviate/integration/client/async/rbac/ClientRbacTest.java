@@ -65,11 +65,6 @@ public class ClientRbacTest implements ClientRbacTestSuite.Rbac {
   }
 
   @Override
-  public Result<Boolean> createRole(String role, Permission<?>[]... permissions) {
-    return rethrow(() -> roles.creator().withName(role).withPermissions(permissions).run());
-  }
-
-  @Override
   public void deleteRole(String role) {
     rethrow(() -> roles.deleter().withName(role).run());
   }
@@ -90,17 +85,7 @@ public class ClientRbacTest implements ClientRbacTestSuite.Rbac {
   }
 
   @Override
-  public Result<?> addPermissions(String role, Permission<?>[]... permissions) {
-    return rethrow(() -> roles.permissionAdder().withRole(role).withPermissions(permissions).run());
-  }
-
-  @Override
   public Result<?> removePermissions(String role, Permission<?>... permissions) {
-    return rethrow(() -> roles.permissionRemover().withRole(role).withPermissions(permissions).run());
-  }
-
-  @Override
-  public Result<?> removePermissions(String role, Permission<?>[]... permissions) {
     return rethrow(() -> roles.permissionRemover().withRole(role).withPermissions(permissions).run());
   }
 }

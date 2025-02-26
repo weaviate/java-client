@@ -5,7 +5,6 @@ import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.function.Supplier;
 
 import org.junit.Test;
@@ -17,6 +16,7 @@ import org.testcontainers.shaded.org.hamcrest.beans.SamePropertyValuesAs;
 
 import com.jparams.junit4.JParamsTestRunner;
 import com.jparams.junit4.data.DataMethod;
+import com.jparams.junit4.description.Name;
 
 import io.weaviate.client.v1.rbac.api.WeaviatePermission;
 
@@ -71,17 +71,18 @@ public class PermissionTest {
         {
             "users permission",
             (Supplier<Permission<?>>) () -> users,
-            new WeaviatePermission("read_users"),
+            new WeaviatePermission("read_users", users),
         },
     };
   }
 
   @DataMethod(source = PermissionTest.class, method = "serializationTestCases")
+  @Name("{0}")
   @Test
-  public void testToWeaviate(String name, Supplier<Permission<?>> permFunc, WeaviatePermission expected)
+  public void testFirstToWeaviate(String name, Supplier<Permission<?>> permFunc, WeaviatePermission expected)
       throws Exception {
     Permission<?> perm = permFunc.get();
-    MatcherAssert.assertThat(name, perm.toWeaviate(), sameAs(expected));
+    MatcherAssert.assertThat(name, perm.firstToWeaviate(), sameAs(expected));
   }
 
   private static <T> Matcher<T> sameAs(T expected) {
@@ -103,6 +104,7 @@ public class PermissionTest {
   }
 
   @DataMethod(source = PermissionTest.class, method = "serializationTestCases")
+  @Name("{0}")
   @Test
   public void testFromWeaviate(String name,
       Supplier<Permission<?>> expectedFunc, WeaviatePermission input)
@@ -156,9 +158,10 @@ public class PermissionTest {
   }
 
   @DataMethod(source = PermissionTest.class, method = "groupedConstructors")
+  @Name("{0}")
   @Test
-  public void testGroupedConstructors(Permission<? extends Permission<?>>[] permissions, String[] expectedActions) {
-    Object[] actualActions = Arrays.stream(permissions).map(Permission::getAction).toArray();
+  public void testGroupedConstructors(Permission<? extends Permission<?>> permission, String[] expectedActions) {
+    Object[] actualActions = permission.getActions().toArray();
     assertArrayEquals(expectedActions, actualActions, "set of allowed actions do not match");
   }
 

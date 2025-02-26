@@ -20,7 +20,7 @@ public class Role {
         "Role<name='%s', permissions=[%s]>",
         this.name, permissions.isEmpty()
             ? "none"
-            : String.join(", ", permissions.stream().map(Permission::getAction)
+            : String.join(",\n", permissions.stream().map(Permission::toString)
                 .collect(Collectors.toList())));
   }
 }

@@ -9,8 +9,8 @@ import lombok.Getter;
 public class DataPermission extends Permission<DataPermission> {
   final String collection;
 
-  public DataPermission(String collection, Action action) {
-    super(action);
+  public DataPermission(String collection, Action... actions) {
+    super(actions);
     this.collection = collection;
   }
 

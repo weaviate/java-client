@@ -7,8 +7,8 @@ import lombok.Getter;
 @Getter
 @EqualsAndHashCode(callSuper = true)
 public class ClusterPermission extends Permission<ClusterPermission> {
-  public ClusterPermission(Action action) {
-    super(action);
+  public ClusterPermission(Action... actions) {
+    super(actions);
   }
 
   ClusterPermission(String action) {

@@ -9,8 +9,8 @@ import lombok.Getter;
 public class CollectionsPermission extends Permission<CollectionsPermission> {
   final String collection;
 
-  public CollectionsPermission(String collection, Action action) {
-    super(action);
+  public CollectionsPermission(String collection, Action... actions) {
+    super(actions);
     this.collection = collection;
   }
 

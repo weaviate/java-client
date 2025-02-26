@@ -8,8 +8,8 @@ import lombok.Getter;
 @EqualsAndHashCode(callSuper = true)
 public class TenantsPermission extends Permission<TenantsPermission> {
 
-  public TenantsPermission(Action action) {
-    super(action);
+  public TenantsPermission(Action... actions) {
+    super(actions);
   }
 
   TenantsPermission(String action) {

@@ -32,7 +32,7 @@ public class PermissionChecker extends AsyncBaseClient<Boolean> implements Async
 
   @Override
   public Future<Result<Boolean>> run(FutureCallback<Result<Boolean>> callback) {
-    return sendPostRequest(path(), permission.toWeaviate(), Boolean.class, callback);
+    return sendPostRequest(path(), permission.firstToWeaviate(), Boolean.class, callback);
   }
 
   private String path() {

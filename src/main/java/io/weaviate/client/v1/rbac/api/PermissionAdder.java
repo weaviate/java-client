@@ -7,7 +7,6 @@ import java.util.List;
 import io.weaviate.client.Config;
 import io.weaviate.client.base.BaseClient;
 import io.weaviate.client.base.ClientResult;
-import io.weaviate.client.base.Response;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.v1.rbac.model.Permission;
@@ -28,15 +27,6 @@ public class PermissionAdder extends BaseClient<Void> implements ClientResult<Bo
 
   public PermissionAdder withPermissions(Permission<?>... permissions) {
     this.permissions = Arrays.asList(permissions);
-    return this;
-  }
-
-  public PermissionAdder withPermissions(Permission<?>[]... permissions) {
-    List<Permission<?>> all = new ArrayList<>();
-    for (Permission<?>[] perm : permissions) {
-      all.addAll(Arrays.asList(perm));
-    }
-    this.permissions = all;
     return this;
   }
 

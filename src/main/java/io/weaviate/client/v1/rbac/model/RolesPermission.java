@@ -12,12 +12,12 @@ public class RolesPermission extends Permission<RolesPermission> {
   final String role;
   final Scope scope;
 
-  public RolesPermission(String role, Action action) {
-    this(role, null, action);
+  public RolesPermission(String role, Action... actions) {
+    this(role, null, actions);
   }
 
-  public RolesPermission(String role, Scope scope, Action action) {
-    super(action);
+  public RolesPermission(String role, Scope scope, Action... actions) {
+    super(actions);
     this.role = role;
     this.scope = scope;
   }
