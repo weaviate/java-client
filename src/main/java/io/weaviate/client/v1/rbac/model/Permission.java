@@ -1,9 +1,8 @@
 package io.weaviate.client.v1.rbac.model;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,15 +13,23 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import io.weaviate.client.v1.rbac.api.WeaviatePermission;
 import io.weaviate.client.v1.rbac.model.NodesPermission.Verbosity;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 @EqualsAndHashCode
 @ToString
 public abstract class Permission<P extends Permission<P>> {
-  @Getter
-  final transient List<String> actions = new ArrayList<>();
+  /**
+   * Actions allowed by this permission. Transience allows easily
+   * serializing "action" separately from other attributes in the
+   * extending permission types.
+   *
+   * LinkedHashSet preserves insertion order for predictability.
+   */
+  final transient Set<String> actions = new LinkedHashSet<>();
+
+  public List<String> getActions() {
+    return actions.stream().collect(Collectors.toList());
+  }
 
   Permission(RbacAction... actions) {
     this.actions.addAll(
@@ -36,7 +43,7 @@ public abstract class Permission<P extends Permission<P>> {
     if (actions.isEmpty()) {
       return null;
     }
-    return this.toWeaviate(actions.get(0));
+    return this.toWeaviate(actions.iterator().next());
   };
 
   public List<WeaviatePermission> toWeaviate() {
@@ -77,29 +84,39 @@ public abstract class Permission<P extends Permission<P>> {
     return null;
   }
 
+  /**
+   * Merge permissions by their type and targeted resource. Weaviate server
+   * returns separate entries for each action, but working with a
+   * permission-per-resource model is more convenient.
+   *
+   * <p>
+   * Example: convert Data[read_data, MyCollection], Data[delete_data,
+   * MyCollection] => Data[[read_data, delete_data], MyCollection].
+   */
   public static final List<Permission<?>> merge(List<Permission<?>> permissions) {
-    @RequiredArgsConstructor
     @EqualsAndHashCode
     class Key {
+      // hash is computed on all permission fields apart from "actions" which
+      // is what we need to aggregate.
       final int hash;
+      // Permission types which do not have any filters differentiate by their class.
       final Class<?> cls;
+
+      private Key(Object object) {
+        this.hash = HashCodeBuilder.reflectionHashCode(object, "actions");
+        this.cls = object.getClass();
+      }
     }
 
     Map<Key, Permission<?>> result = new LinkedHashMap<>(); // preserve insertion order
     for (Permission<?> perm : permissions) {
-      int hash = HashCodeBuilder.reflectionHashCode(perm, "actions");
-      Key key = new Key(hash, perm.getClass());
+      Key key = new Key(perm);
       Permission<?> stored = result.putIfAbsent(key, perm);
-      if (stored != null) {
+      if (stored != null) { // A permission for this key already exists, add all actions.
         stored.actions.addAll(perm.actions);
       }
     }
-    return result.values().stream().<Permission<?>>map(perm -> {
-      Set<String> actions = new HashSet<>(perm.actions);
-      perm.actions.clear();
-      perm.actions.addAll(actions);
-      return perm;
-    }).collect(Collectors.toList());
+    return result.values().stream().collect(Collectors.toList());
   }
 
   /**
