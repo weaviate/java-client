@@ -49,8 +49,8 @@ public class WeaviateAuthClient {
    * with Weaviate Embedding service.
    */
   private static void addWeaviateHeaders(Config config, String apiKey) {
-    config.addHeader(HEADER_X_WEAVIATE_API_KEY, apiKey);
-    config.addHeader(HEADER_X_WEAVIATE_CLUSTER_URL, "https://" + config.getHost());
+    config.setHeader(HEADER_X_WEAVIATE_API_KEY, apiKey);
+    config.setHeader(HEADER_X_WEAVIATE_CLUSTER_URL, "https://" + config.getHost());
   }
 
   /**

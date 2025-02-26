@@ -56,7 +56,7 @@ public class Config {
     this.scheme = scheme;
     this.host = host;
     this.version = "v1";
-    this.headers.putAll(headers);
+    this.setHeaders(headers);
     this.connectionTimeout = connectionTimeout;
     this.connectionRequestTimeout = connectionRequestTimeout;
     this.socketTimeout = socketTimeout;
@@ -71,15 +71,12 @@ public class Config {
     this.scheme = scheme;
     this.host = host;
     this.version = "v1";
+    this.setHeaders(headers);
     this.connectionTimeout = timeout;
     this.connectionRequestTimeout = timeout;
     this.socketTimeout = timeout;
     this.gRPCSecured = gRPCSecured;
     this.gRPCHost = gRPCHost;
-
-    if (headers != null) {
-      this.headers.putAll(headers);
-    }
   }
 
   public String getBaseURL() {
@@ -96,7 +93,23 @@ public class Config {
     return this.gRPCHost != null && !this.gRPCHost.trim().isEmpty();
   }
 
-  void addHeader(String key, String value) {
+  /**
+   * setHeader adds a new header to the headers map. An older entry
+   * with the same key will be overwritten.
+   */
+  void setHeader(String key, String value) {
     this.headers.put(key, value);
+  }
+
+  /**
+   * setHeaders adds all entries to the headers map. Older entries
+   * with the same key will be overwritten.
+   *
+   * Passing a null map is safe, as it will be ignored.
+   */
+  void setHeaders(Map<String, String> headers) {
+    if (headers != null) {
+      this.headers.putAll(headers);
+    }
   }
 }
