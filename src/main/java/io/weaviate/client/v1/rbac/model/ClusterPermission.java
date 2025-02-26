@@ -1,6 +1,5 @@
 package io.weaviate.client.v1.rbac.model;
 
-import io.weaviate.client.v1.rbac.api.WeaviatePermission;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -14,11 +13,6 @@ public class ClusterPermission extends Permission<ClusterPermission> {
 
   ClusterPermission(String action) {
     this(RbacAction.fromString(Action.class, action));
-  }
-
-  @Override
-  public WeaviatePermission toWeaviate() {
-    return new WeaviatePermission(this.action);
   }
 
   @AllArgsConstructor

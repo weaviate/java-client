@@ -1,7 +1,6 @@
 
 package io.weaviate.client.v1.rbac.model;
 
-import io.weaviate.client.v1.rbac.api.WeaviatePermission;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -12,11 +11,6 @@ public class UsersPermission extends Permission<UsersPermission> {
 
   UsersPermission(String action) {
     this(RbacAction.fromString(Action.class, action));
-  }
-
-  @Override
-  public WeaviatePermission toWeaviate() {
-    return new WeaviatePermission(this.action);
   }
 
   @AllArgsConstructor

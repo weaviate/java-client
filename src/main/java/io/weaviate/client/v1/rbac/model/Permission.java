@@ -15,7 +15,9 @@ public abstract class Permission<P extends Permission<P>> {
   }
 
   /** Convert the permission to {@link WeaviatePermission}. */
-  public abstract WeaviatePermission toWeaviate();
+  public WeaviatePermission toWeaviate() {
+    return new WeaviatePermission(this.action, this);
+  };
 
   /**
    * Convert {@link WeaviatePermission} to concrete {@link Permission}.

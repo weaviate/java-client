@@ -2,7 +2,6 @@ package io.weaviate.client.v1.rbac.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import io.weaviate.client.v1.rbac.api.WeaviatePermission;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -37,11 +36,6 @@ public class NodesPermission extends Permission<NodesPermission> {
     super(action);
     this.collection = collection;
     this.verbosity = verbosity;
-  }
-
-  @Override
-  public WeaviatePermission toWeaviate() {
-    return new WeaviatePermission(this.action, this);
   }
 
   @AllArgsConstructor
