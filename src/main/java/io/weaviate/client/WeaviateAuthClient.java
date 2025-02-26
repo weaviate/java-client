@@ -28,6 +28,11 @@ public class WeaviateAuthClient {
     return bearerTokenFlow.getAuthClient(config, null);
   }
 
+  /**
+   * apiKey returns a new WeaviateClient with ApiKey token provider.
+   * If the host is a Weaviate domain, it also adds headers necessary
+   * for authenticating to Weaviate Embeddings service.
+   */
   public static WeaviateClient apiKey(Config config, String apiKey) throws AuthException {
     ApiKeyFlow flow = new ApiKeyFlow(apiKey);
     if (isWeaviateDomain(config.getHost())) {
@@ -41,7 +46,7 @@ public class WeaviateAuthClient {
 
   /**
    * addWeaviateHeaders sets headers necessary for authenticating
-   * with Weaviate Embedding service, if the host is in a Weaviate domain.
+   * with Weaviate Embedding service.
    */
   private static void addWeaviateHeaders(Config config, String apiKey) {
     config.addHeader(HEADER_X_WEAVIATE_API_KEY, apiKey);
