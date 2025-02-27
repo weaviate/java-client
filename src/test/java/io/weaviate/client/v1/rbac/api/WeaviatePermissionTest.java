@@ -2,6 +2,8 @@ package io.weaviate.client.v1.rbac.api;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 
 import io.weaviate.client.v1.rbac.model.BackupsPermission;
@@ -83,13 +85,12 @@ public class WeaviatePermissionTest {
         new UsersPermission(UsersPermission.Action.READ, UsersPermission.Action.ASSIGN_AND_REVOKE),
     };
 
-    // {
-    // WeaviateRole role = new WeaviateRole("TestRole",
-    // Arrays.asList(libraryPermissions));
-    // WeaviatePermission[] got = role.getPermissions().toArray(new
-    // WeaviatePermission[] {});
-    // assertArrayEquals(apiPermissions, got, "lib -> api conversion");
-    // }
+    {
+      WeaviateRole role = new WeaviateRole("TestRole",
+          Arrays.asList(libraryPermissions));
+      WeaviatePermission[] got = role.getPermissions().toArray(new WeaviatePermission[] {});
+      assertArrayEquals(apiPermissions, got, "lib -> api conversion");
+    }
 
     {
       WeaviateRole role = new WeaviateRole("TestRole", apiPermissions);

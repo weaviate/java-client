@@ -23,7 +23,6 @@ public class WeaviateRole {
   WeaviateRole(String name, WeaviatePermission... permissions) {
     this.name = name;
     this.permissions = Arrays.asList(permissions);
-
   }
 
   /** Create {@link Role} from the API response object. */
