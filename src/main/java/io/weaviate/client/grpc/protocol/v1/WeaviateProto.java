@@ -23,29 +23,34 @@ public final class WeaviateProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\021v1/weaviate.proto\022\013weaviate.v1\032\016v1/bat" +
-      "ch.proto\032\025v1/batch_delete.proto\032\023v1/sear" +
-      "ch_get.proto\032\020v1/tenants.proto2\277\002\n\010Weavi" +
-      "ate\022@\n\006Search\022\032.weaviate.v1.SearchReques" +
-      "t\032\030.weaviate.v1.SearchReply\"\000\022R\n\014BatchOb" +
-      "jects\022 .weaviate.v1.BatchObjectsRequest\032" +
-      "\036.weaviate.v1.BatchObjectsReply\"\000\022O\n\013Bat" +
-      "chDelete\022\037.weaviate.v1.BatchDeleteReques" +
-      "t\032\035.weaviate.v1.BatchDeleteReply\"\000\022L\n\nTe" +
-      "nantsGet\022\036.weaviate.v1.TenantsGetRequest" +
-      "\032\034.weaviate.v1.TenantsGetReply\"\000Bj\n#io.w" +
-      "eaviate.client.grpc.protocol.v1B\rWeaviat" +
-      "eProtoZ4github.com/weaviate/weaviate/grp" +
-      "c/generated;protocolb\006proto3"
+      "\n\021v1/weaviate.proto\022\013weaviate.v1\032\022v1/agg" +
+      "regate.proto\032\016v1/batch.proto\032\025v1/batch_d" +
+      "elete.proto\032\023v1/search_get.proto\032\020v1/ten" +
+      "ants.proto2\212\003\n\010Weaviate\022@\n\006Search\022\032.weav" +
+      "iate.v1.SearchRequest\032\030.weaviate.v1.Sear" +
+      "chReply\"\000\022R\n\014BatchObjects\022 .weaviate.v1." +
+      "BatchObjectsRequest\032\036.weaviate.v1.BatchO" +
+      "bjectsReply\"\000\022O\n\013BatchDelete\022\037.weaviate." +
+      "v1.BatchDeleteRequest\032\035.weaviate.v1.Batc" +
+      "hDeleteReply\"\000\022L\n\nTenantsGet\022\036.weaviate." +
+      "v1.TenantsGetRequest\032\034.weaviate.v1.Tenan" +
+      "tsGetReply\"\000\022I\n\tAggregate\022\035.weaviate.v1." +
+      "AggregateRequest\032\033.weaviate.v1.Aggregate" +
+      "Reply\"\000Bj\n#io.weaviate.client.grpc.proto" +
+      "col.v1B\rWeaviateProtoZ4github.com/weavia" +
+      "te/weaviate/grpc/generated;protocolb\006pro" +
+      "to3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
+          io.weaviate.client.grpc.protocol.v1.WeaviateProtoAggregate.getDescriptor(),
           io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch.getDescriptor(),
           io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.getDescriptor(),
           io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.getDescriptor(),
           io.weaviate.client.grpc.protocol.v1.WeaviateProtoTenants.getDescriptor(),
         });
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoAggregate.getDescriptor();
     io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch.getDescriptor();
     io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatchDelete.getDescriptor();
     io.weaviate.client.grpc.protocol.v1.WeaviateProtoSearchGet.getDescriptor();

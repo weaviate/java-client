@@ -139,6 +139,37 @@ public final class WeaviateGrpc {
     return getTenantsGetMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.weaviate.client.grpc.protocol.v1.WeaviateProtoAggregate.AggregateRequest,
+      io.weaviate.client.grpc.protocol.v1.WeaviateProtoAggregate.AggregateReply> getAggregateMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "Aggregate",
+      requestType = io.weaviate.client.grpc.protocol.v1.WeaviateProtoAggregate.AggregateRequest.class,
+      responseType = io.weaviate.client.grpc.protocol.v1.WeaviateProtoAggregate.AggregateReply.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.weaviate.client.grpc.protocol.v1.WeaviateProtoAggregate.AggregateRequest,
+      io.weaviate.client.grpc.protocol.v1.WeaviateProtoAggregate.AggregateReply> getAggregateMethod() {
+    io.grpc.MethodDescriptor<io.weaviate.client.grpc.protocol.v1.WeaviateProtoAggregate.AggregateRequest, io.weaviate.client.grpc.protocol.v1.WeaviateProtoAggregate.AggregateReply> getAggregateMethod;
+    if ((getAggregateMethod = WeaviateGrpc.getAggregateMethod) == null) {
+      synchronized (WeaviateGrpc.class) {
+        if ((getAggregateMethod = WeaviateGrpc.getAggregateMethod) == null) {
+          WeaviateGrpc.getAggregateMethod = getAggregateMethod =
+              io.grpc.MethodDescriptor.<io.weaviate.client.grpc.protocol.v1.WeaviateProtoAggregate.AggregateRequest, io.weaviate.client.grpc.protocol.v1.WeaviateProtoAggregate.AggregateReply>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "Aggregate"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.weaviate.client.grpc.protocol.v1.WeaviateProtoAggregate.AggregateRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.weaviate.client.grpc.protocol.v1.WeaviateProtoAggregate.AggregateReply.getDefaultInstance()))
+              .setSchemaDescriptor(new WeaviateMethodDescriptorSupplier("Aggregate"))
+              .build();
+        }
+      }
+    }
+    return getAggregateMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -214,6 +245,13 @@ public final class WeaviateGrpc {
         io.grpc.stub.StreamObserver<io.weaviate.client.grpc.protocol.v1.WeaviateProtoTenants.TenantsGetReply> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getTenantsGetMethod(), responseObserver);
     }
+
+    /**
+     */
+    default void aggregate(io.weaviate.client.grpc.protocol.v1.WeaviateProtoAggregate.AggregateRequest request,
+        io.grpc.stub.StreamObserver<io.weaviate.client.grpc.protocol.v1.WeaviateProtoAggregate.AggregateReply> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getAggregateMethod(), responseObserver);
+    }
   }
 
   /**
@@ -274,6 +312,14 @@ public final class WeaviateGrpc {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getTenantsGetMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void aggregate(io.weaviate.client.grpc.protocol.v1.WeaviateProtoAggregate.AggregateRequest request,
+        io.grpc.stub.StreamObserver<io.weaviate.client.grpc.protocol.v1.WeaviateProtoAggregate.AggregateReply> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getAggregateMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -318,6 +364,13 @@ public final class WeaviateGrpc {
     public io.weaviate.client.grpc.protocol.v1.WeaviateProtoTenants.TenantsGetReply tenantsGet(io.weaviate.client.grpc.protocol.v1.WeaviateProtoTenants.TenantsGetRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getTenantsGetMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.weaviate.client.grpc.protocol.v1.WeaviateProtoAggregate.AggregateReply aggregate(io.weaviate.client.grpc.protocol.v1.WeaviateProtoAggregate.AggregateRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getAggregateMethod(), getCallOptions(), request);
     }
   }
 
@@ -368,12 +421,21 @@ public final class WeaviateGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getTenantsGetMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.weaviate.client.grpc.protocol.v1.WeaviateProtoAggregate.AggregateReply> aggregate(
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoAggregate.AggregateRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getAggregateMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_SEARCH = 0;
   private static final int METHODID_BATCH_OBJECTS = 1;
   private static final int METHODID_BATCH_DELETE = 2;
   private static final int METHODID_TENANTS_GET = 3;
+  private static final int METHODID_AGGREGATE = 4;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -407,6 +469,10 @@ public final class WeaviateGrpc {
         case METHODID_TENANTS_GET:
           serviceImpl.tenantsGet((io.weaviate.client.grpc.protocol.v1.WeaviateProtoTenants.TenantsGetRequest) request,
               (io.grpc.stub.StreamObserver<io.weaviate.client.grpc.protocol.v1.WeaviateProtoTenants.TenantsGetReply>) responseObserver);
+          break;
+        case METHODID_AGGREGATE:
+          serviceImpl.aggregate((io.weaviate.client.grpc.protocol.v1.WeaviateProtoAggregate.AggregateRequest) request,
+              (io.grpc.stub.StreamObserver<io.weaviate.client.grpc.protocol.v1.WeaviateProtoAggregate.AggregateReply>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -454,6 +520,13 @@ public final class WeaviateGrpc {
               io.weaviate.client.grpc.protocol.v1.WeaviateProtoTenants.TenantsGetRequest,
               io.weaviate.client.grpc.protocol.v1.WeaviateProtoTenants.TenantsGetReply>(
                 service, METHODID_TENANTS_GET)))
+        .addMethod(
+          getAggregateMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoAggregate.AggregateRequest,
+              io.weaviate.client.grpc.protocol.v1.WeaviateProtoAggregate.AggregateReply>(
+                service, METHODID_AGGREGATE)))
         .build();
   }
 
@@ -506,6 +579,7 @@ public final class WeaviateGrpc {
               .addMethod(getBatchObjectsMethod())
               .addMethod(getBatchDeleteMethod())
               .addMethod(getTenantsGetMethod())
+              .addMethod(getAggregateMethod())
               .build();
         }
       }

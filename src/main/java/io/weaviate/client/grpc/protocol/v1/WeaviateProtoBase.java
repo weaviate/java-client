@@ -18068,16 +18068,29 @@ public final class WeaviateProtoBase {
      * for multi-vec
      * </pre>
      *
-     * <code>uint64 index = 2;</code>
+     * <code>uint64 index = 2 [deprecated = true];</code>
+     * @deprecated weaviate.v1.Vectors.index is deprecated.
+     *     See v1/base.proto;l=148
      * @return The index.
      */
-    long getIndex();
+    @java.lang.Deprecated long getIndex();
 
     /**
      * <code>bytes vector_bytes = 3;</code>
      * @return The vectorBytes.
      */
     com.google.protobuf.ByteString getVectorBytes();
+
+    /**
+     * <code>.weaviate.v1.Vectors.VectorType type = 4;</code>
+     * @return The enum numeric value on the wire for type.
+     */
+    int getTypeValue();
+    /**
+     * <code>.weaviate.v1.Vectors.VectorType type = 4;</code>
+     * @return The type.
+     */
+    io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors.VectorType getType();
   }
   /**
    * Protobuf type {@code weaviate.v1.Vectors}
@@ -18094,6 +18107,7 @@ public final class WeaviateProtoBase {
     private Vectors() {
       name_ = "";
       vectorBytes_ = com.google.protobuf.ByteString.EMPTY;
+      type_ = 0;
     }
 
     @java.lang.Override
@@ -18114,6 +18128,123 @@ public final class WeaviateProtoBase {
       return io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.internal_static_weaviate_v1_Vectors_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors.class, io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors.Builder.class);
+    }
+
+    /**
+     * Protobuf enum {@code weaviate.v1.Vectors.VectorType}
+     */
+    public enum VectorType
+        implements com.google.protobuf.ProtocolMessageEnum {
+      /**
+       * <code>VECTOR_TYPE_UNSPECIFIED = 0;</code>
+       */
+      VECTOR_TYPE_UNSPECIFIED(0),
+      /**
+       * <code>VECTOR_TYPE_SINGLE_FP32 = 1;</code>
+       */
+      VECTOR_TYPE_SINGLE_FP32(1),
+      /**
+       * <code>VECTOR_TYPE_MULTI_FP32 = 2;</code>
+       */
+      VECTOR_TYPE_MULTI_FP32(2),
+      UNRECOGNIZED(-1),
+      ;
+
+      /**
+       * <code>VECTOR_TYPE_UNSPECIFIED = 0;</code>
+       */
+      public static final int VECTOR_TYPE_UNSPECIFIED_VALUE = 0;
+      /**
+       * <code>VECTOR_TYPE_SINGLE_FP32 = 1;</code>
+       */
+      public static final int VECTOR_TYPE_SINGLE_FP32_VALUE = 1;
+      /**
+       * <code>VECTOR_TYPE_MULTI_FP32 = 2;</code>
+       */
+      public static final int VECTOR_TYPE_MULTI_FP32_VALUE = 2;
+
+
+      public final int getNumber() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalArgumentException(
+              "Can't get the number of an unknown enum value.");
+        }
+        return value;
+      }
+
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
+      public static VectorType valueOf(int value) {
+        return forNumber(value);
+      }
+
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       */
+      public static VectorType forNumber(int value) {
+        switch (value) {
+          case 0: return VECTOR_TYPE_UNSPECIFIED;
+          case 1: return VECTOR_TYPE_SINGLE_FP32;
+          case 2: return VECTOR_TYPE_MULTI_FP32;
+          default: return null;
+        }
+      }
+
+      public static com.google.protobuf.Internal.EnumLiteMap<VectorType>
+          internalGetValueMap() {
+        return internalValueMap;
+      }
+      private static final com.google.protobuf.Internal.EnumLiteMap<
+          VectorType> internalValueMap =
+            new com.google.protobuf.Internal.EnumLiteMap<VectorType>() {
+              public VectorType findValueByNumber(int number) {
+                return VectorType.forNumber(number);
+              }
+            };
+
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalStateException(
+              "Can't get the descriptor of an unrecognized enum value.");
+        }
+        return getDescriptor().getValues().get(ordinal());
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors.getDescriptor().getEnumTypes().get(0);
+      }
+
+      private static final VectorType[] VALUES = values();
+
+      public static VectorType valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
+        return VALUES[desc.getIndex()];
+      }
+
+      private final int value;
+
+      private VectorType(int value) {
+        this.value = value;
+      }
+
+      // @@protoc_insertion_point(enum_scope:weaviate.v1.Vectors.VectorType)
     }
 
     public static final int NAME_FIELD_NUMBER = 1;
@@ -18162,11 +18293,13 @@ public final class WeaviateProtoBase {
      * for multi-vec
      * </pre>
      *
-     * <code>uint64 index = 2;</code>
+     * <code>uint64 index = 2 [deprecated = true];</code>
+     * @deprecated weaviate.v1.Vectors.index is deprecated.
+     *     See v1/base.proto;l=148
      * @return The index.
      */
     @java.lang.Override
-    public long getIndex() {
+    @java.lang.Deprecated public long getIndex() {
       return index_;
     }
 
@@ -18179,6 +18312,24 @@ public final class WeaviateProtoBase {
     @java.lang.Override
     public com.google.protobuf.ByteString getVectorBytes() {
       return vectorBytes_;
+    }
+
+    public static final int TYPE_FIELD_NUMBER = 4;
+    private int type_ = 0;
+    /**
+     * <code>.weaviate.v1.Vectors.VectorType type = 4;</code>
+     * @return The enum numeric value on the wire for type.
+     */
+    @java.lang.Override public int getTypeValue() {
+      return type_;
+    }
+    /**
+     * <code>.weaviate.v1.Vectors.VectorType type = 4;</code>
+     * @return The type.
+     */
+    @java.lang.Override public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors.VectorType getType() {
+      io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors.VectorType result = io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors.VectorType.forNumber(type_);
+      return result == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors.VectorType.UNRECOGNIZED : result;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -18204,6 +18355,9 @@ public final class WeaviateProtoBase {
       if (!vectorBytes_.isEmpty()) {
         output.writeBytes(3, vectorBytes_);
       }
+      if (type_ != io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors.VectorType.VECTOR_TYPE_UNSPECIFIED.getNumber()) {
+        output.writeEnum(4, type_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -18223,6 +18377,10 @@ public final class WeaviateProtoBase {
       if (!vectorBytes_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(3, vectorBytes_);
+      }
+      if (type_ != io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors.VectorType.VECTOR_TYPE_UNSPECIFIED.getNumber()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(4, type_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -18245,6 +18403,7 @@ public final class WeaviateProtoBase {
           != other.getIndex()) return false;
       if (!getVectorBytes()
           .equals(other.getVectorBytes())) return false;
+      if (type_ != other.type_) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -18263,6 +18422,8 @@ public final class WeaviateProtoBase {
           getIndex());
       hash = (37 * hash) + VECTOR_BYTES_FIELD_NUMBER;
       hash = (53 * hash) + getVectorBytes().hashCode();
+      hash = (37 * hash) + TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + type_;
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -18397,6 +18558,7 @@ public final class WeaviateProtoBase {
         name_ = "";
         index_ = 0L;
         vectorBytes_ = com.google.protobuf.ByteString.EMPTY;
+        type_ = 0;
         return this;
       }
 
@@ -18438,6 +18600,9 @@ public final class WeaviateProtoBase {
         }
         if (((from_bitField0_ & 0x00000004) != 0)) {
           result.vectorBytes_ = vectorBytes_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.type_ = type_;
         }
       }
 
@@ -18496,6 +18661,9 @@ public final class WeaviateProtoBase {
         if (other.getVectorBytes() != com.google.protobuf.ByteString.EMPTY) {
           setVectorBytes(other.getVectorBytes());
         }
+        if (other.type_ != 0) {
+          setTypeValue(other.getTypeValue());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -18537,6 +18705,11 @@ public final class WeaviateProtoBase {
                 bitField0_ |= 0x00000004;
                 break;
               } // case 26
+              case 32: {
+                type_ = input.readEnum();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 32
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -18632,11 +18805,13 @@ public final class WeaviateProtoBase {
        * for multi-vec
        * </pre>
        *
-       * <code>uint64 index = 2;</code>
+       * <code>uint64 index = 2 [deprecated = true];</code>
+       * @deprecated weaviate.v1.Vectors.index is deprecated.
+       *     See v1/base.proto;l=148
        * @return The index.
        */
       @java.lang.Override
-      public long getIndex() {
+      @java.lang.Deprecated public long getIndex() {
         return index_;
       }
       /**
@@ -18644,11 +18819,13 @@ public final class WeaviateProtoBase {
        * for multi-vec
        * </pre>
        *
-       * <code>uint64 index = 2;</code>
+       * <code>uint64 index = 2 [deprecated = true];</code>
+       * @deprecated weaviate.v1.Vectors.index is deprecated.
+       *     See v1/base.proto;l=148
        * @param value The index to set.
        * @return This builder for chaining.
        */
-      public Builder setIndex(long value) {
+      @java.lang.Deprecated public Builder setIndex(long value) {
 
         index_ = value;
         bitField0_ |= 0x00000002;
@@ -18660,10 +18837,12 @@ public final class WeaviateProtoBase {
        * for multi-vec
        * </pre>
        *
-       * <code>uint64 index = 2;</code>
+       * <code>uint64 index = 2 [deprecated = true];</code>
+       * @deprecated weaviate.v1.Vectors.index is deprecated.
+       *     See v1/base.proto;l=148
        * @return This builder for chaining.
        */
-      public Builder clearIndex() {
+      @java.lang.Deprecated public Builder clearIndex() {
         bitField0_ = (bitField0_ & ~0x00000002);
         index_ = 0L;
         onChanged();
@@ -18698,6 +18877,59 @@ public final class WeaviateProtoBase {
       public Builder clearVectorBytes() {
         bitField0_ = (bitField0_ & ~0x00000004);
         vectorBytes_ = getDefaultInstance().getVectorBytes();
+        onChanged();
+        return this;
+      }
+
+      private int type_ = 0;
+      /**
+       * <code>.weaviate.v1.Vectors.VectorType type = 4;</code>
+       * @return The enum numeric value on the wire for type.
+       */
+      @java.lang.Override public int getTypeValue() {
+        return type_;
+      }
+      /**
+       * <code>.weaviate.v1.Vectors.VectorType type = 4;</code>
+       * @param value The enum numeric value on the wire for type to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTypeValue(int value) {
+        type_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.Vectors.VectorType type = 4;</code>
+       * @return The type.
+       */
+      @java.lang.Override
+      public io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors.VectorType getType() {
+        io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors.VectorType result = io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors.VectorType.forNumber(type_);
+        return result == null ? io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors.VectorType.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>.weaviate.v1.Vectors.VectorType type = 4;</code>
+       * @param value The type to set.
+       * @return This builder for chaining.
+       */
+      public Builder setType(io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase.Vectors.VectorType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000008;
+        type_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.Vectors.VectorType type = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearType() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        type_ = 0;
         onChanged();
         return this;
       }
@@ -18928,15 +19160,18 @@ public final class WeaviateProtoBase {
       "!.weaviate.v1.FilterReferenceCountH\000B\010\n\006" +
       "target\"M\n\024GeoCoordinatesFilter\022\020\n\010latitu" +
       "de\030\001 \001(\002\022\021\n\tlongitude\030\002 \001(\002\022\020\n\010distance\030" +
-      "\003 \001(\002\"<\n\007Vectors\022\014\n\004name\030\001 \001(\t\022\r\n\005index\030" +
-      "\002 \001(\004\022\024\n\014vector_bytes\030\003 \001(\014*\211\001\n\020Consiste" +
-      "ncyLevel\022!\n\035CONSISTENCY_LEVEL_UNSPECIFIE" +
-      "D\020\000\022\031\n\025CONSISTENCY_LEVEL_ONE\020\001\022\034\n\030CONSIS" +
-      "TENCY_LEVEL_QUORUM\020\002\022\031\n\025CONSISTENCY_LEVE" +
-      "L_ALL\020\003Bn\n#io.weaviate.client.grpc.proto" +
-      "col.v1B\021WeaviateProtoBaseZ4github.com/we" +
-      "aviate/weaviate/grpc/generated;protocolb" +
-      "\006proto3"
+      "\003 \001(\002\"\323\001\n\007Vectors\022\014\n\004name\030\001 \001(\t\022\021\n\005index" +
+      "\030\002 \001(\004B\002\030\001\022\024\n\014vector_bytes\030\003 \001(\014\022-\n\004type" +
+      "\030\004 \001(\0162\037.weaviate.v1.Vectors.VectorType\"" +
+      "b\n\nVectorType\022\033\n\027VECTOR_TYPE_UNSPECIFIED" +
+      "\020\000\022\033\n\027VECTOR_TYPE_SINGLE_FP32\020\001\022\032\n\026VECTO" +
+      "R_TYPE_MULTI_FP32\020\002*\211\001\n\020ConsistencyLevel" +
+      "\022!\n\035CONSISTENCY_LEVEL_UNSPECIFIED\020\000\022\031\n\025C" +
+      "ONSISTENCY_LEVEL_ONE\020\001\022\034\n\030CONSISTENCY_LE" +
+      "VEL_QUORUM\020\002\022\031\n\025CONSISTENCY_LEVEL_ALL\020\003B" +
+      "n\n#io.weaviate.client.grpc.protocol.v1B\021" +
+      "WeaviateProtoBaseZ4github.com/weaviate/w" +
+      "eaviate/grpc/generated;protocolb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -19050,7 +19285,7 @@ public final class WeaviateProtoBase {
     internal_static_weaviate_v1_Vectors_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_Vectors_descriptor,
-        new java.lang.String[] { "Name", "Index", "VectorBytes", });
+        new java.lang.String[] { "Name", "Index", "VectorBytes", "Type", });
     com.google.protobuf.StructProto.getDescriptor();
   }
 
