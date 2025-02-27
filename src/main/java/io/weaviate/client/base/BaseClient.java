@@ -46,7 +46,6 @@ public abstract class BaseClient<T> {
       HttpResponse response = this.sendHttpRequest(endpoint, payload, method);
       int statusCode = response.getStatusCode();
       String responseBody = response.getBody();
-
       if (statusCode < 399) {
         T body = toResponse(responseBody, classOfT);
         return new Response<>(statusCode, body, null);

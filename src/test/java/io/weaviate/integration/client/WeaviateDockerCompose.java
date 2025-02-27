@@ -2,6 +2,7 @@ package io.weaviate.integration.client;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -13,6 +14,7 @@ import org.testcontainers.weaviate.WeaviateContainer;
 
 public class WeaviateDockerCompose implements TestRule {
 
+  /** Weaviate Docker image to create a container from. */
   private final String weaviateVersion;
   private final boolean withOffloadS3;
 
@@ -98,7 +100,7 @@ public class WeaviateDockerCompose implements TestRule {
     }
     contextionary = new Contextionary();
     contextionary.start();
-    weaviate = new Weaviate(this.weaviateVersion, withOffloadS3);
+    weaviate = new Weaviate(this.weaviateVersion, this.withOffloadS3);
     weaviate.start();
   }
 
