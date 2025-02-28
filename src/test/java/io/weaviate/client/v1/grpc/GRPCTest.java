@@ -8,7 +8,7 @@ import com.google.protobuf.ByteString;
 
 /**
  * Note: Java's {@code byte} is signed (int8) and is different from {@code byte}
- * in Go, which is an aliar for uint8.
+ * in Go, which is an alias for uint8.
  *
  * For this tests purposes the distinction is immaterial, as "want" arrays
  * are "golden values" meant to be a readable respresentation for the test.
