@@ -1,5 +1,30 @@
 package io.weaviate.client.v1.batch.api;
 
+import java.io.Closeable;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+
 import io.weaviate.client.Config;
 import io.weaviate.client.base.BaseClient;
 import io.weaviate.client.base.ClientResult;
@@ -23,25 +48,6 @@ import io.weaviate.client.v1.batch.util.ObjectsPath;
 import io.weaviate.client.v1.data.Data;
 import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.data.replication.model.ConsistencyLevel;
-import java.io.Closeable;
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -49,13 +55,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
-  implements ClientResult<ObjectGetResponse[]>, Closeable {
+    implements ClientResult<ObjectGetResponse[]>, Closeable {
 
   private final Data data;
   private final ObjectsPath objectsPath;
@@ -73,10 +75,9 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
   private final GrpcVersionSupport grpcVersionSupport;
   private final Config config;
 
-
   private ObjectsBatcher(HttpClient httpClient, Config config, Data data, ObjectsPath objectsPath,
-                         AccessTokenProvider tokenProvider, GrpcVersionSupport grpcVersionSupport,
-                         BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig) {
+      AccessTokenProvider tokenProvider, GrpcVersionSupport grpcVersionSupport,
+      BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig) {
     super(httpClient, config);
     this.config = config;
     this.useGRPC = config.useGRPC();
@@ -103,20 +104,21 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
   }
 
   public static ObjectsBatcher create(HttpClient httpClient, Config config, Data data, ObjectsPath objectsPath,
-                                      AccessTokenProvider tokenProvider, GrpcVersionSupport grpcVersionSupport,
-                                      BatchRetriesConfig batchRetriesConfig) {
+      AccessTokenProvider tokenProvider, GrpcVersionSupport grpcVersionSupport,
+      BatchRetriesConfig batchRetriesConfig) {
     Assert.requiredNotNull(batchRetriesConfig, "batchRetriesConfig");
-    return new ObjectsBatcher(httpClient, config, data, objectsPath, tokenProvider, grpcVersionSupport, batchRetriesConfig, null);
+    return new ObjectsBatcher(httpClient, config, data, objectsPath, tokenProvider, grpcVersionSupport,
+        batchRetriesConfig, null);
   }
 
   public static ObjectsBatcher createAuto(HttpClient httpClient, Config config, Data data, ObjectsPath objectsPath,
-                                          AccessTokenProvider tokenProvider, GrpcVersionSupport grpcVersionSupport,
-                                          BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig) {
+      AccessTokenProvider tokenProvider, GrpcVersionSupport grpcVersionSupport,
+      BatchRetriesConfig batchRetriesConfig, AutoBatchConfig autoBatchConfig) {
     Assert.requiredNotNull(batchRetriesConfig, "batchRetriesConfig");
     Assert.requiredNotNull(autoBatchConfig, "autoBatchConfig");
-    return new ObjectsBatcher(httpClient, config, data, objectsPath, tokenProvider, grpcVersionSupport, batchRetriesConfig, autoBatchConfig);
+    return new ObjectsBatcher(httpClient, config, data, objectsPath, tokenProvider, grpcVersionSupport,
+        batchRetriesConfig, autoBatchConfig);
   }
-
 
   public ObjectsBatcher withObject(WeaviateObject object) {
     return withObjects(object);
@@ -137,7 +139,7 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
   @Override
   public Result<ObjectGetResponse[]> run() {
     if (autoRunEnabled) {
-      flush();  // fallback to flush in auto run enabled
+      flush(); // fallback to flush in auto run enabled
       return null;
     }
 
@@ -147,12 +149,12 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
 
     List<WeaviateObject> batch = extractBatch(objects.size());
     return runRecursively(batch, 0, 0, null,
-      (DelayedExecutor<Result<ObjectGetResponse[]>>) delayedExecutor);
+        (DelayedExecutor<Result<ObjectGetResponse[]>>) delayedExecutor);
   }
 
   public void flush() {
     if (!autoRunEnabled) {
-      run();  // fallback to run if auto run disabled
+      run(); // fallback to run if auto run disabled
       return;
     }
 
@@ -185,11 +187,10 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
     }
   }
 
-
   private void addMissingIds(WeaviateObject[] objects) {
     Arrays.stream(objects)
-      .filter(o -> o.getId() == null)
-      .forEach(o -> o.setId(UUID.randomUUID().toString()));
+        .filter(o -> o.getId() == null)
+        .forEach(o -> o.setId(UUID.randomUUID().toString()));
   }
 
   private List<WeaviateObject> extractBatch(int batchSize) {
@@ -215,9 +216,8 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
 
   private void runInThread(List<WeaviateObject> batch) {
     CompletableFuture<Result<ObjectGetResponse[]>> future = CompletableFuture.supplyAsync(
-      () -> createRunFuture(batch),
-      executorService
-    ).thenCompose(f -> f);
+        () -> createRunFuture(batch),
+        executorService).thenCompose(f -> f);
 
     if (autoBatchConfig.callback != null) {
       future = future.whenComplete((result, e) -> autoBatchConfig.callback.accept(result));
@@ -230,11 +230,11 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
 
   private CompletableFuture<Result<ObjectGetResponse[]>> createRunFuture(List<WeaviateObject> batch) {
     return runRecursively(batch, 0, 0, null,
-      (DelayedExecutor<CompletableFuture<Result<ObjectGetResponse[]>>>) delayedExecutor);
+        (DelayedExecutor<CompletableFuture<Result<ObjectGetResponse[]>>>) delayedExecutor);
   }
 
   private <T> T runRecursively(List<WeaviateObject> batch, int connectionErrorCount, int timeoutErrorCount,
-                               List<ObjectGetResponse> combinedSingleResponses, DelayedExecutor<T> delayedExecutor) {
+      List<ObjectGetResponse> combinedSingleResponses, DelayedExecutor<T> delayedExecutor) {
     Result<ObjectGetResponse[]> result = useGRPC ? internalGrpcRun(batch) : internalRun(batch);
 
     if (result.hasErrors()) {
@@ -267,24 +267,25 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
           List<ObjectGetResponse> lambdaCombinedSingleResponses = combinedSingleResponses;
 
           return delayedExecutor.delayed(
-            delay,
-            () -> runRecursively(lambdaBatch, lambdaConnectionErrorCount, lambdaTimeoutErrorCount, lambdaCombinedSingleResponses, delayedExecutor)
-          );
+              delay,
+              () -> runRecursively(lambdaBatch, lambdaConnectionErrorCount, lambdaTimeoutErrorCount,
+                  lambdaCombinedSingleResponses, delayedExecutor));
         }
       }
     } else {
       batch = null;
     }
 
-    Result<ObjectGetResponse[]> finalResult = createFinalResultFromLastResultAndCombinedSingleResponses(result, combinedSingleResponses, batch);
+    Result<ObjectGetResponse[]> finalResult = createFinalResultFromLastResultAndCombinedSingleResponses(result,
+        combinedSingleResponses, batch);
     return delayedExecutor.now(finalResult);
   }
 
   private Result<ObjectGetResponse[]> internalRun(List<WeaviateObject> batch) {
     ObjectsBatchRequestBody batchRequest = ObjectsBatchRequestBody.builder()
-      .objects(batch.toArray(new WeaviateObject[0]))
-      .fields(new String[]{"ALL"})
-      .build();
+        .objects(batch.toArray(new WeaviateObject[batch.size()]))
+        .fields(new String[] { "ALL" })
+        .build();
     String path = objectsPath.buildCreate(ObjectsPath.Params.builder()
         .consistencyLevel(consistencyLevel)
         .build());
@@ -295,9 +296,10 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
   private Result<ObjectGetResponse[]> internalGrpcRun(List<WeaviateObject> batch) {
     BatchObjectConverter batchObjectConverter = new BatchObjectConverter(grpcVersionSupport);
     List<WeaviateProtoBatch.BatchObject> batchObjects = batch.stream()
-      .map(batchObjectConverter::toBatchObject)
-      .collect(Collectors.toList());
-    WeaviateProtoBatch.BatchObjectsRequest.Builder batchObjectsRequestBuilder = WeaviateProtoBatch.BatchObjectsRequest.newBuilder();
+        .map(batchObjectConverter::toBatchObject)
+        .collect(Collectors.toList());
+    WeaviateProtoBatch.BatchObjectsRequest.Builder batchObjectsRequestBuilder = WeaviateProtoBatch.BatchObjectsRequest
+        .newBuilder();
     batchObjectsRequestBuilder.addAllObjects(batchObjects);
     if (consistencyLevel != null) {
       WeaviateProtoBase.ConsistencyLevel cl = WeaviateProtoBase.ConsistencyLevel.CONSISTENCY_LEVEL_ONE;
@@ -320,14 +322,14 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
     }
 
     List<WeaviateErrorMessage> weaviateErrorMessages = batchObjectsReply.getErrorsList().stream()
-      .map(WeaviateProtoBatch.BatchObjectsReply.BatchError::getError)
-      .filter(e -> !e.isEmpty())
-      .map(msg -> WeaviateErrorMessage.builder().message(msg).build())
-      .collect(Collectors.toList());
+        .map(WeaviateProtoBatch.BatchObjectsReply.BatchError::getError)
+        .filter(e -> !e.isEmpty())
+        .map(msg -> WeaviateErrorMessage.builder().message(msg).build())
+        .collect(Collectors.toList());
 
     if (!weaviateErrorMessages.isEmpty()) {
       WeaviateErrorResponse weaviateErrorResponse = WeaviateErrorResponse.builder()
-        .code(422).message(StringUtils.join(weaviateErrorMessages, ",")).error(weaviateErrorMessages).build();
+          .code(422).message(StringUtils.join(weaviateErrorMessages, ",")).error(weaviateErrorMessages).build();
       return new Result<>(422, null, weaviateErrorResponse);
     }
 
@@ -336,6 +338,9 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
       resp.setId(o.getId());
       resp.setClassName(o.getClassName());
       resp.setTenant(o.getTenant());
+      resp.setVector(o.getVector());
+      resp.setVectors(o.getVectors());
+      resp.setMultiVectors(o.getMultiVectors());
       ObjectsGetResponseAO2Result result = new ObjectsGetResponseAO2Result();
       result.setStatus(ObjectGetResponseStatus.SUCCESS);
       resp.setResult(result);
@@ -345,11 +350,12 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
     return new Result<>(200, objectGetResponses, null);
   }
 
-  private Pair<List<ObjectGetResponse>, List<WeaviateObject>> fetchCreatedAndBuildBatchToReRun(List<WeaviateObject> batch) {
+  private Pair<List<ObjectGetResponse>, List<WeaviateObject>> fetchCreatedAndBuildBatchToReRun(
+      List<WeaviateObject> batch) {
     List<WeaviateObject> rerunBatch = new ArrayList<>(batch.size());
     List<ObjectGetResponse> createdResponses = new ArrayList<>(batch.size());
 
-    for (WeaviateObject batchObject: batch) {
+    for (WeaviateObject batchObject : batch) {
       Result<List<WeaviateObject>> existingResult = fetchExistingObject(batchObject);
 
       if (existingResult.hasErrors() || ObjectUtils.isEmpty(existingResult.getResult())) {
@@ -371,16 +377,15 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
 
   private Result<List<WeaviateObject>> fetchExistingObject(WeaviateObject batchObject) {
     return data.objectsGetter()
-      .withID(batchObject.getId())
-      .withClassName(batchObject.getClassName())
-      .withVector()
-      .run();
+        .withID(batchObject.getId())
+        .withClassName(batchObject.getClassName())
+        .withVector()
+        .run();
   }
 
   private boolean isDifferentObject(WeaviateObject batchObject, WeaviateObject existingObject) {
     if ((existingObject.getVector() != null || batchObject.getVector() != null)
-      && !Arrays.equals(existingObject.getVector(), batchObject.getVector())
-    ) {
+        && !Arrays.equals(existingObject.getVector(), batchObject.getVector())) {
       return true;
     }
 
@@ -388,8 +393,7 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
     Map<String, Object> batchProperties = batchObject.getProperties();
 
     if ((existingProperties != null && batchProperties == null)
-      || (existingProperties == null && batchProperties != null)
-    ) {
+        || (existingProperties == null && batchProperties != null)) {
       return true;
     }
 
@@ -413,28 +417,30 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
     response.setCreationTimeUnix(existingObject.getCreationTimeUnix());
     response.setLastUpdateTimeUnix(existingObject.getLastUpdateTimeUnix());
     response.setVector(existingObject.getVector());
+    response.setVectors(existingObject.getVectors());
+    response.setMultiVectors(existingObject.getMultiVectors());
     response.setVectorWeights(existingObject.getVectorWeights());
     response.setResult(result);
 
     return response;
   }
 
-
   private List<ObjectGetResponse> combineSingleResponses(List<ObjectGetResponse> combinedSingleResponses,
-                                                         List<ObjectGetResponse> createdResponses) {
+      List<ObjectGetResponse> createdResponses) {
     if (ObjectUtils.isNotEmpty(createdResponses)) {
       combinedSingleResponses = ObjectUtils.isEmpty(combinedSingleResponses)
-        ? createdResponses
-        : Stream.of(combinedSingleResponses, createdResponses)
-        .flatMap(Collection::stream)
-        .collect(Collectors.toList());
+          ? createdResponses
+          : Stream.of(combinedSingleResponses, createdResponses)
+              .flatMap(Collection::stream)
+              .collect(Collectors.toList());
     }
 
     return combinedSingleResponses;
   }
 
   private Result<ObjectGetResponse[]> createFinalResultFromLastResultAndCombinedSingleResponses(
-    Result<ObjectGetResponse[]> lastResult, List<ObjectGetResponse> combinedSingleResponses, List<WeaviateObject> failedBatch) {
+      Result<ObjectGetResponse[]> lastResult, List<ObjectGetResponse> combinedSingleResponses,
+      List<WeaviateObject> failedBatch) {
 
     if (ObjectUtils.isEmpty(failedBatch) && ObjectUtils.isEmpty(combinedSingleResponses)) {
       return lastResult;
@@ -468,26 +474,26 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
     }
 
     return new Result<>(statusCode, allResponses, WeaviateErrorResponse.builder()
-      .error(messages)
-      .code(statusCode)
-      .build()
-    );
+        .error(messages)
+        .code(statusCode)
+        .build());
   }
-
-
 
   private interface DelayedExecutor<T> {
     T delayed(int delay, Supplier<T> supplier);
+
     T now(Result<ObjectGetResponse[]> result);
   }
 
   @RequiredArgsConstructor
-  private static class ExecutorServiceDelayedExecutor implements DelayedExecutor<CompletableFuture<Result<ObjectGetResponse[]>>> {
+  private static class ExecutorServiceDelayedExecutor
+      implements DelayedExecutor<CompletableFuture<Result<ObjectGetResponse[]>>> {
 
     private final ScheduledExecutorService executorService;
 
     @Override
-    public CompletableFuture<Result<ObjectGetResponse[]>> delayed(int delay, Supplier<CompletableFuture<Result<ObjectGetResponse[]>>> supplier) {
+    public CompletableFuture<Result<ObjectGetResponse[]>> delayed(int delay,
+        Supplier<CompletableFuture<Result<ObjectGetResponse[]>>> supplier) {
       Executor executor = (runnable) -> executorService.schedule(runnable, delay, TimeUnit.MILLISECONDS);
       return CompletableFuture.supplyAsync(supplier, executor).thenCompose(f -> f);
     }
@@ -497,7 +503,6 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
       return CompletableFuture.completedFuture(result);
     }
   }
-
 
   private static class SleepDelayedExecutor implements DelayedExecutor<Result<ObjectGetResponse[]>> {
 
@@ -544,9 +549,9 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
 
     public static BatchRetriesConfigBuilder defaultConfig() {
       return BatchRetriesConfig.builder()
-        .maxTimeoutRetries(MAX_TIMEOUT_RETRIES)
-        .maxConnectionRetries(MAX_CONNECTION_RETRIES)
-        .retriesIntervalMs(RETRIES_INTERVAL);
+          .maxTimeoutRetries(MAX_TIMEOUT_RETRIES)
+          .maxConnectionRetries(MAX_CONNECTION_RETRIES)
+          .retriesIntervalMs(RETRIES_INTERVAL);
     }
   }
 
@@ -567,7 +572,7 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
     Consumer<Result<ObjectGetResponse[]>> callback;
 
     private AutoBatchConfig(int batchSize, int poolSize, int awaitTerminationMs,
-                            Consumer<Result<ObjectGetResponse[]>> callback) {
+        Consumer<Result<ObjectGetResponse[]>> callback) {
       Assert.requireGreaterEqual(batchSize, 1, "batchSize");
       Assert.requireGreaterEqual(poolSize, 1, "corePoolSize");
       Assert.requireGreater(awaitTerminationMs, 0, "awaitTerminationMs");
@@ -580,10 +585,10 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
 
     public static AutoBatchConfigBuilder defaultConfig() {
       return AutoBatchConfig.builder()
-        .batchSize(BATCH_SIZE)
-        .poolSize(POOL_SIZE)
-        .awaitTerminationMs(AWAIT_TERMINATION_MS)
-        .callback(null);
+          .batchSize(BATCH_SIZE)
+          .poolSize(POOL_SIZE)
+          .awaitTerminationMs(AWAIT_TERMINATION_MS)
+          .callback(null);
     }
   }
 }

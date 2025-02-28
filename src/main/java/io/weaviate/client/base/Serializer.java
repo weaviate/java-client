@@ -1,27 +1,33 @@
 package io.weaviate.client.base;
 
+import java.lang.reflect.Type;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+
 import io.weaviate.client.base.util.GroupHitDeserializer;
+import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.graphql.model.GraphQLGetBaseObject;
 import io.weaviate.client.v1.graphql.model.GraphQLTypedResponse;
-import java.lang.reflect.Type;
 
 public class Serializer {
   private Gson gson;
 
   public Serializer() {
-    this.gson = new GsonBuilder().disableHtmlEscaping().create();
+    this.gson = new GsonBuilder()
+        .disableHtmlEscaping()
+        .registerTypeAdapter(WeaviateObject.class, WeaviateObject.Adapter.INSTANCE)
+        .create();
   }
 
   public <C> GraphQLTypedResponse<C> toGraphQLTypedResponse(String response, Class<C> classOfT) {
     Gson gsonTyped = new GsonBuilder()
-      .disableHtmlEscaping()
-      .registerTypeAdapter(GraphQLGetBaseObject.Additional.Group.GroupHit.class, new GroupHitDeserializer())
-      .create();
+        .disableHtmlEscaping()
+        .registerTypeAdapter(GraphQLGetBaseObject.Additional.Group.GroupHit.class, new GroupHitDeserializer())
+        .create();
     return gsonTyped.fromJson(response,
-      TypeToken.getParameterized(GraphQLTypedResponse.class, classOfT).getType());
+        TypeToken.getParameterized(GraphQLTypedResponse.class, classOfT).getType());
   }
 
   public <C> C toResponse(String response, Type typeOfT) {

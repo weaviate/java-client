@@ -1,6 +1,7 @@
 package io.weaviate.client.v1.misc.model;
 
 import com.google.gson.annotations.SerializedName;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -29,6 +30,9 @@ public class VectorIndexConfig {
   PQConfig pq;
   BQConfig bq;
   SQConfig sq;
+
+  @SerializedName("multivector")
+  MultiVectorConfig multiVector;
 
   public enum FilterStrategy {
     @SerializedName("sweeping")
