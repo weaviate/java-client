@@ -1,5 +1,18 @@
 package io.weaviate.client.v1.async.data.api;
 
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
+import org.apache.hc.core5.concurrent.FutureCallback;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpResponse;
+
 import io.weaviate.client.Config;
 import io.weaviate.client.base.AsyncBaseClient;
 import io.weaviate.client.base.AsyncClientResult;
@@ -11,17 +24,6 @@ import io.weaviate.client.base.http.async.ResponseParser;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.data.util.ObjectsPath;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
-import org.apache.hc.core5.concurrent.FutureCallback;
-import org.apache.hc.core5.http.ContentType;
-import org.apache.hc.core5.http.HttpResponse;
 
 public class ObjectUpdater extends AsyncBaseClient<Boolean> implements AsyncClientResult<Boolean> {
   private final ObjectsPath objectsPath;
@@ -32,9 +34,11 @@ public class ObjectUpdater extends AsyncBaseClient<Boolean> implements AsyncClie
   private Map<String, Object> properties;
   private Float[] vector;
   private Map<String, Float[]> vectors;
+  private Map<String, Float[][]> multiVectors;
   private Boolean withMerge;
 
-  public ObjectUpdater(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider, ObjectsPath objectsPath) {
+  public ObjectUpdater(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider,
+      ObjectsPath objectsPath) {
     super(client, config, tokenProvider);
     this.objectsPath = objectsPath;
   }
@@ -74,6 +78,11 @@ public class ObjectUpdater extends AsyncBaseClient<Boolean> implements AsyncClie
     return this;
   }
 
+  public ObjectUpdater withMultiVectors(Map<String, Float[][]> multiVectors) {
+    this.multiVectors = multiVectors;
+    return this;
+  }
+
   public ObjectUpdater withMerge() {
     this.withMerge = true;
     return this;
@@ -83,24 +92,25 @@ public class ObjectUpdater extends AsyncBaseClient<Boolean> implements AsyncClie
   public Future<Result<Boolean>> run(FutureCallback<Result<Boolean>> callback) {
     if (StringUtils.isEmpty(id)) {
       WeaviateErrorMessage errorMessage = WeaviateErrorMessage.builder()
-        .message("id cannot be empty").build();
+          .message("id cannot be empty").build();
       WeaviateErrorResponse errors = WeaviateErrorResponse.builder()
-        .error(Stream.of(errorMessage).collect(Collectors.toList())).build();
+          .error(Stream.of(errorMessage).collect(Collectors.toList())).build();
       return CompletableFuture.completedFuture(new Result<>(500, false, errors));
     }
     String path = objectsPath.buildUpdate(ObjectsPath.Params.builder()
-      .id(id)
-      .className(className)
-      .consistencyLevel(consistencyLevel)
-      .build());
+        .id(id)
+        .className(className)
+        .consistencyLevel(consistencyLevel)
+        .build());
     WeaviateObject obj = WeaviateObject.builder()
-      .className(className)
-      .properties(properties)
-      .id(id)
-      .vector(vector)
-      .vectors(vectors)
-      .tenant(tenant)
-      .build();
+        .className(className)
+        .properties(properties)
+        .id(id)
+        .vector(vector)
+        .vectors(vectors)
+        .multiVectors(multiVectors)
+        .tenant(tenant)
+        .build();
     if (BooleanUtils.isTrue(withMerge)) {
       return sendPatchRequest(path, obj, callback, new ResponseParser<Boolean>() {
         @Override

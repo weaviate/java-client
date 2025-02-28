@@ -79,13 +79,19 @@ public class WeaviateObject {
     @Override
     public JsonElement serialize(WeaviateObject src, Type typeOfSrc, JsonSerializationContext ctx) {
       JsonObject result = gson.toJsonTree(src).getAsJsonObject();
-      JsonObject vectors = result.getAsJsonObject("vectors");
 
       // Add multi-vectors to the named vectors map.
-      for (Entry<String, Float[][]> entry : src.multiVectors.entrySet()) {
-        String name = entry.getKey();
-        JsonElement vector = gson.toJsonTree(entry.getValue());
-        vectors.add(name, vector);
+      if (src.multiVectors != null) {
+        if (!result.has("vectors")) {
+          result.add("vectors", new JsonObject());
+        }
+        JsonObject vectors = result.getAsJsonObject("vectors");
+
+        for (Entry<String, Float[][]> entry : src.multiVectors.entrySet()) {
+          String name = entry.getKey();
+          JsonElement vector = gson.toJsonTree(entry.getValue());
+          vectors.add(name, vector);
+        }
       }
       return result;
     }
