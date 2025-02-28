@@ -84,7 +84,8 @@ public class ClientDataTest {
 
   @Test
   public void testDataCreateAndRetrieveMultiVectors() throws ExecutionException, InterruptedException {
-    try (WeaviateAsyncClient client = new WeaviateClient(new Config("http", address)).async()) {
+    WeaviateClient syncClient = new WeaviateClient(new Config("http", address));
+    try (WeaviateAsyncClient client = syncClient.async()) {
 
       // Arrange: Configure collection and create it
       String className = "NamedMultiVectors";
@@ -169,6 +170,8 @@ public class ClientDataTest {
                       .isEqualTo(colbertVector);
                 });
           }).as("expected object metadata");
+    } finally {
+      new WeaviateTestGenerics().cleanupWeaviate(syncClient);
     }
   }
 
@@ -418,89 +421,93 @@ public class ClientDataTest {
   }
 
   @Test
-  public void testDataUpdateMultiVectors() {
-    WeaviateClient client = new WeaviateClient(new Config("http", address));
+  public void testDataUpdateMultiVectors() throws ExecutionException, InterruptedException {
+    WeaviateClient syncClient = new WeaviateClient(new Config("http", address));
+    try (WeaviateAsyncClient client = syncClient.async()) {
 
-    // Arrange: Configure collection and create it
-    String className = "NamedMultiVectors";
-    WeaviateClass weaviateClass = WeaviateClass.builder()
-        .className(className)
-        .properties(Arrays.asList(
-            Property.builder()
-                .name("name")
-                .dataType(Collections.singletonList(DataType.TEXT))
-                .build()))
-        .vectorConfig(new HashMap<String, WeaviateClass.VectorConfig>() {
-          {
-            this.put("colbert", WeaviateClass.VectorConfig.builder()
-                .vectorizer(new HashMap<String, Object>() {
-                  {
-                    this.put("none", new Object());
-                  }
-                })
-                .vectorIndexConfig(VectorIndexConfig.builder()
-                    .multiVector(MultiVectorConfig.builder().build())
-                    .build())
-                .vectorIndexType("hnsw")
-                .build());
-          }
-        })
-        .build();
+      // Arrange: Configure collection and create it
+      String className = "NamedMultiVectors";
+      WeaviateClass weaviateClass = WeaviateClass.builder()
+          .className(className)
+          .properties(Arrays.asList(
+              Property.builder()
+                  .name("name")
+                  .dataType(Collections.singletonList(DataType.TEXT))
+                  .build()))
+          .vectorConfig(new HashMap<String, WeaviateClass.VectorConfig>() {
+            {
+              this.put("colbert", WeaviateClass.VectorConfig.builder()
+                  .vectorizer(new HashMap<String, Object>() {
+                    {
+                      this.put("none", new Object());
+                    }
+                  })
+                  .vectorIndexConfig(VectorIndexConfig.builder()
+                      .multiVector(MultiVectorConfig.builder().build())
+                      .build())
+                  .vectorIndexType("hnsw")
+                  .build());
+            }
+          })
+          .build();
 
-    Result<Boolean> createResult = client.schema().classCreator().withClass(weaviateClass).run();
-    assumeTrue(createResult.getResult(), "schema created successfully");
+      Result<Boolean> createResult = client.schema().classCreator().withClass(weaviateClass).run().get();
+      assumeTrue(createResult.getResult(), "schema created successfully");
 
-    String id = UUID.randomUUID().toString();
-    Float[][] colbertVector = new Float[][] {
-        { 0.11f, 0.22f, 0.33f, 0.123f, -0.900009f, -0.0000000001f },
-        { 0.11f, 0.22f, 0.33f, 0.123f, -0.900009f, -0.0000000001f },
-    };
+      String id = UUID.randomUUID().toString();
+      Float[][] colbertVector = new Float[][] {
+          { 0.11f, 0.22f, 0.33f, 0.123f, -0.900009f, -0.0000000001f },
+          { 0.11f, 0.22f, 0.33f, 0.123f, -0.900009f, -0.0000000001f },
+      };
 
-    Result<WeaviateObject> insertResult = client.data().creator()
-        .withID(id).withClassName(className)
-        .withProperties(new HashMap<String, Object>() {
-          {
-            this.put("name", "TestObject-1");
-          }
-        })
-        .withMultiVectors(new HashMap<String, Float[][]>() {
-          {
-            this.put("colbert", colbertVector);
-          }
-        })
-        .run();
-    assumeFalse(insertResult.hasErrors(), "test data inserted successfully");
+      Result<WeaviateObject> insertResult = client.data().creator()
+          .withID(id).withClassName(className)
+          .withProperties(new HashMap<String, Object>() {
+            {
+              this.put("name", "TestObject-1");
+            }
+          })
+          .withMultiVectors(new HashMap<String, Float[][]>() {
+            {
+              this.put("colbert", colbertVector);
+            }
+          })
+          .run().get();
+      assumeFalse(insertResult.hasErrors(), "test data inserted successfully");
 
-    // Act: Update data
-    Float[][] newVector = Arrays.stream(colbertVector)
-        .map(inner -> Arrays.stream(inner).map(v -> 5 * v).toArray(Float[]::new))
-        .toArray(Float[][]::new);
-    Result<Boolean> updateResult = client.data().updater()
-        .withID(id).withClassName(className)
-        .withMultiVectors(new HashMap<String, Float[][]>() {
-          {
-            this.put("colbert", newVector);
-          }
-        })
-        .run();
-    assertNull("successfully updated metadata", updateResult.getError());
+      // Act: Update data
+      Float[][] newVector = Arrays.stream(colbertVector)
+          .map(inner -> Arrays.stream(inner).map(v -> 5 * v).toArray(Float[]::new))
+          .toArray(Float[][]::new);
+      Result<Boolean> updateResult = client.data().updater()
+          .withID(id).withClassName(className)
+          .withMultiVectors(new HashMap<String, Float[][]>() {
+            {
+              this.put("colbert", newVector);
+            }
+          })
+          .run().get();
+      assertNull("successfully updated metadata", updateResult.getError());
 
-    // Assert: Retrieve object and check metadata
-    Result<List<WeaviateObject>> getResult = client.data().objectsGetter()
-        .withClassName(className).withID(id).withVector().run();
+      // Assert: Retrieve object and check metadata
+      Result<List<WeaviateObject>> getResult = client.data().objectsGetter()
+          .withClassName(className).withID(id).withVector().run().get();
 
-    Assertions.assertThat(getResult).isNotNull()
-        .returns(null, Result::getError).as("get object error")
-        .extracting(Result::getResult).isNotNull().as("result not null")
-        .extracting(r -> r.get(0)).isNotNull().as("first object")
-        .satisfies(o -> {
-          Assertions.assertThat(o.getMultiVectors()).as("multi-vectors")
-              .isNotEmpty().containsOnlyKeys("colbert")
-              .satisfies(multi -> {
-                Assertions.assertThat(multi.get("colbert")).as("colbert multivector")
-                    .isEqualTo(newVector);
-              });
-        }).as("expected updated object metadata");
+      Assertions.assertThat(getResult).isNotNull()
+          .returns(null, Result::getError).as("get object error")
+          .extracting(Result::getResult).isNotNull().as("result not null")
+          .extracting(r -> r.get(0)).isNotNull().as("first object")
+          .satisfies(o -> {
+            Assertions.assertThat(o.getMultiVectors()).as("multi-vectors")
+                .isNotEmpty().containsOnlyKeys("colbert")
+                .satisfies(multi -> {
+                  Assertions.assertThat(multi.get("colbert")).as("colbert multivector")
+                      .isEqualTo(newVector);
+                });
+          }).as("expected updated object metadata");
+    } finally {
+      new WeaviateTestGenerics().cleanupWeaviate(syncClient);
+    }
   }
 
   @Test
