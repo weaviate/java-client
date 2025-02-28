@@ -238,7 +238,7 @@ public class ClientBatchGrpcCreateNamedVectorsTestSuite {
             assertThat(o.getProperties().get(propName))
                 .isNotNull().as(propName);
           });
-        }).as("wrong object data");
+        }).as("expected object metadata");
 
     // clean up
     Result<Boolean> delete = deleteClass.apply(className);

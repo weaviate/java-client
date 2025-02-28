@@ -25,6 +25,7 @@ public class ObjectCreator extends AsyncBaseClient<WeaviateObject> implements As
   private Map<String, Object> properties;
   private Float[] vector;
   private Map<String, Float[]> vectors;
+  private Map<String, Float[][]> multiVectors;
 
   public ObjectCreator(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider,
       ObjectsPath objectsPath) {
@@ -67,6 +68,11 @@ public class ObjectCreator extends AsyncBaseClient<WeaviateObject> implements As
     return this;
   }
 
+  public ObjectCreator withMultiVectors(Map<String, Float[][]> multiVectors) {
+    this.multiVectors = multiVectors;
+    return this;
+  }
+
   private String getID() {
     if (StringUtils.isEmpty(id)) {
       return UUID.randomUUID().toString();
@@ -84,6 +90,7 @@ public class ObjectCreator extends AsyncBaseClient<WeaviateObject> implements As
         .properties(properties)
         .vector(vector)
         .vectors(vectors)
+        .multiVectors(multiVectors)
         .id(getID())
         .tenant(tenant)
         .build();

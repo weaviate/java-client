@@ -24,7 +24,6 @@ public class ObjectCreator extends BaseClient<WeaviateObject> implements ClientR
   private String tenant;
   private Map<String, Object> properties;
   private Float[] vector;
-  private Float[][] multiVector;
   private Map<String, Float[]> vectors;
   private Map<String, Float[][]> multiVectors;
 
@@ -60,11 +59,6 @@ public class ObjectCreator extends BaseClient<WeaviateObject> implements ClientR
 
   public ObjectCreator withVector(Float[] vector) {
     this.vector = vector;
-    return this;
-  }
-
-  public ObjectCreator withMultiVector(Float[][] multiVector) {
-    this.multiVector = multiVector;
     return this;
   }
 
