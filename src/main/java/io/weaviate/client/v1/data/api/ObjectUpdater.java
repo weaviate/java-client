@@ -1,8 +1,5 @@
 package io.weaviate.client.v1.data.api;
 
-import io.weaviate.client.v1.data.model.WeaviateObject;
-import io.weaviate.client.v1.data.util.ObjectsPath;
-
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -10,6 +7,7 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+
 import io.weaviate.client.Config;
 import io.weaviate.client.base.BaseClient;
 import io.weaviate.client.base.ClientResult;
@@ -18,6 +16,8 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateErrorMessage;
 import io.weaviate.client.base.WeaviateErrorResponse;
 import io.weaviate.client.base.http.HttpClient;
+import io.weaviate.client.v1.data.model.WeaviateObject;
+import io.weaviate.client.v1.data.util.ObjectsPath;
 
 public class ObjectUpdater extends BaseClient<WeaviateObject> implements ClientResult<Boolean> {
 
@@ -29,6 +29,7 @@ public class ObjectUpdater extends BaseClient<WeaviateObject> implements ClientR
   private Map<String, Object> properties;
   private Float[] vector;
   private Map<String, Float[]> vectors;
+  private Map<String, Float[][]> multiVectors;
   private Boolean withMerge;
 
   public ObjectUpdater(HttpClient httpClient, Config config, ObjectsPath objectsPath) {
@@ -71,6 +72,11 @@ public class ObjectUpdater extends BaseClient<WeaviateObject> implements ClientR
     return this;
   }
 
+  public ObjectUpdater withMultiVectors(Map<String, Float[][]> multiVectors) {
+    this.multiVectors = multiVectors;
+    return this;
+  }
+
   public ObjectUpdater withMerge() {
     this.withMerge = true;
     return this;
@@ -80,24 +86,25 @@ public class ObjectUpdater extends BaseClient<WeaviateObject> implements ClientR
   public Result<Boolean> run() {
     if (StringUtils.isEmpty(id)) {
       WeaviateErrorMessage errorMessage = WeaviateErrorMessage.builder()
-        .message("id cannot be empty").build();
+          .message("id cannot be empty").build();
       WeaviateErrorResponse errors = WeaviateErrorResponse.builder()
-        .error(Stream.of(errorMessage).collect(Collectors.toList())).build();
+          .error(Stream.of(errorMessage).collect(Collectors.toList())).build();
       return new Result<>(500, false, errors);
     }
     String path = objectsPath.buildUpdate(ObjectsPath.Params.builder()
-      .id(id)
-      .className(className)
-      .consistencyLevel(consistencyLevel)
-      .build());
+        .id(id)
+        .className(className)
+        .consistencyLevel(consistencyLevel)
+        .build());
     WeaviateObject obj = WeaviateObject.builder()
-      .className(className)
-      .properties(properties)
-      .id(id)
-      .vector(vector)
-      .vectors(vectors)
-      .tenant(tenant)
-      .build();
+        .className(className)
+        .properties(properties)
+        .id(id)
+        .vector(vector)
+        .vectors(vectors)
+        .multiVectors(multiVectors)
+        .tenant(tenant)
+        .build();
     if (BooleanUtils.isTrue(withMerge)) {
       Response<WeaviateObject> resp = sendPatchRequest(path, obj, WeaviateObject.class);
       return new Result<>(resp.getStatusCode(), resp.getStatusCode() == 204, resp.getErrors());

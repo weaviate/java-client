@@ -1,19 +1,21 @@
 package io.weaviate.client.v1.graphql.query.argument;
 
-import io.weaviate.client.v1.graphql.query.util.Serializer;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.lang3.ArrayUtils;
+
+import io.weaviate.client.v1.graphql.query.util.Serializer;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
-import org.apache.commons.lang3.ArrayUtils;
 
 @Getter
 @Builder
@@ -21,7 +23,10 @@ import org.apache.commons.lang3.ArrayUtils;
 @EqualsAndHashCode
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class NearVectorArgument implements Argument {
+  /** One-dimensional search vector. */
   Float[] vector;
+  /** Multi-dimensional search vector. */
+  Float[][] multiVector;
   Float certainty;
   Float distance;
   String[] targetVectors;
@@ -34,6 +39,8 @@ public class NearVectorArgument implements Argument {
 
     if (vector != null) {
       arg.add(String.format("vector:%s", Serializer.array(vector)));
+    } else if (multiVector != null) {
+      arg.add(String.format("vector:%s", Serializer.array(multiVector)));
     }
     if (certainty != null) {
       arg.add(String.format("certainty:%s", certainty));
@@ -48,7 +55,8 @@ public class NearVectorArgument implements Argument {
       Set<String> vectorPerTargetArg = new LinkedHashSet<>();
       for (Map.Entry<String, Float[][]> e : vectorsPerTarget.entrySet()) {
         Float[][] vectors = e.getValue();
-        vectorPerTargetArg.add(String.format("%s:%s", e.getKey(), vectors.length == 1 ? Serializer.array(vectors[0]) : Serializer.array(vectors)));
+        vectorPerTargetArg.add(String.format("%s:%s", e.getKey(),
+            vectors.length == 1 ? Serializer.array(vectors[0]) : Serializer.array(vectors)));
       }
       arg.add(String.format("vectorPerTarget:{%s}", String.join(" ", vectorPerTargetArg)));
     }
@@ -60,24 +68,24 @@ public class NearVectorArgument implements Argument {
   }
 
   /**
-   * withValidTargetVectors makes sure the target names are repeated for each target vector,
+   * withValidTargetVectors makes sure the target names are repeated for each
+   * target vector,
    * which is required by server, but may be easily overlooked by the user.
    *
    * <p>
-   * Note, too, that in case the user fails to pass a value in targetVectors altogether, it will not be added to the query.
+   * Note, too, that in case the user fails to pass a value in targetVectors
+   * altogether, it will not be added to the query.
    *
    * @return A copy of the Targets with validated target vectors.
    */
   private Targets withValidTargetVectors(Targets targets) {
-    return Targets.builder().
-      combinationMethod(targets.getCombinationMethod()).
-      weightsMulti(targets.getWeights()).
-      targetVectors(prepareTargetVectors(targets.getTargetVectors())).
-      build();
+    return Targets.builder().combinationMethod(targets.getCombinationMethod()).weightsMulti(targets.getWeights())
+        .targetVectors(prepareTargetVectors(targets.getTargetVectors())).build();
   }
 
   /**
-   * prepareTargetVectors adds appends the target name for each target vector associated with it.
+   * prepareTargetVectors adds appends the target name for each target vector
+   * associated with it.
    */
   private String[] prepareTargetVectors(String[] targets) {
     List<String> out = new ArrayList<>();
@@ -101,13 +109,28 @@ public class NearVectorArgument implements Argument {
     public NearVectorArgumentBuilder vectorPerTarget(Map<String, Float[]> vectors) {
       this.vectorsPerTarget.clear(); // Overwrite the existing entries each time this is called.
       for (Map.Entry<String, Float[]> e : vectors.entrySet()) {
-        this.vectorsPerTarget.put(e.getKey(), new Float[][]{e.getValue()});
+        this.vectorsPerTarget.put(e.getKey(), new Float[][] { e.getValue() });
       }
       return this;
     }
 
     public NearVectorArgumentBuilder vectorsPerTarget(Map<String, Float[][]> vectors) {
       this.vectorsPerTarget = vectors;
+      return this;
+    }
+
+    public NearVectorArgumentBuilder vector(Float[] vector) {
+      this.vector = vector;
+      return this;
+    }
+
+    public NearVectorArgumentBuilder vector(Float[][] multiVector) {
+      this.multiVector = multiVector;
+      return this;
+    }
+
+    /** Hide this method to promote the overloaded {@link #vector(Float[][])}. */
+    private NearVectorArgumentBuilder multiVector(Float[][] _vectors) {
       return this;
     }
   }

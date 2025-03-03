@@ -1,6 +1,5 @@
 package io.weaviate.client.v1.data.api;
 
-import io.weaviate.client.v1.data.util.ObjectsPath;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -8,14 +7,16 @@ import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
+
 import io.weaviate.client.Config;
 import io.weaviate.client.base.BaseClient;
 import io.weaviate.client.base.ClientResult;
 import io.weaviate.client.base.Response;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.HttpClient;
-import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.data.model.ObjectsListResponse;
+import io.weaviate.client.v1.data.model.WeaviateObject;
+import io.weaviate.client.v1.data.util.ObjectsPath;
 
 public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements ClientResult<List<WeaviateObject>> {
 
@@ -29,6 +30,7 @@ public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements Cl
   private String consistencyLevel;
   private String tenant;
   private String nodeName;
+
   private class ObjectGetter extends BaseClient<WeaviateObject> implements ClientResult<List<WeaviateObject>> {
     private String path;
 
@@ -46,8 +48,8 @@ public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements Cl
       Response<WeaviateObject> resp = sendGetRequest(path, WeaviateObject.class);
       WeaviateObject object = resp.getBody();
       List<WeaviateObject> objects = object == null
-        ? null
-        : Collections.singletonList(object);
+          ? null
+          : Collections.singletonList(object);
       return new Result<>(resp.getStatusCode(), objects, resp.getErrors());
     }
   }
@@ -114,23 +116,24 @@ public class ObjectsGetter extends BaseClient<ObjectsListResponse> implements Cl
   @Override
   public Result<List<WeaviateObject>> run() {
     ObjectsPath.Params params = ObjectsPath.Params.builder()
-            .id(id)
-            .className(className)
-            .limit(limit)
-            .offset(offset)
-            .after(after)
-            .additional(additional.toArray(new String[0]))
-            .consistencyLevel(consistencyLevel)
-            .tenant(tenant)
-            .nodeName(nodeName)
-            .build();
+        .id(id)
+        .className(className)
+        .limit(limit)
+        .offset(offset)
+        .after(after)
+        .additional(additional.toArray(new String[0]))
+        .consistencyLevel(consistencyLevel)
+        .tenant(tenant)
+        .nodeName(nodeName)
+        .build();
     if (StringUtils.isNotBlank(id)) {
       return this.objectGetter.withPath(objectsPath.buildGetOne(params)).run();
     }
     Response<ObjectsListResponse> resp = sendGetRequest(objectsPath.buildGet(params), ObjectsListResponse.class);
     List<WeaviateObject> objects = resp.getBody() == null
-      ? null
-      : Arrays.asList(resp.getBody().getObjects());
+        ? null
+        : Arrays.asList(resp.getBody().getObjects());
+
     return new Result<>(resp.getStatusCode(), objects, resp.getErrors());
   }
 }

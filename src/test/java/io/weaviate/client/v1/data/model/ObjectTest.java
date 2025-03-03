@@ -1,7 +1,5 @@
 package io.weaviate.client.v1.data.model;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -9,9 +7,14 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import junit.framework.TestCase;
+
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import junit.framework.TestCase;
 
 public class ObjectTest extends TestCase {
   @Test
@@ -21,13 +24,13 @@ public class ObjectTest extends TestCase {
     properties.put("name", "Pizza");
     properties.put("description", "Italian pizzas");
     WeaviateObject obj = WeaviateObject.builder()
-            .id("uuid")
-            .className("class")
-            .creationTimeUnix(1000l)
-            .lastUpdateTimeUnix(2000l)
-            .vector(new Float[]{ 1.0f, 2.0f })
-            .properties(properties)
-            .build();
+        .id("uuid")
+        .className("class")
+        .creationTimeUnix(1000l)
+        .lastUpdateTimeUnix(2000l)
+        .vector(new Float[] { 1.0f, 2.0f })
+        .properties(properties)
+        .build();
     // when
     String result = new GsonBuilder().setPrettyPrinting().create().toJson(obj);
     // then
@@ -82,26 +85,28 @@ public class ObjectTest extends TestCase {
   @Test
   public void testSerializeWithReferenceProperty() {
     // given
-    Map<String, Object> properties = new HashMap() {{
-      put("name", "RefBeaconSoup");
-      put("description", "Used only to check if reference can be added.");
-      put("otherFoods", new ObjectReference[]{
-              ObjectReference.builder()
-                      .beacon("weaviate://localhost/someClass/abefd256-8574-442b-9293-9205193737ee")
-                      .build()
-      });
-      put("rating", "9/10");
-    }};
+    Map<String, Object> properties = new HashMap<String, Object>() {
+      {
+        put("name", "RefBeaconSoup");
+        put("description", "Used only to check if reference can be added.");
+        put("otherFoods", new ObjectReference[] {
+            ObjectReference.builder()
+                .beacon("weaviate://localhost/someClass/abefd256-8574-442b-9293-9205193737ee")
+                .build()
+        });
+        put("rating", "9/10");
+      }
+    };
     WeaviateObject obj = WeaviateObject.builder()
-            .id("uuid")
-            .className("class")
-            .properties(properties)
-            .build();
+        .id("uuid")
+        .className("class")
+        .properties(properties)
+        .build();
     // when
     String result = new GsonBuilder()
-            .setPrettyPrinting()
-            .create()
-            .toJson(obj);
+        .setPrettyPrinting()
+        .create()
+        .toJson(obj);
     // then
     Assert.assertNotNull(result);
     Assert.assertTrue(result.contains("otherFoods"));

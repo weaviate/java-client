@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.google.protobuf.ByteString;
 import com.google.protobuf.Struct;
 import com.google.protobuf.Value;
 
@@ -58,9 +59,25 @@ public class BatchObjectConverter {
           .map(entry -> WeaviateProtoBase.Vectors.newBuilder()
               .setName(entry.getKey())
               .setVectorBytes(GRPC.toByteString(entry.getValue()))
+              .setType(WeaviateProtoBase.Vectors.VectorType.VECTOR_TYPE_SINGLE_FP32)
               .build())
           .collect(Collectors.toList());
       builder.addAllVectors(protoVectors);
+    }
+
+    Map<String, Float[][]> multiVectors = obj.getMultiVectors();
+    if (multiVectors != null && !multiVectors.isEmpty()) {
+
+      builder.addAllVectors(multiVectors.entrySet().stream()
+          .map(entry -> {
+            ByteString sendThis = GRPC.toByteString(entry.getValue());
+            return WeaviateProtoBase.Vectors.newBuilder()
+                .setName(entry.getKey())
+                .setVectorBytes(sendThis)
+                .setType(WeaviateProtoBase.Vectors.VectorType.VECTOR_TYPE_MULTI_FP32)
+                .build();
+          })
+          .collect(Collectors.toList()));
     }
 
     return builder.build();

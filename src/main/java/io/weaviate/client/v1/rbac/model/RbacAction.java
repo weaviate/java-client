@@ -7,15 +7,15 @@ package io.weaviate.client.v1.rbac.model;
  * <p>
  * Usage:
  *
- * <pre>
+ * <pre>{@code
  * enum MyAction implements RbacAction {
  *   FOO("do_foo"),
  *   BAR("do_bar");
  *
- *   @Getter
+ *   {@literal @Getter}
  *   private String value;
  * }
- * </pre>
+ * }</pre>
  *
  * <p>
  * Then {@code MyAction.FOO} can be retrieved from "do_foo" using
@@ -32,7 +32,7 @@ interface RbacAction {
    *
    * <pre>{@code
    * OLD_ACTION("old_action") {
-   *  &#64;Override
+   *  {@literal @Override}
    *  public boolean isDeprecated() { return true; }
    * };
    * }</pre>

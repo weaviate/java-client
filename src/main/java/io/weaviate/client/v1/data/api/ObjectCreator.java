@@ -1,12 +1,11 @@
 package io.weaviate.client.v1.data.api;
 
-import io.weaviate.client.v1.data.util.ObjectsPath;
-
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
+
 import io.weaviate.client.Config;
 import io.weaviate.client.base.BaseClient;
 import io.weaviate.client.base.ClientResult;
@@ -14,6 +13,7 @@ import io.weaviate.client.base.Response;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.v1.data.model.WeaviateObject;
+import io.weaviate.client.v1.data.util.ObjectsPath;
 
 public class ObjectCreator extends BaseClient<WeaviateObject> implements ClientResult<WeaviateObject> {
 
@@ -25,6 +25,7 @@ public class ObjectCreator extends BaseClient<WeaviateObject> implements ClientR
   private Map<String, Object> properties;
   private Float[] vector;
   private Map<String, Float[]> vectors;
+  private Map<String, Float[][]> multiVectors;
 
   public ObjectCreator(HttpClient httpClient, Config config, ObjectsPath objectsPath) {
     super(httpClient, config);
@@ -66,6 +67,11 @@ public class ObjectCreator extends BaseClient<WeaviateObject> implements ClientR
     return this;
   }
 
+  public ObjectCreator withMultiVectors(Map<String, Float[][]> multiVectors) {
+    this.multiVectors = multiVectors;
+    return this;
+  }
+
   private String getID() {
     if (StringUtils.isEmpty(id)) {
       return UUID.randomUUID().toString();
@@ -76,16 +82,17 @@ public class ObjectCreator extends BaseClient<WeaviateObject> implements ClientR
   @Override
   public Result<WeaviateObject> run() {
     String path = objectsPath.buildCreate(ObjectsPath.Params.builder()
-      .consistencyLevel(consistencyLevel)
-      .build());
+        .consistencyLevel(consistencyLevel)
+        .build());
     WeaviateObject obj = WeaviateObject.builder()
-      .className(className)
-      .properties(properties)
-      .vector(vector)
-      .vectors(vectors)
-      .id(getID())
-      .tenant(tenant)
-      .build();
+        .className(className)
+        .properties(properties)
+        .vector(vector)
+        .vectors(vectors)
+        .multiVectors(multiVectors)
+        .id(getID())
+        .tenant(tenant)
+        .build();
     Response<WeaviateObject> resp = sendPostRequest(path, obj, WeaviateObject.class);
     return new Result<>(resp);
   }

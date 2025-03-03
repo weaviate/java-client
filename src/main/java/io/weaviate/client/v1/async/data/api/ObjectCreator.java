@@ -1,5 +1,13 @@
 package io.weaviate.client.v1.async.data.api;
 
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.Future;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
+import org.apache.hc.core5.concurrent.FutureCallback;
+
 import io.weaviate.client.Config;
 import io.weaviate.client.base.AsyncBaseClient;
 import io.weaviate.client.base.AsyncClientResult;
@@ -7,12 +15,6 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.data.util.ObjectsPath;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.Future;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
-import org.apache.hc.core5.concurrent.FutureCallback;
 
 public class ObjectCreator extends AsyncBaseClient<WeaviateObject> implements AsyncClientResult<WeaviateObject> {
   private final ObjectsPath objectsPath;
@@ -23,8 +25,10 @@ public class ObjectCreator extends AsyncBaseClient<WeaviateObject> implements As
   private Map<String, Object> properties;
   private Float[] vector;
   private Map<String, Float[]> vectors;
+  private Map<String, Float[][]> multiVectors;
 
-  public ObjectCreator(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider, ObjectsPath objectsPath) {
+  public ObjectCreator(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider,
+      ObjectsPath objectsPath) {
     super(client, config, tokenProvider);
     this.objectsPath = objectsPath;
   }
@@ -64,6 +68,11 @@ public class ObjectCreator extends AsyncBaseClient<WeaviateObject> implements As
     return this;
   }
 
+  public ObjectCreator withMultiVectors(Map<String, Float[][]> multiVectors) {
+    this.multiVectors = multiVectors;
+    return this;
+  }
+
   private String getID() {
     if (StringUtils.isEmpty(id)) {
       return UUID.randomUUID().toString();
@@ -74,16 +83,17 @@ public class ObjectCreator extends AsyncBaseClient<WeaviateObject> implements As
   @Override
   public Future<Result<WeaviateObject>> run(FutureCallback<Result<WeaviateObject>> callback) {
     String path = objectsPath.buildCreate(ObjectsPath.Params.builder()
-      .consistencyLevel(consistencyLevel)
-      .build());
+        .consistencyLevel(consistencyLevel)
+        .build());
     WeaviateObject obj = WeaviateObject.builder()
-      .className(className)
-      .properties(properties)
-      .vector(vector)
-      .vectors(vectors)
-      .id(getID())
-      .tenant(tenant)
-      .build();
+        .className(className)
+        .properties(properties)
+        .vector(vector)
+        .vectors(vectors)
+        .multiVectors(multiVectors)
+        .id(getID())
+        .tenant(tenant)
+        .build();
     return sendPostRequest(path, obj, WeaviateObject.class, callback);
   }
 }

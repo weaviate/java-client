@@ -1,5 +1,13 @@
 package io.weaviate.integration.client.async.batch;
 
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Function;
+
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
+
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
@@ -9,12 +17,6 @@ import io.weaviate.client.v1.data.model.WeaviateObject;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
 import io.weaviate.integration.client.WeaviateDockerCompose;
 import io.weaviate.integration.tests.batch.ClientBatchGrpcCreateNamedVectorsTestSuite;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.function.Function;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
 
 public class ClientBatchGrpcCreateNamedVectorsTest {
   private static String httpHost;
@@ -36,8 +38,8 @@ public class ClientBatchGrpcCreateNamedVectorsTest {
     Function<WeaviateClass, Result<Boolean>> classCreate = (weaviateClass) -> {
       try (WeaviateAsyncClient asyncClient = client.async()) {
         return asyncClient.schema().classCreator()
-          .withClass(weaviateClass)
-          .run().get();
+            .withClass(weaviateClass)
+            .run().get();
       } catch (InterruptedException | ExecutionException e) {
         throw new RuntimeException(e);
       }
@@ -46,8 +48,8 @@ public class ClientBatchGrpcCreateNamedVectorsTest {
     Function<WeaviateObject, Result<ObjectGetResponse[]>> batchCreate = (weaviateObj) -> {
       try (WeaviateAsyncClient asyncClient = client.async()) {
         return asyncClient.batch().objectsBatcher()
-          .withObjects(weaviateObj)
-          .run().get();
+            .withObjects(weaviateObj)
+            .run().get();
       } catch (InterruptedException | ExecutionException e) {
         throw new RuntimeException(e);
       }
@@ -56,10 +58,10 @@ public class ClientBatchGrpcCreateNamedVectorsTest {
     Function<WeaviateObject, Result<List<WeaviateObject>>> fetch = (weaviateObject) -> {
       try (WeaviateAsyncClient asyncClient = client.async()) {
         return asyncClient.data().objectsGetter()
-          .withID(weaviateObject.getId())
-          .withClassName(weaviateObject.getClassName())
-          .withVector()
-          .run().get();
+            .withID(weaviateObject.getId())
+            .withClassName(weaviateObject.getClassName())
+            .withVector()
+            .run().get();
       } catch (InterruptedException | ExecutionException e) {
         throw new RuntimeException(e);
       }
@@ -73,7 +75,56 @@ public class ClientBatchGrpcCreateNamedVectorsTest {
       }
     };
 
-    ClientBatchGrpcCreateNamedVectorsTestSuite.shouldCreateObjectsWithNamedVectors(classCreate, batchCreate, fetch, deleteClass);
+    ClientBatchGrpcCreateNamedVectorsTestSuite.shouldCreateObjectsWithNamedVectors(classCreate, batchCreate, fetch,
+        deleteClass);
+  }
+
+  @Test
+  public void shouldCreateObjectsWithNamedMultiVectors() {
+    WeaviateClient client = createClient();
+
+    Function<WeaviateClass, Result<Boolean>> classCreate = (weaviateClass) -> {
+      try (WeaviateAsyncClient asyncClient = client.async()) {
+        return asyncClient.schema().classCreator()
+            .withClass(weaviateClass)
+            .run().get();
+      } catch (InterruptedException | ExecutionException e) {
+        throw new RuntimeException(e);
+      }
+    };
+
+    Function<WeaviateObject, Result<ObjectGetResponse[]>> batchCreate = (weaviateObj) -> {
+      try (WeaviateAsyncClient asyncClient = client.async()) {
+        return asyncClient.batch().objectsBatcher()
+            .withObjects(weaviateObj)
+            .run().get();
+      } catch (InterruptedException | ExecutionException e) {
+        throw new RuntimeException(e);
+      }
+    };
+
+    Function<WeaviateObject, Result<List<WeaviateObject>>> fetch = (weaviateObject) -> {
+      try (WeaviateAsyncClient asyncClient = client.async()) {
+        return asyncClient.data().objectsGetter()
+            .withID(weaviateObject.getId())
+            .withClassName(weaviateObject.getClassName())
+            .withVector()
+            .run().get();
+      } catch (InterruptedException | ExecutionException e) {
+        throw new RuntimeException(e);
+      }
+    };
+
+    Function<String, Result<Boolean>> deleteClass = (className) -> {
+      try (WeaviateAsyncClient asyncClient = client.async()) {
+        return asyncClient.schema().classDeleter().withClassName(className).run().get();
+      } catch (InterruptedException | ExecutionException e) {
+        throw new RuntimeException(e);
+      }
+    };
+
+    ClientBatchGrpcCreateNamedVectorsTestSuite.shouldCreateObjectsWithNamedMultiVectors(classCreate, batchCreate, fetch,
+        deleteClass);
   }
 
   private WeaviateClient createClient() {
