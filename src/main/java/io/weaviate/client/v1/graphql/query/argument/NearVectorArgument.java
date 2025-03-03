@@ -26,7 +26,7 @@ public class NearVectorArgument implements Argument {
   /** One-dimensional search vector. */
   Float[] vector;
   /** Multi-dimensional search vector. */
-  Float[][] vectors;
+  Float[][] multiVector;
   Float certainty;
   Float distance;
   String[] targetVectors;
@@ -39,8 +39,8 @@ public class NearVectorArgument implements Argument {
 
     if (vector != null) {
       arg.add(String.format("vector:%s", Serializer.array(vector)));
-    } else if (vectors != null) {
-      arg.add(String.format("vector:%s", Serializer.array(vectors)));
+    } else if (multiVector != null) {
+      arg.add(String.format("vector:%s", Serializer.array(multiVector)));
     }
     if (certainty != null) {
       arg.add(String.format("certainty:%s", certainty));
@@ -124,13 +124,13 @@ public class NearVectorArgument implements Argument {
       return this;
     }
 
-    public NearVectorArgumentBuilder vector(Float[][] vectors) {
-      this.vectors = vectors;
+    public NearVectorArgumentBuilder vector(Float[][] multiVector) {
+      this.multiVector = multiVector;
       return this;
     }
 
     /** Hide this method to promote the overloaded {@link #vector(Float[][])}. */
-    private NearVectorArgumentBuilder vectors(Float[][] _vectors) {
+    private NearVectorArgumentBuilder multiVector(Float[][] _vectors) {
       return this;
     }
   }
