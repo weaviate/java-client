@@ -345,6 +345,8 @@
           </executions>
           <configuration>
             <sourcepath>${project.build.directory}/delombok</sourcepath>
+            <!--Disable warnings about missing docstrings.-->
+            <doclint>all,-missing</doclint>
           </configuration>
         </plugin>
         <plugin>
