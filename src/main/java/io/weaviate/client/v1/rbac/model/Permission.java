@@ -98,7 +98,7 @@ public abstract class Permission<P extends Permission<P>> {
    *
    * <p>
    * Example: convert Data[read_data, MyCollection], Data[delete_data,
-   * MyCollection] => Data[[read_data, delete_data], MyCollection].
+   * MyCollection] to Data[[read_data, delete_data], MyCollection].
    */
   public static final List<Permission<?>> merge(List<Permission<?>> permissions) {
     @EqualsAndHashCode
