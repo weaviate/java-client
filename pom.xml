@@ -61,15 +61,15 @@
     <gson.version>2.11.0</gson.version>
     <httpclient.version>5.4.1</httpclient.version>
     <lang3.version>3.17.0</lang3.version>
-    <junit.version>5.11.3</junit.version>
-    <testcontainers.version>1.20.4</testcontainers.version>
-    <assertj-core.version>3.26.3</assertj-core.version>
+    <junit.version>5.12.0</junit.version>
+    <testcontainers.version>1.20.5</testcontainers.version>
+    <assertj-core.version>3.27.3</assertj-core.version>
     <jparams.version>1.0.4</jparams.version>
-    <mockito.version>5.14.2</mockito.version>
-    <slf4j.version>2.0.16</slf4j.version>
-    <logback.version>1.5.12</logback.version>
+    <mockito.version>5.15.2</mockito.version>
+    <slf4j.version>2.0.17</slf4j.version>
+    <logback.version>1.5.17</logback.version>
     <mock-server.version>5.14.0</mock-server.version>
-    <jackson.version>2.18.2</jackson.version>
+    <jackson.version>2.18.3</jackson.version>
     <oauth2-oidc-sdk.version>11.20.1</oauth2-oidc-sdk.version>
     <mock-server.version>5.15.0</mock-server.version>
     <protobuf.java.version>4.29.1</protobuf.java.version>
