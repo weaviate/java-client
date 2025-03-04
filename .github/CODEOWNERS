@@ -1,4 +1,4 @@
-# Ci related folders
+# CI related resources
 /.github/ @weaviate/core
 decrypt_secret.sh @weaviate/core
 secrets.tar.gp @weaviate/core
