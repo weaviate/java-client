@@ -21,7 +21,6 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.core5.concurrent.FutureCallback;
@@ -328,38 +327,7 @@ public class ObjectsBatcher extends AsyncBaseClient<ObjectGetResponse[]>
       }
     }, executor)
         .thenApply(batchObjectsReply -> {
-          List<WeaviateErrorMessage> weaviateErrorMessages = batchObjectsReply.getErrorsList().stream()
-              .map(WeaviateProtoBatch.BatchObjectsReply.BatchError::getError)
-              .filter(e -> !e.isEmpty())
-              .map(msg -> WeaviateErrorMessage.builder().message(msg).build())
-              .collect(Collectors.toList());
-
-          if (!weaviateErrorMessages.isEmpty()) {
-            int statusCode = HttpStatus.SC_UNPROCESSABLE_CONTENT;
-            WeaviateErrorResponse weaviateErrorResponse = WeaviateErrorResponse.builder()
-                .code(statusCode)
-                .message(StringUtils.join(weaviateErrorMessages, ","))
-                .error(weaviateErrorMessages)
-                .build();
-            return new Result<>(statusCode, null, weaviateErrorResponse);
-          }
-
-          ObjectGetResponse[] objectGetResponses = batch.stream().map(o -> {
-            ObjectsGetResponseAO2Result result = new ObjectsGetResponseAO2Result();
-            result.setStatus(ObjectGetResponseStatus.SUCCESS);
-
-            ObjectGetResponse resp = new ObjectGetResponse();
-            resp.setId(o.getId());
-            resp.setClassName(o.getClassName());
-            resp.setTenant(o.getTenant());
-            resp.setVector(o.getVector());
-            resp.setVectors(o.getVectors());
-            resp.setMultiVectors(o.getMultiVectors());
-            resp.setResult(result);
-            return resp;
-          }).toArray(ObjectGetResponse[]::new);
-
-          return new Result<>(HttpStatus.SC_OK, objectGetResponses, null);
+          return io.weaviate.client.v1.batch.api.ObjectsBatcher.resultFromBatchObjectsReply(batchObjectsReply, batch);
         });
   }
 
