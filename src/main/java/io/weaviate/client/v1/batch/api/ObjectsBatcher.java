@@ -24,6 +24,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.hc.core5.http.HttpStatus;
 
 import io.weaviate.client.Config;
 import io.weaviate.client.base.BaseClient;
@@ -38,12 +39,15 @@ import io.weaviate.client.base.util.Assert;
 import io.weaviate.client.base.util.GrpcVersionSupport;
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBase;
 import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch;
+import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch.BatchObjectsReply;
+import io.weaviate.client.grpc.protocol.v1.WeaviateProtoBatch.BatchObjectsReply.BatchError;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.batch.grpc.BatchObjectConverter;
 import io.weaviate.client.v1.batch.model.ObjectGetResponse;
 import io.weaviate.client.v1.batch.model.ObjectGetResponseStatus;
 import io.weaviate.client.v1.batch.model.ObjectsBatchRequestBody;
 import io.weaviate.client.v1.batch.model.ObjectsGetResponseAO2Result;
+import io.weaviate.client.v1.batch.model.ObjectsGetResponseAO2Result.ErrorResponse;
 import io.weaviate.client.v1.batch.util.ObjectsPath;
 import io.weaviate.client.v1.data.Data;
 import io.weaviate.client.v1.data.model.WeaviateObject;
@@ -320,34 +324,58 @@ public class ObjectsBatcher extends BaseClient<ObjectGetResponse[]>
     } finally {
       grpcClient.shutdown();
     }
+    return resultFromBatchObjectsReply(batchObjectsReply, batch);
+  }
 
-    List<WeaviateErrorMessage> weaviateErrorMessages = batchObjectsReply.getErrorsList().stream()
-        .map(WeaviateProtoBatch.BatchObjectsReply.BatchError::getError)
-        .filter(e -> !e.isEmpty())
-        .map(msg -> WeaviateErrorMessage.builder().message(msg).build())
-        .collect(Collectors.toList());
+  public static Result<ObjectGetResponse[]> resultFromBatchObjectsReply(BatchObjectsReply reply,
+      List<WeaviateObject> batch) {
+    Map<Integer, String> errors = reply.getErrorsList()
+        .stream().collect(Collectors.toMap(BatchError::getIndex, BatchError::getError));
+    List<WeaviateErrorMessage> errorMessages = new ArrayList<>();
+    WeaviateErrorResponse responseError = null;
+    int responseCode = HttpStatus.SC_SUCCESS;
 
-    if (!weaviateErrorMessages.isEmpty()) {
-      WeaviateErrorResponse weaviateErrorResponse = WeaviateErrorResponse.builder()
-          .code(422).message(StringUtils.join(weaviateErrorMessages, ",")).error(weaviateErrorMessages).build();
-      return new Result<>(422, null, weaviateErrorResponse);
+    ObjectGetResponse[] responseObjects = new ObjectGetResponse[batch.size()];
+    for (int i = 0; i < responseObjects.length; i++) {
+      ObjectGetResponse r = new ObjectGetResponse();
+      ObjectsGetResponseAO2Result insertResult = new ObjectsGetResponseAO2Result();
+      if (errors.containsKey(i)) {
+        insertResult.setStatus(ObjectGetResponseStatus.FAILED);
+        insertResult.setErrors(new ErrorResponse(errors.get(i)));
+
+        errorMessages.add(WeaviateErrorMessage.builder().message(errors.get(i)).build());
+      } else {
+        insertResult.setStatus(ObjectGetResponseStatus.SUCCESS);
+
+        WeaviateObject batchObject = batch.get(i);
+        r.setId(batchObject.getId());
+        r.setClassName(batchObject.getClassName());
+        r.setTenant(batchObject.getTenant());
+        r.setVector(batchObject.getVector());
+        r.setVectors(batchObject.getVectors());
+        r.setMultiVectors(batchObject.getMultiVectors());
+      }
+      r.setResult(insertResult);
+      responseObjects[i] = r;
     }
 
-    ObjectGetResponse[] objectGetResponses = batch.stream().map(o -> {
-      ObjectGetResponse resp = new ObjectGetResponse();
-      resp.setId(o.getId());
-      resp.setClassName(o.getClassName());
-      resp.setTenant(o.getTenant());
-      resp.setVector(o.getVector());
-      resp.setVectors(o.getVectors());
-      resp.setMultiVectors(o.getMultiVectors());
-      ObjectsGetResponseAO2Result result = new ObjectsGetResponseAO2Result();
-      result.setStatus(ObjectGetResponseStatus.SUCCESS);
-      resp.setResult(result);
-      return resp;
-    }).toArray(ObjectGetResponse[]::new);
+    if (!errors.isEmpty()) {
+      responseCode = HttpStatus.SC_UNPROCESSABLE_CONTENT;
 
-    return new Result<>(200, objectGetResponses, null);
+      // An important distinction between internalGrpcRun and internalRun
+      // is that the regular batching (non-gRPC) method will not surface
+      // an error on the "response level" and only report errors on the
+      // object level.
+      //
+      // Because previously internalGrpcRun used to return 422 and a
+      // WeaviateErrorResponse on partial errors too, we preserve this
+      // behavior for b/c.
+      responseError = WeaviateErrorResponse.builder()
+          .code(responseCode)
+          .message(StringUtils.join(errors.values(), ","))
+          .error(errorMessages).build();
+    }
+    return new Result<>(responseCode, responseObjects, responseError);
   }
 
   private Pair<List<ObjectGetResponse>, List<WeaviateObject>> fetchCreatedAndBuildBatchToReRun(
