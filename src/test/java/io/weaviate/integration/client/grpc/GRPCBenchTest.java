@@ -17,6 +17,7 @@ import java.util.function.Function;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -190,6 +191,16 @@ public class GRPCBenchTest {
 
       int count = countGRPC(result);
       assertEquals(K, count, String.format("must return K=%d results", K));
+
+      Assertions.assertThat(result.objects).allSatisfy(
+          object -> {
+            Assertions.assertThat(object.metadata.id)
+                .isNotNull().as("must retrieve id");
+            Assertions.assertThat(object.metadata.vector)
+                .isNotNull().as("must retrieve vector")
+                .hasSize(VECTOR_LEN).as("vector has expected size");
+          });
+
     }, WARMUP_ROUNDS, BENCHMARK_ROUNDS);
   }
 

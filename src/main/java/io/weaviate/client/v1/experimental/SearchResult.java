@@ -17,9 +17,9 @@ public class SearchResult<T> {
     @AllArgsConstructor
     @ToString
     public static class SearchMetadata {
-      String id;
-      Float distance;
-      Float[] vector;
+      public final String id;
+      public final Float distance;
+      public final Float[] vector;
     }
   }
 }
