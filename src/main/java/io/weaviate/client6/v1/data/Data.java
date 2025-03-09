@@ -21,6 +21,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class Data<T> {
+  // TODO: inject singleton as dependency
   private static final Gson gson = new Gson();
 
   // TODO: this should be wrapped around in some TypeInspector etc.

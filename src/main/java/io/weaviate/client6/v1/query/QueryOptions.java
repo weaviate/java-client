@@ -1,7 +1,14 @@
 package io.weaviate.client6.v1.query;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
+import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.MetadataRequest;
+import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.PropertiesRequest;
+import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.SearchRequest;
 
 @SuppressWarnings("unchecked")
 abstract class QueryOptions<SELF extends QueryOptions<SELF>> {
@@ -11,6 +18,7 @@ abstract class QueryOptions<SELF extends QueryOptions<SELF>> {
   private String after;
   private String consistencyLevel;
   private List<String> returnProperties = new ArrayList<>();
+  private List<Metadata> returnMetadata = new ArrayList<>();
 
   public final SELF limit(Integer limit) {
     this.limit = limit;
@@ -35,5 +43,42 @@ abstract class QueryOptions<SELF extends QueryOptions<SELF>> {
   public final SELF consistencyLevel(String consistencyLevel) {
     this.consistencyLevel = consistencyLevel;
     return (SELF) this;
+  }
+
+  public final SELF returnMetadata(Metadata... metadata) {
+    this.returnMetadata = Arrays.asList(metadata);
+    return (SELF) this;
+  }
+
+  void appendTo(SearchRequest.Builder search) {
+    if (limit != null) {
+      search.setLimit(limit);
+    }
+    if (offset != null) {
+      search.setOffset(offset);
+    }
+    if (StringUtils.isNotBlank(after)) {
+      search.setAfter(after);
+    }
+    if (StringUtils.isNotBlank(consistencyLevel)) {
+      search.setConsistencyLevelValue(Integer.valueOf(consistencyLevel));
+    }
+    if (autocut != null) {
+      search.setAutocut(autocut);
+    }
+
+    if (!returnMetadata.isEmpty()) {
+      var metadata = MetadataRequest.newBuilder();
+      returnMetadata.forEach(m -> m.appendTo(metadata));
+      search.setMetadata(metadata);
+    }
+
+    if (!returnProperties.isEmpty()) {
+      var properties = PropertiesRequest.newBuilder();
+      for (String property : returnProperties) {
+        properties.addNonRefProperties(property);
+      }
+      search.setProperties(properties);
+    }
   }
 }

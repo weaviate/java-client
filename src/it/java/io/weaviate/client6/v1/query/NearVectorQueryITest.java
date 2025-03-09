@@ -5,64 +5,80 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
-import java.util.stream.IntStream;
 
 import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import io.weaviate.client6.Config;
+import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.WeaviateClient;
 import io.weaviate.client6.v1.data.Vectors;
 import io.weaviate.containers.Container;
 
-public class NearVectorQueryITest {
-  private static final WeaviateClient client = new WeaviateClient(
-      new Config("http", Container.WEAVIATE.getHttpHostAddress()));
+public class NearVectorQueryITest extends ConcurrentTest {
+  private static final WeaviateClient client = Container.WEAVIATE.getClient();
 
-  private static final String COLLECTION = "Things";
-  private static final Random rand = new Random();
+  private static final String COLLECTION = unique("Things");
+  private static final String VECTOR_INDEX = "bring_your_own";
 
+  /**
+   * One of the inserted vectors which will be used as target vector for search.
+   */
   private static Float[] searchVector;
 
   @BeforeClass
   public static void beforeAll() throws IOException {
+    createTestCollection();
     var created = createVectors(10);
     searchVector = created.values().iterator().next();
   }
 
   @Test
   public void testNearVector() {
+    // TODO: test that we return the results in the expected order
+    // Because re-ranking should work correctly
     var things = client.collections.use(COLLECTION);
-    SearchResult<Map<String, Object>> result = things.query.nearVector(searchVector,
+    QueryResult<Map<String, Object>> result = things.query.nearVector(searchVector,
         opt -> opt
-            .distance(.002f)
-            .limit(3));
+            .distance(2f)
+            .limit(3)
+            .returnMetadata(MetadataField.DISTANCE));
 
     Assertions.assertThat(result.objects).hasSize(3);
     float maxDistance = Collections.max(result.objects,
         Comparator.comparing(obj -> obj.metadata.distance)).metadata.distance;
-    Assertions.assertThat(maxDistance).isLessThanOrEqualTo(.002f);
+    Assertions.assertThat(maxDistance).isLessThanOrEqualTo(2f);
   }
 
-  static Map<String, Float[]> createVectors(int n) throws IOException {
+  /**
+   * Insert 10 objects with random vectors.
+   *
+   * @returns IDs of inserted objects and their corresponding vectors.
+   */
+  private static Map<String, Float[]> createVectors(int n) throws IOException {
     var created = new HashMap<String, Float[]>();
 
     var things = client.collections.use(COLLECTION);
     for (int i = 0; i < n; i++) {
-      Float[] vector = IntStream.range(0, 9).<Float>mapToObj(f -> rand.nextFloat(-0.01f, 0.001f))
-          .toArray(Float[]::new);
+      var vector = randomVector(10, -.01f, .001f);
       var object = things.data.insert(
           Map.of(),
           metadata -> metadata
-              .id(UUID.randomUUID().toString())
-              .vectors(Vectors.of(vector)));
+              .id(randomUUID())
+              .vectors(Vectors.of(VECTOR_INDEX, vector)));
 
       created.put(object.metadata.id, vector);
     }
 
     return created;
+  }
+
+  /**
+   * Create {@link COLLECTION} with {@link VECTOR_INDEX} vector index.
+   *
+   * @throws IOException
+   */
+  private static void createTestCollection() throws IOException {
+    client.collections.create(COLLECTION, col -> col.vector(VECTOR_INDEX));
   }
 }

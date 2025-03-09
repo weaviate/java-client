@@ -9,7 +9,7 @@ public class Collection<T> {
   public final Data<T> data;
 
   public Collection(Config config, String collectionName) {
-    this.query = new Query<>();
+    this.query = new Query<>(collectionName, config);
     this.data = new Data<>(collectionName, config);
   }
 }

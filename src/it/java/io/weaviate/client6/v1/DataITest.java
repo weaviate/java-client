@@ -2,43 +2,32 @@ package io.weaviate.client6.v1;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.UUID;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.WeaviateClient;
 import io.weaviate.client6.v1.collections.Property;
 import io.weaviate.client6.v1.data.Vectors;
 import io.weaviate.containers.Container;
 
-public class DataITest {
-  // public static final Container.Group compose = Container.compose(
-  // Weaviate.custom()
-  // .withDefaultVectorizer(Contextionary.MODULE)
-  // .withContextionaryUrl(Contextionary.URL)
-  // .build(),
-  // Container.CONTEXTIONARY);
+public class DataITest extends ConcurrentTest {
 
   private static WeaviateClient client = Container.WEAVIATE.getClient();
-
-  // @ClassRule
-  // public static TestRule _rule = compose.asTestRule();
-
-  private static final String COLLECTION = "Things";
+  private static final String COLLECTION = unique("Things");
 
   @BeforeClass
   public static void beforeAll() throws IOException {
-    // client = compose.getClient();
     createTestCollection();
   }
 
   @Test
   public void testCreateGetDelete() throws IOException {
     var things = client.collections.use(COLLECTION);
-    var id = UUID.randomUUID().toString();
+    var id = randomUUID();
     Float[] vector = { 1f, 2f, 3f };
 
     things.data.insert(Map.of("username", "john doe"), metadata -> metadata

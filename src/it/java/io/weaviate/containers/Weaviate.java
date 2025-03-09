@@ -13,7 +13,7 @@ public class Weaviate extends WeaviateContainer {
   public static final String DOCKER_IMAGE = "semitechnologies/weaviate";
 
   public WeaviateClient getClient() {
-    var config = new Config("http", getHttpHostAddress());
+    var config = new Config("http", getHttpHostAddress(), getGrpcHostAddress());
     return new WeaviateClient(config);
   }
 
