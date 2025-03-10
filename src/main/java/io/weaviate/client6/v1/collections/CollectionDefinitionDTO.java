@@ -1,13 +1,14 @@
-package io.weaviate.client6.v1.collections.dto;
+package io.weaviate.client6.v1.collections;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import com.google.gson.annotations.SerializedName;
 
-import io.weaviate.client6.v1.collections.CollectionDefinition;
-import io.weaviate.client6.v1.collections.Property;
+import io.weaviate.client6.v1.collections.CollectionDefinition.VectorConfig;
 
 public class CollectionDefinitionDTO {
   @SerializedName("class")
@@ -31,5 +32,14 @@ public class CollectionDefinitionDTO {
           "vectorIndexType", index.indexType(),
           "vectorIndexConfig", index.indexConfiguration()));
     }
+  }
+
+  CollectionDefinition toCollectionDefinition() {
+    return new CollectionDefinition(
+        collection,
+        properties,
+        vectorIndices.entrySet().stream()
+            .collect(Collectors.toMap(
+                Entry::getKey, entry -> (VectorConfig) entry.getValue())));
   }
 }

@@ -1,6 +1,6 @@
 package io.weaviate.client6;
 
-import io.weaviate.client6.v1.Collections;
+import io.weaviate.client6.v1.collections.Collections;
 
 public class WeaviateClient {
   public final Collections collections;

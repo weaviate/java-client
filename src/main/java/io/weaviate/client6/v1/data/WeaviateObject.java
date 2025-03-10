@@ -1,17 +1,19 @@
 package io.weaviate.client6.v1.data;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.function.Consumer;
 
-import com.google.gson.annotations.SerializedName;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 // TODO: unify this with collections.SearchObject
 
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class WeaviateObject<T> {
   public final String collection;
   public final T properties;
@@ -31,33 +33,16 @@ public class WeaviateObject<T> {
     this.metadata = new Metadata(metadata.id, metadata.vectors);
   }
 
-  RequestObject<T> toRequestObject() {
-    return new RequestObject<T>(collection, metadata.id, properties, metadata.vectors.asMap());
+  // JSON serialization ----------------
+  public static <T> WeaviateObject<T> fromJson(Gson gson, InputStream input) throws IOException {
+    try (var r = new InputStreamReader(input)) {
+      WeaviateObjectDTO<T> dto = gson.fromJson(r, new TypeToken<WeaviateObjectDTO<T>>() {
+      }.getType());
+      return dto.toWeaviateObject();
+    }
   }
 
-  @AllArgsConstructor
-  static class RequestObject<T> {
-    @SerializedName("class")
-    public String collection;
-    @SerializedName("id")
-    public String id;
-    @SerializedName("properties")
-    public T properties;
-    @SerializedName("vectors")
-    public Map<String, Object> vectors;
-
-    WeaviateObject<T> toWeaviateObject() {
-      Map<String, Object> arrayVectors = new HashMap<>();
-      for (var entry : vectors.entrySet()) {
-        var value = (ArrayList<Double>) entry.getValue();
-        var vector = new Float[value.size()];
-        int i = 0;
-        for (var v : value) {
-          vector[i++] = v.floatValue();
-        }
-        arrayVectors.put(entry.getKey(), vector);
-      }
-      return new WeaviateObject<T>(collection, properties, new Metadata(id, new Vectors(arrayVectors)));
-    }
+  public String toJson(Gson gson) {
+    return gson.toJson(new WeaviateObjectDTO<>(this));
   }
 }

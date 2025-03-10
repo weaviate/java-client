@@ -1,4 +1,4 @@
-package io.weaviate.client6.v1;
+package io.weaviate.client6.v1.collections;
 
 import java.io.IOException;
 import java.util.Map;
@@ -15,8 +15,7 @@ import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 import com.google.gson.Gson;
 
 import io.weaviate.client6.Config;
-import io.weaviate.client6.v1.collections.CollectionDefinition;
-import io.weaviate.client6.v1.collections.dto.CollectionDefinitionDTO;
+import io.weaviate.client6.v1.Collection;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -24,17 +23,16 @@ public class Collections {
   // TODO: hide befind an internal HttpClient
   private final Config config;
 
+  // TODO: use singleton configured in one place
   private static final Gson gson = new Gson();
 
   public void create(String name, Consumer<CollectionDefinition.Configuration> options) throws IOException {
     var collection = new CollectionDefinition(name, options);
-    var body = new CollectionDefinitionDTO(collection);
 
     try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-      String jsonBody = gson.toJson(body);
       ClassicHttpRequest httpPost = ClassicRequestBuilder
           .post(config.baseUrl() + "/schema")
-          .setEntity(jsonBody, ContentType.APPLICATION_JSON)
+          .setEntity(collection.toJson(gson), ContentType.APPLICATION_JSON)
           .build();
 
       httpclient.execute(httpPost, response -> {
@@ -48,7 +46,7 @@ public class Collections {
     }
   }
 
-  public Collection<Map<String, Object>> use(String name) {
+  public io.weaviate.client6.v1.Collection<Map<String, Object>> use(String name) {
     return new Collection<>(config, name);
   }
 }

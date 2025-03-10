@@ -1,5 +1,8 @@
 package io.weaviate.client6.v1.collections;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -7,6 +10,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import com.google.gson.Gson;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class CollectionDefinition {
   public final String name;
   public final List<Property> properties;
@@ -49,5 +58,17 @@ public class CollectionDefinition {
       this.vectorConfig = new HashMap<>();
       options.accept(this);
     }
+  }
+
+  // JSON serialization ---------------
+  static CollectionDefinition fromJson(Gson gson, InputStream input) throws IOException {
+    try (var r = new InputStreamReader(input)) {
+      var dto = gson.fromJson(r, CollectionDefinitionDTO.class);
+      return dto.toCollectionDefinition();
+    }
+  }
+
+  public String toJson(Gson gson) {
+    return gson.toJson(new CollectionDefinitionDTO(this));
   }
 }

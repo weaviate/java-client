@@ -1,7 +1,6 @@
 package io.weaviate.client6.v1.data;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -13,7 +12,6 @@ import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
-import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 
 import io.weaviate.client6.Config;
@@ -31,11 +29,11 @@ public class Data<T> {
   private final Config config;
 
   public WeaviateObject<T> insert(T object, Consumer<CustomMetadata> metadata) throws IOException {
-    var body = new WeaviateObject<>(collectionName, object, metadata).toRequestObject();
+    var body = new WeaviateObject<>(collectionName, object, metadata);
     try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
       ClassicHttpRequest httpPost = ClassicRequestBuilder
           .post(config.baseUrl() + "/objects")
-          .setEntity(gson.toJson(body), ContentType.APPLICATION_JSON)
+          .setEntity(body.toJson(gson), ContentType.APPLICATION_JSON)
           .build();
 
       return httpclient.execute(httpPost, response -> {
@@ -45,12 +43,7 @@ public class Data<T> {
           throw new RuntimeException("HTTP " + response.getCode() + ": " + message);
         }
 
-        try (var r = new InputStreamReader(entity.getContent())) {
-          WeaviateObject.RequestObject<T> inserted = gson.fromJson(r,
-              new TypeToken<WeaviateObject.RequestObject<T>>() {
-              }.getType());
-          return inserted.toWeaviateObject();
-        }
+        return WeaviateObject.fromJson(gson, entity.getContent());
       });
     }
   }
@@ -65,23 +58,10 @@ public class Data<T> {
         if (response.getCode() == HttpStatus.SC_NOT_FOUND) {
           return Optional.empty();
         }
-        var json = EntityUtils.toString(response.getEntity());
-        WeaviateObject.RequestObject<T> object = gson.fromJson(json,
-            new TypeToken<WeaviateObject.RequestObject<T>>() {
-            }.getType());
-        if (object == null) {
-          return Optional.empty();
-        }
-        return Optional.of(object.toWeaviateObject());
-        // try (var r = new InputStreamReader(response.getEntity().getContent())) {
-        // WeaviateObject.RequestObject<T> object = gson.fromJson(r,
-        // new TypeToken<WeaviateObject.RequestObject<T>>() {
-        // }.getType());
-        // if (object == null) {
-        // return Optional.empty();
-        // }
-        // return Optional.of(object.toWeaviateObject());
-        // }
+
+        WeaviateObject<T> object = WeaviateObject.fromJson(
+            gson, response.getEntity().getContent());
+        return Optional.ofNullable(object);
       });
     }
   }
