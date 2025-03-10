@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.WeaviateClient;
-import io.weaviate.client6.v1.data.Vectors;
+import io.weaviate.client6.v1.Vectors;
 import io.weaviate.containers.Container;
 
 public class NearVectorQueryITest extends ConcurrentTest {

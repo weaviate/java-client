@@ -11,7 +11,6 @@ import org.junit.Test;
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.WeaviateClient;
 import io.weaviate.client6.v1.collections.Property;
-import io.weaviate.client6.v1.data.Vectors;
 import io.weaviate.containers.Container;
 
 public class DataITest extends ConcurrentTest {

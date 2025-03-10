@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.google.gson.annotations.SerializedName;
 
-import io.weaviate.client6.v1.data.WeaviateObject.Metadata;
+import io.weaviate.client6.v1.Vectors;
 
 class WeaviateObjectDTO<T> {
   @SerializedName("class")

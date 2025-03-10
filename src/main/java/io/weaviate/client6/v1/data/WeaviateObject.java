@@ -19,18 +19,11 @@ public class WeaviateObject<T> {
   public final T properties;
   public final Metadata metadata;
 
-  @AllArgsConstructor
-  public static class Metadata {
-    public final String id;
-    public final Vectors vectors;
-  }
-
-  WeaviateObject(String collection, T properties, Consumer<CustomMetadata> options) {
-    var metadata = new CustomMetadata(options);
+  WeaviateObject(String collection, T properties, Consumer<Metadata.Options> options) {
 
     this.collection = collection;
     this.properties = properties;
-    this.metadata = new Metadata(metadata.id, metadata.vectors);
+    this.metadata = new Metadata(options);
   }
 
   // JSON serialization ----------------

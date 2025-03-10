@@ -28,8 +28,8 @@ public class Data<T> {
   // TODO: hide befind an internal HttpClient
   private final Config config;
 
-  public WeaviateObject<T> insert(T object, Consumer<CustomMetadata> metadata) throws IOException {
-    var body = new WeaviateObject<>(collectionName, object, metadata);
+  public WeaviateObject<T> insert(T object, Consumer<Metadata.Options> options) throws IOException {
+    var body = new WeaviateObject<>(collectionName, object, options);
     try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
       ClassicHttpRequest httpPost = ClassicRequestBuilder
           .post(config.baseUrl() + "/objects")
