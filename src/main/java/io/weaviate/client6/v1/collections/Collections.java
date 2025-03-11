@@ -13,9 +13,15 @@ import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 
 import io.weaviate.client6.Config;
 import io.weaviate.client6.v1.Collection;
+import io.weaviate.client6.v1.collections.CollectionDefinition.Configuration;
+import io.weaviate.client6.v1.collections.VectorIndex.IndexType;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -24,10 +30,51 @@ public class Collections {
   private final Config config;
 
   // TODO: use singleton configured in one place
-  private static final Gson gson = new Gson();
+  private static final Gson gson = new GsonBuilder()
+      .registerTypeAdapter(Vectors.class, new TypeAdapter<Vectors>() {
+        Gson gson = new Gson();
+
+        @Override
+        public void write(JsonWriter out, Vectors value) throws IOException {
+          var unnamed = value.getUnnamed();
+          if (unnamed.isPresent()) {
+            var index = unnamed.get();
+            out.name("vectorIndexType");
+            gson.toJson(index.type(), IndexType.class, out);
+            out.name("vectorizer");
+            gson.toJson(index.vectorizer(), Vectorizer.class, out);
+            out.name("vectorIndexConfig");
+            gson.toJson(index.configuration(), Configuration.class, out);
+            return;
+          }
+
+          gson.toJson(value.asMap(), Map.class, out);
+        }
+
+        @Override
+        public Vectors read(JsonReader in) throws IOException {
+          // TODO Auto-generated method stub
+          throw new UnsupportedOperationException("Unimplemented method 'read'");
+        }
+
+      })
+      .registerTypeHierarchyAdapter(Vectorizer.class, new TypeAdapter<Vectorizer>() {
+        Gson gson = new Gson();
+
+        @Override
+        public void write(JsonWriter out, Vectorizer value) throws IOException {
+          gson.toJson(value, value.getClass(), out);
+        }
+
+        @Override
+        public Vectorizer read(JsonReader in) throws IOException {
+          return Vectorizer.none();
+        }
+      })
+      .create();
 
   public void create(String name, Consumer<CollectionDefinition.Configuration> options) throws IOException {
-    var collection = new CollectionDefinition(name, options);
+    var collection = CollectionDefinition.with(name, options);
 
     try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
       ClassicHttpRequest httpPost = ClassicRequestBuilder

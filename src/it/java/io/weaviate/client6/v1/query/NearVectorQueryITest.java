@@ -13,6 +13,7 @@ import org.junit.Test;
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.WeaviateClient;
 import io.weaviate.client6.v1.Vectors;
+import io.weaviate.client6.v1.collections.VectorIndex;
 import io.weaviate.containers.Container;
 
 public class NearVectorQueryITest extends ConcurrentTest {
@@ -80,6 +81,7 @@ public class NearVectorQueryITest extends ConcurrentTest {
    * @throws IOException
    */
   private static void createTestCollection() throws IOException {
-    client.collections.create(COLLECTION, col -> col.vector(VECTOR_INDEX));
+    client.collections.create(COLLECTION, cfg -> cfg
+        .vector(VECTOR_INDEX, VectorIndex.hnsw()));
   }
 }

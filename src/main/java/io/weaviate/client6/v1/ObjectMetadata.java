@@ -57,7 +57,7 @@ public class ObjectMetadata {
     }
 
     public Builder vectors(Consumer<Vectors.NamedVectors> named) {
-      this.vectors = new Vectors(named);
+      this.vectors = Vectors.with(named);
       return this;
     }
 

@@ -73,9 +73,9 @@ public class Vectors {
     this.namedVectors = Collections.unmodifiableMap(vectors);
   }
 
-  public Vectors(Consumer<NamedVectors> options) {
-    var vectors = new NamedVectors(options);
-    this.namedVectors = vectors.namedVectors;
+  static Vectors with(Consumer<NamedVectors> named) {
+    var vectors = new NamedVectors(named);
+    return new Vectors(vectors.namedVectors);
   }
 
   /**
