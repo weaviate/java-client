@@ -15,6 +15,7 @@ import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 import com.google.gson.Gson;
 
 import io.weaviate.client6.Config;
+import io.weaviate.client6.v1.ObjectMetadata;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -28,7 +29,7 @@ public class Data<T> {
   // TODO: hide befind an internal HttpClient
   private final Config config;
 
-  public WeaviateObject<T> insert(T object, Consumer<Metadata.Options> options) throws IOException {
+  public WeaviateObject<T> insert(T object, Consumer<ObjectMetadata.Builder> options) throws IOException {
     var body = new WeaviateObject<>(collectionName, object, options);
     try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
       ClassicHttpRequest httpPost = ClassicRequestBuilder

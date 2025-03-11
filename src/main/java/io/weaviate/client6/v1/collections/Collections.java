@@ -15,7 +15,6 @@ import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 import com.google.gson.Gson;
 
 import io.weaviate.client6.Config;
-import io.weaviate.client6.internal.DtoTypeAdapterFactory;
 import io.weaviate.client6.v1.Collection;
 import lombok.AllArgsConstructor;
 

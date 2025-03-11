@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.google.gson.annotations.SerializedName;
 
+import io.weaviate.client6.v1.ObjectMetadata;
 import io.weaviate.client6.v1.Vectors;
 
 class WeaviateObjectDTO<T> {
@@ -39,6 +40,6 @@ class WeaviateObjectDTO<T> {
       }
       arrayVectors.put(entry.getKey(), vector);
     }
-    return new WeaviateObject<T>(collection, properties, new Metadata(id, new Vectors(arrayVectors)));
+    return new WeaviateObject<T>(collection, properties, new ObjectMetadata(id, Vectors.of(arrayVectors)));
   }
 }

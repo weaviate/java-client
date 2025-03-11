@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * Vectors is an abstraction over named vectors.
@@ -12,7 +13,7 @@ import java.util.Optional;
 public class Vectors {
   private static final String DEFAULT = "default";
 
-  private Float[] legacyVector;
+  private Float[] unnamedVector;
   private Map<String, Object> namedVectors;
 
   public Float[] getSingle(String name) {
@@ -42,7 +43,7 @@ public class Vectors {
   }
 
   public Optional<Float[]> getUnnamed() {
-    return Optional.ofNullable(legacyVector);
+    return Optional.ofNullable(unnamedVector);
   }
 
   private Optional<?> getOnly() {
@@ -58,13 +59,23 @@ public class Vectors {
 
   /** Creates Vectors with a single unnamed vector. */
   private Vectors(Float[] vector) {
-    this.legacyVector = vector;
-    this.namedVectors = Map.of();
+    this(Map.of());
+    this.unnamedVector = vector;
+  }
+
+  /** Creates Vectors with one named vector. */
+  private Vectors(String name, Object vector) {
+    this.namedVectors = Map.of(name, vector);
   }
 
   /** Creates immutable set of vectors. */
-  public Vectors(Map<String, ? extends Object> vectors) {
+  private Vectors(Map<String, ? extends Object> vectors) {
     this.namedVectors = Collections.unmodifiableMap(vectors);
+  }
+
+  public Vectors(Consumer<NamedVectors> options) {
+    var vectors = new NamedVectors(options);
+    this.namedVectors = vectors.namedVectors;
   }
 
   /**
@@ -75,52 +86,41 @@ public class Vectors {
     return new Vectors(vector);
   }
 
-  public static Vectors.Builder of(Float[] vector) {
-    return Vectors.of(DEFAULT, vector);
+  public static Vectors of(Float[] vector) {
+    return new Vectors(DEFAULT, vector);
   }
 
-  public static Vectors.Builder of(Float[][] vector) {
-    return Vectors.of(DEFAULT, vector);
+  public static Vectors of(Float[][] vector) {
+    return new Vectors(DEFAULT, vector);
   }
 
-  public static Vectors.Builder of(String name, Float[] vector) {
-    return new Vectors.Builder(name, vector);
+  public static Vectors of(String name, Float[] vector) {
+    return new Vectors(name, vector);
   }
 
-  public static Vectors.Builder of(String name, Float[][] vector) {
-    return new Vectors.Builder(name, vector);
+  public static Vectors of(String name, Float[][] vector) {
+    return new Vectors(name, vector);
   }
 
-  public static class Builder {
+  public static Vectors of(Map<String, ? extends Object> vectors) {
+    return new Vectors(vectors);
+  }
+
+  public static class NamedVectors {
     private Map<String, Object> namedVectors = new HashMap<>();
 
-    // Hide this constructor;
-    private Builder() {
-    }
-
-    public Builder(String name, Float[] vector) {
-      this.namedVectors.put(name, vector);
-    }
-
-    public Builder(String name, Float[][] vector) {
-      this.namedVectors.put(name, vector);
-    }
-
-    public Builder of(String name, Float[] vector) {
+    public NamedVectors vector(String name, Float[] vector) {
       this.namedVectors.put(name, vector);
       return this;
     }
 
-    public Builder of(String name, Float[][] vector) {
+    public NamedVectors vector(String name, Float[][] vector) {
       this.namedVectors.put(name, vector);
       return this;
     }
 
-    // If we could bring both Data and Query methods in one package,
-    // then we wouldn't need to expose this method.
-    // Alternatively, of course, we go with Tucked Builders all the way.
-    public Vectors build() {
-      return new Vectors(namedVectors);
+    NamedVectors(Consumer<NamedVectors> options) {
+      options.accept(this);
     }
   }
 }

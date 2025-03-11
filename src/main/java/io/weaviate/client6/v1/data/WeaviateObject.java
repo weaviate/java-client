@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 
+import io.weaviate.client6.v1.ObjectMetadata;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
@@ -17,13 +18,13 @@ import lombok.AllArgsConstructor;
 public class WeaviateObject<T> {
   public final String collection;
   public final T properties;
-  public final Metadata metadata;
+  public final ObjectMetadata metadata;
 
-  WeaviateObject(String collection, T properties, Consumer<Metadata.Options> options) {
+  WeaviateObject(String collection, T properties, Consumer<ObjectMetadata.Builder> options) {
 
     this.collection = collection;
     this.properties = properties;
-    this.metadata = new Metadata(options);
+    this.metadata = new ObjectMetadata(options);
   }
 
   // JSON serialization ----------------
