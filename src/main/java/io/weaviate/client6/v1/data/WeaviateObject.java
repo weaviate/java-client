@@ -9,22 +9,13 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 
 import io.weaviate.client6.v1.ObjectMetadata;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 
 // TODO: unify this with collections.SearchObject
 
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
-public class WeaviateObject<T> {
-  public final String collection;
-  public final T properties;
-  public final ObjectMetadata metadata;
+public record WeaviateObject<T>(String collection, T properties, ObjectMetadata metadata) {
 
   WeaviateObject(String collection, T properties, Consumer<ObjectMetadata.Builder> options) {
-
-    this.collection = collection;
-    this.properties = properties;
-    this.metadata = new ObjectMetadata(options);
+    this(collection, properties, ObjectMetadata.with(options));
   }
 
   // JSON serialization ----------------

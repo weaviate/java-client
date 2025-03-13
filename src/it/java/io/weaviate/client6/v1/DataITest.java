@@ -39,14 +39,14 @@ public class DataITest extends ConcurrentTest {
     Assertions.assertThat(object)
         .as("object exists after insert").get()
         .satisfies(obj -> {
-          Assertions.assertThat(obj.metadata.id)
+          Assertions.assertThat(obj.metadata().id())
               .as("object id").isEqualTo(id);
 
-          Assertions.assertThat(obj.metadata.vectors).extracting(Vectors::getSingle)
+          Assertions.assertThat(obj.metadata().vectors()).extracting(Vectors::getSingle)
               .asInstanceOf(InstanceOfAssertFactories.OPTIONAL).as("has single vector").get()
               .asInstanceOf(InstanceOfAssertFactories.array(Float[].class)).containsExactly(vector);
 
-          Assertions.assertThat(obj.properties)
+          Assertions.assertThat(obj.properties())
               .as("has expected properties")
               .containsEntry("username", "john doe");
         });

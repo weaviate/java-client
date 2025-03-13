@@ -20,12 +20,12 @@ class WeaviateObjectDTO<T> {
   Map<String, Object> vectors;
 
   WeaviateObjectDTO(WeaviateObject<T> object) {
-    this.collection = object.collection;
-    this.properties = object.properties;
+    this.collection = object.collection();
+    this.properties = object.properties();
 
-    if (object.metadata != null) {
-      this.id = object.metadata.id;
-      this.vectors = object.metadata.vectors.asMap();
+    if (object.metadata() != null) {
+      this.id = object.metadata().id();
+      this.vectors = object.metadata().vectors().asMap();
     }
   }
 

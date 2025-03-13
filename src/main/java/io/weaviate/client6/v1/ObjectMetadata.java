@@ -2,24 +2,11 @@ package io.weaviate.client6.v1;
 
 import java.util.function.Consumer;
 
-public class ObjectMetadata {
-  public final String id;
-  public final Vectors vectors;
+public record ObjectMetadata(String id, Vectors vectors) {
 
-  // ObjectMetadata(String id, Vectors vectors) {
-  // this(m -> m.id(id).vectors(vectors));
-  // }
-
-  public ObjectMetadata(String id, Vectors vectors) {
-    this.id = id;
-    this.vectors = vectors;
-  }
-
-  public ObjectMetadata(Consumer<Builder> options) {
+  public static ObjectMetadata with(Consumer<Builder> options) {
     var opt = new Builder(options);
-
-    this.id = opt.id;
-    this.vectors = opt.vectors;
+    return new ObjectMetadata(opt.id, opt.vectors);
   }
 
   public static class Builder {

@@ -68,7 +68,7 @@ public class NearVectorQueryITest extends ConcurrentTest {
               .id(randomUUID())
               .vectors(Vectors.of(VECTOR_INDEX, vector)));
 
-      created.put(object.metadata.id, vector);
+      created.put(object.metadata().id(), vector);
     }
 
     return created;
