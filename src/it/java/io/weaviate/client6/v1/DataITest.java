@@ -59,7 +59,7 @@ public class DataITest extends ConcurrentTest {
   private static void createTestCollection() throws IOException {
     client.collections.create(COLLECTION,
         col -> col
-            .properties(Property.text("username"))
+            .properties(Property.text("username"), Property.integer("age"))
             .vector(VECTOR_INDEX, VectorIndex.hnsw()));
   }
 }

@@ -15,6 +15,7 @@ import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 import com.google.gson.Gson;
 
 import io.weaviate.client6.Config;
+import io.weaviate.client6.internal.HttpClient;
 import io.weaviate.client6.v1.ObjectMetadata;
 import lombok.AllArgsConstructor;
 
@@ -28,25 +29,24 @@ public class Data<T> {
 
   // TODO: hide befind an internal HttpClient
   private final Config config;
+  private final HttpClient httpClient;
 
   public WeaviateObject<T> insert(T object, Consumer<ObjectMetadata.Builder> options) throws IOException {
     var body = new WeaviateObject<>(collectionName, object, options);
-    try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-      ClassicHttpRequest httpPost = ClassicRequestBuilder
-          .post(config.baseUrl() + "/objects")
-          .setEntity(body.toJson(gson), ContentType.APPLICATION_JSON)
-          .build();
+    ClassicHttpRequest httpPost = ClassicRequestBuilder
+        .post(config.baseUrl() + "/objects")
+        .setEntity(body.toJson(gson), ContentType.APPLICATION_JSON)
+        .build();
 
-      return httpclient.execute(httpPost, response -> {
-        var entity = response.getEntity();
-        if (response.getCode() != HttpStatus.SC_SUCCESS) { // Does not return 201
-          var message = EntityUtils.toString(entity);
-          throw new RuntimeException("HTTP " + response.getCode() + ": " + message);
-        }
+    return httpClient.http.execute(httpPost, response -> {
+      var entity = response.getEntity();
+      if (response.getCode() != HttpStatus.SC_SUCCESS) { // Does not return 201
+        var message = EntityUtils.toString(entity);
+        throw new RuntimeException("HTTP " + response.getCode() + ": " + message);
+      }
 
-        return WeaviateObject.fromJson(gson, entity.getContent());
-      });
-    }
+      return WeaviateObject.fromJson(gson, entity.getContent());
+    });
   }
 
   public Optional<WeaviateObject<T>> get(String id) throws IOException {
@@ -55,7 +55,7 @@ public class Data<T> {
           .get(config.baseUrl() + "/objects/" + collectionName + "/" + id + "?include=vector")
           .build();
 
-      return httpclient.execute(httpGet, response -> {
+      return httpClient.http.execute(httpGet, response -> {
         if (response.getCode() == HttpStatus.SC_NOT_FOUND) {
           return Optional.empty();
         }
@@ -73,7 +73,7 @@ public class Data<T> {
           .delete(config.baseUrl() + "/objects/" + collectionName + "/" + id)
           .build();
 
-      httpclient.execute(httpGet, response -> {
+      httpClient.http.execute(httpGet, response -> {
         if (response.getCode() != HttpStatus.SC_NO_CONTENT) {
           throw new RuntimeException(EntityUtils.toString(response.getEntity()));
         }

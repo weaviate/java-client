@@ -38,38 +38,30 @@ public class Container {
       this.weaviate = weaviate;
       this.containers = Arrays.asList(containers);
       setSharedNetwork();
-      System.out.println("Group initialized");
     }
 
     public WeaviateClient getClient() {
-      System.out.println("get Weaviate client");
       return weaviate.getClient();
     }
 
     @Override
     public void start() {
-      System.out.println("Starting containers...");
       containers.forEach(GenericContainer::start);
-      System.out.println("Starting Weaviate...");
       weaviate.start();
-      System.out.println("Started");
     }
 
     @Override
     public void stop() {
-      System.out.println("Stopping...");
       weaviate.stop();
       containers.forEach(GenericContainer::stop);
     }
 
     private void setSharedNetwork() {
-      System.out.println("Set shared network...");
       weaviate.setNetwork(Network.SHARED);
       containers.forEach(c -> c.setNetwork(Network.SHARED));
     }
 
     public TestRule asTestRule() {
-      System.out.println("As TestRule!");
       return new PerTestSuite(this);
     };
   }

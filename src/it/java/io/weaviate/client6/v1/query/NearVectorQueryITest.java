@@ -66,7 +66,6 @@ public class NearVectorQueryITest extends ConcurrentTest {
           Map.of(),
           metadata -> metadata
               .id(randomUUID())
-              .vectors(Vectors.unnamed(vector))
               .vectors(Vectors.of(VECTOR_INDEX, vector)));
 
       created.put(object.metadata.id, vector);

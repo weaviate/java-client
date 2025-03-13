@@ -1,5 +1,6 @@
 package io.weaviate.containers;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,12 +10,18 @@ import io.weaviate.client6.Config;
 import io.weaviate.client6.WeaviateClient;
 
 public class Weaviate extends WeaviateContainer {
+  private static WeaviateClient CLIENT;
+
   public static final String VERSION = "1.29.0";
   public static final String DOCKER_IMAGE = "semitechnologies/weaviate";
 
   public WeaviateClient getClient() {
-    var config = new Config("http", getHttpHostAddress(), getGrpcHostAddress());
-    return new WeaviateClient(config);
+    if (CLIENT == null) {
+      var config = new Config("http", getHttpHostAddress(), getGrpcHostAddress());
+      CLIENT = new WeaviateClient(config);
+      System.out.println("create Weaviate client -- ONCE");
+    }
+    return CLIENT;
   }
 
   public static Weaviate createDefault() {
@@ -87,5 +94,19 @@ public class Weaviate extends WeaviateContainer {
 
   private Weaviate(String dockerImageName) {
     super(dockerImageName);
+  }
+
+  @Override
+  public void stop() {
+    // Note: at the moment containers which are not created as a @TestRule
+    // will not be "stopped", so client's resources are also not being freed.
+    // This is fine in tests, but may produce warnings about the gRPC channel
+    // not shut down properly.
+    super.stop();
+    try {
+      CLIENT.close();
+    } catch (IOException e) {
+      // TODO: log error
+    }
   }
 }

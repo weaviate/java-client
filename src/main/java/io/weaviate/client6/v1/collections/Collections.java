@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.ClassicHttpRequest;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.HttpStatus;
@@ -19,6 +17,8 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 import io.weaviate.client6.Config;
+import io.weaviate.client6.internal.GrpcClient;
+import io.weaviate.client6.internal.HttpClient;
 import io.weaviate.client6.v1.Collection;
 import io.weaviate.client6.v1.collections.CollectionDefinition.Configuration;
 import io.weaviate.client6.v1.collections.VectorIndex.IndexType;
@@ -29,8 +29,12 @@ public class Collections {
   // TODO: hide befind an internal HttpClient
   private final Config config;
 
+  private final HttpClient httpClient;
+  private final GrpcClient grpcClient;
+
   // TODO: use singleton configured in one place
   private static final Gson gson = new GsonBuilder()
+      // TODO: create TypeAdapters via TypeAdapterFactory
       .registerTypeAdapter(Vectors.class, new TypeAdapter<Vectors>() {
         Gson gson = new Gson();
 
@@ -76,24 +80,23 @@ public class Collections {
   public void create(String name, Consumer<CollectionDefinition.Configuration> options) throws IOException {
     var collection = CollectionDefinition.with(name, options);
 
-    try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-      ClassicHttpRequest httpPost = ClassicRequestBuilder
-          .post(config.baseUrl() + "/schema")
-          .setEntity(collection.toJson(gson), ContentType.APPLICATION_JSON)
-          .build();
+    ClassicHttpRequest httpPost = ClassicRequestBuilder
+        .post(config.baseUrl() + "/schema")
+        .setEntity(collection.toJson(gson), ContentType.APPLICATION_JSON)
+        .build();
 
-      httpclient.execute(httpPost, response -> {
-        var entity = response.getEntity();
-        if (response.getCode() != HttpStatus.SC_SUCCESS) { // Does not return 201
-          var message = EntityUtils.toString(entity);
-          throw new RuntimeException("HTTP " + response.getCode() + ": " + message);
-        }
-        return null;
-      });
-    }
+    // TODO: do not expose Apache HttpClient directly
+    httpClient.http.execute(httpPost, response -> {
+      var entity = response.getEntity();
+      if (response.getCode() != HttpStatus.SC_SUCCESS) { // Does not return 201
+        var message = EntityUtils.toString(entity);
+        throw new RuntimeException("HTTP " + response.getCode() + ": " + message);
+      }
+      return null;
+    });
   }
 
-  public io.weaviate.client6.v1.Collection<Map<String, Object>> use(String name) {
-    return new Collection<>(config, name);
+  public Collection<Map<String, Object>> use(String name) {
+    return new Collection<>(name, config, grpcClient, httpClient);
   }
 }

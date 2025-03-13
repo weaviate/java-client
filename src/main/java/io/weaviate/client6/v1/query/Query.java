@@ -9,17 +9,12 @@ import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
-import io.grpc.stub.MetadataUtils;
-import io.weaviate.client6.Config;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateGrpc;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateGrpc.WeaviateBlockingStub;
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoProperties.Value;
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.MetadataResult;
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.SearchReply;
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.SearchRequest;
 import io.weaviate.client6.internal.GRPC;
+import io.weaviate.client6.internal.GrpcClient;
 
 public class Query<T> {
   // TODO: inject singleton as dependency
@@ -28,20 +23,13 @@ public class Query<T> {
   // TODO: this should be wrapped around in some TypeInspector etc.
   private final String collectionName;
 
-  // TODO: hide befind an internal HttpClient
-  private final Config config;
-
   // TODO: implement Closeable and call grpc.shutdown() on exit
   // (probably on a "higher" level);
-  private WeaviateBlockingStub grpc;
+  private final GrpcClient grpcClient;
 
-  public Query(String collectionName, Config config) {
-    this.config = config;
+  public Query(String collectionName, GrpcClient grpc) {
+    this.grpcClient = grpc;
     this.collectionName = collectionName;
-
-    // TODO: add request headers (config.headers + authorization)
-    this.grpc = WeaviateGrpc.newBlockingStub(buildChannel(config))
-        .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(new io.grpc.Metadata()));
   }
 
   public QueryResult<T> nearVector(Float[] vector, Consumer<NearVector.Options> options) {
@@ -60,7 +48,7 @@ public class Query<T> {
   }
 
   private QueryResult<T> search(SearchRequest req) {
-    var reply = grpc.search(req);
+    var reply = grpcClient.grpc.search(req);
     return deserializeUntyped(reply);
   }
 
@@ -112,11 +100,5 @@ public class Query<T> {
       assert false : "branch not covered";
     }
     return null;
-  }
-
-  private static ManagedChannel buildChannel(Config config) {
-    ManagedChannelBuilder<?> channelBuilder = ManagedChannelBuilder.forTarget(config.grpcAddress());
-    channelBuilder.usePlaintext();
-    return channelBuilder.build();
   }
 }

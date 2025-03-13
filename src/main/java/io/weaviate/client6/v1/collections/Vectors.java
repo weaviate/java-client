@@ -40,6 +40,8 @@ public class Vectors {
     return namedVectors.get(DEFAULT);
   }
 
+  // This needs to document the fact that this only returns named vectors.
+  // Rename to "getNamedVectors()"
   public Map<String, Object> asMap() {
     return Map.copyOf(namedVectors);
   }
