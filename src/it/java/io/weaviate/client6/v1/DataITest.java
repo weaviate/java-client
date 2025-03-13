@@ -35,7 +35,7 @@ public class DataITest extends ConcurrentTest {
         .id(id)
         .vectors(Vectors.of(VECTOR_INDEX, vector)));
 
-    var object = things.data.get(id);
+    var object = things.data.get(id, query -> query.withVector());
     Assertions.assertThat(object)
         .as("object exists after insert").get()
         .satisfies(obj -> {

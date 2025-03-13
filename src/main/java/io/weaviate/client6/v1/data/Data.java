@@ -50,9 +50,14 @@ public class Data<T> {
   }
 
   public Optional<WeaviateObject<T>> get(String id) throws IOException {
+    return get(id, q -> {
+    });
+  }
+
+  public Optional<WeaviateObject<T>> get(String id, Consumer<GetParameters> query) throws IOException {
     try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
       ClassicHttpRequest httpGet = ClassicRequestBuilder
-          .get(config.baseUrl() + "/objects/" + collectionName + "/" + id + "?include=vector")
+          .get(config.baseUrl() + "/objects/" + collectionName + "/" + id + QueryParameters.encodeGet(query))
           .build();
 
       return httpClient.http.execute(httpGet, response -> {
