@@ -2,6 +2,7 @@ package io.weaviate.client.v1.experimental;
 
 import java.time.OffsetDateTime;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -138,8 +139,14 @@ public class SearchClient<T> {
    * (de-)serialized by {@link Gson}.
    */
   private static Map<String, Object> convertProtoMap(Map<String, Value> map) {
-    return map.entrySet().stream().collect(Collectors.toMap(
-        Map.Entry::getKey, e -> convertProtoValue(e.getValue())));
+    return map.entrySet().stream()
+        // We cannot use Collectors.toMap() here, because convertProtoValue may
+        // return null (a collection property can be null), which breaks toMap().
+        // See: https://bugs.openjdk.org/browse/JDK-8148463
+        .collect(
+            HashMap::new,
+            (m, e) -> m.put(e.getKey(), convertProtoValue(e.getValue())),
+            HashMap::putAll);
   }
 
   /**
