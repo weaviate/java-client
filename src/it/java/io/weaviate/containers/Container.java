@@ -18,7 +18,25 @@ public class Container {
   public static final Contextionary CONTEXTIONARY = Contextionary.createDefault();
 
   static {
+    startAll();
+  }
+
+  /** Start all shared Testcontainers. */
+  // TODO: start lazily?
+  static void startAll() {
     WEAVIATE.start();
+  }
+
+  /**
+   * Stop all shared Testcontainers created in {@link #startAll}.
+   * <p>
+   * Testcontainer's Ryuk will reap any dangling containers after the tests
+   * finish. However, since {@link Weaviate} instances also hold a
+   * {@link WeaviateClient}, we want to stop them proactively to
+   * close client connections.
+   */
+  static void stopAll() {
+    WEAVIATE.stop();
   }
 
   public static Group compose(Weaviate weaviate, GenericContainer<?>... containers) {

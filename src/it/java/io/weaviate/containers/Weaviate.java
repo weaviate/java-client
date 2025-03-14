@@ -10,18 +10,22 @@ import io.weaviate.client6.Config;
 import io.weaviate.client6.WeaviateClient;
 
 public class Weaviate extends WeaviateContainer {
-  private static WeaviateClient CLIENT;
+  private static WeaviateClient clientInstance;
 
   public static final String VERSION = "1.29.0";
   public static final String DOCKER_IMAGE = "semitechnologies/weaviate";
 
+  /**
+   * Get a client for the current Weaviate container.
+   * As we aren't running tests in parallel at the moment,
+   * this is not made thread-safe.
+   */
   public WeaviateClient getClient() {
-    if (CLIENT == null) {
+    if (clientInstance == null) {
       var config = new Config("http", getHttpHostAddress(), getGrpcHostAddress());
-      CLIENT = new WeaviateClient(config);
-      System.out.println("create Weaviate client -- ONCE");
+      clientInstance = new WeaviateClient(config);
     }
-    return CLIENT;
+    return clientInstance;
   }
 
   public static Weaviate createDefault() {
@@ -104,7 +108,7 @@ public class Weaviate extends WeaviateContainer {
     // not shut down properly.
     super.stop();
     try {
-      CLIENT.close();
+      clientInstance.close();
     } catch (IOException e) {
       // TODO: log error
     }
