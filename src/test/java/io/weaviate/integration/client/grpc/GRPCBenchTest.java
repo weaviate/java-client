@@ -55,7 +55,7 @@ public class GRPCBenchTest {
 
   private WeaviateClient client;
 
-  private static final String[] returnProperties = { "title", "price", "bestBefore" };
+  private static final String[] returnProperties = { "title", "price", "bestBefore", "possiblyNull" };
   private static final String className = "Things";
   private static final Date NOW = Date.from(Instant.now());
 
@@ -174,6 +174,9 @@ public class GRPCBenchTest {
     // WARN: this is to test filtering with List<?> values. Creating List<?>
     // properties is not supported in this version.
     public String[] ingredientsList = {};
+
+    // Property containing null values.
+    public String possiblyNull;
   }
 
   @Test
@@ -400,7 +403,8 @@ public class GRPCBenchTest {
               // and convert it to the correct format behind the scenes.
               /* bestBefore */ DateUtils.addDays(NOW, i),
               /* ingredientsArray */ ingr,
-              /* ingredientsList */ ingr);
+              /* ingredientsList */ ingr,
+              i == 2 ? "not null" : null);
           b.add(thing, e);
           i++;
         }
