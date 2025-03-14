@@ -166,6 +166,8 @@ public class SearchClient<T> {
     } else if (value.hasDateValue()) {
       OffsetDateTime offsetDateTime = OffsetDateTime.parse(value.getDateValue());
       return Date.from(offsetDateTime.toInstant());
+    } else if (value.hasNullValue()) {
+      return null;
     } else {
       assert false : "branch not covered";
     }
