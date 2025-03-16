@@ -21,8 +21,6 @@ import io.weaviate.client6.internal.DtoTypeAdapterFactory;
 import io.weaviate.client6.internal.GrpcClient;
 import io.weaviate.client6.internal.HttpClient;
 import io.weaviate.client6.v1.Collection;
-import io.weaviate.client6.v1.collections.CollectionDefinition.Configuration;
-import io.weaviate.client6.v1.collections.VectorIndex.IndexType;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -48,18 +46,6 @@ public class Collections {
 
         @Override
         public void write(JsonWriter out, Vectors value) throws IOException {
-          var unnamed = value.getUnnamed();
-          if (unnamed.isPresent()) {
-            var index = unnamed.get();
-            out.name("vectorIndexType");
-            gson.toJson(index.type(), IndexType.class, out);
-            out.name("vectorizer");
-            gson.toJson(index.vectorizer(), Vectorizer.class, out);
-            out.name("vectorIndexConfig");
-            gson.toJson(index.configuration(), Configuration.class, out);
-            return;
-          }
-
           gson.toJson(value.asMap(), Map.class, out);
         }
 
@@ -67,24 +53,6 @@ public class Collections {
         public Vectors read(JsonReader in) throws IOException {
           // TODO Auto-generated method stub
           throw new UnsupportedOperationException("Unimplemented method 'read'");
-        }
-
-      })
-      .registerTypeHierarchyAdapter(Vectorizer.class, new TypeAdapter<Vectorizer>() {
-        Gson gson = new Gson();
-
-        @Override
-        public void write(JsonWriter out, Vectorizer value) throws IOException {
-          if (value == null) {
-            out.nullValue();
-          } else {
-            gson.toJson(value, value.getClass(), out);
-          }
-        }
-
-        @Override
-        public Vectorizer read(JsonReader in) throws IOException {
-          return Vectorizer.none();
         }
       })
       .create();

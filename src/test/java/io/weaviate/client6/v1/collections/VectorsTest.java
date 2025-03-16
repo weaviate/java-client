@@ -46,23 +46,6 @@ public class VectorsTest {
         }
 
       })
-      .registerTypeHierarchyAdapter(Vectorizer.class, new TypeAdapter<Vectorizer>() {
-        Gson gson = new Gson();
-
-        @Override
-        public void write(JsonWriter out, Vectorizer value) throws IOException {
-          if (value != null) {
-            gson.toJson(value, value.getClass(), out);
-          } else {
-            out.nullValue();
-          }
-        }
-
-        @Override
-        public Vectorizer read(JsonReader in) throws IOException {
-          return Vectorizer.none();
-        }
-      })
       .create();
 
   public static Object[][] testCases() {
