@@ -7,6 +7,9 @@ import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 
 public class HttpClient implements Closeable {
+  // TODO: move somewhere
+  // public static final Gson GSON =
+
   public final CloseableHttpClient http;
 
   public HttpClient() {

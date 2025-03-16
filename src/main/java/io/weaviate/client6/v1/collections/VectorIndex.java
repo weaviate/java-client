@@ -7,33 +7,30 @@ import com.google.gson.annotations.SerializedName;
 public record VectorIndex<V extends Vectorizer>(
     @SerializedName("vectorIndexType") IndexType type,
     @SerializedName("vectorizer") V vectorizer,
-    @SerializedName("vectorIndexConfig") Configuration configuration) {
+    @SerializedName("vectorIndexConfig") IndexingStrategy configuration) {
 
   public enum IndexType {
     @SerializedName("hnsw")
     HNSW;
   }
 
-  public static sealed interface Configuration permits HNSW {
+  public VectorIndex(IndexingStrategy index, V vectorizer) {
+    this(index.type(), vectorizer, index);
   }
 
-  private VectorIndex(IndexType type, V vectorizer) {
-    this(type, vectorizer, null);
+  public VectorIndex(V vectorizer) {
+    this(null, vectorizer, null);
   }
 
-  public static VectorIndex<NoneVectorizer> bare() {
-    return new VectorIndex<>(null, Vectorizer.none());
-  }
+  public static sealed interface IndexingStrategy permits HNSW {
+    IndexType type();
 
-  public static VectorIndex<NoneVectorizer> hnsw() {
-    return new VectorIndex<>(IndexType.HNSW, Vectorizer.none());
-  }
+    public static IndexingStrategy hnsw() {
+      return new HNSW();
+    }
 
-  public static <V extends Vectorizer> VectorIndex<V> hnsw(V vectorizer) {
-    return new VectorIndex<>(IndexType.HNSW, vectorizer);
-  }
-
-  public static <V extends Vectorizer> VectorIndex<V> hnsw(V vectorizer, Consumer<HNSW.Options> options) {
-    return new VectorIndex<>(IndexType.HNSW, vectorizer, HNSW.with(options));
+    public static IndexingStrategy hnsw(Consumer<HNSW.Options> options) {
+      return HNSW.with(options);
+    }
   }
 }

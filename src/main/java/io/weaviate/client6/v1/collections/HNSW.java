@@ -2,12 +2,22 @@ package io.weaviate.client6.v1.collections;
 
 import java.util.function.Consumer;
 
-public final record HNSW(Distance distance, boolean skip) implements VectorIndex.Configuration {
+import io.weaviate.client6.v1.collections.VectorIndex.IndexType;
+
+public final record HNSW(Distance distance, Boolean skip) implements VectorIndex.IndexingStrategy {
+  public VectorIndex.IndexType type() {
+    return IndexType.HNSW;
+  }
+
   public enum Distance {
     COSINE;
   }
 
-  public static HNSW with(Consumer<Options> options) {
+  HNSW() {
+    this(null, null);
+  }
+
+  static HNSW with(Consumer<Options> options) {
     var opt = new Options(options);
     return new HNSW(opt.distance, opt.skip);
   }

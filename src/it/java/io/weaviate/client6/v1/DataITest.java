@@ -12,6 +12,8 @@ import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.WeaviateClient;
 import io.weaviate.client6.v1.collections.Property;
 import io.weaviate.client6.v1.collections.VectorIndex;
+import io.weaviate.client6.v1.collections.VectorIndex.IndexingStrategy;
+import io.weaviate.client6.v1.collections.Vectorizer;
 import io.weaviate.containers.Container;
 
 public class DataITest extends ConcurrentTest {
@@ -60,6 +62,6 @@ public class DataITest extends ConcurrentTest {
     client.collections.create(COLLECTION,
         col -> col
             .properties(Property.text("username"), Property.integer("age"))
-            .vector(VECTOR_INDEX, VectorIndex.hnsw()));
+            .vector(VECTOR_INDEX, new VectorIndex<>(IndexingStrategy.hnsw(), Vectorizer.none())));
   }
 }

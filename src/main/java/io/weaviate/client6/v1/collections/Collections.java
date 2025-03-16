@@ -17,6 +17,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 import io.weaviate.client6.Config;
+import io.weaviate.client6.internal.DtoTypeAdapterFactory;
 import io.weaviate.client6.internal.GrpcClient;
 import io.weaviate.client6.internal.HttpClient;
 import io.weaviate.client6.v1.Collection;
@@ -32,8 +33,15 @@ public class Collections {
   private final HttpClient httpClient;
   private final GrpcClient grpcClient;
 
+  static {
+    DtoTypeAdapterFactory.register(CollectionDefinition.class,
+        CollectionDefinitionDTO.class,
+        m -> new CollectionDefinitionDTO(m));
+  }
+
   // TODO: use singleton configured in one place
   private static final Gson gson = new GsonBuilder()
+      .registerTypeAdapterFactory(new DtoTypeAdapterFactory())
       // TODO: create TypeAdapters via TypeAdapterFactory
       .registerTypeAdapter(Vectors.class, new TypeAdapter<Vectors>() {
         Gson gson = new Gson();
@@ -67,7 +75,11 @@ public class Collections {
 
         @Override
         public void write(JsonWriter out, Vectorizer value) throws IOException {
-          gson.toJson(value, value.getClass(), out);
+          if (value == null) {
+            out.nullValue();
+          } else {
+            gson.toJson(value, value.getClass(), out);
+          }
         }
 
         @Override
@@ -82,7 +94,7 @@ public class Collections {
 
     ClassicHttpRequest httpPost = ClassicRequestBuilder
         .post(config.baseUrl() + "/schema")
-        .setEntity(collection.toJson(gson), ContentType.APPLICATION_JSON)
+        .setEntity(gson.toJson(collection), ContentType.APPLICATION_JSON)
         .build();
 
     // TODO: do not expose Apache HttpClient directly

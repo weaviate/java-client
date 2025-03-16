@@ -22,9 +22,9 @@ public class Container {
   }
 
   /** Start all shared Testcontainers. */
-  // TODO: start lazily?
+  // TODO: start lazily!
   static void startAll() {
-    WEAVIATE.start();
+    // WEAVIATE.start();
   }
 
   /**
@@ -44,7 +44,6 @@ public class Container {
   }
 
   public static TestRule asTestRule(Startable container) {
-    System.out.print("HERE");
     return new PerTestSuite(container);
   };
 

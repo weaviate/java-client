@@ -21,6 +21,10 @@ public class Weaviate extends WeaviateContainer {
    * this is not made thread-safe.
    */
   public WeaviateClient getClient() {
+    // FIXME: control from containers?
+    if (!isRunning()) {
+      start();
+    }
     if (clientInstance == null) {
       var config = new Config("http", getHttpHostAddress(), getGrpcHostAddress());
       clientInstance = new WeaviateClient(config);
@@ -107,6 +111,9 @@ public class Weaviate extends WeaviateContainer {
     // This is fine in tests, but may produce warnings about the gRPC channel
     // not shut down properly.
     super.stop();
+    if (clientInstance == null) {
+      return;
+    }
     try {
       clientInstance.close();
     } catch (IOException e) {

@@ -1,14 +1,9 @@
 package io.weaviate.client6.v1.collections;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
-
-import com.google.gson.Gson;
 
 import io.weaviate.client6.v1.collections.Vectors.NamedVectors;
 
@@ -47,17 +42,5 @@ public record CollectionDefinition(String name, List<Property> properties, Vecto
     Configuration(Consumer<Configuration> options) {
       options.accept(this);
     }
-  }
-
-  // JSON serialization ---------------
-  static CollectionDefinition fromJson(Gson gson, InputStream input) throws IOException {
-    try (var r = new InputStreamReader(input)) {
-      var dto = gson.fromJson(r, CollectionDefinitionDTO.class);
-      return dto.toCollectionDefinition();
-    }
-  }
-
-  public String toJson(Gson gson) {
-    return gson.toJson(new CollectionDefinitionDTO(this));
   }
 }
