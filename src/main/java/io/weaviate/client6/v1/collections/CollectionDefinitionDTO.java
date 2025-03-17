@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 import io.weaviate.client6.internal.DtoTypeAdapterFactory;
 
-class CollectionDefinitionDTO implements DtoTypeAdapterFactory.DTO<CollectionDefinition> {
+class CollectionDefinitionDTO implements DtoTypeAdapterFactory.Dto<CollectionDefinition> {
   @SerializedName("class")
   String collection;
 

@@ -32,7 +32,8 @@ public class Collections {
   private final GrpcClient grpcClient;
 
   static {
-    DtoTypeAdapterFactory.register(CollectionDefinition.class,
+    DtoTypeAdapterFactory.register(
+        CollectionDefinition.class,
         CollectionDefinitionDTO.class,
         m -> new CollectionDefinitionDTO(m));
   }
