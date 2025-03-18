@@ -13,10 +13,12 @@ public class Property {
   @SerializedName("dataType")
   public final List<DataType> dataTypes;
 
+  /** Add text property with default configuration. */
   public static Property text(String name) {
     return new Property(name, DataType.TEXT);
   }
 
+  /** Add integer property with default configuration. */
   public static Property integer(String name) {
     return new Property(name, DataType.INT);
   }

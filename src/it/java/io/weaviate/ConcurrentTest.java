@@ -34,7 +34,7 @@ public abstract class ConcurrentTest {
   protected String ns(String value) {
     String cls = getClass().getSimpleName();
     String method = currentTest.getMethodName();
-    return cls + "." + method + "-" + value;
+    return cls + "_" + method + "_" + value;
   }
 
   /** Appends random characters to create unique value. */

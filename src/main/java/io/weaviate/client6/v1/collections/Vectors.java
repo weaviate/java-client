@@ -23,6 +23,10 @@ public class Vectors {
     return new Vectors(DEFAULT, vector);
   }
 
+  public static Vectors of(Map<String, VectorIndex<? extends Vectorizer>> vectors) {
+    return new Vectors(vectors);
+  }
+
   public static Vectors with(Consumer<NamedVectors> named) {
     var vectors = new NamedVectors(named);
     return new Vectors(vectors.namedVectors);

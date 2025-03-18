@@ -24,8 +24,13 @@ public record CollectionDefinition(String name, List<Property> properties, Vecto
       return this;
     }
 
+    public <V extends Vectorizer> Configuration vectors(Vectors vectors) {
+      this.vectors = vectors;
+      return this;
+    }
+
     public <V extends Vectorizer> Configuration vector(VectorIndex<V> vector) {
-      this.vectors = new Vectors(vector);
+      this.vectors = Vectors.of(vector);
       return this;
     }
 
