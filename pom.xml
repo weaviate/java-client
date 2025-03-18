@@ -254,7 +254,13 @@
                 @see: https://www.oracle.com/corporate/features/understanding-java-9-modules.html
               -->
               --add-opens=java.base/java.lang=ALL-UNNAMED
-            </argLine>
+              </argLine>
+              <properties>
+                <property>
+                  <name>listener</name>
+                  <value>io.weaviate.containers.TestListener</value>
+                </property>
+              </properties>
           </configuration>
         </plugin>
         <plugin>
@@ -341,12 +347,24 @@
                 </artifacts>
               </configuration>
             </execution>
+            <execution>
+              <id>add-test-source</id>
+              <phase>process-resources</phase>
+              <goals>
+                <goal>add-test-source</goal>
+              </goals>
+              <configuration>
+                <sources>
+                  <source>${project.basedir}/src/it/java</source>
+                </sources>
+              </configuration>
+            </execution>
           </executions>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.2.0</version>
+          <version>3.11.2</version>
           <executions>
             <execution>
               <id>attach-javadocs</id>
