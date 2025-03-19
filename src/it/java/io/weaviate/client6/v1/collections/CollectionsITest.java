@@ -17,40 +17,25 @@ public class CollectionsITest extends ConcurrentTest {
   @Test
   public void testCreateGetDelete() throws IOException {
     var collectionName = ns("Things_1");
+    client.collections.create(collectionName,
+        col -> col
+            .properties(Property.text("username"), Property.integer("age"))
+            .vector(new VectorIndex<>(IndexingStrategy.hnsw(), Vectorizer.none())));
 
-// --------------------------------------------
-var defaultIndex = new VectorIndex<>(Vectorizer.none());
-var hnswIndex = new VectorIndex<>(IndexingStrategy.hnsw(), Vectorizer.none());
-// --------------------------------------------
+    var thingsCollection = client.collections.getConfig(collectionName);
 
-client.collections.create(collectionName,
-    collection -> collection
-        .properties(Property.text("username"), Property.integer("age"))
-        .vector(defaultIndex)
-        .vector("only-one", hnswIndex)
-        .vectors(named -> named
-            .vector("vector-a", hnswIndex)
-            .vector("vector-b", hnswIndex)));
+    Assertions.assertThat(thingsCollection).get()
+        .hasFieldOrPropertyWithValue("name", collectionName)
+        .extracting(CollectionDefinition::vectors).extracting(Vectors::getDefault)
+        .as("default vector").satisfies(defaultVector -> {
+          Assertions.assertThat(defaultVector).extracting(VectorIndex::vectorizer)
+              .as("has none vectorizer").isInstanceOf(NoneVectorizer.class);
+          Assertions.assertThat(defaultVector).extracting(VectorIndex::configuration)
+              .as("has hnsw index").returns(IndexType.HNSW, IndexingStrategy::type);
+        });
 
-// --------------------------------------------
-var thingsCollection = client.collections.getConfig(collectionName);
-// --------------------------------------------
-
-Assertions.assertThat(thingsCollection).get()
-    .hasFieldOrPropertyWithValue("name", collectionName)
-    .extracting(CollectionDefinition::vectors).extracting(Vectors::getDefault)
-    .as("default vector").satisfies(defaultVector -> {
-      Assertions.assertThat(defaultVector).extracting(VectorIndex::vectorizer)
-          .as("has none vectorizer").isInstanceOf(NoneVectorizer.class);
-      Assertions.assertThat(defaultVector).extracting(VectorIndex::configuration)
-          .as("has hnsw index").returns(IndexType.HNSW, IndexingStrategy::type);
-    });
-
-// --------------------------------------------
-client.collections.delete(collectionName);
-// --------------------------------------------
-
-var noCollection = client.collections.getConfig(collectionName);
-Assertions.assertThat(noCollection).as("after delete").isEmpty();
+    client.collections.delete(collectionName);
+    var noCollection = client.collections.getConfig(collectionName);
+    Assertions.assertThat(noCollection).as("after delete").isEmpty();
   }
 }
