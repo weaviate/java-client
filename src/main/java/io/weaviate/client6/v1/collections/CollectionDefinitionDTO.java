@@ -30,12 +30,14 @@ class CollectionDefinitionDTO implements DtoTypeAdapterFactory.Dto<CollectionDef
     this.properties = colDef.properties();
     this.vectors = colDef.vectors();
 
-    var unnamed = this.vectors.getUnnamed();
-    if (unnamed.isPresent()) {
-      var index = unnamed.get();
-      this.vectorIndexType = index.type();
-      this.vectorIndexConfig = index.configuration();
-      this.vectorizer = index.vectorizer();
+    if (this.vectors != null) {
+      var unnamed = this.vectors.getUnnamed();
+      if (unnamed.isPresent()) {
+        var index = unnamed.get();
+        this.vectorIndexType = index.type();
+        this.vectorIndexConfig = index.configuration();
+        this.vectorizer = index.vectorizer();
+      }
     }
   }
 
