@@ -41,11 +41,11 @@ public class NearVectorQueryITest extends ConcurrentTest {
     // TODO: test that we return the results in the expected order
     // Because re-ranking should work correctly
     var things = client.collections.use(COLLECTION);
-QueryResult<Map<String, Object>> result = things.query.nearVector(searchVector,
-    opt -> opt
-        .distance(2f)
-        .limit(3)
-        .returnMetadata(MetadataField.DISTANCE));
+    QueryResult<Map<String, Object>> result = things.query.nearVector(searchVector,
+        opt -> opt
+            .distance(2f)
+            .limit(3)
+            .returnMetadata(MetadataField.DISTANCE));
 
     Assertions.assertThat(result.objects).hasSize(3);
     float maxDistance = Collections.max(result.objects,

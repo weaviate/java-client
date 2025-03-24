@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import io.weaviate.client6.internal.GrpcClient;
+import io.weaviate.client6.internal.codec.grpc.v1.AggregateMarshaler;
+import io.weaviate.client6.v1.query.NearVector;
 
 public class WeaviateAggregate {
   private final String collectionName;
@@ -17,12 +19,10 @@ public class WeaviateAggregate {
     this.grpcClient = grpc;
   }
 
-  public AggregateResult overAll(Consumer<AggregateRequest.Builder> options) {
+  public AggregateResponse overAll(Consumer<AggregateRequest.Builder> options) {
     var aggregation = AggregateRequest.with(collectionName, options);
-    var req = io.weaviate.client6.grpc.protocol.v1.WeaviateProtoAggregate.AggregateRequest.newBuilder();
-    req.setCollection(collectionName);
-    aggregation.appendTo(req);
-    var reply = grpcClient.grpc.aggregate(req.build());
+    var req = new AggregateMarshaler().marshal(aggregation);
+    var reply = grpcClient.grpc.aggregate(req);
 
     Long totalCount = null;
     Map<String, Metric.Values> properties = new HashMap<>();
@@ -53,17 +53,17 @@ public class WeaviateAggregate {
         }
       }
     }
-    var result = new AggregateResult(properties, totalCount);
+    var result = new AggregateResponse(properties, totalCount);
     return result;
   }
 
-  public AggregateGroupByResult overAll(Consumer<AggregateRequest.GroupBy.Builder> groupByOptions,
+  public AggregateGroupByResponse overAll(Consumer<AggregateGroupByRequest.GroupBy.Builder> groupByOptions,
       Consumer<AggregateRequest.Builder> options) {
-    var aggregation = AggregateRequest.with(collectionName, options, groupByOptions);
-    var req = io.weaviate.client6.grpc.protocol.v1.WeaviateProtoAggregate.AggregateRequest.newBuilder();
-    req.setCollection(collectionName);
-    aggregation.appendTo(req);
-    var reply = grpcClient.grpc.aggregate(req.build());
+    var aggregation = AggregateRequest.with(collectionName, options);
+    var groupBy = AggregateGroupByRequest.GroupBy.with(groupByOptions);
+
+    var req = new AggregateMarshaler().marshal(new AggregateGroupByRequest(aggregation, groupBy));
+    var reply = grpcClient.grpc.aggregate(req);
 
     List<Group<?>> groups = new ArrayList<>();
     if (reply.hasGroupedResults()) {
@@ -107,6 +107,47 @@ public class WeaviateAggregate {
 
       }
     }
-    return new AggregateGroupByResult(groups);
+    return new AggregateGroupByResponse(groups);
+  }
+
+  public AggregateResponse nearVector(Float[] vector, Consumer<NearVector.Builder> nearVectorOptions,
+      Consumer<AggregateRequest.Builder> options) {
+    var aggregation = AggregateRequest.with(collectionName, options);
+    var nearVector = NearVector.with(vector, nearVectorOptions);
+
+    var req = new AggregateMarshaler().marshal(nearVector, aggregation);
+    var reply = grpcClient.grpc.aggregate(req);
+
+    Long totalCount = null;
+    Map<String, Metric.Values> properties = new HashMap<>();
+
+    if (reply.hasSingleResult()) {
+      var single = reply.getSingleResult();
+      totalCount = single.hasObjectsCount() ? single.getObjectsCount() : null;
+      var aggregations = single.getAggregations().getAggregationsList();
+      for (var agg : aggregations) {
+        var property = agg.getProperty();
+        Metric.Values value = null;
+
+        if (agg.hasInt()) {
+          var metrics = agg.getInt();
+          value = new IntegerMetric.Values(
+              metrics.hasCount() ? metrics.getCount() : null,
+              metrics.hasMinimum() ? metrics.getMinimum() : null,
+              metrics.hasMaximum() ? metrics.getMaximum() : null,
+              metrics.hasMean() ? metrics.getMean() : null,
+              metrics.hasMedian() ? metrics.getMedian() : null,
+              metrics.hasMode() ? metrics.getMode() : null,
+              metrics.hasSum() ? metrics.getSum() : null);
+        } else {
+          assert false : "branch not covered";
+        }
+        if (value != null) {
+          properties.put(property, value);
+        }
+      }
+    }
+    var result = new AggregateResponse(properties, totalCount);
+    return result;
   }
 }

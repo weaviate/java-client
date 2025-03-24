@@ -15,11 +15,9 @@ import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.SearchReply;
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.SearchRequest;
 import io.weaviate.client6.internal.GRPC;
 import io.weaviate.client6.internal.GrpcClient;
+import io.weaviate.client6.internal.codec.grpc.v1.SearchMarshaler;
 
 public class Query<T> {
-  // TODO: inject singleton as dependency
-  private static final Gson gson = new Gson();
-
   // TODO: this should be wrapped around in some TypeInspector etc.
   private final String collectionName;
 
@@ -32,19 +30,10 @@ public class Query<T> {
     this.collectionName = collectionName;
   }
 
-  public QueryResult<T> nearVector(Float[] vector, Consumer<NearVector.Options> options) {
-    var query = new NearVector(vector, options);
-
-    // TODO: Since we always need to set these values, we migth want to move the
-    // next block to some factory method.
-    var req = SearchRequest.newBuilder();
-    req.setCollection(collectionName);
-    req.setUses123Api(true);
-    req.setUses125Api(true);
-    req.setUses127Api(true);
-
-    query.appendTo(req);
-    return search(req.build());
+  public QueryResult<T> nearVector(Float[] vector, Consumer<NearVector.Builder> options) {
+    var query = NearVector.with(vector, options);
+    var req = new SearchMarshaler(collectionName).addNearVector(query);
+    return search(req.marshal());
   }
 
   private QueryResult<T> search(SearchRequest req) {

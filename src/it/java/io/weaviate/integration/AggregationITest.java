@@ -14,7 +14,10 @@ import org.junit.Test;
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.WeaviateClient;
 import io.weaviate.client6.v1.collections.Property;
-import io.weaviate.client6.v1.collections.aggregate.AggregateGroupByResult;
+import io.weaviate.client6.v1.collections.VectorIndex;
+import io.weaviate.client6.v1.collections.Vectorizer;
+import io.weaviate.client6.v1.collections.Vectors;
+import io.weaviate.client6.v1.collections.aggregate.AggregateGroupByResponse;
 import io.weaviate.client6.v1.collections.aggregate.Group;
 import io.weaviate.client6.v1.collections.aggregate.GroupedBy;
 import io.weaviate.client6.v1.collections.aggregate.IntegerMetric;
@@ -31,16 +34,19 @@ public class AggregationITest extends ConcurrentTest {
         collection -> collection
             .properties(
                 Property.text("category"),
-                Property.integer("price")));
+                Property.integer("price"))
+            .vectors(Vectors.of(new VectorIndex<>(Vectorizer.none()))));
 
     var things = client.collections.use(COLLECTION);
     for (var category : List.of("Shoes", "Hat", "Jacket")) {
       for (var i = 0; i < 5; i++) {
+        var vector = randomVector(10, -.1f, .1f);
         // For simplicity, the "price" for each items equals to the
         // number of characters in the name of the category.
         things.data.insert(Map.of(
             "category", category,
-            "price", category.length()));
+            "price", category.length()),
+            meta -> meta.vectors(vector));
       }
     }
   }
@@ -75,7 +81,7 @@ public class AggregationITest extends ConcurrentTest {
             .includeTotalCount());
 
     Assertions.assertThat(result)
-        .extracting(AggregateGroupByResult::groups)
+        .extracting(AggregateGroupByResponse::groups)
         .asInstanceOf(InstanceOfAssertFactories.list(Group.class))
         .as("group per category").hasSize(3)
         .allSatisfy(group -> {
@@ -97,5 +103,24 @@ public class AggregationITest extends ConcurrentTest {
               .as(desc.apply("min")).returns(expectedPrice, IntegerMetric.Values::min)
               .as(desc.apply("count")).returns(5L, IntegerMetric.Values::count);
         });
+  }
+
+  @Test
+  public void testNearVector() {
+    var things = client.collections.use(COLLECTION);
+    var result = things.aggregate.nearVector(
+        randomVector(10, -1f, 1f),
+        near -> near.limit(5),
+        with -> with.metrics(
+            Metric.integer("price", calculate -> calculate
+                .min().max().count()))
+            .objectLimit(4)
+            .includeTotalCount());
+
+    Assertions.assertThat(result)
+        .as("includes all objects").hasFieldOrPropertyWithValue("totalCount", 4L)
+        .as("'price' is IntegerMetric").returns(true, p -> p.isIntegerProperty("price"))
+        .as("aggregated prices").extracting(p -> p.getInteger("price"))
+        .as("count").returns(4L, IntegerMetric.Values::count);
   }
 }

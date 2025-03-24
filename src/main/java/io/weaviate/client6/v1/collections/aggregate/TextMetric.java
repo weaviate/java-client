@@ -1,51 +1,46 @@
 package io.weaviate.client6.v1.collections.aggregate;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoAggregate.AggregateRequest.Aggregation;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoAggregate.AggregateRequest.Aggregation.Text;
-
-public class TextMetric extends Metric<TextMetric> {
-  private final Set<AggregateFunction> functions;
-  private final boolean occurrenceCount;
-  private final Integer atLeast;
+public record TextMetric(String property, List<_Function> functions, boolean occurrenceCount,
+    Integer atLeast)
+    implements Metric {
 
   public record Values(Long count, List<TopOccurrence> topOccurrences) implements Metric.Values {
   }
 
-  TextMetric(String property, Consumer<Builder> options) {
-    super(property);
-
+  static TextMetric with(String property, Consumer<Builder> options) {
     var opt = new Builder(options);
-    this.functions = opt.functions;
-    this.occurrenceCount = opt.occurrenceCount;
-    this.atLeast = opt.atLeast;
+    return new TextMetric(property,
+        new ArrayList<>(opt.functions),
+        opt.occurrenceCount, opt.atLeast);
   }
 
-  private enum AggregateFunction {
-    COUNT, TYPE, TOP_OCCURENCES
+  public enum _Function {
+    COUNT, TYPE, TOP_OCCURRENCES;
   }
 
   public static class Builder {
-    private final Set<AggregateFunction> functions = new HashSet<>();
+    private final Set<_Function> functions = new HashSet<>();
     private boolean occurrenceCount = false;
     private Integer atLeast;
 
     public Builder count() {
-      functions.add(AggregateFunction.COUNT);
+      functions.add(_Function.COUNT);
       return this;
     }
 
     public Builder type() {
-      functions.add(AggregateFunction.TYPE);
+      functions.add(_Function.TYPE);
       return this;
     }
 
     public Builder topOccurences() {
-      functions.add(AggregateFunction.TOP_OCCURENCES);
+      functions.add(_Function.TOP_OCCURRENCES);
       return this;
     }
 
@@ -64,24 +59,5 @@ public class TextMetric extends Metric<TextMetric> {
     Builder(Consumer<Builder> options) {
       options.accept(this);
     }
-  }
-
-  void appendTo(Aggregation.Builder aggregation) {
-    aggregation.setProperty(property);
-    var text = Text.newBuilder();
-    for (var f : functions) {
-      switch (f) {
-        case TYPE:
-          text.setType(true);
-        case COUNT:
-          text.setCount(true);
-        case TOP_OCCURENCES:
-          text.setTopOccurences(true);
-          if (atLeast != null) {
-            text.setTopOccurencesLimit(atLeast);
-          }
-      }
-    }
-    aggregation.setText(text);
   }
 }

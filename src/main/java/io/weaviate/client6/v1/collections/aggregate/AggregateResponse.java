@@ -2,7 +2,7 @@ package io.weaviate.client6.v1.collections.aggregate;
 
 import java.util.Map;
 
-public record AggregateResult(Map<String, ? extends Metric.Values> properties, Long totalCount) {
+public record AggregateResponse(Map<String, ? extends Metric.Values> properties, Long totalCount) {
   public boolean isTextProperties(String name) {
     return properties.get(name) instanceof TextMetric.Values;
   }
