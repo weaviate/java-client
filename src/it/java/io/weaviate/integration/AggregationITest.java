@@ -17,6 +17,7 @@ import io.weaviate.client6.v1.collections.Property;
 import io.weaviate.client6.v1.collections.VectorIndex;
 import io.weaviate.client6.v1.collections.Vectorizer;
 import io.weaviate.client6.v1.collections.Vectors;
+import io.weaviate.client6.v1.collections.aggregate.AggregateGroupByRequest.GroupBy;
 import io.weaviate.client6.v1.collections.aggregate.AggregateGroupByResponse;
 import io.weaviate.client6.v1.collections.aggregate.Group;
 import io.weaviate.client6.v1.collections.aggregate.GroupedBy;
@@ -74,7 +75,7 @@ public class AggregationITest extends ConcurrentTest {
   public void testOverAll_groupBy_category() {
     var things = client.collections.use(COLLECTION);
     var result = things.aggregate.overAll(
-        groupBy -> groupBy.property("category"),
+        new GroupBy("category"),
         with -> with.metrics(
             Metric.integer("price", calculate -> calculate
                 .min().max().count()))
@@ -130,7 +131,7 @@ public class AggregationITest extends ConcurrentTest {
     var result = things.aggregate.nearVector(
         randomVector(10, -1f, 1f),
         near -> near.distance(2f),
-        groupBy -> groupBy.property("category"),
+        new GroupBy("category"),
         with -> with.metrics(
             Metric.integer("price", calculate -> calculate
                 .min().max().median()))

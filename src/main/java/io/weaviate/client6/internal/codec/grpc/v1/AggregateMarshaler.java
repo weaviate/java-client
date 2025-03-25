@@ -74,61 +74,6 @@ public final class AggregateMarshaler {
     return this;
   }
 
-  public WeaviateProtoAggregate.AggregateRequest marshal(AggregateGroupByRequest aggregateGroupBy) {
-    var aggregate = aggregateGroupBy.aggregate();
-    if (aggregateGroupBy.groupBy() != null) {
-      // addGroupBy(aggregate.collectionName(), aggregateGroupBy.groupBy(), req);
-    }
-    return marshal(aggregate);
-  }
-
-  public WeaviateProtoAggregate.AggregateRequest marshal(NearVector nearVector,
-      AggregateGroupByRequest aggregateGroupBy) {
-    var aggregate = aggregateGroupBy.aggregate();
-    if (aggregateGroupBy.groupBy() != null) {
-      // addGroupBy(aggregate.collectionName(), aggregateGroupBy.groupBy(), req);
-    }
-    return marshal(nearVector, aggregate);
-  }
-
-  public WeaviateProtoAggregate.AggregateRequest marshal(NearVector nearVector, AggregateRequest aggregate) {
-    req.setNearVector(buildNearVector(nearVector));
-    if (nearVector.common().limit() != null) {
-      req.setLimit(nearVector.common().limit());
-    }
-    return marshal(aggregate);
-  }
-
-  private WeaviateProtoBaseSearch.NearVector buildNearVector(NearVector nv) {
-    var nearVector = WeaviateProtoBaseSearch.NearVector.newBuilder();
-    nearVector.setVectorBytes(GRPC.toByteString(nv.vector()));
-
-    if (nv.certainty() != null) {
-      nearVector.setCertainty(nv.certainty());
-    } else if (nv.distance() != null) {
-      nearVector.setDistance(nv.distance());
-    }
-    return nearVector.build();
-  }
-
-  public WeaviateProtoAggregate.AggregateRequest marshal(AggregateRequest aggregate) {
-    req.setCollection(aggregate.collectionName());
-
-    if (aggregate.includeTotalCount()) {
-      req.setObjectsCount(true);
-    }
-
-    if (aggregate.objectLimit() != null) {
-      req.setObjectLimit(aggregate.objectLimit());
-    }
-
-    for (Metric metric : aggregate.returnMetrics()) {
-      addMetric(metric);
-    }
-
-    return req.build();
-  }
-
   private void addMetric(Metric metric) {
     var aggregation = Aggregation.newBuilder();
     aggregation.setProperty(metric.property());
