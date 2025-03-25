@@ -24,4 +24,7 @@ public record NearVector(Float[] vector, Float distance, Float certainty, Common
       return this;
     }
   }
+
+  public static record GroupBy(String property, int maxGroups, int maxObjectsPerGroup) {
+  }
 }

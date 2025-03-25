@@ -1,6 +1,7 @@
 package io.weaviate.client6.v1.query;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -36,9 +37,30 @@ public class Query<T> {
     return search(req.marshal());
   }
 
+  public GroupedQueryResult<T> nearVector(Float[] vector, NearVector.GroupBy groupBy,
+      Consumer<NearVector.Builder> options) {
+    var query = NearVector.with(vector, options);
+    var req = new SearchMarshaler(collectionName).addNearVector(query)
+        .addGroupBy(groupBy);
+    return searchGrouped(req.marshal());
+  }
+
+  public GroupedQueryResult<T> nearVector(Float[] vector, NearVector.GroupBy groupBy) {
+    var query = NearVector.with(vector, opt -> {
+    });
+    var req = new SearchMarshaler(collectionName).addNearVector(query)
+        .addGroupBy(groupBy);
+    return searchGrouped(req.marshal());
+  }
+
   private QueryResult<T> search(SearchRequest req) {
     var reply = grpcClient.grpc.search(req);
     return deserializeUntyped(reply);
+  }
+
+  private GroupedQueryResult<T> searchGrouped(SearchRequest req) {
+    var reply = grpcClient.grpc.search(req);
+    return deserializeUntypedGrouped(reply);
   }
 
   public QueryResult<T> deserializeUntyped(SearchReply reply) {
@@ -57,6 +79,36 @@ public class Query<T> {
         }).toList();
 
     return new QueryResult<T>(objects);
+  }
+
+  public GroupedQueryResult<T> deserializeUntypedGrouped(SearchReply reply) {
+    var allObjects = new ArrayList<GroupedQueryResult.WithGroupSearchObject<T>>();
+    Map<String, GroupedQueryResult.Group<T>> allGroups = reply.getGroupByResultsList()
+        .stream().map(g -> {
+          var groupName = g.getName();
+          var groupObjects = g.getObjectsList().stream().map(res -> {
+            Map<String, Object> properties = convertProtoMap(res.getProperties().getNonRefProps().getFieldsMap());
+
+            MetadataResult meta = res.getMetadata();
+            var metadata = new QueryResult.SearchObject.QueryMetadata(
+                meta.getId(),
+                meta.getDistancePresent() ? meta.getDistance() : null,
+                GRPC.fromByteString(meta.getVectorBytes()));
+            var obj = new GroupedQueryResult.WithGroupSearchObject<T>(groupName, (T) properties, metadata);
+
+            allObjects.add(obj);
+
+            return obj;
+          }).toList();
+
+          return new GroupedQueryResult.Group<>(
+              groupName,
+              g.getMinDistance(),
+              g.getMaxDistance(),
+              g.getNumberOfObjects(),
+              groupObjects);
+        }).collect(Collectors.toMap(GroupedQueryResult.Group::name, g -> g));
+    return new GroupedQueryResult<>(allObjects, allGroups);
   }
 
   /**
