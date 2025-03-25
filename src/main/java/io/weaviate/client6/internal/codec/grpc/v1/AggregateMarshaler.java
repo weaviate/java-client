@@ -19,11 +19,65 @@ import io.weaviate.client6.v1.query.NearVector;
 public final class AggregateMarshaler {
   private final WeaviateProtoAggregate.AggregateRequest.Builder req = WeaviateProtoAggregate.AggregateRequest
       .newBuilder();
+  private final String collectionName;
+
+  public AggregateMarshaler(String collectionName) {
+    this.collectionName = collectionName;
+  }
+
+  public WeaviateProtoAggregate.AggregateRequest marshal() {
+    return req.build();
+  }
+
+  public AggregateMarshaler addAggregation(AggregateRequest aggregate) {
+    req.setCollection(collectionName);
+
+    if (aggregate.includeTotalCount()) {
+      req.setObjectsCount(true);
+    }
+
+    if (aggregate.objectLimit() != null) {
+      req.setObjectLimit(aggregate.objectLimit());
+    }
+
+    for (Metric metric : aggregate.returnMetrics()) {
+      addMetric(metric);
+    }
+
+    return this;
+  }
+
+  public AggregateMarshaler addGroupBy(GroupBy groupBy) {
+    var by = WeaviateProtoAggregate.AggregateRequest.GroupBy.newBuilder();
+    by.setCollection(collectionName);
+    by.setProperty(groupBy.property());
+    req.setGroupBy(by);
+    return this;
+  }
+
+  public AggregateMarshaler addNearVector(NearVector nv) {
+    var nearVector = WeaviateProtoBaseSearch.NearVector.newBuilder();
+    nearVector.setVectorBytes(GRPC.toByteString(nv.vector()));
+
+    if (nv.certainty() != null) {
+      nearVector.setCertainty(nv.certainty());
+    } else if (nv.distance() != null) {
+      nearVector.setDistance(nv.distance());
+    }
+
+    req.setNearVector(nearVector);
+
+    // Base query options
+    if (nv.common().limit() != null) {
+      req.setLimit(nv.common().limit());
+    }
+    return this;
+  }
 
   public WeaviateProtoAggregate.AggregateRequest marshal(AggregateGroupByRequest aggregateGroupBy) {
     var aggregate = aggregateGroupBy.aggregate();
     if (aggregateGroupBy.groupBy() != null) {
-      addGroupBy(aggregate.collectionName(), aggregateGroupBy.groupBy(), req);
+      // addGroupBy(aggregate.collectionName(), aggregateGroupBy.groupBy(), req);
     }
     return marshal(aggregate);
   }
@@ -32,7 +86,7 @@ public final class AggregateMarshaler {
       AggregateGroupByRequest aggregateGroupBy) {
     var aggregate = aggregateGroupBy.aggregate();
     if (aggregateGroupBy.groupBy() != null) {
-      addGroupBy(aggregate.collectionName(), aggregateGroupBy.groupBy(), req);
+      // addGroupBy(aggregate.collectionName(), aggregateGroupBy.groupBy(), req);
     }
     return marshal(nearVector, aggregate);
   }
@@ -95,13 +149,6 @@ public final class AggregateMarshaler {
     }
 
     req.addAggregations(aggregation);
-  }
-
-  private void addGroupBy(String collectionName, GroupBy groupBy, WeaviateProtoAggregate.AggregateRequest.Builder req) {
-    var by = WeaviateProtoAggregate.AggregateRequest.GroupBy.newBuilder();
-    by.setCollection(collectionName);
-    by.setProperty(groupBy.property());
-    req.setGroupBy(by);
   }
 
   @SuppressWarnings("unchecked")

@@ -123,4 +123,42 @@ public class AggregationITest extends ConcurrentTest {
         .as("aggregated prices").extracting(p -> p.getInteger("price"))
         .as("count").returns(4L, IntegerMetric.Values::count);
   }
+
+  @Test
+  public void testNearVector_groupBy_category() {
+    var things = client.collections.use(COLLECTION);
+    var result = things.aggregate.nearVector(
+        randomVector(10, -1f, 1f),
+        near -> near.distance(2f),
+        groupBy -> groupBy.property("category"),
+        with -> with.metrics(
+            Metric.integer("price", calculate -> calculate
+                .min().max().median()))
+            .objectLimit(9)
+            .includeTotalCount());
+
+    Assertions.assertThat(result)
+        .extracting(AggregateGroupByResponse::groups)
+        .asInstanceOf(InstanceOfAssertFactories.list(Group.class))
+        .as("group per category").hasSize(3)
+        .allSatisfy(group -> {
+          Assertions.assertThat(group)
+              .extracting(Group::by)
+              .as(group.by().property() + " is Text property").returns(true, GroupedBy::isText);
+
+          String category = group.by().getAsText();
+          var expectedPrice = (long) category.length();
+
+          Function<String, Supplier<String>> desc = (String metric) -> {
+            return () -> "%s ('%s'.length)".formatted(metric, category);
+          };
+
+          Assertions.assertThat(group)
+              .as("'price' is IntegerMetric").returns(true, g -> g.isIntegerProperty("price"))
+              .as("aggregated prices").extracting(g -> g.getInteger("price"))
+              .as(desc.apply("max")).returns(expectedPrice, IntegerMetric.Values::max)
+              .as(desc.apply("min")).returns(expectedPrice, IntegerMetric.Values::min)
+              .as(desc.apply("median")).returns((double) expectedPrice, IntegerMetric.Values::median);
+        });
+  }
 }
