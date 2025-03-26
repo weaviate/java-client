@@ -31,6 +31,11 @@ public class Data<T> {
   private final Config config;
   private final HttpClient httpClient;
 
+  public WeaviateObject<T> insert(T object) throws IOException {
+    return insert(object, opt -> {
+    });
+  }
+
   public WeaviateObject<T> insert(T object, Consumer<ObjectMetadata.Builder> options) throws IOException {
     var body = new WeaviateObject<>(collectionName, object, options);
     ClassicHttpRequest httpPost = ClassicRequestBuilder

@@ -54,7 +54,11 @@ public class VectorsTest {
             """
                 {
                   "vectorConfig": {
-                    "default": { "vectorizer": { "none":{}}}
+                    "default": {
+                      "vectorizer": { "none": {}},
+                      "vectorIndexType": "hnsw",
+                      "vectorIndexConfig": {}
+                    }
                   }
                 }
                   """,
@@ -65,9 +69,13 @@ public class VectorsTest {
             """
                 {
                   "vectorConfig": {
-                    "vector-1": { "vectorizer": { "none":{}}},
+                    "vector-1": {
+                      "vectorizer": { "none": {}},
+                      "vectorIndexType": "hnsw",
+                      "vectorIndexConfig": {}
+                    },
                     "vector-2": {
-                      "vectorizer": { "none":{}},
+                      "vectorizer": { "none": {}},
                       "vectorIndexType": "hnsw",
                       "vectorIndexConfig": {}
                     }
@@ -83,8 +91,8 @@ public class VectorsTest {
             """
                 {
                   "vectorizer": { "none": {}},
-                  "vectorIndexConfig": { "distance": "COSINE", "skip": true },
-                  "vectorIndexType": "hnsw"
+                  "vectorIndexType": "hnsw",
+                  "vectorIndexConfig": { "distance": "COSINE", "skip": true }
                 }
                   """,
             collectionWithVectors(Vectors.unnamed(

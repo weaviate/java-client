@@ -95,7 +95,11 @@ public class Collections {
 
         @Override
         public void write(JsonWriter out, Vectors value) throws IOException {
-          gson.toJson(value.asMap(), Map.class, out);
+          if (value != null) {
+            gson.toJson(value.asMap(), Map.class, out);
+          } else {
+            out.nullValue();
+          }
         }
 
         @Override
@@ -107,6 +111,11 @@ public class Collections {
         }
       })
       .create();
+
+  public void create(String name) throws IOException {
+    create(name, opt -> {
+    });
+  }
 
   public void create(String name, Consumer<CollectionDefinition.Configuration> options) throws IOException {
     var collection = CollectionDefinition.with(name, options);

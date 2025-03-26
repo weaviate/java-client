@@ -19,7 +19,7 @@ public record VectorIndex<V extends Vectorizer>(
   }
 
   public VectorIndex(V vectorizer) {
-    this(null, vectorizer, null);
+    this(IndexingStrategy.hnsw(), vectorizer);
   }
 
   public static sealed interface IndexingStrategy permits HNSW {
