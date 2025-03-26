@@ -2,7 +2,6 @@ package io.weaviate.client6.v1.collections;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -11,7 +10,7 @@ public class Property {
   public final String name;
 
   @SerializedName("dataType")
-  public final List<DataType> dataTypes;
+  public final List<String> dataTypes;
 
   /** Add text property with default configuration. */
   public static Property text(String name) {
@@ -23,25 +22,17 @@ public class Property {
     return new Property(name, DataType.INT);
   }
 
-  public static final class Configuration {
-    private List<DataType> dataTypes;
-
-    public Configuration dataTypes(DataType... types) {
-      this.dataTypes = Arrays.asList(types);
-      return this;
-    }
+  public static Property reference(String name, String... collections) {
+    return new Property(name, collections);
   }
 
   private Property(String name, DataType type) {
     this.name = name;
-    this.dataTypes = List.of(type);
+    this.dataTypes = List.of(type.name().toLowerCase());
   }
 
-  public Property(String name, Consumer<Configuration> options) {
-    var config = new Configuration();
-    options.accept(config);
-
+  private Property(String name, String... collections) {
     this.name = name;
-    this.dataTypes = config.dataTypes;
+    this.dataTypes = Arrays.asList(collections);
   }
 }

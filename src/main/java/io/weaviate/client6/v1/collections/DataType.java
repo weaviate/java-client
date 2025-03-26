@@ -6,5 +6,7 @@ public enum DataType {
   @SerializedName("text")
   TEXT,
   @SerializedName("int")
-  INT;
+  INT,
+  @SerializedName("reference")
+  REFERENCE;
 }
