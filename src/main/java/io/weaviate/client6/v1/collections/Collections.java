@@ -95,7 +95,11 @@ public class Collections {
 
         @Override
         public void write(JsonWriter out, Vectors value) throws IOException {
-          gson.toJson(value.asMap(), Map.class, out);
+          if (value != null) {
+            gson.toJson(value.asMap(), Map.class, out);
+          } else {
+            out.nullValue();
+          }
         }
 
         @Override
