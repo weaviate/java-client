@@ -5,7 +5,7 @@ import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.MetadataReque
 /**
  * Metadata is the common base for all properties that are requestes as
  * "_additional". It is an inteface all metadata properties MUST implement to be
- * used in {@link QueryOptions}.
+ * used in {@link CommonQueryOptions}.
  */
 public interface Metadata {
   void appendTo(MetadataRequest.Builder metadata);

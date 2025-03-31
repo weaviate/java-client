@@ -1,4 +1,4 @@
-package io.weaviate.internal;
+package io.weaviate.client6.internal;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -9,8 +9,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import com.jparams.junit4.JParamsTestRunner;
 import com.jparams.junit4.data.DataMethod;
-
-import io.weaviate.client6.internal.DtoTypeAdapterFactory;
 
 @RunWith(JParamsTestRunner.class)
 public class DtoTypeAdapterFactoryTest {

@@ -25,20 +25,24 @@ class WeaviateObjectDTO<T> {
 
     if (object.metadata() != null) {
       this.id = object.metadata().id();
-      this.vectors = object.metadata().vectors().asMap();
+      if (object.metadata().vectors() != null) {
+        this.vectors = object.metadata().vectors().asMap();
+      }
     }
   }
 
   WeaviateObject<T> toWeaviateObject() {
     Map<String, Object> arrayVectors = new HashMap<>();
-    for (var entry : vectors.entrySet()) {
-      var value = (ArrayList<Double>) entry.getValue();
-      var vector = new Float[value.size()];
-      int i = 0;
-      for (var v : value) {
-        vector[i++] = v.floatValue();
+    if (vectors != null) {
+      for (var entry : vectors.entrySet()) {
+        var value = (ArrayList<Double>) entry.getValue();
+        var vector = new Float[value.size()];
+        int i = 0;
+        for (var v : value) {
+          vector[i++] = v.floatValue();
+        }
+        arrayVectors.put(entry.getKey(), vector);
       }
-      arrayVectors.put(entry.getKey(), vector);
     }
     return new WeaviateObject<T>(collection, properties, new ObjectMetadata(id, Vectors.of(arrayVectors)));
   }
