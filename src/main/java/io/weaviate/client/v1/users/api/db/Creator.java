@@ -31,6 +31,6 @@ public class Creator extends BaseClient<ApiKey> implements ClientResult<String> 
   @Override
   public Result<String> run() {
     Response<ApiKey> resp = sendPostRequest("/users/db/" + userId, null, ApiKey.class);
-    return new Result<>(resp, resp.getBody().apiKey);
+    return new Result<>(resp, resp.getBody() != null ? resp.getBody().apiKey : null);
   }
 }

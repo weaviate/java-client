@@ -6,6 +6,7 @@ import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateAuthClient;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.async.users.DbUsers;
+import io.weaviate.client.v1.async.users.OidcUsers;
 import io.weaviate.client.v1.async.users.Users;
 import io.weaviate.client.v1.auth.exception.AuthException;
 import io.weaviate.client.v1.rbac.model.Role;
@@ -52,30 +53,51 @@ public class ClientUsersTest extends ClientRbacTest implements ClientUsersTestSu
   }
 
   @Override
-  public io.weaviate.integration.tests.users.ClientUsersTestSuite.DbUsers db() {
-    return new DbUsersImpl();
+  public ClientUsersTestSuite.DbUsers db() {
+    return new NamespacedUsers(false);
   }
 
-  private class DbUsersImpl implements ClientUsersTestSuite.DbUsers {
-    private final DbUsers db;
+  @Override
+  public ClientUsersTestSuite.OidcUsers oidc() {
+    return new NamespacedUsers(true);
+  }
 
-    public DbUsersImpl() {
+  /**
+   * NamespacedUsers uses one of the namespaced clients based on the
+   * value of useOidc. This reduces code duplication, allowing us to
+   * reuse the same implementation for several test iterfaces.
+   */
+  private class NamespacedUsers implements
+      ClientUsersTestSuite.DbUsers, ClientUsersTestSuite.OidcUsers {
+    private final DbUsers db;
+    private final OidcUsers oidc;
+    private final boolean useOidc;
+
+    public NamespacedUsers(boolean useOidc) {
       this.db = users.db();
+      this.oidc = users.oidc();
+      this.useOidc = useOidc;
     }
 
     @Override
     public Result<?> assignRoles(String user, String... roles) {
-      return rethrow(() -> db.assigner().withUserId(user).witRoles(roles).run());
+      return useOidc
+          ? rethrow(() -> oidc.assigner().withUserId(user).witRoles(roles).run())
+          : rethrow(() -> db.assigner().withUserId(user).witRoles(roles).run());
     }
 
     @Override
     public Result<?> revokeRoles(String user, String... roles) {
-      return rethrow(() -> db.revoker().withUserId(user).witRoles(roles).run());
+      return useOidc
+          ? rethrow(() -> oidc.revoker().withUserId(user).witRoles(roles).run())
+          : rethrow(() -> db.revoker().withUserId(user).witRoles(roles).run());
     }
 
     @Override
     public Result<List<Role>> assignedRoles(String user, boolean includePermissions) {
-      return rethrow(() -> db.assignedRoles().withUserId(user).includePermissions(includePermissions).run());
+      return useOidc
+          ? rethrow(() -> oidc.assignedRoles().withUserId(user).includePermissions(includePermissions).run())
+          : rethrow(() -> db.assignedRoles().withUserId(user).includePermissions(includePermissions).run());
     }
 
     @Override

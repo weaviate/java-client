@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -36,6 +37,7 @@ import io.weaviate.client.v1.users.model.UserDb;
 import io.weaviate.integration.client.WeaviateDockerImage;
 import io.weaviate.integration.client.WeaviateWithRbacContainer;
 import io.weaviate.integration.tests.rbac.ClientRbacTestSuite;
+import io.weaviate.integration.tests.rbac.ClientRbacTestSuite.Rbac;
 
 @RunWith(JParamsTestRunner.class)
 public class ClientUsersTestSuite {
@@ -170,12 +172,81 @@ public class ClientUsersTestSuite {
     db.delete("api-ashley");
   }
 
+  /** Admin can list dynamic users. */
+  @DataMethod(source = ClientUsersTestSuite.class, method = "clients")
+  @Name("{0}")
+  @Test
+  public void testListUsers_db(String _kind, Supplier<Users> usersHandle) {
+    DbUsers db = usersHandle.get().db();
+
+    Arrays.asList("jim", "pam", "dwight").forEach(u -> db.create(u));
+
+    List<UserDb> all = db.getAll().getResult();
+    // 3 created + admin user defined in WeaviateWithRbacContainer
+    assertEquals(4, all.size(), "expected number of dynamic users");
+
+    UserDb pam = db.getUser("pam").getResult();
+    assertTrue("pam is one of the users", all.contains(pam));
+
+    Arrays.asList("jim", "pam", "dwight").forEach(u -> db.delete(u));
+  }
+
+  @DataMethod(source = ClientUsersTestSuite.class, method = "clients")
+  @Name("{0}")
+  @Test
+  public void testFetchStaticUsers_db(String _kind, Supplier<Users> usersHandle) {
+    DbUsers db = usersHandle.get().db();
+    UserDb envUser = db.getUser(adminUser).getResult();
+    assertEquals("db_env_user", envUser.getUserType());
+  }
+
+  @DataMethod(source = ClientUsersTestSuite.class, method = "clients")
+  @Name("{0}")
+  @Test
+  public void testAssignRevokeRole_db(String _kind, Supplier<Users> usersHandle) {
+    Rbac rbac = usersHandle.get();
+    DbUsers db = usersHandle.get().db();
+
+    db.create("role-rick");
+    rbac.createRole("TestRole");
+
+    db.assignRoles("role-rick", "TestRole");
+    assertTrue("role-rick has TestRole",
+        checkHasRole(rbac, "role-rick", "TestRole"));
+
+    db.revokeRoles("role-rick", "TestRole");
+    assertFalse("TestRole is revoked",
+        checkHasRole(rbac, "role-rick", "TestRole"));
+
+    db.delete("role-rick");
+    rbac.deleteRole("TestRole");
+  }
+
+  @DataMethod(source = ClientUsersTestSuite.class, method = "clients")
+  @Name("{0}")
+  @Test
+  public void testAssignRevokeRole_oidc(String _kind, Supplier<Users> usersHandle) {
+    Rbac rbac = usersHandle.get();
+    OidcUsers oidc = usersHandle.get().oidc();
+    rbac.createRole("TestRole");
+
+    oidc.assignRoles("role-rick", "TestRole");
+    assertTrue("role-rick has TestRole",
+        checkHasRole(rbac, "role-rick", "TestRole"));
+
+    oidc.revokeRoles("role-rick", "TestRole");
+    assertFalse("TestRole is revoked",
+        checkHasRole(rbac, "role-rick", "TestRole"));
+
+    rbac.deleteRole("TestRole");
+  }
+
   /** Prefix the role with the name of the current test for easier debugging */
   private String roleName(String name) {
     return String.format("%s-%s", currentTest.getMethodName(), name);
   }
 
-  private boolean checkHasRole(Users roles, String user, String role) {
+  private boolean checkHasRole(Rbac roles, String user, String role) {
     return roles.getAssignedUsers(role).getResult().contains(user);
   }
 
@@ -197,6 +268,8 @@ public class ClientUsersTestSuite {
     Result<?> revokeRoles(String user, String... roles);
 
     DbUsers db();
+
+    OidcUsers oidc();
   }
 
   public interface DbUsers {
@@ -219,6 +292,13 @@ public class ClientUsersTestSuite {
     Result<UserDb> getUser(String user);
 
     Result<List<UserDb>> getAll();
+  }
 
+  public interface OidcUsers {
+    Result<?> assignRoles(String user, String... roles);
+
+    Result<?> revokeRoles(String user, String... roles);
+
+    Result<List<Role>> assignedRoles(String user, boolean includePermissions);
   }
 }

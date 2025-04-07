@@ -4,9 +4,11 @@ import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
+@EqualsAndHashCode
 public class UserDb {
   @SerializedName("roles")
   List<String> roleNames;
