@@ -16,8 +16,15 @@ public class RoleRevoker extends BaseClient<Void> implements ClientResult<Boolea
   private String userId;
   private List<String> roles = new ArrayList<>();
 
+  private final String _userType;
+
   public RoleRevoker(HttpClient httpClient, Config config) {
+    this(httpClient, config, null);
+  }
+
+  public RoleRevoker(HttpClient httpClient, Config config, String userType) {
     super(httpClient, config);
+    this._userType = userType;
   }
 
   public RoleRevoker withUserId(String id) {
@@ -32,8 +39,9 @@ public class RoleRevoker extends BaseClient<Void> implements ClientResult<Boolea
 
   /** The API signature for this method is { "roles": [...] } */
   @AllArgsConstructor
-  private static class Body {
-    public final List<String> roles;
+  private class Body {
+    final String userType = _userType;
+    final List<String> roles;
   }
 
   @Override

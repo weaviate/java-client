@@ -1,7 +1,10 @@
 package io.weaviate.integration.tests.users;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.util.List;
@@ -18,13 +21,18 @@ import org.testcontainers.weaviate.WeaviateContainer;
 
 import com.jparams.junit4.JParamsTestRunner;
 import com.jparams.junit4.data.DataMethod;
+import com.jparams.junit4.description.Name;
 
 import io.weaviate.client.Config;
+import io.weaviate.client.WeaviateAuthClient;
+import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
+import io.weaviate.client.base.WeaviateError;
 import io.weaviate.client.v1.rbac.model.Permission;
 import io.weaviate.client.v1.rbac.model.Role;
 import io.weaviate.client.v1.rbac.model.TenantsPermission;
 import io.weaviate.client.v1.users.model.User;
+import io.weaviate.client.v1.users.model.UserDb;
 import io.weaviate.integration.client.WeaviateDockerImage;
 import io.weaviate.integration.client.WeaviateWithRbacContainer;
 import io.weaviate.integration.tests.rbac.ClientRbacTestSuite;
@@ -50,8 +58,11 @@ public class ClientUsersTestSuite {
   public static Object[][] clients() {
     try {
       return new Object[][] {
-          { (Supplier<Users>) () -> new io.weaviate.integration.client.users.ClientUsersTest(config(), API_KEY) },
-          { (Supplier<Users>) () -> new io.weaviate.integration.client.async.users.ClientUsersTest(config(), API_KEY) }
+          { "sync",
+              (Supplier<Users>) () -> new io.weaviate.integration.client.users.ClientUsersTest(config(), API_KEY) },
+          { "async",
+              (Supplier<Users>) () -> new io.weaviate.integration.client.async.users.ClientUsersTest(config(),
+                  API_KEY) }
       };
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -64,7 +75,7 @@ public class ClientUsersTestSuite {
    */
   @DataMethod(source = ClientUsersTestSuite.class, method = "clients")
   @Test
-  public void testGetUserRoles(Supplier<Users> userHandle) {
+  public void testGetUserRoles(String _kind, Supplier<Users> userHandle) {
     Users users = userHandle.get();
     Result<User> myUser = users.getMyUser();
     assertNull("get my user error", myUser.getError());
@@ -81,7 +92,7 @@ public class ClientUsersTestSuite {
   /** User can be assigned a role and the role can be revoked. */
   @DataMethod(source = ClientUsersTestSuite.class, method = "clients")
   @Test
-  public void testAssignRevokeRole(Supplier<Users> userHandle) {
+  public void testAssignRevokeRole(String _kind, Supplier<Users> userHandle) {
     Users roles = userHandle.get();
     String myRole = roleName("VectorOwner");
     try {
@@ -97,10 +108,66 @@ public class ClientUsersTestSuite {
       assertNull("revoke operation error", response.getError());
 
       // Assert
-      assertFalse(checkHasRole(roles, adminUser, myRole), "should not have " + myRole + " role");
+      assertFalse("should not have " + myRole + " role", checkHasRole(roles, adminUser, myRole));
     } finally {
       roles.deleteRole(myRole);
     }
+  }
+
+  /** Admin can control the entire lifecycle of a 'db' user. */
+  @DataMethod(source = ClientUsersTestSuite.class, method = "clients")
+  @Name("{0}")
+  @Test
+  public void testUserLifecycle_db(String _kind, Supplier<Users> usersHandle) {
+    DbUsers db = usersHandle.get().db();
+
+    Result<?> created = db.create("dynamic-dave");
+    assertNull("create user", created.getError());
+
+    UserDb dave = db.getUser("dynamic-dave").getResult();
+    assertTrue("created user is active", dave.isActive());
+
+    boolean ok = db.activate("dynamic-dave").getResult();
+    assertTrue("second activation is a no-op", ok);
+
+    db.deactivate("dynamic-dave", true);
+    dave = db.getUser("dynamic-dave").getResult();
+    assertFalse("user deactivated", dave.isActive());
+
+    ok = db.deactivate("dynamic-dave", true).getResult();
+    assertTrue("second deactivation is a no-op", ok);
+
+    db.delete("dynamic-dave");
+    WeaviateError error = db.getUser("dynamic-dave").getError();
+    assertEquals(404, error.getStatusCode(), "user not found after deletion");
+  }
+
+  /** Admin can obtain and rotate API keys for users. */
+  @DataMethod(source = ClientUsersTestSuite.class, method = "clients")
+  @Name("{0}")
+  @Test
+  public void testRotateApiKeys_db(String _kind, Supplier<Users> usersHandle) {
+    DbUsers db = usersHandle.get().db();
+
+    Result<String> created = db.create("api-ashley");
+    assertNull("create user", created.getError());
+
+    String apiKey = created.getResult();
+    // It doesn't matter that we're using a sync client here,
+    // as we only want to check that the key is valid.
+    WeaviateClient clientAshley = assertDoesNotThrow(() -> WeaviateAuthClient.apiKey(config(), apiKey),
+        "connect with api key");
+
+    User ashley = clientAshley.users().myUserGetter().run().getResult();
+    assertEquals(ashley.getUserId(), "api-ashley");
+
+    String newKey = db.rotateKey("api-ashley").getResult();
+    clientAshley = assertDoesNotThrow(() -> WeaviateAuthClient.apiKey(config(), newKey), "connect with new api key");
+
+    ashley = clientAshley.users().myUserGetter().run().getResult();
+    assertEquals(ashley.getUserId(), "api-ashley");
+
+    db.delete("api-ashley");
   }
 
   /** Prefix the role with the name of the current test for easier debugging */
@@ -128,5 +195,30 @@ public class ClientUsersTestSuite {
     Result<?> assignRoles(String user, String... roles);
 
     Result<?> revokeRoles(String user, String... roles);
+
+    DbUsers db();
+  }
+
+  public interface DbUsers {
+    Result<?> assignRoles(String user, String... roles);
+
+    Result<?> revokeRoles(String user, String... roles);
+
+    Result<List<Role>> assignedRoles(String user, boolean includePermissions);
+
+    Result<String> create(String user);
+
+    Result<String> rotateKey(String user);
+
+    Result<Boolean> delete(String user);
+
+    Result<Boolean> activate(String user);
+
+    Result<Boolean> deactivate(String user, boolean revokeKey);
+
+    Result<UserDb> getUser(String user);
+
+    Result<List<UserDb>> getAll();
+
   }
 }

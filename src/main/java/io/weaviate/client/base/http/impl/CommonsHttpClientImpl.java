@@ -1,13 +1,11 @@
 package io.weaviate.client.base.http.impl;
 
-import io.weaviate.client.base.http.HttpClient;
-import io.weaviate.client.base.http.HttpResponse;
-import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+
 import org.apache.hc.client5.http.classic.methods.HttpDelete;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpHead;
@@ -22,6 +20,10 @@ import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.core5.http.message.BasicClassicHttpRequest;
 
+import io.weaviate.client.base.http.HttpClient;
+import io.weaviate.client.base.http.HttpResponse;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
+
 public class CommonsHttpClientImpl implements HttpClient, Closeable {
   private final Map<String, String> headers;
   private AccessTokenProvider tokenProvider;
@@ -31,7 +33,8 @@ public class CommonsHttpClientImpl implements HttpClient, Closeable {
     this(headers, null, clientBuilder);
   }
 
-  public CommonsHttpClientImpl(Map<String, String> headers, AccessTokenProvider tokenProvider, CloseableHttpClientBuilder clientBuilder) {
+  public CommonsHttpClientImpl(Map<String, String> headers, AccessTokenProvider tokenProvider,
+      CloseableHttpClientBuilder clientBuilder) {
     this.headers = headers;
     this.clientBuilder = clientBuilder;
     this.tokenProvider = tokenProvider;
@@ -44,6 +47,9 @@ public class CommonsHttpClientImpl implements HttpClient, Closeable {
 
   @Override
   public HttpResponse sendPostRequest(String url, String json) throws Exception {
+    if (json == null) {
+      return sendRequestWithoutPayload(new HttpPost(url));
+    }
     return sendRequestWithPayload(new HttpPost(url), json);
   }
 
@@ -95,10 +101,9 @@ public class CommonsHttpClientImpl implements HttpClient, Closeable {
 
     int statusCode = response.getCode();
     String body = response.getEntity() != null
-      ? EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8)
-      : "";
+        ? EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8)
+        : "";
     client.close();
-
     return new HttpResponse(statusCode, body);
   }
 

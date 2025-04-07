@@ -33,4 +33,12 @@ public class Users {
   public RoleRevoker revoker() {
     return new RoleRevoker(httpClient, config);
   }
+
+  public DbUsers db() {
+    return new DbUsers(httpClient, config);
+  }
+
+  public OidcUsers oidc() {
+    return new OidcUsers(httpClient, config);
+  }
 }

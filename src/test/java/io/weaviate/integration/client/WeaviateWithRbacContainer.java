@@ -18,7 +18,12 @@ public class WeaviateWithRbacContainer extends WeaviateContainer {
     withEnv("ENABLE_MODULES", "backup-filesystem");
     withEnv("CLUSTER_GOSSIP_BIND_PORT", "7100");
     withEnv("CLUSTER_DATA_BIND_PORT", "7101");
-
+    withEnv("AUTHENTICATION_DB_USERS_ENABLED", "true");
+    withEnv("AUTHENTICATION_OIDC_ENABLED", "true");
+    withEnv("AUTHENTICATION_OIDC_CLIENT_ID", "wcs");
+    withEnv("AUTHENTICATION_OIDC_ISSUER", "https://auth.wcs.api.weaviate.io/auth/realms/SeMI");
+    withEnv("AUTHENTICATION_OIDC_USERNAME_CLAIM", "email");
+    withEnv("AUTHENTICATION_OIDC_GROUPS_CLAIM", "groups");
     if (viewers.length > 0) {
       withEnv("AUTHORIZATION_VIEWER_USERS", String.join(",", viewers));
     }

@@ -20,8 +20,16 @@ public class RoleRevoker extends AsyncBaseClient<Boolean> implements AsyncClient
   private String userId;
   private List<String> roles = new ArrayList<>();
 
+  private final String _userType;
+
   public RoleRevoker(CloseableHttpAsyncClient httpClient, Config config, AccessTokenProvider tokenProvider) {
+    this(httpClient, config, tokenProvider, null);
+  }
+
+  public RoleRevoker(CloseableHttpAsyncClient httpClient, Config config, AccessTokenProvider tokenProvider,
+      String userType) {
     super(httpClient, config, tokenProvider);
+    this._userType = userType;
   }
 
   public RoleRevoker withUserId(String id) {
@@ -36,8 +44,9 @@ public class RoleRevoker extends AsyncBaseClient<Boolean> implements AsyncClient
 
   /** The API signature for this method is { "roles": [...] } */
   @AllArgsConstructor
-  private static class Body {
-    public final List<String> roles;
+  private class Body {
+    final String userType = _userType; // always inherit from the outer class
+    final List<String> roles;
   }
 
   @Override

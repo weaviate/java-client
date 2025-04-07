@@ -1,4 +1,4 @@
-package io.weaviate.client.v1.users.api;
+package io.weaviate.client.v1.users.api.common;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,16 +15,27 @@ import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.v1.rbac.api.WeaviateRole;
 import io.weaviate.client.v1.rbac.model.Role;
 
-public class UserRolesGetter extends BaseClient<WeaviateRole[]> implements ClientResult<List<Role>> {
+public class AssignedRolesGetter extends BaseClient<WeaviateRole[]> implements ClientResult<List<Role>> {
   private String userId;
+  private boolean includePermissions = false;
+  private final String userType;
 
-  public UserRolesGetter(HttpClient httpClient, Config config) {
+  public AssignedRolesGetter(HttpClient httpClient, Config config, String userType) {
     super(httpClient, config);
+    this.userType = userType;
   }
 
-  /** Leave unset to fetch roles assigned to the current user. */
-  public UserRolesGetter withUserId(String id) {
-    this.userId = id;
+  public AssignedRolesGetter withUserId(String userId) {
+    this.userId = userId;
+    return this;
+  }
+
+  public AssignedRolesGetter includePermissions() {
+    return includePermissions(true);
+  }
+
+  public AssignedRolesGetter includePermissions(boolean include) {
+    this.includePermissions = include;
     return this;
   }
 
@@ -36,9 +47,11 @@ public class UserRolesGetter extends BaseClient<WeaviateRole[]> implements Clien
         .stream().map(WeaviateRole::toRole)
         .collect(Collectors.toList());
     return new Result<>(resp.getStatusCode(), roles, resp.getErrors());
+
   }
 
   private String path() {
-    return String.format("/authz/users/%s/roles", this.userId);
+    return String.format("/authz/users/%s/roles/%s?includeFullRoles=%s",
+        userId, userType, includePermissions);
   }
 }

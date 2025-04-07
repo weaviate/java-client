@@ -5,10 +5,12 @@ import java.util.List;
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateAuthClient;
 import io.weaviate.client.base.Result;
+import io.weaviate.client.v1.async.users.DbUsers;
 import io.weaviate.client.v1.async.users.Users;
 import io.weaviate.client.v1.auth.exception.AuthException;
 import io.weaviate.client.v1.rbac.model.Role;
 import io.weaviate.client.v1.users.model.User;
+import io.weaviate.client.v1.users.model.UserDb;
 import io.weaviate.integration.client.async.rbac.ClientRbacTest;
 import io.weaviate.integration.tests.users.ClientUsersTestSuite;
 
@@ -47,5 +49,68 @@ public class ClientUsersTest extends ClientRbacTest implements ClientUsersTestSu
   @Override
   public Result<?> revokeRoles(String user, String... roles) {
     return rethrow(() -> this.users.revoker().withUserId(user).witRoles(roles).run());
+  }
+
+  @Override
+  public io.weaviate.integration.tests.users.ClientUsersTestSuite.DbUsers db() {
+    return new DbUsersImpl();
+  }
+
+  private class DbUsersImpl implements ClientUsersTestSuite.DbUsers {
+    private final DbUsers db;
+
+    public DbUsersImpl() {
+      this.db = users.db();
+    }
+
+    @Override
+    public Result<?> assignRoles(String user, String... roles) {
+      return rethrow(() -> db.assigner().withUserId(user).witRoles(roles).run());
+    }
+
+    @Override
+    public Result<?> revokeRoles(String user, String... roles) {
+      return rethrow(() -> db.revoker().withUserId(user).witRoles(roles).run());
+    }
+
+    @Override
+    public Result<List<Role>> assignedRoles(String user, boolean includePermissions) {
+      return rethrow(() -> db.assignedRoles().withUserId(user).includePermissions(includePermissions).run());
+    }
+
+    @Override
+    public Result<String> create(String user) {
+      return rethrow(() -> db.creator().withUserId(user).run());
+    }
+
+    @Override
+    public Result<String> rotateKey(String user) {
+      return rethrow(() -> db.keyRotator().withUserId(user).run());
+    }
+
+    @Override
+    public Result<Boolean> delete(String user) {
+      return rethrow(() -> db.deleter().withUserId(user).run());
+    }
+
+    @Override
+    public Result<Boolean> activate(String user) {
+      return rethrow(() -> db.activator().withUserId(user).run());
+    }
+
+    @Override
+    public Result<Boolean> deactivate(String user, boolean revokeKey) {
+      return rethrow(() -> db.deactivator().withUserId(user).run());
+    }
+
+    @Override
+    public Result<UserDb> getUser(String user) {
+      return rethrow(() -> db.getUser().withUserId(user).run());
+    }
+
+    @Override
+    public Result<List<UserDb>> getAll() {
+      return rethrow(() -> db.allGetter().run());
+    }
   }
 }
