@@ -29,6 +29,7 @@ import io.weaviate.client.WeaviateAuthClient;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateError;
+import io.weaviate.client.v1.rbac.model.BackupsPermission;
 import io.weaviate.client.v1.rbac.model.Permission;
 import io.weaviate.client.v1.rbac.model.Role;
 import io.weaviate.client.v1.rbac.model.TenantsPermission;
@@ -238,6 +239,28 @@ public class ClientUsersTestSuite {
     assertFalse("TestRole is revoked",
         checkHasRole(rbac, "role-rick", "TestRole"));
 
+    rbac.deleteRole("TestRole");
+  }
+
+  @DataMethod(source = ClientUsersTestSuite.class, method = "clients")
+  @Name("{0}")
+  @Test
+  public void testFetchAssignedRolesWithPermissions(String _kind, Supplier<Users> usersHandle) {
+    Rbac rbac = usersHandle.get();
+    DbUsers db = usersHandle.get().db();
+
+    rbac.createRole("TestRole",
+        Permission.backups("Pizza", BackupsPermission.Action.MANAGE),
+        Permission.tenants(TenantsPermission.Action.READ));
+    db.create("permission-peter");
+    db.assignRoles("permission-peter", "TestRole");
+
+    List<Role> roles = db.assignedRoles("permission-peter", true).getResult();
+    assertEquals(1, roles.size(), "expected n. of roles");
+    Role testRole = roles.get(0);
+    assertEquals(2, testRole.permissions.size(), "expected n. of permissions");
+
+    db.delete("permission-peter");
     rbac.deleteRole("TestRole");
   }
 

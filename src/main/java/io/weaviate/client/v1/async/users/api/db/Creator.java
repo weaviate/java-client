@@ -41,7 +41,7 @@ public class Creator extends AsyncBaseClient<String> implements AsyncClientResul
       @Override
       public Result<String> parse(HttpResponse response, String body, ContentType contentType) {
         Response<ApiKey> resp = serializer.toResponse(response.getCode(), body, ApiKey.class);
-        return new Result<>(resp, resp.getBody().apiKey);
+        return new Result<>(resp, resp.getBody() != null ? resp.getBody().apiKey : null);
       }
     });
   }
