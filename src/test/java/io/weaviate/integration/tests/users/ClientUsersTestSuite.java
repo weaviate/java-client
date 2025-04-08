@@ -259,7 +259,7 @@ public class ClientUsersTestSuite {
     db.create("permission-peter");
     db.assignRoles("permission-peter", "TestRole");
 
-    List<Role> roles = db.assignedRoles("permission-peter", true).getResult();
+    List<Role> roles = db.getAssignedRoles("permission-peter", true).getResult();
     assertEquals(1, roles.size(), "expected n. of roles");
     Role testRole = roles.get(0);
     assertEquals(2, testRole.permissions.size(), "expected n. of permissions");
@@ -304,7 +304,7 @@ public class ClientUsersTestSuite {
 
     Result<?> revokeRoles(String user, String... roles);
 
-    Result<List<Role>> assignedRoles(String user, boolean includePermissions);
+    Result<List<Role>> getAssignedRoles(String user, boolean includePermissions);
 
     Result<String> create(String user);
 
@@ -326,6 +326,6 @@ public class ClientUsersTestSuite {
 
     Result<?> revokeRoles(String user, String... roles);
 
-    Result<List<Role>> assignedRoles(String user, boolean includePermissions);
+    Result<List<Role>> getAssignedRoles(String user, boolean includePermissions);
   }
 }

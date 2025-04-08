@@ -94,10 +94,10 @@ public class ClientUsersTest extends ClientRbacTest implements ClientUsersTestSu
     }
 
     @Override
-    public Result<List<Role>> assignedRoles(String user, boolean includePermissions) {
+    public Result<List<Role>> getAssignedRoles(String user, boolean includePermissions) {
       return useOidc
-          ? rethrow(() -> oidc.assignedRoles().withUserId(user).includePermissions(includePermissions).run())
-          : rethrow(() -> db.assignedRoles().withUserId(user).includePermissions(includePermissions).run());
+          ? rethrow(() -> oidc.userRolesGetter().withUserId(user).includePermissions(includePermissions).run())
+          : rethrow(() -> db.userRolesGetter().withUserId(user).includePermissions(includePermissions).run());
     }
 
     @Override
