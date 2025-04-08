@@ -9,6 +9,7 @@ import io.weaviate.client.v1.auth.exception.AuthException;
 import io.weaviate.client.v1.rbac.Roles;
 import io.weaviate.client.v1.rbac.model.Permission;
 import io.weaviate.client.v1.rbac.model.Role;
+import io.weaviate.client.v1.rbac.model.UserAssignment;
 import io.weaviate.integration.tests.rbac.ClientRbacTestSuite;
 
 public class ClientRbacTest implements ClientRbacTestSuite.Rbac {
@@ -65,5 +66,10 @@ public class ClientRbacTest implements ClientRbacTestSuite.Rbac {
   @Override
   public Result<?> removePermissions(String role, Permission<?>... permissions) {
     return roles.permissionRemover().withRole(role).withPermissions(permissions).run();
+  }
+
+  @Override
+  public Result<List<UserAssignment>> getUserAssignments(String role) {
+    return roles.userAssignmentsGetter().withRole(role).run();
   }
 }

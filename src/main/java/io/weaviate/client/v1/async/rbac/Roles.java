@@ -12,6 +12,7 @@ import io.weaviate.client.v1.async.rbac.api.RoleCreator;
 import io.weaviate.client.v1.async.rbac.api.RoleDeleter;
 import io.weaviate.client.v1.async.rbac.api.RoleExists;
 import io.weaviate.client.v1.async.rbac.api.RoleGetter;
+import io.weaviate.client.v1.async.rbac.api.UserAssignmentsGetter;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import lombok.RequiredArgsConstructor;
 
@@ -68,6 +69,11 @@ public class Roles {
   /** Get users assigned to a role. */
   public AssignedUsersGetter assignedUsersGetter() {
     return new AssignedUsersGetter(client, config, tokenProvider);
+  };
+
+  /** Get users assigned to a role. */
+  public UserAssignmentsGetter userAssignmentsGetter() {
+    return new UserAssignmentsGetter(client, config, tokenProvider);
   };
 
   /** Check if a role exists. */

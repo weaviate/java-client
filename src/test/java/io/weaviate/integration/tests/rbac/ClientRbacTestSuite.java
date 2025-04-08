@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
@@ -32,6 +33,7 @@ import io.weaviate.client.v1.rbac.model.Permission;
 import io.weaviate.client.v1.rbac.model.Role;
 import io.weaviate.client.v1.rbac.model.RolesPermission;
 import io.weaviate.client.v1.rbac.model.TenantsPermission;
+import io.weaviate.client.v1.rbac.model.UserAssignment;
 import io.weaviate.integration.client.WeaviateDockerImage;
 import io.weaviate.integration.client.WeaviateWithRbacContainer;
 
@@ -100,6 +102,24 @@ public class ClientRbacTestSuite {
     List<String> users = response.getResult();
     assertThat(users).as("users assigned to " + rootRole + " role").hasSize(1);
     assertEquals(adminUser, users.get(0), "wrong user assinged to " + rootRole + " role");
+  }
+
+  /** Admin user should have the admin role assigned to them. */
+  @DataMethod(source = ClientRbacTestSuite.class, method = "clients")
+  @Name("{class}/client={0} ")
+  @Test
+  public void testGetUserAssignments(String _name, Supplier<Rbac> rbac) {
+    Rbac roles = rbac.get();
+    Result<List<UserAssignment>> response = roles.getUserAssignments(rootRole);
+    assertThat(response.getError()).as("get assigned users error").isNull();
+
+    List<UserAssignment> users = response.getResult();
+    // If OIDC is enabled, db / db_env users will appear in the list twice:
+    // once as 'db" and once as an 'oidc' user.
+    assertThat(users).as("users assignments to " + rootRole + " role").hasSize(2);
+    assertEquals(adminUser, users.get(0).getUserId(), "wrong user assinged to " + rootRole + " role");
+    assertArrayEquals(new String[] { "db_env_user", "oidc" },
+        users.stream().map(UserAssignment::getUserType).sorted().toArray());
   }
 
   /**
@@ -291,6 +311,8 @@ public class ClientRbacTestSuite {
     Result<List<Role>> getAll();
 
     Result<List<String>> getAssignedUsers(String role);
+
+    Result<List<UserAssignment>> getUserAssignments(String role);
 
     Result<Boolean> createRole(String role, Permission<?>... permissions);
 
