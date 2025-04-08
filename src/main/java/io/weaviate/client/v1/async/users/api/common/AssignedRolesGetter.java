@@ -31,6 +31,10 @@ public class AssignedRolesGetter extends AsyncBaseClient<List<Role>> implements 
     return this;
   }
 
+  /**
+   * Include a full list of permissions for each role.
+   * If not set, only role names will be populated.
+   */
   public AssignedRolesGetter includePermissions() {
     return includePermissions(true);
   }

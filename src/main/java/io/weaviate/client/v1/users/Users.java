@@ -19,25 +19,45 @@ public class Users {
     return new MyUserGetter(httpClient, config);
   };
 
-  /** Get roles assigned to a user. */
+  /**
+   * Get roles assigned to a user.
+   * <p>
+   * Deprecated - prefer {@link DbUsers#userRolesGetter()} or
+   * {@link OidcUsers#userRolesGetter()}.
+   */
+  @Deprecated
   public UserRolesGetter userRolesGetter() {
     return new UserRolesGetter(httpClient, config);
   };
 
-  /** Assign a role to a user. Note that 'root' cannot be assigned. */
+  /**
+   * Assign a role to a user. Note that 'root' cannot be assigned.
+   * <p>
+   * Deprecated - prefer {@link DbUsers#assigner()} or
+   * {@link OidcUsers#assigner()}.
+   */
+  @Deprecated
   public RoleAssigner assigner() {
     return new RoleAssigner(httpClient, config);
   }
 
-  /** Revoke a role from a user. Note that 'root' cannot be revoked. */
+  /**
+   * Revoke a role from a user. Note that 'root' cannot be revoked.
+   * <p>
+   * Deprecated - prefer {@link DbUsers#revoker()} or
+   * {@link OidcUsers#revoker()}
+   */
+  @Deprecated
   public RoleRevoker revoker() {
     return new RoleRevoker(httpClient, config);
   }
 
+  /** Manage dynamic users, their roles and permissions. */
   public DbUsers db() {
     return new DbUsers(httpClient, config);
   }
 
+  /** Manage users authenticated via OIDC, their roles and permissions. */
   public OidcUsers oidc() {
     return new OidcUsers(httpClient, config);
   }

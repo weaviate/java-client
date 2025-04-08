@@ -31,34 +31,46 @@ public class DbUsers {
     return new RoleRevoker(httpClient, config, USER_TYPE);
   }
 
-  public AssignedRolesGetter assignedRoles() {
+  /** Get roles assigned to a user. */
+  public AssignedRolesGetter userRolesGetter() {
     return new AssignedRolesGetter(httpClient, config, USER_TYPE);
   }
 
+  /** Create a new user. Returns API key for the user to authenticate by. */
   public Creator creator() {
     return new Creator(httpClient, config);
   }
 
+  /**
+   * Delete user.
+   * Users declared in the server environment config cannot be
+   * deleted ('db_env_user').
+   */
   public Deleter deleter() {
     return new Deleter(httpClient, config);
   }
 
+  /** Activate user account. */
   public Activator activator() {
     return new Activator(httpClient, config);
   }
 
+  /** Deactivate user account, optionally revoking its API key. */
   public Deactivator deactivator() {
     return new Deactivator(httpClient, config);
   }
 
+  /** Rotate user's API key. The old key will become invalid. */
   public KeyRotator keyRotator() {
     return new KeyRotator(httpClient, config);
   }
 
+  /** Get information about the user. */
   public ByNameGetter getUser() {
     return new ByNameGetter(httpClient, config);
   }
 
+  /** List all known (non-OIDC) users. */
   public AllGetter allGetter() {
     return new AllGetter(httpClient, config);
   }

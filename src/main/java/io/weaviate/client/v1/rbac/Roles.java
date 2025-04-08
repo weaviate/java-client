@@ -64,7 +64,12 @@ public class Roles {
     return new RoleGetter(httpClient, config);
   };
 
-  /** Get users assigned to a role. */
+  /**
+   * Get users assigned to a role.
+   * <p>
+   * Deprecated - prefer {@link #userAssignmentsGetter()}
+   */
+  @Deprecated
   public AssignedUsersGetter assignedUsersGetter() {
     return new AssignedUsersGetter(httpClient, config);
   };

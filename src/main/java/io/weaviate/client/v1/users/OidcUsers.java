@@ -24,7 +24,8 @@ public class OidcUsers {
     return new RoleRevoker(httpClient, config, USER_TYPE);
   }
 
-  public AssignedRolesGetter assignedRoles() {
+  /** Get roles assigned to a user. */
+  public AssignedRolesGetter userRolesGetter() {
     return new AssignedRolesGetter(httpClient, config, USER_TYPE);
   }
 }

@@ -30,6 +30,10 @@ public class AssignedRolesGetter extends BaseClient<WeaviateRole[]> implements C
     return this;
   }
 
+  /**
+   * Include a full list of permissions for each role.
+   * If not set, only role names will be populated.
+   */
   public AssignedRolesGetter includePermissions() {
     return includePermissions(true);
   }
