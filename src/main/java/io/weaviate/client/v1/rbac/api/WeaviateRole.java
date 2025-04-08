@@ -2,6 +2,7 @@ package io.weaviate.client.v1.rbac.api;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import io.weaviate.client.v1.rbac.model.Permission;
@@ -29,7 +30,7 @@ public class WeaviateRole {
   public Role toRole() {
     List<Permission<?>> permissions = this.permissions.stream()
         .<Permission<?>>map(perm -> Permission.fromWeaviate(perm))
-        .collect(Collectors.toList());
+        .filter(Objects::nonNull).collect(Collectors.toList());
     return new Role(this.name, Permission.merge(permissions));
   }
 }
