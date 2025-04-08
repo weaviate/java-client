@@ -46,7 +46,7 @@ public class Serializer {
     if (statusCode < 399) {
       return new Result<>(toResponse(statusCode, body, classOfT));
     }
-    return new Result<>(statusCode, null, toWeaviateError(body, statusCode));
+    return new Result<>(statusCode, null, toWeaviateError(body));
   }
 
   public <T> Response<T> toResponse(int statusCode, String body, Class<T> classOfT) {
@@ -54,7 +54,7 @@ public class Serializer {
       T obj = toResponse(body, classOfT);
       return new Response<>(statusCode, obj, null);
     }
-    return new Response<>(statusCode, null, toWeaviateError(body, statusCode));
+    return new Response<>(statusCode, null, toWeaviateError(body));
   }
 
   public <C> Response<GraphQLTypedResponse<C>> toGraphQLTypedResponse(int statusCode, String body, Class<C> classOfC) {
@@ -62,21 +62,17 @@ public class Serializer {
       GraphQLTypedResponse<C> obj = toGraphQLTypedResponse(body, classOfC);
       return new Response<>(statusCode, obj, null);
     }
-    return new Response<>(statusCode, null, toWeaviateError(body, statusCode));
+    return new Response<>(statusCode, null, toWeaviateError(body));
   }
 
   public <C> Result<GraphQLTypedResponse<C>> toGraphQLTypedResult(int statusCode, String body, Class<C> classOfC) {
     if (statusCode < 399) {
       return new Result<>(toGraphQLTypedResponse(statusCode, body, classOfC));
     }
-    return new Result<>(statusCode, null, toWeaviateError(body, statusCode));
+    return new Result<>(statusCode, null, toWeaviateError(body));
   }
 
-  public WeaviateErrorResponse toWeaviateError(String body, int statusCode) {
-    WeaviateErrorResponse error = toResponse(body, WeaviateErrorResponse.class);
-    if (error == null) {
-      error = WeaviateErrorResponse.builder().code(statusCode).build();
-    }
-    return error;
+  public WeaviateErrorResponse toWeaviateError(String body) {
+    return toResponse(body, WeaviateErrorResponse.class);
   }
 }

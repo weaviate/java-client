@@ -49,11 +49,7 @@ public abstract class BaseClient<T> {
       if (statusCode < 399) {
         return new Response<>(statusCode, toResponse(responseBody, classOfT), null);
       }
-      WeaviateErrorResponse error = toResponse(responseBody, WeaviateErrorResponse.class);
-      if (error == null) {
-        error = WeaviateErrorResponse.builder().code(statusCode).build();
-      }
-      return new Response<>(statusCode, null, error);
+      return new Response<>(statusCode, null, toResponse(responseBody, WeaviateErrorResponse.class));
     } catch (Exception e) {
       WeaviateErrorResponse errors = getWeaviateErrorResponse(e);
       return new Response<>(0, null, errors);

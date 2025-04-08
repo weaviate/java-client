@@ -142,7 +142,11 @@ public class ClientUsersTestSuite {
 
     db.delete("dynamic-dave");
     WeaviateError error = db.getUser("dynamic-dave").getError();
-    assertEquals(404, error.getStatusCode(), "user not found after deletion");
+    // We do not return 404 errors, or any errors without an error message.
+    // Changing that would mean breaking existing code.
+    // assertEquals(404, error.getStatusCode(), "user not found after deletion");
+    assertNull("getting a deleted user produces no error", error);
+    assertNull("user is deleted", db.getUser("dynamic-dave").getResult());
   }
 
   /** Admin can obtain and rotate API keys for users. */
