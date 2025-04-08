@@ -49,7 +49,7 @@ public class NimbusAuthRefreshTokenTest {
     String password = System.getenv("WCS_DUMMY_CI_PW");
     if (StringUtils.isNotBlank(password)) {
       Config config = new Config("http", address);
-      String username = "ms_2d0e007e7136de11d5f29fce7a53dae219a51458@existiert.net";
+      String username = "oidc-test-user@weaviate.io";
       assertThat(tokenProvider).isNull();
       NimbusAuthAuthImpl nimbusAuth = new NimbusAuthAuthImpl();
       AccessTokenProvider provider = nimbusAuth.getAccessTokenProvider(config, "", username, password, null, AuthType.USER_PASSWORD);
