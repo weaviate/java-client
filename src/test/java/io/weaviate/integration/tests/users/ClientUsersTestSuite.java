@@ -131,14 +131,14 @@ public class ClientUsersTestSuite {
     assertTrue("created user is active", dave.isActive());
 
     boolean ok = db.activate("dynamic-dave").getResult();
-    assertTrue("second activation is a no-op", ok);
+    assertFalse("second activation is a no-op", ok);
 
     db.deactivate("dynamic-dave", true);
     dave = db.getUser("dynamic-dave").getResult();
     assertFalse("user deactivated", dave.isActive());
 
     ok = db.deactivate("dynamic-dave", true).getResult();
-    assertTrue("second deactivation is a no-op", ok);
+    assertFalse("second deactivation is a no-op", ok);
 
     db.delete("dynamic-dave");
     WeaviateError error = db.getUser("dynamic-dave").getError();

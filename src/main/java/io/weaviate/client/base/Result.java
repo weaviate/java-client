@@ -76,7 +76,7 @@ public class Result<T> {
    */
   public static Result<Boolean> voidToBoolean(Response<Void> response) {
     int status = response.getStatusCode();
-    return new Result<>(status, status < 299, response.getErrors());
+    return new Result<>(status, status <= 299, response.getErrors());
   }
 
   /**
@@ -85,14 +85,20 @@ public class Result<T> {
    * allowed codes (e.g. HTTP 409 is used when the request has no effect, because
    * a previous one has already succeeded).
    *
-   * @param response Response from a call that does not return a value, like
-   *                 {@link BaseClient#sendDeleteRequest}.
+   * @param allowCodes Avoid treating these error codes as an error
+   *                   and only return false.
+   *
+   * @param response   Response from a call that does not return a value, like
+   *                   {@link BaseClient#sendDeleteRequest}.
    * @return {@code Result<Boolean>}
    */
   public static Result<Boolean> voidToBoolean(Response<Void> response, int... allowCodes) {
     Integer status = response.getStatusCode();
-    boolean allowedCode = Arrays.stream(allowCodes).anyMatch(status::equals);
-    return new Result<>(status, status < 299 || allowedCode, response.getErrors());
+    boolean isCodeAllowed = Arrays.stream(allowCodes).anyMatch(status::equals);
+    if (status <= 299) {
+      return new Result<>(status, true, null);
+    }
+    return new Result<>(status, false, isCodeAllowed ? null : response.getErrors());
   }
 
   /**
@@ -114,6 +120,9 @@ public class Result<T> {
   /**
    * Get a custom parser to convert {@code Result<Void>} response as to a
    * {@code Result<Void>}. The result contains true if status code is 200.
+   *
+   * @param allowCodes Avoid treating these error codes as an error
+   *                   and only return false.
    *
    * @return {@code Result<Boolean>}
    */
