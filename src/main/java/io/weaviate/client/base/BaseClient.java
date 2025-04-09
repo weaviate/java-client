@@ -47,12 +47,9 @@ public abstract class BaseClient<T> {
       int statusCode = response.getStatusCode();
       String responseBody = response.getBody();
       if (statusCode < 399) {
-        T body = toResponse(responseBody, classOfT);
-        return new Response<>(statusCode, body, null);
+        return new Response<>(statusCode, toResponse(responseBody, classOfT), null);
       }
-
-      WeaviateErrorResponse error = toResponse(responseBody, WeaviateErrorResponse.class);
-      return new Response<>(statusCode, null, error);
+      return new Response<>(statusCode, null, toResponse(responseBody, WeaviateErrorResponse.class));
     } catch (Exception e) {
       WeaviateErrorResponse errors = getWeaviateErrorResponse(e);
       return new Response<>(0, null, errors);

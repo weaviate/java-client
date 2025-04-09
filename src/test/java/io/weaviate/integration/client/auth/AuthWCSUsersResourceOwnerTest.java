@@ -35,7 +35,7 @@ public class AuthWCSUsersResourceOwnerTest {
     String password = System.getenv("WCS_DUMMY_CI_PW");
     if (StringUtils.isNotBlank(password)) {
       Config config = new Config("http", address);
-      String username = "ms_2d0e007e7136de11d5f29fce7a53dae219a51458@existiert.net";
+      String username = "oidc-test-user@weaviate.io";
       ResourceOwnerPasswordFlow resourceOwnerPasswordFlow = new ResourceOwnerPasswordFlow(username, password);
       WeaviateClient client = resourceOwnerPasswordFlow.getAuthClient(config, null);
       Result<Meta> meta = client.misc().metaGetter().run();

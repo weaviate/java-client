@@ -16,11 +16,11 @@ public class WeaviateWithOidcContainer extends WeaviateContainer {
     withEnv("AUTHENTICATION_OIDC_USERNAME_CLAIM", "email");
     withEnv("AUTHENTICATION_OIDC_GROUPS_CLAIM", "groups");
     withEnv("AUTHORIZATION_ADMINLIST_ENABLED", "true");
-    withEnv("AUTHORIZATION_ADMINLIST_USERS", "ms_2d0e007e7136de11d5f29fce7a53dae219a51458@existiert.net");
+    withEnv("AUTHORIZATION_ADMINLIST_USERS", "oidc-test-user@weaviate.io");
     withEnv("AUTHENTICATION_OIDC_SCOPES", "openid,email");
     withEnv("AUTHENTICATION_APIKEY_ENABLED", "true");
     withEnv("AUTHENTICATION_APIKEY_ALLOWED_KEYS", "my-secret-key");
-    withEnv("AUTHENTICATION_APIKEY_USERS", "ms_2d0e007e7136de11d5f29fce7a53dae219a51458@existiert.net");
+    withEnv("AUTHENTICATION_APIKEY_USERS", "oidc-test-user@weaviate.io");
     withEnv("DISABLE_TELEMETRY", "true");
   }
 }

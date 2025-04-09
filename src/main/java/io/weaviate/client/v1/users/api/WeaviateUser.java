@@ -20,7 +20,10 @@ public class WeaviateUser {
   List<WeaviateRole> roles = new ArrayList<>();
 
   public User toUser() {
-    return new User(id != null ? id : username,
-        roles.stream().map(WeaviateRole::toRole).collect(Collectors.toList()));
+    return new User(
+        id != null ? id : username,
+        roles != null
+            ? roles.stream().map(WeaviateRole::toRole).collect(Collectors.toList())
+            : new ArrayList<>());
   }
 }

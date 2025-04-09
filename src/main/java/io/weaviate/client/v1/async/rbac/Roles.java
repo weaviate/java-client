@@ -12,6 +12,7 @@ import io.weaviate.client.v1.async.rbac.api.RoleCreator;
 import io.weaviate.client.v1.async.rbac.api.RoleDeleter;
 import io.weaviate.client.v1.async.rbac.api.RoleExists;
 import io.weaviate.client.v1.async.rbac.api.RoleGetter;
+import io.weaviate.client.v1.async.rbac.api.UserAssignmentsGetter;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import lombok.RequiredArgsConstructor;
 
@@ -65,9 +66,29 @@ public class Roles {
     return new RoleGetter(client, config, tokenProvider);
   };
 
-  /** Get users assigned to a role. */
+  /**
+   * Get users assigned to a role.
+   * <p>
+   * Deprecated - prefer {@link #userAssignmentsGetter()}.
+   */
+  @Deprecated
   public AssignedUsersGetter assignedUsersGetter() {
     return new AssignedUsersGetter(client, config, tokenProvider);
+  };
+
+  /**
+   * Get role assignments.
+   *
+   * <p>
+   * Note, that the result is not a list of unique users,
+   * but rather a list of all username+namespace combinations
+   * allowed for this role.
+   * In clusters with enabled OIDC authorization, users created dynamically
+   * (db_user) or configured in the environment (db_env_user) will appear twice:
+   * once as 'db_*' user and once as 'oidc' user.
+   */
+  public UserAssignmentsGetter userAssignmentsGetter() {
+    return new UserAssignmentsGetter(client, config, tokenProvider);
   };
 
   /** Check if a role exists. */

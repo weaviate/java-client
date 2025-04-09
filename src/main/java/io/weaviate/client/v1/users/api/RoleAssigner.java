@@ -7,7 +7,6 @@ import java.util.List;
 import io.weaviate.client.Config;
 import io.weaviate.client.base.BaseClient;
 import io.weaviate.client.base.ClientResult;
-import io.weaviate.client.base.Response;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.HttpClient;
 import lombok.AllArgsConstructor;
@@ -16,8 +15,15 @@ public class RoleAssigner extends BaseClient<Void> implements ClientResult<Boole
   private String userId;
   private List<String> roles = new ArrayList<>();
 
+  private final String _userType;
+
   public RoleAssigner(HttpClient httpClient, Config config) {
+    this(httpClient, config, null);
+  }
+
+  public RoleAssigner(HttpClient httpClient, Config config, String userType) {
     super(httpClient, config);
+    this._userType = userType;
   }
 
   public RoleAssigner withUserId(String id) {
@@ -32,15 +38,14 @@ public class RoleAssigner extends BaseClient<Void> implements ClientResult<Boole
 
   /** The API signature for this method is { "roles": [...] } */
   @AllArgsConstructor
-  private static class Body {
-    public final List<String> roles;
+  private class Body {
+    final String userType = _userType;
+    final List<String> roles;
   }
 
   @Override
   public Result<Boolean> run() {
-    Response<Void> resp = sendPostRequest(path(), new Body(this.roles), Void.class);
-    int status = resp.getStatusCode();
-    return new Result<Boolean>(status, status == 200, resp.getErrors());
+    return Result.voidToBoolean(sendPostRequest(path(), new Body(this.roles), Void.class));
   }
 
   private String path() {

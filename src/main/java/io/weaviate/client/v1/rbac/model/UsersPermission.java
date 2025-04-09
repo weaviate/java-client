@@ -15,7 +15,10 @@ public class UsersPermission extends Permission<UsersPermission> {
 
   @AllArgsConstructor
   public enum Action implements RbacAction {
+    CREATE("create_users"),
+    UPDATE("update_users"),
     READ("read_users"),
+    DELETE("delete_users"),
     ASSIGN_AND_REVOKE("assign_and_revoke_users");
 
     @Getter
