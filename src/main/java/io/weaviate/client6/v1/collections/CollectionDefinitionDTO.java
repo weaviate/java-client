@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 import io.weaviate.client6.internal.DtoTypeAdapterFactory;
 
-class CollectionDefinitionDTO implements DtoTypeAdapterFactory.Dto<CollectionDefinition> {
+class CollectionDefinitionDTO implements DtoTypeAdapterFactory.Dto<Collection> {
   @SerializedName("class")
   String collection;
 
@@ -25,7 +25,7 @@ class CollectionDefinitionDTO implements DtoTypeAdapterFactory.Dto<CollectionDef
   @SerializedName("vectorizer")
   private Vectorizer vectorizer;
 
-  public CollectionDefinitionDTO(CollectionDefinition colDef) {
+  public CollectionDefinitionDTO(Collection colDef) {
     this.collection = colDef.name();
     this.properties = colDef.properties();
     this.vectors = colDef.vectors();
@@ -41,7 +41,7 @@ class CollectionDefinitionDTO implements DtoTypeAdapterFactory.Dto<CollectionDef
     }
   }
 
-  public CollectionDefinition toModel() {
-    return new CollectionDefinition(collection, properties, vectors);
+  public Collection toModel() {
+    return new Collection(collection, properties, vectors);
   }
 }

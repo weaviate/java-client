@@ -13,11 +13,11 @@ import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.WeaviateClient;
-import io.weaviate.client6.v1.Vectors;
 import io.weaviate.client6.v1.collections.Property;
 import io.weaviate.client6.v1.collections.VectorIndex;
 import io.weaviate.client6.v1.collections.VectorIndex.IndexingStrategy;
 import io.weaviate.client6.v1.collections.Vectorizer;
+import io.weaviate.client6.v1.collections.object.Vectors;
 import io.weaviate.client6.v1.query.GroupedQueryResult;
 import io.weaviate.client6.v1.query.MetadataField;
 import io.weaviate.client6.v1.query.NearVector;

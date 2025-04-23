@@ -1,4 +1,4 @@
-package io.weaviate.client6.v1.data;
+package io.weaviate.client6.v1.collections.data;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -16,11 +16,11 @@ import com.google.gson.Gson;
 
 import io.weaviate.client6.Config;
 import io.weaviate.client6.internal.HttpClient;
-import io.weaviate.client6.v1.ObjectMetadata;
+import io.weaviate.client6.v1.collections.object.WeaviateObject;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class Data<T> {
+public class DataClient<T> {
   // TODO: inject singleton as dependency
   private static final Gson gson = new Gson();
 
@@ -31,16 +31,19 @@ public class Data<T> {
   private final Config config;
   private final HttpClient httpClient;
 
-  public WeaviateObject<T> insert(T object) throws IOException {
-    return insert(object, opt -> {
+  public WeaviateObject<T> insert(T properties) throws IOException {
+    return insert(properties, opt -> {
     });
   }
 
-  public WeaviateObject<T> insert(T object, Consumer<ObjectMetadata.Builder> options) throws IOException {
-    var body = new WeaviateObject<>(collectionName, object, options);
+  public WeaviateObject<T> insert(T properties, Consumer<InsertObjectRequest.Builder<T>> fn) throws IOException {
+    return insert(InsertObjectRequest.of(collectionName, properties, fn));
+  }
+
+  public WeaviateObject<T> insert(InsertObjectRequest<T> request) throws IOException {
     ClassicHttpRequest httpPost = ClassicRequestBuilder
         .post(config.baseUrl() + "/objects")
-        .setEntity(body.toJson(gson), ContentType.APPLICATION_JSON)
+        .setEntity(request.serialize(gson), ContentType.APPLICATION_JSON)
         .build();
 
     return httpClient.http.execute(httpPost, response -> {

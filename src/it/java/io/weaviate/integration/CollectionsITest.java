@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.WeaviateClient;
-import io.weaviate.client6.v1.collections.CollectionDefinition;
+import io.weaviate.client6.v1.collections.Collection;
 import io.weaviate.client6.v1.collections.NoneVectorizer;
 import io.weaviate.client6.v1.collections.Property;
 import io.weaviate.client6.v1.collections.VectorIndex;
@@ -33,7 +33,7 @@ public class CollectionsITest extends ConcurrentTest {
 
     Assertions.assertThat(thingsCollection).get()
         .hasFieldOrPropertyWithValue("name", collectionName)
-        .extracting(CollectionDefinition::vectors).extracting(Vectors::getDefault)
+        .extracting(Collection::vectors).extracting(Vectors::getDefault)
         .as("default vector").satisfies(defaultVector -> {
           Assertions.assertThat(defaultVector).extracting(VectorIndex::vectorizer)
               .as("has none vectorizer").isInstanceOf(NoneVectorizer.class);
@@ -63,8 +63,8 @@ public class CollectionsITest extends ConcurrentTest {
         .as("after create Things").get()
         .satisfies(c -> {
           Assertions.assertThat(c.properties())
-              .as("ownedBy").filteredOn(p -> p.name.equals("ownedBy")).first()
-              .extracting(p -> p.dataTypes).asInstanceOf(InstanceOfAssertFactories.LIST)
+              .as("ownedBy").filteredOn(p -> p.name().equals("ownedBy")).first()
+              .extracting(p -> p.dataTypes()).asInstanceOf(InstanceOfAssertFactories.LIST)
               .containsOnly(nsOwners);
         });
 
@@ -83,8 +83,8 @@ public class CollectionsITest extends ConcurrentTest {
         .as("after add property").get()
         .satisfies(c -> {
           Assertions.assertThat(c.properties())
-              .as("soldIn").filteredOn(p -> p.name.equals("soldIn")).first()
-              .extracting(p -> p.dataTypes).asInstanceOf(InstanceOfAssertFactories.LIST)
+              .as("soldIn").filteredOn(p -> p.name().equals("soldIn")).first()
+              .extracting(p -> p.dataTypes()).asInstanceOf(InstanceOfAssertFactories.LIST)
               .containsOnly(nsOnlineStores, nsMarkets);
         });
   }

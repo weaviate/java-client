@@ -1,4 +1,4 @@
-package io.weaviate.client6.v1.data;
+package io.weaviate.client6.v1.collections.data;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;

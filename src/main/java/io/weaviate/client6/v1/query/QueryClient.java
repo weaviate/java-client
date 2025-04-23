@@ -18,7 +18,7 @@ import io.weaviate.client6.internal.GRPC;
 import io.weaviate.client6.internal.GrpcClient;
 import io.weaviate.client6.internal.codec.grpc.v1.SearchMarshaler;
 
-public class Query<T> {
+public class QueryClient<T> {
   // TODO: this should be wrapped around in some TypeInspector etc.
   private final String collectionName;
 
@@ -26,7 +26,7 @@ public class Query<T> {
   // (probably on a "higher" level);
   private final GrpcClient grpcClient;
 
-  public Query(String collectionName, GrpcClient grpc) {
+  public QueryClient(String collectionName, GrpcClient grpc) {
     this.grpcClient = grpc;
     this.collectionName = collectionName;
   }

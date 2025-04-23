@@ -30,12 +30,11 @@ import io.weaviate.client6.Config;
 import io.weaviate.client6.internal.DtoTypeAdapterFactory;
 import io.weaviate.client6.internal.GrpcClient;
 import io.weaviate.client6.internal.HttpClient;
-import io.weaviate.client6.v1.Collection;
 import io.weaviate.client6.v1.collections.VectorIndex.IndexingStrategy;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class Collections {
+public class CollectionsClient {
   // TODO: hide befind an internal HttpClient
   private final Config config;
 
@@ -44,7 +43,7 @@ public class Collections {
 
   static {
     DtoTypeAdapterFactory.register(
-        CollectionDefinition.class,
+        Collection.class,
         CollectionDefinitionDTO.class,
         m -> {
           return new CollectionDefinitionDTO(m);
@@ -117,9 +116,8 @@ public class Collections {
     });
   }
 
-  public void create(String name, Consumer<CollectionDefinition.Configuration> options) throws IOException {
-    var collection = CollectionDefinition.with(name, options);
-
+  public void create(String name, Consumer<Collection.Configuration> options) throws IOException {
+    var collection = Collection.with(name, options);
     ClassicHttpRequest httpPost = ClassicRequestBuilder
         .post(config.baseUrl() + "/schema")
         .setEntity(gson.toJson(collection), ContentType.APPLICATION_JSON)
@@ -136,7 +134,7 @@ public class Collections {
     });
   }
 
-  public Optional<CollectionDefinition> getConfig(String name) throws IOException {
+  public Optional<Collection> getConfig(String name) throws IOException {
     ClassicHttpRequest httpGet = ClassicRequestBuilder
         .get(config.baseUrl() + "/schema/" + name)
         .build();
@@ -146,7 +144,7 @@ public class Collections {
         return Optional.empty();
       }
       try (var r = new InputStreamReader(response.getEntity().getContent())) {
-        var collection = gson.fromJson(r, CollectionDefinition.class);
+        var collection = gson.fromJson(r, Collection.class);
         return Optional.ofNullable(collection);
       }
     });
@@ -167,7 +165,7 @@ public class Collections {
     });
   }
 
-  public Collection<Map<String, Object>> use(String name) {
-    return new Collection<>(name, config, grpcClient, httpClient);
+  public CollectionClient<Map<String, Object>> use(String name) {
+    return new CollectionClient<>(name, config, grpcClient, httpClient);
   }
 }

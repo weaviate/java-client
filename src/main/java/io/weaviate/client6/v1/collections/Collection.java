@@ -7,11 +7,11 @@ import java.util.function.Consumer;
 
 import io.weaviate.client6.v1.collections.Vectors.NamedVectors;
 
-public record CollectionDefinition(String name, List<Property> properties, Vectors vectors) {
+public record Collection(String name, List<Property> properties, Vectors vectors) {
 
-  public static CollectionDefinition with(String name, Consumer<Configuration> options) {
+  public static Collection with(String name, Consumer<Configuration> options) {
     var config = new Configuration(options);
-    return new CollectionDefinition(name, config.properties, config.vectors);
+    return new Collection(name, config.properties, config.vectors);
   }
 
   // Tucked Builder for additional collection configuration.

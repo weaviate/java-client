@@ -1,5 +1,6 @@
 package io.weaviate.client6.v1.collections;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Optional;
@@ -18,7 +19,7 @@ import io.weaviate.client6.internal.HttpClient;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class WeaviateCollectionConfig {
+public class CollectionConfigClient {
   // TODO: hide befind an internal HttpClient
   private final String collectionName;
   private final Config config;
@@ -27,14 +28,14 @@ public class WeaviateCollectionConfig {
   private static final Gson gson = new Gson();
   static {
     DtoTypeAdapterFactory.register(
-        CollectionDefinition.class,
+        Collection.class,
         CollectionDefinitionDTO.class,
         m -> {
           return new CollectionDefinitionDTO(m);
         });
   }
 
-  public Optional<CollectionDefinition> get() throws IOException {
+  public Optional<Collection> get() throws IOException {
     ClassicHttpRequest httpGet = ClassicRequestBuilder
         .get(config.baseUrl() + "/schema/" + collectionName)
         .build();
@@ -44,7 +45,7 @@ public class WeaviateCollectionConfig {
         return Optional.empty();
       }
       try (var r = new InputStreamReader(response.getEntity().getContent())) {
-        var collection = gson.fromJson(r, CollectionDefinition.class);
+        var collection = gson.fromJson(r, Collection.class);
         return Optional.ofNullable(collection);
       }
     });

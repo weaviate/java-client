@@ -1,13 +1,10 @@
-package io.weaviate.client6.v1.data;
+package io.weaviate.client6.v1.collections.object;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gson.annotations.SerializedName;
-
-import io.weaviate.client6.v1.ObjectMetadata;
-import io.weaviate.client6.v1.Vectors;
 
 class WeaviateObjectDTO<T> {
   @SerializedName("class")
@@ -26,7 +23,7 @@ class WeaviateObjectDTO<T> {
     if (object.metadata() != null) {
       this.id = object.metadata().id();
       if (object.metadata().vectors() != null) {
-        this.vectors = object.metadata().vectors().asMap();
+        this.vectors = object.metadata().vectors().getNamed();
       }
     }
   }

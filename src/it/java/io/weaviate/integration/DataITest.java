@@ -1,4 +1,4 @@
-package io.weaviate.client6.v1;
+package io.weaviate.integration;
 
 import java.io.IOException;
 import java.util.Map;
@@ -14,30 +14,31 @@ import io.weaviate.client6.v1.collections.Property;
 import io.weaviate.client6.v1.collections.VectorIndex;
 import io.weaviate.client6.v1.collections.VectorIndex.IndexingStrategy;
 import io.weaviate.client6.v1.collections.Vectorizer;
+import io.weaviate.client6.v1.collections.object.Vectors;
 import io.weaviate.containers.Container;
 
 public class DataITest extends ConcurrentTest {
 
   private static WeaviateClient client = Container.WEAVIATE.getClient();
-  private static final String COLLECTION = unique("Things");
+  private static final String COLLECTION = unique("Artists");
   private static final String VECTOR_INDEX = "bring_your_own";
 
   @BeforeClass
   public static void beforeAll() throws IOException {
-    createTestCollection();
+    createTestCollections();
   }
 
   @Test
   public void testCreateGetDelete() throws IOException {
-    var things = client.collections.use(COLLECTION);
+    var artists = client.collections.use(COLLECTION);
     var id = randomUUID();
     Float[] vector = { 1f, 2f, 3f };
 
-    things.data.insert(Map.of("username", "john doe"), metadata -> metadata
+    artists.data.insert(Map.of("name", "john doe"), metadata -> metadata
         .id(id)
         .vectors(Vectors.of(VECTOR_INDEX, vector)));
 
-    var object = things.data.get(id, query -> query.withVector());
+    var object = artists.data.get(id, query -> query.withVector());
     Assertions.assertThat(object)
         .as("object exists after insert").get()
         .satisfies(obj -> {
@@ -50,18 +51,27 @@ public class DataITest extends ConcurrentTest {
 
           Assertions.assertThat(obj.properties())
               .as("has expected properties")
-              .containsEntry("username", "john doe");
+              .containsEntry("name", "john doe");
         });
 
-    things.data.delete(id);
-    object = things.data.get(id);
+    artists.data.delete(id);
+    object = artists.data.get(id);
     Assertions.assertThat(object).isEmpty().as("object not exists after deletion");
   }
 
-  private static void createTestCollection() throws IOException {
+  private static void createTestCollections() throws IOException {
+    var awardsGrammy = unique("Grammy");
+    client.collections.create(awardsGrammy);
+
+    var awardsOscar = unique("Oscar");
+    client.collections.create(awardsOscar);
+
     client.collections.create(COLLECTION,
         col -> col
-            .properties(Property.text("username"), Property.integer("age"))
+            .properties(
+                Property.text("name"),
+                Property.integer("age"),
+                Property.reference("hasAwards", awardsGrammy, awardsOscar))
             .vector(VECTOR_INDEX, new VectorIndex<>(IndexingStrategy.hnsw(), Vectorizer.none())));
   }
 }

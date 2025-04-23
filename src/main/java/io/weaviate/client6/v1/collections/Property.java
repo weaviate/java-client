@@ -5,34 +5,33 @@ import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Property {
-  @SerializedName("name")
-  public final String name;
-
-  @SerializedName("dataType")
-  public final List<String> dataTypes;
+public record Property(
+    @SerializedName("name") String name,
+    @SerializedName("dataType") List<String> dataTypes) {
 
   /** Add text property with default configuration. */
   public static Property text(String name) {
-    return new Property(name, DataType.TEXT);
+    return new Property(name, AtomicDataType.TEXT);
   }
 
   /** Add integer property with default configuration. */
   public static Property integer(String name) {
-    return new Property(name, DataType.INT);
+    return new Property(name, AtomicDataType.INT);
   }
 
   public static Property reference(String name, String... collections) {
     return new Property(name, collections);
   }
 
-  private Property(String name, DataType type) {
-    this.name = name;
-    this.dataTypes = List.of(type.name().toLowerCase());
+  public boolean isReference() {
+    return dataTypes.stream().noneMatch(t -> AtomicDataType.isAtomic(t));
+  }
+
+  private Property(String name, AtomicDataType type) {
+    this(name, List.of(type.name().toLowerCase()));
   }
 
   private Property(String name, String... collections) {
-    this.name = name;
-    this.dataTypes = Arrays.asList(collections);
+    this(name, Arrays.asList(collections));
   }
 }

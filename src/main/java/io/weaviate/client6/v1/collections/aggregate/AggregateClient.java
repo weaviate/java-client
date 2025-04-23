@@ -7,11 +7,11 @@ import io.weaviate.client6.internal.codec.grpc.v1.AggregateMarshaler;
 import io.weaviate.client6.internal.codec.grpc.v1.AggregateUnmarshaler;
 import io.weaviate.client6.v1.query.NearVector;
 
-public class WeaviateAggregate {
+public class AggregateClient {
   private final String collectionName;
   private final GrpcClient grpcClient;
 
-  public WeaviateAggregate(String collectionName, GrpcClient grpc) {
+  public AggregateClient(String collectionName, GrpcClient grpc) {
     this.collectionName = collectionName;
     this.grpcClient = grpc;
   }

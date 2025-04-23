@@ -1,4 +1,4 @@
-package io.weaviate.client6.v1;
+package io.weaviate.client6.v1.collections.object;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -53,7 +53,7 @@ public class Vectors {
     return Optional.ofNullable(namedVectors.values().iterator().next());
   }
 
-  public Map<String, Object> asMap() {
+  public Map<String, Object> getNamed() {
     return Map.copyOf(namedVectors);
   }
 
@@ -73,9 +73,8 @@ public class Vectors {
     this.namedVectors = Collections.unmodifiableMap(vectors);
   }
 
-  static Vectors with(Consumer<NamedVectors> named) {
-    var vectors = new NamedVectors(named);
-    return new Vectors(vectors.namedVectors);
+  private Vectors(NamedVectors named) {
+    this.namedVectors = named.namedVectors;
   }
 
   /**
@@ -106,6 +105,12 @@ public class Vectors {
     return new Vectors(vectors);
   }
 
+  public static Vectors of(Consumer<NamedVectors> fn) {
+    var named = new NamedVectors();
+    fn.accept(named);
+    return named.build();
+  }
+
   public static class NamedVectors {
     private Map<String, Object> namedVectors = new HashMap<>();
 
@@ -119,8 +124,8 @@ public class Vectors {
       return this;
     }
 
-    NamedVectors(Consumer<NamedVectors> options) {
-      options.accept(this);
+    public Vectors build() {
+      return new Vectors(this);
     }
   }
 }

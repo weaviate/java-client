@@ -1,4 +1,4 @@
-package io.weaviate.client6.v1.data;
+package io.weaviate.client6.v1.collections.data;
 
 import java.util.LinkedHashSet;
 import java.util.List;

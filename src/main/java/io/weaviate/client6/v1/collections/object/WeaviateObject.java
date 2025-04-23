@@ -1,4 +1,4 @@
-package io.weaviate.client6.v1.data;
+package io.weaviate.client6.v1.collections.object;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,13 +8,12 @@ import java.util.function.Consumer;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 
-import io.weaviate.client6.v1.ObjectMetadata;
+public record WeaviateObject<T>(
+    String collection,
+    T properties,
+    ObjectMetadata metadata) {
 
-// TODO: unify this with collections.SearchObject
-
-public record WeaviateObject<T>(String collection, T properties, ObjectMetadata metadata) {
-
-  WeaviateObject(String collection, T properties, Consumer<ObjectMetadata.Builder> options) {
+  public WeaviateObject(String collection, T properties, Consumer<ObjectMetadata.Builder> options) {
     this(collection, properties, ObjectMetadata.with(options));
   }
 
