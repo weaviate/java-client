@@ -19,16 +19,10 @@ import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 import com.google.gson.Gson;
 
 import io.weaviate.client6.Config;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBase.FilterTarget;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBase.Filters;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBase.Filters.Operator;
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBase.Vectors.VectorType;
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoProperties.Value;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.MetadataRequest;
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.MetadataResult;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.PropertiesRequest;
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.PropertiesResult;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.RefPropertiesRequest;
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.RefPropertiesResult;
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.SearchRequest;
 import io.weaviate.client6.internal.GRPC;
@@ -84,47 +78,13 @@ public class DataClient<T> {
     });
   }
 
-  public Optional<WeaviateObject<T>> get(String id, Consumer<GetParameters> query) throws IOException {
-    return findById(id);
-    // try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-    // ClassicHttpRequest httpGet = ClassicRequestBuilder
-    // .get(config.baseUrl() + "/objects/" + collectionName + "/" + id +
-    // QueryParameters.encodeGet(query))
-    // .build();
-    //
-    // return httpClient.http.execute(httpGet, response -> {
-    // if (response.getCode() == HttpStatus.SC_NOT_FOUND) {
-    // return Optional.empty();
-    // }
-    //
-    // WeaviateObject<T> object = WeaviateObject.fromJson(
-    // gson, response.getEntity().getContent());
-    // return Optional.ofNullable(object);
-    // });
-    // }
+  public Optional<WeaviateObject<T>> get(String id, Consumer<FetchByIdRequest.Builder> fn) throws IOException {
+    return findById(FetchByIdRequest.of(collectionName, id, fn));
   }
 
-  private Optional<WeaviateObject<T>> findById(String id) {
+  private Optional<WeaviateObject<T>> findById(FetchByIdRequest request) {
     var req = SearchRequest.newBuilder();
-    req.setCollection(collectionName);
-
-    var filter = Filters.newBuilder();
-    var target = FilterTarget.newBuilder();
-    target.setProperty("_id");
-    filter.setTarget(target);
-    filter.setValueText(id);
-    filter.setOperator(Operator.OPERATOR_EQUAL);
-    req.setFilters(filter);
-
-    var properties = PropertiesRequest.newBuilder();
-    var references = RefPropertiesRequest.newBuilder();
-    references.setReferenceProperty("hasAwards");
-    references.setTargetCollection("ReferencesITest_testReferences_Oscar");
-    references.setMetadata(MetadataRequest.newBuilder().setUuid(true));
-    // TODO: pass references and properties to fetch
-    properties.addRefProperties(references);
-    req.setProperties(properties);
-
+    request.appendTo(req);
     var result = grpcClient.grpc.search(req.build());
     var objects = result.getResultsList().stream().map(r -> readPropertiesResult(r.getProperties())).toList();
     return Optional.ofNullable((WeaviateObject<T>) objects.get(0));

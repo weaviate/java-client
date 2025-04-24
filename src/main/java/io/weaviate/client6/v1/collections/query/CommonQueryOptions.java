@@ -18,6 +18,7 @@ public record CommonQueryOptions(
     String after,
     String consistencyLevel /* TODO: use ConsistencyLevel enum */,
     List<String> returnProperties,
+    List<QueryReference> returnReferences,
     List<Metadata> returnMetadata) {
 
   public CommonQueryOptions(Builder<? extends Builder<?>> options) {
@@ -28,6 +29,7 @@ public record CommonQueryOptions(
         options.after,
         options.consistencyLevel,
         options.returnProperties,
+        options.returnReferences,
         options.returnMetadata);
 
   }
@@ -39,6 +41,7 @@ public record CommonQueryOptions(
     private String after;
     private String consistencyLevel;
     private List<String> returnProperties = new ArrayList<>();
+    private List<QueryReference> returnReferences = new ArrayList<>();
     private List<Metadata> returnMetadata = new ArrayList<>();
 
     public final SELF limit(Integer limit) {
@@ -63,6 +66,16 @@ public record CommonQueryOptions(
 
     public final SELF consistencyLevel(String consistencyLevel) {
       this.consistencyLevel = consistencyLevel;
+      return (SELF) this;
+    }
+
+    public final SELF returnProperties(String... properties) {
+      this.returnProperties = Arrays.asList(properties);
+      return (SELF) this;
+    }
+
+    public final SELF returnReferences(QueryReference references) {
+      this.returnReferences = Arrays.asList(references);
       return (SELF) this;
     }
 

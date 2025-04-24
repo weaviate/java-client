@@ -14,6 +14,8 @@ import io.weaviate.client6.v1.collections.Property;
 import io.weaviate.client6.v1.collections.Reference;
 import io.weaviate.client6.v1.collections.object.ObjectReference;
 import io.weaviate.client6.v1.collections.object.WeaviateObject;
+import io.weaviate.client6.v1.collections.query.MetadataField;
+import io.weaviate.client6.v1.collections.query.QueryReference;
 import io.weaviate.containers.Container;
 
 /**
@@ -88,7 +90,11 @@ public class ReferencesITest extends ConcurrentTest {
         .extracting(Property::dataTypes, InstanceOfAssertFactories.list(String.class))
         .containsOnly(nsMovies);
 
-    var gotAlex = artists.data.get(alex.metadata().id());
+    var gotAlex = artists.data.get(alex.metadata().id(),
+        opt -> opt.returnReferences(
+            QueryReference.multi("hasAwards", nsOscar,
+                ref -> ref.returnMetadata(MetadataField.ID))));
+
     Assertions.assertThat(gotAlex).get()
         .as("Artists: fetch by id including hasAwards references")
         .extracting(WeaviateObject::references, InstanceOfAssertFactories.map(String.class, ObjectReference.class))
