@@ -41,6 +41,9 @@ class WeaviateObjectDTO<T> {
         arrayVectors.put(entry.getKey(), vector);
       }
     }
-    return new WeaviateObject<T>(collection, properties, new ObjectMetadata(id, Vectors.of(arrayVectors)));
+
+    return new WeaviateObject<T>(collection, properties,
+        /* no references through HTTP */ new HashMap<>(),
+        new ObjectMetadata(id, Vectors.of(arrayVectors)));
   }
 }

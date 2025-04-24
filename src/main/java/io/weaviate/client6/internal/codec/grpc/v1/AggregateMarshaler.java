@@ -8,13 +8,12 @@ import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoAggregate;
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoAggregate.AggregateRequest.Aggregation;
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBaseSearch;
 import io.weaviate.client6.internal.GRPC;
-import io.weaviate.client6.v1.collections.aggregate.AggregateGroupByRequest;
 import io.weaviate.client6.v1.collections.aggregate.AggregateGroupByRequest.GroupBy;
 import io.weaviate.client6.v1.collections.aggregate.AggregateRequest;
 import io.weaviate.client6.v1.collections.aggregate.IntegerMetric;
 import io.weaviate.client6.v1.collections.aggregate.Metric;
 import io.weaviate.client6.v1.collections.aggregate.TextMetric;
-import io.weaviate.client6.v1.query.NearVector;
+import io.weaviate.client6.v1.collections.query.NearVector;
 
 public final class AggregateMarshaler {
   private final WeaviateProtoAggregate.AggregateRequest.Builder req = WeaviateProtoAggregate.AggregateRequest

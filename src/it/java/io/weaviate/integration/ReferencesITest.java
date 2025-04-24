@@ -10,9 +10,10 @@ import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.WeaviateClient;
-import io.weaviate.client6.v1.collections.Collection;
 import io.weaviate.client6.v1.collections.Property;
 import io.weaviate.client6.v1.collections.Reference;
+import io.weaviate.client6.v1.collections.object.ObjectReference;
+import io.weaviate.client6.v1.collections.object.WeaviateObject;
 import io.weaviate.containers.Container;
 
 /**
@@ -53,12 +54,10 @@ public class ReferencesITest extends ConcurrentTest {
     var collectionArtists = artists.config.get();
     Assertions.assertThat(collectionArtists).get()
         .as("Artists: create collection")
-        .extracting(Collection::properties)
-        .extracting(properties -> properties.stream().filter(Property::isReference).findFirst())
-        .extracting(Optional::get)
+        .extracting(c -> c.properties().stream().filter(Property::isReference).findFirst())
+        .as("has one reference property").extracting(Optional::get)
         .returns("hasAwards", Property::name)
-        .extracting(Property::dataTypes)
-        .asInstanceOf(InstanceOfAssertFactories.list(String.class))
+        .extracting(Property::dataTypes, InstanceOfAssertFactories.list(String.class))
         .containsOnly(nsGrammy, nsOscar);
 
     // Act: insert some data
@@ -82,14 +81,22 @@ public class ReferencesITest extends ConcurrentTest {
     collectionArtists = artists.config.get();
     Assertions.assertThat(collectionArtists).get()
         .as("Artists: add reference to Movies")
-        .extracting(Collection::properties)
-        .extracting(properties -> properties.stream()
-            .filter(property -> property.name().equals("featuredIn"))
-            .findFirst())
-        .extracting(Optional::get)
+        .extracting(c -> c.properties().stream()
+            .filter(property -> property.name().equals("featuredIn")).findFirst())
+        .as("featuredIn reference property").extracting(Optional::get)
         .returns(true, Property::isReference)
-        .extracting(Property::dataTypes)
-        .asInstanceOf(InstanceOfAssertFactories.list(String.class))
+        .extracting(Property::dataTypes, InstanceOfAssertFactories.list(String.class))
         .containsOnly(nsMovies);
+
+    var gotAlex = artists.data.get(alex.metadata().id());
+    Assertions.assertThat(gotAlex).get()
+        .as("Artists: fetch by id including hasAwards references")
+        .extracting(WeaviateObject::references, InstanceOfAssertFactories.map(String.class, ObjectReference.class))
+        .as("hasAwards object reference").extractingByKey("hasAwards")
+        .extracting(ObjectReference::objects, InstanceOfAssertFactories.list(WeaviateObject.class))
+        .extracting(objects -> objects.metadata().id())
+        .containsOnly(
+            // grammy_1.metadata().id(), grammy_2.metadata().id(),
+            oscar_1.metadata().id(), oscar_2.metadata().id());
   }
 }

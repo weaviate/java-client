@@ -1,4 +1,4 @@
-package io.weaviate.client6.v1.query;
+package io.weaviate.client6.v1.collections.query;
 
 import java.util.List;
 

@@ -18,9 +18,9 @@ import io.weaviate.client6.v1.collections.VectorIndex;
 import io.weaviate.client6.v1.collections.VectorIndex.IndexingStrategy;
 import io.weaviate.client6.v1.collections.Vectorizer;
 import io.weaviate.client6.v1.collections.object.Vectors;
-import io.weaviate.client6.v1.query.GroupedQueryResult;
-import io.weaviate.client6.v1.query.MetadataField;
-import io.weaviate.client6.v1.query.NearVector;
+import io.weaviate.client6.v1.collections.query.GroupedQueryResult;
+import io.weaviate.client6.v1.collections.query.MetadataField;
+import io.weaviate.client6.v1.collections.query.NearVector;
 import io.weaviate.containers.Container;
 
 public class NearVectorQueryITest extends ConcurrentTest {

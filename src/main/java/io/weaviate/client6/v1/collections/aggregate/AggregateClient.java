@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 import io.weaviate.client6.internal.GrpcClient;
 import io.weaviate.client6.internal.codec.grpc.v1.AggregateMarshaler;
 import io.weaviate.client6.internal.codec.grpc.v1.AggregateUnmarshaler;
-import io.weaviate.client6.v1.query.NearVector;
+import io.weaviate.client6.v1.collections.query.NearVector;
 
 public class AggregateClient {
   private final String collectionName;

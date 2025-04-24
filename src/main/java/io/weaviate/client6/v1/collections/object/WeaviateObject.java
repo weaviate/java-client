@@ -3,6 +3,7 @@ package io.weaviate.client6.v1.collections.object;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import com.google.common.reflect.TypeToken;
@@ -11,10 +12,12 @@ import com.google.gson.Gson;
 public record WeaviateObject<T>(
     String collection,
     T properties,
+    Map<String, ObjectReference> references,
     ObjectMetadata metadata) {
 
-  public WeaviateObject(String collection, T properties, Consumer<ObjectMetadata.Builder> options) {
-    this(collection, properties, ObjectMetadata.with(options));
+  public WeaviateObject(String collection, T properties, Map<String, ObjectReference> references,
+      Consumer<ObjectMetadata.Builder> options) {
+    this(collection, properties, references, ObjectMetadata.with(options));
   }
 
   // JSON serialization ----------------
