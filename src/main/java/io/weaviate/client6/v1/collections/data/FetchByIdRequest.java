@@ -5,9 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
+import com.google.protobuf.util.JsonFormat;
+
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBase.FilterTarget;
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBase.Filters;
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBase.Filters.Operator;
+import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.MetadataRequest;
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.PropertiesRequest;
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.RefPropertiesRequest;
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.SearchRequest;
@@ -47,7 +50,7 @@ public record FetchByIdRequest(
     }
 
     private boolean includeVector;
-    private List<String> includeVectors;
+    private List<String> includeVectors = new ArrayList<>();
     private List<String> returnProperties = new ArrayList<>();
     private List<QueryReference> returnReferences = new ArrayList<>();
 
@@ -76,26 +79,34 @@ public record FetchByIdRequest(
   void appendTo(SearchRequest.Builder req) {
     req.setLimit(1);
     req.setCollection(collection);
-    var filter = Filters.newBuilder();
-    var target = FilterTarget.newBuilder();
-    target.setProperty("_id");
-    filter.setTarget(target);
-    filter.setValueText(id);
-    filter.setOperator(Operator.OPERATOR_EQUAL);
-    req.setFilters(filter);
+
+    req.setFilters(Filters.newBuilder()
+        .setTarget(FilterTarget.newBuilder().setProperty("_id"))
+        .setValueText(id)
+        .setOperator(Operator.OPERATOR_EQUAL));
 
     if (!returnProperties.isEmpty() || !returnReferences.isEmpty()) {
       var properties = PropertiesRequest.newBuilder();
-      for (String property : returnProperties) {
-        properties.addNonRefProperties(property);
+
+      if (!returnProperties.isEmpty()) {
+        properties.addAllNonRefProperties(returnProperties);
       }
 
-      var references = RefPropertiesRequest.newBuilder();
-      for (var ref : returnReferences) {
-        ref.appendTo(references);
+      if (!returnReferences.isEmpty()) {
+        var references = RefPropertiesRequest.newBuilder();
+        returnReferences.forEach(r -> r.appendTo(references));
+        properties.addRefProperties(references);
       }
-      properties.addRefProperties(references);
       req.setProperties(properties);
     }
+
+    // Always request UUID back in this request.
+    var metadata = MetadataRequest.newBuilder().setUuid(true);
+    if (includeVector) {
+      metadata.setVector(true);
+    } else if (!includeVectors.isEmpty()) {
+      metadata.addAllVectors(includeVectors);
+    }
+    req.setMetadata(metadata);
   }
 }

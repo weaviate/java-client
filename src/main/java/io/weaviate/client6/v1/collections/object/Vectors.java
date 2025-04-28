@@ -6,10 +6,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import lombok.ToString;
+
 /**
  * Vectors is an abstraction over named vectors.
  * It may contain both 1-dimensional and 2-dimensional vectors.
  */
+@ToString
 public class Vectors {
   private static final String DEFAULT = "default";
 

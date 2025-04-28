@@ -3,6 +3,7 @@ package io.weaviate.client6.v1.collections.data;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -84,15 +85,44 @@ public class DataClient<T> {
 
   private Optional<WeaviateObject<T>> findById(FetchByIdRequest request) {
     var req = SearchRequest.newBuilder();
+    req.setUses127Api(true);
+    req.setUses125Api(true);
+    req.setUses123Api(true);
     request.appendTo(req);
     var result = grpcClient.grpc.search(req.build());
-    var objects = result.getResultsList().stream().map(r -> readPropertiesResult(r.getProperties())).toList();
+    var objects = result.getResultsList().stream().map(r -> {
+      var tempObj = readPropertiesResult(r.getProperties());
+      MetadataResult meta = r.getMetadata();
+      Vectors vectors;
+      if (!meta.getVectorBytes().isEmpty()) {
+        vectors = Vectors.of(GRPC.fromByteString(meta.getVectorBytes()));
+      } else {
+        vectors = Vectors.of(meta.getVectorsList().stream().collect(
+            Collectors.<io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBase.Vectors, String, Object>toMap(
+                io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBase.Vectors::getName,
+                v -> {
+                  if (v.getType().equals(VectorType.VECTOR_TYPE_SINGLE_FP32)) {
+                    return GRPC.fromByteString(v.getVectorBytes());
+                  } else {
+                    return GRPC.fromByteStringMulti(v.getVectorBytes());
+                  }
+                })));
+      }
+      var metadata = new ObjectMetadata(meta.getId(), vectors);
+      return new WeaviateObject<>(
+          tempObj.collection(),
+          tempObj.properties(),
+          tempObj.references(),
+          metadata);
+    }).toList();
+    if (objects.isEmpty()) {
+      return Optional.empty();
+    }
     return Optional.ofNullable((WeaviateObject<T>) objects.get(0));
   }
 
   private static WeaviateObject<?> readPropertiesResult(PropertiesResult res) {
     var collection = res.getTargetCollection();
-
     var objectProperties = convertProtoMap(res.getNonRefProps().getFieldsMap());
     var referenceProperties = res.getRefPropsList().stream()
         .collect(Collectors.<RefPropertiesResult, String, ObjectReference>toMap(
@@ -129,8 +159,14 @@ public class DataClient<T> {
    * (de-)serialized by {@link Gson}.
    */
   private static Map<String, Object> convertProtoMap(Map<String, Value> map) {
-    return map.entrySet().stream().collect(Collectors.toMap(
-        Map.Entry::getKey, e -> convertProtoValue(e.getValue())));
+    return map.entrySet().stream()
+        // We cannot use Collectors.toMap() here, because convertProtoValue may
+        // return null (a collection property can be null), which breaks toMap().
+        // See: https://bugs.openjdk.org/browse/JDK-8148463
+        .collect(
+            HashMap::new,
+            (m, e) -> m.put(e.getKey(), convertProtoValue(e.getValue())),
+            HashMap::putAll);
   }
 
   /**
@@ -139,7 +175,10 @@ public class DataClient<T> {
    * integer values.
    */
   private static Object convertProtoValue(Value value) {
-    if (value.hasTextValue()) {
+    if (value.hasNullValue()) {
+      // return value.getNullValue();
+      return null;
+    } else if (value.hasTextValue()) {
       return value.getTextValue();
     } else if (value.hasBoolValue()) {
       return value.getBoolValue();
