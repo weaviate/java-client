@@ -51,6 +51,14 @@ public record QueryReference(
     return new QueryReference(builder);
   }
 
+  public static QueryReference[] multi(String property, Consumer<Builder> fn, String... collections) {
+    return Arrays.stream(collections).map(collection -> {
+      var builder = new Builder(collection, property);
+      fn.accept(builder);
+      return new QueryReference(builder);
+    }).toArray(QueryReference[]::new);
+  }
+
   public static class Builder {
     private final String property;
     private final String collection;

@@ -93,9 +93,11 @@ public record FetchByIdRequest(
       }
 
       if (!returnReferences.isEmpty()) {
-        var references = RefPropertiesRequest.newBuilder();
-        returnReferences.forEach(r -> r.appendTo(references));
-        properties.addRefProperties(references);
+        returnReferences.forEach(r -> {
+          var references = RefPropertiesRequest.newBuilder();
+          r.appendTo(references);
+          properties.addRefProperties(references);
+        });
       }
       req.setProperties(properties);
     }

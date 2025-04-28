@@ -93,6 +93,8 @@ public class ReferencesITest extends ConcurrentTest {
     var gotAlex = artists.data.get(alex.metadata().id(),
         opt -> opt.returnReferences(
             QueryReference.multi("hasAwards", nsOscar,
+                ref -> ref.returnMetadata(MetadataField.ID)),
+            QueryReference.multi("hasAwards", nsGrammy,
                 ref -> ref.returnMetadata(MetadataField.ID))));
 
     Assertions.assertThat(gotAlex).get()
@@ -102,6 +104,11 @@ public class ReferencesITest extends ConcurrentTest {
         .extracting(ObjectReference::objects, InstanceOfAssertFactories.list(WeaviateObject.class))
         .extracting(objects -> objects.metadata().id())
         .containsOnly(
+            // INVESTIGATE: When references to 2+ collections are requested,
+            // seems to Weaviate only return references to the first one in the list.
+            // In this case we request { "hasAwards": Oscars } and { "hasAwards": Grammys }
+            // so the latter will not be in the response.
+            //
             // grammy_1.metadata().id(), grammy_2.metadata().id(),
             oscar_1.metadata().id(), oscar_2.metadata().id());
   }

@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
@@ -24,7 +26,6 @@ import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBase.Vectors.VectorType
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoProperties.Value;
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.MetadataResult;
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.PropertiesResult;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.RefPropertiesResult;
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.SearchRequest;
 import io.weaviate.client6.internal.GRPC;
 import io.weaviate.client6.internal.GrpcClient;
@@ -122,36 +123,62 @@ public class DataClient<T> {
   }
 
   private static WeaviateObject<?> readPropertiesResult(PropertiesResult res) {
-    var collection = res.getTargetCollection();
-    var objectProperties = convertProtoMap(res.getNonRefProps().getFieldsMap());
-    var referenceProperties = res.getRefPropsList().stream()
-        .collect(Collectors.<RefPropertiesResult, String, ObjectReference>toMap(
-            RefPropertiesResult::getPropName,
-            ref -> {
-              var refObjects = ref.getPropertiesList().stream()
-                  .map(DataClient::readPropertiesResult)
-                  .toList();
-              return new ObjectReference(refObjects);
-            }));
+    try {
 
-    MetadataResult meta = res.getMetadata();
-    Vectors vectors;
-    if (meta.getVectorBytes() != null) {
-      vectors = Vectors.of(GRPC.fromByteString(meta.getVectorBytes()));
-    } else {
-      vectors = Vectors.of(meta.getVectorsList().stream().collect(
-          Collectors.<io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBase.Vectors, String, Object>toMap(
-              io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBase.Vectors::getName,
-              v -> {
-                if (v.getType().equals(VectorType.VECTOR_TYPE_MULTI_FP32)) {
-                  return GRPC.fromByteString(v.getVectorBytes());
-                } else {
-                  return GRPC.fromByteStringMulti(v.getVectorBytes());
-                }
-              })));
+      var collection = res.getTargetCollection();
+      var objectProperties = convertProtoMap(res.getNonRefProps().getFieldsMap());
+
+      // In case a reference is multi-target, there will be a separate
+      // "reference property" for each of the targets, so instead of
+      // `collect` we need to `reduce` the map, merging related references
+      // as we go.
+      // I.e. { "ref": A-1 } , { "ref": B-1 } => { "ref": [A-1, B-1] }
+      var referenceProperties = res.getRefPropsList().stream().reduce(
+          new HashMap<String, ObjectReference>(),
+          (map, ref) -> {
+            var refObjects = ref.getPropertiesList().stream()
+                .map(DataClient::readPropertiesResult)
+                .toList();
+
+            // Merge ObjectReferences by joining the underlying WeaviateObjects.
+            map.merge(
+                ref.getPropName(),
+                new ObjectReference((List<WeaviateObject<?>>) refObjects),
+                (left, right) -> {
+                  var joined = Stream.concat(
+                      left.objects().stream(),
+                      right.objects().stream()).toList();
+                  return new ObjectReference(joined);
+                });
+            return map;
+          },
+          (left, right) -> {
+            left.putAll(right);
+            return left;
+          });
+
+      MetadataResult meta = res.getMetadata();
+      Vectors vectors;
+      if (meta.getVectorBytes() != null) {
+        vectors = Vectors.of(GRPC.fromByteString(meta.getVectorBytes()));
+      } else {
+        vectors = Vectors.of(meta.getVectorsList().stream().collect(
+            Collectors.<io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBase.Vectors, String, Object>toMap(
+                io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBase.Vectors::getName,
+                v -> {
+                  if (v.getType().equals(VectorType.VECTOR_TYPE_MULTI_FP32)) {
+                    return GRPC.fromByteString(v.getVectorBytes());
+                  } else {
+                    return GRPC.fromByteStringMulti(v.getVectorBytes());
+                  }
+                })));
+      }
+      var metadata = new ObjectMetadata(meta.getId(), vectors);
+      return new WeaviateObject<>(collection, objectProperties, referenceProperties, metadata);
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new RuntimeException(e);
     }
-    var metadata = new ObjectMetadata(meta.getId(), vectors);
-    return new WeaviateObject<>(collection, objectProperties, referenceProperties, metadata);
   }
 
   /*
