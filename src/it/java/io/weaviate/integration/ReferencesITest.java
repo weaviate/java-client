@@ -112,4 +112,70 @@ public class ReferencesITest extends ConcurrentTest {
             // grammy_1.metadata().id(), grammy_2.metadata().id(),
             oscar_1.metadata().id(), oscar_2.metadata().id());
   }
+
+  @Test
+  public void testNestedReferences() throws IOException {
+    // Arrange: create collection with cross-references
+    var nsArtists = ns("Artists");
+    var nsGrammy = ns("Grammy");
+    var nsAcademy = ns("Academy");
+
+    client.collections.create(nsAcademy,
+        opt -> opt
+            .properties(Property.text("ceo")));
+
+    // Act: create Artists collection with hasAwards reference
+    client.collections.create(nsGrammy,
+        col -> col
+            .properties(Property.reference("presentedBy", nsAcademy)));
+
+    client.collections.create(nsArtists,
+        col -> col
+            .properties(
+                Property.text("name"),
+                Property.integer("age"),
+                Property.reference("hasAwards", nsGrammy)));
+
+    var artists = client.collections.use(nsArtists);
+    var grammies = client.collections.use(nsGrammy);
+    var academies = client.collections.use(nsAcademy);
+
+    // Act: insert some data
+    var musicAcademy = academies.data.insert(Map.of("ceo", "Harvy Mason"));
+
+    var grammy_1 = grammies.data.insert(Map.of(),
+        opt -> opt.reference("presentedBy", Reference.objects(musicAcademy)));
+
+    var alex = artists.data.insert(
+        Map.of("name", "Alex"),
+        opt -> opt
+            .reference("hasAwards", Reference.objects(grammy_1)));
+
+    // Assert: fetch nested references
+    var gotAlex = artists.data.get(alex.metadata().id(),
+        opt -> opt.returnReferences(
+            QueryReference.single("hasAwards",
+                ref -> ref
+                    // Name of the CEO of the presenting academy
+                    .returnReferences(
+                        QueryReference.single("presentedBy", r -> r.returnProperties("ceo")))
+                    // Grammy ID
+                    .returnMetadata(MetadataField.ID))));
+
+    Assertions.assertThat(gotAlex).get()
+        .as("Artists: fetch by id including nested references")
+        .extracting(WeaviateObject::references, InstanceOfAssertFactories.map(String.class, ObjectReference.class))
+        .as("hasAwards object reference").extractingByKey("hasAwards")
+        .extracting(ObjectReference::objects, InstanceOfAssertFactories.list(WeaviateObject.class))
+        .hasSize(1).allSatisfy(award -> Assertions.assertThat(award)
+            .returns(grammy_1.metadata().id(), g -> g.metadata().id())
+            .extracting(WeaviateObject::references,
+                InstanceOfAssertFactories.map(String.class, ObjectReference.class))
+            .extractingByKey("presentedBy")
+            .extracting(ObjectReference::objects, InstanceOfAssertFactories.list(WeaviateObject.class))
+            .hasSize(1).extracting(WeaviateObject::properties)
+            .allSatisfy(properties -> Assertions.assertThat(properties)
+                .asInstanceOf(InstanceOfAssertFactories.map(String.class, Object.class))
+                .containsEntry("ceo", "Harvy Mason")));
+  }
 }

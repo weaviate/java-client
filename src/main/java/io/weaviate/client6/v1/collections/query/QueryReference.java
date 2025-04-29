@@ -14,7 +14,7 @@ public record QueryReference(
     String collection,
     boolean includeVector, List<String> includeVectors,
     List<String> returnProperties,
-    List<?> returnReferences,
+    List<QueryReference> returnReferences,
     List<Metadata> returnMetadata) {
 
   public QueryReference(Builder options) {
@@ -71,7 +71,7 @@ public record QueryReference(
     private boolean includeVector;
     private List<String> includeVectors = new ArrayList<>();
     private List<String> returnProperties = new ArrayList<>();
-    private List<?> returnReferences = new ArrayList<>();
+    private List<QueryReference> returnReferences = new ArrayList<>();
     private List<Metadata> returnMetadata = new ArrayList<>();
 
     public final Builder includeVector() {
@@ -89,7 +89,7 @@ public record QueryReference(
       return this;
     }
 
-    public final Builder returnReferences(String... references) {
+    public final Builder returnReferences(QueryReference... references) {
       this.returnReferences = Arrays.asList(references);
       return this;
     }
@@ -112,10 +112,19 @@ public record QueryReference(
       references.setMetadata(metadata);
     }
 
-    if (!returnProperties.isEmpty()) {
+    if (!returnProperties.isEmpty() || !returnReferences.isEmpty()) {
       var properties = PropertiesRequest.newBuilder();
-      for (String property : returnProperties) {
-        properties.addNonRefProperties(property);
+
+      if (!returnProperties.isEmpty()) {
+        properties.addAllNonRefProperties(returnProperties);
+      }
+
+      if (!returnReferences.isEmpty()) {
+        returnReferences.forEach(r -> {
+          var ref = RefPropertiesRequest.newBuilder();
+          r.appendTo(ref);
+          properties.addRefProperties(ref);
+        });
       }
       references.setProperties(properties);
     }
