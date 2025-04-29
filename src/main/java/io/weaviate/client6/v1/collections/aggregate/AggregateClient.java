@@ -55,23 +55,6 @@ public class AggregateClient {
 
   public AggregateGroupByResponse nearVector(
       Float[] vector,
-      AggregateGroupByRequest.GroupBy groupBy,
-      Consumer<AggregateRequest.Builder> options) {
-    var aggregation = AggregateRequest.with(collectionName, options);
-    var nearVector = NearVector.with(vector, opt -> {
-    });
-
-    var req = new AggregateMarshaler(aggregation.collectionName())
-        .addAggregation(aggregation)
-        .addGroupBy(groupBy)
-        .addNearVector(nearVector)
-        .marshal();
-    var reply = grpcClient.grpc.aggregate(req);
-    return new AggregateUnmarshaler(reply).grouped();
-  }
-
-  public AggregateGroupByResponse nearVector(
-      Float[] vector,
       Consumer<NearVector.Builder> nearVectorOptions,
       AggregateGroupByRequest.GroupBy groupBy,
       Consumer<AggregateRequest.Builder> options) {
@@ -94,23 +77,6 @@ public class AggregateClient {
     var aggregation = AggregateRequest.with(collectionName, options);
     var nearVector = NearVector.with(vector, opt -> {
     });
-
-    var req = new AggregateMarshaler(aggregation.collectionName())
-        .addAggregation(aggregation)
-        .addGroupBy(groupBy)
-        .addNearVector(nearVector)
-        .marshal();
-    var reply = grpcClient.grpc.aggregate(req);
-    return new AggregateUnmarshaler(reply).grouped();
-  }
-
-  public AggregateGroupByResponse nearVector(
-      Float[] vector,
-      Consumer<NearVector.Builder> nearVectorOptions,
-      AggregateGroupByRequest.GroupBy groupBy,
-      Consumer<AggregateRequest.Builder> options) {
-    var aggregation = AggregateRequest.with(collectionName, options);
-    var nearVector = NearVector.with(vector, nearVectorOptions);
 
     var req = new AggregateMarshaler(aggregation.collectionName())
         .addAggregation(aggregation)
