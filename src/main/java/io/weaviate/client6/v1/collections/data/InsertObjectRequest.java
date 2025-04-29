@@ -59,7 +59,7 @@ public record InsertObjectRequest<T>(String collection, T properties, String id,
 
     /**
      * Supply one or more (named) vectors. Calls to {@link #vectors} are not
-     * chainable. Use {@link Vectors#of(Consumer) to pass multiple vectors.
+     * chainable. Use {@link Vectors#of(Consumer)} to pass multiple vectors.
      */
     public Builder<T> vectors(Vectors vectors) {
       this.vectors = vectors;
