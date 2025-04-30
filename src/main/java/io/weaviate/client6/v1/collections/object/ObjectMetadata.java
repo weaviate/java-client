@@ -10,8 +10,8 @@ public record ObjectMetadata(String id, Vectors vectors) {
   }
 
   public static class Builder {
-    public String id;
-    public Vectors vectors;
+    private String id;
+    private Vectors vectors;
 
     public Builder id(String id) {
       this.id = id;

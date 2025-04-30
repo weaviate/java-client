@@ -29,7 +29,7 @@ public record VectorIndex<V extends Vectorizer>(
       return new HNSW();
     }
 
-    public static IndexingStrategy hnsw(Consumer<HNSW.Options> options) {
+    public static IndexingStrategy hnsw(Consumer<HNSW.Builder> options) {
       return HNSW.with(options);
     }
   }
