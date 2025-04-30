@@ -116,7 +116,7 @@ public class CollectionsClient {
     });
   }
 
-  public void create(String name, Consumer<Collection.Configuration> options) throws IOException {
+  public void create(String name, Consumer<Collection.Builder> options) throws IOException {
     var collection = Collection.with(name, options);
     ClassicHttpRequest httpPost = ClassicRequestBuilder
         .post(config.baseUrl() + "/schema")
