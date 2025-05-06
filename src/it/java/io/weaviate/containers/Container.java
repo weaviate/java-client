@@ -39,19 +39,19 @@ public class Container {
     WEAVIATE.stop();
   }
 
-  public static Group compose(Weaviate weaviate, GenericContainer<?>... containers) {
-    return new Group(weaviate, containers);
+  public static ContainerGroup compose(Weaviate weaviate, GenericContainer<?>... containers) {
+    return new ContainerGroup(weaviate, containers);
   }
 
   public static TestRule asTestRule(Startable container) {
     return new PerTestSuite(container);
   };
 
-  public static class Group implements Startable {
+  public static class ContainerGroup implements Startable {
     private final Weaviate weaviate;
     private final List<GenericContainer<?>> containers;
 
-    private Group(Weaviate weaviate, GenericContainer<?>... containers) {
+    private ContainerGroup(Weaviate weaviate, GenericContainer<?>... containers) {
       this.weaviate = weaviate;
       this.containers = Arrays.asList(containers);
 
