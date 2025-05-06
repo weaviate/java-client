@@ -5,18 +5,18 @@ import java.io.IOException;
 
 import io.weaviate.client6.internal.GrpcClient;
 import io.weaviate.client6.internal.HttpClient;
-import io.weaviate.client6.v1.collections.Collections;
+import io.weaviate.client6.v1.collections.CollectionsClient;
 
 public class WeaviateClient implements Closeable {
   private final HttpClient http;
   private final GrpcClient grpc;
 
-  public final Collections collections;
+  public final CollectionsClient collections;
 
   public WeaviateClient(Config config) {
     this.http = new HttpClient();
     this.grpc = new GrpcClient(config);
-    this.collections = new Collections(config, http, grpc);
+    this.collections = new CollectionsClient(config, http, grpc);
   }
 
   @Override

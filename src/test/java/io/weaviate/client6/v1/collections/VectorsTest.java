@@ -25,7 +25,7 @@ public class VectorsTest {
   // private static final Gson gson = new Gson();
 
   static {
-    DtoTypeAdapterFactory.register(CollectionDefinition.class, CollectionDefinitionDTO.class,
+    DtoTypeAdapterFactory.register(Collection.class, CollectionDefinitionDTO.class,
         m -> new CollectionDefinitionDTO(m));
   }
   private static final Gson gson = new GsonBuilder()
@@ -108,13 +108,13 @@ public class VectorsTest {
 
   @Test
   @DataMethod(source = VectorsTest.class, method = "testCases")
-  public void test_toJson(String want, CollectionDefinition collection, String... compareKeys) {
+  public void test_toJson(String want, Collection collection, String... compareKeys) {
     var got = gson.toJson(collection);
     assertEqual(want, got, compareKeys);
   }
 
-  private static CollectionDefinition collectionWithVectors(Vectors vectors) {
-    return new CollectionDefinition("Things", List.of(), vectors);
+  private static Collection collectionWithVectors(Vectors vectors) {
+    return new Collection("Things", List.of(), List.of(), vectors);
   }
 
   private void assertEqual(String wantJson, String gotJson, String... compareKeys) {

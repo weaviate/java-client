@@ -1,12 +1,14 @@
 package io.weaviate.client6.v1.collections;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import com.google.gson.annotations.SerializedName;
 
 import io.weaviate.client6.internal.DtoTypeAdapterFactory;
 
-class CollectionDefinitionDTO implements DtoTypeAdapterFactory.Dto<CollectionDefinition> {
+class CollectionDefinitionDTO implements DtoTypeAdapterFactory.Dto<Collection> {
   @SerializedName("class")
   String collection;
 
@@ -25,9 +27,13 @@ class CollectionDefinitionDTO implements DtoTypeAdapterFactory.Dto<CollectionDef
   @SerializedName("vectorizer")
   private Vectorizer vectorizer;
 
-  public CollectionDefinitionDTO(CollectionDefinition colDef) {
+  public CollectionDefinitionDTO(Collection colDef) {
     this.collection = colDef.name();
-    this.properties = colDef.properties();
+    this.properties = Stream.concat(
+        colDef.properties().stream(),
+        colDef.references().stream().map(r -> new Property(r.name(),
+            r.dataTypes())))
+        .toList();
     this.vectors = colDef.vectors();
 
     if (this.vectors != null) {
@@ -41,7 +47,17 @@ class CollectionDefinitionDTO implements DtoTypeAdapterFactory.Dto<CollectionDef
     }
   }
 
-  public CollectionDefinition toModel() {
-    return new CollectionDefinition(collection, properties, vectors);
+  public Collection toModel() {
+    var onlyProperties = new ArrayList<Property>();
+    var references = new ArrayList<ReferenceProperty>();
+
+    for (var p : properties) {
+      if (p.isReference()) {
+        references.add(Property.reference(p.name(), p.dataTypes()));
+      } else {
+        onlyProperties.add(p);
+      }
+    }
+    return new Collection(collection, onlyProperties, references, vectors);
   }
 }

@@ -5,6 +5,9 @@ import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
+import io.weaviate.client6.v1.collections.object.ObjectMetadata;
+import io.weaviate.client6.v1.collections.object.Vectors;
+
 public class ObjectMetadataTest {
 
   @Test
@@ -28,7 +31,7 @@ public class ObjectMetadataTest {
   @Test
   public final void testVectorsMetadata_default() {
     Float[] vector = { 1f, 2f, 3f };
-    var metadata = ObjectMetadata.with(m -> m.vectors(vector));
+    var metadata = ObjectMetadata.with(m -> m.vectors(Vectors.of(vector)));
 
     Assertions.assertThat(metadata.vectors())
         .as("default vector").isNotNull()
@@ -40,7 +43,7 @@ public class ObjectMetadataTest {
   @Test
   public final void testVectorsMetadata_default_2d() {
     Float[][] vector = { { 1f, 2f, 3f }, { 1f, 2f, 3f } };
-    var metadata = ObjectMetadata.with(m -> m.vectors(vector));
+    var metadata = ObjectMetadata.with(m -> m.vectors(Vectors.of(vector)));
 
     Assertions.assertThat(metadata.vectors())
         .as("default 2d vector").isNotNull()
@@ -52,7 +55,7 @@ public class ObjectMetadataTest {
   @Test
   public final void testVectorsMetadata_named() {
     Float[] vector = { 1f, 2f, 3f };
-    var metadata = ObjectMetadata.with(m -> m.vectors("vector-1", vector));
+    var metadata = ObjectMetadata.with(m -> m.vectors(Vectors.of("vector-1", vector)));
 
     Assertions.assertThat(metadata.vectors())
         .as("named vector").isNotNull()
@@ -64,7 +67,7 @@ public class ObjectMetadataTest {
   @Test
   public final void testVectorsMetadata_named_2d() {
     Float[][] vector = { { 1f, 2f, 3f }, { 1f, 2f, 3f } };
-    var metadata = ObjectMetadata.with(m -> m.vectors("vector-1", vector));
+    var metadata = ObjectMetadata.with(m -> m.vectors(Vectors.of("vector-1", vector)));
 
     Assertions.assertThat(metadata.vectors())
         .as("named 2d vector").isNotNull()
@@ -78,9 +81,9 @@ public class ObjectMetadataTest {
     Float[][] vector_1 = { { 1f, 2f, 3f }, { 1f, 2f, 3f } };
     Float[] vector_2 = { 4f, 5f, 6f };
     var metadata = ObjectMetadata.with(m -> m.vectors(
-        named -> named
+        Vectors.of(named -> named
             .vector("vector-1", vector_1)
-            .vector("vector-2", vector_2)));
+            .vector("vector-2", vector_2))));
 
     Assertions.assertThat(metadata.vectors())
         .as("multiple named vectors").isNotNull()
