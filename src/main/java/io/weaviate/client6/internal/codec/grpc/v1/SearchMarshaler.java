@@ -32,6 +32,15 @@ public class SearchMarshaler implements GrpcMarshaler<SearchRequest> {
     return this;
   }
 
+  public SearchMarshaler addGroupBy(NearText.GroupBy gb) {
+    var groupBy = WeaviateProtoSearchGet.GroupBy.newBuilder();
+    groupBy.addPath(gb.property());
+    groupBy.setNumberOfGroups(gb.maxGroups());
+    groupBy.setObjectsPerGroup(gb.maxObjectsPerGroup());
+    req.setGroupBy(groupBy);
+    return this;
+  }
+
   public SearchMarshaler addNearVector(NearVector nv) {
     setCommon(nv.common());
 

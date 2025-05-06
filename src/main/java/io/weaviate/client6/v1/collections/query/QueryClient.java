@@ -66,6 +66,14 @@ public class QueryClient<T> {
     return search(req.marshal());
   }
 
+  public GroupedQueryResult<T> nearText(String text, NearText.GroupBy groupBy, Consumer<NearText.Builder> fn) {
+    var query = NearText.with(text, fn);
+    var req = new SearchMarshaler(collectionName)
+        .addNearText(query)
+        .addGroupBy(groupBy);
+    return searchGrouped(req.marshal());
+  }
+
   public QueryResult<T> nearText(String text) {
     var query = NearText.with(text, opt -> {
     });
