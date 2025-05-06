@@ -132,7 +132,7 @@ public class SearchITest extends ConcurrentTest {
     client.collections.create(nsSongs,
         col -> col
             .properties(Property.text("title"))
-            .vector(new VectorIndex<>(IndexingStrategy.hnsw(), Vectorizer.contextionary())));
+            .vector(new VectorIndex<>(IndexingStrategy.hnsw(), Vectorizer.text2vecContextionary())));
 
     var songs = client.collections.use(nsSongs);
     songs.data.insert(Map.of("title", "Yellow Submarine"));
