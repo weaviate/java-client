@@ -35,7 +35,7 @@ public class Contextionary extends GenericContainer<Contextionary> {
           .withEnv("EXTENSIONS_STORAGE_ORIGIN", "http://weaviate:8080")
           .withEnv("NEIGHBOR_OCCURRENCE_IGNORE_PERCENTILE", "5")
           .withEnv("ENABLE_COMPOUND_SPLITTING", "'false'");
-      container.withCreateContainerCmdModifier(cmd -> cmd.withHostName("contextionary"));
+      container.withCreateContainerCmdModifier(cmd -> cmd.withHostName(HOST_NAME));
       return container;
     }
   }

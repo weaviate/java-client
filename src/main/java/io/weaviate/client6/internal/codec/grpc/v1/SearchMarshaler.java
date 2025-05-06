@@ -10,6 +10,7 @@ import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.SearchRequest
 import io.weaviate.client6.internal.GRPC;
 import io.weaviate.client6.internal.codec.grpc.GrpcMarshaler;
 import io.weaviate.client6.v1.collections.query.CommonQueryOptions;
+import io.weaviate.client6.v1.collections.query.NearText;
 import io.weaviate.client6.v1.collections.query.NearVector;
 
 public class SearchMarshaler implements GrpcMarshaler<SearchRequest> {
@@ -43,7 +44,25 @@ public class SearchMarshaler implements GrpcMarshaler<SearchRequest> {
       nearVector.setDistance(nv.distance());
     }
 
+    // TODO: add targets, vector_for_targets
     req.setNearVector(nearVector);
+    return this;
+  }
+
+  public SearchMarshaler addNearText(NearText nt) {
+    setCommon(nt.common());
+
+    var nearText = WeaviateProtoBaseSearch.NearTextSearch.newBuilder();
+    nearText.addAllQuery(nt.text());
+
+    if (nt.certainty() != null) {
+      nearText.setCertainty(nt.certainty());
+    } else if (nt.distance() != null) {
+      nearText.setDistance(nt.distance());
+    }
+
+    // TODO: add move_to, move_away, targets
+    req.setNearText(nearText);
     return this;
   }
 
