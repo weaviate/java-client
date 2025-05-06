@@ -8,11 +8,20 @@ public abstract class Vectorizer {
     return new NoneVectorizer();
   }
 
-  public static ContextionaryVectorizer contextionary() {
+  public static ContextionaryVectorizer text2vecContextionary() {
     return ContextionaryVectorizer.of();
   }
 
-  public static ContextionaryVectorizer contextionary(Consumer<ContextionaryVectorizer.Builder> fn) {
+  public static ContextionaryVectorizer text2vecContextionary(Consumer<ContextionaryVectorizer.Builder> fn) {
     return ContextionaryVectorizer.of(fn);
+  }
+
+  // TODO: add test cases
+  public static Text2VecWeaviateVectorizer text2vecWeaviate() {
+    return Text2VecWeaviateVectorizer.of();
+  }
+
+  public static Text2VecWeaviateVectorizer text2vecWeaviate(Consumer<Text2VecWeaviateVectorizer.Builder> fn) {
+    return Text2VecWeaviateVectorizer.of(fn);
   }
 }
