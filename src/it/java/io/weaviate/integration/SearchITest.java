@@ -16,12 +16,14 @@ import org.junit.rules.TestRule;
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.WeaviateClient;
 import io.weaviate.client6.v1.collections.Property;
+import io.weaviate.client6.v1.collections.Reference;
 import io.weaviate.client6.v1.collections.VectorIndex;
 import io.weaviate.client6.v1.collections.VectorIndex.IndexingStrategy;
 import io.weaviate.client6.v1.collections.Vectorizer;
 import io.weaviate.client6.v1.collections.object.Vectors;
 import io.weaviate.client6.v1.collections.query.GroupedQueryResult;
 import io.weaviate.client6.v1.collections.query.MetadataField;
+import io.weaviate.client6.v1.collections.query.NearText;
 import io.weaviate.client6.v1.collections.query.NearVector;
 import io.weaviate.containers.Container;
 import io.weaviate.containers.Container.ContainerGroup;
@@ -148,5 +150,43 @@ public class SearchITest extends ConcurrentTest {
         .extracting(obj -> obj.properties).allSatisfy(
             properties -> Assertions.assertThat(properties)
                 .allSatisfy((_k, v) -> Assertions.assertThat((String) v).contains("Jungle")));
+  }
+
+  @Test
+  public void testNearText_groupBy() throws IOException {
+    var vectorIndex = new VectorIndex<>(IndexingStrategy.hnsw(), Vectorizer.text2vecContextionary());
+
+    var nsArtists = ns("Artists");
+    client.collections.create(nsArtists,
+        col -> col
+            .properties(Property.text("name"))
+            .vector(vectorIndex));
+
+    var artists = client.collections.use(nsArtists);
+    var beatles = artists.data.insert(Map.of("name", "Beatles"));
+    var ccr = artists.data.insert(Map.of("name", "CCR"));
+
+    var nsSongs = ns("Songs");
+    client.collections.create(nsSongs,
+        col -> col
+            .properties(Property.text("title"))
+            .references(Property.reference("performedBy", nsArtists))
+            .vector(vectorIndex));
+
+    var songs = client.collections.use(nsSongs);
+    songs.data.insert(Map.of("title", "Yellow Submarine"),
+        s -> s.reference("performedBy", Reference.objects(beatles)));
+    songs.data.insert(Map.of("title", "Run Through The Jungle"),
+        s -> s.reference("performedBy", Reference.objects(ccr)));
+
+    var result = songs.query.nearText("nature",
+        new NearText.GroupBy("performedBy", 2, 1),
+        opt -> opt
+            .returnProperties("title"));
+
+    Assertions.assertThat(result.groups).hasSize(2)
+        .containsOnlyKeys(
+            "weaviate://localhost/%s/%s".formatted(nsArtists, beatles.metadata().id()),
+            "weaviate://localhost/%s/%s".formatted(nsArtists, ccr.metadata().id()));
   }
 }
