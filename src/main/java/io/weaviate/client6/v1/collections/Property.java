@@ -19,8 +19,12 @@ public record Property(
     return new Property(name, AtomicDataType.INT);
   }
 
-  public static Property reference(String name, String... collections) {
-    return new Property(name, collections);
+  public static ReferenceProperty reference(String name, String... collections) {
+    return new ReferenceProperty(name, Arrays.asList(collections));
+  }
+
+  public static ReferenceProperty reference(String name, List<String> collections) {
+    return new ReferenceProperty(name, collections);
   }
 
   public boolean isReference() {
@@ -31,7 +35,4 @@ public record Property(
     this(name, List.of(type.name().toLowerCase()));
   }
 
-  private Property(String name, String... collections) {
-    this(name, Arrays.asList(collections));
-  }
 }

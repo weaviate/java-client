@@ -114,7 +114,7 @@ public class VectorsTest {
   }
 
   private static Collection collectionWithVectors(Vectors vectors) {
-    return new Collection("Things", List.of(), vectors);
+    return new Collection("Things", List.of(), List.of(), vectors);
   }
 
   private void assertEqual(String wantJson, String gotJson, String... compareKeys) {

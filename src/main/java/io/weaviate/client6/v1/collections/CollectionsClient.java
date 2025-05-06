@@ -45,9 +45,7 @@ public class CollectionsClient {
     DtoTypeAdapterFactory.register(
         Collection.class,
         CollectionDefinitionDTO.class,
-        m -> {
-          return new CollectionDefinitionDTO(m);
-        });
+        m -> new CollectionDefinitionDTO(m));
   }
 
   // Gson cannot deserialize interfaces:
@@ -86,6 +84,8 @@ public class CollectionsClient {
 
   private static final Gson gson = new GsonBuilder()
       .registerTypeAdapterFactory(new DtoTypeAdapterFactory())
+      .registerTypeAdapter(IndexingStrategy.class, new IndexingStrategySerde())
+      .registerTypeAdapter(Vectorizer.class, new VectorizerSerde())
       .registerTypeAdapter(Vectors.class, new TypeAdapter<Vectors>() {
         Gson gson = new GsonBuilder()
             .registerTypeAdapter(Vectorizer.class, new VectorizerSerde())

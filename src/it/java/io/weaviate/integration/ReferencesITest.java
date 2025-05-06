@@ -12,6 +12,7 @@ import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.WeaviateClient;
 import io.weaviate.client6.v1.collections.Property;
 import io.weaviate.client6.v1.collections.Reference;
+import io.weaviate.client6.v1.collections.ReferenceProperty;
 import io.weaviate.client6.v1.collections.object.ObjectReference;
 import io.weaviate.client6.v1.collections.object.WeaviateObject;
 import io.weaviate.client6.v1.collections.query.MetadataField;
@@ -45,7 +46,8 @@ public class ReferencesITest extends ConcurrentTest {
         col -> col
             .properties(
                 Property.text("name"),
-                Property.integer("age"),
+                Property.integer("age"))
+            .references(
                 Property.reference("hasAwards", nsGrammy, nsOscar)));
 
     var artists = client.collections.use(nsArtists);
@@ -56,10 +58,10 @@ public class ReferencesITest extends ConcurrentTest {
     var collectionArtists = artists.config.get();
     Assertions.assertThat(collectionArtists).get()
         .as("Artists: create collection")
-        .extracting(c -> c.properties().stream().filter(Property::isReference).findFirst())
+        .extracting(c -> c.references().stream().findFirst())
         .as("has one reference property").extracting(Optional::get)
-        .returns("hasAwards", Property::name)
-        .extracting(Property::dataTypes, InstanceOfAssertFactories.list(String.class))
+        .returns("hasAwards", ReferenceProperty::name)
+        .extracting(ReferenceProperty::dataTypes, InstanceOfAssertFactories.list(String.class))
         .containsOnly(nsGrammy, nsOscar);
 
     // Act: insert some data
@@ -78,16 +80,15 @@ public class ReferencesITest extends ConcurrentTest {
     // Act: add one more reference
     var nsMovies = ns("Movies");
     client.collections.create(nsMovies);
-    artists.config.addProperty(Property.reference("featuredIn", nsMovies));
+    artists.config.addReference("featuredIn", nsMovies);
 
     collectionArtists = artists.config.get();
     Assertions.assertThat(collectionArtists).get()
         .as("Artists: add reference to Movies")
-        .extracting(c -> c.properties().stream()
+        .extracting(c -> c.references().stream()
             .filter(property -> property.name().equals("featuredIn")).findFirst())
         .as("featuredIn reference property").extracting(Optional::get)
-        .returns(true, Property::isReference)
-        .extracting(Property::dataTypes, InstanceOfAssertFactories.list(String.class))
+        .extracting(ReferenceProperty::dataTypes, InstanceOfAssertFactories.list(String.class))
         .containsOnly(nsMovies);
 
     var gotAlex = artists.data.get(alex.metadata().id(),
@@ -127,13 +128,14 @@ public class ReferencesITest extends ConcurrentTest {
     // Act: create Artists collection with hasAwards reference
     client.collections.create(nsGrammy,
         col -> col
-            .properties(Property.reference("presentedBy", nsAcademy)));
+            .references(Property.reference("presentedBy", nsAcademy)));
 
     client.collections.create(nsArtists,
         col -> col
             .properties(
                 Property.text("name"),
-                Property.integer("age"),
+                Property.integer("age"))
+            .references(
                 Property.reference("hasAwards", nsGrammy)));
 
     var artists = client.collections.use(nsArtists);

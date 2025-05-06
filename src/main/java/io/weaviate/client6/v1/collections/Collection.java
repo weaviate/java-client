@@ -7,20 +7,26 @@ import java.util.function.Consumer;
 
 import io.weaviate.client6.v1.collections.Vectors.NamedVectors;
 
-public record Collection(String name, List<Property> properties, Vectors vectors) {
+public record Collection(String name, List<Property> properties, List<ReferenceProperty> references, Vectors vectors) {
 
   public static Collection with(String name, Consumer<Configuration> options) {
     var config = new Configuration(options);
-    return new Collection(name, config.properties, config.vectors);
+    return new Collection(name, config.properties, config.references, config.vectors);
   }
 
   // Tucked Builder for additional collection configuration.
   public static class Configuration {
     public List<Property> properties = new ArrayList<>();
+    public List<ReferenceProperty> references = new ArrayList<>();
     public Vectors vectors;
 
     public Configuration properties(Property... properties) {
       this.properties = Arrays.asList(properties);
+      return this;
+    }
+
+    public Configuration references(ReferenceProperty... references) {
+      this.references = Arrays.asList(references);
       return this;
     }
 

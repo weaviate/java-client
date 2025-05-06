@@ -73,7 +73,8 @@ public class DataITest extends ConcurrentTest {
         col -> col
             .properties(
                 Property.text("name"),
-                Property.integer("age"),
+                Property.integer("age"))
+            .references(
                 Property.reference("hasAwards", awardsGrammy, awardsOscar))
             .vector(VECTOR_INDEX, new VectorIndex<>(IndexingStrategy.hnsw(), Vectorizer.none())));
   }

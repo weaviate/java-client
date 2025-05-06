@@ -55,16 +55,17 @@ public class CollectionsITest extends ConcurrentTest {
     // Act: Create Things collection with owner -> owners
     var nsThings = ns("Things");
     client.collections.create(nsThings,
-        col -> col.properties(Property.reference("ownedBy", nsOwners)));
+        col -> col.references(Property.reference("ownedBy", nsOwners)));
     var things = client.collections.use(nsThings);
 
     // Assert: Things --ownedBy-> Owners
     Assertions.assertThat(things.config.get())
+        // Assertions.assertThat(client.collections.getConfig(nsOwners))
         .as("after create Things").get()
         .satisfies(c -> {
-          Assertions.assertThat(c.properties())
+          Assertions.assertThat(c.references())
               .as("ownedBy").filteredOn(p -> p.name().equals("ownedBy")).first()
-              .extracting(p -> p.dataTypes()).asInstanceOf(InstanceOfAssertFactories.LIST)
+              .extracting(p -> p.dataTypes(), InstanceOfAssertFactories.LIST)
               .containsOnly(nsOwners);
         });
 
@@ -76,15 +77,15 @@ public class CollectionsITest extends ConcurrentTest {
     client.collections.create(nsMarkets);
 
     // Act: Update Things collections to add polymorphic reference
-    things.config.addProperty(Property.reference("soldIn", nsOnlineStores, nsMarkets));
+    things.config.addReference("soldIn", nsOnlineStores, nsMarkets);
 
     // Assert: Things --soldIn-> [OnlineStores, Markets]
     Assertions.assertThat(things.config.get())
         .as("after add property").get()
         .satisfies(c -> {
-          Assertions.assertThat(c.properties())
+          Assertions.assertThat(c.references())
               .as("soldIn").filteredOn(p -> p.name().equals("soldIn")).first()
-              .extracting(p -> p.dataTypes()).asInstanceOf(InstanceOfAssertFactories.LIST)
+              .extracting(p -> p.dataTypes(), InstanceOfAssertFactories.LIST)
               .containsOnly(nsOnlineStores, nsMarkets);
         });
   }
