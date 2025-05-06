@@ -9,8 +9,8 @@ import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.PropertiesReq
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.SearchRequest;
 import io.weaviate.client6.internal.GRPC;
 import io.weaviate.client6.internal.codec.grpc.GrpcMarshaler;
-import io.weaviate.client6.v1.query.CommonQueryOptions;
-import io.weaviate.client6.v1.query.NearVector;
+import io.weaviate.client6.v1.collections.query.CommonQueryOptions;
+import io.weaviate.client6.v1.collections.query.NearVector;
 
 public class SearchMarshaler implements GrpcMarshaler<SearchRequest> {
   private final WeaviateProtoSearchGet.SearchRequest.Builder req = WeaviateProtoSearchGet.SearchRequest.newBuilder();

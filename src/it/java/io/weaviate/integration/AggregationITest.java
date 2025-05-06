@@ -16,13 +16,13 @@ import io.weaviate.client6.WeaviateClient;
 import io.weaviate.client6.v1.collections.Property;
 import io.weaviate.client6.v1.collections.VectorIndex;
 import io.weaviate.client6.v1.collections.Vectorizer;
-import io.weaviate.client6.v1.collections.Vectors;
 import io.weaviate.client6.v1.collections.aggregate.AggregateGroupByRequest.GroupBy;
 import io.weaviate.client6.v1.collections.aggregate.AggregateGroupByResponse;
 import io.weaviate.client6.v1.collections.aggregate.Group;
 import io.weaviate.client6.v1.collections.aggregate.GroupedBy;
 import io.weaviate.client6.v1.collections.aggregate.IntegerMetric;
 import io.weaviate.client6.v1.collections.aggregate.Metric;
+import io.weaviate.client6.v1.collections.object.Vectors;
 import io.weaviate.containers.Container;
 
 public class AggregationITest extends ConcurrentTest {
@@ -36,7 +36,7 @@ public class AggregationITest extends ConcurrentTest {
             .properties(
                 Property.text("category"),
                 Property.integer("price"))
-            .vectors(Vectors.of(new VectorIndex<>(Vectorizer.none()))));
+            .vectors(io.weaviate.client6.v1.collections.Vectors.of(new VectorIndex<>(Vectorizer.none()))));
 
     var things = client.collections.use(COLLECTION);
     for (var category : List.of("Shoes", "Hat", "Jacket")) {
@@ -47,7 +47,7 @@ public class AggregationITest extends ConcurrentTest {
         things.data.insert(Map.of(
             "category", category,
             "price", category.length()),
-            meta -> meta.vectors(vector));
+            meta -> meta.vectors(Vectors.of(vector)));
       }
     }
   }
