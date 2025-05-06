@@ -24,13 +24,12 @@ import io.weaviate.client6.v1.collections.query.GroupedQueryResult;
 import io.weaviate.client6.v1.collections.query.MetadataField;
 import io.weaviate.client6.v1.collections.query.NearVector;
 import io.weaviate.containers.Container;
-import io.weaviate.containers.Container.Group;
-import io.weaviate.containers.Contextionary;
+import io.weaviate.containers.Container.ContainerGroup;
 import io.weaviate.containers.Weaviate;
 
 public class SearchITest extends ConcurrentTest {
-  private static final Group compose = Container.compose(
-      Weaviate.custom().withContextionaryUrl(Contextionary.URL).build(),
+  private static final ContainerGroup compose = Container.compose(
+      Weaviate.custom().withContextionary().build(),
       Container.CONTEXTIONARY);
   @ClassRule // Bind containers to lifetime to the test
   public static final TestRule _rule = compose.asTestRule();
