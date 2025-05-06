@@ -9,7 +9,6 @@ import org.junit.Test;
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.WeaviateClient;
 import io.weaviate.client6.v1.collections.Collection;
-import io.weaviate.client6.v1.collections.NoneVectorizer;
 import io.weaviate.client6.v1.collections.Property;
 import io.weaviate.client6.v1.collections.VectorIndex;
 import io.weaviate.client6.v1.collections.VectorIndex.IndexType;
@@ -17,6 +16,7 @@ import io.weaviate.client6.v1.collections.VectorIndex.IndexingStrategy;
 import io.weaviate.client6.v1.collections.Vectorizer;
 import io.weaviate.client6.v1.collections.Vectors;
 import io.weaviate.containers.Container;
+import io.weaviate.containers.Contextionary;
 
 public class CollectionsITest extends ConcurrentTest {
   private static WeaviateClient client = Container.WEAVIATE.getClient();
@@ -36,7 +36,7 @@ public class CollectionsITest extends ConcurrentTest {
         .extracting(Collection::vectors).extracting(Vectors::getDefault)
         .as("default vector").satisfies(defaultVector -> {
           Assertions.assertThat(defaultVector).extracting(VectorIndex::vectorizer)
-              .as("has none vectorizer").isInstanceOf(NoneVectorizer.class);
+              .as("has none vectorizer").isInstanceOf(Contextionary.class);
           Assertions.assertThat(defaultVector).extracting(VectorIndex::configuration)
               .as("has hnsw index").returns(IndexType.HNSW, IndexingStrategy::type);
         });

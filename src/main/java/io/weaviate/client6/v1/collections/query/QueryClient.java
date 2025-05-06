@@ -31,6 +31,13 @@ public class QueryClient<T> {
     this.collectionName = collectionName;
   }
 
+  public QueryResult<T> nearVector(Float[] vector) {
+    var query = NearVector.with(vector, opt -> {
+    });
+    var req = new SearchMarshaler(collectionName).addNearVector(query);
+    return search(req.marshal());
+  }
+
   public QueryResult<T> nearVector(Float[] vector, Consumer<NearVector.Builder> options) {
     var query = NearVector.with(vector, options);
     var req = new SearchMarshaler(collectionName).addNearVector(query);
@@ -51,6 +58,19 @@ public class QueryClient<T> {
     var req = new SearchMarshaler(collectionName).addNearVector(query)
         .addGroupBy(groupBy);
     return searchGrouped(req.marshal());
+  }
+
+  public QueryResult<T> nearText(String text, Consumer<NearText.Builder> fn) {
+    var query = NearText.with(text, fn);
+    var req = new SearchMarshaler(collectionName).addNearText(query);
+    return search(req.marshal());
+  }
+
+  public QueryResult<T> nearText(String text) {
+    var query = NearText.with(text, opt -> {
+    });
+    var req = new SearchMarshaler(collectionName).addNearText(query);
+    return search(req.marshal());
   }
 
   private QueryResult<T> search(SearchRequest req) {

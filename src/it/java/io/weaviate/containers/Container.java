@@ -54,6 +54,8 @@ public class Container {
     private Group(Weaviate weaviate, GenericContainer<?>... containers) {
       this.weaviate = weaviate;
       this.containers = Arrays.asList(containers);
+
+      weaviate.dependsOn(containers);
       setSharedNetwork();
     }
 
@@ -63,8 +65,7 @@ public class Container {
 
     @Override
     public void start() {
-      containers.forEach(GenericContainer::start);
-      weaviate.start();
+      weaviate.start(); // testcontainers will resolve dependencies
     }
 
     @Override

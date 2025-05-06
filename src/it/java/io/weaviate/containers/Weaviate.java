@@ -69,7 +69,13 @@ public class Weaviate extends WeaviateContainer {
       return this;
     }
 
+    public Builder withContextionary() {
+      addModule(Contextionary.MODULE);
+      return this;
+    }
+
     public Builder withContextionaryUrl(String url) {
+      withContextionary();
       contextionaryUrl = url;
       return this;
     }

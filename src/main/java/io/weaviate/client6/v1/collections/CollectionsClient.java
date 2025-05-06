@@ -75,6 +75,7 @@ public class CollectionsClient {
     @Override
     public Vectorizer deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
         throws JsonParseException {
+      // TODO: deserialize different kinds of vectorizers
       return Vectorizer.none();
     }
 

@@ -9,7 +9,9 @@ import java.util.Map;
 
 import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.WeaviateClient;
@@ -22,9 +24,17 @@ import io.weaviate.client6.v1.collections.query.GroupedQueryResult;
 import io.weaviate.client6.v1.collections.query.MetadataField;
 import io.weaviate.client6.v1.collections.query.NearVector;
 import io.weaviate.containers.Container;
+import io.weaviate.containers.Container.Group;
+import io.weaviate.containers.Contextionary;
+import io.weaviate.containers.Weaviate;
 
-public class NearVectorQueryITest extends ConcurrentTest {
-  private static final WeaviateClient client = Container.WEAVIATE.getClient();
+public class SearchITest extends ConcurrentTest {
+  private static final Group compose = Container.compose(
+      Weaviate.custom().withContextionaryUrl(Contextionary.URL).build(),
+      Container.CONTEXTIONARY);
+  @ClassRule // Bind containers to lifetime to the test
+  public static final TestRule _rule = compose.asTestRule();
+  private static final WeaviateClient client = compose.getClient();
 
   private static final String COLLECTION = unique("Things");
   private static final String VECTOR_INDEX = "bring_your_own";
@@ -81,7 +91,6 @@ public class NearVectorQueryITest extends ConcurrentTest {
     Assertions.assertThat(result.objects)
         .as("object belongs a group")
         .allMatch(obj -> result.groups.get(obj.belongsToGroup).objects().contains(obj));
-
   }
 
   /**
@@ -116,5 +125,29 @@ public class NearVectorQueryITest extends ConcurrentTest {
     client.collections.create(COLLECTION, cfg -> cfg
         .properties(Property.text("category"))
         .vector(VECTOR_INDEX, new VectorIndex<>(IndexingStrategy.hnsw(), Vectorizer.none())));
+  }
+
+  @Test
+  public void testNearText() throws IOException {
+    var nsSongs = ns("Songs");
+    client.collections.create(nsSongs,
+        col -> col
+            .properties(Property.text("title"))
+            .vector(new VectorIndex<>(IndexingStrategy.hnsw(), Vectorizer.contextionary())));
+
+    var songs = client.collections.use(nsSongs);
+    songs.data.insert(Map.of("title", "Yellow Submarine"));
+    songs.data.insert(Map.of("title", "Run Through The Jungle"));
+    songs.data.insert(Map.of("title", "Welcome To The Jungle"));
+
+    var result = songs.query.nearText("forest",
+        opt -> opt
+            .distance(0.5f)
+            .returnProperties("title"));
+
+    Assertions.assertThat(result.objects).hasSize(2)
+        .extracting(obj -> obj.properties).allSatisfy(
+            properties -> Assertions.assertThat(properties)
+                .allSatisfy((_k, v) -> Assertions.assertThat((String) v).contains("Jungle")));
   }
 }
