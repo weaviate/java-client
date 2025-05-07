@@ -207,11 +207,6 @@
   </dependencies>
 
   <build>
-    <testResources>
-      <testResource>
-        <directory>src/it/resources</directory>
-      </testResource>
-    </testResources>
     <extensions>
       <extension>
         <groupId>kr.motd.maven</groupId>
@@ -354,6 +349,7 @@
               <configuration>
                 <sources>
                   <source>${project.basedir}/src/it/java</source>
+                  <source>${project.basedir}/src/it/resources</source>
                 </sources>
               </configuration>
             </execution>
