@@ -24,4 +24,13 @@ public abstract class Vectorizer {
   public static Text2VecWeaviateVectorizer text2vecWeaviate(Consumer<Text2VecWeaviateVectorizer.Builder> fn) {
     return Text2VecWeaviateVectorizer.of(fn);
   }
+
+  // TODO: add test cases
+  public static Multi2VecClipVectorizer multi2vecClip() {
+    return Multi2VecClipVectorizer.of();
+  }
+
+  public static Multi2VecClipVectorizer multi2vecClip(Consumer<Multi2VecClipVectorizer.Builder> fn) {
+    return Multi2VecClipVectorizer.of(fn);
+  }
 }

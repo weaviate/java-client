@@ -81,6 +81,12 @@ public class QueryClient<T> {
     return search(req.marshal());
   }
 
+  public QueryResult<T> nearImage(String image, Consumer<NearImage.Builder> fn) {
+    var query = NearImage.with(image, fn);
+    var req = new SearchMarshaler(collectionName).addNearImage(query);
+    return search(req.marshal());
+  }
+
   private QueryResult<T> search(SearchRequest req) {
     var reply = grpcClient.grpc.search(req);
     return deserializeUntyped(reply);

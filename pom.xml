@@ -207,6 +207,11 @@
   </dependencies>
 
   <build>
+    <testResources>
+      <testResource>
+        <directory>src/it/resources</directory>
+      </testResource>
+    </testResources>
     <extensions>
       <extension>
         <groupId>kr.motd.maven</groupId>
