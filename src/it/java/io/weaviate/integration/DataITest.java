@@ -1,6 +1,7 @@
 package io.weaviate.integration;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
@@ -15,6 +16,7 @@ import io.weaviate.client6.v1.collections.VectorIndex;
 import io.weaviate.client6.v1.collections.VectorIndex.IndexingStrategy;
 import io.weaviate.client6.v1.collections.Vectorizer;
 import io.weaviate.client6.v1.collections.object.Vectors;
+import io.weaviate.client6.v1.collections.object.WeaviateObject;
 import io.weaviate.containers.Container;
 
 public class DataITest extends ConcurrentTest {
@@ -62,6 +64,29 @@ public class DataITest extends ConcurrentTest {
     Assertions.assertThat(object).isEmpty().as("object not exists after deletion");
   }
 
+  @Test
+  public void testBlobData() throws IOException {
+    var nsCats = ns("Cats");
+
+    client.collections.create(nsCats,
+        collection -> collection.properties(
+            Property.text("breed"),
+            Property.blob("img")));
+
+    var cats = client.collections.use(nsCats);
+    var ragdollPng = base64("ragdoll.png");
+    var ragdoll = cats.data.insert(Map.of(
+        "breed", "ragdoll",
+        "img", ragdollPng));
+
+    var got = cats.data.get(ragdoll.metadata().id(),
+        cat -> cat.returnProperties("img"));
+
+    Assertions.assertThat(got).get()
+        .extracting(WeaviateObject::properties, InstanceOfAssertFactories.MAP)
+        .extractingByKey("img").isEqualTo(ragdollPng);
+  }
+
   private static void createTestCollections() throws IOException {
     var awardsGrammy = unique("Grammy");
     client.collections.create(awardsGrammy);
@@ -77,5 +102,9 @@ public class DataITest extends ConcurrentTest {
             .references(
                 Property.reference("hasAwards", awardsGrammy, awardsOscar))
             .vector(VECTOR_INDEX, new VectorIndex<>(IndexingStrategy.hnsw(), Vectorizer.none())));
+  }
+
+  private String base64(String string) {
+    return Base64.getEncoder().encodeToString(string.getBytes());
   }
 }
