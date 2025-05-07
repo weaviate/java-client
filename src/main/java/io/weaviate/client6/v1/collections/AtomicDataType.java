@@ -6,10 +6,13 @@ public enum AtomicDataType {
   @SerializedName("text")
   TEXT,
   @SerializedName("int")
-  INT;
+  INT,
+  @SerializedName("blob")
+  BLOB;
 
   public static boolean isAtomic(String type) {
     return type.equals(TEXT.name().toLowerCase())
-        || type.equals(INT.name().toLowerCase());
+        || type.equals(INT.name().toLowerCase())
+        || type.equals(BLOB.name().toLowerCase());
   }
 }

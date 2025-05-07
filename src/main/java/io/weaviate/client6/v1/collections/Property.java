@@ -19,6 +19,11 @@ public record Property(
     return new Property(name, AtomicDataType.INT);
   }
 
+  /** Add blob property with default configuration. */
+  public static Property blob(String name) {
+    return new Property(name, AtomicDataType.BLOB);
+  }
+
   public static ReferenceProperty reference(String name, String... collections) {
     return new ReferenceProperty(name, Arrays.asList(collections));
   }
