@@ -1,7 +1,6 @@
 package io.weaviate.integration;
 
 import java.io.IOException;
-import java.util.Base64;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
@@ -74,7 +73,7 @@ public class DataITest extends ConcurrentTest {
             Property.blob("img")));
 
     var cats = client.collections.use(nsCats);
-    var ragdollPng = base64("ragdoll.png");
+    var ragdollPng = EncodedMedia.IMAGE;
     var ragdoll = cats.data.insert(Map.of(
         "breed", "ragdoll",
         "img", ragdollPng));
@@ -102,9 +101,5 @@ public class DataITest extends ConcurrentTest {
             .references(
                 Property.reference("hasAwards", awardsGrammy, awardsOscar))
             .vector(VECTOR_INDEX, new VectorIndex<>(IndexingStrategy.hnsw(), Vectorizer.none())));
-  }
-
-  private String base64(String string) {
-    return Base64.getEncoder().encodeToString(string.getBytes());
   }
 }

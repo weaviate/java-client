@@ -1,7 +1,9 @@
 package io.weaviate.containers;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.testcontainers.weaviate.WeaviateContainer;
@@ -42,14 +44,14 @@ public class Weaviate extends WeaviateContainer {
 
   public static class Builder {
     private String versionTag;
-    private Set<String> enableModules;
+    private Set<String> enableModules = new HashSet<>();
     private String defaultVectorizerModule;
-    private String contextionaryUrl;
     private boolean telemetry;
+
+    private Map<String, String> environment = new HashMap<>();
 
     public Builder() {
       this.versionTag = VERSION;
-      this.enableModules = new HashSet<>();
       this.telemetry = false;
     }
 
@@ -65,22 +67,24 @@ public class Weaviate extends WeaviateContainer {
 
     public Builder withDefaultVectorizer(String module) {
       addModule(module);
-      defaultVectorizerModule = module;
+      environment.put("DEFAULT_VECTORIZER_MODULE", module);
       return this;
-    }
-
-    public Builder withContextionary() {
-      return withContextionaryUrl(Contextionary.URL);
     }
 
     public Builder withContextionaryUrl(String url) {
       addModule(Contextionary.MODULE);
-      contextionaryUrl = url;
+      environment.put("CONTEXTIONARY_URL", url);
       return this;
     }
 
-    public Builder enableTelemetry() {
-      telemetry = true;
+    public Builder withClipInferenceApi(String url) {
+      addModule(Multi2VecClip.MODULE);
+      environment.put("CLIP_INFERENCE_API", "http://" + url);
+      return this;
+    }
+
+    public Builder enableTelemetry(boolean enable) {
+      telemetry = enable;
       return this;
     }
 
@@ -88,18 +92,14 @@ public class Weaviate extends WeaviateContainer {
       var c = new Weaviate(DOCKER_IMAGE + ":" + versionTag);
 
       if (!enableModules.isEmpty()) {
+        c.withEnv("ENABLE_API_BASED_MODULES", "'true'");
         c.withEnv("ENABLE_MODULES", String.join(",", enableModules));
-      }
-      if (defaultVectorizerModule != null) {
-        c.withEnv("DEFAULT_VECTORIZER_MODULE", defaultVectorizerModule);
-      }
-      if (contextionaryUrl != null) {
-        c.withEnv("CONTEXTIONARY_URL", contextionaryUrl);
       }
       if (!telemetry) {
         c.withEnv("DISABLE_TELEMETRY", "true");
       }
 
+      environment.forEach((name, value) -> c.withEnv(name, value));
       c.withCreateContainerCmdModifier(cmd -> cmd.withHostName("weaviate"));
       return c;
     }

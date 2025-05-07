@@ -8,8 +8,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
@@ -27,13 +29,18 @@ import io.weaviate.client6.v1.collections.query.NearText;
 import io.weaviate.client6.v1.collections.query.NearVector;
 import io.weaviate.containers.Container;
 import io.weaviate.containers.Container.ContainerGroup;
+import io.weaviate.containers.Contextionary;
 import io.weaviate.containers.Weaviate;
 
 public class SearchITest extends ConcurrentTest {
   private static final ContainerGroup compose = Container.compose(
-      Weaviate.custom().withContextionary().build(),
+      Weaviate.custom()
+          .withContextionaryUrl(Contextionary.URL)
+          // .withClipInferenceApi(Multi2VecClip.URL)
+          .build(),
+      // Container.MULTI2VEC_CLIP, // Uncomment for testNearImage
       Container.CONTEXTIONARY);
-  @ClassRule // Bind containers to lifetime to the test
+  @ClassRule // Bind containers to the lifetime of the test
   public static final TestRule _rule = compose.asTestRule();
   private static final WeaviateClient client = compose.getClient();
 
@@ -188,5 +195,31 @@ public class SearchITest extends ConcurrentTest {
         .containsOnlyKeys(
             "weaviate://localhost/%s/%s".formatted(nsArtists, beatles.metadata().id()),
             "weaviate://localhost/%s/%s".formatted(nsArtists, ccr.metadata().id()));
+  }
+
+  @Test
+  @Ignore("no fitting image to test with")
+  public void testNearImage() throws IOException {
+    var nsCats = ns("Cats");
+
+    client.collections.create(nsCats,
+        collection -> collection
+            .properties(
+                Property.text("breed"),
+                Property.blob("img"))
+            .vector(new VectorIndex<>(IndexingStrategy.hnsw(), Vectorizer.multi2vecClip(
+                clip -> clip.imageFields("img")))));
+
+    var cats = client.collections.use(nsCats);
+    cats.data.insert(Map.of(
+        "breed", "ragdoll",
+        "img", EncodedMedia.IMAGE));
+
+    var got = cats.query.nearImage(EncodedMedia.IMAGE,
+        opt -> opt.returnProperties("breed"));
+
+    Assertions.assertThat(got.objects).hasSize(1).first()
+        .extracting(obj -> obj.properties, InstanceOfAssertFactories.MAP)
+        .extractingByKey("breed").isEqualTo("ragdoll");
   }
 }

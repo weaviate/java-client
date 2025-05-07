@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class Container {
   public static final Weaviate WEAVIATE = Weaviate.createDefault();
   public static final Contextionary CONTEXTIONARY = Contextionary.createDefault();
+  public static final Multi2VecClip MULTI2VEC_CLIP = Multi2VecClip.createDefault();
 
   static {
     startAll();

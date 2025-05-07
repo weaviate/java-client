@@ -10,6 +10,7 @@ import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.SearchRequest
 import io.weaviate.client6.internal.GRPC;
 import io.weaviate.client6.internal.codec.grpc.GrpcMarshaler;
 import io.weaviate.client6.v1.collections.query.CommonQueryOptions;
+import io.weaviate.client6.v1.collections.query.NearImage;
 import io.weaviate.client6.v1.collections.query.NearText;
 import io.weaviate.client6.v1.collections.query.NearVector;
 
@@ -55,6 +56,22 @@ public class SearchMarshaler implements GrpcMarshaler<SearchRequest> {
 
     // TODO: add targets, vector_for_targets
     req.setNearVector(nearVector);
+    return this;
+  }
+
+  public SearchMarshaler addNearImage(NearImage ni) {
+    setCommon(ni.common());
+
+    var nearImage = WeaviateProtoBaseSearch.NearImageSearch.newBuilder();
+    nearImage.setImage(ni.image());
+
+    if (ni.certainty() != null) {
+      nearImage.setCertainty(ni.certainty());
+    } else if (ni.distance() != null) {
+      nearImage.setDistance(ni.distance());
+    }
+
+    req.setNearImage(nearImage);
     return this;
   }
 
