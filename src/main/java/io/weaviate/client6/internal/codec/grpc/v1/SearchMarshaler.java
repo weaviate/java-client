@@ -2,7 +2,10 @@ package io.weaviate.client6.internal.codec.grpc.v1;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.protobuf.util.JsonFormat;
+
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBaseSearch;
+import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBaseSearch.NearTextSearch;
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet;
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.MetadataRequest;
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.PropertiesRequest;
@@ -87,7 +90,19 @@ public class SearchMarshaler implements GrpcMarshaler<SearchRequest> {
       nearText.setDistance(nt.distance());
     }
 
-    // TODO: add move_to, move_away, targets
+    // TODO: add targets
+    if (nt.moveTo() != null) {
+      var to = NearTextSearch.Move.newBuilder();
+      nt.moveTo().appendTo(to);
+      nearText.setMoveTo(to);
+    }
+
+    if (nt.moveAway() != null) {
+      var away = NearTextSearch.Move.newBuilder();
+      nt.moveAway().appendTo(away);
+      nearText.setMoveAway(away);
+    }
+
     req.setNearText(nearText);
     return this;
   }

@@ -144,13 +144,15 @@ public class SearchITest extends ConcurrentTest {
             .vector(new VectorIndex<>(IndexingStrategy.hnsw(), Vectorizer.text2vecContextionary())));
 
     var songs = client.collections.use(nsSongs);
-    songs.data.insert(Map.of("title", "Yellow Submarine"));
+    var submarine = songs.data.insert(Map.of("title", "Yellow Submarine"));
     songs.data.insert(Map.of("title", "Run Through The Jungle"));
     songs.data.insert(Map.of("title", "Welcome To The Jungle"));
 
     var result = songs.query.nearText("forest",
         opt -> opt
             .distance(0.5f)
+            .moveTo(.98f, to -> to.concepts("tropical"))
+            .moveAway(.4f, away -> away.uuids(submarine.metadata().id()))
             .returnProperties("title"));
 
     Assertions.assertThat(result.objects).hasSize(2)
