@@ -14,9 +14,8 @@ import lombok.experimental.FieldDefaults;
 @EqualsAndHashCode
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MuveraConfig {
-  @Builder.Default
-  private boolean enabled = false;
-  private Integer ksim;
-  private Integer dprojections;
-  private Integer repetitions;
+    Boolean enabled;
+    Integer ksim;
+    Integer dprojections;
+    Integer repetitions;
 }
