@@ -62,8 +62,6 @@ public class SearchITest extends ConcurrentTest {
 
   @Test
   public void testNearVector() {
-    // TODO: test that we return the results in the expected order
-    // Because re-ranking should work correctly
     var things = client.collections.use(COLLECTION);
     var result = things.query.nearVector(searchVector,
         opt -> opt
@@ -79,8 +77,6 @@ public class SearchITest extends ConcurrentTest {
 
   @Test
   public void testNearVector_groupBy() {
-    // TODO: test that we return the results in the expected order
-    // Because re-ranking should work correctly
     var things = client.collections.use(COLLECTION);
     var result = things.query.nearVector(searchVector,
         new NearVector.GroupBy("category", 2, 5),

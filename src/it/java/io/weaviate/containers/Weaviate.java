@@ -1,6 +1,7 @@
 package io.weaviate.containers;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -60,25 +61,25 @@ public class Weaviate extends WeaviateContainer {
       return this;
     }
 
-    public Builder addModule(String module) {
-      enableModules.add(module);
+    public Builder addModules(String... modules) {
+      enableModules.addAll(Arrays.asList(modules));
       return this;
     }
 
     public Builder withDefaultVectorizer(String module) {
-      addModule(module);
+      addModules(module);
       environment.put("DEFAULT_VECTORIZER_MODULE", module);
       return this;
     }
 
     public Builder withContextionaryUrl(String url) {
-      addModule(Contextionary.MODULE);
+      addModules(Contextionary.MODULE);
       environment.put("CONTEXTIONARY_URL", url);
       return this;
     }
 
     public Builder withImageInference(String url, String module) {
-      addModule(module);
+      addModules(module);
       environment.put("IMAGE_INFERENCE_API", "http://" + url);
       return this;
     }
