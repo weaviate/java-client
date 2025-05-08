@@ -77,9 +77,9 @@ public class Weaviate extends WeaviateContainer {
       return this;
     }
 
-    public Builder withClipInferenceApi(String url) {
-      addModule(Multi2VecClip.MODULE);
-      environment.put("CLIP_INFERENCE_API", "http://" + url);
+    public Builder withImageInference(String url, String module) {
+      addModule(module);
+      environment.put("IMAGE_INFERENCE_API", "http://" + url);
       return this;
     }
 

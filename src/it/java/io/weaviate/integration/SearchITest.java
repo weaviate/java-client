@@ -11,7 +11,6 @@ import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
@@ -30,15 +29,16 @@ import io.weaviate.client6.v1.collections.query.NearVector;
 import io.weaviate.containers.Container;
 import io.weaviate.containers.Container.ContainerGroup;
 import io.weaviate.containers.Contextionary;
+import io.weaviate.containers.Img2VecNeural;
 import io.weaviate.containers.Weaviate;
 
 public class SearchITest extends ConcurrentTest {
   private static final ContainerGroup compose = Container.compose(
       Weaviate.custom()
           .withContextionaryUrl(Contextionary.URL)
-          // .withClipInferenceApi(Multi2VecClip.URL)
+          .withImageInference(Img2VecNeural.URL, Img2VecNeural.MODULE)
           .build(),
-      // Container.MULTI2VEC_CLIP, // Uncomment for testNearImage
+      Container.IMG2VEC_NEURAL,
       Container.CONTEXTIONARY);
   @ClassRule // Bind containers to the lifetime of the test
   public static final TestRule _rule = compose.asTestRule();
@@ -200,7 +200,7 @@ public class SearchITest extends ConcurrentTest {
   }
 
   @Test
-  @Ignore("no fitting image to test with")
+  // @Ignore("no fitting image to test with")
   public void testNearImage() throws IOException {
     var nsCats = ns("Cats");
 
@@ -209,8 +209,10 @@ public class SearchITest extends ConcurrentTest {
             .properties(
                 Property.text("breed"),
                 Property.blob("img"))
-            .vector(new VectorIndex<>(IndexingStrategy.hnsw(), Vectorizer.multi2vecClip(
-                clip -> clip.imageFields("img")))));
+            .vector(new VectorIndex<>(
+                IndexingStrategy.hnsw(),
+                Vectorizer.img2VecNeuralVectorizer(
+                    i2v -> i2v.imageFields("img")))));
 
     var cats = client.collections.use(nsCats);
     cats.data.insert(Map.of(

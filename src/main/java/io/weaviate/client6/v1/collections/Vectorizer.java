@@ -33,4 +33,12 @@ public abstract class Vectorizer {
   public static Multi2VecClipVectorizer multi2vecClip(Consumer<Multi2VecClipVectorizer.Builder> fn) {
     return Multi2VecClipVectorizer.of(fn);
   }
+
+  public static Img2VecNeuralVectorizer img2VecNeuralVectorizer() {
+    return Img2VecNeuralVectorizer.of();
+  }
+
+  public static Img2VecNeuralVectorizer img2VecNeuralVectorizer(Consumer<Img2VecNeuralVectorizer.Builder> fn) {
+    return Img2VecNeuralVectorizer.of(fn);
+  }
 }
