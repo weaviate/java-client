@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class Container {
   public static final Weaviate WEAVIATE = Weaviate.createDefault();
   public static final Contextionary CONTEXTIONARY = Contextionary.createDefault();
+  public static final Img2VecNeural IMG2VEC_NEURAL = Img2VecNeural.createDefault();
 
   static {
     startAll();
@@ -39,21 +40,23 @@ public class Container {
     WEAVIATE.stop();
   }
 
-  public static Group compose(Weaviate weaviate, GenericContainer<?>... containers) {
-    return new Group(weaviate, containers);
+  public static ContainerGroup compose(Weaviate weaviate, GenericContainer<?>... containers) {
+    return new ContainerGroup(weaviate, containers);
   }
 
   public static TestRule asTestRule(Startable container) {
     return new PerTestSuite(container);
   };
 
-  public static class Group implements Startable {
+  public static class ContainerGroup implements Startable {
     private final Weaviate weaviate;
     private final List<GenericContainer<?>> containers;
 
-    private Group(Weaviate weaviate, GenericContainer<?>... containers) {
+    private ContainerGroup(Weaviate weaviate, GenericContainer<?>... containers) {
       this.weaviate = weaviate;
       this.containers = Arrays.asList(containers);
+
+      weaviate.dependsOn(containers);
       setSharedNetwork();
     }
 
@@ -63,8 +66,7 @@ public class Container {
 
     @Override
     public void start() {
-      containers.forEach(GenericContainer::start);
-      weaviate.start();
+      weaviate.start(); // testcontainers will resolve dependencies
     }
 
     @Override

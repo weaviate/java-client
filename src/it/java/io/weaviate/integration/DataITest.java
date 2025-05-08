@@ -15,6 +15,7 @@ import io.weaviate.client6.v1.collections.VectorIndex;
 import io.weaviate.client6.v1.collections.VectorIndex.IndexingStrategy;
 import io.weaviate.client6.v1.collections.Vectorizer;
 import io.weaviate.client6.v1.collections.object.Vectors;
+import io.weaviate.client6.v1.collections.object.WeaviateObject;
 import io.weaviate.containers.Container;
 
 public class DataITest extends ConcurrentTest {
@@ -60,6 +61,29 @@ public class DataITest extends ConcurrentTest {
     artists.data.delete(id);
     object = artists.data.get(id);
     Assertions.assertThat(object).isEmpty().as("object not exists after deletion");
+  }
+
+  @Test
+  public void testBlobData() throws IOException {
+    var nsCats = ns("Cats");
+
+    client.collections.create(nsCats,
+        collection -> collection.properties(
+            Property.text("breed"),
+            Property.blob("img")));
+
+    var cats = client.collections.use(nsCats);
+    var ragdollPng = EncodedMedia.IMAGE;
+    var ragdoll = cats.data.insert(Map.of(
+        "breed", "ragdoll",
+        "img", ragdollPng));
+
+    var got = cats.data.get(ragdoll.metadata().id(),
+        cat -> cat.returnProperties("img"));
+
+    Assertions.assertThat(got).get()
+        .extracting(WeaviateObject::properties, InstanceOfAssertFactories.MAP)
+        .extractingByKey("img").isEqualTo(ragdollPng);
   }
 
   private static void createTestCollections() throws IOException {

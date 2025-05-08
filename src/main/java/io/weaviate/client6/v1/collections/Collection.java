@@ -9,48 +9,47 @@ import io.weaviate.client6.v1.collections.Vectors.NamedVectors;
 
 public record Collection(String name, List<Property> properties, List<ReferenceProperty> references, Vectors vectors) {
 
-  public static Collection with(String name, Consumer<Configuration> options) {
-    var config = new Configuration(options);
+  public static Collection with(String name, Consumer<Builder> options) {
+    var config = new Builder(options);
     return new Collection(name, config.properties, config.references, config.vectors);
   }
 
-  // Tucked Builder for additional collection configuration.
-  public static class Configuration {
-    public List<Property> properties = new ArrayList<>();
+  public static class Builder {
+    private List<Property> properties = new ArrayList<>();
     public List<ReferenceProperty> references = new ArrayList<>();
-    public Vectors vectors;
+    private Vectors vectors;
 
-    public Configuration properties(Property... properties) {
+    public Builder properties(Property... properties) {
       this.properties = Arrays.asList(properties);
       return this;
     }
 
-    public Configuration references(ReferenceProperty... references) {
+    public Builder references(ReferenceProperty... references) {
       this.references = Arrays.asList(references);
       return this;
     }
 
-    public <V extends Vectorizer> Configuration vectors(Vectors vectors) {
+    public <V extends Vectorizer> Builder vectors(Vectors vectors) {
       this.vectors = vectors;
       return this;
     }
 
-    public <V extends Vectorizer> Configuration vector(VectorIndex<V> vector) {
+    public <V extends Vectorizer> Builder vector(VectorIndex<V> vector) {
       this.vectors = Vectors.of(vector);
       return this;
     }
 
-    public <V extends Vectorizer> Configuration vector(String name, VectorIndex<V> vector) {
+    public <V extends Vectorizer> Builder vector(String name, VectorIndex<V> vector) {
       this.vectors = new Vectors(name, vector);
       return this;
     }
 
-    public Configuration vectors(Consumer<NamedVectors> named) {
+    public Builder vectors(Consumer<NamedVectors> named) {
       this.vectors = Vectors.with(named);
       return this;
     }
 
-    Configuration(Consumer<Configuration> options) {
+    Builder(Consumer<Builder> options) {
       options.accept(this);
     }
   }

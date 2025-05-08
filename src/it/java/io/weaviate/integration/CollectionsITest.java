@@ -60,7 +60,6 @@ public class CollectionsITest extends ConcurrentTest {
 
     // Assert: Things --ownedBy-> Owners
     Assertions.assertThat(things.config.get())
-        // Assertions.assertThat(client.collections.getConfig(nsOwners))
         .as("after create Things").get()
         .satisfies(c -> {
           Assertions.assertThat(c.references())

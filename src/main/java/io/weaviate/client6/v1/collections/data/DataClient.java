@@ -207,7 +207,11 @@ public class DataClient<T> {
       return value.getIntValue();
     } else if (value.hasNumberValue()) {
       return value.getNumberValue();
-    } else if (value.hasDateValue()) {
+    } else if (value.hasBlobValue()) {
+      return value.getBlobValue();
+    } else if (value.hasDateValue())
+
+    {
       OffsetDateTime offsetDateTime = OffsetDateTime.parse(value.getDateValue());
       return Date.from(offsetDateTime.toInstant());
     } else {

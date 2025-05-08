@@ -1,7 +1,10 @@
 package io.weaviate.containers;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.testcontainers.weaviate.WeaviateContainer;
@@ -10,7 +13,7 @@ import io.weaviate.client6.Config;
 import io.weaviate.client6.WeaviateClient;
 
 public class Weaviate extends WeaviateContainer {
-  private static WeaviateClient clientInstance;
+  private WeaviateClient clientInstance;
 
   public static final String VERSION = "1.29.0";
   public static final String DOCKER_IMAGE = "semitechnologies/weaviate";
@@ -42,14 +45,14 @@ public class Weaviate extends WeaviateContainer {
 
   public static class Builder {
     private String versionTag;
-    private Set<String> enableModules;
+    private Set<String> enableModules = new HashSet<>();
     private String defaultVectorizerModule;
-    private String contextionaryUrl;
     private boolean telemetry;
+
+    private Map<String, String> environment = new HashMap<>();
 
     public Builder() {
       this.versionTag = VERSION;
-      this.enableModules = new HashSet<>();
       this.telemetry = false;
     }
 
@@ -58,24 +61,31 @@ public class Weaviate extends WeaviateContainer {
       return this;
     }
 
-    public Builder addModule(String module) {
-      enableModules.add(module);
+    public Builder addModules(String... modules) {
+      enableModules.addAll(Arrays.asList(modules));
       return this;
     }
 
     public Builder withDefaultVectorizer(String module) {
-      addModule(module);
-      defaultVectorizerModule = module;
+      addModules(module);
+      environment.put("DEFAULT_VECTORIZER_MODULE", module);
       return this;
     }
 
     public Builder withContextionaryUrl(String url) {
-      contextionaryUrl = url;
+      addModules(Contextionary.MODULE);
+      environment.put("CONTEXTIONARY_URL", url);
       return this;
     }
 
-    public Builder enableTelemetry() {
-      telemetry = true;
+    public Builder withImageInference(String url, String module) {
+      addModules(module);
+      environment.put("IMAGE_INFERENCE_API", "http://" + url);
+      return this;
+    }
+
+    public Builder enableTelemetry(boolean enable) {
+      telemetry = enable;
       return this;
     }
 
@@ -83,18 +93,14 @@ public class Weaviate extends WeaviateContainer {
       var c = new Weaviate(DOCKER_IMAGE + ":" + versionTag);
 
       if (!enableModules.isEmpty()) {
+        c.withEnv("ENABLE_API_BASED_MODULES", "'true'");
         c.withEnv("ENABLE_MODULES", String.join(",", enableModules));
-      }
-      if (defaultVectorizerModule != null) {
-        c.withEnv("DEFAULT_VECTORIZER_MODULE", defaultVectorizerModule);
-      }
-      if (contextionaryUrl != null) {
-        c.withEnv("CONTEXTIONARY_URL", contextionaryUrl);
       }
       if (!telemetry) {
         c.withEnv("DISABLE_TELEMETRY", "true");
       }
 
+      environment.forEach((name, value) -> c.withEnv(name, value));
       c.withCreateContainerCmdModifier(cmd -> cmd.withHostName("weaviate"));
       return c;
     }

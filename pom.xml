@@ -349,6 +349,7 @@
               <configuration>
                 <sources>
                   <source>${project.basedir}/src/it/java</source>
+                  <source>${project.basedir}/src/it/resources</source>
                 </sources>
               </configuration>
             </execution>
