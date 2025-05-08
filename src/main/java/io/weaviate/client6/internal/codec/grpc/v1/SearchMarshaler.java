@@ -2,8 +2,6 @@ package io.weaviate.client6.internal.codec.grpc.v1;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.protobuf.util.JsonFormat;
-
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBaseSearch;
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBaseSearch.NearTextSearch;
 import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet;
