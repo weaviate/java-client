@@ -30,6 +30,7 @@ public class MultiVectorConfig {
     return this.muvera;
   }
 
+  // Hide the default getter
   private MuveraConfig getMuvera() {
     return this.muvera;
   }
@@ -42,6 +43,7 @@ public class MultiVectorConfig {
       return this;
     }
 
+    // Hide default builder setter
     private MultiVectorConfigBuilder muvera(MuveraConfig _muvera) {
       return this;
     }
