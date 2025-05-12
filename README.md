@@ -23,7 +23,7 @@ To start using Weaviate Java client v5, add this dependency to `pom.xml`:
 <dependency>
     <groupId>io.weaviate</groupId>
     <artifactId>client</artifactId>
-    <version>6.0.0-alpha1</version>
+    <version>6.0.0-alpha2</version>
 </dependency>
 ```
 
