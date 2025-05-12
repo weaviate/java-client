@@ -183,7 +183,7 @@ public class ClientDataTest {
       assumeTrue(createResult.getResult(), "schema created successfully");
       Result<Schema> schemaResult = client.schema().getter().run();
       MuveraConfig result = schemaResult.getResult().getClasses().get(0).getVectorConfig()
-          .get("colbert").getVectorIndexConfig().getMultiVector().getEncoding();
+          .get("colbert").getVectorIndexConfig().getMultiVector().getMuveraEncoding();
       assumeTrue(result.equals(muveraConfig), "muvera config is correct");
     } finally {
       new WeaviateTestGenerics().cleanupWeaviate(client);

@@ -19,9 +19,32 @@ public class MultiVectorConfig {
   @Builder.Default
   private Aggregation aggregation = Aggregation.MAX_SIM;
   @SerializedName("muvera")
-  private MuveraConfig encoding;
+  private MuveraConfig muvera;
 
   public enum Aggregation {
     MAX_SIM;
+  }
+
+
+  public MuveraConfig getMuveraEncoding() {
+    return this.muvera;
+  }
+
+  private MuveraConfig getMuvera() {
+    return this.muvera;
+  }
+
+  public static class MultiVectorConfigBuilder {
+    private MuveraConfig muvera;
+
+    public MultiVectorConfigBuilder encoding(MuveraConfig muvera) {
+      this.muvera = muvera;
+      return this;
+    }
+
+    private MultiVectorConfigBuilder muvera(MuveraConfig _muvera) {
+      return this;
+    }
+
   }
 }
