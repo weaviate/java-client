@@ -83,7 +83,8 @@ public class ClientSchemaTest {
       // given
       WeaviateClass clazz = SchemaTestSuite.testSchemaCreateBandClass.clazz;
       // when
-      Future<Result<Boolean>> createStatusFuture = client.schema().classCreator().withClass(clazz).run();
+      Future<Result<Boolean>> createStatusFuture =
+          client.schema().classCreator().withClass(clazz).run();
       Result<Boolean> createStatus = createStatusFuture.get();
       Future<Result<Schema>> schemaFuture = client.schema().getter().run();
       Result<Schema> schema = schemaFuture.get();
@@ -104,8 +105,8 @@ public class ClientSchemaTest {
       Result<Boolean> deleteStatus = client.schema().allDeleter().run().get();
       Result<Schema> schemaAfterDelete = client.schema().getter().run().get();
       // then
-      SchemaTestSuite.testSchemaCreateRunClass
-        .assertResults(createStatus, schemaAfterCreate, deleteStatus, schemaAfterDelete);
+      SchemaTestSuite.testSchemaCreateRunClass.assertResults(createStatus, schemaAfterCreate,
+          deleteStatus, schemaAfterDelete);
     }
   }
 
@@ -129,26 +130,26 @@ public class ClientSchemaTest {
         }
 
         @Override
-        public void cancelled() {
-        }
+        public void cancelled() {}
       }).get();
-      client.schema().classCreator().withClass(chickenSoup).run(new FutureCallback<Result<Boolean>>() {
-        @Override
-        public void completed(Result<Boolean> chickenSoupCreateStatus) {
-          assertNotNull(chickenSoupCreateStatus);
-          assertTrue(chickenSoupCreateStatus.getResult());
-        }
+      client.schema().classCreator().withClass(chickenSoup)
+          .run(new FutureCallback<Result<Boolean>>() {
+            @Override
+            public void completed(Result<Boolean> chickenSoupCreateStatus) {
+              assertNotNull(chickenSoupCreateStatus);
+              assertTrue(chickenSoupCreateStatus.getResult());
+            }
 
-        @Override
-        public void failed(Exception e) {
-          assertNull(e);
-        }
+            @Override
+            public void failed(Exception e) {
+              assertNull(e);
+            }
 
-        @Override
-        public void cancelled() {
+            @Override
+            public void cancelled() {
 
-        }
-      }).get();
+            }
+          }).get();
       client.schema().getter().run(new FutureCallback<Result<Schema>>() {
         @Override
         public void completed(Result<Schema> schemaAfterCreate) {
@@ -156,7 +157,8 @@ public class ClientSchemaTest {
           assertNotNull(schemaAfterCreate.getResult());
           assertNotNull(schemaAfterCreate.getResult().getClasses());
           assertEquals(2, schemaAfterCreate.getResult().getClasses().size());
-          assertEquals(1, schemaAfterCreate.getResult().getClasses().stream().filter(o -> o.getClassName().equals(pizza.getClassName())).count());
+          assertEquals(1, schemaAfterCreate.getResult().getClasses().stream()
+              .filter(o -> o.getClassName().equals(pizza.getClassName())).count());
         }
 
         @Override
@@ -217,43 +219,50 @@ public class ClientSchemaTest {
       WeaviateClass pizza = SchemaTestSuite.testSchemaDeleteAllSchema.pizza;
       WeaviateClass chickenSoup = SchemaTestSuite.testSchemaDeleteAllSchema.chickenSoup;
       // when
-      Result<Boolean> pizzaCreateStatus = client.schema().classCreator().withClass(pizza).run().get();
-      Result<Boolean> chickenSoupCreateStatus = client.schema().classCreator().withClass(chickenSoup).run().get();
+      Result<Boolean> pizzaCreateStatus =
+          client.schema().classCreator().withClass(pizza).run().get();
+      Result<Boolean> chickenSoupCreateStatus =
+          client.schema().classCreator().withClass(chickenSoup).run().get();
       Result<Schema> schemaAfterCreate = client.schema().getter().run().get();
       Result<Boolean> deleteAllStatus = client.schema().allDeleter().run().get();
       Result<Schema> schemaAfterDelete = client.schema().getter().run().get();
       // then
-      SchemaTestSuite.testSchemaDeleteAllSchema.assertResults(pizzaCreateStatus, chickenSoupCreateStatus,
-        schemaAfterCreate, deleteAllStatus, schemaAfterDelete);
+      SchemaTestSuite.testSchemaDeleteAllSchema.assertResults(pizzaCreateStatus,
+          chickenSoupCreateStatus, schemaAfterCreate, deleteAllStatus, schemaAfterDelete);
     }
   }
 
   @Test
-  public void testSchemaCreateClassesAddProperties() throws ExecutionException, InterruptedException {
+  public void testSchemaCreateClassesAddProperties()
+      throws ExecutionException, InterruptedException {
     try (WeaviateAsyncClient client = syncClient.async()) {
       // given
       WeaviateClass pizza = SchemaTestSuite.testSchemaCreateClassesAddProperties.pizza;
       WeaviateClass chickenSoup = SchemaTestSuite.testSchemaCreateClassesAddProperties.chickenSoup;
       Property newProperty = SchemaTestSuite.testSchemaCreateClassesAddProperties.newProperty;
       // when
-      Result<Boolean> pizzaCreateStatus = client.schema().classCreator().withClass(pizza).run().get();
-      Result<Boolean> chickenSoupCreateStatus = client.schema().classCreator().withClass(chickenSoup).run().get();
+      Result<Boolean> pizzaCreateStatus =
+          client.schema().classCreator().withClass(pizza).run().get();
+      Result<Boolean> chickenSoupCreateStatus =
+          client.schema().classCreator().withClass(chickenSoup).run().get();
       Result<Boolean> pizzaPropertyCreateStatus = client.schema().propertyCreator()
-        .withProperty(newProperty).withClassName(pizza.getClassName()).run().get();
+          .withProperty(newProperty).withClassName(pizza.getClassName()).run().get();
       Result<Boolean> chickenSoupPropertyCreateStatus = client.schema().propertyCreator()
-        .withProperty(newProperty).withClassName(chickenSoup.getClassName()).run().get();
+          .withProperty(newProperty).withClassName(chickenSoup.getClassName()).run().get();
       Result<Schema> schemaAfterCreate = client.schema().getter().run().get();
       Result<Boolean> deleteAllStatus = client.schema().allDeleter().run().get();
       Result<Schema> schemaAfterDelete = client.schema().getter().run().get();
 
       // then
-      SchemaTestSuite.testSchemaCreateClassesAddProperties.assertResults(pizzaCreateStatus, chickenSoupCreateStatus, pizzaPropertyCreateStatus,
-        chickenSoupPropertyCreateStatus, schemaAfterCreate, deleteAllStatus, schemaAfterDelete);
+      SchemaTestSuite.testSchemaCreateClassesAddProperties.assertResults(pizzaCreateStatus,
+          chickenSoupCreateStatus, pizzaPropertyCreateStatus, chickenSoupPropertyCreateStatus,
+          schemaAfterCreate, deleteAllStatus, schemaAfterDelete);
     }
   }
 
   @Test
-  public void testSchemaCreateClassExplicitVectorizerWithProperties() throws ExecutionException, InterruptedException {
+  public void testSchemaCreateClassExplicitVectorizerWithProperties()
+      throws ExecutionException, InterruptedException {
     try (WeaviateAsyncClient client = syncClient.async()) {
       // given
       Map<String, Object> text2vecContextionary = new HashMap<>();
@@ -261,31 +270,25 @@ public class ClientSchemaTest {
       Map<String, Object> moduleConfig = new HashMap<>();
       moduleConfig.put("text2vec-contextionary", text2vecContextionary);
 
-      WeaviateClass clazz = WeaviateClass.builder()
-        .className("Article")
-        .description("A written text, for example a news article or blog post")
-        .vectorIndexType("hnsw")
-        .vectorizer("text2vec-contextionary")
-        .moduleConfig(moduleConfig)
-        .properties(new ArrayList<Property>() {{
-          add(Property.builder()
-            .dataType(new ArrayList<String>() {{
-              add(DataType.TEXT);
-            }})
-            .description("Title of the article")
-            .name("title")
-            .tokenization(Tokenization.FIELD)
-            .build());
-          add(Property.builder()
-            .dataType(new ArrayList<String>() {{
-              add(DataType.TEXT);
-            }})
-            .description("The content of the article")
-            .name("content")
-            .tokenization(Tokenization.WORD)
-            .build());
-        }})
-        .build();
+      WeaviateClass clazz = WeaviateClass.builder().className("Article")
+          .description("A written text, for example a news article or blog post")
+          .vectorIndexType("hnsw").vectorizer("text2vec-contextionary").moduleConfig(moduleConfig)
+          .properties(new ArrayList<Property>() {
+            {
+              add(Property.builder().dataType(new ArrayList<String>() {
+                {
+                  add(DataType.TEXT);
+                }
+              }).description("Title of the article").name("title").tokenization(Tokenization.FIELD)
+                  .build());
+              add(Property.builder().dataType(new ArrayList<String>() {
+                {
+                  add(DataType.TEXT);
+                }
+              }).description("The content of the article").name("content")
+                  .tokenization(Tokenization.WORD).build());
+            }
+          }).build();
       // when
       Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run().get();
       Result<Schema> schemaAfterCreate = client.schema().getter().run().get();
@@ -299,14 +302,11 @@ public class ClientSchemaTest {
       WeaviateClass resultArticleClass = schemaAfterCreate.getResult().getClasses().get(0);
       assertClassEquals(clazz.getClassName(), clazz.getDescription(), resultArticleClass);
 
-      assertThat(resultArticleClass.getModuleConfig())
-        .asInstanceOf(MAP)
-        .containsOnlyKeys("text2vec-contextionary")
-        .extracting(m -> m.get("text2vec-contextionary"))
-        .asInstanceOf(MAP)
-        .containsOnlyKeys("vectorizeClassName")
-        .extracting(m -> m.get("vectorizeClassName"))
-        .isEqualTo(false);
+      assertThat(resultArticleClass.getModuleConfig()).asInstanceOf(MAP)
+          .containsOnlyKeys("text2vec-contextionary")
+          .extracting(m -> m.get("text2vec-contextionary")).asInstanceOf(MAP)
+          .containsOnlyKeys("vectorizeClassName").extracting(m -> m.get("vectorizeClassName"))
+          .isEqualTo(false);
 
       assertPropertiesSize(2, resultArticleClass);
       assertPropertyEquals("title", "field", resultArticleClass.getProperties().get(0));
@@ -318,55 +318,46 @@ public class ClientSchemaTest {
   }
 
   @Test
-  public void testSchemaCreateClassExplicitVectorizerWithArrayProperties() throws ExecutionException, InterruptedException {
+  public void testSchemaCreateClassExplicitVectorizerWithArrayProperties()
+      throws ExecutionException, InterruptedException {
     try (WeaviateAsyncClient client = syncClient.async()) {
       // given
-      WeaviateClass clazz = WeaviateClass.builder()
-        .className("ClassArrays")
-        .description("Class which properties are all array properties")
-        .vectorIndexType("hnsw")
-        .vectorizer("text2vec-contextionary")
-        .properties(new ArrayList<Property>() {{
-          add(Property.builder()
-            .dataType(new ArrayList<String>() {{
-              add(DataType.TEXT_ARRAY);
-            }})
-            .name("stringArray")
-            .tokenization(Tokenization.FIELD)
-            .build());
-          add(Property.builder()
-            .dataType(new ArrayList<String>() {{
-              add(DataType.TEXT_ARRAY);
-            }})
-            .name("textArray")
-            .tokenization(Tokenization.WORD)
-            .build());
-          add(Property.builder()
-            .dataType(new ArrayList<String>() {{
-              add(DataType.INT_ARRAY);
-            }})
-            .name("intArray")
-            .build());
-          add(Property.builder()
-            .dataType(new ArrayList<String>() {{
-              add(DataType.NUMBER_ARRAY);
-            }})
-            .name("numberArray")
-            .build());
-          add(Property.builder()
-            .dataType(new ArrayList<String>() {{
-              add(DataType.BOOLEAN_ARRAY);
-            }})
-            .name("booleanArray")
-            .build());
-          add(Property.builder()
-            .dataType(new ArrayList<String>() {{
-              add(DataType.DATE_ARRAY);
-            }})
-            .name("dateArray")
-            .build());
-        }})
-        .build();
+      WeaviateClass clazz = WeaviateClass.builder().className("ClassArrays")
+          .description("Class which properties are all array properties").vectorIndexType("hnsw")
+          .vectorizer("text2vec-contextionary").properties(new ArrayList<Property>() {
+            {
+              add(Property.builder().dataType(new ArrayList<String>() {
+                {
+                  add(DataType.TEXT_ARRAY);
+                }
+              }).name("stringArray").tokenization(Tokenization.FIELD).build());
+              add(Property.builder().dataType(new ArrayList<String>() {
+                {
+                  add(DataType.TEXT_ARRAY);
+                }
+              }).name("textArray").tokenization(Tokenization.WORD).build());
+              add(Property.builder().dataType(new ArrayList<String>() {
+                {
+                  add(DataType.INT_ARRAY);
+                }
+              }).name("intArray").build());
+              add(Property.builder().dataType(new ArrayList<String>() {
+                {
+                  add(DataType.NUMBER_ARRAY);
+                }
+              }).name("numberArray").build());
+              add(Property.builder().dataType(new ArrayList<String>() {
+                {
+                  add(DataType.BOOLEAN_ARRAY);
+                }
+              }).name("booleanArray").build());
+              add(Property.builder().dataType(new ArrayList<String>() {
+                {
+                  add(DataType.DATE_ARRAY);
+                }
+              }).name("dateArray").build());
+            }
+          }).build();
       // when
       Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run().get();
       Result<Schema> schemaAfterCreate = client.schema().getter().run().get();
@@ -380,12 +371,18 @@ public class ClientSchemaTest {
       WeaviateClass resultArraysClass = schemaAfterCreate.getResult().getClasses().get(0);
       assertClassEquals(clazz.getClassName(), clazz.getDescription(), resultArraysClass);
       assertPropertiesSize(6, resultArraysClass);
-      assertPropertyEquals("stringArray", DataType.TEXT_ARRAY, "field", resultArraysClass.getProperties().get(0));
-      assertPropertyEquals("textArray", DataType.TEXT_ARRAY, "word", resultArraysClass.getProperties().get(1));
-      assertPropertyEquals("intArray", DataType.INT_ARRAY, null, resultArraysClass.getProperties().get(2));
-      assertPropertyEquals("numberArray", DataType.NUMBER_ARRAY, null, resultArraysClass.getProperties().get(3));
-      assertPropertyEquals("booleanArray", DataType.BOOLEAN_ARRAY, null, resultArraysClass.getProperties().get(4));
-      assertPropertyEquals("dateArray", DataType.DATE_ARRAY, null, resultArraysClass.getProperties().get(5));
+      assertPropertyEquals("stringArray", DataType.TEXT_ARRAY, "field",
+          resultArraysClass.getProperties().get(0));
+      assertPropertyEquals("textArray", DataType.TEXT_ARRAY, "word",
+          resultArraysClass.getProperties().get(1));
+      assertPropertyEquals("intArray", DataType.INT_ARRAY, null,
+          resultArraysClass.getProperties().get(2));
+      assertPropertyEquals("numberArray", DataType.NUMBER_ARRAY, null,
+          resultArraysClass.getProperties().get(3));
+      assertPropertyEquals("booleanArray", DataType.BOOLEAN_ARRAY, null,
+          resultArraysClass.getProperties().get(4));
+      assertPropertyEquals("dateArray", DataType.DATE_ARRAY, null,
+          resultArraysClass.getProperties().get(5));
 
       assertResultTrue(deleteStatus);
       assertClassesSize(0, schemaAfterDelete);
@@ -393,29 +390,26 @@ public class ClientSchemaTest {
   }
 
   @Test
-  public void testSchemaCreateClassWithProperties() throws ExecutionException, InterruptedException {
+  public void testSchemaCreateClassWithProperties()
+      throws ExecutionException, InterruptedException {
     try (WeaviateAsyncClient client = syncClient.async()) {
       // given
-      WeaviateClass clazz = WeaviateClass.builder()
-        .className("Article")
-        .description("A written text, for example a news article or blog post")
-        .properties(new ArrayList<Property>() {{
-          add(Property.builder()
-            .dataType(new ArrayList<String>() {{
-              add(DataType.TEXT);
-            }})
-            .description("Title of the article")
-            .name("title")
-            .build());
-          add(Property.builder()
-            .dataType(new ArrayList<String>() {{
-              add(DataType.TEXT);
-            }})
-            .description("The content of the article")
-            .name("content")
-            .build());
-        }})
-        .build();
+      WeaviateClass clazz = WeaviateClass.builder().className("Article")
+          .description("A written text, for example a news article or blog post")
+          .properties(new ArrayList<Property>() {
+            {
+              add(Property.builder().dataType(new ArrayList<String>() {
+                {
+                  add(DataType.TEXT);
+                }
+              }).description("Title of the article").name("title").build());
+              add(Property.builder().dataType(new ArrayList<String>() {
+                {
+                  add(DataType.TEXT);
+                }
+              }).description("The content of the article").name("content").build());
+            }
+          }).build();
       // when
       Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run().get();
       Result<Schema> schemaAfterCreate = client.schema().getter().run().get();
@@ -438,38 +432,36 @@ public class ClientSchemaTest {
   }
 
   @Test
-  public void testSchemaCreateClassWithInvalidTokenizationProperty() throws ExecutionException, InterruptedException {
+  public void testSchemaCreateClassWithInvalidTokenizationProperty()
+      throws ExecutionException, InterruptedException {
     try (WeaviateAsyncClient client = syncClient.async()) {
       // given
-      WeaviateClass pizza = WeaviateClass.builder()
-        .className("Pizza")
-        .description("A delicious religion like food and arguably the best export of Italy.")
-        .build();
+      WeaviateClass pizza = WeaviateClass.builder().className("Pizza")
+          .description("A delicious religion like food and arguably the best export of Italy.")
+          .build();
 
-      Property notExistingTokenization = Property.builder()
-        .dataType(Collections.singletonList(DataType.TEXT))
-        .description("someString")
-        .name("someString")
-        .tokenization("not-existing")
-        .build();
-      Property notSupportedTokenizationForInt = Property.builder()
-        .dataType(Collections.singletonList(DataType.INT))
-        .description("someInt")
-        .name("someInt")
-        .tokenization(Tokenization.WORD)
-        .build();
+      Property notExistingTokenization =
+          Property.builder().dataType(Collections.singletonList(DataType.TEXT))
+              .description("someString").name("someString").tokenization("not-existing").build();
+      Property notSupportedTokenizationForInt =
+          Property.builder().dataType(Collections.singletonList(DataType.INT))
+              .description("someInt").name("someInt").tokenization(Tokenization.WORD).build();
       // when
       Result<Boolean> createStatus = client.schema().classCreator().withClass(pizza).run().get();
       Result<Boolean> notExistingTokenizationCreateStatus = client.schema().propertyCreator()
-        .withProperty(notExistingTokenization).withClassName(pizza.getClassName()).run().get();
-      Result<Boolean> notSupportedTokenizationForIntCreateStatus = client.schema().propertyCreator()
-        .withProperty(notSupportedTokenizationForInt).withClassName(pizza.getClassName()).run().get();
+          .withProperty(notExistingTokenization).withClassName(pizza.getClassName()).run().get();
+      Result<Boolean> notSupportedTokenizationForIntCreateStatus =
+          client.schema().propertyCreator().withProperty(notSupportedTokenizationForInt)
+              .withClassName(pizza.getClassName()).run().get();
 
-      //then
+      // then
       assertResultTrue(createStatus);
 
-      assertResultError("tokenization in body should be one of [word lowercase whitespace field trigram gse kagome_kr kagome_ja gse_ch]", notExistingTokenizationCreateStatus);
-      assertResultError("Tokenization is not allowed for data type 'int'", notSupportedTokenizationForIntCreateStatus);
+      assertResultError(
+          "tokenization in body should be one of [word lowercase whitespace field trigram gse kagome_kr kagome_ja gse_ch]",
+          notExistingTokenizationCreateStatus);
+      assertResultError("tokenization is not allowed for data type 'int'",
+          notSupportedTokenizationForIntCreateStatus);
     }
   }
 
@@ -477,16 +469,15 @@ public class ClientSchemaTest {
   public void testSchemaGetBandClass() throws ExecutionException, InterruptedException {
     try (WeaviateAsyncClient client = syncClient.async()) {
       // given
-      WeaviateClass clazz = WeaviateClass.builder()
-        .className("Band")
-        .description("Band that plays and produces music")
-        .vectorIndexType("hnsw")
-        .vectorizer("text2vec-contextionary")
-        .build();
+      WeaviateClass clazz = WeaviateClass.builder().className("Band")
+          .description("Band that plays and produces music").vectorIndexType("hnsw")
+          .vectorizer("text2vec-contextionary").build();
       // when
       Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run().get();
-      Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run().get();
-      Result<WeaviateClass> nonExistentClass = client.schema().classGetter().withClassName("nonExistentClass").run().get();
+      Result<WeaviateClass> bandClass =
+          client.schema().classGetter().withClassName(clazz.getClassName()).run().get();
+      Result<WeaviateClass> nonExistentClass =
+          client.schema().classGetter().withClassName("nonExistentClass").run().get();
       // then
       assertNotNull(createStatus);
       assertTrue(createStatus.getResult());
@@ -507,24 +498,23 @@ public class ClientSchemaTest {
   public void testSchemaGetShards() throws ExecutionException, InterruptedException {
     try (WeaviateAsyncClient client = syncClient.async()) {
       // given
-      WeaviateClass clazz = WeaviateClass.builder()
-        .className("Band")
-        .description("Band that plays and produces music")
-        .vectorIndexType("hnsw")
-        .vectorizer("text2vec-contextionary")
-        .build();
+      WeaviateClass clazz = WeaviateClass.builder().className("Band")
+          .description("Band that plays and produces music").vectorIndexType("hnsw")
+          .vectorizer("text2vec-contextionary").build();
       // when
       Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run().get();
-      Result<Boolean> bandClassExists = client.schema().exists().withClassName(clazz.getClassName()).run().get();
-      Result<Boolean> nonExistentClassExists = client.schema().exists().withClassName("nonExistentClass").run().get();
+      Result<Boolean> bandClassExists =
+          client.schema().exists().withClassName(clazz.getClassName()).run().get();
+      Result<Boolean> nonExistentClassExists =
+          client.schema().exists().withClassName("nonExistentClass").run().get();
       // then
       assertResultTrue(createStatus);
       assertResultTrue(bandClassExists);
       assertNotNull(nonExistentClassExists);
       assertFalse(nonExistentClassExists.getResult());
       assertNull(nonExistentClassExists.getError());
-      Result<Shard[]> shards = client.schema().shardsGetter()
-        .withClassName(clazz.getClassName()).run().get();
+      Result<Shard[]> shards =
+          client.schema().shardsGetter().withClassName(clazz.getClassName()).run().get();
       assertNotNull(shards);
       assertNotNull(shards.getResult());
       assertEquals(1, shards.getResult().length);
@@ -539,118 +529,73 @@ public class ClientSchemaTest {
     try (WeaviateAsyncClient client = syncClient.async()) {
       String className = "Question";
       List<Property> properties = Arrays.asList(
-        Property.builder()
-          .name("question")
-          .dataType(Arrays.asList(DataType.TEXT))
-          .build(),
-        Property.builder()
-          .name("answer")
-          .dataType(Arrays.asList(DataType.TEXT))
-          .build()
-      );
+          Property.builder().name("question").dataType(Arrays.asList(DataType.TEXT)).build(),
+          Property.builder().name("answer").dataType(Arrays.asList(DataType.TEXT)).build());
 
-      WeaviateClass jeopardyClass = WeaviateClass.builder()
-        .className(className)
-        .description("A Jeopardy! question")
-        .vectorizer("text2vec-contextionary")
-        .properties(properties)
-        .build();
+      WeaviateClass jeopardyClass =
+          WeaviateClass.builder().className(className).description("A Jeopardy! question")
+              .vectorizer("text2vec-contextionary").properties(properties).build();
 
-      Result<Boolean> createResult = client.schema().classCreator()
-        .withClass(jeopardyClass)
-        .run().get();
+      Result<Boolean> createResult =
+          client.schema().classCreator().withClass(jeopardyClass).run().get();
 
-      assertThat(createResult).isNotNull()
-        .withFailMessage(() -> createResult.getError().toString())
-        .returns(false, Result::hasErrors)
-        .withFailMessage(null)
-        .returns(true, Result::getResult);
+      assertThat(createResult).isNotNull().withFailMessage(() -> createResult.getError().toString())
+          .returns(false, Result::hasErrors).withFailMessage(null).returns(true, Result::getResult);
 
-      Result<WeaviateClass> createdClassResult = client.schema().classGetter()
-        .withClassName(className)
-        .run().get();
+      Result<WeaviateClass> createdClassResult =
+          client.schema().classGetter().withClassName(className).run().get();
 
       assertThat(createdClassResult).isNotNull()
-        .withFailMessage(() -> createdClassResult.getError().toString())
-        .returns(false, Result::hasErrors)
-        .withFailMessage(null)
-        .extracting(Result::getResult).isNotNull()
-        .extracting(WeaviateClass::getVectorIndexConfig).isNotNull()
-        .extracting(VectorIndexConfig::getPq).isNotNull()
-        .returns(false, PQConfig::getEnabled);
+          .withFailMessage(() -> createdClassResult.getError().toString())
+          .returns(false, Result::hasErrors).withFailMessage(null).extracting(Result::getResult)
+          .isNotNull().extracting(WeaviateClass::getVectorIndexConfig).isNotNull()
+          .extracting(VectorIndexConfig::getPq).isNotNull().returns(false, PQConfig::getEnabled);
 
-      WeaviateClass newJeopardyClass = WeaviateClass.builder()
-        .className(className)
-        .vectorizer("text2vec-contextionary")
-        .properties(properties)
-        .vectorIndexConfig(VectorIndexConfig.builder()
-          .filterStrategy(VectorIndexConfig.FilterStrategy.ACORN)
-          .pq(PQConfig.builder()
-            .enabled(true)
-            .trainingLimit(99_999)
-            .segments(96)
-            .build())
-          .build())
-        .replicationConfig(ReplicationConfig.builder()
-          .deletionStrategy(ReplicationConfig.DeletionStrategy.DELETE_ON_CONFLICT)
-          .build())
-        .build();
+      WeaviateClass newJeopardyClass = WeaviateClass.builder().className(className)
+          .vectorizer("text2vec-contextionary").properties(properties)
+          .vectorIndexConfig(
+              VectorIndexConfig.builder().filterStrategy(VectorIndexConfig.FilterStrategy.ACORN)
+                  .pq(PQConfig.builder().enabled(true).trainingLimit(99_999).segments(96).build())
+                  .build())
+          .replicationConfig(ReplicationConfig.builder()
+              .deletionStrategy(ReplicationConfig.DeletionStrategy.DELETE_ON_CONFLICT).build())
+          .build();
 
-      Result<Boolean> updateResult = client.schema().classUpdater()
-        .withClass(newJeopardyClass)
-        .run().get();
+      Result<Boolean> updateResult =
+          client.schema().classUpdater().withClass(newJeopardyClass).run().get();
 
-      assertThat(updateResult).isNotNull()
-        .withFailMessage(() -> updateResult.getError().toString())
-        .returns(false, Result::hasErrors)
-        .withFailMessage(null)
-        .returns(true, Result::getResult);
+      assertThat(updateResult).isNotNull().withFailMessage(() -> updateResult.getError().toString())
+          .returns(false, Result::hasErrors).withFailMessage(null).returns(true, Result::getResult);
 
-      Result<WeaviateClass> updatedClassResult = client.schema().classGetter()
-        .withClassName(className)
-        .run().get();
+      Result<WeaviateClass> updatedClassResult =
+          client.schema().classGetter().withClassName(className).run().get();
 
       assertThat(updatedClassResult).isNotNull()
-        .withFailMessage(() -> updatedClassResult.getError().toString())
-        .returns(false, Result::hasErrors)
-        .withFailMessage(null)
-        .extracting(Result::getResult).isNotNull()
-        .extracting(WeaviateClass::getVectorIndexConfig).isNotNull()
-        .returns(VectorIndexConfig.FilterStrategy.ACORN, VectorIndexConfig::getFilterStrategy)
-        .extracting(VectorIndexConfig::getPq).isNotNull()
-        .returns(true, PQConfig::getEnabled)
-        .returns(96, PQConfig::getSegments)
-        .returns(99_999, PQConfig::getTrainingLimit);
+          .withFailMessage(() -> updatedClassResult.getError().toString())
+          .returns(false, Result::hasErrors).withFailMessage(null).extracting(Result::getResult)
+          .isNotNull().extracting(WeaviateClass::getVectorIndexConfig).isNotNull()
+          .returns(VectorIndexConfig.FilterStrategy.ACORN, VectorIndexConfig::getFilterStrategy)
+          .extracting(VectorIndexConfig::getPq).isNotNull().returns(true, PQConfig::getEnabled)
+          .returns(96, PQConfig::getSegments).returns(99_999, PQConfig::getTrainingLimit);
 
-      assertThat(updatedClassResult.getResult())
-        .extracting(WeaviateClass::getReplicationConfig).isNotNull()
-        .returns(ReplicationConfig.DeletionStrategy.DELETE_ON_CONFLICT, ReplicationConfig::getDeletionStrategy);
+      assertThat(updatedClassResult.getResult()).extracting(WeaviateClass::getReplicationConfig)
+          .isNotNull().returns(ReplicationConfig.DeletionStrategy.DELETE_ON_CONFLICT,
+              ReplicationConfig::getDeletionStrategy);
     }
   }
 
   @Test
-  public void testSchemaUpdateShards()  throws ExecutionException, InterruptedException {
+  public void testSchemaUpdateShards() throws ExecutionException, InterruptedException {
     try (WeaviateAsyncClient client = syncClient.async()) {
       // given
       String className = "Band";
       int shardCount = 3;
-      ShardingConfig shardingConfig = ShardingConfig.builder()
-        .actualCount(shardCount)
-        .actualVirtualCount(128)
-        .desiredCount(shardCount)
-        .desiredVirtualCount(128)
-        .function("murmur3")
-        .key("_id")
-        .strategy("hash")
-        .virtualPerPhysical(128)
-        .build();
-      WeaviateClass clazz = WeaviateClass.builder()
-        .className(className)
-        .description("Band that plays and produces music")
-        .vectorIndexType("hnsw")
-        .vectorizer("text2vec-contextionary")
-        .shardingConfig(shardingConfig)
-        .build();
+      ShardingConfig shardingConfig = ShardingConfig.builder().actualCount(shardCount)
+          .actualVirtualCount(128).desiredCount(shardCount).desiredVirtualCount(128)
+          .function("murmur3").key("_id").strategy("hash").virtualPerPhysical(128).build();
+      WeaviateClass clazz = WeaviateClass.builder().className(className)
+          .description("Band that plays and produces music").vectorIndexType("hnsw")
+          .vectorizer("text2vec-contextionary").shardingConfig(shardingConfig).build();
       // when
       Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run().get();
       assertResultTrue(createStatus);
@@ -662,19 +607,15 @@ public class ClientSchemaTest {
       assertEquals(3, shards.getResult().length);
       // update shard status to READONLY
       Result<ShardStatus[]> updateToREADONLY = client.schema().shardsUpdater()
-        .withClassName(className)
-        .withStatus(ShardStatuses.READONLY)
-        .run().get();
+          .withClassName(className).withStatus(ShardStatuses.READONLY).run().get();
       assertNotNull(updateToREADONLY.getResult());
       assertEquals(3, updateToREADONLY.getResult().length);
       for (ShardStatus s : updateToREADONLY.getResult()) {
         assertEquals(ShardStatuses.READONLY, s.getStatus());
       }
       // update shard status to READY
-      Result<ShardStatus[]> updateToREADY = client.schema().shardsUpdater()
-        .withClassName(className)
-        .withStatus(ShardStatuses.READY)
-        .run().get();
+      Result<ShardStatus[]> updateToREADY = client.schema().shardsUpdater().withClassName(className)
+          .withStatus(ShardStatuses.READY).run().get();
       assertNotNull(updateToREADY.getResult());
       assertEquals(3, updateToREADY.getResult().length);
       for (ShardStatus s : updateToREADY.getResult()) {
@@ -695,7 +636,8 @@ public class ClientSchemaTest {
     assertEquals(expectedSize, schemaAfterCreate.getResult().getClasses().size());
   }
 
-  private void assertClassEquals(String expectedName, String expectedDescription, WeaviateClass schemaClass) {
+  private void assertClassEquals(String expectedName, String expectedDescription,
+      WeaviateClass schemaClass) {
     assertEquals(expectedName, schemaClass.getClassName());
     assertEquals(expectedDescription, schemaClass.getDescription());
   }
@@ -705,12 +647,14 @@ public class ClientSchemaTest {
     assertEquals(expectedSize, schemaClass.getProperties().size());
   }
 
-  private void assertPropertyEquals(String expectedName, String expectedTokenization, Property property) {
+  private void assertPropertyEquals(String expectedName, String expectedTokenization,
+      Property property) {
     assertEquals(expectedName, property.getName());
     assertEquals(expectedTokenization, property.getTokenization());
   }
 
-  private void assertPropertyEquals(String expectedName, String expectedDataType, String expectedTokenization, Property property) {
+  private void assertPropertyEquals(String expectedName, String expectedDataType,
+      String expectedTokenization, Property property) {
     assertPropertyEquals(expectedName, expectedTokenization, property);
     assertTrue(property.getDataType().size() > 0);
     assertEquals(expectedDataType, property.getDataType().get(0));

@@ -90,8 +90,8 @@ public class ClientSchemaTest {
     Result<Boolean> deleteStatus = client.schema().allDeleter().run();
     Result<Schema> schemaAfterDelete = client.schema().getter().run();
     // then
-    SchemaTestSuite.testSchemaCreateRunClass
-      .assertResults(createStatus, schemaAfterCreate, deleteStatus, schemaAfterDelete);
+    SchemaTestSuite.testSchemaCreateRunClass.assertResults(createStatus, schemaAfterCreate,
+        deleteStatus, schemaAfterDelete);
   }
 
   @Test
@@ -101,18 +101,18 @@ public class ClientSchemaTest {
     WeaviateClass chickenSoup = SchemaTestSuite.testSchemaDeleteClasses.chickenSoup;
     // when
     Result<Boolean> pizzaCreateStatus = client.schema().classCreator().withClass(pizza).run();
-    Result<Boolean> chickenSoupCreateStatus = client.schema().classCreator().withClass(chickenSoup).run();
+    Result<Boolean> chickenSoupCreateStatus =
+        client.schema().classCreator().withClass(chickenSoup).run();
     Result<Schema> schemaAfterCreate = client.schema().getter().run();
-    Result<Boolean> deletePizzaStatus = client.schema().classDeleter().withClassName(pizza.getClassName()).run();
-    Result<Boolean> deleteChickenSoupStatus = client.schema().classDeleter().withClassName(chickenSoup.getClassName()).run();
+    Result<Boolean> deletePizzaStatus =
+        client.schema().classDeleter().withClassName(pizza.getClassName()).run();
+    Result<Boolean> deleteChickenSoupStatus =
+        client.schema().classDeleter().withClassName(chickenSoup.getClassName()).run();
     Result<Schema> schemaAfterDelete = client.schema().getter().run();
     // then
     SchemaTestSuite.testSchemaDeleteClasses.assertResults(pizzaCreateStatus,
-      chickenSoupCreateStatus,
-      schemaAfterCreate,
-      deletePizzaStatus,
-      deleteChickenSoupStatus,
-      schemaAfterDelete);
+        chickenSoupCreateStatus, schemaAfterCreate, deletePizzaStatus, deleteChickenSoupStatus,
+        schemaAfterDelete);
   }
 
   @Test
@@ -122,13 +122,14 @@ public class ClientSchemaTest {
     WeaviateClass chickenSoup = SchemaTestSuite.testSchemaDeleteAllSchema.chickenSoup;
     // when
     Result<Boolean> pizzaCreateStatus = client.schema().classCreator().withClass(pizza).run();
-    Result<Boolean> chickenSoupCreateStatus = client.schema().classCreator().withClass(chickenSoup).run();
+    Result<Boolean> chickenSoupCreateStatus =
+        client.schema().classCreator().withClass(chickenSoup).run();
     Result<Schema> schemaAfterCreate = client.schema().getter().run();
     Result<Boolean> deleteAllStatus = client.schema().allDeleter().run();
     Result<Schema> schemaAfterDelete = client.schema().getter().run();
     // then
-    SchemaTestSuite.testSchemaDeleteAllSchema.assertResults(pizzaCreateStatus, chickenSoupCreateStatus,
-      schemaAfterCreate, deleteAllStatus, schemaAfterDelete);
+    SchemaTestSuite.testSchemaDeleteAllSchema.assertResults(pizzaCreateStatus,
+        chickenSoupCreateStatus, schemaAfterCreate, deleteAllStatus, schemaAfterDelete);
   }
 
   @Test
@@ -139,17 +140,19 @@ public class ClientSchemaTest {
     Property newProperty = SchemaTestSuite.testSchemaCreateClassesAddProperties.newProperty;
     // when
     Result<Boolean> pizzaCreateStatus = client.schema().classCreator().withClass(pizza).run();
-    Result<Boolean> chickenSoupCreateStatus = client.schema().classCreator().withClass(chickenSoup).run();
+    Result<Boolean> chickenSoupCreateStatus =
+        client.schema().classCreator().withClass(chickenSoup).run();
     Result<Boolean> pizzaPropertyCreateStatus = client.schema().propertyCreator()
-      .withProperty(newProperty).withClassName(pizza.getClassName()).run();
+        .withProperty(newProperty).withClassName(pizza.getClassName()).run();
     Result<Boolean> chickenSoupPropertyCreateStatus = client.schema().propertyCreator()
-      .withProperty(newProperty).withClassName(chickenSoup.getClassName()).run();
+        .withProperty(newProperty).withClassName(chickenSoup.getClassName()).run();
     Result<Schema> schemaAfterCreate = client.schema().getter().run();
     Result<Boolean> deleteAllStatus = client.schema().allDeleter().run();
     Result<Schema> schemaAfterDelete = client.schema().getter().run();
     // then
-    SchemaTestSuite.testSchemaCreateClassesAddProperties.assertResults(pizzaCreateStatus, chickenSoupCreateStatus, pizzaPropertyCreateStatus,
-      chickenSoupPropertyCreateStatus, schemaAfterCreate, deleteAllStatus, schemaAfterDelete);
+    SchemaTestSuite.testSchemaCreateClassesAddProperties.assertResults(pizzaCreateStatus,
+        chickenSoupCreateStatus, pizzaPropertyCreateStatus, chickenSoupPropertyCreateStatus,
+        schemaAfterCreate, deleteAllStatus, schemaAfterDelete);
   }
 
   @Test
@@ -160,31 +163,25 @@ public class ClientSchemaTest {
     Map<String, Object> moduleConfig = new HashMap<>();
     moduleConfig.put("text2vec-contextionary", text2vecContextionary);
 
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className("Article")
-      .description("A written text, for example a news article or blog post")
-      .vectorIndexType("hnsw")
-      .vectorizer("text2vec-contextionary")
-      .moduleConfig(moduleConfig)
-      .properties(new ArrayList() {{
-        add(Property.builder()
-          .dataType(new ArrayList() {{
-            add(DataType.TEXT);
-          }})
-          .description("Title of the article")
-          .name("title")
-          .tokenization(Tokenization.FIELD)
-          .build());
-        add(Property.builder()
-          .dataType(new ArrayList() {{
-            add(DataType.TEXT);
-          }})
-          .description("The content of the article")
-          .name("content")
-          .tokenization(Tokenization.WORD)
-          .build());
-      }})
-      .build();
+    WeaviateClass clazz = WeaviateClass.builder().className("Article")
+        .description("A written text, for example a news article or blog post")
+        .vectorIndexType("hnsw").vectorizer("text2vec-contextionary").moduleConfig(moduleConfig)
+        .properties(new ArrayList() {
+          {
+            add(Property.builder().dataType(new ArrayList() {
+              {
+                add(DataType.TEXT);
+              }
+            }).description("Title of the article").name("title").tokenization(Tokenization.FIELD)
+                .build());
+            add(Property.builder().dataType(new ArrayList() {
+              {
+                add(DataType.TEXT);
+              }
+            }).description("The content of the article").name("content")
+                .tokenization(Tokenization.WORD).build());
+          }
+        }).build();
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
     Result<Schema> schemaAfterCreate = client.schema().getter().run();
@@ -198,14 +195,10 @@ public class ClientSchemaTest {
     WeaviateClass resultArticleClass = schemaAfterCreate.getResult().getClasses().get(0);
     assertClassEquals(clazz.getClassName(), clazz.getDescription(), resultArticleClass);
 
-    assertThat(resultArticleClass.getModuleConfig())
-      .asInstanceOf(MAP)
-      .containsOnlyKeys("text2vec-contextionary")
-      .extracting(m -> m.get("text2vec-contextionary"))
-      .asInstanceOf(MAP)
-      .containsOnlyKeys("vectorizeClassName")
-      .extracting(m -> m.get("vectorizeClassName"))
-      .isEqualTo(false);
+    assertThat(resultArticleClass.getModuleConfig()).asInstanceOf(MAP)
+        .containsOnlyKeys("text2vec-contextionary").extracting(m -> m.get("text2vec-contextionary"))
+        .asInstanceOf(MAP).containsOnlyKeys("vectorizeClassName")
+        .extracting(m -> m.get("vectorizeClassName")).isEqualTo(false);
 
     assertPropertiesSize(2, resultArticleClass);
     assertPropertyEquals("title", "field", resultArticleClass.getProperties().get(0));
@@ -218,52 +211,42 @@ public class ClientSchemaTest {
   @Test
   public void testSchemaCreateClassExplicitVectorizerWithArrayProperties() {
     // given
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className("ClassArrays")
-      .description("Class which properties are all array properties")
-      .vectorIndexType("hnsw")
-      .vectorizer("text2vec-contextionary")
-      .properties(new ArrayList() {{
-        add(Property.builder()
-          .dataType(new ArrayList() {{
-            add(DataType.TEXT_ARRAY);
-          }})
-          .name("stringArray")
-          .tokenization(Tokenization.FIELD)
-          .build());
-        add(Property.builder()
-          .dataType(new ArrayList() {{
-            add(DataType.TEXT_ARRAY);
-          }})
-          .name("textArray")
-          .tokenization(Tokenization.WORD)
-          .build());
-        add(Property.builder()
-          .dataType(new ArrayList() {{
-            add(DataType.INT_ARRAY);
-          }})
-          .name("intArray")
-          .build());
-        add(Property.builder()
-          .dataType(new ArrayList() {{
-            add(DataType.NUMBER_ARRAY);
-          }})
-          .name("numberArray")
-          .build());
-        add(Property.builder()
-          .dataType(new ArrayList() {{
-            add(DataType.BOOLEAN_ARRAY);
-          }})
-          .name("booleanArray")
-          .build());
-        add(Property.builder()
-          .dataType(new ArrayList() {{
-            add(DataType.DATE_ARRAY);
-          }})
-          .name("dateArray")
-          .build());
-      }})
-      .build();
+    WeaviateClass clazz = WeaviateClass.builder().className("ClassArrays")
+        .description("Class which properties are all array properties").vectorIndexType("hnsw")
+        .vectorizer("text2vec-contextionary").properties(new ArrayList() {
+          {
+            add(Property.builder().dataType(new ArrayList() {
+              {
+                add(DataType.TEXT_ARRAY);
+              }
+            }).name("stringArray").tokenization(Tokenization.FIELD).build());
+            add(Property.builder().dataType(new ArrayList() {
+              {
+                add(DataType.TEXT_ARRAY);
+              }
+            }).name("textArray").tokenization(Tokenization.WORD).build());
+            add(Property.builder().dataType(new ArrayList() {
+              {
+                add(DataType.INT_ARRAY);
+              }
+            }).name("intArray").build());
+            add(Property.builder().dataType(new ArrayList() {
+              {
+                add(DataType.NUMBER_ARRAY);
+              }
+            }).name("numberArray").build());
+            add(Property.builder().dataType(new ArrayList() {
+              {
+                add(DataType.BOOLEAN_ARRAY);
+              }
+            }).name("booleanArray").build());
+            add(Property.builder().dataType(new ArrayList() {
+              {
+                add(DataType.DATE_ARRAY);
+              }
+            }).name("dateArray").build());
+          }
+        }).build();
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
     Result<Schema> schemaAfterCreate = client.schema().getter().run();
@@ -277,12 +260,18 @@ public class ClientSchemaTest {
     WeaviateClass resultArraysClass = schemaAfterCreate.getResult().getClasses().get(0);
     assertClassEquals(clazz.getClassName(), clazz.getDescription(), resultArraysClass);
     assertPropertiesSize(6, resultArraysClass);
-    assertPropertyEquals("stringArray", DataType.TEXT_ARRAY, "field", resultArraysClass.getProperties().get(0));
-    assertPropertyEquals("textArray", DataType.TEXT_ARRAY, "word", resultArraysClass.getProperties().get(1));
-    assertPropertyEquals("intArray", DataType.INT_ARRAY, null, resultArraysClass.getProperties().get(2));
-    assertPropertyEquals("numberArray", DataType.NUMBER_ARRAY, null, resultArraysClass.getProperties().get(3));
-    assertPropertyEquals("booleanArray", DataType.BOOLEAN_ARRAY, null, resultArraysClass.getProperties().get(4));
-    assertPropertyEquals("dateArray", DataType.DATE_ARRAY, null, resultArraysClass.getProperties().get(5));
+    assertPropertyEquals("stringArray", DataType.TEXT_ARRAY, "field",
+        resultArraysClass.getProperties().get(0));
+    assertPropertyEquals("textArray", DataType.TEXT_ARRAY, "word",
+        resultArraysClass.getProperties().get(1));
+    assertPropertyEquals("intArray", DataType.INT_ARRAY, null,
+        resultArraysClass.getProperties().get(2));
+    assertPropertyEquals("numberArray", DataType.NUMBER_ARRAY, null,
+        resultArraysClass.getProperties().get(3));
+    assertPropertyEquals("booleanArray", DataType.BOOLEAN_ARRAY, null,
+        resultArraysClass.getProperties().get(4));
+    assertPropertyEquals("dateArray", DataType.DATE_ARRAY, null,
+        resultArraysClass.getProperties().get(5));
 
     assertResultTrue(deleteStatus);
     assertClassesSize(0, schemaAfterDelete);
@@ -291,26 +280,22 @@ public class ClientSchemaTest {
   @Test
   public void testSchemaCreateClassWithProperties() {
     // given
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className("Article")
-      .description("A written text, for example a news article or blog post")
-      .properties(new ArrayList() {{
-        add(Property.builder()
-          .dataType(new ArrayList() {{
-            add(DataType.TEXT);
-          }})
-          .description("Title of the article")
-          .name("title")
-          .build());
-        add(Property.builder()
-          .dataType(new ArrayList() {{
-            add(DataType.TEXT);
-          }})
-          .description("The content of the article")
-          .name("content")
-          .build());
-      }})
-      .build();
+    WeaviateClass clazz = WeaviateClass.builder().className("Article")
+        .description("A written text, for example a news article or blog post")
+        .properties(new ArrayList() {
+          {
+            add(Property.builder().dataType(new ArrayList() {
+              {
+                add(DataType.TEXT);
+              }
+            }).description("Title of the article").name("title").build());
+            add(Property.builder().dataType(new ArrayList() {
+              {
+                add(DataType.TEXT);
+              }
+            }).description("The content of the article").name("content").build());
+          }
+        }).build();
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
     Result<Schema> schemaAfterCreate = client.schema().getter().run();
@@ -334,60 +319,49 @@ public class ClientSchemaTest {
   @Test
   public void testSchemaCreateClassWithInvalidTokenizationProperty() {
     // given
-    WeaviateClass pizza = WeaviateClass.builder()
-      .className("Pizza")
-      .description("A delicious religion like food and arguably the best export of Italy.")
-      .build();
+    WeaviateClass pizza = WeaviateClass.builder().className("Pizza")
+        .description("A delicious religion like food and arguably the best export of Italy.")
+        .build();
 
-    Property notExistingTokenization = Property.builder()
-      .dataType(Collections.singletonList(DataType.TEXT))
-      .description("someString")
-      .name("someString")
-      .tokenization("not-existing")
-      .build();
-    Property notSupportedTokenizationForInt = Property.builder()
-      .dataType(Collections.singletonList(DataType.INT))
-      .description("someInt")
-      .name("someInt")
-      .tokenization(Tokenization.WORD)
-      .build();
+    Property notExistingTokenization =
+        Property.builder().dataType(Collections.singletonList(DataType.TEXT))
+            .description("someString").name("someString").tokenization("not-existing").build();
+    Property notSupportedTokenizationForInt =
+        Property.builder().dataType(Collections.singletonList(DataType.INT)).description("someInt")
+            .name("someInt").tokenization(Tokenization.WORD).build();
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(pizza).run();
     Result<Boolean> notExistingTokenizationCreateStatus = client.schema().propertyCreator()
-      .withProperty(notExistingTokenization).withClassName(pizza.getClassName()).run();
+        .withProperty(notExistingTokenization).withClassName(pizza.getClassName()).run();
     Result<Boolean> notSupportedTokenizationForIntCreateStatus = client.schema().propertyCreator()
-      .withProperty(notSupportedTokenizationForInt).withClassName(pizza.getClassName()).run();
+        .withProperty(notSupportedTokenizationForInt).withClassName(pizza.getClassName()).run();
 
-    //then
+    // then
     assertResultTrue(createStatus);
 
-    assertResultError("tokenization in body should be one of [word lowercase whitespace field trigram gse kagome_kr kagome_ja gse_ch]", notExistingTokenizationCreateStatus);
-    assertResultError("Tokenization is not allowed for data type 'int'", notSupportedTokenizationForIntCreateStatus);
+    assertResultError(
+        "tokenization in body should be one of [word lowercase whitespace field trigram gse kagome_kr kagome_ja gse_ch]",
+        notExistingTokenizationCreateStatus);
+    assertResultError("tokenization is not allowed for data type 'int'",
+        notSupportedTokenizationForIntCreateStatus);
   }
 
   @Test
   public void testCreateClassWithBM25Config() {
     // given
-    BM25Config bm25Config = BM25Config.builder()
-      .b(0.777f)
-      .k1(1.777f)
-      .build();
+    BM25Config bm25Config = BM25Config.builder().b(0.777f).k1(1.777f).build();
 
-    InvertedIndexConfig invertedIndexConfig = InvertedIndexConfig.builder()
-      .bm25(bm25Config)
-      .build();
+    InvertedIndexConfig invertedIndexConfig =
+        InvertedIndexConfig.builder().bm25(bm25Config).build();
 
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className("Band")
-      .description("Band that plays and produces music")
-      .vectorIndexType("hnsw")
-      .vectorizer("text2vec-contextionary")
-      .invertedIndexConfig(invertedIndexConfig)
-      .build();
+    WeaviateClass clazz = WeaviateClass.builder().className("Band")
+        .description("Band that plays and produces music").vectorIndexType("hnsw")
+        .vectorizer("text2vec-contextionary").invertedIndexConfig(invertedIndexConfig).build();
 
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
+    Result<WeaviateClass> bandClass =
+        client.schema().classGetter().withClassName(clazz.getClassName()).run();
 
     // then
     assertNotNull(createStatus);
@@ -396,28 +370,26 @@ public class ClientSchemaTest {
     assertNotNull(bandClass.getResult());
     assertNull(bandClass.getError());
     assertNotNull(bandClass.getResult().getInvertedIndexConfig().getBm25());
-    assertEquals(bm25Config.getB(), bandClass.getResult().getInvertedIndexConfig().getBm25().getB());
-    assertEquals(bm25Config.getK1(), bandClass.getResult().getInvertedIndexConfig().getBm25().getK1());
+    assertEquals(bm25Config.getB(),
+        bandClass.getResult().getInvertedIndexConfig().getBm25().getB());
+    assertEquals(bm25Config.getK1(),
+        bandClass.getResult().getInvertedIndexConfig().getBm25().getK1());
   }
 
   @Test
   public void testCreateClassWithInvertedIndexContainingIndexNullState() {
     // given
-    InvertedIndexConfig invertedIndexConfig = InvertedIndexConfig.builder()
-      .indexNullState(true)
-      .build();
+    InvertedIndexConfig invertedIndexConfig =
+        InvertedIndexConfig.builder().indexNullState(true).build();
 
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className("Band")
-      .description("Band that plays and produces music")
-      .vectorIndexType("hnsw")
-      .vectorizer("text2vec-contextionary")
-      .invertedIndexConfig(invertedIndexConfig)
-      .build();
+    WeaviateClass clazz = WeaviateClass.builder().className("Band")
+        .description("Band that plays and produces music").vectorIndexType("hnsw")
+        .vectorizer("text2vec-contextionary").invertedIndexConfig(invertedIndexConfig).build();
 
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
+    Result<WeaviateClass> bandClass =
+        client.schema().classGetter().withClassName(clazz.getClassName()).run();
 
     // then
     assertNotNull(createStatus);
@@ -431,21 +403,17 @@ public class ClientSchemaTest {
   @Test
   public void testCreateClassWithInvertedIndexContainingIndexPropertyLength() {
     // given
-    InvertedIndexConfig invertedIndexConfig = InvertedIndexConfig.builder()
-      .indexPropertyLength(true)
-      .build();
+    InvertedIndexConfig invertedIndexConfig =
+        InvertedIndexConfig.builder().indexPropertyLength(true).build();
 
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className("Band")
-      .description("Band that plays and produces music")
-      .vectorIndexType("hnsw")
-      .vectorizer("text2vec-contextionary")
-      .invertedIndexConfig(invertedIndexConfig)
-      .build();
+    WeaviateClass clazz = WeaviateClass.builder().className("Band")
+        .description("Band that plays and produces music").vectorIndexType("hnsw")
+        .vectorizer("text2vec-contextionary").invertedIndexConfig(invertedIndexConfig).build();
 
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
+    Result<WeaviateClass> bandClass =
+        client.schema().classGetter().withClassName(clazz.getClassName()).run();
 
     // then
     assertNotNull(createStatus);
@@ -459,27 +427,20 @@ public class ClientSchemaTest {
   @Test
   public void testCreateClassWithStopwordsConfig() {
     // given
-    StopwordConfig stopwordConfig = StopwordConfig.builder()
-      .preset("en")
-      .additions(new String[]{"star", "nebula"})
-      .removals(new String[]{"a", "the"})
-      .build();
+    StopwordConfig stopwordConfig = StopwordConfig.builder().preset("en")
+        .additions(new String[] {"star", "nebula"}).removals(new String[] {"a", "the"}).build();
 
-    InvertedIndexConfig invertedIndexConfig = InvertedIndexConfig.builder()
-      .stopwords(stopwordConfig)
-      .build();
+    InvertedIndexConfig invertedIndexConfig =
+        InvertedIndexConfig.builder().stopwords(stopwordConfig).build();
 
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className("Band")
-      .description("Band that plays and produces music")
-      .vectorIndexType("hnsw")
-      .vectorizer("text2vec-contextionary")
-      .invertedIndexConfig(invertedIndexConfig)
-      .build();
+    WeaviateClass clazz = WeaviateClass.builder().className("Band")
+        .description("Band that plays and produces music").vectorIndexType("hnsw")
+        .vectorizer("text2vec-contextionary").invertedIndexConfig(invertedIndexConfig).build();
 
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
+    Result<WeaviateClass> bandClass =
+        client.schema().classGetter().withClassName(clazz.getClassName()).run();
 
     // then
     assertNotNull(createStatus);
@@ -488,41 +449,33 @@ public class ClientSchemaTest {
     assertNotNull(bandClass.getResult());
     assertNull(bandClass.getError());
     assertNotNull(bandClass.getResult().getInvertedIndexConfig().getStopwords());
-    assertEquals(stopwordConfig.getPreset(), bandClass.getResult().getInvertedIndexConfig().getStopwords().getPreset());
-    assertArrayEquals(stopwordConfig.getAdditions(), bandClass.getResult().getInvertedIndexConfig().getStopwords().getAdditions());
-    assertArrayEquals(stopwordConfig.getRemovals(), bandClass.getResult().getInvertedIndexConfig().getStopwords().getRemovals());
+    assertEquals(stopwordConfig.getPreset(),
+        bandClass.getResult().getInvertedIndexConfig().getStopwords().getPreset());
+    assertArrayEquals(stopwordConfig.getAdditions(),
+        bandClass.getResult().getInvertedIndexConfig().getStopwords().getAdditions());
+    assertArrayEquals(stopwordConfig.getRemovals(),
+        bandClass.getResult().getInvertedIndexConfig().getStopwords().getRemovals());
   }
 
   @Test
   public void testCreateClassWithBM25ConfigAndWithStopwordsConfig() {
     // given
-    BM25Config bm25Config = BM25Config.builder()
-      .b(0.777f)
-      .k1(1.777f)
-      .build();
+    BM25Config bm25Config = BM25Config.builder().b(0.777f).k1(1.777f).build();
 
-    StopwordConfig stopwordConfig = StopwordConfig.builder()
-      .preset("en")
-      .additions(new String[]{"star", "nebula"})
-      .removals(new String[]{"a", "the"})
-      .build();
+    StopwordConfig stopwordConfig = StopwordConfig.builder().preset("en")
+        .additions(new String[] {"star", "nebula"}).removals(new String[] {"a", "the"}).build();
 
-    InvertedIndexConfig invertedIndexConfig = InvertedIndexConfig.builder()
-      .bm25(bm25Config)
-      .stopwords(stopwordConfig)
-      .build();
+    InvertedIndexConfig invertedIndexConfig =
+        InvertedIndexConfig.builder().bm25(bm25Config).stopwords(stopwordConfig).build();
 
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className("Band")
-      .description("Band that plays and produces music")
-      .vectorIndexType("hnsw")
-      .vectorizer("text2vec-contextionary")
-      .invertedIndexConfig(invertedIndexConfig)
-      .build();
+    WeaviateClass clazz = WeaviateClass.builder().className("Band")
+        .description("Band that plays and produces music").vectorIndexType("hnsw")
+        .vectorizer("text2vec-contextionary").invertedIndexConfig(invertedIndexConfig).build();
 
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
+    Result<WeaviateClass> bandClass =
+        client.schema().classGetter().withClassName(clazz.getClassName()).run();
 
     // then
     assertNotNull(createStatus);
@@ -531,26 +484,25 @@ public class ClientSchemaTest {
     assertNotNull(bandClass.getResult());
     assertNull(bandClass.getError());
     assertNotNull(bandClass.getResult().getInvertedIndexConfig().getBm25());
-    assertEquals(bm25Config.getB(), bandClass.getResult().getInvertedIndexConfig().getBm25().getB());
-    assertEquals(bm25Config.getK1(), bandClass.getResult().getInvertedIndexConfig().getBm25().getK1());
+    assertEquals(bm25Config.getB(),
+        bandClass.getResult().getInvertedIndexConfig().getBm25().getB());
+    assertEquals(bm25Config.getK1(),
+        bandClass.getResult().getInvertedIndexConfig().getBm25().getK1());
     assertNotNull(bandClass.getResult().getInvertedIndexConfig().getStopwords());
-    assertEquals(stopwordConfig.getPreset(), bandClass.getResult().getInvertedIndexConfig().getStopwords().getPreset());
-    assertArrayEquals(stopwordConfig.getAdditions(), bandClass.getResult().getInvertedIndexConfig().getStopwords().getAdditions());
-    assertArrayEquals(stopwordConfig.getRemovals(), bandClass.getResult().getInvertedIndexConfig().getStopwords().getRemovals());
+    assertEquals(stopwordConfig.getPreset(),
+        bandClass.getResult().getInvertedIndexConfig().getStopwords().getPreset());
+    assertArrayEquals(stopwordConfig.getAdditions(),
+        bandClass.getResult().getInvertedIndexConfig().getStopwords().getAdditions());
+    assertArrayEquals(stopwordConfig.getRemovals(),
+        bandClass.getResult().getInvertedIndexConfig().getStopwords().getRemovals());
   }
 
   @Test
   public void testCreateClassWithInvertedIndexConfigAndVectorIndexConfigAndShardConfig() {
     // given
-    BM25Config bm25Config = BM25Config.builder()
-      .b(0.777f)
-      .k1(1.777f)
-      .build();
-    StopwordConfig stopwordConfig = StopwordConfig.builder()
-      .preset("en")
-      .additions(new String[]{"star", "nebula"})
-      .removals(new String[]{"a", "the"})
-      .build();
+    BM25Config bm25Config = BM25Config.builder().b(0.777f).k1(1.777f).build();
+    StopwordConfig stopwordConfig = StopwordConfig.builder().preset("en")
+        .additions(new String[] {"star", "nebula"}).removals(new String[] {"a", "the"}).build();
     Integer cleanupIntervalSeconds = 300;
     // vector index config
     Integer efConstruction = 128;
@@ -563,7 +515,7 @@ public class ClientSchemaTest {
     Integer dynamicEfMin = 100;
     Integer flatSearchCutoff = 40000;
     String distance = DistanceType.DOT;
-    //pq config
+    // pq config
     Boolean enabled = true;
     Boolean bitCompression = true;
     Integer segments = 4;
@@ -580,60 +532,35 @@ public class ClientSchemaTest {
     String strategy = "hash";
     Integer virtualPerPhysical = 128;
 
-    InvertedIndexConfig invertedIndexConfig = InvertedIndexConfig.builder()
-      .bm25(bm25Config)
-      .stopwords(stopwordConfig)
-      .cleanupIntervalSeconds(cleanupIntervalSeconds)
-      .build();
+    InvertedIndexConfig invertedIndexConfig = InvertedIndexConfig.builder().bm25(bm25Config)
+        .stopwords(stopwordConfig).cleanupIntervalSeconds(cleanupIntervalSeconds).build();
 
-    VectorIndexConfig vectorIndexConfig = VectorIndexConfig.builder()
-      .cleanupIntervalSeconds(cleanupIntervalSeconds)
-      .efConstruction(efConstruction)
-      .maxConnections(maxConnections)
-      .vectorCacheMaxObjects(vectorCacheMaxObjects)
-      .ef(ef)
-      .skip(skip)
-      .dynamicEfFactor(dynamicEfFactor)
-      .dynamicEfMax(dynamicEfMax)
-      .dynamicEfMin(dynamicEfMin)
-      .flatSearchCutoff(flatSearchCutoff)
-      .distance(distance)
-      .pq(PQConfig.builder()
-        .enabled(enabled)
-        .bitCompression(bitCompression)
-        .segments(segments)
-        .centroids(centroids)
-        .encoder(PQConfig.Encoder.builder()
-          .type(encoderType)
-          .distribution(encoderDistribution)
-          .build())
-        .build())
-      .build();
+    VectorIndexConfig vectorIndexConfig =
+        VectorIndexConfig.builder().cleanupIntervalSeconds(cleanupIntervalSeconds)
+            .efConstruction(efConstruction).maxConnections(maxConnections)
+            .vectorCacheMaxObjects(vectorCacheMaxObjects).ef(ef).skip(skip)
+            .dynamicEfFactor(dynamicEfFactor).dynamicEfMax(dynamicEfMax).dynamicEfMin(dynamicEfMin)
+            .flatSearchCutoff(flatSearchCutoff).distance(distance).pq(
+                PQConfig.builder().enabled(enabled).bitCompression(bitCompression)
+                    .segments(segments).centroids(centroids).encoder(PQConfig.Encoder.builder()
+                        .type(encoderType).distribution(encoderDistribution).build())
+                    .build())
+            .build();
 
-    ShardingConfig shardingConfig = ShardingConfig.builder()
-      .actualCount(actualCount)
-      .actualVirtualCount(actualVirtualCount)
-      .desiredCount(desiredCount)
-      .desiredVirtualCount(desiredVirtualCount)
-      .function(function)
-      .key(key)
-      .strategy(strategy)
-      .virtualPerPhysical(virtualPerPhysical)
-      .build();
+    ShardingConfig shardingConfig =
+        ShardingConfig.builder().actualCount(actualCount).actualVirtualCount(actualVirtualCount)
+            .desiredCount(desiredCount).desiredVirtualCount(desiredVirtualCount).function(function)
+            .key(key).strategy(strategy).virtualPerPhysical(virtualPerPhysical).build();
 
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className("Band")
-      .description("Band that plays and produces music")
-      .vectorIndexType("hnsw")
-      .vectorizer("text2vec-contextionary")
-      .invertedIndexConfig(invertedIndexConfig)
-      .vectorIndexConfig(vectorIndexConfig)
-      .shardingConfig(shardingConfig)
-      .build();
+    WeaviateClass clazz = WeaviateClass.builder().className("Band")
+        .description("Band that plays and produces music").vectorIndexType("hnsw")
+        .vectorizer("text2vec-contextionary").invertedIndexConfig(invertedIndexConfig)
+        .vectorIndexConfig(vectorIndexConfig).shardingConfig(shardingConfig).build();
 
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
+    Result<WeaviateClass> bandClass =
+        client.schema().classGetter().withClassName(clazz.getClassName()).run();
 
     // then
     assertNotNull(createStatus);
@@ -648,8 +575,10 @@ public class ClientSchemaTest {
     assertEquals(bm25Config.getK1(), classInvertedIndexConfig.getBm25().getK1());
     assertNotNull(classInvertedIndexConfig.getStopwords());
     assertEquals(stopwordConfig.getPreset(), classInvertedIndexConfig.getStopwords().getPreset());
-    assertArrayEquals(stopwordConfig.getAdditions(), classInvertedIndexConfig.getStopwords().getAdditions());
-    assertArrayEquals(stopwordConfig.getRemovals(), classInvertedIndexConfig.getStopwords().getRemovals());
+    assertArrayEquals(stopwordConfig.getAdditions(),
+        classInvertedIndexConfig.getStopwords().getAdditions());
+    assertArrayEquals(stopwordConfig.getRemovals(),
+        classInvertedIndexConfig.getStopwords().getRemovals());
     assertEquals(cleanupIntervalSeconds, classInvertedIndexConfig.getCleanupIntervalSeconds());
     VectorIndexConfig classVectorIndexConfig = bandClass.getResult().getVectorIndexConfig();
     assertEquals(maxConnections, classVectorIndexConfig.getMaxConnections());
@@ -663,16 +592,12 @@ public class ClientSchemaTest {
     assertEquals(flatSearchCutoff, classVectorIndexConfig.getFlatSearchCutoff());
     assertEquals(distance, classVectorIndexConfig.getDistance());
 
-    assertThat(classVectorIndexConfig.getPq())
-      .isNotNull()
-      .returns(enabled, PQConfig::getEnabled)
-      .returns(bitCompression, PQConfig::getBitCompression)
-      .returns(segments, PQConfig::getSegments)
-      .returns(centroids, PQConfig::getCentroids);
-    assertThat(classVectorIndexConfig.getPq().getEncoder())
-      .isNotNull()
-      .returns(encoderType, PQConfig.Encoder::getType)
-      .returns(encoderDistribution, PQConfig.Encoder::getDistribution);
+    assertThat(classVectorIndexConfig.getPq()).isNotNull().returns(enabled, PQConfig::getEnabled)
+        .returns(bitCompression, PQConfig::getBitCompression)
+        .returns(segments, PQConfig::getSegments).returns(centroids, PQConfig::getCentroids);
+    assertThat(classVectorIndexConfig.getPq().getEncoder()).isNotNull()
+        .returns(encoderType, PQConfig.Encoder::getType)
+        .returns(encoderDistribution, PQConfig.Encoder::getDistribution);
 
     ShardingConfig classShardingIndexConfig = bandClass.getResult().getShardingConfig();
     assertEquals(actualCount, classShardingIndexConfig.getActualCount());
@@ -688,16 +613,15 @@ public class ClientSchemaTest {
   @Test
   public void testSchemaGetBandClass() {
     // given
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className("Band")
-      .description("Band that plays and produces music")
-      .vectorIndexType("hnsw")
-      .vectorizer("text2vec-contextionary")
-      .build();
+    WeaviateClass clazz =
+        WeaviateClass.builder().className("Band").description("Band that plays and produces music")
+            .vectorIndexType("hnsw").vectorizer("text2vec-contextionary").build();
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
-    Result<WeaviateClass> nonExistentClass = client.schema().classGetter().withClassName("nonExistentClass").run();
+    Result<WeaviateClass> bandClass =
+        client.schema().classGetter().withClassName(clazz.getClassName()).run();
+    Result<WeaviateClass> nonExistentClass =
+        client.schema().classGetter().withClassName("nonExistentClass").run();
     // then
     assertNotNull(createStatus);
     assertTrue(createStatus.getResult());
@@ -716,24 +640,23 @@ public class ClientSchemaTest {
   @Test
   public void testSchemaGetShards() {
     // given
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className("Band")
-      .description("Band that plays and produces music")
-      .vectorIndexType("hnsw")
-      .vectorizer("text2vec-contextionary")
-      .build();
+    WeaviateClass clazz =
+        WeaviateClass.builder().className("Band").description("Band that plays and produces music")
+            .vectorIndexType("hnsw").vectorizer("text2vec-contextionary").build();
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    Result<Boolean> bandClassExists = client.schema().exists().withClassName(clazz.getClassName()).run();
-    Result<Boolean> nonExistentClassExists = client.schema().exists().withClassName("nonExistentClass").run();
+    Result<Boolean> bandClassExists =
+        client.schema().exists().withClassName(clazz.getClassName()).run();
+    Result<Boolean> nonExistentClassExists =
+        client.schema().exists().withClassName("nonExistentClass").run();
     // then
     assertResultTrue(createStatus);
     assertResultTrue(bandClassExists);
     assertNotNull(nonExistentClassExists);
     assertFalse(nonExistentClassExists.getResult());
     assertNull(nonExistentClassExists.getError());
-    Result<Shard[]> shards = client.schema().shardsGetter()
-      .withClassName(clazz.getClassName()).run();
+    Result<Shard[]> shards =
+        client.schema().shardsGetter().withClassName(clazz.getClassName()).run();
     assertNotNull(shards);
     assertNotNull(shards.getResult());
     assertEquals(1, shards.getResult().length);
@@ -746,12 +669,9 @@ public class ClientSchemaTest {
   public void testSchemaUpdateShard() {
     // given
     String className = "Band";
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className(className)
-      .description("Band that plays and produces music")
-      .vectorIndexType("hnsw")
-      .vectorizer("text2vec-contextionary")
-      .build();
+    WeaviateClass clazz = WeaviateClass.builder().className(className)
+        .description("Band that plays and produces music").vectorIndexType("hnsw")
+        .vectorizer("text2vec-contextionary").build();
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
     assertNull(createStatus.getError());
@@ -768,19 +688,13 @@ public class ClientSchemaTest {
     String shardName = shards.getResult()[0].getName();
     assertNotNull(shardName);
     // update shard status to READONLY
-    Result<ShardStatus> updateToREADONLY = client.schema().shardUpdater()
-      .withClassName(className)
-      .withShardName(shardName)
-      .withStatus(ShardStatuses.READONLY)
-      .run();
+    Result<ShardStatus> updateToREADONLY = client.schema().shardUpdater().withClassName(className)
+        .withShardName(shardName).withStatus(ShardStatuses.READONLY).run();
     assertNotNull(updateToREADONLY.getResult());
     assertEquals(ShardStatuses.READONLY, updateToREADONLY.getResult().getStatus());
     // update shard status to READY
-    Result<ShardStatus> updateToREADY = client.schema().shardUpdater()
-      .withClassName(className)
-      .withShardName(shardName)
-      .withStatus(ShardStatuses.READY)
-      .run();
+    Result<ShardStatus> updateToREADY = client.schema().shardUpdater().withClassName(className)
+        .withShardName(shardName).withStatus(ShardStatuses.READY).run();
     assertNotNull(updateToREADY.getResult());
     assertEquals(ShardStatuses.READY, updateToREADY.getResult().getStatus());
   }
@@ -790,23 +704,12 @@ public class ClientSchemaTest {
     // given
     String className = "Band";
     int shardCount = 3;
-    ShardingConfig shardingConfig = ShardingConfig.builder()
-      .actualCount(shardCount)
-      .actualVirtualCount(128)
-      .desiredCount(shardCount)
-      .desiredVirtualCount(128)
-      .function("murmur3")
-      .key("_id")
-      .strategy("hash")
-      .virtualPerPhysical(128)
-      .build();
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className(className)
-      .description("Band that plays and produces music")
-      .vectorIndexType("hnsw")
-      .vectorizer("text2vec-contextionary")
-      .shardingConfig(shardingConfig)
-      .build();
+    ShardingConfig shardingConfig = ShardingConfig.builder().actualCount(shardCount)
+        .actualVirtualCount(128).desiredCount(shardCount).desiredVirtualCount(128)
+        .function("murmur3").key("_id").strategy("hash").virtualPerPhysical(128).build();
+    WeaviateClass clazz = WeaviateClass.builder().className(className)
+        .description("Band that plays and produces music").vectorIndexType("hnsw")
+        .vectorizer("text2vec-contextionary").shardingConfig(shardingConfig).build();
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
     assertResultTrue(createStatus);
@@ -818,19 +721,15 @@ public class ClientSchemaTest {
     assertEquals(3, shards.getResult().length);
     // update shard status to READONLY
     Result<ShardStatus[]> updateToREADONLY = client.schema().shardsUpdater()
-      .withClassName(className)
-      .withStatus(ShardStatuses.READONLY)
-      .run();
+        .withClassName(className).withStatus(ShardStatuses.READONLY).run();
     assertNotNull(updateToREADONLY.getResult());
     assertEquals(3, updateToREADONLY.getResult().length);
     for (ShardStatus s : updateToREADONLY.getResult()) {
       assertEquals(ShardStatuses.READONLY, s.getStatus());
     }
     // update shard status to READY
-    Result<ShardStatus[]> updateToREADY = client.schema().shardsUpdater()
-      .withClassName(className)
-      .withStatus(ShardStatuses.READY)
-      .run();
+    Result<ShardStatus[]> updateToREADY = client.schema().shardsUpdater().withClassName(className)
+        .withStatus(ShardStatuses.READY).run();
     assertNotNull(updateToREADY.getResult());
     assertEquals(3, updateToREADY.getResult().length);
     for (ShardStatus s : updateToREADY.getResult()) {
@@ -842,7 +741,8 @@ public class ClientSchemaTest {
   public void testSchemaUpdateShardsException() {
     // when
     Result<ShardStatus[]> res = client.schema().shardsUpdater().run();
-    Result<ShardStatus[]> res2 = client.schema().shardsUpdater().withStatus(ShardStatuses.READY).run();
+    Result<ShardStatus[]> res2 =
+        client.schema().shardsUpdater().withStatus(ShardStatuses.READY).run();
     Result<ShardStatus[]> res3 = client.schema().shardsUpdater().withClassName("class").run();
     // then
     assertResultError("className, status cannot be empty", res);
@@ -892,7 +792,8 @@ public class ClientSchemaTest {
     assertEquals(expectedSize, schemaAfterCreate.getResult().getClasses().size());
   }
 
-  private void assertClassEquals(String expectedName, String expectedDescription, WeaviateClass schemaClass) {
+  private void assertClassEquals(String expectedName, String expectedDescription,
+      WeaviateClass schemaClass) {
     assertEquals(expectedName, schemaClass.getClassName());
     assertEquals(expectedDescription, schemaClass.getDescription());
   }
@@ -902,12 +803,14 @@ public class ClientSchemaTest {
     assertEquals(expectedSize, schemaClass.getProperties().size());
   }
 
-  private void assertPropertyEquals(String expectedName, String expectedTokenization, Property property) {
+  private void assertPropertyEquals(String expectedName, String expectedTokenization,
+      Property property) {
     assertEquals(expectedName, property.getName());
     assertEquals(expectedTokenization, property.getTokenization());
   }
 
-  private void assertPropertyEquals(String expectedName, String expectedDataType, String expectedTokenization, Property property) {
+  private void assertPropertyEquals(String expectedName, String expectedDataType,
+      String expectedTokenization, Property property) {
     assertPropertyEquals(expectedName, expectedTokenization, property);
     assertTrue(property.getDataType().size() > 0);
     assertEquals(expectedDataType, property.getDataType().get(0));
@@ -917,17 +820,19 @@ public class ClientSchemaTest {
   public void shouldAddObjectsWithNestedProperties_EntireSchema() {
     WeaviateClass schemaClass;
     String className = "ClassWithObjectProperty";
-    Map<String, String> expectedProps = new HashMap<String, String>() {{
-      put("name", DataType.TEXT);
-      put("objectProperty", DataType.OBJECT);
-      put("objectProperty.nestedInt", DataType.INT);
-      put("objectProperty.nestedNumber", DataType.NUMBER);
-      put("objectProperty.nestedText", DataType.TEXT);
-      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
-      put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
-      put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
-      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
-    }};
+    Map<String, String> expectedProps = new HashMap<String, String>() {
+      {
+        put("name", DataType.TEXT);
+        put("objectProperty", DataType.OBJECT);
+        put("objectProperty.nestedInt", DataType.INT);
+        put("objectProperty.nestedNumber", DataType.NUMBER);
+        put("objectProperty.nestedText", DataType.TEXT);
+        put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+        put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
+        put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
+        put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+      }
+    };
 
     WeaviateClass wvtClass = utils.nestedClassEntireSchema(className);
     utils.createClass(client, wvtClass);
@@ -952,26 +857,30 @@ public class ClientSchemaTest {
   public void shouldAddObjectsWithNestedProperties_PartialSchema1() {
     WeaviateClass schemaClass;
     String className = "ClassWithObjectProperty";
-    Map<String, String> expectedPropsStep1 = new HashMap<String, String>() {{
-      put("name", DataType.TEXT);
-      put("objectProperty", DataType.OBJECT);
-      put("objectProperty.nestedInt", DataType.INT);
-      put("objectProperty.nestedText", DataType.TEXT);
-      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
-      put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
-      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
-    }};
-    Map<String, String> expectedPropsStep2 = new HashMap<String, String>() {{
-      put("name", DataType.TEXT);
-      put("objectProperty", DataType.OBJECT);
-      put("objectProperty.nestedInt", DataType.INT);
-      put("objectProperty.nestedNumber", DataType.NUMBER);
-      put("objectProperty.nestedText", DataType.TEXT);
-      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
-      put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
-      put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
-      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
-    }};
+    Map<String, String> expectedPropsStep1 = new HashMap<String, String>() {
+      {
+        put("name", DataType.TEXT);
+        put("objectProperty", DataType.OBJECT);
+        put("objectProperty.nestedInt", DataType.INT);
+        put("objectProperty.nestedText", DataType.TEXT);
+        put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+        put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
+        put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+      }
+    };
+    Map<String, String> expectedPropsStep2 = new HashMap<String, String>() {
+      {
+        put("name", DataType.TEXT);
+        put("objectProperty", DataType.OBJECT);
+        put("objectProperty.nestedInt", DataType.INT);
+        put("objectProperty.nestedNumber", DataType.NUMBER);
+        put("objectProperty.nestedText", DataType.TEXT);
+        put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+        put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
+        put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
+        put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+      }
+    };
 
     WeaviateClass wvtClass = utils.nestedClassPartialSchema1(className);
     utils.createClass(client, wvtClass);
@@ -996,26 +905,30 @@ public class ClientSchemaTest {
   public void shouldAddObjectsWithNestedProperties_PartialSchema2() {
     WeaviateClass schemaClass;
     String className = "ClassWithObjectProperty";
-    Map<String, String> expectedPropsStep1 = new HashMap<String, String>() {{
-      put("name", DataType.TEXT);
-      put("objectProperty", DataType.OBJECT);
-      put("objectProperty.nestedNumber", DataType.NUMBER);
-      put("objectProperty.nestedText", DataType.TEXT);
-      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
-      put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
-      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
-    }};
-    Map<String, String> expectedPropsStep2 = new HashMap<String, String>() {{
-      put("name", DataType.TEXT);
-      put("objectProperty", DataType.OBJECT);
-      put("objectProperty.nestedInt", DataType.NUMBER); // autoschema determines type as number
-      put("objectProperty.nestedNumber", DataType.NUMBER);
-      put("objectProperty.nestedText", DataType.TEXT);
-      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
-      put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
-      put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
-      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
-    }};
+    Map<String, String> expectedPropsStep1 = new HashMap<String, String>() {
+      {
+        put("name", DataType.TEXT);
+        put("objectProperty", DataType.OBJECT);
+        put("objectProperty.nestedNumber", DataType.NUMBER);
+        put("objectProperty.nestedText", DataType.TEXT);
+        put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+        put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
+        put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+      }
+    };
+    Map<String, String> expectedPropsStep2 = new HashMap<String, String>() {
+      {
+        put("name", DataType.TEXT);
+        put("objectProperty", DataType.OBJECT);
+        put("objectProperty.nestedInt", DataType.NUMBER); // autoschema determines type as number
+        put("objectProperty.nestedNumber", DataType.NUMBER);
+        put("objectProperty.nestedText", DataType.TEXT);
+        put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+        put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
+        put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
+        put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+      }
+    };
 
     WeaviateClass wvtClass = utils.nestedClassPartialSchema2(className);
     utils.createClass(client, wvtClass);
@@ -1040,26 +953,30 @@ public class ClientSchemaTest {
   public void shouldAddObjectsWithNestedProperties_NoSchema1() {
     WeaviateClass schemaClass;
     String className = "ClassWithObjectProperty";
-    Map<String, String> expectedPropsStep1 = new HashMap<String, String>() {{
-      put("name", DataType.TEXT);
-      put("objectProperty", DataType.OBJECT);
-      put("objectProperty.nestedInt", DataType.NUMBER); // autoschema determines type as number
-      put("objectProperty.nestedText", DataType.TEXT);
-      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
-      put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
-      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
-    }};
-    Map<String, String> expectedPropsStep2 = new HashMap<String, String>() {{
-      put("name", DataType.TEXT);
-      put("objectProperty", DataType.OBJECT);
-      put("objectProperty.nestedInt", DataType.NUMBER);
-      put("objectProperty.nestedNumber", DataType.NUMBER);
-      put("objectProperty.nestedText", DataType.TEXT);
-      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
-      put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
-      put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
-      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
-    }};
+    Map<String, String> expectedPropsStep1 = new HashMap<String, String>() {
+      {
+        put("name", DataType.TEXT);
+        put("objectProperty", DataType.OBJECT);
+        put("objectProperty.nestedInt", DataType.NUMBER); // autoschema determines type as number
+        put("objectProperty.nestedText", DataType.TEXT);
+        put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+        put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
+        put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+      }
+    };
+    Map<String, String> expectedPropsStep2 = new HashMap<String, String>() {
+      {
+        put("name", DataType.TEXT);
+        put("objectProperty", DataType.OBJECT);
+        put("objectProperty.nestedInt", DataType.NUMBER);
+        put("objectProperty.nestedNumber", DataType.NUMBER);
+        put("objectProperty.nestedText", DataType.TEXT);
+        put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+        put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
+        put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
+        put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+      }
+    };
 
     // schema created after adding object 1
     WeaviateObject object1 = utils.createObject(client, utils.nestedObject1(className));
@@ -1078,26 +995,30 @@ public class ClientSchemaTest {
   public void shouldAddObjectsWithNestedProperties_NoSchema2() {
     WeaviateClass schemaClass;
     String className = "ClassWithObjectProperty";
-    Map<String, String> expectedPropsStep1 = new HashMap<String, String>() {{
-      put("name", DataType.TEXT);
-      put("objectProperty", DataType.OBJECT);
-      put("objectProperty.nestedNumber", DataType.NUMBER);
-      put("objectProperty.nestedText", DataType.TEXT);
-      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
-      put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
-      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
-    }};
-    Map<String, String> expectedPropsStep2 = new HashMap<String, String>() {{
-      put("name", DataType.TEXT);
-      put("objectProperty", DataType.OBJECT);
-      put("objectProperty.nestedInt", DataType.NUMBER); // autoschema determines type as number
-      put("objectProperty.nestedNumber", DataType.NUMBER);
-      put("objectProperty.nestedText", DataType.TEXT);
-      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
-      put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
-      put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
-      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
-    }};
+    Map<String, String> expectedPropsStep1 = new HashMap<String, String>() {
+      {
+        put("name", DataType.TEXT);
+        put("objectProperty", DataType.OBJECT);
+        put("objectProperty.nestedNumber", DataType.NUMBER);
+        put("objectProperty.nestedText", DataType.TEXT);
+        put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+        put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
+        put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+      }
+    };
+    Map<String, String> expectedPropsStep2 = new HashMap<String, String>() {
+      {
+        put("name", DataType.TEXT);
+        put("objectProperty", DataType.OBJECT);
+        put("objectProperty.nestedInt", DataType.NUMBER); // autoschema determines type as number
+        put("objectProperty.nestedNumber", DataType.NUMBER);
+        put("objectProperty.nestedText", DataType.TEXT);
+        put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+        put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
+        put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
+        put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+      }
+    };
 
     // schema created after adding object 2
     WeaviateObject object2 = utils.createObject(client, utils.nestedObject2(className));
@@ -1116,17 +1037,19 @@ public class ClientSchemaTest {
   public void shouldBatchObjectsWithNestedProperties_EntireSchema() {
     WeaviateClass schemaClass;
     String className = "ClassWithObjectProperty";
-    Map<String, String> expectedProps = new HashMap<String, String>() {{
-      put("name", DataType.TEXT);
-      put("objectProperty", DataType.OBJECT);
-      put("objectProperty.nestedInt", DataType.INT);
-      put("objectProperty.nestedNumber", DataType.NUMBER);
-      put("objectProperty.nestedText", DataType.TEXT);
-      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
-      put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
-      put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
-      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
-    }};
+    Map<String, String> expectedProps = new HashMap<String, String>() {
+      {
+        put("name", DataType.TEXT);
+        put("objectProperty", DataType.OBJECT);
+        put("objectProperty.nestedInt", DataType.INT);
+        put("objectProperty.nestedNumber", DataType.NUMBER);
+        put("objectProperty.nestedText", DataType.TEXT);
+        put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+        put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
+        put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
+        put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+      }
+    };
 
     WeaviateClass wvtClass = utils.nestedClassEntireSchema(className);
     utils.createClass(client, wvtClass);
@@ -1135,7 +1058,8 @@ public class ClientSchemaTest {
     utils.assertThatSchemaPropertiesHaveDataTypes(expectedProps, schemaClass);
 
     // schema did not change after adding objects
-    ObjectGetResponse[] objects = utils.batchObjects(client, utils.nestedObject1(className), utils.nestedObject2(className));
+    ObjectGetResponse[] objects =
+        utils.batchObjects(client, utils.nestedObject1(className), utils.nestedObject2(className));
     utils.assertThatObjectsAreSimilar(utils.expectedNestedObject1(className), objects[0]);
     utils.assertThatObjectsAreSimilar(utils.expectedNestedObject2(className), objects[1]);
     schemaClass = utils.getClass(client, className);
@@ -1146,26 +1070,30 @@ public class ClientSchemaTest {
   public void shouldBatchObjectsWithNestedProperties_PartialSchema1() {
     WeaviateClass schemaClass;
     String className = "ClassWithObjectProperty";
-    Map<String, String> expectedPropsStep1 = new HashMap<String, String>() {{
-      put("name", DataType.TEXT);
-      put("objectProperty", DataType.OBJECT);
-      put("objectProperty.nestedInt", DataType.INT);
-      put("objectProperty.nestedText", DataType.TEXT);
-      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
-      put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
-      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
-    }};
-    Map<String, String> expectedPropsStep2 = new HashMap<String, String>() {{
-      put("name", DataType.TEXT);
-      put("objectProperty", DataType.OBJECT);
-      put("objectProperty.nestedInt", DataType.INT);
-      put("objectProperty.nestedNumber", DataType.NUMBER);
-      put("objectProperty.nestedText", DataType.TEXT);
-      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
-      put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
-      put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
-      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
-    }};
+    Map<String, String> expectedPropsStep1 = new HashMap<String, String>() {
+      {
+        put("name", DataType.TEXT);
+        put("objectProperty", DataType.OBJECT);
+        put("objectProperty.nestedInt", DataType.INT);
+        put("objectProperty.nestedText", DataType.TEXT);
+        put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+        put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
+        put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+      }
+    };
+    Map<String, String> expectedPropsStep2 = new HashMap<String, String>() {
+      {
+        put("name", DataType.TEXT);
+        put("objectProperty", DataType.OBJECT);
+        put("objectProperty.nestedInt", DataType.INT);
+        put("objectProperty.nestedNumber", DataType.NUMBER);
+        put("objectProperty.nestedText", DataType.TEXT);
+        put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+        put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
+        put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
+        put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+      }
+    };
 
     WeaviateClass wvtClass = utils.nestedClassPartialSchema1(className);
     utils.createClass(client, wvtClass);
@@ -1174,7 +1102,8 @@ public class ClientSchemaTest {
     utils.assertThatSchemaPropertiesHaveDataTypes(expectedPropsStep1, schemaClass);
 
     // schema changed after adding objects
-    ObjectGetResponse[] objects = utils.batchObjects(client, utils.nestedObject1(className), utils.nestedObject2(className));
+    ObjectGetResponse[] objects =
+        utils.batchObjects(client, utils.nestedObject1(className), utils.nestedObject2(className));
     utils.assertThatObjectsAreSimilar(utils.expectedNestedObject1(className), objects[0]);
     utils.assertThatObjectsAreSimilar(utils.expectedNestedObject2(className), objects[1]);
     schemaClass = utils.getClass(client, className);
@@ -1185,26 +1114,30 @@ public class ClientSchemaTest {
   public void shouldBatchObjectsWithNestedProperties_PartialSchema2() {
     WeaviateClass schemaClass;
     String className = "ClassWithObjectProperty";
-    Map<String, String> expectedPropsStep1 = new HashMap<String, String>() {{
-      put("name", DataType.TEXT);
-      put("objectProperty", DataType.OBJECT);
-      put("objectProperty.nestedNumber", DataType.NUMBER);
-      put("objectProperty.nestedText", DataType.TEXT);
-      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
-      put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
-      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
-    }};
-    Map<String, String> expectedPropsStep2 = new HashMap<String, String>() {{
-      put("name", DataType.TEXT);
-      put("objectProperty", DataType.OBJECT);
-      put("objectProperty.nestedInt", DataType.NUMBER); // autoschema determines type as number
-      put("objectProperty.nestedNumber", DataType.NUMBER);
-      put("objectProperty.nestedText", DataType.TEXT);
-      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
-      put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
-      put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
-      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
-    }};
+    Map<String, String> expectedPropsStep1 = new HashMap<String, String>() {
+      {
+        put("name", DataType.TEXT);
+        put("objectProperty", DataType.OBJECT);
+        put("objectProperty.nestedNumber", DataType.NUMBER);
+        put("objectProperty.nestedText", DataType.TEXT);
+        put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+        put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
+        put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+      }
+    };
+    Map<String, String> expectedPropsStep2 = new HashMap<String, String>() {
+      {
+        put("name", DataType.TEXT);
+        put("objectProperty", DataType.OBJECT);
+        put("objectProperty.nestedInt", DataType.NUMBER); // autoschema determines type as number
+        put("objectProperty.nestedNumber", DataType.NUMBER);
+        put("objectProperty.nestedText", DataType.TEXT);
+        put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+        put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
+        put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
+        put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+      }
+    };
 
     WeaviateClass wvtClass = utils.nestedClassPartialSchema2(className);
     utils.createClass(client, wvtClass);
@@ -1213,7 +1146,8 @@ public class ClientSchemaTest {
     utils.assertThatSchemaPropertiesHaveDataTypes(expectedPropsStep1, schemaClass);
 
     // schema changed after adding objects
-    ObjectGetResponse[] objects = utils.batchObjects(client, utils.nestedObject1(className), utils.nestedObject2(className));
+    ObjectGetResponse[] objects =
+        utils.batchObjects(client, utils.nestedObject1(className), utils.nestedObject2(className));
     utils.assertThatObjectsAreSimilar(utils.expectedNestedObject1(className), objects[0]);
     utils.assertThatObjectsAreSimilar(utils.expectedNestedObject2(className), objects[1]);
     schemaClass = utils.getClass(client, className);
@@ -1224,20 +1158,23 @@ public class ClientSchemaTest {
   public void shouldBatchObjectsWithNestedProperties_NoSchema1() {
     WeaviateClass schemaClass;
     String className = "ClassWithObjectProperty";
-    Map<String, String> expectedProps = new HashMap<String, String>() {{
-      put("name", DataType.TEXT);
-      put("objectProperty", DataType.OBJECT);
-      put("objectProperty.nestedInt", DataType.NUMBER); // autoschema determines type as number
-      put("objectProperty.nestedNumber", DataType.NUMBER);
-      put("objectProperty.nestedText", DataType.TEXT);
-      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
-      put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
-      put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
-      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
-    }};
+    Map<String, String> expectedProps = new HashMap<String, String>() {
+      {
+        put("name", DataType.TEXT);
+        put("objectProperty", DataType.OBJECT);
+        put("objectProperty.nestedInt", DataType.NUMBER); // autoschema determines type as number
+        put("objectProperty.nestedNumber", DataType.NUMBER);
+        put("objectProperty.nestedText", DataType.TEXT);
+        put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+        put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
+        put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
+        put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+      }
+    };
 
     // schema created after adding objects
-    ObjectGetResponse[] objects = utils.batchObjects(client, utils.nestedObject1(className), utils.nestedObject2(className));
+    ObjectGetResponse[] objects =
+        utils.batchObjects(client, utils.nestedObject1(className), utils.nestedObject2(className));
     utils.assertThatObjectsAreSimilar(utils.expectedNestedObject1(className), objects[0]);
     utils.assertThatObjectsAreSimilar(utils.expectedNestedObject2(className), objects[1]);
     schemaClass = utils.getClass(client, className);
@@ -1248,20 +1185,23 @@ public class ClientSchemaTest {
   public void shouldBatchObjectsWithNestedProperties_NoSchema2() {
     WeaviateClass schemaClass;
     String className = "ClassWithObjectProperty";
-    Map<String, String> expectedProps = new HashMap<String, String>() {{
-      put("name", DataType.TEXT);
-      put("objectProperty", DataType.OBJECT);
-      put("objectProperty.nestedInt", DataType.NUMBER); // autoschema determines type as number
-      put("objectProperty.nestedNumber", DataType.NUMBER);
-      put("objectProperty.nestedText", DataType.TEXT);
-      put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
-      put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
-      put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
-      put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
-    }};
+    Map<String, String> expectedProps = new HashMap<String, String>() {
+      {
+        put("name", DataType.TEXT);
+        put("objectProperty", DataType.OBJECT);
+        put("objectProperty.nestedInt", DataType.NUMBER); // autoschema determines type as number
+        put("objectProperty.nestedNumber", DataType.NUMBER);
+        put("objectProperty.nestedText", DataType.TEXT);
+        put("objectProperty.nestedObjects", DataType.OBJECT_ARRAY);
+        put("objectProperty.nestedObjects.nestedBoolLvl2", DataType.BOOLEAN);
+        put("objectProperty.nestedObjects.nestedDateLvl2", DataType.DATE);
+        put("objectProperty.nestedObjects.nestedNumbersLvl2", DataType.NUMBER_ARRAY);
+      }
+    };
 
     // schema created after adding objects
-    ObjectGetResponse[] objects = utils.batchObjects(client, utils.nestedObject2(className), utils.nestedObject1(className));
+    ObjectGetResponse[] objects =
+        utils.batchObjects(client, utils.nestedObject2(className), utils.nestedObject1(className));
     utils.assertThatObjectsAreSimilar(utils.expectedNestedObject2(className), objects[0]);
     utils.assertThatObjectsAreSimilar(utils.expectedNestedObject1(className), objects[1]);
     schemaClass = utils.getClass(client, className);
@@ -1282,23 +1222,20 @@ public class ClientSchemaTest {
     props.put("name", "nested object from file");
     props.put("objectProperty", nestedOneObject);
 
-    WeaviateObject weaviateObject = WeaviateObject.builder()
-      .className(className).id(id).properties(props).build();
+    WeaviateObject weaviateObject =
+        WeaviateObject.builder().className(className).id(id).properties(props).build();
 
     // then
     ObjectGetResponse[] objects = utils.batchObjects(client, weaviateObject);
     assertThat(objects).isNotEmpty();
-    Result<List<WeaviateObject>> result = client.data().objectsGetter().withID(id).withClassName(className).run();
-    assertThat(result).isNotNull()
-      .returns(false, Result::hasErrors)
-      .extracting(Result::getResult)
-      .isNotNull()
-      .extracting(objs -> objs.get(0)).isNotNull()
-      .satisfies(obj -> {
-        assertThat(obj.getId()).isEqualTo(id);
-        assertThat(obj.getProperties()).isNotNull()
-          .extracting(p -> p.get("objectProperty")).isNotNull();
-      });
+    Result<List<WeaviateObject>> result =
+        client.data().objectsGetter().withID(id).withClassName(className).run();
+    assertThat(result).isNotNull().returns(false, Result::hasErrors).extracting(Result::getResult)
+        .isNotNull().extracting(objs -> objs.get(0)).isNotNull().satisfies(obj -> {
+          assertThat(obj.getId()).isEqualTo(id);
+          assertThat(obj.getProperties()).isNotNull().extracting(p -> p.get("objectProperty"))
+              .isNotNull();
+        });
   }
 
   @Test
@@ -1315,115 +1252,76 @@ public class ClientSchemaTest {
     props.put("name", "nested object from file");
     props.put("objectArrayProperty", nestedArrayObject);
 
-    WeaviateObject weaviateObject = WeaviateObject.builder()
-      .className(className).id(id).properties(props).build();
+    WeaviateObject weaviateObject =
+        WeaviateObject.builder().className(className).id(id).properties(props).build();
 
     // then
     ObjectGetResponse[] objects = utils.batchObjects(client, weaviateObject);
     assertThat(objects).isNotEmpty();
-    Result<List<WeaviateObject>> result = client.data().objectsGetter().withID(id).withClassName(className).run();
-    assertThat(result).isNotNull()
-      .returns(false, Result::hasErrors)
-      .extracting(Result::getResult)
-      .isNotNull()
-      .extracting(objs -> objs.get(0)).isNotNull()
-      .satisfies(obj -> {
-        assertThat(obj.getId()).isEqualTo(id);
-        assertThat(obj.getProperties()).isNotNull()
-          .extracting(p -> p.get("objectArrayProperty")).isNotNull();
-      });
+    Result<List<WeaviateObject>> result =
+        client.data().objectsGetter().withID(id).withClassName(className).run();
+    assertThat(result).isNotNull().returns(false, Result::hasErrors).extracting(Result::getResult)
+        .isNotNull().extracting(objs -> objs.get(0)).isNotNull().satisfies(obj -> {
+          assertThat(obj.getId()).isEqualTo(id);
+          assertThat(obj.getProperties()).isNotNull().extracting(p -> p.get("objectArrayProperty"))
+              .isNotNull();
+        });
   }
 
   @Test
   public void shouldUpdateClass() {
     String className = "Question";
     List<Property> properties = Arrays.asList(
-      Property.builder()
-        .name("question")
-        .dataType(Arrays.asList(DataType.TEXT))
-        .build(),
-      Property.builder()
-        .name("answer")
-        .dataType(Arrays.asList(DataType.TEXT))
-        .build()
-    );
+        Property.builder().name("question").dataType(Arrays.asList(DataType.TEXT)).build(),
+        Property.builder().name("answer").dataType(Arrays.asList(DataType.TEXT)).build());
 
-    WeaviateClass jeopardyClass = WeaviateClass.builder()
-      .className(className)
-      .description("A Jeopardy! question")
-      .vectorizer("text2vec-contextionary")
-      .properties(properties)
-      .build();
+    WeaviateClass jeopardyClass =
+        WeaviateClass.builder().className(className).description("A Jeopardy! question")
+            .vectorizer("text2vec-contextionary").properties(properties).build();
 
-    Result<Boolean> createResult = client.schema().classCreator()
-      .withClass(jeopardyClass)
-      .run();
+    Result<Boolean> createResult = client.schema().classCreator().withClass(jeopardyClass).run();
 
-    assertThat(createResult).isNotNull()
-      .withFailMessage(() -> createResult.getError().toString())
-      .returns(false, Result::hasErrors)
-      .withFailMessage(null)
-      .returns(true, Result::getResult);
+    assertThat(createResult).isNotNull().withFailMessage(() -> createResult.getError().toString())
+        .returns(false, Result::hasErrors).withFailMessage(null).returns(true, Result::getResult);
 
-    Result<WeaviateClass> createdClassResult = client.schema().classGetter()
-      .withClassName(className)
-      .run();
+    Result<WeaviateClass> createdClassResult =
+        client.schema().classGetter().withClassName(className).run();
 
     assertThat(createdClassResult).isNotNull()
-      .withFailMessage(() -> createdClassResult.getError().toString())
-      .returns(false, Result::hasErrors)
-      .withFailMessage(null)
-      .extracting(Result::getResult).isNotNull()
-      .extracting(WeaviateClass::getVectorIndexConfig).isNotNull()
-      .extracting(VectorIndexConfig::getPq).isNotNull()
-      .returns(false, PQConfig::getEnabled);
+        .withFailMessage(() -> createdClassResult.getError().toString())
+        .returns(false, Result::hasErrors).withFailMessage(null).extracting(Result::getResult)
+        .isNotNull().extracting(WeaviateClass::getVectorIndexConfig).isNotNull()
+        .extracting(VectorIndexConfig::getPq).isNotNull().returns(false, PQConfig::getEnabled);
 
-    WeaviateClass newJeopardyClass = WeaviateClass.builder()
-      .className(className)
-      .vectorizer("text2vec-contextionary")
-      .properties(properties)
-      .vectorIndexConfig(VectorIndexConfig.builder()
-        .filterStrategy(VectorIndexConfig.FilterStrategy.ACORN)
-        .pq(PQConfig.builder()
-          .enabled(true)
-          .trainingLimit(99_999)
-          .segments(96)
-          .build())
-        .build())
-      .replicationConfig(ReplicationConfig.builder()
-        .deletionStrategy(ReplicationConfig.DeletionStrategy.DELETE_ON_CONFLICT)
-        .build())
-      .build();
+    WeaviateClass newJeopardyClass = WeaviateClass.builder().className(className)
+        .vectorizer("text2vec-contextionary").properties(properties)
+        .vectorIndexConfig(
+            VectorIndexConfig.builder().filterStrategy(VectorIndexConfig.FilterStrategy.ACORN)
+                .pq(PQConfig.builder().enabled(true).trainingLimit(99_999).segments(96).build())
+                .build())
+        .replicationConfig(ReplicationConfig.builder()
+            .deletionStrategy(ReplicationConfig.DeletionStrategy.DELETE_ON_CONFLICT).build())
+        .build();
 
-    Result<Boolean> updateResult = client.schema().classUpdater()
-      .withClass(newJeopardyClass)
-      .run();
+    Result<Boolean> updateResult = client.schema().classUpdater().withClass(newJeopardyClass).run();
 
-    assertThat(updateResult).isNotNull()
-      .withFailMessage(() -> updateResult.getError().toString())
-      .returns(false, Result::hasErrors)
-      .withFailMessage(null)
-      .returns(true, Result::getResult);
+    assertThat(updateResult).isNotNull().withFailMessage(() -> updateResult.getError().toString())
+        .returns(false, Result::hasErrors).withFailMessage(null).returns(true, Result::getResult);
 
-    Result<WeaviateClass> updatedClassResult = client.schema().classGetter()
-      .withClassName(className)
-      .run();
+    Result<WeaviateClass> updatedClassResult =
+        client.schema().classGetter().withClassName(className).run();
 
     assertThat(updatedClassResult).isNotNull()
-      .withFailMessage(() -> updatedClassResult.getError().toString())
-      .returns(false, Result::hasErrors)
-      .withFailMessage(null)
-      .extracting(Result::getResult).isNotNull()
-      .extracting(WeaviateClass::getVectorIndexConfig).isNotNull()
-      .returns(VectorIndexConfig.FilterStrategy.ACORN, VectorIndexConfig::getFilterStrategy)
-      .extracting(VectorIndexConfig::getPq).isNotNull()
-      .returns(true, PQConfig::getEnabled)
-      .returns(96, PQConfig::getSegments)
-      .returns(99_999, PQConfig::getTrainingLimit);
+        .withFailMessage(() -> updatedClassResult.getError().toString())
+        .returns(false, Result::hasErrors).withFailMessage(null).extracting(Result::getResult)
+        .isNotNull().extracting(WeaviateClass::getVectorIndexConfig).isNotNull()
+        .returns(VectorIndexConfig.FilterStrategy.ACORN, VectorIndexConfig::getFilterStrategy)
+        .extracting(VectorIndexConfig::getPq).isNotNull().returns(true, PQConfig::getEnabled)
+        .returns(96, PQConfig::getSegments).returns(99_999, PQConfig::getTrainingLimit);
 
-    assertThat(updatedClassResult.getResult())
-      .extracting(WeaviateClass::getReplicationConfig).isNotNull()
-      .returns(ReplicationConfig.DeletionStrategy.DELETE_ON_CONFLICT, ReplicationConfig::getDeletionStrategy);
+    assertThat(updatedClassResult.getResult()).extracting(WeaviateClass::getReplicationConfig)
+        .isNotNull().returns(ReplicationConfig.DeletionStrategy.DELETE_ON_CONFLICT,
+            ReplicationConfig::getDeletionStrategy);
   }
 
   @Test
@@ -1440,7 +1338,7 @@ public class ClientSchemaTest {
     Integer dynamicEfMin = 100;
     Integer flatSearchCutoff = 40000;
     String distance = DistanceType.DOT;
-    //pq config
+    // pq config
     Boolean enabled = true;
     Boolean bitCompression = true;
     Integer segments = 4;
@@ -1451,36 +1349,22 @@ public class ClientSchemaTest {
     Boolean asyncEnabled = true;
     Integer replicationFactor = 1;
 
-    VectorIndexConfig vectorIndexConfig = VectorIndexConfig.builder()
-      .cleanupIntervalSeconds(cleanupIntervalSeconds)
-      .efConstruction(efConstruction)
-      .maxConnections(maxConnections)
-      .vectorCacheMaxObjects(vectorCacheMaxObjects)
-      .ef(ef)
-      .skip(skip)
-      .filterStrategy(VectorIndexConfig.FilterStrategy.SWEEPING)
-      .dynamicEfFactor(dynamicEfFactor)
-      .dynamicEfMax(dynamicEfMax)
-      .dynamicEfMin(dynamicEfMin)
-      .flatSearchCutoff(flatSearchCutoff)
-      .distance(distance)
-      .pq(PQConfig.builder()
-        .enabled(enabled)
-        .bitCompression(bitCompression)
-        .segments(segments)
-        .centroids(centroids)
-        .encoder(PQConfig.Encoder.builder()
-          .type(encoderType)
-          .distribution(encoderDistribution)
-          .build())
-        .build())
-      .build();
+    VectorIndexConfig vectorIndexConfig =
+        VectorIndexConfig.builder().cleanupIntervalSeconds(cleanupIntervalSeconds)
+            .efConstruction(efConstruction).maxConnections(maxConnections)
+            .vectorCacheMaxObjects(vectorCacheMaxObjects).ef(ef).skip(skip)
+            .filterStrategy(VectorIndexConfig.FilterStrategy.SWEEPING)
+            .dynamicEfFactor(dynamicEfFactor).dynamicEfMax(dynamicEfMax).dynamicEfMin(dynamicEfMin)
+            .flatSearchCutoff(flatSearchCutoff).distance(distance).pq(
+                PQConfig.builder().enabled(enabled).bitCompression(bitCompression)
+                    .segments(segments).centroids(centroids).encoder(PQConfig.Encoder.builder()
+                        .type(encoderType).distribution(encoderDistribution).build())
+                    .build())
+            .build();
 
-    ReplicationConfig replicationConfig = ReplicationConfig.builder()
-      .factor(replicationFactor)
-      .asyncEnabled(asyncEnabled)
-      .deletionStrategy(ReplicationConfig.DeletionStrategy.NO_AUTOMATED_RESOLUTION)
-      .build();
+    ReplicationConfig replicationConfig =
+        ReplicationConfig.builder().factor(replicationFactor).asyncEnabled(asyncEnabled)
+            .deletionStrategy(ReplicationConfig.DeletionStrategy.NO_AUTOMATED_RESOLUTION).build();
 
     Map<String, Object> contextionaryVectorizerSettings = new HashMap<>();
     contextionaryVectorizerSettings.put("vectorizeClassName", true);
@@ -1488,83 +1372,65 @@ public class ClientSchemaTest {
     contextionaryVectorizer.put("text2vec-contextionary", contextionaryVectorizerSettings);
 
     Map<String, WeaviateClass.VectorConfig> vectorConfig = new HashMap<>();
-    vectorConfig.put("hnswVector", WeaviateClass.VectorConfig.builder()
-      .vectorIndexConfig(vectorIndexConfig)
-      .vectorIndexType("hnsw")
-      .vectorizer(contextionaryVectorizer)
-      .build());
+    vectorConfig.put("hnswVector",
+        WeaviateClass.VectorConfig.builder().vectorIndexConfig(vectorIndexConfig)
+            .vectorIndexType("hnsw").vectorizer(contextionaryVectorizer).build());
 
-    WeaviateClass clazz = WeaviateClass.builder()
-      .className("Band")
-      .description("Band that plays and produces music")
-      .vectorConfig(vectorConfig)
-      .replicationConfig(replicationConfig)
-      .build();
+    WeaviateClass clazz =
+        WeaviateClass.builder().className("Band").description("Band that plays and produces music")
+            .vectorConfig(vectorConfig).replicationConfig(replicationConfig).build();
 
-    Result<Boolean> createStatus = client.schema().classCreator()
-      .withClass(clazz)
-      .run();
+    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
 
-    assertThat(createStatus).isNotNull()
-      .returns(false, Result::hasErrors)
-      .returns(true, Result::getResult);
+    assertThat(createStatus).isNotNull().returns(false, Result::hasErrors).returns(true,
+        Result::getResult);
 
-    Result<WeaviateClass> bandClass = client.schema().classGetter()
-      .withClassName(clazz.getClassName())
-      .run();
+    Result<WeaviateClass> bandClass =
+        client.schema().classGetter().withClassName(clazz.getClassName()).run();
 
-    assertThat(bandClass).isNotNull()
-      .returns(false, Result::hasErrors)
-      .extracting(Result::getResult).isNotNull()
-      .extracting(WeaviateClass::getVectorConfig)
-      .satisfies(vc ->
-        assertThat(vc).isNotNull()
-          .containsOnlyKeys("hnswVector")
-          .extracting(vcMap -> vcMap.get("hnswVector")).isNotNull()
-          .satisfies(hnswVectorConfig -> {
-            assertThat(hnswVectorConfig)
-              .extracting(WeaviateClass.VectorConfig::getVectorIndexType)
-              .isEqualTo("hnsw");
+    assertThat(bandClass).isNotNull().returns(false, Result::hasErrors)
+        .extracting(Result::getResult).isNotNull().extracting(WeaviateClass::getVectorConfig)
+        .satisfies(vc -> assertThat(vc).isNotNull().containsOnlyKeys("hnswVector")
+            .extracting(vcMap -> vcMap.get("hnswVector")).isNotNull()
+            .satisfies(hnswVectorConfig -> {
+              assertThat(hnswVectorConfig)
+                  .extracting(WeaviateClass.VectorConfig::getVectorIndexType).isEqualTo("hnsw");
 
-            assertThat(hnswVectorConfig)
-              .extracting(WeaviateClass.VectorConfig::getVectorizer)
-              .satisfies(vectorizer ->
-                assertThat(vectorizer).isNotNull()
-                  .containsOnlyKeys("text2vec-contextionary")
-                  .extracting(vectorizerMap -> vectorizerMap.get("text2vec-contextionary")).isNotNull()
-              );
+              assertThat(hnswVectorConfig).extracting(WeaviateClass.VectorConfig::getVectorizer)
+                  .satisfies(vectorizer -> assertThat(vectorizer).isNotNull()
+                      .containsOnlyKeys("text2vec-contextionary")
+                      .extracting(vectorizerMap -> vectorizerMap.get("text2vec-contextionary"))
+                      .isNotNull());
 
-            assertThat(hnswVectorConfig)
-              .extracting(WeaviateClass.VectorConfig::getVectorIndexConfig)
-              .returns(cleanupIntervalSeconds, VectorIndexConfig::getCleanupIntervalSeconds)
-              .returns(efConstruction, VectorIndexConfig::getEfConstruction)
-              .returns(maxConnections, VectorIndexConfig::getMaxConnections)
-              .returns(VectorIndexConfig.FilterStrategy.SWEEPING, VectorIndexConfig::getFilterStrategy)
-              .returns(vectorCacheMaxObjects, VectorIndexConfig::getVectorCacheMaxObjects)
-              .returns(ef, VectorIndexConfig::getEf)
-              .returns(skip, VectorIndexConfig::getSkip)
-              .returns(dynamicEfFactor, VectorIndexConfig::getDynamicEfFactor)
-              .returns(dynamicEfMax, VectorIndexConfig::getDynamicEfMax)
-              .returns(dynamicEfMin, VectorIndexConfig::getDynamicEfMin)
-              .returns(flatSearchCutoff, VectorIndexConfig::getFlatSearchCutoff)
-              .returns(distance, VectorIndexConfig::getDistance)
+              assertThat(hnswVectorConfig)
+                  .extracting(WeaviateClass.VectorConfig::getVectorIndexConfig)
+                  .returns(cleanupIntervalSeconds, VectorIndexConfig::getCleanupIntervalSeconds)
+                  .returns(efConstruction, VectorIndexConfig::getEfConstruction)
+                  .returns(maxConnections, VectorIndexConfig::getMaxConnections)
+                  .returns(VectorIndexConfig.FilterStrategy.SWEEPING,
+                      VectorIndexConfig::getFilterStrategy)
+                  .returns(vectorCacheMaxObjects, VectorIndexConfig::getVectorCacheMaxObjects)
+                  .returns(ef, VectorIndexConfig::getEf).returns(skip, VectorIndexConfig::getSkip)
+                  .returns(dynamicEfFactor, VectorIndexConfig::getDynamicEfFactor)
+                  .returns(dynamicEfMax, VectorIndexConfig::getDynamicEfMax)
+                  .returns(dynamicEfMin, VectorIndexConfig::getDynamicEfMin)
+                  .returns(flatSearchCutoff, VectorIndexConfig::getFlatSearchCutoff)
+                  .returns(distance, VectorIndexConfig::getDistance)
 
-              .extracting(VectorIndexConfig::getPq).isNotNull()
-              .returns(enabled, PQConfig::getEnabled)
-              .returns(bitCompression, PQConfig::getBitCompression)
-              .returns(segments, PQConfig::getSegments)
-              .returns(centroids, PQConfig::getCentroids)
+                  .extracting(VectorIndexConfig::getPq).isNotNull()
+                  .returns(enabled, PQConfig::getEnabled)
+                  .returns(bitCompression, PQConfig::getBitCompression)
+                  .returns(segments, PQConfig::getSegments)
+                  .returns(centroids, PQConfig::getCentroids)
 
-              .extracting(PQConfig::getEncoder)
-              .returns(encoderType, PQConfig.Encoder::getType)
-              .returns(encoderDistribution, PQConfig.Encoder::getDistribution);
-          })
-      );
+                  .extracting(PQConfig::getEncoder).returns(encoderType, PQConfig.Encoder::getType)
+                  .returns(encoderDistribution, PQConfig.Encoder::getDistribution);
+            }));
 
-    assertThat(bandClass.getResult())
-      .extracting(WeaviateClass::getReplicationConfig).isNotNull()
-      .returns(replicationFactor, ReplicationConfig::getFactor)
-      .returns(asyncEnabled, ReplicationConfig::getAsyncEnabled)
-      .returns(ReplicationConfig.DeletionStrategy.NO_AUTOMATED_RESOLUTION, ReplicationConfig::getDeletionStrategy);
+    assertThat(bandClass.getResult()).extracting(WeaviateClass::getReplicationConfig).isNotNull()
+        .returns(replicationFactor, ReplicationConfig::getFactor)
+        .returns(asyncEnabled, ReplicationConfig::getAsyncEnabled)
+        .returns(ReplicationConfig.DeletionStrategy.NO_AUTOMATED_RESOLUTION,
+            ReplicationConfig::getDeletionStrategy);
   }
 }
