@@ -1,5 +1,6 @@
 package io.weaviate.client.v1.misc.model;
 
+import com.google.gson.annotations.SerializedName;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -17,8 +18,35 @@ public class MultiVectorConfig {
   private boolean enabled = true;
   @Builder.Default
   private Aggregation aggregation = Aggregation.MAX_SIM;
+  @SerializedName("muvera")
+  private MuveraConfig muvera;
 
   public enum Aggregation {
     MAX_SIM;
+  }
+
+
+  public MuveraConfig getMuveraEncoding() {
+    return this.muvera;
+  }
+
+  // Hide the default getter
+  private MuveraConfig getMuvera() {
+    return this.muvera;
+  }
+
+  public static class MultiVectorConfigBuilder {
+    private MuveraConfig muvera;
+
+    public MultiVectorConfigBuilder encoding(MuveraConfig muvera) {
+      this.muvera = muvera;
+      return this;
+    }
+
+    // Hide default builder setter
+    private MultiVectorConfigBuilder muvera(MuveraConfig _muvera) {
+      return this;
+    }
+
   }
 }
