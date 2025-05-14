@@ -32,6 +32,7 @@ import io.weaviate.client6.internal.GrpcClient;
 import io.weaviate.client6.internal.HttpClient;
 import io.weaviate.client6.v1.collections.VectorIndex.IndexingStrategy;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
+import io.weaviate.client6.v1.internal.orm.MapDescriptor;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -170,7 +171,8 @@ public class CollectionsClient {
     });
   }
 
-  public CollectionClient<Map<String, Object>> use(String name) {
-    return new CollectionClient<>(name, config, grpcClient, httpClient, grpcTransport);
+  public CollectionClient<Map<String, Object>> use(String collectionName) {
+    return new CollectionClient<>(collectionName, config, grpcClient, httpClient, grpcTransport,
+        new MapDescriptor(collectionName));
   }
 }
