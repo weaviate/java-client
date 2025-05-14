@@ -5,15 +5,14 @@ import java.util.function.Function;
 
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
+import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 
-public abstract class AbstractQueryClient<ResponseT, GroupedResponseT> {
-  // TODO: collectionName + type + property types should be one object
-  // e.g. CollectionDescriptor
-  protected final String collectionName;
+public abstract class AbstractQueryClient<ObjectT, ResponseT, GroupedResponseT> {
+  protected final CollectionDescriptor<ObjectT> collection;
   protected final GrpcTransport transport;
 
-  AbstractQueryClient(String collectionName, GrpcTransport transport) {
-    this.collectionName = collectionName;
+  AbstractQueryClient(CollectionDescriptor<ObjectT> collection, GrpcTransport transport) {
+    this.collection = collection;
     this.transport = transport;
   }
 
