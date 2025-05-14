@@ -3,12 +3,13 @@ package io.weaviate.client6.internal;
 import java.io.Closeable;
 import java.io.IOException;
 
+import io.grpc.Grpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.MetadataUtils;
 import io.weaviate.client6.Config;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateGrpc;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateGrpc.WeaviateBlockingStub;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateBlockingStub;
 
 public class GrpcClient implements Closeable {
   private final ManagedChannel channel;
