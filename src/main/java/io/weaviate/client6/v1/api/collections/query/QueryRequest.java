@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.google.protobuf.util.JsonFormat;
+
 import io.weaviate.client6.internal.GRPC;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.internal.grpc.Rpc;
@@ -30,6 +32,10 @@ public record QueryRequest(SearchOperator operator, GroupBy groupBy) {
           return message.build();
         },
         reply -> {
+          try {
+            System.out.println(JsonFormat.printer().print(reply));
+          } catch (Exception e) {
+          }
           List<QueryObject<T>> objects = reply.getResultsList()
               .stream().map(QueryRequest::<T>unmarshalResultObject).toList();
           return new QueryResponse<>(objects);

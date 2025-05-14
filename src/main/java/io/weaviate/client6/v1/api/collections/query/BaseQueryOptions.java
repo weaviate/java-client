@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import io.weaviate.client6.v1.collections.query.QueryReference;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
@@ -80,12 +79,16 @@ public record BaseQueryOptions(
     }
 
     final BaseQueryOptions baseOptions() {
-      return (BaseQueryOptions) build();
+      return _build();
     }
 
     @Override
     public T build() {
-      return (T) new BaseQueryOptions(this);
+      return (T) _build();
+    }
+
+    private BaseQueryOptions _build() {
+      return new BaseQueryOptions(this);
     }
   }
 

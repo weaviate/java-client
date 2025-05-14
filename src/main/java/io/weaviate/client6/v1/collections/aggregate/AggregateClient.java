@@ -1,11 +1,13 @@
 package io.weaviate.client6.v1.collections.aggregate;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import io.weaviate.client6.internal.GrpcClient;
 import io.weaviate.client6.internal.codec.grpc.v1.AggregateMarshaler;
 import io.weaviate.client6.internal.codec.grpc.v1.AggregateUnmarshaler;
-import io.weaviate.client6.v1.collections.query.NearVector;
+import io.weaviate.client6.v1.api.collections.query.NearVector;
+import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public class AggregateClient {
   private final String collectionName;
@@ -40,10 +42,10 @@ public class AggregateClient {
 
   public AggregateResponse nearVector(
       Float[] vector,
-      Consumer<NearVector.Builder> nearVectorOptions,
+      Function<NearVector.Builder, ObjectBuilder<NearVector>> nearVectorOptions,
       Consumer<AggregateRequest.Builder> options) {
     var aggregation = AggregateRequest.with(collectionName, options);
-    var nearVector = NearVector.with(vector, nearVectorOptions);
+    var nearVector = NearVector.of(vector, nearVectorOptions);
 
     var req = new AggregateMarshaler(aggregation.collectionName())
         .addAggregation(aggregation)
@@ -55,11 +57,11 @@ public class AggregateClient {
 
   public AggregateGroupByResponse nearVector(
       Float[] vector,
-      Consumer<NearVector.Builder> nearVectorOptions,
+      Function<NearVector.Builder, ObjectBuilder<NearVector>> nearVectorOptions,
       AggregateGroupByRequest.GroupBy groupBy,
       Consumer<AggregateRequest.Builder> options) {
     var aggregation = AggregateRequest.with(collectionName, options);
-    var nearVector = NearVector.with(vector, nearVectorOptions);
+    var nearVector = NearVector.of(vector, nearVectorOptions);
 
     var req = new AggregateMarshaler(aggregation.collectionName())
         .addAggregation(aggregation)
@@ -75,8 +77,7 @@ public class AggregateClient {
       AggregateGroupByRequest.GroupBy groupBy,
       Consumer<AggregateRequest.Builder> options) {
     var aggregation = AggregateRequest.with(collectionName, options);
-    var nearVector = NearVector.with(vector, opt -> {
-    });
+    var nearVector = NearVector.of(vector);
 
     var req = new AggregateMarshaler(aggregation.collectionName())
         .addAggregation(aggregation)

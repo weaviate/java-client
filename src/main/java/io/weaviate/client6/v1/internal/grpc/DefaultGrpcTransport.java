@@ -71,8 +71,9 @@ public final class DefaultGrpcTransport implements GrpcTransport {
   }
 
   private static ManagedChannel buildChannel(GrpcChannelOptions options) {
-    var port = options.useTls() ? HTTPS_PORT : HTTP_PORT;
-    var channel = ManagedChannelBuilder.forAddress(options.host(), port);
+    // var port = options.useTls() ? HTTPS_PORT : HTTP_PORT;
+    // var channel = ManagedChannelBuilder.forAddress(options.host(), port);
+    var channel = ManagedChannelBuilder.forTarget(options.host());
 
     if (options.useTls()) {
       channel.useTransportSecurity();

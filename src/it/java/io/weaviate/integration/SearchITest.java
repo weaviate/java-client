@@ -197,6 +197,7 @@ public class SearchITest extends ConcurrentTest {
   @Test
   // @Ignore("no fitting image to test with")
   public void testNearImage() throws IOException {
+    System.out.println("start test");
     var nsCats = ns("Cats");
 
     client.collections.create(nsCats,
@@ -208,15 +209,18 @@ public class SearchITest extends ConcurrentTest {
                 IndexingStrategy.hnsw(),
                 Vectorizer.img2VecNeuralVectorizer(
                     i2v -> i2v.imageFields("img")))));
+    System.out.println("created collection");
 
     var cats = client.collections.use(nsCats);
     cats.data.insert(Map.of(
         "breed", "ragdoll",
         "img", EncodedMedia.IMAGE));
 
+    System.out.println("inserted data");
     var got = cats.query.nearImage(EncodedMedia.IMAGE,
         opt -> opt.returnProperties("breed"));
 
+    System.out.println("searched");
     Assertions.assertThat(got.objects()).hasSize(1).first()
         .extracting(QueryObject::properties, InstanceOfAssertFactories.MAP)
         .extractingByKey("breed").isEqualTo("ragdoll");

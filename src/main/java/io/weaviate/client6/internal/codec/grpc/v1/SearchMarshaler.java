@@ -2,18 +2,19 @@ package io.weaviate.client6.internal.codec.grpc.v1;
 
 import org.apache.commons.lang3.StringUtils;
 
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBaseSearch;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBaseSearch.NearTextSearch;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.MetadataRequest;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.PropertiesRequest;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.SearchRequest;
 import io.weaviate.client6.internal.GRPC;
 import io.weaviate.client6.internal.codec.grpc.GrpcMarshaler;
-import io.weaviate.client6.v1.collections.query.CommonQueryOptions;
-import io.weaviate.client6.v1.collections.query.NearImage;
-import io.weaviate.client6.v1.collections.query.NearText;
-import io.weaviate.client6.v1.collections.query.NearVector;
+import io.weaviate.client6.v1.api.collections.query.BaseQueryOptions;
+import io.weaviate.client6.v1.api.collections.query.GroupBy;
+import io.weaviate.client6.v1.api.collections.query.NearImage;
+import io.weaviate.client6.v1.api.collections.query.NearText;
+import io.weaviate.client6.v1.api.collections.query.NearVector;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch.NearTextSearch;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.MetadataRequest;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.PropertiesRequest;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.SearchRequest;
 
 public class SearchMarshaler implements GrpcMarshaler<SearchRequest> {
   private final WeaviateProtoSearchGet.SearchRequest.Builder req = WeaviateProtoSearchGet.SearchRequest.newBuilder();
@@ -25,18 +26,9 @@ public class SearchMarshaler implements GrpcMarshaler<SearchRequest> {
     req.setUses127Api(true);
   }
 
-  public SearchMarshaler addGroupBy(NearVector.GroupBy gb) {
+  public SearchMarshaler addGroupBy(GroupBy gb) {
     var groupBy = WeaviateProtoSearchGet.GroupBy.newBuilder();
-    groupBy.addPath(gb.property());
-    groupBy.setNumberOfGroups(gb.maxGroups());
-    groupBy.setObjectsPerGroup(gb.maxObjectsPerGroup());
-    req.setGroupBy(groupBy);
-    return this;
-  }
-
-  public SearchMarshaler addGroupBy(NearText.GroupBy gb) {
-    var groupBy = WeaviateProtoSearchGet.GroupBy.newBuilder();
-    groupBy.addPath(gb.property());
+    groupBy.addAllPath(gb.path());
     groupBy.setNumberOfGroups(gb.maxGroups());
     groupBy.setObjectsPerGroup(gb.maxObjectsPerGroup());
     req.setGroupBy(groupBy);
@@ -80,7 +72,7 @@ public class SearchMarshaler implements GrpcMarshaler<SearchRequest> {
     setCommon(nt.common());
 
     var nearText = WeaviateProtoBaseSearch.NearTextSearch.newBuilder();
-    nearText.addAllQuery(nt.text());
+    nearText.addAllQuery(nt.concepts());
 
     if (nt.certainty() != null) {
       nearText.setCertainty(nt.certainty());
@@ -105,7 +97,7 @@ public class SearchMarshaler implements GrpcMarshaler<SearchRequest> {
     return this;
   }
 
-  private void setCommon(CommonQueryOptions o) {
+  private void setCommon(BaseQueryOptions o) {
     if (o.limit() != null) {
       req.setLimit(o.limit());
     }

@@ -31,6 +31,7 @@ import io.weaviate.client6.internal.DtoTypeAdapterFactory;
 import io.weaviate.client6.internal.GrpcClient;
 import io.weaviate.client6.internal.HttpClient;
 import io.weaviate.client6.v1.collections.VectorIndex.IndexingStrategy;
+import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -40,6 +41,9 @@ public class CollectionsClient {
 
   private final HttpClient httpClient;
   private final GrpcClient grpcClient;
+
+  // TODO: Some commong AbstractWeaviateClient should hold these.
+  private final GrpcTransport grpcTransport;
 
   static {
     DtoTypeAdapterFactory.register(
@@ -167,6 +171,6 @@ public class CollectionsClient {
   }
 
   public CollectionClient<Map<String, Object>> use(String name) {
-    return new CollectionClient<>(name, config, grpcClient, httpClient);
+    return new CollectionClient<>(name, config, grpcClient, httpClient, grpcTransport);
   }
 }
