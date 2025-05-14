@@ -1,19 +1,19 @@
-package io.weaviate.client6.v1.collections.query;
+package io.weaviate.client6.v1.api.collections.query;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
+import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
-import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.MetadataRequest;
-import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.PropertiesRequest;
-import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.RefPropertiesRequest;
 
 public record QueryReference(
     String property,
     String collection,
-    boolean includeVector, List<String> includeVectors,
+    boolean includeVector,
+    List<String> includeVectors,
     List<String> returnProperties,
     List<QueryReference> returnReferences,
     List<Metadata> returnMetadata) {
@@ -30,26 +30,21 @@ public record QueryReference(
   }
 
   public static QueryReference single(String property) {
-    return single(property, opt -> {
-    });
+    return single(property, ObjectBuilder.identity());
   }
 
-  public static QueryReference single(String property, Consumer<Builder> fn) {
-    var builder = new Builder(null, property);
-    fn.accept(builder);
-    return new QueryReference(builder);
+  public static QueryReference single(String property, Function<Builder, ObjectBuilder<QueryReference>> fn) {
+    return fn.apply(new Builder(null, property)).build();
   }
 
   // TODO: check if we can supply mutiple collections
   public static QueryReference multi(String property, String collection) {
-    return multi(collection, property, opt -> {
-    });
+    return multi(collection, property, ObjectBuilder.identity());
   }
 
-  public static QueryReference multi(String property, String collection, Consumer<Builder> fn) {
-    var builder = new Builder(collection, property);
-    fn.accept(builder);
-    return new QueryReference(builder);
+  public static QueryReference multi(String property, String collection,
+      Function<Builder, ObjectBuilder<QueryReference>> fn) {
+    return fn.apply(new Builder(collection, property)).build();
   }
 
   public static QueryReference[] multi(String property, Consumer<Builder> fn, String... collections) {
@@ -60,7 +55,7 @@ public record QueryReference(
     }).toArray(QueryReference[]::new);
   }
 
-  public static class Builder {
+  public static class Builder implements ObjectBuilder<QueryReference> {
     private final String property;
     private final String collection;
 
@@ -99,6 +94,11 @@ public record QueryReference(
       this.returnMetadata = Arrays.asList(metadata);
       return this;
     }
+
+    @Override
+    public QueryReference build() {
+      return new QueryReference(this);
+    }
   }
 
   public void appendTo(WeaviateProtoSearchGet.RefPropertiesRequest.Builder references) {
@@ -108,13 +108,13 @@ public record QueryReference(
     }
 
     if (!returnMetadata.isEmpty()) {
-      var metadata = MetadataRequest.newBuilder();
+      var metadata = WeaviateProtoSearchGet.MetadataRequest.newBuilder();
       returnMetadata.forEach(m -> m.appendTo(metadata));
       references.setMetadata(metadata);
     }
 
     if (!returnProperties.isEmpty() || !returnReferences.isEmpty()) {
-      var properties = PropertiesRequest.newBuilder();
+      var properties = WeaviateProtoSearchGet.PropertiesRequest.newBuilder();
 
       if (!returnProperties.isEmpty()) {
         properties.addAllNonRefProperties(returnProperties);
@@ -122,7 +122,7 @@ public record QueryReference(
 
       if (!returnReferences.isEmpty()) {
         returnReferences.forEach(r -> {
-          var ref = RefPropertiesRequest.newBuilder();
+          var ref = WeaviateProtoSearchGet.RefPropertiesRequest.newBuilder();
           r.appendTo(ref);
           properties.addRefProperties(ref);
         });

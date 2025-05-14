@@ -6,9 +6,9 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.MetadataRequest;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.PropertiesRequest;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.SearchRequest;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.MetadataRequest;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.PropertiesRequest;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.SearchRequest;
 
 @SuppressWarnings("unchecked")
 public record CommonQueryOptions(
@@ -108,7 +108,7 @@ public record CommonQueryOptions(
       }
 
       if (!returnProperties.isEmpty()) {
-        var properties = PropertiesRequest.newBuilder();
+        var properties = PropertiesRequest.newBuilder().addAllNonRefProperties(returnProperties);
         for (String property : returnProperties) {
           properties.addNonRefProperties(property);
         }

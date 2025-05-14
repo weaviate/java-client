@@ -10,13 +10,13 @@ import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoProperties.Value;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.MetadataResult;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.SearchReply;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.SearchRequest;
 import io.weaviate.client6.internal.GRPC;
 import io.weaviate.client6.internal.GrpcClient;
 import io.weaviate.client6.internal.codec.grpc.v1.SearchMarshaler;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.MetadataResult;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.SearchReply;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.SearchRequest;
 
 public class QueryClient<T> {
   // TODO: this should be wrapped around in some TypeInspector etc.

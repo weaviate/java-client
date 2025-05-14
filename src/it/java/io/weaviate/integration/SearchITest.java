@@ -16,16 +16,16 @@ import org.junit.rules.TestRule;
 
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.WeaviateClient;
+import io.weaviate.client6.v1.api.collections.query.GroupBy;
+import io.weaviate.client6.v1.api.collections.query.MetadataField;
+import io.weaviate.client6.v1.api.collections.query.QueryObject;
+import io.weaviate.client6.v1.api.collections.query.QueryResponseGroup;
 import io.weaviate.client6.v1.collections.Property;
 import io.weaviate.client6.v1.collections.Reference;
 import io.weaviate.client6.v1.collections.VectorIndex;
 import io.weaviate.client6.v1.collections.VectorIndex.IndexingStrategy;
 import io.weaviate.client6.v1.collections.Vectorizer;
 import io.weaviate.client6.v1.collections.object.Vectors;
-import io.weaviate.client6.v1.collections.query.GroupedQueryResult;
-import io.weaviate.client6.v1.collections.query.MetadataField;
-import io.weaviate.client6.v1.collections.query.NearText;
-import io.weaviate.client6.v1.collections.query.NearVector;
 import io.weaviate.containers.Container;
 import io.weaviate.containers.Container.ContainerGroup;
 import io.weaviate.containers.Contextionary;
@@ -69,9 +69,9 @@ public class SearchITest extends ConcurrentTest {
             .limit(3)
             .returnMetadata(MetadataField.DISTANCE));
 
-    Assertions.assertThat(result.objects).hasSize(3);
-    float maxDistance = Collections.max(result.objects,
-        Comparator.comparing(obj -> obj.metadata.distance())).metadata.distance();
+    Assertions.assertThat(result.objects()).hasSize(3);
+    float maxDistance = Collections.max(result.objects(),
+        Comparator.comparing(obj -> obj.metadata().distance())).metadata().distance();
     Assertions.assertThat(maxDistance).isLessThanOrEqualTo(2f);
   }
 
@@ -79,22 +79,22 @@ public class SearchITest extends ConcurrentTest {
   public void testNearVector_groupBy() {
     var things = client.collections.use(COLLECTION);
     var result = things.query.nearVector(searchVector,
-        new NearVector.GroupBy("category", 2, 5),
-        opt -> opt.distance(10f));
+        opt -> opt.distance(10f),
+        GroupBy.property("category", 2, 5));
 
-    Assertions.assertThat(result.groups)
+    Assertions.assertThat(result.groups())
         .as("group per category").containsOnlyKeys(CATEGORIES)
         .hasSizeLessThanOrEqualTo(2)
         .allSatisfy((category, group) -> {
           Assertions.assertThat(group)
-              .as("group name").returns(category, GroupedQueryResult.Group::name);
+              .as("group name").returns(category, QueryResponseGroup::name);
           Assertions.assertThat(group.numberOfObjects())
               .as("[%s] has 1+ object", category).isLessThanOrEqualTo(5L);
         });
 
-    Assertions.assertThat(result.objects)
+    Assertions.assertThat(result.objects())
         .as("object belongs a group")
-        .allMatch(obj -> result.groups.get(obj.belongsToGroup).objects().contains(obj));
+        .allMatch(obj -> result.groups().get(obj.belongsToGroup()).objects().contains(obj));
   }
 
   /**
@@ -151,8 +151,8 @@ public class SearchITest extends ConcurrentTest {
             .moveAway(.4f, away -> away.uuids(submarine.metadata().id()))
             .returnProperties("title"));
 
-    Assertions.assertThat(result.objects).hasSize(2)
-        .extracting(obj -> obj.properties).allSatisfy(
+    Assertions.assertThat(result.objects()).hasSize(2)
+        .extracting(QueryObject::properties).allSatisfy(
             properties -> Assertions.assertThat(properties)
                 .allSatisfy((_k, v) -> Assertions.assertThat((String) v).contains("Jungle")));
   }
@@ -185,11 +185,10 @@ public class SearchITest extends ConcurrentTest {
         s -> s.reference("performedBy", Reference.objects(ccr)));
 
     var result = songs.query.nearText("nature",
-        new NearText.GroupBy("performedBy", 2, 1),
-        opt -> opt
-            .returnProperties("title"));
+        opt -> opt.returnProperties("title"),
+        GroupBy.property("performedBy", 2, 1));
 
-    Assertions.assertThat(result.groups).hasSize(2)
+    Assertions.assertThat(result.groups()).hasSize(2)
         .containsOnlyKeys(
             "weaviate://localhost/%s/%s".formatted(nsArtists, beatles.metadata().id()),
             "weaviate://localhost/%s/%s".formatted(nsArtists, ccr.metadata().id()));
@@ -218,8 +217,8 @@ public class SearchITest extends ConcurrentTest {
     var got = cats.query.nearImage(EncodedMedia.IMAGE,
         opt -> opt.returnProperties("breed"));
 
-    Assertions.assertThat(got.objects).hasSize(1).first()
-        .extracting(obj -> obj.properties, InstanceOfAssertFactories.MAP)
+    Assertions.assertThat(got.objects()).hasSize(1).first()
+        .extracting(QueryObject::properties, InstanceOfAssertFactories.MAP)
         .extractingByKey("breed").isEqualTo("ragdoll");
   }
 }
