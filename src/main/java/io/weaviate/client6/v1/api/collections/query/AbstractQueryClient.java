@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.internal.ObjectBuilder;
-import io.weaviate.client6.v1.internal.grpc.DefaultGrpcTransport;
-import io.weaviate.client6.v1.internal.grpc.GrpcChannelOptions;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 
 public abstract class AbstractQueryClient<ResponseT, GroupedResponseT> {
@@ -14,9 +12,9 @@ public abstract class AbstractQueryClient<ResponseT, GroupedResponseT> {
   protected final String collectionName;
   protected final GrpcTransport transport;
 
-  AbstractQueryClient(String collectionName, GrpcChannelOptions options) {
+  AbstractQueryClient(String collectionName, GrpcTransport transport) {
     this.collectionName = collectionName;
-    this.transport = new DefaultGrpcTransport(options);
+    this.transport = transport;
   }
 
   protected abstract ResponseT performRequest(SearchOperator operator);

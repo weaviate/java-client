@@ -3,7 +3,6 @@ package io.weaviate.client6.internal;
 import java.io.Closeable;
 import java.io.IOException;
 
-import io.grpc.Grpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.MetadataUtils;

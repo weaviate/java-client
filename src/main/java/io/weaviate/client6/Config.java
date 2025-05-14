@@ -35,7 +35,7 @@ public class Config implements GrpcChannelOptions {
 
   @Override
   public String host() {
-    return grpcHost;
+    return grpcAddress();
   }
 
   @Override

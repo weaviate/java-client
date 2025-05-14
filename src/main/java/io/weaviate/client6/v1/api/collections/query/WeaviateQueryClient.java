@@ -1,11 +1,11 @@
 package io.weaviate.client6.v1.api.collections.query;
 
-import io.weaviate.client6.v1.internal.grpc.GrpcChannelOptions;
+import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 
 public class WeaviateQueryClient<T> extends AbstractQueryClient<QueryResponse<T>, QueryResponseGrouped<T>> {
 
-  public WeaviateQueryClient(String collectionName, GrpcChannelOptions options) {
-    super(collectionName, options);
+  public WeaviateQueryClient(String collectionName, GrpcTransport transport) {
+    super(collectionName, transport);
   }
 
   protected final QueryResponse<T> performRequest(SearchOperator operator) {

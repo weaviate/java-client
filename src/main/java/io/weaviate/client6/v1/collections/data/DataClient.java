@@ -22,11 +22,6 @@ import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 import com.google.gson.Gson;
 
 import io.weaviate.client6.Config;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBase.Vectors.VectorType;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoProperties.Value;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.MetadataResult;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.PropertiesResult;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.SearchRequest;
 import io.weaviate.client6.internal.GRPC;
 import io.weaviate.client6.internal.GrpcClient;
 import io.weaviate.client6.internal.HttpClient;
@@ -34,6 +29,12 @@ import io.weaviate.client6.v1.collections.object.ObjectMetadata;
 import io.weaviate.client6.v1.collections.object.ObjectReference;
 import io.weaviate.client6.v1.collections.object.Vectors;
 import io.weaviate.client6.v1.collections.object.WeaviateObject;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.Vectors.VectorType;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.MetadataResult;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.PropertiesResult;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.SearchRequest;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -99,8 +100,8 @@ public class DataClient<T> {
         vectors = Vectors.of(GRPC.fromByteString(meta.getVectorBytes()));
       } else {
         vectors = Vectors.of(meta.getVectorsList().stream().collect(
-            Collectors.<io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBase.Vectors, String, Object>toMap(
-                io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBase.Vectors::getName,
+            Collectors.<WeaviateProtoBase.Vectors, String, Object>toMap(
+                WeaviateProtoBase.Vectors::getName,
                 v -> {
                   if (v.getType().equals(VectorType.VECTOR_TYPE_SINGLE_FP32)) {
                     return GRPC.fromByteString(v.getVectorBytes());
@@ -161,8 +162,8 @@ public class DataClient<T> {
       vectors = Vectors.of(GRPC.fromByteString(meta.getVectorBytes()));
     } else {
       vectors = Vectors.of(meta.getVectorsList().stream().collect(
-          Collectors.<io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBase.Vectors, String, Object>toMap(
-              io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBase.Vectors::getName,
+          Collectors.<WeaviateProtoBase.Vectors, String, Object>toMap(
+              WeaviateProtoBase.Vectors::getName,
               v -> {
                 if (v.getType().equals(VectorType.VECTOR_TYPE_MULTI_FP32)) {
                   return GRPC.fromByteString(v.getVectorBytes());

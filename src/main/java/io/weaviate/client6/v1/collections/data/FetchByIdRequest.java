@@ -5,14 +5,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBase.FilterTarget;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBase.Filters;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoBase.Filters.Operator;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.MetadataRequest;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.PropertiesRequest;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.RefPropertiesRequest;
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoSearchGet.SearchRequest;
-import io.weaviate.client6.v1.collections.query.QueryReference;
+import io.weaviate.client6.v1.api.collections.query.QueryReference;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.FilterTarget;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.Filters;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.Filters.Operator;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.MetadataRequest;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.PropertiesRequest;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.RefPropertiesRequest;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.SearchRequest;
 
 public record FetchByIdRequest(
     String collection,

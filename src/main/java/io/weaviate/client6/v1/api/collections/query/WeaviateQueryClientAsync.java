@@ -2,13 +2,13 @@ package io.weaviate.client6.v1.api.collections.query;
 
 import java.util.concurrent.CompletableFuture;
 
-import io.weaviate.client6.v1.internal.grpc.GrpcChannelOptions;
+import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 
 public class WeaviateQueryClientAsync<T>
     extends AbstractQueryClient<CompletableFuture<QueryResponse<T>>, CompletableFuture<QueryResponseGrouped<T>>> {
 
-  public WeaviateQueryClientAsync(String collectionName, GrpcChannelOptions options) {
-    super(collectionName, options);
+  public WeaviateQueryClientAsync(String collectionName, GrpcTransport transport) {
+    super(collectionName, transport);
   }
 
   protected final CompletableFuture<QueryResponse<T>> performRequest(SearchOperator operator) {

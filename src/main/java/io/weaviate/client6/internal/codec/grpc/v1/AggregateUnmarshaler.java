@@ -5,13 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.weaviate.client6.grpc.protocol.v1.WeaviateProtoAggregate;
 import io.weaviate.client6.v1.collections.aggregate.AggregateGroupByResponse;
 import io.weaviate.client6.v1.collections.aggregate.AggregateResponse;
 import io.weaviate.client6.v1.collections.aggregate.Group;
 import io.weaviate.client6.v1.collections.aggregate.GroupedBy;
 import io.weaviate.client6.v1.collections.aggregate.IntegerMetric;
 import io.weaviate.client6.v1.collections.aggregate.Metric;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate;
 
 public final class AggregateUnmarshaler {
   private final WeaviateProtoAggregate.AggregateReply reply;
