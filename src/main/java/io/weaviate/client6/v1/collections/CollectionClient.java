@@ -5,7 +5,6 @@ import io.weaviate.client6.internal.GrpcClient;
 import io.weaviate.client6.internal.HttpClient;
 import io.weaviate.client6.v1.api.collections.aggregate.WeaviateAggregateClient;
 import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClient;
-import io.weaviate.client6.v1.collections.aggregate.AggregateClient;
 import io.weaviate.client6.v1.collections.data.DataClient;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
@@ -13,8 +12,6 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 public class CollectionClient<T> {
   public final WeaviateQueryClient<T> query;
   public final WeaviateAggregateClient aggregate;
-
-  public final AggregateClient old_aggregate;
 
   public final DataClient<T> data;
   public final CollectionConfigClient config;
@@ -26,6 +23,5 @@ public class CollectionClient<T> {
 
     this.data = new DataClient<>(collectionName, config, http, grpc);
     this.config = new CollectionConfigClient(collectionName, config, http);
-    this.old_aggregate = new AggregateClient(collectionName, grpc);
   }
 }
