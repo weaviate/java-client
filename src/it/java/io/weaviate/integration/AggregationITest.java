@@ -13,15 +13,15 @@ import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.WeaviateClient;
+import io.weaviate.client6.v1.api.collections.aggregate.AggregateResponseGroup;
+import io.weaviate.client6.v1.api.collections.aggregate.AggregateResponseGrouped;
+import io.weaviate.client6.v1.api.collections.aggregate.Aggregation;
+import io.weaviate.client6.v1.api.collections.aggregate.GroupBy;
+import io.weaviate.client6.v1.api.collections.aggregate.GroupedBy;
+import io.weaviate.client6.v1.api.collections.aggregate.IntegerAggregation;
 import io.weaviate.client6.v1.collections.Property;
 import io.weaviate.client6.v1.collections.VectorIndex;
 import io.weaviate.client6.v1.collections.Vectorizer;
-import io.weaviate.client6.v1.collections.aggregate.AggregateGroupByRequest.GroupBy;
-import io.weaviate.client6.v1.collections.aggregate.AggregateGroupByResponse;
-import io.weaviate.client6.v1.collections.aggregate.Group;
-import io.weaviate.client6.v1.collections.aggregate.GroupedBy;
-import io.weaviate.client6.v1.collections.aggregate.IntegerMetric;
-import io.weaviate.client6.v1.collections.aggregate.Metric;
 import io.weaviate.client6.v1.collections.object.Vectors;
 import io.weaviate.containers.Container;
 
@@ -56,41 +56,43 @@ public class AggregationITest extends ConcurrentTest {
   public void testOverAll() {
     var things = client.collections.use(COLLECTION);
     var result = things.aggregate.overAll(
-        with -> with.metrics(
-            Metric.integer("price", calculate -> calculate
-                .median().max().count()))
-            .includeTotalCount());
+        with -> with
+            .metrics(
+                Aggregation.integer("price",
+                    calculate -> calculate.median().max().count()))
+            .includeTotalCount(true));
 
     Assertions.assertThat(result)
         .as("includes all objects").hasFieldOrPropertyWithValue("totalCount", 15L)
-        .as("'price' is IntegerMetric").returns(true, p -> p.isIntegerProperty("price"))
-        .as("aggregated prices").extracting(p -> p.getInteger("price"))
-        .as("min").returns(null, IntegerMetric.Values::min)
-        .as("max").returns(6L, IntegerMetric.Values::max)
-        .as("median").returns(5D, IntegerMetric.Values::median)
-        .as("count").returns(15L, IntegerMetric.Values::count);
+        .as("'price' is IntegerAggregation").returns(true, p -> p.isInteger("price"))
+        .as("aggregated prices").extracting(p -> p.integer("price"))
+        .as("min").returns(null, IntegerAggregation.Values::min)
+        .as("max").returns(6L, IntegerAggregation.Values::max)
+        .as("median").returns(5D, IntegerAggregation.Values::median)
+        .as("count").returns(15L, IntegerAggregation.Values::count);
   }
 
   @Test
   public void testOverAll_groupBy_category() {
     var things = client.collections.use(COLLECTION);
     var result = things.aggregate.overAll(
-        new GroupBy("category"),
-        with -> with.metrics(
-            Metric.integer("price", calculate -> calculate
-                .min().max().count()))
-            .includeTotalCount());
+        with -> with
+            .metrics(
+                Aggregation.integer("price",
+                    calculate -> calculate.min().max().count()))
+            .includeTotalCount(true),
+        new GroupBy("category"));
 
     Assertions.assertThat(result)
-        .extracting(AggregateGroupByResponse::groups)
-        .asInstanceOf(InstanceOfAssertFactories.list(Group.class))
+        .extracting(AggregateResponseGrouped::groups)
+        .asInstanceOf(InstanceOfAssertFactories.list(AggregateResponseGroup.class))
         .as("group per category").hasSize(3)
         .allSatisfy(group -> {
           Assertions.assertThat(group)
-              .extracting(Group::by)
-              .as(group.by().property() + " is Text property").returns(true, GroupedBy::isText);
+              .extracting(AggregateResponseGroup::groupedBy)
+              .as(group.groupedBy().property() + " is Text property").returns(true, GroupedBy::isText);
 
-          String category = group.by().getAsText();
+          String category = group.groupedBy().text();
           var expectedPrice = (long) category.length();
 
           Function<String, Supplier<String>> desc = (String metric) -> {
@@ -98,11 +100,11 @@ public class AggregationITest extends ConcurrentTest {
           };
 
           Assertions.assertThat(group)
-              .as("'price' is IntegerMetric").returns(true, g -> g.isIntegerProperty("price"))
-              .as("aggregated prices").extracting(g -> g.getInteger("price"))
-              .as(desc.apply("max")).returns(expectedPrice, IntegerMetric.Values::max)
-              .as(desc.apply("min")).returns(expectedPrice, IntegerMetric.Values::min)
-              .as(desc.apply("count")).returns(5L, IntegerMetric.Values::count);
+              .as("'price' is IntegerAggregation").returns(true, g -> g.isInteger("price"))
+              .as("aggregated prices").extracting(g -> g.integer("price"))
+              .as(desc.apply("max")).returns(expectedPrice, IntegerAggregation.Values::max)
+              .as(desc.apply("min")).returns(expectedPrice, IntegerAggregation.Values::min)
+              .as(desc.apply("count")).returns(5L, IntegerAggregation.Values::count);
         });
   }
 
@@ -112,17 +114,18 @@ public class AggregationITest extends ConcurrentTest {
     var result = things.aggregate.nearVector(
         randomVector(10, -1f, 1f),
         near -> near.limit(5),
-        with -> with.metrics(
-            Metric.integer("price", calculate -> calculate
-                .min().max().count()))
+        with -> with
+            .metrics(
+                Aggregation.integer("price",
+                    calculate -> calculate.min().max().count()))
             .objectLimit(4)
-            .includeTotalCount());
+            .includeTotalCount(true));
 
     Assertions.assertThat(result)
         .as("includes all objects").hasFieldOrPropertyWithValue("totalCount", 4L)
-        .as("'price' is IntegerMetric").returns(true, p -> p.isIntegerProperty("price"))
-        .as("aggregated prices").extracting(p -> p.getInteger("price"))
-        .as("count").returns(4L, IntegerMetric.Values::count);
+        .as("'price' is IntegerAggregation").returns(true, p -> p.isInteger("price"))
+        .as("aggregated prices").extracting(p -> p.integer("price"))
+        .as("count").returns(4L, IntegerAggregation.Values::count);
   }
 
   @Test
@@ -131,23 +134,24 @@ public class AggregationITest extends ConcurrentTest {
     var result = things.aggregate.nearVector(
         randomVector(10, -1f, 1f),
         near -> near.distance(2f),
-        new GroupBy("category"),
-        with -> with.metrics(
-            Metric.integer("price", calculate -> calculate
-                .min().max().median()))
+        with -> with
+            .metrics(
+                Aggregation.integer("price",
+                    calculate -> calculate.min().max().median()))
             .objectLimit(9)
-            .includeTotalCount());
+            .includeTotalCount(true),
+        new GroupBy("category"));
 
     Assertions.assertThat(result)
-        .extracting(AggregateGroupByResponse::groups)
-        .asInstanceOf(InstanceOfAssertFactories.list(Group.class))
+        .extracting(AggregateResponseGrouped::groups)
+        .asInstanceOf(InstanceOfAssertFactories.list(AggregateResponseGroup.class))
         .as("group per category").hasSize(3)
         .allSatisfy(group -> {
           Assertions.assertThat(group)
-              .extracting(Group::by)
-              .as(group.by().property() + " is Text property").returns(true, GroupedBy::isText);
+              .extracting(AggregateResponseGroup::groupedBy)
+              .as(group.groupedBy().property() + " is Text property").returns(true, GroupedBy::isText);
 
-          String category = group.by().getAsText();
+          String category = group.groupedBy().text();
           var expectedPrice = (long) category.length();
 
           Function<String, Supplier<String>> desc = (String metric) -> {
@@ -155,11 +159,11 @@ public class AggregationITest extends ConcurrentTest {
           };
 
           Assertions.assertThat(group)
-              .as("'price' is IntegerMetric").returns(true, g -> g.isIntegerProperty("price"))
-              .as("aggregated prices").extracting(g -> g.getInteger("price"))
-              .as(desc.apply("max")).returns(expectedPrice, IntegerMetric.Values::max)
-              .as(desc.apply("min")).returns(expectedPrice, IntegerMetric.Values::min)
-              .as(desc.apply("median")).returns((double) expectedPrice, IntegerMetric.Values::median);
+              .as("'price' is IntegerAggregation").returns(true, g -> g.isInteger("price"))
+              .as("aggregated prices").extracting(g -> g.integer("price"))
+              .as(desc.apply("max")).returns(expectedPrice, IntegerAggregation.Values::max)
+              .as(desc.apply("min")).returns(expectedPrice, IntegerAggregation.Values::min)
+              .as(desc.apply("median")).returns((double) expectedPrice, IntegerAggregation.Values::median);
         });
   }
 }

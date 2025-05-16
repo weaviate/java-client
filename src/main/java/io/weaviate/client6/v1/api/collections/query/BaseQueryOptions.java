@@ -9,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
-@SuppressWarnings("unchecked")
 public record BaseQueryOptions(
     Integer limit,
     Integer offset,
@@ -33,6 +32,7 @@ public record BaseQueryOptions(
 
   }
 
+  @SuppressWarnings("unchecked")
   public static abstract class Builder<SELF extends Builder<SELF, T>, T extends Object> implements ObjectBuilder<T> {
     private Integer limit;
     private Integer offset;

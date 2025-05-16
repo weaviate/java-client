@@ -2,11 +2,14 @@ package io.weaviate.client6.v1.api.collections.query;
 
 import java.util.function.Function;
 
+import io.weaviate.client6.v1.api.collections.aggregate.ObjectFilter;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
 public record NearImage(String image, Float distance, Float certainty, BaseQueryOptions common)
-    implements SearchOperator {
+    implements SearchOperator, ObjectFilter {
 
   public static NearImage of(String image) {
     return of(image, ObjectBuilder.identity());
@@ -53,9 +56,20 @@ public record NearImage(String image, Float distance, Float certainty, BaseQuery
   }
 
   @Override
-  public void appendTo(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.SearchRequest.Builder req) {
+  public void appendTo(WeaviateProtoSearchGet.SearchRequest.Builder req) {
     common.appendTo(req);
+    req.setNearImage(protoBuilder());
+  }
 
+  @Override
+  public void appendTo(WeaviateProtoAggregate.AggregateRequest.Builder req) {
+    if (common.limit() != null) {
+      req.setLimit(common.limit());
+    }
+    req.setNearImage(protoBuilder());
+  }
+
+  private WeaviateProtoBaseSearch.NearImageSearch.Builder protoBuilder() {
     var nearImage = WeaviateProtoBaseSearch.NearImageSearch.newBuilder();
     nearImage.setImage(image);
 
@@ -64,7 +78,6 @@ public record NearImage(String image, Float distance, Float certainty, BaseQuery
     } else if (distance != null) {
       nearImage.setDistance(distance);
     }
-
-    req.setNearImage(nearImage);
+    return nearImage;
   }
 }

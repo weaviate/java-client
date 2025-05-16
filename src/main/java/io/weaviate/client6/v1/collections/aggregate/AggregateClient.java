@@ -51,6 +51,7 @@ public class AggregateClient {
         .addAggregation(aggregation)
         .addNearVector(nearVector)
         .marshal();
+
     var reply = grpcClient.grpc.aggregate(req);
     return new AggregateUnmarshaler(reply).single();
   }
