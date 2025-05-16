@@ -10,13 +10,13 @@ import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.WeaviateClient;
+import io.weaviate.client6.v1.api.collections.query.MetadataField;
+import io.weaviate.client6.v1.api.collections.query.QueryReference;
 import io.weaviate.client6.v1.collections.Property;
 import io.weaviate.client6.v1.collections.Reference;
 import io.weaviate.client6.v1.collections.ReferenceProperty;
 import io.weaviate.client6.v1.collections.object.ObjectReference;
 import io.weaviate.client6.v1.collections.object.WeaviateObject;
-import io.weaviate.client6.v1.collections.query.MetadataField;
-import io.weaviate.client6.v1.collections.query.QueryReference;
 import io.weaviate.containers.Container;
 
 /**
