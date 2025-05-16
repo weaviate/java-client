@@ -5,11 +5,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
+import io.weaviate.client6.v1.api.collections.aggregate.ObjectFilter;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
 public record NearText(List<String> concepts, Float distance, Float certainty, Move moveTo, Move moveAway,
-    BaseQueryOptions common) implements SearchOperator {
+    BaseQueryOptions common) implements SearchOperator, ObjectFilter {
 
   public static NearText of(String... concepts) {
     return of(Arrays.asList(concepts), ObjectBuilder.identity());
@@ -121,9 +124,20 @@ public record NearText(List<String> concepts, Float distance, Float certainty, M
   }
 
   @Override
-  public void appendTo(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.SearchRequest.Builder req) {
+  public void appendTo(WeaviateProtoSearchGet.SearchRequest.Builder req) {
     common.appendTo(req);
+    req.setNearText(protoBuilder());
+  }
 
+  @Override
+  public void appendTo(WeaviateProtoAggregate.AggregateRequest.Builder req) {
+    if (common.limit() != null) {
+      req.setLimit(common.limit());
+    }
+    req.setNearText(protoBuilder());
+  }
+
+  private WeaviateProtoBaseSearch.NearTextSearch.Builder protoBuilder() {
     var nearText = WeaviateProtoBaseSearch.NearTextSearch.newBuilder();
     nearText.addAllQuery(concepts);
 
@@ -146,6 +160,6 @@ public record NearText(List<String> concepts, Float distance, Float certainty, M
       nearText.setMoveAway(away);
     }
 
-    req.setNearText(nearText);
+    return nearText;
   }
 }

@@ -3,13 +3,15 @@ package io.weaviate.client6.v1.api.collections.query;
 import java.util.function.Function;
 
 import io.weaviate.client6.internal.GRPC;
+import io.weaviate.client6.v1.api.collections.aggregate.ObjectFilter;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
 public record NearVector(Float[] vector, Float distance, Float certainty, BaseQueryOptions common)
-    implements SearchOperator {
+    implements SearchOperator, ObjectFilter {
 
   public static final NearVector of(Float[] vector) {
     return of(vector, ObjectBuilder.identity());
@@ -51,11 +53,22 @@ public record NearVector(Float[] vector, Float distance, Float certainty, BaseQu
     }
   }
 
+  @Override
   public final void appendTo(WeaviateProtoSearchGet.SearchRequest.Builder req) {
     common.appendTo(req);
+    req.setNearVector(protoBuilder());
+  }
 
+  @Override
+  public void appendTo(WeaviateProtoAggregate.AggregateRequest.Builder req) {
+    if (common.limit() != null) {
+      req.setLimit(common.limit());
+    }
+    req.setNearVector(protoBuilder());
+  }
+
+  private WeaviateProtoBaseSearch.NearVector.Builder protoBuilder() {
     var nearVector = WeaviateProtoBaseSearch.NearVector.newBuilder();
-
     nearVector.addVectors(WeaviateProtoBase.Vectors.newBuilder()
         .setType(WeaviateProtoBase.Vectors.VectorType.VECTOR_TYPE_SINGLE_FP32)
         .setVectorBytes(GRPC.toByteString(vector)));
@@ -65,7 +78,6 @@ public record NearVector(Float[] vector, Float distance, Float certainty, BaseQu
     } else if (distance != null) {
       nearVector.setDistance(distance);
     }
-
-    req.setNearVector(nearVector);
+    return nearVector;
   }
 }
