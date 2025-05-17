@@ -10,12 +10,11 @@ import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.WeaviateClient;
+import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.collections.Property;
 import io.weaviate.client6.v1.collections.VectorIndex;
 import io.weaviate.client6.v1.collections.VectorIndex.IndexingStrategy;
 import io.weaviate.client6.v1.collections.Vectorizer;
-import io.weaviate.client6.v1.collections.object.Vectors;
-import io.weaviate.client6.v1.collections.object.WeaviateObject;
 import io.weaviate.containers.Container;
 
 public class DataITest extends ConcurrentTest {
@@ -39,9 +38,9 @@ public class DataITest extends ConcurrentTest {
         .id(id)
         .vectors(Vectors.of(VECTOR_INDEX, vector)));
 
-    var object = artists.data.get(id, query -> query
+    var object = artists.query.byId(id, query -> query
         .returnProperties("name")
-        .includeVector());
+        .includeVector(true));
 
     Assertions.assertThat(object)
         .as("object exists after insert").get()
@@ -59,7 +58,7 @@ public class DataITest extends ConcurrentTest {
         });
 
     artists.data.delete(id);
-    object = artists.data.get(id);
+    object = artists.query.byId(id);
     Assertions.assertThat(object).isEmpty().as("object not exists after deletion");
   }
 
@@ -78,11 +77,11 @@ public class DataITest extends ConcurrentTest {
         "breed", "ragdoll",
         "img", ragdollPng));
 
-    var got = cats.data.get(ragdoll.metadata().id(),
+    var got = cats.query.byId(ragdoll.metadata().id(),
         cat -> cat.returnProperties("img"));
 
     Assertions.assertThat(got).get()
-        .extracting(WeaviateObject::properties, InstanceOfAssertFactories.MAP)
+        .extracting(io.weaviate.client6.v1.api.collections.WeaviateObject::properties, InstanceOfAssertFactories.MAP)
         .extractingByKey("img").isEqualTo(ragdollPng);
   }
 

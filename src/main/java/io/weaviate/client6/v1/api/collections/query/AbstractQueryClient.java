@@ -1,24 +1,41 @@
 package io.weaviate.client6.v1.api.collections.query;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 
-public abstract class AbstractQueryClient<ObjectT, ResponseT, GroupedResponseT> {
-  protected final CollectionDescriptor<ObjectT> collection;
+public abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedResponseT> {
+  protected final CollectionDescriptor<PropertiesT> collection;
   protected final GrpcTransport transport;
 
-  AbstractQueryClient(CollectionDescriptor<ObjectT> collection, GrpcTransport transport) {
+  AbstractQueryClient(CollectionDescriptor<PropertiesT> collection, GrpcTransport transport) {
     this.collection = collection;
     this.transport = transport;
   }
 
+  protected abstract SingleT byId(ById byId);
+
   protected abstract ResponseT performRequest(SearchOperator operator);
 
   protected abstract GroupedResponseT performRequest(SearchOperator operator, GroupBy groupBy);
+
+  // Fetch by ID --------------------------------------------------------------
+
+  public SingleT byId(String uuid) {
+    return byId(ById.of(uuid));
+  }
+
+  public SingleT byId(String uuid, Function<ById.Builder, ObjectBuilder<ById>> fn) {
+    return byId(ById.of(uuid, fn));
+  }
+
+  protected final <T> Optional<T> optionalFirst(List<T> objects) {
+    return objects.isEmpty() ? Optional.empty() : Optional.ofNullable(objects.get(0));
+  }
 
   // NearVector queries -------------------------------------------------------
 

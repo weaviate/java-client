@@ -11,8 +11,8 @@ import java.util.function.Consumer;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.collections.Reference;
-import io.weaviate.client6.v1.collections.object.Vectors;
 
 public record InsertObjectRequest<T>(String collection, T properties, String id, Vectors vectors,
     Map<String, List<Reference>> references) {

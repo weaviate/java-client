@@ -28,6 +28,11 @@ public class MapBuilder implements PropertiesBuilder<Map<String, Object>> {
   }
 
   @Override
+  public void setBlob(String property, String value) {
+    properties.put(property, value);
+  }
+
+  @Override
   public void setDate(String property, Date value) {
     properties.put(property, value);
   }
@@ -36,5 +41,4 @@ public class MapBuilder implements PropertiesBuilder<Map<String, Object>> {
   public Map<String, Object> build() {
     return properties;
   }
-
 }
