@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.WeaviateClient;
+import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.aggregate.AggregateResponseGroup;
 import io.weaviate.client6.v1.api.collections.aggregate.AggregateResponseGrouped;
 import io.weaviate.client6.v1.api.collections.aggregate.Aggregation;
@@ -22,7 +23,6 @@ import io.weaviate.client6.v1.api.collections.aggregate.IntegerAggregation;
 import io.weaviate.client6.v1.collections.Property;
 import io.weaviate.client6.v1.collections.VectorIndex;
 import io.weaviate.client6.v1.collections.Vectorizer;
-import io.weaviate.client6.v1.collections.object.Vectors;
 import io.weaviate.containers.Container;
 
 public class AggregationITest extends ConcurrentTest {

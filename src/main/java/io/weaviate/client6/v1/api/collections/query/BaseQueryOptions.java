@@ -68,7 +68,7 @@ public record BaseQueryOptions(
       return (SELF) this;
     }
 
-    public final SELF returnReferences(QueryReference references) {
+    public final SELF returnReferences(QueryReference... references) {
       this.returnReferences = Arrays.asList(references);
       return (SELF) this;
     }

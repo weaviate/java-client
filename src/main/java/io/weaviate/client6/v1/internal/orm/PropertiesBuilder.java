@@ -11,6 +11,8 @@ public interface PropertiesBuilder<T> {
 
   void setNumber(String property, Number value);
 
+  void setBlob(String property, String value);
+
   void setDate(String property, Date value);
 
   T build();

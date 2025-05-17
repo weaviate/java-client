@@ -16,16 +16,16 @@ import org.junit.rules.TestRule;
 
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.WeaviateClient;
+import io.weaviate.client6.v1.api.collections.Vectors;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.query.GroupBy;
 import io.weaviate.client6.v1.api.collections.query.MetadataField;
-import io.weaviate.client6.v1.api.collections.query.QueryObject;
 import io.weaviate.client6.v1.api.collections.query.QueryResponseGroup;
 import io.weaviate.client6.v1.collections.Property;
 import io.weaviate.client6.v1.collections.Reference;
 import io.weaviate.client6.v1.collections.VectorIndex;
 import io.weaviate.client6.v1.collections.VectorIndex.IndexingStrategy;
 import io.weaviate.client6.v1.collections.Vectorizer;
-import io.weaviate.client6.v1.collections.object.Vectors;
 import io.weaviate.containers.Container;
 import io.weaviate.containers.Container.ContainerGroup;
 import io.weaviate.containers.Contextionary;
@@ -152,7 +152,7 @@ public class SearchITest extends ConcurrentTest {
             .returnProperties("title"));
 
     Assertions.assertThat(result.objects()).hasSize(2)
-        .extracting(QueryObject::properties).allSatisfy(
+        .extracting(WeaviateObject::properties).allSatisfy(
             properties -> Assertions.assertThat(properties)
                 .allSatisfy((_k, v) -> Assertions.assertThat((String) v).contains("Jungle")));
   }
@@ -217,7 +217,7 @@ public class SearchITest extends ConcurrentTest {
         opt -> opt.returnProperties("breed"));
 
     Assertions.assertThat(got.objects()).hasSize(1).first()
-        .extracting(QueryObject::properties, InstanceOfAssertFactories.MAP)
+        .extracting(WeaviateObject::properties, InstanceOfAssertFactories.MAP)
         .extractingByKey("breed").isEqualTo("ragdoll");
   }
 }
