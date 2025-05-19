@@ -10,13 +10,14 @@ import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.WeaviateClient;
+import io.weaviate.client6.v1.api.collections.ObjectReference;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.query.MetadataField;
+import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.api.collections.query.QueryReference;
 import io.weaviate.client6.v1.collections.Property;
 import io.weaviate.client6.v1.collections.Reference;
 import io.weaviate.client6.v1.collections.ReferenceProperty;
-import io.weaviate.client6.v1.collections.object.ObjectReference;
-import io.weaviate.client6.v1.collections.object.WeaviateObject;
 import io.weaviate.containers.Container;
 
 /**
@@ -91,7 +92,7 @@ public class ReferencesITest extends ConcurrentTest {
         .extracting(ReferenceProperty::dataTypes, InstanceOfAssertFactories.list(String.class))
         .containsOnly(nsMovies);
 
-    var gotAlex = artists.data.get(alex.metadata().id(),
+    var gotAlex = artists.query.byId(alex.metadata().id(),
         opt -> opt.returnReferences(
             QueryReference.multi("hasAwards", nsOscar,
                 ref -> ref.returnMetadata(MetadataField.ID)),
@@ -103,7 +104,7 @@ public class ReferencesITest extends ConcurrentTest {
         .extracting(WeaviateObject::references, InstanceOfAssertFactories.map(String.class, ObjectReference.class))
         .as("hasAwards object reference").extractingByKey("hasAwards")
         .extracting(ObjectReference::objects, InstanceOfAssertFactories.list(WeaviateObject.class))
-        .extracting(objects -> objects.metadata().id())
+        .extracting(object -> ((QueryMetadata) object.metadata()).id())
         .containsOnly(
             // INVESTIGATE: When references to 2+ collections are requested,
             // seems to Weaviate only return references to the first one in the list.
@@ -154,7 +155,7 @@ public class ReferencesITest extends ConcurrentTest {
             .reference("hasAwards", Reference.objects(grammy_1)));
 
     // Assert: fetch nested references
-    var gotAlex = artists.data.get(alex.metadata().id(),
+    var gotAlex = artists.query.byId(alex.metadata().id(),
         opt -> opt.returnReferences(
             QueryReference.single("hasAwards",
                 ref -> ref
@@ -170,7 +171,7 @@ public class ReferencesITest extends ConcurrentTest {
         .as("hasAwards object reference").extractingByKey("hasAwards")
         .extracting(ObjectReference::objects, InstanceOfAssertFactories.list(WeaviateObject.class))
         .hasSize(1).allSatisfy(award -> Assertions.assertThat(award)
-            .returns(grammy_1.metadata().id(), g -> g.metadata().id())
+            .returns(grammy_1.metadata().id(), grammy -> ((QueryMetadata) grammy.metadata()).id())
             .extracting(WeaviateObject::references,
                 InstanceOfAssertFactories.map(String.class, ObjectReference.class))
             .extractingByKey("presentedBy")
