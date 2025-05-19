@@ -100,7 +100,7 @@ public record QueryRequest(SearchOperator operator, GroupBy groupBy) {
             new HashMap<String, ObjectReference>(),
             (map, ref) -> {
               var refObjects = ref.getPropertiesList().stream()
-                  .map(property -> unmarshalResultObject(property, propertiesResult.getMetadata(), descriptor))
+                  .map(property -> unmarshalResultObject(property, property.getMetadata(), descriptor))
                   .toList();
 
               // Merge ObjectReferences by joining the underlying WeaviateObjects.
