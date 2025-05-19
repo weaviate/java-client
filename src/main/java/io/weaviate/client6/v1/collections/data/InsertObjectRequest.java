@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -59,7 +60,7 @@ public record InsertObjectRequest<T>(String collection, T properties, String id,
 
     /**
      * Supply one or more (named) vectors. Calls to {@link #vectors} are not
-     * chainable. Use {@link Vectors#of(Consumer)} to pass multiple vectors.
+     * chainable. Use {@link Vectors#of(Function)} to pass multiple vectors.
      */
     public Builder<T> vectors(Vectors vectors) {
       this.vectors = vectors;
