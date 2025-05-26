@@ -14,6 +14,11 @@ import com.jparams.junit4.JParamsTestRunner;
 import com.jparams.junit4.data.DataMethod;
 
 @RunWith(JParamsTestRunner.class)
+/**
+ * Test that WeaviateObject vectors are de-/serialized correctly. Specifically,
+ * single- and multi-vectors should be correctly combined under the "vectors"
+ * key in case any named vectors are present.
+ */
 public class WeaviateObjectAdapterTest {
   private static final Gson gson = new GsonBuilder()
       .registerTypeAdapter(WeaviateObject.class, WeaviateObject.Adapter.INSTANCE)
@@ -69,6 +74,5 @@ public class WeaviateObjectAdapterTest {
     JsonElement gotEl = JsonParser.parseString(got);
     JsonElement wantEl = JsonParser.parseString(want);
     Assertions.assertThat(gotEl).isEqualTo(wantEl);
-
   }
 }
