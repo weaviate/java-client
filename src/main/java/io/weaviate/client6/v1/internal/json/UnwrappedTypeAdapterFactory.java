@@ -51,8 +51,6 @@ public class UnwrappedTypeAdapterFactory implements TypeAdapterFactory {
       return null;
     }
 
-    // final TypeAdapter<JsonElement> elementAdapter = gson.getDelegateAdapter(this,
-    // TypeToken.get(JsonElement.class));
     final var delegate = gson.getDelegateAdapter(this, typeToken);
     return new TypeAdapter<T>() {
 
