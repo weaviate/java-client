@@ -2,7 +2,7 @@ package io.weaviate.client6.v1.internal.orm;
 
 import java.util.Map;
 
-public class MapDescriptor implements CollectionDescriptor<Map<String, Object>> {
+public final class MapDescriptor implements CollectionDescriptor<Map<String, Object>> {
   private final String collectionName;
 
   public MapDescriptor(String collectionName) {
