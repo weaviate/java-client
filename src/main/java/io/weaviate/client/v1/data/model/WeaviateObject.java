@@ -80,8 +80,12 @@ public class WeaviateObject {
     public JsonElement serialize(WeaviateObject src, Type typeOfSrc, JsonSerializationContext ctx) {
       JsonObject result = gson.toJsonTree(src).getAsJsonObject();
 
+      if (result.has("vectors") && result.getAsJsonObject("vectors").isEmpty()) {
+        result.remove("vectors");
+      }
+
       // Add multi-vectors to the named vectors map.
-      if (src.multiVectors != null) {
+      if (src.multiVectors != null && !src.multiVectors.isEmpty()) {
         if (!result.has("vectors")) {
           result.add("vectors", new JsonObject());
         }
