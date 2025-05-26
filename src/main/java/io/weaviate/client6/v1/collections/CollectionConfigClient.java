@@ -113,6 +113,8 @@ public class CollectionConfigClient {
         .get(config.baseUrl() + "/schema/" + collectionName)
         .build();
 
+    ClassicRequestBuilder.create("GET").setUri("uri").setEntity("", ContentType.APPLICATION_JSON).build();
+
     return httpClient.http.execute(httpGet, response -> {
       if (response.getCode() == HttpStatus.SC_NOT_FOUND) {
         return Optional.empty();

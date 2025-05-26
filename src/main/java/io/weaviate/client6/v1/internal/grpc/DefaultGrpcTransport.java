@@ -82,7 +82,7 @@ public final class DefaultGrpcTransport implements GrpcTransport {
     }
 
     var headers = new Metadata();
-    for (final var header : options.headers()) {
+    for (final var header : options.headers().entrySet()) {
       var key = Metadata.Key.of(header.getKey(), Metadata.ASCII_STRING_MARSHALLER);
       headers.put(key, header.getValue());
 
