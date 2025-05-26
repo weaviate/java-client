@@ -19,7 +19,7 @@ public class WeaviateObjectAdapterTest {
       .registerTypeAdapter(WeaviateObject.class, WeaviateObject.Adapter.INSTANCE)
       .create();
 
-  public static Object[][] testCaseSerialize() {
+  public static Object[][] testCasesJson() {
     return new Object[][] {
         {
             WeaviateObject.builder().vector(new Float[] { 1f, 2f, 3f }).build(),
@@ -52,10 +52,17 @@ public class WeaviateObjectAdapterTest {
   }
 
   @Test
-  @DataMethod(source = WeaviateObjectAdapterTest.class, method = "testCaseSerialize")
+  @DataMethod(source = WeaviateObjectAdapterTest.class, method = "testCasesJson")
   public void test_toJson(WeaviateObject in, String want) {
     String got = gson.toJson(in);
     assertSameJson(got, want);
+  }
+
+  @Test
+  @DataMethod(source = WeaviateObjectAdapterTest.class, method = "testCasesJson")
+  public void test_fromJson(WeaviateObject want, String in) {
+    WeaviateObject got = gson.fromJson(in, WeaviateObject.class);
+    Assertions.assertThat(got).usingRecursiveComparison().isEqualTo(want);
   }
 
   private void assertSameJson(String got, String want) {
