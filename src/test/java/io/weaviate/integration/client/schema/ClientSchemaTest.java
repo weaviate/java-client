@@ -1,6 +1,30 @@
 package io.weaviate.integration.client.schema;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
+
 import com.google.gson.Gson;
+
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
@@ -23,30 +47,9 @@ import io.weaviate.client.v1.schema.model.ShardStatus;
 import io.weaviate.client.v1.schema.model.ShardStatuses;
 import io.weaviate.client.v1.schema.model.Tokenization;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
+import io.weaviate.client.v1.schema.model.WeaviateClass.VectorConfig;
 import io.weaviate.integration.client.WeaviateDockerCompose;
 import io.weaviate.integration.tests.schema.SchemaTestSuite;
-import java.io.File;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
-import org.junit.After;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
-
 
 public class ClientSchemaTest {
   private WeaviateClient client;
@@ -101,13 +104,11 @@ public class ClientSchemaTest {
     WeaviateClass chickenSoup = SchemaTestSuite.testSchemaDeleteClasses.chickenSoup;
     // when
     Result<Boolean> pizzaCreateStatus = client.schema().classCreator().withClass(pizza).run();
-    Result<Boolean> chickenSoupCreateStatus =
-        client.schema().classCreator().withClass(chickenSoup).run();
+    Result<Boolean> chickenSoupCreateStatus = client.schema().classCreator().withClass(chickenSoup).run();
     Result<Schema> schemaAfterCreate = client.schema().getter().run();
-    Result<Boolean> deletePizzaStatus =
-        client.schema().classDeleter().withClassName(pizza.getClassName()).run();
-    Result<Boolean> deleteChickenSoupStatus =
-        client.schema().classDeleter().withClassName(chickenSoup.getClassName()).run();
+    Result<Boolean> deletePizzaStatus = client.schema().classDeleter().withClassName(pizza.getClassName()).run();
+    Result<Boolean> deleteChickenSoupStatus = client.schema().classDeleter().withClassName(chickenSoup.getClassName())
+        .run();
     Result<Schema> schemaAfterDelete = client.schema().getter().run();
     // then
     SchemaTestSuite.testSchemaDeleteClasses.assertResults(pizzaCreateStatus,
@@ -122,8 +123,7 @@ public class ClientSchemaTest {
     WeaviateClass chickenSoup = SchemaTestSuite.testSchemaDeleteAllSchema.chickenSoup;
     // when
     Result<Boolean> pizzaCreateStatus = client.schema().classCreator().withClass(pizza).run();
-    Result<Boolean> chickenSoupCreateStatus =
-        client.schema().classCreator().withClass(chickenSoup).run();
+    Result<Boolean> chickenSoupCreateStatus = client.schema().classCreator().withClass(chickenSoup).run();
     Result<Schema> schemaAfterCreate = client.schema().getter().run();
     Result<Boolean> deleteAllStatus = client.schema().allDeleter().run();
     Result<Schema> schemaAfterDelete = client.schema().getter().run();
@@ -140,8 +140,7 @@ public class ClientSchemaTest {
     Property newProperty = SchemaTestSuite.testSchemaCreateClassesAddProperties.newProperty;
     // when
     Result<Boolean> pizzaCreateStatus = client.schema().classCreator().withClass(pizza).run();
-    Result<Boolean> chickenSoupCreateStatus =
-        client.schema().classCreator().withClass(chickenSoup).run();
+    Result<Boolean> chickenSoupCreateStatus = client.schema().classCreator().withClass(chickenSoup).run();
     Result<Boolean> pizzaPropertyCreateStatus = client.schema().propertyCreator()
         .withProperty(newProperty).withClassName(pizza.getClassName()).run();
     Result<Boolean> chickenSoupPropertyCreateStatus = client.schema().propertyCreator()
@@ -156,56 +155,39 @@ public class ClientSchemaTest {
   }
 
   @Test
-  public void testSchemaCreateClassExplicitVectorizerWithProperties() {
-    // given
-    Map<String, Object> text2vecContextionary = new HashMap<>();
-    text2vecContextionary.put("vectorizeClassName", false);
-    Map<String, Object> moduleConfig = new HashMap<>();
-    moduleConfig.put("text2vec-contextionary", text2vecContextionary);
+  public void testSchemaAddVectors() {
+    // Arrange
+    VectorConfig vector = VectorConfig.builder()
+        .vectorIndexType("hnsw")
+        .vectorizer(Collections.singletonMap("none", Collections.emptyMap()))
+        .vectorIndexConfig(VectorIndexConfig.builder().build())
+        .build();
+    String className = "Pizza_testSchemaAddVectors";
+    client.schema().classCreator()
+        .withClass(WeaviateClass.builder()
+            .className(className)
+            .properties(Collections.singletonList(
+                Property.builder()
+                    .name("title").dataType(Collections.singletonList(DataType.TEXT))
+                    .build()))
+            .vectorConfig(Collections.singletonMap("default", vector))
+            .build())
+        .run();
 
-    WeaviateClass clazz = WeaviateClass.builder().className("Article")
-        .description("A written text, for example a news article or blog post")
-        .vectorIndexType("hnsw").vectorizer("text2vec-contextionary").moduleConfig(moduleConfig)
-        .properties(new ArrayList() {
-          {
-            add(Property.builder().dataType(new ArrayList() {
-              {
-                add(DataType.TEXT);
-              }
-            }).description("Title of the article").name("title").tokenization(Tokenization.FIELD)
-                .build());
-            add(Property.builder().dataType(new ArrayList() {
-              {
-                add(DataType.TEXT);
-              }
-            }).description("The content of the article").name("content")
-                .tokenization(Tokenization.WORD).build());
-          }
-        }).build();
-    // when
-    Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    Result<Schema> schemaAfterCreate = client.schema().getter().run();
-    Result<Boolean> deleteStatus = client.schema().allDeleter().run();
-    Result<Schema> schemaAfterDelete = client.schema().getter().run();
+    // Act
+    Result<Boolean> add = client.schema().vectorAdder()
+        .withClass(className)
+        .withVector("vector-a", vector)
+        .withVector("vector-b", vector)
+        .run();
+    assertNull("error adding new vectors", add.getError());
 
-    // then
-    assertResultTrue(createStatus);
-    assertClassesSize(1, schemaAfterCreate);
+    Result<WeaviateClass> result = client.schema().classGetter().withClassName(className).run();
+    WeaviateClass pizza = result.getResult();
+    assertThat(pizza.getVectorConfig())
+        .as("has all 3 vectors")
+        .containsKeys("default", "vector-a", "vector-b");
 
-    WeaviateClass resultArticleClass = schemaAfterCreate.getResult().getClasses().get(0);
-    assertClassEquals(clazz.getClassName(), clazz.getDescription(), resultArticleClass);
-
-    assertThat(resultArticleClass.getModuleConfig()).asInstanceOf(MAP)
-        .containsOnlyKeys("text2vec-contextionary").extracting(m -> m.get("text2vec-contextionary"))
-        .asInstanceOf(MAP).containsOnlyKeys("vectorizeClassName")
-        .extracting(m -> m.get("vectorizeClassName")).isEqualTo(false);
-
-    assertPropertiesSize(2, resultArticleClass);
-    assertPropertyEquals("title", "field", resultArticleClass.getProperties().get(0));
-    assertPropertyEquals("content", "word", resultArticleClass.getProperties().get(1));
-
-    assertResultTrue(deleteStatus);
-    assertClassesSize(0, schemaAfterDelete);
   }
 
   @Test
@@ -323,12 +305,11 @@ public class ClientSchemaTest {
         .description("A delicious religion like food and arguably the best export of Italy.")
         .build();
 
-    Property notExistingTokenization =
-        Property.builder().dataType(Collections.singletonList(DataType.TEXT))
-            .description("someString").name("someString").tokenization("not-existing").build();
-    Property notSupportedTokenizationForInt =
-        Property.builder().dataType(Collections.singletonList(DataType.INT)).description("someInt")
-            .name("someInt").tokenization(Tokenization.WORD).build();
+    Property notExistingTokenization = Property.builder().dataType(Collections.singletonList(DataType.TEXT))
+        .description("someString").name("someString").tokenization("not-existing").build();
+    Property notSupportedTokenizationForInt = Property.builder().dataType(Collections.singletonList(DataType.INT))
+        .description("someInt")
+        .name("someInt").tokenization(Tokenization.WORD).build();
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(pizza).run();
     Result<Boolean> notExistingTokenizationCreateStatus = client.schema().propertyCreator()
@@ -351,8 +332,7 @@ public class ClientSchemaTest {
     // given
     BM25Config bm25Config = BM25Config.builder().b(0.777f).k1(1.777f).build();
 
-    InvertedIndexConfig invertedIndexConfig =
-        InvertedIndexConfig.builder().bm25(bm25Config).build();
+    InvertedIndexConfig invertedIndexConfig = InvertedIndexConfig.builder().bm25(bm25Config).build();
 
     WeaviateClass clazz = WeaviateClass.builder().className("Band")
         .description("Band that plays and produces music").vectorIndexType("hnsw")
@@ -360,8 +340,7 @@ public class ClientSchemaTest {
 
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    Result<WeaviateClass> bandClass =
-        client.schema().classGetter().withClassName(clazz.getClassName()).run();
+    Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
 
     // then
     assertNotNull(createStatus);
@@ -379,8 +358,7 @@ public class ClientSchemaTest {
   @Test
   public void testCreateClassWithInvertedIndexContainingIndexNullState() {
     // given
-    InvertedIndexConfig invertedIndexConfig =
-        InvertedIndexConfig.builder().indexNullState(true).build();
+    InvertedIndexConfig invertedIndexConfig = InvertedIndexConfig.builder().indexNullState(true).build();
 
     WeaviateClass clazz = WeaviateClass.builder().className("Band")
         .description("Band that plays and produces music").vectorIndexType("hnsw")
@@ -388,8 +366,7 @@ public class ClientSchemaTest {
 
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    Result<WeaviateClass> bandClass =
-        client.schema().classGetter().withClassName(clazz.getClassName()).run();
+    Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
 
     // then
     assertNotNull(createStatus);
@@ -403,8 +380,7 @@ public class ClientSchemaTest {
   @Test
   public void testCreateClassWithInvertedIndexContainingIndexPropertyLength() {
     // given
-    InvertedIndexConfig invertedIndexConfig =
-        InvertedIndexConfig.builder().indexPropertyLength(true).build();
+    InvertedIndexConfig invertedIndexConfig = InvertedIndexConfig.builder().indexPropertyLength(true).build();
 
     WeaviateClass clazz = WeaviateClass.builder().className("Band")
         .description("Band that plays and produces music").vectorIndexType("hnsw")
@@ -412,8 +388,7 @@ public class ClientSchemaTest {
 
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    Result<WeaviateClass> bandClass =
-        client.schema().classGetter().withClassName(clazz.getClassName()).run();
+    Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
 
     // then
     assertNotNull(createStatus);
@@ -428,10 +403,9 @@ public class ClientSchemaTest {
   public void testCreateClassWithStopwordsConfig() {
     // given
     StopwordConfig stopwordConfig = StopwordConfig.builder().preset("en")
-        .additions(new String[] {"star", "nebula"}).removals(new String[] {"a", "the"}).build();
+        .additions(new String[] { "star", "nebula" }).removals(new String[] { "a", "the" }).build();
 
-    InvertedIndexConfig invertedIndexConfig =
-        InvertedIndexConfig.builder().stopwords(stopwordConfig).build();
+    InvertedIndexConfig invertedIndexConfig = InvertedIndexConfig.builder().stopwords(stopwordConfig).build();
 
     WeaviateClass clazz = WeaviateClass.builder().className("Band")
         .description("Band that plays and produces music").vectorIndexType("hnsw")
@@ -439,8 +413,7 @@ public class ClientSchemaTest {
 
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    Result<WeaviateClass> bandClass =
-        client.schema().classGetter().withClassName(clazz.getClassName()).run();
+    Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
 
     // then
     assertNotNull(createStatus);
@@ -463,10 +436,10 @@ public class ClientSchemaTest {
     BM25Config bm25Config = BM25Config.builder().b(0.777f).k1(1.777f).build();
 
     StopwordConfig stopwordConfig = StopwordConfig.builder().preset("en")
-        .additions(new String[] {"star", "nebula"}).removals(new String[] {"a", "the"}).build();
+        .additions(new String[] { "star", "nebula" }).removals(new String[] { "a", "the" }).build();
 
-    InvertedIndexConfig invertedIndexConfig =
-        InvertedIndexConfig.builder().bm25(bm25Config).stopwords(stopwordConfig).build();
+    InvertedIndexConfig invertedIndexConfig = InvertedIndexConfig.builder().bm25(bm25Config).stopwords(stopwordConfig)
+        .build();
 
     WeaviateClass clazz = WeaviateClass.builder().className("Band")
         .description("Band that plays and produces music").vectorIndexType("hnsw")
@@ -474,8 +447,7 @@ public class ClientSchemaTest {
 
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    Result<WeaviateClass> bandClass =
-        client.schema().classGetter().withClassName(clazz.getClassName()).run();
+    Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
 
     // then
     assertNotNull(createStatus);
@@ -502,7 +474,7 @@ public class ClientSchemaTest {
     // given
     BM25Config bm25Config = BM25Config.builder().b(0.777f).k1(1.777f).build();
     StopwordConfig stopwordConfig = StopwordConfig.builder().preset("en")
-        .additions(new String[] {"star", "nebula"}).removals(new String[] {"a", "the"}).build();
+        .additions(new String[] { "star", "nebula" }).removals(new String[] { "a", "the" }).build();
     Integer cleanupIntervalSeconds = 300;
     // vector index config
     Integer efConstruction = 128;
@@ -535,22 +507,21 @@ public class ClientSchemaTest {
     InvertedIndexConfig invertedIndexConfig = InvertedIndexConfig.builder().bm25(bm25Config)
         .stopwords(stopwordConfig).cleanupIntervalSeconds(cleanupIntervalSeconds).build();
 
-    VectorIndexConfig vectorIndexConfig =
-        VectorIndexConfig.builder().cleanupIntervalSeconds(cleanupIntervalSeconds)
-            .efConstruction(efConstruction).maxConnections(maxConnections)
-            .vectorCacheMaxObjects(vectorCacheMaxObjects).ef(ef).skip(skip)
-            .dynamicEfFactor(dynamicEfFactor).dynamicEfMax(dynamicEfMax).dynamicEfMin(dynamicEfMin)
-            .flatSearchCutoff(flatSearchCutoff).distance(distance).pq(
-                PQConfig.builder().enabled(enabled).bitCompression(bitCompression)
-                    .segments(segments).centroids(centroids).encoder(PQConfig.Encoder.builder()
-                        .type(encoderType).distribution(encoderDistribution).build())
-                    .build())
-            .build();
+    VectorIndexConfig vectorIndexConfig = VectorIndexConfig.builder().cleanupIntervalSeconds(cleanupIntervalSeconds)
+        .efConstruction(efConstruction).maxConnections(maxConnections)
+        .vectorCacheMaxObjects(vectorCacheMaxObjects).ef(ef).skip(skip)
+        .dynamicEfFactor(dynamicEfFactor).dynamicEfMax(dynamicEfMax).dynamicEfMin(dynamicEfMin)
+        .flatSearchCutoff(flatSearchCutoff).distance(distance).pq(
+            PQConfig.builder().enabled(enabled).bitCompression(bitCompression)
+                .segments(segments).centroids(centroids).encoder(PQConfig.Encoder.builder()
+                    .type(encoderType).distribution(encoderDistribution).build())
+                .build())
+        .build();
 
-    ShardingConfig shardingConfig =
-        ShardingConfig.builder().actualCount(actualCount).actualVirtualCount(actualVirtualCount)
-            .desiredCount(desiredCount).desiredVirtualCount(desiredVirtualCount).function(function)
-            .key(key).strategy(strategy).virtualPerPhysical(virtualPerPhysical).build();
+    ShardingConfig shardingConfig = ShardingConfig.builder().actualCount(actualCount)
+        .actualVirtualCount(actualVirtualCount)
+        .desiredCount(desiredCount).desiredVirtualCount(desiredVirtualCount).function(function)
+        .key(key).strategy(strategy).virtualPerPhysical(virtualPerPhysical).build();
 
     WeaviateClass clazz = WeaviateClass.builder().className("Band")
         .description("Band that plays and produces music").vectorIndexType("hnsw")
@@ -559,8 +530,7 @@ public class ClientSchemaTest {
 
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    Result<WeaviateClass> bandClass =
-        client.schema().classGetter().withClassName(clazz.getClassName()).run();
+    Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
 
     // then
     assertNotNull(createStatus);
@@ -613,15 +583,12 @@ public class ClientSchemaTest {
   @Test
   public void testSchemaGetBandClass() {
     // given
-    WeaviateClass clazz =
-        WeaviateClass.builder().className("Band").description("Band that plays and produces music")
-            .vectorIndexType("hnsw").vectorizer("text2vec-contextionary").build();
+    WeaviateClass clazz = WeaviateClass.builder().className("Band").description("Band that plays and produces music")
+        .vectorIndexType("hnsw").vectorizer("text2vec-contextionary").build();
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    Result<WeaviateClass> bandClass =
-        client.schema().classGetter().withClassName(clazz.getClassName()).run();
-    Result<WeaviateClass> nonExistentClass =
-        client.schema().classGetter().withClassName("nonExistentClass").run();
+    Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
+    Result<WeaviateClass> nonExistentClass = client.schema().classGetter().withClassName("nonExistentClass").run();
     // then
     assertNotNull(createStatus);
     assertTrue(createStatus.getResult());
@@ -640,23 +607,19 @@ public class ClientSchemaTest {
   @Test
   public void testSchemaGetShards() {
     // given
-    WeaviateClass clazz =
-        WeaviateClass.builder().className("Band").description("Band that plays and produces music")
-            .vectorIndexType("hnsw").vectorizer("text2vec-contextionary").build();
+    WeaviateClass clazz = WeaviateClass.builder().className("Band").description("Band that plays and produces music")
+        .vectorIndexType("hnsw").vectorizer("text2vec-contextionary").build();
     // when
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
-    Result<Boolean> bandClassExists =
-        client.schema().exists().withClassName(clazz.getClassName()).run();
-    Result<Boolean> nonExistentClassExists =
-        client.schema().exists().withClassName("nonExistentClass").run();
+    Result<Boolean> bandClassExists = client.schema().exists().withClassName(clazz.getClassName()).run();
+    Result<Boolean> nonExistentClassExists = client.schema().exists().withClassName("nonExistentClass").run();
     // then
     assertResultTrue(createStatus);
     assertResultTrue(bandClassExists);
     assertNotNull(nonExistentClassExists);
     assertFalse(nonExistentClassExists.getResult());
     assertNull(nonExistentClassExists.getError());
-    Result<Shard[]> shards =
-        client.schema().shardsGetter().withClassName(clazz.getClassName()).run();
+    Result<Shard[]> shards = client.schema().shardsGetter().withClassName(clazz.getClassName()).run();
     assertNotNull(shards);
     assertNotNull(shards.getResult());
     assertEquals(1, shards.getResult().length);
@@ -741,8 +704,7 @@ public class ClientSchemaTest {
   public void testSchemaUpdateShardsException() {
     // when
     Result<ShardStatus[]> res = client.schema().shardsUpdater().run();
-    Result<ShardStatus[]> res2 =
-        client.schema().shardsUpdater().withStatus(ShardStatuses.READY).run();
+    Result<ShardStatus[]> res2 = client.schema().shardsUpdater().withStatus(ShardStatuses.READY).run();
     Result<ShardStatus[]> res3 = client.schema().shardsUpdater().withClassName("class").run();
     // then
     assertResultError("className, status cannot be empty", res);
@@ -1058,8 +1020,8 @@ public class ClientSchemaTest {
     utils.assertThatSchemaPropertiesHaveDataTypes(expectedProps, schemaClass);
 
     // schema did not change after adding objects
-    ObjectGetResponse[] objects =
-        utils.batchObjects(client, utils.nestedObject1(className), utils.nestedObject2(className));
+    ObjectGetResponse[] objects = utils.batchObjects(client, utils.nestedObject1(className),
+        utils.nestedObject2(className));
     utils.assertThatObjectsAreSimilar(utils.expectedNestedObject1(className), objects[0]);
     utils.assertThatObjectsAreSimilar(utils.expectedNestedObject2(className), objects[1]);
     schemaClass = utils.getClass(client, className);
@@ -1102,8 +1064,8 @@ public class ClientSchemaTest {
     utils.assertThatSchemaPropertiesHaveDataTypes(expectedPropsStep1, schemaClass);
 
     // schema changed after adding objects
-    ObjectGetResponse[] objects =
-        utils.batchObjects(client, utils.nestedObject1(className), utils.nestedObject2(className));
+    ObjectGetResponse[] objects = utils.batchObjects(client, utils.nestedObject1(className),
+        utils.nestedObject2(className));
     utils.assertThatObjectsAreSimilar(utils.expectedNestedObject1(className), objects[0]);
     utils.assertThatObjectsAreSimilar(utils.expectedNestedObject2(className), objects[1]);
     schemaClass = utils.getClass(client, className);
@@ -1146,8 +1108,8 @@ public class ClientSchemaTest {
     utils.assertThatSchemaPropertiesHaveDataTypes(expectedPropsStep1, schemaClass);
 
     // schema changed after adding objects
-    ObjectGetResponse[] objects =
-        utils.batchObjects(client, utils.nestedObject1(className), utils.nestedObject2(className));
+    ObjectGetResponse[] objects = utils.batchObjects(client, utils.nestedObject1(className),
+        utils.nestedObject2(className));
     utils.assertThatObjectsAreSimilar(utils.expectedNestedObject1(className), objects[0]);
     utils.assertThatObjectsAreSimilar(utils.expectedNestedObject2(className), objects[1]);
     schemaClass = utils.getClass(client, className);
@@ -1173,8 +1135,8 @@ public class ClientSchemaTest {
     };
 
     // schema created after adding objects
-    ObjectGetResponse[] objects =
-        utils.batchObjects(client, utils.nestedObject1(className), utils.nestedObject2(className));
+    ObjectGetResponse[] objects = utils.batchObjects(client, utils.nestedObject1(className),
+        utils.nestedObject2(className));
     utils.assertThatObjectsAreSimilar(utils.expectedNestedObject1(className), objects[0]);
     utils.assertThatObjectsAreSimilar(utils.expectedNestedObject2(className), objects[1]);
     schemaClass = utils.getClass(client, className);
@@ -1200,8 +1162,8 @@ public class ClientSchemaTest {
     };
 
     // schema created after adding objects
-    ObjectGetResponse[] objects =
-        utils.batchObjects(client, utils.nestedObject2(className), utils.nestedObject1(className));
+    ObjectGetResponse[] objects = utils.batchObjects(client, utils.nestedObject2(className),
+        utils.nestedObject1(className));
     utils.assertThatObjectsAreSimilar(utils.expectedNestedObject2(className), objects[0]);
     utils.assertThatObjectsAreSimilar(utils.expectedNestedObject1(className), objects[1]);
     schemaClass = utils.getClass(client, className);
@@ -1222,14 +1184,12 @@ public class ClientSchemaTest {
     props.put("name", "nested object from file");
     props.put("objectProperty", nestedOneObject);
 
-    WeaviateObject weaviateObject =
-        WeaviateObject.builder().className(className).id(id).properties(props).build();
+    WeaviateObject weaviateObject = WeaviateObject.builder().className(className).id(id).properties(props).build();
 
     // then
     ObjectGetResponse[] objects = utils.batchObjects(client, weaviateObject);
     assertThat(objects).isNotEmpty();
-    Result<List<WeaviateObject>> result =
-        client.data().objectsGetter().withID(id).withClassName(className).run();
+    Result<List<WeaviateObject>> result = client.data().objectsGetter().withID(id).withClassName(className).run();
     assertThat(result).isNotNull().returns(false, Result::hasErrors).extracting(Result::getResult)
         .isNotNull().extracting(objs -> objs.get(0)).isNotNull().satisfies(obj -> {
           assertThat(obj.getId()).isEqualTo(id);
@@ -1252,14 +1212,12 @@ public class ClientSchemaTest {
     props.put("name", "nested object from file");
     props.put("objectArrayProperty", nestedArrayObject);
 
-    WeaviateObject weaviateObject =
-        WeaviateObject.builder().className(className).id(id).properties(props).build();
+    WeaviateObject weaviateObject = WeaviateObject.builder().className(className).id(id).properties(props).build();
 
     // then
     ObjectGetResponse[] objects = utils.batchObjects(client, weaviateObject);
     assertThat(objects).isNotEmpty();
-    Result<List<WeaviateObject>> result =
-        client.data().objectsGetter().withID(id).withClassName(className).run();
+    Result<List<WeaviateObject>> result = client.data().objectsGetter().withID(id).withClassName(className).run();
     assertThat(result).isNotNull().returns(false, Result::hasErrors).extracting(Result::getResult)
         .isNotNull().extracting(objs -> objs.get(0)).isNotNull().satisfies(obj -> {
           assertThat(obj.getId()).isEqualTo(id);
@@ -1275,17 +1233,15 @@ public class ClientSchemaTest {
         Property.builder().name("question").dataType(Arrays.asList(DataType.TEXT)).build(),
         Property.builder().name("answer").dataType(Arrays.asList(DataType.TEXT)).build());
 
-    WeaviateClass jeopardyClass =
-        WeaviateClass.builder().className(className).description("A Jeopardy! question")
-            .vectorizer("text2vec-contextionary").properties(properties).build();
+    WeaviateClass jeopardyClass = WeaviateClass.builder().className(className).description("A Jeopardy! question")
+        .vectorizer("text2vec-contextionary").properties(properties).build();
 
     Result<Boolean> createResult = client.schema().classCreator().withClass(jeopardyClass).run();
 
     assertThat(createResult).isNotNull().withFailMessage(() -> createResult.getError().toString())
         .returns(false, Result::hasErrors).withFailMessage(null).returns(true, Result::getResult);
 
-    Result<WeaviateClass> createdClassResult =
-        client.schema().classGetter().withClassName(className).run();
+    Result<WeaviateClass> createdClassResult = client.schema().classGetter().withClassName(className).run();
 
     assertThat(createdClassResult).isNotNull()
         .withFailMessage(() -> createdClassResult.getError().toString())
@@ -1308,8 +1264,7 @@ public class ClientSchemaTest {
     assertThat(updateResult).isNotNull().withFailMessage(() -> updateResult.getError().toString())
         .returns(false, Result::hasErrors).withFailMessage(null).returns(true, Result::getResult);
 
-    Result<WeaviateClass> updatedClassResult =
-        client.schema().classGetter().withClassName(className).run();
+    Result<WeaviateClass> updatedClassResult = client.schema().classGetter().withClassName(className).run();
 
     assertThat(updatedClassResult).isNotNull()
         .withFailMessage(() -> updatedClassResult.getError().toString())
@@ -1349,22 +1304,21 @@ public class ClientSchemaTest {
     Boolean asyncEnabled = true;
     Integer replicationFactor = 1;
 
-    VectorIndexConfig vectorIndexConfig =
-        VectorIndexConfig.builder().cleanupIntervalSeconds(cleanupIntervalSeconds)
-            .efConstruction(efConstruction).maxConnections(maxConnections)
-            .vectorCacheMaxObjects(vectorCacheMaxObjects).ef(ef).skip(skip)
-            .filterStrategy(VectorIndexConfig.FilterStrategy.SWEEPING)
-            .dynamicEfFactor(dynamicEfFactor).dynamicEfMax(dynamicEfMax).dynamicEfMin(dynamicEfMin)
-            .flatSearchCutoff(flatSearchCutoff).distance(distance).pq(
-                PQConfig.builder().enabled(enabled).bitCompression(bitCompression)
-                    .segments(segments).centroids(centroids).encoder(PQConfig.Encoder.builder()
-                        .type(encoderType).distribution(encoderDistribution).build())
-                    .build())
-            .build();
+    VectorIndexConfig vectorIndexConfig = VectorIndexConfig.builder().cleanupIntervalSeconds(cleanupIntervalSeconds)
+        .efConstruction(efConstruction).maxConnections(maxConnections)
+        .vectorCacheMaxObjects(vectorCacheMaxObjects).ef(ef).skip(skip)
+        .filterStrategy(VectorIndexConfig.FilterStrategy.SWEEPING)
+        .dynamicEfFactor(dynamicEfFactor).dynamicEfMax(dynamicEfMax).dynamicEfMin(dynamicEfMin)
+        .flatSearchCutoff(flatSearchCutoff).distance(distance).pq(
+            PQConfig.builder().enabled(enabled).bitCompression(bitCompression)
+                .segments(segments).centroids(centroids).encoder(PQConfig.Encoder.builder()
+                    .type(encoderType).distribution(encoderDistribution).build())
+                .build())
+        .build();
 
-    ReplicationConfig replicationConfig =
-        ReplicationConfig.builder().factor(replicationFactor).asyncEnabled(asyncEnabled)
-            .deletionStrategy(ReplicationConfig.DeletionStrategy.NO_AUTOMATED_RESOLUTION).build();
+    ReplicationConfig replicationConfig = ReplicationConfig.builder().factor(replicationFactor)
+        .asyncEnabled(asyncEnabled)
+        .deletionStrategy(ReplicationConfig.DeletionStrategy.NO_AUTOMATED_RESOLUTION).build();
 
     Map<String, Object> contextionaryVectorizerSettings = new HashMap<>();
     contextionaryVectorizerSettings.put("vectorizeClassName", true);
@@ -1376,17 +1330,15 @@ public class ClientSchemaTest {
         WeaviateClass.VectorConfig.builder().vectorIndexConfig(vectorIndexConfig)
             .vectorIndexType("hnsw").vectorizer(contextionaryVectorizer).build());
 
-    WeaviateClass clazz =
-        WeaviateClass.builder().className("Band").description("Band that plays and produces music")
-            .vectorConfig(vectorConfig).replicationConfig(replicationConfig).build();
+    WeaviateClass clazz = WeaviateClass.builder().className("Band").description("Band that plays and produces music")
+        .vectorConfig(vectorConfig).replicationConfig(replicationConfig).build();
 
     Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run();
 
     assertThat(createStatus).isNotNull().returns(false, Result::hasErrors).returns(true,
         Result::getResult);
 
-    Result<WeaviateClass> bandClass =
-        client.schema().classGetter().withClassName(clazz.getClassName()).run();
+    Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run();
 
     assertThat(bandClass).isNotNull().returns(false, Result::hasErrors)
         .extracting(Result::getResult).isNotNull().extracting(WeaviateClass::getVectorConfig)

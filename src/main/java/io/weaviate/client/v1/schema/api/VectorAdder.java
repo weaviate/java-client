@@ -1,5 +1,6 @@
 package io.weaviate.client.v1.schema.api;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,7 +44,7 @@ public class VectorAdder extends BaseClient<WeaviateClass> implements ClientResu
    * previously.
    */
   public VectorAdder withVector(Map<String, VectorConfig> vectors) {
-    this.addedVectors = Map.copyOf(vectors);
+    this.addedVectors = Collections.unmodifiableMap(vectors);
     return this;
   }
 

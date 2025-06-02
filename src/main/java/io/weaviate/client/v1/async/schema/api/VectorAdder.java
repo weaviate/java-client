@@ -1,5 +1,6 @@
 package io.weaviate.client.v1.async.schema.api;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -53,7 +54,7 @@ public class VectorAdder extends AsyncBaseClient<Boolean> implements AsyncClient
    * previously.
    */
   public VectorAdder withVector(Map<String, VectorConfig> vectors) {
-    this.addedVectors = Map.copyOf(vectors);
+    this.addedVectors = Collections.unmodifiableMap(vectors);
     return this;
   }
 
