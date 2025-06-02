@@ -300,8 +300,8 @@ public class ClientSchemaTest {
       };
       Result<Boolean> add = client.schema().vectorAdder()
           .withClass(className)
-          .withVectorConfig("vector-a", v
-
+          .withVectorConfig("vector-a", vector)
+          .withVectorConfig("vector-b", vector)
           .run(callback).get();
       assertNull("error adding new vectors", add.getError());
 
