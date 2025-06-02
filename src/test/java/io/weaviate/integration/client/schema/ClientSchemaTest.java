@@ -177,8 +177,8 @@ public class ClientSchemaTest {
     // Act
     Result<Boolean> add = client.schema().vectorAdder()
         .withClass(className)
-        .withVector("vector-a", vector)
-        .withVector("vector-b", vector)
+        .withVectorConfig("vector-a", vector)
+        .withVectorConfig("vector-b", vector)
         .run();
     assertNull("error adding new vectors", add.getError());
 
@@ -187,7 +187,6 @@ public class ClientSchemaTest {
     assertThat(pizza.getVectorConfig())
         .as("has all 3 vectors")
         .containsKeys("default", "vector-a", "vector-b");
-
   }
 
   @Test

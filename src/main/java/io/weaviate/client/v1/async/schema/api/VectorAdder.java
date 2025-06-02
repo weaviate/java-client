@@ -44,7 +44,7 @@ public class VectorAdder extends AsyncBaseClient<Boolean> implements AsyncClient
    * Add a named vectors. This method can be chained to add multiple named vectors
    * without using a {@link Map}.
    */
-  public VectorAdder withVector(String name, VectorConfig vector) {
+  public VectorAdder withVectorConfig(String name, VectorConfig vector) {
     this.addedVectors.put(name, vector);
     return this;
   }
@@ -53,7 +53,7 @@ public class VectorAdder extends AsyncBaseClient<Boolean> implements AsyncClient
    * Add all vectors from the map. This will overwrite any vectors added
    * previously.
    */
-  public VectorAdder withVector(Map<String, VectorConfig> vectors) {
+  public VectorAdder withVectorConfig(Map<String, VectorConfig> vectors) {
     this.addedVectors = Collections.unmodifiableMap(vectors);
     return this;
   }
