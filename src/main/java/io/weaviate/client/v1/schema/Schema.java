@@ -19,6 +19,7 @@ import io.weaviate.client.v1.schema.api.TenantsDeleter;
 import io.weaviate.client.v1.schema.api.TenantsExists;
 import io.weaviate.client.v1.schema.api.TenantsGetter;
 import io.weaviate.client.v1.schema.api.TenantsUpdater;
+import io.weaviate.client.v1.schema.api.VectorAdder;
 
 public class Schema {
   private final Config config;
@@ -57,6 +58,10 @@ public class Schema {
 
   public PropertyCreator propertyCreator() {
     return new PropertyCreator(httpClient, config);
+  }
+
+  public VectorAdder vectorAdder() {
+    return new VectorAdder(httpClient, config);
   }
 
   public SchemaDeleter allDeleter() {
