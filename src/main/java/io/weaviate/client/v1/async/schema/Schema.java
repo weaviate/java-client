@@ -1,5 +1,7 @@
 package io.weaviate.client.v1.async.schema;
 
+import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
+
 import io.weaviate.client.Config;
 import io.weaviate.client.base.util.DbVersionSupport;
 import io.weaviate.client.v1.async.schema.api.ClassCreator;
@@ -7,20 +9,19 @@ import io.weaviate.client.v1.async.schema.api.ClassDeleter;
 import io.weaviate.client.v1.async.schema.api.ClassExists;
 import io.weaviate.client.v1.async.schema.api.ClassGetter;
 import io.weaviate.client.v1.async.schema.api.ClassUpdater;
-import io.weaviate.client.v1.async.schema.api.SchemaGetter;
 import io.weaviate.client.v1.async.schema.api.PropertyCreator;
 import io.weaviate.client.v1.async.schema.api.SchemaDeleter;
-import io.weaviate.client.v1.async.schema.api.ShardsGetter;
+import io.weaviate.client.v1.async.schema.api.SchemaGetter;
 import io.weaviate.client.v1.async.schema.api.ShardUpdater;
+import io.weaviate.client.v1.async.schema.api.ShardsGetter;
 import io.weaviate.client.v1.async.schema.api.ShardsUpdater;
 import io.weaviate.client.v1.async.schema.api.TenantsCreator;
-import io.weaviate.client.v1.async.schema.api.TenantsGetter;
-import io.weaviate.client.v1.async.schema.api.TenantsUpdater;
 import io.weaviate.client.v1.async.schema.api.TenantsDeleter;
 import io.weaviate.client.v1.async.schema.api.TenantsExists;
-
+import io.weaviate.client.v1.async.schema.api.TenantsGetter;
+import io.weaviate.client.v1.async.schema.api.TenantsUpdater;
+import io.weaviate.client.v1.async.schema.api.VectorAdder;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
-import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 
 public class Schema {
   private final CloseableHttpAsyncClient client;
@@ -28,7 +29,8 @@ public class Schema {
   private final AccessTokenProvider tokenProvider;
   private final DbVersionSupport dbVersionSupport;
 
-  public Schema(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider, DbVersionSupport dbVersionSupport) {
+  public Schema(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider,
+      DbVersionSupport dbVersionSupport) {
     this.client = client;
     this.config = config;
     this.tokenProvider = tokenProvider;
@@ -63,8 +65,13 @@ public class Schema {
     return new PropertyCreator(client, config, tokenProvider);
   }
 
+  public VectorAdder vectorAdder() {
+    return new VectorAdder(client, config, tokenProvider);
+  }
+
   public SchemaDeleter allDeleter() {
-    return new SchemaDeleter(new SchemaGetter(client, config, tokenProvider), new ClassDeleter(client, config, tokenProvider));
+    return new SchemaDeleter(new SchemaGetter(client, config, tokenProvider),
+        new ClassDeleter(client, config, tokenProvider));
   }
 
   public ShardsGetter shardsGetter() {
