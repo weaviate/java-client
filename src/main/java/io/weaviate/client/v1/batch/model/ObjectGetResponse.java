@@ -26,7 +26,6 @@ public class ObjectGetResponse {
   Map<String, Object> properties;
   Map<String, Object> additional;
   Float[] vector;
-  Float[][] multiVector;
   Map<String, Float[]> vectors;
   Map<String, Float[][]> multiVectors;
   Object vectorWeights;
