@@ -17,6 +17,7 @@ import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.internal.json.JsonEnum;
 
 public interface VectorIndex {
+  static final String DEFAULT_VECTOR_NAME = "default";
 
   public enum Kind implements JsonEnum<Kind> {
     HNSW("hnsw"),

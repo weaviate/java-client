@@ -1,5 +1,8 @@
 package io.weaviate.client6.v1.internal.json;
 
+import java.util.Arrays;
+import java.util.function.BiConsumer;
+
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,6 +13,7 @@ import com.jparams.junit4.data.DataMethod;
 
 import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.api.collections.Vectorizer;
+import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.vectorindex.Distance;
 import io.weaviate.client6.v1.api.collections.vectorindex.Flat;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
@@ -75,7 +79,7 @@ public class JSONTest {
                 """,
         },
 
-        // VectorIndex.CustomTypeFactory
+        // VectorIndex.CustomTypeAdapterFactory
         {
             VectorIndex.class,
             Flat.of(new NoneVectorizer(), flat -> flat
@@ -124,6 +128,40 @@ public class JSONTest {
                 }
                   """,
         },
+
+        // Vectors.CustomTypeAdapterFactory
+        {
+            Vectors.class,
+            Vectors.of(new Float[] { 1f, 2f }),
+            "{\"default\": [1.0, 2.0]}",
+            (CustomAssert) JSONTest::compareVectors,
+        },
+        {
+            Vectors.class,
+            Vectors.of(new Float[][] { { 1f, 2f }, { 3f, 4f } }),
+            "{\"default\": [[1.0, 2.0], [3.0, 4.0]]}",
+            (CustomAssert) JSONTest::compareVectors,
+        },
+        {
+            Vectors.class,
+            Vectors.of("custom", new Float[] { 1f, 2f }),
+            "{\"custom\": [1.0, 2.0]}",
+            (CustomAssert) JSONTest::compareVectors,
+        },
+        {
+            Vectors.class,
+            Vectors.of("custom", new Float[][] { { 1f, 2f }, { 3f, 4f } }),
+            "{\"custom\": [[1.0, 2.0], [3.0, 4.0]]}",
+            (CustomAssert) JSONTest::compareVectors,
+        },
+        {
+            Vectors.class,
+            Vectors.of(named -> named
+                .vector("1d", new Float[] { 1f, 2f })
+                .vector("2d", new Float[][] { { 1f, 2f }, { 3f, 4f } })),
+            "{\"1d\": [1.0, 2.0], \"2d\": [[1.0, 2.0], [3.0, 4.0]]}",
+            (CustomAssert) JSONTest::compareVectors,
+        },
     };
   }
 
@@ -134,11 +172,19 @@ public class JSONTest {
     assertEqualJson(want, got);
   }
 
+  private interface CustomAssert extends BiConsumer<Object, Object> {
+  }
+
   @Test
   @DataMethod(source = JSONTest.class, method = "testCases")
-  public void test_deserialize(Class<?> targetClass, Object want, String in) {
+  public void test_deserialize(Class<?> targetClass, Object want, String in, CustomAssert assertion) {
     var got = JSON.deserialize(in, targetClass);
-    Assertions.assertThat(got).isEqualTo(want);
+
+    if (assertion != null) {
+      assertion.accept(got, want);
+    } else {
+      Assertions.assertThat(got).isEqualTo(want);
+    }
   }
 
   private static void assertEqualJson(String want, String got) {
@@ -146,4 +192,13 @@ public class JSONTest {
     var gotJson = JsonParser.parseString(got);
     Assertions.assertThat(gotJson).isEqualTo(wantJson);
   }
+
+  private static void compareVectors(Object got, Object want) {
+    Assertions.assertThat(got)
+        .usingRecursiveComparison()
+        .withEqualsForType(Arrays::equals, Float[].class)
+        .withEqualsForType(Arrays::deepEquals, Float[][].class)
+        .isEqualTo(want);
+  }
+
 }
