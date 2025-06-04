@@ -33,9 +33,6 @@ public record NoneVectorizer() implements Vectorizer {
 
     @Override
     public NoneVectorizer read(JsonReader in) throws IOException {
-      if (in.peek() == JsonToken.NULL) {
-        return null;
-      }
       // NoneVectorizer expects no parameters, so we just skip to the closing bracket.
       in.beginObject();
       while (in.peek() != JsonToken.END_OBJECT) {
@@ -44,5 +41,5 @@ public record NoneVectorizer() implements Vectorizer {
       in.endObject();
       return new NoneVectorizer();
     }
-  };
+  }.nullSafe();
 }
