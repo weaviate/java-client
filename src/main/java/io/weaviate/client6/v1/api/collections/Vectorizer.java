@@ -88,10 +88,6 @@ public interface Vectorizer {
 
         @Override
         public Vectorizer read(JsonReader in) throws IOException {
-          if (in.peek() == JsonToken.NULL) {
-            return null;
-          }
-
           in.beginObject();
           var vectorizerName = in.nextName();
           try {
@@ -107,7 +103,7 @@ public interface Vectorizer {
             in.endObject();
           }
         }
-      };
+      }.nullSafe();
     }
   }
 }
