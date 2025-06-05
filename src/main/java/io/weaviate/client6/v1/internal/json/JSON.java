@@ -9,6 +9,8 @@ public final class JSON {
   static {
     var gsonBuilder = new GsonBuilder();
     gsonBuilder.registerTypeAdapterFactory(
+        io.weaviate.client6.v1.api.collections.WeaviateCollection.CustomTypeAdapterFactory.INSTANCE);
+    gsonBuilder.registerTypeAdapterFactory(
         io.weaviate.client6.v1.api.collections.Vectors.CustomTypeAdapterFactory.INSTANCE);
     gsonBuilder.registerTypeAdapterFactory(
         io.weaviate.client6.v1.api.collections.Vectorizer.CustomTypeAdapterFactory.INSTANCE);

@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
+import lombok.EqualsAndHashCode;
 
 public class Hnsw extends BaseVectorIndex {
   @SerializedName("distance")
