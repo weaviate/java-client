@@ -8,7 +8,10 @@ import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
+@EqualsAndHashCode(callSuper = true)
+@ToString
 public class Hnsw extends BaseVectorIndex {
   @SerializedName("distance")
   private final Distance distance;
@@ -37,7 +40,7 @@ public class Hnsw extends BaseVectorIndex {
   Boolean skipVectorization;
 
   @Override
-  public VectorIndex.Kind type() {
+  public VectorIndex.Kind _kind() {
     return VectorIndex.Kind.HNSW;
   }
 

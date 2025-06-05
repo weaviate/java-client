@@ -165,7 +165,7 @@ public class JSONTest {
             (CustomAssert) JSONTest::compareVectors,
         },
 
-        // WeaviateCollection.TYPE_ADAPTER
+        // WeaviateCollection.CustomTypeAdapterFactory
         {
             WeaviateCollection.class,
             WeaviateCollection.of("Things", things -> things
@@ -238,5 +238,4 @@ public class JSONTest {
         .withEqualsForType(Arrays::deepEquals, Float[][].class)
         .isEqualTo(want);
   }
-
 }

@@ -2,6 +2,7 @@ package io.weaviate.client6.v1.internal.json;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 public final class JSON {
   private static final Gson gson;
@@ -23,11 +24,19 @@ public final class JSON {
     gson = gsonBuilder.create();
   }
 
+  public static final Gson getGson() {
+    return gson;
+  }
+
   public static final String serialize(Object value) {
     return gson.toJson(value);
   }
 
   public static final <T> T deserialize(String json, Class<T> cls) {
     return gson.fromJson(json, cls);
+  }
+
+  public static final <T> T deserialize(String json, TypeToken<T> token) {
+    return gson.fromJson(json, token);
   }
 }

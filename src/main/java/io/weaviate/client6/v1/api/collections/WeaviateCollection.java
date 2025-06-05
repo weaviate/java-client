@@ -81,6 +81,11 @@ public record WeaviateCollection(
       return this;
     }
 
+    public Builder vector(VectorIndex vector) {
+      this.vectors.put(VectorIndex.DEFAULT_VECTOR_NAME, vector);
+      return this;
+    }
+
     public Builder vector(String name, VectorIndex vector) {
       this.vectors.put(name, vector);
       return this;

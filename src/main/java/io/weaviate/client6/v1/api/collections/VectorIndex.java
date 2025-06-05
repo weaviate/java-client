@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
+import com.google.gson.internal.Streams;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -41,11 +42,15 @@ public interface VectorIndex {
     }
   }
 
-  public VectorIndex.Kind type();
+  VectorIndex.Kind _kind();
 
-  public Vectorizer vectorizer();
+  default String type() {
+    return _kind().jsonValue();
+  }
 
-  public Object config();
+  Vectorizer vectorizer();
+
+  Object config();
 
   public static enum CustomTypeAdapterFactory implements TypeAdapterFactory {
     INSTANCE;
@@ -82,10 +87,12 @@ public interface VectorIndex {
         public void write(JsonWriter out, VectorIndex value) throws IOException {
           out.beginObject();
           out.name("vectorIndexType");
-          out.value(value.type().jsonValue());
+          out.value(value._kind().jsonValue());
 
+          var config = writeAdapter.toJsonTree((T) value.config());
+          config.getAsJsonObject().remove("vectorizer");
           out.name("vectorIndexConfig");
-          writeAdapter.write(out, (T) value.config());
+          Streams.write(config, out);
 
           out.name("vectorizer");
           vectorizerAdapter.write(out, value.vectorizer());
