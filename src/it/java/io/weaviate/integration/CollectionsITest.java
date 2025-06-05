@@ -44,46 +44,46 @@ public class CollectionsITest extends ConcurrentTest {
     Assertions.assertThat(noCollection).as("after delete").isEmpty();
   }
 
-  // @Test
-  // public void testCrossReferences() throws IOException {
-  // // Arrange: Create Owners collection
-  // var nsOwners = ns("Owners");
-  // client.collections.create(nsOwners);
-  //
-  // // Act: Create Things collection with owner -> owners
-  // var nsThings = ns("Things");
-  // client.collections.create(nsThings,
-  // col -> col.references(Property.reference("ownedBy", nsOwners)));
-  // var things = client.collections.use(nsThings);
-  //
-  // // Assert: Things --ownedBy-> Owners
-  // Assertions.assertThat(things.config.get())
-  // .as("after create Things").get()
-  // .satisfies(c -> {
-  // Assertions.assertThat(c.references())
-  // .as("ownedBy").filteredOn(p -> p.name().equals("ownedBy")).first()
-  // .extracting(p -> p.dataTypes(), InstanceOfAssertFactories.LIST)
-  // .containsOnly(nsOwners);
-  // });
-  //
-  // // Arrange: Create OnlineStores and Markets collections
-  // var nsOnlineStores = ns("OnlineStores");
-  // client.collections.create(nsOnlineStores);
-  //
-  // var nsMarkets = ns("Markets");
-  // client.collections.create(nsMarkets);
-  //
-  // // Act: Update Things collections to add polymorphic reference
-  // things.config.addReference("soldIn", nsOnlineStores, nsMarkets);
-  //
-  // // Assert: Things --soldIn-> [OnlineStores, Markets]
-  // Assertions.assertThat(things.config.get())
-  // .as("after add property").get()
-  // .satisfies(c -> {
-  // Assertions.assertThat(c.references())
-  // .as("soldIn").filteredOn(p -> p.name().equals("soldIn")).first()
-  // .extracting(p -> p.dataTypes(), InstanceOfAssertFactories.LIST)
-  // .containsOnly(nsOnlineStores, nsMarkets);
-  // });
-  // }
+  @Test
+  public void testCrossReferences() throws IOException {
+    // Arrange: Create Owners collection
+    var nsOwners = ns("Owners");
+    client.collections.create(nsOwners);
+
+    // Act: Create Things collection with owner -> owners
+    var nsThings = ns("Things");
+    client.collections.create(nsThings,
+        col -> col.references(Property.reference("ownedBy", nsOwners)));
+    var things = client.collections.use(nsThings);
+
+    // Assert: Things --ownedBy-> Owners
+    Assertions.assertThat(things.config.get())
+        .as("after create Things").get()
+        .satisfies(c -> {
+          Assertions.assertThat(c.references())
+              .as("ownedBy").filteredOn(p -> p.name().equals("ownedBy")).first()
+              .extracting(p -> p.dataTypes(), InstanceOfAssertFactories.LIST)
+              .containsOnly(nsOwners);
+        });
+
+    // Arrange: Create OnlineStores and Markets collections
+    var nsOnlineStores = ns("OnlineStores");
+    client.collections.create(nsOnlineStores);
+
+    var nsMarkets = ns("Markets");
+    client.collections.create(nsMarkets);
+
+    // Act: Update Things collections to add polymorphic reference
+    things.config.addReference("soldIn", nsOnlineStores, nsMarkets);
+
+    // Assert: Things --soldIn-> [OnlineStores, Markets]
+    Assertions.assertThat(things.config.get())
+        .as("after add property").get()
+        .satisfies(c -> {
+          Assertions.assertThat(c.references())
+              .as("soldIn").filteredOn(p -> p.name().equals("soldIn")).first()
+              .extracting(p -> p.dataTypes(), InstanceOfAssertFactories.LIST)
+              .containsOnly(nsOnlineStores, nsMarkets);
+        });
+  }
 }

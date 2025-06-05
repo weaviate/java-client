@@ -7,4 +7,8 @@ import com.google.gson.annotations.SerializedName;
 public record ReferenceProperty(
     @SerializedName("name") String name,
     @SerializedName("dataType") List<String> dataTypes) {
+
+  public Property toProperty() {
+    return new Property(name, dataTypes);
+  }
 }

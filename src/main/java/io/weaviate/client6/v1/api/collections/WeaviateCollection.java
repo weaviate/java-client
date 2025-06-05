@@ -150,7 +150,7 @@ public record WeaviateCollection(
 
           for (var property : mixedProperties) {
             var dataTypes = property.getAsJsonObject().get("dataType").getAsJsonArray();
-            if (dataTypes.size() == 1) {
+            if (dataTypes.size() == 1 && DataType.KNOWN_TYPES.contains(dataTypes.get(0).getAsString())) {
               properties.add(property);
             } else {
               references.add(property);

@@ -2,6 +2,7 @@ package io.weaviate.client6.v1.api.collections;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
@@ -38,7 +39,11 @@ public class WeaviateCollectionsClientAsync {
         CreateCollectionRequest._ENDPOINT);
   }
 
-  public void delete(String name) throws IOException {
-    this.restTransport.performRequestAsync(new DeleteCollectionRequest(name), DeleteCollectionRequest._ENDPOINT);
+  public CompletableFuture<Optional<WeaviateCollection>> getConfig(String name) throws IOException {
+    return this.restTransport.performRequestAsync(new GetConfigRequest(name), GetConfigRequest._ENDPOINT);
+  }
+
+  public CompletableFuture<Void> delete(String name) throws IOException {
+    return this.restTransport.performRequestAsync(new DeleteCollectionRequest(name), DeleteCollectionRequest._ENDPOINT);
   }
 }
