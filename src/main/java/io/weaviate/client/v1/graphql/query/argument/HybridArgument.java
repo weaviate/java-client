@@ -29,6 +29,7 @@ public class HybridArgument implements Argument {
   String[] targetVectors;
   Searches searches;
   Targets targets;
+  Bm25Argument.SearchOperator bm25SearchOperator;
 
   @Override
   public String build() {
@@ -62,6 +63,9 @@ public class HybridArgument implements Argument {
         searchesArgs.add(searches.nearText.build());
       }
       arg.add(String.format("searches:{%s}", String.join(" ", searchesArgs)));
+    }
+    if (bm25SearchOperator != null) {
+      arg.add(String.format("bm25SearchOperator:%s", bm25SearchOperator.build()));
     }
     if (targets != null) {
       arg.add(String.format("%s", targets.build()));
