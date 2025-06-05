@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode
 abstract class BaseVectorIndex implements VectorIndex {
-  protected final transient Vectorizer vectorizer;
+  protected final Vectorizer vectorizer;
 
   @Override
   public Vectorizer vectorizer() {

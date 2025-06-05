@@ -35,8 +35,4 @@ public record Property(
   public static ReferenceProperty reference(String name, List<String> collections) {
     return new ReferenceProperty(name, collections);
   }
-
-  boolean isReference() {
-    return dataTypes.size() > 1 || !DataType.KNOWN_TYPES.contains(dataTypes.get(0));
-  }
 }

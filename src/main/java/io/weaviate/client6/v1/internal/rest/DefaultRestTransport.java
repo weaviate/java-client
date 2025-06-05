@@ -12,6 +12,7 @@ import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.concurrent.FutureCallback;
 import org.apache.hc.core5.http.ClassicHttpRequest;
 import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 import org.apache.hc.core5.io.CloseMode;
 
@@ -36,7 +37,8 @@ public class DefaultRestTransport implements RestTransport {
   public <RequestT, ResponseT> ResponseT performRequest(RequestT request, Endpoint<RequestT, ResponseT> endpoint)
       throws IOException {
     var req = prepareClassicRequest(request, endpoint);
-    return this.httpClient.execute(req, response -> endpoint.deserializeResponse(gson, response));
+    return this.httpClient.execute(req,
+        response -> endpoint.deserializeResponse(gson, EntityUtils.toString(response.getEntity())));
   }
 
   @Override
@@ -44,7 +46,7 @@ public class DefaultRestTransport implements RestTransport {
       Endpoint<RequestT, ResponseT> endpoint) {
     var req = prepareSimpleRequest(request, endpoint);
 
-    var completable = new CompletableFuture<>();
+    var completable = new CompletableFuture<SimpleHttpResponse>();
     this.httpClientAsync.execute(req, new FutureCallback<>() {
 
       @Override
@@ -63,7 +65,7 @@ public class DefaultRestTransport implements RestTransport {
       }
 
     });
-    return completable.thenApply(r -> endpoint.deserializeResponse(gson, (SimpleHttpResponse) r));
+    return completable.thenApply(r -> endpoint.deserializeResponse(gson, r.getBody().getBodyText()));
   }
 
   private <RequestT> SimpleHttpRequest prepareSimpleRequest(RequestT request, Endpoint<RequestT, ?> endpoint) {
@@ -80,12 +82,14 @@ public class DefaultRestTransport implements RestTransport {
   private <RequestT> ClassicHttpRequest prepareClassicRequest(RequestT request, Endpoint<RequestT, ?> endpoint) {
     var method = endpoint.method(request);
     var uri = transportOptions.host() + endpoint.requestUrl(request);
+
     // TODO: apply options;
+    var req = ClassicRequestBuilder.create(method).setUri(uri);
     var body = endpoint.body(gson, request);
-    return ClassicRequestBuilder.create(method)
-        .setEntity(body, ContentType.APPLICATION_JSON)
-        .setUri(uri)
-        .build();
+    if (body != null) {
+      req.setEntity(body, ContentType.APPLICATION_JSON);
+    }
+    return req.build();
   }
 
   @Override

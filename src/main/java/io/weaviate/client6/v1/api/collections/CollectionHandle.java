@@ -6,11 +6,11 @@ import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 import io.weaviate.client6.v1.internal.rest.RestTransport;
 
-public class WeaviateCollectionClient<T> {
+public class CollectionHandle<T> {
   public final WeaviateQueryClient<T> query;
   public final WeaviateAggregateClient aggregate;
 
-  public WeaviateCollectionClient(
+  public CollectionHandle(
       RestTransport restTransport,
       GrpcTransport grpcTransport,
       CollectionDescriptor<T> collectionDescriptor) {
