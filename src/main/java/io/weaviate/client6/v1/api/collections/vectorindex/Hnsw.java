@@ -8,22 +8,32 @@ import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public record Hnsw(
-    Vectorizer vectorizer,
-    Distance distance,
-    Integer ef,
-    Integer efConstruction,
-    Integer maxConnections,
-    Long vectorCacheMaxObjects,
-    Integer cleanupIntervalSeconds,
-    FilterStrategy filterStrategy,
+public class Hnsw extends BaseVectorIndex {
+  @SerializedName("distance")
+  private final Distance distance;
+  @SerializedName("ef")
+  private final Integer ef;
+  @SerializedName("efConstruction")
+  private final Integer efConstruction;
+  @SerializedName("maxConnections")
+  private final Integer maxConnections;
+  @SerializedName("vectorCacheMaxObjects")
+  private final Long vectorCacheMaxObjects;
+  @SerializedName("cleanupIntervalSeconds")
+  private final Integer cleanupIntervalSeconds;
+  @SerializedName("filterStrategy")
+  private final FilterStrategy filterStrategy;
 
-    Integer dynamicEfMin,
-    Integer dynamicEfMax,
-    Integer dynamicEfFactor,
-    Integer flatSearchCutoff,
-
-    @SerializedName("skip") Boolean skipVectorization) implements VectorIndex {
+  @SerializedName("dynamicEfMin")
+  private final Integer dynamicEfMin;
+  @SerializedName("dynamicEfMax")
+  private final Integer dynamicEfMax;
+  @SerializedName("dynamicEfFactor")
+  private final Integer dynamicEfFactor;
+  @SerializedName("flatSearchCutoff")
+  private final Integer flatSearchCutoff;
+  @SerializedName("skip")
+  Boolean skipVectorization;
 
   @Override
   public VectorIndex.Kind type() {
@@ -32,20 +42,7 @@ public record Hnsw(
 
   @Override
   public Object config() {
-    return new Hnsw(
-        null,
-        this.distance,
-        this.ef,
-        this.efConstruction,
-        this.maxConnections,
-        this.vectorCacheMaxObjects,
-        this.cleanupIntervalSeconds,
-        this.filterStrategy,
-        this.dynamicEfMin,
-        this.dynamicEfMax,
-        this.dynamicEfFactor,
-        this.flatSearchCutoff,
-        this.skipVectorization);
+    return this;
   }
 
   @Override
@@ -62,20 +59,19 @@ public record Hnsw(
   }
 
   public Hnsw(Builder builder) {
-    this(
-        builder.vectorizer,
-        builder.distance,
-        builder.ef,
-        builder.efConstruction,
-        builder.maxConnections,
-        builder.vectorCacheMaxObjects,
-        builder.cleanupIntervalSeconds,
-        builder.filterStrategy,
-        builder.dynamicEfMin,
-        builder.dynamicEfMax,
-        builder.dynamicEfFactor,
-        builder.flatSearchCutoff,
-        builder.skipVectorization);
+    super(builder.vectorizer);
+    this.distance = builder.distance;
+    this.ef = builder.ef;
+    this.efConstruction = builder.efConstruction;
+    this.maxConnections = builder.maxConnections;
+    this.vectorCacheMaxObjects = builder.vectorCacheMaxObjects;
+    this.cleanupIntervalSeconds = builder.cleanupIntervalSeconds;
+    this.filterStrategy = builder.filterStrategy;
+    this.dynamicEfMin = builder.dynamicEfMin;
+    this.dynamicEfMax = builder.dynamicEfMax;
+    this.dynamicEfFactor = builder.dynamicEfFactor;
+    this.flatSearchCutoff = builder.flatSearchCutoff;
+    this.skipVectorization = builder.skipVectorization;
   }
 
   public static class Builder implements ObjectBuilder<Hnsw> {

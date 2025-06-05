@@ -8,20 +8,18 @@ import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public record Flat(
-    Vectorizer vectorizer,
-    @SerializedName("vectorCacheMaxObjects") Long vectorCacheMaxObjects) implements VectorIndex {
+public class Flat extends BaseVectorIndex {
+  @SerializedName("vectorCacheMaxObjects")
+  Long vectorCacheMaxObjects;
 
   @Override
-  public Kind type() {
+  public VectorIndex.Kind type() {
     return VectorIndex.Kind.FLAT;
   }
 
   @Override
   public Object config() {
-    return new Flat(
-        null,
-        this.vectorCacheMaxObjects);
+    return this;
   }
 
   public static Flat of(Vectorizer vectorizer) {
@@ -33,7 +31,8 @@ public record Flat(
   }
 
   public Flat(Builder builder) {
-    this(builder.vectorizer, builder.vectorCacheMaxObjects);
+    super(builder.vectorizer);
+    this.vectorCacheMaxObjects = builder.vectorCacheMaxObjects;
   }
 
   public static class Builder implements ObjectBuilder<Flat> {
