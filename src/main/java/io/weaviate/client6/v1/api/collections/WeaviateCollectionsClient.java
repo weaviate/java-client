@@ -37,11 +37,11 @@ public class WeaviateCollectionsClient {
         CreateCollectionRequest._ENDPOINT);
   }
 
-  public void delete(String name) throws IOException {
-    this.restTransport.performRequest(new DeleteCollectionRequest(name), DeleteCollectionRequest._ENDPOINT);
-  }
-
   public Optional<WeaviateCollection> getConfig(String name) throws IOException {
     return this.restTransport.performRequest(new GetConfigRequest(name), GetConfigRequest._ENDPOINT);
+  }
+
+  public void delete(String name) throws IOException {
+    this.restTransport.performRequest(new DeleteCollectionRequest(name), DeleteCollectionRequest._ENDPOINT);
   }
 }
