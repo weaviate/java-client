@@ -11,9 +11,11 @@ import com.google.gson.JsonParser;
 import com.jparams.junit4.JParamsTestRunner;
 import com.jparams.junit4.data.DataMethod;
 
+import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.api.collections.Vectors;
+import io.weaviate.client6.v1.api.collections.WeaviateCollection;
 import io.weaviate.client6.v1.api.collections.vectorindex.Distance;
 import io.weaviate.client6.v1.api.collections.vectorindex.Flat;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
@@ -162,6 +164,38 @@ public class JSONTest {
             "{\"1d\": [1.0, 2.0], \"2d\": [[1.0, 2.0], [3.0, 4.0]]}",
             (CustomAssert) JSONTest::compareVectors,
         },
+
+        // WeaviateCollection.TYPE_ADAPTER
+        {
+            WeaviateCollection.class,
+            WeaviateCollection.of("Things", things -> things
+                .description("A collection of things")
+                .properties(
+                    Property.text("shape"),
+                    Property.integer("size"))
+                .references(
+                    Property.reference("owner", "Person", "Company"))
+                .vectors(named -> named
+                    .vector("v-shape", Hnsw.of(new NoneVectorizer())))),
+            """
+                {
+                  "class": "Things",
+                  "description": "A collection of things",
+                  "properties": [
+                    {"name": "shape", "dataType": ["text"]},
+                    {"name": "size", "dataType": ["int"]},
+                    {"name": "owner", "dataType": ["Person", "Company"]}
+                  ],
+                  "vectorConfig": {
+                    "v-shape": {
+                      "vectorIndexType": "hnsw",
+                      "vectorIndexConfig": {},
+                      "vectorizer": {"none": {}}
+                    }
+                  }
+                }
+                  """,
+        },
     };
   }
 
@@ -193,6 +227,10 @@ public class JSONTest {
     Assertions.assertThat(gotJson).isEqualTo(wantJson);
   }
 
+  /**
+   * Custom assert function that uses deep array equality
+   * to correctly compare Float[] and Float[][] nested in the object.
+   */
   private static void compareVectors(Object got, Object want) {
     Assertions.assertThat(got)
         .usingRecursiveComparison()
