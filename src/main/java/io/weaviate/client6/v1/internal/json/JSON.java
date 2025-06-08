@@ -10,6 +10,8 @@ public final class JSON {
   static {
     var gsonBuilder = new GsonBuilder();
     gsonBuilder.registerTypeAdapterFactory(
+        io.weaviate.client6.v1.api.collections.WeaviateObject.CustomTypeAdapterFactory.INSTANCE);
+    gsonBuilder.registerTypeAdapterFactory(
         io.weaviate.client6.v1.api.collections.WeaviateCollection.CustomTypeAdapterFactory.INSTANCE);
     gsonBuilder.registerTypeAdapterFactory(
         io.weaviate.client6.v1.api.collections.Vectors.CustomTypeAdapterFactory.INSTANCE);
@@ -21,6 +23,9 @@ public final class JSON {
     gsonBuilder.registerTypeAdapter(
         io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer.class,
         io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer.TYPE_ADAPTER);
+    gsonBuilder.registerTypeAdapter(
+        io.weaviate.client6.v1.api.collections.data.Reference.class,
+        io.weaviate.client6.v1.api.collections.data.Reference.TYPE_ADAPTER);
     gson = gsonBuilder.create();
   }
 
@@ -29,7 +34,14 @@ public final class JSON {
   }
 
   public static final String serialize(Object value) {
-    return gson.toJson(value);
+    if (value == null) {
+      return null;
+    }
+    return serialize(value, TypeToken.get(value.getClass()));
+  }
+
+  public static final String serialize(Object value, TypeToken<?> typeToken) {
+    return gson.toJson(value, typeToken.getType());
   }
 
   public static final <T> T deserialize(String json, Class<T> cls) {
