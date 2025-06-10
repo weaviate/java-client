@@ -1,4 +1,4 @@
-package io.weaviate.client6.internal;
+package io.weaviate.client6.v1.internal.grpc;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

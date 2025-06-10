@@ -2,9 +2,9 @@ package io.weaviate.client6.v1.api.collections.query;
 
 import java.util.function.Function;
 
-import io.weaviate.client6.internal.GRPC;
 import io.weaviate.client6.v1.api.collections.aggregate.ObjectFilter;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
+import io.weaviate.client6.v1.internal.grpc.GRPC;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch;
