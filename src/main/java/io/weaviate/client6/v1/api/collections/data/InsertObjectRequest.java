@@ -23,20 +23,13 @@ public record InsertObjectRequest<T>(WeaviateObject<T, Reference, ObjectMetadata
     return Endpoint.of(
         request -> "POST",
         request -> "/objects/",
-        (gson, request) -> {
-          System.out.println("insert: " + JSON.serialize(request.object, TypeToken.getParameterized(
-              WeaviateObject.class, descriptor.typeToken().getType(), Reference.class, ObjectMetadata.class)));
-          return JSON.serialize(request.object, TypeToken.getParameterized(
-              WeaviateObject.class, descriptor.typeToken().getType(), Reference.class, ObjectMetadata.class));
-        },
+        (gson, request) -> JSON.serialize(request.object, TypeToken.getParameterized(
+            WeaviateObject.class, descriptor.typeToken().getType(), Reference.class, ObjectMetadata.class)),
         request -> Collections.emptyMap(),
         code -> code != HttpStatus.SC_SUCCESS,
-        (gson, response) -> {
-          System.out.println("inserted: " + response);
-          return JSON.deserialize(response,
-              (TypeToken<WeaviateObject<T, Object, ObjectMetadata>>) TypeToken.getParameterized(
-                  WeaviateObject.class, descriptor.typeToken().getType(), Object.class, ObjectMetadata.class));
-        });
+        (gson, response) -> JSON.deserialize(response,
+            (TypeToken<WeaviateObject<T, Object, ObjectMetadata>>) TypeToken.getParameterized(
+                WeaviateObject.class, descriptor.typeToken().getType(), Object.class, ObjectMetadata.class)));
   }
 
   public static <T> InsertObjectRequest<T> of(String collectionName, T properties) {

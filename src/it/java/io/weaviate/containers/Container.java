@@ -10,7 +10,7 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.lifecycle.Startable;
 
-import io.weaviate.client6.WeaviateClient;
+import io.weaviate.client6.v1.api.WeaviateClient;
 import lombok.RequiredArgsConstructor;
 
 public class Container {
