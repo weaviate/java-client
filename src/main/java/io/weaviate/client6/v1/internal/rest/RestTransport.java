@@ -9,5 +9,5 @@ public interface RestTransport extends Closeable {
       throws IOException;
 
   <RequestT, ResponseT> CompletableFuture<ResponseT> performRequestAsync(RequestT request,
-      Endpoint<RequestT, ResponseT> endpoint) throws IOException;
+      Endpoint<RequestT, ResponseT> endpoint);
 }

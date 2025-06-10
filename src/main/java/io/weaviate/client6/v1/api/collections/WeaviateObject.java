@@ -2,9 +2,15 @@ package io.weaviate.client6.v1.api.collections;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.internal.Streams;
@@ -14,44 +20,63 @@ import com.google.gson.stream.JsonWriter;
 
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public record WeaviateObject<P, M extends WeaviateMetadata>(
+public record WeaviateObject<P, R, M extends WeaviateMetadata>(
     String collection,
     P properties,
-    Map<String, ObjectReference<P, M>> references,
+    Map<String, List<R>> references,
     M metadata) {
 
-  public WeaviateObject(Builder<P, M> builder) {
+  public WeaviateObject(Builder<P, R, M> builder) {
     this(builder.collection, builder.properties, builder.references, builder.metadata);
   }
 
-  public static class Builder<P, M extends WeaviateMetadata> implements ObjectBuilder<WeaviateObject<P, M>> {
+  public static class Builder<P, R, M extends WeaviateMetadata> implements ObjectBuilder<WeaviateObject<P, R, M>> {
     private String collection;
     private P properties;
-    private Map<String, ObjectReference<P, M>> references;
+    private Map<String, List<R>> references = new HashMap<>();
     private M metadata;
 
-    public Builder<P, M> collection(String collection) {
+    public final Builder<P, R, M> collection(String collection) {
       this.collection = collection;
       return this;
     }
 
-    public Builder<P, M> properties(P properties) {
+    public final Builder<P, R, M> properties(P properties) {
       this.properties = properties;
       return this;
     }
 
-    public Builder<P, M> references(Map<String, ObjectReference<P, M>> references) {
+    /**
+     * Add a reference. Calls to {@link #reference} can be chained
+     * to add multiple references.
+     */
+    @SafeVarargs
+    public final Builder<P, R, M> reference(String property, R... references) {
+      for (var ref : references) {
+        addReference(property, ref);
+      }
+      return this;
+    }
+
+    private final void addReference(String property, R reference) {
+      if (!references.containsKey(property)) {
+        references.put(property, new ArrayList<>());
+      }
+      references.get(property).add(reference);
+    }
+
+    public Builder<P, R, M> references(Map<String, List<R>> references) {
       this.references = references;
       return this;
     }
 
-    public Builder<P, M> metadata(M metadata) {
+    public Builder<P, R, M> metadata(M metadata) {
       this.metadata = metadata;
       return this;
     }
 
     @Override
-    public WeaviateObject<P, M> build() {
+    public WeaviateObject<P, R, M> build() {
       return new WeaviateObject<>(this);
     }
   }
@@ -65,37 +90,44 @@ public record WeaviateObject<P, M extends WeaviateMetadata>(
       var type = typeToken.getType();
       var rawType = typeToken.getRawType();
       if (rawType != WeaviateObject.class ||
-          !(type instanceof ParameterizedType parameterized)) {
+          !(type instanceof ParameterizedType parameterized)
+          || parameterized.getActualTypeArguments().length < 3) {
         return null;
       }
 
       var typeParams = parameterized.getActualTypeArguments();
       final var propertiesType = typeParams[0];
-      final var metadataType = typeParams[1];
+      final var referencesType = typeParams[1];
+      final var metadataType = typeParams[2];
 
       final var propertiesAdapter = gson.getAdapter(TypeToken.get(propertiesType));
       final var metadataAdapter = gson.getAdapter(TypeToken.get(metadataType));
+      final var referencesAdapter = gson.getAdapter(TypeToken.get(referencesType));
 
-      final var referencesAdapter = gson.getAdapter(TypeToken.getParameterized(
-          Map.class,
-          String.class, TypeToken.getParameterized(
-              ObjectReference.class, propertiesType, metadataType)
-              .getType()));
-
-      return (TypeAdapter<T>) new TypeAdapter<WeaviateObject<?, ?>>() {
+      return (TypeAdapter<T>) new TypeAdapter<WeaviateObject<?, ?, ?>>() {
 
         @Override
-        public void write(JsonWriter out, WeaviateObject<?, ?> value) throws IOException {
+        public void write(JsonWriter out, WeaviateObject<?, ?, ?> value) throws IOException {
           out.beginObject();
 
           out.name("class");
           out.value(value.collection());
 
           out.name("properties");
-          ((TypeAdapter<Object>) propertiesAdapter).write(out, value.properties());
-
-          out.name("references");
-          ((TypeAdapter<Object>) referencesAdapter).write(out, value.references());
+          if (value.references().isEmpty()) {
+            ((TypeAdapter<Object>) propertiesAdapter).write(out, value.properties());
+          } else {
+            var properties = ((TypeAdapter<Object>) propertiesAdapter).toJsonTree(value.properties()).getAsJsonObject();
+            for (var refEntry : value.references().entrySet()) {
+              var beacons = new JsonArray();
+              for (var reference : (List<Object>) refEntry.getValue()) {
+                var beacon = ((TypeAdapter<Object>) referencesAdapter).toJsonTree(reference);
+                beacons.add(beacon);
+              }
+              properties.add(refEntry.getKey(), beacons);
+            }
+            Streams.write(properties, out);
+          }
 
           // Flatten out metadata fields.
           var metadata = ((TypeAdapter<Object>) metadataAdapter).toJsonTree(value.metadata);
@@ -107,37 +139,36 @@ public record WeaviateObject<P, M extends WeaviateMetadata>(
         }
 
         @Override
-        public WeaviateObject<?, ?> read(JsonReader in) throws IOException {
+        public WeaviateObject<?, ?, ?> read(JsonReader in) throws IOException {
           var builder = new WeaviateObject.Builder<>();
           var metadata = new ObjectMetadata.Builder();
 
-          in.beginObject();
-          while (in.hasNext()) {
-            switch (in.nextName()) {
-              case "class":
-                builder.collection(in.nextString());
-                break;
-              case "properties":
-                var properties = propertiesAdapter.read(in);
-                builder.properties(properties);
-                break;
-              case "references":
-                var references = referencesAdapter.read(in);
-                builder.references((Map<String, ObjectReference<Object, WeaviateMetadata>>) references);
-                break;
+          var object = JsonParser.parseReader(in).getAsJsonObject();
+          builder.collection(object.get("class").getAsString());
 
-              // Collect metadata
-              case "id":
-                metadata.id(in.nextString());
-                break;
-              default: // ignore unknown values
-                in.skipValue();
-                break;
+          var jsonProperties = object.get("properties").getAsJsonObject();
+          var trueProperties = new JsonObject();
+          for (var property : jsonProperties.entrySet()) {
+            var value = property.getValue();
+            if (!value.isJsonArray()) {
+              trueProperties.add(property.getKey(), value);
+              continue;
+            }
+            var array = value.getAsJsonArray();
+            var first = array.get(0);
+            if (first.isJsonObject() && first.getAsJsonObject().has("beacon")) {
+              for (var el : array) {
+                var beacon = ((TypeAdapter<Object>) referencesAdapter).fromJsonTree(el);
+                builder.reference(property.getKey(), beacon);
+              }
             }
           }
-          in.endObject();
 
+          builder.properties(propertiesAdapter.fromJsonTree(trueProperties));
+
+          metadata.id(object.get("id").getAsString());
           builder.metadata(metadata.build());
+
           return builder.build();
         }
       };

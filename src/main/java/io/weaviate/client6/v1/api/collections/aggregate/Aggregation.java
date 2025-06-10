@@ -28,6 +28,7 @@ public record Aggregation(
         builder.includeTotalCount,
         builder.metrics);
   }
+  // TODO: provide default value for ArrayList<>
 
   public static class Builder implements ObjectBuilder<Aggregation> {
     private final ObjectFilter objectFilter;
@@ -36,6 +37,7 @@ public record Aggregation(
       this.objectFilter = objectFilter;
     }
 
+    // TODO: provide default value for ArrayList<>
     private List<PropertyAggregation> metrics;
     private Integer objectLimit;
     private boolean includeTotalCount = false;

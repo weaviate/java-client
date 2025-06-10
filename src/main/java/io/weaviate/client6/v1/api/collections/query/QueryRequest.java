@@ -9,8 +9,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.util.JsonFormat;
+
 import io.weaviate.client6.internal.GRPC;
-import io.weaviate.client6.v1.api.collections.ObjectReference;
+import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.internal.grpc.Rpc;
@@ -36,14 +39,26 @@ public record QueryRequest(SearchOperator operator, GroupBy groupBy) {
           if (request.groupBy != null) {
             request.groupBy.appendTo(message);
           }
+          try {
+            System.out.println(JsonFormat.printer().print(message));
+          } catch (InvalidProtocolBufferException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
           return message.build();
         },
         reply -> {
-          List<WeaviateObject<T, QueryMetadata>> objects = reply.getResultsList().stream()
+          try {
+            System.out.println(JsonFormat.printer().print(reply));
+          } catch (InvalidProtocolBufferException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+          var objects = reply
+              .getResultsList()
+              .stream()
               .map(obj -> QueryRequest.unmarshalResultObject(
-                  obj.getProperties(),
-                  obj.getMetadata(),
-                  collection))
+                  obj.getProperties(), obj.getMetadata(), collection))
               .toList();
           return new QueryResponse<>(objects);
         },
@@ -82,7 +97,20 @@ public record QueryRequest(SearchOperator operator, GroupBy groupBy) {
         }, () -> rpc.method(), () -> rpc.methodAsync());
   }
 
-  private static <T> WeaviateObject<T, QueryMetadata> unmarshalResultObject(
+  private static <T> WeaviateObject<T, Object, QueryMetadata> unmarshalResultObject(
+      WeaviateProtoSearchGet.PropertiesResult propertiesResult,
+      WeaviateProtoSearchGet.MetadataResult metadataResult,
+      CollectionDescriptor<T> descriptor) {
+    var res = unmarshalReferences(propertiesResult, metadataResult, descriptor);
+    var metadata = new QueryMetadata.Builder()
+        .id(res.metadata().uuid())
+        .distance(metadataResult.getDistance())
+        .certainty(metadataResult.getCertainty())
+        .vectors(res.metadata().vectors());
+    return new WeaviateObject<>(descriptor.name(), res.properties(), res.references(), metadata.build());
+  }
+
+  private static <T> WeaviateObject<T, Object, ObjectMetadata> unmarshalReferences(
       WeaviateProtoSearchGet.PropertiesResult propertiesResult,
       WeaviateProtoSearchGet.MetadataResult metadataResult,
       CollectionDescriptor<T> descriptor) {
@@ -97,22 +125,31 @@ public record QueryRequest(SearchOperator operator, GroupBy groupBy) {
     // I.e. { "ref": A-1 } , { "ref": B-1 } => { "ref": [A-1, B-1] }
     var referenceProperties = propertiesResult.getRefPropsList()
         .stream().reduce(
-            new HashMap<String, ObjectReference>(),
+            new HashMap<String, List<Object>>(),
             (map, ref) -> {
               var refObjects = ref.getPropertiesList().stream()
-                  .map(property -> unmarshalResultObject(property, property.getMetadata(), descriptor))
+                  .map(property -> {
+                    var reference = unmarshalReferences(
+                        property, property.getMetadata(),
+                        // TODO: this should be possible to configure for ODM?
+                        CollectionDescriptor.ofMap(property.getTargetCollection()));
+                    return (Object) new WeaviateObject<>(
+                        reference.collection(),
+                        (Object) reference.properties(),
+                        reference.references(),
+                        reference.metadata());
+                  })
                   .toList();
 
               // Merge ObjectReferences by joining the underlying WeaviateObjects.
               map.merge(
                   ref.getPropName(),
-                  // TODO: check if this works
-                  new ObjectReference((List<WeaviateObject<T, QueryMetadata>>) refObjects),
+                  refObjects,
                   (left, right) -> {
                     var joined = Stream.concat(
-                        left.objects().stream(),
-                        right.objects().stream()).toList();
-                    return new ObjectReference(joined);
+                        left.stream(),
+                        right.stream()).toList();
+                    return joined;
                   });
               return map;
             },
@@ -121,33 +158,35 @@ public record QueryRequest(SearchOperator operator, GroupBy groupBy) {
               return left;
             });
 
-    // TODO: should we return without metdata (null)?
-    if (metadataResult == null) {
-      metadataResult = propertiesResult.getMetadata();
-    }
+    ObjectMetadata metadata = null;
+    if (metadataResult != null) {
+      var metadataBuilder = new ObjectMetadata.Builder()
+          .id(metadataResult.getId());
 
-    var metadata = new QueryMetadata.Builder()
-        .id(metadataResult.getId())
-        .distance(metadataResult.getDistance())
-        .certainty(metadataResult.getCertainty());
-
-    var vectors = new Vectors.Builder();
-    for (final var vector : metadataResult.getVectorsList()) {
-      var vectorName = vector.getName();
-      switch (vector.getType()) {
-        case VECTOR_TYPE_SINGLE_FP32:
-          vectors.vector(vectorName, GRPC.fromByteString(vector.getVectorBytes()));
-          break;
-        case VECTOR_TYPE_MULTI_FP32:
-          vectors.vector(vectorName, GRPC.fromByteStringMulti(vector.getVectorBytes()));
-          break;
-        default:
-          continue;
+      var vectors = new Vectors.Builder();
+      for (final var vector : metadataResult.getVectorsList()) {
+        var vectorName = vector.getName();
+        switch (vector.getType()) {
+          case VECTOR_TYPE_SINGLE_FP32:
+            vectors.vector(vectorName, GRPC.fromByteString(vector.getVectorBytes()));
+            break;
+          case VECTOR_TYPE_MULTI_FP32:
+            vectors.vector(vectorName, GRPC.fromByteStringMulti(vector.getVectorBytes()));
+            break;
+          default:
+            continue;
+        }
       }
+      metadataBuilder.vectors(vectors.build());
+      metadata = metadataBuilder.build();
     }
-    metadata.vectors(vectors.build());
 
-    return new WeaviateObject<>(descriptor.name(), properties.build(), referenceProperties, metadata.build());
+    var obj = new WeaviateObject.Builder<T, Object, ObjectMetadata>()
+        .collection(descriptor.name())
+        .properties(properties.build())
+        .references(referenceProperties)
+        .metadata(metadata);
+    return obj.build();
   }
 
   private static <T> void setProperty(String property, WeaviateProtoProperties.Value value,

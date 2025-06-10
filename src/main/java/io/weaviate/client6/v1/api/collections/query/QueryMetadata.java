@@ -1,9 +1,10 @@
 package io.weaviate.client6.v1.api.collections.query;
 
 import io.weaviate.client6.v1.api.collections.Vectors;
+import io.weaviate.client6.v1.api.collections.WeaviateMetadata;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public record QueryMetadata(String id, Float distance, Float certainty, Vectors vectors) {
+public record QueryMetadata(String uuid, Float distance, Float certainty, Vectors vectors) implements WeaviateMetadata {
 
   private QueryMetadata(Builder builder) {
     this(builder.uuid, builder.distance, builder.certainty, builder.vectors);

@@ -8,14 +8,14 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 
 public class WeaviateQueryClient<T>
     extends
-    AbstractQueryClient<T, Optional<WeaviateObject<T, QueryMetadata>>, QueryResponse<T>, QueryResponseGrouped<T>> {
+    AbstractQueryClient<T, Optional<WeaviateObject<T, Object, QueryMetadata>>, QueryResponse<T>, QueryResponseGrouped<T>> {
 
   public WeaviateQueryClient(CollectionDescriptor<T> collection, GrpcTransport transport) {
     super(collection, transport);
   }
 
   @Override
-  protected Optional<WeaviateObject<T, QueryMetadata>> byId(ById byId) {
+  protected Optional<WeaviateObject<T, Object, QueryMetadata>> byId(ById byId) {
     var request = new QueryRequest(byId, null);
     var result = this.transport.performRequest(request, QueryRequest.rpc(collection));
     return optionalFirst(result.objects());
