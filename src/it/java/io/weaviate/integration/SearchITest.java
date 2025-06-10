@@ -43,7 +43,7 @@ public class SearchITest extends ConcurrentTest {
       Container.CONTEXTIONARY);
   @ClassRule // Bind containers to the lifetime of the test
   public static final TestRule _rule = compose.asTestRule();
-  private static final WeaviateClient client = compose.getClient().apiClient();
+  private static final WeaviateClient client = compose.getClient();
 
   private static final String COLLECTION = unique("Things");
   private static final String VECTOR_INDEX = "bring_your_own";

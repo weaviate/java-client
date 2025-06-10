@@ -26,7 +26,7 @@ import io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer;
 import io.weaviate.containers.Container;
 
 public class AggregationITest extends ConcurrentTest {
-  private static WeaviateClient client = Container.WEAVIATE.getClient().apiClient();
+  private static WeaviateClient client = Container.WEAVIATE.getClient();
   private static final String COLLECTION = unique("Things");
 
   @BeforeClass

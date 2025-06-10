@@ -9,8 +9,8 @@ import java.util.Set;
 
 import org.testcontainers.weaviate.WeaviateContainer;
 
-import io.weaviate.client6.Config;
-import io.weaviate.client6.WeaviateClient;
+import io.weaviate.client6.v1.api.Config;
+import io.weaviate.client6.v1.api.WeaviateClient;
 
 public class Weaviate extends WeaviateContainer {
   private WeaviateClient clientInstance;

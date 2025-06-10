@@ -30,7 +30,7 @@ import io.weaviate.containers.Container;
  * </ul>
  */
 public class ReferencesITest extends ConcurrentTest {
-  private static final WeaviateClient client = Container.WEAVIATE.getClient().apiClient();
+  private static final WeaviateClient client = Container.WEAVIATE.getClient();
 
   @Test
   public void testReferences() throws IOException {
@@ -98,8 +98,6 @@ public class ReferencesITest extends ConcurrentTest {
                 ref -> ref.returnMetadata(MetadataField.ID)),
             QueryReference.multi("hasAwards", nsGrammy,
                 ref -> ref.returnMetadata(MetadataField.ID))));
-
-    System.out.println(gotAlex.get());
 
     Assertions.assertThat(gotAlex).get()
         .as("Artists: fetch by id including hasAwards references")

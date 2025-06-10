@@ -16,7 +16,7 @@ import io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer;
 import io.weaviate.containers.Container;
 
 public class CollectionsITest extends ConcurrentTest {
-  private static WeaviateClient client = Container.WEAVIATE.getClient().apiClient();
+  private static WeaviateClient client = Container.WEAVIATE.getClient();
 
   @Test
   public void testCreateGetDelete() throws IOException {
