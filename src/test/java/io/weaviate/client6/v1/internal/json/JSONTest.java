@@ -28,6 +28,7 @@ import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.api.collections.vectorizers.Img2VecNeuralVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecClipVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecContextionaryVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecWeaviateVectorizer;
 
 /** Unit tests for custom POJO-to-JSON serialization. */
@@ -60,13 +61,23 @@ public class JSONTest {
             """
                 {"multi2vec-clip": {
                   "inferenceUrl": "http://example.com",
-                  "vectorizeCollectionName": true,
+                  "vectorizeClassName": true,
                   "imageFields": ["img"],
                   "textFields": ["txt"],
                   "weights": {
                     "imageWeights": [1.0],
                     "textWeights": [2.0]
                   }
+                }}
+                """,
+        },
+        {
+            Vectorizer.class,
+            Text2VecContextionaryVectorizer.of(t2v -> t2v
+                .vectorizeCollectionName(true)),
+            """
+                {"text2vec-contextionary": {
+                  "vectorizeClassName": true
                 }}
                 """,
         },
@@ -80,7 +91,7 @@ public class JSONTest {
             """
                 {"text2vec-weaviate": {
                   "baseUrl": "http://example.com",
-                  "vectorizeCollectionName": true,
+                  "vectorizeClassName": true,
                   "dimensions": 4,
                   "model": "very-good-model"
                 }}
