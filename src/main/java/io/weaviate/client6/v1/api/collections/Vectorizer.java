@@ -75,14 +75,15 @@ public interface Vectorizer {
         init(gson);
       }
 
-      final var writeAdapter = gson.getDelegateAdapter(this, TypeToken.get(rawType));
       return (TypeAdapter<T>) new TypeAdapter<Vectorizer>() {
 
         @Override
         public void write(JsonWriter out, Vectorizer value) throws IOException {
+          var writeAdapter = readAdapters.get(value._kind());
+
           out.beginObject();
           out.name(value._kind().jsonValue());
-          writeAdapter.write(out, (T) value._self());
+          ((TypeAdapter<T>) writeAdapter).write(out, (T) value._self());
           out.endObject();
         }
 

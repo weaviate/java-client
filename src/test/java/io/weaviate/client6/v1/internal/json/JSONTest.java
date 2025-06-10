@@ -182,7 +182,8 @@ public class JSONTest {
                 .references(
                     Property.reference("owner", "Person", "Company"))
                 .vectors(named -> named
-                    .vector("v-shape", Hnsw.of(new NoneVectorizer())))),
+                    .vector("v-shape", Hnsw.of(Img2VecNeuralVectorizer.of(
+                        i2v -> i2v.imageFields("img")))))),
             """
                 {
                   "class": "Things",
@@ -196,7 +197,9 @@ public class JSONTest {
                     "v-shape": {
                       "vectorIndexType": "hnsw",
                       "vectorIndexConfig": {},
-                      "vectorizer": {"none": {}}
+                      "vectorizer": {"img2vec-neural": {
+                        "imageFields": ["img"]
+                      }}
                     }
                   }
                 }
