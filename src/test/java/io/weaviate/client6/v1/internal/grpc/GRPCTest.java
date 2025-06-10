@@ -1,4 +1,4 @@
-package io.weaviate.client6.internal;
+package io.weaviate.client6.v1.internal.grpc;
 
 import static org.junit.Assert.assertArrayEquals;
 
