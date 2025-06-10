@@ -12,7 +12,7 @@ import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Multi2VecClipVectorizer(
-    @SerializedName("vectorizeCollectionName") boolean vectorizeCollectionName,
+    @SerializedName("vectorizeClassName") boolean vectorizeCollectionName,
     @SerializedName("inferenceUrl") String inferenceUrl,
     @SerializedName("imageFields") List<String> imageFields,
     @SerializedName("textFields") List<String> textFields,

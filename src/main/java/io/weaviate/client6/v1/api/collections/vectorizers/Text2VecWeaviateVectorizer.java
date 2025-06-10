@@ -8,7 +8,7 @@ import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Text2VecWeaviateVectorizer(
-    @SerializedName("vectorizeCollectionName") boolean vectorizeCollectionName,
+    @SerializedName("vectorizeClassName") boolean vectorizeCollectionName,
     @SerializedName("baseUrl") String inferenceUrl,
     @SerializedName("dimensions") Integer dimensions,
     @SerializedName("model") String model) implements Vectorizer {
