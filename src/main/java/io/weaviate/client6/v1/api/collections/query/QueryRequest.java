@@ -9,9 +9,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.google.protobuf.InvalidProtocolBufferException;
-import com.google.protobuf.util.JsonFormat;
-
 import io.weaviate.client6.internal.GRPC;
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.Vectors;
@@ -39,21 +36,9 @@ public record QueryRequest(SearchOperator operator, GroupBy groupBy) {
           if (request.groupBy != null) {
             request.groupBy.appendTo(message);
           }
-          try {
-            System.out.println(JsonFormat.printer().print(message));
-          } catch (InvalidProtocolBufferException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-          }
           return message.build();
         },
         reply -> {
-          try {
-            System.out.println(JsonFormat.printer().print(reply));
-          } catch (InvalidProtocolBufferException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-          }
           var objects = reply
               .getResultsList()
               .stream()
