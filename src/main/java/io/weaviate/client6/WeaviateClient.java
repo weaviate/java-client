@@ -14,6 +14,7 @@ public class WeaviateClient implements Closeable {
   private final GrpcClient grpc;
 
   public final CollectionsClient collections;
+  public final io.weaviate.client6.v1.api.WeaviateClient apiClient;
 
   private final GrpcTransport grpcTransport;
 
@@ -22,8 +23,14 @@ public class WeaviateClient implements Closeable {
     this.grpc = new GrpcClient(config);
 
     this.grpcTransport = new DefaultGrpcTransport(config);
-
     this.collections = new CollectionsClient(config, http, grpc, grpcTransport);
+    this.apiClient = new io.weaviate.client6.v1.api.WeaviateClient(
+        new io.weaviate.client6.v1.api.Config(config.scheme, config.httpHost, config.grpcHost));
+
+  }
+
+  public io.weaviate.client6.v1.api.WeaviateClient apiClient() {
+    return this.apiClient;
   }
 
   @Override

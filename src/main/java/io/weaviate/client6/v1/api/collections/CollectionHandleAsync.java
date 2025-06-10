@@ -2,6 +2,7 @@ package io.weaviate.client6.v1.api.collections;
 
 import io.weaviate.client6.v1.api.collections.aggregate.WeaviateAggregateClientAsync;
 import io.weaviate.client6.v1.api.collections.config.WeaviateConfigClientAsync;
+import io.weaviate.client6.v1.api.collections.data.WeaviateDataClientAsync;
 import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClientAsync;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
@@ -9,6 +10,7 @@ import io.weaviate.client6.v1.internal.rest.RestTransport;
 
 public class CollectionHandleAsync<T> {
   public final WeaviateConfigClientAsync config;
+  public final WeaviateDataClientAsync<T> data;
   public final WeaviateQueryClientAsync<T> query;
   public final WeaviateAggregateClientAsync aggregate;
 
@@ -18,6 +20,7 @@ public class CollectionHandleAsync<T> {
       CollectionDescriptor<T> collectionDescriptor) {
 
     this.config = new WeaviateConfigClientAsync(collectionDescriptor, restTransport, grpcTransport);
+    this.data = new WeaviateDataClientAsync<>(collectionDescriptor, restTransport);
     this.query = new WeaviateQueryClientAsync<>(collectionDescriptor, grpcTransport);
     this.aggregate = new WeaviateAggregateClientAsync(collectionDescriptor, grpcTransport);
   }

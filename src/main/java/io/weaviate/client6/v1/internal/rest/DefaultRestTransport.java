@@ -37,8 +37,11 @@ public class DefaultRestTransport implements RestTransport {
   public <RequestT, ResponseT> ResponseT performRequest(RequestT request, Endpoint<RequestT, ResponseT> endpoint)
       throws IOException {
     var req = prepareClassicRequest(request, endpoint);
+    // FIXME: we need to differentiate between "no body" and "soumething's wrong"
     return this.httpClient.execute(req,
-        response -> endpoint.deserializeResponse(gson, EntityUtils.toString(response.getEntity())));
+        response -> response.getEntity() != null
+            ? endpoint.deserializeResponse(gson, EntityUtils.toString(response.getEntity()))
+            : null);
   }
 
   @Override
@@ -65,7 +68,10 @@ public class DefaultRestTransport implements RestTransport {
       }
 
     });
-    return completable.thenApply(r -> endpoint.deserializeResponse(gson, r.getBody().getBodyText()));
+    // FIXME: we need to differentiate between "no body" and "soumething's wrong"
+    return completable.thenApply(r -> r.getBody() == null
+        ? endpoint.deserializeResponse(gson, r.getBody().getBodyText())
+        : null);
   }
 
   private <RequestT> SimpleHttpRequest prepareSimpleRequest(RequestT request, Endpoint<RequestT, ?> endpoint) {
@@ -75,7 +81,9 @@ public class DefaultRestTransport implements RestTransport {
 
     var body = endpoint.body(gson, request);
     var req = SimpleHttpRequest.create(method, uri);
-    req.setBody(body.getBytes(), ContentType.APPLICATION_JSON);
+    if (body != null) {
+      req.setBody(body.getBytes(), ContentType.APPLICATION_JSON);
+    }
     return req;
   }
 

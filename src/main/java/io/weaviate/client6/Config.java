@@ -1,17 +1,16 @@
 package io.weaviate.client6;
 
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Map.Entry;
+import java.util.Map;
 
 import io.weaviate.client6.v1.internal.grpc.GrpcChannelOptions;
 
 public class Config implements GrpcChannelOptions {
-  private final String version = "v1";
-  private final String scheme;
-  private final String httpHost;
-  private final String grpcHost;
-  private final Collection<Entry<String, String>> headers = Collections.emptyList();
+  public final String version = "v1";
+  public final String scheme;
+  public final String httpHost;
+  public final String grpcHost;
+  public final Map<String, String> headers = Collections.emptyMap();
 
   public Config(String scheme, String httpHost, String grpcHost) {
     this.scheme = scheme;
@@ -39,7 +38,7 @@ public class Config implements GrpcChannelOptions {
   }
 
   @Override
-  public Collection<Entry<String, String>> headers() {
+  public Map<String, String> headers() {
     return headers;
   }
 

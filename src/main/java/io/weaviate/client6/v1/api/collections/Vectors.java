@@ -17,11 +17,13 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 import io.weaviate.client6.v1.internal.ObjectBuilder;
+import lombok.ToString;
 
 /**
  * Vectors is an abstraction over named vectors, which can store
  * both 1-dimensional and 2-dimensional vectors.
  */
+@ToString
 public class Vectors {
   private final Map<String, Object> namedVectors;
 

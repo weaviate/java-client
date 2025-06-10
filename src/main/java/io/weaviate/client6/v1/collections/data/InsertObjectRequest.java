@@ -10,7 +10,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.collections.Reference;
@@ -106,17 +105,17 @@ public record InsertObjectRequest<T>(String collection, T properties, String id,
       w.value(id);
     }
 
-    if (vectors != null) {
-      var unnamed = vectors.getUnnamed();
-      if (unnamed.isPresent()) {
-        w.name("vector");
-        gson.getAdapter(Float[].class).write(w, unnamed.get());
-      } else {
-        w.name("vectors");
-        gson.getAdapter(new TypeToken<Map<String, Object>>() {
-        }).write(w, vectors.getNamed());
-      }
-    }
+    // if (vectors != null) {
+    // var unnamed = vectors.getUnnamed();
+    // if (unnamed.isPresent()) {
+    // w.name("vector");
+    // gson.getAdapter(Float[].class).write(w, unnamed.get());
+    // } else {
+    // w.name("vectors");
+    // gson.getAdapter(new TypeToken<Map<String, Object>>() {
+    // }).write(w, vectors.getNamed());
+    // }
+    // }
 
     if (properties != null || references != null) {
       w.name("properties");

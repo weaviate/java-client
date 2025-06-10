@@ -1,6 +1,7 @@
 package io.weaviate.integration;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -9,15 +10,14 @@ import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
-import io.weaviate.client6.WeaviateClient;
-import io.weaviate.client6.v1.api.collections.ObjectReference;
+import io.weaviate.client6.v1.api.WeaviateClient;
+import io.weaviate.client6.v1.api.collections.ObjectMetadata;
+import io.weaviate.client6.v1.api.collections.Property;
+import io.weaviate.client6.v1.api.collections.ReferenceProperty;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
+import io.weaviate.client6.v1.api.collections.data.Reference;
 import io.weaviate.client6.v1.api.collections.query.MetadataField;
-import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.api.collections.query.QueryReference;
-import io.weaviate.client6.v1.collections.Property;
-import io.weaviate.client6.v1.collections.Reference;
-import io.weaviate.client6.v1.collections.ReferenceProperty;
 import io.weaviate.containers.Container;
 
 /**
@@ -30,7 +30,7 @@ import io.weaviate.containers.Container;
  * </ul>
  */
 public class ReferencesITest extends ConcurrentTest {
-  private static final WeaviateClient client = Container.WEAVIATE.getClient();
+  private static final WeaviateClient client = Container.WEAVIATE.getClient().apiClient();
 
   @Test
   public void testReferences() throws IOException {
@@ -75,7 +75,7 @@ public class ReferencesITest extends ConcurrentTest {
         Map.of("name", "Alex"),
         opt -> opt
             .reference("hasAwards", Reference.uuids(
-                grammy_1.metadata().id(), oscar_1.metadata().id()))
+                grammy_1.metadata().uuid(), oscar_1.metadata().uuid()))
             .reference("hasAwards", Reference.objects(grammy_2, oscar_2)));
 
     // Act: add one more reference
@@ -92,19 +92,24 @@ public class ReferencesITest extends ConcurrentTest {
         .extracting(ReferenceProperty::dataTypes, InstanceOfAssertFactories.list(String.class))
         .containsOnly(nsMovies);
 
-    var gotAlex = artists.query.byId(alex.metadata().id(),
+    var gotAlex = artists.query.byId(alex.metadata().uuid(),
         opt -> opt.returnReferences(
             QueryReference.multi("hasAwards", nsOscar,
                 ref -> ref.returnMetadata(MetadataField.ID)),
             QueryReference.multi("hasAwards", nsGrammy,
                 ref -> ref.returnMetadata(MetadataField.ID))));
 
+    System.out.println(gotAlex.get());
+
     Assertions.assertThat(gotAlex).get()
         .as("Artists: fetch by id including hasAwards references")
-        .extracting(WeaviateObject::references, InstanceOfAssertFactories.map(String.class, ObjectReference.class))
+
+        // Cast references to Map<String, List<WeaviateObject>>
+        .extracting(WeaviateObject::references, InstanceOfAssertFactories.map(String.class, List.class))
         .as("hasAwards object reference").extractingByKey("hasAwards")
-        .extracting(ObjectReference::objects, InstanceOfAssertFactories.list(WeaviateObject.class))
-        .extracting(object -> ((QueryMetadata) object.metadata()).id())
+        .asInstanceOf(InstanceOfAssertFactories.list(WeaviateObject.class))
+
+        .extracting(object -> ((ObjectMetadata) object.metadata()).uuid())
         .containsOnly(
             // INVESTIGATE: When references to 2+ collections are requested,
             // seems to Weaviate only return references to the first one in the list.
@@ -112,7 +117,7 @@ public class ReferencesITest extends ConcurrentTest {
             // so the latter will not be in the response.
             //
             // grammy_1.metadata().id(), grammy_2.metadata().id(),
-            oscar_1.metadata().id(), oscar_2.metadata().id());
+            oscar_1.metadata().uuid(), oscar_2.metadata().uuid());
   }
 
   @Test
@@ -155,7 +160,7 @@ public class ReferencesITest extends ConcurrentTest {
             .reference("hasAwards", Reference.objects(grammy_1)));
 
     // Assert: fetch nested references
-    var gotAlex = artists.query.byId(alex.metadata().id(),
+    var gotAlex = artists.query.byId(alex.metadata().uuid(),
         opt -> opt.returnReferences(
             QueryReference.single("hasAwards",
                 ref -> ref
@@ -167,15 +172,20 @@ public class ReferencesITest extends ConcurrentTest {
 
     Assertions.assertThat(gotAlex).get()
         .as("Artists: fetch by id including nested references")
-        .extracting(WeaviateObject::references, InstanceOfAssertFactories.map(String.class, ObjectReference.class))
+
+        // Cast references to Map<String, List<WeaviateObject>>
+        .extracting(WeaviateObject::references, InstanceOfAssertFactories.map(String.class, List.class))
         .as("hasAwards object reference").extractingByKey("hasAwards")
-        .extracting(ObjectReference::objects, InstanceOfAssertFactories.list(WeaviateObject.class))
+        .asInstanceOf(InstanceOfAssertFactories.list(WeaviateObject.class))
+
         .hasSize(1).allSatisfy(award -> Assertions.assertThat(award)
-            .returns(grammy_1.metadata().id(), grammy -> ((QueryMetadata) grammy.metadata()).id())
-            .extracting(WeaviateObject::references,
-                InstanceOfAssertFactories.map(String.class, ObjectReference.class))
-            .extractingByKey("presentedBy")
-            .extracting(ObjectReference::objects, InstanceOfAssertFactories.list(WeaviateObject.class))
+            .returns(grammy_1.metadata().uuid(), grammy -> ((ObjectMetadata) grammy.metadata()).uuid())
+
+            // Cast references to Map<String, List<WeaviateObject>>
+            .extracting(WeaviateObject::references, InstanceOfAssertFactories.map(String.class, List.class))
+            .as("presentedBy object reference").extractingByKey("presentedBy")
+            .asInstanceOf(InstanceOfAssertFactories.list(WeaviateObject.class))
+
             .hasSize(1).extracting(WeaviateObject::properties)
             .allSatisfy(properties -> Assertions.assertThat(properties)
                 .asInstanceOf(InstanceOfAssertFactories.map(String.class, Object.class))
