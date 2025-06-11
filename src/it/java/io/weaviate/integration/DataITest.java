@@ -13,7 +13,7 @@ import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
-import io.weaviate.client6.v1.api.collections.query.MetadataField;
+import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer;
 import io.weaviate.containers.Container;
@@ -41,7 +41,7 @@ public class DataITest extends ConcurrentTest {
 
     var object = artists.query.byId(id, query -> query
         .returnProperties("name")
-        .returnMetadata(MetadataField.ID, MetadataField.VECTOR));
+        .returnMetadata(Metadata.ID, Metadata.VECTOR));
 
     Assertions.assertThat(object)
         .as("object exists after insert").get()
