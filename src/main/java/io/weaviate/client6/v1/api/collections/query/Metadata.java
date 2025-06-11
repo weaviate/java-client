@@ -10,5 +10,8 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 public interface Metadata {
   void appendTo(WeaviateProtoSearchGet.MetadataRequest.Builder metadata);
 
-  // TODO: export all possible metadata as static members
+  public static final Metadata ID = MetadataField.ID;
+  public static final Metadata VECTOR = MetadataField.VECTOR;
+  public static final Metadata DISTANCE = MetadataField.DISTANCE;
+  public static final Metadata CERTAINTY = MetadataField.CERTAINTY;
 }

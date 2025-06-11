@@ -21,7 +21,7 @@ import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.Reference;
 import io.weaviate.client6.v1.api.collections.query.GroupBy;
-import io.weaviate.client6.v1.api.collections.query.MetadataField;
+import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.QueryResponseGroup;
 import io.weaviate.client6.v1.api.collections.query.Where;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
@@ -69,7 +69,7 @@ public class SearchITest extends ConcurrentTest {
         opt -> opt
             .distance(2f)
             .limit(3)
-            .returnMetadata(MetadataField.DISTANCE));
+            .returnMetadata(Metadata.DISTANCE));
 
     Assertions.assertThat(result.objects()).hasSize(3);
     float maxDistance = Collections.max(result.objects(),

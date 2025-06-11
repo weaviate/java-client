@@ -16,7 +16,7 @@ import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.ReferenceProperty;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.Reference;
-import io.weaviate.client6.v1.api.collections.query.MetadataField;
+import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.QueryReference;
 import io.weaviate.containers.Container;
 
@@ -95,9 +95,9 @@ public class ReferencesITest extends ConcurrentTest {
     var gotAlex = artists.query.byId(alex.metadata().uuid(),
         opt -> opt.returnReferences(
             QueryReference.multi("hasAwards", nsOscar,
-                ref -> ref.returnMetadata(MetadataField.ID)),
+                ref -> ref.returnMetadata(Metadata.ID)),
             QueryReference.multi("hasAwards", nsGrammy,
-                ref -> ref.returnMetadata(MetadataField.ID))));
+                ref -> ref.returnMetadata(Metadata.ID))));
 
     Assertions.assertThat(gotAlex).get()
         .as("Artists: fetch by id including hasAwards references")
@@ -166,7 +166,7 @@ public class ReferencesITest extends ConcurrentTest {
                     .returnReferences(
                         QueryReference.single("presentedBy", r -> r.returnProperties("ceo")))
                     // Grammy ID
-                    .returnMetadata(MetadataField.ID))));
+                    .returnMetadata(Metadata.ID))));
 
     Assertions.assertThat(gotAlex).get()
         .as("Artists: fetch by id including nested references")

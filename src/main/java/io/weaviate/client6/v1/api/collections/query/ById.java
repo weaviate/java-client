@@ -74,7 +74,7 @@ public record ById(
 
     var metadata = WeaviateProtoSearchGet.MetadataRequest.newBuilder();
     if (returnMetadata.isEmpty()) {
-      MetadataField.ID.appendTo(metadata);
+      Metadata.ID.appendTo(metadata);
     } else {
       returnMetadata.forEach(m -> m.appendTo(metadata));
     }
