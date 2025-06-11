@@ -8,6 +8,11 @@ public class MapBuilder implements PropertiesBuilder<Map<String, Object>> {
   private final Map<String, Object> properties = new HashMap<>();
 
   @Override
+  public void setNull(String property) {
+    properties.put(property, null);
+  }
+
+  @Override
   public void setText(String property, String value) {
     properties.put(property, value);
   }

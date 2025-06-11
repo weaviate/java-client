@@ -3,6 +3,8 @@ package io.weaviate.client6.v1.internal.orm;
 import java.util.Date;
 
 public interface PropertiesBuilder<T> {
+  void setNull(String property);
+
   void setText(String property, String value);
 
   void setBoolean(String property, Boolean value);

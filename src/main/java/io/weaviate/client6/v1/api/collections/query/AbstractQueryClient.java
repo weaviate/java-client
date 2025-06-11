@@ -37,6 +37,25 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
     return objects.isEmpty() ? Optional.empty() : Optional.ofNullable(objects.get(0));
   }
 
+  // Object queries -----------------------------------------------------------
+
+  public ResponseT fetchObjects(Function<FetchObjects.Builder, ObjectBuilder<FetchObjects>> fn) {
+    return fetchObjects(FetchObjects.of(fn));
+  }
+
+  public ResponseT fetchObjects(FetchObjects query) {
+    return performRequest(query);
+  }
+
+  public GroupedResponseT fetchObjects(Function<FetchObjects.Builder, ObjectBuilder<FetchObjects>> fn,
+      GroupBy groupBy) {
+    return fetchObjects(FetchObjects.of(fn), groupBy);
+  }
+
+  public GroupedResponseT fetchObjects(FetchObjects query, GroupBy groupBy) {
+    return performRequest(query, groupBy);
+  }
+
   // NearVector queries -------------------------------------------------------
 
   public ResponseT nearVector(Float[] vector) {
