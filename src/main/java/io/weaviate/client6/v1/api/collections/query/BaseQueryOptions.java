@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import io.weaviate.client6.v1.internal.ObjectBuilder;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
 public record BaseQueryOptions(
@@ -14,7 +15,8 @@ public record BaseQueryOptions(
     Integer offset,
     Integer autocut,
     String after,
-    String consistencyLevel,
+    ConsistencyLevel consistencyLevel,
+    Where where,
     List<String> returnProperties,
     List<QueryReference> returnReferences,
     List<Metadata> returnMetadata) {
@@ -26,6 +28,7 @@ public record BaseQueryOptions(
         builder.autocut,
         builder.after,
         builder.consistencyLevel,
+        builder.where,
         builder.returnProperties,
         builder.returnReferences,
         builder.returnMetadata);
@@ -38,7 +41,8 @@ public record BaseQueryOptions(
     private Integer offset;
     private Integer autocut;
     private String after;
-    private String consistencyLevel;
+    private ConsistencyLevel consistencyLevel;
+    private Where where;
     private List<String> returnProperties = new ArrayList<>();
     private List<QueryReference> returnReferences = new ArrayList<>();
     private List<Metadata> returnMetadata = new ArrayList<>();
@@ -60,6 +64,16 @@ public record BaseQueryOptions(
 
     public final SELF after(String after) {
       this.after = after;
+      return (SELF) this;
+    }
+
+    public final SELF consistencyLevel(ConsistencyLevel consistencyLevel) {
+      this.consistencyLevel = consistencyLevel;
+      return (SELF) this;
+    }
+
+    public final SELF where(Where where) {
+      this.where = where;
       return (SELF) this;
     }
 
@@ -106,20 +120,30 @@ public record BaseQueryOptions(
       req.setAutocut(autocut);
     }
 
-    if (StringUtils.isNotBlank(consistencyLevel)) {
-      req.setConsistencyLevelValue(Integer.valueOf(consistencyLevel));
+    if (consistencyLevel != null) {
+      consistencyLevel.appendTo(req);
     }
 
-    if (!returnMetadata.isEmpty()) {
-      var metadata = WeaviateProtoSearchGet.MetadataRequest.newBuilder();
-      returnMetadata.forEach(m -> m.appendTo(metadata));
-      req.setMetadata(metadata);
+    if (where != null) {
+      var filter = WeaviateProtoBase.Filters.newBuilder();
+      where.appendTo(filter);
+      req.setFilters(filter);
     }
+
+    var metadata = WeaviateProtoSearchGet.MetadataRequest.newBuilder();
+    if (returnMetadata.isEmpty()) {
+      MetadataField.ID.appendTo(metadata);
+    } else {
+      returnMetadata.forEach(m -> m.appendTo(metadata));
+    }
+    req.setMetadata(metadata);
 
     if (!returnProperties.isEmpty() || !returnReferences.isEmpty()) {
       var properties = WeaviateProtoSearchGet.PropertiesRequest.newBuilder();
 
-      if (!returnProperties.isEmpty()) {
+      if (returnProperties.isEmpty()) {
+        properties.setReturnAllNonrefProperties(true);
+      } else {
         properties.addAllNonRefProperties(returnProperties);
       }
 
