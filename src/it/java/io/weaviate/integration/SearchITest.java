@@ -21,8 +21,9 @@ import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.Reference;
 import io.weaviate.client6.v1.api.collections.query.GroupBy;
-import io.weaviate.client6.v1.api.collections.query.MetadataField;
+import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.QueryResponseGroup;
+import io.weaviate.client6.v1.api.collections.query.Where;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.api.collections.vectorizers.Img2VecNeuralVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer;
@@ -68,7 +69,7 @@ public class SearchITest extends ConcurrentTest {
         opt -> opt
             .distance(2f)
             .limit(3)
-            .returnMetadata(MetadataField.DISTANCE));
+            .returnMetadata(Metadata.DISTANCE));
 
     Assertions.assertThat(result.objects()).hasSize(3);
     float maxDistance = Collections.max(result.objects(),
@@ -219,5 +220,39 @@ public class SearchITest extends ConcurrentTest {
     Assertions.assertThat(got.objects()).hasSize(1).first()
         .extracting(WeaviateObject::properties, InstanceOfAssertFactories.MAP)
         .extractingByKey("breed").isEqualTo("ragdoll");
+  }
+
+  @Test
+  public void testFetchObjectsWithFilters() throws IOException {
+    var nsHats = ns("Hats");
+
+    client.collections.create(nsHats,
+        collection -> collection
+            .properties(
+                Property.text("colour"),
+                Property.integer("size")));
+
+    var hats = client.collections.use(nsHats);
+
+    /* blackHat */ hats.data.insert(Map.of("colour", "black", "size", 6));
+    var redHat = hats.data.insert(Map.of("colour", "red", "size", 5));
+    var greenHat = hats.data.insert(Map.of("colour", "green", "size", 1));
+    var hugeHat = hats.data.insert(Map.of("colour", "orange", "size", 40));
+
+    var got = hats.query.fetchObjects(
+        query -> query.where(
+            Where.or(
+                Where.property("colour").eq("orange"),
+                Where.and(
+                    Where.property("size").gte(1),
+                    Where.property("size").lt(6)))));
+
+    Assertions.assertThat(got.objects())
+        .extracting(hat -> hat.metadata().uuid())
+        .containsOnly(
+            redHat.metadata().uuid(),
+            greenHat.metadata().uuid(),
+            hugeHat.metadata().uuid());
+
   }
 }

@@ -176,7 +176,9 @@ public record QueryRequest(SearchOperator operator, GroupBy groupBy) {
 
   private static <T> void setProperty(String property, WeaviateProtoProperties.Value value,
       PropertiesBuilder<T> builder) {
-    if (value.hasTextValue()) {
+    if (value.hasNullValue()) {
+      builder.setNull(property);
+    } else if (value.hasTextValue()) {
       builder.setText(property, value.getTextValue());
     } else if (value.hasBoolValue()) {
       builder.setBoolean(property, value.getBoolValue());
@@ -190,7 +192,7 @@ public record QueryRequest(SearchOperator operator, GroupBy groupBy) {
       OffsetDateTime offsetDateTime = OffsetDateTime.parse(value.getDateValue());
       builder.setDate(property, Date.from(offsetDateTime.toInstant()));
     } else {
-      assert false : "branch not covered";
+      assert false : "(query) branch not covered";
     }
   }
 }

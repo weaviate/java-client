@@ -8,7 +8,8 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 public enum MetadataField implements Metadata {
   ID,
   VECTOR,
-  DISTANCE;
+  DISTANCE,
+  CERTAINTY;
 
   public void appendTo(WeaviateProtoSearchGet.MetadataRequest.Builder metadata) {
     switch (this) {
@@ -20,6 +21,9 @@ public enum MetadataField implements Metadata {
         break;
       case DISTANCE:
         metadata.setDistance(true);
+        break;
+      case CERTAINTY:
+        metadata.setCertainty(true);
         break;
     }
   }

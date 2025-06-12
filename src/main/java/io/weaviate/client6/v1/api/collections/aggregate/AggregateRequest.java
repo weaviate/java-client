@@ -60,7 +60,7 @@ public record AggregateRequest(Aggregation aggregation, GroupBy groupBy) {
           } else if (groupBy.hasText()) {
             groupedBy = new GroupedBy<String>(property, groupBy.getText());
           } else {
-            assert false : "branch not covered";
+            assert false : "(aggregate) branch not covered";
           }
 
           var properties = unmarshalAggregation(result.getAggregations());
