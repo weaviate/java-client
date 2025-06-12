@@ -7,7 +7,8 @@ public record QueryObjectGrouped<T>(
     QueryMetadata metadata,
     String belongsToGroup) {
 
-  QueryObjectGrouped(WeaviateObject<T, QueryMetadata> object, String belongsToGroup) {
+  QueryObjectGrouped(WeaviateObject<T, Object, QueryMetadata> object,
+      String belongsToGroup) {
     this(object.properties(), object.metadata(), belongsToGroup);
   }
 }

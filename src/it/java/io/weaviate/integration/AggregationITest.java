@@ -12,7 +12,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
-import io.weaviate.client6.WeaviateClient;
+import io.weaviate.client6.v1.api.WeaviateClient;
+import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.aggregate.AggregateResponseGroup;
 import io.weaviate.client6.v1.api.collections.aggregate.AggregateResponseGrouped;
@@ -20,9 +21,8 @@ import io.weaviate.client6.v1.api.collections.aggregate.Aggregation;
 import io.weaviate.client6.v1.api.collections.aggregate.GroupBy;
 import io.weaviate.client6.v1.api.collections.aggregate.GroupedBy;
 import io.weaviate.client6.v1.api.collections.aggregate.IntegerAggregation;
-import io.weaviate.client6.v1.collections.Property;
-import io.weaviate.client6.v1.collections.VectorIndex;
-import io.weaviate.client6.v1.collections.Vectorizer;
+import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
+import io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer;
 import io.weaviate.containers.Container;
 
 public class AggregationITest extends ConcurrentTest {
@@ -36,7 +36,7 @@ public class AggregationITest extends ConcurrentTest {
             .properties(
                 Property.text("category"),
                 Property.integer("price"))
-            .vectors(io.weaviate.client6.v1.collections.Vectors.of(new VectorIndex<>(Vectorizer.none()))));
+            .vector(Hnsw.of(new NoneVectorizer())));
 
     var things = client.collections.use(COLLECTION);
     for (var category : List.of("Shoes", "Hat", "Jacket")) {

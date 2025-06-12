@@ -7,15 +7,12 @@ import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
-import io.weaviate.client6.WeaviateClient;
-import io.weaviate.client6.v1.collections.Collection;
-import io.weaviate.client6.v1.collections.NoneVectorizer;
-import io.weaviate.client6.v1.collections.Property;
-import io.weaviate.client6.v1.collections.VectorIndex;
-import io.weaviate.client6.v1.collections.VectorIndex.IndexType;
-import io.weaviate.client6.v1.collections.VectorIndex.IndexingStrategy;
-import io.weaviate.client6.v1.collections.Vectorizer;
-import io.weaviate.client6.v1.collections.Vectors;
+import io.weaviate.client6.v1.api.WeaviateClient;
+import io.weaviate.client6.v1.api.collections.Property;
+import io.weaviate.client6.v1.api.collections.VectorIndex;
+import io.weaviate.client6.v1.api.collections.WeaviateCollection;
+import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
+import io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer;
 import io.weaviate.containers.Container;
 
 public class CollectionsITest extends ConcurrentTest {
@@ -27,18 +24,19 @@ public class CollectionsITest extends ConcurrentTest {
     client.collections.create(collectionName,
         col -> col
             .properties(Property.text("username"), Property.integer("age"))
-            .vector(new VectorIndex<>(IndexingStrategy.hnsw(), Vectorizer.none())));
+            .vector(Hnsw.of(new NoneVectorizer())));
 
     var thingsCollection = client.collections.getConfig(collectionName);
 
     Assertions.assertThat(thingsCollection).get()
         .hasFieldOrPropertyWithValue("name", collectionName)
-        .extracting(Collection::vectors).extracting(Vectors::getDefault)
-        .as("default vector").satisfies(defaultVector -> {
+        .extracting(WeaviateCollection::vectors, InstanceOfAssertFactories.map(String.class, VectorIndex.class))
+        .as("default vector").extractingByKey("default")
+        .satisfies(defaultVector -> {
           Assertions.assertThat(defaultVector).extracting(VectorIndex::vectorizer)
               .as("has none vectorizer").isInstanceOf(NoneVectorizer.class);
-          Assertions.assertThat(defaultVector).extracting(VectorIndex::configuration)
-              .as("has hnsw index").returns(IndexType.HNSW, IndexingStrategy::type);
+          Assertions.assertThat(defaultVector).extracting(VectorIndex::config)
+              .isInstanceOf(Hnsw.class);
         });
 
     client.collections.delete(collectionName);

@@ -10,7 +10,7 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 
-public abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
+abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
   protected final CollectionDescriptor<?> collection;
   protected final GrpcTransport transport;
 

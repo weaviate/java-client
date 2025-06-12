@@ -9,16 +9,15 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
-import io.weaviate.client6.WeaviateClient;
+import io.weaviate.client6.v1.api.WeaviateClient;
+import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.Vectors;
-import io.weaviate.client6.v1.collections.Property;
-import io.weaviate.client6.v1.collections.VectorIndex;
-import io.weaviate.client6.v1.collections.VectorIndex.IndexingStrategy;
-import io.weaviate.client6.v1.collections.Vectorizer;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
+import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
+import io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer;
 import io.weaviate.containers.Container;
 
 public class DataITest extends ConcurrentTest {
-
   private static WeaviateClient client = Container.WEAVIATE.getClient();
   private static final String COLLECTION = unique("Artists");
   private static final String VECTOR_INDEX = "bring_your_own";
@@ -34,9 +33,10 @@ public class DataITest extends ConcurrentTest {
     var id = randomUUID();
     Float[] vector = { 1f, 2f, 3f };
 
-    artists.data.insert(Map.of("name", "john doe"), metadata -> metadata
-        .id(id)
-        .vectors(Vectors.of(VECTOR_INDEX, vector)));
+    artists.data.insert(Map.of("name", "john doe"),
+        metadata -> metadata
+            .uuid(id)
+            .vectors(Vectors.of(VECTOR_INDEX, vector)));
 
     var object = artists.query.byId(id, query -> query
         .returnProperties("name")
@@ -45,11 +45,10 @@ public class DataITest extends ConcurrentTest {
     Assertions.assertThat(object)
         .as("object exists after insert").get()
         .satisfies(obj -> {
-          Assertions.assertThat(obj.metadata().id())
+          Assertions.assertThat(obj.metadata().uuid())
               .as("object id").isEqualTo(id);
 
-          Assertions.assertThat(obj.metadata().vectors()).extracting(Vectors::getSingle)
-              .asInstanceOf(InstanceOfAssertFactories.OPTIONAL).as("has single vector").get()
+          Assertions.assertThat(obj.metadata().vectors()).extracting(v -> v.getSingle(VECTOR_INDEX))
               .asInstanceOf(InstanceOfAssertFactories.array(Float[].class)).containsExactly(vector);
 
           Assertions.assertThat(obj.properties())
@@ -77,11 +76,11 @@ public class DataITest extends ConcurrentTest {
         "breed", "ragdoll",
         "img", ragdollPng));
 
-    var got = cats.query.byId(ragdoll.metadata().id(),
+    var got = cats.query.byId(ragdoll.metadata().uuid(),
         cat -> cat.returnProperties("img"));
 
     Assertions.assertThat(got).get()
-        .extracting(io.weaviate.client6.v1.api.collections.WeaviateObject::properties, InstanceOfAssertFactories.MAP)
+        .extracting(WeaviateObject::properties, InstanceOfAssertFactories.MAP)
         .extractingByKey("img").isEqualTo(ragdollPng);
   }
 
@@ -99,6 +98,6 @@ public class DataITest extends ConcurrentTest {
                 Property.integer("age"))
             .references(
                 Property.reference("hasAwards", awardsGrammy, awardsOscar))
-            .vector(VECTOR_INDEX, new VectorIndex<>(IndexingStrategy.hnsw(), Vectorizer.none())));
+            .vectors(named -> named.vector(VECTOR_INDEX, Hnsw.of(new NoneVectorizer()))));
   }
 }

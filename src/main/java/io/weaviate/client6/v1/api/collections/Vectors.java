@@ -1,60 +1,76 @@
 package io.weaviate.client6.v1.api.collections;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.TypeAdapter;
+import com.google.gson.TypeAdapterFactory;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import lombok.ToString;
 
 /**
- * Vectors is an abstraction over named vectors.
- * It may contain both 1-dimensional and 2-dimensional vectors.
+ * Vectors is an abstraction over named vectors, which can store
+ * both 1-dimensional and 2-dimensional vectors.
  */
 @ToString
 public class Vectors {
-  // TODO: define this in collection.config.Vectors
-  private static final String DEFAULT = "default";
-
-  private final Float[] unnamedVector;
   private final Map<String, Object> namedVectors;
 
-  /**
-   * Pass legacy unnamed vector.
-   * Multi-vectors can only be passed as named vectors.
-   */
-  public static Vectors unnamed(Float[] vector) {
-    return new Vectors(vector);
-  }
-
   public static Vectors of(Float[] vector) {
-    return new Vectors(DEFAULT, vector);
-  }
-
-  public static Vectors of(Float[][] vector) {
-    return new Vectors(DEFAULT, vector);
+    return new Vectors(VectorIndex.DEFAULT_VECTOR_NAME, vector);
   }
 
   public static Vectors of(String name, Float[] vector) {
     return new Vectors(name, vector);
   }
 
-  public static Vectors of(String name, Float[][] vector) {
-    return new Vectors(name, vector);
+  public static Vectors of(Float[][] vector) {
+    return new Vectors(VectorIndex.DEFAULT_VECTOR_NAME, vector);
   }
 
-  public static Vectors of(Map<String, ? extends Object> vectors) {
-    return new Vectors(vectors, null);
+  public static Vectors of(String name, Float[][] vector) {
+    return new Vectors(name, vector);
   }
 
   public static Vectors of(Function<Builder, ObjectBuilder<Vectors>> fn) {
     return fn.apply(new Builder()).build();
   }
 
-  public static class Builder {
-    private Map<String, Object> namedVectors = new HashMap<>();
+  public Vectors(Builder builder) {
+    this.namedVectors = builder.namedVectors;
+  }
+
+  /*
+   * Create a single named vector.
+   * Intended to be used by factory methods, which can statically restrict
+   * vector's type to {@code Float[]} and {@code Float[][]}.
+   *
+   * @param name Vector name.
+   *
+   * @param vector {@code Float[]} or {@code Float[][]} vector.
+   *
+   */
+  private Vectors(String name, Object vector) {
+    this.namedVectors = Collections.singletonMap(name, vector);
+  }
+
+  private Vectors(Map<String, Object> namedVectors) {
+    this.namedVectors = namedVectors;
+  }
+
+  public static class Builder implements ObjectBuilder<Vectors> {
+    private final Map<String, Object> namedVectors = new HashMap<>();
 
     public Builder vector(String name, Float[] vector) {
       this.namedVectors.put(name, vector);
@@ -66,8 +82,9 @@ public class Vectors {
       return this;
     }
 
+    @Override
     public Vectors build() {
-      return new Vectors(this.namedVectors, null);
+      return new Vectors(this);
     }
   }
 
@@ -76,12 +93,7 @@ public class Vectors {
   }
 
   public Float[] getDefaultSingle() {
-    return getSingle(DEFAULT);
-  }
-
-  @SuppressWarnings("unchecked")
-  public Optional<Float[]> getSingle() {
-    return (Optional<Float[]>) getOnly();
+    return getSingle(VectorIndex.DEFAULT_VECTOR_NAME);
   }
 
   public Float[][] getMulti(String name) {
@@ -89,43 +101,51 @@ public class Vectors {
   }
 
   public Float[][] getDefaultMulti() {
-    return getMulti(DEFAULT);
+    return getMulti(VectorIndex.DEFAULT_VECTOR_NAME);
   }
 
-  @SuppressWarnings("unchecked")
-  public Optional<Float[][]> getMulti() {
-    return (Optional<Float[][]>) getOnly();
-  }
+  public static enum CustomTypeAdapterFactory implements TypeAdapterFactory {
+    INSTANCE;
 
-  public Optional<Float[]> getUnnamed() {
-    return Optional.ofNullable(unnamedVector);
-  }
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+      if (type.getRawType() != Vectors.class) {
+        return null;
+      }
+      final var mapAdapter = gson.getDelegateAdapter(this, new TypeToken<Map<String, Object>>() {
+      });
+      final var float_1d = gson.getDelegateAdapter(this, TypeToken.get(Float[].class));
+      final var float_2d = gson.getDelegateAdapter(this, TypeToken.get(Float[][].class));
+      return (TypeAdapter<T>) new TypeAdapter<Vectors>() {
 
-  private Optional<?> getOnly() {
-    if (namedVectors == null || namedVectors.isEmpty() || namedVectors.size() > 1) {
-      return Optional.empty();
+        @Override
+        public void write(JsonWriter out, Vectors value) throws IOException {
+          mapAdapter.write(out, value.namedVectors);
+        }
+
+        @Override
+        public Vectors read(JsonReader in) throws IOException {
+          var vectorsMap = JsonParser.parseReader(in).getAsJsonObject().asMap();
+          var namedVectors = new HashMap<String, Object>();
+
+          for (var entry : vectorsMap.entrySet()) {
+            String vectorName = entry.getKey();
+            JsonElement el = entry.getValue();
+            if (el.isJsonArray()) {
+              JsonArray array = el.getAsJsonArray();
+              Object vector;
+              if (array.size() > 0 && array.get(0).isJsonArray()) {
+                vector = float_2d.fromJsonTree(array);
+              } else {
+                vector = float_1d.fromJsonTree(array);
+              }
+              namedVectors.put(vectorName, vector);
+            }
+          }
+          return new Vectors(namedVectors);
+        }
+      }.nullSafe();
     }
-    return Optional.ofNullable(namedVectors.values().iterator().next());
-  }
-
-  public Map<String, Object> getNamed() {
-    return Map.copyOf(namedVectors);
-  }
-
-  private Vectors(Map<String, ? extends Object> named) {
-    this(named, null);
-  }
-
-  private Vectors(Float[] unnamed) {
-    this(Collections.emptyMap(), unnamed);
-  }
-
-  private Vectors(String name, Object vector) {
-    this(Collections.singletonMap(name, vector));
-  }
-
-  private Vectors(Map<String, ? extends Object> named, Float[] unnamed) {
-    this.namedVectors = Map.copyOf(named);
-    this.unnamedVector = unnamed;
   }
 }

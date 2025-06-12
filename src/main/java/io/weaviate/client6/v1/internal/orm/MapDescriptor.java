@@ -2,7 +2,9 @@ package io.weaviate.client6.v1.internal.orm;
 
 import java.util.Map;
 
-public class MapDescriptor implements CollectionDescriptor<Map<String, Object>> {
+import com.google.gson.reflect.TypeToken;
+
+public final class MapDescriptor implements CollectionDescriptor<Map<String, Object>> {
   private final String collectionName;
 
   public MapDescriptor(String collectionName) {
@@ -22,5 +24,11 @@ public class MapDescriptor implements CollectionDescriptor<Map<String, Object>> 
   @Override
   public PropertiesBuilder<Map<String, Object>> propertiesBuilder() {
     return new MapBuilder();
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public TypeToken<Map<String, Object>> typeToken() {
+    return (TypeToken<Map<String, Object>>) TypeToken.getParameterized(Map.class, String.class, Object.class);
   }
 }

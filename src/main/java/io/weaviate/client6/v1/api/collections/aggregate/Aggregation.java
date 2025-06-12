@@ -1,5 +1,6 @@
 package io.weaviate.client6.v1.api.collections.aggregate;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -36,7 +37,7 @@ public record Aggregation(
       this.objectFilter = objectFilter;
     }
 
-    private List<PropertyAggregation> metrics;
+    private List<PropertyAggregation> metrics = new ArrayList<>();
     private Integer objectLimit;
     private boolean includeTotalCount = false;
 

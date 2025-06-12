@@ -3,7 +3,6 @@ package io.weaviate.client6.v1.api.collections.query;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.internal.ObjectBuilder;
@@ -45,14 +44,6 @@ public record QueryReference(
   public static QueryReference multi(String property, String collection,
       Function<Builder, ObjectBuilder<QueryReference>> fn) {
     return fn.apply(new Builder(collection, property)).build();
-  }
-
-  public static QueryReference[] multi(String property, Consumer<Builder> fn, String... collections) {
-    return Arrays.stream(collections).map(collection -> {
-      var builder = new Builder(collection, property);
-      fn.accept(builder);
-      return new QueryReference(builder);
-    }).toArray(QueryReference[]::new);
   }
 
   public static class Builder implements ObjectBuilder<QueryReference> {
