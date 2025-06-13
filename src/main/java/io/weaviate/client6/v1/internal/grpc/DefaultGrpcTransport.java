@@ -89,7 +89,7 @@ public final class DefaultGrpcTransport implements GrpcTransport {
       channel.usePlaintext();
     }
 
-    channel.intercept(MetadataUtils.newAttachHeadersInterceptor(channelOptions.metadata()));
+    channel.intercept(MetadataUtils.newAttachHeadersInterceptor(channelOptions.headers()));
     return channel.build();
   }
 
