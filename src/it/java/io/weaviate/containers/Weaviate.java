@@ -46,7 +46,6 @@ public class Weaviate extends WeaviateContainer {
   public static class Builder {
     private String versionTag;
     private Set<String> enableModules = new HashSet<>();
-    private String defaultVectorizerModule;
     private boolean telemetry;
 
     private Map<String, String> environment = new HashMap<>();

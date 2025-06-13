@@ -22,15 +22,29 @@ import com.google.gson.GsonBuilder;
 public class DefaultRestTransport implements RestTransport {
   private final CloseableHttpClient httpClient;
   private final CloseableHttpAsyncClient httpClientAsync;
-  private final TransportOptions transportOptions;
+  private final RestTransportOptions transportOptions;
 
+  // TODO: retire
   private static final Gson gson = new GsonBuilder().create();
 
-  public DefaultRestTransport(TransportOptions options) {
-    this.transportOptions = options;
-    this.httpClient = HttpClients.createDefault();
-    this.httpClientAsync = HttpAsyncClients.createDefault();
-    httpClientAsync.start();
+  public DefaultRestTransport(RestTransportOptions transportOptions) {
+    this.transportOptions = transportOptions;
+
+    // TODO: doesn't make sense to spin up both?
+    var httpClient = HttpClients.custom()
+        .setDefaultHeaders(transportOptions.headers());
+    var httpClientAsync = HttpAsyncClients.custom()
+        .setDefaultHeaders(transportOptions.headers());
+
+    if (transportOptions.tokenProvider() != null) {
+      var interceptor = new AuthorizationInterceptor(transportOptions.tokenProvider());
+      httpClient.addRequestInterceptorFirst(interceptor);
+      httpClientAsync.addRequestInterceptorFirst(interceptor);
+    }
+
+    this.httpClient = httpClient.build();
+    this.httpClientAsync = httpClientAsync.build();
+    this.httpClientAsync.start();
   }
 
   @Override
