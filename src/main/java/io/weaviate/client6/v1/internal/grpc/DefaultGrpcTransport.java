@@ -9,7 +9,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import io.grpc.Metadata;
 import io.grpc.stub.MetadataUtils;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateBlockingStub;
@@ -21,13 +20,23 @@ public final class DefaultGrpcTransport implements GrpcTransport {
   private final WeaviateBlockingStub blockingStub;
   private final WeaviateFutureStub futureStub;
 
-  private static final int HTTP_PORT = 80;
-  private static final int HTTPS_PORT = 443;
-
   public DefaultGrpcTransport(GrpcChannelOptions channelOptions) {
     this.channel = buildChannel(channelOptions);
-    this.blockingStub = WeaviateGrpc.newBlockingStub(channel);
-    this.futureStub = WeaviateGrpc.newFutureStub(channel);
+
+    var blockingStub = WeaviateGrpc.newBlockingStub(channel)
+        .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(channelOptions.headers()));
+
+    var futureStub = WeaviateGrpc.newFutureStub(channel)
+        .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(channelOptions.headers()));
+
+    if (channelOptions.tokenProvider() != null) {
+      var credentials = new TokenCallCredentials(channelOptions.tokenProvider());
+      blockingStub = blockingStub.withCallCredentials(credentials);
+      futureStub = futureStub.withCallCredentials(credentials);
+    }
+
+    this.blockingStub = blockingStub;
+    this.futureStub = futureStub;
   }
 
   @Override
@@ -70,24 +79,17 @@ public final class DefaultGrpcTransport implements GrpcTransport {
     return completable;
   }
 
-  private static ManagedChannel buildChannel(GrpcChannelOptions options) {
-    // var port = options.useTls() ? HTTPS_PORT : HTTP_PORT;
-    // var channel = ManagedChannelBuilder.forAddress(options.host(), port);
-    var channel = ManagedChannelBuilder.forTarget(options.host());
+  private static ManagedChannel buildChannel(GrpcChannelOptions channelOptions) {
+    var host = channelOptions.host();
+    var channel = ManagedChannelBuilder.forTarget(host);
 
-    if (options.useTls()) {
+    if (host.startsWith("https://")) {
       channel.useTransportSecurity();
     } else {
       channel.usePlaintext();
     }
 
-    var headers = new Metadata();
-    for (final var header : options.headers().entrySet()) {
-      var key = Metadata.Key.of(header.getKey(), Metadata.ASCII_STRING_MARSHALLER);
-      headers.put(key, header.getValue());
-
-    }
-    channel.intercept(MetadataUtils.newAttachHeadersInterceptor(headers));
+    channel.intercept(MetadataUtils.newAttachHeadersInterceptor(channelOptions.metadata()));
     return channel.build();
   }
 
