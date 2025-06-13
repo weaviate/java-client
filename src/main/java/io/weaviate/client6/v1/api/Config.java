@@ -3,6 +3,7 @@ package io.weaviate.client6.v1.api;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.TokenProvider;
@@ -28,6 +29,18 @@ public class Config {
     this.grpcHost = grpcHost;
     this.headers = headers;
     this.tokenProvider = tokenProvider;
+  }
+
+  public Config(String scheme, String httpHost, String grpcHost) {
+    this.scheme = scheme;
+    this.httpHost = httpHost;
+    this.grpcHost = grpcHost;
+    this.headers = new HashMap<>();
+    this.tokenProvider = null;
+  }
+
+  public static Config of(String scheme, String httpHost, Function<Config.Builder, ObjectBuilder<Config>> fn) {
+    return fn.apply(new Builder(scheme, httpHost)).build();
   }
 
   protected String baseUrl(String hostname) {
