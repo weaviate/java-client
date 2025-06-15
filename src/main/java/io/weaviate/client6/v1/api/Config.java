@@ -69,8 +69,27 @@ public record Config(
       return (SELF) this;
     }
 
+    private static final String HEADER_X_WEAVIATE_API_KEY = "X-Weaviate-Api-Key";
+    private static final String HEADER_X_WEAVIATE_CLUSTER_URL = "X-Weaviate-Cluster-URL";
+
+    /**
+     * isWeaviateDomain returns true if the host matches weaviate.io,
+     * semi.technology, or weaviate.cloud domain.
+     */
+    private static boolean isWeaviateDomain(String host) {
+      var lower = host.toLowerCase();
+      return lower.contains("weaviate.io") ||
+          lower.contains("semi.technology") ||
+          lower.contains("weaviate.cloud");
+    }
+
     @Override
     public Config build() {
+      if (isWeaviateDomain(httpHost) && tokenProvider != null) {
+        // TODO: verify token is static (does not expire) as we add move authz methods.
+        setHeader(HEADER_X_WEAVIATE_API_KEY, tokenProvider.getToken().accessToken());
+        setHeader(HEADER_X_WEAVIATE_CLUSTER_URL, "https://" + httpHost + ":" + httpPort);
+      }
       return new Config(this);
     }
   }
