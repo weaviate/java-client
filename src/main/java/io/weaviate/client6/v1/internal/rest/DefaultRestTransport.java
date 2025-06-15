@@ -90,7 +90,7 @@ public class DefaultRestTransport implements RestTransport {
 
   private <RequestT> SimpleHttpRequest prepareSimpleRequest(RequestT request, Endpoint<RequestT, ?> endpoint) {
     var method = endpoint.method(request);
-    var uri = transportOptions.host() + endpoint.requestUrl(request);
+    var uri = transportOptions.baseUrl() + endpoint.requestUrl(request);
     // TODO: apply options;
 
     var body = endpoint.body(gson, request);
@@ -103,7 +103,7 @@ public class DefaultRestTransport implements RestTransport {
 
   private <RequestT> ClassicHttpRequest prepareClassicRequest(RequestT request, Endpoint<RequestT, ?> endpoint) {
     var method = endpoint.method(request);
-    var uri = transportOptions.host() + endpoint.requestUrl(request);
+    var uri = transportOptions.baseUrl() + endpoint.requestUrl(request);
 
     // TODO: apply options;
     var req = ClassicRequestBuilder.create(method).setUri(uri);

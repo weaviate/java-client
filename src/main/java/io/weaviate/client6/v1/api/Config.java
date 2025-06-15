@@ -10,116 +10,141 @@ import io.weaviate.client6.v1.internal.TokenProvider;
 import io.weaviate.client6.v1.internal.grpc.GrpcChannelOptions;
 import io.weaviate.client6.v1.internal.rest.RestTransportOptions;
 
-public class Config {
-  private final String version = "v1";
-  private final String scheme;
-  private final String httpHost;
-  private final String grpcHost;
-  private final Map<String, String> headers;
-  private final TokenProvider tokenProvider;
+public record Config(
+    String scheme,
+    String httpHost,
+    int httpPort,
+    String grpcHost,
+    int grpcPort,
+    Map<String, String> headers,
+    TokenProvider tokenProvider) {
 
-  public Config(
-      String scheme,
-      String httpHost,
-      String grpcHost,
-      Map<String, String> headers,
-      TokenProvider tokenProvider) {
-    this.scheme = scheme;
-    this.httpHost = httpHost;
-    this.grpcHost = grpcHost;
-    this.headers = headers;
-    this.tokenProvider = tokenProvider;
+  public static Config of(String scheme, Function<Custom, ObjectBuilder<Config>> fn) {
+    return fn.apply(new Custom(scheme)).build();
   }
 
-  public Config(String scheme, String httpHost, String grpcHost) {
-    this.scheme = scheme;
-    this.httpHost = httpHost;
-    this.grpcHost = grpcHost;
-    this.headers = new HashMap<>();
-    this.tokenProvider = null;
-  }
-
-  public static Config of(String scheme, String httpHost, Function<Config.Builder, ObjectBuilder<Config>> fn) {
-    return fn.apply(new Builder(scheme, httpHost)).build();
-  }
-
-  protected String baseUrl(String hostname) {
-    return scheme + "://" + hostname + "/" + version;
+  public Config(Builder<?> builder) {
+    this(
+        builder.scheme,
+        builder.httpHost,
+        builder.httpPort,
+        builder.grpcHost,
+        builder.grpcPort,
+        builder.headers,
+        builder.tokenProvider);
   }
 
   public RestTransportOptions restTransportOptions() {
-    return new RestTransportOptions(baseUrl(httpHost), headers, tokenProvider);
+    return new RestTransportOptions(scheme, httpHost, httpPort, headers, tokenProvider);
   }
 
   public GrpcChannelOptions grpcTransportOptions() {
-    return new GrpcChannelOptions(
-        grpcHost.contains(":")
-            ? grpcHost
-            : grpcHost + (scheme == "https" ? ":433" : ":80"),
-        headers, tokenProvider);
+    return new GrpcChannelOptions(scheme, grpcHost, grpcPort, headers, tokenProvider);
   }
 
-  public static class Builder implements ObjectBuilder<Config> {
-    // Required parameters
-    private final String scheme;
-    private final String httpHost;
+  abstract static class Builder<SELF extends Builder<SELF>> implements ObjectBuilder<Config> {
+    // Required parameters;
+    protected final String scheme;
 
-    public Builder(String url) {
-      this(URI.create(url));
-    }
+    protected String httpHost;
+    protected int httpPort;
+    protected String grpcHost;
+    protected int grpcPort;
+    protected TokenProvider tokenProvider;
+    protected Map<String, String> headers = new HashMap<>();
 
-    public Builder(URI url) {
-      this(url.getScheme(), url.getHost());
-    }
-
-    public Builder(String scheme, String httpHost) {
+    protected Builder(String scheme) {
       this.scheme = scheme;
-      this.httpHost = httpHost;
     }
 
-    private String grpcPrefix;
-    private String grpcHost;
-    private TokenProvider tokenProvider;
-
-    private Map<String, String> headers = new HashMap<>();
-
-    public Builder grpcPrefix(String prefix) {
-      this.grpcPrefix = prefix;
-      return this;
-    }
-
-    public Builder grpcHost(String host) {
-      this.grpcHost = host;
-      return this;
-    }
-
-    public Builder authorization(TokenProvider tokenProvider) {
-      this.tokenProvider = tokenProvider;
-      return this;
-    }
-
-    public Builder setHeader(String key, String value) {
+    @SuppressWarnings("unchecked")
+    public SELF setHeader(String key, String value) {
       this.headers.put(key, value);
-      return this;
+      return (SELF) this;
     }
 
-    public Builder setHeaders(Map<String, String> headers) {
+    @SuppressWarnings("unchecked")
+    public SELF setHeaders(Map<String, String> headers) {
       this.headers = Map.copyOf(headers);
-      return this;
+      return (SELF) this;
     }
 
     @Override
     public Config build() {
-      if (grpcHost == null && grpcPrefix == null) {
-        throw new RuntimeException("grpcHost and grpcPrefix cannot both be null");
-      }
+      return new Config(this);
+    }
+  }
 
-      return new Config(
-          scheme,
-          httpHost,
-          grpcHost != null ? grpcHost : grpcPrefix + httpHost,
-          headers,
-          tokenProvider);
+  public static class Local extends Builder<Local> {
+    public Local() {
+      super("http");
+      host("localhost");
+      httpPort(8080);
+      grpcPort(50051);
+    }
+
+    public Local host(String host) {
+      this.httpHost = host;
+      this.grpcHost = host;
+      return this;
+    }
+
+    public Local httpPort(int port) {
+      this.httpPort = port;
+      return this;
+    }
+
+    public Local grpcPort(int port) {
+      this.grpcPort = port;
+      return this;
+    }
+  }
+
+  public static class WeaviateCloud extends Builder<WeaviateCloud> {
+    public WeaviateCloud(String clusterUrl, TokenProvider tokenProvider) {
+      this(URI.create(clusterUrl), tokenProvider);
+    }
+
+    public WeaviateCloud(URI clusterUrl, TokenProvider tokenProvider) {
+      super("https");
+      this.httpHost = clusterUrl.getHost();
+      this.httpPort = 443;
+      this.grpcHost = "grpc-" + httpPort;
+      this.grpcPort = 443;
+      this.tokenProvider = tokenProvider;
+    }
+  }
+
+  public static class Custom extends Builder<Custom> {
+    public Custom(String scheme) {
+      super(scheme);
+      this.httpPort = scheme == "https" ? 443 : 80;
+      this.grpcPort = scheme == "https" ? 443 : 80;
+    }
+
+    public Custom httpHost(String host) {
+      this.httpHost = host;
+      return this;
+    }
+
+    public Custom httpPort(int port) {
+      this.grpcPort = port;
+      return this;
+    }
+
+    public Custom grpcHost(String host) {
+      this.grpcHost = host;
+      return this;
+    }
+
+    public Custom grpcPort(int port) {
+      this.grpcPort = port;
+      return this;
+    }
+
+    public Custom authorization(TokenProvider tokenProvider) {
+      this.tokenProvider = tokenProvider;
+      return this;
     }
   }
 }

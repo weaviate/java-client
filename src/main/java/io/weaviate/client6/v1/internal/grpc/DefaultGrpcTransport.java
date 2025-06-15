@@ -20,17 +20,17 @@ public final class DefaultGrpcTransport implements GrpcTransport {
   private final WeaviateBlockingStub blockingStub;
   private final WeaviateFutureStub futureStub;
 
-  public DefaultGrpcTransport(GrpcChannelOptions channelOptions) {
-    this.channel = buildChannel(channelOptions);
+  public DefaultGrpcTransport(GrpcChannelOptions transportOptions) {
+    this.channel = buildChannel(transportOptions);
 
     var blockingStub = WeaviateGrpc.newBlockingStub(channel)
-        .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(channelOptions.headers()));
+        .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(transportOptions.headers()));
 
     var futureStub = WeaviateGrpc.newFutureStub(channel)
-        .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(channelOptions.headers()));
+        .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(transportOptions.headers()));
 
-    if (channelOptions.tokenProvider() != null) {
-      var credentials = new TokenCallCredentials(channelOptions.tokenProvider());
+    if (transportOptions.tokenProvider() != null) {
+      var credentials = new TokenCallCredentials(transportOptions.tokenProvider());
       blockingStub = blockingStub.withCallCredentials(credentials);
       futureStub = futureStub.withCallCredentials(credentials);
     }
@@ -79,17 +79,16 @@ public final class DefaultGrpcTransport implements GrpcTransport {
     return completable;
   }
 
-  private static ManagedChannel buildChannel(GrpcChannelOptions channelOptions) {
-    var host = channelOptions.host();
-    var channel = ManagedChannelBuilder.forTarget(host);
+  private static ManagedChannel buildChannel(GrpcChannelOptions transportOptions) {
+    var channel = ManagedChannelBuilder.forAddress(transportOptions.host(), transportOptions.port());
 
-    if (host.startsWith("https://")) {
+    if (transportOptions.isSecure()) {
       channel.useTransportSecurity();
     } else {
       channel.usePlaintext();
     }
 
-    channel.intercept(MetadataUtils.newAttachHeadersInterceptor(channelOptions.headers()));
+    channel.intercept(MetadataUtils.newAttachHeadersInterceptor(transportOptions.headers()));
     return channel.build();
   }
 

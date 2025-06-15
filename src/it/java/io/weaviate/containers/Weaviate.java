@@ -9,7 +9,6 @@ import java.util.Set;
 
 import org.testcontainers.weaviate.WeaviateContainer;
 
-import io.weaviate.client6.v1.api.Config;
 import io.weaviate.client6.v1.api.WeaviateClient;
 
 public class Weaviate extends WeaviateContainer {
@@ -29,9 +28,12 @@ public class Weaviate extends WeaviateContainer {
       start();
     }
     if (clientInstance == null) {
-      var config = new Config("http", getHttpHostAddress(), getGrpcHostAddress());
       try {
-        clientInstance = new WeaviateClient(config);
+        clientInstance = WeaviateClient.local(
+            conn -> conn
+                .host(getHost())
+                .httpPort(getMappedPort(8080))
+                .grpcPort(getMappedPort(50051)));
       } catch (Exception e) {
         throw new RuntimeException("create WeaviateClient for Weaviate container", e);
       }

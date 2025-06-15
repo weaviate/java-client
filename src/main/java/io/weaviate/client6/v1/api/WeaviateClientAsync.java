@@ -17,7 +17,7 @@ public class WeaviateClientAsync implements Closeable {
 
   public final WeaviateCollectionsClientAsync collections;
 
-  public WeaviateClientAsync(Config config) {
+  public WeaviateClientAsync(ConnectionParams config) {
     this.restTransport = new DefaultRestTransport(config.restTransportOptions());
     this.grpcTransport = new DefaultGrpcTransport(config.grpcTransportOptions());
 
@@ -28,9 +28,8 @@ public class WeaviateClientAsync implements Closeable {
     return local(ObjectBuilder.identity());
   }
 
-  public static WeaviateClientAsync local(Function<Config.Builder, ObjectBuilder<Config>> fn) {
-    var config = new Config.Builder("http", "localhost:8080")
-        .grpcHost("locahost:50051");
+  public static WeaviateClientAsync local(Function<ConnectionParams.Local, ObjectBuilder<ConnectionParams>> fn) {
+    var config = new ConnectionParams.Local();
     return new WeaviateClientAsync(fn.apply(config).build());
   }
 
@@ -39,10 +38,8 @@ public class WeaviateClientAsync implements Closeable {
   }
 
   public static WeaviateClientAsync wcd(String clusterUrl, String apiKey,
-      Function<Config.Builder, ObjectBuilder<Config>> fn) {
-    var config = new Config.Builder(clusterUrl)
-        .grpcPrefix("grpc-")
-        .authorization(Authorization.apiKey(apiKey));
+      Function<ConnectionParams.WeaviateCloud, ObjectBuilder<ConnectionParams>> fn) {
+    var config = new ConnectionParams.WeaviateCloud(clusterUrl, Authorization.apiKey(apiKey));
     return new WeaviateClientAsync(fn.apply(config).build());
   }
 

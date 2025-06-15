@@ -36,9 +36,8 @@ public class WeaviateClient implements Closeable {
     return local(ObjectBuilder.identity());
   }
 
-  public static WeaviateClient local(Function<Config.Builder, ObjectBuilder<Config>> fn) {
-    var config = new Config.Builder("http", "localhost:8080")
-        .grpcHost("locahost:50051");
+  public static WeaviateClient local(Function<Config.Local, ObjectBuilder<Config>> fn) {
+    var config = new Config.Local();
     return new WeaviateClient(fn.apply(config).build());
   }
 
@@ -47,10 +46,8 @@ public class WeaviateClient implements Closeable {
   }
 
   public static WeaviateClient wcd(String clusterUrl, String apiKey,
-      Function<Config.Builder, ObjectBuilder<Config>> fn) {
-    var config = new Config.Builder(clusterUrl)
-        .grpcPrefix("grpc-")
-        .authorization(Authorization.apiKey(apiKey));
+      Function<Config.WeaviateCloud, ObjectBuilder<Config>> fn) {
+    var config = new Config.WeaviateCloud(clusterUrl, Authorization.apiKey(apiKey));
     return new WeaviateClient(fn.apply(config).build());
   }
 
