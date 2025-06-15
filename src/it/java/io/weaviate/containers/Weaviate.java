@@ -30,7 +30,11 @@ public class Weaviate extends WeaviateContainer {
     }
     if (clientInstance == null) {
       var config = new Config("http", getHttpHostAddress(), getGrpcHostAddress());
-      clientInstance = new WeaviateClient(config);
+      try {
+        clientInstance = new WeaviateClient(config);
+      } catch (Exception e) {
+        throw new RuntimeException("create WeaviateClient for Weaviate container", e);
+      }
     }
     return clientInstance;
   }
