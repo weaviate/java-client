@@ -1,15 +1,24 @@
 package io.weaviate.client6.v1.internal.grpc;
 
-import java.util.Collections;
 import java.util.Map;
 
-// TODO: unify with rest.TransportOptions?
-public interface GrpcChannelOptions {
-  String host();
+import io.grpc.Metadata;
+import io.weaviate.client6.v1.internal.TokenProvider;
+import io.weaviate.client6.v1.internal.TransportOptions;
 
-  default Map<String, String> headers() {
-    return Collections.emptyMap();
+public class GrpcChannelOptions extends TransportOptions<Metadata> {
+  public GrpcChannelOptions(String scheme, String host, int port, Map<String, String> headers,
+      TokenProvider tokenProvider) {
+    super(scheme, host, port, buildMetadata(headers), tokenProvider);
   }
 
-  boolean useTls();
+  private static final Metadata buildMetadata(Map<String, String> headers) {
+    var metadata = new Metadata();
+    for (var header : headers.entrySet()) {
+      metadata.put(
+          Metadata.Key.of(header.getKey(), Metadata.ASCII_STRING_MARSHALLER),
+          header.getValue());
+    }
+    return metadata;
+  }
 }
