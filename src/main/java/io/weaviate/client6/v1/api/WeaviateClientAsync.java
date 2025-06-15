@@ -17,7 +17,7 @@ public class WeaviateClientAsync implements Closeable {
 
   public final WeaviateCollectionsClientAsync collections;
 
-  public WeaviateClientAsync(ConnectionParams config) {
+  public WeaviateClientAsync(Config config) {
     this.restTransport = new DefaultRestTransport(config.restTransportOptions());
     this.grpcTransport = new DefaultGrpcTransport(config.grpcTransportOptions());
 
@@ -28,8 +28,8 @@ public class WeaviateClientAsync implements Closeable {
     return local(ObjectBuilder.identity());
   }
 
-  public static WeaviateClientAsync local(Function<ConnectionParams.Local, ObjectBuilder<ConnectionParams>> fn) {
-    var config = new ConnectionParams.Local();
+  public static WeaviateClientAsync local(Function<Config.Local, ObjectBuilder<Config>> fn) {
+    var config = new Config.Local();
     return new WeaviateClientAsync(fn.apply(config).build());
   }
 
@@ -38,8 +38,8 @@ public class WeaviateClientAsync implements Closeable {
   }
 
   public static WeaviateClientAsync wcd(String clusterUrl, String apiKey,
-      Function<ConnectionParams.WeaviateCloud, ObjectBuilder<ConnectionParams>> fn) {
-    var config = new ConnectionParams.WeaviateCloud(clusterUrl, Authorization.apiKey(apiKey));
+      Function<Config.WeaviateCloud, ObjectBuilder<Config>> fn) {
+    var config = new Config.WeaviateCloud(clusterUrl, Authorization.apiKey(apiKey));
     return new WeaviateClientAsync(fn.apply(config).build());
   }
 
