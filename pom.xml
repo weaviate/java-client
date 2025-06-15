@@ -194,6 +194,7 @@
     </dependency>
     <dependency>
       <groupId>org.mock-server</groupId>
+      <!-- TODO: check if we can reduce JAR size by using mockserver-netty-no-dependencies -->
       <artifactId>mockserver-netty</artifactId>
       <version>${mock-server.version}</version>
       <scope>test</scope>
