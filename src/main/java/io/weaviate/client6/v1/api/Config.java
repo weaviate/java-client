@@ -52,7 +52,11 @@ public class Config {
   }
 
   public GrpcChannelOptions grpcTransportOptions() {
-    return new GrpcChannelOptions(baseUrl(grpcHost), headers, tokenProvider);
+    return new GrpcChannelOptions(
+        grpcHost.contains(":")
+            ? grpcHost
+            : grpcHost + (scheme == "https" ? ":433" : ":80"),
+        headers, tokenProvider);
   }
 
   public static class Builder implements ObjectBuilder<Config> {

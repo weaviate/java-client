@@ -12,11 +12,10 @@ import io.weaviate.client6.v1.internal.TransportOptions;
 public final class RestTransportOptions extends TransportOptions<Collection<BasicHeader>> {
 
   public RestTransportOptions(String host, Map<String, String> headers, TokenProvider tokenProvider) {
-    super(host, headers, tokenProvider);
+    super(host, buildHeaders(headers), tokenProvider);
   }
 
-  @Override
-  protected final Collection<BasicHeader> buildHeaders(Map<String, String> headers) {
+  private static final Collection<BasicHeader> buildHeaders(Map<String, String> headers) {
     var basicHeaders = new HashSet<BasicHeader>();
     for (var header : headers.entrySet()) {
       basicHeaders.add(new BasicHeader(header.getKey(), header.getValue()));
