@@ -237,7 +237,7 @@ public class JSONTest {
                 "Things",
                 Map.of("title", "ThingOne"),
                 Map.of("hasRef", List.of(Reference.uuids("ref-1"))),
-                ObjectMetadata.of(meta -> meta.id("thing-1"))),
+                ObjectMetadata.of(meta -> meta.uuid("thing-1"))),
             """
                 {
                   "class": "Things",
