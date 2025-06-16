@@ -55,12 +55,9 @@ public class Bm25Argument implements Argument {
 
     @Override
     public String build() {
-      String query = "{operator:" + operator;
-      if (operator != AND) {
-        query += " minimumOrTokensMatch:" + minimumMatch;
-      }
-      query += "}";
-      return query;
+      // While minimumOrTokensMatch is ignored, it should nevertheless be included
+      // in the query, otherwise the server refuses to execute it.
+      return String.format("{operator:%s minimumOrTokensMatch:%s}", operator, minimumMatch);
     }
   }
 }

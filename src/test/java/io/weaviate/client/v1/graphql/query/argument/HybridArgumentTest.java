@@ -140,7 +140,7 @@ public class HybridArgumentTest {
                 .query("hello")
                 .bm25SearchOperator(Bm25Argument.SearchOperator.and())
                 .build(),
-            "hybrid:{query:\"hello\" bm25SearchOperator:{operator:And}}",
+            "hybrid:{query:\"hello\" bm25SearchOperator:{operator:And minimumOrTokensMatch:0}}",
         },
         {
             "bm25 search operator Or",

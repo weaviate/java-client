@@ -39,7 +39,7 @@ public class Bm25ArgumentTest {
 
     String str = bm25.build();
 
-    assertThat(str).isEqualTo("bm25:{query:\"hello\" searchOperator:{operator:And}}");
+    assertThat(str).isEqualTo("bm25:{query:\"hello\" searchOperator:{operator:And minimumOrTokensMatch:0}}");
   }
 
   @Test
