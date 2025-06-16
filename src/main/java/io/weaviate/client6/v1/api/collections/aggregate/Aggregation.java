@@ -9,16 +9,16 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate;
 
 public record Aggregation(
-    ObjectFilter filter,
+    AggregateObjectFilter filter,
     Integer objectLimit,
     boolean includeTotalCount,
     List<PropertyAggregation> returnMetrics) {
 
   public static Aggregation of(Function<Builder, ObjectBuilder<Aggregation>> fn) {
-    return of(ObjectFilter.NONE, fn);
+    return of(AggregateObjectFilter.NONE, fn);
   }
 
-  public static Aggregation of(ObjectFilter objectFilter, Function<Builder, ObjectBuilder<Aggregation>> fn) {
+  public static Aggregation of(AggregateObjectFilter objectFilter, Function<Builder, ObjectBuilder<Aggregation>> fn) {
     return fn.apply(new Builder(objectFilter)).build();
   }
 
@@ -31,9 +31,9 @@ public record Aggregation(
   }
 
   public static class Builder implements ObjectBuilder<Aggregation> {
-    private final ObjectFilter objectFilter;
+    private final AggregateObjectFilter objectFilter;
 
-    public Builder(ObjectFilter objectFilter) {
+    public Builder(AggregateObjectFilter objectFilter) {
       this.objectFilter = objectFilter;
     }
 

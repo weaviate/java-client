@@ -2,7 +2,7 @@ package io.weaviate.client6.v1.api.collections.query;
 
 import java.util.function.Function;
 
-import io.weaviate.client6.v1.api.collections.aggregate.ObjectFilter;
+import io.weaviate.client6.v1.api.collections.aggregate.AggregateObjectFilter;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.GRPC;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate;
@@ -11,7 +11,7 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
 public record NearVector(Float[] vector, Float distance, Float certainty, BaseQueryOptions common)
-    implements SearchOperator, ObjectFilter {
+    implements QueryOperator, AggregateObjectFilter {
 
   public static final NearVector of(Float[] vector) {
     return of(vector, ObjectBuilder.identity());

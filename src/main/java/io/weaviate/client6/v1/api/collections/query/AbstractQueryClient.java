@@ -19,9 +19,9 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
 
   protected abstract SingleT byId(ById byId);
 
-  protected abstract ResponseT performRequest(SearchOperator operator);
+  protected abstract ResponseT performRequest(QueryOperator operator);
 
-  protected abstract GroupedResponseT performRequest(SearchOperator operator, GroupBy groupBy);
+  protected abstract GroupedResponseT performRequest(QueryOperator operator, GroupBy groupBy);
 
   // Fetch by ID --------------------------------------------------------------
 
