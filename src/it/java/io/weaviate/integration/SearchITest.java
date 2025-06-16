@@ -22,6 +22,7 @@ import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.Reference;
 import io.weaviate.client6.v1.api.collections.query.GroupBy;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
+import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.api.collections.query.QueryResponseGroup;
 import io.weaviate.client6.v1.api.collections.query.Where;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
@@ -254,5 +255,30 @@ public class SearchITest extends ConcurrentTest {
             greenHat.metadata().uuid(),
             hugeHat.metadata().uuid());
 
+  }
+
+  @Test
+  public void testBm25() throws IOException {
+    var nsWords = ns("Words");
+
+    client.collections.create(nsWords,
+        collection -> collection
+            .properties(
+                Property.text("relevant"),
+                Property.text("irrelevant")));
+
+    var words = client.collections.use(nsWords);
+
+    /* notWant */ words.data.insert(Map.of("relevant", "elefant", "irrelevant", "dollar bill"));
+    var want = words.data.insert(Map.of("relevant", "a dime a dollar", "irrelevant", "euro"));
+
+    var dollarWorlds = words.query.bm25(
+        "dollar",
+        bm25 -> bm25.queryProperties("relevant"));
+
+    Assertions.assertThat(dollarWorlds.objects())
+        .hasSize(1)
+        .extracting(WeaviateObject::metadata).extracting(QueryMetadata::uuid)
+        .containsOnly(want.metadata().uuid());
   }
 }

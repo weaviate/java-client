@@ -56,6 +56,32 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
     return performRequest(query, groupBy);
   }
 
+  // BM25 queries -------------------------------------------------------------
+
+  public ResponseT bm25(String query) {
+    return bm25(Bm25.of(query));
+  }
+
+  public ResponseT bm25(String query, Function<Bm25.Builder, ObjectBuilder<Bm25>> fn) {
+    return bm25(Bm25.of(query, fn));
+  }
+
+  public ResponseT bm25(Bm25 query) {
+    return performRequest(query);
+  }
+
+  public GroupedResponseT bm25(String query, GroupBy groupBy) {
+    return bm25(Bm25.of(query), groupBy);
+  }
+
+  public GroupedResponseT bm25(String query, Function<Bm25.Builder, ObjectBuilder<Bm25>> fn, GroupBy groupBy) {
+    return bm25(Bm25.of(query, fn), groupBy);
+  }
+
+  public GroupedResponseT bm25(Bm25 query, GroupBy groupBy) {
+    return performRequest(query, groupBy);
+  }
+
   // NearVector queries -------------------------------------------------------
 
   public ResponseT nearVector(Float[] vector) {
