@@ -86,7 +86,7 @@ public record Config(
     @Override
     public Config build() {
       if (isWeaviateDomain(httpHost) && tokenProvider != null) {
-        // TODO: verify token is static (does not expire) as we add move authz methods.
+        // TODO: verify token is static (does not expire) as we add more authz methods.
         setHeader(HEADER_X_WEAVIATE_API_KEY, tokenProvider.getToken().accessToken());
         setHeader(HEADER_X_WEAVIATE_CLUSTER_URL, "https://" + httpHost + ":" + httpPort);
       }
