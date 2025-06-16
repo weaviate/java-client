@@ -134,8 +134,8 @@ public record Config(
   public static class Custom extends Builder<Custom> {
     public Custom(String scheme) {
       super(scheme);
-      this.httpPort = scheme == "https" ? 443 : 80;
-      this.grpcPort = scheme == "https" ? 443 : 80;
+      httpPort(scheme == "https" ? 443 : 80);
+      grpcPort(scheme == "https" ? 443 : 80);
     }
 
     public Custom httpHost(String host) {
