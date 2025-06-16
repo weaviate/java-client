@@ -29,6 +29,7 @@ public record Bm25(String query, List<String> queryProperties, BaseQueryOptions 
 
     // Optional query parameters.
     List<String> queryProperties;
+    SearchOperator searchOperator;
 
     public Builder(String query) {
       this.query = query;
@@ -40,6 +41,11 @@ public record Bm25(String query, List<String> queryProperties, BaseQueryOptions 
 
     public Builder queryProperties(List<String> properties) {
       this.queryProperties = properties;
+      return this;
+    }
+
+    public Builder searchOperator(SearchOperator searchOperator) {
+      this.searchOperator = searchOperator;
       return this;
     }
 
