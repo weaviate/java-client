@@ -44,6 +44,7 @@ message GenerativeProvider {
     GenerativeDatabricks databricks = 11;
     GenerativeFriendliAI friendliai = 12;
     GenerativeNvidia nvidia = 13;
+    GenerativeXAI xai = 14;
   }
 }
 
@@ -56,6 +57,7 @@ message GenerativeAnthropic{
   optional double top_p = 6;
   optional TextArray stop_sequences = 7;
   optional TextArray images = 8;
+  optional TextArray image_properties = 9;
 }
 
 message GenerativeAnyscale{
@@ -73,6 +75,7 @@ message GenerativeAWS{
   optional string target_model = 12;
   optional string target_variant = 13;
   optional TextArray images = 14;
+  optional TextArray image_properties = 15;
 }
 
 message GenerativeCohere{
@@ -103,12 +106,13 @@ message GenerativeOllama{
   optional string model = 2;
   optional double temperature = 3;
   optional TextArray images = 4;
+  optional TextArray image_properties = 5;
 }
 
 message GenerativeOpenAI{
   optional double frequency_penalty = 1;
   optional int64 max_tokens = 2;
-  string model = 3;
+  optional string model = 3;
   optional int64 n = 4;
   optional double presence_penalty = 5;
   optional TextArray stop = 6;
@@ -120,6 +124,7 @@ message GenerativeOpenAI{
   optional string deployment_id = 12;
   optional bool is_azure = 13;
   optional TextArray images = 14;
+  optional TextArray image_properties = 15;
 }
 
 message GenerativeGoogle{
@@ -136,6 +141,7 @@ message GenerativeGoogle{
   optional string endpoint_id = 11;
   optional string region = 12;
   optional TextArray images = 13;
+  optional TextArray image_properties = 14;
 }
 
 message GenerativeDatabricks{
@@ -167,6 +173,16 @@ message GenerativeNvidia{
   optional double temperature = 3;
   optional double top_p = 4;
   optional int64 max_tokens = 5;
+}
+
+message GenerativeXAI{
+  optional string base_url = 1;
+  optional string model = 2;
+  optional double temperature = 3;
+  optional double top_p = 4;
+  optional int64 max_tokens = 5;
+  optional TextArray images = 6;
+  optional TextArray image_properties = 7;
 }
 
 message GenerativeAnthropicMetadata {
@@ -277,6 +293,15 @@ message GenerativeNvidiaMetadata {
   optional Usage usage = 1;
 }
 
+message GenerativeXAIMetadata {
+  message Usage {
+    optional int64 prompt_tokens = 1;
+    optional int64 completion_tokens = 2;
+    optional int64 total_tokens = 3;
+  }
+  optional Usage usage = 1;
+}
+
 message GenerativeMetadata {
   oneof kind {
     GenerativeAnthropicMetadata anthropic = 1;
@@ -291,6 +316,7 @@ message GenerativeMetadata {
     GenerativeDatabricksMetadata databricks = 10;
     GenerativeFriendliAIMetadata friendliai = 11;
     GenerativeNvidiaMetadata nvidia = 12;
+    GenerativeXAIMetadata xai = 13;
   }
 }
 

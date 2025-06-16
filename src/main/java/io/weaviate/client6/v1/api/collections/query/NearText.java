@@ -5,14 +5,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
-import io.weaviate.client6.v1.api.collections.aggregate.ObjectFilter;
+import io.weaviate.client6.v1.api.collections.aggregate.AggregateObjectFilter;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
 public record NearText(List<String> concepts, Float distance, Float certainty, Move moveTo, Move moveAway,
-    BaseQueryOptions common) implements SearchOperator, ObjectFilter {
+    BaseQueryOptions common) implements QueryOperator, AggregateObjectFilter {
 
   public static NearText of(String... concepts) {
     return of(Arrays.asList(concepts), ObjectBuilder.identity());

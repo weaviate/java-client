@@ -21,7 +21,7 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 import io.weaviate.client6.v1.internal.orm.PropertiesBuilder;
 
-public record QueryRequest(SearchOperator operator, GroupBy groupBy) {
+public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
 
   static <T> Rpc<QueryRequest, WeaviateProtoSearchGet.SearchRequest, QueryResponse<T>, WeaviateProtoSearchGet.SearchReply> rpc(
       CollectionDescriptor<T> collection) {

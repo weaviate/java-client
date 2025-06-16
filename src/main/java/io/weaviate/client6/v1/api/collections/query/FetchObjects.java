@@ -5,7 +5,7 @@ import java.util.function.Function;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
-public record FetchObjects(BaseQueryOptions common) implements SearchOperator {
+public record FetchObjects(BaseQueryOptions common) implements QueryOperator {
 
   public static FetchObjects of(Function<Builder, ObjectBuilder<FetchObjects>> fn) {
     return fn.apply(new Builder()).build();

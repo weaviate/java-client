@@ -23,13 +23,13 @@ public class WeaviateQueryClient<T>
   }
 
   @Override
-  protected final QueryResponse<T> performRequest(SearchOperator operator) {
+  protected final QueryResponse<T> performRequest(QueryOperator operator) {
     var request = new QueryRequest(operator, null);
     return this.transport.performRequest(request, QueryRequest.rpc(collection));
   }
 
   @Override
-  protected final QueryResponseGrouped<T> performRequest(SearchOperator operator, GroupBy groupBy) {
+  protected final QueryResponseGrouped<T> performRequest(QueryOperator operator, GroupBy groupBy) {
     var request = new QueryRequest(operator, groupBy);
     return this.transport.performRequest(request, QueryRequest.grouped(collection));
   }
