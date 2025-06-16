@@ -9,7 +9,7 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
 public record Bm25(String query, List<String> queryProperties, BaseQueryOptions common)
-    implements SearchOperator {
+    implements QueryOperator {
 
   public static final Bm25 of(String query) {
     return of(query, ObjectBuilder.identity());

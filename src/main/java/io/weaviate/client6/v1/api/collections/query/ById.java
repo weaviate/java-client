@@ -13,7 +13,7 @@ public record ById(
     String uuid,
     List<String> returnProperties,
     List<QueryReference> returnReferences,
-    List<Metadata> returnMetadata) implements SearchOperator {
+    List<Metadata> returnMetadata) implements QueryOperator {
 
   private static final String ID_PROPERTY = "_id";
 
