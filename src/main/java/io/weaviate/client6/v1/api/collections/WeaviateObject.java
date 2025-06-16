@@ -166,7 +166,7 @@ public record WeaviateObject<P, R, M extends WeaviateMetadata>(
 
           builder.properties(propertiesAdapter.fromJsonTree(trueProperties));
 
-          metadata.id(object.get("id").getAsString());
+          metadata.uuid(object.get("id").getAsString());
           builder.metadata(metadata.build());
 
           return builder.build();

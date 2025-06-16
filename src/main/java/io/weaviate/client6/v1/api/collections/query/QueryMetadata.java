@@ -16,7 +16,7 @@ public record QueryMetadata(String uuid, Float distance, Float certainty, Vector
     private Float certainty;
     private Vectors vectors;
 
-    public final Builder id(String uuid) {
+    public final Builder uuid(String uuid) {
       this.uuid = uuid;
       return this;
     }
