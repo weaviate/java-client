@@ -2,8 +2,10 @@ package io.weaviate.client6.v1.api;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClientAsync;
+import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.DefaultGrpcTransport;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.rest.DefaultRestTransport;
@@ -16,10 +18,29 @@ public class WeaviateClientAsync implements Closeable {
   public final WeaviateCollectionsClientAsync collections;
 
   public WeaviateClientAsync(Config config) {
-    this.restTransport = new DefaultRestTransport(config.rest());
-    this.grpcTransport = new DefaultGrpcTransport(config.grpc());
+    this.restTransport = new DefaultRestTransport(config.restTransportOptions());
+    this.grpcTransport = new DefaultGrpcTransport(config.grpcTransportOptions());
 
     this.collections = new WeaviateCollectionsClientAsync(restTransport, grpcTransport);
+  }
+
+  public static WeaviateClientAsync local() {
+    return local(ObjectBuilder.identity());
+  }
+
+  public static WeaviateClientAsync local(Function<Config.Local, ObjectBuilder<Config>> fn) {
+    var config = new Config.Local();
+    return new WeaviateClientAsync(fn.apply(config).build());
+  }
+
+  public static WeaviateClientAsync wcd(String clusterUrl, String apiKey) {
+    return wcd(clusterUrl, apiKey, ObjectBuilder.identity());
+  }
+
+  public static WeaviateClientAsync wcd(String clusterUrl, String apiKey,
+      Function<Config.WeaviateCloud, ObjectBuilder<Config>> fn) {
+    var config = new Config.WeaviateCloud(clusterUrl, Authorization.apiKey(apiKey));
+    return new WeaviateClientAsync(fn.apply(config).build());
   }
 
   @Override

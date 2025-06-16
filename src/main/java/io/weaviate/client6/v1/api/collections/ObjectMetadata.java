@@ -13,7 +13,7 @@ public record ObjectMetadata(
     @SerializedName("lastUpdateTImeUnix") Long lastUpdatedAt) implements WeaviateMetadata {
 
   public ObjectMetadata(Builder builder) {
-    this(builder.id, builder.vectors, null, null);
+    this(builder.uuid, builder.vectors, null, null);
   }
 
   public static ObjectMetadata of(Function<Builder, ObjectBuilder<ObjectMetadata>> fn) {
@@ -21,11 +21,11 @@ public record ObjectMetadata(
   }
 
   public static class Builder implements ObjectBuilder<ObjectMetadata> {
-    private String id;
+    private String uuid;
     private Vectors vectors;
 
-    public Builder id(String id) {
-      this.id = id;
+    public Builder uuid(String uuid) {
+      this.uuid = uuid;
       return this;
     }
 

@@ -54,7 +54,7 @@ public record InsertObjectRequest<T>(WeaviateObject<T, Reference, ObjectMetadata
     }
 
     public Builder<T> uuid(String uuid) {
-      this.metadata.id(uuid);
+      this.metadata.uuid(uuid);
       return this;
     }
 

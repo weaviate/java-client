@@ -1,68 +1,166 @@
 package io.weaviate.client6.v1.api;
 
-import java.util.Collections;
+import java.net.URI;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
+import io.weaviate.client6.v1.internal.ObjectBuilder;
+import io.weaviate.client6.v1.internal.TokenProvider;
 import io.weaviate.client6.v1.internal.grpc.GrpcChannelOptions;
-import io.weaviate.client6.v1.internal.rest.TransportOptions;
+import io.weaviate.client6.v1.internal.rest.RestTransportOptions;
 
-public class Config {
-  private final String version = "v1";
-  private final String scheme;
-  private final String httpHost;
-  private final String grpcHost;
-  private final Map<String, String> headers = Collections.emptyMap();
+public record Config(
+    String scheme,
+    String httpHost,
+    int httpPort,
+    String grpcHost,
+    int grpcPort,
+    Map<String, String> headers,
+    TokenProvider tokenProvider) {
 
-  public Config(String scheme, String httpHost, String grpcHost) {
-    this.scheme = scheme;
-    this.httpHost = httpHost;
-    this.grpcHost = grpcHost;
+  public static Config of(String scheme, Function<Custom, ObjectBuilder<Config>> fn) {
+    return fn.apply(new Custom(scheme)).build();
   }
 
-  public String baseUrl() {
-    return scheme + "://" + httpHost + "/" + version;
+  public Config(Builder<?> builder) {
+    this(
+        builder.scheme,
+        builder.httpHost,
+        builder.httpPort,
+        builder.grpcHost,
+        builder.grpcPort,
+        builder.headers,
+        builder.tokenProvider);
   }
 
-  public String grpcAddress() {
-    if (grpcHost.contains(":")) {
-      return grpcHost;
+  public RestTransportOptions restTransportOptions() {
+    return new RestTransportOptions(scheme, httpHost, httpPort, headers, tokenProvider);
+  }
+
+  public GrpcChannelOptions grpcTransportOptions() {
+    return new GrpcChannelOptions(scheme, grpcHost, grpcPort, headers, tokenProvider);
+  }
+
+  abstract static class Builder<SELF extends Builder<SELF>> implements ObjectBuilder<Config> {
+    // Required parameters;
+    protected final String scheme;
+
+    protected String httpHost;
+    protected int httpPort;
+    protected String grpcHost;
+    protected int grpcPort;
+    protected TokenProvider tokenProvider;
+    protected Map<String, String> headers = new HashMap<>();
+
+    protected Builder(String scheme) {
+      this.scheme = scheme;
     }
-    // FIXME: use secure port (433) if scheme == https
-    return String.format("%s:80", grpcHost);
+
+    @SuppressWarnings("unchecked")
+    public SELF setHeader(String key, String value) {
+      this.headers.put(key, value);
+      return (SELF) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public SELF setHeaders(Map<String, String> headers) {
+      this.headers = Map.copyOf(headers);
+      return (SELF) this;
+    }
+
+    private static final String HEADER_X_WEAVIATE_CLUSTER_URL = "X-Weaviate-Cluster-URL";
+
+    /**
+     * isWeaviateDomain returns true if the host matches weaviate.io,
+     * semi.technology, or weaviate.cloud domain.
+     */
+    private static boolean isWeaviateDomain(String host) {
+      var lower = host.toLowerCase();
+      return lower.contains("weaviate.io") ||
+          lower.contains("semi.technology") ||
+          lower.contains("weaviate.cloud");
+    }
+
+    @Override
+    public Config build() {
+      if (isWeaviateDomain(httpHost) && tokenProvider != null) {
+        setHeader(HEADER_X_WEAVIATE_CLUSTER_URL, "https://" + httpHost + ":" + httpPort);
+      }
+      return new Config(this);
+    }
   }
 
-  public TransportOptions rest() {
-    return new TransportOptions() {
+  public static class Local extends Builder<Local> {
+    public Local() {
+      super("http");
+      host("localhost");
+      httpPort(8080);
+      grpcPort(50051);
+    }
 
-      @Override
-      public String host() {
-        return baseUrl();
-      }
+    public Local host(String host) {
+      this.httpHost = host;
+      this.grpcHost = host;
+      return this;
+    }
 
-      @Override
-      public Map<String, String> headers() {
-        return headers;
-      }
+    public Local httpPort(int port) {
+      this.httpPort = port;
+      return this;
+    }
 
-    };
+    public Local grpcPort(int port) {
+      this.grpcPort = port;
+      return this;
+    }
   }
 
-  public GrpcChannelOptions grpc() {
-    return new GrpcChannelOptions() {
-      @Override
-      public String host() {
-        return grpcAddress();
-      }
+  public static class WeaviateCloud extends Builder<WeaviateCloud> {
+    public WeaviateCloud(String clusterUrl, TokenProvider tokenProvider) {
+      this(URI.create(clusterUrl), tokenProvider);
+    }
 
-      @Override
-      public boolean useTls() {
-        return scheme.equals("https");
-      }
+    public WeaviateCloud(URI clusterUrl, TokenProvider tokenProvider) {
+      super("https");
+      this.httpHost = clusterUrl.getHost();
+      this.httpPort = 443;
+      this.grpcHost = "grpc-" + httpPort;
+      this.grpcPort = 443;
+      this.tokenProvider = tokenProvider;
+    }
+  }
 
-      @Override
-      public Map<String, String> headers() {
-        return headers;
-      }
-    };
+  public static class Custom extends Builder<Custom> {
+    public Custom(String scheme) {
+      super(scheme);
+      httpPort(scheme == "https" ? 443 : 80);
+      grpcPort(scheme == "https" ? 443 : 80);
+    }
+
+    public Custom httpHost(String host) {
+      this.httpHost = host;
+      return this;
+    }
+
+    public Custom httpPort(int port) {
+      this.grpcPort = port;
+      return this;
+    }
+
+    public Custom grpcHost(String host) {
+      this.grpcHost = host;
+      return this;
+    }
+
+    public Custom grpcPort(int port) {
+      this.grpcPort = port;
+      return this;
+    }
+
+    public Custom authorization(TokenProvider tokenProvider) {
+      this.tokenProvider = tokenProvider;
+      return this;
+    }
   }
 }

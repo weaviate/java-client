@@ -9,7 +9,6 @@ import java.util.Set;
 
 import org.testcontainers.weaviate.WeaviateContainer;
 
-import io.weaviate.client6.v1.api.Config;
 import io.weaviate.client6.v1.api.WeaviateClient;
 
 public class Weaviate extends WeaviateContainer {
@@ -29,8 +28,15 @@ public class Weaviate extends WeaviateContainer {
       start();
     }
     if (clientInstance == null) {
-      var config = new Config("http", getHttpHostAddress(), getGrpcHostAddress());
-      clientInstance = new WeaviateClient(config);
+      try {
+        clientInstance = WeaviateClient.local(
+            conn -> conn
+                .host(getHost())
+                .httpPort(getMappedPort(8080))
+                .grpcPort(getMappedPort(50051)));
+      } catch (Exception e) {
+        throw new RuntimeException("create WeaviateClient for Weaviate container", e);
+      }
     }
     return clientInstance;
   }
@@ -46,7 +52,6 @@ public class Weaviate extends WeaviateContainer {
   public static class Builder {
     private String versionTag;
     private Set<String> enableModules = new HashSet<>();
-    private String defaultVectorizerModule;
     private boolean telemetry;
 
     private Map<String, String> environment = new HashMap<>();

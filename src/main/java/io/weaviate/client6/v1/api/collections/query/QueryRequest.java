@@ -88,7 +88,7 @@ public record QueryRequest(SearchOperator operator, GroupBy groupBy) {
       CollectionDescriptor<T> descriptor) {
     var res = unmarshalReferences(propertiesResult, metadataResult, descriptor);
     var metadata = new QueryMetadata.Builder()
-        .id(res.metadata().uuid())
+        .uuid(res.metadata().uuid())
         .distance(metadataResult.getDistance())
         .certainty(metadataResult.getCertainty())
         .vectors(res.metadata().vectors());
@@ -146,7 +146,7 @@ public record QueryRequest(SearchOperator operator, GroupBy groupBy) {
     ObjectMetadata metadata = null;
     if (metadataResult != null) {
       var metadataBuilder = new ObjectMetadata.Builder()
-          .id(metadataResult.getId());
+          .uuid(metadataResult.getId());
 
       var vectors = new Vectors.Builder();
       for (final var vector : metadataResult.getVectorsList()) {
