@@ -176,7 +176,7 @@ public class ClientSchemaTest {
 
     // Act
     Result<Boolean> add = client.schema().vectorAdder()
-        .withClass(className)
+        .withClassName(className)
         .withVectorConfig("vector-a", vector)
         .withVectorConfig("vector-b", vector)
         .run();

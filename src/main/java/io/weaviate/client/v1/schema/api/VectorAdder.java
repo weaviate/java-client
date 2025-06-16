@@ -25,7 +25,7 @@ public class VectorAdder extends BaseClient<WeaviateClass> implements ClientResu
     this.getter = new ClassGetter(httpClient, config);
   }
 
-  public VectorAdder withClass(String className) {
+  public VectorAdder withClassName(String className) {
     this.className = className;
     return this;
   }

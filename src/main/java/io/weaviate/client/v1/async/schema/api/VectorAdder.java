@@ -35,7 +35,7 @@ public class VectorAdder extends AsyncBaseClient<Boolean> implements AsyncClient
     this.getter = new ClassGetter(client, config, tokenProvider);
   }
 
-  public VectorAdder withClass(String className) {
+  public VectorAdder withClassName(String className) {
     this.className = className;
     return this;
   }
