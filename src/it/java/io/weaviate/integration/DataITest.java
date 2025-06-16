@@ -11,11 +11,10 @@ import org.junit.Test;
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.Property;
+import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
-import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
-import io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer;
 import io.weaviate.containers.Container;
 
 public class DataITest extends ConcurrentTest {
@@ -99,6 +98,6 @@ public class DataITest extends ConcurrentTest {
                 Property.integer("age"))
             .references(
                 Property.reference("hasAwards", awardsGrammy, awardsOscar))
-            .vectors(named -> named.vector(VECTOR_INDEX, Hnsw.of(new NoneVectorizer()))));
+            .vectors(Vectorizer.none(VECTOR_INDEX)));
   }
 }

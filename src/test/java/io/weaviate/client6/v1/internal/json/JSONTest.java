@@ -192,9 +192,8 @@ public class JSONTest {
                     Property.integer("size"))
                 .references(
                     Property.reference("owner", "Person", "Company"))
-                .vectors(named -> named
-                    .vector("v-shape", Hnsw.of(Img2VecNeuralVectorizer.of(
-                        i2v -> i2v.imageFields("img")))))),
+                .vectors(Vectorizer.img2vecNeural("v-shape",
+                    i2v -> i2v.imageFields("img")))),
             """
                 {
                   "class": "Things",
@@ -229,7 +228,7 @@ public class JSONTest {
             "{\"beacon\": \"weaviate://localhost/Doodlebops/id-1\"}",
         },
 
-        // WeaviateObject.CustomTypeAdapterFactory.INSTANCE
+        // WeaviateObject.CustomTypeAdapterFactory
         {
             new TypeToken<WeaviateObject<Map<String, Object>, Reference, ObjectMetadata>>() {
             },

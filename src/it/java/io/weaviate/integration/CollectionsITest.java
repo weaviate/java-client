@@ -10,6 +10,7 @@ import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
+import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.api.collections.WeaviateCollection;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer;
@@ -24,7 +25,7 @@ public class CollectionsITest extends ConcurrentTest {
     client.collections.create(collectionName,
         col -> col
             .properties(Property.text("username"), Property.integer("age"))
-            .vector(Hnsw.of(new NoneVectorizer())));
+            .vectors(Vectorizer.none()));
 
     var thingsCollection = client.collections.getConfig(collectionName);
 

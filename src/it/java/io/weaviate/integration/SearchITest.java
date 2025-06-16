@@ -17,6 +17,7 @@ import org.junit.rules.TestRule;
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.Property;
+import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.Reference;
@@ -25,10 +26,6 @@ import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.api.collections.query.QueryResponseGroup;
 import io.weaviate.client6.v1.api.collections.query.Where;
-import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
-import io.weaviate.client6.v1.api.collections.vectorizers.Img2VecNeuralVectorizer;
-import io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer;
-import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecContextionaryVectorizer;
 import io.weaviate.containers.Container;
 import io.weaviate.containers.Container.ContainerGroup;
 import io.weaviate.containers.Contextionary;
@@ -131,7 +128,7 @@ public class SearchITest extends ConcurrentTest {
   private static void createTestCollection() throws IOException {
     client.collections.create(COLLECTION, cfg -> cfg
         .properties(Property.text("category"))
-        .vector(VECTOR_INDEX, Hnsw.of(new NoneVectorizer())));
+        .vectors(Vectorizer.none(VECTOR_INDEX)));
   }
 
   @Test
@@ -140,7 +137,7 @@ public class SearchITest extends ConcurrentTest {
     client.collections.create(nsSongs,
         col -> col
             .properties(Property.text("title"))
-            .vector(Hnsw.of(Text2VecContextionaryVectorizer.of())));
+            .vectors(Vectorizer.text2VecContextionary()));
 
     var songs = client.collections.use(nsSongs);
     var submarine = songs.data.insert(Map.of("title", "Yellow Submarine"));
@@ -162,13 +159,13 @@ public class SearchITest extends ConcurrentTest {
 
   @Test
   public void testNearText_groupBy() throws IOException {
-    var vectorIndex = Hnsw.of(Text2VecContextionaryVectorizer.of());
+    var vectorIndex = Vectorizer.text2VecContextionary();
 
     var nsArtists = ns("Artists");
     client.collections.create(nsArtists,
         col -> col
             .properties(Property.text("name"))
-            .vector(vectorIndex));
+            .vectors(vectorIndex));
 
     var artists = client.collections.use(nsArtists);
     var beatles = artists.data.insert(Map.of("name", "Beatles"));
@@ -179,7 +176,7 @@ public class SearchITest extends ConcurrentTest {
         col -> col
             .properties(Property.text("title"))
             .references(Property.reference("performedBy", nsArtists))
-            .vector(vectorIndex));
+            .vectors(vectorIndex));
 
     var songs = client.collections.use(nsSongs);
     songs.data.insert(Map.of("title", "Yellow Submarine"),
@@ -206,9 +203,8 @@ public class SearchITest extends ConcurrentTest {
             .properties(
                 Property.text("breed"),
                 Property.blob("img"))
-            .vector(Hnsw.of(
-                Img2VecNeuralVectorizer.of(
-                    i2v -> i2v.imageFields("img")))));
+            .vectors(Vectorizer.img2vecNeural(
+                i2v -> i2v.imageFields("img"))));
 
     var cats = client.collections.use(nsCats);
     cats.data.insert(Map.of(
