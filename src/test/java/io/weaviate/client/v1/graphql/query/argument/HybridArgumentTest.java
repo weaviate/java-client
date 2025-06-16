@@ -133,7 +133,23 @@ public class HybridArgumentTest {
                     .build())
                 .build(),
             "hybrid:{query:\"ColBERT me if you can!\" searches:{nearVector:{vector:[[1.0,2.0,3.0],[4.0,5.0,6.0]] targetVectors:[\"colbert\"]}}}",
-        }
+        },
+        {
+            "bm25 search operator And",
+            HybridArgument.builder()
+                .query("hello")
+                .bm25SearchOperator(Bm25Argument.SearchOperator.and())
+                .build(),
+            "hybrid:{query:\"hello\" bm25SearchOperator:{operator:And minimumOrTokensMatch:0}}",
+        },
+        {
+            "bm25 search operator Or",
+            HybridArgument.builder()
+                .query("hello")
+                .bm25SearchOperator(Bm25Argument.SearchOperator.or(2))
+                .build(),
+            "hybrid:{query:\"hello\" bm25SearchOperator:{operator:Or minimumOrTokensMatch:2}}",
+        },
     };
   }
 
