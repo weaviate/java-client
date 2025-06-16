@@ -1,5 +1,29 @@
 package io.weaviate.integration.client.async.schema;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.apache.hc.core5.concurrent.FutureCallback;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
+
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
@@ -17,29 +41,9 @@ import io.weaviate.client.v1.schema.model.ShardStatus;
 import io.weaviate.client.v1.schema.model.ShardStatuses;
 import io.weaviate.client.v1.schema.model.Tokenization;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
+import io.weaviate.client.v1.schema.model.WeaviateClass.VectorConfig;
 import io.weaviate.integration.client.WeaviateDockerCompose;
 import io.weaviate.integration.tests.schema.SchemaTestSuite;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import org.apache.hc.core5.concurrent.FutureCallback;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
-import org.junit.After;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
 
 public class ClientSchemaTest {
   private WeaviateClient syncClient;
@@ -83,8 +87,7 @@ public class ClientSchemaTest {
       // given
       WeaviateClass clazz = SchemaTestSuite.testSchemaCreateBandClass.clazz;
       // when
-      Future<Result<Boolean>> createStatusFuture =
-          client.schema().classCreator().withClass(clazz).run();
+      Future<Result<Boolean>> createStatusFuture = client.schema().classCreator().withClass(clazz).run();
       Result<Boolean> createStatus = createStatusFuture.get();
       Future<Result<Schema>> schemaFuture = client.schema().getter().run();
       Result<Schema> schema = schemaFuture.get();
@@ -130,7 +133,8 @@ public class ClientSchemaTest {
         }
 
         @Override
-        public void cancelled() {}
+        public void cancelled() {
+        }
       }).get();
       client.schema().classCreator().withClass(chickenSoup)
           .run(new FutureCallback<Result<Boolean>>() {
@@ -190,7 +194,6 @@ public class ClientSchemaTest {
         }
       }).get();
 
-
       client.schema().getter().run(new FutureCallback<Result<Schema>>() {
         @Override
         public void completed(Result<Schema> schemaResult) {
@@ -219,10 +222,8 @@ public class ClientSchemaTest {
       WeaviateClass pizza = SchemaTestSuite.testSchemaDeleteAllSchema.pizza;
       WeaviateClass chickenSoup = SchemaTestSuite.testSchemaDeleteAllSchema.chickenSoup;
       // when
-      Result<Boolean> pizzaCreateStatus =
-          client.schema().classCreator().withClass(pizza).run().get();
-      Result<Boolean> chickenSoupCreateStatus =
-          client.schema().classCreator().withClass(chickenSoup).run().get();
+      Result<Boolean> pizzaCreateStatus = client.schema().classCreator().withClass(pizza).run().get();
+      Result<Boolean> chickenSoupCreateStatus = client.schema().classCreator().withClass(chickenSoup).run().get();
       Result<Schema> schemaAfterCreate = client.schema().getter().run().get();
       Result<Boolean> deleteAllStatus = client.schema().allDeleter().run().get();
       Result<Schema> schemaAfterDelete = client.schema().getter().run().get();
@@ -241,10 +242,8 @@ public class ClientSchemaTest {
       WeaviateClass chickenSoup = SchemaTestSuite.testSchemaCreateClassesAddProperties.chickenSoup;
       Property newProperty = SchemaTestSuite.testSchemaCreateClassesAddProperties.newProperty;
       // when
-      Result<Boolean> pizzaCreateStatus =
-          client.schema().classCreator().withClass(pizza).run().get();
-      Result<Boolean> chickenSoupCreateStatus =
-          client.schema().classCreator().withClass(chickenSoup).run().get();
+      Result<Boolean> pizzaCreateStatus = client.schema().classCreator().withClass(pizza).run().get();
+      Result<Boolean> chickenSoupCreateStatus = client.schema().classCreator().withClass(chickenSoup).run().get();
       Result<Boolean> pizzaPropertyCreateStatus = client.schema().propertyCreator()
           .withProperty(newProperty).withClassName(pizza.getClassName()).run().get();
       Result<Boolean> chickenSoupPropertyCreateStatus = client.schema().propertyCreator()
@@ -257,6 +256,62 @@ public class ClientSchemaTest {
       SchemaTestSuite.testSchemaCreateClassesAddProperties.assertResults(pizzaCreateStatus,
           chickenSoupCreateStatus, pizzaPropertyCreateStatus, chickenSoupPropertyCreateStatus,
           schemaAfterCreate, deleteAllStatus, schemaAfterDelete);
+    }
+  }
+
+  @Test
+  public void testSchemaAddVectors() throws ExecutionException, InterruptedException {
+    // Arrange
+    VectorConfig vector = VectorConfig.builder()
+        .vectorIndexType("hnsw")
+        .vectorizer(Collections.singletonMap("none", Collections.emptyMap()))
+        .vectorIndexConfig(VectorIndexConfig.builder().build())
+        .build();
+    String className = "Pizza_testSchemaAddVectors";
+    try (WeaviateAsyncClient client = syncClient.async()) {
+      client.schema().classCreator()
+          .withClass(WeaviateClass.builder()
+              .className(className)
+              .properties(Collections.singletonList(
+                  Property.builder()
+                      .name("title").dataType(Collections.singletonList(DataType.TEXT))
+                      .build()))
+              .vectorConfig(Collections.singletonMap("default", vector))
+              .build())
+          .run().get();
+
+      // Act
+      AtomicBoolean completed = new AtomicBoolean(false);
+      FutureCallback<Result<Boolean>> callback = new FutureCallback<Result<Boolean>>() {
+
+        @Override
+        public void completed(Result<Boolean> result) {
+          completed.set(true);
+        }
+
+        @Override
+        public void failed(Exception ex) {
+          completed.set(true);
+        }
+
+        @Override
+        public void cancelled() {
+        }
+      };
+      Result<Boolean> add = client.schema().vectorAdder()
+          .withClassName(className)
+          .withVectorConfig("vector-a", vector)
+          .withVectorConfig("vector-b", vector)
+          .run(callback).get();
+      assertNull("error adding new vectors", add.getError());
+
+      Result<WeaviateClass> result = client.schema().classGetter()
+          .withClassName(className).run().get();
+      WeaviateClass pizza = result.getResult();
+      assertThat(pizza.getVectorConfig())
+          .as("has all 3 vectors")
+          .containsKeys("default", "vector-a", "vector-b");
+      assertTrue("callback called on completion", completed.get());
     }
   }
 
@@ -440,19 +495,17 @@ public class ClientSchemaTest {
           .description("A delicious religion like food and arguably the best export of Italy.")
           .build();
 
-      Property notExistingTokenization =
-          Property.builder().dataType(Collections.singletonList(DataType.TEXT))
-              .description("someString").name("someString").tokenization("not-existing").build();
-      Property notSupportedTokenizationForInt =
-          Property.builder().dataType(Collections.singletonList(DataType.INT))
-              .description("someInt").name("someInt").tokenization(Tokenization.WORD).build();
+      Property notExistingTokenization = Property.builder().dataType(Collections.singletonList(DataType.TEXT))
+          .description("someString").name("someString").tokenization("not-existing").build();
+      Property notSupportedTokenizationForInt = Property.builder().dataType(Collections.singletonList(DataType.INT))
+          .description("someInt").name("someInt").tokenization(Tokenization.WORD).build();
       // when
       Result<Boolean> createStatus = client.schema().classCreator().withClass(pizza).run().get();
       Result<Boolean> notExistingTokenizationCreateStatus = client.schema().propertyCreator()
           .withProperty(notExistingTokenization).withClassName(pizza.getClassName()).run().get();
-      Result<Boolean> notSupportedTokenizationForIntCreateStatus =
-          client.schema().propertyCreator().withProperty(notSupportedTokenizationForInt)
-              .withClassName(pizza.getClassName()).run().get();
+      Result<Boolean> notSupportedTokenizationForIntCreateStatus = client.schema().propertyCreator()
+          .withProperty(notSupportedTokenizationForInt)
+          .withClassName(pizza.getClassName()).run().get();
 
       // then
       assertResultTrue(createStatus);
@@ -474,10 +527,9 @@ public class ClientSchemaTest {
           .vectorizer("text2vec-contextionary").build();
       // when
       Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run().get();
-      Result<WeaviateClass> bandClass =
-          client.schema().classGetter().withClassName(clazz.getClassName()).run().get();
-      Result<WeaviateClass> nonExistentClass =
-          client.schema().classGetter().withClassName("nonExistentClass").run().get();
+      Result<WeaviateClass> bandClass = client.schema().classGetter().withClassName(clazz.getClassName()).run().get();
+      Result<WeaviateClass> nonExistentClass = client.schema().classGetter().withClassName("nonExistentClass").run()
+          .get();
       // then
       assertNotNull(createStatus);
       assertTrue(createStatus.getResult());
@@ -503,18 +555,15 @@ public class ClientSchemaTest {
           .vectorizer("text2vec-contextionary").build();
       // when
       Result<Boolean> createStatus = client.schema().classCreator().withClass(clazz).run().get();
-      Result<Boolean> bandClassExists =
-          client.schema().exists().withClassName(clazz.getClassName()).run().get();
-      Result<Boolean> nonExistentClassExists =
-          client.schema().exists().withClassName("nonExistentClass").run().get();
+      Result<Boolean> bandClassExists = client.schema().exists().withClassName(clazz.getClassName()).run().get();
+      Result<Boolean> nonExistentClassExists = client.schema().exists().withClassName("nonExistentClass").run().get();
       // then
       assertResultTrue(createStatus);
       assertResultTrue(bandClassExists);
       assertNotNull(nonExistentClassExists);
       assertFalse(nonExistentClassExists.getResult());
       assertNull(nonExistentClassExists.getError());
-      Result<Shard[]> shards =
-          client.schema().shardsGetter().withClassName(clazz.getClassName()).run().get();
+      Result<Shard[]> shards = client.schema().shardsGetter().withClassName(clazz.getClassName()).run().get();
       assertNotNull(shards);
       assertNotNull(shards.getResult());
       assertEquals(1, shards.getResult().length);
@@ -532,18 +581,15 @@ public class ClientSchemaTest {
           Property.builder().name("question").dataType(Arrays.asList(DataType.TEXT)).build(),
           Property.builder().name("answer").dataType(Arrays.asList(DataType.TEXT)).build());
 
-      WeaviateClass jeopardyClass =
-          WeaviateClass.builder().className(className).description("A Jeopardy! question")
-              .vectorizer("text2vec-contextionary").properties(properties).build();
+      WeaviateClass jeopardyClass = WeaviateClass.builder().className(className).description("A Jeopardy! question")
+          .vectorizer("text2vec-contextionary").properties(properties).build();
 
-      Result<Boolean> createResult =
-          client.schema().classCreator().withClass(jeopardyClass).run().get();
+      Result<Boolean> createResult = client.schema().classCreator().withClass(jeopardyClass).run().get();
 
       assertThat(createResult).isNotNull().withFailMessage(() -> createResult.getError().toString())
           .returns(false, Result::hasErrors).withFailMessage(null).returns(true, Result::getResult);
 
-      Result<WeaviateClass> createdClassResult =
-          client.schema().classGetter().withClassName(className).run().get();
+      Result<WeaviateClass> createdClassResult = client.schema().classGetter().withClassName(className).run().get();
 
       assertThat(createdClassResult).isNotNull()
           .withFailMessage(() -> createdClassResult.getError().toString())
@@ -561,14 +607,12 @@ public class ClientSchemaTest {
               .deletionStrategy(ReplicationConfig.DeletionStrategy.DELETE_ON_CONFLICT).build())
           .build();
 
-      Result<Boolean> updateResult =
-          client.schema().classUpdater().withClass(newJeopardyClass).run().get();
+      Result<Boolean> updateResult = client.schema().classUpdater().withClass(newJeopardyClass).run().get();
 
       assertThat(updateResult).isNotNull().withFailMessage(() -> updateResult.getError().toString())
           .returns(false, Result::hasErrors).withFailMessage(null).returns(true, Result::getResult);
 
-      Result<WeaviateClass> updatedClassResult =
-          client.schema().classGetter().withClassName(className).run().get();
+      Result<WeaviateClass> updatedClassResult = client.schema().classGetter().withClassName(className).run().get();
 
       assertThat(updatedClassResult).isNotNull()
           .withFailMessage(() -> updatedClassResult.getError().toString())
