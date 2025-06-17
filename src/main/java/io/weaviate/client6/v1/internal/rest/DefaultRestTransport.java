@@ -83,7 +83,7 @@ public class DefaultRestTransport implements RestTransport {
 
     });
     // FIXME: we need to differentiate between "no body" and "soumething's wrong"
-    return completable.thenApply(r -> r.getBody() == null
+    return completable.thenApply(r -> r.getBody() != null
         ? endpoint.deserializeResponse(gson, r.getBody().getBodyText())
         : null);
   }
