@@ -3,6 +3,7 @@ package io.weaviate.client6.v1.api.collections;
 import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import com.google.gson.Gson;
@@ -97,6 +98,13 @@ public interface Vectorizer {
       Function<Text2VecContextionaryVectorizer.Builder, ObjectBuilder<Text2VecContextionaryVectorizer>> fn) {
     return Map.entry(vectorName,
         VectorIndex.DEFAULT_VECTOR_INDEX.apply(Text2VecContextionaryVectorizer.of(fn)));
+  }
+
+  public static <B, I extends VectorIndex> Map.Entry<String, VectorIndex> text2VecContextionary(
+      BiFunction<Vectorizer, Function<B, ObjectBuilder<I>>, VectorIndex> ctor,
+      Function<Text2VecContextionaryVectorizer.Builder, ObjectBuilder<Text2VecContextionaryVectorizer>> fnVectorizer,
+      Function<B, ObjectBuilder<I>> fnIndex) {
+    return Map.entry("default", ctor.apply(null, null));
   }
 
   public static Map.Entry<String, VectorIndex> multi2vecClip() {
