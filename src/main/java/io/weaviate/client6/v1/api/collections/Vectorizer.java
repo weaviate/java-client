@@ -3,6 +3,8 @@ package io.weaviate.client6.v1.api.collections;
 import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
@@ -12,11 +14,13 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
+import io.weaviate.client6.v1.api.collections.vectorindex.WrappedVectorIndex;
 import io.weaviate.client6.v1.api.collections.vectorizers.Img2VecNeuralVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecClipVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecContextionaryVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecWeaviateVectorizer;
+import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.json.JsonEnum;
 
 public interface Vectorizer {
@@ -47,6 +51,99 @@ public interface Vectorizer {
   Kind _kind();
 
   Object _self();
+
+  public static Map.Entry<String, VectorIndex> none() {
+    return buildVectorIndex(VectorIndex.DEFAULT_VECTOR_NAME, new NoneVectorizer.Builder(), ObjectBuilder.identity());
+  }
+
+  public static Map.Entry<String, VectorIndex> none(
+      Function<NoneVectorizer.Builder, ObjectBuilder<NoneVectorizer>> fn) {
+    return buildVectorIndex(VectorIndex.DEFAULT_VECTOR_NAME, new NoneVectorizer.Builder(), ObjectBuilder.identity());
+  }
+
+  public static Map.Entry<String, VectorIndex> none(String vectorName,
+      Function<NoneVectorizer.Builder, ObjectBuilder<NoneVectorizer>> fn) {
+    return buildVectorIndex(vectorName, new NoneVectorizer.Builder(), ObjectBuilder.identity());
+  }
+
+  public static Map.Entry<String, VectorIndex> text2vecWeaviate() {
+    return Map.entry(VectorIndex.DEFAULT_VECTOR_NAME,
+        VectorIndex.DEFAULT_VECTOR_INDEX.apply(Text2VecWeaviateVectorizer.of()));
+  }
+
+  public static Map.Entry<String, VectorIndex> text2vecWeaviate(
+      Function<Text2VecWeaviateVectorizer.Builder, ObjectBuilder<Text2VecWeaviateVectorizer>> fn) {
+    return Map.entry(VectorIndex.DEFAULT_VECTOR_NAME,
+        VectorIndex.DEFAULT_VECTOR_INDEX.apply(Text2VecWeaviateVectorizer.of(fn)));
+  }
+
+  public static Map.Entry<String, VectorIndex> text2vecWeaviate(String vectorName,
+      Function<Text2VecWeaviateVectorizer.Builder, ObjectBuilder<Text2VecWeaviateVectorizer>> fn) {
+    return Map.entry(vectorName,
+        VectorIndex.DEFAULT_VECTOR_INDEX.apply(Text2VecWeaviateVectorizer.of(fn)));
+  }
+
+  public static Map.Entry<String, VectorIndex> text2VecContextionary() {
+    return Map.entry(VectorIndex.DEFAULT_VECTOR_NAME,
+        VectorIndex.DEFAULT_VECTOR_INDEX.apply(Text2VecContextionaryVectorizer.of()));
+  }
+
+  public static Map.Entry<String, VectorIndex> text2VecContextionary(
+      Function<Text2VecContextionaryVectorizer.Builder, ObjectBuilder<Text2VecContextionaryVectorizer>> fn) {
+    return Map.entry(VectorIndex.DEFAULT_VECTOR_NAME,
+        VectorIndex.DEFAULT_VECTOR_INDEX.apply(Text2VecContextionaryVectorizer.of(fn)));
+  }
+
+  public static Map.Entry<String, VectorIndex> text2VecContextionary(String vectorName,
+      Function<Text2VecContextionaryVectorizer.Builder, ObjectBuilder<Text2VecContextionaryVectorizer>> fn) {
+    return Map.entry(vectorName,
+        VectorIndex.DEFAULT_VECTOR_INDEX.apply(Text2VecContextionaryVectorizer.of(fn)));
+  }
+
+  public static <B, I extends VectorIndex> Map.Entry<String, VectorIndex> text2VecContextionary(
+      BiFunction<Vectorizer, Function<B, ObjectBuilder<I>>, VectorIndex> ctor,
+      Function<Text2VecContextionaryVectorizer.Builder, ObjectBuilder<Text2VecContextionaryVectorizer>> fnVectorizer,
+      Function<B, ObjectBuilder<I>> fnIndex) {
+    return Map.entry("default", ctor.apply(null, null));
+  }
+
+  public static Map.Entry<String, VectorIndex> multi2vecClip() {
+    return buildVectorIndex(VectorIndex.DEFAULT_VECTOR_NAME, new Multi2VecClipVectorizer.Builder(),
+        ObjectBuilder.identity());
+  }
+
+  public static Map.Entry<String, VectorIndex> multi2vecClip(
+      Function<Multi2VecClipVectorizer.Builder, ObjectBuilder<Multi2VecClipVectorizer>> fn) {
+    return buildVectorIndex(VectorIndex.DEFAULT_VECTOR_NAME, new Multi2VecClipVectorizer.Builder(), fn);
+  }
+
+  public static Map.Entry<String, VectorIndex> multi2vecClip(String vectorName,
+      Function<Multi2VecClipVectorizer.Builder, ObjectBuilder<Multi2VecClipVectorizer>> fn) {
+    return buildVectorIndex(vectorName, new Multi2VecClipVectorizer.Builder(), fn);
+  }
+
+  public static Map.Entry<String, VectorIndex> img2vecNeural() {
+    return buildVectorIndex(VectorIndex.DEFAULT_VECTOR_NAME, new Img2VecNeuralVectorizer.Builder(),
+        ObjectBuilder.identity());
+  }
+
+  public static Map.Entry<String, VectorIndex> img2vecNeural(
+      Function<Img2VecNeuralVectorizer.Builder, ObjectBuilder<Img2VecNeuralVectorizer>> fn) {
+    return buildVectorIndex(VectorIndex.DEFAULT_VECTOR_NAME, new Img2VecNeuralVectorizer.Builder(), fn);
+  }
+
+  public static Map.Entry<String, VectorIndex> img2vecNeural(String vectorName,
+      Function<Img2VecNeuralVectorizer.Builder, ObjectBuilder<Img2VecNeuralVectorizer>> fn) {
+    return buildVectorIndex(vectorName, new Img2VecNeuralVectorizer.Builder(), fn);
+  }
+
+  private static <B extends WrappedVectorIndex.Builder<B, V>, V extends Vectorizer> Map.Entry<String, VectorIndex> buildVectorIndex(
+      String key,
+      B builder, Function<B, ObjectBuilder<V>> fn) {
+    @SuppressWarnings("unchecked")
+    B b = (B) fn.apply(builder);
+    return Map.entry(key, b.buildVectorIndex());
+  }
 
   public static enum CustomTypeAdapterFactory implements TypeAdapterFactory {
     INSTANCE;

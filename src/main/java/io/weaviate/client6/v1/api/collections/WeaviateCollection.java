@@ -81,20 +81,29 @@ public record WeaviateCollection(
       return this;
     }
 
-    public Builder vector(VectorIndex vector) {
-      this.vectors.put(VectorIndex.DEFAULT_VECTOR_NAME, vector);
+    @SafeVarargs
+    public final Builder vectors(Map.Entry<String, VectorIndex>... vectors) {
+      for (final var vector : vectors) {
+        this.vectors.put(vector.getKey(), vector.getValue());
+      }
       return this;
     }
 
-    public Builder vector(String name, VectorIndex vector) {
-      this.vectors.put(name, vector);
-      return this;
-    }
-
-    public Builder vectors(Function<VectorsBuilder, ObjectBuilder<Map<String, VectorIndex>>> fn) {
-      this.vectors = fn.apply(new VectorsBuilder()).build();
-      return this;
-    }
+    // public Builder vector(VectorIndex vector) {
+    // this.vectors.put(VectorIndex.DEFAULT_VECTOR_NAME, vector);
+    // return this;
+    // }
+    //
+    // public Builder vector(String name, VectorIndex vector) {
+    // this.vectors.put(name, vector);
+    // return this;
+    // }
+    //
+    // public Builder vectors(Function<VectorsBuilder, ObjectBuilder<Map<String,
+    // VectorIndex>>> fn) {
+    // this.vectors = fn.apply(new VectorsBuilder()).build();
+    // return this;
+    // }
 
     public static class VectorsBuilder implements ObjectBuilder<Map<String, VectorIndex>> {
       private Map<String, VectorIndex> vectors = new HashMap<>();

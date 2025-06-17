@@ -9,6 +9,7 @@ import java.util.function.Function;
 import com.google.gson.annotations.SerializedName;
 
 import io.weaviate.client6.v1.api.collections.Vectorizer;
+import io.weaviate.client6.v1.api.collections.vectorindex.WrappedVectorIndex;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Multi2VecClipVectorizer(
@@ -52,7 +53,7 @@ public record Multi2VecClipVectorizer(
             builder.textFields.values().stream().toList()));
   }
 
-  public static class Builder implements ObjectBuilder<Multi2VecClipVectorizer> {
+  public static class Builder extends WrappedVectorIndex.Builder<Builder, Multi2VecClipVectorizer> {
     private boolean vectorizeCollectionName = false;
     private String inferenceUrl;
     private Map<String, Float> imageFields = new HashMap<>();

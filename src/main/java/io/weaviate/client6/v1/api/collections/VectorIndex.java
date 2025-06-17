@@ -3,6 +3,7 @@ package io.weaviate.client6.v1.api.collections;
 import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
@@ -18,6 +19,7 @@ import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.internal.json.JsonEnum;
 
 public interface VectorIndex {
+  static final Function<Vectorizer, VectorIndex> DEFAULT_VECTOR_INDEX = Hnsw::of;
   static final String DEFAULT_VECTOR_NAME = "default";
 
   public enum Kind implements JsonEnum<Kind> {
@@ -80,7 +82,8 @@ public interface VectorIndex {
       }
 
       final var vectorizerAdapter = gson.getDelegateAdapter(this, TypeToken.get(Vectorizer.class));
-      final var writeAdapter = gson.getDelegateAdapter(this, TypeToken.get(rawType));
+      // final var writeAdapter = gson.getDelegateAdapter(this,
+      // TypeToken.get(rawType));
       return (TypeAdapter<T>) new TypeAdapter<VectorIndex>() {
 
         @Override
@@ -89,10 +92,13 @@ public interface VectorIndex {
           out.name("vectorIndexType");
           out.value(value._kind().jsonValue());
 
-          var config = writeAdapter.toJsonTree((T) value.config());
-          config.getAsJsonObject().remove("vectorizer");
-          out.name("vectorIndexConfig");
-          Streams.write(config, out);
+          var adapter = (TypeAdapter<T>) readAdapters.get(value._kind());
+          if (adapter != null) {
+            var config = adapter.toJsonTree((T) value.config());
+            config.getAsJsonObject().remove("vectorizer");
+            out.name("vectorIndexConfig");
+            Streams.write(config, out);
+          }
 
           out.name("vectorizer");
           vectorizerAdapter.write(out, value.vectorizer());
