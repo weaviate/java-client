@@ -82,7 +82,8 @@ public interface VectorIndex {
       }
 
       final var vectorizerAdapter = gson.getDelegateAdapter(this, TypeToken.get(Vectorizer.class));
-      final var writeAdapter = gson.getDelegateAdapter(this, TypeToken.get(rawType));
+      // final var writeAdapter = gson.getDelegateAdapter(this,
+      // TypeToken.get(rawType));
       return (TypeAdapter<T>) new TypeAdapter<VectorIndex>() {
 
         @Override
@@ -91,10 +92,13 @@ public interface VectorIndex {
           out.name("vectorIndexType");
           out.value(value._kind().jsonValue());
 
-          var config = writeAdapter.toJsonTree((T) value.config());
-          config.getAsJsonObject().remove("vectorizer");
-          out.name("vectorIndexConfig");
-          Streams.write(config, out);
+          var adapter = (TypeAdapter<T>) readAdapters.get(value._kind());
+          if (adapter != null) {
+            var config = adapter.toJsonTree((T) value.config());
+            config.getAsJsonObject().remove("vectorizer");
+            out.name("vectorIndexConfig");
+            Streams.write(config, out);
+          }
 
           out.name("vectorizer");
           vectorizerAdapter.write(out, value.vectorizer());

@@ -8,6 +8,7 @@ import java.util.function.Function;
 import com.google.gson.annotations.SerializedName;
 
 import io.weaviate.client6.v1.api.collections.Vectorizer;
+import io.weaviate.client6.v1.api.collections.vectorindex.WrappedVectorIndex;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Img2VecNeuralVectorizer(
@@ -35,7 +36,7 @@ public record Img2VecNeuralVectorizer(
     this(builder.imageFields);
   }
 
-  public static class Builder implements ObjectBuilder<Img2VecNeuralVectorizer> {
+  public static class Builder extends WrappedVectorIndex.Builder<Builder, Img2VecNeuralVectorizer> {
     private List<String> imageFields = new ArrayList<>();
 
     public Builder imageFields(List<String> fields) {

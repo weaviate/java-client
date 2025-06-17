@@ -8,6 +8,7 @@ import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 import io.weaviate.client6.v1.api.collections.Vectorizer;
+import io.weaviate.client6.v1.api.collections.vectorindex.WrappedVectorIndex;
 
 public record NoneVectorizer() implements Vectorizer {
   @Override
@@ -18,6 +19,14 @@ public record NoneVectorizer() implements Vectorizer {
   @Override
   public Object _self() {
     return this;
+  }
+
+  public static class Builder extends WrappedVectorIndex.Builder<Builder, NoneVectorizer> {
+
+    @Override
+    public NoneVectorizer build() {
+      return new NoneVectorizer();
+    }
   }
 
   public static final TypeAdapter<NoneVectorizer> TYPE_ADAPTER = new TypeAdapter<NoneVectorizer>() {

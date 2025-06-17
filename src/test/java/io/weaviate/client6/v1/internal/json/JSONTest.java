@@ -25,6 +25,7 @@ import io.weaviate.client6.v1.api.collections.data.Reference;
 import io.weaviate.client6.v1.api.collections.vectorindex.Distance;
 import io.weaviate.client6.v1.api.collections.vectorindex.Flat;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
+import io.weaviate.client6.v1.api.collections.vectorindex.WrappedVectorIndex;
 import io.weaviate.client6.v1.api.collections.vectorizers.Img2VecNeuralVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecClipVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer;
@@ -214,6 +215,7 @@ public class JSONTest {
                   }
                 }
                 """,
+            (CustomAssert) JSONTest::compareVectorIndex,
         },
 
         // Reference.TYPE_ADAPTER
@@ -296,13 +298,38 @@ public class JSONTest {
 
   /**
    * Custom assert function that uses deep array equality
-   * to correctly compare Float[] and Float[][] nested in the object.
+   * to correctly compare {@code Float[]} and {@code Float[][]}
+   * nested in the object.
    */
   private static void compareVectors(Object got, Object want) {
     Assertions.assertThat(got)
         .usingRecursiveComparison()
         .withEqualsForType(Arrays::equals, Float[].class)
         .withEqualsForType(Arrays::deepEquals, Float[][].class)
+        .isEqualTo(want);
+  }
+
+  /**
+   * Custom assert function that unwraps {@link WrappedVectorIndex}
+   * and compares its interface values rather than the object itself..
+   *
+   * Note, that JSONs are correctly deserialized into {@link Hnsw}, {@link Flat},
+   * etc., but this test suit expects to find {@link WrappedVectorIndex}
+   * if the configuration is created with one of the {@link Vectorizer}'s
+   * static factories.
+   */
+  private static void compareVectorIndex(Object got, Object want) {
+    Assertions.assertThat(got)
+        .usingRecursiveComparison()
+        .withEqualsForType((v1, v2) -> {
+          if (!(v1 instanceof WrappedVectorIndex) &&
+              !(v2 instanceof WrappedVectorIndex)) {
+            return v1.equals(v2);
+          }
+          return v1._kind().equals(v2._kind())
+              && v1.vectorizer().equals(v2.vectorizer())
+              && v1.config().equals(v2.config());
+        }, VectorIndex.class)
         .isEqualTo(want);
   }
 }
