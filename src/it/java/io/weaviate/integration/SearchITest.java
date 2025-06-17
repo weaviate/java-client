@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactories;
@@ -258,7 +259,7 @@ public class SearchITest extends ConcurrentTest {
   }
 
   @Test
-  public void testBm25() throws IOException {
+  public void testBm25() throws IOException, InterruptedException, ExecutionException {
     var nsWords = ns("Words");
 
     client.collections.create(nsWords,
@@ -280,5 +281,38 @@ public class SearchITest extends ConcurrentTest {
         .hasSize(1)
         .extracting(WeaviateObject::metadata).extracting(QueryMetadata::uuid)
         .containsOnly(want.metadata().uuid());
+  }
+
+  /**
+   * Minimal test to verify async functionality works as expected.
+   * We will extend our testing framework at a later stage to automatically
+   * test both sync/async clients.
+   */
+  @Test
+  public void testBm25_async() throws IOException, InterruptedException, ExecutionException {
+    var nsWords = ns("Words");
+
+    try (final var async = client.async()) {
+      async.collections.create(nsWords,
+          collection -> collection
+              .properties(
+                  Property.text("relevant"),
+                  Property.text("irrelevant")))
+          .get();
+
+      var words = async.collections.use(nsWords);
+
+      /* notWant */ words.data.insert(Map.of("relevant", "elefant", "irrelevant", "dollar bill")).get();
+      var want = words.data.insert(Map.of("relevant", "a dime a dollar", "irrelevant", "euro")).get();
+
+      var dollarWorlds = words.query.bm25(
+          "dollar",
+          bm25 -> bm25.queryProperties("relevant")).get();
+
+      Assertions.assertThat(dollarWorlds.objects())
+          .hasSize(1)
+          .extracting(WeaviateObject::metadata).extracting(QueryMetadata::uuid)
+          .containsOnly(want.metadata().uuid());
+    }
   }
 }
