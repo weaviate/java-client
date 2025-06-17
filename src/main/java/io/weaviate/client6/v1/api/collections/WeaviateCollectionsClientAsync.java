@@ -19,8 +19,8 @@ public class WeaviateCollectionsClientAsync {
     this.grpcTransport = grpcTransport;
   }
 
-  public CollectionHandle<Map<String, Object>> use(String collectionName) {
-    return new CollectionHandle<>(restTransport, grpcTransport,
+  public CollectionHandleAsync<Map<String, Object>> use(String collectionName) {
+    return new CollectionHandleAsync<>(restTransport, grpcTransport,
         CollectionDescriptor.ofMap(collectionName));
   }
 
