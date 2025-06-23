@@ -1,6 +1,7 @@
 package io.weaviate.client6.v1.api.collections;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -41,7 +42,21 @@ public class WeaviateCollectionsClient {
     return this.restTransport.performRequest(new GetConfigRequest(name), GetConfigRequest._ENDPOINT);
   }
 
+  public List<WeaviateCollection> list() throws IOException {
+    return this.restTransport.performRequest(new ListCollectionRequest(), ListCollectionRequest._ENDPOINT);
+  }
+
   public void delete(String name) throws IOException {
     this.restTransport.performRequest(new DeleteCollectionRequest(name), DeleteCollectionRequest._ENDPOINT);
+  }
+
+  public void deleteAll() throws IOException {
+    for (var collection : list()) {
+      delete(collection.name());
+    }
+  }
+
+  public boolean exists(String name) throws IOException {
+    return getConfig(name).isPresent();
   }
 }
