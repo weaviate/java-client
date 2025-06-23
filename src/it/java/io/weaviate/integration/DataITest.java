@@ -13,7 +13,9 @@ import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
+import io.weaviate.client6.v1.api.collections.data.Reference;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
+import io.weaviate.client6.v1.api.collections.query.QueryReference;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer;
 import io.weaviate.containers.Container;
@@ -100,5 +102,77 @@ public class DataITest extends ConcurrentTest {
             .references(
                 Property.reference("hasAwards", awardsGrammy, awardsOscar))
             .vectors(named -> named.vector(VECTOR_INDEX, Hnsw.of(new NoneVectorizer()))));
+  }
+
+  @Test
+  public void testReferences_AddReplaceDelete() throws IOException {
+    // Arrange
+    var nsPersons = ns("Person");
+
+    client.collections.create(nsPersons,
+        collection -> collection
+            .properties(Property.text("name"))
+            .references(Property.reference("hasFriend", nsPersons)));
+
+    var persons = client.collections.use(nsPersons);
+    var john = persons.data.insert(Map.of("name", "john"));
+    var albie = persons.data.insert(Map.of("name", "albie"));
+
+    // Act: add reference
+    persons.data.referenceAdd(
+        john.metadata().uuid(),
+        "hasFriend",
+        Reference.object(albie));
+
+    // Assert
+    var johnWithFriends = persons.query.byId(john.metadata().uuid(),
+        query -> query.returnReferences(
+            QueryReference.single("hasFriend",
+                friend -> friend.returnProperties("name"))));
+
+    Assertions.assertThat(johnWithFriends).get()
+        .as("friends after ADD")
+        .extracting(WeaviateObject::references).extracting("hasFriend")
+        .asInstanceOf(InstanceOfAssertFactories.list(WeaviateObject.class))
+        .hasSize(1)
+        .first().extracting(WeaviateObject::properties, InstanceOfAssertFactories.MAP)
+        .returns("albie", friend -> friend.get("name"));
+
+    // Act: replace reference
+    var barbara = persons.data.insert(Map.of("name", "barbara"));
+    persons.data.referenceReplace(
+        john.metadata().uuid(),
+        "hasFriend",
+        Reference.object(barbara));
+
+    johnWithFriends = persons.query.byId(john.metadata().uuid(),
+        query -> query.returnReferences(
+            QueryReference.single("hasFriend",
+                friend -> friend.returnProperties("name"))));
+
+    Assertions.assertThat(johnWithFriends).get()
+        .as("friends after REPLACE")
+        .extracting(WeaviateObject::references).extracting("hasFriend")
+        .asInstanceOf(InstanceOfAssertFactories.list(WeaviateObject.class))
+        .hasSize(1)
+        .first().extracting(WeaviateObject::properties, InstanceOfAssertFactories.MAP)
+        .returns("barbara", friend -> friend.get("name"));
+
+    // Act: delete reference
+    persons.data.referenceDelete(
+        john.metadata().uuid(),
+        "hasFriend",
+        Reference.object(barbara));
+
+    // Assert
+    johnWithFriends = persons.query.byId(john.metadata().uuid(),
+        query -> query.returnReferences(
+            QueryReference.single("hasFriend")));
+
+    Assertions.assertThat(johnWithFriends).get()
+        .as("friends after DELETE")
+        .extracting(WeaviateObject::references).extracting("hasFriend")
+        .asInstanceOf(InstanceOfAssertFactories.list(WeaviateObject.class))
+        .isEmpty();
   }
 }

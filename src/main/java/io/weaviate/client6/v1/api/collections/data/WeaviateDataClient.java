@@ -36,4 +36,28 @@ public class WeaviateDataClient<T> {
     this.restTransport.performRequest(new DeleteObjectRequest(collectionDescriptor.name(), uuid),
         DeleteObjectRequest._ENDPOINT);
   }
+
+  public void referenceAdd(String fromUuid, String fromProperty, Reference reference) throws IOException {
+    for (var uuid : reference.uuids()) {
+      var singleRef = new Reference(reference.collection(), uuid);
+      this.restTransport.performRequest(new ReferenceAddRequest(fromUuid, fromProperty, singleRef),
+          ReferenceAddRequest.endpoint(collectionDescriptor));
+    }
+  }
+
+  public void referenceDelete(String fromUuid, String fromProperty, Reference reference) throws IOException {
+    for (var uuid : reference.uuids()) {
+      var singleRef = new Reference(reference.collection(), uuid);
+      this.restTransport.performRequest(new ReferenceDeleteRequest(fromUuid, fromProperty, singleRef),
+          ReferenceDeleteRequest.endpoint(collectionDescriptor));
+    }
+  }
+
+  public void referenceReplace(String fromUuid, String fromProperty, Reference reference) throws IOException {
+    for (var uuid : reference.uuids()) {
+      var singleRef = new Reference(reference.collection(), uuid);
+      this.restTransport.performRequest(new ReferenceReplaceRequest(fromUuid, fromProperty, singleRef),
+          ReferenceReplaceRequest.endpoint(collectionDescriptor));
+    }
+  }
 }
