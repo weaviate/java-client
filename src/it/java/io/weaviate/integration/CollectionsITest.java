@@ -86,4 +86,32 @@ public class CollectionsITest extends ConcurrentTest {
               .containsOnly(nsOnlineStores, nsMarkets);
         });
   }
+
+  @Test
+  public void testListDeleteAll() throws IOException {
+    var nsA = ns("A");
+    var nsB = ns("B");
+    var nsC = ns("C");
+
+    client.collections.create(nsA);
+    client.collections.create(nsB);
+    client.collections.create(nsC);
+
+    Assertions.assertThat(client.collections.exists(nsA)).isTrue();
+    Assertions.assertThat(client.collections.exists(nsB)).isTrue();
+    Assertions.assertThat(client.collections.exists(nsC)).isTrue();
+    Assertions.assertThat(client.collections.exists(ns("X"))).isFalse();
+
+    var all = client.collections.list();
+    Assertions.assertThat(all)
+        .hasSizeGreaterThanOrEqualTo(3)
+        .extracting(WeaviateCollection::name)
+        .contains(nsA, nsB, nsC);
+
+    client.collections.deleteAll();
+
+    all = client.collections.list();
+    Assertions.assertThat(all.isEmpty());
+
+  }
 }
