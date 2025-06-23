@@ -27,7 +27,12 @@ public record Reference(String collection, List<String> uuids) {
     return new Reference(null, Arrays.asList(uuids));
   }
 
-  /** Create references to {@link WeaviateObject}. */
+  /** Create references to single {@link WeaviateObject}. */
+  public static Reference object(WeaviateObject<?, ?, ?> object) {
+    return new Reference(object.collection(), object.metadata().uuid());
+  }
+
+  /** Create references to multiple {@link WeaviateObject}. */
   public static Reference[] objects(WeaviateObject<?, ?, ?>... objects) {
     return Arrays.stream(objects)
         .map(o -> new Reference(o.collection(), o.metadata().uuid()))
