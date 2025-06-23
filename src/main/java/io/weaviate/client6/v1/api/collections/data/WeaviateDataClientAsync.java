@@ -1,6 +1,7 @@
 package io.weaviate.client6.v1.api.collections.data;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
@@ -37,5 +38,51 @@ public class WeaviateDataClientAsync<T> {
   public CompletableFuture<Void> delete(String uuid) {
     return this.restTransport.performRequestAsync(new DeleteObjectRequest(collectionDescriptor.name(), uuid),
         DeleteObjectRequest._ENDPOINT);
+  }
+
+  public CompletableFuture<Void> referenceAdd(String fromUuid, String fromProperty, Reference reference) {
+    return forEachAsync(reference.uuids(), uuid -> {
+      var singleRef = new Reference(reference.collection(), (String) uuid);
+      return this.restTransport.performRequestAsync(new ReferenceAddRequest(fromUuid, fromProperty, singleRef),
+          ReferenceAddRequest.endpoint(collectionDescriptor));
+    });
+  }
+
+  public CompletableFuture<Void> referenceDelete(String fromUuid, String fromProperty, Reference reference) {
+    return forEachAsync(reference.uuids(), uuid -> {
+      var singleRef = new Reference(reference.collection(), (String) uuid);
+      return this.restTransport.performRequestAsync(new ReferenceDeleteRequest(fromUuid, fromProperty, singleRef),
+          ReferenceDeleteRequest.endpoint(collectionDescriptor));
+    });
+  }
+
+  public CompletableFuture<Void> referenceReplace(String fromUuid, String fromProperty, Reference reference) {
+    return forEachAsync(reference.uuids(), uuid -> {
+      var singleRef = new Reference(reference.collection(), (String) uuid);
+      return this.restTransport.performRequestAsync(new ReferenceReplaceRequest(fromUuid, fromProperty, singleRef),
+          ReferenceReplaceRequest.endpoint(collectionDescriptor));
+    });
+  }
+
+  /**
+   * Spawn execution {@code fn} for each of the {@code elements} and return a
+   * flattened {@link CompletableFuture#allOf}.
+   *
+   * <p>
+   * Usage:
+   *
+   * <pre>{@code
+   *  // With elements immediately available
+   *  forEachAsync(myElements, element -> doNetworkIo(element));
+   *
+   *  // Chain to another CompletableFuture
+   *  fetch(request).thenCompose(elements -> forEachAsync(...));
+   * }</pre>
+   */
+  private static <T> CompletableFuture<Void> forEachAsync(Collection<T> elements,
+      Function<T, CompletableFuture<?>> fn) {
+    var futures = elements.stream().map(el -> fn.apply(el))
+        .toArray(CompletableFuture[]::new);
+    return CompletableFuture.allOf(futures);
   }
 }
