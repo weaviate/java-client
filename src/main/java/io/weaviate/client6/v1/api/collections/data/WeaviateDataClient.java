@@ -43,8 +43,14 @@ public class WeaviateDataClient<T> {
 
   public void update(String uuid, Function<UpdateObjectRequest.Builder<T>, ObjectBuilder<UpdateObjectRequest<T>>> fn)
       throws IOException {
-    this.restTransport.performRequest(UpdateObjectRequest.of(uuid, fn),
+    this.restTransport.performRequest(UpdateObjectRequest.of(collectionDescriptor.name(), uuid, fn),
         UpdateObjectRequest.endpoint(collectionDescriptor));
+  }
+
+  public void replace(String uuid, Function<ReplaceObjectRequest.Builder<T>, ObjectBuilder<ReplaceObjectRequest<T>>> fn)
+      throws IOException {
+    this.restTransport.performRequest(ReplaceObjectRequest.of(collectionDescriptor.name(), uuid, fn),
+        ReplaceObjectRequest.endpoint(collectionDescriptor));
   }
 
   public void delete(String uuid) throws IOException {

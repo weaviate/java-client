@@ -13,29 +13,29 @@ import io.weaviate.client6.v1.internal.json.JSON;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 import io.weaviate.client6.v1.internal.rest.Endpoint;
 
-public record UpdateObjectRequest<T>(WeaviateObject<T, Reference, ObjectMetadata> object) {
+public record ReplaceObjectRequest<T>(WeaviateObject<T, Reference, ObjectMetadata> object) {
 
-  static final <T> Endpoint<UpdateObjectRequest<T>, Void> endpoint(CollectionDescriptor<T> collectionDescriptor) {
+  static final <T> Endpoint<ReplaceObjectRequest<T>, Void> endpoint(CollectionDescriptor<T> collectionDescriptor) {
     return Endpoint.of(
-        request -> "PATCH",
+        request -> "PUT",
         request -> "/objects/" + collectionDescriptor.name() + "/" + request.object.metadata().uuid(),
         (gson, request) -> JSON.serialize(request.object, TypeToken.getParameterized(
             WeaviateObject.class, collectionDescriptor.typeToken().getType(), Reference.class, ObjectMetadata.class)),
         request -> Collections.emptyMap(),
-        code -> code != 204,
+        code -> code != 200,
         (gson, response) -> null);
   }
 
-  public static <T> UpdateObjectRequest<T> of(String collectionName, String uuid,
-      Function<UpdateObjectRequest.Builder<T>, ObjectBuilder<UpdateObjectRequest<T>>> fn) {
+  public static <T> ReplaceObjectRequest<T> of(String collectionName, String uuid,
+      Function<ReplaceObjectRequest.Builder<T>, ObjectBuilder<ReplaceObjectRequest<T>>> fn) {
     return fn.apply(new Builder<>(collectionName, uuid)).build();
   }
 
-  public UpdateObjectRequest(Builder<T> builder) {
+  public ReplaceObjectRequest(Builder<T> builder) {
     this(builder.object.build());
   }
 
-  public static class Builder<T> implements ObjectBuilder<UpdateObjectRequest<T>> {
+  public static class Builder<T> implements ObjectBuilder<ReplaceObjectRequest<T>> {
     private final WeaviateObject.Builder<T, Reference, ObjectMetadata> object = new WeaviateObject.Builder<>();
     private final ObjectMetadata.Builder metadata = new ObjectMetadata.Builder();
 
@@ -60,9 +60,9 @@ public record UpdateObjectRequest<T>(WeaviateObject<T, Reference, ObjectMetadata
     }
 
     @Override
-    public UpdateObjectRequest<T> build() {
+    public ReplaceObjectRequest<T> build() {
       this.object.metadata(this.metadata.build());
-      return new UpdateObjectRequest<>(this);
+      return new ReplaceObjectRequest<>(this);
     }
   }
 }
