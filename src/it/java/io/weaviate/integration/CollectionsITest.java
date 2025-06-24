@@ -105,7 +105,7 @@ public class CollectionsITest extends ConcurrentTest {
     var all = client.collections.list();
     Assertions.assertThat(all)
         .hasSizeGreaterThanOrEqualTo(3)
-        .extracting(WeaviateCollection::name)
+        .extracting(WeaviateCollection::collectionName)
         .contains(nsA, nsB, nsC);
 
     client.collections.deleteAll();
@@ -113,5 +113,33 @@ public class CollectionsITest extends ConcurrentTest {
     all = client.collections.list();
     Assertions.assertThat(all.isEmpty());
 
+  }
+
+  @Test
+  public void testUpdateCollection() throws IOException {
+    var nsBoxes = ns("Boxes");
+    var nsThings = ns("Things");
+
+    client.collections.create(nsBoxes);
+
+    client.collections.create(nsThings,
+        collection -> collection
+            .description("Things stored in boxes")
+            .properties(
+                Property.text("name"),
+                Property.integer("width"))
+            .references(
+                Property.reference("storedIn", nsBoxes)));
+
+    var things = client.collections.use(nsThings);
+
+    // Act
+    things.config.update(nsThings, collection -> collection
+        .description("Things stored on shelves"));
+
+    // Assert
+    var thingsConfig = things.config.get();
+    Assertions.assertThat(thingsConfig).get()
+        .returns("Things stored on shelves", WeaviateCollection::description);
   }
 }

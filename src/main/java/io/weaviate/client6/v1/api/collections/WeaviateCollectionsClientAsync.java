@@ -55,7 +55,7 @@ public class WeaviateCollectionsClientAsync {
   public CompletableFuture<Void> deleteAll() throws IOException {
     return list().thenCompose(collections -> {
       var futures = collections.stream()
-          .map(collection -> delete(collection.name()))
+          .map(collection -> delete(collection.collectionName()))
           .toArray(CompletableFuture[]::new);
       return CompletableFuture.allOf(futures);
     });

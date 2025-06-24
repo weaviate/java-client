@@ -41,7 +41,9 @@ public class WeaviateConfigClient {
 
   public void update(String collectionName,
       Function<UpdateCollectionRequest.Builder, ObjectBuilder<UpdateCollectionRequest>> fn) throws IOException {
-    this.restTransport.performRequest(UpdateCollectionRequest.of(collectionName, fn),
+    var thisCollection = get().orElseThrow(); // TODO: use descriptive error
+    System.out.println("got");
+    this.restTransport.performRequest(UpdateCollectionRequest.of(thisCollection, fn),
         UpdateCollectionRequest._ENDPOINT);
   }
 }

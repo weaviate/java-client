@@ -17,22 +17,22 @@ public class WeaviateConfigClientAsync {
   private final RestTransport restTransport;
   private final WeaviateCollectionsClientAsync collectionsClient;
 
-  protected final CollectionDescriptor<?> collection;
+  protected final CollectionDescriptor<?> collectionDescriptor;
 
   public WeaviateConfigClientAsync(CollectionDescriptor<?> collection, RestTransport restTransport,
       GrpcTransport grpcTransport) {
     this.restTransport = restTransport;
     this.collectionsClient = new WeaviateCollectionsClientAsync(restTransport, grpcTransport);
 
-    this.collection = collection;
+    this.collectionDescriptor = collection;
   }
 
   public CompletableFuture<Optional<WeaviateCollection>> get() throws IOException {
-    return collectionsClient.getConfig(collection.name());
+    return collectionsClient.getConfig(collectionDescriptor.name());
   }
 
   public CompletableFuture<Void> addProperty(Property property) throws IOException {
-    return this.restTransport.performRequestAsync(new AddPropertyRequest(collection.name(), property),
+    return this.restTransport.performRequestAsync(new AddPropertyRequest(collectionDescriptor.name(), property),
         AddPropertyRequest._ENDPOINT);
   }
 
@@ -42,7 +42,10 @@ public class WeaviateConfigClientAsync {
 
   public CompletableFuture<Void> update(String collectionName,
       Function<UpdateCollectionRequest.Builder, ObjectBuilder<UpdateCollectionRequest>> fn) throws IOException {
-    return this.restTransport.performRequestAsync(UpdateCollectionRequest.of(collectionName, fn),
-        UpdateCollectionRequest._ENDPOINT);
+    return get().thenCompose(maybeCollection -> {
+      var thisCollection = maybeCollection.orElseThrow();
+      return this.restTransport.performRequestAsync(UpdateCollectionRequest.of(thisCollection, fn),
+          UpdateCollectionRequest._ENDPOINT);
+    });
   }
 }
