@@ -7,6 +7,7 @@ import io.weaviate.client6.v1.api.collections.query.NearAudio;
 import io.weaviate.client6.v1.api.collections.query.NearDepth;
 import io.weaviate.client6.v1.api.collections.query.NearImage;
 import io.weaviate.client6.v1.api.collections.query.NearImu;
+import io.weaviate.client6.v1.api.collections.query.NearObject;
 import io.weaviate.client6.v1.api.collections.query.NearText;
 import io.weaviate.client6.v1.api.collections.query.NearThermal;
 import io.weaviate.client6.v1.api.collections.query.NearVector;
@@ -64,6 +65,36 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
   }
 
   public GroupedResponseT nearVector(NearVector filter, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
+    return performRequest(Aggregation.of(filter, fn), groupBy);
+  }
+
+  // NearObject ---------------------------------------------------------------
+
+  public ResponseT nearObject(String uuid, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return nearObject(NearObject.of(uuid), fn);
+  }
+
+  public ResponseT nearObject(String uuid, Function<NearObject.Builder, ObjectBuilder<NearObject>> nv,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return nearObject(NearObject.of(uuid, nv), fn);
+  }
+
+  public ResponseT nearObject(NearObject filter, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return performRequest(Aggregation.of(filter, fn));
+  }
+
+  public GroupedResponseT nearObject(String uuid, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
+    return nearObject(NearObject.of(uuid), fn, groupBy);
+  }
+
+  public GroupedResponseT nearObject(String uuid, Function<NearObject.Builder, ObjectBuilder<NearObject>> nv,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn, GroupBy groupBy) {
+    return nearObject(NearObject.of(uuid, nv), fn, groupBy);
+  }
+
+  public GroupedResponseT nearObject(NearObject filter, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
       GroupBy groupBy) {
     return performRequest(Aggregation.of(filter, fn), groupBy);
   }
