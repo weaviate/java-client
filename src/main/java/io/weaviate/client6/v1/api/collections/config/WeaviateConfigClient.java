@@ -2,23 +2,25 @@ package io.weaviate.client6.v1.api.collections.config;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.WeaviateCollection;
 import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClient;
+import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 import io.weaviate.client6.v1.internal.rest.RestTransport;
 
 public class WeaviateConfigClient {
-  private final RestTransport transport;
+  private final RestTransport restTransport;
   private final WeaviateCollectionsClient collectionsClient;
 
   protected final CollectionDescriptor<?> collection;
 
   public WeaviateConfigClient(CollectionDescriptor<?> collection, RestTransport restTransport,
       GrpcTransport grpcTransport) {
-    this.transport = restTransport;
+    this.restTransport = restTransport;
     this.collectionsClient = new WeaviateCollectionsClient(restTransport, grpcTransport);
 
     this.collection = collection;
@@ -29,10 +31,17 @@ public class WeaviateConfigClient {
   }
 
   public void addProperty(Property property) throws IOException {
-    this.transport.performRequest(new AddPropertyRequest(collection.name(), property), AddPropertyRequest._ENDPOINT);
+    this.restTransport.performRequest(new AddPropertyRequest(collection.name(), property),
+        AddPropertyRequest._ENDPOINT);
   }
 
-  public void addReference(String name, String... dataTypes) throws IOException {
-    this.addProperty(Property.reference(name, dataTypes).toProperty());
+  public void addReference(String propertyName, String... dataTypes) throws IOException {
+    this.addProperty(Property.reference(propertyName, dataTypes).toProperty());
+  }
+
+  public void update(String collectionName,
+      Function<UpdateCollectionRequest.Builder, ObjectBuilder<UpdateCollectionRequest>> fn) throws IOException {
+    this.restTransport.performRequest(UpdateCollectionRequest.of(collectionName, fn),
+        UpdateCollectionRequest._ENDPOINT);
   }
 }
