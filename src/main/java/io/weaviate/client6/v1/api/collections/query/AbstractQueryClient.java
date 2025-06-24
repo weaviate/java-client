@@ -82,6 +82,32 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
     return performRequest(query, groupBy);
   }
 
+  // Hybrid queries -----------------------------------------------------------
+
+  public ResponseT hybrid(String query) {
+    return hybrid(Hybrid.of(query));
+  }
+
+  public ResponseT hybrid(String query, Function<Hybrid.Builder, ObjectBuilder<Hybrid>> fn) {
+    return hybrid(Hybrid.of(query, fn));
+  }
+
+  public ResponseT hybrid(Hybrid query) {
+    return performRequest(query);
+  }
+
+  public GroupedResponseT hybrid(String query, GroupBy groupBy) {
+    return hybrid(Hybrid.of(query), groupBy);
+  }
+
+  public GroupedResponseT hybrid(String query, Function<Hybrid.Builder, ObjectBuilder<Hybrid>> fn, GroupBy groupBy) {
+    return hybrid(Hybrid.of(query, fn), groupBy);
+  }
+
+  public GroupedResponseT hybrid(Hybrid query, GroupBy groupBy) {
+    return performRequest(query, groupBy);
+  }
+
   // NearVector queries -------------------------------------------------------
 
   public ResponseT nearVector(Float[] vector) {

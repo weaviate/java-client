@@ -125,7 +125,8 @@ public record NearText(List<String> concepts, Float distance, Float certainty, M
     req.setNearText(protoBuilder());
   }
 
-  private WeaviateProtoBaseSearch.NearTextSearch.Builder protoBuilder() {
+  // Package-private for Hybrid to see.
+  WeaviateProtoBaseSearch.NearTextSearch.Builder protoBuilder() {
     var nearText = WeaviateProtoBaseSearch.NearTextSearch.newBuilder();
     nearText.addAllQuery(concepts);
 
