@@ -3,6 +3,7 @@ package io.weaviate.client6.v1.api.collections.aggregate;
 import java.util.List;
 import java.util.function.Function;
 
+import io.weaviate.client6.v1.api.collections.query.Hybrid;
 import io.weaviate.client6.v1.api.collections.query.NearAudio;
 import io.weaviate.client6.v1.api.collections.query.NearDepth;
 import io.weaviate.client6.v1.api.collections.query.NearImage;
@@ -37,6 +38,36 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
 
   public GroupedResponseT overAll(Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn, GroupBy groupBy) {
     return performRequest(Aggregation.of(fn), groupBy);
+  }
+
+  // Hybrid -------------------------------------------------------------------
+
+  public ResponseT hybrid(String query, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return hybrid(Hybrid.of(query), fn);
+  }
+
+  public ResponseT hybrid(String query, Function<Hybrid.Builder, ObjectBuilder<Hybrid>> nv,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return hybrid(Hybrid.of(query, nv), fn);
+  }
+
+  public ResponseT hybrid(Hybrid filter, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return performRequest(Aggregation.of(filter, fn));
+  }
+
+  public GroupedResponseT hybrid(String query, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
+    return hybrid(Hybrid.of(query), fn, groupBy);
+  }
+
+  public GroupedResponseT hybrid(String query, Function<Hybrid.Builder, ObjectBuilder<Hybrid>> nv,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn, GroupBy groupBy) {
+    return hybrid(Hybrid.of(query, nv), fn, groupBy);
+  }
+
+  public GroupedResponseT hybrid(Hybrid filter, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
+    return performRequest(Aggregation.of(filter, fn), groupBy);
   }
 
   // NearVector ---------------------------------------------------------------
