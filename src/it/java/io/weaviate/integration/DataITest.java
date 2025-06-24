@@ -15,6 +15,7 @@ import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.Reference;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
+import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.api.collections.query.QueryReference;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer;
@@ -45,8 +46,10 @@ public class DataITest extends ConcurrentTest {
         .returnProperties("name")
         .returnMetadata(Metadata.ID, Metadata.VECTOR));
 
+    Assertions.assertThat(artists.data.exists(id))
+        .as("object exists after insert").isTrue();
     Assertions.assertThat(object)
-        .as("object exists after insert").get()
+        .as("object has correct properties").get()
         .satisfies(obj -> {
           Assertions.assertThat(obj.metadata().uuid())
               .as("object id").isEqualTo(id);
@@ -60,8 +63,8 @@ public class DataITest extends ConcurrentTest {
         });
 
     artists.data.delete(id);
-    object = artists.query.byId(id);
-    Assertions.assertThat(object).isEmpty().as("object not exists after deletion");
+    Assertions.assertThat(artists.data.exists(id))
+        .as("object not exists after deletion").isFalse();
   }
 
   @Test
@@ -174,5 +177,98 @@ public class DataITest extends ConcurrentTest {
         .extracting(WeaviateObject::references).extracting("hasFriend")
         .asInstanceOf(InstanceOfAssertFactories.list(WeaviateObject.class))
         .isEmpty();
+  }
+
+  @Test
+  public void testReplace() throws IOException {
+    // Arrange
+    var nsBooks = ns("Books");
+
+    client.collections.create(nsBooks,
+        collection -> collection
+            .properties(Property.text("title"), Property.integer("year")));
+
+    // Add 1 book with 'title' only.
+    var books = client.collections.use(nsBooks);
+    var ivanhoe = books.data.insert(Map.of("title", "ivanhoe"));
+
+    // Act
+    books.data.replace(ivanhoe.metadata().uuid(),
+        replace -> replace.properties(Map.of("year", 1819)));
+
+    // Assert
+    var replacedIvanhoe = books.query.byId(ivanhoe.metadata().uuid());
+
+    Assertions.assertThat(replacedIvanhoe).get()
+        .as("has ONLY year property")
+        .extracting(WeaviateObject::properties, InstanceOfAssertFactories.MAP)
+        .doesNotContain(Map.entry("title", "ivanhoe"))
+        .contains(Map.entry("year", 1819L));
+  }
+
+  @Test
+  public void testUpdate() throws IOException {
+    // Arrange
+    var nsBooks = ns("Books");
+    var nsAuthors = ns("Authors");
+
+    client.collections.create(nsAuthors,
+        collection -> collection
+            .properties(Property.text("name")));
+
+    client.collections.create(nsBooks,
+        collection -> collection
+            .properties(Property.text("title"), Property.integer("year"))
+            .references(Property.reference("writtenBy", nsAuthors))
+            .vector(Hnsw.of(new NoneVectorizer())));
+
+    var authors = client.collections.use(nsAuthors);
+    var walter = authors.data.insert(Map.of("name", "walter scott"));
+
+    var vector = new Float[] { 1f, 2f, 3f };
+
+    var books = client.collections.use(nsBooks);
+
+    // Add 1 book without mentioning its author, year published,
+    // or supplying a vector.
+    var ivanhoe = books.data.insert(Map.of("title", "ivanhoe"));
+
+    // Act
+    books.data.update(ivanhoe.metadata().uuid(),
+        update -> update
+            .properties(Map.of("year", 1819))
+            .reference("writtenBy", Reference.objects(walter))
+            .vectors(Vectors.of(vector)));
+
+    // Assert
+    var updIvanhoe = books.query.byId(
+        ivanhoe.metadata().uuid(),
+        query -> query
+            .returnMetadata(Metadata.VECTOR)
+            .returnReferences(
+                QueryReference.single("writtenBy",
+                    writtenBy -> writtenBy.returnMetadata(Metadata.ID))));
+
+    Assertions.assertThat(updIvanhoe).get()
+        .satisfies(book -> {
+          Assertions.assertThat(book)
+              .as("has both year and title property")
+              .extracting(WeaviateObject::properties, InstanceOfAssertFactories.MAP)
+              .contains(Map.entry("title", "ivanhoe"), Map.entry("year", 1819L));
+
+          Assertions.assertThat(book)
+              .as("has reference to Authors")
+              .extracting(WeaviateObject::references, InstanceOfAssertFactories.MAP)
+              .extractingByKey("writtenBy", InstanceOfAssertFactories.list(WeaviateObject.class))
+              .first()
+              .extracting(WeaviateObject::properties, InstanceOfAssertFactories.MAP)
+              .contains(Map.entry("name", "walter scott"));
+
+          Assertions.assertThat(book)
+              .as("has a vector")
+              .extracting(WeaviateObject::metadata)
+              .extracting(QueryMetadata::vectors)
+              .returns(vector, Vectors::getDefaultSingle);
+        });
   }
 }
