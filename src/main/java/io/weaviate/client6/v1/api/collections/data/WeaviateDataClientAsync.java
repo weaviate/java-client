@@ -45,6 +45,20 @@ public class WeaviateDataClientAsync<T> {
     return this.query.byId(uuid).thenApply(Optional::isPresent);
   }
 
+  public CompletableFuture<Void> update(String uuid,
+      Function<UpdateObjectRequest.Builder<T>, ObjectBuilder<UpdateObjectRequest<T>>> fn)
+      throws IOException {
+    return this.restTransport.performRequestAsync(UpdateObjectRequest.of(collectionDescriptor.name(), uuid, fn),
+        UpdateObjectRequest.endpoint(collectionDescriptor));
+  }
+
+  public CompletableFuture<Void> replace(String uuid,
+      Function<ReplaceObjectRequest.Builder<T>, ObjectBuilder<ReplaceObjectRequest<T>>> fn)
+      throws IOException {
+    return this.restTransport.performRequestAsync(ReplaceObjectRequest.of(collectionDescriptor.name(), uuid, fn),
+        ReplaceObjectRequest.endpoint(collectionDescriptor));
+  }
+
   public CompletableFuture<Void> delete(String uuid) {
     return this.restTransport.performRequestAsync(new DeleteObjectRequest(collectionDescriptor.name(), uuid),
         DeleteObjectRequest._ENDPOINT);
