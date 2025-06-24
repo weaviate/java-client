@@ -8,8 +8,11 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
-public record Bm25(String query, List<String> queryProperties, BaseQueryOptions common)
-    implements QueryOperator {
+public record Bm25(
+    String query,
+    List<String> queryProperties,
+    SearchOperator searchOperator,
+    BaseQueryOptions common) implements QueryOperator {
 
   public static final Bm25 of(String query) {
     return of(query, ObjectBuilder.identity());
@@ -20,7 +23,7 @@ public record Bm25(String query, List<String> queryProperties, BaseQueryOptions 
   }
 
   public Bm25(Builder builder) {
-    this(builder.query, builder.queryProperties, builder.baseOptions());
+    this(builder.query, builder.queryProperties, builder.searchOperator, builder.baseOptions());
   }
 
   public static class Builder extends BaseQueryOptions.Builder<Builder, Bm25> {
@@ -58,8 +61,13 @@ public record Bm25(String query, List<String> queryProperties, BaseQueryOptions 
   @Override
   public final void appendTo(WeaviateProtoSearchGet.SearchRequest.Builder req) {
     common.appendTo(req);
-    req.setBm25Search(WeaviateProtoBaseSearch.BM25.newBuilder()
+    var bm25 = WeaviateProtoBaseSearch.BM25.newBuilder()
         .setQuery(query)
-        .addAllProperties(queryProperties));
+        .addAllProperties(queryProperties);
+
+    if (searchOperator != null) {
+      searchOperator.appendTo(bm25);
+    }
+    req.setBm25Search(bm25);
   }
 }
