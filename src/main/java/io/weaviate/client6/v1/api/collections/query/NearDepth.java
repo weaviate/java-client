@@ -8,18 +8,18 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
-public record NearImage(String image, Float distance, Float certainty, BaseQueryOptions common)
+public record NearDepth(String depth, Float distance, Float certainty, BaseQueryOptions common)
     implements QueryOperator, AggregateObjectFilter {
 
-  public static NearImage of(String image) {
-    return of(image, ObjectBuilder.identity());
+  public static NearDepth of(String depth) {
+    return of(depth, ObjectBuilder.identity());
   }
 
-  public static NearImage of(String image, Function<Builder, ObjectBuilder<NearImage>> fn) {
-    return fn.apply(new Builder(image)).build();
+  public static NearDepth of(String depth, Function<Builder, ObjectBuilder<NearDepth>> fn) {
+    return fn.apply(new Builder(depth)).build();
   }
 
-  public NearImage(Builder builder) {
+  public NearDepth(Builder builder) {
     this(
         builder.media,
         builder.distance,
@@ -27,21 +27,21 @@ public record NearImage(String image, Float distance, Float certainty, BaseQuery
         builder.baseOptions());
   }
 
-  public static class Builder extends NearMediaBuilder<Builder, NearImage> {
-    public Builder(String image) {
-      super(image);
+  public static class Builder extends NearMediaBuilder<Builder, NearDepth> {
+    public Builder(String depth) {
+      super(depth);
     }
 
     @Override
-    public final NearImage build() {
-      return new NearImage(this);
+    public final NearDepth build() {
+      return new NearDepth(this);
     }
   }
 
   @Override
   public void appendTo(WeaviateProtoSearchGet.SearchRequest.Builder req) {
     common.appendTo(req);
-    req.setNearImage(protoBuilder());
+    req.setNearDepth(protoBuilder());
   }
 
   @Override
@@ -49,18 +49,18 @@ public record NearImage(String image, Float distance, Float certainty, BaseQuery
     if (common.limit() != null) {
       req.setLimit(common.limit());
     }
-    req.setNearImage(protoBuilder());
+    req.setNearDepth(protoBuilder());
   }
 
-  private WeaviateProtoBaseSearch.NearImageSearch.Builder protoBuilder() {
-    var nearImage = WeaviateProtoBaseSearch.NearImageSearch.newBuilder();
-    nearImage.setImage(image);
+  private WeaviateProtoBaseSearch.NearDepthSearch.Builder protoBuilder() {
+    var nearDepth = WeaviateProtoBaseSearch.NearDepthSearch.newBuilder();
+    nearDepth.setDepth(depth);
 
     if (certainty != null) {
-      nearImage.setCertainty(certainty);
+      nearDepth.setCertainty(certainty);
     } else if (distance != null) {
-      nearImage.setDistance(distance);
+      nearDepth.setDistance(distance);
     }
-    return nearImage;
+    return nearDepth;
   }
 }

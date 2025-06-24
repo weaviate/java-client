@@ -175,4 +175,139 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
   public GroupedResponseT nearImage(NearImage query, GroupBy groupBy) {
     return performRequest(query, groupBy);
   }
+
+  // NearAudio queries --------------------------------------------------------
+
+  public ResponseT nearAudio(String audio) {
+    return nearAudio(NearAudio.of(audio));
+  }
+
+  public ResponseT nearAudio(String audio, Function<NearAudio.Builder, ObjectBuilder<NearAudio>> fn) {
+    return nearAudio(NearAudio.of(audio, fn));
+  }
+
+  public ResponseT nearAudio(NearAudio query) {
+    return performRequest(query);
+  }
+
+  public GroupedResponseT nearAudio(String audio, GroupBy groupBy) {
+    return nearAudio(NearAudio.of(audio), groupBy);
+  }
+
+  public GroupedResponseT nearAudio(String audio, Function<NearAudio.Builder, ObjectBuilder<NearAudio>> fn,
+      GroupBy groupBy) {
+    return nearAudio(NearAudio.of(audio, fn), groupBy);
+  }
+
+  public GroupedResponseT nearAudio(NearAudio query, GroupBy groupBy) {
+    return performRequest(query, groupBy);
+  }
+
+  // NearVideo queries --------------------------------------------------------
+
+  public ResponseT nearVideo(String video) {
+    return nearVideo(NearVideo.of(video));
+  }
+
+  public ResponseT nearVideo(String video, Function<NearVideo.Builder, ObjectBuilder<NearVideo>> fn) {
+    return nearVideo(NearVideo.of(video, fn));
+  }
+
+  public ResponseT nearVideo(NearVideo query) {
+    return performRequest(query);
+  }
+
+  public GroupedResponseT nearVideo(String video, GroupBy groupBy) {
+    return nearVideo(NearVideo.of(video), groupBy);
+  }
+
+  public GroupedResponseT nearVideo(String video, Function<NearVideo.Builder, ObjectBuilder<NearVideo>> fn,
+      GroupBy groupBy) {
+    return nearVideo(NearVideo.of(video, fn), groupBy);
+  }
+
+  public GroupedResponseT nearVideo(NearVideo query, GroupBy groupBy) {
+    return performRequest(query, groupBy);
+  }
+
+  // NearThermal queries ------------------------------------------------------
+
+  public ResponseT nearThermal(String thermal) {
+    return nearThermal(NearThermal.of(thermal));
+  }
+
+  public ResponseT nearThermal(String thermal, Function<NearThermal.Builder, ObjectBuilder<NearThermal>> fn) {
+    return nearThermal(NearThermal.of(thermal, fn));
+  }
+
+  public ResponseT nearThermal(NearThermal query) {
+    return performRequest(query);
+  }
+
+  public GroupedResponseT nearThermal(String thermal, GroupBy groupBy) {
+    return nearThermal(NearThermal.of(thermal), groupBy);
+  }
+
+  public GroupedResponseT nearThermal(String thermal, Function<NearThermal.Builder, ObjectBuilder<NearThermal>> fn,
+      GroupBy groupBy) {
+    return nearThermal(NearThermal.of(thermal, fn), groupBy);
+  }
+
+  public GroupedResponseT nearThermal(NearThermal query, GroupBy groupBy) {
+    return performRequest(query, groupBy);
+  }
+
+  // NearDepth queries --------------------------------------------------------
+
+  public ResponseT nearDepth(String depth) {
+    return nearDepth(NearDepth.of(depth));
+  }
+
+  public ResponseT nearDepth(String depth, Function<NearDepth.Builder, ObjectBuilder<NearDepth>> fn) {
+    return nearDepth(NearDepth.of(depth, fn));
+  }
+
+  public ResponseT nearDepth(NearDepth query) {
+    return performRequest(query);
+  }
+
+  public GroupedResponseT nearDepth(String depth, GroupBy groupBy) {
+    return nearDepth(NearDepth.of(depth), groupBy);
+  }
+
+  public GroupedResponseT nearDepth(String depth, Function<NearDepth.Builder, ObjectBuilder<NearDepth>> fn,
+      GroupBy groupBy) {
+    return nearDepth(NearDepth.of(depth, fn), groupBy);
+  }
+
+  public GroupedResponseT nearDepth(NearDepth query, GroupBy groupBy) {
+    return performRequest(query, groupBy);
+  }
+
+  // NearImu queries ----------------------------------------------------------
+
+  public ResponseT nearImu(String imu) {
+    return nearImu(NearImu.of(imu));
+  }
+
+  public ResponseT nearImu(String imu, Function<NearImu.Builder, ObjectBuilder<NearImu>> fn) {
+    return nearImu(NearImu.of(imu, fn));
+  }
+
+  public ResponseT nearImu(NearImu query) {
+    return performRequest(query);
+  }
+
+  public GroupedResponseT nearImu(String imu, GroupBy groupBy) {
+    return nearImu(NearImu.of(imu), groupBy);
+  }
+
+  public GroupedResponseT nearImu(String imu, Function<NearImu.Builder, ObjectBuilder<NearImu>> fn,
+      GroupBy groupBy) {
+    return nearImu(NearImu.of(imu, fn), groupBy);
+  }
+
+  public GroupedResponseT nearImu(NearImu query, GroupBy groupBy) {
+    return performRequest(query, groupBy);
+  }
 }

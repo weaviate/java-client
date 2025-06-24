@@ -8,18 +8,18 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
-public record NearImage(String image, Float distance, Float certainty, BaseQueryOptions common)
+public record NearThermal(String thermal, Float distance, Float certainty, BaseQueryOptions common)
     implements QueryOperator, AggregateObjectFilter {
 
-  public static NearImage of(String image) {
-    return of(image, ObjectBuilder.identity());
+  public static NearThermal of(String thermal) {
+    return of(thermal, ObjectBuilder.identity());
   }
 
-  public static NearImage of(String image, Function<Builder, ObjectBuilder<NearImage>> fn) {
-    return fn.apply(new Builder(image)).build();
+  public static NearThermal of(String thermal, Function<Builder, ObjectBuilder<NearThermal>> fn) {
+    return fn.apply(new Builder(thermal)).build();
   }
 
-  public NearImage(Builder builder) {
+  public NearThermal(Builder builder) {
     this(
         builder.media,
         builder.distance,
@@ -27,21 +27,21 @@ public record NearImage(String image, Float distance, Float certainty, BaseQuery
         builder.baseOptions());
   }
 
-  public static class Builder extends NearMediaBuilder<Builder, NearImage> {
-    public Builder(String image) {
-      super(image);
+  public static class Builder extends NearMediaBuilder<Builder, NearThermal> {
+    public Builder(String thermal) {
+      super(thermal);
     }
 
     @Override
-    public final NearImage build() {
-      return new NearImage(this);
+    public final NearThermal build() {
+      return new NearThermal(this);
     }
   }
 
   @Override
   public void appendTo(WeaviateProtoSearchGet.SearchRequest.Builder req) {
     common.appendTo(req);
-    req.setNearImage(protoBuilder());
+    req.setNearThermal(protoBuilder());
   }
 
   @Override
@@ -49,18 +49,18 @@ public record NearImage(String image, Float distance, Float certainty, BaseQuery
     if (common.limit() != null) {
       req.setLimit(common.limit());
     }
-    req.setNearImage(protoBuilder());
+    req.setNearThermal(protoBuilder());
   }
 
-  private WeaviateProtoBaseSearch.NearImageSearch.Builder protoBuilder() {
-    var nearImage = WeaviateProtoBaseSearch.NearImageSearch.newBuilder();
-    nearImage.setImage(image);
+  private WeaviateProtoBaseSearch.NearThermalSearch.Builder protoBuilder() {
+    var nearThermal = WeaviateProtoBaseSearch.NearThermalSearch.newBuilder();
+    nearThermal.setThermal(thermal);
 
     if (certainty != null) {
-      nearImage.setCertainty(certainty);
+      nearThermal.setCertainty(certainty);
     } else if (distance != null) {
-      nearImage.setDistance(distance);
+      nearThermal.setDistance(distance);
     }
-    return nearImage;
+    return nearThermal;
   }
 }
