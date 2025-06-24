@@ -45,8 +45,10 @@ public class DataITest extends ConcurrentTest {
         .returnProperties("name")
         .returnMetadata(Metadata.ID, Metadata.VECTOR));
 
+    Assertions.assertThat(artists.data.exists(id))
+        .as("object exists after insert").isTrue();
     Assertions.assertThat(object)
-        .as("object exists after insert").get()
+        .as("object has correct properties").get()
         .satisfies(obj -> {
           Assertions.assertThat(obj.metadata().uuid())
               .as("object id").isEqualTo(id);
@@ -60,8 +62,8 @@ public class DataITest extends ConcurrentTest {
         });
 
     artists.data.delete(id);
-    object = artists.query.byId(id);
-    Assertions.assertThat(object).isEmpty().as("object not exists after deletion");
+    Assertions.assertThat(artists.data.exists(id))
+        .as("object not exists after deletion").isFalse();
   }
 
   @Test
@@ -174,5 +176,13 @@ public class DataITest extends ConcurrentTest {
         .extracting(WeaviateObject::references).extracting("hasFriend")
         .asInstanceOf(InstanceOfAssertFactories.list(WeaviateObject.class))
         .isEmpty();
+  }
+
+  @Test
+  public void testReplace() {
+  }
+
+  @Test
+  public void testUpdate() {
   }
 }

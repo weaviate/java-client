@@ -5,6 +5,7 @@ import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
+import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClient;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 import io.weaviate.client6.v1.internal.rest.RestTransport;
@@ -13,9 +14,13 @@ public class WeaviateDataClient<T> {
   private final RestTransport restTransport;
   private final CollectionDescriptor<T> collectionDescriptor;
 
-  public WeaviateDataClient(CollectionDescriptor<T> collectionDescriptor, RestTransport restTransport) {
+  private final WeaviateQueryClient<T> query;
+
+  public WeaviateDataClient(CollectionDescriptor<T> collectionDescriptor, RestTransport restTransport,
+      WeaviateQueryClient<T> query) {
     this.restTransport = restTransport;
     this.collectionDescriptor = collectionDescriptor;
+    this.query = query;
   }
 
   public WeaviateObject<T, Object, ObjectMetadata> insert(T properties) throws IOException {
@@ -30,6 +35,10 @@ public class WeaviateDataClient<T> {
 
   public WeaviateObject<T, Object, ObjectMetadata> insert(InsertObjectRequest<T> request) throws IOException {
     return this.restTransport.performRequest(request, InsertObjectRequest.endpoint(collectionDescriptor));
+  }
+
+  public boolean exists(String uuid) throws IOException {
+    return this.query.byId(uuid).isPresent();
   }
 
   public void delete(String uuid) throws IOException {

@@ -2,11 +2,13 @@ package io.weaviate.client6.v1.api.collections.data;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
+import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClientAsync;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 import io.weaviate.client6.v1.internal.rest.RestTransport;
@@ -15,9 +17,13 @@ public class WeaviateDataClientAsync<T> {
   private final RestTransport restTransport;
   private final CollectionDescriptor<T> collectionDescriptor;
 
-  public WeaviateDataClientAsync(CollectionDescriptor<T> collectionDescriptor, RestTransport restTransport) {
+  private final WeaviateQueryClientAsync<T> query;
+
+  public WeaviateDataClientAsync(CollectionDescriptor<T> collectionDescriptor, RestTransport restTransport,
+      WeaviateQueryClientAsync<T> query) {
     this.restTransport = restTransport;
     this.collectionDescriptor = collectionDescriptor;
+    this.query = query;
   }
 
   public CompletableFuture<WeaviateObject<T, Object, ObjectMetadata>> insert(T properties) throws IOException {
@@ -33,6 +39,10 @@ public class WeaviateDataClientAsync<T> {
   public CompletableFuture<WeaviateObject<T, Object, ObjectMetadata>> insert(InsertObjectRequest<T> request)
       throws IOException {
     return this.restTransport.performRequestAsync(request, InsertObjectRequest.endpoint(collectionDescriptor));
+  }
+
+  public CompletableFuture<Boolean> exists(String uuid) {
+    return this.query.byId(uuid).thenApply(Optional::isPresent);
   }
 
   public CompletableFuture<Void> delete(String uuid) {
