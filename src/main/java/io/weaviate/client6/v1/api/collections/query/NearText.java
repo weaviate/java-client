@@ -40,28 +40,16 @@ public record NearText(List<String> concepts, Float distance, Float certainty, M
         builder.baseOptions());
   }
 
-  public static class Builder extends BaseQueryOptions.Builder<Builder, NearText> {
+  public static class Builder extends BaseVectorSearchBuilder<Builder, NearText> {
     // Required query parameters.
     private final List<String> concepts;
 
     // Optional query parameter.
-    private Float distance;
-    private Float certainty;
     private Move moveTo;
     private Move moveAway;
 
     public Builder(List<String> concepts) {
       this.concepts = concepts;
-    }
-
-    public final Builder distance(float distance) {
-      this.distance = distance;
-      return this;
-    }
-
-    public final Builder certainty(float certainty) {
-      this.certainty = certainty;
-      return this;
     }
 
     public final Builder moveTo(float force, Function<Move.Builder, ObjectBuilder<Move>> fn) {

@@ -23,26 +23,12 @@ public record NearObject(String uuid, Float distance, Float certainty, BaseQuery
     this(builder.uuid, builder.distance, builder.certainty, builder.baseOptions());
   }
 
-  public static class Builder extends BaseQueryOptions.Builder<Builder, NearObject> {
+  public static class Builder extends BaseVectorSearchBuilder<Builder, NearObject> {
     // Required query parameters.
     private final String uuid;
 
-    // Optional query parameters.
-    private Float distance;
-    private Float certainty;
-
     public Builder(String uuid) {
       this.uuid = uuid;
-    }
-
-    public final Builder distance(float distance) {
-      this.distance = distance;
-      return this;
-    }
-
-    public final Builder certainty(float certainty) {
-      this.certainty = certainty;
-      return this;
     }
 
     @Override

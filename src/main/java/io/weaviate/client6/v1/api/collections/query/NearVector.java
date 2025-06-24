@@ -25,26 +25,12 @@ public record NearVector(Float[] vector, Float distance, Float certainty, BaseQu
     this(builder.vector, builder.distance, builder.certainty, builder.baseOptions());
   }
 
-  public static class Builder extends BaseQueryOptions.Builder<Builder, NearVector> {
+  public static class Builder extends BaseVectorSearchBuilder<Builder, NearVector> {
     // Required query parameters.
     private final Float[] vector;
 
-    // Optional query parameters.
-    private Float distance;
-    private Float certainty;
-
     public Builder(Float[] vector) {
       this.vector = vector;
-    }
-
-    public final Builder distance(float distance) {
-      this.distance = distance;
-      return this;
-    }
-
-    public final Builder certainty(float certainty) {
-      this.certainty = certainty;
-      return this;
     }
 
     @Override
