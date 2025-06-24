@@ -16,34 +16,38 @@ public record UpdateCollectionRequest(WeaviateCollection collection) {
 
   public static final Endpoint<UpdateCollectionRequest, Void> _ENDPOINT = Endpoint.of(
       request -> "PUT",
-      request -> "/schema/" + request.collection.name(),
+      request -> "/schema/" + request.collection.collectionName(),
       (gson, request) -> JSON.serialize(request.collection),
       request -> Collections.emptyMap(),
       code -> code != HttpStatus.SC_SUCCESS,
       (gson, response) -> null);
 
-  public static UpdateCollectionRequest of(String collectionName,
+  public static UpdateCollectionRequest of(WeaviateCollection collection,
       Function<Builder, ObjectBuilder<UpdateCollectionRequest>> fn) {
-    return fn.apply(new Builder(collectionName)).build();
+    return fn.apply(new Builder(collection)).build();
   }
 
   public UpdateCollectionRequest(Builder builder) {
-    this(builder.collection.build());
+    this(builder.newCollection.build());
   }
 
   public static class Builder implements ObjectBuilder<UpdateCollectionRequest> {
-    private final WeaviateCollection.Builder collection;
+    private final WeaviateCollection currentCollection;
+    private final WeaviateCollection.Builder newCollection;
 
-    public Builder(String collectionName) {
-      this.collection = new WeaviateCollection.Builder(collectionName);
+    public Builder(WeaviateCollection currentCollection) {
+      this.currentCollection = currentCollection;
+      this.newCollection = currentCollection.edit();
     }
 
     public Builder description(String description) {
-      this.collection.description(description);
+      this.newCollection.description(description);
       return this;
     }
 
-    public Builder vectors(Map.Entry<String, VectorIndex> vector) {
+    @SafeVarargs
+    public final Builder vectors(Map.Entry<String, VectorIndex>... vectors) {
+      this.newCollection.vectors(Map.ofEntries(vectors));
       return this;
     }
 

@@ -52,7 +52,7 @@ public class WeaviateCollectionsClient {
 
   public void deleteAll() throws IOException {
     for (var collection : list()) {
-      delete(collection.name());
+      delete(collection.collectionName());
     }
   }
 

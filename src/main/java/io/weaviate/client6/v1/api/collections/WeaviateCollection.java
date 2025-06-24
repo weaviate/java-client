@@ -10,6 +10,7 @@ import java.util.function.Function;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
@@ -22,7 +23,7 @@ import com.google.gson.stream.JsonWriter;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record WeaviateCollection(
-    @SerializedName("class") String name,
+    @SerializedName("class") String collectionName,
     @SerializedName("description") String description,
     @SerializedName("properties") List<Property> properties,
     List<ReferenceProperty> references,
@@ -34,6 +35,23 @@ public record WeaviateCollection(
 
   public static WeaviateCollection of(String collectionName, Function<Builder, ObjectBuilder<WeaviateCollection>> fn) {
     return fn.apply(new Builder(collectionName)).build();
+  }
+
+  /**
+   * Returns a {@link Builder} with all current values of
+   * {@code WeaviateCollection} pre-filled.
+   */
+  public Builder edit() {
+    return new Builder(collectionName)
+        .description(description)
+        .properties(properties)
+        .references(references)
+        .vectors(vectors);
+  }
+
+  /** Create a copy of this {@code WeaviateCollection} and edit parts of it. */
+  public WeaviateCollection edit(Function<Builder, ObjectBuilder<WeaviateCollection>> fn) {
+    return fn.apply(edit()).build();
   }
 
   public WeaviateCollection(Builder builder) {
@@ -68,7 +86,7 @@ public record WeaviateCollection(
     }
 
     public Builder properties(List<Property> properties) {
-      this.properties = properties;
+      this.properties.addAll(properties);
       return this;
     }
 
@@ -77,7 +95,7 @@ public record WeaviateCollection(
     }
 
     public Builder references(List<ReferenceProperty> references) {
-      this.references = references;
+      this.references.addAll(references);
       return this;
     }
 
@@ -88,6 +106,11 @@ public record WeaviateCollection(
 
     public Builder vector(String name, VectorIndex vector) {
       this.vectors.put(name, vector);
+      return this;
+    }
+
+    public Builder vectors(Map<String, VectorIndex> vectors) {
+      this.vectors.putAll(vectors);
       return this;
     }
 
@@ -159,6 +182,11 @@ public record WeaviateCollection(
 
           jsonObject.add("properties", properties);
           jsonObject.add("references", references);
+
+          if (!jsonObject.has("vectorConfig")) {
+            jsonObject.add("vectorConfig", new JsonObject());
+          }
+
           return delegate.fromJsonTree(jsonObject);
         }
       }.nullSafe();
