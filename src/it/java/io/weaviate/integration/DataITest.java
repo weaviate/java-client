@@ -180,9 +180,30 @@ public class DataITest extends ConcurrentTest {
   }
 
   @Test
-  public void testReplace() {
-    // Replace (PUT):
-    // properties, reference, vectors
+  public void testReplace() throws IOException {
+    // Arrange
+    var nsBooks = ns("Books");
+
+    client.collections.create(nsBooks,
+        collection -> collection
+            .properties(Property.text("title"), Property.integer("year")));
+
+    // Add 1 book with 'title' only.
+    var books = client.collections.use(nsBooks);
+    var ivanhoe = books.data.insert(Map.of("title", "ivanhoe"));
+
+    // Act
+    books.data.replace(ivanhoe.metadata().uuid(),
+        replace -> replace.properties(Map.of("year", 1819)));
+
+    // Assert
+    var replacedIvanhoe = books.query.byId(ivanhoe.metadata().uuid());
+
+    Assertions.assertThat(replacedIvanhoe).get()
+        .as("has ONLY year property")
+        .extracting(WeaviateObject::properties, InstanceOfAssertFactories.MAP)
+        .doesNotContain(Map.entry("title", "ivanhoe"))
+        .contains(Map.entry("year", 1819L));
   }
 
   @Test
@@ -231,9 +252,9 @@ public class DataITest extends ConcurrentTest {
     Assertions.assertThat(updIvanhoe).get()
         .satisfies(book -> {
           Assertions.assertThat(book)
-              .as("has year property")
+              .as("has both year and title property")
               .extracting(WeaviateObject::properties, InstanceOfAssertFactories.MAP)
-              .contains(Map.entry("year", 1819L));
+              .contains(Map.entry("title", "ivanhoe"), Map.entry("year", 1819L));
 
           Assertions.assertThat(book)
               .as("has reference to Authors")
