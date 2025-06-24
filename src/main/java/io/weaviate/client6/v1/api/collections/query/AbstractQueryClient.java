@@ -109,6 +109,33 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
     return performRequest(query, groupBy);
   }
 
+  // NearObject queries -------------------------------------------------------
+
+  public ResponseT nearObject(String uuid) {
+    return nearObject(NearObject.of(uuid));
+  }
+
+  public ResponseT nearObject(String uuid, Function<NearObject.Builder, ObjectBuilder<NearObject>> fn) {
+    return nearObject(NearObject.of(uuid, fn));
+  }
+
+  public ResponseT nearObject(NearObject query) {
+    return performRequest(query);
+  }
+
+  public GroupedResponseT nearObject(String uuid, GroupBy groupBy) {
+    return nearObject(NearObject.of(uuid), groupBy);
+  }
+
+  public GroupedResponseT nearObject(String uuid, Function<NearObject.Builder, ObjectBuilder<NearObject>> fn,
+      GroupBy groupBy) {
+    return nearObject(NearObject.of(uuid, fn), groupBy);
+  }
+
+  public GroupedResponseT nearObject(NearObject query, GroupBy groupBy) {
+    return performRequest(query, groupBy);
+  }
+
   // NearText queries ---------------------------------------------------------
 
   public ResponseT nearText(String... text) {
