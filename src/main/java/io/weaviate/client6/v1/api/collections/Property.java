@@ -92,6 +92,46 @@ public record Property(
       this.dataTypes = List.copyOf(dataTypes);
     }
 
+    public Builder dataTypes(List<String> dataTypes) {
+      this.dataTypes = dataTypes;
+      return this;
+    }
+
+    public Builder description(String description) {
+      this.description = description;
+      return this;
+    }
+
+    public Builder indexInverted(boolean indexInverted) {
+      this.indexInverted = indexInverted;
+      return this;
+    }
+
+    public Builder indexFilterable(boolean indexFilterable) {
+      this.indexFilterable = indexFilterable;
+      return this;
+    }
+
+    public Builder indexRangeFilters(boolean indexRangeFilters) {
+      this.indexRangeFilters = indexRangeFilters;
+      return this;
+    }
+
+    public Builder indexSearchable(boolean indexSearchable) {
+      this.indexSearchable = indexSearchable;
+      return this;
+    }
+
+    public Builder skipVectorization(boolean skipVectorization) {
+      this.skipVectorization = skipVectorization;
+      return this;
+    }
+
+    public Builder vectorizePropertyName(boolean vectorizePropertyName) {
+      this.vectorizePropertyName = vectorizePropertyName;
+      return this;
+    }
+
     @Override
     public Property build() {
       return new Property(this);

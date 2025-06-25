@@ -27,7 +27,8 @@ public record CollectionConfig(
     @SerializedName("description") String description,
     @SerializedName("properties") List<Property> properties,
     List<ReferenceProperty> references,
-    @SerializedName("vectorConfig") Map<String, VectorIndex> vectors) {
+    @SerializedName("vectorConfig") Map<String, VectorIndex> vectors,
+    @SerializedName("invertedIndexConfig") InvertedIndex invertedIndex) {
 
   public static CollectionConfig of(String collectionName) {
     return of(collectionName, ObjectBuilder.identity());
@@ -60,7 +61,8 @@ public record CollectionConfig(
         builder.description,
         builder.properties,
         builder.references,
-        builder.vectors);
+        builder.vectors,
+        builder.invertedIndex);
   }
 
   public static class Builder implements ObjectBuilder<CollectionConfig> {
@@ -71,6 +73,7 @@ public record CollectionConfig(
     private List<Property> properties = new ArrayList<>();
     private List<ReferenceProperty> references = new ArrayList<>();
     private Map<String, VectorIndex> vectors = new HashMap<>();
+    private InvertedIndex invertedIndex;
 
     public Builder(String collectionName) {
       this.collectionName = collectionName;
@@ -131,6 +134,11 @@ public record CollectionConfig(
       public Map<String, VectorIndex> build() {
         return this.vectors;
       }
+    }
+
+    public Builder invertedIndex(Function<InvertedIndex.Builder, ObjectBuilder<InvertedIndex>> fn) {
+      this.invertedIndex = InvertedIndex.of(fn);
+      return this;
     }
 
     @Override
