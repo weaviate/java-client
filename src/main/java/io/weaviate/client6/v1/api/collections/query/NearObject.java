@@ -31,6 +31,10 @@ public record NearObject(String uuid, Float distance, Float certainty, BaseQuery
       this.uuid = uuid;
     }
 
+    public Builder excludeSelf() {
+      return where(Where.uuid().ne(uuid));
+    }
+
     @Override
     public final NearObject build() {
       return new NearObject(this);
