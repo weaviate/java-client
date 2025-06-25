@@ -12,7 +12,7 @@ public final class JSON {
     gsonBuilder.registerTypeAdapterFactory(
         io.weaviate.client6.v1.api.collections.WeaviateObject.CustomTypeAdapterFactory.INSTANCE);
     gsonBuilder.registerTypeAdapterFactory(
-        io.weaviate.client6.v1.api.collections.WeaviateCollection.CustomTypeAdapterFactory.INSTANCE);
+        io.weaviate.client6.v1.api.collections.CollectionConfig.CustomTypeAdapterFactory.INSTANCE);
     gsonBuilder.registerTypeAdapterFactory(
         io.weaviate.client6.v1.api.collections.Vectors.CustomTypeAdapterFactory.INSTANCE);
     gsonBuilder.registerTypeAdapterFactory(

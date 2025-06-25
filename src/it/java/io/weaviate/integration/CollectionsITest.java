@@ -8,9 +8,9 @@ import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
+import io.weaviate.client6.v1.api.collections.CollectionConfig;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
-import io.weaviate.client6.v1.api.collections.WeaviateCollection;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer;
 import io.weaviate.containers.Container;
@@ -30,7 +30,7 @@ public class CollectionsITest extends ConcurrentTest {
 
     Assertions.assertThat(thingsCollection).get()
         .hasFieldOrPropertyWithValue("collectionName", collectionName)
-        .extracting(WeaviateCollection::vectors, InstanceOfAssertFactories.map(String.class, VectorIndex.class))
+        .extracting(CollectionConfig::vectors, InstanceOfAssertFactories.map(String.class, VectorIndex.class))
         .as("default vector").extractingByKey("default")
         .satisfies(defaultVector -> {
           Assertions.assertThat(defaultVector).extracting(VectorIndex::vectorizer)
@@ -105,7 +105,7 @@ public class CollectionsITest extends ConcurrentTest {
     var all = client.collections.list();
     Assertions.assertThat(all)
         .hasSizeGreaterThanOrEqualTo(3)
-        .extracting(WeaviateCollection::collectionName)
+        .extracting(CollectionConfig::collectionName)
         .contains(nsA, nsB, nsC);
 
     client.collections.deleteAll();
@@ -140,6 +140,6 @@ public class CollectionsITest extends ConcurrentTest {
     // Assert
     var thingsConfig = things.config.get();
     Assertions.assertThat(thingsConfig).get()
-        .returns("Things stored on shelves", WeaviateCollection::description);
+        .returns("Things stored on shelves", CollectionConfig::description);
   }
 }

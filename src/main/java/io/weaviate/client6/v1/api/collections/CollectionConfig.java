@@ -22,18 +22,18 @@ import com.google.gson.stream.JsonWriter;
 
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public record WeaviateCollection(
+public record CollectionConfig(
     @SerializedName("class") String collectionName,
     @SerializedName("description") String description,
     @SerializedName("properties") List<Property> properties,
     List<ReferenceProperty> references,
     @SerializedName("vectorConfig") Map<String, VectorIndex> vectors) {
 
-  public static WeaviateCollection of(String collectionName) {
+  public static CollectionConfig of(String collectionName) {
     return of(collectionName, ObjectBuilder.identity());
   }
 
-  public static WeaviateCollection of(String collectionName, Function<Builder, ObjectBuilder<WeaviateCollection>> fn) {
+  public static CollectionConfig of(String collectionName, Function<Builder, ObjectBuilder<CollectionConfig>> fn) {
     return fn.apply(new Builder(collectionName)).build();
   }
 
@@ -50,11 +50,11 @@ public record WeaviateCollection(
   }
 
   /** Create a copy of this {@code WeaviateCollection} and edit parts of it. */
-  public WeaviateCollection edit(Function<Builder, ObjectBuilder<WeaviateCollection>> fn) {
+  public CollectionConfig edit(Function<Builder, ObjectBuilder<CollectionConfig>> fn) {
     return fn.apply(edit()).build();
   }
 
-  public WeaviateCollection(Builder builder) {
+  public CollectionConfig(Builder builder) {
     this(
         builder.collectionName,
         builder.description,
@@ -63,7 +63,7 @@ public record WeaviateCollection(
         builder.vectors);
   }
 
-  public static class Builder implements ObjectBuilder<WeaviateCollection> {
+  public static class Builder implements ObjectBuilder<CollectionConfig> {
     // Required parameters;
     private final String collectionName;
 
@@ -134,8 +134,8 @@ public record WeaviateCollection(
     }
 
     @Override
-    public WeaviateCollection build() {
-      return new WeaviateCollection(this);
+    public CollectionConfig build() {
+      return new CollectionConfig(this);
     }
   }
 
@@ -145,15 +145,15 @@ public record WeaviateCollection(
     @SuppressWarnings("unchecked")
     @Override
     public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
-      if (type.getRawType() != WeaviateCollection.class) {
+      if (type.getRawType() != CollectionConfig.class) {
         return null;
       }
 
-      final var delegate = gson.getDelegateAdapter(this, (TypeToken<WeaviateCollection>) type);
-      return (TypeAdapter<T>) new TypeAdapter<WeaviateCollection>() {
+      final var delegate = gson.getDelegateAdapter(this, (TypeToken<CollectionConfig>) type);
+      return (TypeAdapter<T>) new TypeAdapter<CollectionConfig>() {
 
         @Override
-        public void write(JsonWriter out, WeaviateCollection value) throws IOException {
+        public void write(JsonWriter out, CollectionConfig value) throws IOException {
           var jsonObject = delegate.toJsonTree(value).getAsJsonObject();
 
           var references = jsonObject.remove("references").getAsJsonArray();
@@ -164,7 +164,7 @@ public record WeaviateCollection(
         }
 
         @Override
-        public WeaviateCollection read(JsonReader in) throws IOException {
+        public CollectionConfig read(JsonReader in) throws IOException {
           var jsonObject = JsonParser.parseReader(in).getAsJsonObject();
 
           var mixedProperties = jsonObject.get("properties").getAsJsonArray();
