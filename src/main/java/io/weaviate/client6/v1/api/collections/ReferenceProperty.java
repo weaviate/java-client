@@ -9,6 +9,6 @@ public record ReferenceProperty(
     @SerializedName("dataType") List<String> dataTypes) {
 
   public Property toProperty() {
-    return new Property(name, dataTypes);
+    return new Property.Builder(name, dataTypes).build();
   }
 }
