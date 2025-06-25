@@ -26,25 +26,25 @@ public class WeaviateCollectionsClientAsync {
         CollectionDescriptor.ofMap(collectionName));
   }
 
-  public CompletableFuture<WeaviateCollection> create(String name) {
-    return create(WeaviateCollection.of(name));
+  public CompletableFuture<CollectionConfig> create(String name) {
+    return create(CollectionConfig.of(name));
   }
 
-  public CompletableFuture<WeaviateCollection> create(String name,
-      Function<WeaviateCollection.Builder, ObjectBuilder<WeaviateCollection>> fn) {
-    return create(WeaviateCollection.of(name, fn));
+  public CompletableFuture<CollectionConfig> create(String name,
+      Function<CollectionConfig.Builder, ObjectBuilder<CollectionConfig>> fn) {
+    return create(CollectionConfig.of(name, fn));
   }
 
-  public CompletableFuture<WeaviateCollection> create(WeaviateCollection collection) {
+  public CompletableFuture<CollectionConfig> create(CollectionConfig collection) {
     return this.restTransport.performRequestAsync(new CreateCollectionRequest(collection),
         CreateCollectionRequest._ENDPOINT);
   }
 
-  public CompletableFuture<Optional<WeaviateCollection>> getConfig(String name) {
+  public CompletableFuture<Optional<CollectionConfig>> getConfig(String name) {
     return this.restTransport.performRequestAsync(new GetConfigRequest(name), GetConfigRequest._ENDPOINT);
   }
 
-  public CompletableFuture<List<WeaviateCollection>> list() {
+  public CompletableFuture<List<CollectionConfig>> list() {
     return this.restTransport.performRequestAsync(new ListCollectionRequest(), ListCollectionRequest._ENDPOINT);
   }
 

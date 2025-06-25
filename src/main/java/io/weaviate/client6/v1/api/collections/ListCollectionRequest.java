@@ -5,13 +5,11 @@ import java.util.List;
 
 import org.apache.hc.core5.http.HttpStatus;
 
-import com.google.gson.reflect.TypeToken;
-
 import io.weaviate.client6.v1.internal.json.JSON;
 import io.weaviate.client6.v1.internal.rest.Endpoint;
 
 public record ListCollectionRequest() {
-  public static final Endpoint<ListCollectionRequest, List<WeaviateCollection>> _ENDPOINT = Endpoint.of(
+  public static final Endpoint<ListCollectionRequest, List<CollectionConfig>> _ENDPOINT = Endpoint.of(
       request -> "GET",
       request -> "/schema",
       (gson, request) -> null,

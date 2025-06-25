@@ -5,8 +5,8 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
+import io.weaviate.client6.v1.api.collections.CollectionConfig;
 import io.weaviate.client6.v1.api.collections.Property;
-import io.weaviate.client6.v1.api.collections.WeaviateCollection;
 import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClientAsync;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
@@ -27,7 +27,7 @@ public class WeaviateConfigClientAsync {
     this.collectionDescriptor = collection;
   }
 
-  public CompletableFuture<Optional<WeaviateCollection>> get() throws IOException {
+  public CompletableFuture<Optional<CollectionConfig>> get() throws IOException {
     return collectionsClient.getConfig(collectionDescriptor.name());
   }
 

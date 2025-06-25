@@ -14,12 +14,12 @@ import com.google.gson.reflect.TypeToken;
 import com.jparams.junit4.JParamsTestRunner;
 import com.jparams.junit4.data.DataMethod;
 
+import io.weaviate.client6.v1.api.collections.CollectionConfig;
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.api.collections.Vectors;
-import io.weaviate.client6.v1.api.collections.WeaviateCollection;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.Reference;
 import io.weaviate.client6.v1.api.collections.vectorindex.Distance;
@@ -184,8 +184,8 @@ public class JSONTest {
 
         // WeaviateCollection.CustomTypeAdapterFactory
         {
-            WeaviateCollection.class,
-            WeaviateCollection.of("Things", things -> things
+            CollectionConfig.class,
+            CollectionConfig.of("Things", things -> things
                 .description("A collection of things")
                 .properties(
                     Property.text("shape"),

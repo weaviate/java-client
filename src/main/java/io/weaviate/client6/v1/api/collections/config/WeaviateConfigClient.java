@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Function;
 
+import io.weaviate.client6.v1.api.collections.CollectionConfig;
 import io.weaviate.client6.v1.api.collections.Property;
-import io.weaviate.client6.v1.api.collections.WeaviateCollection;
 import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClient;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
@@ -26,7 +26,7 @@ public class WeaviateConfigClient {
     this.collection = collection;
   }
 
-  public Optional<WeaviateCollection> get() throws IOException {
+  public Optional<CollectionConfig> get() throws IOException {
     return collectionsClient.getConfig(collection.name());
   }
 
@@ -42,7 +42,6 @@ public class WeaviateConfigClient {
   public void update(String collectionName,
       Function<UpdateCollectionRequest.Builder, ObjectBuilder<UpdateCollectionRequest>> fn) throws IOException {
     var thisCollection = get().orElseThrow(); // TODO: use descriptive error
-    System.out.println("got");
     this.restTransport.performRequest(UpdateCollectionRequest.of(thisCollection, fn),
         UpdateCollectionRequest._ENDPOINT);
   }

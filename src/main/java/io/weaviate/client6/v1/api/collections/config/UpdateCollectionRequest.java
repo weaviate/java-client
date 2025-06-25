@@ -6,13 +6,13 @@ import java.util.function.Function;
 
 import org.apache.hc.core5.http.HttpStatus;
 
+import io.weaviate.client6.v1.api.collections.CollectionConfig;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
-import io.weaviate.client6.v1.api.collections.WeaviateCollection;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.json.JSON;
 import io.weaviate.client6.v1.internal.rest.Endpoint;
 
-public record UpdateCollectionRequest(WeaviateCollection collection) {
+public record UpdateCollectionRequest(CollectionConfig collection) {
 
   public static final Endpoint<UpdateCollectionRequest, Void> _ENDPOINT = Endpoint.of(
       request -> "PUT",
@@ -22,7 +22,7 @@ public record UpdateCollectionRequest(WeaviateCollection collection) {
       code -> code != HttpStatus.SC_SUCCESS,
       (gson, response) -> null);
 
-  public static UpdateCollectionRequest of(WeaviateCollection collection,
+  public static UpdateCollectionRequest of(CollectionConfig collection,
       Function<Builder, ObjectBuilder<UpdateCollectionRequest>> fn) {
     return fn.apply(new Builder(collection)).build();
   }
@@ -32,10 +32,10 @@ public record UpdateCollectionRequest(WeaviateCollection collection) {
   }
 
   public static class Builder implements ObjectBuilder<UpdateCollectionRequest> {
-    private final WeaviateCollection currentCollection;
-    private final WeaviateCollection.Builder newCollection;
+    private final CollectionConfig currentCollection;
+    private final CollectionConfig.Builder newCollection;
 
-    public Builder(WeaviateCollection currentCollection) {
+    public Builder(CollectionConfig currentCollection) {
       this.currentCollection = currentCollection;
       this.newCollection = currentCollection.edit();
     }
