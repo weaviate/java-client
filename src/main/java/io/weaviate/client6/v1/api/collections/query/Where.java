@@ -90,6 +90,10 @@ public class Where implements WhereOperand {
   // Comparison operators return fluid builder.
   // --------------------------------------------------------------------------
 
+  public static WhereBuilder uuid() {
+    return property("_id");
+  }
+
   public static WhereBuilder property(String property) {
     return new WhereBuilder(new PathOperand(property));
   }
@@ -564,7 +568,6 @@ public class Where implements WhereOperand {
       this.path = path;
     }
 
-    @SafeVarargs
     private PathOperand(String... path) {
       this(Arrays.asList(path));
     }
