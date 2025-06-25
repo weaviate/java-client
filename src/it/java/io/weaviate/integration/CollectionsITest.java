@@ -29,7 +29,7 @@ public class CollectionsITest extends ConcurrentTest {
     var thingsCollection = client.collections.getConfig(collectionName);
 
     Assertions.assertThat(thingsCollection).get()
-        .hasFieldOrPropertyWithValue("name", collectionName)
+        .hasFieldOrPropertyWithValue("collectionName", collectionName)
         .extracting(WeaviateCollection::vectors, InstanceOfAssertFactories.map(String.class, VectorIndex.class))
         .as("default vector").extractingByKey("default")
         .satisfies(defaultVector -> {
