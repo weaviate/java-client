@@ -77,7 +77,8 @@ public record BaseQueryOptions(
      * {@code gte}, {@code like}, etc.
      * Subsequent calls to {@link #where} aggregate with an AND operator.
      *
-     * @see {@link Where}
+     * <p>
+     * See: {@link Where}
      */
     public final SELF where(Where where) {
       this.where = this.where == null ? where : Where.and(this.where, where);

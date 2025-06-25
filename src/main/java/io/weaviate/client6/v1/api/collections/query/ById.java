@@ -15,7 +15,7 @@ public record ById(
     List<QueryReference> returnReferences,
     List<Metadata> returnMetadata) implements QueryOperator {
 
-  private static final String ID_PROPERTY = "_id";
+  static final String ID_PROPERTY = "_id";
 
   public static ById of(String uuid) {
     return of(uuid, ObjectBuilder.identity());
@@ -67,7 +67,7 @@ public record ById(
 
   @Override
   public void appendTo(WeaviateProtoSearchGet.SearchRequest.Builder req) {
-    var where = Where.property(ID_PROPERTY).eq(uuid);
+    var where = Where.uuid().eq(uuid);
     var filter = WeaviateProtoBase.Filters.newBuilder();
     where.appendTo(filter);
     req.setFilters(filter);
