@@ -345,4 +345,27 @@ public class SearchITest extends ConcurrentTest {
         .extracting(WeaviateObject::metadata).extracting(WeaviateMetadata::uuid)
         .containsOnly(lion.metadata().uuid());
   }
+
+  @Test
+  public void testHybrid() throws IOException {
+    // Arrange
+    var nsHobbies = ns("Hobbies");
+
+    client.collections.create(nsHobbies,
+        collection -> collection
+            .properties(Property.text("name"), Property.text("description"))
+            .vector(Hnsw.of(Text2VecContextionaryVectorizer.of())));
+
+    var hobbies = client.collections.use(nsHobbies);
+
+    var skiing = hobbies.data.insert(Map.of("name", "skiing", "description", "winter sport"));
+    hobbies.data.insert(Map.of("name", "jetskiing", "description", "water sport"));
+
+    // Act
+    var winterSport = hobbies.query.hybrid("winter");
+    Assertions.assertThat(winterSport.objects())
+        .hasSize(1)
+        .extracting(WeaviateObject::metadata).extracting(WeaviateMetadata::uuid)
+        .containsOnly(skiing.metadata().uuid());
+  }
 }

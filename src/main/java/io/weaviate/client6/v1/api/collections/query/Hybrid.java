@@ -1,5 +1,6 @@
 package io.weaviate.client6.v1.api.collections.query;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -18,25 +19,6 @@ public record Hybrid(
     QueryOperator near,
     FusionType fusionType,
     Float maxVectorDistance,
-    /**
-     * alpha: NUMBER = 0.7,
-     * vector: Optional[HybridVectorType] = None,
-     * query_properties: Optional[List[str]] = None,
-     * fusion_type: Optional[HybridFusion] = None,
-     * max_vector_distance: Optional[NUMBER] = None,
-     * limit: Optional[int] = None,
-     * offset: Optional[int] = None,
-     * bm25_operator: Optional[BM25OperatorOptions] = None,
-     * auto_limit: Optional[int] = None,
-     * filters: Optional[_Filters] = None,
-     * group_by: Optional[GroupBy] = None,
-     * rerank: Optional[Rerank] = None,
-     * target_vector: Optional[TargetVectorJoinType] = None,
-     * include_vector: INCLUDE_VECTOR = False,
-     * return_metadata: Optional[METADATA] = None,
-     * return_properties: Optional[ReturnProperties[TProperties]] = None,
-     * return_references: Optional[ReturnReferences[TReferences]] = None,
-     */
     BaseQueryOptions common)
     implements QueryOperator, AggregateObjectFilter {
 
@@ -69,7 +51,7 @@ public record Hybrid(
     private final String query;
 
     // Optional query parameters.
-    List<String> queryProperties;
+    List<String> queryProperties = new ArrayList<>();
     SearchOperator searchOperator;
     Float alpha;
     QueryOperator near;
