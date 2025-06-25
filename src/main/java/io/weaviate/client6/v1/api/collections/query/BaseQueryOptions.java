@@ -72,8 +72,15 @@ public record BaseQueryOptions(
       return (SELF) this;
     }
 
+    /**
+     * Filter result set using traditional filtering operators: {@code eq},
+     * {@code gte}, {@code like}, etc.
+     * Subsequent calls to {@link #where} aggregate with an AND operator.
+     *
+     * @see {@link Where}
+     */
     public final SELF where(Where where) {
-      this.where = where;
+      this.where = this.where == null ? where : Where.and(this.where, where);
       return (SELF) this;
     }
 
