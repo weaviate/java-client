@@ -97,7 +97,7 @@ public class Where implements WhereOperand {
   // --------------------------------------------------------------------------
 
   public static WhereBuilder uuid() {
-    return property("_id");
+    return property(ById.ID_PROPERTY);
   }
 
   public static WhereBuilder property(String property) {
