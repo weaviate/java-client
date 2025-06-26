@@ -69,6 +69,12 @@ public class Where implements WhereOperand {
         || operands.stream().allMatch(operator -> operator.isEmpty());
   }
 
+  @Override
+  public String toString() {
+    var operandStrings = operands.stream().map(Object::toString).toList();
+    return "Where(" + String.join(" " + operator.toString() + " ", operandStrings) + ")";
+  }
+
   // Logical operators return a complete operand.
   // --------------------------------------------------------------------------
   public static Where and(WhereOperand... operands) {
@@ -89,6 +95,10 @@ public class Where implements WhereOperand {
 
   // Comparison operators return fluid builder.
   // --------------------------------------------------------------------------
+
+  public static WhereBuilder uuid() {
+    return property(ById.ID_PROPERTY);
+  }
 
   public static WhereBuilder property(String property) {
     return new WhereBuilder(new PathOperand(property));
@@ -564,7 +574,6 @@ public class Where implements WhereOperand {
       this.path = path;
     }
 
-    @SafeVarargs
     private PathOperand(String... path) {
       this(Arrays.asList(path));
     }
@@ -576,6 +585,11 @@ public class Where implements WhereOperand {
         where.addOn(path.get(0));
       }
       // FIXME: no way to reference objects rn?
+    }
+
+    @Override
+    public String toString() {
+      return String.join("::", path);
     }
   }
 
@@ -589,6 +603,11 @@ public class Where implements WhereOperand {
     @Override
     public void appendTo(WeaviateProtoBase.Filters.Builder where) {
       where.setValueText(value);
+    }
+
+    @Override
+    public String toString() {
+      return value;
     }
   }
 
@@ -608,6 +627,11 @@ public class Where implements WhereOperand {
     public void appendTo(WeaviateProtoBase.Filters.Builder where) {
       where.setValueTextArray(WeaviateProtoBase.TextArray.newBuilder().addAllValues(values));
     }
+
+    @Override
+    public String toString() {
+      return values.toString();
+    }
   }
 
   private static class BooleanOperand implements WhereOperand {
@@ -620,6 +644,11 @@ public class Where implements WhereOperand {
     @Override
     public void appendTo(WeaviateProtoBase.Filters.Builder where) {
       where.setValueBoolean(value);
+    }
+
+    @Override
+    public String toString() {
+      return value.toString();
     }
   }
 
@@ -639,6 +668,11 @@ public class Where implements WhereOperand {
     public void appendTo(WeaviateProtoBase.Filters.Builder where) {
       where.setValueBooleanArray(WeaviateProtoBase.BooleanArray.newBuilder().addAllValues(values));
     }
+
+    @Override
+    public String toString() {
+      return values.toString();
+    }
   }
 
   private static class IntegerOperand implements WhereOperand {
@@ -651,6 +685,11 @@ public class Where implements WhereOperand {
     @Override
     public void appendTo(WeaviateProtoBase.Filters.Builder where) {
       where.setValueInt(value);
+    }
+
+    @Override
+    public String toString() {
+      return value.toString();
     }
   }
 
@@ -674,6 +713,11 @@ public class Where implements WhereOperand {
     public void appendTo(WeaviateProtoBase.Filters.Builder where) {
       where.setValueIntArray(WeaviateProtoBase.IntArray.newBuilder().addAllValues(toLongs()));
     }
+
+    @Override
+    public String toString() {
+      return values.toString();
+    }
   }
 
   private static class NumberOperand implements WhereOperand {
@@ -686,6 +730,11 @@ public class Where implements WhereOperand {
     @Override
     public void appendTo(WeaviateProtoBase.Filters.Builder where) {
       where.setValueNumber(value.doubleValue());
+    }
+
+    @Override
+    public String toString() {
+      return value.toString();
     }
   }
 
@@ -709,6 +758,11 @@ public class Where implements WhereOperand {
     public void appendTo(WeaviateProtoBase.Filters.Builder where) {
       where.setValueNumberArray(WeaviateProtoBase.NumberArray.newBuilder().addAllValues(toDoubles()));
     }
+
+    @Override
+    public String toString() {
+      return values.toString();
+    }
   }
 
   private static class DateOperand implements WhereOperand {
@@ -726,6 +780,11 @@ public class Where implements WhereOperand {
     public void appendTo(WeaviateProtoBase.Filters.Builder where) {
       where.setValueText(format(value));
     }
+
+    @Override
+    public String toString() {
+      return format(value);
+    }
   }
 
   private static class DateArrayOperand implements WhereOperand {
@@ -742,12 +801,16 @@ public class Where implements WhereOperand {
 
     private List<String> formatted() {
       return values.stream().map(date -> DateOperand.format(date)).toList();
-
     }
 
     @Override
     public void appendTo(WeaviateProtoBase.Filters.Builder where) {
       where.setValueTextArray(WeaviateProtoBase.TextArray.newBuilder().addAllValues(formatted()));
+    }
+
+    @Override
+    public String toString() {
+      return values.toString();
     }
   }
 
@@ -766,6 +829,11 @@ public class Where implements WhereOperand {
     public void appendTo(WeaviateProtoBase.Filters.Builder where) {
       where.setValueGeo(WeaviateProtoBase.GeoCoordinatesFilter.newBuilder()
           .setLatitude(lat).setLongitude(lon).setDistance(distance));
+    }
+
+    @Override
+    public String toString() {
+      return "(lat=%d, lon=%d, distance=%d)".formatted(lat, lon, distance);
     }
   }
 }

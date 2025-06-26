@@ -25,26 +25,12 @@ public record NearVector(Float[] vector, Float distance, Float certainty, BaseQu
     this(builder.vector, builder.distance, builder.certainty, builder.baseOptions());
   }
 
-  public static class Builder extends BaseQueryOptions.Builder<Builder, NearVector> {
+  public static class Builder extends BaseVectorSearchBuilder<Builder, NearVector> {
     // Required query parameters.
     private final Float[] vector;
 
-    // Optional query parameters.
-    private Float distance;
-    private Float certainty;
-
     public Builder(Float[] vector) {
       this.vector = vector;
-    }
-
-    public final Builder distance(float distance) {
-      this.distance = distance;
-      return this;
-    }
-
-    public final Builder certainty(float certainty) {
-      this.certainty = certainty;
-      return this;
     }
 
     @Override
@@ -67,7 +53,8 @@ public record NearVector(Float[] vector, Float distance, Float certainty, BaseQu
     req.setNearVector(protoBuilder());
   }
 
-  private WeaviateProtoBaseSearch.NearVector.Builder protoBuilder() {
+  // This is made package-private for Hybrid to see. Should we refactor?
+  WeaviateProtoBaseSearch.NearVector.Builder protoBuilder() {
     var nearVector = WeaviateProtoBaseSearch.NearVector.newBuilder();
     nearVector.addVectors(WeaviateProtoBase.Vectors.newBuilder()
         .setType(WeaviateProtoBase.Vectors.VectorType.VECTOR_TYPE_SINGLE_FP32)

@@ -19,6 +19,7 @@ import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.Vectors;
+import io.weaviate.client6.v1.api.collections.WeaviateMetadata;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.Reference;
 import io.weaviate.client6.v1.api.collections.query.GroupBy;
@@ -314,5 +315,57 @@ public class SearchITest extends ConcurrentTest {
           .extracting(WeaviateObject::metadata).extracting(QueryMetadata::uuid)
           .containsOnly(want.metadata().uuid());
     }
+  }
+
+  @Test
+  public void testNearObject() throws IOException {
+    // Arrange
+    var nsAnimals = ns("Animals");
+
+    client.collections.create(nsAnimals,
+        collection -> collection
+            .properties(Property.text("kind"))
+            .vector(Hnsw.of(Text2VecContextionaryVectorizer.of())));
+
+    var animals = client.collections.use(nsAnimals);
+
+    // Terrestrial animals
+    var cat = animals.data.insert(Map.of("kind", "cat"));
+    var lion = animals.data.insert(Map.of("kind", "lion"));
+    // Aquatic animal
+    animals.data.insert(Map.of("kind", "dolphin"));
+
+    // Act
+    var terrestrial = animals.query.nearObject(cat.metadata().uuid(),
+        q -> q.excludeSelf().limit(1));
+
+    // Assert
+    Assertions.assertThat(terrestrial.objects())
+        .hasSize(1)
+        .extracting(WeaviateObject::metadata).extracting(WeaviateMetadata::uuid)
+        .containsOnly(lion.metadata().uuid());
+  }
+
+  @Test
+  public void testHybrid() throws IOException {
+    // Arrange
+    var nsHobbies = ns("Hobbies");
+
+    client.collections.create(nsHobbies,
+        collection -> collection
+            .properties(Property.text("name"), Property.text("description"))
+            .vector(Hnsw.of(Text2VecContextionaryVectorizer.of())));
+
+    var hobbies = client.collections.use(nsHobbies);
+
+    var skiing = hobbies.data.insert(Map.of("name", "skiing", "description", "winter sport"));
+    hobbies.data.insert(Map.of("name", "jetskiing", "description", "water sport"));
+
+    // Act
+    var winterSport = hobbies.query.hybrid("winter");
+    Assertions.assertThat(winterSport.objects())
+        .hasSize(1)
+        .extracting(WeaviateObject::metadata).extracting(WeaviateMetadata::uuid)
+        .containsOnly(skiing.metadata().uuid());
   }
 }

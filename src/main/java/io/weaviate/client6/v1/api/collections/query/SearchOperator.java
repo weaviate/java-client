@@ -20,10 +20,12 @@ public class SearchOperator {
     this.minimumOrTokensMatch = minimumOrTokensMatch;
   }
 
-  void appendTo(WeaviateProtoBaseSearch.SearchOperatorOptions.Builder options) {
+  void appendTo(WeaviateProtoBaseSearch.BM25.Builder req) {
+    var options = WeaviateProtoBaseSearch.SearchOperatorOptions.newBuilder();
     options.setOperator(operator == "And" ? Operator.OPERATOR_AND : Operator.OPERATOR_OR);
     if (minimumOrTokensMatch != null) {
       options.setMinimumOrTokensMatch(minimumOrTokensMatch);
     }
+    req.setSearchOperator(options);
   }
 }
