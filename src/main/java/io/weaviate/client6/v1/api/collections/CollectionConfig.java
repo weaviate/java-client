@@ -70,8 +70,8 @@ public record CollectionConfig(
     this(
         builder.collectionName,
         builder.description,
-        builder.properties,
-        builder.references,
+        builder.propertyList(),
+        builder.referenceList(),
         builder.vectors,
         builder.multiTenancy,
         builder.sharding,
@@ -86,8 +86,8 @@ public record CollectionConfig(
     private final String collectionName;
 
     private String description;
-    private List<Property> properties = new ArrayList<>();
-    private List<ReferenceProperty> references = new ArrayList<>();
+    private Map<String, Property> properties = new HashMap<>();
+    private Map<String, ReferenceProperty> references = new HashMap<>();
     private Map<String, VectorIndex> vectors = new HashMap<>();
     private MultiTenancy multiTenancy;
     private Sharding sharding;
@@ -110,8 +110,12 @@ public record CollectionConfig(
     }
 
     public Builder properties(List<Property> properties) {
-      this.properties.addAll(properties);
+      properties.forEach(property -> this.properties.put(property.propertyName(), property));
       return this;
+    }
+
+    private List<Property> propertyList() {
+      return this.properties.values().stream().toList();
     }
 
     public Builder references(ReferenceProperty... references) {
@@ -119,8 +123,12 @@ public record CollectionConfig(
     }
 
     public Builder references(List<ReferenceProperty> references) {
-      this.references.addAll(references);
+      references.forEach(reference -> this.references.put(reference.propertyName(), reference));
       return this;
+    }
+
+    private List<ReferenceProperty> referenceList() {
+      return this.references.values().stream().toList();
     }
 
     public Builder vector(VectorIndex vector) {

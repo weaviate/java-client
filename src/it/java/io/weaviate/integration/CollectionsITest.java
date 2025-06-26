@@ -61,7 +61,7 @@ public class CollectionsITest extends ConcurrentTest {
         .as("after create Things").get()
         .satisfies(c -> {
           Assertions.assertThat(c.references())
-              .as("ownedBy").filteredOn(p -> p.name().equals("ownedBy")).first()
+              .as("ownedBy").filteredOn(p -> p.propertyName().equals("ownedBy")).first()
               .extracting(p -> p.dataTypes(), InstanceOfAssertFactories.LIST)
               .containsOnly(nsOwners);
         });
@@ -81,7 +81,7 @@ public class CollectionsITest extends ConcurrentTest {
         .as("after add property").get()
         .satisfies(c -> {
           Assertions.assertThat(c.references())
-              .as("soldIn").filteredOn(p -> p.name().equals("soldIn")).first()
+              .as("soldIn").filteredOn(p -> p.propertyName().equals("soldIn")).first()
               .extracting(p -> p.dataTypes(), InstanceOfAssertFactories.LIST)
               .containsOnly(nsOnlineStores, nsMarkets);
         });
@@ -117,33 +117,33 @@ public class CollectionsITest extends ConcurrentTest {
 
   @Test
   public void testUpdateCollection() throws IOException {
-    try {
-      var nsBoxes = ns("Boxes");
-      var nsThings = ns("Things");
+    var nsBoxes = ns("Boxes");
+    var nsThings = ns("Things");
 
-      client.collections.create(nsBoxes);
+    client.collections.create(nsBoxes);
 
-      client.collections.create(nsThings,
-          collection -> collection
-              .description("Things stored in boxes")
-              .properties(
-                  Property.text("name"),
-                  Property.integer("width"))
-              .references(
-                  Property.reference("storedIn", nsBoxes)));
+    client.collections.create(nsThings,
+        collection -> collection
+            .description("Things stored in boxes")
+            .properties(
+                Property.text("name"),
+                Property.integer("width",
+                    w -> w.description("how wide this thing is")))
+            .invertedIndex(index -> index.cleanupIntervalSeconds(10))
+            .replication(replicate -> replicate.asyncEnabled(true)));
 
-      var things = client.collections.use(nsThings);
+    var things = client.collections.use(nsThings);
 
-      // Act
-      things.config.update(nsThings, collection -> collection
-          .description("Things stored on shelves"));
+    // Act
+    things.config.update(nsThings, collection -> collection
+        .description("Things stored on shelves")
+        .propertyDescription("width", "not height"));
 
-      // Assert
-      var thingsConfig = things.config.get();
-      Assertions.assertThat(thingsConfig).get()
-          .returns("Things stored on shelves", CollectionConfig::description);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    // Assert
+    var updated = things.config.get();
+    Assertions.assertThat(updated).get()
+        .returns("Things stored on shelves", CollectionConfig::description)
+        .extracting(CollectionConfig::properties, InstanceOfAssertFactories.list(Property.class))
+        .extracting(Property::description).contains("not height");
   }
 }

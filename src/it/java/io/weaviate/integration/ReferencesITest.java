@@ -61,7 +61,7 @@ public class ReferencesITest extends ConcurrentTest {
         .as("Artists: create collection")
         .extracting(c -> c.references().stream().findFirst())
         .as("has one reference property").extracting(Optional::get)
-        .returns("hasAwards", ReferenceProperty::name)
+        .returns("hasAwards", ReferenceProperty::propertyName)
         .extracting(ReferenceProperty::dataTypes, InstanceOfAssertFactories.list(String.class))
         .containsOnly(nsGrammy, nsOscar);
 
@@ -87,7 +87,7 @@ public class ReferencesITest extends ConcurrentTest {
     Assertions.assertThat(collectionArtists).get()
         .as("Artists: add reference to Movies")
         .extracting(c -> c.references().stream()
-            .filter(property -> property.name().equals("featuredIn")).findFirst())
+            .filter(property -> property.propertyName().equals("featuredIn")).findFirst())
         .as("featuredIn reference property").extracting(Optional::get)
         .extracting(ReferenceProperty::dataTypes, InstanceOfAssertFactories.list(String.class))
         .containsOnly(nsMovies);
