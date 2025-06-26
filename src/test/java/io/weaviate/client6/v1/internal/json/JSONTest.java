@@ -15,13 +15,16 @@ import com.jparams.junit4.JParamsTestRunner;
 import com.jparams.junit4.data.DataMethod;
 
 import io.weaviate.client6.v1.api.collections.CollectionConfig;
+import io.weaviate.client6.v1.api.collections.Generative;
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.Property;
+import io.weaviate.client6.v1.api.collections.Reranker;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.Reference;
+import io.weaviate.client6.v1.api.collections.rerankers.CohereReranker;
 import io.weaviate.client6.v1.api.collections.vectorindex.Distance;
 import io.weaviate.client6.v1.api.collections.vectorindex.Flat;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
@@ -246,6 +249,43 @@ public class JSONTest {
                     "hasRef": [{"beacon": "weaviate://localhost/ref-1"}]
                   },
                   "id": "thing-1"
+                }
+                  """,
+        },
+
+        // Reranker.CustomTypeAdapterFactory
+        {
+            Reranker.class,
+            Reranker.cohere(rerank -> rerank
+                .model(CohereReranker.RERANK_ENGLISH_V2)),
+            """
+                {
+                  "reranker-cohere": {
+                    "model": "rerank-english-v2.0"
+                  }
+                }
+                  """,
+        },
+
+        {
+            Generative.class,
+            Generative.cohere(generate -> generate
+                .kProperty("k-property")
+                .maxTokensProperty(10)
+                .model("example-model")
+                .returnLikelihoodsProperty("likelihood")
+                .stopSequencesProperty("stop", "halt")
+                .temperatureProperty("celcius")),
+            """
+                {
+                  "generative-cohere": {
+                    "kProperty": "k-property",
+                    "maxTokensProperty": 10,
+                    "model": "example-model",
+                    "returnLikelihoodsProperty": "likelihood",
+                    "stopSequencesProperty": ["stop", "halt"],
+                    "temperatureProperty": "celcius"
+                  }
                 }
                   """,
         },
