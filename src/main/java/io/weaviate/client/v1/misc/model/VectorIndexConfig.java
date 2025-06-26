@@ -30,14 +30,14 @@ public class VectorIndexConfig {
   PQConfig pq;
   BQConfig bq;
   SQConfig sq;
+  RQConfig rq;
 
   @SerializedName("multivector")
   MultiVectorConfig multiVector;
 
   public enum FilterStrategy {
     @SerializedName("sweeping")
-    SWEEPING,
-    @SerializedName("acorn")
+    SWEEPING, @SerializedName("acorn")
     ACORN;
   }
 }
