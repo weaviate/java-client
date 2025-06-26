@@ -51,6 +51,21 @@ public record Property(
     return new ReferenceProperty(name, collections);
   }
 
+  public Builder edit() {
+    return new Builder(propertyName, dataTypes)
+        .description(description)
+        .indexInverted(indexInverted)
+        .indexFilterable(indexFilterable)
+        .indexRangeFilters(indexRangeFilters)
+        .indexSearchable(indexSearchable)
+        .skipVectorization(skipVectorization)
+        .vectorizePropertyName(vectorizePropertyName);
+  }
+
+  public Property edit(Function<Builder, ObjectBuilder<Property>> fn) {
+    return fn.apply(edit()).build();
+  }
+
   public Property(Builder builder) {
     this(
         builder.propertyName,
@@ -102,32 +117,32 @@ public record Property(
       return this;
     }
 
-    public Builder indexInverted(boolean indexInverted) {
+    public Builder indexInverted(Boolean indexInverted) {
       this.indexInverted = indexInverted;
       return this;
     }
 
-    public Builder indexFilterable(boolean indexFilterable) {
+    public Builder indexFilterable(Boolean indexFilterable) {
       this.indexFilterable = indexFilterable;
       return this;
     }
 
-    public Builder indexRangeFilters(boolean indexRangeFilters) {
+    public Builder indexRangeFilters(Boolean indexRangeFilters) {
       this.indexRangeFilters = indexRangeFilters;
       return this;
     }
 
-    public Builder indexSearchable(boolean indexSearchable) {
+    public Builder indexSearchable(Boolean indexSearchable) {
       this.indexSearchable = indexSearchable;
       return this;
     }
 
-    public Builder skipVectorization(boolean skipVectorization) {
+    public Builder skipVectorization(Boolean skipVectorization) {
       this.skipVectorization = skipVectorization;
       return this;
     }
 
-    public Builder vectorizePropertyName(boolean vectorizePropertyName) {
+    public Builder vectorizePropertyName(Boolean vectorizePropertyName) {
       this.vectorizePropertyName = vectorizePropertyName;
       return this;
     }
