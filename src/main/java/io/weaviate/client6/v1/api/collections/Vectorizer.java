@@ -51,11 +51,11 @@ public interface Vectorizer {
   public static enum CustomTypeAdapterFactory implements TypeAdapterFactory {
     INSTANCE;
 
-    private static final EnumMap<Vectorizer.Kind, TypeAdapter<? extends Vectorizer>> readAdapters = new EnumMap<>(
+    private static final EnumMap<Vectorizer.Kind, TypeAdapter<? extends Vectorizer>> delegateAdapters = new EnumMap<>(
         Vectorizer.Kind.class);
 
     private final void addAdapter(Gson gson, Vectorizer.Kind kind, Class<? extends Vectorizer> cls) {
-      readAdapters.put(kind, (TypeAdapter<? extends Vectorizer>) gson.getDelegateAdapter(this, TypeToken.get(cls)));
+      delegateAdapters.put(kind, (TypeAdapter<? extends Vectorizer>) gson.getDelegateAdapter(this, TypeToken.get(cls)));
     }
 
     private final void init(Gson gson) {
@@ -74,7 +74,7 @@ public interface Vectorizer {
         return null;
       }
 
-      if (readAdapters.isEmpty()) {
+      if (delegateAdapters.isEmpty()) {
         init(gson);
       }
 
@@ -82,11 +82,11 @@ public interface Vectorizer {
 
         @Override
         public void write(JsonWriter out, Vectorizer value) throws IOException {
-          var writeAdapter = readAdapters.get(value._kind());
+          TypeAdapter<T> adapter = (TypeAdapter<T>) delegateAdapters.get(value._kind());
 
           out.beginObject();
           out.name(value._kind().jsonValue());
-          ((TypeAdapter<T>) writeAdapter).write(out, (T) value._self());
+          adapter.write(out, (T) value._self());
           out.endObject();
         }
 
@@ -96,7 +96,7 @@ public interface Vectorizer {
           var vectorizerName = in.nextName();
           try {
             var kind = Vectorizer.Kind.valueOfJson(vectorizerName);
-            var adapter = readAdapters.get(kind);
+            var adapter = delegateAdapters.get(kind);
             return adapter.read(in);
           } catch (IllegalArgumentException e) {
             return null;

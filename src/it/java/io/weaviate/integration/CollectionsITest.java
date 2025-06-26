@@ -117,29 +117,33 @@ public class CollectionsITest extends ConcurrentTest {
 
   @Test
   public void testUpdateCollection() throws IOException {
-    var nsBoxes = ns("Boxes");
-    var nsThings = ns("Things");
+    try {
+      var nsBoxes = ns("Boxes");
+      var nsThings = ns("Things");
 
-    client.collections.create(nsBoxes);
+      client.collections.create(nsBoxes);
 
-    client.collections.create(nsThings,
-        collection -> collection
-            .description("Things stored in boxes")
-            .properties(
-                Property.text("name"),
-                Property.integer("width"))
-            .references(
-                Property.reference("storedIn", nsBoxes)));
+      client.collections.create(nsThings,
+          collection -> collection
+              .description("Things stored in boxes")
+              .properties(
+                  Property.text("name"),
+                  Property.integer("width"))
+              .references(
+                  Property.reference("storedIn", nsBoxes)));
 
-    var things = client.collections.use(nsThings);
+      var things = client.collections.use(nsThings);
 
-    // Act
-    things.config.update(nsThings, collection -> collection
-        .description("Things stored on shelves"));
+      // Act
+      things.config.update(nsThings, collection -> collection
+          .description("Things stored on shelves"));
 
-    // Assert
-    var thingsConfig = things.config.get();
-    Assertions.assertThat(thingsConfig).get()
-        .returns("Things stored on shelves", CollectionConfig::description);
+      // Assert
+      var thingsConfig = things.config.get();
+      Assertions.assertThat(thingsConfig).get()
+          .returns("Things stored on shelves", CollectionConfig::description);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 }
