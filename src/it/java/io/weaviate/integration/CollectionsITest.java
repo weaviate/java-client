@@ -9,7 +9,9 @@ import org.junit.Test;
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.CollectionConfig;
+import io.weaviate.client6.v1.api.collections.InvertedIndex;
 import io.weaviate.client6.v1.api.collections.Property;
+import io.weaviate.client6.v1.api.collections.Replication;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer;
@@ -129,21 +131,32 @@ public class CollectionsITest extends ConcurrentTest {
                 Property.text("name"),
                 Property.integer("width",
                     w -> w.description("how wide this thing is")))
-            .invertedIndex(index -> index.cleanupIntervalSeconds(10))
-            .replication(replicate -> replicate.asyncEnabled(true)));
+            .invertedIndex(idx -> idx.cleanupIntervalSeconds(10))
+            .replication(repl -> repl.asyncEnabled(true)));
 
     var things = client.collections.use(nsThings);
 
     // Act
     things.config.update(nsThings, collection -> collection
         .description("Things stored on shelves")
-        .propertyDescription("width", "not height"));
+        .propertyDescription("width", "not height")
+        .invertedIndex(idx -> idx.cleanupIntervalSeconds(30))
+        .replication(repl -> repl.asyncEnabled(false)));
 
     // Assert
     var updated = things.config.get();
     Assertions.assertThat(updated).get()
         .returns("Things stored on shelves", CollectionConfig::description)
-        .extracting(CollectionConfig::properties, InstanceOfAssertFactories.list(Property.class))
-        .extracting(Property::description).contains("not height");
+        .satisfies(collection -> {
+          Assertions.assertThat(collection)
+              .extracting(CollectionConfig::properties, InstanceOfAssertFactories.list(Property.class))
+              .extracting(Property::description).contains("not height");
+
+          Assertions.assertThat(collection)
+              .extracting(CollectionConfig::invertedIndex).returns(30, InvertedIndex::cleanupIntervalSeconds);
+
+          Assertions.assertThat(collection)
+              .extracting(CollectionConfig::replication).returns(false, Replication::asyncEnabled);
+        });
   }
 }
