@@ -19,6 +19,10 @@ public final class JSON {
         io.weaviate.client6.v1.api.collections.Vectorizer.CustomTypeAdapterFactory.INSTANCE);
     gsonBuilder.registerTypeAdapterFactory(
         io.weaviate.client6.v1.api.collections.VectorIndex.CustomTypeAdapterFactory.INSTANCE);
+    gsonBuilder.registerTypeAdapterFactory(
+        io.weaviate.client6.v1.api.collections.Reranker.CustomTypeAdapterFactory.INSTANCE);
+    gsonBuilder.registerTypeAdapterFactory(
+        io.weaviate.client6.v1.api.collections.Generative.CustomTypeAdapterFactory.INSTANCE);
 
     gsonBuilder.registerTypeAdapter(
         io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer.class,
