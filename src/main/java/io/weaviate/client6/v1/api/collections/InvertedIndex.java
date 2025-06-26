@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record InvertedIndex(
-    @SerializedName("cleanupIntervalSeconds") String cleanupIntervalSeconds,
+    @SerializedName("cleanupIntervalSeconds") Integer cleanupIntervalSeconds,
     @SerializedName("bm25") Bm25 bm25,
     @SerializedName("stopwords") Stopwords stopwords,
     @SerializedName("indexTimestamps") Boolean indexTimestamps,
@@ -114,7 +114,7 @@ public record InvertedIndex(
   }
 
   public static class Builder implements ObjectBuilder<InvertedIndex> {
-    private String cleanupIntervalSeconds;
+    private Integer cleanupIntervalSeconds;
     private Bm25 bm25;
     private Stopwords stopwords;
     private Boolean indexTimestamps;
@@ -122,7 +122,7 @@ public record InvertedIndex(
     private Boolean indexPropertyLength;
     private Boolean useBlockMaxWAND;
 
-    public Builder cleanupIntervalSeconds(String cleanupIntervalSeconds) {
+    public Builder cleanupIntervalSeconds(int cleanupIntervalSeconds) {
       this.cleanupIntervalSeconds = cleanupIntervalSeconds;
       return this;
     }

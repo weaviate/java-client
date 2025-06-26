@@ -28,7 +28,12 @@ public record CollectionConfig(
     @SerializedName("properties") List<Property> properties,
     List<ReferenceProperty> references,
     @SerializedName("vectorConfig") Map<String, VectorIndex> vectors,
-    @SerializedName("invertedIndexConfig") InvertedIndex invertedIndex) {
+    @SerializedName("multiTenancyConfig") MultiTenancy multiTenancy,
+    @SerializedName("shardingConfig") Sharding sharding,
+    @SerializedName("replicationConfig") Replication replication,
+    @SerializedName("invertedIndexConfig") InvertedIndex invertedIndex,
+    List<Reranker> rerankerModules,
+    List<Generative> generativeModules) {
 
   public static CollectionConfig of(String collectionName) {
     return of(collectionName, ObjectBuilder.identity());
@@ -47,7 +52,13 @@ public record CollectionConfig(
         .description(description)
         .properties(properties)
         .references(references)
-        .vectors(vectors);
+        .vectors(vectors)
+        .multiTenancy(multiTenancy)
+        .sharding(sharding)
+        .replication(replication)
+        .invertedIndex(invertedIndex)
+        .rerankerModules(rerankerModules != null ? rerankerModules : new ArrayList<>())
+        .generativeModules(generativeModules != null ? generativeModules : new ArrayList<>());
   }
 
   /** Create a copy of this {@code WeaviateCollection} and edit parts of it. */
@@ -62,7 +73,12 @@ public record CollectionConfig(
         builder.properties,
         builder.references,
         builder.vectors,
-        builder.invertedIndex);
+        builder.multiTenancy,
+        builder.sharding,
+        builder.replication,
+        builder.invertedIndex,
+        builder.rerankerModules,
+        builder.generativeModules);
   }
 
   public static class Builder implements ObjectBuilder<CollectionConfig> {
@@ -73,7 +89,12 @@ public record CollectionConfig(
     private List<Property> properties = new ArrayList<>();
     private List<ReferenceProperty> references = new ArrayList<>();
     private Map<String, VectorIndex> vectors = new HashMap<>();
+    private MultiTenancy multiTenancy;
+    private Sharding sharding;
+    private Replication replication;
     private InvertedIndex invertedIndex;
+    private List<Reranker> rerankerModules = new ArrayList<>();
+    private List<Generative> generativeModules = new ArrayList<>();
 
     public Builder(String collectionName) {
       this.collectionName = collectionName;
@@ -136,8 +157,61 @@ public record CollectionConfig(
       }
     }
 
+    public Builder sharding(Sharding sharding) {
+      this.sharding = sharding;
+      return this;
+    }
+
+    public Builder sharding(Function<Sharding.Builder, ObjectBuilder<Sharding>> fn) {
+      this.sharding = Sharding.of(fn);
+      return this;
+    }
+
+    public Builder multiTenancy(MultiTenancy multiTenancy) {
+      this.multiTenancy = multiTenancy;
+      return this;
+    }
+
+    public Builder multiTenancy(Function<MultiTenancy.Builder, ObjectBuilder<MultiTenancy>> fn) {
+      this.multiTenancy = MultiTenancy.of(fn);
+      return this;
+    }
+
+    public Builder replication(Replication replication) {
+      this.replication = replication;
+      return this;
+    }
+
+    public Builder replication(Function<Replication.Builder, ObjectBuilder<Replication>> fn) {
+      this.replication = Replication.of(fn);
+      return this;
+    }
+
+    public Builder invertedIndex(InvertedIndex invertedIndex) {
+      this.invertedIndex = invertedIndex;
+      return this;
+    }
+
     public Builder invertedIndex(Function<InvertedIndex.Builder, ObjectBuilder<InvertedIndex>> fn) {
       this.invertedIndex = InvertedIndex.of(fn);
+      return this;
+    }
+
+    public Builder rerankerModules(Reranker... rerankerModules) {
+      return rerankerModules(Arrays.asList(rerankerModules));
+    }
+
+    public Builder rerankerModules(List<Reranker> rerankerModules) {
+      this.rerankerModules.addAll(rerankerModules);
+      return this;
+    }
+
+    public Builder generativeModules(Generative... generativeModules) {
+      return generativeModules(Arrays.asList(generativeModules));
+    }
+
+    public Builder generativeModules(List<Generative> generativeModules) {
+      this.generativeModules.addAll(generativeModules);
       return this;
     }
 
@@ -164,9 +238,31 @@ public record CollectionConfig(
         public void write(JsonWriter out, CollectionConfig value) throws IOException {
           var jsonObject = delegate.toJsonTree(value).getAsJsonObject();
 
+          // References must be merged with properties.
           var references = jsonObject.remove("references").getAsJsonArray();
           var properties = jsonObject.get("properties").getAsJsonArray();
           properties.addAll(references);
+
+          // Reranker and Generative module configs belong to the "moduleConfig".
+          var rerankerModules = jsonObject.remove("rerankerModules").getAsJsonArray();
+          var generativeModules = jsonObject.remove("generativeModules").getAsJsonArray();
+          if (!rerankerModules.isEmpty() && !generativeModules.isEmpty()) {
+            var modules = new JsonObject();
+
+            // Copy configuration for each reranker module.
+            rerankerModules.forEach(reranker -> {
+              reranker.getAsJsonObject().entrySet()
+                  .stream().forEach(entry -> modules.add(entry.getKey(), entry.getValue()));
+            });
+
+            // Copy configuration for each generative module.
+            generativeModules.forEach(generative -> {
+              generative.getAsJsonObject().entrySet()
+                  .stream().forEach(entry -> modules.add(entry.getKey(), entry.getValue()));
+            });
+
+            jsonObject.add("moduleConfig", modules);
+          }
 
           Streams.write(jsonObject, out);
         }
@@ -194,6 +290,28 @@ public record CollectionConfig(
           if (!jsonObject.has("vectorConfig")) {
             jsonObject.add("vectorConfig", new JsonObject());
           }
+
+          // Separate modules into reranker- and generative- modules.
+          var rerankerModules = new JsonArray();
+          var generativeModules = new JsonArray();
+          if (jsonObject.has("moduleConfig")) {
+            var moduleConfig = jsonObject.remove("moduleConfig").getAsJsonObject();
+
+            moduleConfig.entrySet().stream()
+                .forEach(entry -> {
+                  var module = new JsonObject();
+                  var name = entry.getKey();
+                  module.add(name, entry.getValue());
+
+                  if (name.startsWith("reranker-")) {
+                    rerankerModules.add(module);
+                  } else if (name.startsWith("generative-")) {
+                    generativeModules.add(module);
+                  }
+                });
+          }
+          jsonObject.add("rerankerModules", rerankerModules);
+          jsonObject.add("generativeModules", generativeModules);
 
           return delegate.fromJsonTree(jsonObject);
         }
