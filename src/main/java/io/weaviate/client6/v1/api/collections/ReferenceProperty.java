@@ -5,10 +5,10 @@ import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
 public record ReferenceProperty(
-    @SerializedName("name") String name,
+    @SerializedName("name") String propertyName,
     @SerializedName("dataType") List<String> dataTypes) {
 
   public Property toProperty() {
-    return new Property(name, dataTypes);
+    return new Property.Builder(propertyName, dataTypes).build();
   }
 }

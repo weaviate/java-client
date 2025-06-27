@@ -24,25 +24,25 @@ public class WeaviateCollectionsClient {
     return new CollectionHandle<>(restTransport, grpcTransport, CollectionDescriptor.ofMap(collectionName));
   }
 
-  public WeaviateCollection create(String name) throws IOException {
-    return create(WeaviateCollection.of(name));
+  public CollectionConfig create(String name) throws IOException {
+    return create(CollectionConfig.of(name));
   }
 
-  public WeaviateCollection create(String name,
-      Function<WeaviateCollection.Builder, ObjectBuilder<WeaviateCollection>> fn) throws IOException {
-    return create(WeaviateCollection.of(name, fn));
+  public CollectionConfig create(String name,
+      Function<CollectionConfig.Builder, ObjectBuilder<CollectionConfig>> fn) throws IOException {
+    return create(CollectionConfig.of(name, fn));
   }
 
-  public WeaviateCollection create(WeaviateCollection collection) throws IOException {
+  public CollectionConfig create(CollectionConfig collection) throws IOException {
     return this.restTransport.performRequest(new CreateCollectionRequest(collection),
         CreateCollectionRequest._ENDPOINT);
   }
 
-  public Optional<WeaviateCollection> getConfig(String name) throws IOException {
+  public Optional<CollectionConfig> getConfig(String name) throws IOException {
     return this.restTransport.performRequest(new GetConfigRequest(name), GetConfigRequest._ENDPOINT);
   }
 
-  public List<WeaviateCollection> list() throws IOException {
+  public List<CollectionConfig> list() throws IOException {
     return this.restTransport.performRequest(new ListCollectionRequest(), ListCollectionRequest._ENDPOINT);
   }
 
@@ -52,7 +52,7 @@ public class WeaviateCollectionsClient {
 
   public void deleteAll() throws IOException {
     for (var collection : list()) {
-      delete(collection.name());
+      delete(collection.collectionName());
     }
   }
 

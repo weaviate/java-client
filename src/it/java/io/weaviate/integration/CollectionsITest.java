@@ -8,9 +8,11 @@ import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
+import io.weaviate.client6.v1.api.collections.CollectionConfig;
+import io.weaviate.client6.v1.api.collections.InvertedIndex;
 import io.weaviate.client6.v1.api.collections.Property;
+import io.weaviate.client6.v1.api.collections.Replication;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
-import io.weaviate.client6.v1.api.collections.WeaviateCollection;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer;
 import io.weaviate.containers.Container;
@@ -29,8 +31,8 @@ public class CollectionsITest extends ConcurrentTest {
     var thingsCollection = client.collections.getConfig(collectionName);
 
     Assertions.assertThat(thingsCollection).get()
-        .hasFieldOrPropertyWithValue("name", collectionName)
-        .extracting(WeaviateCollection::vectors, InstanceOfAssertFactories.map(String.class, VectorIndex.class))
+        .hasFieldOrPropertyWithValue("collectionName", collectionName)
+        .extracting(CollectionConfig::vectors, InstanceOfAssertFactories.map(String.class, VectorIndex.class))
         .as("default vector").extractingByKey("default")
         .satisfies(defaultVector -> {
           Assertions.assertThat(defaultVector).extracting(VectorIndex::vectorizer)
@@ -61,7 +63,7 @@ public class CollectionsITest extends ConcurrentTest {
         .as("after create Things").get()
         .satisfies(c -> {
           Assertions.assertThat(c.references())
-              .as("ownedBy").filteredOn(p -> p.name().equals("ownedBy")).first()
+              .as("ownedBy").filteredOn(p -> p.propertyName().equals("ownedBy")).first()
               .extracting(p -> p.dataTypes(), InstanceOfAssertFactories.LIST)
               .containsOnly(nsOwners);
         });
@@ -81,7 +83,7 @@ public class CollectionsITest extends ConcurrentTest {
         .as("after add property").get()
         .satisfies(c -> {
           Assertions.assertThat(c.references())
-              .as("soldIn").filteredOn(p -> p.name().equals("soldIn")).first()
+              .as("soldIn").filteredOn(p -> p.propertyName().equals("soldIn")).first()
               .extracting(p -> p.dataTypes(), InstanceOfAssertFactories.LIST)
               .containsOnly(nsOnlineStores, nsMarkets);
         });
@@ -105,7 +107,7 @@ public class CollectionsITest extends ConcurrentTest {
     var all = client.collections.list();
     Assertions.assertThat(all)
         .hasSizeGreaterThanOrEqualTo(3)
-        .extracting(WeaviateCollection::name)
+        .extracting(CollectionConfig::collectionName)
         .contains(nsA, nsB, nsC);
 
     client.collections.deleteAll();
@@ -113,5 +115,48 @@ public class CollectionsITest extends ConcurrentTest {
     all = client.collections.list();
     Assertions.assertThat(all.isEmpty());
 
+  }
+
+  @Test
+  public void testUpdateCollection() throws IOException {
+    var nsBoxes = ns("Boxes");
+    var nsThings = ns("Things");
+
+    client.collections.create(nsBoxes);
+
+    client.collections.create(nsThings,
+        collection -> collection
+            .description("Things stored in boxes")
+            .properties(
+                Property.text("name"),
+                Property.integer("width",
+                    w -> w.description("how wide this thing is")))
+            .invertedIndex(idx -> idx.cleanupIntervalSeconds(10))
+            .replication(repl -> repl.asyncEnabled(true)));
+
+    var things = client.collections.use(nsThings);
+
+    // Act
+    things.config.update(nsThings, collection -> collection
+        .description("Things stored on shelves")
+        .propertyDescription("width", "not height")
+        .invertedIndex(idx -> idx.cleanupIntervalSeconds(30))
+        .replication(repl -> repl.asyncEnabled(false)));
+
+    // Assert
+    var updated = things.config.get();
+    Assertions.assertThat(updated).get()
+        .returns("Things stored on shelves", CollectionConfig::description)
+        .satisfies(collection -> {
+          Assertions.assertThat(collection)
+              .extracting(CollectionConfig::properties, InstanceOfAssertFactories.list(Property.class))
+              .extracting(Property::description).contains("not height");
+
+          Assertions.assertThat(collection)
+              .extracting(CollectionConfig::invertedIndex).returns(30, InvertedIndex::cleanupIntervalSeconds);
+
+          Assertions.assertThat(collection)
+              .extracting(CollectionConfig::replication).returns(false, Replication::asyncEnabled);
+        });
   }
 }
