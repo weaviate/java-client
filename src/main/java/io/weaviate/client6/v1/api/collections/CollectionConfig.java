@@ -33,7 +33,7 @@ public record CollectionConfig(
     @SerializedName("replicationConfig") Replication replication,
     @SerializedName("invertedIndexConfig") InvertedIndex invertedIndex,
     List<Reranker> rerankerModules,
-    List<Generative> generativeModules) {
+    Generative generativeModule) {
 
   public static CollectionConfig of(String collectionName) {
     return of(collectionName, ObjectBuilder.identity());
@@ -58,7 +58,7 @@ public record CollectionConfig(
         .replication(replication)
         .invertedIndex(invertedIndex)
         .rerankerModules(rerankerModules != null ? rerankerModules : new ArrayList<>())
-        .generativeModules(generativeModules != null ? generativeModules : new ArrayList<>());
+        .generativeModule(generativeModule);
   }
 
   /** Create a copy of this {@code WeaviateCollection} and edit parts of it. */
@@ -78,7 +78,7 @@ public record CollectionConfig(
         builder.replication,
         builder.invertedIndex,
         builder.rerankerModules,
-        builder.generativeModules);
+        builder.generativeModule);
   }
 
   public static class Builder implements ObjectBuilder<CollectionConfig> {
@@ -94,7 +94,7 @@ public record CollectionConfig(
     private Replication replication;
     private InvertedIndex invertedIndex;
     private List<Reranker> rerankerModules = new ArrayList<>();
-    private List<Generative> generativeModules = new ArrayList<>();
+    private Generative generativeModule;
 
     public Builder(String collectionName) {
       this.collectionName = collectionName;
@@ -214,12 +214,8 @@ public record CollectionConfig(
       return this;
     }
 
-    public Builder generativeModules(Generative... generativeModules) {
-      return generativeModules(Arrays.asList(generativeModules));
-    }
-
-    public Builder generativeModules(List<Generative> generativeModules) {
-      this.generativeModules.addAll(generativeModules);
+    public Builder generativeModule(Generative generativeModule) {
+      this.generativeModule = generativeModule;
       return this;
     }
 
@@ -253,8 +249,8 @@ public record CollectionConfig(
 
           // Reranker and Generative module configs belong to the "moduleConfig".
           var rerankerModules = jsonObject.remove("rerankerModules").getAsJsonArray();
-          var generativeModules = jsonObject.remove("generativeModules").getAsJsonArray();
-          if (!rerankerModules.isEmpty() && !generativeModules.isEmpty()) {
+          var generativeModule = jsonObject.remove("generativeModule");
+          if (!rerankerModules.isEmpty() || !generativeModule.isJsonNull()) {
             var modules = new JsonObject();
 
             // Copy configuration for each reranker module.
@@ -264,10 +260,8 @@ public record CollectionConfig(
             });
 
             // Copy configuration for each generative module.
-            generativeModules.forEach(generative -> {
-              generative.getAsJsonObject().entrySet()
-                  .stream().forEach(entry -> modules.add(entry.getKey(), entry.getValue()));
-            });
+            generativeModule.getAsJsonObject().entrySet()
+                .stream().forEach(entry -> modules.add(entry.getKey(), entry.getValue()));
 
             jsonObject.add("moduleConfig", modules);
           }
@@ -301,7 +295,6 @@ public record CollectionConfig(
 
           // Separate modules into reranker- and generative- modules.
           var rerankerModules = new JsonArray();
-          var generativeModules = new JsonArray();
           if (jsonObject.has("moduleConfig")) {
             var moduleConfig = jsonObject.remove("moduleConfig").getAsJsonObject();
 
@@ -314,12 +307,11 @@ public record CollectionConfig(
                   if (name.startsWith("reranker-")) {
                     rerankerModules.add(module);
                   } else if (name.startsWith("generative-")) {
-                    generativeModules.add(module);
+                    jsonObject.add("generativeModule", module);
                   }
                 });
           }
           jsonObject.add("rerankerModules", rerankerModules);
-          jsonObject.add("generativeModules", generativeModules);
 
           return delegate.fromJsonTree(jsonObject);
         }

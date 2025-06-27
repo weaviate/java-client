@@ -93,13 +93,8 @@ public record UpdateCollectionRequest(CollectionConfig collection) {
       return this;
     }
 
-    public Builder generativeModules(Generative... generativeModules) {
-      this.newCollection.generativeModules(generativeModules);
-      return this;
-    }
-
-    public Builder generativeModules(List<Generative> generativeModules) {
-      this.newCollection.generativeModules(generativeModules);
+    public Builder generativeModule(Generative generativeModule) {
+      this.newCollection.generativeModule(generativeModule);
       return this;
     }
 
