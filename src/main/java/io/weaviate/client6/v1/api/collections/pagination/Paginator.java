@@ -1,6 +1,7 @@
 package io.weaviate.client6.v1.api.collections.pagination;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Function;
@@ -8,7 +9,10 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
+import io.weaviate.client6.v1.api.collections.query.FetchObjects;
+import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
+import io.weaviate.client6.v1.api.collections.query.QueryReference;
 import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClient;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
@@ -16,6 +20,7 @@ public class Paginator<T> implements Iterable<WeaviateObject<T, Object, QueryMet
   private static final int DEFAULT_PAGE_SIZE = 100;
 
   private final WeaviateQueryClient<T> query;
+  private final Function<FetchObjects.Builder, ObjectBuilder<FetchObjects>> queryOptions;
   private final int pageSize;
   private final String cursor;
 
@@ -30,7 +35,10 @@ public class Paginator<T> implements Iterable<WeaviateObject<T, Object, QueryMet
 
   public Spliterator<WeaviateObject<T, Object, QueryMetadata>> spliterator() {
     return new CursorSpliterator<T>(cursor, pageSize,
-        (after, limit) -> query.fetchObjects(q -> q.after(after).limit(limit)).objects());
+        (after, limit) -> {
+          var fn = ObjectBuilder.partial(queryOptions, q -> q.after(after).limit(limit));
+          return query.fetchObjects(fn).objects();
+        });
   }
 
   public static <T> Paginator<T> of(WeaviateQueryClient<T> query) {
@@ -44,6 +52,7 @@ public class Paginator<T> implements Iterable<WeaviateObject<T, Object, QueryMet
 
   Paginator(Builder<T> builder) {
     this.query = builder.query;
+    this.queryOptions = builder.queryOptions;
     this.cursor = builder.cursor;
     this.pageSize = builder.pageSize;
   }
@@ -51,12 +60,15 @@ public class Paginator<T> implements Iterable<WeaviateObject<T, Object, QueryMet
   public static class Builder<T> implements ObjectBuilder<Paginator<T>> {
     private final WeaviateQueryClient<T> query;
 
-    int pageSize = DEFAULT_PAGE_SIZE;
-    String cursor;
+    private Function<FetchObjects.Builder, ObjectBuilder<FetchObjects>> queryOptions = ObjectBuilder.identity();
+    private int pageSize = DEFAULT_PAGE_SIZE;
+    private String cursor;
 
     public Builder(WeaviateQueryClient<T> query) {
       this.query = query;
     }
+
+    // Pagination options -----------------------------------------------------
 
     public Builder<T> pageSize(int pageSize) {
       this.pageSize = pageSize;
@@ -65,6 +77,37 @@ public class Paginator<T> implements Iterable<WeaviateObject<T, Object, QueryMet
 
     public Builder<T> resumeFrom(String uuid) {
       this.cursor = uuid;
+      return this;
+    }
+
+    // Query options ----------------------------------------------------------
+
+    public final Builder<T> returnProperties(String... properties) {
+      return applyQueryOption(q -> q.returnProperties(properties));
+    }
+
+    public final Builder<T> returnProperties(List<String> properties) {
+      return applyQueryOption(q -> q.returnProperties(properties));
+    }
+
+    public final Builder<T> returnReferences(QueryReference... references) {
+      return applyQueryOption(q -> q.returnReferences(references));
+    }
+
+    public final Builder<T> returnReferences(List<QueryReference> references) {
+      return applyQueryOption(q -> q.returnReferences(references));
+    }
+
+    public final Builder<T> returnMetadata(Metadata... metadata) {
+      return applyQueryOption(q -> q.returnMetadata(metadata));
+    }
+
+    public final Builder<T> returnMetadata(List<Metadata> metadata) {
+      return applyQueryOption(q -> q.returnMetadata(metadata));
+    }
+
+    private final Builder<T> applyQueryOption(Function<FetchObjects.Builder, FetchObjects.Builder> options) {
+      this.queryOptions = ObjectBuilder.partial(this.queryOptions, options);
       return this;
     }
 

@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
+import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.WeaviateMetadata;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.containers.Container;
@@ -88,5 +89,32 @@ public class PaginationITest extends ConcurrentTest {
 
     // Assert
     Assertions.assertThat(remaining).isEqualTo(5);
+  }
+
+  @Test
+  public void testWithQueryOptions() throws IOException {
+    // Arrange
+    var nsThings = ns("Things");
+    var count = 10;
+
+    client.collections.create(nsThings,
+        c -> c.properties(
+            Property.text("fetch_me"),
+            Property.integer("dont_fetch")));
+
+    var things = client.collections.use(nsThings);
+    var inserted = new ArrayList<String>();
+    for (var i = 0; i < count; i++) {
+      var object = things.data.insert(Collections.emptyMap());
+      inserted.add(object.metadata().uuid());
+    }
+
+    // Act / Assert
+    var withSomeProperties = things.paginate(p -> p.returnProperties("fetch_me"));
+    for (var thing : withSomeProperties) {
+      Assertions.assertThat(thing.properties())
+          .as("uuid=" + thing.metadata().uuid())
+          .doesNotContainKey("dont_fetch");
+    }
   }
 }

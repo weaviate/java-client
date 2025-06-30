@@ -86,17 +86,29 @@ public record BaseQueryOptions(
     }
 
     public final SELF returnProperties(String... properties) {
-      this.returnProperties = Arrays.asList(properties);
+      return returnProperties(Arrays.asList(properties));
+    }
+
+    public final SELF returnProperties(List<String> properties) {
+      this.returnProperties.addAll(properties);
       return (SELF) this;
     }
 
     public final SELF returnReferences(QueryReference... references) {
-      this.returnReferences = Arrays.asList(references);
+      return returnReferences(Arrays.asList(references));
+    }
+
+    public final SELF returnReferences(List<QueryReference> references) {
+      this.returnReferences.addAll(references);
       return (SELF) this;
     }
 
     public final SELF returnMetadata(Metadata... metadata) {
-      this.returnMetadata = Arrays.asList(metadata);
+      return returnMetadata(metadata);
+    }
+
+    public final SELF returnMetadata(List<Metadata> metadata) {
+      this.returnMetadata.addAll(metadata);
       return (SELF) this;
     }
 
