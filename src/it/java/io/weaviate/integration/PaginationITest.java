@@ -143,7 +143,7 @@ public class PaginationITest extends ConcurrentTest {
 
       // Act
       var objectCount = new AtomicInteger();
-      var countAll = things.paginate(p -> p.pageSize(5))
+      var countAll = things.paginate(p -> p.pageSize(5).prefetch(true))
           .forEach(__ -> objectCount.getAndIncrement());
 
       // Assert

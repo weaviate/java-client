@@ -36,12 +36,12 @@ public class AsyncPaginator<PropertiesT> {
           return this.query.fetchObjects(fn).thenApply(QueryResponse::objects);
         });
 
-    this.resultSet = CompletableFuture.completedFuture(rs);
+    this.resultSet = builder.prefetch ? rs.fetchNextPage() : CompletableFuture.completedFuture(rs);
   }
 
   public CompletableFuture<Void> forEach(Consumer<WeaviateObject<PropertiesT, Object, QueryMetadata>> action) {
     return resultSet
-        .thenCompose(AsyncResultSet::fetchNextPage)
+        .thenCompose(rs -> rs.isEmpty() ? rs.fetchNextPage() : CompletableFuture.completedFuture(rs))
         .thenCompose(processPageAndAdvance(action));
   }
 
