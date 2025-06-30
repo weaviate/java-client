@@ -42,11 +42,27 @@ public class AsyncPaginator<PropertiesT> {
   public CompletableFuture<Void> forEach(Consumer<WeaviateObject<PropertiesT, Object, QueryMetadata>> action) {
     return resultSet
         .thenCompose(rs -> rs.isEmpty() ? rs.fetchNextPage() : CompletableFuture.completedFuture(rs))
+        .thenCompose(processEachAndAdvance(action));
+  }
+
+  public CompletableFuture<Void> forPage(Consumer<List<WeaviateObject<PropertiesT, Object, QueryMetadata>>> action) {
+    return resultSet
+        .thenCompose(rs -> rs.isEmpty() ? rs.fetchNextPage() : CompletableFuture.completedFuture(rs))
         .thenCompose(processPageAndAdvance(action));
   }
 
-  public Function<AsyncResultSet<PropertiesT>, CompletableFuture<Void>> processPageAndAdvance(
+  public Function<AsyncResultSet<PropertiesT>, CompletableFuture<Void>> processEachAndAdvance(
       Consumer<WeaviateObject<PropertiesT, Object, QueryMetadata>> action) {
+    return processAndAdvanceFunc(rs -> rs.forEach(action));
+  }
+
+  public Function<AsyncResultSet<PropertiesT>, CompletableFuture<Void>> processPageAndAdvance(
+      Consumer<List<WeaviateObject<PropertiesT, Object, QueryMetadata>>> action) {
+    return processAndAdvanceFunc(rs -> action.accept(rs.currentPage()));
+  }
+
+  public Function<AsyncResultSet<PropertiesT>, CompletableFuture<Void>> processAndAdvanceFunc(
+      Consumer<AsyncResultSet<PropertiesT>> action) {
     return rs -> {
       // Empty result set means there were no more objects to fetch.
       if (rs.isEmpty()) {
@@ -54,12 +70,10 @@ public class AsyncPaginator<PropertiesT> {
       }
 
       // Apply provided callback for each method -- consume current page.
-      for (var object : rs) {
-        action.accept(object);
-      }
+      action.accept(rs);
 
       // Advance iteration.
-      return rs.fetchNextPage().thenCompose(processPageAndAdvance(action));
+      return rs.fetchNextPage().thenCompose(processAndAdvanceFunc(action));
     };
   }
 

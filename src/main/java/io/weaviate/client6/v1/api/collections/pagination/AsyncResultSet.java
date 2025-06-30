@@ -31,7 +31,7 @@ public class AsyncResultSet<PropertiesT> implements Iterable<WeaviateObject<Prop
     this.currentPage = currentPage;
   }
 
-  public Iterable<WeaviateObject<PropertiesT, Object, QueryMetadata>> currentPage() {
+  public List<WeaviateObject<PropertiesT, Object, QueryMetadata>> currentPage() {
     return currentPage;
   }
 
