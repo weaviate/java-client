@@ -5,6 +5,8 @@ import static org.junit.Assume.assumeTrue;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -115,6 +117,29 @@ public class PaginationITest extends ConcurrentTest {
       Assertions.assertThat(thing.properties())
           .as("uuid=" + thing.metadata().uuid())
           .doesNotContainKey("dont_fetch");
+    }
+  }
+
+  @Test
+  public void testStreamAsync() throws IOException, InterruptedException, ExecutionException {
+    // Arrange
+    var nsThings = ns("Things");
+    var count = 10;
+
+    client.collections.create(nsThings);
+
+    try (final var async = client.async()) {
+      var things = async.collections.use(nsThings);
+
+      var futures = new CompletableFuture<?>[count];
+      var inserted = new ArrayList<String>();
+      for (var i = 0; i < count; i++) {
+        futures[i] = things.data.insert(Collections.emptyMap())
+            .thenAccept(object -> inserted.add(object.metadata().uuid()));
+      }
+      CompletableFuture.allOf(futures).get();
+
+      var asyncPaginator = things.paginate();
     }
   }
 }

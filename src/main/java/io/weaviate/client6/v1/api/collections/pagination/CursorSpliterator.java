@@ -59,6 +59,6 @@ public class CursorSpliterator<T> implements Spliterator<WeaviateObject<T, Objec
 
   @Override
   public int characteristics() {
-    return ORDERED | NONNULL;
+    return ORDERED | DISTINCT | NONNULL;
   }
 }

@@ -24,4 +24,7 @@ public class CollectionHandleAsync<T> {
     this.query = new WeaviateQueryClientAsync<>(collectionDescriptor, grpcTransport);
     this.aggregate = new WeaviateAggregateClientAsync(collectionDescriptor, grpcTransport);
   }
+
+  public void paginate() {
+  }
 }
