@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.assertj.core.api.Assertions;
+import org.junit.Assume;
 import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
@@ -121,7 +123,7 @@ public class PaginationITest extends ConcurrentTest {
   }
 
   @Test
-  public void testStreamAsync() throws IOException, InterruptedException, ExecutionException {
+  public void testAsyncPaginator() throws IOException, InterruptedException, ExecutionException {
     // Arrange
     var nsThings = ns("Things");
     var count = 10;
@@ -139,7 +141,20 @@ public class PaginationITest extends ConcurrentTest {
       }
       CompletableFuture.allOf(futures).get();
 
-      var asyncPaginator = things.paginate();
+      // Act
+      var objectCount = new AtomicInteger();
+      var countAll = things.paginate(p -> p.pageSize(5))
+          .forEach(__ -> objectCount.getAndIncrement());
+
+      // Assert
+      if (!countAll.isDone()) {
+        Assume.assumeTrue("iteration not completed", objectCount.get() < count);
+      }
+
+      countAll.get(); // Wait for it to complete.
+      Assertions.assertThat(objectCount.get())
+          .as("object count after iteration completed")
+          .isEqualTo(count);
     }
   }
 }
