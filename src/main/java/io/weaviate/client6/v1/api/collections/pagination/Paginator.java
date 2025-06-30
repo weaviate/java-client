@@ -17,7 +17,7 @@ import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClient;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public class Paginator<T> implements Iterable<WeaviateObject<T, Object, QueryMetadata>> {
-  private static final int DEFAULT_PAGE_SIZE = 100;
+  static final int DEFAULT_PAGE_SIZE = 100;
 
   private final WeaviateQueryClient<T> query;
   private final Function<FetchObjects.Builder, ObjectBuilder<FetchObjects>> queryOptions;
@@ -116,5 +116,4 @@ public class Paginator<T> implements Iterable<WeaviateObject<T, Object, QueryMet
       return new Paginator<>(this);
     }
   }
-
 }
