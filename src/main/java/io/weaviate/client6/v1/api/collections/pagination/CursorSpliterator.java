@@ -1,4 +1,4 @@
-package io.weaviate.client6.v1.api.collections;
+package io.weaviate.client6.v1.api.collections.pagination;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -7,10 +7,11 @@ import java.util.Spliterator;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 
-class CursorSpliterator<T> implements Spliterator<WeaviateObject<T, Object, QueryMetadata>> {
-  private final int batchSize;
+public class CursorSpliterator<T> implements Spliterator<WeaviateObject<T, Object, QueryMetadata>> {
+  private final int pageSize;
   private final BiFunction<String, Integer, List<WeaviateObject<T, Object, QueryMetadata>>> fetch;
 
   // Spliterators do not promise thread-safety, so there's no mechanism
@@ -18,9 +19,10 @@ class CursorSpliterator<T> implements Spliterator<WeaviateObject<T, Object, Quer
   private String cursor;
   private Iterator<WeaviateObject<T, Object, QueryMetadata>> currentPage = Collections.emptyIterator();
 
-  public CursorSpliterator(int batchSize,
+  public CursorSpliterator(String cursor, int pageSize,
       BiFunction<String, Integer, List<WeaviateObject<T, Object, QueryMetadata>>> fetch) {
-    this.batchSize = batchSize;
+    this.cursor = cursor;
+    this.pageSize = pageSize;
     this.fetch = fetch;
   }
 
@@ -33,7 +35,7 @@ class CursorSpliterator<T> implements Spliterator<WeaviateObject<T, Object, Quer
     }
 
     // It's OK for the cursor to be null, because it's String (object).
-    var nextPage = fetch.apply(cursor, batchSize);
+    var nextPage = fetch.apply(cursor, pageSize);
     if (nextPage.isEmpty()) {
       return false;
     }
