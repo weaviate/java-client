@@ -19,10 +19,10 @@ public class PaginationITest extends ConcurrentTest {
   private static WeaviateClient client = Container.WEAVIATE.getClient();
 
   @Test
-  public void test_stream() throws IOException {
+  public void testIterateAll() throws IOException {
     // Arrange
     var nsThings = ns("Things");
-    var count = 10;
+    var count = 150;
 
     client.collections.create(nsThings);
     var things = client.collections.use(nsThings);
@@ -34,8 +34,10 @@ public class PaginationITest extends ConcurrentTest {
     }
     assumeTrue("all objects were inserted", inserted.size() == count);
 
+    var allThings = things.paginate();
+
     // Act: stream
-    var gotStream = things.stream()
+    var gotStream = allThings.stream()
         .map(WeaviateObject::metadata).map(WeaviateMetadata::uuid).toList();
 
     // Assert
@@ -44,20 +46,47 @@ public class PaginationITest extends ConcurrentTest {
         .hasSize(inserted.size())
         .containsAll(inserted);
 
-    // Act: list
-    var gotList = new ArrayList<String>();
-    for (var object : things.list()) {
-      gotList.add(object.metadata().uuid());
+    // Act: for-loop
+    var gotLoop = new ArrayList<String>();
+    for (var thing : allThings) {
+      gotLoop.add(thing.metadata().uuid());
     }
 
     // Assert
-    Assertions.assertThat(gotList)
+    Assertions.assertThat(gotLoop)
         .as("list fetched all objects")
         .hasSize(inserted.size())
         .containsAll(inserted);
 
     Assertions.assertThat(gotStream)
         .as("stream and list return consistent order")
-        .containsExactlyElementsOf(gotList);
+        .containsExactlyElementsOf(gotLoop);
+  }
+
+  @Test
+  public void testResumePagination() throws IOException {
+    // Arrange
+    var nsThings = ns("Things");
+    var count = 10;
+
+    client.collections.create(nsThings);
+
+    var things = client.collections.use(nsThings);
+    var inserted = new ArrayList<String>();
+    for (var i = 0; i < count; i++) {
+      var object = things.data.insert(Collections.emptyMap());
+      inserted.add(object.metadata().uuid());
+    }
+
+    // Iterate over first 5 objects
+    String lastId = things.paginate(p -> p.pageSize(5)).stream()
+        .limit(5).map(thing -> thing.metadata().uuid())
+        .reduce((prev, next) -> next).get();
+
+    // Act
+    var remaining = things.paginate(p -> p.resumeFrom(lastId)).stream().count();
+
+    // Assert
+    Assertions.assertThat(remaining).isEqualTo(5);
   }
 }
