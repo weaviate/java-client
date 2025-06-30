@@ -104,7 +104,7 @@ public record BaseQueryOptions(
     }
 
     public final SELF returnMetadata(Metadata... metadata) {
-      return returnMetadata(metadata);
+      return returnMetadata(Arrays.asList(metadata));
     }
 
     public final SELF returnMetadata(List<Metadata> metadata) {
