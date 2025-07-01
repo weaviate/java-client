@@ -4,7 +4,7 @@ import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.query.Where;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
-import io.weaviate.client6.v1.internal.grpc.GRPC;
+import io.weaviate.client6.v1.internal.grpc.ByteStringUtil;
 import io.weaviate.client6.v1.internal.grpc.Rpc;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateBlockingStub;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateFutureStub;
@@ -39,7 +39,7 @@ public record DeleteManyRequest(Where where, Boolean verbose, Boolean dryRun) {
               var objects = reply.getObjectsList()
                   .stream()
                   .map(obj -> new DeleteManyResponse.DeletedObject(
-                      GRPC.byteStringToUuid(obj.getUuid()).toString(),
+                      ByteStringUtil.decodeUuid(obj.getUuid()).toString(),
                       obj.getSuccessful(),
                       obj.getError()))
                   .toList();
