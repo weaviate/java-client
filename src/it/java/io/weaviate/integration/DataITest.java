@@ -13,10 +13,12 @@ import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
+import io.weaviate.client6.v1.api.collections.data.DeleteManyResponse;
 import io.weaviate.client6.v1.api.collections.data.Reference;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.api.collections.query.QueryReference;
+import io.weaviate.client6.v1.api.collections.query.Where;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer;
 import io.weaviate.containers.Container;
@@ -270,5 +272,54 @@ public class DataITest extends ConcurrentTest {
               .extracting(QueryMetadata::vectors)
               .returns(vector, Vectors::getDefaultSingle);
         });
+  }
+
+  @Test
+  public void testDeleteMany() throws IOException {
+    // Arrange
+    var nsThings = ns("Things");
+
+    client.collections.create(nsThings,
+        collection -> collection
+            .properties(Property.integer("last_used")));
+
+    var things = client.collections.use(nsThings);
+    things.data.insert(Map.of("last_used", 1));
+    var delete_1 = things.data.insert(Map.of("last_used", 5)).metadata().uuid();
+    var delete_2 = things.data.insert(Map.of("last_used", 9)).metadata().uuid();
+
+    // Act (dry run)
+    things.data.deleteMany(
+        Where.property("last_used").gte(4),
+        opt -> opt.dryRun(true));
+
+    // Assert
+    Assertions.assertThat(things.data.exists(delete_1)).as("#1 exists").isTrue();
+    Assertions.assertThat(things.data.exists(delete_2)).as("#2 exists").isTrue();
+
+    // Act (live run)
+    var deleted = things.data.deleteMany(
+        Where.property("last_used").gte(4),
+        opt -> opt.verbose(true));
+
+    // Assert
+    Assertions.assertThat(deleted)
+        .returns(2L, DeleteManyResponse::matches)
+        .returns(2L, DeleteManyResponse::successful)
+        .returns(0L, DeleteManyResponse::failed)
+        .extracting(DeleteManyResponse::objects, InstanceOfAssertFactories.list(DeleteManyResponse.DeletedObject.class))
+        .extracting(DeleteManyResponse.DeletedObject::uuid)
+        .containsOnly(delete_1, delete_2);
+
+    var count = things.aggregate.overAll(
+        cnt -> cnt
+            .objectLimit(100)
+            .includeTotalCount(true))
+        .totalCount();
+
+    Assertions.assertThat(count)
+        .as("one object remaining")
+        .isEqualTo(1);
+
   }
 }

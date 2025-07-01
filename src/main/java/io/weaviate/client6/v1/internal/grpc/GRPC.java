@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.Arrays;
+import java.util.UUID;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -11,6 +12,14 @@ import com.google.protobuf.ByteString;
 
 public class GRPC {
   private static final ByteOrder BYTE_ORDER = ByteOrder.LITTLE_ENDIAN;
+
+  /** Decode ByteString to UUID. */
+  public static UUID byteStringToUuid(ByteString bs) {
+    var buf = ByteBuffer.wrap(bs.toByteArray());
+    var most = buf.getLong();
+    var least = buf.getLong();
+    return new UUID(most, least);
+  }
 
   /** Encode Float[] to ByteString. */
   public static ByteString toByteString(Float[] vector) {
