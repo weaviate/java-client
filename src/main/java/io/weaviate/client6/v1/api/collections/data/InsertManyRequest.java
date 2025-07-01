@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.google.protobuf.util.JsonFormat;
-
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.internal.grpc.ByteStringUtil;
