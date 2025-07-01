@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -25,6 +26,11 @@ public record WeaviateObject<P, R, M extends WeaviateMetadata>(
     P properties,
     Map<String, List<R>> references,
     M metadata) {
+
+  public static <P, R, M extends WeaviateMetadata> WeaviateObject<P, R, M> of(
+      Function<Builder<P, R, M>, ObjectBuilder<WeaviateObject<P, R, M>>> fn) {
+    return fn.apply(new Builder<>()).build();
+  }
 
   public WeaviateObject(Builder<P, R, M> builder) {
     this(builder.collection, builder.properties, builder.references, builder.metadata);

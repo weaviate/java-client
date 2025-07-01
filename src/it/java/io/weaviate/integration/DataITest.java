@@ -322,4 +322,28 @@ public class DataITest extends ConcurrentTest {
         .isEqualTo(1);
 
   }
+
+  @Test
+  public void testInsertMany() throws IOException {
+    // Arrange
+    var nsThings = ns("Things");
+
+    client.collections.create(nsThings);
+
+    var things = client.collections.use(nsThings);
+
+    // Act
+    things.data.insertMany(Map.of(), Map.of(), Map.of(), Map.of(), Map.of());
+
+    // Assert
+    var count = things.aggregate.overAll(
+        cnt -> cnt
+            .objectLimit(100)
+            .includeTotalCount(true))
+        .totalCount();
+
+    Assertions.assertThat(count)
+        .as("collection has 5 objects")
+        .isEqualTo(5);
+  }
 }

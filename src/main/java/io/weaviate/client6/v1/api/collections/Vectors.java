@@ -104,6 +104,10 @@ public class Vectors {
     return getMulti(VectorIndex.DEFAULT_VECTOR_NAME);
   }
 
+  public Map<String, Object> asMap() {
+    return Map.copyOf(namedVectors);
+  }
+
   public static enum CustomTypeAdapterFactory implements TypeAdapterFactory {
     INSTANCE;
 
