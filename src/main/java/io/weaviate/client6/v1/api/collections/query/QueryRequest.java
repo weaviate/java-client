@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
-import io.weaviate.client6.v1.internal.grpc.GRPC;
+import io.weaviate.client6.v1.internal.grpc.ByteStringUtil;
 import io.weaviate.client6.v1.internal.grpc.Rpc;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateBlockingStub;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateFutureStub;
@@ -153,10 +153,10 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
         var vectorName = vector.getName();
         switch (vector.getType()) {
           case VECTOR_TYPE_SINGLE_FP32:
-            vectors.vector(vectorName, GRPC.fromByteString(vector.getVectorBytes()));
+            vectors.vector(vectorName, ByteStringUtil.decodeVectorSingle(vector.getVectorBytes()));
             break;
           case VECTOR_TYPE_MULTI_FP32:
-            vectors.vector(vectorName, GRPC.fromByteStringMulti(vector.getVectorBytes()));
+            vectors.vector(vectorName, ByteStringUtil.decodeVectorMulti(vector.getVectorBytes()));
             break;
           default:
             continue;
