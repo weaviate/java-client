@@ -1,6 +1,7 @@
 package io.weaviate.client6.v1.internal.grpc;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.Test;
 
@@ -44,5 +45,13 @@ public class GRPCTest {
     Float[][] want = { { 1f, 2f, 3f }, { 4f, 5f, 6f } };
     Float[][] got = GRPC.fromByteStringMulti(ByteString.copyFrom(bytes));
     assertArrayEquals(want, got);
+  }
+
+  @Test
+  public void test_byteStringToUuid() {
+    byte[] bytes = { 38, 19, -74, 24, -114, -19, 73, 43, -112, -60, 47, 96, 83, -89, -35, -23 };
+    String want = "2613b618-8eed-492b-90c4-2f6053a7dde9";
+    String got = GRPC.byteStringToUuid(ByteString.copyFrom(bytes)).toString();
+    assertEquals(want, got);
   }
 }
