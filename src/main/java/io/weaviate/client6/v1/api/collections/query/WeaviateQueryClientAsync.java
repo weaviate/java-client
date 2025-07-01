@@ -11,28 +11,28 @@ public class WeaviateQueryClientAsync<T>
     extends
     AbstractQueryClient<T, CompletableFuture<Optional<WeaviateObject<T, Object, QueryMetadata>>>, CompletableFuture<QueryResponse<T>>, CompletableFuture<QueryResponseGrouped<T>>> {
 
-  public WeaviateQueryClientAsync(CollectionDescriptor<T> collection, GrpcTransport transport) {
-    super(collection, transport);
+  public WeaviateQueryClientAsync(CollectionDescriptor<T> collection, GrpcTransport grpcTransport) {
+    super(collection, grpcTransport);
   }
 
   @Override
   protected CompletableFuture<Optional<WeaviateObject<T, Object, QueryMetadata>>> byId(
       ById byId) {
     var request = new QueryRequest(byId, null);
-    var result = this.transport.performRequestAsync(request, QueryRequest.rpc(collection));
+    var result = this.grpcTransport.performRequestAsync(request, QueryRequest.rpc(collection));
     return result.thenApply(r -> optionalFirst(r.objects()));
   }
 
   @Override
   protected final CompletableFuture<QueryResponse<T>> performRequest(QueryOperator operator) {
     var request = new QueryRequest(operator, null);
-    return this.transport.performRequestAsync(request, QueryRequest.rpc(collection));
+    return this.grpcTransport.performRequestAsync(request, QueryRequest.rpc(collection));
   }
 
   @Override
   protected final CompletableFuture<QueryResponseGrouped<T>> performRequest(QueryOperator operator, GroupBy groupBy) {
     var request = new QueryRequest(operator, groupBy);
-    return this.transport.performRequestAsync(request, QueryRequest.grouped(collection));
+    return this.grpcTransport.performRequestAsync(request, QueryRequest.grouped(collection));
   }
 
 }
