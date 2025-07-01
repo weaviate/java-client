@@ -1,5 +1,6 @@
 package io.weaviate.client6.v1.api.collections;
 
+import java.util.UUID;
 import java.util.function.Function;
 
 import com.google.gson.annotations.SerializedName;
@@ -23,6 +24,10 @@ public record ObjectMetadata(
   public static class Builder implements ObjectBuilder<ObjectMetadata> {
     private String uuid;
     private Vectors vectors;
+
+    public Builder uuid(UUID uuid) {
+      return uuid(uuid.toString());
+    }
 
     public Builder uuid(String uuid) {
       this.uuid = uuid;

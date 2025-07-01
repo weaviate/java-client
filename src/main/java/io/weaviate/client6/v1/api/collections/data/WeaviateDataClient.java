@@ -2,6 +2,7 @@ package io.weaviate.client6.v1.api.collections.data;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
@@ -38,6 +39,19 @@ public class WeaviateDataClient<T> {
       Function<InsertObjectRequest.Builder<T>, ObjectBuilder<InsertObjectRequest<T>>> fn)
       throws IOException {
     return insert(InsertObjectRequest.of(collectionDescriptor.name(), properties, fn));
+  }
+
+  @SafeVarargs
+  public final InsertManyResponse insertMany(T... objects) {
+    return insertMany(InsertManyRequest.of(objects));
+  }
+
+  public InsertManyResponse insertMany(List<WeaviateObject<T, Reference, ObjectMetadata>> objects) {
+    return insertMany(new InsertManyRequest<>(objects));
+  }
+
+  public InsertManyResponse insertMany(InsertManyRequest<T> request) {
+    return this.grpcTransport.performRequest(request, InsertManyRequest.rpc(request.objects(), collectionDescriptor));
   }
 
   public WeaviateObject<T, Object, ObjectMetadata> insert(InsertObjectRequest<T> request) throws IOException {
