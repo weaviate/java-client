@@ -114,6 +114,16 @@ public class WeaviateDataClientAsync<T> {
     });
   }
 
+  public CompletableFuture<ReferenceAddManyResponse> referenceAddMany(BatchReference... references) throws IOException {
+    return referenceAddMany(Arrays.asList(references));
+  }
+
+  public CompletableFuture<ReferenceAddManyResponse> referenceAddMany(List<BatchReference> references)
+      throws IOException {
+    return this.restTransport.performRequestAsync(new ReferenceAddManyRequest(references),
+        ReferenceAddManyRequest.endpoint(references));
+  }
+
   public CompletableFuture<Void> referenceDelete(String fromUuid, String fromProperty, Reference reference) {
     return forEachAsync(reference.uuids(), uuid -> {
       var singleRef = new Reference(reference.collection(), (String) uuid);
