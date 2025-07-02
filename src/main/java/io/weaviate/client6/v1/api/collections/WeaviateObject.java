@@ -27,6 +27,16 @@ public record WeaviateObject<P, R, M extends WeaviateMetadata>(
     Map<String, List<R>> references,
     M metadata) {
 
+  /** Shorthand for accesing objects's UUID from metadata. */
+  public String uuid() {
+    return metadata.uuid();
+  }
+
+  /** Shorthand for accesing objects's vectors from metadata. */
+  public Vectors vectors() {
+    return metadata.vectors();
+  }
+
   public static <P, R, M extends WeaviateMetadata> WeaviateObject<P, R, M> of(
       Function<Builder<P, R, M>, ObjectBuilder<WeaviateObject<P, R, M>>> fn) {
     return fn.apply(new Builder<>()).build();

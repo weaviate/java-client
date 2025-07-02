@@ -108,6 +108,15 @@ public class WeaviateDataClient<T> {
     }
   }
 
+  public ReferenceAddManyResponse referenceAddMany(BatchReference... references) throws IOException {
+    return referenceAddMany(Arrays.asList(references));
+  }
+
+  public ReferenceAddManyResponse referenceAddMany(List<BatchReference> references) throws IOException {
+    return this.restTransport.performRequest(new ReferenceAddManyRequest(references),
+        ReferenceAddManyRequest.endpoint(references));
+  }
+
   public void referenceDelete(String fromUuid, String fromProperty, Reference reference) throws IOException {
     for (var uuid : reference.uuids()) {
       var singleRef = new Reference(reference.collection(), uuid);
