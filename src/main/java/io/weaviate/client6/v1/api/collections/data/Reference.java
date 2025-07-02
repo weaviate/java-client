@@ -44,6 +44,22 @@ public record Reference(String collection, List<String> uuids) {
     return new Reference(collection, Arrays.asList(uuids));
   }
 
+  public static String toBeacon(String collection, String uuid) {
+    return toBeacon(collection, null, uuid);
+  }
+
+  public static String toBeacon(String collection, String property, String uuid) {
+    var beacon = "weaviate://localhost";
+    if (collection != null) {
+      beacon += "/" + collection;
+    }
+    beacon += "/" + uuid;
+    if (property != null) {
+      beacon += "/" + property;
+    }
+    return beacon;
+  }
+
   public static final TypeAdapter<Reference> TYPE_ADAPTER = new TypeAdapter<Reference>() {
 
     @Override
@@ -51,14 +67,7 @@ public record Reference(String collection, List<String> uuids) {
       for (var uuid : value.uuids()) {
         out.beginObject();
         out.name("beacon");
-
-        var beacon = "weaviate://localhost";
-        if (value.collection() != null) {
-          beacon += "/" + value.collection();
-        }
-        beacon += "/" + uuid;
-
-        out.value(beacon);
+        out.value(toBeacon(value.collection(), uuid));
         out.endObject();
       }
     }

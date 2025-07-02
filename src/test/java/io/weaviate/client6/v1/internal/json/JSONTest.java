@@ -23,7 +23,9 @@ import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
+import io.weaviate.client6.v1.api.collections.data.BatchReference;
 import io.weaviate.client6.v1.api.collections.data.Reference;
+import io.weaviate.client6.v1.api.collections.data.ReferenceAddManyResponse;
 import io.weaviate.client6.v1.api.collections.rerankers.CohereReranker;
 import io.weaviate.client6.v1.api.collections.vectorindex.Distance;
 import io.weaviate.client6.v1.api.collections.vectorindex.Flat;
@@ -289,6 +291,17 @@ public class JSONTest {
                 }
                   """,
         },
+        {
+            BatchReference.class,
+            new BatchReference("FromCollection", "fromProperty", "from-uuid",
+                Reference.collection("ToCollection", "to-uuid")),
+            """
+                {
+                  "from": "weaviate://localhost/FromCollection/from-uuid/fromProperty",
+                  "to": "weaviate://localhost/ToCollection/to-uuid"
+                }
+                  """,
+        },
     };
   }
 
@@ -345,5 +358,27 @@ public class JSONTest {
         .withEqualsForType(Arrays::equals, Float[].class)
         .withEqualsForType(Arrays::deepEquals, Float[][].class)
         .isEqualTo(want);
+  }
+
+  @Test
+  public void test_ReferenceAddManyResponse_CustomDeserializer() {
+    var json = """
+        [
+          {
+            "result": { "status": "SUCCESS", "errors": {} }
+          },
+          {
+            "result": { "status": "FAILED", "errors": {
+              "error": [ "oops" ]
+            }}
+          }
+        ]
+          """;
+
+    var got = JSON.deserialize(json, ReferenceAddManyResponse.class);
+
+    Assertions.assertThat(got.errors())
+        .as("response contains 1 error")
+        .hasSize(1);
   }
 }

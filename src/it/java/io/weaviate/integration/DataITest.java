@@ -13,6 +13,7 @@ import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
+import io.weaviate.client6.v1.api.collections.data.BatchReference;
 import io.weaviate.client6.v1.api.collections.data.DeleteManyResponse;
 import io.weaviate.client6.v1.api.collections.data.Reference;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
@@ -345,5 +346,45 @@ public class DataITest extends ConcurrentTest {
     Assertions.assertThat(count)
         .as("collection has 5 objects")
         .isEqualTo(5);
+  }
+
+  @Test
+  public void testReferenceAddMany() throws IOException {
+    // Arrange
+    var nsCities = ns("Cities");
+    var nsAirports = ns("Airports");
+
+    client.collections.create(nsAirports);
+    client.collections.create(nsCities, c -> c
+        .references(Property.reference("hasAirports", nsAirports)));
+
+    var airports = client.collections.use(nsAirports);
+    var cities = client.collections.use(nsCities);
+
+    var alpha = airports.data.insert(Map.of()).uuid();
+    var goodburg = cities.data.insert(Map.of(), city -> city
+        .reference("hasAirports", Reference.uuids(alpha)));
+
+    // Act
+    var newAirports = airports.data.insertMany(Map.of(), Map.of());
+    var bravo = newAirports.responses().get(0).uuid();
+    var charlie = newAirports.responses().get(1).uuid();
+
+    var response = cities.data.referenceAddMany(BatchReference.uuids(goodburg, "hasAirports", bravo, charlie));
+
+    // Assert
+    Assertions.assertThat(response.errors()).isEmpty();
+
+    var goodburgAirports = cities.query.byId(goodburg.metadata().uuid(),
+        city -> city.returnReferences(
+            QueryReference.single("hasAirports",
+                airport -> airport.returnMetadata(Metadata.ID))));
+
+    Assertions.assertThat(goodburgAirports).get()
+        .as("Goodburg has 3 airports")
+        .extracting(WeaviateObject::references)
+        .extracting(references -> references.get("hasAirports"), InstanceOfAssertFactories.list(WeaviateObject.class))
+        .extracting(WeaviateObject::uuid)
+        .contains(alpha, bravo, charlie);
   }
 }
