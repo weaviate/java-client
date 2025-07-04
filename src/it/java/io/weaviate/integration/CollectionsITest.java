@@ -13,6 +13,8 @@ import io.weaviate.client6.v1.api.collections.InvertedIndex;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.Replication;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
+import io.weaviate.client6.v1.api.collections.config.Shard;
+import io.weaviate.client6.v1.api.collections.config.ShardStatus;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer;
 import io.weaviate.containers.Container;
@@ -158,5 +160,28 @@ public class CollectionsITest extends ConcurrentTest {
           Assertions.assertThat(collection)
               .extracting(CollectionConfig::replication).returns(false, Replication::asyncEnabled);
         });
+  }
+
+  @Test
+  public void testShards() throws IOException {
+    var nsShatteredCups = ns("ShatteredCups");
+    client.collections.create(nsShatteredCups);
+    var cups = client.collections.use(nsShatteredCups);
+
+    // Act: get initial shard state
+    var shards = cups.config.getShards();
+
+    Assertions.assertThat(shards).as("single-tenant collections has 1 shard").hasSize(1);
+    var singleShard = shards.get(0);
+
+    // Act: flip the status
+    var wantStatus = singleShard.status().equals("READY") ? ShardStatus.READONLY : ShardStatus.READY;
+    var updated = cups.config.updateShards(wantStatus, singleShard.name());
+
+    Assertions.assertThat(updated)
+        .as("shard status changed")
+        .hasSize(1)
+        .extracting(Shard::status)
+        .containsOnly(wantStatus.name());
   }
 }
