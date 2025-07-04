@@ -1,7 +1,9 @@
 package io.weaviate.client6.v1.api.collections.data;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -9,21 +11,26 @@ import java.util.function.Function;
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClientAsync;
+import io.weaviate.client6.v1.api.collections.query.Where;
+import io.weaviate.client6.v1.api.collections.query.WhereOperand;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
+import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 import io.weaviate.client6.v1.internal.rest.RestTransport;
 
 public class WeaviateDataClientAsync<T> {
   private final RestTransport restTransport;
+  private final GrpcTransport grpcTransport;
   private final CollectionDescriptor<T> collectionDescriptor;
 
   private final WeaviateQueryClientAsync<T> query;
 
   public WeaviateDataClientAsync(CollectionDescriptor<T> collectionDescriptor, RestTransport restTransport,
-      WeaviateQueryClientAsync<T> query) {
+      GrpcTransport grpcTransport) {
     this.restTransport = restTransport;
+    this.grpcTransport = grpcTransport;
     this.collectionDescriptor = collectionDescriptor;
-    this.query = query;
+    this.query = new WeaviateQueryClientAsync<>(collectionDescriptor, grpcTransport);
   }
 
   public CompletableFuture<WeaviateObject<T, Object, ObjectMetadata>> insert(T properties) throws IOException {
@@ -39,6 +46,20 @@ public class WeaviateDataClientAsync<T> {
   public CompletableFuture<WeaviateObject<T, Object, ObjectMetadata>> insert(InsertObjectRequest<T> request)
       throws IOException {
     return this.restTransport.performRequestAsync(request, InsertObjectRequest.endpoint(collectionDescriptor));
+  }
+
+  @SafeVarargs
+  public final CompletableFuture<InsertManyResponse> insertMany(T... objects) {
+    return insertMany(InsertManyRequest.of(objects));
+  }
+
+  public CompletableFuture<InsertManyResponse> insertMany(List<WeaviateObject<T, Reference, ObjectMetadata>> objects) {
+    return insertMany(new InsertManyRequest<>(objects));
+  }
+
+  public CompletableFuture<InsertManyResponse> insertMany(InsertManyRequest<T> request) {
+    return this.grpcTransport.performRequestAsync(request,
+        InsertManyRequest.rpc(request.objects(), collectionDescriptor));
   }
 
   public CompletableFuture<Boolean> exists(String uuid) {
@@ -64,12 +85,43 @@ public class WeaviateDataClientAsync<T> {
         DeleteObjectRequest._ENDPOINT);
   }
 
+  public CompletableFuture<DeleteManyResponse> deleteMany(String... uuids) throws IOException {
+    var either = Arrays.stream(uuids)
+        .map(uuid -> (WhereOperand) Where.uuid().eq(uuid))
+        .toList();
+    return deleteMany(DeleteManyRequest.of(Where.or(either)));
+  }
+
+  public CompletableFuture<DeleteManyResponse> deleteMany(Where where) throws IOException {
+    return deleteMany(DeleteManyRequest.of(where));
+  }
+
+  public CompletableFuture<DeleteManyResponse> deleteMany(Where where,
+      Function<DeleteManyRequest.Builder, ObjectBuilder<DeleteManyRequest>> fn)
+      throws IOException {
+    return deleteMany(DeleteManyRequest.of(where, fn));
+  }
+
+  public CompletableFuture<DeleteManyResponse> deleteMany(DeleteManyRequest request) throws IOException {
+    return this.grpcTransport.performRequestAsync(request, DeleteManyRequest.rpc(collectionDescriptor));
+  }
+
   public CompletableFuture<Void> referenceAdd(String fromUuid, String fromProperty, Reference reference) {
     return forEachAsync(reference.uuids(), uuid -> {
       var singleRef = new Reference(reference.collection(), (String) uuid);
       return this.restTransport.performRequestAsync(new ReferenceAddRequest(fromUuid, fromProperty, singleRef),
           ReferenceAddRequest.endpoint(collectionDescriptor));
     });
+  }
+
+  public CompletableFuture<ReferenceAddManyResponse> referenceAddMany(BatchReference... references) throws IOException {
+    return referenceAddMany(Arrays.asList(references));
+  }
+
+  public CompletableFuture<ReferenceAddManyResponse> referenceAddMany(List<BatchReference> references)
+      throws IOException {
+    return this.restTransport.performRequestAsync(new ReferenceAddManyRequest(references),
+        ReferenceAddManyRequest.endpoint(references));
   }
 
   public CompletableFuture<Void> referenceDelete(String fromUuid, String fromProperty, Reference reference) {

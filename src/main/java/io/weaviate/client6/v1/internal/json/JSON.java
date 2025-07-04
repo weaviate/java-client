@@ -9,6 +9,8 @@ public final class JSON {
 
   static {
     var gsonBuilder = new GsonBuilder();
+
+    // TypeAdapterFactories ---------------------------------------------------
     gsonBuilder.registerTypeAdapterFactory(
         io.weaviate.client6.v1.api.collections.WeaviateObject.CustomTypeAdapterFactory.INSTANCE);
     gsonBuilder.registerTypeAdapterFactory(
@@ -24,12 +26,21 @@ public final class JSON {
     gsonBuilder.registerTypeAdapterFactory(
         io.weaviate.client6.v1.api.collections.Generative.CustomTypeAdapterFactory.INSTANCE);
 
+    // TypeAdapters -----------------------------------------------------------
     gsonBuilder.registerTypeAdapter(
         io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer.class,
         io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer.TYPE_ADAPTER);
     gsonBuilder.registerTypeAdapter(
         io.weaviate.client6.v1.api.collections.data.Reference.class,
         io.weaviate.client6.v1.api.collections.data.Reference.TYPE_ADAPTER);
+    gsonBuilder.registerTypeAdapter(
+        io.weaviate.client6.v1.api.collections.data.BatchReference.class,
+        io.weaviate.client6.v1.api.collections.data.BatchReference.TYPE_ADAPTER);
+
+    // Deserilizers -----------------------------------------------------------
+    gsonBuilder.registerTypeAdapter(
+        io.weaviate.client6.v1.api.collections.data.ReferenceAddManyResponse.class,
+        io.weaviate.client6.v1.api.collections.data.ReferenceAddManyResponse.CustomJsonDeserializer.INSTANCE);
     gson = gsonBuilder.create();
   }
 

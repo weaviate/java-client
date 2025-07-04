@@ -4,7 +4,7 @@ import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.aggregate.AggregateObjectFilter;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
-import io.weaviate.client6.v1.internal.grpc.GRPC;
+import io.weaviate.client6.v1.internal.grpc.ByteStringUtil;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch;
@@ -58,7 +58,7 @@ public record NearVector(Float[] vector, Float distance, Float certainty, BaseQu
     var nearVector = WeaviateProtoBaseSearch.NearVector.newBuilder();
     nearVector.addVectors(WeaviateProtoBase.Vectors.newBuilder()
         .setType(WeaviateProtoBase.Vectors.VectorType.VECTOR_TYPE_SINGLE_FP32)
-        .setVectorBytes(GRPC.toByteString(vector)));
+        .setVectorBytes(ByteStringUtil.encodeVectorSingle(vector)));
 
     if (certainty != null) {
       nearVector.setCertainty(certainty);

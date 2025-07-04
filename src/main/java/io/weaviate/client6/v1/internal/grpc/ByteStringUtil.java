@@ -4,16 +4,25 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.Arrays;
+import java.util.UUID;
 
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.google.protobuf.ByteString;
 
-public class GRPC {
+public class ByteStringUtil {
   private static final ByteOrder BYTE_ORDER = ByteOrder.LITTLE_ENDIAN;
 
+  /** Decode ByteString to UUID. */
+  public static UUID decodeUuid(ByteString bs) {
+    var buf = ByteBuffer.wrap(bs.toByteArray());
+    var most = buf.getLong();
+    var least = buf.getLong();
+    return new UUID(most, least);
+  }
+
   /** Encode Float[] to ByteString. */
-  public static ByteString toByteString(Float[] vector) {
+  public static ByteString encodeVectorSingle(Float[] vector) {
     if (vector == null || vector.length == 0) {
       return ByteString.EMPTY;
     }
@@ -23,7 +32,7 @@ public class GRPC {
   }
 
   /** Encode float[] to ByteString. */
-  public static ByteString toByteString(float[] vector) {
+  public static ByteString encodeVectorSingle(float[] vector) {
     ByteBuffer buffer = ByteBuffer.allocate(vector.length * Float.BYTES).order(BYTE_ORDER);
     for (float f : vector) {
       buffer.putFloat(f);
@@ -37,7 +46,7 @@ public class GRPC {
    * The first 2 bytes of the resulting ByteString encode the number of dimensions
    * (uint16 / short) followed by concatenated vectors (4 bytes per element).
    */
-  public static ByteString toByteString(Float[][] vectors) {
+  public static ByteString encodeVectorMulti(Float[][] vectors) {
     if (vectors == null || vectors.length == 0 || vectors[0].length == 0) {
       return ByteString.EMPTY;
     }
@@ -56,7 +65,7 @@ public class GRPC {
    * Decode ByteString into a Float[]. ByteString size must be a multiple of
    * {@link Float#BYTES}, throws {@link IllegalArgumentException} otherwise.
    */
-  public static Float[] fromByteString(ByteString bs) {
+  public static Float[] decodeVectorSingle(ByteString bs) {
     if (bs.size() % Float.BYTES != 0) {
       throw new IllegalArgumentException(
           "byte string size not a multiple of " + String.valueOf(Float.BYTES) + " (Float.BYTES)");
@@ -66,8 +75,8 @@ public class GRPC {
     return ArrayUtils.toObject(vector);
   }
 
-  /** Decode ByteString into a Float[][]. */
-  public static Float[][] fromByteStringMulti(ByteString bs) {
+  /** Decode ByteString to Float[][]. */
+  public static Float[][] decodeVectorMulti(ByteString bs) {
     if (bs == null || bs.size() == 0) {
       return new Float[0][0];
     }

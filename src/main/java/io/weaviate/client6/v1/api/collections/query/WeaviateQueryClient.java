@@ -10,14 +10,14 @@ public class WeaviateQueryClient<T>
     extends
     AbstractQueryClient<T, Optional<WeaviateObject<T, Object, QueryMetadata>>, QueryResponse<T>, QueryResponseGrouped<T>> {
 
-  public WeaviateQueryClient(CollectionDescriptor<T> collection, GrpcTransport transport) {
-    super(collection, transport);
+  public WeaviateQueryClient(CollectionDescriptor<T> collection, GrpcTransport grpcTransport) {
+    super(collection, grpcTransport);
   }
 
   @Override
   protected Optional<WeaviateObject<T, Object, QueryMetadata>> byId(ById byId) {
     var request = new QueryRequest(byId, null);
-    var result = this.transport.performRequest(request, QueryRequest.rpc(collection));
+    var result = this.grpcTransport.performRequest(request, QueryRequest.rpc(collection));
     return optionalFirst(result.objects());
 
   }
@@ -25,13 +25,13 @@ public class WeaviateQueryClient<T>
   @Override
   protected final QueryResponse<T> performRequest(QueryOperator operator) {
     var request = new QueryRequest(operator, null);
-    return this.transport.performRequest(request, QueryRequest.rpc(collection));
+    return this.grpcTransport.performRequest(request, QueryRequest.rpc(collection));
   }
 
   @Override
   protected final QueryResponseGrouped<T> performRequest(QueryOperator operator, GroupBy groupBy) {
     var request = new QueryRequest(operator, groupBy);
-    return this.transport.performRequest(request, QueryRequest.grouped(collection));
+    return this.grpcTransport.performRequest(request, QueryRequest.grouped(collection));
   }
 
 }
