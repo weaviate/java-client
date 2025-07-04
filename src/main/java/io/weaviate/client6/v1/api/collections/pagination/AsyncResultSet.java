@@ -1,6 +1,7 @@
 package io.weaviate.client6.v1.api.collections.pagination;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -12,9 +13,9 @@ import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 public class AsyncResultSet<PropertiesT> implements Iterable<WeaviateObject<PropertiesT, Object, QueryMetadata>> {
 
   private final int pageSize;
+  private final String cursor;
   private final BiFunction<String, Integer, CompletableFuture<List<WeaviateObject<PropertiesT, Object, QueryMetadata>>>> fetch;
 
-  private String cursor;
   private List<WeaviateObject<PropertiesT, Object, QueryMetadata>> currentPage = new ArrayList<>();
 
   AsyncResultSet(String cursor, int pageSize,
@@ -28,10 +29,10 @@ public class AsyncResultSet<PropertiesT> implements Iterable<WeaviateObject<Prop
       BiFunction<String, Integer, CompletableFuture<List<WeaviateObject<PropertiesT, Object, QueryMetadata>>>> fetch,
       List<WeaviateObject<PropertiesT, Object, QueryMetadata>> currentPage) {
     this(cursor, pageSize, fetch);
-    this.currentPage = currentPage;
+    this.currentPage = Collections.unmodifiableList(currentPage);
   }
 
-  public List<WeaviateObject<PropertiesT, Object, QueryMetadata>> currentPage() {
+  List<WeaviateObject<PropertiesT, Object, QueryMetadata>> currentPage() {
     return currentPage;
   }
 
