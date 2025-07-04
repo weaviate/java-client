@@ -10,12 +10,12 @@ import java.util.function.BiFunction;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 
-public class AsyncResultSet<PropertiesT> implements Iterable<WeaviateObject<PropertiesT, Object, QueryMetadata>> {
+public final class AsyncResultSet<PropertiesT> implements Iterable<WeaviateObject<PropertiesT, Object, QueryMetadata>> {
 
   private final int pageSize;
-  private final String cursor;
   private final BiFunction<String, Integer, CompletableFuture<List<WeaviateObject<PropertiesT, Object, QueryMetadata>>>> fetch;
 
+  private final String cursor;
   private List<WeaviateObject<PropertiesT, Object, QueryMetadata>> currentPage = new ArrayList<>();
 
   AsyncResultSet(String cursor, int pageSize,
