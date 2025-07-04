@@ -1,6 +1,8 @@
 package io.weaviate.client6.v1.api.collections.config;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -47,5 +49,23 @@ public class WeaviateConfigClientAsync {
       return this.restTransport.performRequestAsync(UpdateCollectionRequest.of(thisCollection, fn),
           UpdateCollectionRequest._ENDPOINT);
     });
+  }
+
+  public CompletableFuture<List<Shard>> getShards() {
+    return this.restTransport.performRequestAsync(new GetShardsRequest(collectionDescriptor.name()),
+        GetShardsRequest._ENDPOINT);
+  }
+
+  public CompletableFuture<List<Shard>> updateShards(ShardStatus status, String... shards) throws IOException {
+    return updateShards(status, Arrays.asList(shards));
+  }
+
+  public CompletableFuture<List<Shard>> updateShards(ShardStatus status, List<String> shards) throws IOException {
+    var updates = shards.stream().map(
+        shard -> this.restTransport.performRequestAsync(
+            new UpdateShardStatusRequest(collectionDescriptor.name(), shard, status),
+            UpdateShardStatusRequest._ENDPOINT))
+        .toArray(CompletableFuture[]::new);
+    return CompletableFuture.allOf(updates).thenCompose(__ -> getShards());
   }
 }

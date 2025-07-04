@@ -1,6 +1,8 @@
 package io.weaviate.client6.v1.api.collections.config;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -44,5 +46,22 @@ public class WeaviateConfigClient {
     var thisCollection = get().orElseThrow(); // TODO: use descriptive error
     this.restTransport.performRequest(UpdateCollectionRequest.of(thisCollection, fn),
         UpdateCollectionRequest._ENDPOINT);
+  }
+
+  public List<Shard> getShards() throws IOException {
+    return this.restTransport.performRequest(new GetShardsRequest(collection.name()), GetShardsRequest._ENDPOINT);
+  }
+
+  public List<Shard> updateShards(ShardStatus status, String... shards) throws IOException {
+    return updateShards(status, Arrays.asList(shards));
+  }
+
+  public List<Shard> updateShards(ShardStatus status, List<String> shards) throws IOException {
+    for (var shard : shards) {
+      this.restTransport.performRequest(
+          new UpdateShardStatusRequest(collection.name(), shard, status),
+          UpdateShardStatusRequest._ENDPOINT);
+    }
+    return getShards();
   }
 }
