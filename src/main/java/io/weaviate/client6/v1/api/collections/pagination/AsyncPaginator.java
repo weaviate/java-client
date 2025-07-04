@@ -20,7 +20,7 @@ public class AsyncPaginator<PropertiesT> {
   private final int pageSize;
   private final String cursor;
 
-  private CompletableFuture<AsyncResultSet<PropertiesT>> resultSet;
+  private CompletableFuture<AsyncPage<PropertiesT>> resultSet;
 
   public AsyncPaginator(Builder<PropertiesT> builder) {
     this.query = builder.query;
@@ -28,7 +28,7 @@ public class AsyncPaginator<PropertiesT> {
     this.pageSize = builder.pageSize;
     this.cursor = builder.cursor;
 
-    var rs = new AsyncResultSet<PropertiesT>(
+    var rs = new AsyncPage<PropertiesT>(
         cursor,
         pageSize,
         (after, limit) -> {
@@ -51,18 +51,18 @@ public class AsyncPaginator<PropertiesT> {
         .thenCompose(processPageAndAdvance(action));
   }
 
-  public Function<AsyncResultSet<PropertiesT>, CompletableFuture<Void>> processEachAndAdvance(
+  public Function<AsyncPage<PropertiesT>, CompletableFuture<Void>> processEachAndAdvance(
       Consumer<WeaviateObject<PropertiesT, Object, QueryMetadata>> action) {
     return processAndAdvanceFunc(rs -> rs.forEach(action));
   }
 
-  public Function<AsyncResultSet<PropertiesT>, CompletableFuture<Void>> processPageAndAdvance(
+  public Function<AsyncPage<PropertiesT>, CompletableFuture<Void>> processPageAndAdvance(
       Consumer<List<WeaviateObject<PropertiesT, Object, QueryMetadata>>> action) {
-    return processAndAdvanceFunc(rs -> action.accept(rs.currentPage()));
+    return processAndAdvanceFunc(rs -> action.accept(rs.items()));
   }
 
-  public Function<AsyncResultSet<PropertiesT>, CompletableFuture<Void>> processAndAdvanceFunc(
-      Consumer<AsyncResultSet<PropertiesT>> action) {
+  public Function<AsyncPage<PropertiesT>, CompletableFuture<Void>> processAndAdvanceFunc(
+      Consumer<AsyncPage<PropertiesT>> action) {
     return rs -> {
       // Empty result set means there were no more objects to fetch.
       if (rs.isEmpty()) {
