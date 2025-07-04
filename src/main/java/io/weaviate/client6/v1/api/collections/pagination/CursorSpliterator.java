@@ -10,24 +10,24 @@ import java.util.function.Consumer;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 
-public class CursorSpliterator<T> implements Spliterator<WeaviateObject<T, Object, QueryMetadata>> {
+public class CursorSpliterator<PropertiesT> implements Spliterator<WeaviateObject<PropertiesT, Object, QueryMetadata>> {
   private final int pageSize;
-  private final BiFunction<String, Integer, List<WeaviateObject<T, Object, QueryMetadata>>> fetch;
+  private final BiFunction<String, Integer, List<WeaviateObject<PropertiesT, Object, QueryMetadata>>> fetch;
 
   // Spliterators do not promise thread-safety, so there's no mechanism
   // to protect access to its internal state.
   private String cursor;
-  private Iterator<WeaviateObject<T, Object, QueryMetadata>> currentPage = Collections.emptyIterator();
+  private Iterator<WeaviateObject<PropertiesT, Object, QueryMetadata>> currentPage = Collections.emptyIterator();
 
   public CursorSpliterator(String cursor, int pageSize,
-      BiFunction<String, Integer, List<WeaviateObject<T, Object, QueryMetadata>>> fetch) {
+      BiFunction<String, Integer, List<WeaviateObject<PropertiesT, Object, QueryMetadata>>> fetch) {
     this.cursor = cursor;
     this.pageSize = pageSize;
     this.fetch = fetch;
   }
 
   @Override
-  public boolean tryAdvance(Consumer<? super WeaviateObject<T, Object, QueryMetadata>> action) {
+  public boolean tryAdvance(Consumer<? super WeaviateObject<PropertiesT, Object, QueryMetadata>> action) {
     // Happy path: there are remaining objects in the current page.
     if (currentPage.hasNext()) {
       action.accept(currentPage.next());
@@ -45,7 +45,7 @@ public class CursorSpliterator<T> implements Spliterator<WeaviateObject<T, Objec
   }
 
   @Override
-  public Spliterator<WeaviateObject<T, Object, QueryMetadata>> trySplit() {
+  public Spliterator<WeaviateObject<PropertiesT, Object, QueryMetadata>> trySplit() {
     // Do not support splitting just now;
     return null;
   }

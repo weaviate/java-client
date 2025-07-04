@@ -16,25 +16,25 @@ import io.weaviate.client6.v1.api.collections.query.QueryReference;
 import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClient;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public class Paginator<T> implements Iterable<WeaviateObject<T, Object, QueryMetadata>> {
+public class Paginator<PropertiesT> implements Iterable<WeaviateObject<PropertiesT, Object, QueryMetadata>> {
   static final int DEFAULT_PAGE_SIZE = 100;
 
-  private final WeaviateQueryClient<T> query;
+  private final WeaviateQueryClient<PropertiesT> query;
   private final Function<FetchObjects.Builder, ObjectBuilder<FetchObjects>> queryOptions;
   private final int pageSize;
   private final String cursor;
 
   @Override
-  public Iterator<WeaviateObject<T, Object, QueryMetadata>> iterator() {
+  public Iterator<WeaviateObject<PropertiesT, Object, QueryMetadata>> iterator() {
     return Spliterators.iterator(spliterator());
   }
 
-  public Stream<WeaviateObject<T, Object, QueryMetadata>> stream() {
+  public Stream<WeaviateObject<PropertiesT, Object, QueryMetadata>> stream() {
     return StreamSupport.stream(spliterator(), false);
   }
 
-  public Spliterator<WeaviateObject<T, Object, QueryMetadata>> spliterator() {
-    return new CursorSpliterator<T>(cursor, pageSize,
+  public Spliterator<WeaviateObject<PropertiesT, Object, QueryMetadata>> spliterator() {
+    return new CursorSpliterator<PropertiesT>(cursor, pageSize,
         (after, limit) -> {
           var fn = ObjectBuilder.partial(queryOptions, q -> q.after(after).limit(limit));
           return query.fetchObjects(fn).objects();
@@ -50,7 +50,7 @@ public class Paginator<T> implements Iterable<WeaviateObject<T, Object, QueryMet
     return fn.apply(new Builder<>(query)).build();
   }
 
-  Paginator(Builder<T> builder) {
+  Paginator(Builder<PropertiesT> builder) {
     this.query = builder.query;
     this.queryOptions = builder.queryOptions;
     this.cursor = builder.cursor;
