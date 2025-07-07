@@ -217,14 +217,6 @@ public class Where implements WhereOperand {
       return new Where(Operator.LESS_THAN, left, new TextArrayOperand(values));
     }
 
-    public Where lt(Boolean value) {
-      return new Where(Operator.LESS_THAN, left, new BooleanOperand(value));
-    }
-
-    public Where lt(Boolean... values) {
-      return new Where(Operator.LESS_THAN, left, new BooleanArrayOperand(values));
-    }
-
     public Where lt(Integer value) {
       return new Where(Operator.LESS_THAN, left, new IntegerOperand(value));
     }
@@ -261,14 +253,6 @@ public class Where implements WhereOperand {
 
     public Where lte(String... values) {
       return new Where(Operator.LESS_THAN_EQUAL, left, new TextArrayOperand(values));
-    }
-
-    public Where lte(Boolean value) {
-      return new Where(Operator.LESS_THAN_EQUAL, left, new BooleanOperand(value));
-    }
-
-    public Where lte(Boolean... values) {
-      return new Where(Operator.LESS_THAN_EQUAL, left, new BooleanArrayOperand(values));
     }
 
     public Where lte(Integer value) {
@@ -309,14 +293,6 @@ public class Where implements WhereOperand {
       return new Where(Operator.GREATER_THAN, left, new TextArrayOperand(values));
     }
 
-    public Where gt(Boolean value) {
-      return new Where(Operator.GREATER_THAN, left, new BooleanOperand(value));
-    }
-
-    public Where gt(Boolean... values) {
-      return new Where(Operator.GREATER_THAN, left, new BooleanArrayOperand(values));
-    }
-
     public Where gt(Integer value) {
       return new Where(Operator.GREATER_THAN, left, new IntegerOperand(value));
     }
@@ -355,14 +331,6 @@ public class Where implements WhereOperand {
       return new Where(Operator.GREATER_THAN_EQUAL, left, new TextArrayOperand(values));
     }
 
-    public Where gte(Boolean value) {
-      return new Where(Operator.GREATER_THAN_EQUAL, left, new BooleanOperand(value));
-    }
-
-    public Where gte(Boolean... values) {
-      return new Where(Operator.GREATER_THAN_EQUAL, left, new BooleanArrayOperand(values));
-    }
-
     public Where gte(Integer value) {
       return new Where(Operator.GREATER_THAN_EQUAL, left, new IntegerOperand(value));
     }
@@ -395,46 +363,6 @@ public class Where implements WhereOperand {
     // ------------------------------------------------------------------------
     public Where like(String value) {
       return new Where(Operator.LIKE, left, new TextOperand(value));
-    }
-
-    public Where like(String... values) {
-      return new Where(Operator.LIKE, left, new TextArrayOperand(values));
-    }
-
-    public Where like(Boolean value) {
-      return new Where(Operator.LIKE, left, new BooleanOperand(value));
-    }
-
-    public Where like(Boolean... values) {
-      return new Where(Operator.LIKE, left, new BooleanArrayOperand(values));
-    }
-
-    public Where like(Integer value) {
-      return new Where(Operator.LIKE, left, new IntegerOperand(value));
-    }
-
-    public Where like(Integer... values) {
-      return new Where(Operator.LIKE, left, new IntegerArrayOperand(values));
-    }
-
-    public Where like(Number value) {
-      return new Where(Operator.LIKE, left, new NumberOperand(value.doubleValue()));
-    }
-
-    public Where like(Number... values) {
-      return new Where(Operator.LIKE, left, new NumberArrayOperand(values));
-    }
-
-    public Where like(Date value) {
-      return new Where(Operator.LIKE, left, new DateOperand(value));
-    }
-
-    public Where like(Date... values) {
-      return new Where(Operator.LIKE, left, new DateArrayOperand(values));
-    }
-
-    public Where like(Object value) {
-      return new Where(Operator.LIKE, left, fromObject(value));
     }
 
     // ContainsAny

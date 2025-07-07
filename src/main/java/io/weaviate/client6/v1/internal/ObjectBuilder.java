@@ -8,4 +8,9 @@ public interface ObjectBuilder<T> {
   static <B extends ObjectBuilder<T>, T> Function<B, ObjectBuilder<T>> identity() {
     return builder -> builder;
   }
+
+  static <B extends ObjectBuilder<T>, T> Function<B, ObjectBuilder<T>> partial(Function<B, ObjectBuilder<T>> fn,
+      Function<B, B> partialFn) {
+    return partialFn.andThen(fn);
+  }
 }

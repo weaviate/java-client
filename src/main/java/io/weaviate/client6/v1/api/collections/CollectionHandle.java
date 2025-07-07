@@ -1,9 +1,13 @@
 package io.weaviate.client6.v1.api.collections;
 
+import java.util.function.Function;
+
 import io.weaviate.client6.v1.api.collections.aggregate.WeaviateAggregateClient;
 import io.weaviate.client6.v1.api.collections.config.WeaviateConfigClient;
 import io.weaviate.client6.v1.api.collections.data.WeaviateDataClient;
+import io.weaviate.client6.v1.api.collections.pagination.Paginator;
 import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClient;
+import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 import io.weaviate.client6.v1.internal.rest.RestTransport;
@@ -23,5 +27,13 @@ public class CollectionHandle<T> {
     this.data = new WeaviateDataClient<>(collectionDescriptor, restTransport, grpcTransport);
     this.query = new WeaviateQueryClient<>(collectionDescriptor, grpcTransport);
     this.aggregate = new WeaviateAggregateClient(collectionDescriptor, grpcTransport);
+  }
+
+  public Paginator<T> paginate() {
+    return Paginator.of(this.query);
+  }
+
+  public Paginator<T> paginate(Function<Paginator.Builder<T>, ObjectBuilder<Paginator<T>>> fn) {
+    return Paginator.of(this.query, fn);
   }
 }
