@@ -11,7 +11,7 @@ To start using Weaviate Java client add this dependency to `pom.xml`:
 <dependency>
     <groupId>io.weaviate</groupId>
     <artifactId>client</artifactId>
-    <version>6.0.0-beta1</version>
+    <version>6.0.0-beta2</version>
 </dependency>
 ```
 
