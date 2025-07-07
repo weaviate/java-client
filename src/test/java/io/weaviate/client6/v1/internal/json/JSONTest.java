@@ -19,8 +19,8 @@ import io.weaviate.client6.v1.api.collections.Generative;
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.Reranker;
-import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.api.collections.Vectorizer;
+import io.weaviate.client6.v1.api.collections.Vectorizers;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.BatchReference;
@@ -44,17 +44,29 @@ public class JSONTest {
         // Vectorizer.CustomTypeAdapterFactory
         {
             Vectorizer.class,
-            new NoneVectorizer(),
-            "{\"none\": {}}",
+            NoneVectorizer.of(),
+            """
+                {
+                  "vectorIndexType": "hnsw",
+                  "vectorIndexConfig": {},
+                  "vectorizer": {"none": {}}
+                }
+                  """,
         },
         {
             Vectorizer.class,
             Img2VecNeuralVectorizer.of(i2v -> i2v.imageFields("jpeg", "png")),
             """
-                {"img2vec-neural": {
-                  "imageFields": ["jpeg", "png"]
-                }}
-                """,
+                {
+                  "vectorIndexType": "hnsw",
+                  "vectorIndexConfig": {},
+                  "vectorizer": {
+                    "img2vec-neural": {
+                      "imageFields": ["jpeg", "png"]
+                    }
+                  }
+                }
+                    """,
         },
         {
             Vectorizer.class,
@@ -64,27 +76,39 @@ public class JSONTest {
                 .textField("txt", 2f)
                 .vectorizeCollectionName(true)),
             """
-                {"multi2vec-clip": {
-                  "inferenceUrl": "http://example.com",
-                  "vectorizeClassName": true,
-                  "imageFields": ["img"],
-                  "textFields": ["txt"],
-                  "weights": {
-                    "imageWeights": [1.0],
-                    "textWeights": [2.0]
+                {
+                  "vectorIndexType": "hnsw",
+                  "vectorIndexConfig": {},
+                  "vectorizer": {
+                    "multi2vec-clip": {
+                      "inferenceUrl": "http://example.com",
+                      "vectorizeClassName": true,
+                      "imageFields": ["img"],
+                      "textFields": ["txt"],
+                      "weights": {
+                        "imageWeights": [1.0],
+                        "textWeights": [2.0]
+                      }
+                    }
                   }
-                }}
-                """,
+                }
+                    """,
         },
         {
             Vectorizer.class,
             Text2VecContextionaryVectorizer.of(t2v -> t2v
                 .vectorizeCollectionName(true)),
             """
-                {"text2vec-contextionary": {
-                  "vectorizeClassName": true
-                }}
-                """,
+                {
+                  "vectorIndexType": "hnsw",
+                  "vectorIndexConfig": {},
+                  "vectorizer": {
+                    "text2vec-contextionary": {
+                      "vectorizeClassName": true
+                    }
+                  }
+                }
+                    """,
         },
         {
             Vectorizer.class,
@@ -94,20 +118,27 @@ public class JSONTest {
                 .model("very-good-model")
                 .vectorizeCollectionName(true)),
             """
-                {"text2vec-weaviate": {
-                  "baseUrl": "http://example.com",
-                  "vectorizeClassName": true,
-                  "dimensions": 4,
-                  "model": "very-good-model"
-                }}
-                """,
+                {
+                  "vectorIndexType": "hnsw",
+                  "vectorIndexConfig": {},
+                  "vectorizer": {
+                    "text2vec-weaviate": {
+                      "baseUrl": "http://example.com",
+                      "vectorizeClassName": true,
+                      "dimensions": 4,
+                      "model": "very-good-model"
+                    }
+                  }
+                }
+                    """,
         },
 
         // VectorIndex.CustomTypeAdapterFactory
         {
-            VectorIndex.class,
-            Flat.of(new NoneVectorizer(), flat -> flat
-                .vectorCacheMaxObjects(100)),
+            Vectorizer.class,
+            NoneVectorizer.of(none -> none
+                .vectorIndex(Flat.of(flat -> flat
+                    .vectorCacheMaxObjects(100)))),
             """
                 {
                   "vectorIndexType": "flat",
@@ -117,20 +148,21 @@ public class JSONTest {
                 """,
         },
         {
-            VectorIndex.class,
-            Hnsw.of(new NoneVectorizer(), hnsw -> hnsw
-                .distance(Distance.DOT)
-                .ef(1)
-                .efConstruction(2)
-                .maxConnections(3)
-                .vectorCacheMaxObjects(4)
-                .cleanupIntervalSeconds(5)
-                .dynamicEfMin(6)
-                .dynamicEfMax(7)
-                .dynamicEfFactor(8)
-                .flatSearchCutoff(9)
-                .skipVectorization(true)
-                .filterStrategy(Hnsw.FilterStrategy.ACORN)),
+            Vectorizer.class,
+            NoneVectorizer.of(none -> none
+                .vectorIndex(Hnsw.of(hnsw -> hnsw
+                    .distance(Distance.DOT)
+                    .ef(1)
+                    .efConstruction(2)
+                    .maxConnections(3)
+                    .vectorCacheMaxObjects(4)
+                    .cleanupIntervalSeconds(5)
+                    .dynamicEfMin(6)
+                    .dynamicEfMax(7)
+                    .dynamicEfFactor(8)
+                    .flatSearchCutoff(9)
+                    .skipVectorization(true)
+                    .filterStrategy(Hnsw.FilterStrategy.ACORN)))),
             """
                 {
                   "vectorIndexType": "hnsw",
@@ -197,9 +229,9 @@ public class JSONTest {
                     Property.integer("size"))
                 .references(
                     Property.reference("owner", "Person", "Company"))
-                .vectors(named -> named
-                    .vector("v-shape", Hnsw.of(Img2VecNeuralVectorizer.of(
-                        i2v -> i2v.imageFields("img")))))),
+                .vectors(
+                    Vectorizers.img2vecNeural("v-shape",
+                        i2v -> i2v.imageFields("img")))),
             """
                 {
                   "class": "Things",

@@ -7,11 +7,13 @@ import java.util.function.Function;
 
 import com.google.gson.annotations.SerializedName;
 
+import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Img2VecNeuralVectorizer(
-    @SerializedName("imageFields") List<String> imageFields) implements Vectorizer {
+    @SerializedName("imageFields") List<String> imageFields,
+    VectorIndex vectorIndex) implements Vectorizer {
 
   @Override
   public Vectorizer.Kind _kind() {
@@ -32,10 +34,11 @@ public record Img2VecNeuralVectorizer(
   }
 
   public Img2VecNeuralVectorizer(Builder builder) {
-    this(builder.imageFields);
+    this(builder.imageFields, builder.vectorIndex);
   }
 
   public static class Builder implements ObjectBuilder<Img2VecNeuralVectorizer> {
+    private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
     private List<String> imageFields = new ArrayList<>();
 
     public Builder imageFields(List<String> fields) {
@@ -45,6 +48,11 @@ public record Img2VecNeuralVectorizer(
 
     public Builder imageFields(String... fields) {
       return imageFields(Arrays.asList(fields));
+    }
+
+    public Builder vectorIndex(VectorIndex vectorIndex) {
+      this.vectorIndex = vectorIndex;
+      return this;
     }
 
     @Override

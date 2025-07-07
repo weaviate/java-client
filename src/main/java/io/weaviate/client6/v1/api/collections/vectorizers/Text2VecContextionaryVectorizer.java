@@ -4,11 +4,13 @@ import java.util.function.Function;
 
 import com.google.gson.annotations.SerializedName;
 
+import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Text2VecContextionaryVectorizer(
-    @SerializedName("vectorizeClassName") boolean vectorizeCollectionName) implements Vectorizer {
+    @SerializedName("vectorizeClassName") boolean vectorizeCollectionName,
+    VectorIndex vectorIndex) implements Vectorizer {
 
   @Override
   public Vectorizer.Kind _kind() {
@@ -30,14 +32,20 @@ public record Text2VecContextionaryVectorizer(
   }
 
   public Text2VecContextionaryVectorizer(Builder builder) {
-    this(builder.vectorizeCollectionName);
+    this(builder.vectorizeCollectionName, builder.vectorIndex);
   }
 
   public static class Builder implements ObjectBuilder<Text2VecContextionaryVectorizer> {
+    private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
     private boolean vectorizeCollectionName = false;
 
     public Builder vectorizeCollectionName(boolean enable) {
       this.vectorizeCollectionName = enable;
+      return this;
+    }
+
+    public Builder vectorIndex(VectorIndex vectorIndex) {
+      this.vectorIndex = vectorIndex;
       return this;
     }
 
