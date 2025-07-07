@@ -11,6 +11,7 @@ import org.junit.Test;
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.Property;
+import io.weaviate.client6.v1.api.collections.Vectorizers;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.BatchReference;
@@ -20,8 +21,6 @@ import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.api.collections.query.QueryReference;
 import io.weaviate.client6.v1.api.collections.query.Where;
-import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
-import io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer;
 import io.weaviate.containers.Container;
 
 public class DataITest extends ConcurrentTest {
@@ -107,7 +106,7 @@ public class DataITest extends ConcurrentTest {
                 Property.integer("age"))
             .references(
                 Property.reference("hasAwards", awardsGrammy, awardsOscar))
-            .vectors(named -> named.vector(VECTOR_INDEX, Hnsw.of(new NoneVectorizer()))));
+            .vectors(Vectorizers.none(VECTOR_INDEX)));
   }
 
   @Test
@@ -223,7 +222,7 @@ public class DataITest extends ConcurrentTest {
         collection -> collection
             .properties(Property.text("title"), Property.integer("year"))
             .references(Property.reference("writtenBy", nsAuthors))
-            .vector(Hnsw.of(new NoneVectorizer())));
+            .vectors(Vectorizers.none()));
 
     var authors = client.collections.use(nsAuthors);
     var walter = authors.data.insert(Map.of("name", "walter scott"));

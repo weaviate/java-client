@@ -19,6 +19,7 @@ import io.weaviate.client6.v1.internal.json.JsonEnum;
 
 public interface VectorIndex {
   static final String DEFAULT_VECTOR_NAME = "default";
+  static final VectorIndex DEFAULT_VECTOR_INDEX = Hnsw.of();
 
   public enum Kind implements JsonEnum<Kind> {
     HNSW("hnsw"),
@@ -47,8 +48,6 @@ public interface VectorIndex {
   default String type() {
     return _kind().jsonValue();
   }
-
-  Vectorizer vectorizer();
 
   Object config();
 
@@ -79,7 +78,6 @@ public interface VectorIndex {
         init(gson);
       }
 
-      final var vectorizerAdapter = gson.getDelegateAdapter(this, TypeToken.get(Vectorizer.class));
       final var writeAdapter = gson.getDelegateAdapter(this, TypeToken.get(rawType));
       return (TypeAdapter<T>) new TypeAdapter<VectorIndex>() {
 
@@ -89,13 +87,11 @@ public interface VectorIndex {
           out.name("vectorIndexType");
           out.value(value._kind().jsonValue());
 
-          var config = writeAdapter.toJsonTree((T) value.config());
-          config.getAsJsonObject().remove("vectorizer");
           out.name("vectorIndexConfig");
+          var config = writeAdapter.toJsonTree((T) value.config());
+          config.getAsJsonObject().remove("name");
           Streams.write(config, out);
 
-          out.name("vectorizer");
-          vectorizerAdapter.write(out, value.vectorizer());
           out.endObject();
         }
 
@@ -117,7 +113,6 @@ public interface VectorIndex {
           }
 
           var config = jsonObject.get("vectorIndexConfig").getAsJsonObject();
-          config.add("vectorizer", jsonObject.get("vectorizer"));
           return adapter.fromJsonTree(config);
         }
       }.nullSafe();

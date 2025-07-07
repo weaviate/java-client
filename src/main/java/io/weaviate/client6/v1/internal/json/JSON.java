@@ -28,9 +28,6 @@ public final class JSON {
 
     // TypeAdapters -----------------------------------------------------------
     gsonBuilder.registerTypeAdapter(
-        io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer.class,
-        io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer.TYPE_ADAPTER);
-    gsonBuilder.registerTypeAdapter(
         io.weaviate.client6.v1.api.collections.data.Reference.class,
         io.weaviate.client6.v1.api.collections.data.Reference.TYPE_ADAPTER);
     gsonBuilder.registerTypeAdapter(

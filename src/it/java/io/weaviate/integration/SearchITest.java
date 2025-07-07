@@ -18,6 +18,7 @@ import org.junit.rules.TestRule;
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.Property;
+import io.weaviate.client6.v1.api.collections.Vectorizers;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateMetadata;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
@@ -27,10 +28,6 @@ import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.api.collections.query.QueryResponseGroup;
 import io.weaviate.client6.v1.api.collections.query.Where;
-import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
-import io.weaviate.client6.v1.api.collections.vectorizers.Img2VecNeuralVectorizer;
-import io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer;
-import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecContextionaryVectorizer;
 import io.weaviate.containers.Container;
 import io.weaviate.containers.Container.ContainerGroup;
 import io.weaviate.containers.Contextionary;
@@ -133,7 +130,7 @@ public class SearchITest extends ConcurrentTest {
   private static void createTestCollection() throws IOException {
     client.collections.create(COLLECTION, cfg -> cfg
         .properties(Property.text("category"))
-        .vector(VECTOR_INDEX, Hnsw.of(new NoneVectorizer())));
+        .vectors(Vectorizers.none(VECTOR_INDEX)));
   }
 
   @Test
@@ -142,7 +139,7 @@ public class SearchITest extends ConcurrentTest {
     client.collections.create(nsSongs,
         col -> col
             .properties(Property.text("title"))
-            .vector(Hnsw.of(Text2VecContextionaryVectorizer.of())));
+            .vectors(Vectorizers.text2vecContextionary()));
 
     var songs = client.collections.use(nsSongs);
     var submarine = songs.data.insert(Map.of("title", "Yellow Submarine"));
@@ -164,13 +161,13 @@ public class SearchITest extends ConcurrentTest {
 
   @Test
   public void testNearText_groupBy() throws IOException {
-    var vectorIndex = Hnsw.of(Text2VecContextionaryVectorizer.of());
+    var vectorizer = Vectorizers.text2vecContextionary();
 
     var nsArtists = ns("Artists");
     client.collections.create(nsArtists,
         col -> col
             .properties(Property.text("name"))
-            .vector(vectorIndex));
+            .vectors(vectorizer));
 
     var artists = client.collections.use(nsArtists);
     var beatles = artists.data.insert(Map.of("name", "Beatles"));
@@ -181,7 +178,7 @@ public class SearchITest extends ConcurrentTest {
         col -> col
             .properties(Property.text("title"))
             .references(Property.reference("performedBy", nsArtists))
-            .vector(vectorIndex));
+            .vectors(vectorizer));
 
     var songs = client.collections.use(nsSongs);
     songs.data.insert(Map.of("title", "Yellow Submarine"),
@@ -208,9 +205,8 @@ public class SearchITest extends ConcurrentTest {
             .properties(
                 Property.text("breed"),
                 Property.blob("img"))
-            .vector(Hnsw.of(
-                Img2VecNeuralVectorizer.of(
-                    i2v -> i2v.imageFields("img")))));
+            .vectors(Vectorizers.img2vecNeural(
+                i2v -> i2v.imageFields("img"))));
 
     var cats = client.collections.use(nsCats);
     cats.data.insert(Map.of(
@@ -325,7 +321,7 @@ public class SearchITest extends ConcurrentTest {
     client.collections.create(nsAnimals,
         collection -> collection
             .properties(Property.text("kind"))
-            .vector(Hnsw.of(Text2VecContextionaryVectorizer.of())));
+            .vectors(Vectorizers.text2vecContextionary()));
 
     var animals = client.collections.use(nsAnimals);
 
@@ -354,7 +350,7 @@ public class SearchITest extends ConcurrentTest {
     client.collections.create(nsHobbies,
         collection -> collection
             .properties(Property.text("name"), Property.text("description"))
-            .vector(Hnsw.of(Text2VecContextionaryVectorizer.of())));
+            .vectors(Vectorizers.text2vecContextionary()));
 
     var hobbies = client.collections.use(nsHobbies);
 

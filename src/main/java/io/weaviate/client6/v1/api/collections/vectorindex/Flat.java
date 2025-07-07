@@ -5,16 +5,10 @@ import java.util.function.Function;
 import com.google.gson.annotations.SerializedName;
 
 import io.weaviate.client6.v1.api.collections.VectorIndex;
-import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
-@EqualsAndHashCode(callSuper = true)
-@ToString
-public class Flat extends BaseVectorIndex {
-  @SerializedName("vectorCacheMaxObjects")
-  Long vectorCacheMaxObjects;
+public record Flat(@SerializedName("vectorCacheMaxObjects") Long vectorCacheMaxObjects)
+    implements VectorIndex {
 
   @Override
   public VectorIndex.Kind _kind() {
@@ -26,28 +20,21 @@ public class Flat extends BaseVectorIndex {
     return this;
   }
 
-  public static Flat of(Vectorizer vectorizer) {
-    return of(vectorizer, ObjectBuilder.identity());
+  public static Flat of() {
+    return of(ObjectBuilder.identity());
   }
 
-  public static Flat of(Vectorizer vectorizer, Function<Builder, ObjectBuilder<Flat>> fn) {
-    return fn.apply(new Builder(vectorizer)).build();
+  public static Flat of(Function<Builder, ObjectBuilder<Flat>> fn) {
+    return fn.apply(new Builder()).build();
   }
 
   public Flat(Builder builder) {
-    super(builder.vectorizer);
-    this.vectorCacheMaxObjects = builder.vectorCacheMaxObjects;
+    this(builder.vectorCacheMaxObjects);
   }
 
   public static class Builder implements ObjectBuilder<Flat> {
-    // Required parameters.
-    private final Vectorizer vectorizer;
 
     private Long vectorCacheMaxObjects;
-
-    protected Builder(Vectorizer vectorizer) {
-      this.vectorizer = vectorizer;
-    }
 
     public Builder vectorCacheMaxObjects(long vectorCacheMaxObjects) {
       this.vectorCacheMaxObjects = vectorCacheMaxObjects;
