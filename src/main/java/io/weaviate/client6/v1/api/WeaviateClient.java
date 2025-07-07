@@ -37,18 +37,21 @@ public class WeaviateClient implements Closeable {
   }
 
   public static WeaviateClient local(Function<Config.Local, ObjectBuilder<Config>> fn) {
-    var config = new Config.Local();
-    return new WeaviateClient(fn.apply(config).build());
+    return new WeaviateClient(fn.apply(new Config.Local()).build());
   }
 
-  public static WeaviateClient wcd(String clusterUrl, String apiKey) {
-    return wcd(clusterUrl, apiKey, ObjectBuilder.identity());
+  public static WeaviateClient wcd(String httpHost, String apiKey) {
+    return wcd(httpHost, apiKey, ObjectBuilder.identity());
   }
 
-  public static WeaviateClient wcd(String clusterUrl, String apiKey,
+  public static WeaviateClient wcd(String httpHost, String apiKey,
       Function<Config.WeaviateCloud, ObjectBuilder<Config>> fn) {
-    var config = new Config.WeaviateCloud(clusterUrl, Authorization.apiKey(apiKey));
+    var config = new Config.WeaviateCloud(httpHost, Authorization.apiKey(apiKey));
     return new WeaviateClient(fn.apply(config).build());
+  }
+
+  public static WeaviateClient custom(Function<Config.Custom, ObjectBuilder<Config>> fn) {
+    return new WeaviateClient(fn.apply(new Config.Custom()).build());
   }
 
   @Override
