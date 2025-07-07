@@ -27,7 +27,7 @@ public record CollectionConfig(
     @SerializedName("description") String description,
     @SerializedName("properties") List<Property> properties,
     List<ReferenceProperty> references,
-    @SerializedName("vectorConfig") Map<String, VectorIndex> vectors,
+    @SerializedName("vectorConfig") Map<String, Vectorizer> vectors,
     @SerializedName("multiTenancyConfig") MultiTenancy multiTenancy,
     @SerializedName("shardingConfig") Sharding sharding,
     @SerializedName("replicationConfig") Replication replication,
@@ -88,7 +88,7 @@ public record CollectionConfig(
     private String description;
     private Map<String, Property> properties = new HashMap<>();
     private Map<String, ReferenceProperty> references = new HashMap<>();
-    private Map<String, VectorIndex> vectors = new HashMap<>();
+    private Map<String, Vectorizer> vectors = new HashMap<>();
     private MultiTenancy multiTenancy;
     private Sharding sharding;
     private Replication replication;
@@ -131,23 +131,14 @@ public record CollectionConfig(
       return this.references.values().stream().toList();
     }
 
-    public Builder vector(VectorIndex vector) {
-      this.vectors.put(VectorIndex.DEFAULT_VECTOR_NAME, vector);
-      return this;
-    }
-
-    public Builder vector(String name, VectorIndex vector) {
-      this.vectors.put(name, vector);
-      return this;
-    }
-
-    public Builder vectors(Map<String, VectorIndex> vectors) {
+    public final Builder vectors(Map<String, Vectorizer> vectors) {
       this.vectors.putAll(vectors);
       return this;
     }
 
-    public Builder vectors(Function<VectorsBuilder, ObjectBuilder<Map<String, VectorIndex>>> fn) {
-      this.vectors = fn.apply(new VectorsBuilder()).build();
+    @SafeVarargs
+    public final Builder vectors(Map.Entry<String, Vectorizer>... vectors) {
+      this.vectors.putAll(Map.ofEntries(vectors));
       return this;
     }
 

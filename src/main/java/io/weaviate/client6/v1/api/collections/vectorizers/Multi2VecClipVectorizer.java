@@ -8,6 +8,7 @@ import java.util.function.Function;
 
 import com.google.gson.annotations.SerializedName;
 
+import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
@@ -16,7 +17,8 @@ public record Multi2VecClipVectorizer(
     @SerializedName("inferenceUrl") String inferenceUrl,
     @SerializedName("imageFields") List<String> imageFields,
     @SerializedName("textFields") List<String> textFields,
-    @SerializedName("weights") Weights weights) implements Vectorizer {
+    @SerializedName("weights") Weights weights,
+    VectorIndex vectorIndex) implements Vectorizer {
 
   private static record Weights(
       @SerializedName("imageWeights") List<Float> imageWeights,
@@ -49,10 +51,12 @@ public record Multi2VecClipVectorizer(
         builder.textFields.keySet().stream().toList(),
         new Weights(
             builder.imageFields.values().stream().toList(),
-            builder.textFields.values().stream().toList()));
+            builder.textFields.values().stream().toList()),
+        builder.vectorIndex);
   }
 
   public static class Builder implements ObjectBuilder<Multi2VecClipVectorizer> {
+    private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
     private boolean vectorizeCollectionName = false;
     private String inferenceUrl;
     private Map<String, Float> imageFields = new HashMap<>();
@@ -93,6 +97,11 @@ public record Multi2VecClipVectorizer(
 
     public Builder vectorizeCollectionName(boolean enable) {
       this.vectorizeCollectionName = enable;
+      return this;
+    }
+
+    public Builder vectorIndex(VectorIndex vectorIndex) {
+      this.vectorIndex = vectorIndex;
       return this;
     }
 

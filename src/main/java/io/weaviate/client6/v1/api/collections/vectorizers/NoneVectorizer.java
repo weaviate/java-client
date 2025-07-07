@@ -1,15 +1,13 @@
 package io.weaviate.client6.v1.api.collections.vectorizers;
 
-import java.io.IOException;
+import java.util.function.Function;
 
-import com.google.gson.TypeAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
-import com.google.gson.stream.JsonWriter;
-
+import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.api.collections.Vectorizer;
+import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
+import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public record NoneVectorizer() implements Vectorizer {
+public record NoneVectorizer(VectorIndex vectorIndex) implements Vectorizer {
   @Override
   public Kind _kind() {
     return Vectorizer.Kind.NONE;
@@ -20,26 +18,29 @@ public record NoneVectorizer() implements Vectorizer {
     return this;
   }
 
-  public static final TypeAdapter<NoneVectorizer> TYPE_ADAPTER = new TypeAdapter<NoneVectorizer>() {
+  public static NoneVectorizer of() {
+    return of(ObjectBuilder.identity());
+  }
 
-    @Override
-    public void write(JsonWriter out, NoneVectorizer value) throws IOException {
-      out.beginObject();
-      out.name(value._kind().jsonValue());
-      out.beginObject();
-      out.endObject();
-      out.endObject();
+  public static NoneVectorizer of(Function<Builder, ObjectBuilder<NoneVectorizer>> fn) {
+    return fn.apply(new Builder()).build();
+  }
+
+  public NoneVectorizer(Builder builder) {
+    this(builder.vectorIndex);
+  }
+
+  public static class Builder implements ObjectBuilder<NoneVectorizer> {
+    private VectorIndex vectorIndex = Hnsw.of();
+
+    public Builder vectorIndex(VectorIndex vectorIndex) {
+      this.vectorIndex = vectorIndex;
+      return this;
     }
 
     @Override
-    public NoneVectorizer read(JsonReader in) throws IOException {
-      // NoneVectorizer expects no parameters, so we just skip to the closing bracket.
-      in.beginObject();
-      while (in.peek() != JsonToken.END_OBJECT) {
-        in.skipValue();
-      }
-      in.endObject();
-      return new NoneVectorizer();
+    public NoneVectorizer build() {
+      return new NoneVectorizer(this);
     }
-  }.nullSafe();
+  }
 }

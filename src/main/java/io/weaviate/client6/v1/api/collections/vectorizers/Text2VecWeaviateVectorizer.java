@@ -4,6 +4,7 @@ import java.util.function.Function;
 
 import com.google.gson.annotations.SerializedName;
 
+import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
@@ -11,7 +12,8 @@ public record Text2VecWeaviateVectorizer(
     @SerializedName("vectorizeClassName") boolean vectorizeCollectionName,
     @SerializedName("baseUrl") String inferenceUrl,
     @SerializedName("dimensions") Integer dimensions,
-    @SerializedName("model") String model) implements Vectorizer {
+    @SerializedName("model") String model,
+    VectorIndex vectorIndex) implements Vectorizer {
 
   @Override
   public Vectorizer.Kind _kind() {
@@ -35,13 +37,15 @@ public record Text2VecWeaviateVectorizer(
     this(builder.vectorizeCollectionName,
         builder.inferenceUrl,
         builder.dimensions,
-        builder.model);
+        builder.model,
+        builder.vectorIndex);
   }
 
   public static final String SNOWFLAKE_ARCTIC_EMBED_L_20 = "Snowflake/snowflake-arctic-embed-l-v2.0";
   public static final String SNOWFLAKE_ARCTIC_EMBED_M_15 = "Snowflake/snowflake-arctic-embed-m-v1.5";
 
   public static class Builder implements ObjectBuilder<Text2VecWeaviateVectorizer> {
+    private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
     private boolean vectorizeCollectionName = false;
     private String inferenceUrl;
     private Integer dimensions;
@@ -64,6 +68,11 @@ public record Text2VecWeaviateVectorizer(
 
     public Builder model(String model) {
       this.model = model;
+      return this;
+    }
+
+    public Builder vectorIndex(VectorIndex vectorIndex) {
+      this.vectorIndex = vectorIndex;
       return this;
     }
 

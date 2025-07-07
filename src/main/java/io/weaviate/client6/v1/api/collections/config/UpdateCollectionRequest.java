@@ -12,7 +12,7 @@ import io.weaviate.client6.v1.api.collections.Generative;
 import io.weaviate.client6.v1.api.collections.InvertedIndex;
 import io.weaviate.client6.v1.api.collections.Replication;
 import io.weaviate.client6.v1.api.collections.Reranker;
-import io.weaviate.client6.v1.api.collections.VectorIndex;
+import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.json.JSON;
 import io.weaviate.client6.v1.internal.rest.Endpoint;
@@ -98,9 +98,14 @@ public record UpdateCollectionRequest(CollectionConfig collection) {
       return this;
     }
 
+    public final Builder vectors(Map<String, Vectorizer> vectors) {
+      this.newCollection.vectors(vectors);
+      return this;
+    }
+
     @SafeVarargs
-    public final Builder vectors(Map.Entry<String, VectorIndex>... vectors) {
-      this.newCollection.vectors(Map.ofEntries(vectors));
+    public final Builder vectors(Map.Entry<String, Vectorizer>... vectors) {
+      this.newCollection.vectors(vectors);
       return this;
     }
 
