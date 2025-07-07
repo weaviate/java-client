@@ -19,8 +19,8 @@ public record Config(
     Map<String, String> headers,
     TokenProvider tokenProvider) {
 
-  public static Config of(String scheme, Function<Custom, ObjectBuilder<Config>> fn) {
-    return fn.apply(new Custom(scheme)).build();
+  public static Config of(Function<Custom, ObjectBuilder<Config>> fn) {
+    return fn.apply(new Custom()).build();
   }
 
   public Config(Builder<?> builder) {
@@ -43,8 +43,7 @@ public record Config(
   }
 
   abstract static class Builder<SELF extends Builder<SELF>> implements ObjectBuilder<Config> {
-    // Required parameters;
-    protected final String scheme;
+    protected String scheme;
 
     protected String httpHost;
     protected int httpPort;
@@ -53,8 +52,27 @@ public record Config(
     protected TokenProvider tokenProvider;
     protected Map<String, String> headers = new HashMap<>();
 
-    protected Builder(String scheme) {
+    @SuppressWarnings("unchecked")
+    protected SELF scheme(String scheme) {
       this.scheme = scheme;
+      return (SELF) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected SELF httpHost(String httpHost) {
+      this.httpHost = trimScheme(httpHost);
+      return (SELF) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected SELF grpcHost(String grpcHost) {
+      this.grpcHost = trimScheme(grpcHost);
+      return (SELF) this;
+    }
+
+    /** Remove leading http(s):// prefix from a URL, if present. */
+    private String trimScheme(String url) {
+      return url.replaceFirst("^https?\\/\\/", "");
     }
 
     @SuppressWarnings("unchecked")
@@ -93,15 +111,15 @@ public record Config(
 
   public static class Local extends Builder<Local> {
     public Local() {
-      super("http");
+      scheme("http");
       host("localhost");
       httpPort(8080);
       grpcPort(50051);
     }
 
     public Local host(String host) {
-      this.httpHost = host;
-      this.grpcHost = host;
+      httpHost(host);
+      grpcHost(host);
       return this;
     }
 
@@ -117,29 +135,36 @@ public record Config(
   }
 
   public static class WeaviateCloud extends Builder<WeaviateCloud> {
-    public WeaviateCloud(String clusterUrl, TokenProvider tokenProvider) {
-      this(URI.create(clusterUrl), tokenProvider);
+    public WeaviateCloud(String httpHost, TokenProvider tokenProvider) {
+      this(URI.create(httpHost), tokenProvider);
     }
 
-    public WeaviateCloud(URI clusterUrl, TokenProvider tokenProvider) {
-      super("https");
-      this.httpHost = clusterUrl.getHost();
+    public WeaviateCloud(URI clusterUri, TokenProvider tokenProvider) {
+      scheme("https");
+      super.httpHost(clusterUri.getHost() != null
+          ? clusterUri.getHost() // https://[example.com]/about
+          : clusterUri.getPath().split("/")[0]); // [example.com]/about
       this.httpPort = 443;
-      this.grpcHost = "grpc-" + httpPort;
+      super.grpcHost("grpc-" + this.httpHost);
       this.grpcPort = 443;
       this.tokenProvider = tokenProvider;
     }
   }
 
   public static class Custom extends Builder<Custom> {
-    public Custom(String scheme) {
-      super(scheme);
+    /**
+     * Scheme controls which protocol will be used for the database connection.
+     * REST and gRPC ports will be automatically inferred from it:
+     * <strong>443</strong> for HTTPS connection and <strong>80</strong> for HTTP.
+     */
+    public Custom scheme(String scheme) {
       httpPort(scheme == "https" ? 443 : 80);
       grpcPort(scheme == "https" ? 443 : 80);
+      return super.scheme(scheme);
     }
 
-    public Custom httpHost(String host) {
-      this.httpHost = host;
+    public Custom httpHost(String httpHost) {
+      super.httpHost(httpHost);
       return this;
     }
 
@@ -148,8 +173,8 @@ public record Config(
       return this;
     }
 
-    public Custom grpcHost(String host) {
-      this.grpcHost = host;
+    public Custom grpcHost(String grpcHost) {
+      super.grpcHost(grpcHost);
       return this;
     }
 
