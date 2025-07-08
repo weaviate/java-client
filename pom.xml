@@ -7,8 +7,8 @@
   <packaging>jar</packaging>
   <version>6.0.0-SNAPSHOT</version>
 
-  <name>Weaviate Java Client</name>
-  <description>A Java client for Weaviate Vector Search Engine</description>
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>Official Java client for Weaviate Vector Search Engine</description>
   <url>https://github.com/weaviate/java-client</url>
 
   <organization>
