@@ -11,7 +11,6 @@ import org.testcontainers.containers.Network;
 import org.testcontainers.lifecycle.Startable;
 
 import io.weaviate.client6.v1.api.WeaviateClient;
-import lombok.RequiredArgsConstructor;
 
 public class Container {
   public static final Weaviate WEAVIATE = Weaviate.createDefault();
@@ -85,9 +84,12 @@ public class Container {
     };
   }
 
-  @RequiredArgsConstructor
   public static class PerTestSuite implements TestRule {
     private final Startable container;
+
+    public PerTestSuite(Startable container) {
+      this.container = container;
+    }
 
     @Override
     public Statement apply(Statement base, Description description) {
