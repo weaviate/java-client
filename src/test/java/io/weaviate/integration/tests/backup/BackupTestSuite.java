@@ -664,10 +664,12 @@ public class BackupTestSuite {
    * @param result Any Result object from a request.
    */
   private static void skipIfNotImplemented(Result<?> result) {
-    assumeTrue(
-      "this operation is not implemented on the server", 
-      result.getError().getMessages().stream()
-        .noneMatch(err -> err.getMessage().toLowerCase().contains("not implemented"))
-    );
+    if (result.hasErrors()) {
+      assumeTrue(
+        "this operation is not implemented on the server", 
+        result.getError().getMessages().stream()
+          .noneMatch(err -> err.getMessage().toLowerCase().contains("not implemented"))
+      );
+    }
   }
 }
