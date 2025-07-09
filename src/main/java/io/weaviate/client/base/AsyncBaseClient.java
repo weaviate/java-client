@@ -30,39 +30,48 @@ public abstract class AsyncBaseClient<T> {
     return sendRequest(endpoint, null, "GET", classOfT, callback, null);
   }
 
-  protected Future<Result<T>> sendGetRequest(String endpoint, FutureCallback<Result<T>> callback, ResponseParser<T> parser) {
+  protected Future<Result<T>> sendGetRequest(String endpoint, FutureCallback<Result<T>> callback,
+      ResponseParser<T> parser) {
     return sendRequest(endpoint, null, "GET", null, callback, parser);
   }
 
-  protected Future<Result<T>> sendPostRequest(String endpoint, Object payload, Class<T> classOfT, FutureCallback<Result<T>> callback) {
+  protected Future<Result<T>> sendPostRequest(String endpoint, Object payload, Class<T> classOfT,
+      FutureCallback<Result<T>> callback) {
     return sendRequest(endpoint, payload, "POST", classOfT, callback, null);
   }
 
-  protected Future<Result<T>> sendPostRequest(String endpoint, Object payload, FutureCallback<Result<T>> callback, ResponseParser<T> parser) {
+  protected Future<Result<T>> sendPostRequest(String endpoint, Object payload, FutureCallback<Result<T>> callback,
+      ResponseParser<T> parser) {
     return sendRequest(endpoint, payload, "POST", null, callback, parser);
   }
 
-  protected Future<Result<T>> sendPutRequest(String endpoint, Object payload, Class<T> classOfT, FutureCallback<Result<T>> callback) {
+  protected Future<Result<T>> sendPutRequest(String endpoint, Object payload, Class<T> classOfT,
+      FutureCallback<Result<T>> callback) {
     return sendRequest(endpoint, payload, "PUT", classOfT, callback, null);
   }
 
-  protected Future<Result<T>> sendPutRequest(String endpoint, Object payload, FutureCallback<Result<T>> callback, ResponseParser<T> parser) {
+  protected Future<Result<T>> sendPutRequest(String endpoint, Object payload, FutureCallback<Result<T>> callback,
+      ResponseParser<T> parser) {
     return sendRequest(endpoint, payload, "PUT", null, callback, parser);
   }
 
-  protected Future<Result<T>> sendPatchRequest(String endpoint, Object payload, Class<T> classOfT, FutureCallback<Result<T>> callback) {
+  protected Future<Result<T>> sendPatchRequest(String endpoint, Object payload, Class<T> classOfT,
+      FutureCallback<Result<T>> callback) {
     return sendRequest(endpoint, payload, "PATCH", classOfT, callback, null);
   }
 
-  protected Future<Result<T>> sendPatchRequest(String endpoint, Object payload, FutureCallback<Result<T>> callback, ResponseParser<T> parser) {
+  protected Future<Result<T>> sendPatchRequest(String endpoint, Object payload, FutureCallback<Result<T>> callback,
+      ResponseParser<T> parser) {
     return sendRequest(endpoint, payload, "PATCH", null, callback, parser);
   }
 
-  protected Future<Result<T>> sendDeleteRequest(String endpoint, Object payload, Class<T> classOfT, FutureCallback<Result<T>> callback) {
+  protected Future<Result<T>> sendDeleteRequest(String endpoint, Object payload, Class<T> classOfT,
+      FutureCallback<Result<T>> callback) {
     return sendRequest(endpoint, payload, "DELETE", classOfT, callback, null);
   }
 
-  protected Future<Result<T>> sendDeleteRequest(String endpoint, Object payload, FutureCallback<Result<T>> callback, ResponseParser<T> parser) {
+  protected Future<Result<T>> sendDeleteRequest(String endpoint, Object payload, FutureCallback<Result<T>> callback,
+      ResponseParser<T> parser) {
     return sendRequest(endpoint, payload, "DELETE", null, callback, parser);
   }
 
@@ -70,12 +79,15 @@ public abstract class AsyncBaseClient<T> {
     return sendRequest(endpoint, null, "HEAD", classOfT, callback, null);
   }
 
-  protected Future<Result<T>> sendHeadRequest(String endpoint, FutureCallback<Result<T>> callback, ResponseParser<T> parser) {
+  protected Future<Result<T>> sendHeadRequest(String endpoint, FutureCallback<Result<T>> callback,
+      ResponseParser<T> parser) {
     return sendRequest(endpoint, null, "HEAD", null, callback, parser);
   }
 
-  private Future<Result<T>> sendRequest(String endpoint, Object payload, String method, Class<T> classOfT, FutureCallback<Result<T>> callback, ResponseParser<T> parser) {
-    return client.execute(SimpleRequestProducer.create(getRequest(endpoint, payload, method)), new WeaviateResponseConsumer<>(classOfT, parser), callback);
+  private Future<Result<T>> sendRequest(String endpoint, Object payload, String method, Class<T> classOfT,
+      FutureCallback<Result<T>> callback, ResponseParser<T> parser) {
+    return client.execute(SimpleRequestProducer.create(getRequest(endpoint, payload, method)),
+        new WeaviateResponseConsumer<>(classOfT, parser), callback);
   }
 
   protected SimpleHttpRequest getRequest(String endpoint, Object payload, String method) {
