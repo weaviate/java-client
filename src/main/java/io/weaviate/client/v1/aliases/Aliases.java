@@ -33,7 +33,7 @@ public class Aliases {
     return new AliasDeleter(httpClient, config);
   }
 
-  public Object updater() {
+  public AliasUpdater updater() {
     return new AliasUpdater(httpClient, config);
   }
 }

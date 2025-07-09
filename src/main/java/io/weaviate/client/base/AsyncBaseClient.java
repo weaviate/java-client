@@ -1,17 +1,19 @@
 package io.weaviate.client.base;
 
-import io.weaviate.client.Config;
-import io.weaviate.client.base.http.async.ResponseParser;
-import io.weaviate.client.base.http.async.WeaviateResponseConsumer;
-import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import java.util.Map;
 import java.util.concurrent.Future;
+
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.client5.http.async.methods.SimpleRequestProducer;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.core5.concurrent.FutureCallback;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.HttpHeaders;
+
+import io.weaviate.client.Config;
+import io.weaviate.client.base.http.async.ResponseParser;
+import io.weaviate.client.base.http.async.WeaviateResponseConsumer;
+import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 
 public abstract class AsyncBaseClient<T> {
   protected final CloseableHttpAsyncClient client;
