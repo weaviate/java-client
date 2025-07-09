@@ -25,6 +25,7 @@ jobs:
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
         run: |
           export GPG_TTY=$(tty)
+          source ./passphrase.env # load $MAVEN_GPG_PASSHRASE for maven-gpg-plugin
           mvn -DskipTests clean package
           mvn -s settings.xml \
           -Dcentral-publishing.autoPublish=true \
