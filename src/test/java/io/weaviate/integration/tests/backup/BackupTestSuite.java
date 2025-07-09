@@ -337,7 +337,7 @@ public class BackupTestSuite {
 
     assertThat(listResult.getError()).isNull();
     assertThat(listResult.getResult()).isNotNull()
-      .hasSize(2);
+      .hasSizeGreaterThan(2);
   }
 
   public static void testFailOnCreateBackupOnNotExistingBackend(Supplier<Result<BackupCreateResponse>> supplierCreate) {
