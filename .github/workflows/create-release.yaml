@@ -16,7 +16,7 @@ jobs:
         env:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
-          ./decrypt_secret.sh
+          ./tools/decrypt_secret.sh
       - name: Deploy
         env:
           OKTA_DUMMY_CI_PW: ${{ secrets.OKTA_DUMMY_CI_PW }}
@@ -25,8 +25,12 @@ jobs:
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
         run: |
           export GPG_TTY=$(tty)
+          source ./passphrase.env # load $MAVEN_GPG_PASSHRASE for maven-gpg-plugin
           mvn -DskipTests clean package
-          mvn -s settings.xml deploy
+          mvn -s settings.xml \
+          -Dcentral-publishing.autoPublish=true \
+          -Dcentral-publishing.waitUntil=published \
+          deploy
       - name: Archive artifacts
         uses: actions/upload-artifact@v4
         with:
