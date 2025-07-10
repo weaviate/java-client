@@ -132,9 +132,9 @@ public abstract class Permission<P extends Permission<P>> {
    * Create {@link AliasesPermission} for a alias.
    * <p>
    * Example:
-   * {@code Permission.backups("Pizza", AliasPermission.Action.MANAGE) }
+   * {@code Permission.aliases("PizzaAlias", AliasPermission.Action.CREATE) }
    */
-  public static AliasesPermission alias(String alias, AliasesPermission.Action... actions) {
+  public static AliasesPermission aliases(String alias, AliasesPermission.Action... actions) {
     checkDeprecation(actions);
     return new AliasesPermission(alias, actions);
   }
