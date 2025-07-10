@@ -37,7 +37,7 @@ public class PermissionTest {
         {
             "alias permission",
             (Supplier<Permission<?>>) () -> alias,
-            new WeaviatePermission("create_backups", alias),
+            new WeaviatePermission("create_aliases", alias),
         },
         {
             "backup permission",
