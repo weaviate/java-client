@@ -12,6 +12,7 @@ import io.weaviate.client.base.http.async.AsyncHttpClient;
 import io.weaviate.client.base.util.DbVersionProvider;
 import io.weaviate.client.base.util.DbVersionSupport;
 import io.weaviate.client.base.util.GrpcVersionSupport;
+import io.weaviate.client.v1.async.aliases.Aliases;
 import io.weaviate.client.v1.async.backup.Backup;
 import io.weaviate.client.v1.async.batch.Batch;
 import io.weaviate.client.v1.async.classifications.Classifications;
@@ -82,6 +83,10 @@ public class WeaviateAsyncClient implements AutoCloseable {
 
   public Users users() {
     return new Users(client, config, tokenProvider);
+  }
+
+  public Aliases alias() {
+    return new Aliases(client, config, tokenProvider);
   }
 
   private DbVersionProvider initDbVersionProvider() {

@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import io.weaviate.client.v1.rbac.model.AliasPermission;
 import io.weaviate.client.v1.rbac.model.BackupsPermission;
 import io.weaviate.client.v1.rbac.model.ClusterPermission;
 import io.weaviate.client.v1.rbac.model.CollectionsPermission;
@@ -26,6 +27,10 @@ public class WeaviatePermissionTest {
   @Test
   public void testMergedPermissions() {
     WeaviatePermission[] apiPermissions = {
+        // Create and delete PizzaAlias alias
+        new WeaviatePermission("create_aliases", new AliasPermission("PizzaAlias")),
+        new WeaviatePermission("delete_aliases", new AliasPermission("PizzaAlias")),
+
         // Manage Pizza backups
         new WeaviatePermission("manage_backups", new BackupsPermission("Pizza")),
 
@@ -70,6 +75,7 @@ public class WeaviatePermissionTest {
     };
 
     Permission<?>[] libraryPermissions = {
+        new AliasPermission("PizzaAlias", AliasPermission.Action.CREATE, AliasPermission.Action.DELETE),
         new BackupsPermission("Pizza", BackupsPermission.Action.MANAGE),
         new DataPermission("Pizza", DataPermission.Action.MANAGE, DataPermission.Action.READ),
         new DataPermission("Songs", DataPermission.Action.UPDATE, DataPermission.Action.DELETE),

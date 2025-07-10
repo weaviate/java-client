@@ -8,6 +8,7 @@ import io.weaviate.client.base.http.impl.CommonsHttpClientImpl;
 import io.weaviate.client.base.util.DbVersionProvider;
 import io.weaviate.client.base.util.DbVersionSupport;
 import io.weaviate.client.base.util.GrpcVersionSupport;
+import io.weaviate.client.v1.aliases.Aliases;
 import io.weaviate.client.v1.async.WeaviateAsyncClient;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.backup.Backup;
@@ -109,6 +110,10 @@ public class WeaviateClient {
 
   public Users users() {
     return new Users(httpClient, config);
+  }
+
+  public Aliases alias() {
+    return new Aliases(httpClient, config);
   }
 
   private DbVersionProvider initDbVersionProvider() {
