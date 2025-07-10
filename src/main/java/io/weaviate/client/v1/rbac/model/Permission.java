@@ -66,7 +66,9 @@ public abstract class Permission<P extends Permission<P>> {
    */
   public static Permission<?> fromWeaviate(WeaviatePermission perm) {
     String action = perm.getAction();
-    if (perm.getBackups() != null) {
+    if (perm.getAliases() != null) {
+      return new AliasesPermission(perm.getAliases().getAlias(), action);
+    } else if (perm.getBackups() != null) {
       return new BackupsPermission(perm.getBackups().getCollection(), action);
     } else if (perm.getCollections() != null) {
       return new CollectionsPermission(perm.getCollections().getCollection(), action);
@@ -127,10 +129,21 @@ public abstract class Permission<P extends Permission<P>> {
   }
 
   /**
+   * Create {@link AliasesPermission} for a alias.
+   * <p>
+   * Example:
+   * {@code Permission.backups("Pizza", AliasPermission.Action.MANAGE) }
+   */
+  public static AliasesPermission alias(String alias, AliasesPermission.Action... actions) {
+    checkDeprecation(actions);
+    return new AliasesPermission(alias, actions);
+  }
+
+  /**
    * Create {@link BackupsPermission} for a collection.
    * <p>
    * Example:
-   * {@code Permission.backups(BackupsPermission.Action.MANAGE, "Pizza") }
+   * {@code Permission.backups("Pizza", BackupsPermission.Action.MANAGE) }
    */
   public static BackupsPermission backups(String collection, BackupsPermission.Action... actions) {
     checkDeprecation(actions);
@@ -140,7 +153,7 @@ public abstract class Permission<P extends Permission<P>> {
   /**
    * Create {@link ClusterPermission} permission.
    * <p>
-   * Example: {@code Permission.cluster(ClusterPermission.Action.READ, "Pizza") }
+   * Example: {@code Permission.cluster(ClusterPermission.Action.READ) }
    */
   public static ClusterPermission cluster(ClusterPermission.Action... actions) {
     checkDeprecation(actions);

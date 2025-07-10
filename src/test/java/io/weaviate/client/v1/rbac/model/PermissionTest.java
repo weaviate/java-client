@@ -23,6 +23,7 @@ import io.weaviate.client.v1.rbac.api.WeaviatePermission;
 @RunWith(JParamsTestRunner.class)
 public class PermissionTest {
   public static Object[][] serializationTestCases() {
+    AliasesPermission alias = new AliasesPermission("PizzaAlias", AliasesPermission.Action.CREATE);
     BackupsPermission backups = new BackupsPermission("Pizza", BackupsPermission.Action.MANAGE);
     DataPermission data = new DataPermission("Pizza", DataPermission.Action.MANAGE);
     NodesPermission nodes = new NodesPermission("Pizza", NodesPermission.Action.READ);
@@ -33,6 +34,11 @@ public class PermissionTest {
     UsersPermission users = new UsersPermission(UsersPermission.Action.READ);
 
     return new Object[][] {
+        {
+            "alias permission",
+            (Supplier<Permission<?>>) () -> alias,
+            new WeaviatePermission("create_backups", alias),
+        },
         {
             "backup permission",
             (Supplier<Permission<?>>) () -> backups,
