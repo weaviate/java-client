@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -49,11 +50,11 @@ public class ClientAliasesTest {
     assumeTrue(createdGeorge.getResult(), "created GeorgeBarnes collection");
 
     // Act: create alias
-    client.aliases().creator().withClassName("PaulHewson").withAlias("Bono").run().get();
-    client.aliases().creator().withClassName("GeorgeBarnes").withAlias("MachineGunKelly").run().get();
+    client.alias().creator().withClassName("PaulHewson").withAlias("Bono").run().get();
+    client.alias().creator().withClassName("GeorgeBarnes").withAlias("MachineGunKelly").run().get();
 
     // Assert: get all
-    Result<Map<String, Alias>> all = client.aliases().allGetter().run().get();
+    Result<Map<String, Alias>> all = client.alias().allGetter().run().get();
 
     Assertions.assertThat(all.getError()).isNull();
     Assertions.assertThat(all.getResult())
@@ -70,21 +71,27 @@ public class ClientAliasesTest {
         .className("ColsonBaker").build()).run().get();
     assumeTrue(createdMGK.getResult(), "created ColsonBaker collection");
 
-    client.aliases().updater().withAlias("MachineGunKelly").withNewClassName("ColsonBaker").run().get();
+    client.alias().updater().withAlias("MachineGunKelly").withNewClassName("ColsonBaker").run().get();
 
     // Assert: get one
-    Result<Alias> mgk = client.aliases().getter().withAlias("MachineGunKelly").run().get();
+    Result<Alias> mgk = client.alias().getter().withAlias("MachineGunKelly").run().get();
 
     Assertions.assertThat(mgk.getResult())
         .as("MachineGunKelly alias points to ColsonBaker")
         .returns("MachineGunKelly", Alias::getAlias)
         .returns("ColsonBaker", Alias::getClassName);
 
+    Result<Map<String, Alias>> colsonAliases = client.alias().allGetter().withClassName("ColsonBaker").run().get();
+    Assertions.assertThat(colsonAliases.getResult())
+        .containsOnlyKeys("MachineGunKelly")
+        .extracting(Map::values, InstanceOfAssertFactories.collection(Alias.class))
+        .extracting(Alias::getClassName).containsOnly("ColsonBaker");
+
     // Act: delete
-    client.aliases().deleter().withAlias("Bono").run().get();
+    client.alias().deleter().withAlias("Bono").run().get();
 
     // Assert
-    Result<Alias> bono = client.aliases().getter().withAlias("Bono").run().get();
+    Result<Alias> bono = client.alias().getter().withAlias("Bono").run().get();
     Assertions.assertThat(bono)
         .as("Bono alias deleted")
         .returns(null, Result::getResult)

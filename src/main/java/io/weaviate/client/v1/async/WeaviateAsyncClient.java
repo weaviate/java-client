@@ -85,7 +85,7 @@ public class WeaviateAsyncClient implements AutoCloseable {
     return new Users(client, config, tokenProvider);
   }
 
-  public Aliases aliases() {
+  public Aliases alias() {
     return new Aliases(client, config, tokenProvider);
   }
 

@@ -15,8 +15,16 @@ import io.weaviate.client.v1.aliases.api.AliasAllGetter.ResponseBody;
 import io.weaviate.client.v1.aliases.model.Alias;
 
 public class AliasAllGetter extends BaseClient<ResponseBody> implements ClientResult<Map<String, Alias>> {
+  private String className;
+
   public AliasAllGetter(HttpClient httpClient, Config config) {
     super(httpClient, config);
+  }
+
+  /** List aliases defined for this class. */
+  public AliasAllGetter withClassName(String className) {
+    this.className = className;
+    return this;
   }
 
   static class ResponseBody {
@@ -25,7 +33,8 @@ public class AliasAllGetter extends BaseClient<ResponseBody> implements ClientRe
 
   @Override
   public Result<Map<String, Alias>> run() {
-    Response<ResponseBody> resp = sendGetRequest("/aliases", ResponseBody.class);
+    String path = "/aliases" + (className != null ? "?class=" + className : "");
+    Response<ResponseBody> resp = sendGetRequest(path, ResponseBody.class);
     if (resp.getErrors() != null) {
       return new Result<>(resp, null);
     }

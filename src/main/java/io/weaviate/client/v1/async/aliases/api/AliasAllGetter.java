@@ -22,14 +22,22 @@ import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 
 public class AliasAllGetter extends AsyncBaseClient<Map<String, Alias>>
     implements AsyncClientResult<Map<String, Alias>> {
+  private String className;
 
   public AliasAllGetter(CloseableHttpAsyncClient httpClient, Config config, AccessTokenProvider tokenProvider) {
     super(httpClient, config, tokenProvider);
   }
 
+  /** List aliases defined for this class. */
+  public AliasAllGetter withClassName(String className) {
+    this.className = className;
+    return this;
+  }
+
   @Override
   public Future<Result<Map<String, Alias>>> run(FutureCallback<Result<Map<String, Alias>>> callback) {
-    return sendGetRequest("/aliases", callback, new ResponseParser<Map<String, Alias>>() {
+    String path = "/aliases" + (className != null ? "?class=" + className : "");
+    return sendGetRequest(path, callback, new ResponseParser<Map<String, Alias>>() {
 
       class ResponseBody {
         List<Alias> aliases;

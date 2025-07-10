@@ -24,7 +24,7 @@ import com.jparams.junit4.description.Name;
 
 import io.weaviate.client.Config;
 import io.weaviate.client.base.Result;
-import io.weaviate.client.v1.rbac.model.AliasesPermission;
+import io.weaviate.client.v1.rbac.model.AliasPermission;
 import io.weaviate.client.v1.rbac.model.BackupsPermission;
 import io.weaviate.client.v1.rbac.model.ClusterPermission;
 import io.weaviate.client.v1.rbac.model.CollectionsPermission;
@@ -137,7 +137,7 @@ public class ClientRbacTestSuite {
     String myCollectionAlias = "PizzaAlias";
 
     Permission<?>[] wantPermissions = new Permission<?>[] {
-        Permission.aliases(myCollectionAlias, AliasesPermission.Action.CREATE),
+        Permission.alias(myCollectionAlias, AliasPermission.Action.CREATE),
         Permission.backups(myCollection, BackupsPermission.Action.MANAGE),
         Permission.cluster(ClusterPermission.Action.READ),
         Permission.nodes(myCollection, NodesPermission.Action.READ),

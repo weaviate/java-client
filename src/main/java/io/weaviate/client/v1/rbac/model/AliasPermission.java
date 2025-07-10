@@ -6,15 +6,15 @@ import lombok.Getter;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class AliasesPermission extends Permission<AliasesPermission> {
+public class AliasPermission extends Permission<AliasPermission> {
   final String alias;
 
-  public AliasesPermission(String alias, Action... actions) {
+  public AliasPermission(String alias, Action... actions) {
     super(actions);
     this.alias = alias;
   }
 
-  AliasesPermission(String alias, String action) {
+  AliasPermission(String alias, String action) {
     this(alias, RbacAction.fromString(Action.class, action));
   }
 

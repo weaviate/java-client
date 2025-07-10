@@ -3,7 +3,7 @@ package io.weaviate.client.v1.rbac.api;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.weaviate.client.v1.rbac.model.AliasesPermission;
+import io.weaviate.client.v1.rbac.model.AliasPermission;
 import io.weaviate.client.v1.rbac.model.BackupsPermission;
 import io.weaviate.client.v1.rbac.model.CollectionsPermission;
 import io.weaviate.client.v1.rbac.model.DataPermission;
@@ -26,7 +26,7 @@ import lombok.ToString;
 @ToString
 public class WeaviatePermission {
   String action;
-  AliasesPermission aliases;
+  AliasPermission aliases;
   BackupsPermission backups;
   CollectionsPermission collections;
   DataPermission data;
@@ -41,8 +41,8 @@ public class WeaviatePermission {
 
   public <P extends Permission<P>> WeaviatePermission(String action, Permission<P> perm) {
     this.action = action;
-    if (perm instanceof AliasesPermission) {
-      this.aliases = (AliasesPermission) perm;
+    if (perm instanceof AliasPermission) {
+      this.aliases = (AliasPermission) perm;
     } else if (perm instanceof BackupsPermission) {
       this.backups = (BackupsPermission) perm;
     } else if (perm instanceof CollectionsPermission) {

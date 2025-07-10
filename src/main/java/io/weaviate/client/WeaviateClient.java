@@ -112,7 +112,7 @@ public class WeaviateClient {
     return new Users(httpClient, config);
   }
 
-  public Aliases aliases() {
+  public Aliases alias() {
     return new Aliases(httpClient, config);
   }
 

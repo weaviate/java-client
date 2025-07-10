@@ -67,7 +67,7 @@ public abstract class Permission<P extends Permission<P>> {
   public static Permission<?> fromWeaviate(WeaviatePermission perm) {
     String action = perm.getAction();
     if (perm.getAliases() != null) {
-      return new AliasesPermission(perm.getAliases().getAlias(), action);
+      return new AliasPermission(perm.getAliases().getAlias(), action);
     } else if (perm.getBackups() != null) {
       return new BackupsPermission(perm.getBackups().getCollection(), action);
     } else if (perm.getCollections() != null) {
@@ -129,14 +129,14 @@ public abstract class Permission<P extends Permission<P>> {
   }
 
   /**
-   * Create {@link AliasesPermission} for a alias.
+   * Create {@link AliasPermission} for an alias.
    * <p>
    * Example:
-   * {@code Permission.aliases("PizzaAlias", AliasPermission.Action.CREATE) }
+   * {@code Permission.alias("PizzaAlias", AliasPermission.Action.CREATE) }
    */
-  public static AliasesPermission aliases(String alias, AliasesPermission.Action... actions) {
+  public static AliasPermission alias(String alias, AliasPermission.Action... actions) {
     checkDeprecation(actions);
-    return new AliasesPermission(alias, actions);
+    return new AliasPermission(alias, actions);
   }
 
   /**
