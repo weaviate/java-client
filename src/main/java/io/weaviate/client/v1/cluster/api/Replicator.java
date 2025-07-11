@@ -5,11 +5,11 @@ import com.google.gson.annotations.SerializedName;
 import io.weaviate.client.Config;
 import io.weaviate.client.base.BaseClient;
 import io.weaviate.client.base.ClientResult;
-import io.weaviate.client.base.Response;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.v1.cluster.api.Replicator.ResponseBody;
 import io.weaviate.client.v1.cluster.model.ReplicationType;
+import lombok.Getter;
 
 public class Replicator extends BaseClient<ResponseBody> implements ClientResult<String> {
   private String className;
@@ -60,6 +60,7 @@ public class Replicator extends BaseClient<ResponseBody> implements ClientResult
     ReplicationType replicationType = Replicator.this.replicationType;
   }
 
+  @Getter
   static class ResponseBody {
     @SerializedName("id")
     String replicationId;
@@ -67,7 +68,8 @@ public class Replicator extends BaseClient<ResponseBody> implements ClientResult
 
   @Override
   public Result<String> run() {
-    Response<ResponseBody> resp = sendPostRequest("/replication/replicate", new RequestBody(), ResponseBody.class);
-    return new Result<>(resp, resp.getBody().replicationId);
+    return Result.map(
+        sendPostRequest("/replication/replicate", new RequestBody(), ResponseBody.class),
+        ResponseBody::getReplicationId);
   }
 }

@@ -1,7 +1,6 @@
 package io.weaviate.client.v1.cluster.api.replication.api;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +9,6 @@ import java.util.Map.Entry;
 import io.weaviate.client.Config;
 import io.weaviate.client.base.BaseClient;
 import io.weaviate.client.base.ClientResult;
-import io.weaviate.client.base.Response;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.base.util.UrlEncoder;
@@ -57,7 +55,6 @@ public class ReplicationQuerier extends BaseClient<ReplicateOperation[]>
       path += "?" + String.join("&", query);
     }
 
-    Response<ReplicateOperation[]> resp = sendGetRequest(path, ReplicateOperation[].class);
-    return new Result<>(resp, Arrays.asList(resp.getBody()));
+    return Result.toList(sendGetRequest(path, ReplicateOperation[].class));
   }
 }

@@ -67,6 +67,49 @@ public class Result<T> {
   }
 
   /**
+   * Apply {@code map} function to {@code Response::getBody} and return
+   * {@link Result} with the transformed body.
+   *
+   * <p>
+   * A {@code null}-body is passed as-is.
+   *
+   * <p>
+   * Usage:
+   *
+   * <pre>{@code @Override
+   * public Result<String> run() {
+   *   // Deserializes into Person.class but returns Person's firstName or null.
+   *   return Result.map(sendGetRequest("/person", Person.class), Person::getFirstName);
+   * }
+   * }</pre>
+   */
+  public static <T, R> Result<R> map(Response<T> response, Function<T, R> map) {
+    R body = response.getBody() != null
+        ? map.apply(response.getBody())
+        : null;
+    return new Result<>(response, body);
+  }
+
+  /**
+   * Convert {@code T[]} response to a {@code List<T>} response.
+   * This is handy for all request handlers which returns lists,
+   * as the current client does not support deserializing into a parametrized
+   * {@code List.class}.
+   *
+   * <p>
+   * Usage:
+   *
+   * <pre>{@code @Override
+   * public Result<List<String>> run() {
+   *   return Result.toList(sendGetRequest("/names", String[].class));
+   * }
+   * }</pre>
+   */
+  public static <T> Result<List<T>> toList(Response<T[]> response) {
+    return new Result<>(response, Arrays.asList(response.getBody()));
+  }
+
+  /**
    * Convert {@code Result<Void>} response to a {@code Result<Boolean>}.
    * The result contains true if status code is in 100-299 range.
    *

@@ -5,12 +5,12 @@ import com.google.gson.annotations.SerializedName;
 import io.weaviate.client.Config;
 import io.weaviate.client.base.BaseClient;
 import io.weaviate.client.base.ClientResult;
-import io.weaviate.client.base.Response;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.base.util.UrlEncoder;
 import io.weaviate.client.v1.cluster.api.ShardingStateQuerier.ResponseBody;
 import io.weaviate.client.v1.cluster.model.ShardingState;
+import lombok.Getter;
 
 public class ShardingStateQuerier extends BaseClient<ResponseBody> implements ClientResult<ShardingState> {
   private String className;
@@ -30,6 +30,7 @@ public class ShardingStateQuerier extends BaseClient<ResponseBody> implements Cl
     return this;
   }
 
+  @Getter
   static class ResponseBody {
     @SerializedName("shardingState")
     ShardingState state;
@@ -41,7 +42,6 @@ public class ShardingStateQuerier extends BaseClient<ResponseBody> implements Cl
     if (shard != null) {
       path += "&" + UrlEncoder.encodeQueryParam("shard", shard);
     }
-    Response<ResponseBody> resp = sendGetRequest(path, ResponseBody.class);
-    return new Result<>(resp, resp.getBody().state);
+    return Result.map(sendGetRequest(path, ResponseBody.class), ResponseBody::getState);
   }
 }
