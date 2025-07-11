@@ -1,5 +1,13 @@
 package io.weaviate.client.v1.cluster.api;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.apache.commons.lang3.StringUtils;
+
 import io.weaviate.client.Config;
 import io.weaviate.client.base.BaseClient;
 import io.weaviate.client.base.ClientResult;
@@ -8,12 +16,10 @@ import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.base.util.UrlEncoder;
 import io.weaviate.client.v1.cluster.model.NodesStatusResponse;
-import org.apache.commons.lang3.StringUtils;
 
 public class NodesStatusGetter extends BaseClient<NodesStatusResponse> implements ClientResult<NodesStatusResponse> {
-
   private String className;
-  private String output;
+  private Map<String, Object> queryParams = new HashMap<>();
 
   public NodesStatusGetter(HttpClient httpClient, Config config) {
     super(httpClient, config);
@@ -24,8 +30,13 @@ public class NodesStatusGetter extends BaseClient<NodesStatusResponse> implement
     return this;
   }
 
+  public NodesStatusGetter withShard(String shard) {
+    this.queryParams.put("shard", shard);
+    return this;
+  }
+
   public NodesStatusGetter withOutput(String output) {
-    this.output = output;
+    this.queryParams.put("output", output);
     return this;
   }
 
@@ -37,12 +48,20 @@ public class NodesStatusGetter extends BaseClient<NodesStatusResponse> implement
 
   private String path() {
     String path = "/nodes";
+
     if (StringUtils.isNotBlank(className)) {
-      path = String.format("%s/%s", path, UrlEncoder.encodePathParam(className));
+      path += "/" + UrlEncoder.encodePathParam(className);
     }
-    if (StringUtils.isNotBlank(output)) {
-      path = String.format("%s?%s", path, UrlEncoder.encodeQueryParam("output", output));
+
+    List<String> query = new ArrayList<>();
+    for (Entry<String, Object> qp : queryParams.entrySet()) {
+      query.add(UrlEncoder.encodeQueryParam(qp.getKey(), qp.getValue().toString()));
     }
+
+    if (!query.isEmpty()) {
+      path += "?" + String.join("&", query);
+    }
+
     return path;
   }
 }

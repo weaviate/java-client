@@ -2,6 +2,8 @@ package io.weaviate.client.v1.cluster;
 
 import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.v1.cluster.api.NodesStatusGetter;
+import io.weaviate.client.v1.cluster.api.Replicator;
+import io.weaviate.client.v1.cluster.api.ShardingStateQuerier;
 import io.weaviate.client.Config;
 
 public class Cluster {
@@ -16,5 +18,13 @@ public class Cluster {
 
   public NodesStatusGetter nodesStatusGetter() {
     return new NodesStatusGetter(httpClient, config);
+  }
+
+  public ShardingStateQuerier shardingStateQuerier() {
+    return new ShardingStateQuerier(httpClient, config);
+  }
+
+  public Replicator replicator() {
+    return new Replicator(httpClient, config);
   }
 }
