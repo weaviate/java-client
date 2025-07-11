@@ -11,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import io.weaviate.client.Config;
 import io.weaviate.client.base.BaseClient;
 import io.weaviate.client.base.ClientResult;
-import io.weaviate.client.base.Response;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.base.util.UrlEncoder;
@@ -42,8 +41,7 @@ public class NodesStatusGetter extends BaseClient<NodesStatusResponse> implement
 
   @Override
   public Result<NodesStatusResponse> run() {
-    Response<NodesStatusResponse> resp = sendGetRequest(path(), NodesStatusResponse.class);
-    return new Result<>(resp);
+    return new Result<>(sendGetRequest(path(), NodesStatusResponse.class));
   }
 
   private String path() {

@@ -1,5 +1,7 @@
 package io.weaviate.client.v1.cluster.api.replication.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public enum ReplicateOperationState {
   @SerializedName("REGISTERED")
   REGISTERED,
