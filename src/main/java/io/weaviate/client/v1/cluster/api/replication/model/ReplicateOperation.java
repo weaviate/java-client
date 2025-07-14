@@ -5,7 +5,11 @@ import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
 import io.weaviate.client.v1.cluster.model.ReplicationType;
+import lombok.Getter;
+import lombok.ToString;
 
+@Getter
+@ToString
 public class ReplicateOperation {
   @SerializedName("id")
   String uuid;

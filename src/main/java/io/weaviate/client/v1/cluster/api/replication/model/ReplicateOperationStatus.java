@@ -4,6 +4,11 @@ import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
+import lombok.Getter;
+import lombok.ToString;
+
+@Getter
+@ToString
 public class ReplicateOperationStatus {
   @SerializedName("state")
   ReplicateOperationState state;

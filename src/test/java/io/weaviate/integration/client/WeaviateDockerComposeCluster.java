@@ -1,6 +1,7 @@
 package io.weaviate.integration.client;
 
 import java.time.Duration;
+
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -35,8 +36,11 @@ public class WeaviateDockerComposeCluster implements TestRule {
       withEnv("RAFT_JOIN", "weaviate-0");
       if (isJoining) {
         withEnv("CLUSTER_JOIN", "weaviate-0:7110");
-        waitingFor(Wait.forHttp("/v1/.well-known/ready").forPort(8080).forStatusCode(200).withStartupTimeout(Duration.ofSeconds(10)));
+        waitingFor(Wait.forHttp("/v1/.well-known/ready").forPort(8080).forStatusCode(200)
+            .withStartupTimeout(Duration.ofSeconds(10)));
       }
+
+      withEnv("REPLICA_MOVEMENT_ENABLED", "true");
     }
   }
 
