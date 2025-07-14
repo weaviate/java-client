@@ -25,6 +25,7 @@ import io.weaviate.client.base.util.UrlEncoder;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.backup.model.BackupRestoreResponse;
 import io.weaviate.client.v1.backup.model.BackupRestoreStatusResponse;
+import io.weaviate.client.v1.backup.model.RbacRestoreOption;
 import io.weaviate.client.v1.backup.model.RestoreStatus;
 import lombok.Builder;
 import lombok.Getter;
@@ -229,8 +230,11 @@ public class BackupRestorer extends AsyncBaseClient<BackupRestoreResponse>
   @Getter
   @Builder
   private static class BackupRestore {
+    @SerializedName("config")
     BackupRestoreConfig config;
+    @SerializedName("include")
     String[] include;
+    @SerializedName("exclude")
     String[] exclude;
   }
 
@@ -243,5 +247,9 @@ public class BackupRestorer extends AsyncBaseClient<BackupRestoreResponse>
     String bucket;
     @SerializedName("Path")
     String path;
+    @SerializedName("usersOptions")
+    RbacRestoreOption usersRestore;
+    @SerializedName("rolesOptions")
+    RbacRestoreOption rolesRestore;
   }
 }
