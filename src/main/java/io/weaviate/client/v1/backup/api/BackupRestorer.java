@@ -68,18 +68,17 @@ public class BackupRestorer extends BaseClient<BackupRestoreResponse> implements
   @Override
   public Result<BackupRestoreResponse> run() {
     BackupRestore payload = BackupRestore.builder()
-      .config(BackupRestoreConfig.builder().build())
-      .include(includeClassNames)
-      .exclude(excludeClassNames)
-      .config(config)
-      .build();
+        .config(BackupRestoreConfig.builder().build())
+        .include(includeClassNames)
+        .exclude(excludeClassNames)
+        .config(config)
+        .build();
 
     if (waitForCompletion) {
       return restoreAndWaitForCompletion(payload);
     }
     return restore(payload);
   }
-
 
   private Result<BackupRestoreResponse> restore(BackupRestore payload) {
     Response<BackupRestoreResponse> response = sendPostRequest(path(), payload, BackupRestoreResponse.class);
@@ -93,7 +92,7 @@ public class BackupRestorer extends BaseClient<BackupRestoreResponse> implements
     }
 
     statusGetter.withBackend(backend).withBackupId(backupId);
-    while(true) {
+    while (true) {
       Response<BackupRestoreStatusResponse> statusResponse = statusGetter.statusRestore();
       if (new Result<>(statusResponse).hasErrors()) {
         return merge(statusResponse, result);
@@ -117,7 +116,8 @@ public class BackupRestorer extends BaseClient<BackupRestoreResponse> implements
     return String.format("/backups/%s/%s/restore", backend, backupId);
   }
 
-  private Result<BackupRestoreResponse> merge(Response<BackupRestoreStatusResponse> response, Result<BackupRestoreResponse> result) {
+  private Result<BackupRestoreResponse> merge(Response<BackupRestoreStatusResponse> response,
+      Result<BackupRestoreResponse> result) {
     BackupRestoreStatusResponse statusRestoreResponse = response.getBody();
     BackupRestoreResponse restoreResponse = result.getResult();
 
@@ -135,7 +135,6 @@ public class BackupRestorer extends BaseClient<BackupRestoreResponse> implements
 
     return new Result<>(response.getStatusCode(), merged, response.getErrors());
   }
-
 
   @Getter
   @Builder
