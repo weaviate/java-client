@@ -13,6 +13,7 @@ import io.weaviate.client.v1.rbac.model.CollectionsPermission;
 import io.weaviate.client.v1.rbac.model.DataPermission;
 import io.weaviate.client.v1.rbac.model.NodesPermission;
 import io.weaviate.client.v1.rbac.model.Permission;
+import io.weaviate.client.v1.rbac.model.ReplicatePermission;
 import io.weaviate.client.v1.rbac.model.Role;
 import io.weaviate.client.v1.rbac.model.RolesPermission;
 import io.weaviate.client.v1.rbac.model.TenantsPermission;
@@ -72,6 +73,10 @@ public class WeaviatePermissionTest {
         // Read and delete users
         new WeaviatePermission("read_users", new UsersPermission()),
         new WeaviatePermission("assign_and_revoke_users", new UsersPermission()),
+
+        // Create and update replications
+        new WeaviatePermission("create_replicate", new ReplicatePermission("Pizza", "shard-123")),
+        new WeaviatePermission("update_replicate", new ReplicatePermission("Pizza", "shard-123")),
     };
 
     Permission<?>[] libraryPermissions = {
@@ -89,6 +94,8 @@ public class WeaviatePermissionTest {
         new ClusterPermission(ClusterPermission.Action.READ),
         new TenantsPermission(TenantsPermission.Action.CREATE, TenantsPermission.Action.UPDATE),
         new UsersPermission(UsersPermission.Action.READ, UsersPermission.Action.ASSIGN_AND_REVOKE),
+        new ReplicatePermission("Pizza", "shard-123", ReplicatePermission.Action.CREATE,
+            ReplicatePermission.Action.UPDATE),
     };
 
     {
