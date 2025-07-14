@@ -1,17 +1,19 @@
 package io.weaviate.client.v1.backup.api;
 
 import com.google.gson.annotations.SerializedName;
-import io.weaviate.client.v1.backup.model.BackupRestoreResponse;
-import io.weaviate.client.v1.backup.model.BackupRestoreStatusResponse;
-import io.weaviate.client.v1.backup.model.RestoreStatus;
-import lombok.Builder;
-import lombok.Getter;
+
 import io.weaviate.client.Config;
 import io.weaviate.client.base.BaseClient;
 import io.weaviate.client.base.ClientResult;
 import io.weaviate.client.base.Response;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.http.HttpClient;
+import io.weaviate.client.v1.backup.model.BackupRestoreResponse;
+import io.weaviate.client.v1.backup.model.BackupRestoreStatusResponse;
+import io.weaviate.client.v1.backup.model.RbacRestoreOption;
+import io.weaviate.client.v1.backup.model.RestoreStatus;
+import lombok.Builder;
+import lombok.Getter;
 
 public class BackupRestorer extends BaseClient<BackupRestoreResponse> implements ClientResult<BackupRestoreResponse> {
 
@@ -68,7 +70,6 @@ public class BackupRestorer extends BaseClient<BackupRestoreResponse> implements
   @Override
   public Result<BackupRestoreResponse> run() {
     BackupRestore payload = BackupRestore.builder()
-        .config(BackupRestoreConfig.builder().build())
         .include(includeClassNames)
         .exclude(excludeClassNames)
         .config(config)
@@ -139,8 +140,11 @@ public class BackupRestorer extends BaseClient<BackupRestoreResponse> implements
   @Getter
   @Builder
   private static class BackupRestore {
+    @SerializedName("config")
     BackupRestoreConfig config;
+    @SerializedName("include")
     String[] include;
+    @SerializedName("exclude")
     String[] exclude;
   }
 
@@ -153,5 +157,9 @@ public class BackupRestorer extends BaseClient<BackupRestoreResponse> implements
     String bucket;
     @SerializedName("Path")
     String path;
+    @SerializedName("usersOptions")
+    RbacRestoreOption usersRestore;
+    @SerializedName("rolesOptions")
+    RbacRestoreOption rolesRestore;
   }
 }
