@@ -8,14 +8,16 @@ import lombok.Getter;
 @EqualsAndHashCode(callSuper = true)
 public class AliasPermission extends Permission<AliasPermission> {
   final String alias;
+  final String collection;
 
-  public AliasPermission(String alias, Action... actions) {
+  public AliasPermission(String alias, String collection, Action... actions) {
     super(actions);
     this.alias = alias;
+    this.collection = collection;
   }
 
-  AliasPermission(String alias, String action) {
-    this(alias, RbacAction.fromString(Action.class, action));
+  AliasPermission(String alias, String collection, String action) {
+    this(alias, collection, RbacAction.fromString(Action.class, action));
   }
 
   @AllArgsConstructor
