@@ -58,6 +58,8 @@ public class WeaviateDockerCompose implements TestRule {
       withEnv("PERSISTENCE_FLUSH_IDLE_MEMTABLES_AFTER", "1");
       withEnv("ENABLE_MODULES", String.join(",", enableModules));
       withCreateContainerCmdModifier(cmd -> cmd.withHostName("weaviate"));
+
+      withEnv("AUTHENTICATION_DB_USERS_ENABLED", "true");
     }
   }
 
