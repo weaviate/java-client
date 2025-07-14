@@ -18,7 +18,6 @@ public class ReplicationAllGetter extends BaseClient<ReplicateOperation[]>
 
   @Override
   public Result<List<ReplicateOperation>> run() {
-    String path = "/replication/replicate/list?includeHistory=true";
-    return Result.toList(sendGetRequest(path, ReplicateOperation[].class));
+    return Result.toList(sendGetRequest("/replication/replicate/list?includeHistory=true", ReplicateOperation[].class));
   }
 }
