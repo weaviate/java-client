@@ -16,8 +16,10 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 
 import io.weaviate.client.Config;
+import io.weaviate.client.WeaviateAuthClient;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
+import io.weaviate.client.v1.auth.exception.AuthException;
 import io.weaviate.client.v1.backup.api.BackupCreator;
 import io.weaviate.client.v1.backup.api.BackupRestorer;
 import io.weaviate.client.v1.backup.api.BackupRestorer.BackupRestoreConfig;
@@ -31,7 +33,7 @@ import io.weaviate.client.v1.graphql.query.fields.Field;
 import io.weaviate.client.v1.rbac.model.ClusterPermission;
 import io.weaviate.client.v1.rbac.model.Permission;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
-import io.weaviate.integration.client.WeaviateDockerCompose;
+import io.weaviate.integration.client.WeaviateDockerComposeBackup;
 import io.weaviate.integration.client.WeaviateTestGenerics;
 import io.weaviate.integration.tests.backup.BackupTestSuite;
 
@@ -48,12 +50,12 @@ public class ClientBackupTest {
   public TestName currentTest = new TestName();
 
   @ClassRule
-  public static WeaviateDockerCompose compose = new WeaviateDockerCompose();
+  public static WeaviateDockerComposeBackup compose = new WeaviateDockerComposeBackup();
 
   @Before
-  public void before() {
+  public void before() throws AuthException {
     Config config = new Config("http", compose.getHttpHostAddress());
-    client = new WeaviateClient(config);
+    client = WeaviateAuthClient.apiKey(config, WeaviateDockerComposeBackup.ADMIN_KEY);
     testGenerics.createTestSchemaAndData(client);
 
     backupId = String.format("backup-%s-%s", currentTest.getMethodName().toLowerCase(),
@@ -497,6 +499,7 @@ public class ClientBackupTest {
             .withIncludeClassNames("RolesUsers")
             .withWaitForCompletion(true)
             .run(),
+        // Restore from backup
         () -> client.backup().restorer()
             .withBackend(BackupTestSuite.BACKEND)
             .withBackupId(backupId)
