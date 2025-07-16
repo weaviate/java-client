@@ -19,14 +19,22 @@ public class AuthorizationITest extends ConcurrentTest {
   private ClientAndServer mockServer;
 
   @Before
-  public void startMockServer() {
-    mockServer = ClientAndServer.startClientAndServer(8080);
+  public void startMockServer() throws IOException {
+    // MockServer does not verify exclusive ownership of the port
+    // and using any well-known port like 8080 will produce flaky
+    // test results with fairly confusing errors, like:
+    //
+    // path /mockserver/verifySequence was not found
+    //
+    // if another webserver is listening to that port.
+    // We use 0 to let the underlying system find an available port.
+    mockServer = ClientAndServer.startClientAndServer(0);
   }
 
   @Test
   public void testAuthorization_apiKey() throws IOException {
     var transportOptions = new RestTransportOptions(
-        "http", "localhost", 8080,
+        "http", "localhost", mockServer.getLocalPort(),
         Collections.emptyMap(), Authorization.apiKey("my-api-key"));
 
     try (final var restClient = new DefaultRestTransport(transportOptions)) {
