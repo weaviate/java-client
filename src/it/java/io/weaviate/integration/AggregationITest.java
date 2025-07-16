@@ -80,7 +80,7 @@ public class AggregationITest extends ConcurrentTest {
                 Aggregation.integer("price",
                     calculate -> calculate.min().max().count()))
             .includeTotalCount(true),
-        new GroupBy("category"));
+        GroupBy.property("category"));
 
     Assertions.assertThat(result)
         .extracting(AggregateResponseGrouped::groups)
@@ -139,7 +139,7 @@ public class AggregationITest extends ConcurrentTest {
                     calculate -> calculate.min().max().median()))
             .objectLimit(9)
             .includeTotalCount(true),
-        new GroupBy("category"));
+        GroupBy.property("category"));
 
     Assertions.assertThat(result)
         .extracting(AggregateResponseGrouped::groups)
