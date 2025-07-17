@@ -1,5 +1,6 @@
 package io.weaviate.client6.v1.api.collections.query;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -31,7 +32,7 @@ public record Bm25(
     private final String query;
 
     // Optional query parameters.
-    List<String> queryProperties;
+    List<String> queryProperties = new ArrayList<>();
     SearchOperator searchOperator;
 
     public Builder(String query) {
@@ -43,7 +44,7 @@ public record Bm25(
     }
 
     public Builder queryProperties(List<String> properties) {
-      this.queryProperties = properties;
+      this.queryProperties.addAll(properties);
       return this;
     }
 
