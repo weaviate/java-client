@@ -1320,7 +1320,6 @@ public class ClientSchemaTest {
         .deletionStrategy(ReplicationConfig.DeletionStrategy.NO_AUTOMATED_RESOLUTION).build();
 
     Map<String, Object> contextionaryVectorizerSettings = new HashMap<>();
-    contextionaryVectorizerSettings.put("vectorizeClassName", true);
     Map<String, Object> contextionaryVectorizer = new HashMap<>();
     contextionaryVectorizer.put("text2vec-contextionary", contextionaryVectorizerSettings);
 

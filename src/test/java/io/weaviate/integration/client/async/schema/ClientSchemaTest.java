@@ -321,7 +321,6 @@ public class ClientSchemaTest {
     try (WeaviateAsyncClient client = syncClient.async()) {
       // given
       Map<String, Object> text2vecContextionary = new HashMap<>();
-      text2vecContextionary.put("vectorizeClassName", false);
       Map<String, Object> moduleConfig = new HashMap<>();
       moduleConfig.put("text2vec-contextionary", text2vecContextionary);
 
@@ -356,12 +355,6 @@ public class ClientSchemaTest {
 
       WeaviateClass resultArticleClass = schemaAfterCreate.getResult().getClasses().get(0);
       assertClassEquals(clazz.getClassName(), clazz.getDescription(), resultArticleClass);
-
-      assertThat(resultArticleClass.getModuleConfig()).asInstanceOf(MAP)
-          .containsOnlyKeys("text2vec-contextionary")
-          .extracting(m -> m.get("text2vec-contextionary")).asInstanceOf(MAP)
-          .containsOnlyKeys("vectorizeClassName").extracting(m -> m.get("vectorizeClassName"))
-          .isEqualTo(false);
 
       assertPropertiesSize(2, resultArticleClass);
       assertPropertyEquals("title", "field", resultArticleClass.getProperties().get(0));

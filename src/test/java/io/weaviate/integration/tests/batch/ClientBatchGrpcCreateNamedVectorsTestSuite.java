@@ -42,7 +42,6 @@ public class ClientBatchGrpcCreateNamedVectorsTestSuite {
     none.put("none", new Object());
     Map<String, Object> text2vecContextionary = new HashMap<>();
     Map<String, Object> text2vecContextionarySettings = new HashMap<>();
-    text2vecContextionarySettings.put("vectorizeClassName", false);
     text2vecContextionarySettings.put("properties", new String[] { "title" });
     text2vecContextionary.put("text2vec-contextionary", text2vecContextionarySettings);
     Map<String, WeaviateClass.VectorConfig> vectorConfig = new HashMap<>();

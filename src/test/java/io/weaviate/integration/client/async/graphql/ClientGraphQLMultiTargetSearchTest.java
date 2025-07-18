@@ -1,5 +1,23 @@
 package io.weaviate.integration.client.async.graphql;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
+import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
+
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
@@ -16,26 +34,13 @@ import io.weaviate.client.v1.graphql.query.argument.Targets;
 import io.weaviate.client.v1.graphql.query.fields.Field;
 import io.weaviate.client.v1.misc.model.BQConfig;
 import io.weaviate.client.v1.misc.model.PQConfig;
-import io.weaviate.client.v1.misc.model.SQConfig;
 import io.weaviate.client.v1.misc.model.RQConfig;
+import io.weaviate.client.v1.misc.model.SQConfig;
 import io.weaviate.client.v1.misc.model.VectorIndexConfig;
 import io.weaviate.client.v1.schema.model.DataType;
 import io.weaviate.client.v1.schema.model.Property;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
 import io.weaviate.integration.client.WeaviateDockerCompose;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
-
-import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.function.Consumer;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
-import static org.junit.Assert.assertNull;
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class ClientGraphQLMultiTargetSearchTest extends AbstractAsyncClientTest {
   private String httpHost;
@@ -88,27 +93,25 @@ public class ClientGraphQLMultiTargetSearchTest extends AbstractAsyncClientTest 
     weights.put(title1, 0.6f);
     weights.put(title2, 0.3f);
     weights.put(title3, 0.1f);
-    Targets targets =
-        Targets.builder().targetVectors(new String[] {titleAndContent, title1, title2, title3})
-            .combinationMethod(Targets.CombinationMethod.manualWeights).weights(weights).build();
+    Targets targets = Targets.builder().targetVectors(new String[] { titleAndContent, title1, title2, title3 })
+        .combinationMethod(Targets.CombinationMethod.manualWeights).weights(weights).build();
     NearTextArgument nearText = gql.arguments().nearTextArgBuilder()
-        .concepts(new String[] {"Water black"}).targets(targets).build();
-    Result<GraphQLResponse> response =
-        doGet(get -> get.withClassName(className).withNearText(nearText).withFields(_additional));
+        .concepts(new String[] { "Water black" }).targets(targets).build();
+    Result<GraphQLResponse> response = doGet(
+        get -> get.withClassName(className).withNearText(nearText).withFields(_additional));
     assertGetContainsIds(response, className, id1, id2, id3);
     // nearVector with single vector-per-target
     Map<String, Float[]> vectorPerTarget = new HashMap<>();
-    vectorPerTarget.put(bringYourOwnVector, new Float[] {.99f, .88f, .77f});
-    vectorPerTarget.put(bringYourOwnVector2, new Float[] {.11f, .22f, .33f});
+    vectorPerTarget.put(bringYourOwnVector, new Float[] { .99f, .88f, .77f });
+    vectorPerTarget.put(bringYourOwnVector2, new Float[] { .11f, .22f, .33f });
     weights = new HashMap<String, Float>() {
       {
         this.put(bringYourOwnVector, 0.1f);
         this.put(bringYourOwnVector2, 0.6f);
       }
     };
-    targets =
-        Targets.builder().targetVectors(new String[] {bringYourOwnVector, bringYourOwnVector2})
-            .combinationMethod(Targets.CombinationMethod.manualWeights).weights(weights).build();
+    targets = Targets.builder().targetVectors(new String[] { bringYourOwnVector, bringYourOwnVector2 })
+        .combinationMethod(Targets.CombinationMethod.manualWeights).weights(weights).build();
     final NearVectorArgument nearVector1 = gql.arguments().nearVectorArgBuilder()
         .vectorPerTarget(vectorPerTarget).targets(targets).build();
     response = doGet(
@@ -118,15 +121,14 @@ public class ClientGraphQLMultiTargetSearchTest extends AbstractAsyncClientTest 
     // nearVector with multiple vector-per-target
     Map<String, Float[][]> vectorsPerTarget = new HashMap<>();
     vectorsPerTarget.put(bringYourOwnVector,
-        new Float[][] {new Float[] {.99f, .88f, .77f}, new Float[] {.99f, .88f, .77f}});
-    vectorsPerTarget.put(bringYourOwnVector2, new Float[][] {new Float[] {.11f, .22f, .33f}});
+        new Float[][] { new Float[] { .99f, .88f, .77f }, new Float[] { .99f, .88f, .77f } });
+    vectorsPerTarget.put(bringYourOwnVector2, new Float[][] { new Float[] { .11f, .22f, .33f } });
     Map<String, Float[]> weightsMulti = new HashMap<>();
-    weightsMulti.put(bringYourOwnVector, new Float[] {0.5f, 0.5f});
-    weightsMulti.put(bringYourOwnVector2, new Float[] {0.6f});
-    targets =
-        Targets.builder().targetVectors(new String[] {bringYourOwnVector, bringYourOwnVector2})
-            .combinationMethod(Targets.CombinationMethod.manualWeights).weightsMulti(weightsMulti)
-            .build();
+    weightsMulti.put(bringYourOwnVector, new Float[] { 0.5f, 0.5f });
+    weightsMulti.put(bringYourOwnVector2, new Float[] { 0.6f });
+    targets = Targets.builder().targetVectors(new String[] { bringYourOwnVector, bringYourOwnVector2 })
+        .combinationMethod(Targets.CombinationMethod.manualWeights).weightsMulti(weightsMulti)
+        .build();
     final NearVectorArgument nearVector2 = gql.arguments().nearVectorArgBuilder()
         .vectorsPerTarget(vectorsPerTarget).targets(targets).build();
     response = doGet(
@@ -135,11 +137,10 @@ public class ClientGraphQLMultiTargetSearchTest extends AbstractAsyncClientTest 
     assertGetContainsIds(response, className, id2, id3);
     // nearObject
     targets = Targets
-        .builder().targetVectors(new String[] {bringYourOwnVector, bringYourOwnVector2,
-            titleAndContent, title1, title2, title3})
+        .builder().targetVectors(new String[] { bringYourOwnVector, bringYourOwnVector2,
+            titleAndContent, title1, title2, title3 })
         .combinationMethod(Targets.CombinationMethod.average).build();
-    NearObjectArgument nearObject =
-        gql.arguments().nearObjectArgBuilder().id(id3).targets(targets).build();
+    NearObjectArgument nearObject = gql.arguments().nearObjectArgBuilder().id(id3).targets(targets).build();
     response = doGet(
         get -> get.withClassName(className).withNearObject(nearObject).withFields(_additional));
     assertGetContainsIds(response, className, id2, id3);
@@ -168,9 +169,10 @@ public class ClientGraphQLMultiTargetSearchTest extends AbstractAsyncClientTest 
     vectorConfig.put(title3, getTitle3VectorConfig());
     vectorConfig.put(bringYourOwnVector, getBringYourOwnVectorVectorConfig());
     vectorConfig.put(bringYourOwnVector2, getBringYourOwnVectorVectorConfig2());
-    Result<Boolean> createResult =
-        syncClient.schema().classCreator().withClass(WeaviateClass.builder().className(className)
-            .properties(properties).vectorConfig(vectorConfig).build()).run();
+    Result<Boolean> createResult = syncClient.schema().classCreator()
+        .withClass(WeaviateClass.builder().className(className)
+            .properties(properties).vectorConfig(vectorConfig).build())
+        .run();
     assertThat(createResult).isNotNull().returns(false, Result::hasErrors).returns(true,
         Result::getResult);
     // add data
@@ -181,7 +183,7 @@ public class ClientGraphQLMultiTargetSearchTest extends AbstractAsyncClientTest 
     props1.put("title1", "J.R.R. Tolkien The Lord of the Rings");
     props1.put("title2", "Rings");
     props1.put("title3", "Book");
-    Float[] vector1a = new Float[] {0.77f, 0.88f, 0.77f};
+    Float[] vector1a = new Float[] { 0.77f, 0.88f, 0.77f };
     Map<String, Float[]> vectors1 = new HashMap<>();
     vectors1.put("bringYourOwnVector", vector1a);
     // don't add vector for bringYourOwnVector2
@@ -192,8 +194,8 @@ public class ClientGraphQLMultiTargetSearchTest extends AbstractAsyncClientTest 
     props2.put("title1", "Jacek Dukaj Black Oceans");
     props2.put("title2", "Water");
     props2.put("title3", "Book");
-    Float[] vector2a = new Float[] {0.11f, 0.22f, 0.33f};
-    Float[] vector2b = new Float[] {0.11f, 0.11f, 0.11f};
+    Float[] vector2a = new Float[] { 0.11f, 0.22f, 0.33f };
+    Float[] vector2b = new Float[] { 0.11f, 0.11f, 0.11f };
     Map<String, Float[]> vectors2 = new HashMap<>();
     vectors2.put("bringYourOwnVector", vector2a);
     vectors2.put("bringYourOwnVector2", vector2b);
@@ -205,8 +207,8 @@ public class ClientGraphQLMultiTargetSearchTest extends AbstractAsyncClientTest 
     props3.put("title1", "Paula Hawkins Into the Water");
     props3.put("title2", "Water go into it");
     props3.put("title3", "Book");
-    Float[] vector3a = new Float[] {0.99f, 0.88f, 0.77f};
-    Float[] vector3b = new Float[] {0.99f, 0.88f, 0.77f};
+    Float[] vector3a = new Float[] { 0.99f, 0.88f, 0.77f };
+    Float[] vector3b = new Float[] { 0.99f, 0.88f, 0.77f };
     Map<String, Float[]> vectors3 = new HashMap<>();
     vectors3.put("bringYourOwnVector", vector3a);
     vectors3.put("bringYourOwnVector2", vector3b);
@@ -215,8 +217,7 @@ public class ClientGraphQLMultiTargetSearchTest extends AbstractAsyncClientTest 
     WeaviateObject obj2 = createObject(id2, className, props2, vectors2);
     WeaviateObject obj3 = createObject(id3, className, props3, vectors3);
 
-    Result<ObjectGetResponse[]> result =
-        syncClient.batch().objectsBatcher().withObjects(obj1, obj2, obj3).run();
+    Result<ObjectGetResponse[]> result = syncClient.batch().objectsBatcher().withObjects(obj1, obj2, obj3).run();
 
     assertThat(result).isNotNull().returns(false, Result::hasErrors).extracting(Result::getResult)
         .asInstanceOf(ARRAY).hasSize(3);
@@ -225,8 +226,7 @@ public class ClientGraphQLMultiTargetSearchTest extends AbstractAsyncClientTest 
   private WeaviateClass.VectorConfig getTitleAndContentVectorConfig() {
     Map<String, Object> titleAndContent = new HashMap<>();
     Map<String, Object> text2vecContextionarySettings = new HashMap<>();
-    text2vecContextionarySettings.put("vectorizeClassName", false);
-    text2vecContextionarySettings.put("properties", new String[] {"title", "content"});
+    text2vecContextionarySettings.put("properties", new String[] { "title", "content" });
     titleAndContent.put("text2vec-contextionary", text2vecContextionarySettings);
     return getHNSWSQVectorConfig(titleAndContent);
   }
@@ -234,8 +234,7 @@ public class ClientGraphQLMultiTargetSearchTest extends AbstractAsyncClientTest 
   private WeaviateClass.VectorConfig getTitle1VectorConfig() {
     Map<String, Object> titleAndContent = new HashMap<>();
     Map<String, Object> text2vecContextionarySettings = new HashMap<>();
-    text2vecContextionarySettings.put("vectorizeClassName", false);
-    text2vecContextionarySettings.put("properties", new String[] {"title1"});
+    text2vecContextionarySettings.put("properties", new String[] { "title1" });
     titleAndContent.put("text2vec-contextionary", text2vecContextionarySettings);
     return getHNSWPQVectorConfig(titleAndContent);
   }
@@ -243,8 +242,7 @@ public class ClientGraphQLMultiTargetSearchTest extends AbstractAsyncClientTest 
   private WeaviateClass.VectorConfig getTitle2VectorConfig() {
     Map<String, Object> titleAndContent = new HashMap<>();
     Map<String, Object> text2vecContextionarySettings = new HashMap<>();
-    text2vecContextionarySettings.put("vectorizeClassName", false);
-    text2vecContextionarySettings.put("properties", new String[] {"title2"});
+    text2vecContextionarySettings.put("properties", new String[] { "title2" });
     titleAndContent.put("text2vec-contextionary", text2vecContextionarySettings);
     return getHNSWVectorConfig(titleAndContent);
   }
@@ -252,8 +250,7 @@ public class ClientGraphQLMultiTargetSearchTest extends AbstractAsyncClientTest 
   private WeaviateClass.VectorConfig getTitle3VectorConfig() {
     Map<String, Object> titleAndContent = new HashMap<>();
     Map<String, Object> text2vecContextionarySettings = new HashMap<>();
-    text2vecContextionarySettings.put("vectorizeClassName", false);
-    text2vecContextionarySettings.put("properties", new String[] {"title3"});
+    text2vecContextionarySettings.put("properties", new String[] { "title3" });
     titleAndContent.put("text2vec-contextionary", text2vecContextionarySettings);
     return getHNSWRQVectorConfig(titleAndContent);
   }
@@ -310,8 +307,7 @@ public class ClientGraphQLMultiTargetSearchTest extends AbstractAsyncClientTest 
 
   private WeaviateObject createObject(String id, String className, Map<String, Object> props,
       Map<String, Float[]> vectors) {
-    WeaviateObject.WeaviateObjectBuilder obj =
-        WeaviateObject.builder().id(id).className(className).properties(props);
+    WeaviateObject.WeaviateObjectBuilder obj = WeaviateObject.builder().id(id).className(className).properties(props);
     if (vectors != null) {
       obj = obj.vectors(vectors);
     }
