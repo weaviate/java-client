@@ -137,7 +137,7 @@ public class ClientRbacTestSuite {
     String myCollectionAlias = "PizzaAlias";
 
     Permission<?>[] wantPermissions = new Permission<?>[] {
-        Permission.alias(myCollectionAlias, AliasPermission.Action.CREATE),
+        Permission.alias(myCollectionAlias, myCollection, AliasPermission.Action.CREATE),
         Permission.backups(myCollection, BackupsPermission.Action.MANAGE),
         Permission.cluster(ClusterPermission.Action.READ),
         Permission.nodes(myCollection, NodesPermission.Action.READ),

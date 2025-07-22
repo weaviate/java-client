@@ -28,8 +28,8 @@ public class WeaviatePermissionTest {
   public void testMergedPermissions() {
     WeaviatePermission[] apiPermissions = {
         // Create and delete PizzaAlias alias
-        new WeaviatePermission("create_aliases", new AliasPermission("PizzaAlias")),
-        new WeaviatePermission("delete_aliases", new AliasPermission("PizzaAlias")),
+        new WeaviatePermission("create_aliases", new AliasPermission("PizzaAlias", "Pizza")),
+        new WeaviatePermission("delete_aliases", new AliasPermission("PizzaAlias", "Pizza")),
 
         // Manage Pizza backups
         new WeaviatePermission("manage_backups", new BackupsPermission("Pizza")),
@@ -75,7 +75,7 @@ public class WeaviatePermissionTest {
     };
 
     Permission<?>[] libraryPermissions = {
-        new AliasPermission("PizzaAlias", AliasPermission.Action.CREATE, AliasPermission.Action.DELETE),
+        new AliasPermission("PizzaAlias", "Pizza", AliasPermission.Action.CREATE, AliasPermission.Action.DELETE),
         new BackupsPermission("Pizza", BackupsPermission.Action.MANAGE),
         new DataPermission("Pizza", DataPermission.Action.MANAGE, DataPermission.Action.READ),
         new DataPermission("Songs", DataPermission.Action.UPDATE, DataPermission.Action.DELETE),
