@@ -27,7 +27,7 @@ public class ReplicationGetter extends AsyncBaseClient<ReplicateOperation>
     return this;
   }
 
-  public ReplicationGetter includeHistory(boolean includeHistory) {
+  public ReplicationGetter withIncludeHistory(boolean includeHistory) {
     this.includeHistory = includeHistory;
     return this;
   }

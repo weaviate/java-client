@@ -154,7 +154,7 @@ public class ClientReplicateTest {
 
     // Act: get status with history
     ReplicateOperation status_2 = client.cluster().replication().getter()
-        .withUuid(uuid).includeHistory(true)
+        .withUuid(uuid).withIncludeHistory(true)
         .run().get().getResult();
 
     Assertions.assertThat(status_2).isNotNull()

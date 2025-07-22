@@ -37,7 +37,7 @@ public class ReplicationQuerier extends BaseClient<ReplicateOperation[]>
     return this;
   }
 
-  public ReplicationQuerier includeHistory(boolean includeHistory) {
+  public ReplicationQuerier withIncludeHistory(boolean includeHistory) {
     this.queryParams.put("includeHistory", includeHistory);
     return this;
   }
