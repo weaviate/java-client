@@ -174,7 +174,7 @@ public class PermissionTest {
             },
         },
         {
-            Permission.alias("PizzaAlias",
+            Permission.alias("PizzaAlias", "Pizza",
                 AliasPermission.Action.CREATE,
                 AliasPermission.Action.READ,
                 AliasPermission.Action.UPDATE,
