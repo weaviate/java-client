@@ -12,23 +12,25 @@ import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.weaviate.WeaviateContainer;
 
-public class WeaviateDockerCompose implements TestRule {
+public class WeaviateDockerComposeBackup implements TestRule {
+
+  public static final String ADMIN_KEY = "admin-key";
 
   /** Weaviate Docker image to create a container from. */
   private final String weaviateVersion;
   private final boolean withOffloadS3;
 
-  public WeaviateDockerCompose() {
+  public WeaviateDockerComposeBackup() {
     this.weaviateVersion = WeaviateDockerImage.WEAVIATE_DOCKER_IMAGE;
     this.withOffloadS3 = false;
   }
 
-  public WeaviateDockerCompose(String version) {
+  public WeaviateDockerComposeBackup(String version) {
     this.weaviateVersion = String.format("semitechnologies/weaviate:%s", version);
     this.withOffloadS3 = false;
   }
 
-  public WeaviateDockerCompose(String version, boolean withOffloadS3) {
+  public WeaviateDockerComposeBackup(String version, boolean withOffloadS3) {
     this.weaviateVersion = String.format("semitechnologies/weaviate:%s", version);
     this.withOffloadS3 = withOffloadS3;
   }
@@ -57,8 +59,25 @@ public class WeaviateDockerCompose implements TestRule {
       withEnv("DISABLE_TELEMETRY", "true");
       withEnv("PERSISTENCE_FLUSH_IDLE_MEMTABLES_AFTER", "1");
       withEnv("ENABLE_MODULES", String.join(",", enableModules));
-      withEnv("AUTHENTICATION_DB_USERS_ENABLED", "true");
       withCreateContainerCmdModifier(cmd -> cmd.withHostName("weaviate"));
+
+      withEnv("AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED", "false");
+      withEnv("AUTHENTICATION_APIKEY_ENABLED", "true");
+      withEnv("AUTHENTICATION_APIKEY_ALLOWED_KEYS", ADMIN_KEY + ",custom-key");
+      withEnv("AUTHENTICATION_APIKEY_USERS", "admin-user,custom-user");
+      withEnv("AUTHORIZATION_ADMIN_USERS", "admin-user");
+      withEnv("PERSISTENCE_DATA_PATH", "./data-weaviate-0");
+      withEnv("CLUSTER_IN_LOCALHOST", "true");
+      withEnv("CLUSTER_GOSSIP_BIND_PORT", "7100");
+      withEnv("CLUSTER_DATA_BIND_PORT", "7101");
+      withEnv("RAFT_BOOTSTRAP_EXPECT", "1");
+      withEnv("AUTHORIZATION_ENABLE_RBAC", "true");
+      withEnv("AUTHENTICATION_DB_USERS_ENABLED", "true");
+      withEnv("AUTHENTICATION_OIDC_ENABLED", "true");
+      withEnv("AUTHENTICATION_OIDC_CLIENT_ID", "wcs");
+      withEnv("AUTHENTICATION_OIDC_ISSUER", "https://auth.wcs.api.weaviate.io/auth/realms/SeMI");
+      withEnv("AUTHENTICATION_OIDC_USERNAME_CLAIM", "email");
+      withEnv("AUTHENTICATION_OIDC_GROUPS_CLAIM", "groups");
     }
   }
 

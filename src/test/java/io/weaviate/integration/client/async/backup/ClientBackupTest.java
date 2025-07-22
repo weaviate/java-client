@@ -3,11 +3,13 @@ package io.weaviate.integration.client.async.backup;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.assertj.core.api.Assertions;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Before;
@@ -17,6 +19,7 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 
 import io.weaviate.client.Config;
+import io.weaviate.client.WeaviateAuthClient;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.async.WeaviateAsyncClient;
@@ -26,13 +29,19 @@ import io.weaviate.client.v1.async.backup.api.BackupCreator;
 import io.weaviate.client.v1.async.backup.api.BackupGetter;
 import io.weaviate.client.v1.async.backup.api.BackupRestoreStatusGetter;
 import io.weaviate.client.v1.async.backup.api.BackupRestorer;
+import io.weaviate.client.v1.async.backup.api.BackupRestorer.BackupRestoreConfig;
+import io.weaviate.client.v1.auth.exception.AuthException;
 import io.weaviate.client.v1.backup.model.BackupCreateResponse;
 import io.weaviate.client.v1.backup.model.BackupCreateStatusResponse;
 import io.weaviate.client.v1.backup.model.BackupRestoreResponse;
 import io.weaviate.client.v1.backup.model.BackupRestoreStatusResponse;
+import io.weaviate.client.v1.backup.model.RbacRestoreOption;
 import io.weaviate.client.v1.graphql.model.GraphQLResponse;
 import io.weaviate.client.v1.graphql.query.fields.Field;
-import io.weaviate.integration.client.WeaviateDockerCompose;
+import io.weaviate.client.v1.rbac.model.ClusterPermission;
+import io.weaviate.client.v1.rbac.model.Permission;
+import io.weaviate.client.v1.schema.model.WeaviateClass;
+import io.weaviate.integration.client.WeaviateDockerComposeBackup;
 import io.weaviate.integration.client.WeaviateTestGenerics;
 import io.weaviate.integration.tests.backup.BackupTestSuite;
 
@@ -49,15 +58,16 @@ public class ClientBackupTest {
   public TestName currentTest = new TestName();
 
   @ClassRule
-  public static WeaviateDockerCompose compose = new WeaviateDockerCompose();
+  public static WeaviateDockerComposeBackup compose = new WeaviateDockerComposeBackup();
 
   @Before
-  public void before() {
+  public void before() throws AuthException {
     Config config = new Config("http", compose.getHttpHostAddress());
-    client = new WeaviateClient(config);
+    client = WeaviateAuthClient.apiKey(config, WeaviateDockerComposeBackup.ADMIN_KEY);
     testGenerics.createTestSchemaAndData(client);
 
-    backupId = String.format("backup-%s-%s", currentTest.getMethodName().toLowerCase(), rand.nextInt(Integer.MAX_VALUE));
+    backupId = String.format("backup-%s-%s", currentTest.getMethodName().toLowerCase(),
+        rand.nextInt(Integer.MAX_VALUE));
     notExistingBackupId = "not-existing-backup-" + backupId;
   }
 
@@ -66,38 +76,33 @@ public class ClientBackupTest {
     testGenerics.cleanupWeaviate(client);
   }
 
-
   @Test
   public void shouldCreateAndRestoreBackupWithWaiting() {
     try (WeaviateAsyncClient asyncClient = client.async()) {
       Supplier<Result<BackupCreateResponse>> supplierCreateResult = createSupplierCreate(
-        asyncClient, creator -> creator
-          .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-          .withWaitForCompletion(true)
-      );
+          asyncClient, creator -> creator
+              .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId)
+              .withWaitForCompletion(true));
       Supplier<Result<BackupCreateStatusResponse>> supplierCreateStatusResult = createSupplierCreateStatus(
-        asyncClient, createStatusGetter -> createStatusGetter
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-      );
+          asyncClient, createStatusGetter -> createStatusGetter
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId));
       Supplier<Result<BackupRestoreResponse>> supplierRestoreResult = createSupplierRestore(
-        asyncClient, restorer -> restorer
-          .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-          .withWaitForCompletion(true)
-      );
+          asyncClient, restorer -> restorer
+              .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId)
+              .withWaitForCompletion(true));
       Supplier<Result<BackupRestoreStatusResponse>> supplierRestoreStatusResult = createSupplierRestoreStatus(
-        asyncClient, restoreStatusGetter -> restoreStatusGetter
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-      );
+          asyncClient, restoreStatusGetter -> restoreStatusGetter
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId));
 
       BackupTestSuite.testCreateAndRestoreBackupWithWaiting(supplierCreateResult, supplierCreateStatusResult,
-        supplierRestoreResult, supplierRestoreStatusResult,
-        createSupplierDeletePizza(), createSupplierGQLOfClass(), backupId);
+          supplierRestoreResult, supplierRestoreStatusResult,
+          createSupplierDeletePizza(), createSupplierGQLOfClass(), backupId);
     }
   }
 
@@ -105,31 +110,27 @@ public class ClientBackupTest {
   public void shouldCreateAndRestoreBackupWithoutWaiting() throws InterruptedException {
     try (WeaviateAsyncClient asyncClient = client.async()) {
       Supplier<Result<BackupCreateResponse>> supplierCreateResult = createSupplierCreate(
-        asyncClient, creator -> creator
-          .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-      );
+          asyncClient, creator -> creator
+              .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId));
       Supplier<Result<BackupCreateStatusResponse>> supplierCreateStatusResult = createSupplierCreateStatus(
-        asyncClient, createStatusGetter -> createStatusGetter
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-      );
+          asyncClient, createStatusGetter -> createStatusGetter
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId));
       Supplier<Result<BackupRestoreResponse>> supplierRestoreResult = createSupplierRestore(
-        asyncClient, restorer -> restorer
-          .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-      );
+          asyncClient, restorer -> restorer
+              .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId));
       Supplier<Result<BackupRestoreStatusResponse>> supplierRestoreStatusResult = createSupplierRestoreStatus(
-        asyncClient, restoreStatusGetter -> restoreStatusGetter
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-      );
+          asyncClient, restoreStatusGetter -> restoreStatusGetter
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId));
 
       BackupTestSuite.testCreateAndRestoreBackupWithoutWaiting(supplierCreateResult, supplierCreateStatusResult,
-        supplierRestoreResult, supplierRestoreStatusResult,
-        createSupplierDeletePizza(), createSupplierGQLOfClass(), backupId);
+          supplierRestoreResult, supplierRestoreStatusResult,
+          createSupplierDeletePizza(), createSupplierGQLOfClass(), backupId);
     }
   }
 
@@ -140,37 +141,33 @@ public class ClientBackupTest {
 
     try (WeaviateAsyncClient asyncClient = client.async()) {
       Supplier<Result<BackupCreateResponse>> supplierCreateResult = createSupplierCreate(
-        asyncClient, creator -> creator
-          .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-          .withConfig(BackupCreator.BackupCreateConfig.builder().bucket(bucket).path(path).build())
-      );
+          asyncClient, creator -> creator
+              .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId)
+              .withConfig(BackupCreator.BackupCreateConfig.builder().bucket(bucket).path(path).build()));
       Supplier<Result<BackupCreateStatusResponse>> supplierCreateStatusResult = createSupplierCreateStatus(
-        asyncClient, createStatusGetter -> createStatusGetter
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-          .withBucket(bucket)
-          .withPath(path)
-      );
+          asyncClient, createStatusGetter -> createStatusGetter
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId)
+              .withBucket(bucket)
+              .withPath(path));
       Supplier<Result<BackupRestoreResponse>> supplierRestoreResult = createSupplierRestore(
-        asyncClient, restorer -> restorer
-          .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-          .withConfig(BackupRestorer.BackupRestoreConfig.builder().bucket(bucket).path(path).build())
-      );
+          asyncClient, restorer -> restorer
+              .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId)
+              .withConfig(BackupRestorer.BackupRestoreConfig.builder().bucket(bucket).path(path).build()));
       Supplier<Result<BackupRestoreStatusResponse>> supplierRestoreStatusResult = createSupplierRestoreStatus(
-        asyncClient, restoreStatusGetter -> restoreStatusGetter
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-          .withBucket(bucket)
-          .withPath(path)
-      );
+          asyncClient, restoreStatusGetter -> restoreStatusGetter
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId)
+              .withBucket(bucket)
+              .withPath(path));
 
       BackupTestSuite.testCreateWithDynamicLocation(supplierCreateResult, supplierCreateStatusResult,
-        supplierRestoreResult, supplierRestoreStatusResult,
-        createSupplierDeletePizza(), createSupplierGQLOfClass(), backupId, bucket, path);
+          supplierRestoreResult, supplierRestoreStatusResult,
+          createSupplierDeletePizza(), createSupplierGQLOfClass(), backupId, bucket, path);
     }
   }
 
@@ -178,59 +175,54 @@ public class ClientBackupTest {
   public void shouldCreateAndRestore1Of2Classes() {
     try (WeaviateAsyncClient asyncClient = client.async()) {
       Supplier<Result<BackupCreateResponse>> supplierCreateResult = createSupplierCreate(
-        asyncClient, creator -> creator
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-          .withWaitForCompletion(true)
-      );
+          asyncClient, creator -> creator
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId)
+              .withWaitForCompletion(true));
       Supplier<Result<BackupCreateStatusResponse>> supplierCreateStatusResult = createSupplierCreateStatus(
-        asyncClient, createStatusGetter -> createStatusGetter
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-      );
+          asyncClient, createStatusGetter -> createStatusGetter
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId));
       Supplier<Result<BackupRestoreResponse>> supplierRestoreResult = createSupplierRestore(
-        asyncClient, restorer -> restorer
-          .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-          .withWaitForCompletion(true)
-      );
+          asyncClient, restorer -> restorer
+              .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId)
+              .withWaitForCompletion(true));
       Supplier<Result<BackupRestoreStatusResponse>> supplierRestoreStatusResult = createSupplierRestoreStatus(
-        asyncClient, restoreStatusGetter -> restoreStatusGetter
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-      );
+          asyncClient, restoreStatusGetter -> restoreStatusGetter
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId));
 
       BackupTestSuite.testCreateAndRestore1Of2Classes(supplierCreateResult, supplierCreateStatusResult,
-        supplierRestoreResult, supplierRestoreStatusResult,
-        createSupplierDeletePizza(), createSupplierGQLOfClass(), backupId);
+          supplierRestoreResult, supplierRestoreStatusResult,
+          createSupplierDeletePizza(), createSupplierGQLOfClass(), backupId);
     }
   }
 
   @Test
   public void shouldListCreatedBackups() {
     try (WeaviateAsyncClient asyncClient = client.async()) {
-      List<Supplier<Result<BackupCreateResponse>>> createSuppliers = new ArrayList<Supplier<Result<BackupCreateResponse>>>() {{
-        this.add(createSupplierCreate(
-          asyncClient, creator -> creator
-            .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
-            .withBackend(BackupTestSuite.BACKEND)
-            .withBackupId(backupId+"-1")
-            .withWaitForCompletion(true)
-        ));
-        this.add(createSupplierCreate(
-          asyncClient, creator -> creator
-            .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
-            .withBackend(BackupTestSuite.BACKEND)
-            .withBackupId(backupId+"-2")
-            .withWaitForCompletion(true)
-        ));
-      }};
+      List<Supplier<Result<BackupCreateResponse>>> createSuppliers = new ArrayList<Supplier<Result<BackupCreateResponse>>>() {
+        {
+          this.add(createSupplierCreate(
+              asyncClient, creator -> creator
+                  .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
+                  .withBackend(BackupTestSuite.BACKEND)
+                  .withBackupId(backupId + "-1")
+                  .withWaitForCompletion(true)));
+          this.add(createSupplierCreate(
+              asyncClient, creator -> creator
+                  .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
+                  .withBackend(BackupTestSuite.BACKEND)
+                  .withBackupId(backupId + "-2")
+                  .withWaitForCompletion(true)));
+        }
+      };
 
       Supplier<Result<BackupCreateResponse[]>> supplierGetResult = createSupplierGet(
-        asyncClient, creator -> creator
-          .withBackend(BackupTestSuite.BACKEND)
-      );
+          asyncClient, creator -> creator
+              .withBackend(BackupTestSuite.BACKEND));
 
       BackupTestSuite.testListExistingBackups(createSuppliers, supplierGetResult);
     }
@@ -240,11 +232,10 @@ public class ClientBackupTest {
   public void shouldFailOnCreateBackupOnNotExistingBackend() {
     try (WeaviateAsyncClient asyncClient = client.async()) {
       Supplier<Result<BackupCreateResponse>> supplierCreateResult = createSupplierCreate(
-        asyncClient, creator -> creator
-          .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
-          .withBackend(BackupTestSuite.NOT_EXISTING_BACKEND)
-          .withBackupId(backupId)
-      );
+          asyncClient, creator -> creator
+              .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
+              .withBackend(BackupTestSuite.NOT_EXISTING_BACKEND)
+              .withBackupId(backupId));
 
       BackupTestSuite.testFailOnCreateBackupOnNotExistingBackend(supplierCreateResult);
     }
@@ -254,10 +245,9 @@ public class ClientBackupTest {
   public void shouldFailOnCreateBackupStatusOnNotExistingBackend() {
     try (WeaviateAsyncClient asyncClient = client.async()) {
       Supplier<Result<BackupCreateStatusResponse>> supplierCreateStatusResult = createSupplierCreateStatus(
-        asyncClient, createStatusGetter -> createStatusGetter
-          .withBackend(BackupTestSuite.NOT_EXISTING_BACKEND)
-          .withBackupId(backupId)
-      );
+          asyncClient, createStatusGetter -> createStatusGetter
+              .withBackend(BackupTestSuite.NOT_EXISTING_BACKEND)
+              .withBackupId(backupId));
 
       BackupTestSuite.testFailOnCreateBackupStatusOnNotExistingBackend(supplierCreateStatusResult);
     }
@@ -267,11 +257,10 @@ public class ClientBackupTest {
   public void shouldFailOnRestoreBackupFromNotExistingBackend() {
     try (WeaviateAsyncClient asyncClient = client.async()) {
       Supplier<Result<BackupRestoreResponse>> supplierRestoreResult = createSupplierRestore(
-        asyncClient, restorer -> restorer
-          .withIncludeClassNames(BackupTestSuite.NOT_EXISTING_CLASS_NAME)
-          .withBackend(BackupTestSuite.NOT_EXISTING_BACKEND)
-          .withBackupId(backupId)
-      );
+          asyncClient, restorer -> restorer
+              .withIncludeClassNames(BackupTestSuite.NOT_EXISTING_CLASS_NAME)
+              .withBackend(BackupTestSuite.NOT_EXISTING_BACKEND)
+              .withBackupId(backupId));
 
       BackupTestSuite.testFailOnRestoreBackupFromNotExistingBackend(supplierRestoreResult);
     }
@@ -281,11 +270,10 @@ public class ClientBackupTest {
   public void shouldFailOnCreateBackupForNotExistingClass() {
     try (WeaviateAsyncClient asyncClient = client.async()) {
       Supplier<Result<BackupCreateResponse>> supplierCreateResult = createSupplierCreate(
-        asyncClient, creator -> creator
-          .withIncludeClassNames(BackupTestSuite.NOT_EXISTING_CLASS_NAME)
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-      );
+          asyncClient, creator -> creator
+              .withIncludeClassNames(BackupTestSuite.NOT_EXISTING_CLASS_NAME)
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId));
 
       BackupTestSuite.testFailOnCreateBackupForNotExistingClass(supplierCreateResult);
     }
@@ -295,19 +283,17 @@ public class ClientBackupTest {
   public void shouldFailOnRestoreBackupForExistingClass() {
     try (WeaviateAsyncClient asyncClient = client.async()) {
       Supplier<Result<BackupCreateResponse>> supplierCreateResult = createSupplierCreate(
-        asyncClient, creator -> creator
-          .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-          .withWaitForCompletion(true)
-      );
+          asyncClient, creator -> creator
+              .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId)
+              .withWaitForCompletion(true));
       Supplier<Result<BackupRestoreResponse>> supplierRestoreResult = createSupplierRestore(
-        asyncClient, restorer -> restorer
-          .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-          .withWaitForCompletion(true)
-      );
+          asyncClient, restorer -> restorer
+              .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId)
+              .withWaitForCompletion(true));
 
       BackupTestSuite.testFailOnRestoreBackupForExistingClass(supplierCreateResult, supplierRestoreResult, backupId);
     }
@@ -317,12 +303,11 @@ public class ClientBackupTest {
   public void shouldFailOnCreateOfExistingBackup() {
     try (WeaviateAsyncClient asyncClient = client.async()) {
       Supplier<Result<BackupCreateResponse>> supplierCreateResult = createSupplierCreate(
-        asyncClient, creator -> creator
-          .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-          .withWaitForCompletion(true)
-      );
+          asyncClient, creator -> creator
+              .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId)
+              .withWaitForCompletion(true));
 
       BackupTestSuite.testFailOnCreateOfExistingBackup(supplierCreateResult, backupId);
     }
@@ -332,10 +317,9 @@ public class ClientBackupTest {
   public void shouldFailOnCreateStatusOfNotExistingBackup() {
     try (WeaviateAsyncClient asyncClient = client.async()) {
       Supplier<Result<BackupCreateStatusResponse>> supplierCreateStatusResult = createSupplierCreateStatus(
-        asyncClient, createStatusGetter -> createStatusGetter
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(notExistingBackupId)
-      );
+          asyncClient, createStatusGetter -> createStatusGetter
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(notExistingBackupId));
 
       BackupTestSuite.testFailOnCreateStatusOfNotExistingBackup(supplierCreateStatusResult, notExistingBackupId);
     }
@@ -345,11 +329,10 @@ public class ClientBackupTest {
   public void shouldFailOnRestoreOfNotExistingBackup() {
     try (WeaviateAsyncClient asyncClient = client.async()) {
       Supplier<Result<BackupRestoreResponse>> supplierRestoreResult = createSupplierRestore(
-        asyncClient, restorer -> restorer
-          .withIncludeClassNames(BackupTestSuite.NOT_EXISTING_CLASS_NAME)
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(notExistingBackupId)
-      );
+          asyncClient, restorer -> restorer
+              .withIncludeClassNames(BackupTestSuite.NOT_EXISTING_CLASS_NAME)
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(notExistingBackupId));
 
       BackupTestSuite.testFailOnRestoreOfNotExistingBackup(supplierRestoreResult, notExistingBackupId);
     }
@@ -359,19 +342,18 @@ public class ClientBackupTest {
   public void shouldFailOnRestoreBackupStatusOfNotStartedRestore() {
     try (WeaviateAsyncClient asyncClient = client.async()) {
       Supplier<Result<BackupCreateResponse>> supplierCreateResult = createSupplierCreate(
-        asyncClient, creator -> creator
-          .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-          .withWaitForCompletion(true)
-      );
+          asyncClient, creator -> creator
+              .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId)
+              .withWaitForCompletion(true));
       Supplier<Result<BackupRestoreStatusResponse>> supplierRestoreStatusResult = createSupplierRestoreStatus(
-        asyncClient, restoreStatusGetter -> restoreStatusGetter
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-      );
+          asyncClient, restoreStatusGetter -> restoreStatusGetter
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId));
 
-      BackupTestSuite.testFailOnRestoreBackupStatusOfNotStartedRestore(supplierCreateResult, supplierRestoreStatusResult, backupId);
+      BackupTestSuite.testFailOnRestoreBackupStatusOfNotStartedRestore(supplierCreateResult,
+          supplierRestoreStatusResult, backupId);
     }
   }
 
@@ -379,13 +361,12 @@ public class ClientBackupTest {
   public void shouldFailOnCreateBackupForBothIncludeAndExcludeClasses() {
     try (WeaviateAsyncClient asyncClient = client.async()) {
       Supplier<Result<BackupCreateResponse>> supplierCreateResult = createSupplierCreate(
-        asyncClient, creator -> creator
-          .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
-          .withExcludeClassNames(BackupTestSuite.CLASS_NAME_SOUP)
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-          .withWaitForCompletion(true)
-      );
+          asyncClient, creator -> creator
+              .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
+              .withExcludeClassNames(BackupTestSuite.CLASS_NAME_SOUP)
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId)
+              .withWaitForCompletion(true));
 
       BackupTestSuite.testFailOnCreateBackupForBothIncludeAndExcludeClasses(supplierCreateResult);
     }
@@ -395,22 +376,21 @@ public class ClientBackupTest {
   public void shouldFailOnRestoreBackupForBothIncludeAndExcludeClasses() {
     try (WeaviateAsyncClient asyncClient = client.async()) {
       Supplier<Result<BackupCreateResponse>> supplierCreateResult = createSupplierCreate(
-        asyncClient, creator -> creator
-          .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA, BackupTestSuite.CLASS_NAME_SOUP)
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-          .withWaitForCompletion(true)
-      );
+          asyncClient, creator -> creator
+              .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA, BackupTestSuite.CLASS_NAME_SOUP)
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId)
+              .withWaitForCompletion(true));
       Supplier<Result<BackupRestoreResponse>> supplierRestoreResult = createSupplierRestore(
-        asyncClient, restorer -> restorer
-          .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
-          .withExcludeClassNames(BackupTestSuite.CLASS_NAME_SOUP)
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-      );
+          asyncClient, restorer -> restorer
+              .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
+              .withExcludeClassNames(BackupTestSuite.CLASS_NAME_SOUP)
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId));
 
-      BackupTestSuite.testFailOnRestoreBackupForBothIncludeAndExcludeClasses(supplierCreateResult, supplierRestoreResult,
-        createSupplierDeletePizza());
+      BackupTestSuite.testFailOnRestoreBackupForBothIncludeAndExcludeClasses(supplierCreateResult,
+          supplierRestoreResult,
+          createSupplierDeletePizza());
     }
   }
 
@@ -419,80 +399,76 @@ public class ClientBackupTest {
     try (WeaviateAsyncClient asyncClient = client.async()) {
       // config with too high value
       Supplier<Result<BackupCreateResponse>> supplierCreateInvConfigResult = createSupplierCreate(
-        asyncClient, creator -> {
-          BackupCreator.BackupCreateConfig invCreateConfig = BackupCreator.BackupCreateConfig.builder()
-            .cpuPercentage(801)
-            .build();
+          asyncClient, creator -> {
+            BackupCreator.BackupCreateConfig invCreateConfig = BackupCreator.BackupCreateConfig.builder()
+                .cpuPercentage(801)
+                .build();
 
-          creator
-            .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
-            .withBackend(BackupTestSuite.BACKEND)
-            .withBackupId(backupId)
-            .withConfig(invCreateConfig)
-            .withWaitForCompletion(true);
-        }
-      );
+            creator
+                .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
+                .withBackend(BackupTestSuite.BACKEND)
+                .withBackupId(backupId)
+                .withConfig(invCreateConfig)
+                .withWaitForCompletion(true);
+          });
       // valid config
       Supplier<Result<BackupCreateResponse>> supplierCreateResult = createSupplierCreate(
-        asyncClient, creator -> {
-          BackupCreator.BackupCreateConfig createConfig = BackupCreator.BackupCreateConfig.builder()
-            .cpuPercentage(80)
-            .chunkSize(512)
-            .compressionLevel(BackupCreator.BackupCompression.BEST_SPEED)
-            .build();
+          asyncClient, creator -> {
+            BackupCreator.BackupCreateConfig createConfig = BackupCreator.BackupCreateConfig.builder()
+                .cpuPercentage(80)
+                .chunkSize(512)
+                .compressionLevel(BackupCreator.BackupCompression.BEST_SPEED)
+                .build();
 
-          creator
-            .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
-            .withBackend(BackupTestSuite.BACKEND)
-            .withBackupId(backupId)
-            .withConfig(createConfig)
-            .withWaitForCompletion(true);
-        }
-      );
+            creator
+                .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
+                .withBackend(BackupTestSuite.BACKEND)
+                .withBackupId(backupId)
+                .withConfig(createConfig)
+                .withWaitForCompletion(true);
+          });
       Supplier<Result<BackupCreateStatusResponse>> supplierCreateStatusResult = createSupplierCreateStatus(
-        asyncClient, createStatusGetter -> createStatusGetter
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-      );
+          asyncClient, createStatusGetter -> createStatusGetter
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId));
       // config with too high value
       Supplier<Result<BackupRestoreResponse>> supplierRestoreInvConfigResult = createSupplierRestore(
-        asyncClient, restorer -> {
-          BackupRestorer.BackupRestoreConfig invRestoreConfig = BackupRestorer.BackupRestoreConfig.builder()
-            .cpuPercentage(90)
-            .build();
+          asyncClient, restorer -> {
+            BackupRestorer.BackupRestoreConfig invRestoreConfig = BackupRestorer.BackupRestoreConfig.builder()
+                .cpuPercentage(90)
+                .build();
 
-          restorer
-            .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
-            .withBackend(BackupTestSuite.BACKEND)
-            .withBackupId(backupId)
-            .withConfig(invRestoreConfig)
-            .withWaitForCompletion(true);
-        }
-      );
+            restorer
+                .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
+                .withBackend(BackupTestSuite.BACKEND)
+                .withBackupId(backupId)
+                .withConfig(invRestoreConfig)
+                .withWaitForCompletion(true);
+          });
       // valid config
       Supplier<Result<BackupRestoreResponse>> supplierRestoreResult = createSupplierRestore(
-        asyncClient, restorer -> {
-          BackupRestorer.BackupRestoreConfig restoreConfig = BackupRestorer.BackupRestoreConfig.builder()
-            .cpuPercentage(70)
-            .build();
+          asyncClient, restorer -> {
+            BackupRestorer.BackupRestoreConfig restoreConfig = BackupRestorer.BackupRestoreConfig.builder()
+                .cpuPercentage(70)
+                .build();
 
-          restorer
-            .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
-            .withBackend(BackupTestSuite.BACKEND)
-            .withBackupId(backupId)
-            .withConfig(restoreConfig)
-            .withWaitForCompletion(true);
-        }
-      );
+            restorer
+                .withIncludeClassNames(BackupTestSuite.CLASS_NAME_PIZZA)
+                .withBackend(BackupTestSuite.BACKEND)
+                .withBackupId(backupId)
+                .withConfig(restoreConfig)
+                .withWaitForCompletion(true);
+          });
       Supplier<Result<BackupRestoreStatusResponse>> supplierRestoreStatusResult = createSupplierRestoreStatus(
-        asyncClient, restoreStatusGetter -> restoreStatusGetter
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-      );
+          asyncClient, restoreStatusGetter -> restoreStatusGetter
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId));
 
-      BackupTestSuite.testCreateAndRestoreBackupWithWaitingWithConfig(supplierCreateInvConfigResult, supplierCreateResult,
-        supplierCreateStatusResult, supplierRestoreInvConfigResult, supplierRestoreResult, supplierRestoreStatusResult,
-        createSupplierDeletePizza(), createSupplierGQLOfClass(), backupId);
+      BackupTestSuite.testCreateAndRestoreBackupWithWaitingWithConfig(supplierCreateInvConfigResult,
+          supplierCreateResult,
+          supplierCreateStatusResult, supplierRestoreInvConfigResult, supplierRestoreResult,
+          supplierRestoreStatusResult,
+          createSupplierDeletePizza(), createSupplierGQLOfClass(), backupId);
     }
   }
 
@@ -500,44 +476,123 @@ public class ClientBackupTest {
   public void shouldCancelBackup() {
     try (WeaviateAsyncClient asyncClient = client.async()) {
       Supplier<Result<BackupCreateResponse>> supplierCreateResult = createSupplierCreate(
-        asyncClient, creator -> creator
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-          .withWaitForCompletion(false) // this will allow us to "intercept" the backup in progress
+          asyncClient, creator -> creator
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId)
+              .withWaitForCompletion(false) // this will allow us to "intercept" the backup in progress
       );
       Supplier<Result<Void>> supplierCancelResult = createSupplierCanceler(
-        asyncClient, canceler -> canceler
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-      );
+          asyncClient, canceler -> canceler
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId));
       Supplier<Result<BackupCreateStatusResponse>> supplierCreateStatusResult = createSupplierCreateStatus(
-        asyncClient, createStatusGetter -> createStatusGetter
-          .withBackend(BackupTestSuite.BACKEND)
-          .withBackupId(backupId)
-      );
+          asyncClient, createStatusGetter -> createStatusGetter
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId));
 
       BackupTestSuite.testCancelBackup(supplierCreateResult, supplierCancelResult, supplierCreateStatusResult);
     }
   }
 
+  @Test
+  public void shouldRestoreWithRbacOptions() {
+    final String className = "RolesUsers";
+    final String roleName = "restoreRole";
+    final String userName = "restoreUser";
+
+    try (final WeaviateAsyncClient async = client.async()) {
+
+      BackupTestSuite.testBackupRestoreWithRbacOptions(backupId,
+          // Arrange: create collection, create role, create user;
+          runnable(() -> {
+            async.schema().classDeleter().withClassName(className).run().get();
+            async.schema().classCreator().withClass(WeaviateClass.builder().className(className).build()).run().get();
+
+            async.roles().deleter().withName(roleName).run().get();
+            Result<?> createRole = async.roles().creator().withName(roleName)
+                .withPermissions(Permission.cluster(ClusterPermission.Action.READ)).run().get();
+            Assertions.assertThat(createRole.getError()).as("create role").isNull();
+
+            async.users().db().deleter().withUserId(userName).run().get();
+            Result<?> createUser = async.users().db().creator().withUserId(userName).run().get();
+            Assertions.assertThat(createUser.getError()).as("create user").isNull();
+
+            return null; // satisfy Callable
+          }),
+          runnable(() -> {
+            async.schema().classDeleter().withClassName(className).run().get();
+            async.roles().deleter().withName(roleName).run().get();
+            async.users().db().deleter().withUserId(userName).run().get();
+
+            return null; // satisfy Callable
+          }),
+          // Create backup
+          supplier(() -> async.backup().creator()
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId)
+              .withIncludeClassNames("RolesUsers")
+              .withWaitForCompletion(true)
+              .run().get()),
+          // Restore from backup
+          supplier(() -> async.backup().restorer()
+              .withBackend(BackupTestSuite.BACKEND)
+              .withBackupId(backupId)
+              .withIncludeClassNames("RolesUsers")
+              .withWaitForCompletion(true)
+              .withConfig(BackupRestoreConfig.builder()
+                  .usersRestore(RbacRestoreOption.ALL)
+                  .rolesRestore(RbacRestoreOption.ALL)
+                  .build())
+              .run().get()),
+          supplier(() -> async.users().db().getUser().withUserId(userName).run().get()),
+          supplier(() -> async.roles().getter().withName(roleName).run().get()));
+    }
+  }
+
+  @FunctionalInterface
+  interface ThrowingSupplier<T> {
+    T get() throws Exception;
+  }
+
+  /** Convert throwing Callable into a Runnable which does not throw. */
+  private static Runnable runnable(Callable<Exception> c) {
+    return () -> {
+      try {
+        c.call();
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    };
+  }
+
+  /** Convert throwing Supplier into one that does not throw. */
+  private static <T> Supplier<T> supplier(ThrowingSupplier<T> s) {
+    return () -> {
+      try {
+        return s.get();
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    };
+  }
 
   @NotNull
   private Supplier<Result<Boolean>> createSupplierDeletePizza() {
     return () -> client.schema().classDeleter()
-      .withClassName(BackupTestSuite.CLASS_NAME_PIZZA)
-      .run();
+        .withClassName(BackupTestSuite.CLASS_NAME_PIZZA)
+        .run();
   }
 
   @NotNull
   private Function<String, Result<GraphQLResponse>> createSupplierGQLOfClass() {
     return (String className) -> client.graphQL().get()
-      .withClassName(className)
-      .withFields(Field.builder().name("name").build())
-      .run();
+        .withClassName(className)
+        .withFields(Field.builder().name("name").build())
+        .run();
   }
 
   private Supplier<Result<BackupCreateResponse>> createSupplierCreate(WeaviateAsyncClient asyncClient,
-                                                                      Consumer<BackupCreator> configure) {
+      Consumer<BackupCreator> configure) {
     return () -> {
       try {
         BackupCreator creator = asyncClient.backup().creator();
@@ -550,7 +605,7 @@ public class ClientBackupTest {
   }
 
   private Supplier<Result<BackupCreateResponse[]>> createSupplierGet(WeaviateAsyncClient asyncClient,
-                                                                     Consumer<BackupGetter> configure) {
+      Consumer<BackupGetter> configure) {
     return () -> {
       try {
         BackupGetter getter = asyncClient.backup().getter();
@@ -559,11 +614,11 @@ public class ClientBackupTest {
       } catch (InterruptedException | ExecutionException e) {
         throw new RuntimeException(e);
       }
-    };                              
+    };
   }
 
   private Supplier<Result<BackupCreateStatusResponse>> createSupplierCreateStatus(WeaviateAsyncClient asyncClient,
-                                                                                  Consumer<BackupCreateStatusGetter> configure) {
+      Consumer<BackupCreateStatusGetter> configure) {
     return () -> {
       try {
         BackupCreateStatusGetter getter = asyncClient.backup().createStatusGetter();
@@ -576,7 +631,7 @@ public class ClientBackupTest {
   }
 
   private Supplier<Result<BackupRestoreResponse>> createSupplierRestore(WeaviateAsyncClient asyncClient,
-                                                                        Consumer<BackupRestorer> configure) {
+      Consumer<BackupRestorer> configure) {
     return () -> {
       try {
         BackupRestorer restorer = asyncClient.backup().restorer();
@@ -589,7 +644,7 @@ public class ClientBackupTest {
   }
 
   private Supplier<Result<BackupRestoreStatusResponse>> createSupplierRestoreStatus(WeaviateAsyncClient asyncClient,
-                                                                                    Consumer<BackupRestoreStatusGetter> configure) {
+      Consumer<BackupRestoreStatusGetter> configure) {
     return () -> {
       try {
         BackupRestoreStatusGetter getter = asyncClient.backup().restoreStatusGetter();
@@ -602,7 +657,7 @@ public class ClientBackupTest {
   }
 
   private Supplier<Result<Void>> createSupplierCanceler(WeaviateAsyncClient asyncClient,
-                                                        Consumer<BackupCanceler> configure) {
+      Consumer<BackupCanceler> configure) {
     return () -> {
       try {
         BackupCanceler canceler = asyncClient.backup().canceler();

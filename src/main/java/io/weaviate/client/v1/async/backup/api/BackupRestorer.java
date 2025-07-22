@@ -1,6 +1,18 @@
 package io.weaviate.client.v1.async.backup.api;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Future;
+
+import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
+import org.apache.hc.core5.concurrent.FutureCallback;
+import org.apache.hc.core5.http.HttpStatus;
+
 import com.google.gson.annotations.SerializedName;
+
 import io.weaviate.client.Config;
 import io.weaviate.client.base.AsyncBaseClient;
 import io.weaviate.client.base.AsyncClientResult;
@@ -13,22 +25,13 @@ import io.weaviate.client.base.util.UrlEncoder;
 import io.weaviate.client.v1.auth.provider.AccessTokenProvider;
 import io.weaviate.client.v1.backup.model.BackupRestoreResponse;
 import io.weaviate.client.v1.backup.model.BackupRestoreStatusResponse;
+import io.weaviate.client.v1.backup.model.RbacRestoreOption;
 import io.weaviate.client.v1.backup.model.RestoreStatus;
 import lombok.Builder;
 import lombok.Getter;
-import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
-import org.apache.hc.core5.concurrent.FutureCallback;
-import org.apache.hc.core5.http.HttpStatus;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Future;
 
 public class BackupRestorer extends AsyncBaseClient<BackupRestoreResponse>
-  implements AsyncClientResult<BackupRestoreResponse> {
+    implements AsyncClientResult<BackupRestoreResponse> {
 
   private static final long WAIT_INTERVAL = 1000;
 
@@ -41,13 +44,12 @@ public class BackupRestorer extends AsyncBaseClient<BackupRestoreResponse>
   private boolean waitForCompletion;
   private final Executor executor;
 
-
-  public BackupRestorer(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider, BackupRestoreStatusGetter statusGetter, Executor executor) {
+  public BackupRestorer(CloseableHttpAsyncClient client, Config config, AccessTokenProvider tokenProvider,
+      BackupRestoreStatusGetter statusGetter, Executor executor) {
     super(client, config, tokenProvider);
     this.statusGetter = statusGetter;
     this.executor = executor;
   }
-
 
   public BackupRestorer withIncludeClassNames(String... classNames) {
     this.includeClassNames = classNames;
@@ -87,19 +89,20 @@ public class BackupRestorer extends AsyncBaseClient<BackupRestoreResponse>
     return restore(callback);
   }
 
-
   private Future<Result<BackupRestoreResponse>> restore(FutureCallback<Result<BackupRestoreResponse>> callback) {
     BackupRestore payload = BackupRestore.builder()
-      .config(BackupRestoreConfig.builder().build())
-      .include(includeClassNames)
-      .exclude(excludeClassNames)
-      .config(config)
-      .build();
-    String path = String.format("/backups/%s/%s/restore", UrlEncoder.encodePathParam(backend), UrlEncoder.encodePathParam(backupId));
+        .config(BackupRestoreConfig.builder().build())
+        .include(includeClassNames)
+        .exclude(excludeClassNames)
+        .config(config)
+        .build();
+    String path = String.format("/backups/%s/%s/restore", UrlEncoder.encodePathParam(backend),
+        UrlEncoder.encodePathParam(backupId));
     return sendPostRequest(path, payload, BackupRestoreResponse.class, callback);
   }
 
-  private Future<Result<BackupRestoreResponse>> restoreAndWaitForCompletion(FutureCallback<Result<BackupRestoreResponse>> callback) {
+  private Future<Result<BackupRestoreResponse>> restoreAndWaitForCompletion(
+      FutureCallback<Result<BackupRestoreResponse>> callback) {
     CompletableFuture<Result<BackupRestoreResponse>> future = new CompletableFuture<>();
     FutureCallback<Result<BackupRestoreResponse>> internalCallback = new FutureCallback<Result<BackupRestoreResponse>>() {
       @Override
@@ -124,64 +127,65 @@ public class BackupRestorer extends AsyncBaseClient<BackupRestoreResponse>
     restore(internalCallback);
 
     return future.thenCompose(restoreResult -> {
-        if (restoreResult.hasErrors()) {
-          return CompletableFuture.completedFuture(restoreResult);
-        }
-        return getStatusRecursively(backend, backupId, restoreResult);
-      })
-      .whenComplete((restoreResult, throwable) -> {
-        if (callback != null) {
-          if (throwable != null) {
-            callback.failed((Exception) throwable);
-          } else {
-            callback.completed(restoreResult);
+      if (restoreResult.hasErrors()) {
+        return CompletableFuture.completedFuture(restoreResult);
+      }
+      return getStatusRecursively(backend, backupId, restoreResult);
+    })
+        .whenComplete((restoreResult, throwable) -> {
+          if (callback != null) {
+            if (throwable != null) {
+              callback.failed((Exception) throwable);
+            } else {
+              callback.completed(restoreResult);
+            }
           }
-        }
-      });
+        });
   }
 
   private CompletableFuture<Result<BackupRestoreStatusResponse>> getStatus(String backend, String backupId) {
     CompletableFuture<Result<BackupRestoreStatusResponse>> future = new CompletableFuture<>();
     statusGetter.withBackend(backend).withBackupId(backupId)
-      .run(new FutureCallback<Result<BackupRestoreStatusResponse>>() {
-        @Override
-        public void completed(Result<BackupRestoreStatusResponse> createStatusResult) {
-          future.complete(createStatusResult);
-        }
+        .run(new FutureCallback<Result<BackupRestoreStatusResponse>>() {
+          @Override
+          public void completed(Result<BackupRestoreStatusResponse> createStatusResult) {
+            future.complete(createStatusResult);
+          }
 
-        @Override
-        public void failed(Exception e) {
-          future.completeExceptionally(e);
-        }
+          @Override
+          public void failed(Exception e) {
+            future.completeExceptionally(e);
+          }
 
-        @Override
-        public void cancelled() {
-        }
-      });
+          @Override
+          public void cancelled() {
+          }
+        });
     return future;
   }
 
   private CompletableFuture<Result<BackupRestoreResponse>> getStatusRecursively(String backend, String backupId,
-                                                                                Result<BackupRestoreResponse> restoreResult) {
+      Result<BackupRestoreResponse> restoreResult) {
     return Futures.thenComposeAsync(getStatus(backend, backupId), restoreStatusResult -> {
       boolean isRunning = Optional.of(restoreStatusResult)
-        .filter(r -> !r.hasErrors())
-        .map(Result::getResult)
-        .map(BackupRestoreStatusResponse::getStatus)
-        .filter(status -> {
-          switch (status) {
-            case RestoreStatus.SUCCESS:
-            case RestoreStatus.FAILED:
-              return false;
-            default:
-              return true;
-          }
-        })
-        .isPresent();
+          .filter(r -> !r.hasErrors())
+          .map(Result::getResult)
+          .map(BackupRestoreStatusResponse::getStatus)
+          .filter(status -> {
+            switch (status) {
+              case RestoreStatus.SUCCESS:
+              case RestoreStatus.FAILED:
+                return false;
+              default:
+                return true;
+            }
+          })
+          .isPresent();
 
       if (isRunning) {
         try {
-          return Futures.supplyDelayed(() -> getStatusRecursively(backend, backupId, restoreResult), WAIT_INTERVAL, executor);
+          return Futures.supplyDelayed(() -> getStatusRecursively(backend, backupId, restoreResult), WAIT_INTERVAL,
+              executor);
         } catch (InterruptedException e) {
           throw new CompletionException(e);
         }
@@ -191,7 +195,7 @@ public class BackupRestorer extends AsyncBaseClient<BackupRestoreResponse>
   }
 
   private Result<BackupRestoreResponse> merge(Result<BackupRestoreStatusResponse> restoreStatusResult,
-                                              Result<BackupRestoreResponse> restoreResult) {
+      Result<BackupRestoreResponse> restoreResult) {
     BackupRestoreStatusResponse restoreStatusResponse = restoreStatusResult.getResult();
     BackupRestoreResponse restoreResponse = restoreResult.getResult();
 
@@ -215,20 +219,22 @@ public class BackupRestorer extends AsyncBaseClient<BackupRestoreResponse>
       List<WeaviateErrorMessage> messages = error.getMessages();
 
       errorResponse = WeaviateErrorResponse.builder()
-        .code(statusCode)
-        .error(messages)
-        .build();
+          .code(statusCode)
+          .error(messages)
+          .build();
     }
 
     return new Result<>(statusCode, merged, errorResponse);
   }
 
-
   @Getter
   @Builder
   private static class BackupRestore {
+    @SerializedName("config")
     BackupRestoreConfig config;
+    @SerializedName("include")
     String[] include;
+    @SerializedName("exclude")
     String[] exclude;
   }
 
@@ -241,5 +247,9 @@ public class BackupRestorer extends AsyncBaseClient<BackupRestoreResponse>
     String bucket;
     @SerializedName("Path")
     String path;
+    @SerializedName("usersOptions")
+    RbacRestoreOption usersRestore;
+    @SerializedName("rolesOptions")
+    RbacRestoreOption rolesRestore;
   }
 }
