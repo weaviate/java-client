@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.Future;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -64,6 +65,102 @@ public class Result<T> {
   public <C> Result<C> toErrorResult() {
     return new Result<>(this.error.getStatusCode(), null,
         WeaviateErrorResponse.builder().error(this.error.getMessages()).build());
+  }
+
+  /**
+   * Apply {@code map} function to {@code Response::getBody} and return
+   * {@link Result} with the transformed body.
+   *
+   * <p>
+   * A {@code null}-body is passed as-is.
+   *
+   * <p>
+   * Usage:
+   *
+   * <pre>{@code @Override
+   * public Result<String> run() {
+   *   // Deserializes into Person.class but returns Person's firstName or null.
+   *   return Result.map(sendGetRequest("/person", Person.class), Person::getFirstName);
+   * }
+   * }</pre>
+   */
+  public static <T, R> Result<R> map(Response<T> response, Function<T, R> map) {
+    R body = response.getBody() != null
+        ? map.apply(response.getBody())
+        : null;
+    return new Result<>(response, body);
+  }
+
+  /**
+   * Apply {@code map} function to {@code Response::getBody} and return
+   * {@link Future} with the transformed body.
+   *
+   * <p>
+   * A {@code null}-body is passed as-is.
+   *
+   * <p>
+   * Usage:
+   *
+   * <pre>{@code @Override
+   * public Future<String> run(FutureCallback<Result<String>> callback) {
+   *   // Deserializes into Person.class but returns Person's firstName or null.
+   *   return sendGetRequest("/person", callback, Result.mapParser(Person.class, Person::getFirstName));
+   * }
+   * }</pre>
+   */
+  public static <T, R> ResponseParser<R> mapParser(Class<T> cls, Function<T, R> map) {
+    return new ResponseParser<R>() {
+      @Override
+      public Result<R> parse(HttpResponse response, String body, ContentType contentType) {
+        Response<T> resp = this.serializer.toResponse(response.getCode(), body, cls);
+        return Result.map(resp, map);
+      }
+    };
+  }
+
+  /**
+   * Convert {@code T[]} response to a {@code List<T>} response.
+   * This is handy for all request handlers which returns lists,
+   * as the current client does not support deserializing into a parametrized
+   * {@code List.class}.
+   *
+   * <p>
+   * Usage:
+   *
+   * <pre>{@code @Override
+   * public Result<List<String>> run() {
+   *   return Result.toList(sendGetRequest("/names", String[].class));
+   * }
+   * }</pre>
+   */
+  public static <T> Result<List<T>> toList(Response<T[]> response) {
+    return new Result<>(response, Arrays.asList(response.getBody()));
+  }
+
+  /**
+   * Convert {@code T[]} response to a {@code List<T>} response.
+   * This is handy for all request handlers which returns lists,
+   * as the current client does not support deserializing into a parametrized
+   * {@code List.class}.
+   *
+   * <p>
+   * Usage:
+   *
+   * <pre>{@code @Override
+   * public Future<List<String>> run(FutureCallback<List<String>> callback) {
+   *   return sendGetRequest("/names", callback, Result.toListParser(String[].class));
+   * }
+   * }</pre>
+   */
+  public static <T> ResponseParser<List<T>> toListParser(Class<T[]> cls) {
+    return new ResponseParser<List<T>>() {
+
+      @Override
+      public Result<List<T>> parse(HttpResponse response, String body, ContentType contentType) {
+        Response<T[]> resp = this.serializer.toResponse(response.getCode(), body, cls);
+        return Result.toList(resp);
+      }
+    };
   }
 
   /**

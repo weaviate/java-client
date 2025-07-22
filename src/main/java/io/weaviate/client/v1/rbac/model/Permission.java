@@ -86,6 +86,12 @@ public abstract class Permission<P extends Permission<P>> {
       return new RolesPermission(roles.getRole(), roles.getScope(), action);
     } else if (perm.getTenants() != null) {
       return new TenantsPermission(action);
+    } else if (perm.getReplicate() != null) {
+      ReplicatePermission replicate = perm.getReplicate();
+      return new ReplicatePermission(replicate.getCollection(), replicate.getShard(), action);
+
+      // Cluster-/UserPermission do not have any additional data, so we can only
+      // identify them based on the action.
     } else if (RbacAction.isValid(ClusterPermission.Action.class, action)) {
       return new ClusterPermission(action);
     } else if (RbacAction.isValid(UsersPermission.Action.class, action)) {
@@ -238,6 +244,18 @@ public abstract class Permission<P extends Permission<P>> {
   public static UsersPermission users(UsersPermission.Action... actions) {
     checkDeprecation(actions);
     return new UsersPermission(actions);
+  }
+
+  /**
+   * Create {@link ReplicatePermission}.
+   *
+   * <p>
+   * Example:
+   * {@code Permissions.replicate("Pizza", "shard-123", ReplicatePermission.Action.CREATE)}
+   */
+  public static ReplicatePermission replicate(String collection, String shard, ReplicatePermission.Action... actions) {
+    checkDeprecation(actions);
+    return new ReplicatePermission(collection, shard, actions);
   }
 
   private static void checkDeprecation(RbacAction... actions) throws IllegalArgumentException {

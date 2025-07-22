@@ -9,6 +9,7 @@ import io.weaviate.client.v1.rbac.model.CollectionsPermission;
 import io.weaviate.client.v1.rbac.model.DataPermission;
 import io.weaviate.client.v1.rbac.model.NodesPermission;
 import io.weaviate.client.v1.rbac.model.Permission;
+import io.weaviate.client.v1.rbac.model.ReplicatePermission;
 import io.weaviate.client.v1.rbac.model.RolesPermission;
 import io.weaviate.client.v1.rbac.model.TenantsPermission;
 import io.weaviate.client.v1.rbac.model.UsersPermission;
@@ -34,6 +35,7 @@ public class WeaviatePermission {
   RolesPermission roles;
   TenantsPermission tenants;
   UsersPermission users;
+  ReplicatePermission replicate;
 
   public WeaviatePermission(String action) {
     this.action = action;
@@ -57,6 +59,8 @@ public class WeaviatePermission {
       this.tenants = (TenantsPermission) perm;
     } else if (perm instanceof UsersPermission) {
       this.users = (UsersPermission) perm;
+    } else if (perm instanceof ReplicatePermission) {
+      this.replicate = (ReplicatePermission) perm;
     }
   }
 

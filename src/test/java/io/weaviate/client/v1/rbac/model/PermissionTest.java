@@ -32,6 +32,7 @@ public class PermissionTest {
     ClusterPermission cluster = new ClusterPermission(ClusterPermission.Action.READ);
     TenantsPermission tenants = new TenantsPermission(TenantsPermission.Action.READ);
     UsersPermission users = new UsersPermission(UsersPermission.Action.READ);
+    ReplicatePermission replicate = new ReplicatePermission("Pizza", "shard-123", ReplicatePermission.Action.READ);
 
     return new Object[][] {
         {
@@ -79,6 +80,11 @@ public class PermissionTest {
             (Supplier<Permission<?>>) () -> users,
             new WeaviatePermission("read_users", users),
         },
+        {
+            "replicate permission",
+            (Supplier<Permission<?>>) () -> replicate,
+            new WeaviatePermission("read_replicate", replicate),
+        },
     };
   }
 
@@ -107,6 +113,13 @@ public class PermissionTest {
     RolesPermission perm = new RolesPermission("ExampleRole", RolesPermission.Action.READ);
     assertThat(perm).as("roles permission must have scope=null")
         .returns(null, RolesPermission::getScope);
+  }
+
+  @Test
+  public void testDefaultReplicatePermission() {
+    ReplicatePermission perm = new ReplicatePermission("Pizza", null);
+    assertThat(perm).as("replicate permission returns shard=* on read if one is not specified")
+        .returns("*", ReplicatePermission::getShard);
   }
 
   @DataMethod(source = PermissionTest.class, method = "serializationTestCases")
@@ -158,6 +171,32 @@ public class PermissionTest {
             new String[] {
                 "read_roles",
                 "update_roles",
+            },
+        },
+        {
+            Permission.alias("PizzaAlias", "Pizza",
+                AliasPermission.Action.CREATE,
+                AliasPermission.Action.READ,
+                AliasPermission.Action.UPDATE,
+                AliasPermission.Action.DELETE),
+            new String[] {
+                "create_aliases",
+                "read_aliases",
+                "update_aliases",
+                "delete_aliases",
+            },
+        },
+        {
+            Permission.replicate("Pizza", "shard-123",
+                ReplicatePermission.Action.CREATE,
+                ReplicatePermission.Action.READ,
+                ReplicatePermission.Action.UPDATE,
+                ReplicatePermission.Action.DELETE),
+            new String[] {
+                "create_replicate",
+                "read_replicate",
+                "update_replicate",
+                "delete_replicate",
             },
         },
     };

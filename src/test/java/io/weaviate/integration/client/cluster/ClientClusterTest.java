@@ -1,5 +1,12 @@
 package io.weaviate.integration.client.cluster;
 
+import java.util.function.Supplier;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
+
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
@@ -8,12 +15,6 @@ import io.weaviate.client.v1.cluster.model.NodesStatusResponse;
 import io.weaviate.integration.client.WeaviateDockerCompose;
 import io.weaviate.integration.client.WeaviateTestGenerics;
 import io.weaviate.integration.tests.cluster.ClusterTestSuite;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
-
-import java.util.function.Supplier;
 
 public class ClientClusterTest {
 
@@ -37,8 +38,8 @@ public class ClientClusterTest {
   @Test
   public void testClusterNodesEndpointWithoutDataWithOutputVerbose() {
     Supplier<Result<NodesStatusResponse>> resultSupplier = () -> client.cluster().nodesStatusGetter()
-      .withOutput(NodeStatusOutput.VERBOSE)
-      .run();
+        .withOutput(NodeStatusOutput.VERBOSE)
+        .run();
 
     ClusterTestSuite.testNoDataOutputVerbose(resultSupplier);
   }
@@ -46,8 +47,8 @@ public class ClientClusterTest {
   @Test
   public void testClusterNodesEndpointWithDataWithOutputVerbose() throws InterruptedException {
     Supplier<Result<NodesStatusResponse>> resultSupplier = () -> client.cluster().nodesStatusGetter()
-      .withOutput(NodeStatusOutput.VERBOSE)
-      .run();
+        .withOutput(NodeStatusOutput.VERBOSE)
+        .run();
 
     ClusterTestSuite.testDataOutputVerbose(resultSupplier, testGenerics, client);
   }
@@ -55,25 +56,25 @@ public class ClientClusterTest {
   @Test
   public void shouldGetNodeStatusPerClassWithOutputVerbose() throws InterruptedException {
     Supplier<Result<NodesStatusResponse>> resultSupplierAll = () -> client.cluster().nodesStatusGetter()
-      .withOutput(NodeStatusOutput.VERBOSE)
-      .run();
+        .withOutput(NodeStatusOutput.VERBOSE)
+        .run();
     Supplier<Result<NodesStatusResponse>> resultSupplierPizza = () -> client.cluster().nodesStatusGetter()
-      .withOutput(NodeStatusOutput.VERBOSE)
-      .withClassName("Pizza")
-      .run();
+        .withOutput(NodeStatusOutput.VERBOSE)
+        .withClassName("Pizza")
+        .run();
     Supplier<Result<NodesStatusResponse>> resultSupplierSoup = () -> client.cluster().nodesStatusGetter()
-      .withOutput(NodeStatusOutput.VERBOSE)
-      .withClassName("Soup")
-      .run();
+        .withOutput(NodeStatusOutput.VERBOSE)
+        .withClassName("Soup")
+        .run();
 
     ClusterTestSuite.testDataPerClassOutputVerbose(resultSupplierAll, resultSupplierPizza, resultSupplierSoup,
-      testGenerics, client);
+        testGenerics, client);
   }
 
   @Test
   public void testClusterNodesEndpointWithOutputMinimalImplicit() {
     Supplier<Result<NodesStatusResponse>> resultSupplier = () -> client.cluster().nodesStatusGetter()
-      .run();
+        .run();
 
     ClusterTestSuite.testNoDataOutputMinimalImplicit(resultSupplier);
   }
