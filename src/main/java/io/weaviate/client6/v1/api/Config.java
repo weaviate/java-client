@@ -158,8 +158,8 @@ public record Config(
      * <strong>443</strong> for HTTPS connection and <strong>80</strong> for HTTP.
      */
     public Custom scheme(String scheme) {
-      httpPort(scheme == "https" ? 443 : 80);
-      grpcPort(scheme == "https" ? 443 : 80);
+      httpPort("https".equals(scheme) ? 443 : 80);
+      grpcPort("https".equals(scheme) ? 443 : 80);
       return super.scheme(scheme);
     }
 
@@ -169,7 +169,7 @@ public record Config(
     }
 
     public Custom httpPort(int port) {
-      this.grpcPort = port;
+      this.httpPort = port;
       return this;
     }
 
