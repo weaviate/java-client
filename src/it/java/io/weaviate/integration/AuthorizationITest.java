@@ -35,7 +35,7 @@ public class AuthorizationITest extends ConcurrentTest {
   public void testAuthorization_apiKey() throws IOException {
     var transportOptions = new RestTransportOptions(
         "http", "localhost", mockServer.getLocalPort(),
-        Collections.emptyMap(), Authorization.apiKey("my-api-key"));
+        Collections.emptyMap(), Authorization.apiKey("my-api-key"), null);
 
     try (final var restClient = new DefaultRestTransport(transportOptions)) {
       restClient.performRequest(null, Endpoint.of(
