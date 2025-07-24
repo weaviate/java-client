@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import javax.net.ssl.TrustManagerFactory;
+
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.TokenProvider;
 import io.weaviate.client6.v1.internal.grpc.GrpcChannelOptions;
@@ -17,7 +19,8 @@ public record Config(
     String grpcHost,
     int grpcPort,
     Map<String, String> headers,
-    TokenProvider tokenProvider) {
+    TokenProvider tokenProvider,
+    TrustManagerFactory trustManagerFactory) {
 
   public static Config of(Function<Custom, ObjectBuilder<Config>> fn) {
     return fn.apply(new Custom()).build();
@@ -31,15 +34,16 @@ public record Config(
         builder.grpcHost,
         builder.grpcPort,
         builder.headers,
-        builder.tokenProvider);
+        builder.tokenProvider,
+        builder.trustManagerFactory);
   }
 
   public RestTransportOptions restTransportOptions() {
-    return new RestTransportOptions(scheme, httpHost, httpPort, headers, tokenProvider);
+    return new RestTransportOptions(scheme, httpHost, httpPort, headers, tokenProvider, trustManagerFactory);
   }
 
   public GrpcChannelOptions grpcTransportOptions() {
-    return new GrpcChannelOptions(scheme, grpcHost, grpcPort, headers, tokenProvider);
+    return new GrpcChannelOptions(scheme, grpcHost, grpcPort, headers, tokenProvider, trustManagerFactory);
   }
 
   private abstract static class Builder<SELF extends Builder<SELF>> implements ObjectBuilder<Config> {
@@ -50,6 +54,7 @@ public record Config(
     protected String grpcHost;
     protected int grpcPort;
     protected TokenProvider tokenProvider;
+    protected TrustManagerFactory trustManagerFactory;
     protected Map<String, String> headers = new HashMap<>();
 
     @SuppressWarnings("unchecked")
@@ -73,6 +78,12 @@ public record Config(
     /** Remove leading http(s):// prefix from a URL, if present. */
     private String trimScheme(String url) {
       return url.replaceFirst("^https?\\/\\/", "");
+    }
+
+    @SuppressWarnings("unchecked")
+    protected SELF trustManagerFactory(TrustManagerFactory tmf) {
+      this.trustManagerFactory = tmf;
+      return (SELF) this;
     }
 
     @SuppressWarnings("unchecked")
@@ -149,6 +160,10 @@ public record Config(
       this.grpcPort = 443;
       this.tokenProvider = tokenProvider;
     }
+
+    public WeaviateCloud trustManagerFactory(TrustManagerFactory tmf) {
+      return super.trustManagerFactory(tmf);
+    }
   }
 
   public static class Custom extends Builder<Custom> {
@@ -186,6 +201,10 @@ public record Config(
     public Custom authorization(TokenProvider tokenProvider) {
       this.tokenProvider = tokenProvider;
       return this;
+    }
+
+    public Custom trustManagerFactory(TrustManagerFactory tmf) {
+      return super.trustManagerFactory(tmf);
     }
   }
 }

@@ -1,7 +1,11 @@
 package io.weaviate.client6.v1.internal.rest;
 
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.CompletableFuture;
+
+import javax.net.ssl.SSLContext;
 
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
@@ -9,6 +13,11 @@ import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManager;
+import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.ssl.DefaultClientTlsStrategy;
 import org.apache.hc.core5.concurrent.FutureCallback;
 import org.apache.hc.core5.http.ClassicHttpRequest;
 import org.apache.hc.core5.http.ContentType;
@@ -35,6 +44,27 @@ public class DefaultRestTransport implements RestTransport {
         .setDefaultHeaders(transportOptions.headers());
     var httpClientAsync = HttpAsyncClients.custom()
         .setDefaultHeaders(transportOptions.headers());
+
+    // Apply custom SSL context
+    if (transportOptions.trustManagerFactory() != null) {
+      DefaultClientTlsStrategy tlsStrategy;
+      try {
+        var sslCtx = SSLContext.getInstance("TLS");
+        sslCtx.init(null, transportOptions.trustManagerFactory().getTrustManagers(), null);
+        tlsStrategy = new DefaultClientTlsStrategy(sslCtx);
+      } catch (NoSuchAlgorithmException | KeyManagementException e) {
+        // todo: throw WeaviateConnectionException
+        throw new RuntimeException("connect to Weaviate", e);
+      }
+
+      PoolingHttpClientConnectionManager syncManager = PoolingHttpClientConnectionManagerBuilder.create()
+          .setTlsSocketStrategy(tlsStrategy).build();
+      PoolingAsyncClientConnectionManager asyncManager = PoolingAsyncClientConnectionManagerBuilder.create()
+          .setTlsStrategy(tlsStrategy).build();
+
+      httpClient.setConnectionManager(syncManager);
+      httpClientAsync.setConnectionManager(asyncManager);
+    }
 
     if (transportOptions.tokenProvider() != null) {
       var interceptor = new AuthorizationInterceptor(transportOptions.tokenProvider());
