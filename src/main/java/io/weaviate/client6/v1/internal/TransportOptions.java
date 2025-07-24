@@ -22,7 +22,7 @@ public abstract class TransportOptions<H> {
   }
 
   public boolean isSecure() {
-    return scheme == "https";
+    return scheme.equals("https");
   }
 
   public String scheme() {

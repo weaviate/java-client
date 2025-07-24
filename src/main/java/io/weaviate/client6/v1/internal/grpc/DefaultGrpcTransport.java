@@ -3,13 +3,17 @@ package io.weaviate.client6.v1.internal.grpc;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
+import javax.net.ssl.SSLException;
+
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
+import io.grpc.netty.GrpcSslContexts;
+import io.grpc.netty.NettyChannelBuilder;
 import io.grpc.stub.MetadataUtils;
+import io.netty.handler.ssl.SslContext;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateBlockingStub;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateFutureStub;
@@ -80,7 +84,7 @@ public final class DefaultGrpcTransport implements GrpcTransport {
   }
 
   private static ManagedChannel buildChannel(GrpcChannelOptions transportOptions) {
-    var channel = ManagedChannelBuilder.forAddress(transportOptions.host(), transportOptions.port());
+    var channel = NettyChannelBuilder.forAddress(transportOptions.host(), transportOptions.port());
 
     if (transportOptions.isSecure()) {
       channel.useTransportSecurity();
@@ -88,7 +92,21 @@ public final class DefaultGrpcTransport implements GrpcTransport {
       channel.usePlaintext();
     }
 
+    if (transportOptions.trustManagerFactory() != null) {
+      SslContext sslCtx;
+      try {
+        sslCtx = GrpcSslContexts.forClient()
+            .trustManager(transportOptions.trustManagerFactory())
+            .build();
+      } catch (SSLException e) {
+        // todo: rethrow as WeaviateConnectionException
+        throw new RuntimeException("create grpc transport", e);
+      }
+      channel.sslContext(sslCtx);
+    }
+
     channel.intercept(MetadataUtils.newAttachHeadersInterceptor(transportOptions.headers()));
+
     return channel.build();
   }
 
