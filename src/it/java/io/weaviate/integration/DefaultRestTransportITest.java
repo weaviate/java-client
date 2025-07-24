@@ -25,7 +25,7 @@ public class DefaultRestTransportITest {
   private TrustManagerFactory tmf;
 
   @Before
-  public void startMockServer() throws IOException {
+  public void setUp() throws IOException {
     // MockServer does not verify exclusive ownership of the port
     // and using any well-known port like 8080 will produce flaky
     // test results with fairly confusing errors, like:
@@ -86,7 +86,7 @@ public class DefaultRestTransportITest {
   }
 
   @After
-  public void stopMockServer() throws IOException {
+  public void tearDown() throws IOException {
     mockServer.stop();
     transport.close();
   }
