@@ -42,7 +42,7 @@ public record Config(
     return new GrpcChannelOptions(scheme, grpcHost, grpcPort, headers, tokenProvider);
   }
 
-  abstract static class Builder<SELF extends Builder<SELF>> implements ObjectBuilder<Config> {
+  public abstract static class Builder<SELF extends Builder<SELF>> implements ObjectBuilder<Config> {
     protected String scheme;
 
     protected String httpHost;
