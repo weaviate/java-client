@@ -23,7 +23,7 @@ public record Config(
     return fn.apply(new Custom()).build();
   }
 
-  public Config(Builder<?> builder) {
+  private Config(Builder<?> builder) {
     this(
         builder.scheme,
         builder.httpHost,
@@ -42,7 +42,7 @@ public record Config(
     return new GrpcChannelOptions(scheme, grpcHost, grpcPort, headers, tokenProvider);
   }
 
-  public abstract static class Builder<SELF extends Builder<SELF>> implements ObjectBuilder<Config> {
+  private abstract static class Builder<SELF extends Builder<SELF>> implements ObjectBuilder<Config> {
     protected String scheme;
 
     protected String httpHost;
