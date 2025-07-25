@@ -14,10 +14,10 @@ import com.google.protobuf.ByteString;
  * For this tests purposes the distinction is immaterial, as "want" arrays
  * are "golden values" meant to be a readable respresentation for the test.
  */
-public class GRPCTest {
+public class ByteStringUtilTest {
   @Test
   public void test_encodeVector_1d() {
-    Float[] vector = { 1f, 2f, 3f };
+    float[] vector = { 1f, 2f, 3f };
     byte[] want = { 0, 0, -128, 63, 0, 0, 0, 64, 0, 0, 64, 64 };
     byte[] got = ByteStringUtil.encodeVectorSingle(vector).toByteArray();
     assertArrayEquals(want, got);
@@ -26,14 +26,14 @@ public class GRPCTest {
   @Test
   public void test_decodeVector_1d() {
     byte[] bytes = { 0, 0, -128, 63, 0, 0, 0, 64, 0, 0, 64, 64 };
-    Float[] want = { 1f, 2f, 3f };
-    Float[] got = ByteStringUtil.decodeVectorSingle(ByteString.copyFrom(bytes));
-    assertArrayEquals(want, got);
+    float[] want = { 1f, 2f, 3f };
+    float[] got = ByteStringUtil.decodeVectorSingle(ByteString.copyFrom(bytes));
+    assertArrayEquals(want, got, 0);
   }
 
   @Test
   public void test_encodeVector_2d() {
-    Float[][] vector = { { 1f, 2f, 3f }, { 4f, 5f, 6f } };
+    float[][] vector = { { 1f, 2f, 3f }, { 4f, 5f, 6f } };
     byte[] want = { 3, 0, 0, 0, -128, 63, 0, 0, 0, 64, 0, 0, 64, 64, 0, 0, -128, 64, 0, 0, -96, 64, 0, 0, -64, 64 };
     byte[] got = ByteStringUtil.encodeVectorMulti(vector).toByteArray();
     assertArrayEquals(want, got);
@@ -42,8 +42,8 @@ public class GRPCTest {
   @Test
   public void test_decodeVector_2d() {
     byte[] bytes = { 3, 0, 0, 0, -128, 63, 0, 0, 0, 64, 0, 0, 64, 64, 0, 0, -128, 64, 0, 0, -96, 64, 0, 0, -64, 64 };
-    Float[][] want = { { 1f, 2f, 3f }, { 4f, 5f, 6f } };
-    Float[][] got = ByteStringUtil.decodeVectorMulti(ByteString.copyFrom(bytes));
+    float[][] want = { { 1f, 2f, 3f }, { 4f, 5f, 6f } };
+    float[][] got = ByteStringUtil.decodeVectorMulti(ByteString.copyFrom(bytes));
     assertArrayEquals(want, got);
   }
 
