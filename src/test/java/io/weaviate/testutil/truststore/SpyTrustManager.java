@@ -1,4 +1,4 @@
-package io.weaviate.truststore;
+package io.weaviate.testutil.truststore;
 
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -7,6 +7,11 @@ import java.util.Optional;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
+/**
+ * Test fixture that records when this TrustManager has been used.
+ * Combine with {@link SingleTrustManagerFactory#create} to mock
+ * a custom TrustStore.
+ */
 public class SpyTrustManager implements X509TrustManager {
   private boolean used = false;
 
