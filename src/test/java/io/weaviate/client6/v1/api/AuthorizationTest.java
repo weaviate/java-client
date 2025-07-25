@@ -1,4 +1,4 @@
-package io.weaviate.integration;
+package io.weaviate.client6.v1.api;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -9,13 +9,11 @@ import org.junit.Test;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpRequest;
 
-import io.weaviate.ConcurrentTest;
-import io.weaviate.client6.v1.api.Authorization;
 import io.weaviate.client6.v1.internal.rest.DefaultRestTransport;
 import io.weaviate.client6.v1.internal.rest.Endpoint;
 import io.weaviate.client6.v1.internal.rest.RestTransportOptions;
 
-public class AuthorizationITest extends ConcurrentTest {
+public class AuthorizationTest {
   private ClientAndServer mockServer;
 
   @Before

@@ -1,4 +1,4 @@
-package io.weaviate.integration;
+package io.weaviate.client6.v1.internal.rest;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -13,13 +13,10 @@ import org.junit.Test;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpRequest;
 
-import io.weaviate.client6.v1.internal.rest.DefaultRestTransport;
-import io.weaviate.client6.v1.internal.rest.Endpoint;
-import io.weaviate.client6.v1.internal.rest.RestTransportOptions;
-import io.weaviate.truststore.SingleTrustManagerFactory;
-import io.weaviate.truststore.SpyTrustManager;
+import io.weaviate.testutil.truststore.SingleTrustManagerFactory;
+import io.weaviate.testutil.truststore.SpyTrustManager;
 
-public class DefaultRestTransportITest {
+public class DefaultRestTransportTest {
   private ClientAndServer mockServer;
   private DefaultRestTransport transport;
   private TrustManagerFactory tmf;

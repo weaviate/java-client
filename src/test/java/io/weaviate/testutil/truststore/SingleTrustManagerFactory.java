@@ -1,17 +1,18 @@
-package io.weaviate.truststore;
+package io.weaviate.testutil.truststore;
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
-import java.util.Arrays;
 
 import javax.net.ssl.ManagerFactoryParameters;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.TrustManagerFactorySpi;
 
+/** TrustManagerFactory which always returns the same {@code TrustManager}. */
 public final class SingleTrustManagerFactory extends TrustManagerFactory {
 
+  /** Create a factory that will return {@code TrustManager tm}. */
   public static TrustManagerFactory create(TrustManager tm) {
     return new SingleTrustManagerFactory(tm);
   }
