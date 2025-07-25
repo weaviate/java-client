@@ -72,11 +72,11 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
 
   // NearVector ---------------------------------------------------------------
 
-  public ResponseT nearVector(Float[] vector, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+  public ResponseT nearVector(float[] vector, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
     return nearVector(NearVector.of(vector), fn);
   }
 
-  public ResponseT nearVector(Float[] vector, Function<NearVector.Builder, ObjectBuilder<NearVector>> nv,
+  public ResponseT nearVector(float[] vector, Function<NearVector.Builder, ObjectBuilder<NearVector>> nv,
       Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
     return nearVector(NearVector.of(vector, nv), fn);
   }
@@ -85,12 +85,12 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
     return performRequest(Aggregation.of(filter, fn));
   }
 
-  public GroupedResponseT nearVector(Float[] vector, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+  public GroupedResponseT nearVector(float[] vector, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
       GroupBy groupBy) {
     return nearVector(NearVector.of(vector), fn, groupBy);
   }
 
-  public GroupedResponseT nearVector(Float[] vector, Function<NearVector.Builder, ObjectBuilder<NearVector>> nv,
+  public GroupedResponseT nearVector(float[] vector, Function<NearVector.Builder, ObjectBuilder<NearVector>> nv,
       Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn, GroupBy groupBy) {
     return nearVector(NearVector.of(vector, nv), fn, groupBy);
   }

@@ -6,8 +6,6 @@ import java.nio.FloatBuffer;
 import java.util.Arrays;
 import java.util.UUID;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import com.google.protobuf.ByteString;
 
 public class ByteStringUtil {
@@ -21,32 +19,25 @@ public class ByteStringUtil {
     return new UUID(most, least);
   }
 
-  /** Encode Float[] to ByteString. */
-  public static ByteString encodeVectorSingle(Float[] vector) {
+  /** Encode float[] to ByteString. */
+  public static ByteString encodeVectorSingle(float[] vector) {
     if (vector == null || vector.length == 0) {
       return ByteString.EMPTY;
     }
     ByteBuffer buffer = ByteBuffer.allocate(vector.length * Float.BYTES).order(BYTE_ORDER);
-    Arrays.stream(vector).forEach(buffer::putFloat);
-    return ByteString.copyFrom(buffer.array());
-  }
-
-  /** Encode float[] to ByteString. */
-  public static ByteString encodeVectorSingle(float[] vector) {
-    ByteBuffer buffer = ByteBuffer.allocate(vector.length * Float.BYTES).order(BYTE_ORDER);
-    for (float f : vector) {
+    for (final var f : vector) {
       buffer.putFloat(f);
     }
     return ByteString.copyFrom(buffer.array());
   }
 
   /**
-   * Encode Float[][] to ByteString.
+   * Encode float[][] to ByteString.
    * <p>
    * The first 2 bytes of the resulting ByteString encode the number of dimensions
    * (uint16 / short) followed by concatenated vectors (4 bytes per element).
    */
-  public static ByteString encodeVectorMulti(Float[][] vectors) {
+  public static ByteString encodeVectorMulti(float[][] vectors) {
     if (vectors == null || vectors.length == 0 || vectors[0].length == 0) {
       return ByteString.EMPTY;
     }
@@ -57,45 +48,67 @@ public class ByteStringUtil {
     /* concatenated elements */ (n * dimensions * Float.BYTES);
     ByteBuffer buffer = ByteBuffer.allocate(capacity).order(BYTE_ORDER)
         .putShort(dimensions);
-    Arrays.stream(vectors).forEach(v -> Arrays.stream(v).forEach(buffer::putFloat));
+    Arrays.stream(vectors).forEach(vector -> {
+      for (final var f : vector) {
+        buffer.putFloat(f);
+      }
+    });
     return ByteString.copyFrom(buffer.array());
   }
 
   /**
-   * Decode ByteString into a Float[]. ByteString size must be a multiple of
-   * {@link Float#BYTES}, throws {@link IllegalArgumentException} otherwise.
+   * Decode ByteString to {@code float[]}.
+   *
+   * @throws IllegalArgumentException if ByteString size is not
+   *                                  a multiple of {@link Float#BYTES}.
    */
-  public static Float[] decodeVectorSingle(ByteString bs) {
+  public static float[] decodeVectorSingle(ByteString bs) {
     if (bs.size() % Float.BYTES != 0) {
       throw new IllegalArgumentException(
-          "byte string size not a multiple of " + String.valueOf(Float.BYTES) + " (Float.BYTES)");
+          "ByteString size " + bs.size() + " is not a multiple of " + String.valueOf(Float.BYTES) + " (Float.BYTES)");
     }
     float[] vector = new float[bs.size() / Float.BYTES];
     bs.asReadOnlyByteBuffer().order(BYTE_ORDER).asFloatBuffer().get(vector);
-    return ArrayUtils.toObject(vector);
+    return vector;
   }
 
-  /** Decode ByteString to Float[][]. */
-  public static Float[][] decodeVectorMulti(ByteString bs) {
+  /**
+   * Decode ByteString to {@code float[][]}.
+   *
+   * <p>
+   * The expected structure of the byte string of total size N is:
+   * <ul>
+   * <li>[2 bytes]: dimensionality of the inner vector ({@code dim})
+   * <li>[N-2 bytes]: concatenated inner vectors. N-2 must be a multiple of
+   * {@code Float.BYTES * dim}
+   * </ul>
+   *
+   * @throws IllegalArgumentException if ByteString is not of a valid size.
+   */
+  public static float[][] decodeVectorMulti(ByteString bs) {
     if (bs == null || bs.size() == 0) {
-      return new Float[0][0];
+      return new float[0][0];
     }
 
     ByteBuffer buf = bs.asReadOnlyByteBuffer().order(BYTE_ORDER);
+    short dim = buf.getShort(); // advances current position
+    if (dim == 0) {
+      return new float[0][0];
+    }
 
-    // Dimensions are encoded in the first 2 bytes.
-    short dimensions = buf.getShort(); // advances current position
-
-    FloatBuffer fbuf = buf.asFloatBuffer();
-    int n = fbuf.remaining() / dimensions; // fbuf size is buf / Float.BYTES
+    FloatBuffer fbuf = buf.asFloatBuffer(); // fbuf size is buf / Float.BYTES
+    if (fbuf.remaining() % dim != 0) {
+      throw new IllegalArgumentException(
+          "Remaing ByteString size " + fbuf.remaining() + " is not a multiple of " + dim
+              + " (dim)");
+    }
+    int n = fbuf.remaining() / dim;
 
     // Reading from buffer advances current position,
     // so we always read from offset=0.
-    Float[][] vectors = new Float[n][dimensions];
+    float[][] vectors = new float[n][dim];
     for (int i = 0; i < n; i++) {
-      float[] v = new float[dimensions];
-      fbuf.get(v, 0, dimensions);
-      vectors[i] = ArrayUtils.toObject(v);
+      fbuf.get(vectors[i], 0, dim);
     }
     return vectors;
   }

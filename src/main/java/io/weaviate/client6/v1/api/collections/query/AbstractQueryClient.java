@@ -110,11 +110,11 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
 
   // NearVector queries -------------------------------------------------------
 
-  public ResponseT nearVector(Float[] vector) {
+  public ResponseT nearVector(float[] vector) {
     return nearVector(NearVector.of(vector));
   }
 
-  public ResponseT nearVector(Float[] vector, Function<NearVector.Builder, ObjectBuilder<NearVector>> fn) {
+  public ResponseT nearVector(float[] vector, Function<NearVector.Builder, ObjectBuilder<NearVector>> fn) {
     return nearVector(NearVector.of(vector, fn));
   }
 
@@ -122,11 +122,11 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
     return performRequest(query);
   }
 
-  public GroupedResponseT nearVector(Float[] vector, GroupBy groupBy) {
+  public GroupedResponseT nearVector(float[] vector, GroupBy groupBy) {
     return nearVector(NearVector.of(vector), groupBy);
   }
 
-  public GroupedResponseT nearVector(Float[] vector, Function<NearVector.Builder, ObjectBuilder<NearVector>> fn,
+  public GroupedResponseT nearVector(float[] vector, Function<NearVector.Builder, ObjectBuilder<NearVector>> fn,
       GroupBy groupBy) {
     return nearVector(NearVector.of(vector, fn), groupBy);
   }

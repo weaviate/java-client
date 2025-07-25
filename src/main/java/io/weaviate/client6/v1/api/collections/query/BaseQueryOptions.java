@@ -47,17 +47,17 @@ public record BaseQueryOptions(
     private List<QueryReference> returnReferences = new ArrayList<>();
     private List<Metadata> returnMetadata = new ArrayList<>();
 
-    public final SELF limit(Integer limit) {
+    public final SELF limit(int limit) {
       this.limit = limit;
       return (SELF) this;
     }
 
-    public final SELF offset(Integer offset) {
+    public final SELF offset(int offset) {
       this.offset = offset;
       return (SELF) this;
     }
 
-    public final SELF autocut(Integer autocut) {
+    public final SELF autocut(int autocut) {
       this.autocut = autocut;
       return (SELF) this;
     }

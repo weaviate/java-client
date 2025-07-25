@@ -10,14 +10,14 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
-public record NearVector(Float[] vector, Float distance, Float certainty, BaseQueryOptions common)
+public record NearVector(float[] vector, Float distance, Float certainty, BaseQueryOptions common)
     implements QueryOperator, AggregateObjectFilter {
 
-  public static final NearVector of(Float[] vector) {
+  public static final NearVector of(float[] vector) {
     return of(vector, ObjectBuilder.identity());
   }
 
-  public static final NearVector of(Float[] vector, Function<Builder, ObjectBuilder<NearVector>> fn) {
+  public static final NearVector of(float[] vector, Function<Builder, ObjectBuilder<NearVector>> fn) {
     return fn.apply(new Builder(vector)).build();
   }
 
@@ -27,9 +27,9 @@ public record NearVector(Float[] vector, Float distance, Float certainty, BaseQu
 
   public static class Builder extends BaseVectorSearchBuilder<Builder, NearVector> {
     // Required query parameters.
-    private final Float[] vector;
+    private final float[] vector;
 
-    public Builder(Float[] vector) {
+    public Builder(float[] vector) {
       this.vector = vector;
     }
 

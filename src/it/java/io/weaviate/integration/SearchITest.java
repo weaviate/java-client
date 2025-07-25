@@ -53,7 +53,7 @@ public class SearchITest extends ConcurrentTest {
   /**
    * One of the inserted vectors which will be used as target vector for search.
    */
-  private static Float[] searchVector;
+  private static float[] searchVector;
 
   @BeforeClass
   public static void beforeAll() throws IOException {
@@ -102,10 +102,10 @@ public class SearchITest extends ConcurrentTest {
   /**
    * Insert 10 objects with random vectors.
    *
-   * @returns IDs of inserted objects and their corresponding vectors.
+   * @return IDs of inserted objects and their corresponding vectors.
    */
-  private static Map<String, Float[]> populateTest(int n) throws IOException {
-    var created = new HashMap<String, Float[]>();
+  private static Map<String, float[]> populateTest(int n) throws IOException {
+    var created = new HashMap<String, float[]>();
 
     var things = client.collections.use(COLLECTION);
     for (int i = 0; i < n; i++) {
