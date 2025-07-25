@@ -13,12 +13,12 @@ public record GroupedBy<T>(String property, T value) {
   }
 
   public boolean isInteger() {
-    return value instanceof String;
+    return value instanceof Long;
   }
 
-  public Integer integer() {
-    checkPropertyType(this::isInteger, "Integer");
-    return (Integer) value;
+  public Long integer() {
+    checkPropertyType(this::isInteger, "Long");
+    return (Long) value;
   }
 
   private void checkPropertyType(Supplier<Boolean> check, String expected) {
