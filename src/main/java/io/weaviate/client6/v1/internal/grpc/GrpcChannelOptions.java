@@ -2,14 +2,16 @@ package io.weaviate.client6.v1.internal.grpc;
 
 import java.util.Map;
 
+import javax.net.ssl.TrustManagerFactory;
+
 import io.grpc.Metadata;
 import io.weaviate.client6.v1.internal.TokenProvider;
 import io.weaviate.client6.v1.internal.TransportOptions;
 
 public class GrpcChannelOptions extends TransportOptions<Metadata> {
   public GrpcChannelOptions(String scheme, String host, int port, Map<String, String> headers,
-      TokenProvider tokenProvider) {
-    super(scheme, host, port, buildMetadata(headers), tokenProvider);
+      TokenProvider tokenProvider, TrustManagerFactory tmf) {
+    super(scheme, host, port, buildMetadata(headers), tokenProvider, tmf);
   }
 
   private static final Metadata buildMetadata(Map<String, String> headers) {

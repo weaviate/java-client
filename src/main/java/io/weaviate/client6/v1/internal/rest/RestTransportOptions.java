@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 
+import javax.net.ssl.TrustManagerFactory;
+
 import org.apache.hc.core5.http.message.BasicHeader;
 
 import io.weaviate.client6.v1.internal.TokenProvider;
@@ -13,8 +15,8 @@ public final class RestTransportOptions extends TransportOptions<Collection<Basi
   private static final String API_VERSION = "v1";
 
   public RestTransportOptions(String scheme, String host, int port, Map<String, String> headers,
-      TokenProvider tokenProvider) {
-    super(scheme, host, port, buildHeaders(headers), tokenProvider);
+      TokenProvider tokenProvider, TrustManagerFactory trust) {
+    super(scheme, host, port, buildHeaders(headers), tokenProvider, trust);
   }
 
   private static final Collection<BasicHeader> buildHeaders(Map<String, String> headers) {

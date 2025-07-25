@@ -24,28 +24,37 @@ public class WeaviateClientAsync implements Closeable {
     this.collections = new WeaviateCollectionsClientAsync(restTransport, grpcTransport);
   }
 
+  /** Connect to a local Weaviate instance. */
   public static WeaviateClientAsync local() {
     return local(ObjectBuilder.identity());
   }
 
+  /** Connect to a local Weaviate instance. */
   public static WeaviateClientAsync local(Function<Config.Local, ObjectBuilder<Config>> fn) {
     return new WeaviateClientAsync(fn.apply(new Config.Local()).build());
   }
 
+  /** Connect to a Weaviate Cloud instance. */
   public static WeaviateClientAsync wcd(String httpHost, String apiKey) {
     return wcd(httpHost, apiKey, ObjectBuilder.identity());
   }
 
+  /** Connect to a Weaviate Cloud instance. */
   public static WeaviateClientAsync wcd(String httpHost, String apiKey,
       Function<Config.WeaviateCloud, ObjectBuilder<Config>> fn) {
     var config = new Config.WeaviateCloud(httpHost, Authorization.apiKey(apiKey));
     return new WeaviateClientAsync(fn.apply(config).build());
   }
 
+  /** Connect to a Weaviate instance with custom configuration. */
   public static WeaviateClientAsync custom(Function<Config.Custom, ObjectBuilder<Config>> fn) {
     return new WeaviateClientAsync(Config.of(fn));
   }
 
+  /**
+   * Close {@link #restTransport} and {@link #grpcTransport}
+   * and release associated resources.
+   */
   @Override
   public void close() throws IOException {
     this.restTransport.close();
