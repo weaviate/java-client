@@ -54,4 +54,43 @@ public class ByteStringUtilTest {
     String got = ByteStringUtil.decodeUuid(ByteString.copyFrom(bytes)).toString();
     assertEquals(want, got);
   }
+
+  @Test
+  public void test_decodeVector_1d_empty() {
+    byte[] bytes = new byte[0];
+    float[] got = ByteStringUtil.decodeVectorSingle(ByteString.copyFrom(bytes));
+    assertEquals(0, got.length);
+  }
+
+  @Test
+  public void test_decodeVector_2d_empty() {
+    byte[] bytes = new byte[0];
+    float[][] got = ByteStringUtil.decodeVectorMulti(ByteString.copyFrom(bytes));
+    assertEquals(0, got.length);
+  }
+
+  @Test
+  public void test_decodeVector_2d_dim_zero() {
+    byte[] bytes = new byte[] { 0, 0 };
+    float[][] got = ByteStringUtil.decodeVectorMulti(ByteString.copyFrom(bytes));
+    assertEquals(0, got.length);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void test_decodeVector_1d_illegal() {
+    byte[] bytes = new byte[Float.BYTES - 1]; // must be a multiple of Float.BYTES
+    ByteStringUtil.decodeVectorSingle(ByteString.copyFrom(bytes));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void test_decodeVector_2d_illegal() {
+    // The first Short.BYTES is the dimensionality of each array.
+    // The size of the rest must be a multiple of Float.BYTES * dimensionality.
+    var dimensionality = 5;
+    byte[] bytes = new byte[Short.BYTES + (Float.BYTES * dimensionality - 1)];
+    bytes[0] = 0;
+    bytes[1] = (byte) dimensionality;
+
+    ByteStringUtil.decodeVectorMulti(ByteString.copyFrom(bytes));
+  }
 }

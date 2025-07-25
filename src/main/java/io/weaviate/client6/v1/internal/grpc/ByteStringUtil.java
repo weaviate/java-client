@@ -57,7 +57,7 @@ public class ByteStringUtil {
   }
 
   /**
-   * Decode ByteString to float[].
+   * Decode ByteString to {@code float[]}.
    *
    * @throws IllegalArgumentException if ByteString size is not
    *                                  a multiple of {@link Float#BYTES}.
@@ -65,7 +65,7 @@ public class ByteStringUtil {
   public static float[] decodeVectorSingle(ByteString bs) {
     if (bs.size() % Float.BYTES != 0) {
       throw new IllegalArgumentException(
-          "ByteString is size " + bs.size() + ", not a multiple of " + String.valueOf(Float.BYTES) + " (Float.BYTES)");
+          "ByteString size " + bs.size() + " is not a multiple of " + String.valueOf(Float.BYTES) + " (Float.BYTES)");
     }
     float[] vector = new float[bs.size() / Float.BYTES];
     bs.asReadOnlyByteBuffer().order(BYTE_ORDER).asFloatBuffer().get(vector);
@@ -73,10 +73,17 @@ public class ByteStringUtil {
   }
 
   /**
-   * Decode ByteString to float[][].
+   * Decode ByteString to {@code float[][]}.
    *
-   * @throws IllegalArgumentException if ByteString size is not
-   *                                  a multiple of {@link Float#BYTES}.
+   * <p>
+   * The expected structure of the byte string of total size N is:
+   * <ul>
+   * <li>[2 bytes]: dimensionality of the inner vector ({@code dim})
+   * <li>[N-2 bytes]: concatenated inner vectors. N-2 must be a multiple of
+   * {@code Float.BYTES * dim}
+   * </ul>
+   *
+   * @throws IllegalArgumentException if ByteString is not of a valid size.
    */
   public static float[][] decodeVectorMulti(ByteString bs) {
     if (bs == null || bs.size() == 0) {
@@ -84,20 +91,24 @@ public class ByteStringUtil {
     }
 
     ByteBuffer buf = bs.asReadOnlyByteBuffer().order(BYTE_ORDER);
+    short dim = buf.getShort(); // advances current position
+    if (dim == 0) {
+      return new float[0][0];
+    }
 
-    // Dimensions are encoded in the first 2 bytes.
-    short dimensions = buf.getShort(); // advances current position
-
-    // TODO: throw IllegalArgumentException if fbuf.remaining not a multile of
-    // Float.BYTES
-    FloatBuffer fbuf = buf.asFloatBuffer();
-    int n = fbuf.remaining() / dimensions; // fbuf size is buf / Float.BYTES
+    FloatBuffer fbuf = buf.asFloatBuffer(); // fbuf size is buf / Float.BYTES
+    if (fbuf.remaining() % dim != 0) {
+      throw new IllegalArgumentException(
+          "Remaing ByteString size " + fbuf.remaining() + " is not a multiple of " + dim
+              + " (dim)");
+    }
+    int n = fbuf.remaining() / dim;
 
     // Reading from buffer advances current position,
     // so we always read from offset=0.
-    float[][] vectors = new float[n][dimensions];
+    float[][] vectors = new float[n][dim];
     for (int i = 0; i < n; i++) {
-      fbuf.get(vectors[i], 0, dimensions);
+      fbuf.get(vectors[i], 0, dim);
     }
     return vectors;
   }
