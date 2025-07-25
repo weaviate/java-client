@@ -29,7 +29,7 @@ public class WeaviateClient implements Closeable {
   }
 
   /**
-   * Create {@link @WeaviateClientAsync} with identical configurations.
+   * Create {@link WeaviateClientAsync} with identical configurations.
    * It is a shorthand for:
    *
    * <pre>{@code

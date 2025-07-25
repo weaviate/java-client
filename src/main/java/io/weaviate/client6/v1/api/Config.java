@@ -196,7 +196,7 @@ public record Config(
 
   /**
    * Configuration for instances hosted on Weaviate Cloud.
-   * {@link Config#WeaviateCloud} will create a secure client
+   * {@link WeaviateCloud} will create a secure client
    * with {@code schema: https} and {@code http-/grpcPort: 443}.
    *
    * Custom SSL certificates are suppored via
