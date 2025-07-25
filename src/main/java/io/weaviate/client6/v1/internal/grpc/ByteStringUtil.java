@@ -97,11 +97,7 @@ public class ByteStringUtil {
     // so we always read from offset=0.
     float[][] vectors = new float[n][dimensions];
     for (int i = 0; i < n; i++) {
-      float[] v = new float[dimensions];
-      // TODO: use pre-allocated array rather than creating a new one
-      // fbuf.get(vectors[i], 0, dimensions);
-      fbuf.get(v, 0, dimensions);
-      vectors[i] = v;
+      fbuf.get(vectors[i], 0, dimensions);
     }
     return vectors;
   }
