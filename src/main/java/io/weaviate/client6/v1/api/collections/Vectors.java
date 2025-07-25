@@ -102,7 +102,7 @@ public class Vectors {
   /**
    * Get 1-dimensional vector by name.
    *
-   * @returns Vector as {@code float[]} or {@code null}.
+   * @return Vector as {@code float[]} or {@code null}.
    * @throws ClassCastException The underlying vector is not a {@code float[]}.
    */
   public float[] getSingle(String name) {
@@ -112,7 +112,7 @@ public class Vectors {
   /**
    * Get default 1-dimensional vector.
    *
-   * @returns Vector as {@code float[]} or {@code null}.
+   * @return Vector as {@code float[]} or {@code null}.
    * @throws ClassCastException if the underlying object is not a {@code float[]}.
    */
   public float[] getDefaultSingle() {
@@ -122,7 +122,7 @@ public class Vectors {
   /**
    * Get 2-dimensional vector by name.
    *
-   * @returns Vector as {@code float[][]} or {@code null}.
+   * @return Vector as {@code float[][]} or {@code null}.
    * @throws ClassCastException if the underlying object is not a
    *                            {@code float[][]}.
    */
@@ -133,7 +133,7 @@ public class Vectors {
   /**
    * Get default 2-dimensional vector.
    *
-   * @returns Vector as {@code float[][]} or {@code null}.
+   * @return Vector as {@code float[][]} or {@code null}.
    * @throws ClassCastException if the underlying object is not a
    *                            {@code float[][]}.
    */
@@ -146,7 +146,7 @@ public class Vectors {
    * Each element is either a {@code float[]} or a {@code float[][]}.
    *
    *
-   * @returns Map of name-vector pairs. The returned map is immutable.
+   * @return Map of name-vector pairs. The returned map is immutable.
    */
   public Map<String, Object> asMap() {
     return Map.copyOf(namedVectors);

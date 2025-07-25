@@ -102,7 +102,7 @@ public class SearchITest extends ConcurrentTest {
   /**
    * Insert 10 objects with random vectors.
    *
-   * @returns IDs of inserted objects and their corresponding vectors.
+   * @return IDs of inserted objects and their corresponding vectors.
    */
   private static Map<String, float[]> populateTest(int n) throws IOException {
     var created = new HashMap<String, float[]>();
