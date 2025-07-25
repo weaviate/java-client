@@ -101,10 +101,10 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
               var vector = WeaviateProtoBase.Vectors.newBuilder()
                   .setName(entry.getKey());
 
-              if (value instanceof Float[] single) {
+              if (value instanceof float[] single) {
                 vector.setType(VectorType.VECTOR_TYPE_SINGLE_FP32);
                 vector.setVectorBytes(ByteStringUtil.encodeVectorSingle(single));
-              } else if (value instanceof Float[][] multi) {
+              } else if (value instanceof float[][] multi) {
                 vector.setVectorBytes(ByteStringUtil.encodeVectorMulti(multi));
                 vector.setType(VectorType.VECTOR_TYPE_MULTI_FP32);
               }

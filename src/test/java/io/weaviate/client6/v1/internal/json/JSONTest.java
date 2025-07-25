@@ -188,33 +188,33 @@ public class JSONTest {
         // Vectors.CustomTypeAdapterFactory
         {
             Vectors.class,
-            Vectors.of(new Float[] { 1f, 2f }),
+            Vectors.of(new float[] { 1f, 2f }),
             "{\"default\": [1.0, 2.0]}",
             (CustomAssert) JSONTest::compareVectors,
         },
         {
             Vectors.class,
-            Vectors.of(new Float[][] { { 1f, 2f }, { 3f, 4f } }),
+            Vectors.of(new float[][] { { 1f, 2f }, { 3f, 4f } }),
             "{\"default\": [[1.0, 2.0], [3.0, 4.0]]}",
             (CustomAssert) JSONTest::compareVectors,
         },
         {
             Vectors.class,
-            Vectors.of("custom", new Float[] { 1f, 2f }),
+            Vectors.of("custom", new float[] { 1f, 2f }),
             "{\"custom\": [1.0, 2.0]}",
             (CustomAssert) JSONTest::compareVectors,
         },
         {
             Vectors.class,
-            Vectors.of("custom", new Float[][] { { 1f, 2f }, { 3f, 4f } }),
+            Vectors.of("custom", new float[][] { { 1f, 2f }, { 3f, 4f } }),
             "{\"custom\": [[1.0, 2.0], [3.0, 4.0]]}",
             (CustomAssert) JSONTest::compareVectors,
         },
         {
             Vectors.class,
             Vectors.of(named -> named
-                .vector("1d", new Float[] { 1f, 2f })
-                .vector("2d", new Float[][] { { 1f, 2f }, { 3f, 4f } })),
+                .vector("1d", new float[] { 1f, 2f })
+                .vector("2d", new float[][] { { 1f, 2f }, { 3f, 4f } })),
             "{\"1d\": [1.0, 2.0], \"2d\": [[1.0, 2.0], [3.0, 4.0]]}",
             (CustomAssert) JSONTest::compareVectors,
         },
@@ -382,13 +382,13 @@ public class JSONTest {
 
   /**
    * Custom assert function that uses deep array equality
-   * to correctly compare Float[] and Float[][] nested in the object.
+   * to correctly compare float[] and float[][] nested in the object.
    */
   private static void compareVectors(Object got, Object want) {
     Assertions.assertThat(got)
         .usingRecursiveComparison()
-        .withEqualsForType(Arrays::equals, Float[].class)
-        .withEqualsForType(Arrays::deepEquals, Float[][].class)
+        .withEqualsForType(Arrays::equals, float[].class)
+        .withEqualsForType(Arrays::deepEquals, float[][].class)
         .isEqualTo(want);
   }
 

@@ -8,6 +8,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
+import com.google.common.primitives.Floats;
+
 /**
  * ConcurrentTest is the base class for integration tests, which provides
  * utility methods to uniqualize collections and objects created in the
@@ -56,9 +58,9 @@ public abstract class ConcurrentTest {
    * @param bound  Value range upper bound.
    * @return
    */
-  protected static Float[] randomVector(int length, float origin, float bound) {
-    return IntStream.range(0, length)
+  protected static float[] randomVector(int length, float origin, float bound) {
+    return Floats.toArray(IntStream.range(0, length)
         .<Float>mapToObj(f -> rand.nextFloat(origin, bound))
-        .toArray(Float[]::new);
+        .toList());
   }
 }
