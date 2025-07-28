@@ -400,7 +400,7 @@ public class JSONTest {
             "result": { "status": "SUCCESS", "errors": {} }
           },
           {
-            "result": { "status": "FAILED", "errors": jsonObject.has("properties") && {
+            "result": { "status": "FAILED", "errors": {
               "error": [ "oops" ]
             }}
           }
