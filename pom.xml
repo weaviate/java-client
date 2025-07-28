@@ -90,7 +90,6 @@
         <groupId>io.grpc</groupId>
         <artifactId>grpc-netty-shaded</artifactId>
         <version>${grpc-netty-shaded.version}</version>
-        <scope>runtime</scope>
       </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
