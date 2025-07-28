@@ -165,4 +165,13 @@ public class AggregationITest extends ConcurrentTest {
               .as(desc.apply("median")).returns((double) expectedPrice, IntegerAggregation.Values::median);
         });
   }
+
+  @Test
+  public void testCollestionSizeShortcut() {
+    var things = client.collections.use(COLLECTION);
+    var countAggregate = things.aggregate
+        .overAll(x -> x.includeTotalCount(true)).totalCount();
+    var size = things.size();
+    Assertions.assertThat(size).isEqualTo(countAggregate);
+  }
 }

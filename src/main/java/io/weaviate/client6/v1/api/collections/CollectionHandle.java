@@ -1,5 +1,6 @@
 package io.weaviate.client6.v1.api.collections;
 
+import java.util.Collection;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.aggregate.WeaviateAggregateClient;
@@ -35,5 +36,25 @@ public class CollectionHandle<T> {
 
   public Paginator<T> paginate(Function<Paginator.Builder<T>, ObjectBuilder<Paginator<T>>> fn) {
     return Paginator.of(this.query, fn);
+  }
+
+  /**
+   * Get the object count in this collection.
+   *
+   * <p>
+   * While made to resemeble {@link Collection#size}, counting Weaviate collection
+   * objects involves making a network call, making this a blocking operation.
+   * This method also does not define behaviour for cases where the size of the
+   * collection exceeds {@link Long#MAX_VALUE} as this is unlikely to happen.
+   *
+   * <p>
+   * This is a shortcut for:
+   *
+   * <pre>{@code
+   * handle.aggregate.overAll(all -> all.includeTotalCount(true)).totalCount()
+   * }</pre>
+   */
+  public long size() {
+    return this.aggregate.overAll(all -> all.includeTotalCount(true)).totalCount();
   }
 }
