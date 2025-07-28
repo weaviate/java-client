@@ -74,10 +74,9 @@ public record ById(
 
     var metadata = WeaviateProtoSearchGet.MetadataRequest.newBuilder();
     if (returnMetadata.isEmpty()) {
-      Metadata.ID.appendTo(metadata);
-    } else {
-      returnMetadata.forEach(m -> m.appendTo(metadata));
+      returnMetadata.add(Metadata.UUID);
     }
+    returnMetadata.forEach(m -> m.appendTo(metadata));
     req.setMetadata(metadata);
 
     if (!returnProperties.isEmpty() || !returnReferences.isEmpty()) {

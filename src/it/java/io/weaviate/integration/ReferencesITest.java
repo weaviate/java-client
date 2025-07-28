@@ -95,9 +95,9 @@ public class ReferencesITest extends ConcurrentTest {
     var gotAlex = artists.query.byId(alex.metadata().uuid(),
         opt -> opt.returnReferences(
             QueryReference.multi("hasAwards", nsOscar,
-                ref -> ref.returnMetadata(Metadata.ID)),
+                ref -> ref.returnMetadata(Metadata.UUID)),
             QueryReference.multi("hasAwards", nsGrammy,
-                ref -> ref.returnMetadata(Metadata.ID))));
+                ref -> ref.returnMetadata(Metadata.UUID))));
 
     Assertions.assertThat(gotAlex).get()
         .as("Artists: fetch by id including hasAwards references")
@@ -166,7 +166,7 @@ public class ReferencesITest extends ConcurrentTest {
                     .returnReferences(
                         QueryReference.single("presentedBy", r -> r.returnProperties("ceo")))
                     // Grammy ID
-                    .returnMetadata(Metadata.ID))));
+                    .returnMetadata(Metadata.UUID))));
 
     Assertions.assertThat(gotAlex).get()
         .as("Artists: fetch by id including nested references")
