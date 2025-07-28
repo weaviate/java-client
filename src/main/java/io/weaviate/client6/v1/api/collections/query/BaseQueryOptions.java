@@ -152,7 +152,7 @@ public record BaseQueryOptions(
 
     var metadata = WeaviateProtoSearchGet.MetadataRequest.newBuilder();
     if (returnMetadata.isEmpty()) {
-      Metadata.ID.appendTo(metadata);
+      Metadata.UUID.appendTo(metadata);
     } else {
       returnMetadata.forEach(m -> m.appendTo(metadata));
     }

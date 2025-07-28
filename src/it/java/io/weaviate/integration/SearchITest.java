@@ -358,10 +358,20 @@ public class SearchITest extends ConcurrentTest {
     hobbies.data.insert(Map.of("name", "jetskiing", "description", "water sport"));
 
     // Act
-    var winterSport = hobbies.query.hybrid("winter");
+    var winterSport = hobbies.query.hybrid("winter",
+        hybrid -> hybrid
+            .returnMetadata(Metadata.UUID, Metadata.SCORE, Metadata.EXPLAIN_SCORE));
+
+    // Assert
     Assertions.assertThat(winterSport.objects())
         .hasSize(1)
         .extracting(WeaviateObject::metadata).extracting(WeaviateMetadata::uuid)
         .containsOnly(skiing.metadata().uuid());
+
+    var first = winterSport.objects().get(0);
+    Assertions.assertThat(first.metadata().score())
+        .as("metadata::score").isNotNull();
+    Assertions.assertThat(first.metadata().explainScore())
+        .as("metadata::explainScore").isNotNull();
   }
 }
