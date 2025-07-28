@@ -400,7 +400,7 @@ public class JSONTest {
             "result": { "status": "SUCCESS", "errors": {} }
           },
           {
-            "result": { "status": "FAILED", "errors": {
+            "result": { "status": "FAILED", "errors": jsonObject.has("properties") && {
               "error": [ "oops" ]
             }}
           }
@@ -412,5 +412,15 @@ public class JSONTest {
     Assertions.assertThat(got.errors())
         .as("response contains 1 error")
         .hasSize(1);
+  }
+
+  @Test
+  public void test_CollectionConfig_read_empty() {
+    var json = """
+        { "class": "BarebonesCollection" }
+        """;
+    Assertions.assertThatCode(() -> JSON.deserialize(json, CollectionConfig.class))
+        .as("deserialize CollectionConfig with no properties")
+        .doesNotThrowAnyException();
   }
 }
