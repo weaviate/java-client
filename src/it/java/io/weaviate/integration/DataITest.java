@@ -37,7 +37,7 @@ public class DataITest extends ConcurrentTest {
   public void testCreateGetDelete() throws IOException {
     var artists = client.collections.use(COLLECTION);
     var id = randomUUID();
-    Float[] vector = { 1f, 2f, 3f };
+    float[] vector = { 1, 2, 3 };
 
     artists.data.insert(Map.of("name", "john doe"),
         metadata -> metadata
@@ -58,8 +58,8 @@ public class DataITest extends ConcurrentTest {
           Assertions.assertThat(obj.metadata().uuid())
               .as("object id").isEqualTo(id);
 
-          Assertions.assertThat(obj.metadata().vectors()).extracting(v -> v.getSingle(VECTOR_INDEX))
-              .asInstanceOf(InstanceOfAssertFactories.array(Float[].class)).containsExactly(vector);
+          Assertions.assertThat(obj.metadata().vectors().getSingle(VECTOR_INDEX))
+              .containsExactly(vector);
 
           Assertions.assertThat(obj.properties())
               .as("has expected properties")
@@ -234,7 +234,7 @@ public class DataITest extends ConcurrentTest {
     var authors = client.collections.use(nsAuthors);
     var walter = authors.data.insert(Map.of("name", "walter scott"));
 
-    var vector = new Float[] { 1f, 2f, 3f };
+    var vector = new float[] { 1, 2, 3 };
 
     var books = client.collections.use(nsBooks);
 

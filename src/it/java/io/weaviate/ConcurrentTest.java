@@ -2,7 +2,6 @@ package io.weaviate;
 
 import java.util.Random;
 import java.util.UUID;
-import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Rule;
@@ -56,9 +55,11 @@ public abstract class ConcurrentTest {
    * @param bound  Value range upper bound.
    * @return
    */
-  protected static Float[] randomVector(int length, float origin, float bound) {
-    return IntStream.range(0, length)
-        .<Float>mapToObj(f -> rand.nextFloat(origin, bound))
-        .toArray(Float[]::new);
+  protected static float[] randomVector(int length, float origin, float bound) {
+    var vector = new float[length];
+    for (var i = 0; i < length; i++) {
+      vector[i] = rand.nextFloat(origin, bound);
+    }
+    return vector;
   }
 }
