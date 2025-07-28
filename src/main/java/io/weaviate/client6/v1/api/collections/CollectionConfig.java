@@ -289,7 +289,7 @@ public record CollectionConfig(
 
           // Separate modules into reranker- and generative- modules.
           var rerankerModules = new JsonArray();
-          if (jsonObject.has("moduleConfig")) {
+          if (jsonObject.has("moduleConfig") && jsonObject.get("moduleConfig").isJsonObject()) {
             var moduleConfig = jsonObject.remove("moduleConfig").getAsJsonObject();
 
             moduleConfig.entrySet().stream()
