@@ -86,16 +86,33 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
       WeaviateProtoSearchGet.PropertiesResult propertiesResult,
       WeaviateProtoSearchGet.MetadataResult metadataResult,
       CollectionDescriptor<T> descriptor) {
-    var res = unmarshalReferences(propertiesResult, metadataResult, descriptor);
+    var object = unmarshalWithReferences(propertiesResult, metadataResult, descriptor);
     var metadata = new QueryMetadata.Builder()
-        .uuid(res.metadata().uuid())
-        .distance(metadataResult.getDistance())
-        .certainty(metadataResult.getCertainty())
-        .vectors(res.metadata().vectors());
-    return new WeaviateObject<>(descriptor.name(), res.properties(), res.references(), metadata.build());
+        .uuid(object.metadata().uuid())
+        .vectors(object.metadata().vectors());
+
+    if (metadataResult.getCreationTimeUnixPresent()) {
+      metadata.creationTimeUnix(metadataResult.getCreationTimeUnix());
+    }
+    if (metadataResult.getLastUpdateTimeUnixPresent()) {
+      metadata.lastUpdateTimeUnix(metadataResult.getLastUpdateTimeUnix());
+    }
+    if (metadataResult.getDistancePresent()) {
+      metadata.distance(metadataResult.getDistance());
+    }
+    if (metadataResult.getCertaintyPresent()) {
+      metadata.certainty(metadataResult.getCertainty());
+    }
+    if (metadataResult.getScorePresent()) {
+      metadata.score(metadataResult.getScore());
+    }
+    if (metadataResult.getExplainScorePresent()) {
+      metadata.explainScore(metadataResult.getExplainScore());
+    }
+    return new WeaviateObject<>(descriptor.name(), object.properties(), object.references(), metadata.build());
   }
 
-  private static <T> WeaviateObject<T, Object, ObjectMetadata> unmarshalReferences(
+  private static <T> WeaviateObject<T, Object, ObjectMetadata> unmarshalWithReferences(
       WeaviateProtoSearchGet.PropertiesResult propertiesResult,
       WeaviateProtoSearchGet.MetadataResult metadataResult,
       CollectionDescriptor<T> descriptor) {
@@ -114,7 +131,7 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
             (map, ref) -> {
               var refObjects = ref.getPropertiesList().stream()
                   .map(property -> {
-                    var reference = unmarshalReferences(
+                    var reference = unmarshalWithReferences(
                         property, property.getMetadata(),
                         // TODO: this should be possible to configure for ODM?
                         CollectionDescriptor.ofMap(property.getTargetCollection()));
