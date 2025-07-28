@@ -2,13 +2,10 @@ package io.weaviate;
 
 import java.util.Random;
 import java.util.UUID;
-import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Rule;
 import org.junit.rules.TestName;
-
-import com.google.common.primitives.Floats;
 
 /**
  * ConcurrentTest is the base class for integration tests, which provides
@@ -59,8 +56,10 @@ public abstract class ConcurrentTest {
    * @return
    */
   protected static float[] randomVector(int length, float origin, float bound) {
-    return Floats.toArray(IntStream.range(0, length)
-        .<Float>mapToObj(f -> rand.nextFloat(origin, bound))
-        .toList());
+    var vector = new float[length];
+    for (var i = 0; i < length; i++) {
+      vector[i] = rand.nextFloat(origin, bound);
+    }
+    return vector;
   }
 }
