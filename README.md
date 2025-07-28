@@ -6,7 +6,7 @@ Official Weaviate Java Client.
 
 ## ⚠️ New Java client version ⚠️
 
-To start using Weaviate Java Client add this dependency to `pom.xml`:
+To start using Weaviate Java Client add the dependency to `pom.xml`:
 
 ```xml
 
@@ -17,11 +17,17 @@ To start using Weaviate Java Client add this dependency to `pom.xml`:
 </dependency>
 ```
 
-### For applications on Java 9 or above
+### Uber JAR🫙
+
+If you're building a uber-JAR with something like `maven-assembly-plugin`, use a shaded version with classifier `all`.  
+This ensures that all dynamically-loaded dependecies of `io.grpc` are resolved correctly.
+
+
+### Gson and reflective access to internal JDK classes
 
 The client uses Google's [`gson`](https://github.com/google/gson) for JSON de-/serialization which does reflection on internal `java.lang` classes. This is _not allowed by default_ in Java 9 and above.
 
-To work around this, it's necessary to add this JVM commandline argument:
+To work around this, it's necessary to add this JVM command line argument:
 
 ```
 --add-opens=java.base/java.lang=ALL-UNNAMED
