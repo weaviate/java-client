@@ -328,6 +328,23 @@
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
+          <artifactId>versions-maven-plugin</artifactId>
+          <version>2.18.0</version>
+          <configuration>
+            <allowSnapshots>false</allowSnapshots>
+            <generateBackupPoms>false</generateBackupPoms>
+            <ruleSet>
+              <ignoreVersions>
+                <ignoreVersion>
+                  <type>regex</type>
+                  <version>(.+-SNAPSHOT|.+-(M|RC|rc)\d|.+-(alpha|beta)\d?)</version>
+                </ignoreVersion>
+              </ignoreVersions>
+            </ruleSet>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
           <version>3.2.0</version>
           <executions>
