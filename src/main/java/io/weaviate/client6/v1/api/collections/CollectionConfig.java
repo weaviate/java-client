@@ -264,16 +264,19 @@ public record CollectionConfig(
         public CollectionConfig read(JsonReader in) throws IOException {
           var jsonObject = JsonParser.parseReader(in).getAsJsonObject();
 
-          var mixedProperties = jsonObject.get("properties").getAsJsonArray();
           var references = new JsonArray();
           var properties = new JsonArray();
 
-          for (var property : mixedProperties) {
-            var dataTypes = property.getAsJsonObject().get("dataType").getAsJsonArray();
-            if (dataTypes.size() == 1 && DataType.KNOWN_TYPES.contains(dataTypes.get(0).getAsString())) {
-              properties.add(property);
-            } else {
-              references.add(property);
+          if (jsonObject.has("properties") && jsonObject.get("properties").isJsonArray()) {
+            var mixedProperties = jsonObject.get("properties").getAsJsonArray();
+
+            for (var property : mixedProperties) {
+              var dataTypes = property.getAsJsonObject().get("dataType").getAsJsonArray();
+              if (dataTypes.size() == 1 && DataType.KNOWN_TYPES.contains(dataTypes.get(0).getAsString())) {
+                properties.add(property);
+              } else {
+                references.add(property);
+              }
             }
           }
 
@@ -286,7 +289,7 @@ public record CollectionConfig(
 
           // Separate modules into reranker- and generative- modules.
           var rerankerModules = new JsonArray();
-          if (jsonObject.has("moduleConfig")) {
+          if (jsonObject.has("moduleConfig") && jsonObject.get("moduleConfig").isJsonObject()) {
             var moduleConfig = jsonObject.remove("moduleConfig").getAsJsonObject();
 
             moduleConfig.entrySet().stream()

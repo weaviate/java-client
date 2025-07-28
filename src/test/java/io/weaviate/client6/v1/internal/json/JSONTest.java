@@ -413,4 +413,14 @@ public class JSONTest {
         .as("response contains 1 error")
         .hasSize(1);
   }
+
+  @Test
+  public void test_CollectionConfig_read_empty() {
+    var json = """
+        { "class": "BarebonesCollection" }
+        """;
+    Assertions.assertThatCode(() -> JSON.deserialize(json, CollectionConfig.class))
+        .as("deserialize CollectionConfig with no properties")
+        .doesNotThrowAnyException();
+  }
 }
