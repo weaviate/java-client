@@ -1,7 +1,10 @@
 package io.weaviate.client6.v1.api.collections;
 
+import java.util.Collection;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
+import io.weaviate.client6.v1.api.collections.aggregate.AggregateResponse;
 import io.weaviate.client6.v1.api.collections.aggregate.WeaviateAggregateClientAsync;
 import io.weaviate.client6.v1.api.collections.config.WeaviateConfigClientAsync;
 import io.weaviate.client6.v1.api.collections.data.WeaviateDataClientAsync;
@@ -36,5 +39,29 @@ public class CollectionHandleAsync<PropertiesT> {
   public AsyncPaginator<PropertiesT> paginate(
       Function<AsyncPaginator.Builder<PropertiesT>, ObjectBuilder<AsyncPaginator<PropertiesT>>> fn) {
     return AsyncPaginator.of(this.query, fn);
+  }
+
+  /**
+   * Get the object count in this collection.
+   *
+   * <p>
+   * While made to resemeble {@link Collection#size}, counting Weaviate collection
+   * objects involves making a network call; still, this operation is
+   * non-blocking, as resolving the underlying {@code CompletableFuture} is
+   * deferred to the caller.
+   *
+   * This method also does not define behaviour for cases where the size of the
+   * collection exceeds {@link Long#MAX_VALUE} as this is unlikely to happen.
+   *
+   * <p>
+   * This is a shortcut for:
+   *
+   * <pre>{@code
+   * handle.aggregate.overAll(all -> all.includeTotalCount(true)).totalCount()
+   * }</pre>
+   */
+  public CompletableFuture<Long> size() {
+    return this.aggregate.overAll(all -> all.includeTotalCount(true))
+        .thenApply(AggregateResponse::totalCount);
   }
 }
