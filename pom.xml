@@ -216,7 +216,6 @@
             <pluginArtifact>io.grpc:protoc-gen-grpc-java:1.58.0:exe:${os.detected.classifier}</pluginArtifact>
             <outputDirectory>src/main/java</outputDirectory>
             <clearOutputDirectory>false</clearOutputDirectory>
-
           </configuration>
           <executions>
             <execution>
@@ -461,6 +460,28 @@
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.1.1my</version>
         </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>3.6.0</version>
+          <configuration>
+            <createDependencyReducedPom>false</createDependencyReducedPom>
+            <shadedArtifactAttached>true</shadedArtifactAttached>
+            <shadedClassifierName>all</shadedClassifierName>
+            <transformers>
+              <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+            </transformers>
+          </configuration>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <goals>
+                <goal>shade</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -479,6 +500,10 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
