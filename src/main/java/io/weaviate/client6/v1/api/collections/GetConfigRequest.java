@@ -3,17 +3,15 @@ package io.weaviate.client6.v1.api.collections;
 import java.util.Collections;
 import java.util.Optional;
 
-import org.apache.hc.core5.http.HttpStatus;
-
 import io.weaviate.client6.v1.internal.json.JSON;
 import io.weaviate.client6.v1.internal.rest.Endpoint;
+import io.weaviate.client6.v1.internal.rest.OptionalEndpoint;
 
 public record GetConfigRequest(String collectionName) {
-  public static final Endpoint<GetConfigRequest, Optional<CollectionConfig>> _ENDPOINT = Endpoint.of(
-      request -> "GET",
-      request -> "/schema/" + request.collectionName,
-      (gson, request) -> null,
-      request -> Collections.emptyMap(),
-      code -> code != HttpStatus.SC_SUCCESS,
-      (gson, response) -> Optional.ofNullable(JSON.deserialize(response, CollectionConfig.class)));
+  public static final Endpoint<GetConfigRequest, Optional<CollectionConfig>> _ENDPOINT = OptionalEndpoint
+      .noBodyOptional(
+          request -> "GET",
+          request -> "/schema/" + request.collectionName,
+          request -> Collections.emptyMap(),
+          (statusCode, response) -> JSON.deserialize(response, CollectionConfig.class));
 }

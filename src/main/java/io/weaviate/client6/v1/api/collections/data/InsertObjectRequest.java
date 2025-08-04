@@ -3,8 +3,6 @@ package io.weaviate.client6.v1.api.collections.data;
 import java.util.Collections;
 import java.util.function.Function;
 
-import org.apache.hc.core5.http.HttpStatus;
-
 import com.google.gson.reflect.TypeToken;
 
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
@@ -14,20 +12,20 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.json.JSON;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 import io.weaviate.client6.v1.internal.rest.Endpoint;
+import io.weaviate.client6.v1.internal.rest.SimpleEndpoint;
 
 public record InsertObjectRequest<T>(WeaviateObject<T, Reference, ObjectMetadata> object) {
 
   @SuppressWarnings("unchecked")
   public static final <T> Endpoint<InsertObjectRequest<T>, WeaviateObject<T, Object, ObjectMetadata>> endpoint(
       CollectionDescriptor<T> descriptor) {
-    return Endpoint.of(
+    return new SimpleEndpoint<>(
         request -> "POST",
         request -> "/objects/",
-        (gson, request) -> JSON.serialize(request.object, TypeToken.getParameterized(
-            WeaviateObject.class, descriptor.typeToken().getType(), Reference.class, ObjectMetadata.class)),
         request -> Collections.emptyMap(),
-        code -> code != HttpStatus.SC_SUCCESS,
-        (gson, response) -> JSON.deserialize(response,
+        request -> JSON.serialize(request.object, TypeToken.getParameterized(
+            WeaviateObject.class, descriptor.typeToken().getType(), Reference.class, ObjectMetadata.class)),
+        (statusCode, response) -> JSON.deserialize(response,
             (TypeToken<WeaviateObject<T, Object, ObjectMetadata>>) TypeToken.getParameterized(
                 WeaviateObject.class, descriptor.typeToken().getType(), Object.class, ObjectMetadata.class)));
   }
