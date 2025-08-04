@@ -20,21 +20,19 @@ import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManagerBu
 import org.apache.hc.client5.http.ssl.DefaultClientTlsStrategy;
 import org.apache.hc.core5.concurrent.FutureCallback;
 import org.apache.hc.core5.http.ClassicHttpRequest;
+import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 import org.apache.hc.core5.io.CloseMode;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import io.weaviate.client6.v1.api.WeaviateApiException;
 
 public class DefaultRestTransport implements RestTransport {
   private final CloseableHttpClient httpClient;
   private final CloseableHttpAsyncClient httpClientAsync;
   private final RestTransportOptions transportOptions;
-
-  // TODO: retire
-  private static final Gson gson = new GsonBuilder().create();
 
   public DefaultRestTransport(RestTransportOptions transportOptions) {
     this.transportOptions = transportOptions;
@@ -78,18 +76,38 @@ public class DefaultRestTransport implements RestTransport {
   }
 
   @Override
-  public <RequestT, ResponseT> ResponseT performRequest(RequestT request, Endpoint<RequestT, ResponseT> endpoint)
+  public <RequestT, ResponseT, ExceptionT> ResponseT performRequest(RequestT request,
+      Endpoint<RequestT, ResponseT> endpoint)
       throws IOException {
     var req = prepareClassicRequest(request, endpoint);
-    // FIXME: we need to differentiate between "no body" and "soumething's wrong"
-    return this.httpClient.execute(req,
-        response -> response.getEntity() != null
-            ? endpoint.deserializeResponse(gson, EntityUtils.toString(response.getEntity()))
-            : null);
+    return this.httpClient.execute(req, r -> this.handleResponse(endpoint, req.getMethod(), req.getRequestUri(), r));
+  }
+
+  private <RequestT, ResponseT> ClassicHttpRequest prepareClassicRequest(RequestT request,
+      Endpoint<RequestT, ResponseT> endpoint) {
+    var method = endpoint.method(request);
+    var uri = transportOptions.baseUrl() + endpoint.requestUrl(request);
+
+    // TODO: apply options;
+    var req = ClassicRequestBuilder.create(method).setUri(uri);
+    var body = endpoint.body(request);
+    if (body != null) {
+      req.setEntity(body, ContentType.APPLICATION_JSON);
+    }
+    return req.build();
+  }
+
+  private <ResponseT, ExceptionT> ResponseT handleResponse(Endpoint<?, ResponseT> endpoint, String method, String url,
+      ClassicHttpResponse httpResponse) throws IOException, ParseException {
+    var statusCode = httpResponse.getCode();
+    var body = httpResponse.getEntity() != null
+        ? EntityUtils.toString(httpResponse.getEntity())
+        : "";
+    return _handleResponse(endpoint, method, url, statusCode, body);
   }
 
   @Override
-  public <RequestT, ResponseT> CompletableFuture<ResponseT> performRequestAsync(RequestT request,
+  public <RequestT, ResponseT, ExceptionT> CompletableFuture<ResponseT> performRequestAsync(RequestT request,
       Endpoint<RequestT, ResponseT> endpoint) {
     var req = prepareSimpleRequest(request, endpoint);
 
@@ -112,18 +130,18 @@ public class DefaultRestTransport implements RestTransport {
       }
 
     });
-    // FIXME: we need to differentiate between "no body" and "soumething's wrong"
-    return completable.thenApply(r -> r.getBody() != null
-        ? endpoint.deserializeResponse(gson, r.getBody().getBodyText())
-        : null);
+    return completable
+        .thenApply(r -> (ResponseT) handleResponseAsync(endpoint,
+            req.getMethod(), req.getRequestUri(), r));
   }
 
-  private <RequestT> SimpleHttpRequest prepareSimpleRequest(RequestT request, Endpoint<RequestT, ?> endpoint) {
+  private <RequestT, ResponseT> SimpleHttpRequest prepareSimpleRequest(RequestT request,
+      Endpoint<RequestT, ResponseT> endpoint) {
     var method = endpoint.method(request);
     var uri = transportOptions.baseUrl() + endpoint.requestUrl(request);
     // TODO: apply options;
 
-    var body = endpoint.body(gson, request);
+    var body = endpoint.body(request);
     var req = SimpleHttpRequest.create(method, uri);
     if (body != null) {
       req.setBody(body.getBytes(), ContentType.APPLICATION_JSON);
@@ -131,17 +149,36 @@ public class DefaultRestTransport implements RestTransport {
     return req;
   }
 
-  private <RequestT> ClassicHttpRequest prepareClassicRequest(RequestT request, Endpoint<RequestT, ?> endpoint) {
-    var method = endpoint.method(request);
-    var uri = transportOptions.baseUrl() + endpoint.requestUrl(request);
+  private <ResponseT, ExceptionT> ResponseT handleResponseAsync(
+      Endpoint<?, ResponseT> endpoint,
+      String method, String url,
+      SimpleHttpResponse httpResponse) {
+    var statusCode = httpResponse.getCode();
+    var body = httpResponse.getBody() != null
+        ? httpResponse.getBody().getBodyText()
+        : "";
+    return _handleResponse(endpoint, method, url, statusCode, body);
+  }
 
-    // TODO: apply options;
-    var req = ClassicRequestBuilder.create(method).setUri(uri);
-    var body = endpoint.body(gson, request);
-    if (body != null) {
-      req.setEntity(body, ContentType.APPLICATION_JSON);
+  private <ResponseT> ResponseT _handleResponse(Endpoint<?, ResponseT> endpoint, String method, String url,
+      int statusCode, String body) {
+    if (endpoint.isError(statusCode)) {
+      var message = endpoint.deserializeError(statusCode, body);
+      throw new WeaviateApiException(method, url, statusCode, message);
     }
-    return req.build();
+
+    if (endpoint instanceof JsonEndpoint json) {
+      @SuppressWarnings("unchecked")
+      ResponseT response = (ResponseT) json.deserializeResponse(statusCode, body);
+      return response;
+    } else if (endpoint instanceof BooleanEndpoint bool) {
+      @SuppressWarnings("unchecked")
+      ResponseT response = (ResponseT) ((Boolean) bool.getResult(statusCode));
+      return response;
+    }
+
+    // TODO: make it a WeaviateTransportException
+    throw new RuntimeException("Unhandled endpoint type " + endpoint.getClass().getSimpleName());
   }
 
   @Override

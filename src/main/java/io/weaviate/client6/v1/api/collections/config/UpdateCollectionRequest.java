@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.apache.hc.core5.http.HttpStatus;
-
 import io.weaviate.client6.v1.api.collections.CollectionConfig;
 import io.weaviate.client6.v1.api.collections.Generative;
 import io.weaviate.client6.v1.api.collections.InvertedIndex;
@@ -16,16 +14,15 @@ import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.json.JSON;
 import io.weaviate.client6.v1.internal.rest.Endpoint;
+import io.weaviate.client6.v1.internal.rest.SimpleEndpoint;
 
 public record UpdateCollectionRequest(CollectionConfig collection) {
 
-  public static final Endpoint<UpdateCollectionRequest, Void> _ENDPOINT = Endpoint.of(
+  public static final Endpoint<UpdateCollectionRequest, Void> _ENDPOINT = SimpleEndpoint.sideEffect(
       request -> "PUT",
       request -> "/schema/" + request.collection.collectionName(),
-      (gson, request) -> JSON.serialize(request.collection),
       request -> Collections.emptyMap(),
-      code -> code != HttpStatus.SC_SUCCESS,
-      (gson, response) -> null);
+      request -> JSON.serialize(request.collection));
 
   public static UpdateCollectionRequest of(CollectionConfig collection,
       Function<Builder, ObjectBuilder<UpdateCollectionRequest>> fn) {

@@ -6,8 +6,20 @@ package io.weaviate.client6.v1.api;
  * a bad request or a server error.
  */
 public class WeaviateApiException extends RuntimeException {
-  // TODO: rather than storing bare values (status code, response body),
-  // store "Response" object and provide accessors to .status(), .error().
-
   private final String endpoint;
+  private final int statusCode;
+
+  public WeaviateApiException(String method, String endpoint, int statusCode, String errorMessage) {
+    super("%s %s: %s".formatted(method, endpoint, errorMessage));
+    this.endpoint = endpoint;
+    this.statusCode = statusCode;
+  }
+
+  public String endpoint() {
+    return endpoint;
+  }
+
+  public int statusCode() {
+    return statusCode;
+  }
 }

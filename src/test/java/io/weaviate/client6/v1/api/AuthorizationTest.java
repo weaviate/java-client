@@ -10,7 +10,7 @@ import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpRequest;
 
 import io.weaviate.client6.v1.internal.rest.DefaultRestTransport;
-import io.weaviate.client6.v1.internal.rest.Endpoint;
+import io.weaviate.client6.v1.internal.rest.OptionalEndpoint;
 import io.weaviate.client6.v1.internal.rest.RestTransportOptions;
 
 public class AuthorizationTest {
@@ -36,13 +36,8 @@ public class AuthorizationTest {
         Collections.emptyMap(), Authorization.apiKey("my-api-key"), null);
 
     try (final var restClient = new DefaultRestTransport(transportOptions)) {
-      restClient.performRequest(null, Endpoint.of(
-          request -> "GET",
-          request -> "/",
-          (gson, request) -> null,
-          request -> null,
-          code -> code != 200,
-          (gson, response) -> null));
+      restClient.performRequest(null, OptionalEndpoint.noBodyOptional(
+          request -> "GET", request -> "/", request -> null, (code, response) -> null));
     }
 
     mockServer.verify(
