@@ -164,7 +164,7 @@ public class DefaultRestTransport implements RestTransport {
       int statusCode, String body) {
     if (endpoint.isError(statusCode)) {
       var message = endpoint.deserializeError(statusCode, body);
-      throw new WeaviateApiException(method, url, statusCode, message);
+      throw WeaviateApiException.http(method, url, statusCode, message);
     }
 
     if (endpoint instanceof JsonEndpoint json) {

@@ -10,10 +10,12 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import io.grpc.ManagedChannel;
+import io.grpc.StatusRuntimeException;
 import io.grpc.netty.shaded.io.grpc.netty.GrpcSslContexts;
 import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
 import io.grpc.stub.MetadataUtils;
+import io.weaviate.client6.v1.api.WeaviateApiException;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateBlockingStub;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateFutureStub;
@@ -48,8 +50,12 @@ public final class DefaultGrpcTransport implements GrpcTransport {
       Rpc<RequestT, RequestM, ResponseT, ReplyM> rpc) {
     var message = rpc.marshal(request);
     var method = rpc.method();
-    var reply = method.apply(blockingStub, message);
-    return rpc.unmarshal(reply);
+    try {
+      var reply = method.apply(blockingStub, message);
+      return rpc.unmarshal(reply);
+    } catch (io.grpc.StatusRuntimeException e) {
+      throw WeaviateApiException.gRPC(e);
+    }
   }
 
   @Override
@@ -76,6 +82,10 @@ public final class DefaultGrpcTransport implements GrpcTransport {
 
       @Override
       public void onFailure(Throwable t) {
+        if (t instanceof StatusRuntimeException e) {
+          completable.completeExceptionally(WeaviateApiException.gRPC(e));
+          return;
+        }
         completable.completeExceptionally(t);
       }
 
