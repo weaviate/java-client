@@ -16,10 +16,11 @@ import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
+import io.weaviate.client6.v1.api.WeaviateException;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.WeaviateMetadata;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
-import io.weaviate.client6.v1.api.collections.pagination.WeaviatePaginationException;
+import io.weaviate.client6.v1.api.collections.pagination.PaginationException;
 import io.weaviate.containers.Container;
 
 public class PaginationITest extends ConcurrentTest {
@@ -160,13 +161,13 @@ public class PaginationITest extends ConcurrentTest {
     }
   }
 
-  @Test(expected = WeaviatePaginationException.class)
+  @Test(expected = PaginationException.class)
   public void testFailedPagination() throws IOException {
     var things = client.collections.use("Unknown");
     things.paginate().forEach(System.out::println);
   }
 
-  @Test(expected = WeaviatePaginationException.class)
+  @Test(expected = PaginationException.class)
   public void testFailedAsyncPagination_forEach() throws Throwable {
     try (final var async = client.async()) {
       var things = async.collections.use("Unknown");
@@ -178,7 +179,7 @@ public class PaginationITest extends ConcurrentTest {
     }
   }
 
-  @Test(expected = WeaviatePaginationException.class)
+  @Test(expected = WeaviateException.class)
   public void testFailedAsyncPagination_forPage() throws Throwable {
     try (final var async = client.async()) {
       var things = async.collections.use("Unknown");

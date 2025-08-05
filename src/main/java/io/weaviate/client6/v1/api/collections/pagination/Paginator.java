@@ -40,7 +40,7 @@ public class Paginator<PropertiesT> implements Iterable<WeaviateObject<Propertie
           try {
             return query.fetchObjects(fn).objects();
           } catch (Exception e) {
-            throw WeaviatePaginationException.after(cursor, pageSize, e);
+            throw PaginationException.after(cursor, pageSize, e);
           }
         });
   }

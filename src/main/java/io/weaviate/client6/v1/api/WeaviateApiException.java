@@ -5,7 +5,7 @@ package io.weaviate.client6.v1.api;
  * server, but the operation did not complete successfully either either due to
  * a bad request or a server error.
  */
-public class WeaviateApiException extends RuntimeException {
+public class WeaviateApiException extends WeaviateException {
   private final String errorMessage;
   private final Source source;
   private final String endpoint;
