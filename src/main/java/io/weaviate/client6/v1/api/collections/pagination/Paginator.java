@@ -37,7 +37,11 @@ public class Paginator<PropertiesT> implements Iterable<WeaviateObject<Propertie
     return new CursorSpliterator<PropertiesT>(cursor, pageSize,
         (after, limit) -> {
           var fn = ObjectBuilder.partial(queryOptions, q -> q.after(after).limit(limit));
-          return query.fetchObjects(fn).objects();
+          try {
+            return query.fetchObjects(fn).objects();
+          } catch (Exception e) {
+            throw WeaviatePaginationException.after(cursor, pageSize, e);
+          }
         });
   }
 
@@ -75,7 +79,8 @@ public class Paginator<PropertiesT> implements Iterable<WeaviateObject<Propertie
       return this;
     }
 
-    public Builder<T> resumeFrom(String uuid) {
+    /** Set a cursor (object UUID) to start pagination from. */
+    public Builder<T> fromCursor(String uuid) {
       this.cursor = uuid;
       return this;
     }

@@ -31,9 +31,16 @@ public class AsyncPaginator<PropertiesT> {
     var rs = new AsyncPage<PropertiesT>(
         cursor,
         pageSize,
-        (after, limit) -> {
-          var fn = ObjectBuilder.partial(queryOptions, q -> q.after(after).limit(limit));
-          return this.query.fetchObjects(fn).thenApply(QueryResponse::objects);
+        (cursor, pageSize) -> {
+          var fn = ObjectBuilder.partial(queryOptions, q -> q.after(cursor).limit(pageSize));
+          return this.query.fetchObjects(fn)
+              .handle((response, ex) -> {
+                if (ex != null) {
+                  throw WeaviatePaginationException.after(cursor, pageSize, ex);
+                }
+                return response;
+              })
+              .thenApply(QueryResponse::objects);
         });
 
     this.resultSet = builder.prefetch ? rs.fetchNextPage() : CompletableFuture.completedFuture(rs);
@@ -51,17 +58,17 @@ public class AsyncPaginator<PropertiesT> {
         .thenCompose(processPageAndAdvance(action));
   }
 
-  public Function<AsyncPage<PropertiesT>, CompletableFuture<Void>> processEachAndAdvance(
+  private static <PropertiesT> Function<AsyncPage<PropertiesT>, CompletableFuture<Void>> processEachAndAdvance(
       Consumer<WeaviateObject<PropertiesT, Object, QueryMetadata>> action) {
     return processAndAdvanceFunc(rs -> rs.forEach(action));
   }
 
-  public Function<AsyncPage<PropertiesT>, CompletableFuture<Void>> processPageAndAdvance(
+  private static <PropertiesT> Function<AsyncPage<PropertiesT>, CompletableFuture<Void>> processPageAndAdvance(
       Consumer<List<WeaviateObject<PropertiesT, Object, QueryMetadata>>> action) {
     return processAndAdvanceFunc(rs -> action.accept(rs.items()));
   }
 
-  public Function<AsyncPage<PropertiesT>, CompletableFuture<Void>> processAndAdvanceFunc(
+  private static <PropertiesT> Function<AsyncPage<PropertiesT>, CompletableFuture<Void>> processAndAdvanceFunc(
       Consumer<AsyncPage<PropertiesT>> action) {
     return rs -> {
       // Empty result set means there were no more objects to fetch.
@@ -105,11 +112,17 @@ public class AsyncPaginator<PropertiesT> {
       return this;
     }
 
-    public Builder<PropertiesT> resumeFrom(String uuid) {
+    /** Set a cursor (object UUID) to start pagination from. */
+    public Builder<PropertiesT> fromCursor(String uuid) {
       this.cursor = uuid;
       return this;
     }
 
+    /**
+     * When prefetch is enabled, the first page is retrieved before any of the
+     * terminating methods ({@link AsyncPaginator#forEach},
+     * {@link AsyncPaginator#forPage}) are called on the paginator.
+     */
     public Builder<PropertiesT> prefetch(boolean enable) {
       this.prefetch = enable;
       return this;

@@ -9,8 +9,8 @@ public class WeaviateApiException extends RuntimeException {
   private final String errorMessage;
   private final Source source;
   private final String endpoint;
-  private final Integer statusCode;
-  private final String grpcStatus;
+  private final Integer httpStatusCode;
+  private final io.grpc.Status.Code grpcStatusCode;
 
   private enum Source {
     HTTP, GRPC;
@@ -22,16 +22,16 @@ public class WeaviateApiException extends RuntimeException {
 
   public static WeaviateApiException gRPC(io.grpc.StatusRuntimeException ex) {
     var status = ex.getStatus();
-    return new WeaviateApiException(status.getCode().toString(), status.getDescription());
+    return new WeaviateApiException(status.getCode(), status.getDescription());
   }
 
-  private WeaviateApiException(String status, String errorMessage) {
-    super("%s: %s".formatted(status, errorMessage));
+  private WeaviateApiException(io.grpc.Status.Code code, String errorMessage) {
+    super("%s: %s".formatted(code, errorMessage));
     this.source = Source.GRPC;
     this.errorMessage = errorMessage;
-    this.grpcStatus = status;
+    this.grpcStatusCode = code;
     this.endpoint = null;
-    this.statusCode = null;
+    this.httpStatusCode = null;
   }
 
   private WeaviateApiException(String method, String endpoint, int statusCode, String errorMessage) {
@@ -39,15 +39,31 @@ public class WeaviateApiException extends RuntimeException {
     this.source = Source.HTTP;
     this.errorMessage = errorMessage;
     this.endpoint = endpoint;
-    this.statusCode = statusCode;
-    this.grpcStatus = null;
+    this.httpStatusCode = statusCode;
+    this.grpcStatusCode = null;
+  }
+
+  public boolean isGPRC() {
+    return source == Source.GRPC;
+  }
+
+  public String grpcStatusCode() {
+    return grpcStatusCode.toString();
+  }
+
+  public boolean isHTTP() {
+    return source == Source.HTTP;
   }
 
   public String endpoint() {
     return endpoint;
   }
 
-  public Integer statusCode() {
-    return statusCode;
+  public Integer httpStatusCode() {
+    return httpStatusCode;
+  }
+
+  public String getError() {
+    return errorMessage;
   }
 }

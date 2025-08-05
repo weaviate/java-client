@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 
 import org.assertj.core.api.Assertions;
@@ -402,15 +403,15 @@ public class SearchITest extends ConcurrentTest {
           collection -> collection
               .properties(Property.text("name"))
               .vectors(Vectorizers.text2vecContextionary()))
-          .get();
+          .join();
 
       var things = async.collections.use(nsThings);
-      var balloon = things.data.insert(Map.of("name", "balloon")).get();
+      var balloon = things.data.insert(Map.of("name", "balloon")).join();
 
       try {
-        things.query.nearObject(balloon.uuid(), q -> q.limit(-1)).get();
-      } catch (ExecutionException e) {
-        throw e.getCause();
+        things.query.nearObject(balloon.uuid(), q -> q.limit(-1)).join();
+      } catch (CompletionException e) {
+        throw e.getCause(); // CompletableFuture exceptions are always wrapped
       }
     }
   }
