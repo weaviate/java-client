@@ -9,7 +9,6 @@ import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Text2VecWeaviateVectorizer(
-    @SerializedName("vectorizeClassName") boolean vectorizeCollectionName,
     @SerializedName("baseUrl") String inferenceUrl,
     @SerializedName("dimensions") Integer dimensions,
     @SerializedName("model") String model,
@@ -34,7 +33,7 @@ public record Text2VecWeaviateVectorizer(
   }
 
   public Text2VecWeaviateVectorizer(Builder builder) {
-    this(builder.vectorizeCollectionName,
+    this(
         builder.inferenceUrl,
         builder.dimensions,
         builder.model,
@@ -46,15 +45,9 @@ public record Text2VecWeaviateVectorizer(
 
   public static class Builder implements ObjectBuilder<Text2VecWeaviateVectorizer> {
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
-    private boolean vectorizeCollectionName = false;
     private String inferenceUrl;
     private Integer dimensions;
     private String model;
-
-    public Builder vectorizeCollectionName(boolean enable) {
-      this.vectorizeCollectionName = enable;
-      return this;
-    }
 
     public Builder inferenceUrl(String inferenceUrl) {
       this.inferenceUrl = inferenceUrl;
