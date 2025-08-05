@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -18,6 +19,7 @@ import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.WeaviateMetadata;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
+import io.weaviate.client6.v1.api.collections.pagination.WeaviatePaginationException;
 import io.weaviate.containers.Container;
 
 public class PaginationITest extends ConcurrentTest {
@@ -89,7 +91,7 @@ public class PaginationITest extends ConcurrentTest {
         .reduce((prev, next) -> next).get();
 
     // Act
-    var remaining = things.paginate(p -> p.resumeFrom(lastId)).stream().count();
+    var remaining = things.paginate(p -> p.fromCursor(lastId)).stream().count();
 
     // Assert
     Assertions.assertThat(remaining).isEqualTo(5);
@@ -155,6 +157,36 @@ public class PaginationITest extends ConcurrentTest {
       Assertions.assertThat(objectCount.get())
           .as("object count after iteration completed")
           .isEqualTo(count);
+    }
+  }
+
+  @Test(expected = WeaviatePaginationException.class)
+  public void testFailedPagination() throws IOException {
+    var things = client.collections.use("Unknown");
+    things.paginate().forEach(System.out::println);
+  }
+
+  @Test(expected = WeaviatePaginationException.class)
+  public void testFailedAsyncPagination_forEach() throws Throwable {
+    try (final var async = client.async()) {
+      var things = async.collections.use("Unknown");
+      try {
+        things.paginate().forEach(__ -> System.out.println("called once")).join();
+      } catch (CompletionException e) {
+        throw e.getCause(); // CompletableFuture exceptions are always wrapped
+      }
+    }
+  }
+
+  @Test(expected = WeaviatePaginationException.class)
+  public void testFailedAsyncPagination_forPage() throws Throwable {
+    try (final var async = client.async()) {
+      var things = async.collections.use("Unknown");
+      try {
+        things.paginate().forPage(__ -> System.out.println("called once")).join();
+      } catch (CompletionException e) {
+        throw e.getCause(); // CompletableFuture exceptions are always wrapped
+      }
     }
   }
 }

@@ -40,6 +40,15 @@ public final class AsyncPage<PropertiesT> implements Iterable<WeaviateObject<Pro
     return this.currentPage.isEmpty();
   }
 
+  /**
+   * Fetch an {@link AsyncPage} containing the next {@code pageSize} results
+   * and advance the cursor.
+   *
+   * <p>
+   * The returned stage may complete exceptionally in case the underlying
+   * query fails. Callers are advised to use exception-aware
+   * {@link CompletableFuture#handle} to process page results.
+   */
   public CompletableFuture<AsyncPage<PropertiesT>> fetchNextPage() {
     return fetch.apply(cursor, pageSize)
         .thenApply(nextPage -> {
