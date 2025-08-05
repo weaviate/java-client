@@ -36,7 +36,7 @@ public class AsyncPaginator<PropertiesT> {
           return this.query.fetchObjects(fn)
               .handle((response, ex) -> {
                 if (ex != null) {
-                  throw WeaviatePaginationException.after(cursor, pageSize, ex);
+                  throw PaginationException.after(cursor, pageSize, ex);
                 }
                 return response;
               })
