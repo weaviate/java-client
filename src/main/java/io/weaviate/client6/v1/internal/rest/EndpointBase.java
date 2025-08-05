@@ -1,7 +1,12 @@
 package io.weaviate.client6.v1.internal.rest;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+
+import com.google.gson.annotations.SerializedName;
+
+import io.weaviate.client6.v1.internal.json.JSON;
 
 public abstract class EndpointBase<RequestT, ResponseT> implements Endpoint<RequestT, ResponseT> {
   private static final Function<?, String> NULL_BODY = __ -> null;
@@ -54,7 +59,16 @@ public abstract class EndpointBase<RequestT, ResponseT> implements Endpoint<Requ
 
   @Override
   public String deserializeError(int statusCode, String responseBody) {
-    // TODO: deserialize
-    return responseBody;
+    var response = JSON.deserialize(responseBody, ErrorResponse.class);
+    if (response.errors.isEmpty()) {
+      return "";
+
+    }
+    return response.errors.get(0).text();
+  }
+
+  static record ErrorResponse(@SerializedName("error") List<ErrorMessage> errors) {
+    private static record ErrorMessage(@SerializedName("message") String text) {
+    }
   }
 }

@@ -7,6 +7,7 @@ import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
+import io.weaviate.client6.v1.api.WeaviateApiException;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.CollectionConfig;
 import io.weaviate.client6.v1.api.collections.InvertedIndex;
@@ -184,5 +185,10 @@ public class CollectionsITest extends ConcurrentTest {
         .hasSize(1)
         .extracting(Shard::status)
         .containsOnly(wantStatus.name());
+  }
+
+  @Test(expected = WeaviateApiException.class)
+  public void testInvalidCollectionName() throws IOException {
+    client.collections.create("^collection@weaviate.io$");
   }
 }
