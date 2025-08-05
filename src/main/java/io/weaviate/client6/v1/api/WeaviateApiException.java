@@ -10,7 +10,7 @@ public class WeaviateApiException extends RuntimeException {
   private final int statusCode;
 
   public WeaviateApiException(String method, String endpoint, int statusCode, String errorMessage) {
-    super("%s %s: %s".formatted(method, endpoint, errorMessage));
+    super("HTTP %d: %s %s: %s".formatted(statusCode, method, endpoint, errorMessage));
     this.endpoint = endpoint;
     this.statusCode = statusCode;
   }
