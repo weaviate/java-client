@@ -9,7 +9,15 @@ import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Text2VecContextionaryVectorizer(
-    @SerializedName("vectorizeClassName") boolean vectorizeCollectionName,
+    /**
+     * Weaviate defaults to {@code true} if the value is not provided.
+     * Because text2vec-contextionary cannot handle understores in collection names,
+     * this quickly becomes inconvenient.
+     *
+     * To avoid that we send "vectorizeClassName": false all the time
+     * and make it impossible to enable this feature, as it is deprecated.
+     */
+    @Deprecated @SerializedName("vectorizeClassName") boolean vectorizeCollectionName,
     VectorIndex vectorIndex) implements Vectorizer {
 
   @Override
@@ -31,18 +39,22 @@ public record Text2VecContextionaryVectorizer(
     return fn.apply(new Builder()).build();
   }
 
+  /**
+   * Canonical constructor always sets {@link #vectorizeCollectionName} to false.
+   */
+  public Text2VecContextionaryVectorizer(boolean vectorizeCollectionName, VectorIndex vectorIndex) {
+    this.vectorizeCollectionName = false;
+    this.vectorIndex = vectorIndex;
+  }
+
   public Text2VecContextionaryVectorizer(Builder builder) {
     this(builder.vectorizeCollectionName, builder.vectorIndex);
   }
 
   public static class Builder implements ObjectBuilder<Text2VecContextionaryVectorizer> {
-    private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
-    private boolean vectorizeCollectionName = false;
+    private final boolean vectorizeCollectionName = false;
 
-    public Builder vectorizeCollectionName(boolean enable) {
-      this.vectorizeCollectionName = enable;
-      return this;
-    }
+    private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
 
     public Builder vectorIndex(VectorIndex vectorIndex) {
       this.vectorIndex = vectorIndex;

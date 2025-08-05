@@ -13,7 +13,6 @@ import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Multi2VecClipVectorizer(
-    @SerializedName("vectorizeClassName") boolean vectorizeCollectionName,
     @SerializedName("inferenceUrl") String inferenceUrl,
     @SerializedName("imageFields") List<String> imageFields,
     @SerializedName("textFields") List<String> textFields,
@@ -45,7 +44,6 @@ public record Multi2VecClipVectorizer(
 
   public Multi2VecClipVectorizer(Builder builder) {
     this(
-        builder.vectorizeCollectionName,
         builder.inferenceUrl,
         builder.imageFields.keySet().stream().toList(),
         builder.textFields.keySet().stream().toList(),
@@ -57,7 +55,6 @@ public record Multi2VecClipVectorizer(
 
   public static class Builder implements ObjectBuilder<Multi2VecClipVectorizer> {
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
-    private boolean vectorizeCollectionName = false;
     private String inferenceUrl;
     private Map<String, Float> imageFields = new HashMap<>();
     private Map<String, Float> textFields = new HashMap<>();
@@ -92,11 +89,6 @@ public record Multi2VecClipVectorizer(
 
     public Builder textField(String field, float weight) {
       textFields.put(field, weight);
-      return this;
-    }
-
-    public Builder vectorizeCollectionName(boolean enable) {
-      this.vectorizeCollectionName = enable;
       return this;
     }
 
