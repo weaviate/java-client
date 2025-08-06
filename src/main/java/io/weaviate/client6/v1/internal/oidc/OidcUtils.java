@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
+import io.weaviate.client6.v1.api.WeaviateOAuthException;
 import io.weaviate.client6.v1.internal.json.JSON;
 import io.weaviate.client6.v1.internal.rest.Endpoint;
 import io.weaviate.client6.v1.internal.rest.ExternalEndpoint;
@@ -41,14 +42,14 @@ public final class OidcUtils {
     try {
       openid = transport.performRequest(null, GET_OPENID);
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new WeaviateOAuthException("fetch OpenID configuration", e);
     }
 
     String providerMetadata;
     try {
       providerMetadata = transport.performRequest(openid.endpoint(), GET_PROVIDER_METADATA);
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new WeaviateOAuthException("fetch provider metadata", e);
     }
 
     var redirectUrl = transport.getTransportOptions().baseUrl() + OPENID_URL;

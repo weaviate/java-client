@@ -7,6 +7,7 @@ import java.util.function.Function;
 import io.weaviate.client6.v1.api.alias.WeaviateAliasClient;
 import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClient;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
+import io.weaviate.client6.v1.internal.TokenProvider;
 import io.weaviate.client6.v1.internal.grpc.DefaultGrpcTransport;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.rest.DefaultRestTransport;
@@ -36,14 +37,16 @@ public class WeaviateClient implements Closeable {
       this.restTransport = new DefaultRestTransport(config.restTransportOptions());
       this.grpcTransport = new DefaultGrpcTransport(config.grpcTransportOptions());
     } else {
+      TokenProvider tokenProvider;
       try (final var noAuthRest = new DefaultRestTransport(config.restTransportOptions())) {
-        var tokenProvider = config.authorization().getTokenProvider(noAuthRest);
-        this.restTransport = new DefaultRestTransport(config.restTransportOptions(tokenProvider));
-        this.grpcTransport = new DefaultGrpcTransport(config.grpcTransportOptions(tokenProvider));
+        tokenProvider = config.authorization().getTokenProvider(noAuthRest);
       } catch (IOException e) {
-        // TODO: throw WeaviateOAuthException
-        throw new RuntimeException(e);
+        // Generally IOExceptions are caught in TokenProvider internals.
+        // This one may be thrown when noAuthRest transport is auto-closed.
+        throw new WeaviateOAuthException(e);
       }
+      this.restTransport = new DefaultRestTransport(config.restTransportOptions(tokenProvider));
+      this.grpcTransport = new DefaultGrpcTransport(config.grpcTransportOptions(tokenProvider));
     }
 
     this.alias = new WeaviateAliasClient(restTransport);
