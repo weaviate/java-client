@@ -25,8 +25,8 @@ public class WeaviateCollectionsClient {
    * Obtain a handle to send requests to a particular collection.
    * The returned object is thread-safe.
    *
-   * @returns a handle for a collection with {@code Map<String, Object>}
-   *          properties.
+   * @return a handle for a collection with {@code Map<String, Object>}
+   *         properties.
    */
   public CollectionHandle<Map<String, Object>> use(String collectionName) {
     return new CollectionHandle<>(restTransport, grpcTransport, CollectionDescriptor.ofMap(collectionName));
@@ -35,7 +35,7 @@ public class WeaviateCollectionsClient {
   /**
    * Create a new Weaviate collection with default configuration.
    *
-   * @returns the configuration of the created collection.
+   * @return the configuration of the created collection.
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
    * @throws IOException          in case the request was not sent successfully
@@ -50,7 +50,7 @@ public class WeaviateCollectionsClient {
    * Create and configure a new Weaviate collection. See
    * {@link CollectionConfig.Builder} for available options.
    *
-   * @returns the configuration of the created collection.
+   * @return the configuration of the created collection.
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
    * @throws IOException          in case the request was not sent successfully
@@ -65,7 +65,7 @@ public class WeaviateCollectionsClient {
   /**
    * Create a new Weaviate collection with {@link CollectionConfig}.
    *
-   * @returns the configuration of the created collection.
+   * @return the configuration of the created collection.
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
    * @throws IOException          in case the request was not sent successfully
@@ -80,7 +80,7 @@ public class WeaviateCollectionsClient {
   /**
    * Fetch Weaviate collection configuration.
    *
-   * @returns the collection configuration if one with this name exists.
+   * @return the collection configuration if one with this name exists.
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
    * @throws IOException          in case the request was not sent successfully
@@ -94,7 +94,7 @@ public class WeaviateCollectionsClient {
   /**
    * Fetch configurations for all collections in Weaviate.
    *
-   * @returns a list of collection configurations.
+   * @return a list of collection configurations.
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
    * @throws IOException          in case the request was not sent successfully
