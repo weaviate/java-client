@@ -59,11 +59,10 @@ public abstract class EndpointBase<RequestT, ResponseT> implements Endpoint<Requ
 
   @Override
   public String deserializeError(int statusCode, String responseBody) {
-    {
-      var response = JSON.deserialize(responseBody, ErrorResponse1.class);
-      if (response.errors != null && !response.errors.isEmpty()) {
-        return response.errors.get(0).message();
-      }
+    var response = JSON.deserialize(responseBody, ErrorResponse.class);
+    if (response == null || response.errors.isEmpty()) {
+      return "";
+
     }
     var response = JSON.deserialize(responseBody, ErrorResponse2.class);
     if (response.error != null && !response.error.isBlank()) {

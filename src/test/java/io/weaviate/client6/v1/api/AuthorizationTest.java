@@ -3,6 +3,7 @@ package io.weaviate.client6.v1.api;
 import java.io.IOException;
 import java.util.Collections;
 
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,11 +11,13 @@ import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpRequest;
 
 import io.weaviate.client6.v1.internal.rest.DefaultRestTransport;
-import io.weaviate.client6.v1.internal.rest.OptionalEndpoint;
+import io.weaviate.client6.v1.internal.rest.RestTransport;
 import io.weaviate.client6.v1.internal.rest.RestTransportOptions;
+import io.weaviate.client6.v1.internal.rest.SimpleEndpoint;
 
 public class AuthorizationTest {
   private ClientAndServer mockServer;
+  private RestTransport noAuthTransport;
 
   @Before
   public void startMockServer() throws IOException {
@@ -27,17 +30,26 @@ public class AuthorizationTest {
     // if another webserver is listening to that port.
     // We use 0 to let the underlying system find an available port.
     mockServer = ClientAndServer.startClientAndServer(0);
+    noAuthTransport = new DefaultRestTransport(
+        new RestTransportOptions(
+            "http", "localhost", mockServer.getLocalPort(),
+            Collections.emptyMap(), null, null));
   }
 
   @Test
   public void testAuthorization_apiKey() throws IOException {
+    var authz = Authorization.apiKey("my-api-key");
     var transportOptions = new RestTransportOptions(
         "http", "localhost", mockServer.getLocalPort(),
-        Collections.emptyMap(), Authorization.apiKey("my-api-key"), null);
+        Collections.emptyMap(), authz.getTokenProvider(noAuthTransport), null);
 
     try (final var restClient = new DefaultRestTransport(transportOptions)) {
-      restClient.performRequest(null, OptionalEndpoint.noBodyOptional(
-          request -> "GET", request -> "/", request -> null, (code, response) -> null));
+      restClient.performRequest(null, SimpleEndpoint.sideEffect(
+          request -> "GET", request -> "/", request -> null));
+    } catch (WeaviateApiException ex) {
+      if (ex.httpStatusCode() != 404) {
+        Assertions.fail("unexpected error", ex);
+      }
     }
 
     mockServer.verify(
@@ -48,7 +60,8 @@ public class AuthorizationTest {
   }
 
   @After
-  public void stopMockServer() {
+  public void stopMockServer() throws IOException {
     mockServer.stop();
+    noAuthTransport.close();
   }
 }

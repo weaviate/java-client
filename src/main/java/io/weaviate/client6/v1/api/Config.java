@@ -19,7 +19,7 @@ public record Config(
     String grpcHost,
     int grpcPort,
     Map<String, String> headers,
-    TokenProvider tokenProvider,
+    Authorization authorization,
     TrustManagerFactory trustManagerFactory) {
 
   public static Config of(Function<Custom, ObjectBuilder<Config>> fn) {
@@ -34,15 +34,23 @@ public record Config(
         builder.grpcHost,
         builder.grpcPort,
         builder.headers,
-        builder.tokenProvider,
+        builder.authorization,
         builder.trustManagerFactory);
   }
 
   RestTransportOptions restTransportOptions() {
+    return restTransportOptions(null);
+  }
+
+  RestTransportOptions restTransportOptions(TokenProvider tokenProvider) {
     return new RestTransportOptions(scheme, httpHost, httpPort, headers, tokenProvider, trustManagerFactory);
   }
 
   GrpcChannelOptions grpcTransportOptions() {
+    return grpcTransportOptions(null);
+  }
+
+  GrpcChannelOptions grpcTransportOptions(TokenProvider tokenProvider) {
     return new GrpcChannelOptions(scheme, grpcHost, grpcPort, headers, tokenProvider, trustManagerFactory);
   }
 
@@ -53,7 +61,7 @@ public record Config(
     protected int httpPort;
     protected String grpcHost;
     protected int grpcPort;
-    protected TokenProvider tokenProvider;
+    protected Authorization authorization;
     protected TrustManagerFactory trustManagerFactory;
     protected Map<String, String> headers = new HashMap<>();
 
@@ -144,7 +152,7 @@ public record Config(
     public Config build() {
       // For clusters hosted on Weaviate Cloud, Weaviate Embedding Service
       // will be available under the same domain.
-      if (isWeaviateDomain(httpHost) && tokenProvider != null) {
+      if (isWeaviateDomain(httpHost) && authorization != null) {
         setHeader(HEADER_X_WEAVIATE_CLUSTER_URL, "https://" + httpHost + ":" + httpPort);
       }
       return new Config(this);
@@ -203,11 +211,11 @@ public record Config(
    * {@link #trustManagerFactory}.
    */
   public static class WeaviateCloud extends Builder<WeaviateCloud> {
-    public WeaviateCloud(String httpHost, TokenProvider tokenProvider) {
-      this(URI.create(httpHost), tokenProvider);
+    public WeaviateCloud(String httpHost, Authorization authorization) {
+      this(URI.create(httpHost), authorization);
     }
 
-    public WeaviateCloud(URI clusterUri, TokenProvider tokenProvider) {
+    public WeaviateCloud(URI clusterUri, Authorization authorization) {
       scheme("https");
       super.httpHost(clusterUri.getHost() != null
           ? clusterUri.getHost() // https://[example.com]/about
@@ -215,7 +223,7 @@ public record Config(
       super.grpcHost("grpc-" + this.httpHost);
       this.httpPort = 443;
       this.grpcPort = 443;
-      this.tokenProvider = tokenProvider;
+      this.authorization = authorization;
     }
 
     /**
@@ -287,8 +295,8 @@ public record Config(
      * Set authorization method. Setting this to {@code null} or omitting
      * will not use any authorization mechanism.
      */
-    public Custom authorization(TokenProvider tokenProvider) {
-      this.tokenProvider = tokenProvider;
+    public Custom authorization(Authorization authorization) {
+      this.authorization = authorization;
       return this;
     }
 
