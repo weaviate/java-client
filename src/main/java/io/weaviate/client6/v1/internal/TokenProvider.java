@@ -32,6 +32,7 @@ public interface TokenProvider {
 
   public static TokenProvider bearerToken(OidcConfig oidc, String accessToken, String refreshToken, long expiresIn) {
     final var token = Token.expireAfter(accessToken, refreshToken, expiresIn);
-    return NimbusTokenProvider.bearerToken(oidc, token);
+    final var provider = NimbusTokenProvider.bearerToken(oidc, token);
+    return ReuseTokenProvider.wrap(token, provider);
   }
 }
