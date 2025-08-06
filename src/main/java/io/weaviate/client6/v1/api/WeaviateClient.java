@@ -22,8 +22,20 @@ public class WeaviateClient implements Closeable {
 
   public WeaviateClient(Config config) {
     this.config = config;
-    this.restTransport = new DefaultRestTransport(config.restTransportOptions());
-    this.grpcTransport = new DefaultGrpcTransport(config.grpcTransportOptions());
+
+    if (config.authorization() == null) {
+      this.restTransport = new DefaultRestTransport(config.restTransportOptions());
+      this.grpcTransport = new DefaultGrpcTransport(config.grpcTransportOptions());
+    } else {
+      try (final var noAuthRest = new DefaultRestTransport(config.restTransportOptions())) {
+        var tokenProvider = config.authorization().getTokenProvider(noAuthRest);
+        this.restTransport = new DefaultRestTransport(config.restTransportOptions(tokenProvider));
+        this.grpcTransport = new DefaultGrpcTransport(config.grpcTransportOptions(tokenProvider));
+      } catch (IOException e) {
+        // TODO: throw WeaviateOAuthException
+        throw new RuntimeException(e);
+      }
+    }
 
     this.collections = new WeaviateCollectionsClient(restTransport, grpcTransport);
   }

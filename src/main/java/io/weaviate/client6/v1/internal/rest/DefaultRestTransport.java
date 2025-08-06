@@ -79,6 +79,7 @@ public class DefaultRestTransport implements RestTransport {
   public <RequestT, ResponseT, ExceptionT> ResponseT performRequest(RequestT request,
       Endpoint<RequestT, ResponseT> endpoint)
       throws IOException {
+
     var req = prepareClassicRequest(request, endpoint);
     return this.httpClient.execute(req, r -> this.handleResponse(endpoint, req.getMethod(), req.getRequestUri(), r));
   }
@@ -86,7 +87,7 @@ public class DefaultRestTransport implements RestTransport {
   private <RequestT, ResponseT> ClassicHttpRequest prepareClassicRequest(RequestT request,
       Endpoint<RequestT, ResponseT> endpoint) {
     var method = endpoint.method(request);
-    var uri = transportOptions.baseUrl() + endpoint.requestUrl(request);
+    var uri = endpoint.requestUrl(transportOptions, request);
 
     // TODO: apply options;
     var req = ClassicRequestBuilder.create(method).setUri(uri);
@@ -138,7 +139,8 @@ public class DefaultRestTransport implements RestTransport {
   private <RequestT, ResponseT> SimpleHttpRequest prepareSimpleRequest(RequestT request,
       Endpoint<RequestT, ResponseT> endpoint) {
     var method = endpoint.method(request);
-    var uri = transportOptions.baseUrl() + endpoint.requestUrl(request);
+    var uri = endpoint.requestUrl(transportOptions, request);
+
     // TODO: apply options;
 
     var body = endpoint.body(request);
@@ -179,6 +181,11 @@ public class DefaultRestTransport implements RestTransport {
 
     // TODO: make it a WeaviateTransportException
     throw new RuntimeException("Unhandled endpoint type " + endpoint.getClass().getSimpleName());
+  }
+
+  @Override
+  public RestTransportOptions getTransportOptions() {
+    return transportOptions;
   }
 
   @Override
