@@ -17,6 +17,7 @@ import com.nimbusds.openid.connect.sdk.OIDCTokenResponse;
 import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 
+import io.weaviate.client6.v1.api.WeaviateOAuthException;
 import io.weaviate.client6.v1.internal.TokenProvider;
 import io.weaviate.client6.v1.internal.oidc.OidcConfig;
 
@@ -36,8 +37,7 @@ public final class NimbusTokenProvider implements TokenProvider {
     try {
       this.metadata = OIDCProviderMetadata.parse(oidc.providerMetadata());
     } catch (ParseException ex) {
-      // TODO: throw WeaviateOAuthException;
-      throw new RuntimeException(ex);
+      throw new WeaviateOAuthException("parse provider metadata: ", ex);
     }
 
     this.clientId = new ClientID(oidc.clientId());
@@ -62,14 +62,14 @@ public final class NimbusTokenProvider implements TokenProvider {
       var httpResponse = request.send();
       response = OIDCTokenResponseParser.parse(httpResponse);
     } catch (IOException | ParseException e) {
-      // TODO: throw WeaviateOAuthException
-      throw new RuntimeException(e);
+      throw new WeaviateOAuthException(e);
     }
 
     if (response instanceof TokenErrorResponse err) {
-      var message = err.getErrorObject().getDescription();
-      // TODO: throw WeaviateOAuthException
-      throw new RuntimeException(message);
+      var error = err.getErrorObject();
+      throw new WeaviateOAuthException("%s %s".formatted(
+          error.getCode(),
+          error.getDescription()));
     }
 
     var tokens = ((OIDCTokenResponse) response).getOIDCTokens();
