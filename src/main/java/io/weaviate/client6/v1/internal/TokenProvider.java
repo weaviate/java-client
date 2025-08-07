@@ -11,6 +11,9 @@ public interface TokenProvider {
 
   public record Token(String accessToken, String refreshToken, Instant createdAt, long expiresIn) {
     public boolean isValid() {
+      if (expiresIn == -1) {
+        return true;
+      }
       // TODO: adjust for expireDelta
       return Instant.now().isAfter(createdAt.plusSeconds(expiresIn));
     }
