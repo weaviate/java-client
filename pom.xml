@@ -472,6 +472,19 @@
             <transformers>
               <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
             </transformers>
+            <!-- Common gRPC dependencies may appear in user's project under different, -->
+            <!-- incompatible versions. Relocating them in a shaded version of the package -->
+            <!-- avoids dependency conflicts. -->
+            <relocations>
+              <relocation>
+                <pattern>com.google.protobuf</pattern>
+                <shadedPattern>io.weaviate.shaded.com.google.protobuf</shadedPattern>
+              </relocation>
+              <relocation>
+                <pattern>io.grpc</pattern>
+                <shadedPattern>io.weaviate.shaded.io.grpc</shadedPattern>
+              </relocation>
+            </relocations>
           </configuration>
           <executions>
             <execution>
