@@ -12,18 +12,17 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.json.JSON;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 import io.weaviate.client6.v1.internal.rest.Endpoint;
+import io.weaviate.client6.v1.internal.rest.SimpleEndpoint;
 
 public record ReplaceObjectRequest<T>(WeaviateObject<T, Reference, ObjectMetadata> object) {
 
   static final <T> Endpoint<ReplaceObjectRequest<T>, Void> endpoint(CollectionDescriptor<T> collectionDescriptor) {
-    return Endpoint.of(
+    return SimpleEndpoint.sideEffect(
         request -> "PUT",
         request -> "/objects/" + collectionDescriptor.name() + "/" + request.object.metadata().uuid(),
-        (gson, request) -> JSON.serialize(request.object, TypeToken.getParameterized(
-            WeaviateObject.class, collectionDescriptor.typeToken().getType(), Reference.class, ObjectMetadata.class)),
         request -> Collections.emptyMap(),
-        code -> code != 200,
-        (gson, response) -> null);
+        request -> JSON.serialize(request.object, TypeToken.getParameterized(
+            WeaviateObject.class, collectionDescriptor.typeToken().getType(), Reference.class, ObjectMetadata.class)));
   }
 
   public static <T> ReplaceObjectRequest<T> of(String collectionName, String uuid,

@@ -42,13 +42,8 @@ public class DefaultRestTransportTest {
 
   @Test
   public void testCustomTrustStore_sync() throws IOException {
-    transport.performRequest(null, Endpoint.of(
-        request -> "GET",
-        request -> "/",
-        (gson, request) -> null,
-        request -> null,
-        code -> code != 200,
-        (gson, response) -> null));
+    transport.performRequest(null, OptionalEndpoint.noBodyOptional(
+        request -> "GET", request -> "/", request -> null, (code, response) -> null));
 
     mockServer.verify(
         HttpRequest.request()
@@ -63,13 +58,8 @@ public class DefaultRestTransportTest {
 
   @Test
   public void testCustomTrustStore_async() throws IOException, ExecutionException, InterruptedException {
-    transport.performRequestAsync(null, Endpoint.of(
-        request -> "GET",
-        request -> "/",
-        (gson, request) -> null,
-        request -> null,
-        code -> code != 200,
-        (gson, response) -> null)).get();
+    transport.performRequestAsync(null, OptionalEndpoint.noBodyOptional(
+        request -> "GET", request -> "/", request -> null, (code, response) -> null)).get();
 
     mockServer.verify(
         HttpRequest.request()

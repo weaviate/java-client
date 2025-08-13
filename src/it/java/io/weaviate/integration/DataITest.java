@@ -9,6 +9,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
+import io.weaviate.client6.v1.api.WeaviateApiException;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.Vectorizers;
@@ -392,5 +393,18 @@ public class DataITest extends ConcurrentTest {
         .extracting(references -> references.get("hasAirports"), InstanceOfAssertFactories.list(WeaviateObject.class))
         .extracting(WeaviateObject::uuid)
         .contains(alpha, bravo, charlie);
+  }
+
+  @Test(expected = WeaviateApiException.class)
+  public void testDuplicateUuid() throws IOException {
+    // Arrange
+    var nsThings = ns("Things");
+
+    client.collections.create(nsThings);
+    var things = client.collections.use(nsThings);
+    var thing_1 = things.data.insert(Map.of());
+
+    // Act
+    things.data.insert(Map.of(), thing -> thing.uuid(thing_1.uuid()));
   }
 }

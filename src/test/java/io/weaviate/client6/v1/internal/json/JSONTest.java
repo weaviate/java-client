@@ -73,8 +73,7 @@ public class JSONTest {
             Multi2VecClipVectorizer.of(m2v -> m2v
                 .inferenceUrl("http://example.com")
                 .imageField("img", 1f)
-                .textField("txt", 2f)
-                .vectorizeCollectionName(true)),
+                .textField("txt", 2f)),
             """
                 {
                   "vectorIndexType": "hnsw",
@@ -82,7 +81,6 @@ public class JSONTest {
                   "vectorizer": {
                     "multi2vec-clip": {
                       "inferenceUrl": "http://example.com",
-                      "vectorizeClassName": true,
                       "imageFields": ["img"],
                       "textFields": ["txt"],
                       "weights": {
@@ -96,15 +94,14 @@ public class JSONTest {
         },
         {
             Vectorizer.class,
-            Text2VecContextionaryVectorizer.of(t2v -> t2v
-                .vectorizeCollectionName(true)),
+            Text2VecContextionaryVectorizer.of(),
             """
                 {
                   "vectorIndexType": "hnsw",
                   "vectorIndexConfig": {},
                   "vectorizer": {
                     "text2vec-contextionary": {
-                      "vectorizeClassName": true
+                      "vectorizeClassName": false
                     }
                   }
                 }
@@ -115,8 +112,7 @@ public class JSONTest {
             Text2VecWeaviateVectorizer.of(t2v -> t2v
                 .inferenceUrl("http://example.com")
                 .dimensions(4)
-                .model("very-good-model")
-                .vectorizeCollectionName(true)),
+                .model("very-good-model")),
             """
                 {
                   "vectorIndexType": "hnsw",
@@ -124,7 +120,6 @@ public class JSONTest {
                   "vectorizer": {
                     "text2vec-weaviate": {
                       "baseUrl": "http://example.com",
-                      "vectorizeClassName": true,
                       "dimensions": 4,
                       "model": "very-good-model"
                     }

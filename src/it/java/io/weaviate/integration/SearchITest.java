@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 
 import org.assertj.core.api.Assertions;
@@ -16,6 +17,7 @@ import org.junit.Test;
 import org.junit.rules.TestRule;
 
 import io.weaviate.ConcurrentTest;
+import io.weaviate.client6.v1.api.WeaviateApiException;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.Vectorizers;
@@ -373,5 +375,44 @@ public class SearchITest extends ConcurrentTest {
         .as("metadata::score").isNotNull();
     Assertions.assertThat(first.metadata().explainScore())
         .as("metadata::explainScore").isNotNull();
+  }
+
+  @Test(expected = WeaviateApiException.class)
+  public void testBadRequest() throws IOException {
+    // Arrange
+    var nsThings = ns("Things");
+
+    client.collections.create(nsThings,
+        collection -> collection
+            .properties(Property.text("name"))
+            .vectors(Vectorizers.text2vecContextionary()));
+
+    var things = client.collections.use(nsThings);
+    var balloon = things.data.insert(Map.of("name", "balloon"));
+
+    things.query.nearObject(balloon.uuid(), q -> q.limit(-1));
+  }
+
+  @Test(expected = WeaviateApiException.class)
+  public void testBadRequest_async() throws Throwable {
+    // Arrange
+    var nsThings = ns("Things");
+
+    try (final var async = client.async()) {
+      async.collections.create(nsThings,
+          collection -> collection
+              .properties(Property.text("name"))
+              .vectors(Vectorizers.text2vecContextionary()))
+          .join();
+
+      var things = async.collections.use(nsThings);
+      var balloon = things.data.insert(Map.of("name", "balloon")).join();
+
+      try {
+        things.query.nearObject(balloon.uuid(), q -> q.limit(-1)).join();
+      } catch (CompletionException e) {
+        throw e.getCause(); // CompletableFuture exceptions are always wrapped
+      }
+    }
   }
 }
