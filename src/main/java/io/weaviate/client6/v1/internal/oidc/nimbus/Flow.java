@@ -23,8 +23,8 @@ interface Flow {
   }
 
   static Flow resourceOwnerPassword(String username, String password) {
-    final var GRANT = new ResourceOwnerPasswordCredentialsGrant(username, new Secret(password));
-    return () -> GRANT; // Reuse cached authorization grant
+    final var grant = new ResourceOwnerPasswordCredentialsGrant(username, new Secret(password));
+    return () -> grant; // Reuse cached authorization grant
   }
 
   static Flow clientCredentials(String clientId, String clientSecret) {

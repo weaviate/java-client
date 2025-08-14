@@ -32,7 +32,7 @@ final class ReuseTokenProvider implements TokenProvider {
   static TokenProvider wrap(Token t, TokenProvider tp, long expiryDelta) {
     if (tp instanceof ReuseTokenProvider rtp) {
       if (t == null) {
-        // Use it directly, but set new expirty delta.
+        // Use it directly, but set new expiry delta.
         return rtp.withExpiryDelta(expiryDelta);
       }
     }
