@@ -126,6 +126,11 @@ public class WeaviateClient implements Closeable {
     return this.restTransport.performRequest(null, IsLiveRequest._ENDPOINT);
   }
 
+  /** Ping the server for a readiness check. */
+  public boolean isReady() throws IOException {
+    return this.restTransport.performRequest(null, IsReadyRequest._ENDPOINT);
+  }
+
   /**
    * Close {@link #restTransport} and {@link #grpcTransport}
    * and release associated resources.
