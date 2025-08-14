@@ -20,8 +20,24 @@ import javax.annotation.concurrent.ThreadSafe;
 @ThreadSafe
 final class ReuseTokenProvider implements TokenProvider {
   private final TokenProvider provider;
+  private final long expiryDelta;
 
   private volatile Token token;
+
+  /**
+   * Create new {@link ReuseTokenProvider} from another {@link TokenProvider}.
+   * Wrapping an instance ReuseTokenProvider returns that instance if the token is
+   * {@code null}, so this method is safe to call with any TokenProvider.
+   */
+  static TokenProvider wrap(Token t, TokenProvider tp, long expiryDelta) {
+    if (tp instanceof ReuseTokenProvider rtp) {
+      if (t == null) {
+        // Use it directly, but set new expirty delta.
+        return rtp.withExpiryDelta(expiryDelta);
+      }
+    }
+    return new ReuseTokenProvider(t, tp, expiryDelta);
+  }
 
   /**
    * Create new {@link ReuseTokenProvider} from another {@link TokenProvider}.
@@ -34,12 +50,24 @@ final class ReuseTokenProvider implements TokenProvider {
         return rtp; // Use it directly.
       }
     }
-    return new ReuseTokenProvider(t, tp);
+    return new ReuseTokenProvider(t, tp, 0);
   }
 
-  private ReuseTokenProvider(Token t, TokenProvider tp) {
+  /**
+   * Create a new TokenProvider with a different expiryDelta.
+   * Tokens obtained from this TokenProvider with have the same early expiry.
+   *
+   * @param expiryDelta Early expiry in seconds.
+   * @return A new TokenProvider.
+   */
+  TokenProvider withExpiryDelta(long expirtyDelta) {
+    return new ReuseTokenProvider(this.token, this.provider, expirtyDelta);
+  }
+
+  private ReuseTokenProvider(Token t, TokenProvider tp, long expiryDelta) {
     this.provider = tp;
     this.token = t;
+    this.expiryDelta = expiryDelta;
   }
 
   @Override
@@ -49,7 +77,7 @@ final class ReuseTokenProvider implements TokenProvider {
     }
     synchronized (this) {
       if (token == null || !token.isValid()) {
-        token = provider.getToken();
+        token = provider.getToken().withExpiryDelta(expiryDelta);
       }
     }
     return token;
