@@ -4,13 +4,10 @@ import java.io.IOException;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import com.nimbusds.oauth2.sdk.AuthorizationGrant;
 import com.nimbusds.oauth2.sdk.ParseException;
-import com.nimbusds.oauth2.sdk.RefreshTokenGrant;
 import com.nimbusds.oauth2.sdk.Scope;
 import com.nimbusds.oauth2.sdk.TokenRequest;
 import com.nimbusds.oauth2.sdk.id.ClientID;
-import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
 
@@ -102,8 +99,8 @@ public final class NimbusTokenProvider implements TokenProvider {
         ? Token.expireAfter(accessToken.getValue(), accessToken.getLifetime())
         : Token.expireAfter(accessToken.getValue(), refreshToken.getValue(), accessToken.getLifetime());
 
-    if (flow instanceof BearerTokenFlow btf) {
-      btf.setToken(newToken);
+    if (flow instanceof RefreshTokenFlow rtf) {
+      rtf.setToken(newToken);
     }
 
     return newToken;
@@ -119,24 +116,6 @@ public final class NimbusTokenProvider implements TokenProvider {
       return OIDCProviderMetadata.parse(providerMetadata);
     } catch (ParseException ex) {
       throw new WeaviateOAuthException("parse provider metadata: ", ex);
-    }
-  }
-
-  @NotThreadSafe
-  final class BearerTokenFlow implements Flow {
-    private Token t;
-
-    BearerTokenFlow(Token t) {
-      this.t = t;
-    }
-
-    @Override
-    public AuthorizationGrant getAuthorizationGrant() {
-      return new RefreshTokenGrant(new RefreshToken(t.refreshToken()));
-    }
-
-    public void setToken(Token t) {
-      this.t = t;
     }
   }
 }

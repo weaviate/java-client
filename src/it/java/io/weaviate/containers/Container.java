@@ -17,16 +17,6 @@ public class Container {
   public static final Contextionary CONTEXTIONARY = Contextionary.createDefault();
   public static final Img2VecNeural IMG2VEC_NEURAL = Img2VecNeural.createDefault();
 
-  static {
-    startAll();
-  }
-
-  /** Start all shared Testcontainers. */
-  // TODO: start lazily!
-  static void startAll() {
-    // WEAVIATE.start();
-  }
-
   /**
    * Stop all shared Testcontainers created in {@link #startAll}.
    * <p>
