@@ -13,7 +13,7 @@ public interface TokenProvider {
   Token getToken();
 
   /** Token represents an access_token + refresh_token pair. */
-  public record Token(String accessToken, String refreshToken, Instant createdAt, long expiresIn) {
+  public record Token(String accessToken, String refreshToken, Instant createdAt, long expiresIn, long expiryDelta) {
     /**
      * Returns {@code true} if remaining lifetime of the token is greater than 0.
      * Tokens created with {@link #expireNever} are always valid.
@@ -22,8 +22,21 @@ public interface TokenProvider {
       if (expiresIn == -1) {
         return true;
       }
-      // TODO: adjust for expireDelta
-      return Instant.now().isAfter(createdAt.plusSeconds(expiresIn));
+      return Instant.now().isBefore(createdAt.plusSeconds(expiresIn - expiryDelta));
+    }
+
+    /**
+     * Set early expiry for the Token.
+     *
+     * <p>
+     * A Token with {@link #expiresIn} of 10s and {@link #expiryDelta} of 3s
+     * will be invalid 7s after being created.
+     *
+     * @param expiryDelta Early expiry in seconds.
+     * @return A Token identical to the source one, but with a different expiry.
+     */
+    public Token withExpiryDelta(long expiryDelta) {
+      return new Token(accessToken, refreshToken, createdAt, expiresIn, expiryDelta);
     }
 
     /**
@@ -36,11 +49,13 @@ public interface TokenProvider {
      * @return A new Token.
      */
     public static Token expireAfter(String accessToken, String refreshToken, long expiresIn) {
-      return new Token(accessToken, refreshToken, Instant.now(), expiresIn);
+      return new Token(accessToken, refreshToken, Instant.now(), expiresIn, 0);
     }
 
     /**
      * Create a token that does not have a refresh_token.
+     * For example, a token obtained via a Client Credentials grant
+     * can only be renewed using that grant type.
      *
      * @param accessToken Access token.
      * @param expiresIn   Remaining token lifetime in seconds.
@@ -62,6 +77,20 @@ public interface TokenProvider {
     }
   }
 
+  /**
+   * Refreshing the token slightly ahead of time will help prevent
+   * phony unauthorized access errors.
+   *
+   * This value is currently not configuratble and should be seen
+   * as an internal implementation detail.
+   */
+  static long DEFAULT_EARLY_EXPIRY = 30;
+
+  /**
+   * Authorize using a token that never expires and doesn't need to be refreshed.
+   *
+   * @param apiKey Access token.
+   */
   public static TokenProvider staticToken(String accessToken) {
     final var token = Token.expireNever(accessToken);
     return () -> token;
@@ -83,7 +112,7 @@ public interface TokenProvider {
   public static TokenProvider bearerToken(OidcConfig oidc, String accessToken, String refreshToken, long expiresIn) {
     final var token = Token.expireAfter(accessToken, refreshToken, expiresIn);
     final var provider = NimbusTokenProvider.refreshToken(oidc, token);
-    return reuse(token, provider);
+    return reuse(token, provider, DEFAULT_EARLY_EXPIRY);
   }
 
   /**
@@ -99,7 +128,7 @@ public interface TokenProvider {
    */
   public static TokenProvider resourceOwnerPassword(OidcConfig oidc, String username, String password) {
     final var passwordGrant = NimbusTokenProvider.resourceOwnerPassword(oidc, username, password);
-    return reuse(null, exchange(oidc, passwordGrant));
+    return reuse(null, exchange(oidc, passwordGrant), DEFAULT_EARLY_EXPIRY);
   }
 
   /**
@@ -115,7 +144,7 @@ public interface TokenProvider {
    */
   public static TokenProvider clientCredentials(OidcConfig oidc, String clientId, String clientSecret) {
     final var provider = NimbusTokenProvider.clientCredentials(oidc, clientId, clientSecret);
-    return reuse(null, provider);
+    return reuse(null, provider, DEFAULT_EARLY_EXPIRY);
   }
 
   /**
@@ -131,6 +160,14 @@ public interface TokenProvider {
    */
   static TokenProvider reuse(Token t, TokenProvider tp) {
     return ReuseTokenProvider.wrap(t, tp);
+  }
+
+  /**
+   * Obtain a TokenProvider which reuses tokens obtained
+   * from another TokenProvider until they expire.
+   */
+  static TokenProvider reuse(Token t, TokenProvider tp, long expiryDelta) {
+    return ReuseTokenProvider.wrap(t, tp, expiryDelta);
   }
 
   public record ProviderMetadata(URI tokenEndpoint) {
