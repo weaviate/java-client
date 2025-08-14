@@ -26,14 +26,46 @@ public final class NimbusTokenProvider implements TokenProvider {
   private final String redirectUrl;
   private final Flow flow;
 
-  public static NimbusTokenProvider bearerToken(OidcConfig oidc, Token t) {
-    return new NimbusTokenProvider(oidc, Flow.bearerToken(t));
+  /**
+   * Create a TokenProvider that uses Refresh Token authorization grant.
+   *
+   * @param oidc OIDC config.
+   * @param t    Current token. Must not be null.
+   *
+   * @return A new instance of NimbusTokenProvider. Instances are never cached.
+   * @throws WeaviateOAuthException if an error occurred at any point of the
+   *                                exchange process.
+   */
+  public static NimbusTokenProvider refreshToken(OidcConfig oidc, Token t) {
+    return new NimbusTokenProvider(oidc, Flow.refreshToken(t));
   }
 
+  /**
+   * Create a TokenProvider that uses Resource Owner Password authorization grant.
+   *
+   * @param oidc     OIDC config.
+   * @param username Resource owner username.
+   * @param password Resource owner password.
+   *
+   * @return A new instance of NimbusTokenProvider. Instances are never cached.
+   * @throws WeaviateOAuthException if an error occured at any point of the
+   *                                exchange process.
+   */
   public static NimbusTokenProvider resourceOwnerPassword(OidcConfig oidc, String username, String password) {
     return new NimbusTokenProvider(oidc, Flow.resourceOwnerPassword(username, password));
   }
 
+  /**
+   * Create a TokenProvider that uses Client Credentials authorization grant.
+   *
+   * @param oidc         OIDC config.
+   * @param clientId     Client ID.
+   * @param clientSecret Client secret.
+   *
+   * @return A new instance of NimbusTokenProvider. Instances are never cached.
+   * @throws WeaviateOAuthException if an error occured at any point of the
+   *                                exchange process.
+   */
   public static NimbusTokenProvider clientCredentials(OidcConfig oidc, String clientId, String clientSecret) {
     return new NimbusTokenProvider(oidc, Flow.clientCredentials(clientId, clientSecret));
   }

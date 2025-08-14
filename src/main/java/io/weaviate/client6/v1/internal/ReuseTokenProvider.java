@@ -5,6 +5,17 @@ import javax.annotation.concurrent.ThreadSafe;
 /**
  * ReuseTokenProvider returns the same token as long as its valid and obtains a
  * new token from a {@link TokenProvider} otherwise.
+ *
+ * <p>
+ * Usage:
+ *
+ * <pre>{@code
+ * // Create an TokenProvider that can rotate tokens as they expire.
+ * var myProvider = new MyTokenProvider();
+ *
+ * // Create a reusable TokenProvider.
+ * var tokenProvider = ReuseTokenProvider.wrap(myProvider);
+ * }</pre>
  */
 @ThreadSafe
 final class ReuseTokenProvider implements TokenProvider {
