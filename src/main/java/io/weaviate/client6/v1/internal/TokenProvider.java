@@ -89,7 +89,7 @@ public interface TokenProvider {
   /**
    * Authorize using a token that never expires and doesn't need to be refreshed.
    *
-   * @param apiKey Access token.
+   * @param accessToken Access token.
    */
   public static TokenProvider staticToken(String accessToken) {
     final var token = Token.expireNever(accessToken);
