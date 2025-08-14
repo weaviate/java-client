@@ -11,6 +11,8 @@ import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.Authorization;
+import io.weaviate.client6.v1.internal.TokenProvider;
+import io.weaviate.client6.v1.internal.rest.RestTransport;
 import io.weaviate.containers.Weaviate;
 
 /**
@@ -45,9 +47,13 @@ public class OIDCSupportITest extends ConcurrentTest {
       .build();
 
   @Test
-  public void test_bearerToken() {
+  public void test_bearerToken() throws IOException {
     Assume.assumeTrue("WCS_DUMMY_CI_PW is not set", WCS_DUMMY_CI_PW != null);
     Assume.assumeTrue("no internet connection", hasInternetConnection());
+
+    var t = TokenInterceptor.stealToken();
+    var authz = Authorization.bearerToken(t.accessToken(), t.refreshToken(), t.expiresIn());
+    pingWeaviate(wcsContainer, authz);
   }
 
   @Test
@@ -65,6 +71,7 @@ public class OIDCSupportITest extends ConcurrentTest {
     Assume.assumeTrue("no internet connection", hasInternetConnection());
 
     var authz = Authorization.clientCredentials(OKTA_CLIENT_ID, OKTA_CLIENT_SECRET, List.of());
+    pingWeaviate(oktaContainer, authz);
     pingWeaviate(oktaContainer, authz);
   }
 
@@ -85,6 +92,34 @@ public class OIDCSupportITest extends ConcurrentTest {
       return true;
     } catch (IOException e) {
       return false;
+    }
+  }
+
+  private static class TokenInterceptor implements Authorization, TokenProvider {
+    /** Exchange resource owner password for a token and return it. */
+    public static Token stealToken() throws IOException {
+      var authz = Authorization.resourceOwnerPassword(WCS_DUMMY_CI_USERNAME, WCS_DUMMY_CI_PW, List.of());
+      var spy = new TokenInterceptor(authz);
+      pingWeaviate(wcsContainer, spy);
+      return spy.getToken();
+    }
+
+    private Authorization authorization;
+    private TokenProvider tokenProvider;
+
+    private TokenInterceptor(Authorization actual) {
+      this.authorization = actual;
+    }
+
+    @Override
+    public TokenProvider getTokenProvider(RestTransport transport) {
+      tokenProvider = authorization.getTokenProvider(transport);
+      return this;
+    }
+
+    @Override
+    public Token getToken() {
+      return tokenProvider.getToken();
     }
   }
 }

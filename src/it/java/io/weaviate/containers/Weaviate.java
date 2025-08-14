@@ -15,10 +15,10 @@ import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public class Weaviate extends WeaviateContainer {
-  private WeaviateClient clientInstance;
-
-  public static final String VERSION = "1.32.2";
+  public static final String VERSION = "1.29.1";
   public static final String DOCKER_IMAGE = "semitechnologies/weaviate";
+
+  private volatile SharedClient clientInstance;
 
   public WeaviateClient getClient() {
     return getClient(ObjectBuilder.identity());
@@ -30,24 +30,29 @@ public class Weaviate extends WeaviateContainer {
    * this is not made thread-safe.
    */
   public WeaviateClient getClient(Function<Config.Custom, ObjectBuilder<Config>> fn) {
-    // FIXME: control from containers?
     if (!isRunning()) {
       start();
     }
-    if (clientInstance == null) {
-      var host = getHost();
-      var customFn = ObjectBuilder.partial(fn,
-          conn -> conn
-              .scheme("http")
-              .httpHost(host)
-              .grpcHost(host)
-              .httpPort(getMappedPort(8080))
-              .grpcPort(getMappedPort(50051)));
-      try {
-        clientInstance = WeaviateClient.custom(customFn);
-        // clientInstance = WeaviateClient.local();
-      } catch (Exception e) {
-        throw new RuntimeException("create WeaviateClient for Weaviate container", e);
+    if (clientInstance != null) {
+      return clientInstance;
+    }
+
+    synchronized (this) {
+      if (clientInstance == null) {
+        var host = getHost();
+        var customFn = ObjectBuilder.partial(fn,
+            conn -> conn
+                .scheme("http")
+                .httpHost(host)
+                .grpcHost(host)
+                .httpPort(getMappedPort(8080))
+                .grpcPort(getMappedPort(50051)));
+        var config = customFn.apply(new Config.Custom()).build();
+        try {
+          clientInstance = new SharedClient(config, this);
+        } catch (Exception e) {
+          throw new RuntimeException("create WeaviateClient for Weaviate container", e);
+        }
       }
     }
     return clientInstance;
@@ -158,10 +163,32 @@ public class Weaviate extends WeaviateContainer {
     if (clientInstance == null) {
       return;
     }
-    try {
-      clientInstance.close();
-    } catch (IOException e) {
-      // TODO: log error
+    synchronized (this) {
+      try {
+        clientInstance.close(this);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+
+  /** SharedClient's lifetime is tied to that of it's parent container. */
+  private class SharedClient extends WeaviateClient {
+    private final Weaviate parent;
+
+    private SharedClient(Config config, Weaviate parent) {
+      super(config);
+      this.parent = parent;
+    }
+
+    private void close(Weaviate caller) throws IOException {
+      if (caller == parent) {
+        super.close();
+      }
+    }
+
+    @Override
+    public void close() throws IOException {
     }
   }
 }

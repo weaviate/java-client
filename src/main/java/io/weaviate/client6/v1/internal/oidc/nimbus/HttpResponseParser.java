@@ -75,8 +75,6 @@ final class OIDCTokensParser {
   }
 
   private static ErrorDetails fromHttpResponse(HTTPResponse response) {
-    System.out.println(response.getBody());
-    System.out.println(JSON.deserialize(response.getBody(), ErrorDetails.class));
     return JSON.deserialize(response.getBody(), ErrorDetails.class);
   }
 }
