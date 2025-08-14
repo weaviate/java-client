@@ -18,8 +18,8 @@ interface Flow {
     return null;
   }
 
-  static Flow bearerToken(Token t) {
-    return new BearerTokenFlow(t);
+  static Flow refreshToken(Token t) {
+    return new RefreshTokenFlow(t);
   }
 
   static Flow resourceOwnerPassword(String username, String password) {
