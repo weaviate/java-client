@@ -8,14 +8,11 @@ import com.nimbusds.oauth2.sdk.AuthorizationGrant;
 import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.RefreshTokenGrant;
 import com.nimbusds.oauth2.sdk.Scope;
-import com.nimbusds.oauth2.sdk.TokenErrorResponse;
 import com.nimbusds.oauth2.sdk.TokenRequest;
-import com.nimbusds.oauth2.sdk.TokenResponse;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
-import com.nimbusds.openid.connect.sdk.OIDCTokenResponse;
-import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
 
 import io.weaviate.client6.v1.api.WeaviateOAuthException;
 import io.weaviate.client6.v1.internal.TokenProvider;
@@ -37,6 +34,10 @@ public final class NimbusTokenProvider implements TokenProvider {
     return new NimbusTokenProvider(oidc, Flow.resourceOwnerPassword(username, password));
   }
 
+  public static NimbusTokenProvider clientCredentials(OidcConfig oidc, String clientId, String clientSecret) {
+    return new NimbusTokenProvider(oidc, Flow.clientCredentials(clientId, clientSecret));
+  }
+
   private NimbusTokenProvider(OidcConfig oidc, Flow flow) {
     try {
       this.metadata = OIDCProviderMetadata.parse(oidc.providerMetadata());
@@ -54,31 +55,27 @@ public final class NimbusTokenProvider implements TokenProvider {
   public Token getToken() {
     var uri = metadata.getTokenEndpointURI();
     var grant = flow.getAuthorizationGrant();
-    var request = new TokenRequest(uri, clientId, grant, scope).toHTTPRequest();
 
-    TokenResponse response;
+    var clientAuth = flow.getClientAuthentication();
+    var tokenRequest = clientAuth == null
+        ? new TokenRequest(uri, clientId, grant, scope)
+        : new TokenRequest(uri, clientAuth, grant, scope);
+    var request = tokenRequest.toHTTPRequest();
+
+    OIDCTokens tokens;
     try {
-      var httpResponse = request.send();
-      response = OIDCTokenResponseParser.parse(httpResponse);
+      var response = request.send();
+      tokens = OIDCTokensParser.parse(response);
     } catch (IOException | ParseException e) {
       throw new WeaviateOAuthException(e);
     }
 
-    if (response instanceof TokenErrorResponse err) {
-      var error = err.getErrorObject();
-      throw new WeaviateOAuthException("%s (code=%s)".formatted(
-          error.getDescription(),
-          error.getCode()));
-    }
-
-    var tokens = ((OIDCTokenResponse) response).getOIDCTokens();
     var accessToken = tokens.getAccessToken();
     var refreshToken = tokens.getRefreshToken();
 
-    var newToken = Token.expireAfter(
-        accessToken.getValue(),
-        refreshToken.getValue(),
-        accessToken.getLifetime());
+    var newToken = refreshToken == null
+        ? Token.expireAfter(accessToken.getValue(), accessToken.getLifetime())
+        : Token.expireAfter(accessToken.getValue(), refreshToken.getValue(), accessToken.getLifetime());
 
     if (flow instanceof BearerTokenFlow btf) {
       btf.setToken(newToken);

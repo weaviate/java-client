@@ -13,6 +13,7 @@ import io.weaviate.client6.v1.internal.rest.RestTransport;
 import io.weaviate.client6.v1.internal.rest.SimpleEndpoint;
 
 public final class OidcUtils {
+  /** Prevents public initialization. */
   private OidcUtils() {
   }
 

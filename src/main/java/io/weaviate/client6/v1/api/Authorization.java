@@ -27,4 +27,11 @@ public interface Authorization {
       return TokenProvider.resourceOwnerPassword(oidc, username, password);
     };
   }
+
+  public static Authorization clientCredentials(String clientId, String clientSecret, List<String> scopes) {
+    return transport -> {
+      OidcConfig oidc = OidcUtils.getConfig(transport);
+      return TokenProvider.clientCredentials(oidc, clientId, clientSecret);
+    };
+  }
 }

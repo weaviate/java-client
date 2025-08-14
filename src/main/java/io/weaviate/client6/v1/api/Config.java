@@ -111,6 +111,16 @@ public record Config(
     }
 
     /**
+     * Set authorization method. Setting this to {@code null} or omitting
+     * will not use any authorization mechanism.
+     */
+    @SuppressWarnings("unchecked")
+    public SELF authorization(Authorization authz) {
+      this.authorization = authz;
+      return (SELF) this;
+    }
+
+    /**
      * Set a single request header. The client does not support header lists,
      * so there is no equivalent {@code addHeader} to append to existing header.
      * This will be applied both to REST and gRPC requests.
@@ -288,15 +298,6 @@ public record Config(
     /** Set gRPC port. */
     public Custom grpcPort(int port) {
       this.grpcPort = port;
-      return this;
-    }
-
-    /**
-     * Set authorization method. Setting this to {@code null} or omitting
-     * will not use any authorization mechanism.
-     */
-    public Custom authorization(Authorization authorization) {
-      this.authorization = authorization;
       return this;
     }
 

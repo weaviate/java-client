@@ -22,6 +22,10 @@ public interface TokenProvider {
       return new Token(accessToken, refreshToken, Instant.now(), expiresIn);
     }
 
+    public static Token expireAfter(String accessToken, long expiresIn) {
+      return expireAfter(accessToken, null, expiresIn);
+    }
+
     /** Create a token that never expires. */
     public static Token expireNever(String accessToken) {
       return Token.expireAfter(accessToken, "", -1);
@@ -33,10 +37,6 @@ public interface TokenProvider {
     return () -> token;
   }
 
-  public static TokenProvider reuse(Token t, TokenProvider tp) {
-    return ReuseTokenProvider.wrap(t, tp);
-  }
-
   public static TokenProvider bearerToken(OidcConfig oidc, String accessToken, String refreshToken, long expiresIn) {
     final var token = Token.expireAfter(accessToken, refreshToken, expiresIn);
     final var provider = NimbusTokenProvider.bearerToken(oidc, token);
@@ -44,7 +44,20 @@ public interface TokenProvider {
   }
 
   public static TokenProvider resourceOwnerPassword(OidcConfig oidc, String username, String password) {
-    final var provider = NimbusTokenProvider.resourceOwnerPassword(oidc, username, password);
+    final var passwordGrant = NimbusTokenProvider.resourceOwnerPassword(oidc, username, password);
+    return reuse(null, exchange(oidc, passwordGrant));
+  }
+
+  public static TokenProvider clientCredentials(OidcConfig oidc, String clientId, String clientSecret) {
+    final var provider = NimbusTokenProvider.clientCredentials(oidc, clientId, clientSecret);
     return reuse(null, provider);
+  }
+
+  static TokenProvider exchange(OidcConfig oidc, TokenProvider tp) {
+    return new ExchangeTokenProvider(oidc, tp);
+  }
+
+  static TokenProvider reuse(Token t, TokenProvider tp) {
+    return ReuseTokenProvider.wrap(t, tp);
   }
 }
