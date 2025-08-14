@@ -13,36 +13,65 @@ import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.Authorization;
 import io.weaviate.containers.Weaviate;
 
+/**
+ * Test that the client can use one of the supported authorization flows to
+ * obtain a token from the OIDC provider and use it in a request to Weaviate.
+ */
 public class OIDCSupportITest extends ConcurrentTest {
+  private static final String WCS_DUMMY_CI_USER = "oidc-test-user@weaviate.io";
+  private static final String WCS_DUMMY_CI_PW = System.getenv("WCS_DUMMY_CI_PW");
+
+  /**
+   * Weaviate conatiner that users WCS-backed OIDC provider.
+   * Supports ResourceOwnerPassword and RefreshToken authentication flows.
+   */
   private static final Weaviate wcsContainer = Weaviate.custom()
       .withOIDC("wcs", "https://auth.wcs.api.weaviate.io/auth/realms/SeMI", "email", "groups")
       .build();
 
-  private static final String WCS_DUMMY_CI_USER = System.getenv("WCS_DUMMY_CI_USER");
-  private static final String WCS_DUMMY_CI_PW = System.getenv("WCS_DUMMY_CI_PW");
+  private static final String OKTA_CLIENT_ID = "0oa7e9ipdkVZRUcxo5d7";
   private static final String OKTA_CLIENT_SECRET = System.getenv("OKTA_CLIENT_SECRET");
+
+  /**
+   * Weaviate container that uses Okta's dummy OIDC provider.
+   * Supports ClientCredentials flow.
+   */
+  private static final Weaviate oktaContainer = Weaviate.custom()
+      .withOIDC(OKTA_CLIENT_ID, "https://dev-32300990.okta.com/oauth2/aus7e9kxbwYQB0eht5d7", "cid", "groups")
+      .build();
+
+  @Test
+  public void test_bearerToken() {
+    Assume.assumeTrue("WCS_DUMMY_CI_PW is not set", WCS_DUMMY_CI_PW != null);
+    Assume.assumeTrue("no internet connection", hasInternetConnection());
+  }
 
   @Test
   public void test_resourceOwnerPassword() throws IOException {
-    checkSkip();
+    Assume.assumeTrue("WCS_DUMMY_CI_PW is not set", WCS_DUMMY_CI_PW != null);
+    Assume.assumeTrue("no internet connection", hasInternetConnection());
 
     var authz = Authorization.resourceOwnerPassword(WCS_DUMMY_CI_USER, WCS_DUMMY_CI_PW, List.of("test_scope"));
+    pingWeaviate(wcsContainer, authz);
+  }
 
-    try (final var client = wcsContainer.getClient(conn -> conn.authorization(authz))) {
+  @Test
+  public void test_clientCredentials() throws IOException {
+    Assume.assumeTrue("OKTA_CLIENT_SECRET is not set", OKTA_CLIENT_SECRET != null);
+    Assume.assumeTrue("no internet connection", hasInternetConnection());
+
+    var authz = Authorization.clientCredentials(OKTA_CLIENT_ID, OKTA_CLIENT_SECRET, List.of("test_scope"));
+    pingWeaviate(oktaContainer, authz);
+  }
+
+  private static void pingWeaviate(final Weaviate container, Authorization authz) throws IOException {
+    try (final var client = container.getClient(conn -> conn.authorization(authz))) {
       Assertions.assertThat(client.isLive()).isTrue();
     }
   }
 
-  @Test
-  public void test_bearerToken() {
-    checkSkip();
-  }
-
-  private static void checkSkip() {
-    Assume.assumeTrue("WCS_DUMMY_CI_USER is not set", WCS_DUMMY_CI_USER != null);
-    Assume.assumeTrue("WCS_DUMMY_CI_PW is not set", WCS_DUMMY_CI_PW != null);
-    Assume.assumeTrue("OKTA_CLIENT_SECRET is not set", OKTA_CLIENT_SECRET != null);
-    Assume.assumeTrue("no internet connection", ping("www.google.com"));
+  private static boolean hasInternetConnection() {
+    return ping("www.google.com");
   }
 
   private static boolean ping(String site) {

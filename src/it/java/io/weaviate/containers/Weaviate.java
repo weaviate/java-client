@@ -35,15 +35,17 @@ public class Weaviate extends WeaviateContainer {
       start();
     }
     if (clientInstance == null) {
+      var host = getHost();
       var customFn = ObjectBuilder.partial(fn,
           conn -> conn
               .scheme("http")
-              .httpHost(getHost())
-              .grpcHost(getHost())
+              .httpHost(host)
+              .grpcHost(host)
               .httpPort(getMappedPort(8080))
               .grpcPort(getMappedPort(50051)));
       try {
         clientInstance = WeaviateClient.custom(customFn);
+        // clientInstance = WeaviateClient.local();
       } catch (Exception e) {
         throw new RuntimeException("create WeaviateClient for Weaviate container", e);
       }
