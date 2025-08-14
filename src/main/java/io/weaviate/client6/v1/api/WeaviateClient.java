@@ -140,6 +140,11 @@ public class WeaviateClient implements Closeable {
     return this.restTransport.performRequest(null, IsReadyRequest._ENDPOINT);
   }
 
+  /** Get deployement metadata for the target Weaviate instance. */
+  public InstanceMetadata meta() throws IOException {
+    return this.restTransport.performRequest(null, InstanceMetadataRequest._ENDPOINT);
+  }
+
   /**
    * Close {@link #restTransport} and {@link #grpcTransport}
    * and release associated resources.
