@@ -7,7 +7,6 @@ import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
 import io.weaviate.client6.v1.api.WeaviateOAuthException;
-import io.weaviate.client6.v1.internal.json.JSON;
 import io.weaviate.client6.v1.internal.rest.Endpoint;
 import io.weaviate.client6.v1.internal.rest.ExternalEndpoint;
 import io.weaviate.client6.v1.internal.rest.RestTransport;
@@ -30,7 +29,7 @@ public final class OidcUtils {
       request -> request, // URL is the request body.
       requesf -> Collections.emptyMap(),
       request -> null,
-      (statusCode, response) -> JSON.deserialize(response, String.class));
+      (__, response) -> response);
 
   private static record OpenIdConfiguration(
       @SerializedName("clientId") String clientId,
