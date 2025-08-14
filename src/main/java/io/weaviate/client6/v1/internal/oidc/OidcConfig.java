@@ -5,13 +5,11 @@ import java.util.List;
 
 public record OidcConfig(
     String clientId,
-    String redirectUrl,
     String providerMetadata,
     List<String> scopes) {
 
-  public OidcConfig(String clientId, String redirectUrl, String providerMetadata, List<String> scopes) {
+  public OidcConfig(String clientId, String providerMetadata, List<String> scopes) {
     this.clientId = clientId;
-    this.redirectUrl = redirectUrl;
     this.providerMetadata = providerMetadata;
     this.scopes = scopes != null ? scopes : Collections.emptyList();
   }

@@ -23,7 +23,6 @@ public final class NimbusTokenProvider implements TokenProvider {
   private final OIDCProviderMetadata metadata;
   private final ClientID clientId;
   private final Scope scope;
-  private final String redirectUrl;
   private final Flow flow;
 
   /**
@@ -79,7 +78,6 @@ public final class NimbusTokenProvider implements TokenProvider {
 
     this.clientId = new ClientID(oidc.clientId());
     this.scope = new Scope(oidc.scopes().toArray(String[]::new));
-    this.redirectUrl = oidc.redirectUrl();
     this.flow = flow;
   }
 
