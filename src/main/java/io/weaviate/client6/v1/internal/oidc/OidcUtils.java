@@ -17,11 +17,11 @@ public final class OidcUtils {
   private OidcUtils() {
   }
 
-  private static final String OPENID_URL = "/.well-known/openid-configuration";
+  private static final String OPENID_CONFIGURATION_URL = "/.well-known/openid-configuration";
 
   private static final Endpoint<Void, OpenIdConfiguration> GET_OPENID_ENDPOINT = SimpleEndpoint.noBody(
       request -> "GET",
-      request -> "/.well-known/openid-configuration",
+      request -> OPENID_CONFIGURATION_URL,
       request -> Collections.emptyMap(),
       OpenIdConfiguration.class);
 
@@ -53,8 +53,6 @@ public final class OidcUtils {
     } catch (IOException e) {
       throw new WeaviateOAuthException("fetch provider metadata", e);
     }
-
-    var redirectUrl = transport.getTransportOptions().baseUrl() + OPENID_URL;
-    return new OidcConfig(openid.clientId(), redirectUrl, providerMetadata, openid.scopes());
+    return new OidcConfig(openid.clientId(), providerMetadata, openid.scopes());
   }
 }
