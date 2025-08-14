@@ -12,21 +12,26 @@ final class ReuseTokenProvider implements TokenProvider {
 
   private volatile Token token;
 
-  public static TokenProvider wrap(Token t, TokenProvider provider) {
-    if (provider instanceof ReuseTokenProvider rtp) {
+  /**
+   * Create new {@link ReuseTokenProvider} from another {@link TokenProvider}.
+   * Wrapping an instance ReuseTokenProvider returns that instance,
+   * so this method is safe to call with any TokenProvider.
+   */
+  static TokenProvider wrap(Token t, TokenProvider tp) {
+    if (tp instanceof ReuseTokenProvider rtp) {
       if (t == null) {
         return rtp; // Use it directly.
       }
     }
 
     if (t == null) {
-      t = provider.getToken();
+      t = tp.getToken();
     }
-    return new ReuseTokenProvider(t, provider);
+    return new ReuseTokenProvider(t, tp);
   }
 
-  private ReuseTokenProvider(Token t, TokenProvider provider) {
-    this.provider = provider;
+  private ReuseTokenProvider(Token t, TokenProvider tp) {
+    this.provider = tp;
     this.token = token;
   }
 
