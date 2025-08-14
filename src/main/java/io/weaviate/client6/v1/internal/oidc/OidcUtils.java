@@ -18,13 +18,14 @@ public final class OidcUtils {
   }
 
   private static final String OPENID_URL = "/.well-known/openid-configuration";
-  private static final Endpoint<Void, OpenIdConfiguration> GET_OPENID = SimpleEndpoint.noBody(
+
+  private static final Endpoint<Void, OpenIdConfiguration> GET_OPENID_ENDPOINT = SimpleEndpoint.noBody(
       request -> "GET",
       request -> "/.well-known/openid-configuration",
       request -> Collections.emptyMap(),
       OpenIdConfiguration.class);
 
-  private static final Endpoint<String, String> GET_PROVIDER_METADATA = new ExternalEndpoint<>(
+  private static final Endpoint<String, String> GET_PROVIDER_METADATA_ENDPOINT = new ExternalEndpoint<>(
       request -> "GET",
       request -> request, // URL is the request body.
       requesf -> Collections.emptyMap(),
@@ -37,17 +38,18 @@ public final class OidcUtils {
       @SerializedName("href") String endpoint) {
   }
 
+  /** Fetch cluster's OIDC config. */
   public static final OidcConfig getConfig(RestTransport transport) {
     OpenIdConfiguration openid;
     try {
-      openid = transport.performRequest(null, GET_OPENID);
+      openid = transport.performRequest(null, GET_OPENID_ENDPOINT);
     } catch (IOException e) {
       throw new WeaviateOAuthException("fetch OpenID configuration", e);
     }
 
     String providerMetadata;
     try {
-      providerMetadata = transport.performRequest(openid.endpoint(), GET_PROVIDER_METADATA);
+      providerMetadata = transport.performRequest(openid.endpoint(), GET_PROVIDER_METADATA_ENDPOINT);
     } catch (IOException e) {
       throw new WeaviateOAuthException("fetch provider metadata", e);
     }

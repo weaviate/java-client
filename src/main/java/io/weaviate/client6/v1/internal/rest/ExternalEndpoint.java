@@ -15,7 +15,7 @@ public class ExternalEndpoint<RequestT, ResponseT> extends SimpleEndpoint<Reques
     super(method, requestUrl, queryParameters, body, deserializeResponse);
   }
 
-  /** Returns {@link #requestUrl()} without {@code baseUrl} prefix. */
+  /** Returns {@code requestUrl} without {@code baseUrl} prefix. */
   @Override
   public String requestUrl(RestTransportOptions __, RequestT request) {
     return requestUrl(request);

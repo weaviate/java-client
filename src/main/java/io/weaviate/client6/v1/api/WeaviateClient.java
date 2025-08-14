@@ -9,9 +9,11 @@ import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClient;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.TokenProvider;
 import io.weaviate.client6.v1.internal.grpc.DefaultGrpcTransport;
+import io.weaviate.client6.v1.internal.grpc.GrpcChannelOptions;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.rest.DefaultRestTransport;
 import io.weaviate.client6.v1.internal.rest.RestTransport;
+import io.weaviate.client6.v1.internal.rest.RestTransportOptions;
 
 public class WeaviateClient implements Closeable {
   /** Store this for {@link #async()} helper. */
@@ -33,9 +35,11 @@ public class WeaviateClient implements Closeable {
   public WeaviateClient(Config config) {
     this.config = config;
 
+    RestTransportOptions restOpt;
+    GrpcChannelOptions grpcOpt;
     if (config.authorization() == null) {
-      this.restTransport = new DefaultRestTransport(config.restTransportOptions());
-      this.grpcTransport = new DefaultGrpcTransport(config.grpcTransportOptions());
+      restOpt = config.restTransportOptions();
+      grpcOpt = config.grpcTransportOptions();
     } else {
       TokenProvider tokenProvider;
       try (final var noAuthRest = new DefaultRestTransport(config.restTransportOptions())) {
@@ -45,11 +49,13 @@ public class WeaviateClient implements Closeable {
         // This one may be thrown when noAuthRest transport is auto-closed.
         throw new WeaviateOAuthException(e);
       }
-      this.restTransport = new DefaultRestTransport(config.restTransportOptions(tokenProvider));
-      this.grpcTransport = new DefaultGrpcTransport(config.grpcTransportOptions(tokenProvider));
+      restOpt = config.restTransportOptions(tokenProvider);
+      grpcOpt = config.grpcTransportOptions(tokenProvider);
     }
 
-    this.alias = new WeaviateAliasClient(restTransport);
+    this.restTransport = new DefaultRestTransport(restOpt);
+    this.grpcTransport = new DefaultGrpcTransport(grpcOpt);
+
     this.collections = new WeaviateCollectionsClient(restTransport, grpcTransport);
   }
 
