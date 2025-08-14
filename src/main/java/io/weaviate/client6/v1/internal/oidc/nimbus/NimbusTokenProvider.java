@@ -33,6 +33,10 @@ public final class NimbusTokenProvider implements TokenProvider {
     return new NimbusTokenProvider(oidc, Flow.bearerToken(t));
   }
 
+  public static NimbusTokenProvider resourceOwnerPassword(OidcConfig oidc, String username, String password) {
+    return new NimbusTokenProvider(oidc, Flow.resourceOwnerPassword(username, password));
+  }
+
   private NimbusTokenProvider(OidcConfig oidc, Flow flow) {
     try {
       this.metadata = OIDCProviderMetadata.parse(oidc.providerMetadata());
@@ -50,12 +54,7 @@ public final class NimbusTokenProvider implements TokenProvider {
   public Token getToken() {
     var uri = metadata.getTokenEndpointURI();
     var grant = flow.getAuthorizationGrant();
-    var request = new TokenRequest.Builder(uri, clientId, grant)
-        .scope(scope)
-        .customParameter("response_type", "code", "id_token")
-        .customParameter("response_mode", "fragment")
-        .customParameter("redirect_url", redirectUrl)
-        .build().toHTTPRequest();
+    var request = new TokenRequest(uri, clientId, grant, scope).toHTTPRequest();
 
     TokenResponse response;
     try {
@@ -67,9 +66,9 @@ public final class NimbusTokenProvider implements TokenProvider {
 
     if (response instanceof TokenErrorResponse err) {
       var error = err.getErrorObject();
-      throw new WeaviateOAuthException("%s %s".formatted(
-          error.getCode(),
-          error.getDescription()));
+      throw new WeaviateOAuthException("%s (code=%s)".formatted(
+          error.getDescription(),
+          error.getCode()));
     }
 
     var tokens = ((OIDCTokenResponse) response).getOIDCTokens();

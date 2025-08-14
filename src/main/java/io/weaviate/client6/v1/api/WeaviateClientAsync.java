@@ -2,6 +2,7 @@ package io.weaviate.client6.v1.api;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClientAsync;
@@ -49,6 +50,11 @@ public class WeaviateClientAsync implements Closeable {
   /** Connect to a Weaviate instance with custom configuration. */
   public static WeaviateClientAsync custom(Function<Config.Custom, ObjectBuilder<Config>> fn) {
     return new WeaviateClientAsync(Config.of(fn));
+  }
+
+  /** Ping the server for a liveness check. */
+  public CompletableFuture<Boolean> isLive() {
+    return this.restTransport.performRequestAsync(null, IsLiveRequest._ENDPOINT);
   }
 
   /**

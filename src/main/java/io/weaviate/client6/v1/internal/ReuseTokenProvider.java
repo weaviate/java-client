@@ -14,8 +14,9 @@ final class ReuseTokenProvider implements TokenProvider {
 
   /**
    * Create new {@link ReuseTokenProvider} from another {@link TokenProvider}.
-   * Wrapping an instance ReuseTokenProvider returns that instance,
-   * so this method is safe to call with any TokenProvider.
+   * Wrapping an instance ReuseTokenProvider returns that instance if the token is
+   * {@code null}, so this method is safe to call with any TokenProvider.
+   * Otherwise a new token is obtained.
    */
   static TokenProvider wrap(Token t, TokenProvider tp) {
     if (tp instanceof ReuseTokenProvider rtp) {
@@ -32,7 +33,7 @@ final class ReuseTokenProvider implements TokenProvider {
 
   private ReuseTokenProvider(Token t, TokenProvider tp) {
     this.provider = tp;
-    this.token = token;
+    this.token = t;
   }
 
   @Override

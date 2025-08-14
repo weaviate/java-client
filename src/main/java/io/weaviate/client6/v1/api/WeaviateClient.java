@@ -121,6 +121,11 @@ public class WeaviateClient implements Closeable {
     return new WeaviateClient(fn.apply(new Config.Custom()).build());
   }
 
+  /** Ping the server for a liveness check. */
+  public boolean isLive() throws IOException {
+    return this.restTransport.performRequest(null, IsLiveRequest._ENDPOINT);
+  }
+
   /**
    * Close {@link #restTransport} and {@link #grpcTransport}
    * and release associated resources.

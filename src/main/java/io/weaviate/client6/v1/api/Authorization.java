@@ -1,5 +1,7 @@
 package io.weaviate.client6.v1.api;
 
+import java.util.List;
+
 import io.weaviate.client6.v1.internal.TokenProvider;
 import io.weaviate.client6.v1.internal.oidc.OidcConfig;
 import io.weaviate.client6.v1.internal.oidc.OidcUtils;
@@ -16,6 +18,13 @@ public interface Authorization {
     return transport -> {
       OidcConfig oidc = OidcUtils.getConfig(transport);
       return TokenProvider.bearerToken(oidc, accessToken, refreshToken, expiresIn);
+    };
+  }
+
+  public static Authorization resourceOwnerPassword(String username, String password, List<String> scopes) {
+    return transport -> {
+      OidcConfig oidc = OidcUtils.getConfig(transport);
+      return TokenProvider.resourceOwnerPassword(oidc, username, password);
     };
   }
 }

@@ -6,10 +6,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.testcontainers.weaviate.WeaviateContainer;
 
+import io.weaviate.client6.v1.api.Config;
 import io.weaviate.client6.v1.api.WeaviateClient;
+import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public class Weaviate extends WeaviateContainer {
   private WeaviateClient clientInstance;
@@ -17,23 +20,30 @@ public class Weaviate extends WeaviateContainer {
   public static final String VERSION = "1.29.1";
   public static final String DOCKER_IMAGE = "semitechnologies/weaviate";
 
+  public WeaviateClient getClient() {
+    return getClient(ObjectBuilder.identity());
+  }
+
   /**
    * Get a client for the current Weaviate container.
    * As we aren't running tests in parallel at the moment,
    * this is not made thread-safe.
    */
-  public WeaviateClient getClient() {
+  public WeaviateClient getClient(Function<Config.Custom, ObjectBuilder<Config>> fn) {
     // FIXME: control from containers?
     if (!isRunning()) {
       start();
     }
     if (clientInstance == null) {
+      var customFn = ObjectBuilder.partial(fn,
+          conn -> conn
+              .scheme("http")
+              .httpHost(getHost())
+              .grpcHost(getHost())
+              .httpPort(getMappedPort(8080))
+              .grpcPort(getMappedPort(50051)));
       try {
-        clientInstance = WeaviateClient.local(
-            conn -> conn
-                .host(getHost())
-                .httpPort(getMappedPort(8080))
-                .grpcPort(getMappedPort(50051)));
+        clientInstance = WeaviateClient.custom(customFn);
       } catch (Exception e) {
         throw new RuntimeException("create WeaviateClient for Weaviate container", e);
       }
@@ -90,7 +100,22 @@ public class Weaviate extends WeaviateContainer {
     }
 
     public Builder enableTelemetry(boolean enable) {
-      telemetry = enable;
+      environment.put("DISABLE_TELEMETRY", Boolean.toString(!enable));
+      return this;
+    }
+
+    public Builder enableAnonymousAccess(boolean enable) {
+      environment.put("AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED", Boolean.toString(enable));
+      return this;
+    }
+
+    public Builder withOIDC(String clientId, String issuer, String usernameClaim, String groupsClaim) {
+      enableAnonymousAccess(false);
+      environment.put("AUTHENTICATION_OIDC_ENABLED", "true");
+      environment.put("AUTHENTICATION_OIDC_CLIENT_ID", clientId);
+      environment.put("AUTHENTICATION_OIDC_ISSUER", issuer);
+      environment.put("AUTHENTICATION_OIDC_USERNAME_CLAIM", usernameClaim);
+      environment.put("AUTHENTICATION_OIDC_GROUPS_CLAIM", groupsClaim);
       return this;
     }
 
@@ -98,11 +123,8 @@ public class Weaviate extends WeaviateContainer {
       var c = new Weaviate(DOCKER_IMAGE + ":" + versionTag);
 
       if (!enableModules.isEmpty()) {
-        c.withEnv("ENABLE_API_BASED_MODULES", "'true'");
+        c.withEnv("ENABLE_API_BASED_MODULES", Boolean.TRUE.toString());
         c.withEnv("ENABLE_MODULES", String.join(",", enableModules));
-      }
-      if (!telemetry) {
-        c.withEnv("DISABLE_TELEMETRY", "true");
       }
 
       environment.forEach((name, value) -> c.withEnv(name, value));

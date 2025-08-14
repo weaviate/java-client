@@ -42,4 +42,9 @@ public interface TokenProvider {
     final var provider = NimbusTokenProvider.bearerToken(oidc, token);
     return reuse(token, provider);
   }
+
+  public static TokenProvider resourceOwnerPassword(OidcConfig oidc, String username, String password) {
+    final var provider = NimbusTokenProvider.resourceOwnerPassword(oidc, username, password);
+    return reuse(null, provider);
+  }
 }
