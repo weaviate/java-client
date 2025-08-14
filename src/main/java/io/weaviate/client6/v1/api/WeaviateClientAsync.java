@@ -120,6 +120,11 @@ public class WeaviateClientAsync implements Closeable {
     return this.restTransport.performRequestAsync(null, IsLiveRequest._ENDPOINT);
   }
 
+  /** Ping the server for a readiness check. */
+  public CompletableFuture<Boolean> isReady() {
+    return this.restTransport.performRequestAsync(null, IsReadyRequest._ENDPOINT);
+  }
+
   /**
    * Close {@link #restTransport} and {@link #grpcTransport}
    * and release associated resources.
