@@ -53,6 +53,7 @@ public final class OidcUtils {
     } catch (IOException e) {
       throw new WeaviateOAuthException("fetch provider metadata", e);
     }
+
     return new OidcConfig(openid.clientId(), providerMetadata, openid.scopes());
   }
 }

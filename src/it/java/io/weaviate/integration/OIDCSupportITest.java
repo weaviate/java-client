@@ -16,9 +16,13 @@ import io.weaviate.containers.Weaviate;
 /**
  * Test that the client can use one of the supported authorization flows to
  * obtain a token from the OIDC provider and use it in a request to Weaviate.
+ *
+ * Running this test suite successfully requires talking to external services,
+ * so tests will be skipped if the don't have internet. See
+ * {@link #hasInternetConnection}.
  */
 public class OIDCSupportITest extends ConcurrentTest {
-  private static final String WCS_DUMMY_CI_USER = "oidc-test-user@weaviate.io";
+  private static final String WCS_DUMMY_CI_USERNAME = "oidc-test-user@weaviate.io";
   private static final String WCS_DUMMY_CI_PW = System.getenv("WCS_DUMMY_CI_PW");
 
   /**
@@ -51,7 +55,7 @@ public class OIDCSupportITest extends ConcurrentTest {
     Assume.assumeTrue("WCS_DUMMY_CI_PW is not set", WCS_DUMMY_CI_PW != null);
     Assume.assumeTrue("no internet connection", hasInternetConnection());
 
-    var authz = Authorization.resourceOwnerPassword(WCS_DUMMY_CI_USER, WCS_DUMMY_CI_PW, List.of("test_scope"));
+    var authz = Authorization.resourceOwnerPassword(WCS_DUMMY_CI_USERNAME, WCS_DUMMY_CI_PW, List.of());
     pingWeaviate(wcsContainer, authz);
   }
 
@@ -60,7 +64,7 @@ public class OIDCSupportITest extends ConcurrentTest {
     Assume.assumeTrue("OKTA_CLIENT_SECRET is not set", OKTA_CLIENT_SECRET != null);
     Assume.assumeTrue("no internet connection", hasInternetConnection());
 
-    var authz = Authorization.clientCredentials(OKTA_CLIENT_ID, OKTA_CLIENT_SECRET, List.of("test_scope"));
+    var authz = Authorization.clientCredentials(OKTA_CLIENT_ID, OKTA_CLIENT_SECRET, List.of());
     pingWeaviate(oktaContainer, authz);
   }
 

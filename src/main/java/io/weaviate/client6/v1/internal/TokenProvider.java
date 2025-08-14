@@ -1,5 +1,6 @@
 package io.weaviate.client6.v1.internal;
 
+import java.net.URI;
 import java.time.Instant;
 
 import io.weaviate.client6.v1.api.WeaviateOAuthException;
@@ -131,4 +132,21 @@ public interface TokenProvider {
   static TokenProvider reuse(Token t, TokenProvider tp) {
     return ReuseTokenProvider.wrap(t, tp);
   }
+
+  public record ProviderMetadata(URI tokenEndpoint) {
+  }
+
+  /**
+   * Returns true if this OIDC provider's token endpoint is hosted at
+   * {@code login.microsoftonline.com}.
+   *
+   * @param oidc OIDC config.
+   *
+   * @throws WeaviateOAuthException if metadata could not be parsed.
+   */
+  public static boolean isMicrosoft(OidcConfig oidc) {
+    var metadata = NimbusTokenProvider.parseProviderMetadata(oidc.providerMetadata());
+    return metadata.tokenEndpoint().getHost().contains("login.microsoftonline.com");
+  }
+
 }

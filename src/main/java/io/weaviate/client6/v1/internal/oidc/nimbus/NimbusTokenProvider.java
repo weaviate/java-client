@@ -70,12 +70,7 @@ public final class NimbusTokenProvider implements TokenProvider {
   }
 
   private NimbusTokenProvider(OidcConfig oidc, Flow flow) {
-    try {
-      this.metadata = OIDCProviderMetadata.parse(oidc.providerMetadata());
-    } catch (ParseException ex) {
-      throw new WeaviateOAuthException("parse provider metadata: ", ex);
-    }
-
+    this.metadata = _parseProviderMetadata(oidc.providerMetadata());
     this.clientId = new ClientID(oidc.clientId());
     this.scope = new Scope(oidc.scopes().toArray(String[]::new));
     this.flow = flow;
@@ -112,6 +107,19 @@ public final class NimbusTokenProvider implements TokenProvider {
     }
 
     return newToken;
+  }
+
+  public static ProviderMetadata parseProviderMetadata(String providerMetadata) {
+    var metadata = _parseProviderMetadata(providerMetadata);
+    return new ProviderMetadata(metadata.getTokenEndpointURI());
+  }
+
+  private static OIDCProviderMetadata _parseProviderMetadata(String providerMetadata) {
+    try {
+      return OIDCProviderMetadata.parse(providerMetadata);
+    } catch (ParseException ex) {
+      throw new WeaviateOAuthException("parse provider metadata: ", ex);
+    }
   }
 
   @NotThreadSafe

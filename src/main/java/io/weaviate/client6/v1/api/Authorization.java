@@ -51,7 +51,7 @@ public interface Authorization {
    */
   public static Authorization resourceOwnerPassword(String username, String password, List<String> scopes) {
     return transport -> {
-      OidcConfig oidc = OidcUtils.getConfig(transport);
+      OidcConfig oidc = OidcUtils.getConfig(transport).withScopes(scopes).withScopes("offline_access");
       return TokenProvider.resourceOwnerPassword(oidc, username, password);
     };
   }
@@ -69,7 +69,10 @@ public interface Authorization {
    */
   public static Authorization clientCredentials(String clientId, String clientSecret, List<String> scopes) {
     return transport -> {
-      OidcConfig oidc = OidcUtils.getConfig(transport);
+      OidcConfig oidc = OidcUtils.getConfig(transport).withScopes(scopes);
+      if (oidc.scopes().isEmpty() && TokenProvider.isMicrosoft(oidc)) {
+        oidc = oidc.withScopes(clientId + "/.default");
+      }
       return TokenProvider.clientCredentials(oidc, clientId, clientSecret);
     };
   }
