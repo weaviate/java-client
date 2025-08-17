@@ -73,7 +73,7 @@ public class DefaultRestTransportTest {
   }
 
   @After
-  public void tearDown() throws IOException {
+  public void tearDown() throws Exception {
     mockServer.stop();
     transport.close();
   }

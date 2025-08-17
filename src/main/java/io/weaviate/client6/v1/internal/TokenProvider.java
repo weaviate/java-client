@@ -81,7 +81,7 @@ public interface TokenProvider {
    * Refreshing the token slightly ahead of time will help prevent
    * phony unauthorized access errors.
    *
-   * This value is currently not configuratble and should be seen
+   * This value is currently not configurable and should be seen
    * as an internal implementation detail.
    */
   static long DEFAULT_EARLY_EXPIRY = 30;

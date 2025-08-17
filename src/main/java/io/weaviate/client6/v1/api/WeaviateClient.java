@@ -1,6 +1,5 @@
 package io.weaviate.client6.v1.api;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.util.function.Function;
 
@@ -14,7 +13,7 @@ import io.weaviate.client6.v1.internal.rest.DefaultRestTransport;
 import io.weaviate.client6.v1.internal.rest.RestTransport;
 import io.weaviate.client6.v1.internal.rest.RestTransportOptions;
 
-public class WeaviateClient implements Closeable {
+public class WeaviateClient implements AutoCloseable {
   /** Store this for {@link #async()} helper. */
   private final Config config;
 
@@ -35,8 +34,8 @@ public class WeaviateClient implements Closeable {
       TokenProvider tokenProvider;
       try (final var noAuthRest = new DefaultRestTransport(config.restTransportOptions())) {
         tokenProvider = config.authorization().getTokenProvider(noAuthRest);
-      } catch (IOException e) {
-        // Generally IOExceptions are caught in TokenProvider internals.
+      } catch (Exception e) {
+        // Generally exceptions are caught in TokenProvider internals.
         // This one may be thrown when noAuthRest transport is auto-closed.
         throw new WeaviateOAuthException(e);
       }
@@ -141,7 +140,7 @@ public class WeaviateClient implements Closeable {
    * and release associated resources.
    */
   @Override
-  public void close() throws IOException {
+  public void close() throws Exception {
     this.restTransport.close();
     this.grpcTransport.close();
   }

@@ -288,7 +288,7 @@ public class SearchITest extends ConcurrentTest {
    * test both sync/async clients.
    */
   @Test
-  public void testBm25_async() throws IOException, InterruptedException, ExecutionException {
+  public void testBm25_async() throws Exception, InterruptedException, ExecutionException {
     var nsWords = ns("Words");
 
     try (final var async = client.async()) {
