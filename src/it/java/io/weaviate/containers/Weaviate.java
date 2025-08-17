@@ -166,7 +166,7 @@ public class Weaviate extends WeaviateContainer {
     synchronized (this) {
       try {
         clientInstance.close(this);
-      } catch (IOException e) {
+      } catch (Exception e) {
         throw new RuntimeException(e);
       }
     }
@@ -181,7 +181,7 @@ public class Weaviate extends WeaviateContainer {
       this.parent = parent;
     }
 
-    private void close(Weaviate caller) throws IOException {
+    private void close(Weaviate caller) throws Exception {
       if (caller == parent) {
         super.close();
       }

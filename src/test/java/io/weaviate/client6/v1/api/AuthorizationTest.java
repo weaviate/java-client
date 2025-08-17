@@ -37,7 +37,7 @@ public class AuthorizationTest {
   }
 
   @Test
-  public void testAuthorization_apiKey() throws IOException {
+  public void testAuthorization_apiKey() throws Exception {
     var authz = Authorization.apiKey("my-api-key");
     var transportOptions = new RestTransportOptions(
         "http", "localhost", mockServer.getLocalPort(),
@@ -60,7 +60,7 @@ public class AuthorizationTest {
   }
 
   @After
-  public void stopMockServer() throws IOException {
+  public void stopMockServer() throws Exception {
     mockServer.stop();
     noAuthTransport.close();
   }

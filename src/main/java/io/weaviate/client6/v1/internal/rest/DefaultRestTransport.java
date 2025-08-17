@@ -34,6 +34,8 @@ public class DefaultRestTransport implements RestTransport {
   private final CloseableHttpAsyncClient httpClientAsync;
   private final RestTransportOptions transportOptions;
 
+  private AuthenticationInterceptor authInterceptor;
+
   public DefaultRestTransport(RestTransportOptions transportOptions) {
     this.transportOptions = transportOptions;
 
@@ -65,9 +67,9 @@ public class DefaultRestTransport implements RestTransport {
     }
 
     if (transportOptions.tokenProvider() != null) {
-      var interceptor = new AuthorizationInterceptor(transportOptions.tokenProvider());
-      httpClient.addRequestInterceptorFirst(interceptor);
-      httpClientAsync.addRequestInterceptorFirst(interceptor);
+      authInterceptor = new AuthenticationInterceptor(transportOptions.tokenProvider());
+      httpClient.addRequestInterceptorFirst(authInterceptor);
+      httpClientAsync.addExecInterceptorFirst("auth", authInterceptor);
     }
 
     this.httpClient = httpClient.build();
@@ -191,8 +193,11 @@ public class DefaultRestTransport implements RestTransport {
   }
 
   @Override
-  public void close() throws IOException {
+  public void close() throws Exception {
     httpClient.close();
     httpClientAsync.close(CloseMode.GRACEFUL);
+    if (authInterceptor != null) {
+      authInterceptor.close();
+    }
   }
 }
