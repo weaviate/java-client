@@ -30,14 +30,29 @@ public interface AsyncTokenProvider extends AutoCloseable {
     return new Default(tp);
   }
 
-  /** AsyncTokenProvider fetches tokens in a single background thread. */
+  /**
+   * AsyncTokenProvider fetches tokens in a
+   * <i>shared single background thread</i>.
+   */
   public static class Default implements AsyncTokenProvider {
-    private final ExecutorService exec;
+    /**
+     * Shared executor service. This way all instances
+     * can share the same thread pool.
+     */
+    private static ExecutorService exec;
+    /** Shut down {@link #exec} once refCount reaches 0. */
+    private static int refCount = 0;
+
     private final TokenProvider provider;
 
     Default(TokenProvider tp) {
+      synchronized (Default.class) {
+        if (refCount == 0) {
+          exec = Executors.newSingleThreadExecutor();
+        }
+        refCount++;
+      }
       this.provider = tp;
-      this.exec = Executors.newSingleThreadExecutor();
     }
 
     /** Get token with the default single-thread executor. */
@@ -54,7 +69,13 @@ public interface AsyncTokenProvider extends AutoCloseable {
 
     @Override
     public void close() throws Exception {
-      exec.shutdown();
+      synchronized (Default.class) {
+        refCount--;
+        if (refCount == 0 && exec != null) {
+          exec.shutdown();
+          exec = null;
+        }
+      }
     }
   }
 }
