@@ -1,6 +1,7 @@
 package io.weaviate.client6.v1.internal;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -15,6 +16,8 @@ import io.weaviate.client6.v1.internal.TokenProvider.Token;
  */
 public interface AsyncTokenProvider extends AutoCloseable {
   CompletableFuture<Token> getToken();
+
+  CompletableFuture<Token> getToken(Executor executor);
 
   /**
    * Create an {@link AsyncTokenProvider} instance from an existing
@@ -37,9 +40,16 @@ public interface AsyncTokenProvider extends AutoCloseable {
       this.exec = Executors.newSingleThreadExecutor();
     }
 
+    /** Get token with the default single-thread executor. */
     @Override
     public CompletableFuture<Token> getToken() {
-      return CompletableFuture.supplyAsync(provider::getToken, exec);
+      return getToken(exec);
+    }
+
+    /** Get token with a custom executor. */
+    @Override
+    public CompletableFuture<Token> getToken(Executor executor) {
+      return CompletableFuture.supplyAsync(provider::getToken, executor);
     }
 
     @Override

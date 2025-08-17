@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.List;
+import java.util.UUID;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Assume;
@@ -20,7 +21,7 @@ import io.weaviate.containers.Weaviate;
  * obtain a token from the OIDC provider and use it in a request to Weaviate.
  *
  * Running this test suite successfully requires talking to external services,
- * so tests will be skipped if the don't have internet. See
+ * so tests will be skipped if we don't have internet. See
  * {@link #hasInternetConnection}.
  */
 public class OIDCSupportITest extends ConcurrentTest {
@@ -28,7 +29,7 @@ public class OIDCSupportITest extends ConcurrentTest {
   private static final String WCS_DUMMY_CI_PW = System.getenv("WCS_DUMMY_CI_PW");
 
   /**
-   * Weaviate conatiner that users WCS-backed OIDC provider.
+   * Weaviate container that uses WCS-backed OIDC provider.
    * Supports ResourceOwnerPassword and RefreshToken authentication flows.
    */
   private static final Weaviate wcsContainer = Weaviate.custom()
@@ -74,6 +75,37 @@ public class OIDCSupportITest extends ConcurrentTest {
     pingWeaviate(oktaContainer, authz);
   }
 
+  /**
+   * Test AuthenticationInterceptor (HTTP) / TokenCallCredentials (gRPC)
+   * work correctly in the async context.
+   */
+  @Test
+  public void test_clientCredentials_async() throws Exception {
+    Assume.assumeTrue("OKTA_CLIENT_SECRET is not set", OKTA_CLIENT_SECRET != null);
+    Assume.assumeTrue("no internet connection", hasInternetConnection());
+
+    var authz = Authorization.clientCredentials(OKTA_CLIENT_ID, OKTA_CLIENT_SECRET, List.of());
+    final var client = oktaContainer.getClient(conn -> conn.authorization(authz));
+    final var async = client.async();
+
+    try {
+      // Make an authenticated REST call
+      Assertions.assertThat(async.isLive().get()).isTrue();
+
+      // Make an authenticated gRPC call
+      var nsThings = ns("Things");
+      async.collections.create(nsThings);
+      var things = async.collections.use(nsThings);
+      var randomUuid = UUID.randomUUID().toString();
+      Assertions.assertThat(things.data.exists(randomUuid).get()).isFalse();
+    } catch (Exception e) {
+      Assertions.fail(e);
+    } finally {
+      client.close();
+      async.close();
+    }
+  }
+
   private static void pingWeaviate(final Weaviate container, Authorization authz) throws Exception {
     try (final var client = container.getClient(conn -> conn.authorization(authz))) {
       Assertions.assertThat(client.isLive()).isTrue();
@@ -91,26 +123,6 @@ public class OIDCSupportITest extends ConcurrentTest {
       return true;
     } catch (IOException e) {
       return false;
-    }
-  }
-
-  /** Test AuthenticationInterceptor works correctly in the async context. */
-  @Test
-  public void test_clientCredentials_async() throws Exception {
-    Assume.assumeTrue("OKTA_CLIENT_SECRET is not set", OKTA_CLIENT_SECRET != null);
-    Assume.assumeTrue("no internet connection", hasInternetConnection());
-
-    var authz = Authorization.clientCredentials(OKTA_CLIENT_ID, OKTA_CLIENT_SECRET, List.of());
-    final var client = oktaContainer.getClient(conn -> conn.authorization(authz));
-    final var async = client.async();
-
-    try {
-      Assertions.assertThat(async.isLive().get()).isTrue();
-    } catch (Exception e) {
-      Assertions.fail(e);
-    } finally {
-      client.close();
-      async.close();
     }
   }
 
