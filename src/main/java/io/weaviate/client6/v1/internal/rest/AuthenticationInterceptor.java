@@ -33,6 +33,10 @@ class AuthenticationInterceptor implements HttpRequestInterceptor, AsyncExecChai
     this.tokenProviderAsync = AsyncTokenProvider.wrap(tokenProvider);
   }
 
+  /**
+   * Add Authorization header to a blocking request.
+   * See {@link HttpRequestInterceptor}.
+   */
   @Override
   public void process(HttpRequest request, EntityDetails entity, HttpContext context)
       throws HttpException, IOException {
@@ -40,6 +44,10 @@ class AuthenticationInterceptor implements HttpRequestInterceptor, AsyncExecChai
     setAuthorization(request, token);
   }
 
+  /**
+   * Add Authorization header to a non-blocking request.
+   * See {@link AsyncExecChainHandler}.
+   */
   @Override
   public void execute(HttpRequest request, AsyncEntityProducer entityProducer, Scope scope, AsyncExecChain chain,
       AsyncExecCallback callback) throws HttpException, IOException {
