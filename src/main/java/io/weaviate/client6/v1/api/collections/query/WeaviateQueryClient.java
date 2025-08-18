@@ -2,6 +2,7 @@ package io.weaviate.client6.v1.api.collections.query;
 
 import java.util.Optional;
 
+import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
@@ -10,8 +11,16 @@ public class WeaviateQueryClient<T>
     extends
     AbstractQueryClient<T, Optional<WeaviateObject<T, Object, QueryMetadata>>, QueryResponse<T>, QueryResponseGrouped<T>> {
 
-  public WeaviateQueryClient(CollectionDescriptor<T> collection, GrpcTransport grpcTransport) {
-    super(collection, grpcTransport);
+  public WeaviateQueryClient(
+      CollectionDescriptor<T> collection,
+      GrpcTransport grpcTransport,
+      CollectionHandleDefaults defaults) {
+    super(collection, grpcTransport, defaults);
+  }
+
+  /** Copy constructor that sets new defaults. */
+  public WeaviateQueryClient(WeaviateQueryClient<T> qc, CollectionHandleDefaults defaults) {
+    super(qc, defaults);
   }
 
   @Override
