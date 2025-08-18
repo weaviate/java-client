@@ -11,16 +11,15 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 
 public class CollectionHandleDefaultsTest {
   private static final CollectionDescriptor<Map<String, Object>> DESCRIPTOR = CollectionDescriptor.ofMap("Things");
+  private static final CollectionHandleDefaults NONE_DEFAULTS = CollectionHandleDefaults.of(ObjectBuilder.identity());
 
   /** CollectionHandle with no defaults. */
   private static final CollectionHandle<Map<String, Object>> HANDLE_NONE = new CollectionHandle<>(
-      null, null,
-      DESCRIPTOR, CollectionHandleDefaults.of(ObjectBuilder.identity()));
+      null, null, DESCRIPTOR, NONE_DEFAULTS);
 
   /** CollectionHandleAsync with no defaults. */
   private static final CollectionHandleAsync<Map<String, Object>> HANDLE_NONE_ASYNC = new CollectionHandleAsync<>(
-      null, null,
-      DESCRIPTOR, CollectionHandleDefaults.of(ObjectBuilder.identity()));
+      null, null, DESCRIPTOR, NONE_DEFAULTS);
 
   /** All defaults are {@code null} if none were set. */
   @Test
