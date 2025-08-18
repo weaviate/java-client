@@ -15,46 +15,54 @@ import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 import io.weaviate.client6.v1.internal.rest.RestTransport;
 
-public class WeaviateDataClient<T> {
+public class WeaviateDataClient<PropertiesT> {
   private final RestTransport restTransport;
   private final GrpcTransport grpcTransport;
-  private final CollectionDescriptor<T> collectionDescriptor;
+  private final CollectionDescriptor<PropertiesT> collectionDescriptor;
 
-  private final WeaviateQueryClient<T> query;
+  private final WeaviateQueryClient<PropertiesT> query;
 
-  public WeaviateDataClient(CollectionDescriptor<T> collectionDescriptor, RestTransport restTransport,
-      GrpcTransport grpcTransport) {
+  public WeaviateDataClient(CollectionDescriptor<PropertiesT> collectionDescriptor, RestTransport restTransport,
+      GrpcTransport grpcTransport, WeaviateQueryClient<PropertiesT> query) {
     this.restTransport = restTransport;
     this.grpcTransport = grpcTransport;
     this.collectionDescriptor = collectionDescriptor;
-    this.query = new WeaviateQueryClient<>(collectionDescriptor, grpcTransport);
-
+    this.query = query;
   }
 
-  public WeaviateObject<T, Object, ObjectMetadata> insert(T properties) throws IOException {
+  /** Copy constructor that updates the {@link #query} to use new defaults. */
+  public WeaviateDataClient(WeaviateDataClient<PropertiesT> c, WeaviateQueryClient<PropertiesT> query) {
+    this.restTransport = c.restTransport;
+    this.grpcTransport = c.grpcTransport;
+    this.collectionDescriptor = c.collectionDescriptor;
+    this.query = query;
+  }
+
+  public WeaviateObject<PropertiesT, Object, ObjectMetadata> insert(PropertiesT properties) throws IOException {
     return insert(InsertObjectRequest.of(collectionDescriptor.name(), properties));
   }
 
-  public WeaviateObject<T, Object, ObjectMetadata> insert(T properties,
-      Function<InsertObjectRequest.Builder<T>, ObjectBuilder<InsertObjectRequest<T>>> fn)
+  public WeaviateObject<PropertiesT, Object, ObjectMetadata> insert(PropertiesT properties,
+      Function<InsertObjectRequest.Builder<PropertiesT>, ObjectBuilder<InsertObjectRequest<PropertiesT>>> fn)
       throws IOException {
     return insert(InsertObjectRequest.of(collectionDescriptor.name(), properties, fn));
   }
 
   @SafeVarargs
-  public final InsertManyResponse insertMany(T... objects) {
+  public final InsertManyResponse insertMany(PropertiesT... objects) {
     return insertMany(InsertManyRequest.of(objects));
   }
 
-  public InsertManyResponse insertMany(List<WeaviateObject<T, Reference, ObjectMetadata>> objects) {
+  public InsertManyResponse insertMany(List<WeaviateObject<PropertiesT, Reference, ObjectMetadata>> objects) {
     return insertMany(new InsertManyRequest<>(objects));
   }
 
-  public InsertManyResponse insertMany(InsertManyRequest<T> request) {
+  public InsertManyResponse insertMany(InsertManyRequest<PropertiesT> request) {
     return this.grpcTransport.performRequest(request, InsertManyRequest.rpc(request.objects(), collectionDescriptor));
   }
 
-  public WeaviateObject<T, Object, ObjectMetadata> insert(InsertObjectRequest<T> request) throws IOException {
+  public WeaviateObject<PropertiesT, Object, ObjectMetadata> insert(InsertObjectRequest<PropertiesT> request)
+      throws IOException {
     return this.restTransport.performRequest(request, InsertObjectRequest.endpoint(collectionDescriptor));
   }
 
@@ -62,13 +70,15 @@ public class WeaviateDataClient<T> {
     return this.query.byId(uuid).isPresent();
   }
 
-  public void update(String uuid, Function<UpdateObjectRequest.Builder<T>, ObjectBuilder<UpdateObjectRequest<T>>> fn)
+  public void update(String uuid,
+      Function<UpdateObjectRequest.Builder<PropertiesT>, ObjectBuilder<UpdateObjectRequest<PropertiesT>>> fn)
       throws IOException {
     this.restTransport.performRequest(UpdateObjectRequest.of(collectionDescriptor.name(), uuid, fn),
         UpdateObjectRequest.endpoint(collectionDescriptor));
   }
 
-  public void replace(String uuid, Function<ReplaceObjectRequest.Builder<T>, ObjectBuilder<ReplaceObjectRequest<T>>> fn)
+  public void replace(String uuid,
+      Function<ReplaceObjectRequest.Builder<PropertiesT>, ObjectBuilder<ReplaceObjectRequest<PropertiesT>>> fn)
       throws IOException {
     this.restTransport.performRequest(ReplaceObjectRequest.of(collectionDescriptor.name(), uuid, fn),
         ReplaceObjectRequest.endpoint(collectionDescriptor));

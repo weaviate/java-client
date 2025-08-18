@@ -18,46 +18,57 @@ import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 import io.weaviate.client6.v1.internal.rest.RestTransport;
 
-public class WeaviateDataClientAsync<T> {
+public class WeaviateDataClientAsync<PropertiesT> {
   private final RestTransport restTransport;
   private final GrpcTransport grpcTransport;
-  private final CollectionDescriptor<T> collectionDescriptor;
+  private final CollectionDescriptor<PropertiesT> collectionDescriptor;
 
-  private final WeaviateQueryClientAsync<T> query;
+  private final WeaviateQueryClientAsync<PropertiesT> query;
 
-  public WeaviateDataClientAsync(CollectionDescriptor<T> collectionDescriptor, RestTransport restTransport,
-      GrpcTransport grpcTransport) {
+  public WeaviateDataClientAsync(CollectionDescriptor<PropertiesT> collectionDescriptor, RestTransport restTransport,
+      GrpcTransport grpcTransport, WeaviateQueryClientAsync<PropertiesT> query) {
     this.restTransport = restTransport;
     this.grpcTransport = grpcTransport;
     this.collectionDescriptor = collectionDescriptor;
-    this.query = new WeaviateQueryClientAsync<>(collectionDescriptor, grpcTransport);
+    this.query = query;
   }
 
-  public CompletableFuture<WeaviateObject<T, Object, ObjectMetadata>> insert(T properties) throws IOException {
+  /** Copy constructor that updates the {@link #query} to use new defaults. */
+  public WeaviateDataClientAsync(WeaviateDataClientAsync<PropertiesT> c, WeaviateQueryClientAsync<PropertiesT> query) {
+    this.restTransport = c.restTransport;
+    this.grpcTransport = c.grpcTransport;
+    this.collectionDescriptor = c.collectionDescriptor;
+    this.query = query;
+  }
+
+  public CompletableFuture<WeaviateObject<PropertiesT, Object, ObjectMetadata>> insert(PropertiesT properties)
+      throws IOException {
     return insert(InsertObjectRequest.of(collectionDescriptor.name(), properties));
   }
 
-  public CompletableFuture<WeaviateObject<T, Object, ObjectMetadata>> insert(T properties,
-      Function<InsertObjectRequest.Builder<T>, ObjectBuilder<InsertObjectRequest<T>>> fn)
+  public CompletableFuture<WeaviateObject<PropertiesT, Object, ObjectMetadata>> insert(PropertiesT properties,
+      Function<InsertObjectRequest.Builder<PropertiesT>, ObjectBuilder<InsertObjectRequest<PropertiesT>>> fn)
       throws IOException {
     return insert(InsertObjectRequest.of(collectionDescriptor.name(), properties, fn));
   }
 
-  public CompletableFuture<WeaviateObject<T, Object, ObjectMetadata>> insert(InsertObjectRequest<T> request)
+  public CompletableFuture<WeaviateObject<PropertiesT, Object, ObjectMetadata>> insert(
+      InsertObjectRequest<PropertiesT> request)
       throws IOException {
     return this.restTransport.performRequestAsync(request, InsertObjectRequest.endpoint(collectionDescriptor));
   }
 
   @SafeVarargs
-  public final CompletableFuture<InsertManyResponse> insertMany(T... objects) {
+  public final CompletableFuture<InsertManyResponse> insertMany(PropertiesT... objects) {
     return insertMany(InsertManyRequest.of(objects));
   }
 
-  public CompletableFuture<InsertManyResponse> insertMany(List<WeaviateObject<T, Reference, ObjectMetadata>> objects) {
+  public CompletableFuture<InsertManyResponse> insertMany(
+      List<WeaviateObject<PropertiesT, Reference, ObjectMetadata>> objects) {
     return insertMany(new InsertManyRequest<>(objects));
   }
 
-  public CompletableFuture<InsertManyResponse> insertMany(InsertManyRequest<T> request) {
+  public CompletableFuture<InsertManyResponse> insertMany(InsertManyRequest<PropertiesT> request) {
     return this.grpcTransport.performRequestAsync(request,
         InsertManyRequest.rpc(request.objects(), collectionDescriptor));
   }
@@ -67,14 +78,14 @@ public class WeaviateDataClientAsync<T> {
   }
 
   public CompletableFuture<Void> update(String uuid,
-      Function<UpdateObjectRequest.Builder<T>, ObjectBuilder<UpdateObjectRequest<T>>> fn)
+      Function<UpdateObjectRequest.Builder<PropertiesT>, ObjectBuilder<UpdateObjectRequest<PropertiesT>>> fn)
       throws IOException {
     return this.restTransport.performRequestAsync(UpdateObjectRequest.of(collectionDescriptor.name(), uuid, fn),
         UpdateObjectRequest.endpoint(collectionDescriptor));
   }
 
   public CompletableFuture<Void> replace(String uuid,
-      Function<ReplaceObjectRequest.Builder<T>, ObjectBuilder<ReplaceObjectRequest<T>>> fn)
+      Function<ReplaceObjectRequest.Builder<PropertiesT>, ObjectBuilder<ReplaceObjectRequest<PropertiesT>>> fn)
       throws IOException {
     return this.restTransport.performRequestAsync(ReplaceObjectRequest.of(collectionDescriptor.name(), uuid, fn),
         ReplaceObjectRequest.endpoint(collectionDescriptor));
