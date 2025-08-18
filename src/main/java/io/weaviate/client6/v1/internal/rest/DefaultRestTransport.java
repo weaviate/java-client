@@ -67,7 +67,7 @@ public class DefaultRestTransport implements RestTransport {
     }
 
     if (transportOptions.tokenProvider() != null) {
-      authInterceptor = new AuthenticationInterceptor(transportOptions.tokenProvider());
+      this.authInterceptor = new AuthenticationInterceptor(transportOptions.tokenProvider());
       httpClient.addRequestInterceptorFirst(authInterceptor);
       httpClientAsync.addExecInterceptorFirst("auth", authInterceptor);
     }

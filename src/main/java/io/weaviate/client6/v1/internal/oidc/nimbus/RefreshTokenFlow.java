@@ -27,6 +27,10 @@ final class RefreshTokenFlow implements Flow {
     return new RefreshTokenGrant(new RefreshToken(t.refreshToken()));
   }
 
+  public String getRefreshToken() {
+    return t.refreshToken();
+  }
+
   public void setToken(Token t) {
     this.t = t;
   }

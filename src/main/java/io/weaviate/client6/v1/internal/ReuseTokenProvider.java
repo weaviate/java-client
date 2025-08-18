@@ -28,6 +28,8 @@ final class ReuseTokenProvider implements TokenProvider {
    * Create new {@link ReuseTokenProvider} from another {@link TokenProvider}.
    * Wrapping an instance ReuseTokenProvider returns that instance if the token is
    * {@code null}, so this method is safe to call with any TokenProvider.
+   *
+   * @return A TokenProvider.
    */
   static TokenProvider wrap(Token t, TokenProvider tp, long expiryDelta) {
     if (tp instanceof ReuseTokenProvider rtp) {
@@ -81,5 +83,10 @@ final class ReuseTokenProvider implements TokenProvider {
       }
     }
     return token;
+  }
+
+  @Override
+  public void close() throws Exception {
+    provider.close();
   }
 }

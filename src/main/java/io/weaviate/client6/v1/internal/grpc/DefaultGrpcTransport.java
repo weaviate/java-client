@@ -37,7 +37,7 @@ public final class DefaultGrpcTransport implements GrpcTransport {
         .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(transportOptions.headers()));
 
     if (transportOptions.tokenProvider() != null) {
-      callCredentials = new TokenCallCredentials(transportOptions.tokenProvider());
+      this.callCredentials = new TokenCallCredentials(transportOptions.tokenProvider());
       blockingStub = blockingStub.withCallCredentials(callCredentials);
       futureStub = futureStub.withCallCredentials(callCredentials);
     }
