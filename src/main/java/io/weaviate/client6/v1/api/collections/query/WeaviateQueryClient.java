@@ -26,7 +26,7 @@ public class WeaviateQueryClient<T>
   @Override
   protected Optional<WeaviateObject<T, Object, QueryMetadata>> byId(ById byId) {
     var request = new QueryRequest(byId, null);
-    var result = this.grpcTransport.performRequest(request, QueryRequest.rpc(collection));
+    var result = this.grpcTransport.performRequest(request, QueryRequest.rpc(collection, defaults));
     return optionalFirst(result.objects());
 
   }
@@ -34,13 +34,13 @@ public class WeaviateQueryClient<T>
   @Override
   protected final QueryResponse<T> performRequest(QueryOperator operator) {
     var request = new QueryRequest(operator, null);
-    return this.grpcTransport.performRequest(request, QueryRequest.rpc(collection));
+    return this.grpcTransport.performRequest(request, QueryRequest.rpc(collection, defaults));
   }
 
   @Override
   protected final QueryResponseGrouped<T> performRequest(QueryOperator operator, GroupBy groupBy) {
     var request = new QueryRequest(operator, groupBy);
-    return this.grpcTransport.performRequest(request, QueryRequest.grouped(collection));
+    return this.grpcTransport.performRequest(request, QueryRequest.grouped(collection, defaults));
   }
 
 }

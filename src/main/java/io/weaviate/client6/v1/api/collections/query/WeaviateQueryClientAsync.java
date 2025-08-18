@@ -28,20 +28,20 @@ public class WeaviateQueryClientAsync<T>
   protected CompletableFuture<Optional<WeaviateObject<T, Object, QueryMetadata>>> byId(
       ById byId) {
     var request = new QueryRequest(byId, null);
-    var result = this.grpcTransport.performRequestAsync(request, QueryRequest.rpc(collection));
+    var result = this.grpcTransport.performRequestAsync(request, QueryRequest.rpc(collection, defaults));
     return result.thenApply(r -> optionalFirst(r.objects()));
   }
 
   @Override
   protected final CompletableFuture<QueryResponse<T>> performRequest(QueryOperator operator) {
     var request = new QueryRequest(operator, null);
-    return this.grpcTransport.performRequestAsync(request, QueryRequest.rpc(collection));
+    return this.grpcTransport.performRequestAsync(request, QueryRequest.rpc(collection, defaults));
   }
 
   @Override
   protected final CompletableFuture<QueryResponseGrouped<T>> performRequest(QueryOperator operator, GroupBy groupBy) {
     var request = new QueryRequest(operator, groupBy);
-    return this.grpcTransport.performRequestAsync(request, QueryRequest.grouped(collection));
+    return this.grpcTransport.performRequestAsync(request, QueryRequest.grouped(collection, defaults));
   }
 
 }
