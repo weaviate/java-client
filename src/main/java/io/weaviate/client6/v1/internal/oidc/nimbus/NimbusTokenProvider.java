@@ -100,6 +100,12 @@ public final class NimbusTokenProvider implements TokenProvider {
         : Token.expireAfter(accessToken.getValue(), refreshToken.getValue(), accessToken.getLifetime());
 
     if (flow instanceof RefreshTokenFlow rtf) {
+      // Some IdP servers may omit refresh_token from the response if it is
+      // sufficiently long-lived. In such case we continue reusing the old one.
+      if (newToken.refreshToken() == null) {
+        var rt = rtf.getRefreshToken();
+        newToken = newToken.withRefreshToken(rt);
+      }
       rtf.setToken(newToken);
     }
 
