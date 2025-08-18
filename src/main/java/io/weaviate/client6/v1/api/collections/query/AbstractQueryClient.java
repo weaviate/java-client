@@ -14,7 +14,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
   protected final CollectionDescriptor<PropertiesT> collection;
   protected final GrpcTransport grpcTransport;
 
-  private final CollectionHandleDefaults defaults;
+  protected final CollectionHandleDefaults defaults;
 
   AbstractQueryClient(CollectionDescriptor<PropertiesT> collection, GrpcTransport grpcTransport,
       CollectionHandleDefaults defaults) {
