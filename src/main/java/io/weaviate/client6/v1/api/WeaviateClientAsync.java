@@ -28,19 +28,19 @@ public class WeaviateClientAsync implements AutoCloseable {
   public final WeaviateCollectionsClientAsync collections;
 
   /**
-   * This constructor is blocking if {@link Authorization} configured,
+   * This constructor is blocking if {@link Authentication} configured,
    * as the client will need to do the initial token exchange.
    */
   public WeaviateClientAsync(Config config) {
     RestTransportOptions restOpt;
     GrpcChannelOptions grpcOpt;
-    if (config.authorization() == null) {
+    if (config.authentication() == null) {
       restOpt = config.restTransportOptions();
       grpcOpt = config.grpcTransportOptions();
     } else {
       TokenProvider tokenProvider;
       try (final var noAuthRest = new DefaultRestTransport(config.restTransportOptions())) {
-        tokenProvider = config.authorization().getTokenProvider(noAuthRest);
+        tokenProvider = config.authentication().getTokenProvider(noAuthRest);
       } catch (Exception e) {
         // Generally IOExceptions are caught in TokenProvider internals.
         // This one may be thrown when noAuthRest transport is auto-closed.
@@ -61,7 +61,7 @@ public class WeaviateClientAsync implements AutoCloseable {
    * Connect to a local Weaviate instance.
    *
    * <p>
-   * This call is blocking if {@link Authorization} configured,
+   * This call is blocking if {@link Authentication} configured,
    * as the client will need to do the initial token exchange.
    */
   public static WeaviateClientAsync local() {
@@ -72,7 +72,7 @@ public class WeaviateClientAsync implements AutoCloseable {
    * Connect to a local Weaviate instance.
    *
    * <p>
-   * This call is blocking if {@link Authorization} configured,
+   * This call is blocking if {@link Authentication} configured,
    * as the client will need to do the initial token exchange.
    */
   public static WeaviateClientAsync local(Function<Config.Local, ObjectBuilder<Config>> fn) {
@@ -83,7 +83,7 @@ public class WeaviateClientAsync implements AutoCloseable {
    * Connect to a Weaviate Cloud instance.
    *
    * <p>
-   * This call is blocking if {@link Authorization} configured,
+   * This call is blocking if {@link Authentication} configured,
    * as the client will need to do the initial token exchange.
    */
   public static WeaviateClientAsync wcd(String httpHost, String apiKey) {
@@ -94,12 +94,12 @@ public class WeaviateClientAsync implements AutoCloseable {
    * Connect to a Weaviate Cloud instance.
    *
    * <p>
-   * This call is blocking if {@link Authorization} configured,
+   * This call is blocking if {@link Authentication} configured,
    * as the client will need to do the initial token exchange.
    */
   public static WeaviateClientAsync wcd(String httpHost, String apiKey,
       Function<Config.WeaviateCloud, ObjectBuilder<Config>> fn) {
-    var config = new Config.WeaviateCloud(httpHost, Authorization.apiKey(apiKey));
+    var config = new Config.WeaviateCloud(httpHost, Authentication.apiKey(apiKey));
     return new WeaviateClientAsync(fn.apply(config).build());
   }
 
@@ -107,7 +107,7 @@ public class WeaviateClientAsync implements AutoCloseable {
    * Connect to a Weaviate instance with custom configuration.
    *
    * <p>
-   * This call is blocking if {@link Authorization} configured,
+   * This call is blocking if {@link Authentication} configured,
    * as the client will need to do the initial token exchange.
    */
   public static WeaviateClientAsync custom(Function<Config.Custom, ObjectBuilder<Config>> fn) {
