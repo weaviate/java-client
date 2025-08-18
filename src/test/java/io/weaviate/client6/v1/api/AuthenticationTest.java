@@ -15,7 +15,7 @@ import io.weaviate.client6.v1.internal.rest.RestTransport;
 import io.weaviate.client6.v1.internal.rest.RestTransportOptions;
 import io.weaviate.client6.v1.internal.rest.SimpleEndpoint;
 
-public class AuthorizationTest {
+public class AuthenticationTest {
   private ClientAndServer mockServer;
   private RestTransport noAuthTransport;
 
@@ -37,8 +37,8 @@ public class AuthorizationTest {
   }
 
   @Test
-  public void testAuthorization_apiKey() throws Exception {
-    var authz = Authorization.apiKey("my-api-key");
+  public void testAuthentication_apiKey() throws Exception {
+    var authz = Authentication.apiKey("my-api-key");
     var transportOptions = new RestTransportOptions(
         "http", "localhost", mockServer.getLocalPort(),
         Collections.emptyMap(), authz.getTokenProvider(noAuthTransport), null);
