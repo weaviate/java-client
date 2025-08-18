@@ -74,6 +74,7 @@ class AuthenticationInterceptor implements HttpRequestInterceptor, AsyncExecChai
 
   @Override
   public void close() throws Exception {
+    tokenProvider.close();
     tokenProviderAsync.close();
   }
 }

@@ -29,4 +29,9 @@ class ExchangeTokenProvider implements TokenProvider {
   public Token getToken() {
     return bearer.getToken();
   }
+
+  @Override
+  public void close() throws Exception {
+    bearer.close();
+  }
 }

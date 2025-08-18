@@ -9,7 +9,7 @@ import io.weaviate.client6.v1.internal.oidc.nimbus.NimbusTokenProvider;
 
 /** TokenProvider obtains authentication tokens. */
 @FunctionalInterface
-public interface TokenProvider {
+public interface TokenProvider extends AutoCloseable {
   Token getToken();
 
   /** Token represents an access_token + refresh_token pair. */
@@ -19,10 +19,15 @@ public interface TokenProvider {
      * Tokens created with {@link #expireNever} are always valid.
      */
     public boolean isValid() {
-      if (expiresIn == -1) {
+      if (neverExpires()) {
         return true;
       }
       return Instant.now().isBefore(createdAt.plusSeconds(expiresIn - expiryDelta));
+    }
+
+    /** Returns {@code true} if this token is always valid. */
+    public boolean neverExpires() {
+      return expiresIn == -1;
     }
 
     /**
@@ -36,6 +41,11 @@ public interface TokenProvider {
      * @return A Token identical to the source one, but with a different expiry.
      */
     public Token withExpiryDelta(long expiryDelta) {
+      return new Token(accessToken, refreshToken, createdAt, expiresIn, expiryDelta);
+    }
+
+    /** Create a token with a different refresh_token. */
+    public Token withRefreshToken(String refreshToken) {
       return new Token(accessToken, refreshToken, createdAt, expiresIn, expiryDelta);
     }
 
@@ -112,7 +122,7 @@ public interface TokenProvider {
   public static TokenProvider bearerToken(OidcConfig oidc, String accessToken, String refreshToken, long expiresIn) {
     final var token = Token.expireAfter(accessToken, refreshToken, expiresIn);
     final var provider = NimbusTokenProvider.refreshToken(oidc, token);
-    return reuse(token, provider, DEFAULT_EARLY_EXPIRY);
+    return background(reuse(token, provider, DEFAULT_EARLY_EXPIRY));
   }
 
   /**
@@ -123,12 +133,12 @@ public interface TokenProvider {
    * @param password Resource owner password.
    *
    * @return Internal TokenProvider implementation.
-   * @throws WeaviateOAuthException if an error occured at any point of the token
+   * @throws WeaviateOAuthException if an error occurred at any point of the token
    *                                exchange process.
    */
   public static TokenProvider resourceOwnerPassword(OidcConfig oidc, String username, String password) {
     final var passwordGrant = NimbusTokenProvider.resourceOwnerPassword(oidc, username, password);
-    return reuse(null, exchange(oidc, passwordGrant), DEFAULT_EARLY_EXPIRY);
+    return background(reuse(null, exchange(oidc, passwordGrant), DEFAULT_EARLY_EXPIRY));
   }
 
   /**
@@ -139,7 +149,7 @@ public interface TokenProvider {
    * @param clientSecret Client secret.
    *
    * @return Internal TokenProvider implementation.
-   * @throws WeaviateOAuthException if an error occured at any point while
+   * @throws WeaviateOAuthException if an error occurred at any point while
    *                                obtaining a new token.
    */
   public static TokenProvider clientCredentials(OidcConfig oidc, String clientId, String clientSecret) {
@@ -170,6 +180,14 @@ public interface TokenProvider {
     return ReuseTokenProvider.wrap(t, tp, expiryDelta);
   }
 
+  /**
+   * Obtain a TokenProvider which refreshes tokens in a background thread.
+   * This ensures a refresh_token doesn't become stale.
+   */
+  static TokenProvider background(TokenProvider tp) {
+    return BackgroundTokenProvider.wrap(tp);
+  }
+
   public record ProviderMetadata(URI tokenEndpoint) {
   }
 
@@ -186,4 +204,10 @@ public interface TokenProvider {
     return metadata.tokenEndpoint().getHost().contains("login.microsoftonline.com");
   }
 
+  /**
+   * Implementations which need to dispose of created resources,
+   * e.g. thread pools, should override this method.
+   */
+  default void close() throws Exception {
+  }
 }

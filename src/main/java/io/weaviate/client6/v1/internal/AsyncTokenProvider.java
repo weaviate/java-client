@@ -69,6 +69,8 @@ public interface AsyncTokenProvider extends AutoCloseable {
 
     @Override
     public void close() throws Exception {
+      provider.close();
+
       synchronized (Default.class) {
         refCount--;
         if (refCount == 0 && exec != null) {
