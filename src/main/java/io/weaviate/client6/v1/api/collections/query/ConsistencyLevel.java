@@ -1,6 +1,8 @@
 package io.weaviate.client6.v1.api.collections.query;
 
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatchDelete;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
 public enum ConsistencyLevel {
@@ -14,7 +16,15 @@ public enum ConsistencyLevel {
     this.consistencyLevel = consistencyLevel;
   }
 
-  final void appendTo(WeaviateProtoSearchGet.SearchRequest.Builder req) {
+  public final void appendTo(WeaviateProtoSearchGet.SearchRequest.Builder req) {
+    req.setConsistencyLevel(consistencyLevel);
+  }
+
+  public final void appendTo(WeaviateProtoBatchDelete.BatchDeleteRequest.Builder req) {
+    req.setConsistencyLevel(consistencyLevel);
+  }
+
+  public final void appendTo(WeaviateProtoBatch.BatchObjectsRequest.Builder req) {
     req.setConsistencyLevel(consistencyLevel);
   }
 }

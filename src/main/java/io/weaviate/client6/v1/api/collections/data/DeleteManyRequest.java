@@ -2,6 +2,7 @@ package io.weaviate.client6.v1.api.collections.data;
 
 import java.util.function.Function;
 
+import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.api.collections.query.Where;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.ByteStringUtil;
@@ -15,7 +16,8 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 public record DeleteManyRequest(Where where, Boolean verbose, Boolean dryRun) {
 
   public static Rpc<DeleteManyRequest, WeaviateProtoBatchDelete.BatchDeleteRequest, DeleteManyResponse, WeaviateProtoBatchDelete.BatchDeleteReply> rpc(
-      CollectionDescriptor<?> collectionDescriptor) {
+      CollectionDescriptor<?> collectionDescriptor,
+      CollectionHandleDefaults defaults) {
     return Rpc
         .of(
             request -> {
@@ -27,6 +29,9 @@ public record DeleteManyRequest(Where where, Boolean verbose, Boolean dryRun) {
               }
               if (request.dryRun != null) {
                 message.setDryRun(request.dryRun);
+              }
+              if (defaults.consistencyLevel() != null) {
+                defaults.consistencyLevel().appendTo(message);
               }
 
               var filters = WeaviateProtoBase.Filters.newBuilder();

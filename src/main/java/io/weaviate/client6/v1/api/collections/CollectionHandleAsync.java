@@ -33,7 +33,7 @@ public class CollectionHandleAsync<PropertiesT> {
     this.config = new WeaviateConfigClientAsync(collectionDescriptor, restTransport, grpcTransport);
     this.aggregate = new WeaviateAggregateClientAsync(collectionDescriptor, grpcTransport);
     this.query = new WeaviateQueryClientAsync<>(collectionDescriptor, grpcTransport, defaults);
-    this.data = new WeaviateDataClientAsync<>(collectionDescriptor, restTransport, grpcTransport, query);
+    this.data = new WeaviateDataClientAsync<>(collectionDescriptor, restTransport, grpcTransport, defaults);
 
     this.defaults = defaults;
   }
@@ -43,7 +43,7 @@ public class CollectionHandleAsync<PropertiesT> {
     this.config = c.config;
     this.aggregate = c.aggregate;
     this.query = new WeaviateQueryClientAsync<>(c.query, defaults);
-    this.data = new WeaviateDataClientAsync<>(c.data, query);
+    this.data = new WeaviateDataClientAsync<>(c.data, defaults);
 
     this.defaults = defaults;
   }
