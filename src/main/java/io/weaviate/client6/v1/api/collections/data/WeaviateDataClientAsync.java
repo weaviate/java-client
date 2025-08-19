@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
+import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClientAsync;
@@ -24,21 +25,27 @@ public class WeaviateDataClientAsync<PropertiesT> {
   private final CollectionDescriptor<PropertiesT> collectionDescriptor;
 
   private final WeaviateQueryClientAsync<PropertiesT> query;
+  private final CollectionHandleDefaults defaults;
 
-  public WeaviateDataClientAsync(CollectionDescriptor<PropertiesT> collectionDescriptor, RestTransport restTransport,
-      GrpcTransport grpcTransport, WeaviateQueryClientAsync<PropertiesT> query) {
+  public WeaviateDataClientAsync(
+      CollectionDescriptor<PropertiesT> collectionDescriptor,
+      RestTransport restTransport,
+      GrpcTransport grpcTransport,
+      CollectionHandleDefaults defaults) {
     this.restTransport = restTransport;
     this.grpcTransport = grpcTransport;
     this.collectionDescriptor = collectionDescriptor;
-    this.query = query;
+    this.query = new WeaviateQueryClientAsync<>(collectionDescriptor, grpcTransport, defaults);
+    this.defaults = defaults;
   }
 
   /** Copy constructor that updates the {@link #query} to use new defaults. */
-  public WeaviateDataClientAsync(WeaviateDataClientAsync<PropertiesT> c, WeaviateQueryClientAsync<PropertiesT> query) {
+  public WeaviateDataClientAsync(WeaviateDataClientAsync<PropertiesT> c, CollectionHandleDefaults defaults) {
     this.restTransport = c.restTransport;
     this.grpcTransport = c.grpcTransport;
     this.collectionDescriptor = c.collectionDescriptor;
-    this.query = query;
+    this.query = new WeaviateQueryClientAsync<>(collectionDescriptor, grpcTransport, defaults);
+    this.defaults = defaults;
   }
 
   public CompletableFuture<WeaviateObject<PropertiesT, Object, ObjectMetadata>> insert(PropertiesT properties)
@@ -70,7 +77,7 @@ public class WeaviateDataClientAsync<PropertiesT> {
 
   public CompletableFuture<InsertManyResponse> insertMany(InsertManyRequest<PropertiesT> request) {
     return this.grpcTransport.performRequestAsync(request,
-        InsertManyRequest.rpc(request.objects(), collectionDescriptor));
+        InsertManyRequest.rpc(request.objects(), collectionDescriptor, defaults));
   }
 
   public CompletableFuture<Boolean> exists(String uuid) {
@@ -114,7 +121,7 @@ public class WeaviateDataClientAsync<PropertiesT> {
   }
 
   public CompletableFuture<DeleteManyResponse> deleteMany(DeleteManyRequest request) throws IOException {
-    return this.grpcTransport.performRequestAsync(request, DeleteManyRequest.rpc(collectionDescriptor));
+    return this.grpcTransport.performRequestAsync(request, DeleteManyRequest.rpc(collectionDescriptor, defaults));
   }
 
   public CompletableFuture<Void> referenceAdd(String fromUuid, String fromProperty, Reference reference) {

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
+import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClient;
@@ -21,21 +22,27 @@ public class WeaviateDataClient<PropertiesT> {
   private final CollectionDescriptor<PropertiesT> collectionDescriptor;
 
   private final WeaviateQueryClient<PropertiesT> query;
+  private final CollectionHandleDefaults defaults;
 
-  public WeaviateDataClient(CollectionDescriptor<PropertiesT> collectionDescriptor, RestTransport restTransport,
-      GrpcTransport grpcTransport, WeaviateQueryClient<PropertiesT> query) {
+  public WeaviateDataClient(
+      CollectionDescriptor<PropertiesT> collectionDescriptor,
+      RestTransport restTransport,
+      GrpcTransport grpcTransport,
+      CollectionHandleDefaults defaults) {
     this.restTransport = restTransport;
     this.grpcTransport = grpcTransport;
     this.collectionDescriptor = collectionDescriptor;
-    this.query = query;
+    this.query = new WeaviateQueryClient<>(collectionDescriptor, grpcTransport, defaults);
+    this.defaults = defaults;
   }
 
   /** Copy constructor that updates the {@link #query} to use new defaults. */
-  public WeaviateDataClient(WeaviateDataClient<PropertiesT> c, WeaviateQueryClient<PropertiesT> query) {
+  public WeaviateDataClient(WeaviateDataClient<PropertiesT> c, CollectionHandleDefaults defaults) {
     this.restTransport = c.restTransport;
     this.grpcTransport = c.grpcTransport;
     this.collectionDescriptor = c.collectionDescriptor;
-    this.query = query;
+    this.query = new WeaviateQueryClient<>(collectionDescriptor, grpcTransport, defaults);
+    this.defaults = defaults;
   }
 
   public WeaviateObject<PropertiesT, Object, ObjectMetadata> insert(PropertiesT properties) throws IOException {
@@ -58,7 +65,8 @@ public class WeaviateDataClient<PropertiesT> {
   }
 
   public InsertManyResponse insertMany(InsertManyRequest<PropertiesT> request) {
-    return this.grpcTransport.performRequest(request, InsertManyRequest.rpc(request.objects(), collectionDescriptor));
+    return this.grpcTransport.performRequest(request,
+        InsertManyRequest.rpc(request.objects(), collectionDescriptor, defaults));
   }
 
   public WeaviateObject<PropertiesT, Object, ObjectMetadata> insert(InsertObjectRequest<PropertiesT> request)
@@ -107,7 +115,7 @@ public class WeaviateDataClient<PropertiesT> {
   }
 
   public DeleteManyResponse deleteMany(DeleteManyRequest request) throws IOException {
-    return this.grpcTransport.performRequest(request, DeleteManyRequest.rpc(collectionDescriptor));
+    return this.grpcTransport.performRequest(request, DeleteManyRequest.rpc(collectionDescriptor, defaults));
   }
 
   public void referenceAdd(String fromUuid, String fromProperty, Reference reference) throws IOException {

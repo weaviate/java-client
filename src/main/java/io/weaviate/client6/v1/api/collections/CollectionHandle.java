@@ -30,7 +30,7 @@ public class CollectionHandle<PropertiesT> {
     this.config = new WeaviateConfigClient(collectionDescriptor, restTransport, grpcTransport);
     this.aggregate = new WeaviateAggregateClient(collectionDescriptor, grpcTransport);
     this.query = new WeaviateQueryClient<>(collectionDescriptor, grpcTransport, defaults);
-    this.data = new WeaviateDataClient<>(collectionDescriptor, restTransport, grpcTransport, query);
+    this.data = new WeaviateDataClient<>(collectionDescriptor, restTransport, grpcTransport, defaults);
 
     this.defaults = defaults;
   }
@@ -40,7 +40,7 @@ public class CollectionHandle<PropertiesT> {
     this.config = c.config;
     this.aggregate = c.aggregate;
     this.query = new WeaviateQueryClient<>(c.query, defaults);
-    this.data = new WeaviateDataClient<>(c.data, query);
+    this.data = new WeaviateDataClient<>(c.data, defaults);
 
     this.defaults = defaults;
   }

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.internal.grpc.ByteStringUtil;
@@ -37,7 +38,8 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
 
   public static <T> Rpc<InsertManyRequest<T>, WeaviateProtoBatch.BatchObjectsRequest, InsertManyResponse, WeaviateProtoBatch.BatchObjectsReply> rpc(
       List<WeaviateObject<T, Reference, ObjectMetadata>> insertObjects,
-      CollectionDescriptor<T> collectionsDescriptor) {
+      CollectionDescriptor<T> collectionsDescriptor,
+      CollectionHandleDefaults defaults) {
     return Rpc.of(
         request -> {
           var message = WeaviateProtoBatch.BatchObjectsRequest.newBuilder();
@@ -47,6 +49,10 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
             buildObject(batchObject, obj, collectionsDescriptor);
             return batchObject.build();
           }).toList();
+
+          if (defaults.consistencyLevel() != null) {
+            defaults.consistencyLevel().appendTo(message);
+          }
 
           message.addAllObjects(batch);
           return message.build();
