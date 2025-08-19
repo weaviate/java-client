@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-import io.weaviate.client6.v1.api.collections.CollectionHandle;
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
@@ -34,18 +33,6 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
   protected abstract ResponseT performRequest(QueryOperator operator);
 
   protected abstract GroupedResponseT performRequest(QueryOperator operator, GroupBy groupBy);
-
-  /**
-   * Apply default query parameters set on the parent {@link CollectionHandle}.
-   *
-   * @param fn User-provided query options.
-   *
-   * @return Tucket builder with defaults.
-   */
-  private <T, B extends BaseQueryOptions.Builder<B, T>> Function<B, ObjectBuilder<T>> applyDefaults(
-      Function<B, ObjectBuilder<T>> fn) {
-    return ObjectBuilder.partial(fn, b -> b.consistencyLevel(defaults.consistencyLevel()));
-  }
 
   // Fetch by ID --------------------------------------------------------------
 
@@ -95,7 +82,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
   }
 
   public ResponseT bm25(String query, Function<Bm25.Builder, ObjectBuilder<Bm25>> fn) {
-    return bm25(Bm25.of(query, applyDefaults(fn)));
+    return bm25(Bm25.of(query, fn));
   }
 
   public ResponseT bm25(Bm25 query) {
@@ -107,7 +94,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
   }
 
   public GroupedResponseT bm25(String query, Function<Bm25.Builder, ObjectBuilder<Bm25>> fn, GroupBy groupBy) {
-    return bm25(Bm25.of(query, applyDefaults(fn)), groupBy);
+    return bm25(Bm25.of(query, fn), groupBy);
   }
 
   public GroupedResponseT bm25(Bm25 query, GroupBy groupBy) {
@@ -121,7 +108,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
   }
 
   public ResponseT hybrid(String query, Function<Hybrid.Builder, ObjectBuilder<Hybrid>> fn) {
-    return hybrid(Hybrid.of(query, applyDefaults(fn)));
+    return hybrid(Hybrid.of(query, fn));
   }
 
   public ResponseT hybrid(Hybrid query) {
@@ -133,7 +120,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
   }
 
   public GroupedResponseT hybrid(String query, Function<Hybrid.Builder, ObjectBuilder<Hybrid>> fn, GroupBy groupBy) {
-    return hybrid(Hybrid.of(query, applyDefaults(fn)), groupBy);
+    return hybrid(Hybrid.of(query, fn), groupBy);
   }
 
   public GroupedResponseT hybrid(Hybrid query, GroupBy groupBy) {
@@ -147,7 +134,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
   }
 
   public ResponseT nearVector(float[] vector, Function<NearVector.Builder, ObjectBuilder<NearVector>> fn) {
-    return nearVector(NearVector.of(vector, applyDefaults(fn)));
+    return nearVector(NearVector.of(vector, fn));
   }
 
   public ResponseT nearVector(NearVector query) {
@@ -160,7 +147,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
 
   public GroupedResponseT nearVector(float[] vector, Function<NearVector.Builder, ObjectBuilder<NearVector>> fn,
       GroupBy groupBy) {
-    return nearVector(NearVector.of(vector, applyDefaults(fn)), groupBy);
+    return nearVector(NearVector.of(vector, fn), groupBy);
   }
 
   public GroupedResponseT nearVector(NearVector query, GroupBy groupBy) {
@@ -174,7 +161,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
   }
 
   public ResponseT nearObject(String uuid, Function<NearObject.Builder, ObjectBuilder<NearObject>> fn) {
-    return nearObject(NearObject.of(uuid, applyDefaults(fn)));
+    return nearObject(NearObject.of(uuid, fn));
   }
 
   public ResponseT nearObject(NearObject query) {
@@ -187,7 +174,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
 
   public GroupedResponseT nearObject(String uuid, Function<NearObject.Builder, ObjectBuilder<NearObject>> fn,
       GroupBy groupBy) {
-    return nearObject(NearObject.of(uuid, applyDefaults(fn)), groupBy);
+    return nearObject(NearObject.of(uuid, fn), groupBy);
   }
 
   public GroupedResponseT nearObject(NearObject query, GroupBy groupBy) {
@@ -201,11 +188,11 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
   }
 
   public ResponseT nearText(String text, Function<NearText.Builder, ObjectBuilder<NearText>> fn) {
-    return nearText(NearText.of(text, applyDefaults(fn)));
+    return nearText(NearText.of(text, fn));
   }
 
   public ResponseT nearText(List<String> text, Function<NearText.Builder, ObjectBuilder<NearText>> fn) {
-    return nearText(NearText.of(text, applyDefaults(fn)));
+    return nearText(NearText.of(text, fn));
   }
 
   public ResponseT nearText(NearText query) {
@@ -241,7 +228,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
   }
 
   public ResponseT nearImage(String image, Function<NearImage.Builder, ObjectBuilder<NearImage>> fn) {
-    return nearImage(NearImage.of(image, applyDefaults(fn)));
+    return nearImage(NearImage.of(image, fn));
   }
 
   public ResponseT nearImage(NearImage query) {
@@ -254,7 +241,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
 
   public GroupedResponseT nearImage(String image, Function<NearImage.Builder, ObjectBuilder<NearImage>> fn,
       GroupBy groupBy) {
-    return nearImage(NearImage.of(image, applyDefaults(fn)), groupBy);
+    return nearImage(NearImage.of(image, fn), groupBy);
   }
 
   public GroupedResponseT nearImage(NearImage query, GroupBy groupBy) {
@@ -268,7 +255,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
   }
 
   public ResponseT nearAudio(String audio, Function<NearAudio.Builder, ObjectBuilder<NearAudio>> fn) {
-    return nearAudio(NearAudio.of(audio, applyDefaults(fn)));
+    return nearAudio(NearAudio.of(audio, fn));
   }
 
   public ResponseT nearAudio(NearAudio query) {
@@ -281,7 +268,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
 
   public GroupedResponseT nearAudio(String audio, Function<NearAudio.Builder, ObjectBuilder<NearAudio>> fn,
       GroupBy groupBy) {
-    return nearAudio(NearAudio.of(audio, applyDefaults(fn)), groupBy);
+    return nearAudio(NearAudio.of(audio, fn), groupBy);
   }
 
   public GroupedResponseT nearAudio(NearAudio query, GroupBy groupBy) {
@@ -295,7 +282,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
   }
 
   public ResponseT nearVideo(String video, Function<NearVideo.Builder, ObjectBuilder<NearVideo>> fn) {
-    return nearVideo(NearVideo.of(video, applyDefaults(fn)));
+    return nearVideo(NearVideo.of(video, fn));
   }
 
   public ResponseT nearVideo(NearVideo query) {
@@ -308,7 +295,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
 
   public GroupedResponseT nearVideo(String video, Function<NearVideo.Builder, ObjectBuilder<NearVideo>> fn,
       GroupBy groupBy) {
-    return nearVideo(NearVideo.of(video, applyDefaults(fn)), groupBy);
+    return nearVideo(NearVideo.of(video, fn), groupBy);
   }
 
   public GroupedResponseT nearVideo(NearVideo query, GroupBy groupBy) {
@@ -322,7 +309,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
   }
 
   public ResponseT nearThermal(String thermal, Function<NearThermal.Builder, ObjectBuilder<NearThermal>> fn) {
-    return nearThermal(NearThermal.of(thermal, applyDefaults(fn)));
+    return nearThermal(NearThermal.of(thermal, fn));
   }
 
   public ResponseT nearThermal(NearThermal query) {
@@ -335,7 +322,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
 
   public GroupedResponseT nearThermal(String thermal, Function<NearThermal.Builder, ObjectBuilder<NearThermal>> fn,
       GroupBy groupBy) {
-    return nearThermal(NearThermal.of(thermal, applyDefaults(fn)), groupBy);
+    return nearThermal(NearThermal.of(thermal, fn), groupBy);
   }
 
   public GroupedResponseT nearThermal(NearThermal query, GroupBy groupBy) {
@@ -349,7 +336,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
   }
 
   public ResponseT nearDepth(String depth, Function<NearDepth.Builder, ObjectBuilder<NearDepth>> fn) {
-    return nearDepth(NearDepth.of(depth, applyDefaults(fn)));
+    return nearDepth(NearDepth.of(depth, fn));
   }
 
   public ResponseT nearDepth(NearDepth query) {
@@ -362,7 +349,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
 
   public GroupedResponseT nearDepth(String depth, Function<NearDepth.Builder, ObjectBuilder<NearDepth>> fn,
       GroupBy groupBy) {
-    return nearDepth(NearDepth.of(depth, applyDefaults(fn)), groupBy);
+    return nearDepth(NearDepth.of(depth, fn), groupBy);
   }
 
   public GroupedResponseT nearDepth(NearDepth query, GroupBy groupBy) {
@@ -376,7 +363,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
   }
 
   public ResponseT nearImu(String imu, Function<NearImu.Builder, ObjectBuilder<NearImu>> fn) {
-    return nearImu(NearImu.of(imu, applyDefaults(fn)));
+    return nearImu(NearImu.of(imu, fn));
   }
 
   public ResponseT nearImu(NearImu query) {
@@ -389,7 +376,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
 
   public GroupedResponseT nearImu(String imu, Function<NearImu.Builder, ObjectBuilder<NearImu>> fn,
       GroupBy groupBy) {
-    return nearImu(NearImu.of(imu, applyDefaults(fn)), groupBy);
+    return nearImu(NearImu.of(imu, fn), groupBy);
   }
 
   public GroupedResponseT nearImu(NearImu query, GroupBy groupBy) {
