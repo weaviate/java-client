@@ -1,6 +1,4 @@
-package io.weaviate.client6.v1.api.collections.query;
-
-import java.util.Map;
+package io.weaviate.client6.v1.api.collections.aggregate;
 
 import org.assertj.core.api.Assertions;
 import org.junit.AfterClass;
@@ -14,14 +12,14 @@ import com.jparams.junit4.data.DataMethod;
 import com.jparams.junit4.description.Name;
 
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
+import io.weaviate.client6.v1.api.collections.query.ConsistencyLevel;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
-import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
 import io.weaviate.client6.v1.internal.json.JSON;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 import io.weaviate.testutil.transport.MockGrpcTransport;
 
 @RunWith(JParamsTestRunner.class)
-public class WeaviateQueryClientTest {
+public class WeaviateAggregateClientTest {
   private static MockGrpcTransport grpc;
 
   @BeforeClass
@@ -36,7 +34,7 @@ public class WeaviateQueryClientTest {
 
   @FunctionalInterface
   interface Act {
-    void apply(WeaviateQueryClient<Map<String, Object>> client) throws Exception;
+    void apply(WeaviateAggregateClient client) throws Exception;
   }
 
   private <T> void assertJsonHasValue(String json, String key, T value) {
@@ -51,38 +49,36 @@ public class WeaviateQueryClientTest {
 
   public static Object[][] grpcTestCases() {
     return new Object[][] {
-        { "get by id", (Act) client -> client.byId("test-uuid") },
-        { "fetch objects", (Act) client -> client.fetchObjects(ObjectBuilder.identity()) },
-        { "bm25", (Act) client -> client.bm25("red ballon") },
-        { "hybrid", (Act) client -> client.hybrid("red ballon") },
-        { "nearVector", (Act) client -> client.nearVector(new float[] {}) },
-        { "nearText", (Act) client -> client.nearText("weather in Arizona") },
-        { "nearObject", (Act) client -> client.nearObject("test-uuid") },
-        { "nearImage", (Act) client -> client.nearImage("img.jpeg") },
-        { "nearAudio", (Act) client -> client.nearAudio("song.mp3") },
-        { "nearVideo", (Act) client -> client.nearVideo("clip.mp4") },
-        { "nearDepth", (Act) client -> client.nearDepth("20.000 leagues") },
-        { "nearThermal", (Act) client -> client.nearThermal("Fahrenheit 451") },
-        { "nearImu", (Act) client -> client.nearImu("6 m/s") },
+        { "over all", (Act) client -> client.overAll(ObjectBuilder.identity()) },
+        { "hybrid", (Act) client -> client.hybrid("red balloon", ObjectBuilder.identity()) },
+        { "nearVector", (Act) client -> client.nearVector(new float[] {}, ObjectBuilder.identity()) },
+        { "nearText", (Act) client -> client.nearText("red balloon", ObjectBuilder.identity()) },
+        { "nearObject", (Act) client -> client.nearObject("test-uuid", ObjectBuilder.identity()) },
+        { "nearImage", (Act) client -> client.nearImage("img.jpeg", ObjectBuilder.identity()) },
+        { "nearAudio", (Act) client -> client.nearAudio("song.mp3", ObjectBuilder.identity()) },
+        { "nearVideo", (Act) client -> client.nearVideo("clip.mp4", ObjectBuilder.identity()) },
+        { "nearDepth", (Act) client -> client.nearDepth("20.000 leagues", ObjectBuilder.identity()) },
+        { "nearThermal", (Act) client -> client.nearThermal("Fahrenheit 451", ObjectBuilder.identity()) },
+        { "nearImu", (Act) client -> client.nearImu("6 m/s", ObjectBuilder.identity()) },
     };
   }
 
   @Name("{0}")
-  @DataMethod(source = WeaviateQueryClientTest.class, method = "grpcTestCases")
+  @DataMethod(source = WeaviateAggregateClientTest.class, method = "grpcTestCases")
   @Test
   public void test_collectionHandleDefaults_grpc(String __, Act act)
       throws Exception {
     // Arrange
     var collection = CollectionDescriptor.ofMap("Things");
     var defaults = CollectionHandleDefaults.of(d -> d
-        .consistencyLevel(ConsistencyLevel.ONE));
-    var client = new WeaviateQueryClient<Map<String, Object>>(collection, grpc, defaults);
+        .consistencyLevel(ConsistencyLevel.ONE)
+        .tenant("john_doe"));
+    var client = new WeaviateAggregateClient(collection, grpc, defaults);
 
     // Act
     act.apply(client);
 
     // Assert
-    grpc.assertNext(json -> assertJsonHasValue(json, "consistencyLevel",
-        WeaviateProtoBase.ConsistencyLevel.CONSISTENCY_LEVEL_ONE.toString()));
+    grpc.assertNext(json -> assertJsonHasValue(json, "tenant", "john_doe"));
   }
 }

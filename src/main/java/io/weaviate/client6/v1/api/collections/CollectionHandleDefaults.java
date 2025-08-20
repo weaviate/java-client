@@ -12,6 +12,7 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.Rpc;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateBlockingStub;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateFutureStub;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatchDelete;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
@@ -19,7 +20,7 @@ import io.weaviate.client6.v1.internal.rest.Endpoint;
 import io.weaviate.client6.v1.internal.rest.EndpointBase;
 import io.weaviate.client6.v1.internal.rest.JsonEndpoint;
 
-public record CollectionHandleDefaults(ConsistencyLevel consistencyLevel) {
+public record CollectionHandleDefaults(ConsistencyLevel consistencyLevel, String tenant) {
   private static final String CONSISTENCY_LEVEL = "consistency_level";
 
   /**
@@ -35,22 +36,29 @@ public record CollectionHandleDefaults(ConsistencyLevel consistencyLevel) {
   /**
    * Empty collection defaults.
    *
-   * @return An tucked builder that does not leaves all defaults unset.
+   * @return A tucked builder that does not leaves all defaults unset.
    */
   public static Function<Builder, ObjectBuilder<CollectionHandleDefaults>> none() {
     return ObjectBuilder.identity();
   }
 
   public CollectionHandleDefaults(Builder builder) {
-    this(builder.consistencyLevel);
+    this(builder.consistencyLevel, builder.tenant);
   }
 
   public static final class Builder implements ObjectBuilder<CollectionHandleDefaults> {
     private ConsistencyLevel consistencyLevel;
+    private String tenant;
 
     /** Set default consistency level for this collection handle. */
     public Builder consistencyLevel(ConsistencyLevel consistencyLevel) {
       this.consistencyLevel = consistencyLevel;
+      return this;
+    }
+
+    /** Set default tenant for this collection handle. */
+    public Builder tenant(String tenant) {
+      this.tenant = tenant;
       return this;
     }
 
@@ -176,6 +184,11 @@ public record CollectionHandleDefaults(ConsistencyLevel consistencyLevel) {
       return CollectionHandleDefaults.this.consistencyLevel;
     }
 
+    /** Return tenant of the enclosing CollectionHandleDefaults object. */
+    private String tenant() {
+      return CollectionHandleDefaults.this.tenant;
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public RequestM marshal(RequestT request) {
@@ -198,6 +211,12 @@ public record CollectionHandleDefaults(ConsistencyLevel consistencyLevel) {
           consistencyLevel().appendTo(b);
           return (RequestM) b.build();
         }
+      } else if (message instanceof WeaviateProtoAggregate.AggregateRequest msg) {
+        var b = msg.toBuilder();
+        if (msg.getTenant().isEmpty() && tenant() != null) {
+          b.setTenant(tenant());
+        }
+        return (RequestM) b.build();
       }
 
       return message;

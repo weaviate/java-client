@@ -90,14 +90,15 @@ public class WeaviateDataClientTest {
     };
   }
 
-  @Name("0")
+  @Name("{0}")
   @DataMethod(source = WeaviateDataClientTest.class, method = "restTestCases")
   @Test
   public void test_collectionHandleDefaults_rest(String __, ConsistencyLevel cl, Location clLoc, Act act)
       throws Exception {
     // Arrange
     var collection = CollectionDescriptor.ofMap("Things");
-    var defaults = new CollectionHandleDefaults(cl);
+    var defaults = CollectionHandleDefaults.of(d -> d
+        .consistencyLevel(cl));
     var client = new WeaviateDataClient<Map<String, Object>>(
         collection, rest, null, defaults);
 
@@ -134,14 +135,15 @@ public class WeaviateDataClientTest {
     };
   }
 
-  @Name("0")
+  @Name("{0}")
   @DataMethod(source = WeaviateDataClientTest.class, method = "grpcTestCases")
   @Test
   public void test_collectionHandleDefaults_grpc(String __, Act act)
       throws Exception {
     // Arrange
     var collection = CollectionDescriptor.ofMap("Things");
-    var defaults = new CollectionHandleDefaults(ConsistencyLevel.ONE);
+    var defaults = CollectionHandleDefaults.of(d -> d
+        .consistencyLevel(ConsistencyLevel.ONE));
     var client = new WeaviateDataClient<Map<String, Object>>(
         collection, null, grpc, defaults);
 

@@ -18,11 +18,11 @@ public class WeaviateAggregateClientAsync
 
   protected final CompletableFuture<AggregateResponse> performRequest(Aggregation aggregation) {
     var request = new AggregateRequest(aggregation, null);
-    return this.transport.performRequestAsync(request, AggregateRequest.rpc(collection));
+    return this.transport.performRequestAsync(request, AggregateRequest.rpc(collection, defaults));
   }
 
   protected final CompletableFuture<AggregateResponseGrouped> performRequest(Aggregation aggregation, GroupBy groupBy) {
     var request = new AggregateRequest(aggregation, groupBy);
-    return this.transport.performRequestAsync(request, AggregateRequest.grouped(collection));
+    return this.transport.performRequestAsync(request, AggregateRequest.grouped(collection, defaults));
   }
 }

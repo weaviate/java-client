@@ -79,6 +79,19 @@ public class CollectionHandle<PropertiesT> {
   }
 
   public CollectionHandle<PropertiesT> withConsistencyLevel(ConsistencyLevel consistencyLevel) {
-    return new CollectionHandle<>(this, CollectionHandleDefaults.of(def -> def.consistencyLevel(consistencyLevel)));
+    return new CollectionHandle<>(this, CollectionHandleDefaults.of(with -> with.consistencyLevel(consistencyLevel)));
+  }
+
+  public String tenant() {
+    return defaults.tenant();
+  }
+
+  public CollectionHandle<PropertiesT> withTenant(String tenant) {
+    return new CollectionHandle<>(this, CollectionHandleDefaults.of(with -> with.tenant(tenant)));
+  }
+
+  public CollectionHandle<PropertiesT> withDefaults(
+      Function<CollectionHandleDefaults.Builder, ObjectBuilder<CollectionHandleDefaults>> fn) {
+    return new CollectionHandle<>(this, CollectionHandleDefaults.of(fn));
   }
 }

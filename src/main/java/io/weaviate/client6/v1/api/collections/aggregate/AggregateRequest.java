@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.internal.grpc.Rpc;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateBlockingStub;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateFutureStub;
@@ -13,8 +14,9 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 public record AggregateRequest(Aggregation aggregation, GroupBy groupBy) {
 
   static <T> Rpc<AggregateRequest, WeaviateProtoAggregate.AggregateRequest, AggregateResponse, WeaviateProtoAggregate.AggregateReply> rpc(
-      CollectionDescriptor<T> collection) {
-    return Rpc.of(
+      CollectionDescriptor<T> collection,
+      CollectionHandleDefaults defaults) {
+    return defaults.rpc(Rpc.of(
         request -> {
           var message = WeaviateProtoAggregate.AggregateRequest.newBuilder();
           message.setCollection(collection.name());
@@ -39,12 +41,13 @@ public record AggregateRequest(Aggregation aggregation, GroupBy groupBy) {
           return result;
         },
         () -> WeaviateBlockingStub::aggregate,
-        () -> WeaviateFutureStub::aggregate);
+        () -> WeaviateFutureStub::aggregate));
   }
 
   static <T> Rpc<AggregateRequest, WeaviateProtoAggregate.AggregateRequest, AggregateResponseGrouped, WeaviateProtoAggregate.AggregateReply> grouped(
-      CollectionDescriptor<T> collection) {
-    var rpc = rpc(collection);
+      CollectionDescriptor<T> collection,
+      CollectionHandleDefaults defaults) {
+    var rpc = rpc(collection, defaults);
     return Rpc.of(request -> rpc.marshal(request), reply -> {
       var groups = new ArrayList<AggregateResponseGroup<?>>();
       if (reply.hasGroupedResults()) {
