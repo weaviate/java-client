@@ -19,6 +19,7 @@ public record DeleteObjectRequest(String uuid) {
             request -> "/objects/" + collection.name() + "/" + request.uuid,
             request -> Collections.emptyMap()),
         add -> add
-            .consistencyLevel(Location.QUERY));
+            .consistencyLevel(Location.QUERY)
+            .tenant(Location.QUERY));
   }
 }

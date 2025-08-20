@@ -22,6 +22,7 @@ import io.weaviate.client6.v1.internal.rest.JsonEndpoint;
 
 public record CollectionHandleDefaults(ConsistencyLevel consistencyLevel, String tenant) {
   private static final String CONSISTENCY_LEVEL = "consistency_level";
+  private static final String TENANT = "tenant";
 
   /**
    * Set default values for query / aggregation requests.
@@ -93,12 +94,17 @@ public record CollectionHandleDefaults(ConsistencyLevel consistencyLevel, String
     ConsistencyLevel consistencyLevel();
 
     SelfT withConsistencyLevel(ConsistencyLevel consistencyLevel);
+
+    String tenant();
+
+    SelfT withTenant(String tenant);
   }
 
   private class ContextEndpoint<RequestT, ResponseT> extends EndpointBase<RequestT, ResponseT>
       implements JsonEndpoint<RequestT, ResponseT> {
 
     private final Location consistencyLevelLoc;
+    private final Location tenantLoc;
     private final Endpoint<RequestT, ResponseT> endpoint;
 
     ContextEndpoint(EndpointBuilder<RequestT, ResponseT> builder) {
@@ -107,6 +113,7 @@ public record CollectionHandleDefaults(ConsistencyLevel consistencyLevel, String
           builder.endpoint::queryParameters,
           builder.endpoint::body);
       this.consistencyLevelLoc = builder.consistencyLevelLoc;
+      this.tenantLoc = builder.tenantLoc;
       this.endpoint = builder.endpoint;
     }
 
@@ -119,8 +126,11 @@ public record CollectionHandleDefaults(ConsistencyLevel consistencyLevel, String
     public Map<String, Object> queryParameters(RequestT request) {
       // Copy the map, as it's most likely unmodifiable.
       var query = new HashMap<>(super.queryParameters(request));
-      if (consistencyLevel() != null && consistencyLevelLoc == Location.QUERY) {
+      if (consistencyLevel() != null && consistencyLevelLoc != null && consistencyLevelLoc == Location.QUERY) {
         query.putIfAbsent(CONSISTENCY_LEVEL, consistencyLevel());
+      }
+      if (tenant() != null && tenantLoc != null && tenantLoc == Location.QUERY) {
+        query.putIfAbsent(TENANT, tenant());
       }
       return query;
     }
@@ -129,8 +139,11 @@ public record CollectionHandleDefaults(ConsistencyLevel consistencyLevel, String
     @Override
     public String body(RequestT request) {
       if (request instanceof WithDefaults wd) {
-        if (wd.consistencyLevel() == null) {
+        if (wd.consistencyLevel() == null && consistencyLevel() != null) {
           wd = wd.withConsistencyLevel(consistencyLevel());
+        }
+        if (wd.tenant() == null && tenant() != null) {
+          wd = wd.withTenant(tenant());
         }
         // This cast is safe as long as `wd` returns its own type,
         // which it does as per the interface contract.
@@ -153,6 +166,7 @@ public record CollectionHandleDefaults(ConsistencyLevel consistencyLevel, String
     private final Endpoint<RequestT, ResponseT> endpoint;
 
     private Location consistencyLevelLoc;
+    private Location tenantLoc;
 
     EndpointBuilder(Endpoint<RequestT, ResponseT> ep) {
       this.endpoint = ep;
@@ -161,6 +175,12 @@ public record CollectionHandleDefaults(ConsistencyLevel consistencyLevel, String
     /** Control which part of the request to add default consistency level to. */
     public EndpointBuilder<RequestT, ResponseT> consistencyLevel(Location loc) {
       this.consistencyLevelLoc = loc;
+      return this;
+    }
+
+    /** Control which part of the request to add default consistency level to. */
+    public EndpointBuilder<RequestT, ResponseT> tenant(Location loc) {
+      this.tenantLoc = loc;
       return this;
     }
 
@@ -197,14 +217,30 @@ public record CollectionHandleDefaults(ConsistencyLevel consistencyLevel, String
         var b = msg.toBuilder();
         if (!msg.hasConsistencyLevel() && consistencyLevel() != null) {
           consistencyLevel().appendTo(b);
-          return (RequestM) b.build();
         }
+
+        // Tenant must be applied to each batch object individually.
+        msg.getObjectsList().stream()
+            .map(obj -> {
+              var objBuilder = obj.toBuilder();
+              if (obj.getTenant().isEmpty() && tenant() != null) {
+                objBuilder.setTenant(tenant());
+              }
+              return objBuilder.build();
+            })
+            .forEach(b::addObjects);
+        return (RequestM) b.build();
+
       } else if (message instanceof WeaviateProtoBatchDelete.BatchDeleteRequest msg) {
         var b = msg.toBuilder();
         if (!msg.hasConsistencyLevel() && consistencyLevel() != null) {
           consistencyLevel().appendTo(b);
-          return (RequestM) b.build();
         }
+        if (msg.getTenant().isEmpty() && tenant() != null) {
+          b.setTenant(tenant());
+        }
+        return (RequestM) b.build();
+
       } else if (message instanceof WeaviateProtoSearchGet.SearchRequest msg) {
         var b = msg.toBuilder();
         if (!msg.hasConsistencyLevel() && consistencyLevel() != null) {
@@ -214,6 +250,7 @@ public record CollectionHandleDefaults(ConsistencyLevel consistencyLevel, String
           b.setTenant(tenant());
         }
         return (RequestM) b.build();
+
       } else if (message instanceof WeaviateProtoAggregate.AggregateRequest msg) {
         var b = msg.toBuilder();
         if (msg.getTenant().isEmpty() && tenant() != null) {
