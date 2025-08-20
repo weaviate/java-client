@@ -13,7 +13,6 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedResponseT> {
   protected final CollectionDescriptor<PropertiesT> collection;
   protected final GrpcTransport grpcTransport;
-
   protected final CollectionHandleDefaults defaults;
 
   AbstractQueryClient(CollectionDescriptor<PropertiesT> collection, GrpcTransport grpcTransport,

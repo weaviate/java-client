@@ -14,6 +14,7 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateBlocki
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateFutureStub;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatchDelete;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 import io.weaviate.client6.v1.internal.rest.Endpoint;
 import io.weaviate.client6.v1.internal.rest.EndpointBase;
 import io.weaviate.client6.v1.internal.rest.JsonEndpoint;
@@ -179,19 +180,26 @@ public record CollectionHandleDefaults(ConsistencyLevel consistencyLevel) {
     @Override
     public RequestM marshal(RequestT request) {
       var message = rpc.marshal(request);
-      if (message instanceof WeaviateProtoBatchDelete.BatchDeleteRequest msg) {
+      if (message instanceof WeaviateProtoBatch.BatchObjectsRequest msg) {
         var b = msg.toBuilder();
         if (!msg.hasConsistencyLevel() && consistencyLevel() != null) {
           consistencyLevel().appendTo(b);
           return (RequestM) b.build();
         }
-      } else if (message instanceof WeaviateProtoBatch.BatchObjectsRequest msg) {
+      } else if (message instanceof WeaviateProtoBatchDelete.BatchDeleteRequest msg) {
+        var b = msg.toBuilder();
+        if (!msg.hasConsistencyLevel() && consistencyLevel() != null) {
+          consistencyLevel().appendTo(b);
+          return (RequestM) b.build();
+        }
+      } else if (message instanceof WeaviateProtoSearchGet.SearchRequest msg) {
         var b = msg.toBuilder();
         if (!msg.hasConsistencyLevel() && consistencyLevel() != null) {
           consistencyLevel().appendTo(b);
           return (RequestM) b.build();
         }
       }
+
       return message;
     }
 
