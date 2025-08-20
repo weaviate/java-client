@@ -22,6 +22,7 @@ public record ReferenceReplaceRequest(String fromUuid, String fromProperty, Refe
             request -> Collections.emptyMap(),
             request -> JSON.serialize(List.of(request.reference))),
         add -> add
-            .consistencyLevel(Location.QUERY));
+            .consistencyLevel(Location.QUERY)
+            .tenant(Location.QUERY));
   }
 }

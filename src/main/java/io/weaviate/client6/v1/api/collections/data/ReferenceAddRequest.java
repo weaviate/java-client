@@ -21,7 +21,8 @@ public record ReferenceAddRequest(String fromUuid, String fromProperty, Referenc
             request -> Collections.emptyMap(),
             request -> JSON.serialize(request.reference)),
         add -> add
-            .consistencyLevel(Location.QUERY));
+            .consistencyLevel(Location.QUERY)
+            .tenant(Location.QUERY));
 
   }
 }

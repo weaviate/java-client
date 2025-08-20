@@ -21,6 +21,7 @@ public record ReferenceDeleteRequest(String fromUuid, String fromProperty, Refer
             request -> Collections.emptyMap(),
             request -> JSON.serialize(request.reference)),
         add -> add
-            .consistencyLevel(Location.QUERY));
+            .consistencyLevel(Location.QUERY)
+            .tenant(Location.QUERY));
   }
 }

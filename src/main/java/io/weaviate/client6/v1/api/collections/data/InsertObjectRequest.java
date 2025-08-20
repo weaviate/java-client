@@ -27,8 +27,10 @@ public record InsertObjectRequest<T>(WeaviateObject<T, Reference, ObjectMetadata
             request -> "POST",
             request -> "/objects/",
             request -> Collections.emptyMap(),
-            request -> JSON.serialize(request.object, TypeToken.getParameterized(
-                WeaviateObject.class, collection.typeToken().getType(), Reference.class, ObjectMetadata.class)),
+            request -> JSON.serialize(
+                new WriteWeaviateObject<>(request.object, defaults.tenant()),
+                TypeToken.getParameterized(
+                    WriteWeaviateObject.class, collection.typeToken().getType())),
             (statusCode, response) -> JSON.deserialize(response,
                 (TypeToken<WeaviateObject<T, Object, ObjectMetadata>>) TypeToken.getParameterized(
                     WeaviateObject.class, collection.typeToken().getType(), Object.class, ObjectMetadata.class))),

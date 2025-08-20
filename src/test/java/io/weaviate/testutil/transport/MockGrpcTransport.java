@@ -23,23 +23,27 @@ public class MockGrpcTransport implements GrpcTransport {
 
   public void assertNext(AssertFunction... assertions) {
     var assertN = Math.min(assertions.length, requests.size());
-    for (var i = 0; i < assertN; i++) {
-      var req = requests.get(i);
-      String json;
-      try {
-        json = JsonFormat.printer().print(req);
-      } catch (InvalidProtocolBufferException e) {
-        throw new RuntimeException(e);
+    try {
+      for (var i = 0; i < assertN; i++) {
+        var req = requests.get(i);
+        String json;
+        try {
+          json = JsonFormat.printer().print(req);
+        } catch (InvalidProtocolBufferException e) {
+          throw new RuntimeException(e);
+        }
+        assertions[i].apply(json);
       }
-      assertions[i].apply(json);
+    } finally {
+      requests.clear();
     }
-    requests.clear();
   }
 
   @Override
   public <RequestT, RequestM, ReplyM, ResponseT> ResponseT performRequest(RequestT request,
       Rpc<RequestT, RequestM, ResponseT, ReplyM> rpc) {
-    requests.add((MessageOrBuilder) rpc.marshal(request));
+    var r = rpc.marshal(request);
+    requests.add((MessageOrBuilder) r);
     return null;
   }
 

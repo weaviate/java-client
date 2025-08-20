@@ -25,10 +25,12 @@ public record UpdateObjectRequest<T>(WeaviateObject<T, Reference, ObjectMetadata
             request -> "PATCH",
             request -> "/objects/" + collection.name() + "/" + request.object.metadata().uuid(),
             request -> Collections.emptyMap(),
-            request -> JSON.serialize(request.object, TypeToken.getParameterized(
-                WeaviateObject.class, collection.typeToken().getType(), Reference.class, ObjectMetadata.class))),
+            request -> JSON.serialize(
+                new WriteWeaviateObject<>(request.object, defaults.tenant()),
+                TypeToken.getParameterized(WriteWeaviateObject.class, collection.typeToken().getType()))),
         add -> add
-            .consistencyLevel(Location.QUERY));
+            .consistencyLevel(Location.QUERY)
+            .tenant(Location.BODY));
   }
 
   public static <T> UpdateObjectRequest<T> of(String collectionName, String uuid,

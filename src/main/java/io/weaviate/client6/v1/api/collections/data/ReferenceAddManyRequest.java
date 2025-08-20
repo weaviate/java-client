@@ -34,7 +34,8 @@ public record ReferenceAddManyRequest(List<BatchReference> references) {
               return new ReferenceAddManyResponse(errors);
             }),
         add -> add
-            .consistencyLevel(Location.QUERY));
+            .consistencyLevel(Location.QUERY)
+            .tenant(Location.QUERY));
   }
 
 }

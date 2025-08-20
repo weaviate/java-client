@@ -28,11 +28,14 @@ public class MockRestTransport implements RestTransport {
 
   public void assertNext(AssertFunction... assertions) {
     var assertN = Math.min(assertions.length, requests.size());
-    for (var i = 0; i < assertN; i++) {
-      var req = requests.get(i);
-      assertions[i].apply(req.method, req.requestUrl, req.body, req.queryParameters);
+    try {
+      for (var i = 0; i < assertN; i++) {
+        var req = requests.get(i);
+        assertions[i].apply(req.method, req.requestUrl, req.body, req.queryParameters);
+      }
+    } finally {
+      requests.clear();
     }
-    requests.clear();
   }
 
   @Override
