@@ -5,6 +5,8 @@ import java.util.function.Function;
 
 import com.google.gson.reflect.TypeToken;
 
+import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
+import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults.Location;
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
@@ -18,16 +20,20 @@ public record InsertObjectRequest<T>(WeaviateObject<T, Reference, ObjectMetadata
 
   @SuppressWarnings("unchecked")
   public static final <T> Endpoint<InsertObjectRequest<T>, WeaviateObject<T, Object, ObjectMetadata>> endpoint(
-      CollectionDescriptor<T> descriptor) {
-    return new SimpleEndpoint<>(
-        request -> "POST",
-        request -> "/objects/",
-        request -> Collections.emptyMap(),
-        request -> JSON.serialize(request.object, TypeToken.getParameterized(
-            WeaviateObject.class, descriptor.typeToken().getType(), Reference.class, ObjectMetadata.class)),
-        (statusCode, response) -> JSON.deserialize(response,
-            (TypeToken<WeaviateObject<T, Object, ObjectMetadata>>) TypeToken.getParameterized(
-                WeaviateObject.class, descriptor.typeToken().getType(), Object.class, ObjectMetadata.class)));
+      CollectionDescriptor<T> collection,
+      CollectionHandleDefaults defaults) {
+    return defaults.endpoint(
+        new SimpleEndpoint<>(
+            request -> "POST",
+            request -> "/objects/",
+            request -> Collections.emptyMap(),
+            request -> JSON.serialize(request.object, TypeToken.getParameterized(
+                WeaviateObject.class, collection.typeToken().getType(), Reference.class, ObjectMetadata.class)),
+            (statusCode, response) -> JSON.deserialize(response,
+                (TypeToken<WeaviateObject<T, Object, ObjectMetadata>>) TypeToken.getParameterized(
+                    WeaviateObject.class, collection.typeToken().getType(), Object.class, ObjectMetadata.class))),
+        add -> add
+            .consistencyLevel(Location.QUERY));
   }
 
   public static <T> InsertObjectRequest<T> of(String collectionName, T properties) {
@@ -72,4 +78,5 @@ public record InsertObjectRequest<T>(WeaviateObject<T, Reference, ObjectMetadata
       return new InsertObjectRequest<>(this);
     }
   }
+
 }

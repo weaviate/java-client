@@ -16,48 +16,46 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 public record DeleteManyRequest(Where where, Boolean verbose, Boolean dryRun) {
 
   public static Rpc<DeleteManyRequest, WeaviateProtoBatchDelete.BatchDeleteRequest, DeleteManyResponse, WeaviateProtoBatchDelete.BatchDeleteReply> rpc(
-      CollectionDescriptor<?> collectionDescriptor,
+      CollectionDescriptor<?> collection,
       CollectionHandleDefaults defaults) {
-    return Rpc
-        .of(
-            request -> {
-              var message = WeaviateProtoBatchDelete.BatchDeleteRequest.newBuilder();
-              message.setCollection(collectionDescriptor.name());
+    return defaults.rpc(
+        Rpc
+            .of(
+                request -> {
+                  var message = WeaviateProtoBatchDelete.BatchDeleteRequest.newBuilder();
+                  message.setCollection(collection.name());
 
-              if (request.verbose != null) {
-                message.setVerbose(request.verbose);
-              }
-              if (request.dryRun != null) {
-                message.setDryRun(request.dryRun);
-              }
-              if (defaults.consistencyLevel() != null) {
-                defaults.consistencyLevel().appendTo(message);
-              }
+                  if (request.verbose != null) {
+                    message.setVerbose(request.verbose);
+                  }
+                  if (request.dryRun != null) {
+                    message.setDryRun(request.dryRun);
+                  }
 
-              var filters = WeaviateProtoBase.Filters.newBuilder();
-              request.where.appendTo(filters);
-              message.setFilters(filters);
+                  var filters = WeaviateProtoBase.Filters.newBuilder();
+                  request.where.appendTo(filters);
+                  message.setFilters(filters);
 
-              return message.build();
-            },
-            reply -> {
-              var objects = reply.getObjectsList()
-                  .stream()
-                  .map(obj -> new DeleteManyResponse.DeletedObject(
-                      ByteStringUtil.decodeUuid(obj.getUuid()).toString(),
-                      obj.getSuccessful(),
-                      obj.getError()))
-                  .toList();
+                  return message.build();
+                },
+                reply -> {
+                  var objects = reply.getObjectsList()
+                      .stream()
+                      .map(obj -> new DeleteManyResponse.DeletedObject(
+                          ByteStringUtil.decodeUuid(obj.getUuid()).toString(),
+                          obj.getSuccessful(),
+                          obj.getError()))
+                      .toList();
 
-              return new DeleteManyResponse(
-                  reply.getTook(),
-                  reply.getFailed(),
-                  reply.getMatches(),
-                  reply.getSuccessful(),
-                  objects);
-            },
-            () -> WeaviateBlockingStub::batchDelete,
-            () -> WeaviateFutureStub::batchDelete);
+                  return new DeleteManyResponse(
+                      reply.getTook(),
+                      reply.getFailed(),
+                      reply.getMatches(),
+                      reply.getSuccessful(),
+                      objects);
+                },
+                () -> WeaviateBlockingStub::batchDelete,
+                () -> WeaviateFutureStub::batchDelete));
   }
 
   public static DeleteManyRequest of(Where where) {

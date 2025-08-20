@@ -1,11 +1,26 @@
 package io.weaviate.client6.v1.api.collections;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
+
+import com.google.common.util.concurrent.ListenableFuture;
 
 import io.weaviate.client6.v1.api.collections.query.ConsistencyLevel;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
+import io.weaviate.client6.v1.internal.grpc.Rpc;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateBlockingStub;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateFutureStub;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatchDelete;
+import io.weaviate.client6.v1.internal.rest.Endpoint;
+import io.weaviate.client6.v1.internal.rest.EndpointBase;
+import io.weaviate.client6.v1.internal.rest.JsonEndpoint;
 
 public record CollectionHandleDefaults(ConsistencyLevel consistencyLevel) {
+  private static final String CONSISTENCY_LEVEL = "consistency_level";
+
   /**
    * Set default values for query / aggregation requests.
    *
@@ -32,6 +47,7 @@ public record CollectionHandleDefaults(ConsistencyLevel consistencyLevel) {
   public static final class Builder implements ObjectBuilder<CollectionHandleDefaults> {
     private ConsistencyLevel consistencyLevel;
 
+    /** Set default consistency level for this collection handle. */
     public Builder consistencyLevel(ConsistencyLevel consistencyLevel) {
       this.consistencyLevel = consistencyLevel;
       return this;
@@ -40,6 +56,158 @@ public record CollectionHandleDefaults(ConsistencyLevel consistencyLevel) {
     @Override
     public CollectionHandleDefaults build() {
       return new CollectionHandleDefaults(this);
+    }
+  }
+
+  public <RequestT, ResponseT> Endpoint<RequestT, ResponseT> endpoint(Endpoint<RequestT, ResponseT> ep,
+      Function<EndpointBuilder<RequestT, ResponseT>, ObjectBuilder<Endpoint<RequestT, ResponseT>>> fn) {
+    return fn.apply(new EndpointBuilder<>(ep)).build();
+  }
+
+  public <RequestT, RequestM, ResponseT, ReplyM> Rpc<RequestT, RequestM, ResponseT, ReplyM> rpc(
+      Rpc<RequestT, RequestM, ResponseT, ReplyM> rpc) {
+    return new ContextRpc<>(rpc);
+  }
+
+  /** Which part of the request a parameter should be added to. */
+  public static enum Location {
+    /** Query string. */
+    QUERY,
+    /**
+     * Request body. {@code RequestT} must implement {@link WithDefaults} for the
+     * changes to be applied.
+     */
+    BODY;
+  }
+
+  public static interface WithDefaults<SelfT extends WithDefaults<SelfT>> {
+    ConsistencyLevel consistencyLevel();
+
+    SelfT withConsistencyLevel(ConsistencyLevel consistencyLevel);
+  }
+
+  private class ContextEndpoint<RequestT, ResponseT> extends EndpointBase<RequestT, ResponseT>
+      implements JsonEndpoint<RequestT, ResponseT> {
+
+    private final Location consistencyLevelLoc;
+    private final Endpoint<RequestT, ResponseT> endpoint;
+
+    ContextEndpoint(EndpointBuilder<RequestT, ResponseT> builder) {
+      super(builder.endpoint::method,
+          builder.endpoint::requestUrl,
+          builder.endpoint::queryParameters,
+          builder.endpoint::body);
+      this.consistencyLevelLoc = builder.consistencyLevelLoc;
+      this.endpoint = builder.endpoint;
+    }
+
+    /** Return consistencyLevel of the enclosing CollectionHandleDefaults object. */
+    private ConsistencyLevel consistencyLevel() {
+      return CollectionHandleDefaults.this.consistencyLevel;
+    }
+
+    @Override
+    public Map<String, Object> queryParameters(RequestT request) {
+      // Copy the map, as it's most likely unmodifiable.
+      var query = new HashMap<>(super.queryParameters(request));
+      if (consistencyLevel() != null && consistencyLevelLoc == Location.QUERY) {
+        query.putIfAbsent(CONSISTENCY_LEVEL, consistencyLevel());
+      }
+      return query;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public String body(RequestT request) {
+      if (request instanceof WithDefaults wd) {
+        if (wd.consistencyLevel() == null) {
+          wd = wd.withConsistencyLevel(consistencyLevel());
+        }
+        // This cast is safe as long as `wd` returns its own type,
+        // which it does as per the interface contract.
+        request = (RequestT) wd;
+      }
+      return super.body(request);
+    }
+
+    @Override
+    public ResponseT deserializeResponse(int statusCode, String responseBody) {
+      return EndpointBase.deserializeResponse(endpoint, statusCode, responseBody);
+    }
+  }
+
+  /**
+   * EndpointBuilder configures how CollectionHandleDefautls
+   * are added to a REST request.
+   */
+  public class EndpointBuilder<RequestT, ResponseT> implements ObjectBuilder<Endpoint<RequestT, ResponseT>> {
+    private final Endpoint<RequestT, ResponseT> endpoint;
+
+    private Location consistencyLevelLoc;
+
+    EndpointBuilder(Endpoint<RequestT, ResponseT> ep) {
+      this.endpoint = ep;
+    }
+
+    /** Control which part of the request to add default consistency level to. */
+    public EndpointBuilder<RequestT, ResponseT> consistencyLevel(Location loc) {
+      this.consistencyLevelLoc = loc;
+      return this;
+    }
+
+    @Override
+    public Endpoint<RequestT, ResponseT> build() {
+      return new ContextEndpoint<>(this);
+    }
+  }
+
+  private class ContextRpc<RequestT, RequestM, ResponseT, ReplyM>
+      implements Rpc<RequestT, RequestM, ResponseT, ReplyM> {
+
+    private final Rpc<RequestT, RequestM, ResponseT, ReplyM> rpc;
+
+    ContextRpc(Rpc<RequestT, RequestM, ResponseT, ReplyM> rpc) {
+      this.rpc = rpc;
+    }
+
+    /** Return consistencyLevel of the enclosing CollectionHandleDefaults object. */
+    private ConsistencyLevel consistencyLevel() {
+      return CollectionHandleDefaults.this.consistencyLevel;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public RequestM marshal(RequestT request) {
+      var message = rpc.marshal(request);
+      if (message instanceof WeaviateProtoBatchDelete.BatchDeleteRequest msg) {
+        var b = msg.toBuilder();
+        if (!msg.hasConsistencyLevel() && consistencyLevel() != null) {
+          consistencyLevel().appendTo(b);
+          return (RequestM) b.build();
+        }
+      } else if (message instanceof WeaviateProtoBatch.BatchObjectsRequest msg) {
+        var b = msg.toBuilder();
+        if (!msg.hasConsistencyLevel() && consistencyLevel() != null) {
+          consistencyLevel().appendTo(b);
+          return (RequestM) b.build();
+        }
+      }
+      return message;
+    }
+
+    @Override
+    public ResponseT unmarshal(ReplyM reply) {
+      return rpc.unmarshal(reply);
+    }
+
+    @Override
+    public BiFunction<WeaviateBlockingStub, RequestM, ReplyM> method() {
+      return rpc.method();
+    }
+
+    @Override
+    public BiFunction<WeaviateFutureStub, RequestM, ListenableFuture<ReplyM>> methodAsync() {
+      return rpc.methodAsync();
     }
   }
 }

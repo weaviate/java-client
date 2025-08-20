@@ -27,7 +27,7 @@ public class WeaviateQueryClient<T>
   protected Optional<WeaviateObject<T, Object, QueryMetadata>> byId(ById byId) {
     var request = new QueryRequest(byId, null);
     var result = this.grpcTransport.performRequest(request, QueryRequest.rpc(collection, defaults));
-    return optionalFirst(result.objects());
+    return optionalFirst(result);
 
   }
 

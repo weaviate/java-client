@@ -14,7 +14,7 @@ public abstract class EndpointBase<RequestT, ResponseT> implements Endpoint<Requ
   protected final Function<RequestT, String> method;
   protected final Function<RequestT, String> requestUrl;
   protected final Function<RequestT, String> body;
-  protected final Function<RequestT, Map<String, String>> queryParameters;
+  protected final Function<RequestT, Map<String, Object>> queryParameters;
 
   @SuppressWarnings("unchecked")
   protected static <RequestT> Function<RequestT, String> nullBody() {
@@ -24,7 +24,7 @@ public abstract class EndpointBase<RequestT, ResponseT> implements Endpoint<Requ
   public EndpointBase(
       Function<RequestT, String> method,
       Function<RequestT, String> requestUrl,
-      Function<RequestT, Map<String, String>> queryParameters,
+      Function<RequestT, Map<String, Object>> queryParameters,
       Function<RequestT, String> body) {
     this.method = method;
     this.requestUrl = requestUrl;
@@ -43,7 +43,7 @@ public abstract class EndpointBase<RequestT, ResponseT> implements Endpoint<Requ
   }
 
   @Override
-  public Map<String, String> queryParameters(RequestT request) {
+  public Map<String, Object> queryParameters(RequestT request) {
     return queryParameters.apply(request);
   }
 
@@ -65,6 +65,19 @@ public abstract class EndpointBase<RequestT, ResponseT> implements Endpoint<Requ
 
     }
     return response.errors.get(0).text();
+  }
+
+  @SuppressWarnings("unchecked")
+  public static <ResponseT> ResponseT deserializeResponse(Endpoint<?, ResponseT> endpoint, int statusCode,
+      String responseBody) {
+    if (endpoint instanceof JsonEndpoint json) {
+      return (ResponseT) json.deserializeResponse(statusCode, responseBody);
+    } else if (endpoint instanceof BooleanEndpoint bool) {
+      return (ResponseT) ((Boolean) bool.getResult(statusCode));
+    }
+
+    // TODO: make it a WeaviateTransportException
+    throw new RuntimeException("Unhandled endpoint type " + endpoint.getClass().getSimpleName());
   }
 
   static record ErrorResponse(@SerializedName("error") List<ErrorMessage> errors) {
