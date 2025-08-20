@@ -52,6 +52,9 @@ class AuthenticationInterceptor implements HttpRequestInterceptor, AsyncExecChai
   public void execute(HttpRequest request, AsyncEntityProducer entityProducer, Scope scope, AsyncExecChain chain,
       AsyncExecCallback callback) throws HttpException, IOException {
 
+    // CloseableHttpClient is backed by an internal I/O reactor, which runs its own
+    // threads for non-blocking I/O. It does not expose that executor, so we must
+    // schedule CompletableFutures on the default AsyncTokenProvider's executor.
     tokenProviderAsync.getToken().whenComplete((tok, error) -> {
       if (error != null) {
         callback.failed(error instanceof Exception ex ? ex : new RuntimeException(error));
