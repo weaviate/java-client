@@ -128,18 +128,9 @@ public class WeaviateDataClientTest {
 
   public static Object[][] grpcTestCases() {
     return new Object[][] {
-        {
-            "object exists",
-            (Act) client -> client.exists("test-uuid"),
-        },
-        {
-            "insert many",
-            (Act) client -> client.insertMany(),
-        },
-        {
-            "delete many",
-            (Act) client -> client.deleteMany(),
-        },
+        { "object exists", (Act) client -> client.exists("test-uuid") },
+        { "insert many", (Act) client -> client.insertMany() },
+        { "delete many", (Act) client -> client.deleteMany() },
     };
   }
 

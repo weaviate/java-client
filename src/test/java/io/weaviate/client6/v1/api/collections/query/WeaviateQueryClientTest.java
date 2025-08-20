@@ -51,58 +51,19 @@ public class WeaviateQueryClientTest {
 
   public static Object[][] grpcTestCases() {
     return new Object[][] {
-        {
-            "get by id",
-            (Act) client -> client.byId("test-uuid")
-        },
-        {
-            "fetch objects",
-            (Act) client -> client.fetchObjects(ObjectBuilder.identity()),
-        },
-        {
-            "bm25",
-            (Act) client -> client.bm25("red ballon"),
-        },
-        {
-            "hybrid",
-            (Act) client -> client.hybrid("red ballon"),
-        },
-        {
-            "nearVector",
-            (Act) client -> client.nearVector(new float[] {}),
-        },
-        {
-            "nearText",
-            (Act) client -> client.nearText("weather in Arizona"),
-        },
-        {
-            "nearObject",
-            (Act) client -> client.nearObject("test-uuid"),
-        },
-        {
-            "nearImage",
-            (Act) client -> client.nearImage("img.jpeg"),
-        },
-        {
-            "nearAudio",
-            (Act) client -> client.nearAudio("song.mp3"),
-        },
-        {
-            "nearVideo",
-            (Act) client -> client.nearVideo("clip.mp4"),
-        },
-        {
-            "nearDepth",
-            (Act) client -> client.nearDepth("20.000 leagues"),
-        },
-        {
-            "nearThermal",
-            (Act) client -> client.nearThermal("Fahrenheit 451"),
-        },
-        {
-            "nearImu",
-            (Act) client -> client.nearImu("6 m/s"),
-        },
+        { "get by id", (Act) client -> client.byId("test-uuid") },
+        { "fetch objects", (Act) client -> client.fetchObjects(ObjectBuilder.identity()) },
+        { "bm25", (Act) client -> client.bm25("red ballon") },
+        { "hybrid", (Act) client -> client.hybrid("red ballon") },
+        { "nearVector", (Act) client -> client.nearVector(new float[] {}) },
+        { "nearText", (Act) client -> client.nearText("weather in Arizona") },
+        { "nearObject", (Act) client -> client.nearObject("test-uuid") },
+        { "nearImage", (Act) client -> client.nearImage("img.jpeg") },
+        { "nearAudio", (Act) client -> client.nearAudio("song.mp3") },
+        { "nearVideo", (Act) client -> client.nearVideo("clip.mp4") },
+        { "nearDepth", (Act) client -> client.nearDepth("20.000 leagues") },
+        { "nearThermal", (Act) client -> client.nearThermal("Fahrenheit 451") },
+        { "nearImu", (Act) client -> client.nearImu("6 m/s") },
     };
   }
 
