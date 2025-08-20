@@ -59,7 +59,7 @@
     <logback.version>1.5.18</logback.version>
     <mock-server.version>5.14.0</mock-server.version>
     <jackson.version>2.19.1</jackson.version>
-    <oauth2-oidc-sdk.version>11.26</oauth2-oidc-sdk.version>
+    <oauth2-oidc-sdk.version>11.27</oauth2-oidc-sdk.version>
     <mock-server.version>5.15.0</mock-server.version>
     <protobuf.java.version>4.31.1</protobuf.java.version>
     <protobuf.java-util.version>4.31.1</protobuf.java-util.version>
