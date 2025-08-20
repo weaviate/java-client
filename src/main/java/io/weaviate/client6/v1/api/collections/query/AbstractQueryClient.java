@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
@@ -49,11 +50,14 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
   /**
    * Retrieve the first result from query response if any.
    *
-   * @param objects A list of objects, normally {@link QueryResponse#objects}.
+   * @param response Query response.
    * @return An object from the list or empty {@link Optional}.
    */
-  protected final <T> Optional<T> optionalFirst(List<T> objects) {
-    return objects.isEmpty() ? Optional.empty() : Optional.ofNullable(objects.get(0));
+  protected final <T> Optional<WeaviateObject<T, Object, QueryMetadata>> optionalFirst(QueryResponse<T> response) {
+    return response == null || response.objects().isEmpty()
+        ? Optional.empty()
+        : Optional.ofNullable(response.objects().get(0));
+
   }
 
   // Object queries -----------------------------------------------------------

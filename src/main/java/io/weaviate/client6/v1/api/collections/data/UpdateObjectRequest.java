@@ -5,6 +5,8 @@ import java.util.function.Function;
 
 import com.google.gson.reflect.TypeToken;
 
+import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
+import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults.Location;
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
@@ -16,13 +18,17 @@ import io.weaviate.client6.v1.internal.rest.SimpleEndpoint;
 
 public record UpdateObjectRequest<T>(WeaviateObject<T, Reference, ObjectMetadata> object) {
 
-  static final <T> Endpoint<UpdateObjectRequest<T>, Void> endpoint(CollectionDescriptor<T> collectionDescriptor) {
-    return SimpleEndpoint.sideEffect(
-        request -> "PATCH",
-        request -> "/objects/" + collectionDescriptor.name() + "/" + request.object.metadata().uuid(),
-        request -> Collections.emptyMap(),
-        request -> JSON.serialize(request.object, TypeToken.getParameterized(
-            WeaviateObject.class, collectionDescriptor.typeToken().getType(), Reference.class, ObjectMetadata.class)));
+  static final <T> Endpoint<UpdateObjectRequest<T>, Void> endpoint(CollectionDescriptor<T> collection,
+      CollectionHandleDefaults defaults) {
+    return defaults.endpoint(
+        SimpleEndpoint.sideEffect(
+            request -> "PATCH",
+            request -> "/objects/" + collection.name() + "/" + request.object.metadata().uuid(),
+            request -> Collections.emptyMap(),
+            request -> JSON.serialize(request.object, TypeToken.getParameterized(
+                WeaviateObject.class, collection.typeToken().getType(), Reference.class, ObjectMetadata.class))),
+        add -> add
+            .consistencyLevel(Location.QUERY));
   }
 
   public static <T> UpdateObjectRequest<T> of(String collectionName, String uuid,

@@ -8,7 +8,7 @@ public class BooleanEndpoint<RequestT> extends EndpointBase<RequestT, Boolean> {
   public BooleanEndpoint(
       Function<RequestT, String> method,
       Function<RequestT, String> requestUrl,
-      Function<RequestT, Map<String, String>> queryParameters,
+      Function<RequestT, Map<String, Object>> queryParameters,
       Function<RequestT, String> body) {
     super(method, requestUrl, queryParameters, body);
   }

@@ -40,53 +40,50 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
       List<WeaviateObject<T, Reference, ObjectMetadata>> insertObjects,
       CollectionDescriptor<T> collectionsDescriptor,
       CollectionHandleDefaults defaults) {
-    return Rpc.of(
-        request -> {
-          var message = WeaviateProtoBatch.BatchObjectsRequest.newBuilder();
+    return defaults.rpc(
+        Rpc.of(
+            request -> {
+              var message = WeaviateProtoBatch.BatchObjectsRequest.newBuilder();
 
-          var batch = request.objects.stream().map(obj -> {
-            var batchObject = WeaviateProtoBatch.BatchObject.newBuilder();
-            buildObject(batchObject, obj, collectionsDescriptor);
-            return batchObject.build();
-          }).toList();
+              var batch = request.objects.stream().map(obj -> {
+                var batchObject = WeaviateProtoBatch.BatchObject.newBuilder();
+                buildObject(batchObject, obj, collectionsDescriptor);
+                return batchObject.build();
+              }).toList();
 
-          if (defaults.consistencyLevel() != null) {
-            defaults.consistencyLevel().appendTo(message);
-          }
+              message.addAllObjects(batch);
+              return message.build();
+            },
+            response -> {
+              var insertErrors = response.getErrorsList();
 
-          message.addAllObjects(batch);
-          return message.build();
-        },
-        response -> {
-          var insertErrors = response.getErrorsList();
+              var responses = new ArrayList<InsertManyResponse.InsertObject>(insertObjects.size());
+              var errors = new ArrayList<String>(insertErrors.size());
+              var uuids = new ArrayList<String>();
 
-          var responses = new ArrayList<InsertManyResponse.InsertObject>(insertObjects.size());
-          var errors = new ArrayList<String>(insertErrors.size());
-          var uuids = new ArrayList<String>();
+              var failed = insertErrors.stream()
+                  .collect(Collectors.toMap(err -> err.getIndex(), err -> err.getError()));
 
-          var failed = insertErrors.stream()
-              .collect(Collectors.toMap(err -> err.getIndex(), err -> err.getError()));
+              var iter = insertObjects.listIterator();
+              while (iter.hasNext()) {
+                var idx = iter.nextIndex();
+                var next = iter.next();
+                var uuid = next.metadata() != null ? next.metadata().uuid() : null;
 
-          var iter = insertObjects.listIterator();
-          while (iter.hasNext()) {
-            var idx = iter.nextIndex();
-            var next = iter.next();
-            var uuid = next.metadata() != null ? next.metadata().uuid() : null;
+                if (failed.containsKey(idx)) {
+                  var err = failed.get(idx);
+                  errors.add(err);
+                  responses.add(new InsertManyResponse.InsertObject(uuid, false, err));
+                } else {
+                  uuids.add(uuid);
+                  responses.add(new InsertManyResponse.InsertObject(uuid, true, null));
+                }
+              }
 
-            if (failed.containsKey(idx)) {
-              var err = failed.get(idx);
-              errors.add(err);
-              responses.add(new InsertManyResponse.InsertObject(uuid, false, err));
-            } else {
-              uuids.add(uuid);
-              responses.add(new InsertManyResponse.InsertObject(uuid, true, null));
-            }
-          }
-
-          return new InsertManyResponse(response.getTook(), responses, uuids, errors);
-        },
-        () -> WeaviateBlockingStub::batchObjects,
-        () -> WeaviateFutureStub::batchObjects);
+              return new InsertManyResponse(response.getTook(), responses, uuids, errors);
+            },
+            () -> WeaviateBlockingStub::batchObjects,
+            () -> WeaviateFutureStub::batchObjects));
   }
 
   public static <T> void buildObject(WeaviateProtoBatch.BatchObject.Builder object,

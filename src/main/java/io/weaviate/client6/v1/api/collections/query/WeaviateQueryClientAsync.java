@@ -29,7 +29,7 @@ public class WeaviateQueryClientAsync<T>
       ById byId) {
     var request = new QueryRequest(byId, null);
     var result = this.grpcTransport.performRequestAsync(request, QueryRequest.rpc(collection, defaults));
-    return result.thenApply(r -> optionalFirst(r.objects()));
+    return result.thenApply(this::optionalFirst);
   }
 
   @Override
