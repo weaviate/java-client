@@ -209,8 +209,11 @@ public record CollectionHandleDefaults(ConsistencyLevel consistencyLevel, String
         var b = msg.toBuilder();
         if (!msg.hasConsistencyLevel() && consistencyLevel() != null) {
           consistencyLevel().appendTo(b);
-          return (RequestM) b.build();
         }
+        if (msg.getTenant().isEmpty() && tenant() != null) {
+          b.setTenant(tenant());
+        }
+        return (RequestM) b.build();
       } else if (message instanceof WeaviateProtoAggregate.AggregateRequest msg) {
         var b = msg.toBuilder();
         if (msg.getTenant().isEmpty() && tenant() != null) {
