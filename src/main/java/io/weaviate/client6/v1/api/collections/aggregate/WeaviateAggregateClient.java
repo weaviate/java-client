@@ -15,11 +15,11 @@ public class WeaviateAggregateClient extends AbstractAggregateClient<AggregateRe
 
   protected final AggregateResponse performRequest(Aggregation aggregation) {
     var request = new AggregateRequest(aggregation, null);
-    return this.transport.performRequest(request, AggregateRequest.rpc(collection));
+    return this.transport.performRequest(request, AggregateRequest.rpc(collection, defaults));
   }
 
   protected final AggregateResponseGrouped performRequest(Aggregation aggregation, GroupBy groupBy) {
     var request = new AggregateRequest(aggregation, groupBy);
-    return this.transport.performRequest(request, AggregateRequest.grouped(collection));
+    return this.transport.performRequest(request, AggregateRequest.grouped(collection, defaults));
   }
 }
