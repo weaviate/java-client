@@ -89,8 +89,8 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
   private static <T> WeaviateObject<T, Object, QueryMetadata> unmarshalResultObject(
       WeaviateProtoSearchGet.PropertiesResult propertiesResult,
       WeaviateProtoSearchGet.MetadataResult metadataResult,
-      CollectionDescriptor<T> descriptor) {
-    var object = unmarshalWithReferences(propertiesResult, metadataResult, descriptor);
+      CollectionDescriptor<T> collection) {
+    var object = unmarshalWithReferences(propertiesResult, metadataResult, collection);
     var metadata = new QueryMetadata.Builder()
         .uuid(object.metadata().uuid())
         .vectors(object.metadata().vectors());
@@ -113,7 +113,7 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
     if (metadataResult.getExplainScorePresent()) {
       metadata.explainScore(metadataResult.getExplainScore());
     }
-    return new WeaviateObject<>(descriptor.name(), object.properties(), object.references(), metadata.build());
+    return new WeaviateObject<>(collection.name(), object.properties(), object.references(), metadata.build());
   }
 
   private static <T> WeaviateObject<T, Object, ObjectMetadata> unmarshalWithReferences(

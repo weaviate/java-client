@@ -75,14 +75,18 @@ public class WeaviateQueryClientTest {
     // Arrange
     var collection = CollectionDescriptor.ofMap("Things");
     var defaults = CollectionHandleDefaults.of(d -> d
-        .consistencyLevel(ConsistencyLevel.ONE));
+        .consistencyLevel(ConsistencyLevel.ONE)
+        .tenant("john_doe"));
     var client = new WeaviateQueryClient<Map<String, Object>>(collection, grpc, defaults);
 
     // Act
     act.apply(client);
 
     // Assert
-    grpc.assertNext(json -> assertJsonHasValue(json, "consistencyLevel",
-        WeaviateProtoBase.ConsistencyLevel.CONSISTENCY_LEVEL_ONE.toString()));
+    grpc.assertNext(json -> {
+      assertJsonHasValue(json, "tenant", "john_doe");
+      assertJsonHasValue(json, "consistencyLevel",
+          WeaviateProtoBase.ConsistencyLevel.CONSISTENCY_LEVEL_ONE.toString());
+    });
   }
 }
