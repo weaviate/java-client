@@ -28,14 +28,14 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
   static <T> Rpc<QueryRequest, WeaviateProtoSearchGet.SearchRequest, QueryResponse<T>, WeaviateProtoSearchGet.SearchReply> rpc(
       CollectionDescriptor<T> collection,
       CollectionHandleDefaults defaults) {
-    return Rpc.of(
+    return defaults.rpc(Rpc.of(
         request -> {
           var message = WeaviateProtoSearchGet.SearchRequest.newBuilder();
           message.setUses127Api(true);
           message.setUses125Api(true);
           message.setUses123Api(true);
           message.setCollection(collection.name());
-          request.operator.appendTo(message, defaults);
+          request.operator.appendTo(message);
           if (request.groupBy != null) {
             request.groupBy.appendTo(message);
           }
@@ -51,7 +51,7 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
           return new QueryResponse<>(objects);
         },
         () -> WeaviateBlockingStub::search,
-        () -> WeaviateFutureStub::search);
+        () -> WeaviateFutureStub::search));
   }
 
   static <T> Rpc<QueryRequest, WeaviateProtoSearchGet.SearchRequest, QueryResponseGrouped<T>, WeaviateProtoSearchGet.SearchReply> grouped(
