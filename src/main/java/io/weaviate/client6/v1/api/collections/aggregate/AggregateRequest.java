@@ -16,13 +16,16 @@ public record AggregateRequest(Aggregation aggregation, GroupBy groupBy) {
   static <T> Rpc<AggregateRequest, WeaviateProtoAggregate.AggregateRequest, AggregateResponse, WeaviateProtoAggregate.AggregateReply> rpc(
       CollectionDescriptor<T> collection,
       CollectionHandleDefaults defaults) {
-    return defaults.rpc(Rpc.of(
+    return Rpc.of(
         request -> {
           var message = WeaviateProtoAggregate.AggregateRequest.newBuilder();
           message.setCollection(collection.name());
           request.aggregation.appendTo(message);
           if (request.groupBy != null) {
             request.groupBy.appendTo(message, collection.name());
+          }
+          if (defaults.tenant() != null) {
+            message.setTenant(defaults.tenant());
           }
           return message.build();
         },
@@ -41,7 +44,7 @@ public record AggregateRequest(Aggregation aggregation, GroupBy groupBy) {
           return result;
         },
         () -> WeaviateBlockingStub::aggregate,
-        () -> WeaviateFutureStub::aggregate));
+        () -> WeaviateFutureStub::aggregate);
   }
 
   static <T> Rpc<AggregateRequest, WeaviateProtoAggregate.AggregateRequest, AggregateResponseGrouped, WeaviateProtoAggregate.AggregateReply> grouped(

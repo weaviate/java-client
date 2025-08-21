@@ -38,58 +38,62 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
 
   public static <T> Rpc<InsertManyRequest<T>, WeaviateProtoBatch.BatchObjectsRequest, InsertManyResponse, WeaviateProtoBatch.BatchObjectsReply> rpc(
       List<WeaviateObject<T, Reference, ObjectMetadata>> insertObjects,
-      CollectionDescriptor<T> collectionsDescriptor,
+      CollectionDescriptor<T> collection,
       CollectionHandleDefaults defaults) {
-    return defaults.rpc(
-        Rpc.of(
-            request -> {
-              var message = WeaviateProtoBatch.BatchObjectsRequest.newBuilder();
+    return Rpc.of(
+        request -> {
+          var message = WeaviateProtoBatch.BatchObjectsRequest.newBuilder();
 
-              var batch = request.objects.stream().map(obj -> {
-                var batchObject = WeaviateProtoBatch.BatchObject.newBuilder();
-                buildObject(batchObject, obj, collectionsDescriptor);
-                return batchObject.build();
-              }).toList();
+          var batch = request.objects.stream().map(obj -> {
+            var batchObject = WeaviateProtoBatch.BatchObject.newBuilder();
+            buildObject(batchObject, obj, collection, defaults);
+            return batchObject.build();
+          }).toList();
 
-              message.addAllObjects(batch);
-              return message.build();
-            },
-            response -> {
-              var insertErrors = response.getErrorsList();
+          message.addAllObjects(batch);
 
-              var responses = new ArrayList<InsertManyResponse.InsertObject>(insertObjects.size());
-              var errors = new ArrayList<String>(insertErrors.size());
-              var uuids = new ArrayList<String>();
+          if (defaults.consistencyLevel() != null) {
+            defaults.consistencyLevel().appendTo(message);
+          }
+          return message.build();
+        },
+        response -> {
+          var insertErrors = response.getErrorsList();
 
-              var failed = insertErrors.stream()
-                  .collect(Collectors.toMap(err -> err.getIndex(), err -> err.getError()));
+          var responses = new ArrayList<InsertManyResponse.InsertObject>(insertObjects.size());
+          var errors = new ArrayList<String>(insertErrors.size());
+          var uuids = new ArrayList<String>();
 
-              var iter = insertObjects.listIterator();
-              while (iter.hasNext()) {
-                var idx = iter.nextIndex();
-                var next = iter.next();
-                var uuid = next.metadata() != null ? next.metadata().uuid() : null;
+          var failed = insertErrors.stream()
+              .collect(Collectors.toMap(err -> err.getIndex(), err -> err.getError()));
 
-                if (failed.containsKey(idx)) {
-                  var err = failed.get(idx);
-                  errors.add(err);
-                  responses.add(new InsertManyResponse.InsertObject(uuid, false, err));
-                } else {
-                  uuids.add(uuid);
-                  responses.add(new InsertManyResponse.InsertObject(uuid, true, null));
-                }
-              }
+          var iter = insertObjects.listIterator();
+          while (iter.hasNext()) {
+            var idx = iter.nextIndex();
+            var next = iter.next();
+            var uuid = next.metadata() != null ? next.metadata().uuid() : null;
 
-              return new InsertManyResponse(response.getTook(), responses, uuids, errors);
-            },
-            () -> WeaviateBlockingStub::batchObjects,
-            () -> WeaviateFutureStub::batchObjects));
+            if (failed.containsKey(idx)) {
+              var err = failed.get(idx);
+              errors.add(err);
+              responses.add(new InsertManyResponse.InsertObject(uuid, false, err));
+            } else {
+              uuids.add(uuid);
+              responses.add(new InsertManyResponse.InsertObject(uuid, true, null));
+            }
+          }
+
+          return new InsertManyResponse(response.getTook(), responses, uuids, errors);
+        },
+        () -> WeaviateBlockingStub::batchObjects,
+        () -> WeaviateFutureStub::batchObjects);
   }
 
   public static <T> void buildObject(WeaviateProtoBatch.BatchObject.Builder object,
       WeaviateObject<T, Reference, ObjectMetadata> insert,
-      CollectionDescriptor<T> collectionDescriptor) {
-    object.setCollection(collectionDescriptor.name());
+      CollectionDescriptor<T> collection,
+      CollectionHandleDefaults defaults) {
+    object.setCollection(collection.name());
 
     var metadata = insert.metadata();
     if (metadata != null) {
@@ -116,6 +120,9 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
             }).toList();
         object.addAllVectors(vectors);
       }
+      if (defaults.tenant() != null) {
+        object.setTenant(defaults.tenant());
+      }
     }
 
     var properties = WeaviateProtoBatch.BatchObject.Properties.newBuilder();
@@ -123,7 +130,7 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
     var singleRef = new ArrayList<WeaviateProtoBatch.BatchObject.SingleTargetRefProps>();
     var multiRef = new ArrayList<WeaviateProtoBatch.BatchObject.MultiTargetRefProps>();
 
-    collectionDescriptor
+    collection
         .propertiesReader(insert.properties()).readProperties()
         .entrySet().stream().forEach(entry -> {
           var value = entry.getValue();
