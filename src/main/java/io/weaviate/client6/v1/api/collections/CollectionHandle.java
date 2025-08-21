@@ -25,12 +25,12 @@ public class CollectionHandle<PropertiesT> {
   public CollectionHandle(
       RestTransport restTransport,
       GrpcTransport grpcTransport,
-      CollectionDescriptor<PropertiesT> collectionDescriptor,
+      CollectionDescriptor<PropertiesT> collection,
       CollectionHandleDefaults defaults) {
-    this.config = new WeaviateConfigClient(collectionDescriptor, restTransport, grpcTransport);
-    this.aggregate = new WeaviateAggregateClient(collectionDescriptor, grpcTransport, defaults);
-    this.query = new WeaviateQueryClient<>(collectionDescriptor, grpcTransport, defaults);
-    this.data = new WeaviateDataClient<>(collectionDescriptor, restTransport, grpcTransport, defaults);
+    this.config = new WeaviateConfigClient(collection, restTransport, grpcTransport);
+    this.aggregate = new WeaviateAggregateClient(collection, grpcTransport, defaults);
+    this.query = new WeaviateQueryClient<>(collection, grpcTransport, defaults);
+    this.data = new WeaviateDataClient<>(collection, restTransport, grpcTransport, defaults);
 
     this.defaults = defaults;
   }
