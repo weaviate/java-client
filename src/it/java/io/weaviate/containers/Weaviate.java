@@ -25,9 +25,12 @@ public class Weaviate extends WeaviateContainer {
   }
 
   /**
-   * Get a client for the current Weaviate container.
-   * As we aren't running tests in parallel at the moment,
-   * this is not made thread-safe.
+   * Create a new instance of WeaviateClient connected to this container if none
+   * exist. Get an existing client otherwise.
+   *
+   * The lifetime of this client is tied to that of its container, which means
+   * that you do not need to {@code close} it manually. It will only truly close
+   * after the parent Testcontainer is stopped.
    */
   public WeaviateClient getClient(Function<Config.Custom, ObjectBuilder<Config>> fn) {
     if (!isRunning()) {
@@ -56,6 +59,26 @@ public class Weaviate extends WeaviateContainer {
       }
     }
     return clientInstance;
+  }
+
+  /**
+   * Create a new instance of WeaviateClient connected to this container.
+   * Prefer using {@link #getClient} unless your test needs the initialization
+   * steps to run, e.g. OIDC authorization grant exchange.
+   */
+  public WeaviateClient getNewClient(Function<Config.Custom, ObjectBuilder<Config>> fn) {
+    if (!isRunning()) {
+      start();
+    }
+    var host = getHost();
+    var customFn = ObjectBuilder.partial(fn,
+        conn -> conn
+            .scheme("http")
+            .httpHost(host)
+            .grpcHost(host)
+            .httpPort(getMappedPort(8080))
+            .grpcPort(getMappedPort(50051)));
+    return WeaviateClient.custom(customFn);
   }
 
   public static Weaviate createDefault() {

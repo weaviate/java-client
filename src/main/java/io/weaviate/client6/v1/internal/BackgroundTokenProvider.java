@@ -56,7 +56,6 @@ public class BackgroundTokenProvider implements TokenProvider {
 
   @Override
   public void close() throws Exception {
-    System.out.println("BackgroundTokenProvider::close");
     exec.shutdown();
   }
 }

@@ -33,4 +33,11 @@ public class TokenTest {
         .as(token.toString())
         .isEqualTo(wantValid);
   }
+
+  @Test
+  public void test_expiryDeltaNonNegative() {
+    var t = Token.expireAfter("access_token", 90L);
+    var expireLater = t.withExpiryDelta(-10L);
+    Assertions.assertThat(expireLater.expiryDelta()).as("expiryDelta must be >= 0").isEqualTo(0L);
+  }
 }
