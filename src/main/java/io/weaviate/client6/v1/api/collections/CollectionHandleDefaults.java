@@ -9,9 +9,6 @@ import io.weaviate.client6.v1.api.collections.query.ConsistencyLevel;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record CollectionHandleDefaults(ConsistencyLevel consistencyLevel, String tenant) {
-  private static final String CONSISTENCY_LEVEL = "consistency_level";
-  private static final String TENANT = "tenant";
-
   /**
    * Set default values for query / aggregation requests.
    *
