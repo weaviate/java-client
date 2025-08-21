@@ -89,4 +89,17 @@ public class CollectionHandleAsync<PropertiesT> {
     return new CollectionHandleAsync<>(this, CollectionHandleDefaults.of(
         def -> def.consistencyLevel(consistencyLevel)));
   }
+
+  public String tenant() {
+    return defaults.tenant();
+  }
+
+  public CollectionHandleAsync<PropertiesT> withTenant(String tenant) {
+    return new CollectionHandleAsync<>(this, CollectionHandleDefaults.of(with -> with.tenant(tenant)));
+  }
+
+  public CollectionHandleAsync<PropertiesT> withDefaults(
+      Function<CollectionHandleDefaults.Builder, ObjectBuilder<CollectionHandleDefaults>> fn) {
+    return new CollectionHandleAsync<>(this, CollectionHandleDefaults.of(fn));
+  }
 }
