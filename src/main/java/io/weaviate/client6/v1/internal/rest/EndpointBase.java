@@ -67,19 +67,6 @@ public abstract class EndpointBase<RequestT, ResponseT> implements Endpoint<Requ
     return response.errors.get(0).text();
   }
 
-  @SuppressWarnings("unchecked")
-  public static <ResponseT> ResponseT deserializeResponse(Endpoint<?, ResponseT> endpoint, int statusCode,
-      String responseBody) {
-    if (endpoint instanceof JsonEndpoint json) {
-      return (ResponseT) json.deserializeResponse(statusCode, responseBody);
-    } else if (endpoint instanceof BooleanEndpoint bool) {
-      return (ResponseT) ((Boolean) bool.getResult(statusCode));
-    }
-
-    // TODO: make it a WeaviateTransportException
-    throw new RuntimeException("Unhandled endpoint type " + endpoint.getClass().getSimpleName());
-  }
-
   static record ErrorResponse(@SerializedName("error") List<ErrorMessage> errors) {
     private static record ErrorMessage(@SerializedName("message") String text) {
     }

@@ -165,13 +165,21 @@ public class DefaultRestTransport implements RestTransport {
     return _handleResponse(endpoint, method, url, statusCode, body);
   }
 
+  @SuppressWarnings("unchecked")
   private <ResponseT> ResponseT _handleResponse(Endpoint<?, ResponseT> endpoint, String method, String url,
       int statusCode, String body) {
     if (endpoint.isError(statusCode)) {
       var message = endpoint.deserializeError(statusCode, body);
       throw WeaviateApiException.http(method, url, statusCode, message);
     }
-    return EndpointBase.deserializeResponse(endpoint, statusCode, body);
+    if (endpoint instanceof JsonEndpoint json) {
+      return (ResponseT) json.deserializeResponse(statusCode, body);
+    } else if (endpoint instanceof BooleanEndpoint bool) {
+      return (ResponseT) ((Boolean) bool.getResult(statusCode));
+    }
+
+    // TODO: make it a WeaviateTransportException
+    throw new RuntimeException("Unhandled endpoint type " + endpoint.getClass().getSimpleName());
   }
 
   @Override
