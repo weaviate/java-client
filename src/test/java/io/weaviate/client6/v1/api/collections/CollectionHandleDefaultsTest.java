@@ -24,7 +24,8 @@ public class CollectionHandleDefaultsTest {
   /** All defaults are {@code null} if none were set. */
   @Test
   public void test_defaults() {
-    Assertions.assertThat(HANDLE_NONE.consistencyLevel()).isNull();
+    Assertions.assertThat(HANDLE_NONE.consistencyLevel()).as("default ConsistencyLevel").isNull();
+    Assertions.assertThat(HANDLE_NONE.tenant()).as("default tenant").isNull();
   }
 
   /**
@@ -39,13 +40,35 @@ public class CollectionHandleDefaultsTest {
   }
 
   /**
-   * {@link CollectionHandleAsync#withConsistencyLevel} should create a copy with
+   * {@link CollectionHandleAsync#withTenant} should create a copy with
    * different defaults but not modify the original.
    */
   @Test
   public void test_withConsistencyLevel_async() {
     var handle = HANDLE_NONE_ASYNC.withConsistencyLevel(ConsistencyLevel.QUORUM);
     Assertions.assertThat(handle.consistencyLevel()).isEqualTo(ConsistencyLevel.QUORUM);
+    Assertions.assertThat(HANDLE_NONE_ASYNC.consistencyLevel()).isNull();
+  }
+
+  /**
+   * {@link CollectionHandle#withTenant} should create a copy with
+   * different defaults but not modify the original.
+   */
+  @Test
+  public void test_withTenant() {
+    var handle = HANDLE_NONE.withTenant("john_doe");
+    Assertions.assertThat(handle.tenant()).isEqualTo("john_doe");
+    Assertions.assertThat(HANDLE_NONE.consistencyLevel()).isNull();
+  }
+
+  /**
+   * {@link CollectionHandleAsync#withTenant} should create a copy with
+   * different defaults but not modify the original.
+   */
+  @Test
+  public void test_withTenant_async() {
+    var handle = HANDLE_NONE_ASYNC.withTenant("john_doe");
+    Assertions.assertThat(handle.tenant()).isEqualTo("john_doe");
     Assertions.assertThat(HANDLE_NONE_ASYNC.consistencyLevel()).isNull();
   }
 }
