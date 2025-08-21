@@ -6,7 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public final class UrlEncoder {
+final class UrlEncoder {
 
   private static String encodeValue(Object value) {
     try {
@@ -16,11 +16,28 @@ public final class UrlEncoder {
     }
   }
 
+  /**
+   * Encodes each key-value pair into a URL-compatible query string, omitting any
+   * {@code null} or blank (in case of String parameter) values.
+   * Each value is represented by the return of its [@conde toString()} method.
+   *
+   * @return URL query string or empty string if the map was empty
+   *         or contained no valid parameters.
+   */
   public static String encodeQuery(Map<String, Object> queryParams) {
     if (queryParams == null || queryParams.isEmpty()) {
       return "";
     }
     return queryParams.entrySet().stream()
+        .filter(qp -> {
+          if (qp == null) {
+            return false;
+          }
+          if (qp.getValue() instanceof String str) {
+            return !str.isBlank();
+          }
+          return true;
+        })
         .map(qp -> qp.getKey() + "=" + encodeValue(qp.getValue()))
         .collect(Collectors.joining("&", "?", ""));
   }
