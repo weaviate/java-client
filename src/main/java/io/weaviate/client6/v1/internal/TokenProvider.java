@@ -37,11 +37,11 @@ public interface TokenProvider extends AutoCloseable {
      * A Token with {@link #expiresIn} of 10s and {@link #expiryDelta} of 3s
      * will be invalid 7s after being created.
      *
-     * @param expiryDelta Early expiry in seconds.
+     * @param expiryDelta Early expiry in seconds. A negative value is clamped to 0.
      * @return A Token identical to the source one, but with a different expiry.
      */
     public Token withExpiryDelta(long expiryDelta) {
-      return new Token(accessToken, refreshToken, createdAt, expiresIn, expiryDelta);
+      return new Token(accessToken, refreshToken, createdAt, expiresIn, Math.max(0, expiryDelta));
     }
 
     /** Create a token with a different refresh_token. */

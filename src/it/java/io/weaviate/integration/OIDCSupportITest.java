@@ -23,6 +23,8 @@ import io.weaviate.containers.Weaviate;
  * Running this test suite successfully requires talking to external services,
  * so tests will be skipped if we don't have internet. See
  * {@link #hasInternetConnection}.
+ * Additionally, {@code WCS_DUMMY_CI_PW} and {@code OKTA_CLIENT_SECRET}
+ * environment variables must be set.
  */
 public class OIDCSupportITest extends ConcurrentTest {
   private static final String WCS_DUMMY_CI_USERNAME = "oidc-test-user@weaviate.io";
@@ -47,14 +49,31 @@ public class OIDCSupportITest extends ConcurrentTest {
       .withOIDC(OKTA_CLIENT_ID, "https://dev-32300990.okta.com/oauth2/aus7e9kxbwYQB0eht5d7", "cid", "groups")
       .build();
 
+  /**
+   * Exchange a Resource Owner Password grant for a bearer token
+   * and authenticate with it.
+   */
   @Test
   public void test_bearerToken() throws Exception {
     Assume.assumeTrue("WCS_DUMMY_CI_PW is not set", WCS_DUMMY_CI_PW != null);
     Assume.assumeTrue("no internet connection", hasInternetConnection());
 
-    var t = SpyTokenProvider.stealToken();
-    var auth = Authentication.bearerToken(t.accessToken(), t.refreshToken(), t.expiresIn());
+    var passwordAuth = Authentication.resourceOwnerPassword(WCS_DUMMY_CI_USERNAME, WCS_DUMMY_CI_PW, List.of());
+    var t = SpyTokenProvider.stealToken(passwordAuth);
+    Assertions.assertThat(t.isValid()).as("bearer token is valid").isTrue();
+
+    // Expire this token immediately to force the client to fetch a new one.
+    var auth = SpyTokenProvider.spyOn(Authentication.bearerToken(t.accessToken(), t.refreshToken(), 0));
     pingWeaviate(wcsContainer, auth);
+
+    var newT = auth.getToken();
+    Assertions.assertThat(newT.accessToken())
+        .as("expect access_token was refreshed")
+        .isNotEqualTo(t.accessToken());
+
+    // Check that the new token authenticates requests.
+    pingWeaviate(wcsContainer, auth);
+    pingWeaviateAsync(wcsContainer, auth);
   }
 
   @Test
@@ -62,8 +81,24 @@ public class OIDCSupportITest extends ConcurrentTest {
     Assume.assumeTrue("WCS_DUMMY_CI_PW is not set", WCS_DUMMY_CI_PW != null);
     Assume.assumeTrue("no internet connection", hasInternetConnection());
 
-    var auth = Authentication.resourceOwnerPassword(WCS_DUMMY_CI_USERNAME, WCS_DUMMY_CI_PW, List.of());
+    // Check norwal resource owner password flow works.
+    var password = Authentication.resourceOwnerPassword(WCS_DUMMY_CI_USERNAME, WCS_DUMMY_CI_PW, List.of());
+    var auth = SpyTokenProvider.spyOn(password);
     pingWeaviate(wcsContainer, auth);
+    pingWeaviateAsync(wcsContainer, auth);
+
+    // Get the token obtained by the wrapped TokenProvider.
+    var t = auth.getToken();
+
+    // Now make all tokens expire immediately, forcing the client to refresh..
+    // Verify the new token is different from the one before.
+    auth.setExpiresIn(0);
+    pingWeaviate(wcsContainer, auth);
+
+    var newT = auth.getToken();
+    Assertions.assertThat(newT.accessToken())
+        .as("expect access_token was refreshed")
+        .isNotEqualTo(t.accessToken());
   }
 
   @Test
@@ -71,44 +106,55 @@ public class OIDCSupportITest extends ConcurrentTest {
     Assume.assumeTrue("OKTA_CLIENT_SECRET is not set", OKTA_CLIENT_SECRET != null);
     Assume.assumeTrue("no internet connection", hasInternetConnection());
 
-    var auth = Authentication.clientCredentials(OKTA_CLIENT_ID, OKTA_CLIENT_SECRET, List.of());
+    // Check norwal client credentials flow works.
+    var cc = Authentication.clientCredentials(OKTA_CLIENT_ID, OKTA_CLIENT_SECRET, List.of());
+    var auth = SpyTokenProvider.spyOn(cc);
     pingWeaviate(oktaContainer, auth);
+    pingWeaviateAsync(oktaContainer, auth);
+
+    // Get the token obtained by the wrapped TokenProvider.
+    var t = auth.getToken();
+
+    // Now make all tokens expire immediately, forcing the client to refresh..
+    // Verify the new token is different from the one before.
+    auth.setExpiresIn(0);
+    pingWeaviate(oktaContainer, auth);
+
+    var newT = auth.getToken();
+    Assertions.assertThat(newT.accessToken())
+        .as("expect access_token was refreshed")
+        .isNotEqualTo(t.accessToken());
   }
 
-  /**
-   * Test AuthenticationInterceptor (HTTP) / TokenCallCredentials (gRPC)
-   * work correctly in the async context.
-   */
-  @Test
-  public void test_clientCredentials_async() throws Exception {
-    Assume.assumeTrue("OKTA_CLIENT_SECRET is not set", OKTA_CLIENT_SECRET != null);
-    Assume.assumeTrue("no internet connection", hasInternetConnection());
-
-    var auth = Authentication.clientCredentials(OKTA_CLIENT_ID, OKTA_CLIENT_SECRET, List.of());
-    final var client = oktaContainer.getClient(conn -> conn.authentication(auth));
-    final var async = client.async();
-
-    try {
-      // Make an authenticated REST call
-      Assertions.assertThat(async.isLive().get()).isTrue();
+  /** Send an HTTP and gRPC requests using a "sync" client. */
+  private static void pingWeaviate(final Weaviate container, Authentication auth) throws Exception {
+    try (final var client = container.getNewClient(conn -> conn.authentication(auth))) {
+      // Make an authenticated HTTP call
+      Assertions.assertThat(client.isLive()).isTrue();
 
       // Make an authenticated gRPC call
-      var nsThings = ns("Things");
-      async.collections.create(nsThings);
-      var things = async.collections.use(nsThings);
+      var nsThings = unique("Things");
+      client.collections.create(nsThings);
+      var things = client.collections.use(nsThings);
       var randomUuid = UUID.randomUUID().toString();
-      Assertions.assertThat(things.data.exists(randomUuid).get()).isFalse();
-    } catch (Exception e) {
-      Assertions.fail(e);
-    } finally {
-      client.close();
-      async.close();
+      Assertions.assertThat(things.data.exists(randomUuid)).isFalse();
     }
   }
 
-  private static void pingWeaviate(final Weaviate container, Authentication auth) throws Exception {
-    try (final var client = container.getClient(conn -> conn.authentication(auth))) {
-      Assertions.assertThat(client.isLive()).isTrue();
+  /** Send an HTTP and gRPC requests using an "async" client. */
+  private static void pingWeaviateAsync(final Weaviate container, Authentication auth) throws Exception {
+    try (final var client = container.getNewClient(conn -> conn.authentication(auth))) {
+      try (final var async = client.async()) {
+        // Make an authenticated HTTP call
+        Assertions.assertThat(async.isLive().join()).isTrue();
+
+        // Make an authenticated gRPC call
+        var nsThings = unique("Things");
+        async.collections.create(nsThings).join();
+        var things = async.collections.use(nsThings);
+        var randomUuid = UUID.randomUUID().toString();
+        Assertions.assertThat(things.data.exists(randomUuid).join()).isFalse();
+      }
     }
   }
 
@@ -132,14 +178,19 @@ public class OIDCSupportITest extends ConcurrentTest {
    */
   private static class SpyTokenProvider implements Authentication, TokenProvider {
 
-    /** Exchange resource owner password for a token and return it. */
-    static Token stealToken() throws Exception {
-      var auth = Authentication.resourceOwnerPassword(WCS_DUMMY_CI_USERNAME, WCS_DUMMY_CI_PW, List.of());
-      var spy = new SpyTokenProvider(auth);
+    /** Spy on the TokenProvider returned by thie Authentication. */
+    static SpyTokenProvider spyOn(Authentication auth) {
+      return new SpyTokenProvider(auth);
+    }
+
+    /** Spy a token obtained by another TokenProvider. */
+    static Token stealToken(Authentication auth) throws Exception {
+      var spy = spyOn(auth);
       pingWeaviate(wcsContainer, spy);
       return spy.getToken();
     }
 
+    private Long expiresIn;
     private Authentication authentication;
     private TokenProvider tokenProvider;
 
@@ -155,7 +206,17 @@ public class OIDCSupportITest extends ConcurrentTest {
 
     @Override
     public Token getToken() {
-      return tokenProvider.getToken();
+      var t = tokenProvider.getToken();
+      if (expiresIn != null) {
+        t = Token.expireAfter(t.accessToken(), t.refreshToken(), expiresIn);
+      }
+      return t;
     }
+
+    /** Expire all tokens in {@code expiresIn} seconds. */
+    void setExpiresIn(long expiresIn) {
+      this.expiresIn = expiresIn;
+    }
+
   }
 }
