@@ -16,6 +16,11 @@ public class WeaviateAggregateClientAsync
     super(collection, transport, defaults);
   }
 
+  /** Copy constructor that sets new defaults. */
+  public WeaviateAggregateClientAsync(WeaviateAggregateClientAsync c, CollectionHandleDefaults defaults) {
+    super(c, defaults);
+  }
+
   protected final CompletableFuture<AggregateResponse> performRequest(Aggregation aggregation) {
     var request = new AggregateRequest(aggregation, null);
     return this.transport.performRequestAsync(request, AggregateRequest.rpc(collection, defaults));

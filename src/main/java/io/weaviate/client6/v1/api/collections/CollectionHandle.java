@@ -40,13 +40,13 @@ public class CollectionHandle<PropertiesT> {
 
   /** Copy constructor that sets new defaults. */
   private CollectionHandle(CollectionHandle<PropertiesT> c, CollectionHandleDefaults defaults) {
-    this.aggregate = c.aggregate;
-    this.tenants = c.tenants;
-
     this.config = new WeaviateConfigClient(c.config, defaults);
+    this.aggregate = new WeaviateAggregateClient(c.aggregate, defaults);
     this.query = new WeaviateQueryClient<>(c.query, defaults);
     this.data = new WeaviateDataClient<>(c.data, defaults);
     this.defaults = defaults;
+
+    this.tenants = c.tenants;
   }
 
   public Paginator<PropertiesT> paginate() {

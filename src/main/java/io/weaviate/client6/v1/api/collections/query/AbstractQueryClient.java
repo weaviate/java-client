@@ -23,9 +23,10 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
   }
 
   /** Copy constructor that sets new defaults. */
-  AbstractQueryClient(AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedResponseT> qc,
+  AbstractQueryClient(
+      AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedResponseT> c,
       CollectionHandleDefaults defaults) {
-    this(qc.collection, qc.grpcTransport, defaults);
+    this(c.collection, c.grpcTransport, defaults);
   }
 
   protected abstract SingleT byId(ById byId);
