@@ -43,13 +43,13 @@ public class CollectionHandleAsync<PropertiesT> {
 
   /** Copy constructor that sets new defaults. */
   private CollectionHandleAsync(CollectionHandleAsync<PropertiesT> c, CollectionHandleDefaults defaults) {
-    this.aggregate = c.aggregate;
-    this.tenants = c.tenants;
-
     this.config = new WeaviateConfigClientAsync(c.config, defaults);
+    this.aggregate = new WeaviateAggregateClientAsync(c.aggregate, defaults);
     this.query = new WeaviateQueryClientAsync<>(c.query, defaults);
     this.data = new WeaviateDataClientAsync<>(c.data, defaults);
     this.defaults = defaults;
+
+    this.tenants = c.tenants;
   }
 
   public AsyncPaginator<PropertiesT> paginate() {

@@ -32,6 +32,12 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
     this.defaults = defaults;
   }
 
+  AbstractAggregateClient(
+      AbstractAggregateClient<ResponseT, GroupedResponseT> c,
+      CollectionHandleDefaults defaults) {
+    this(c.collection, c.transport, defaults);
+  }
+
   protected abstract ResponseT performRequest(Aggregation aggregation);
 
   protected abstract GroupedResponseT performRequest(Aggregation aggregation, GroupBy groupBy);

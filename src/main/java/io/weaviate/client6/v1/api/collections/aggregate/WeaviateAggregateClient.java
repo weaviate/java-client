@@ -13,6 +13,11 @@ public class WeaviateAggregateClient extends AbstractAggregateClient<AggregateRe
     super(collection, transport, defaults);
   }
 
+  /** Copy constructor that sets new defaults. */
+  public WeaviateAggregateClient(WeaviateAggregateClient c, CollectionHandleDefaults defaults) {
+    super(c, defaults);
+  }
+
   protected final AggregateResponse performRequest(Aggregation aggregation) {
     var request = new AggregateRequest(aggregation, null);
     return this.transport.performRequest(request, AggregateRequest.rpc(collection, defaults));

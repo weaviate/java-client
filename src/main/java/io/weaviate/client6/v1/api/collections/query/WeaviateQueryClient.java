@@ -19,8 +19,8 @@ public class WeaviateQueryClient<T>
   }
 
   /** Copy constructor that sets new defaults. */
-  public WeaviateQueryClient(WeaviateQueryClient<T> qc, CollectionHandleDefaults defaults) {
-    super(qc, defaults);
+  public WeaviateQueryClient(WeaviateQueryClient<T> c, CollectionHandleDefaults defaults) {
+    super(c, defaults);
   }
 
   @Override
