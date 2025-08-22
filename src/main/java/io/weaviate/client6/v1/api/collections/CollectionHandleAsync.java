@@ -11,6 +11,7 @@ import io.weaviate.client6.v1.api.collections.data.WeaviateDataClientAsync;
 import io.weaviate.client6.v1.api.collections.pagination.AsyncPaginator;
 import io.weaviate.client6.v1.api.collections.query.ConsistencyLevel;
 import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClientAsync;
+import io.weaviate.client6.v1.api.collections.tenants.WeaviateTenantsClientAsync;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
@@ -21,19 +22,21 @@ public class CollectionHandleAsync<PropertiesT> {
   public final WeaviateDataClientAsync<PropertiesT> data;
   public final WeaviateQueryClientAsync<PropertiesT> query;
   public final WeaviateAggregateClientAsync aggregate;
+  public final WeaviateTenantsClientAsync tenants;
 
   private final CollectionHandleDefaults defaults;
 
   public CollectionHandleAsync(
       RestTransport restTransport,
       GrpcTransport grpcTransport,
-      CollectionDescriptor<PropertiesT> collectionDescriptor,
+      CollectionDescriptor<PropertiesT> collection,
       CollectionHandleDefaults defaults) {
 
-    this.config = new WeaviateConfigClientAsync(collectionDescriptor, restTransport, grpcTransport);
-    this.aggregate = new WeaviateAggregateClientAsync(collectionDescriptor, grpcTransport, defaults);
-    this.query = new WeaviateQueryClientAsync<>(collectionDescriptor, grpcTransport, defaults);
-    this.data = new WeaviateDataClientAsync<>(collectionDescriptor, restTransport, grpcTransport, defaults);
+    this.config = new WeaviateConfigClientAsync(collection, restTransport, grpcTransport);
+    this.aggregate = new WeaviateAggregateClientAsync(collection, grpcTransport, defaults);
+    this.query = new WeaviateQueryClientAsync<>(collection, grpcTransport, defaults);
+    this.data = new WeaviateDataClientAsync<>(collection, restTransport, grpcTransport, defaults);
+    this.tenants = new WeaviateTenantsClientAsync(collection, restTransport, grpcTransport);
 
     this.defaults = defaults;
   }
@@ -42,6 +45,7 @@ public class CollectionHandleAsync<PropertiesT> {
   private CollectionHandleAsync(CollectionHandleAsync<PropertiesT> c, CollectionHandleDefaults defaults) {
     this.config = c.config;
     this.aggregate = c.aggregate;
+    this.tenants = c.tenants;
     this.query = new WeaviateQueryClientAsync<>(c.query, defaults);
     this.data = new WeaviateDataClientAsync<>(c.data, defaults);
 

@@ -42,9 +42,9 @@ public class CollectionHandle<PropertiesT> {
   private CollectionHandle(CollectionHandle<PropertiesT> c, CollectionHandleDefaults defaults) {
     this.config = c.config;
     this.aggregate = c.aggregate;
+    this.tenants = c.tenants;
     this.query = new WeaviateQueryClient<>(c.query, defaults);
     this.data = new WeaviateDataClient<>(c.data, defaults);
-    this.tenants = c.tenants;
 
     this.defaults = defaults;
   }
