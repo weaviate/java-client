@@ -19,9 +19,13 @@ To start using Weaviate Java Client add the dependency to `pom.xml`:
 
 ### Uber JAR🫙
 
-If you're building a uber-JAR with something like `maven-assembly-plugin`, use a shaded version with classifier `all`.  
+If you're building a uber-JAR with something like `maven-assembly-plugin`, use a shaded version with classifier `all`.
 This ensures that all dynamically-loaded dependecies of `io.grpc` are resolved correctly.
 
+### SNAPSHOT releases
+
+The latest development version of `client6` is released after every merged pull request. Set the version to `6.0.0-SNAPSHOT` to include it in your project.
+Please be mindful of the fact that this is not a stable release and breaking changes may be introduced.
 
 ### Gson and reflective access to internal JDK classes
 
@@ -41,14 +45,11 @@ applicationDefaultJvmArgs += listOf(
 )
 ```
 
-## Documentation
+## Useful resources
 
 - [Documentation](https://weaviate.io/developers/weaviate/current/client-libraries/java.html).
-
-## Support
-
-- [Stackoverflow for questions](https://stackoverflow.com/questions/tagged/weaviate).
-- [Github for issues](https://github.com/weaviate/java-client/issues).
+- [StackOverflow for questions about Weaviate](https://stackoverflow.com/questions/tagged/weaviate).
+- [Github for issues in client6](https://github.com/weaviate/java-client/issues).
 
 ## Contributing
 
