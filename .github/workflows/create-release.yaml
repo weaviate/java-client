@@ -1,9 +1,8 @@
 name: Create Release
 on:
   push:
-      # Release a new version every time a v6 tag is pushed.
     tags:
-      - '6.0.0-*'
+      - '**'
   pull_request:
     # Release a new SNAPSHOT version every time a PR is merged to v6.
     types: [closed]
