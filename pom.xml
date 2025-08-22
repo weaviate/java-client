@@ -244,6 +244,7 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>2.22.2</version>
           <configuration>
+            <trimStackTrace>false</trimStackTrace>
             <argLine>
               <!--
                 Gson (used for JSON serialization) utilizes reflection and needs to be able to access private fields of

@@ -9,6 +9,7 @@ import io.weaviate.client6.v1.api.collections.data.WeaviateDataClient;
 import io.weaviate.client6.v1.api.collections.pagination.Paginator;
 import io.weaviate.client6.v1.api.collections.query.ConsistencyLevel;
 import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClient;
+import io.weaviate.client6.v1.api.collections.tenants.WeaviateTenantsClient;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
@@ -19,6 +20,7 @@ public class CollectionHandle<PropertiesT> {
   public final WeaviateDataClient<PropertiesT> data;
   public final WeaviateQueryClient<PropertiesT> query;
   public final WeaviateAggregateClient aggregate;
+  public final WeaviateTenantsClient tenants;
 
   private final CollectionHandleDefaults defaults;
 
@@ -31,6 +33,7 @@ public class CollectionHandle<PropertiesT> {
     this.aggregate = new WeaviateAggregateClient(collection, grpcTransport, defaults);
     this.query = new WeaviateQueryClient<>(collection, grpcTransport, defaults);
     this.data = new WeaviateDataClient<>(collection, restTransport, grpcTransport, defaults);
+    this.tenants = new WeaviateTenantsClient(collection, restTransport, grpcTransport);
 
     this.defaults = defaults;
   }
@@ -41,6 +44,7 @@ public class CollectionHandle<PropertiesT> {
     this.aggregate = c.aggregate;
     this.query = new WeaviateQueryClient<>(c.query, defaults);
     this.data = new WeaviateDataClient<>(c.data, defaults);
+    this.tenants = c.tenants;
 
     this.defaults = defaults;
   }
