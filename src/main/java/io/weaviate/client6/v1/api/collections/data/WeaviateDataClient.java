@@ -25,14 +25,14 @@ public class WeaviateDataClient<PropertiesT> {
   private final CollectionHandleDefaults defaults;
 
   public WeaviateDataClient(
-      CollectionDescriptor<PropertiesT> collectionDescriptor,
+      CollectionDescriptor<PropertiesT> collection,
       RestTransport restTransport,
       GrpcTransport grpcTransport,
       CollectionHandleDefaults defaults) {
     this.restTransport = restTransport;
     this.grpcTransport = grpcTransport;
-    this.collection = collectionDescriptor;
-    this.query = new WeaviateQueryClient<>(collectionDescriptor, grpcTransport, defaults);
+    this.collection = collection;
+    this.query = new WeaviateQueryClient<>(collection, grpcTransport, defaults);
     this.defaults = defaults;
   }
 

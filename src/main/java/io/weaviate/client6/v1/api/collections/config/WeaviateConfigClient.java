@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.CollectionConfig;
+import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClient;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
@@ -18,14 +19,27 @@ public class WeaviateConfigClient {
   private final RestTransport restTransport;
   private final WeaviateCollectionsClient collectionsClient;
 
-  protected final CollectionDescriptor<?> collection;
+  private final CollectionDescriptor<?> collection;
+  private final CollectionHandleDefaults defaults;
 
-  public WeaviateConfigClient(CollectionDescriptor<?> collection, RestTransport restTransport,
-      GrpcTransport grpcTransport) {
+  public WeaviateConfigClient(
+      CollectionDescriptor<?> collection,
+      RestTransport restTransport,
+      GrpcTransport grpcTransport,
+      CollectionHandleDefaults defaults) {
     this.restTransport = restTransport;
     this.collectionsClient = new WeaviateCollectionsClient(restTransport, grpcTransport);
 
     this.collection = collection;
+    this.defaults = defaults;
+  }
+
+  /** Copy constructor that updates the {@link #defaults}. */
+  public WeaviateConfigClient(WeaviateConfigClient c, CollectionHandleDefaults defaults) {
+    this.restTransport = c.restTransport;
+    this.collectionsClient = c.collectionsClient;
+    this.collection = c.collection;
+    this.defaults = defaults;
   }
 
   public Optional<CollectionConfig> get() throws IOException {
@@ -49,7 +63,7 @@ public class WeaviateConfigClient {
   }
 
   public List<Shard> getShards() throws IOException {
-    return this.restTransport.performRequest(new GetShardsRequest(collection.name()), GetShardsRequest._ENDPOINT);
+    return this.restTransport.performRequest(null, GetShardsRequest.endpoint(collection, defaults));
   }
 
   public List<Shard> updateShards(ShardStatus status, String... shards) throws IOException {

@@ -29,23 +29,23 @@ public class CollectionHandle<PropertiesT> {
       GrpcTransport grpcTransport,
       CollectionDescriptor<PropertiesT> collection,
       CollectionHandleDefaults defaults) {
-    this.config = new WeaviateConfigClient(collection, restTransport, grpcTransport);
+    this.config = new WeaviateConfigClient(collection, restTransport, grpcTransport, defaults);
     this.aggregate = new WeaviateAggregateClient(collection, grpcTransport, defaults);
     this.query = new WeaviateQueryClient<>(collection, grpcTransport, defaults);
     this.data = new WeaviateDataClient<>(collection, restTransport, grpcTransport, defaults);
-    this.tenants = new WeaviateTenantsClient(collection, restTransport, grpcTransport);
-
     this.defaults = defaults;
+
+    this.tenants = new WeaviateTenantsClient(collection, restTransport, grpcTransport);
   }
 
   /** Copy constructor that sets new defaults. */
   private CollectionHandle(CollectionHandle<PropertiesT> c, CollectionHandleDefaults defaults) {
-    this.config = c.config;
     this.aggregate = c.aggregate;
     this.tenants = c.tenants;
+
+    this.config = new WeaviateConfigClient(c.config, defaults);
     this.query = new WeaviateQueryClient<>(c.query, defaults);
     this.data = new WeaviateDataClient<>(c.data, defaults);
-
     this.defaults = defaults;
   }
 
