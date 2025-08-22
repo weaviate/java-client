@@ -8,6 +8,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.CollectionConfig;
+import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClientAsync;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
@@ -19,22 +20,35 @@ public class WeaviateConfigClientAsync {
   private final RestTransport restTransport;
   private final WeaviateCollectionsClientAsync collectionsClient;
 
-  protected final CollectionDescriptor<?> collectionDescriptor;
+  private final CollectionDescriptor<?> collection;
+  private final CollectionHandleDefaults defaults;
 
-  public WeaviateConfigClientAsync(CollectionDescriptor<?> collection, RestTransport restTransport,
-      GrpcTransport grpcTransport) {
+  public WeaviateConfigClientAsync(
+      CollectionDescriptor<?> collection,
+      RestTransport restTransport,
+      GrpcTransport grpcTransport,
+      CollectionHandleDefaults defaults) {
     this.restTransport = restTransport;
     this.collectionsClient = new WeaviateCollectionsClientAsync(restTransport, grpcTransport);
 
-    this.collectionDescriptor = collection;
+    this.collection = collection;
+    this.defaults = defaults;
+  }
+
+  /** Copy constructor that updates the {@link #defaults}. */
+  public WeaviateConfigClientAsync(WeaviateConfigClientAsync c, CollectionHandleDefaults defaults) {
+    this.restTransport = c.restTransport;
+    this.collectionsClient = c.collectionsClient;
+    this.collection = c.collection;
+    this.defaults = defaults;
   }
 
   public CompletableFuture<Optional<CollectionConfig>> get() throws IOException {
-    return collectionsClient.getConfig(collectionDescriptor.name());
+    return collectionsClient.getConfig(collection.name());
   }
 
   public CompletableFuture<Void> addProperty(Property property) throws IOException {
-    return this.restTransport.performRequestAsync(new AddPropertyRequest(collectionDescriptor.name(), property),
+    return this.restTransport.performRequestAsync(new AddPropertyRequest(collection.name(), property),
         AddPropertyRequest._ENDPOINT);
   }
 
@@ -52,8 +66,7 @@ public class WeaviateConfigClientAsync {
   }
 
   public CompletableFuture<List<Shard>> getShards() {
-    return this.restTransport.performRequestAsync(new GetShardsRequest(collectionDescriptor.name()),
-        GetShardsRequest._ENDPOINT);
+    return this.restTransport.performRequestAsync(null, GetShardsRequest.endpoint(collection, defaults));
   }
 
   public CompletableFuture<List<Shard>> updateShards(ShardStatus status, String... shards) throws IOException {
@@ -63,7 +76,7 @@ public class WeaviateConfigClientAsync {
   public CompletableFuture<List<Shard>> updateShards(ShardStatus status, List<String> shards) throws IOException {
     var updates = shards.stream().map(
         shard -> this.restTransport.performRequestAsync(
-            new UpdateShardStatusRequest(collectionDescriptor.name(), shard, status),
+            new UpdateShardStatusRequest(collection.name(), shard, status),
             UpdateShardStatusRequest._ENDPOINT))
         .toArray(CompletableFuture[]::new);
     return CompletableFuture.allOf(updates).thenCompose(__ -> getShards());
