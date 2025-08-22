@@ -1,5 +1,6 @@
 package io.weaviate.client6.v1.api.collections;
 
+import java.io.IOException;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
@@ -14,7 +15,6 @@ import com.jparams.junit4.data.DataMethod;
 import com.jparams.junit4.description.Name;
 
 import io.weaviate.client6.v1.api.collections.data.Reference;
-import io.weaviate.client6.v1.api.collections.data.WeaviateDataClient;
 import io.weaviate.client6.v1.api.collections.query.ConsistencyLevel;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
@@ -207,17 +207,33 @@ public class CollectionHandleTest {
   }
 
   @Test
+  public void test_defaultTenant_getShards() throws IOException {
+    // Arrange
+    var collection = CollectionDescriptor.ofMap("Things");
+    var defaults = CollectionHandleDefaults.of(d -> d
+        .tenant("john_doe"));
+    var client = new CollectionHandle<Map<String, Object>>(rest, grpc, collection, defaults);
+
+    // Act
+    client.config.getShards();
+
+    // Assert
+    rest.assertNext((method, requestUrl, body, query) -> {
+      Assertions.assertThat(query).containsEntry("tenant", defaults.tenant());
+    });
+  }
+
+  @Test
   public void test_defaultTenant_insertMany() {
     // Arrange
     var collection = CollectionDescriptor.ofMap("Things");
     var defaults = CollectionHandleDefaults.of(d -> d
         .consistencyLevel(ConsistencyLevel.ONE)
         .tenant("john_doe"));
-    var client = new WeaviateDataClient<Map<String, Object>>(
-        collection, null, grpc, defaults);
+    var client = new CollectionHandle<Map<String, Object>>(rest, grpc, collection, defaults);
 
     // Act
-    client.insertMany(Map.of());
+    client.data.insertMany(Map.of());
 
     // Assert
     grpc.assertNext(json -> {
