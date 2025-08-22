@@ -52,8 +52,7 @@ final class OIDCTokensParser {
 
     var error = fromErrorResponse(response.toErrorResponse());
     if (!error.isComplete()) {
-      var error2 = fromHttpResponse(httpResponse);
-      error = error2;
+      error = fromHttpResponse(httpResponse);
     }
     throw new WeaviateOAuthException("%s (code=%s)".formatted(
         error.description(),
