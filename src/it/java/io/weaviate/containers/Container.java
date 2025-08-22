@@ -16,6 +16,7 @@ public class Container {
   public static final Weaviate WEAVIATE = Weaviate.createDefault();
   public static final Contextionary CONTEXTIONARY = Contextionary.createDefault();
   public static final Img2VecNeural IMG2VEC_NEURAL = Img2VecNeural.createDefault();
+  public static final MinIo MINIO = MinIo.createDefault();
 
   static {
     startAll();

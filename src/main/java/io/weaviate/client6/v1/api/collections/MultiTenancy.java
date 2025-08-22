@@ -7,8 +7,9 @@ import com.google.gson.annotations.SerializedName;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record MultiTenancy(
+    @SerializedName("enabled") Boolean enabled,
     @SerializedName("autoTenantCreation") Boolean createAutomatically,
-    @SerializedName("autoTenantActivate") Boolean activateAutomatically) {
+    @SerializedName("autoTenantActivation") Boolean activateAutomatically) {
 
   public static MultiTenancy of(Function<Builder, ObjectBuilder<MultiTenancy>> fn) {
     return fn.apply(new Builder()).build();
@@ -16,21 +17,28 @@ public record MultiTenancy(
 
   public MultiTenancy(Builder builder) {
     this(
+        builder.enabled,
         builder.createAutomatically,
         builder.activateAutomatically);
   }
 
   public static class Builder implements ObjectBuilder<MultiTenancy> {
+    private Boolean enabled = true;
     private Boolean createAutomatically;
     private Boolean activateAutomatically;
 
-    public Builder createAutomatically(boolean createAutomatically) {
-      this.createAutomatically = createAutomatically;
+    public Builder enabled(boolean enabled) {
+      this.enabled = enabled;
       return this;
     }
 
-    public Builder activateAutomatically(boolean activateAutomatically) {
-      this.activateAutomatically = activateAutomatically;
+    public Builder autoTenantCreation(boolean enabled) {
+      this.createAutomatically = enabled;
+      return this;
+    }
+
+    public Builder autoTenantActivation(boolean enabled) {
+      this.activateAutomatically = enabled;
       return this;
     }
 
