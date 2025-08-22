@@ -35,7 +35,7 @@ public class WeaviateConfigClientAsync {
     this.defaults = defaults;
   }
 
-  /** Copy constructor that updates the {@link #defaults}. */
+  /** Copy constructor that sets new defaults. */
   public WeaviateConfigClientAsync(WeaviateConfigClientAsync c, CollectionHandleDefaults defaults) {
     this.restTransport = c.restTransport;
     this.collectionsClient = c.collectionsClient;
