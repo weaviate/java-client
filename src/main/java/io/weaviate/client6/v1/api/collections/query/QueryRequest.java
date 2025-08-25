@@ -218,6 +218,8 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
         var uuids = list.getUuidValues().getValuesList().stream()
             .map(UUID::fromString).toList();
         builder.setUuidArray(property, uuids);
+      } else if (list.hasBoolValues()) {
+        builder.setBooleanArray(property, list.getBoolValues().getValuesList());
       }
     } else {
       assert false : "(query) branch not covered";
