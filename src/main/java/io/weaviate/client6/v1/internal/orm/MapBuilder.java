@@ -29,7 +29,7 @@ public class MapBuilder implements PropertiesBuilder<Map<String, Object>> {
   }
 
   @Override
-  public void setNumber(String property, Number value) {
+  public void setDouble(String property, Double value) {
     properties.put(property, value);
   }
 

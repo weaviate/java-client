@@ -62,6 +62,8 @@ public record AggregateRequest(Aggregation aggregation, GroupBy groupBy) {
             groupedBy = new GroupedBy<String>(property, groupBy.getText());
           } else if (groupBy.hasBoolean()) {
             groupedBy = new GroupedBy<Boolean>(property, groupBy.getBoolean());
+          } else if (groupBy.hasNumber()) {
+            groupedBy = new GroupedBy<Double>(property, groupBy.getNumber());
           } else {
             assert false : "(aggregate) branch not covered";
           }
@@ -74,6 +76,7 @@ public record AggregateRequest(Aggregation aggregation, GroupBy groupBy) {
       }
       return new AggregateResponseGrouped(groups);
     }, () -> rpc.method(), () -> rpc.methodAsync());
+
   }
 
   private static Map<String, Object> unmarshalAggregation(WeaviateProtoAggregate.AggregateReply.Aggregations result) {
@@ -120,6 +123,16 @@ public record AggregateRequest(Aggregation aggregation, GroupBy groupBy) {
             metric.hasMaximum() ? DateUtil.fromISO8601(metric.getMaximum()) : null,
             metric.hasMedian() ? DateUtil.fromISO8601(metric.getMedian()) : null,
             metric.hasMode() ? DateUtil.fromISO8601(metric.getMode()) : null);
+      } else if (aggregation.hasNumber()) {
+        var metric = aggregation.getNumber();
+        value = new NumberAggregation.Values(
+            metric.hasCount() ? metric.getCount() : null,
+            metric.hasMinimum() ? metric.getMinimum() : null,
+            metric.hasMaximum() ? metric.getMaximum() : null,
+            metric.hasMean() ? metric.getMean() : null,
+            metric.hasMedian() ? metric.getMedian() : null,
+            metric.hasMode() ? metric.getMode() : null,
+            metric.hasSum() ? metric.getSum() : null);
       } else {
         assert false : "branch not covered";
       }

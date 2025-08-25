@@ -30,6 +30,15 @@ public record GroupedBy<T>(String property, T value) {
     return (Boolean) value;
   }
 
+  public boolean isNumber() {
+    return value instanceof Double;
+  }
+
+  public Double number() {
+    checkPropertyType(this::isNumber, "Number");
+    return (Double) value;
+  }
+
   private void checkPropertyType(Supplier<Boolean> check, String expected) {
     if (!check.get()) {
       throw new IllegalStateException(property + "is not a " + expected + " property");

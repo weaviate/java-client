@@ -37,6 +37,16 @@ public record Aggregation(
     return BooleanAggregation.of(property, fn);
   }
 
+  public static final PropertyAggregation date(String property,
+      Function<DateAggregation.Builder, ObjectBuilder<DateAggregation>> fn) {
+    return DateAggregation.of(property, fn);
+  }
+
+  public static final PropertyAggregation number(String property,
+      Function<NumberAggregation.Builder, ObjectBuilder<NumberAggregation>> fn) {
+    return NumberAggregation.of(property, fn);
+  }
+
   public Aggregation(Builder builder) {
     this(
         builder.objectFilter,

@@ -203,7 +203,7 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
     } else if (value.hasIntValue()) {
       builder.setInteger(property, value.getIntValue());
     } else if (value.hasNumberValue()) {
-      builder.setNumber(property, value.getNumberValue());
+      builder.setDouble(property, value.getNumberValue());
     } else if (value.hasBlobValue()) {
       builder.setBlob(property, value.getBlobValue());
     } else if (value.hasDateValue()) {

@@ -40,6 +40,15 @@ public record AggregateResponse(Map<String, ? extends Object> properties, Long t
     return (DateAggregation.Values) this.properties.get(name);
   }
 
+  public boolean isNumber(String name) {
+    return properties.get(name) instanceof NumberAggregation.Values;
+  }
+
+  public NumberAggregation.Values number(String name) {
+    checkPropertyType(name, this::isNumber, "Number");
+    return (NumberAggregation.Values) this.properties.get(name);
+  }
+
   private void checkPropertyType(String name, Function<String, Boolean> check, String expected) {
     if (!check.apply(name)) {
       throw new IllegalStateException(name + "is not a " + expected + " property");
