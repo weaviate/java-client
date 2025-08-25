@@ -9,7 +9,7 @@ public record AggregateResponse(Map<String, ? extends Object> properties, Long t
   }
 
   public TextAggregation.Values text(String name) {
-    checkPropertyType(name, this::isText, "Text");
+    checkPropertyType(name, this::isText, "TEXT");
     return (TextAggregation.Values) this.properties.get(name);
   }
 
@@ -18,7 +18,7 @@ public record AggregateResponse(Map<String, ? extends Object> properties, Long t
   }
 
   public IntegerAggregation.Values integer(String name) {
-    checkPropertyType(name, this::isInteger, "Integer");
+    checkPropertyType(name, this::isInteger, "INTEGER");
     return (IntegerAggregation.Values) this.properties.get(name);
   }
 
@@ -27,7 +27,7 @@ public record AggregateResponse(Map<String, ? extends Object> properties, Long t
   }
 
   public BooleanAggregation.Values bool(String name) {
-    checkPropertyType(name, this::isBool, "Boolean");
+    checkPropertyType(name, this::isBool, "BOOLEAN");
     return (BooleanAggregation.Values) this.properties.get(name);
   }
 
@@ -36,7 +36,7 @@ public record AggregateResponse(Map<String, ? extends Object> properties, Long t
   }
 
   public DateAggregation.Values date(String name) {
-    checkPropertyType(name, this::isDate, "Date");
+    checkPropertyType(name, this::isDate, "DATE");
     return (DateAggregation.Values) this.properties.get(name);
   }
 
@@ -45,7 +45,7 @@ public record AggregateResponse(Map<String, ? extends Object> properties, Long t
   }
 
   public NumberAggregation.Values number(String name) {
-    checkPropertyType(name, this::isNumber, "Number");
+    checkPropertyType(name, this::isNumber, "NUMBER");
     return (NumberAggregation.Values) this.properties.get(name);
   }
 
