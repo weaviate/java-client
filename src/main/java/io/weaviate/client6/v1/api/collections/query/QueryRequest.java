@@ -220,6 +220,11 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
             ByteStringUtil.decodeIntValues(list.getIntValues().getValues()))
             .boxed().toList();
         builder.setLongArray(property, ints);
+      } else if (list.hasNumberValues()) {
+        var numbers = Arrays.stream(
+            ByteStringUtil.decodeNumberValues(list.getNumberValues().getValues()))
+            .boxed().toList();
+        builder.setDoubleArray(property, numbers);
       } else if (list.hasUuidValues()) {
         var uuids = list.getUuidValues().getValuesList().stream()
             .map(UUID::fromString).toList();

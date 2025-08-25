@@ -132,4 +132,20 @@ public class ByteStringUtil {
     bs.asReadOnlyByteBuffer().order(BYTE_ORDER).asLongBuffer().get(vector);
     return vector;
   }
+
+  /**
+   * Decode ByteString to {@code double[]}.
+   *
+   * @throws IllegalArgumentException if ByteString size is not
+   *                                  a multiple of {@link Double#BYTES}.
+   */
+  public static double[] decodeNumberValues(ByteString bs) {
+    if (bs.size() % Double.BYTES != 0) {
+      throw new IllegalArgumentException(
+          "ByteString size " + bs.size() + " is not a multiple of " + String.valueOf(Double.BYTES) + " (Double.BYTES)");
+    }
+    double[] vector = new double[bs.size() / Double.BYTES];
+    bs.asReadOnlyByteBuffer().order(BYTE_ORDER).asDoubleBuffer().get(vector);
+    return vector;
+  }
 }

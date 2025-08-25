@@ -115,6 +115,14 @@ public record Property(
     return newProperty(name, DataType.NUMBER, fn);
   }
 
+  public static Property numberArray(String name) {
+    return numberArray(name, ObjectBuilder.identity());
+  }
+
+  public static Property numberArray(String name, Function<Builder, ObjectBuilder<Property>> fn) {
+    return newProperty(name, DataType.NUMBER_ARRAY, fn);
+  }
+
   private static Property newProperty(String name, String dataType, Function<Builder, ObjectBuilder<Property>> fn) {
     return fn.apply(new Builder(name, dataType)).build();
   }

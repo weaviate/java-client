@@ -3,6 +3,7 @@ package io.weaviate.client6.v1.internal.grpc;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import com.google.protobuf.ByteString;
@@ -84,6 +85,14 @@ public class ByteStringUtilTest {
     assertArrayEquals(want, got);
   }
 
+  @Test
+  public void test_decodeNumberValues() {
+    byte[] bytes = { 0, 0, 0, 0, 0, 0, -16, 63, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 8, 64 };
+    double[] want = { 1, 2, 3 };
+    double[] got = ByteStringUtil.decodeNumberValues(ByteString.copyFrom(bytes));
+    Assertions.assertThat(got).isEqualTo(want);
+  }
+
   @Test(expected = IllegalArgumentException.class)
   public void test_decodeVector_1d_illegal() {
     byte[] bytes = new byte[Float.BYTES - 1]; // must be a multiple of Float.BYTES
@@ -106,5 +115,11 @@ public class ByteStringUtilTest {
   public void test_decodeIntValues_illegal() {
     byte[] bytes = new byte[Long.BYTES - 1]; // must be a multiple of Long.BYTES
     ByteStringUtil.decodeIntValues(ByteString.copyFrom(bytes));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void test_decodeNumberValues_illegal() {
+    byte[] bytes = new byte[Double.BYTES - 1]; // must be a multiple of Double.BYTES
+    ByteStringUtil.decodeNumberValues(ByteString.copyFrom(bytes));
   }
 }
