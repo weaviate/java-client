@@ -429,6 +429,7 @@ public class DataITest extends ConcurrentTest {
                 Property.date("prop_date"),
                 Property.uuid("prop_uuid"),
                 Property.boolArray("prop_bool_array"),
+                Property.dateArray("prop_date_array"),
                 Property.uuidArray("prop_uuid_array"),
                 Property.textArray("prop_text_array")));
 
@@ -445,6 +446,7 @@ public class DataITest extends ConcurrentTest {
         "prop_date", now,
         "prop_uuid", uuid,
         "prop_bool_array", List.of(true, false),
+        "prop_date_array", List.of(now, now),
         "prop_uuid_array", List.of(uuid, uuid),
         "prop_text_array", List.of("a", "b", "c"));
     var returnProperties = want.keySet().toArray(String[]::new);
