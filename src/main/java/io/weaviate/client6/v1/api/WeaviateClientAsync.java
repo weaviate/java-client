@@ -4,6 +4,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.function.Function;
 
+import io.weaviate.client6.v1.api.alias.WeaviateAliasClientAsync;
 import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClientAsync;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.DefaultGrpcTransport;
@@ -16,11 +17,13 @@ public class WeaviateClientAsync implements Closeable {
   private final GrpcTransport grpcTransport;
 
   public final WeaviateCollectionsClientAsync collections;
+  public final WeaviateAliasClientAsync alias;
 
   public WeaviateClientAsync(Config config) {
     this.restTransport = new DefaultRestTransport(config.restTransportOptions());
     this.grpcTransport = new DefaultGrpcTransport(config.grpcTransportOptions());
 
+    this.alias = new WeaviateAliasClientAsync(restTransport);
     this.collections = new WeaviateCollectionsClientAsync(restTransport, grpcTransport);
   }
 
