@@ -1,6 +1,6 @@
 package io.weaviate.client6.v1.internal.orm;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,7 +38,7 @@ public class MapBuilder implements PropertiesBuilder<Map<String, Object>> {
   }
 
   @Override
-  public void setDate(String property, Date value) {
+  public void setOffsetDateTime(String property, OffsetDateTime value) {
     properties.put(property, value);
   }
 

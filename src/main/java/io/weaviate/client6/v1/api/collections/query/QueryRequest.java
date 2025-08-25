@@ -1,8 +1,6 @@
 package io.weaviate.client6.v1.api.collections.query;
 
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
@@ -12,6 +10,7 @@ import java.util.stream.Stream;
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
+import io.weaviate.client6.v1.internal.DateUtil;
 import io.weaviate.client6.v1.internal.grpc.ByteStringUtil;
 import io.weaviate.client6.v1.internal.grpc.Rpc;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateBlockingStub;
@@ -168,12 +167,13 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
       var vectors = new Vectors.Builder();
       for (final var vector : metadataResult.getVectorsList()) {
         var vectorName = vector.getName();
+        var vbytes = vector.getVectorBytes();
         switch (vector.getType()) {
           case VECTOR_TYPE_SINGLE_FP32:
-            vectors.vector(vectorName, ByteStringUtil.decodeVectorSingle(vector.getVectorBytes()));
+            vectors.vector(vectorName, ByteStringUtil.decodeVectorSingle(vbytes));
             break;
           case VECTOR_TYPE_MULTI_FP32:
-            vectors.vector(vectorName, ByteStringUtil.decodeVectorMulti(vector.getVectorBytes()));
+            vectors.vector(vectorName, ByteStringUtil.decodeVectorMulti(vbytes));
             break;
           default:
             continue;
@@ -206,8 +206,7 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
     } else if (value.hasBlobValue()) {
       builder.setBlob(property, value.getBlobValue());
     } else if (value.hasDateValue()) {
-      OffsetDateTime offsetDateTime = OffsetDateTime.parse(value.getDateValue());
-      builder.setDate(property, Date.from(offsetDateTime.toInstant()));
+      builder.setOffsetDateTime(property, DateUtil.fromISO8601(value.getDateValue()));
     } else {
       assert false : "(query) branch not covered";
     }

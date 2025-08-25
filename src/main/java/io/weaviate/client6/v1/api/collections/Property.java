@@ -51,6 +51,14 @@ public record Property(
     return newProperty(name, DataType.BOOL, fn);
   }
 
+  public static Property date(String name) {
+    return date(name, ObjectBuilder.identity());
+  }
+
+  public static Property date(String name, Function<Builder, ObjectBuilder<Property>> fn) {
+    return newProperty(name, DataType.DATE, fn);
+  }
+
   private static Property newProperty(String name, String dataType, Function<Builder, ObjectBuilder<Property>> fn) {
     return fn.apply(new Builder(name, dataType)).build();
   }
