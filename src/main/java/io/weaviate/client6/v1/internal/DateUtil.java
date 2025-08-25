@@ -15,7 +15,7 @@ public final class DateUtil {
   private DateUtil() {
   }
 
-  /** Convert ISO8601-formatted time string to {@Olink OffsetDateTime}. */
+  /** Convert ISO8601-formatted time string to {@link OffsetDateTime}. */
   public static OffsetDateTime fromISO8601(String iso8601) {
     return OffsetDateTime.parse(iso8601);
   }
