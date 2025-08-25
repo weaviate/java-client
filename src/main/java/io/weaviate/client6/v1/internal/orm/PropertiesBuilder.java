@@ -17,5 +17,7 @@ public interface PropertiesBuilder<T> {
 
   void setOffsetDateTime(String property, OffsetDateTime value);
 
+  void setUuid(String property, UUID uuid);
+
   T build();
 }

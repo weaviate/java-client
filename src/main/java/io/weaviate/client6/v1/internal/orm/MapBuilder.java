@@ -3,6 +3,7 @@ package io.weaviate.client6.v1.internal.orm;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class MapBuilder implements PropertiesBuilder<Map<String, Object>> {
   private final Map<String, Object> properties = new HashMap<>();
@@ -39,6 +40,11 @@ public class MapBuilder implements PropertiesBuilder<Map<String, Object>> {
 
   @Override
   public void setOffsetDateTime(String property, OffsetDateTime value) {
+    properties.put(property, value);
+  }
+
+  @Override
+  public void setUuid(String property, UUID value) {
     properties.put(property, value);
   }
 
