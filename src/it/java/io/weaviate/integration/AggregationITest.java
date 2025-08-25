@@ -16,9 +16,9 @@ import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.Vectorizers;
 import io.weaviate.client6.v1.api.collections.Vectors;
+import io.weaviate.client6.v1.api.collections.aggregate.Aggregate;
 import io.weaviate.client6.v1.api.collections.aggregate.AggregateResponseGroup;
 import io.weaviate.client6.v1.api.collections.aggregate.AggregateResponseGrouped;
-import io.weaviate.client6.v1.api.collections.aggregate.Aggregation;
 import io.weaviate.client6.v1.api.collections.aggregate.GroupBy;
 import io.weaviate.client6.v1.api.collections.aggregate.GroupedBy;
 import io.weaviate.client6.v1.api.collections.aggregate.IntegerAggregation;
@@ -57,7 +57,7 @@ public class AggregationITest extends ConcurrentTest {
     var result = things.aggregate.overAll(
         with -> with
             .metrics(
-                Aggregation.integer("price",
+                Aggregate.integer("price",
                     calculate -> calculate.median().max().count()))
             .includeTotalCount(true));
 
@@ -77,7 +77,7 @@ public class AggregationITest extends ConcurrentTest {
     var result = things.aggregate.overAll(
         with -> with
             .metrics(
-                Aggregation.integer("price",
+                Aggregate.integer("price",
                     calculate -> calculate.min().max().count()))
             .includeTotalCount(true),
         GroupBy.property("category"));
@@ -115,7 +115,7 @@ public class AggregationITest extends ConcurrentTest {
         near -> near.limit(5),
         with -> with
             .metrics(
-                Aggregation.integer("price",
+                Aggregate.integer("price",
                     calculate -> calculate.min().max().count()))
             .objectLimit(4)
             .includeTotalCount(true));
@@ -135,7 +135,7 @@ public class AggregationITest extends ConcurrentTest {
         near -> near.distance(2f),
         with -> with
             .metrics(
-                Aggregation.integer("price",
+                Aggregate.integer("price",
                     calculate -> calculate.min().max().median()))
             .objectLimit(9)
             .includeTotalCount(true),
