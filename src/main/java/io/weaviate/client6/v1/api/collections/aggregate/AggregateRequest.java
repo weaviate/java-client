@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.weaviate.client6.v1.internal.DateUtil;
 import io.weaviate.client6.v1.internal.grpc.Rpc;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateBlockingStub;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateFutureStub;
@@ -59,6 +60,8 @@ public record AggregateRequest(Aggregation aggregation, GroupBy groupBy) {
             groupedBy = new GroupedBy<Long>(property, groupBy.getInt());
           } else if (groupBy.hasText()) {
             groupedBy = new GroupedBy<String>(property, groupBy.getText());
+          } else if (groupBy.hasBoolean()) {
+            groupedBy = new GroupedBy<Boolean>(property, groupBy.getBoolean());
           } else {
             assert false : "(aggregate) branch not covered";
           }
@@ -109,6 +112,14 @@ public record AggregateRequest(Aggregation aggregation, GroupBy groupBy) {
             metric.hasPercentageTrue() ? Float.valueOf((float) metric.getPercentageTrue()) : null,
             metric.hasTotalFalse() ? metric.getTotalFalse() : null,
             metric.hasTotalTrue() ? metric.getTotalTrue() : null);
+      } else if (aggregation.hasDate()) {
+        var metric = aggregation.getDate();
+        value = new DateAggregation.Values(
+            metric.hasCount() ? metric.getCount() : null,
+            metric.hasMinimum() ? DateUtil.fromISO8601(metric.getMinimum()) : null,
+            metric.hasMaximum() ? DateUtil.fromISO8601(metric.getMaximum()) : null,
+            metric.hasMedian() ? DateUtil.fromISO8601(metric.getMedian()) : null,
+            metric.hasMode() ? DateUtil.fromISO8601(metric.getMode()) : null);
       } else {
         assert false : "branch not covered";
       }

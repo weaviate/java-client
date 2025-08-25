@@ -22,7 +22,7 @@ public record GroupedBy<T>(String property, T value) {
   }
 
   public boolean isBool() {
-    return value instanceof Long;
+    return value instanceof Boolean;
   }
 
   public Boolean bool() {

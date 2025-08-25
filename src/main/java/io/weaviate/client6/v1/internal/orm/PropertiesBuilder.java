@@ -1,6 +1,6 @@
 package io.weaviate.client6.v1.internal.orm;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 public interface PropertiesBuilder<T> {
   void setNull(String property);
@@ -15,7 +15,7 @@ public interface PropertiesBuilder<T> {
 
   void setBlob(String property, String value);
 
-  void setDate(String property, Date value);
+  void setOffsetDateTime(String property, OffsetDateTime value);
 
   T build();
 }
