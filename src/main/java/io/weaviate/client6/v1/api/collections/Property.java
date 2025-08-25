@@ -27,6 +27,14 @@ public record Property(
     return newProperty(name, DataType.TEXT, fn);
   }
 
+  public static Property textArray(String name) {
+    return textArray(name, ObjectBuilder.identity());
+  }
+
+  public static Property textArray(String name, Function<Builder, ObjectBuilder<Property>> fn) {
+    return newProperty(name, DataType.TEXT_ARRAY, fn);
+  }
+
   public static Property integer(String name) {
     return integer(name, ObjectBuilder.identity());
   }

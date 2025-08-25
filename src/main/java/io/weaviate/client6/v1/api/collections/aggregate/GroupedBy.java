@@ -1,5 +1,7 @@
 package io.weaviate.client6.v1.api.collections.aggregate;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Supplier;
 
 public record GroupedBy<T>(String property, T value) {
@@ -37,6 +39,16 @@ public record GroupedBy<T>(String property, T value) {
   public Double number() {
     checkPropertyType(this::isNumber, "NUMBER");
     return (Double) value;
+  }
+
+  public boolean isTextArray() {
+    return value instanceof String[];
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<String> textArray() {
+    checkPropertyType(this::isTextArray, "NUMBER");
+    return (List<String>) Arrays.asList(value);
   }
 
   private void checkPropertyType(Supplier<Boolean> check, String expected) {

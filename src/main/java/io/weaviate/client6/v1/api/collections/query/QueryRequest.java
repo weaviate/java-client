@@ -210,6 +210,11 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
       builder.setOffsetDateTime(property, DateUtil.fromISO8601(value.getDateValue()));
     } else if (value.hasUuidValue()) {
       builder.setUuid(property, UUID.fromString(value.getUuidValue()));
+    } else if (value.hasListValue()) {
+      var list = value.getListValue();
+      if (list.hasTextValues()) {
+        builder.setTextArray(property, list.getTextValues().getValuesList());
+      }
     } else {
       assert false : "(query) branch not covered";
     }
