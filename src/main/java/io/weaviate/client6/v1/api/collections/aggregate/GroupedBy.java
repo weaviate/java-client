@@ -8,7 +8,7 @@ public record GroupedBy<T>(String property, T value) {
   }
 
   public String text() {
-    checkPropertyType(this::isText, "Text");
+    checkPropertyType(this::isText, "TEXT");
     return (String) value;
   }
 
@@ -17,7 +17,7 @@ public record GroupedBy<T>(String property, T value) {
   }
 
   public Long integer() {
-    checkPropertyType(this::isInteger, "Long");
+    checkPropertyType(this::isInteger, "LONG");
     return (Long) value;
   }
 
@@ -26,7 +26,7 @@ public record GroupedBy<T>(String property, T value) {
   }
 
   public Boolean bool() {
-    checkPropertyType(this::isBool, "Boolean");
+    checkPropertyType(this::isBool, "BOOLEAN");
     return (Boolean) value;
   }
 
@@ -35,7 +35,7 @@ public record GroupedBy<T>(String property, T value) {
   }
 
   public Double number() {
-    checkPropertyType(this::isNumber, "Number");
+    checkPropertyType(this::isNumber, "NUMBER");
     return (Double) value;
   }
 
