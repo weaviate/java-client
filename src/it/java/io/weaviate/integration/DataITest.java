@@ -428,6 +428,7 @@ public class DataITest extends ConcurrentTest {
                 Property.bool("prop_bool"),
                 Property.date("prop_date"),
                 Property.uuid("prop_uuid"),
+                Property.uuidArray("prop_uuid_array"),
                 Property.textArray("prop_text_array")));
 
     var types = client.collections.use(nsDataTypes);
@@ -442,6 +443,7 @@ public class DataITest extends ConcurrentTest {
         "prop_bool", true,
         "prop_date", now,
         "prop_uuid", uuid,
+        "prop_uuid_array", List.of(uuid, uuid),
         "prop_text_array", List.of("a", "b", "c"));
     var returnProperties = want.keySet().toArray(String[]::new);
 

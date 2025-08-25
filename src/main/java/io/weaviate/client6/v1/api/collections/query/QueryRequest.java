@@ -214,6 +214,10 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
       var list = value.getListValue();
       if (list.hasTextValues()) {
         builder.setTextArray(property, list.getTextValues().getValuesList());
+      } else if (list.hasUuidValues()) {
+        var uuids = list.getUuidValues().getValuesList().stream()
+            .map(UUID::fromString).toList();
+        builder.setUuidArray(property, uuids);
       }
     } else {
       assert false : "(query) branch not covered";

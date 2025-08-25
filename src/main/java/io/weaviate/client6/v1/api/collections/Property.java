@@ -75,6 +75,14 @@ public record Property(
     return newProperty(name, DataType.UUID, fn);
   }
 
+  public static Property uuidArray(String name) {
+    return uuidArray(name, ObjectBuilder.identity());
+  }
+
+  public static Property uuidArray(String name, Function<Builder, ObjectBuilder<Property>> fn) {
+    return newProperty(name, DataType.UUID_ARRAY, fn);
+  }
+
   public static Property number(String name) {
     return number(name, ObjectBuilder.identity());
   }
