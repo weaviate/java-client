@@ -21,6 +21,15 @@ public record GroupedBy<T>(String property, T value) {
     return (Long) value;
   }
 
+  public boolean isBool() {
+    return value instanceof Long;
+  }
+
+  public Boolean bool() {
+    checkPropertyType(this::isBool, "Boolean");
+    return (Boolean) value;
+  }
+
   private void checkPropertyType(Supplier<Boolean> check, String expected) {
     if (!check.get()) {
       throw new IllegalStateException(property + "is not a " + expected + " property");

@@ -22,6 +22,21 @@ public record Aggregation(
     return fn.apply(new Builder(objectFilter)).build();
   }
 
+  public static final PropertyAggregation text(String property,
+      Function<TextAggregation.Builder, ObjectBuilder<TextAggregation>> fn) {
+    return TextAggregation.of(property, fn);
+  }
+
+  public static final PropertyAggregation integer(String property,
+      Function<IntegerAggregation.Builder, ObjectBuilder<IntegerAggregation>> fn) {
+    return IntegerAggregation.of(property, fn);
+  }
+
+  public static final PropertyAggregation bool(String property,
+      Function<BooleanAggregation.Builder, ObjectBuilder<BooleanAggregation>> fn) {
+    return BooleanAggregation.of(property, fn);
+  }
+
   public Aggregation(Builder builder) {
     this(
         builder.objectFilter,
@@ -61,16 +76,6 @@ public record Aggregation(
     public Aggregation build() {
       return new Aggregation(this);
     }
-  }
-
-  public static final PropertyAggregation text(String property,
-      Function<TextAggregation.Builder, ObjectBuilder<TextAggregation>> fn) {
-    return TextAggregation.of(property, fn);
-  }
-
-  public static final PropertyAggregation integer(String property,
-      Function<IntegerAggregation.Builder, ObjectBuilder<IntegerAggregation>> fn) {
-    return IntegerAggregation.of(property, fn);
   }
 
   public void appendTo(WeaviateProtoAggregate.AggregateRequest.Builder req) {
