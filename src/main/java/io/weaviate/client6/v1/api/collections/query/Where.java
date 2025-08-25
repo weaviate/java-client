@@ -123,7 +123,7 @@ public class Where implements WhereOperand {
       return new Where(Operator.EQUAL, left, new TextArrayOperand(values));
     }
 
-    public Where eq(Boolean value) {
+    public Where eq(boolean value) {
       return new Where(Operator.EQUAL, left, new BooleanOperand(value));
     }
 
@@ -131,7 +131,11 @@ public class Where implements WhereOperand {
       return new Where(Operator.EQUAL, left, new BooleanArrayOperand(values));
     }
 
-    public Where eq(Long value) {
+    public Where eq(long value) {
+      return new Where(Operator.EQUAL, left, new IntegerOperand(value));
+    }
+
+    public Where eq(int value) {
       return new Where(Operator.EQUAL, left, new IntegerOperand(value));
     }
 
@@ -139,7 +143,11 @@ public class Where implements WhereOperand {
       return new Where(Operator.EQUAL, left, new IntegerArrayOperand(values));
     }
 
-    public Where eq(Double value) {
+    public Where eq(double value) {
+      return new Where(Operator.EQUAL, left, new NumberOperand(value));
+    }
+
+    public Where eq(float value) {
       return new Where(Operator.EQUAL, left, new NumberOperand(value));
     }
 
@@ -169,7 +177,7 @@ public class Where implements WhereOperand {
       return new Where(Operator.NOT_EQUAL, left, new TextArrayOperand(values));
     }
 
-    public Where ne(Boolean value) {
+    public Where ne(boolean value) {
       return new Where(Operator.NOT_EQUAL, left, new BooleanOperand(value));
     }
 
@@ -177,7 +185,11 @@ public class Where implements WhereOperand {
       return new Where(Operator.NOT_EQUAL, left, new BooleanArrayOperand(values));
     }
 
-    public Where ne(Long value) {
+    public Where ne(long value) {
+      return new Where(Operator.NOT_EQUAL, left, new IntegerOperand(value));
+    }
+
+    public Where ne(int value) {
       return new Where(Operator.NOT_EQUAL, left, new IntegerOperand(value));
     }
 
@@ -185,7 +197,11 @@ public class Where implements WhereOperand {
       return new Where(Operator.NOT_EQUAL, left, new IntegerArrayOperand(values));
     }
 
-    public Where ne(Double value) {
+    public Where ne(double value) {
+      return new Where(Operator.NOT_EQUAL, left, new NumberOperand(value));
+    }
+
+    public Where ne(float value) {
       return new Where(Operator.NOT_EQUAL, left, new NumberOperand(value));
     }
 
@@ -215,7 +231,11 @@ public class Where implements WhereOperand {
       return new Where(Operator.LESS_THAN, left, new TextArrayOperand(values));
     }
 
-    public Where lt(Long value) {
+    public Where lt(long value) {
+      return new Where(Operator.LESS_THAN, left, new IntegerOperand(value));
+    }
+
+    public Where lt(int value) {
       return new Where(Operator.LESS_THAN, left, new IntegerOperand(value));
     }
 
@@ -223,7 +243,11 @@ public class Where implements WhereOperand {
       return new Where(Operator.LESS_THAN, left, new IntegerArrayOperand(values));
     }
 
-    public Where lt(Double value) {
+    public Where lt(double value) {
+      return new Where(Operator.LESS_THAN, left, new NumberOperand(value));
+    }
+
+    public Where lt(float value) {
       return new Where(Operator.LESS_THAN, left, new NumberOperand(value));
     }
 
@@ -253,7 +277,11 @@ public class Where implements WhereOperand {
       return new Where(Operator.LESS_THAN_EQUAL, left, new TextArrayOperand(values));
     }
 
-    public Where lte(Long value) {
+    public Where lte(long value) {
+      return new Where(Operator.LESS_THAN_EQUAL, left, new IntegerOperand(value));
+    }
+
+    public Where lte(int value) {
       return new Where(Operator.LESS_THAN_EQUAL, left, new IntegerOperand(value));
     }
 
@@ -261,7 +289,11 @@ public class Where implements WhereOperand {
       return new Where(Operator.LESS_THAN_EQUAL, left, new IntegerArrayOperand(values));
     }
 
-    public Where lte(Double value) {
+    public Where lte(double value) {
+      return new Where(Operator.LESS_THAN_EQUAL, left, new NumberOperand(value));
+    }
+
+    public Where lte(float value) {
       return new Where(Operator.LESS_THAN_EQUAL, left, new NumberOperand(value));
     }
 
@@ -291,7 +323,11 @@ public class Where implements WhereOperand {
       return new Where(Operator.GREATER_THAN, left, new TextArrayOperand(values));
     }
 
-    public Where gt(Long value) {
+    public Where gt(long value) {
+      return new Where(Operator.GREATER_THAN, left, new IntegerOperand(value));
+    }
+
+    public Where gt(int value) {
       return new Where(Operator.GREATER_THAN, left, new IntegerOperand(value));
     }
 
@@ -299,7 +335,11 @@ public class Where implements WhereOperand {
       return new Where(Operator.GREATER_THAN, left, new IntegerArrayOperand(values));
     }
 
-    public Where gt(Double value) {
+    public Where gt(double value) {
+      return new Where(Operator.GREATER_THAN, left, new NumberOperand(value));
+    }
+
+    public Where gt(float value) {
       return new Where(Operator.GREATER_THAN, left, new NumberOperand(value));
     }
 
@@ -329,7 +369,11 @@ public class Where implements WhereOperand {
       return new Where(Operator.GREATER_THAN_EQUAL, left, new TextArrayOperand(values));
     }
 
-    public Where gte(Long value) {
+    public Where gte(long value) {
+      return new Where(Operator.GREATER_THAN_EQUAL, left, new IntegerOperand(value));
+    }
+
+    public Where gte(int value) {
       return new Where(Operator.GREATER_THAN_EQUAL, left, new IntegerOperand(value));
     }
 
@@ -337,7 +381,11 @@ public class Where implements WhereOperand {
       return new Where(Operator.GREATER_THAN_EQUAL, left, new IntegerArrayOperand(values));
     }
 
-    public Where gte(Double value) {
+    public Where gte(double value) {
+      return new Where(Operator.GREATER_THAN_EQUAL, left, new NumberOperand(value));
+    }
+
+    public Where gte(float value) {
       return new Where(Operator.GREATER_THAN_EQUAL, left, new NumberOperand(value));
     }
 
@@ -454,10 +502,14 @@ public class Where implements WhereOperand {
       return new TextOperand(str);
     } else if (value instanceof Boolean bool) {
       return new BooleanOperand(bool);
-    } else if (value instanceof Long lng) {
-      return new IntegerOperand(lng);
+    } else if (value instanceof Long l) {
+      return new IntegerOperand(l);
+    } else if (value instanceof Integer i) {
+      return new IntegerOperand(i);
     } else if (value instanceof Double dbl) {
       return new NumberOperand(dbl);
+    } else if (value instanceof Float f) {
+      return new NumberOperand(f);
     } else if (value instanceof OffsetDateTime date) {
       return new DateOperand(date);
     } else if (value instanceof String[] strarr) {
@@ -490,7 +542,7 @@ public class Where implements WhereOperand {
       }
     }
     throw new IllegalArgumentException(
-        "value must be either of String, Boolean, OffsetDateTime, Integer, Long, Double, Array/List of these types");
+        "value must be either of String, Boolean, OffsetDateTime, Long, Double, or Array/List of these types");
   }
 
   private static class PathOperand implements WhereOperand {
@@ -561,9 +613,9 @@ public class Where implements WhereOperand {
   }
 
   private static class BooleanOperand implements WhereOperand {
-    private final Boolean value;
+    private final boolean value;
 
-    private BooleanOperand(Boolean value) {
+    private BooleanOperand(boolean value) {
       this.value = value;
     }
 
@@ -574,7 +626,7 @@ public class Where implements WhereOperand {
 
     @Override
     public String toString() {
-      return value.toString();
+      return Boolean.toString(value);
     }
   }
 
@@ -602,9 +654,13 @@ public class Where implements WhereOperand {
   }
 
   private static class IntegerOperand implements WhereOperand {
-    private final Long value;
+    private final long value;
 
-    private IntegerOperand(Long value) {
+    private IntegerOperand(long value) {
+      this.value = value;
+    }
+
+    private IntegerOperand(int value) {
       this.value = value;
     }
 
@@ -615,7 +671,7 @@ public class Where implements WhereOperand {
 
     @Override
     public String toString() {
-      return value.toString();
+      return Long.toString(value);
     }
   }
 
@@ -643,9 +699,13 @@ public class Where implements WhereOperand {
   }
 
   private static class NumberOperand implements WhereOperand {
-    private final Double value;
+    private final double value;
 
-    private NumberOperand(Double value) {
+    private NumberOperand(double value) {
+      this.value = value;
+    }
+
+    private NumberOperand(float value) {
       this.value = value;
     }
 
@@ -656,7 +716,7 @@ public class Where implements WhereOperand {
 
     @Override
     public String toString() {
-      return value.toString();
+      return Double.toString(value);
     }
   }
 
