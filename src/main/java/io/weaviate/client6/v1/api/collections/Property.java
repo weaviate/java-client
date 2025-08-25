@@ -43,6 +43,14 @@ public record Property(
     return newProperty(name, DataType.INT, fn);
   }
 
+  public static Property integerArray(String name) {
+    return integerArray(name, ObjectBuilder.identity());
+  }
+
+  public static Property integerArray(String name, Function<Builder, ObjectBuilder<Property>> fn) {
+    return newProperty(name, DataType.INT_ARRAY, fn);
+  }
+
   public static Property blob(String name) {
     return blob(name, ObjectBuilder.identity());
   }

@@ -71,9 +71,17 @@ public class ByteStringUtilTest {
 
   @Test
   public void test_decodeVector_2d_dim_zero() {
-    byte[] bytes = new byte[] { 0, 0 };
+    byte[] bytes = { 0, 0 };
     float[][] got = ByteStringUtil.decodeVectorMulti(ByteString.copyFrom(bytes));
     assertEquals(0, got.length);
+  }
+
+  @Test
+  public void test_decodeIntValues() {
+    byte[] bytes = { 1, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0 };
+    long[] want = { 1, 2, 3 };
+    long[] got = ByteStringUtil.decodeIntValues(ByteString.copyFrom(bytes));
+    assertArrayEquals(want, got);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -92,5 +100,11 @@ public class ByteStringUtilTest {
     bytes[1] = (byte) dimensionality;
 
     ByteStringUtil.decodeVectorMulti(ByteString.copyFrom(bytes));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void test_decodeIntValues_illegal() {
+    byte[] bytes = new byte[Long.BYTES - 1]; // must be a multiple of Long.BYTES
+    ByteStringUtil.decodeIntValues(ByteString.copyFrom(bytes));
   }
 }

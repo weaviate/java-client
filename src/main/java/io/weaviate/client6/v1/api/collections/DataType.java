@@ -8,6 +8,7 @@ public interface DataType {
   public static final String TEXT = "text";
   public static final String TEXT_ARRAY = "text[]";
   public static final String INT = "int";
+  public static final String INT_ARRAY = "int[]";
   public static final String NUMBER = "number";
   public static final String BOOL = "boolean";
   public static final String BOOL_ARRAY = "boolean[]";
@@ -19,5 +20,5 @@ public interface DataType {
 
   public static final Set<String> KNOWN_TYPES = ImmutableSet.of(
       TEXT, INT, BLOB, BOOL, DATE, UUID, NUMBER,
-      TEXT_ARRAY, BOOL_ARRAY, DATE_ARRAY, UUID_ARRAY);
+      TEXT_ARRAY, INT_ARRAY, BOOL_ARRAY, DATE_ARRAY, UUID_ARRAY);
 }
