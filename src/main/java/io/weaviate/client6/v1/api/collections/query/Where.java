@@ -1,10 +1,8 @@
 package io.weaviate.client6.v1.api.collections.query;
 
+import java.time.OffsetDateTime;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-
-import org.apache.commons.lang3.time.DateFormatUtils;
 
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.Filters;
@@ -149,11 +147,11 @@ public class Where implements WhereOperand {
       return new Where(Operator.EQUAL, left, new NumberArrayOperand(values));
     }
 
-    public Where eq(Date value) {
+    public Where eq(OffsetDateTime value) {
       return new Where(Operator.EQUAL, left, new DateOperand(value));
     }
 
-    public Where eq(Date... values) {
+    public Where eq(OffsetDateTime... values) {
       return new Where(Operator.EQUAL, left, new DateArrayOperand(values));
     }
 
@@ -195,11 +193,11 @@ public class Where implements WhereOperand {
       return new Where(Operator.NOT_EQUAL, left, new NumberArrayOperand(values));
     }
 
-    public Where ne(Date value) {
+    public Where ne(OffsetDateTime value) {
       return new Where(Operator.NOT_EQUAL, left, new DateOperand(value));
     }
 
-    public Where ne(Date... values) {
+    public Where ne(OffsetDateTime... values) {
       return new Where(Operator.NOT_EQUAL, left, new DateArrayOperand(values));
     }
 
@@ -233,11 +231,11 @@ public class Where implements WhereOperand {
       return new Where(Operator.LESS_THAN, left, new NumberArrayOperand(values));
     }
 
-    public Where lt(Date value) {
+    public Where lt(OffsetDateTime value) {
       return new Where(Operator.LESS_THAN, left, new DateOperand(value));
     }
 
-    public Where lt(Date... values) {
+    public Where lt(OffsetDateTime... values) {
       return new Where(Operator.LESS_THAN, left, new DateArrayOperand(values));
     }
 
@@ -271,11 +269,11 @@ public class Where implements WhereOperand {
       return new Where(Operator.LESS_THAN_EQUAL, left, new NumberArrayOperand(values));
     }
 
-    public Where lte(Date value) {
+    public Where lte(OffsetDateTime value) {
       return new Where(Operator.LESS_THAN_EQUAL, left, new DateOperand(value));
     }
 
-    public Where lte(Date... values) {
+    public Where lte(OffsetDateTime... values) {
       return new Where(Operator.LESS_THAN_EQUAL, left, new DateArrayOperand(values));
     }
 
@@ -309,11 +307,11 @@ public class Where implements WhereOperand {
       return new Where(Operator.GREATER_THAN, left, new NumberArrayOperand(values));
     }
 
-    public Where gt(Date value) {
+    public Where gt(OffsetDateTime value) {
       return new Where(Operator.GREATER_THAN, left, new DateOperand(value));
     }
 
-    public Where gt(Date... values) {
+    public Where gt(OffsetDateTime... values) {
       return new Where(Operator.GREATER_THAN, left, new DateArrayOperand(values));
     }
 
@@ -347,11 +345,11 @@ public class Where implements WhereOperand {
       return new Where(Operator.GREATER_THAN_EQUAL, left, new NumberArrayOperand(values));
     }
 
-    public Where gte(Date value) {
+    public Where gte(OffsetDateTime value) {
       return new Where(Operator.GREATER_THAN_EQUAL, left, new DateOperand(value));
     }
 
-    public Where gte(Date... values) {
+    public Where gte(OffsetDateTime... values) {
       return new Where(Operator.GREATER_THAN_EQUAL, left, new DateArrayOperand(values));
     }
 
@@ -387,7 +385,7 @@ public class Where implements WhereOperand {
       return new Where(Operator.CONTAINS_ANY, left, new NumberArrayOperand(values));
     }
 
-    public Where containsAny(Date... values) {
+    public Where containsAny(OffsetDateTime... values) {
       return new Where(Operator.CONTAINS_ANY, left, new DateArrayOperand(values));
     }
 
@@ -413,7 +411,7 @@ public class Where implements WhereOperand {
       return new Where(Operator.CONTAINS_ALL, left, new NumberArrayOperand(values));
     }
 
-    public Where containsAll(Date... values) {
+    public Where containsAll(OffsetDateTime... values) {
       return new Where(Operator.CONTAINS_ALL, left, new DateArrayOperand(values));
     }
 
@@ -460,8 +458,8 @@ public class Where implements WhereOperand {
       return new IntegerOperand(lng);
     } else if (value instanceof Double dbl) {
       return new NumberOperand(dbl);
-    } else if (value instanceof Date) {
-      return new DateOperand((Date) value);
+    } else if (value instanceof OffsetDateTime date) {
+      return new DateOperand(date);
     } else if (value instanceof String[] strarr) {
       return new TextArrayOperand(strarr);
     } else if (value instanceof Boolean[] boolarr) {
@@ -470,7 +468,7 @@ public class Where implements WhereOperand {
       return new IntegerArrayOperand(lngarr);
     } else if (value instanceof Double[] dblarr) {
       return new NumberArrayOperand(dblarr);
-    } else if (value instanceof Date[] datearr) {
+    } else if (value instanceof OffsetDateTime[] datearr) {
       return new DateArrayOperand(datearr);
     } else if (value instanceof List) {
       if (((List<?>) value).isEmpty()) {
@@ -487,12 +485,12 @@ public class Where implements WhereOperand {
         return new IntegerArrayOperand((List<Long>) value);
       } else if (first instanceof Double) {
         return new NumberArrayOperand((List<Double>) value);
-      } else if (first instanceof Date) {
-        return new DateArrayOperand((List<Date>) value);
+      } else if (first instanceof OffsetDateTime) {
+        return new DateArrayOperand((List<OffsetDateTime>) value);
       }
     }
     throw new IllegalArgumentException(
-        "value must be either of String, Boolean, Date, Integer, Long, Double, Array/List of these types");
+        "value must be either of String, Boolean, OffsetDateTime, Integer, Long, Double, Array/List of these types");
   }
 
   private static class PathOperand implements WhereOperand {
@@ -686,41 +684,37 @@ public class Where implements WhereOperand {
   }
 
   private static class DateOperand implements WhereOperand {
-    private final Date value;
+    private final OffsetDateTime value;
 
-    private DateOperand(Date value) {
+    private DateOperand(OffsetDateTime value) {
       this.value = value;
-    }
-
-    private static String format(Date date) {
-      return DateFormatUtils.format(date, "yyyy-MM-dd'T'HH:mm:ssZZZZZ");
     }
 
     @Override
     public void appendTo(WeaviateProtoBase.Filters.Builder where) {
-      where.setValueText(format(value));
+      where.setValueText(value.toString());
     }
 
     @Override
     public String toString() {
-      return format(value);
+      return value.toString();
     }
   }
 
   private static class DateArrayOperand implements WhereOperand {
-    private final List<Date> values;
+    private final List<OffsetDateTime> values;
 
-    private DateArrayOperand(List<Date> values) {
+    private DateArrayOperand(List<OffsetDateTime> values) {
       this.values = values;
     }
 
     @SafeVarargs
-    private DateArrayOperand(Date... values) {
+    private DateArrayOperand(OffsetDateTime... values) {
       this(Arrays.asList(values));
     }
 
     private List<String> formatted() {
-      return values.stream().map(date -> DateOperand.format(date)).toList();
+      return values.stream().map(OffsetDateTime::toString).toList();
     }
 
     @Override
