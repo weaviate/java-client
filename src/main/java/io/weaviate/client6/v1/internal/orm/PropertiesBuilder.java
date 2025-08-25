@@ -1,6 +1,7 @@
 package io.weaviate.client6.v1.internal.orm;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 public interface PropertiesBuilder<T> {
@@ -18,7 +19,9 @@ public interface PropertiesBuilder<T> {
 
   void setOffsetDateTime(String property, OffsetDateTime value);
 
-  void setUuid(String property, UUID uuid);
+  void setUuid(String property, UUID value);
+
+  void setTextArray(String property, List<String> value);
 
   T build();
 }

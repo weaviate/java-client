@@ -2,6 +2,7 @@ package io.weaviate.integration;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -426,7 +427,8 @@ public class DataITest extends ConcurrentTest {
                 Property.number("prop_number"),
                 Property.bool("prop_bool"),
                 Property.date("prop_date"),
-                Property.uuid("prop_uuid")));
+                Property.uuid("prop_uuid"),
+                Property.textArray("prop_text_array")));
 
     var types = client.collections.use(nsDataTypes);
 
@@ -439,7 +441,8 @@ public class DataITest extends ConcurrentTest {
         "prop_number", 1D,
         "prop_bool", true,
         "prop_date", now,
-        "prop_uuid", uuid);
+        "prop_uuid", uuid,
+        "prop_text_array", List.of("a", "b", "c"));
     var returnProperties = want.keySet().toArray(String[]::new);
 
     // Act
