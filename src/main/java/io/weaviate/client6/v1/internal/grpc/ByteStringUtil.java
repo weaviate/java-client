@@ -9,6 +9,10 @@ import java.util.UUID;
 import com.google.protobuf.ByteString;
 
 public class ByteStringUtil {
+  /** Prevent public initialization. */
+  private ByteStringUtil() {
+  }
+
   private static final ByteOrder BYTE_ORDER = ByteOrder.LITTLE_ENDIAN;
 
   /** Decode ByteString to UUID. */
