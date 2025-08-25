@@ -22,6 +22,15 @@ public record AggregateResponse(Map<String, ? extends Object> properties, Long t
     return (IntegerAggregation.Values) this.properties.get(name);
   }
 
+  public boolean isBool(String name) {
+    return properties.get(name) instanceof BooleanAggregation.Values;
+  }
+
+  public BooleanAggregation.Values bool(String name) {
+    checkPropertyType(name, this::isBool, "Boolean");
+    return (BooleanAggregation.Values) this.properties.get(name);
+  }
+
   private void checkPropertyType(String name, Function<String, Boolean> check, String expected) {
     if (!check.apply(name)) {
       throw new IllegalStateException(name + "is not a " + expected + " property");

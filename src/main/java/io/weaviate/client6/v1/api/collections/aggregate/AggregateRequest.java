@@ -101,7 +101,14 @@ public record AggregateRequest(Aggregation aggregation, GroupBy groupBy) {
         value = new TextAggregation.Values(
             metric.hasCount() ? metric.getCount() : null,
             topOccurrences);
-
+      } else if (aggregation.hasBoolean()) {
+        var metric = aggregation.getBoolean();
+        value = new BooleanAggregation.Values(
+            metric.hasCount() ? metric.getCount() : null,
+            metric.hasPercentageFalse() ? Float.valueOf((float) metric.getPercentageFalse()) : null,
+            metric.hasPercentageTrue() ? Float.valueOf((float) metric.getPercentageTrue()) : null,
+            metric.hasTotalFalse() ? metric.getTotalFalse() : null,
+            metric.hasTotalTrue() ? metric.getTotalTrue() : null);
       } else {
         assert false : "branch not covered";
       }
