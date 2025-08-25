@@ -10,6 +10,7 @@ public interface DataType {
   public static final String INT = "int";
   public static final String NUMBER = "number";
   public static final String BOOL = "boolean";
+  public static final String BOOL_ARRAY = "boolean[]";
   public static final String BLOB = "blob";
   public static final String DATE = "date";
   public static final String UUID = "uuid";
@@ -17,5 +18,5 @@ public interface DataType {
 
   public static final Set<String> KNOWN_TYPES = ImmutableSet.of(
       TEXT, INT, BLOB, BOOL, DATE, UUID, NUMBER,
-      TEXT_ARRAY, UUID_ARRAY);
+      TEXT_ARRAY, BOOL_ARRAY, UUID_ARRAY);
 }

@@ -25,5 +25,7 @@ public interface PropertiesBuilder<T> {
 
   void setUuidArray(String property, List<UUID> value);
 
+  void setBooleanArray(String property, List<Boolean> value);
+
   T build();
 }

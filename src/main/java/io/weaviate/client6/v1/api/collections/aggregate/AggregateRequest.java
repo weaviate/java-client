@@ -57,13 +57,17 @@ public record AggregateRequest(Aggregation aggregation, GroupBy groupBy) {
           var property = groupBy.getPathList().get(0);
 
           if (groupBy.hasInt()) {
-            groupedBy = new GroupedBy<Long>(property, groupBy.getInt());
+            groupedBy = new GroupedBy<>(property, groupBy.getInt());
           } else if (groupBy.hasText()) {
-            groupedBy = new GroupedBy<String>(property, groupBy.getText());
+            groupedBy = new GroupedBy<>(property, groupBy.getText());
           } else if (groupBy.hasBoolean()) {
-            groupedBy = new GroupedBy<Boolean>(property, groupBy.getBoolean());
+            groupedBy = new GroupedBy<>(property, groupBy.getBoolean());
           } else if (groupBy.hasNumber()) {
-            groupedBy = new GroupedBy<Double>(property, groupBy.getNumber());
+            groupedBy = new GroupedBy<>(property, groupBy.getNumber());
+          } else if (groupBy.hasTexts()) {
+            groupedBy = new GroupedBy<>(property, groupBy.getTexts().getValuesList().toArray(String[]::new));
+          } else if (groupBy.hasBooleans()) {
+            groupedBy = new GroupedBy<>(property, groupBy.getBooleans().getValuesList().toArray(Boolean[]::new));
           } else {
             assert false : "(aggregate) branch not covered";
           }

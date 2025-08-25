@@ -59,6 +59,14 @@ public record Property(
     return newProperty(name, DataType.BOOL, fn);
   }
 
+  public static Property boolArray(String name) {
+    return boolArray(name, ObjectBuilder.identity());
+  }
+
+  public static Property boolArray(String name, Function<Builder, ObjectBuilder<Property>> fn) {
+    return newProperty(name, DataType.BOOL_ARRAY, fn);
+  }
+
   public static Property date(String name) {
     return date(name, ObjectBuilder.identity());
   }

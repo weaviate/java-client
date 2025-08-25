@@ -60,6 +60,11 @@ public class MapBuilder implements PropertiesBuilder<Map<String, Object>> {
   }
 
   @Override
+  public void setBooleanArray(String property, List<Boolean> value) {
+    properties.put(property, value);
+  }
+
+  @Override
   public Map<String, Object> build() {
     return properties;
   }

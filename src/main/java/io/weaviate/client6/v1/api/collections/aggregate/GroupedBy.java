@@ -47,8 +47,18 @@ public record GroupedBy<T>(String property, T value) {
 
   @SuppressWarnings("unchecked")
   public List<String> textArray() {
-    checkPropertyType(this::isTextArray, "NUMBER");
+    checkPropertyType(this::isTextArray, "TEXT[]");
     return (List<String>) Arrays.asList(value);
+  }
+
+  public boolean isBoolArray() {
+    return value instanceof Boolean[];
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<Boolean> boolArray() {
+    checkPropertyType(this::isBoolArray, "BOOLEAN[]");
+    return (List<Boolean>) Arrays.asList(value);
   }
 
   private void checkPropertyType(Supplier<Boolean> check, String expected) {
