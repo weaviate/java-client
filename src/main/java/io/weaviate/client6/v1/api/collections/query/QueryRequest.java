@@ -3,6 +3,7 @@ package io.weaviate.client6.v1.api.collections.query;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -207,6 +208,8 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
       builder.setBlob(property, value.getBlobValue());
     } else if (value.hasDateValue()) {
       builder.setOffsetDateTime(property, DateUtil.fromISO8601(value.getDateValue()));
+    } else if (value.hasUuidValue()) {
+      builder.setUuid(property, UUID.fromString(value.getUuidValue()));
     } else {
       assert false : "(query) branch not covered";
     }

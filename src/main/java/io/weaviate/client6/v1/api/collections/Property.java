@@ -59,6 +59,14 @@ public record Property(
     return newProperty(name, DataType.DATE, fn);
   }
 
+  public static Property uuid(String name) {
+    return uuid(name, ObjectBuilder.identity());
+  }
+
+  public static Property uuid(String name, Function<Builder, ObjectBuilder<Property>> fn) {
+    return newProperty(name, DataType.UUID, fn);
+  }
+
   private static Property newProperty(String name, String dataType, Function<Builder, ObjectBuilder<Property>> fn) {
     return fn.apply(new Builder(name, dataType)).build();
   }
