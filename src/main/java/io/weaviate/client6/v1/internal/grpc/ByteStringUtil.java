@@ -116,4 +116,20 @@ public class ByteStringUtil {
     }
     return vectors;
   }
+
+  /**
+   * Decode ByteString to {@code long[]}.
+   *
+   * @throws IllegalArgumentException if ByteString size is not
+   *                                  a multiple of {@link Long#BYTES}.
+   */
+  public static long[] decodeIntValues(ByteString bs) {
+    if (bs.size() % Long.BYTES != 0) {
+      throw new IllegalArgumentException(
+          "ByteString size " + bs.size() + " is not a multiple of " + String.valueOf(Long.BYTES) + " (Long.BYTES)");
+    }
+    long[] vector = new long[bs.size() / Long.BYTES];
+    bs.asReadOnlyByteBuffer().order(BYTE_ORDER).asLongBuffer().get(vector);
+    return vector;
+  }
 }

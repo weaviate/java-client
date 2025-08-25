@@ -19,7 +19,7 @@ public record GroupedBy<T>(String property, T value) {
   }
 
   public Long integer() {
-    checkPropertyType(this::isInteger, "LONG");
+    checkPropertyType(this::isInteger, "INTEGER");
     return (Long) value;
   }
 
@@ -59,6 +59,16 @@ public record GroupedBy<T>(String property, T value) {
   public List<Boolean> boolArray() {
     checkPropertyType(this::isBoolArray, "BOOLEAN[]");
     return (List<Boolean>) Arrays.asList(value);
+  }
+
+  public boolean isIntegerArray() {
+    return value instanceof Long[];
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<Long> integerArray() {
+    checkPropertyType(this::isIntegerArray, "INTEGER[]");
+    return (List<Long>) Arrays.asList(value);
   }
 
   private void checkPropertyType(Supplier<Boolean> check, String expected) {

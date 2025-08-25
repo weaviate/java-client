@@ -55,6 +55,11 @@ public class MapBuilder implements PropertiesBuilder<Map<String, Object>> {
   }
 
   @Override
+  public void setLongArray(String property, List<Long> value) {
+    properties.put(property, value);
+  }
+
+  @Override
   public void setUuidArray(String property, List<UUID> value) {
     properties.put(property, value);
   }

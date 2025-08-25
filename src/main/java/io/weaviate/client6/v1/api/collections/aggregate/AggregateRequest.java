@@ -66,6 +66,8 @@ public record AggregateRequest(Aggregation aggregation, GroupBy groupBy) {
             groupedBy = new GroupedBy<>(property, groupBy.getNumber());
           } else if (groupBy.hasTexts()) {
             groupedBy = new GroupedBy<>(property, groupBy.getTexts().getValuesList().toArray(String[]::new));
+          } else if (groupBy.hasInts()) {
+            groupedBy = new GroupedBy<>(property, groupBy.getInts().getValuesList().toArray(Long[]::new));
           } else if (groupBy.hasBooleans()) {
             groupedBy = new GroupedBy<>(property, groupBy.getBooleans().getValuesList().toArray(Boolean[]::new));
           } else {

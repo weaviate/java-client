@@ -428,6 +428,7 @@ public class DataITest extends ConcurrentTest {
                 Property.bool("prop_bool"),
                 Property.date("prop_date"),
                 Property.uuid("prop_uuid"),
+                Property.integerArray("prop_integer_array"),
                 Property.boolArray("prop_bool_array"),
                 Property.dateArray("prop_date_array"),
                 Property.uuidArray("prop_uuid_array"),
@@ -438,17 +439,18 @@ public class DataITest extends ConcurrentTest {
     var now = OffsetDateTime.now();
     var uuid = UUID.randomUUID();
 
-    Map<String, Object> want = Map.of(
-        "prop_text", "Hello, World!",
-        "prop_integer", 1L,
-        "prop_number", 1D,
-        "prop_bool", true,
-        "prop_date", now,
-        "prop_uuid", uuid,
-        "prop_bool_array", List.of(true, false),
-        "prop_date_array", List.of(now, now),
-        "prop_uuid_array", List.of(uuid, uuid),
-        "prop_text_array", List.of("a", "b", "c"));
+    Map<String, Object> want = Map.ofEntries(
+        Map.entry("prop_text", "Hello, World!"),
+        Map.entry("prop_integer", 1L),
+        Map.entry("prop_number", 1D),
+        Map.entry("prop_bool", true),
+        Map.entry("prop_date", now),
+        Map.entry("prop_uuid", uuid),
+        Map.entry("prop_integer_array", List.of(1L, 2L, 3L)),
+        Map.entry("prop_bool_array", List.of(true, false)),
+        Map.entry("prop_date_array", List.of(now, now)),
+        Map.entry("prop_uuid_array", List.of(uuid, uuid)),
+        Map.entry("prop_text_array", List.of("a", "b", "c")));
     var returnProperties = want.keySet().toArray(String[]::new);
 
     // Act

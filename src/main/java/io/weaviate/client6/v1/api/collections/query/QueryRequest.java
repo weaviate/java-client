@@ -1,6 +1,7 @@
 package io.weaviate.client6.v1.api.collections.query;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -214,6 +215,11 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
       var list = value.getListValue();
       if (list.hasTextValues()) {
         builder.setTextArray(property, list.getTextValues().getValuesList());
+      } else if (list.hasIntValues()) {
+        var ints = Arrays.stream(
+            ByteStringUtil.decodeIntValues(list.getIntValues().getValues()))
+            .boxed().toList();
+        builder.setLongArray(property, ints);
       } else if (list.hasUuidValues()) {
         var uuids = list.getUuidValues().getValuesList().stream()
             .map(UUID::fromString).toList();
