@@ -133,19 +133,19 @@ public class Where implements WhereOperand {
       return new Where(Operator.EQUAL, left, new BooleanArrayOperand(values));
     }
 
-    public Where eq(Integer value) {
+    public Where eq(Long value) {
       return new Where(Operator.EQUAL, left, new IntegerOperand(value));
     }
 
-    public Where eq(Integer... values) {
+    public Where eq(Long... values) {
       return new Where(Operator.EQUAL, left, new IntegerArrayOperand(values));
     }
 
-    public Where eq(Number value) {
-      return new Where(Operator.EQUAL, left, new NumberOperand(value.doubleValue()));
+    public Where eq(Double value) {
+      return new Where(Operator.EQUAL, left, new NumberOperand(value));
     }
 
-    public Where eq(Number... values) {
+    public Where eq(Double... values) {
       return new Where(Operator.EQUAL, left, new NumberArrayOperand(values));
     }
 
@@ -179,19 +179,19 @@ public class Where implements WhereOperand {
       return new Where(Operator.NOT_EQUAL, left, new BooleanArrayOperand(values));
     }
 
-    public Where ne(Integer value) {
+    public Where ne(Long value) {
       return new Where(Operator.NOT_EQUAL, left, new IntegerOperand(value));
     }
 
-    public Where ne(Integer... values) {
+    public Where ne(Long... values) {
       return new Where(Operator.NOT_EQUAL, left, new IntegerArrayOperand(values));
     }
 
-    public Where ne(Number value) {
-      return new Where(Operator.NOT_EQUAL, left, new NumberOperand(value.doubleValue()));
+    public Where ne(Double value) {
+      return new Where(Operator.NOT_EQUAL, left, new NumberOperand(value));
     }
 
-    public Where ne(Number... values) {
+    public Where ne(Double... values) {
       return new Where(Operator.NOT_EQUAL, left, new NumberArrayOperand(values));
     }
 
@@ -217,19 +217,19 @@ public class Where implements WhereOperand {
       return new Where(Operator.LESS_THAN, left, new TextArrayOperand(values));
     }
 
-    public Where lt(Integer value) {
+    public Where lt(Long value) {
       return new Where(Operator.LESS_THAN, left, new IntegerOperand(value));
     }
 
-    public Where lt(Integer... values) {
+    public Where lt(Long... values) {
       return new Where(Operator.LESS_THAN, left, new IntegerArrayOperand(values));
     }
 
-    public Where lt(Number value) {
-      return new Where(Operator.LESS_THAN, left, new NumberOperand(value.doubleValue()));
+    public Where lt(Double value) {
+      return new Where(Operator.LESS_THAN, left, new NumberOperand(value));
     }
 
-    public Where lt(Number... values) {
+    public Where lt(Double... values) {
       return new Where(Operator.LESS_THAN, left, new NumberArrayOperand(values));
     }
 
@@ -255,19 +255,19 @@ public class Where implements WhereOperand {
       return new Where(Operator.LESS_THAN_EQUAL, left, new TextArrayOperand(values));
     }
 
-    public Where lte(Integer value) {
+    public Where lte(Long value) {
       return new Where(Operator.LESS_THAN_EQUAL, left, new IntegerOperand(value));
     }
 
-    public Where lte(Integer... values) {
+    public Where lte(Long... values) {
       return new Where(Operator.LESS_THAN_EQUAL, left, new IntegerArrayOperand(values));
     }
 
-    public Where lte(Number value) {
-      return new Where(Operator.LESS_THAN_EQUAL, left, new NumberOperand(value.doubleValue()));
+    public Where lte(Double value) {
+      return new Where(Operator.LESS_THAN_EQUAL, left, new NumberOperand(value));
     }
 
-    public Where lte(Number... values) {
+    public Where lte(Double... values) {
       return new Where(Operator.LESS_THAN_EQUAL, left, new NumberArrayOperand(values));
     }
 
@@ -293,19 +293,19 @@ public class Where implements WhereOperand {
       return new Where(Operator.GREATER_THAN, left, new TextArrayOperand(values));
     }
 
-    public Where gt(Integer value) {
+    public Where gt(Long value) {
       return new Where(Operator.GREATER_THAN, left, new IntegerOperand(value));
     }
 
-    public Where gt(Integer... values) {
+    public Where gt(Long... values) {
       return new Where(Operator.GREATER_THAN, left, new IntegerArrayOperand(values));
     }
 
-    public Where gt(Number value) {
-      return new Where(Operator.GREATER_THAN, left, new NumberOperand(value.doubleValue()));
+    public Where gt(Double value) {
+      return new Where(Operator.GREATER_THAN, left, new NumberOperand(value));
     }
 
-    public Where gt(Number... values) {
+    public Where gt(Double... values) {
       return new Where(Operator.GREATER_THAN, left, new NumberArrayOperand(values));
     }
 
@@ -331,19 +331,19 @@ public class Where implements WhereOperand {
       return new Where(Operator.GREATER_THAN_EQUAL, left, new TextArrayOperand(values));
     }
 
-    public Where gte(Integer value) {
+    public Where gte(Long value) {
       return new Where(Operator.GREATER_THAN_EQUAL, left, new IntegerOperand(value));
     }
 
-    public Where gte(Integer... values) {
+    public Where gte(Long... values) {
       return new Where(Operator.GREATER_THAN_EQUAL, left, new IntegerArrayOperand(values));
     }
 
-    public Where gte(Number value) {
-      return new Where(Operator.GREATER_THAN_EQUAL, left, new NumberOperand(value.doubleValue()));
+    public Where gte(Double value) {
+      return new Where(Operator.GREATER_THAN_EQUAL, left, new NumberOperand(value));
     }
 
-    public Where gte(Number... values) {
+    public Where gte(Double... values) {
       return new Where(Operator.GREATER_THAN_EQUAL, left, new NumberArrayOperand(values));
     }
 
@@ -379,11 +379,11 @@ public class Where implements WhereOperand {
       return new Where(Operator.CONTAINS_ANY, left, new BooleanArrayOperand(values));
     }
 
-    public Where containsAny(Integer... values) {
+    public Where containsAny(Long... values) {
       return new Where(Operator.CONTAINS_ANY, left, new IntegerArrayOperand(values));
     }
 
-    public Where containsAny(Number... values) {
+    public Where containsAny(Double... values) {
       return new Where(Operator.CONTAINS_ANY, left, new NumberArrayOperand(values));
     }
 
@@ -405,11 +405,11 @@ public class Where implements WhereOperand {
       return new Where(Operator.CONTAINS_ALL, left, new BooleanArrayOperand(values));
     }
 
-    public Where containsAll(Integer... values) {
+    public Where containsAll(Long... values) {
       return new Where(Operator.CONTAINS_ALL, left, new IntegerArrayOperand(values));
     }
 
-    public Where containsAll(Number... values) {
+    public Where containsAll(Double... values) {
       return new Where(Operator.CONTAINS_ALL, left, new NumberArrayOperand(values));
     }
 
@@ -452,26 +452,26 @@ public class Where implements WhereOperand {
 
   @SuppressWarnings("unchecked")
   static WhereOperand fromObject(Object value) {
-    if (value instanceof String) {
-      return new TextOperand((String) value);
-    } else if (value instanceof Boolean) {
-      return new BooleanOperand((Boolean) value);
-    } else if (value instanceof Integer) {
-      return new IntegerOperand((Integer) value);
-    } else if (value instanceof Number) {
-      return new NumberOperand((Number) value);
+    if (value instanceof String str) {
+      return new TextOperand(str);
+    } else if (value instanceof Boolean bool) {
+      return new BooleanOperand(bool);
+    } else if (value instanceof Long lng) {
+      return new IntegerOperand(lng);
+    } else if (value instanceof Double dbl) {
+      return new NumberOperand(dbl);
     } else if (value instanceof Date) {
       return new DateOperand((Date) value);
-    } else if (value instanceof String[]) {
-      return new TextArrayOperand((String[]) value);
-    } else if (value instanceof Boolean[]) {
-      return new BooleanArrayOperand((Boolean[]) value);
-    } else if (value instanceof Integer[]) {
-      return new IntegerArrayOperand((Integer[]) value);
-    } else if (value instanceof Number[]) {
-      return new NumberArrayOperand((Number[]) value);
-    } else if (value instanceof Date[]) {
-      return new DateArrayOperand((Date[]) value);
+    } else if (value instanceof String[] strarr) {
+      return new TextArrayOperand(strarr);
+    } else if (value instanceof Boolean[] boolarr) {
+      return new BooleanArrayOperand(boolarr);
+    } else if (value instanceof Long[] lngarr) {
+      return new IntegerArrayOperand(lngarr);
+    } else if (value instanceof Double[] dblarr) {
+      return new NumberArrayOperand(dblarr);
+    } else if (value instanceof Date[] datearr) {
+      return new DateArrayOperand(datearr);
     } else if (value instanceof List) {
       if (((List<?>) value).isEmpty()) {
         throw new IllegalArgumentException(
@@ -483,16 +483,16 @@ public class Where implements WhereOperand {
         return new TextArrayOperand((List<String>) value);
       } else if (first instanceof Boolean) {
         return new BooleanArrayOperand((List<Boolean>) value);
-      } else if (first instanceof Integer) {
-        return new IntegerArrayOperand((List<Integer>) value);
-      } else if (first instanceof Number) {
-        return new NumberArrayOperand((List<Number>) value);
+      } else if (first instanceof Long) {
+        return new IntegerArrayOperand((List<Long>) value);
+      } else if (first instanceof Double) {
+        return new NumberArrayOperand((List<Double>) value);
       } else if (first instanceof Date) {
         return new DateArrayOperand((List<Date>) value);
       }
     }
     throw new IllegalArgumentException(
-        "value must be either of String, Boolean, Date, Integer, Number, Array/List of these types");
+        "value must be either of String, Boolean, Date, Integer, Long, Double, Array/List of these types");
   }
 
   private static class PathOperand implements WhereOperand {
@@ -604,9 +604,9 @@ public class Where implements WhereOperand {
   }
 
   private static class IntegerOperand implements WhereOperand {
-    private final Integer value;
+    private final Long value;
 
-    private IntegerOperand(Integer value) {
+    private IntegerOperand(Long value) {
       this.value = value;
     }
 
@@ -622,24 +622,20 @@ public class Where implements WhereOperand {
   }
 
   private static class IntegerArrayOperand implements WhereOperand {
-    private final List<Integer> values;
+    private final List<Long> values;
 
-    private IntegerArrayOperand(List<Integer> values) {
+    private IntegerArrayOperand(List<Long> values) {
       this.values = values;
     }
 
     @SafeVarargs
-    private IntegerArrayOperand(Integer... values) {
+    private IntegerArrayOperand(Long... values) {
       this(Arrays.asList(values));
-    }
-
-    private List<Long> toLongs() {
-      return values.stream().map(Integer::longValue).toList();
     }
 
     @Override
     public void appendTo(WeaviateProtoBase.Filters.Builder where) {
-      where.setValueIntArray(WeaviateProtoBase.IntArray.newBuilder().addAllValues(toLongs()));
+      where.setValueIntArray(WeaviateProtoBase.IntArray.newBuilder().addAllValues(values));
     }
 
     @Override
@@ -649,15 +645,15 @@ public class Where implements WhereOperand {
   }
 
   private static class NumberOperand implements WhereOperand {
-    private final Number value;
+    private final Double value;
 
-    private NumberOperand(Number value) {
+    private NumberOperand(Double value) {
       this.value = value;
     }
 
     @Override
     public void appendTo(WeaviateProtoBase.Filters.Builder where) {
-      where.setValueNumber(value.doubleValue());
+      where.setValueNumber(value);
     }
 
     @Override
@@ -667,24 +663,20 @@ public class Where implements WhereOperand {
   }
 
   private static class NumberArrayOperand implements WhereOperand {
-    private final List<Number> values;
+    private final List<Double> values;
 
-    private NumberArrayOperand(List<Number> values) {
+    private NumberArrayOperand(List<Double> values) {
       this.values = values;
     }
 
     @SafeVarargs
-    private NumberArrayOperand(Number... values) {
+    private NumberArrayOperand(Double... values) {
       this(Arrays.asList(values));
-    }
-
-    private List<Double> toDoubles() {
-      return values.stream().map(Number::doubleValue).toList();
     }
 
     @Override
     public void appendTo(WeaviateProtoBase.Filters.Builder where) {
-      where.setValueNumberArray(WeaviateProtoBase.NumberArray.newBuilder().addAllValues(toDoubles()));
+      where.setValueNumberArray(WeaviateProtoBase.NumberArray.newBuilder().addAllValues(values));
     }
 
     @Override
