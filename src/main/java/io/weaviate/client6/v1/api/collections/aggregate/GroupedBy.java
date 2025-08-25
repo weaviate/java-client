@@ -71,6 +71,16 @@ public record GroupedBy<T>(String property, T value) {
     return (List<Long>) Arrays.asList(value);
   }
 
+  public boolean isNumberArray() {
+    return value instanceof Double[];
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<Double> numberArray() {
+    checkPropertyType(this::isNumberArray, "NUMBER[]");
+    return (List<Double>) Arrays.asList(value);
+  }
+
   private void checkPropertyType(Supplier<Boolean> check, String expected) {
     if (!check.get()) {
       throw new IllegalStateException(property + "is not a " + expected + " property");

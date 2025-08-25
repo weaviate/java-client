@@ -25,6 +25,8 @@ public interface PropertiesBuilder<T> {
 
   void setLongArray(String property, List<Long> value);
 
+  void setDoubleArray(String property, List<Double> value);
+
   void setUuidArray(String property, List<UUID> value);
 
   void setBooleanArray(String property, List<Boolean> value);
