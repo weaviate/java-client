@@ -1,7 +1,9 @@
 package io.weaviate.integration;
 
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.Map;
+import java.util.UUID;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactories;
@@ -406,5 +408,50 @@ public class DataITest extends ConcurrentTest {
 
     // Act
     things.data.insert(Map.of(), thing -> thing.uuid(thing_1.uuid()));
+  }
+
+  @Test
+  public void testDataTypes() throws IOException {
+    // Arrange
+    var nsDataTypes = ns("DataTypes");
+
+    // BLOB type is omitted because a base64-encoded image
+    // isn't doing the failure message any favours.
+    // It's tested in other test cases above.
+    client.collections.create(
+        nsDataTypes, c -> c
+            .properties(
+                Property.text("prop_text"),
+                Property.integer("prop_integer"),
+                Property.number("prop_number"),
+                Property.bool("prop_bool"),
+                Property.date("prop_date"),
+                Property.uuid("prop_uuid")));
+
+    var types = client.collections.use(nsDataTypes);
+
+    var now = OffsetDateTime.now();
+    var uuid = UUID.randomUUID();
+
+    Map<String, Object> want = Map.of(
+        "prop_text", "Hello, World!",
+        "prop_integer", 1L,
+        "prop_number", 1D,
+        "prop_bool", true,
+        "prop_date", now,
+        "prop_uuid", uuid);
+    var returnProperties = want.keySet().toArray(String[]::new);
+
+    // Act
+    var object = types.data.insert(want);
+    var got = types.query.byId(object.uuid(),
+        q -> q.returnProperties(returnProperties));
+
+    // Assert
+    Assertions.assertThat(got).get()
+        .extracting(WeaviateObject::properties)
+        .asInstanceOf(InstanceOfAssertFactories.map(String.class, Object.class))
+        .containsAllEntriesOf(want);
+
   }
 }
