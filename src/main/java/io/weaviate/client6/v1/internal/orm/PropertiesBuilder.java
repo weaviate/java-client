@@ -23,5 +23,7 @@ public interface PropertiesBuilder<T> {
 
   void setTextArray(String property, List<String> value);
 
+  void setUuidArray(String property, List<UUID> value);
+
   T build();
 }

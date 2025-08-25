@@ -13,8 +13,9 @@ public interface DataType {
   public static final String BLOB = "blob";
   public static final String DATE = "date";
   public static final String UUID = "uuid";
+  public static final String UUID_ARRAY = "uuid[]";
 
   public static final Set<String> KNOWN_TYPES = ImmutableSet.of(
       TEXT, INT, BLOB, BOOL, DATE, UUID, NUMBER,
-      TEXT_ARRAY);
+      TEXT_ARRAY, UUID_ARRAY);
 }
