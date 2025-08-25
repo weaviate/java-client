@@ -27,6 +27,20 @@ This ensures that all dynamically-loaded dependecies of `io.grpc` are resolved c
 The latest development version of `client6` is released after every merged pull request. Set the version to `6.0.0-SNAPSHOT` to include it in your project.
 Please be mindful of the fact that this is not a stable release and breaking changes may be introduced.
 
+Snapshot releases overwrite each other, so no two releases are alike. If you find a bug in one of the `SNAPSHOT` versions that you'd like to report, please include the output of `Debug.printBuildInfo()` in the ticket's description.
+
+```java
+import io.weaviate.client6.v1.internal.Debug;
+
+public class App {
+    public static void main(String[] args) {
+        Debug.printBuildInfo();
+
+        // ...the rest of your application code...
+    }
+}
+```
+
 ### Gson and reflective access to internal JDK classes
 
 The client uses Google's [`gson`](https://github.com/google/gson) for JSON de-/serialization which does reflection on internal `java.lang` classes. This is _not allowed by default_ in Java 9 and above.
