@@ -220,6 +220,10 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
         builder.setUuidArray(property, uuids);
       } else if (list.hasBoolValues()) {
         builder.setBooleanArray(property, list.getBoolValues().getValuesList());
+      } else if (list.hasDateValues()) {
+        var dates = list.getDateValues().getValuesList().stream()
+            .map(DateUtil::fromISO8601).toList();
+        builder.setOffsetDateTimeArray(property, dates);
       }
     } else {
       assert false : "(query) branch not covered";

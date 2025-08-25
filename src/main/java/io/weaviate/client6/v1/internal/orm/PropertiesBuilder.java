@@ -27,5 +27,7 @@ public interface PropertiesBuilder<T> {
 
   void setBooleanArray(String property, List<Boolean> value);
 
+  void setOffsetDateTimeArray(String property, List<OffsetDateTime> value);
+
   T build();
 }
