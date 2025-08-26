@@ -9,7 +9,7 @@ public class ExternalEndpoint<RequestT, ResponseT> extends SimpleEndpoint<Reques
   public ExternalEndpoint(
       Function<RequestT, String> method,
       Function<RequestT, String> requestUrl,
-      Function<RequestT, Map<String, String>> queryParameters,
+      Function<RequestT, Map<String, Object>> queryParameters,
       Function<RequestT, String> body,
       BiFunction<Integer, String, ResponseT> deserializeResponse) {
     super(method, requestUrl, queryParameters, body, deserializeResponse);

@@ -10,6 +10,4 @@ public interface RestTransport extends AutoCloseable {
 
   <RequestT, ResponseT, ExceptionT> CompletableFuture<ResponseT> performRequestAsync(RequestT request,
       Endpoint<RequestT, ResponseT> endpoint);
-
-  RestTransportOptions getTransportOptions();
 }
