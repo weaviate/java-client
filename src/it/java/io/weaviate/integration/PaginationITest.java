@@ -126,7 +126,7 @@ public class PaginationITest extends ConcurrentTest {
   }
 
   @Test
-  public void testAsyncPaginator() throws IOException, InterruptedException, ExecutionException {
+  public void testAsyncPaginator() throws Exception, InterruptedException, ExecutionException {
     // Arrange
     var nsThings = ns("Things");
     var count = 10;

@@ -6,39 +6,79 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.testcontainers.weaviate.WeaviateContainer;
 
+import io.weaviate.client6.v1.api.Config;
 import io.weaviate.client6.v1.api.WeaviateClient;
+import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public class Weaviate extends WeaviateContainer {
-  private WeaviateClient clientInstance;
-
-  public static final String VERSION = "1.29.1";
+  public static final String VERSION = "1.32.3";
   public static final String DOCKER_IMAGE = "semitechnologies/weaviate";
 
-  /**
-   * Get a client for the current Weaviate container.
-   * As we aren't running tests in parallel at the moment,
-   * this is not made thread-safe.
-   */
+  private volatile SharedClient clientInstance;
+
   public WeaviateClient getClient() {
-    // FIXME: control from containers?
+    return getClient(ObjectBuilder.identity());
+  }
+
+  /**
+   * Create a new instance of WeaviateClient connected to this container if none
+   * exist. Get an existing client otherwise.
+   *
+   * The lifetime of this client is tied to that of its container, which means
+   * that you do not need to {@code close} it manually. It will only truly close
+   * after the parent Testcontainer is stopped.
+   */
+  public WeaviateClient getClient(Function<Config.Custom, ObjectBuilder<Config>> fn) {
     if (!isRunning()) {
       start();
     }
-    if (clientInstance == null) {
-      try {
-        clientInstance = WeaviateClient.local(
+    if (clientInstance != null) {
+      return clientInstance;
+    }
+
+    synchronized (this) {
+      if (clientInstance == null) {
+        var host = getHost();
+        var customFn = ObjectBuilder.partial(fn,
             conn -> conn
-                .host(getHost())
+                .scheme("http")
+                .httpHost(host)
+                .grpcHost(host)
                 .httpPort(getMappedPort(8080))
                 .grpcPort(getMappedPort(50051)));
-      } catch (Exception e) {
-        throw new RuntimeException("create WeaviateClient for Weaviate container", e);
+        var config = customFn.apply(new Config.Custom()).build();
+        try {
+          clientInstance = new SharedClient(config, this);
+        } catch (Exception e) {
+          throw new RuntimeException("create WeaviateClient for Weaviate container", e);
+        }
       }
     }
     return clientInstance;
+  }
+
+  /**
+   * Create a new instance of WeaviateClient connected to this container.
+   * Prefer using {@link #getClient} unless your test needs the initialization
+   * steps to run, e.g. OIDC authorization grant exchange.
+   */
+  public WeaviateClient getNewClient(Function<Config.Custom, ObjectBuilder<Config>> fn) {
+    if (!isRunning()) {
+      start();
+    }
+    var host = getHost();
+    var customFn = ObjectBuilder.partial(fn,
+        conn -> conn
+            .scheme("http")
+            .httpHost(host)
+            .grpcHost(host)
+            .httpPort(getMappedPort(8080))
+            .grpcPort(getMappedPort(50051)));
+    return WeaviateClient.custom(customFn);
   }
 
   public static Weaviate createDefault() {
@@ -99,7 +139,22 @@ public class Weaviate extends WeaviateContainer {
     }
 
     public Builder enableTelemetry(boolean enable) {
-      telemetry = enable;
+      environment.put("DISABLE_TELEMETRY", Boolean.toString(!enable));
+      return this;
+    }
+
+    public Builder enableAnonymousAccess(boolean enable) {
+      environment.put("AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED", Boolean.toString(enable));
+      return this;
+    }
+
+    public Builder withOIDC(String clientId, String issuer, String usernameClaim, String groupsClaim) {
+      enableAnonymousAccess(false);
+      environment.put("AUTHENTICATION_OIDC_ENABLED", "true");
+      environment.put("AUTHENTICATION_OIDC_CLIENT_ID", clientId);
+      environment.put("AUTHENTICATION_OIDC_ISSUER", issuer);
+      environment.put("AUTHENTICATION_OIDC_USERNAME_CLAIM", usernameClaim);
+      environment.put("AUTHENTICATION_OIDC_GROUPS_CLAIM", groupsClaim);
       return this;
     }
 
@@ -107,11 +162,8 @@ public class Weaviate extends WeaviateContainer {
       var c = new Weaviate(DOCKER_IMAGE + ":" + versionTag);
 
       if (!enableModules.isEmpty()) {
-        c.withEnv("ENABLE_API_BASED_MODULES", "'true'");
+        c.withEnv("ENABLE_API_BASED_MODULES", Boolean.TRUE.toString());
         c.withEnv("ENABLE_MODULES", String.join(",", enableModules));
-      }
-      if (!telemetry) {
-        c.withEnv("DISABLE_TELEMETRY", "true");
       }
 
       environment.forEach((name, value) -> c.withEnv(name, value));
@@ -134,10 +186,32 @@ public class Weaviate extends WeaviateContainer {
     if (clientInstance == null) {
       return;
     }
-    try {
-      clientInstance.close();
-    } catch (IOException e) {
-      // TODO: log error
+    synchronized (this) {
+      try {
+        clientInstance.close(this);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+
+  /** SharedClient's lifetime is tied to that of it's parent container. */
+  private class SharedClient extends WeaviateClient {
+    private final Weaviate parent;
+
+    private SharedClient(Config config, Weaviate parent) {
+      super(config);
+      this.parent = parent;
+    }
+
+    private void close(Weaviate caller) throws Exception {
+      if (caller == parent) {
+        super.close();
+      }
+    }
+
+    @Override
+    public void close() throws IOException {
     }
   }
 }

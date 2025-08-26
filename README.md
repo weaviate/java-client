@@ -9,7 +9,6 @@ Official Weaviate Java Client.
 To start using Weaviate Java Client add the dependency to `pom.xml`:
 
 ```xml
-
 <dependency>
     <groupId>io.weaviate</groupId>
     <artifactId>client6</artifactId>
@@ -19,8 +18,17 @@ To start using Weaviate Java Client add the dependency to `pom.xml`:
 
 ### Uber JAR🫙
 
-If you're building a uber-JAR with something like `maven-assembly-plugin`, use a shaded version with classifier `all`.
+If you're building an uber-JAR with something like `maven-assembly-plugin`, use a shaded version with classifier `all`.
 This ensures that all dynamically-loaded dependecies of `io.grpc` are resolved correctly.
+
+```xml
+<dependency>
+    <groupId>io.weaviate</groupId>
+    <artifactId>client6</artifactId>
+    <version>6.0.0-beta4</version>
+    <classifier>all</classifier>
+</dependency>
+```
 
 ### SNAPSHOT releases
 

@@ -8,6 +8,10 @@ public interface Endpoint<RequestT, ResponseT> {
 
   String requestUrl(RequestT request);
 
+  default String requestUrl(RestTransportOptions transportOptions, RequestT request) {
+    return transportOptions.baseUrl() + requestUrl(request);
+  }
+
   String body(RequestT request);
 
   Map<String, Object> queryParameters(RequestT request);

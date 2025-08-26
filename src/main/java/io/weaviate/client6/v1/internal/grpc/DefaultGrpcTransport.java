@@ -1,6 +1,5 @@
 package io.weaviate.client6.v1.internal.grpc;
 
-import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
 import javax.net.ssl.SSLException;
@@ -26,6 +25,8 @@ public final class DefaultGrpcTransport implements GrpcTransport {
   private final WeaviateBlockingStub blockingStub;
   private final WeaviateFutureStub futureStub;
 
+  private TokenCallCredentials callCredentials;
+
   public DefaultGrpcTransport(GrpcChannelOptions transportOptions) {
     this.channel = buildChannel(transportOptions);
 
@@ -36,9 +37,9 @@ public final class DefaultGrpcTransport implements GrpcTransport {
         .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(transportOptions.headers()));
 
     if (transportOptions.tokenProvider() != null) {
-      var credentials = new TokenCallCredentials(transportOptions.tokenProvider());
-      blockingStub = blockingStub.withCallCredentials(credentials);
-      futureStub = futureStub.withCallCredentials(credentials);
+      this.callCredentials = new TokenCallCredentials(transportOptions.tokenProvider());
+      blockingStub = blockingStub.withCallCredentials(callCredentials);
+      futureStub = futureStub.withCallCredentials(callCredentials);
     }
 
     this.blockingStub = blockingStub;
@@ -121,7 +122,10 @@ public final class DefaultGrpcTransport implements GrpcTransport {
   }
 
   @Override
-  public void close() throws IOException {
-    this.channel.shutdown();
+  public void close() throws Exception {
+    channel.shutdown();
+    if (callCredentials != null) {
+      callCredentials.close();
+    }
   }
 }
