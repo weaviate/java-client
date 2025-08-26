@@ -75,6 +75,12 @@ public class DefaultRestTransport implements RestTransport {
     this.httpClientAsync.start();
   }
 
+  private <RequestT> String uri(Endpoint<RequestT, ?> ep, RequestT req) {
+    return transportOptions.baseUrl()
+        + ep.requestUrl(req)
+        + UrlEncoder.encodeQuery(ep.queryParameters(req));
+  }
+
   @Override
   public <RequestT, ResponseT, ExceptionT> ResponseT performRequest(RequestT request,
       Endpoint<RequestT, ResponseT> endpoint)
@@ -86,7 +92,7 @@ public class DefaultRestTransport implements RestTransport {
   private <RequestT, ResponseT> ClassicHttpRequest prepareClassicRequest(RequestT request,
       Endpoint<RequestT, ResponseT> endpoint) {
     var method = endpoint.method(request);
-    var uri = transportOptions.baseUrl() + endpoint.requestUrl(request);
+    var uri = uri(endpoint, request);
 
     // TODO: apply options;
     var req = ClassicRequestBuilder.create(method).setUri(uri);
@@ -138,8 +144,7 @@ public class DefaultRestTransport implements RestTransport {
   private <RequestT, ResponseT> SimpleHttpRequest prepareSimpleRequest(RequestT request,
       Endpoint<RequestT, ResponseT> endpoint) {
     var method = endpoint.method(request);
-    var uri = transportOptions.baseUrl() + endpoint.requestUrl(request);
-    // TODO: apply options;
+    var uri = uri(endpoint, request);
 
     var body = endpoint.body(request);
     var req = SimpleHttpRequest.create(method, uri);
@@ -160,21 +165,17 @@ public class DefaultRestTransport implements RestTransport {
     return _handleResponse(endpoint, method, url, statusCode, body);
   }
 
+  @SuppressWarnings("unchecked")
   private <ResponseT> ResponseT _handleResponse(Endpoint<?, ResponseT> endpoint, String method, String url,
       int statusCode, String body) {
     if (endpoint.isError(statusCode)) {
       var message = endpoint.deserializeError(statusCode, body);
       throw WeaviateApiException.http(method, url, statusCode, message);
     }
-
     if (endpoint instanceof JsonEndpoint json) {
-      @SuppressWarnings("unchecked")
-      ResponseT response = (ResponseT) json.deserializeResponse(statusCode, body);
-      return response;
+      return (ResponseT) json.deserializeResponse(statusCode, body);
     } else if (endpoint instanceof BooleanEndpoint bool) {
-      @SuppressWarnings("unchecked")
-      ResponseT response = (ResponseT) ((Boolean) bool.getResult(statusCode));
-      return response;
+      return (ResponseT) ((Boolean) bool.getResult(statusCode));
     }
 
     // TODO: make it a WeaviateTransportException

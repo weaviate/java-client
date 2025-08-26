@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
@@ -11,10 +13,20 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedResponseT> {
   protected final CollectionDescriptor<PropertiesT> collection;
   protected final GrpcTransport grpcTransport;
+  protected final CollectionHandleDefaults defaults;
 
-  AbstractQueryClient(CollectionDescriptor<PropertiesT> collection, GrpcTransport grpcTransport) {
+  AbstractQueryClient(CollectionDescriptor<PropertiesT> collection, GrpcTransport grpcTransport,
+      CollectionHandleDefaults defaults) {
     this.collection = collection;
     this.grpcTransport = grpcTransport;
+    this.defaults = defaults;
+  }
+
+  /** Copy constructor that sets new defaults. */
+  AbstractQueryClient(
+      AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedResponseT> c,
+      CollectionHandleDefaults defaults) {
+    this(c.collection, c.grpcTransport, defaults);
   }
 
   protected abstract SingleT byId(ById byId);
@@ -30,11 +42,22 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
   }
 
   public SingleT byId(String uuid, Function<ById.Builder, ObjectBuilder<ById>> fn) {
+    // Collection handle defaults (consistencyLevel / tenant) are irrelevant for
+    // by-ID lookup. Do not `applyDefaults` to `fn`.
     return byId(ById.of(uuid, fn));
   }
 
-  protected final <T> Optional<T> optionalFirst(List<T> objects) {
-    return objects.isEmpty() ? Optional.empty() : Optional.ofNullable(objects.get(0));
+  /**
+   * Retrieve the first result from query response if any.
+   *
+   * @param response Query response.
+   * @return An object from the list or empty {@link Optional}.
+   */
+  protected final <T> Optional<WeaviateObject<T, Object, QueryMetadata>> optionalFirst(QueryResponse<T> response) {
+    return response == null || response.objects().isEmpty()
+        ? Optional.empty()
+        : Optional.ofNullable(response.objects().get(0));
+
   }
 
   // Object queries -----------------------------------------------------------

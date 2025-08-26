@@ -9,6 +9,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
@@ -25,7 +26,8 @@ import io.weaviate.client6.v1.internal.orm.PropertiesBuilder;
 public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
 
   static <T> Rpc<QueryRequest, WeaviateProtoSearchGet.SearchRequest, QueryResponse<T>, WeaviateProtoSearchGet.SearchReply> rpc(
-      CollectionDescriptor<T> collection) {
+      CollectionDescriptor<T> collection,
+      CollectionHandleDefaults defaults) {
     return Rpc.of(
         request -> {
           var message = WeaviateProtoSearchGet.SearchRequest.newBuilder();
@@ -34,6 +36,14 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
           message.setUses123Api(true);
           message.setCollection(collection.name());
           request.operator.appendTo(message);
+
+          if (defaults.tenant() != null) {
+            message.setTenant(defaults.tenant());
+          }
+          if (defaults.consistencyLevel() != null) {
+            defaults.consistencyLevel().appendTo(message);
+          }
+
           if (request.groupBy != null) {
             request.groupBy.appendTo(message);
           }
@@ -53,8 +63,9 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
   }
 
   static <T> Rpc<QueryRequest, WeaviateProtoSearchGet.SearchRequest, QueryResponseGrouped<T>, WeaviateProtoSearchGet.SearchReply> grouped(
-      CollectionDescriptor<T> collection) {
-    var rpc = rpc(collection);
+      CollectionDescriptor<T> collection,
+      CollectionHandleDefaults defaults) {
+    var rpc = rpc(collection, defaults);
     return Rpc.of(
         request -> rpc.marshal(request),
         reply -> {
@@ -86,8 +97,8 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
   private static <T> WeaviateObject<T, Object, QueryMetadata> unmarshalResultObject(
       WeaviateProtoSearchGet.PropertiesResult propertiesResult,
       WeaviateProtoSearchGet.MetadataResult metadataResult,
-      CollectionDescriptor<T> descriptor) {
-    var object = unmarshalWithReferences(propertiesResult, metadataResult, descriptor);
+      CollectionDescriptor<T> collection) {
+    var object = unmarshalWithReferences(propertiesResult, metadataResult, collection);
     var metadata = new QueryMetadata.Builder()
         .uuid(object.metadata().uuid())
         .vectors(object.metadata().vectors());
@@ -110,7 +121,7 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
     if (metadataResult.getExplainScorePresent()) {
       metadata.explainScore(metadataResult.getExplainScore());
     }
-    return new WeaviateObject<>(descriptor.name(), object.properties(), object.references(), metadata.build());
+    return new WeaviateObject<>(collection.name(), object.properties(), object.references(), metadata.build());
   }
 
   private static <T> WeaviateObject<T, Object, ObjectMetadata> unmarshalWithReferences(

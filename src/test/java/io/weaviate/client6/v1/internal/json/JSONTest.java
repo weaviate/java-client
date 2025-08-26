@@ -345,6 +345,7 @@ public class JSONTest {
 
   }
 
+  @FunctionalInterface
   private interface CustomAssert extends BiConsumer<Object, Object> {
   }
 

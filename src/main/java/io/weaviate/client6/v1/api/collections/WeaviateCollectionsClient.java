@@ -29,7 +29,24 @@ public class WeaviateCollectionsClient {
    *         properties.
    */
   public CollectionHandle<Map<String, Object>> use(String collectionName) {
-    return new CollectionHandle<>(restTransport, grpcTransport, CollectionDescriptor.ofMap(collectionName));
+    return use(collectionName, CollectionHandleDefaults.none());
+  }
+
+  /**
+   * Obtain a handle to send requests to a particular collection.
+   * The returned object is thread-safe.
+   *
+   * @return a handle for a collection with {@code Map<String, Object>}
+   *         properties.
+   */
+  public CollectionHandle<Map<String, Object>> use(
+      String collectionName,
+      Function<CollectionHandleDefaults.Builder, ObjectBuilder<CollectionHandleDefaults>> fn) {
+    return new CollectionHandle<>(
+        restTransport,
+        grpcTransport,
+        CollectionDescriptor.ofMap(collectionName),
+        CollectionHandleDefaults.of(fn));
   }
 
   /**

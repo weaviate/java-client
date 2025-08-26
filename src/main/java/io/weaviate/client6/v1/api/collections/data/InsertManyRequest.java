@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.internal.grpc.ByteStringUtil;
@@ -37,18 +38,23 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
 
   public static <T> Rpc<InsertManyRequest<T>, WeaviateProtoBatch.BatchObjectsRequest, InsertManyResponse, WeaviateProtoBatch.BatchObjectsReply> rpc(
       List<WeaviateObject<T, Reference, ObjectMetadata>> insertObjects,
-      CollectionDescriptor<T> collectionsDescriptor) {
+      CollectionDescriptor<T> collection,
+      CollectionHandleDefaults defaults) {
     return Rpc.of(
         request -> {
           var message = WeaviateProtoBatch.BatchObjectsRequest.newBuilder();
 
           var batch = request.objects.stream().map(obj -> {
             var batchObject = WeaviateProtoBatch.BatchObject.newBuilder();
-            buildObject(batchObject, obj, collectionsDescriptor);
+            buildObject(batchObject, obj, collection, defaults);
             return batchObject.build();
           }).toList();
 
           message.addAllObjects(batch);
+
+          if (defaults.consistencyLevel() != null) {
+            defaults.consistencyLevel().appendTo(message);
+          }
           return message.build();
         },
         response -> {
@@ -85,8 +91,9 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
 
   public static <T> void buildObject(WeaviateProtoBatch.BatchObject.Builder object,
       WeaviateObject<T, Reference, ObjectMetadata> insert,
-      CollectionDescriptor<T> collectionDescriptor) {
-    object.setCollection(collectionDescriptor.name());
+      CollectionDescriptor<T> collection,
+      CollectionHandleDefaults defaults) {
+    object.setCollection(collection.name());
 
     var metadata = insert.metadata();
     if (metadata != null) {
@@ -113,6 +120,9 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
             }).toList();
         object.addAllVectors(vectors);
       }
+      if (defaults.tenant() != null) {
+        object.setTenant(defaults.tenant());
+      }
     }
 
     var properties = WeaviateProtoBatch.BatchObject.Properties.newBuilder();
@@ -120,7 +130,7 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
     var singleRef = new ArrayList<WeaviateProtoBatch.BatchObject.SingleTargetRefProps>();
     var multiRef = new ArrayList<WeaviateProtoBatch.BatchObject.MultiTargetRefProps>();
 
-    collectionDescriptor
+    collection
         .propertiesReader(insert.properties()).readProperties()
         .entrySet().stream().forEach(entry -> {
           var value = entry.getValue();

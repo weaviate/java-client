@@ -3,6 +3,7 @@ package io.weaviate.client6.v1.api.collections.aggregate;
 import java.util.List;
 import java.util.function.Function;
 
+import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.api.collections.query.Hybrid;
 import io.weaviate.client6.v1.api.collections.query.NearAudio;
 import io.weaviate.client6.v1.api.collections.query.NearDepth;
@@ -20,10 +21,21 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
   protected final CollectionDescriptor<?> collection;
   protected final GrpcTransport transport;
+  protected final CollectionHandleDefaults defaults;
 
-  AbstractAggregateClient(CollectionDescriptor<?> collection, GrpcTransport transport) {
+  AbstractAggregateClient(
+      CollectionDescriptor<?> collection,
+      GrpcTransport transport,
+      CollectionHandleDefaults defaults) {
     this.transport = transport;
     this.collection = collection;
+    this.defaults = defaults;
+  }
+
+  AbstractAggregateClient(
+      AbstractAggregateClient<ResponseT, GroupedResponseT> c,
+      CollectionHandleDefaults defaults) {
+    this(c.collection, c.transport, defaults);
   }
 
   protected abstract ResponseT performRequest(Aggregation aggregation);
