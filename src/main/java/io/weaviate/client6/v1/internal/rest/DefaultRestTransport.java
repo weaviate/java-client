@@ -78,8 +78,7 @@ public class DefaultRestTransport implements RestTransport {
   }
 
   private <RequestT> String uri(Endpoint<RequestT, ?> ep, RequestT req) {
-    return transportOptions.baseUrl()
-        + ep.requestUrl(req)
+    return ep.requestUrl(transportOptions, req)
         + UrlEncoder.encodeQuery(ep.queryParameters(req));
   }
 
