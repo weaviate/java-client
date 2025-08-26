@@ -21,13 +21,23 @@ To start using Weaviate Java Client add the dependency to `pom.xml`:
 If you're building a uber-JAR with something like `maven-assembly-plugin`, use a shaded version with classifier `all`.
 This ensures that all dynamically-loaded dependecies of `io.grpc` are resolved correctly.
 
-```xml
-<dependency>
-    <groupId>io.weaviate</groupId>
-    <artifactId>client6</artifactId>
-    <version>6.0.0-beta4</version>
-    <classifier>all</classifier>
-</dependency>
+### SNAPSHOT releases
+
+The latest development version of `client6` is released after every merged pull request. To include it in you project set the version to `6.0.0-SNAPSHOT` and [configure your `<repositories>` section accordingly](https://central.sonatype.org/publish/publish-portal-snapshots/#consuming-snapshot-releases-for-your-project).
+Please be mindful of the fact that this is not a stable release and breaking changes may be introduced.
+
+Snapshot releases overwrite each other, so no two releases are alike. If you find a bug in one of the `SNAPSHOT` versions that you'd like to report, please include the output of `Debug.printBuildInfo()` in the ticket's description.
+
+```java
+import io.weaviate.client6.v1.internal.Debug;
+
+public class App {
+    public static void main(String[] args) {
+        Debug.printBuildInfo();
+
+        // ...the rest of your application code...
+    }
+}
 ```
 
 ### Gson and reflective access to internal JDK classes
