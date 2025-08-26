@@ -24,7 +24,7 @@ This ensures that all dynamically-loaded dependecies of `io.grpc` are resolved c
 
 ### SNAPSHOT releases
 
-The latest development version of `client6` is released after every merged pull request. Set the version to `6.0.0-SNAPSHOT` to include it in your project.
+The latest development version of `client6` is released after every merged pull request. To include it in you project set the version to `6.0.0-SNAPSHOT` and [configure your `<repositories>` section accordingly](https://central.sonatype.org/publish/publish-portal-snapshots/#consuming-snapshot-releases-for-your-project).
 Please be mindful of the fact that this is not a stable release and breaking changes may be introduced.
 
 Snapshot releases overwrite each other, so no two releases are alike. If you find a bug in one of the `SNAPSHOT` versions that you'd like to report, please include the output of `Debug.printBuildInfo()` in the ticket's description.
