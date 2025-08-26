@@ -187,7 +187,7 @@ public record WeaviateObject<P, R, M extends WeaviateMetadata>(
 
           return builder.build();
         }
-      };
+      }.nullSafe();
     }
   }
 }

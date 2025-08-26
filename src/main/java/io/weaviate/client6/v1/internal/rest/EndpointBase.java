@@ -14,7 +14,7 @@ public abstract class EndpointBase<RequestT, ResponseT> implements Endpoint<Requ
   protected final Function<RequestT, String> method;
   protected final Function<RequestT, String> requestUrl;
   protected final Function<RequestT, String> body;
-  protected final Function<RequestT, Map<String, String>> queryParameters;
+  protected final Function<RequestT, Map<String, Object>> queryParameters;
 
   @SuppressWarnings("unchecked")
   protected static <RequestT> Function<RequestT, String> nullBody() {
@@ -24,7 +24,7 @@ public abstract class EndpointBase<RequestT, ResponseT> implements Endpoint<Requ
   public EndpointBase(
       Function<RequestT, String> method,
       Function<RequestT, String> requestUrl,
-      Function<RequestT, Map<String, String>> queryParameters,
+      Function<RequestT, Map<String, Object>> queryParameters,
       Function<RequestT, String> body) {
     this.method = method;
     this.requestUrl = requestUrl;
@@ -43,7 +43,7 @@ public abstract class EndpointBase<RequestT, ResponseT> implements Endpoint<Requ
   }
 
   @Override
-  public Map<String, String> queryParameters(RequestT request) {
+  public Map<String, Object> queryParameters(RequestT request) {
     return queryParameters.apply(request);
   }
 
@@ -59,16 +59,24 @@ public abstract class EndpointBase<RequestT, ResponseT> implements Endpoint<Requ
 
   @Override
   public String deserializeError(int statusCode, String responseBody) {
-    var response = JSON.deserialize(responseBody, ErrorResponse.class);
-    if (response.errors.isEmpty()) {
-      return "";
-
+    {
+      var response = JSON.deserialize(responseBody, ErrorResponse1.class);
+      if (response.errors != null && !response.errors.isEmpty()) {
+        return response.errors.get(0).message();
+      }
     }
-    return response.errors.get(0).text();
+    var response = JSON.deserialize(responseBody, ErrorResponse2.class);
+    if (response.error != null && !response.error.isBlank()) {
+      return response.error;
+    }
+    return responseBody;
   }
 
-  static record ErrorResponse(@SerializedName("error") List<ErrorMessage> errors) {
-    private static record ErrorMessage(@SerializedName("message") String text) {
+  private static record ErrorResponse1(@SerializedName("error") List<ErrorMessage> errors) {
+    private static record ErrorMessage(@SerializedName("message") String message) {
     }
+  }
+
+  private static record ErrorResponse2(@SerializedName("message") String error) {
   }
 }

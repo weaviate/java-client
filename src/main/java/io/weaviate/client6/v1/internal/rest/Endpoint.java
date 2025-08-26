@@ -10,7 +10,7 @@ public interface Endpoint<RequestT, ResponseT> {
 
   String body(RequestT request);
 
-  Map<String, String> queryParameters(RequestT request);
+  Map<String, Object> queryParameters(RequestT request);
 
   /** Should this status code be considered an error? */
   boolean isError(int statusCode);

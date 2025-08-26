@@ -22,8 +22,17 @@ public class WeaviateCollectionsClientAsync {
   }
 
   public CollectionHandleAsync<Map<String, Object>> use(String collectionName) {
-    return new CollectionHandleAsync<>(restTransport, grpcTransport,
-        CollectionDescriptor.ofMap(collectionName));
+    return use(collectionName, CollectionHandleDefaults.none());
+  }
+
+  public CollectionHandleAsync<Map<String, Object>> use(
+      String collectionName,
+      Function<CollectionHandleDefaults.Builder, ObjectBuilder<CollectionHandleDefaults>> fn) {
+    return new CollectionHandleAsync<>(
+        restTransport,
+        grpcTransport,
+        CollectionDescriptor.ofMap(collectionName),
+        CollectionHandleDefaults.of(fn));
   }
 
   public CompletableFuture<CollectionConfig> create(String name) {

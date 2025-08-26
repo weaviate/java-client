@@ -1,10 +1,12 @@
 package io.weaviate.client6.v1.api.collections.data;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.function.Function;
 
 import com.google.gson.reflect.TypeToken;
 
+import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
@@ -16,13 +18,17 @@ import io.weaviate.client6.v1.internal.rest.SimpleEndpoint;
 
 public record ReplaceObjectRequest<T>(WeaviateObject<T, Reference, ObjectMetadata> object) {
 
-  static final <T> Endpoint<ReplaceObjectRequest<T>, Void> endpoint(CollectionDescriptor<T> collectionDescriptor) {
+  static final <T> Endpoint<ReplaceObjectRequest<T>, Void> endpoint(CollectionDescriptor<T> collection,
+      CollectionHandleDefaults defaults) {
     return SimpleEndpoint.sideEffect(
         request -> "PUT",
-        request -> "/objects/" + collectionDescriptor.name() + "/" + request.object.metadata().uuid(),
-        request -> Collections.emptyMap(),
-        request -> JSON.serialize(request.object, TypeToken.getParameterized(
-            WeaviateObject.class, collectionDescriptor.typeToken().getType(), Reference.class, ObjectMetadata.class)));
+        request -> "/objects/" + collection.name() + "/" + request.object.metadata().uuid(),
+        request -> defaults.consistencyLevel() != null
+            ? Map.of("consistency_level", defaults.consistencyLevel())
+            : Collections.emptyMap(),
+        request -> JSON.serialize(
+            new WriteWeaviateObject<>(request.object, defaults.tenant()),
+            TypeToken.getParameterized(WriteWeaviateObject.class, collection.typeToken().getType())));
   }
 
   public static <T> ReplaceObjectRequest<T> of(String collectionName, String uuid,
