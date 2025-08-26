@@ -147,9 +147,7 @@ public class DefaultRestTransport implements RestTransport {
   private <RequestT, ResponseT> SimpleHttpRequest prepareSimpleRequest(RequestT request,
       Endpoint<RequestT, ResponseT> endpoint) {
     var method = endpoint.method(request);
-    var uri = endpoint.requestUrl(transportOptions, request);
-
-    // TODO: apply options;
+    var uri = uri(endpoint, request);
 
     var body = endpoint.body(request);
     var req = SimpleHttpRequest.create(method, uri);
@@ -185,11 +183,6 @@ public class DefaultRestTransport implements RestTransport {
 
     // TODO: make it a WeaviateTransportException
     throw new RuntimeException("Unhandled endpoint type " + endpoint.getClass().getSimpleName());
-  }
-
-  @Override
-  public RestTransportOptions getTransportOptions() {
-    return transportOptions;
   }
 
   @Override

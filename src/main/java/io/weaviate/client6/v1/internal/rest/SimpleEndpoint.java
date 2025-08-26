@@ -31,7 +31,7 @@ public class SimpleEndpoint<RequestT, ResponseT> extends EndpointBase<RequestT, 
   public static <RequestT, ResponseT> SimpleEndpoint<RequestT, ResponseT> noBody(
       Function<RequestT, String> method,
       Function<RequestT, String> requestUrl,
-      Function<RequestT, Map<String, String>> queryParameters,
+      Function<RequestT, Map<String, Object>> queryParameters,
       Class<ResponseT> cls) {
     return new SimpleEndpoint<>(method, requestUrl, queryParameters, nullBody(), deserializeClass(cls));
   }
