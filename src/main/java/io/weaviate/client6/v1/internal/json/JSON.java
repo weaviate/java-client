@@ -27,6 +27,8 @@ public final class JSON {
         io.weaviate.client6.v1.api.collections.Reranker.CustomTypeAdapterFactory.INSTANCE);
     gsonBuilder.registerTypeAdapterFactory(
         io.weaviate.client6.v1.api.collections.Generative.CustomTypeAdapterFactory.INSTANCE);
+    gsonBuilder.registerTypeAdapterFactory(
+        io.weaviate.client6.v1.internal.DateUtil.CustomTypeAdapterFactory.INSTANCE);
 
     // TypeAdapters -----------------------------------------------------------
     gsonBuilder.registerTypeAdapter(

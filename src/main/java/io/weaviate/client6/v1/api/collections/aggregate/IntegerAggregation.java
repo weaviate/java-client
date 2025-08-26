@@ -10,8 +10,7 @@ public class IntegerAggregation
     extends AbstractPropertyAggregation<WeaviateProtoAggregate.AggregateRequest.Aggregation.Integer.Builder> {
 
   public IntegerAggregation(String property,
-      Set<Metric<WeaviateProtoAggregate.AggregateRequest.Aggregation.Integer.Builder>> metrics,
-      Integer topOccurrencesCutoff) {
+      Set<Metric<WeaviateProtoAggregate.AggregateRequest.Aggregation.Integer.Builder>> metrics) {
     super(property, metrics);
   }
 
@@ -20,12 +19,11 @@ public class IntegerAggregation
   }
 
   public IntegerAggregation(Builder builder) {
-    this(builder.property, builder.metrics, builder.topOccurrencesCutoff);
+    this(builder.property, builder.metrics);
   }
 
   public static class Builder extends
       AbstractPropertyAggregation.Builder<WeaviateProtoAggregate.AggregateRequest.Aggregation.Integer.Builder, IntegerAggregation, Builder> {
-    private Integer topOccurrencesCutoff;
 
     public Builder(String property) {
       super(property);

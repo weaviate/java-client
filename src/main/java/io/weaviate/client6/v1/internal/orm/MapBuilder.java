@@ -1,8 +1,10 @@
 package io.weaviate.client6.v1.internal.orm;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class MapBuilder implements PropertiesBuilder<Map<String, Object>> {
   private final Map<String, Object> properties = new HashMap<>();
@@ -28,7 +30,7 @@ public class MapBuilder implements PropertiesBuilder<Map<String, Object>> {
   }
 
   @Override
-  public void setNumber(String property, Number value) {
+  public void setDouble(String property, Double value) {
     properties.put(property, value);
   }
 
@@ -38,7 +40,42 @@ public class MapBuilder implements PropertiesBuilder<Map<String, Object>> {
   }
 
   @Override
-  public void setDate(String property, Date value) {
+  public void setOffsetDateTime(String property, OffsetDateTime value) {
+    properties.put(property, value);
+  }
+
+  @Override
+  public void setUuid(String property, UUID value) {
+    properties.put(property, value);
+  }
+
+  @Override
+  public void setTextArray(String property, List<String> value) {
+    properties.put(property, value);
+  }
+
+  @Override
+  public void setLongArray(String property, List<Long> value) {
+    properties.put(property, value);
+  }
+
+  @Override
+  public void setDoubleArray(String property, List<Double> value) {
+    properties.put(property, value);
+  }
+
+  @Override
+  public void setUuidArray(String property, List<UUID> value) {
+    properties.put(property, value);
+  }
+
+  @Override
+  public void setBooleanArray(String property, List<Boolean> value) {
+    properties.put(property, value);
+  }
+
+  @Override
+  public void setOffsetDateTimeArray(String property, List<OffsetDateTime> value) {
     properties.put(property, value);
   }
 
