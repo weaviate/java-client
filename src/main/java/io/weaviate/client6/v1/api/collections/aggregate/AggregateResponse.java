@@ -9,7 +9,7 @@ public record AggregateResponse(Map<String, ? extends Object> properties, Long t
   }
 
   public TextAggregation.Values text(String name) {
-    checkPropertyType(name, this::isText, "Text");
+    checkPropertyType(name, this::isText, "TEXT");
     return (TextAggregation.Values) this.properties.get(name);
   }
 
@@ -18,8 +18,35 @@ public record AggregateResponse(Map<String, ? extends Object> properties, Long t
   }
 
   public IntegerAggregation.Values integer(String name) {
-    checkPropertyType(name, this::isInteger, "Integer");
+    checkPropertyType(name, this::isInteger, "INTEGER");
     return (IntegerAggregation.Values) this.properties.get(name);
+  }
+
+  public boolean isBool(String name) {
+    return properties.get(name) instanceof BooleanAggregation.Values;
+  }
+
+  public BooleanAggregation.Values bool(String name) {
+    checkPropertyType(name, this::isBool, "BOOLEAN");
+    return (BooleanAggregation.Values) this.properties.get(name);
+  }
+
+  public boolean isDate(String name) {
+    return properties.get(name) instanceof DateAggregation.Values;
+  }
+
+  public DateAggregation.Values date(String name) {
+    checkPropertyType(name, this::isDate, "DATE");
+    return (DateAggregation.Values) this.properties.get(name);
+  }
+
+  public boolean isNumber(String name) {
+    return properties.get(name) instanceof NumberAggregation.Values;
+  }
+
+  public NumberAggregation.Values number(String name) {
+    checkPropertyType(name, this::isNumber, "NUMBER");
+    return (NumberAggregation.Values) this.properties.get(name);
   }
 
   private void checkPropertyType(String name, Function<String, Boolean> check, String expected) {

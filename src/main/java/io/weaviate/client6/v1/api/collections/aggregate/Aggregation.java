@@ -63,16 +63,6 @@ public record Aggregation(
     }
   }
 
-  public static final PropertyAggregation text(String property,
-      Function<TextAggregation.Builder, ObjectBuilder<TextAggregation>> fn) {
-    return TextAggregation.of(property, fn);
-  }
-
-  public static final PropertyAggregation integer(String property,
-      Function<IntegerAggregation.Builder, ObjectBuilder<IntegerAggregation>> fn) {
-    return IntegerAggregation.of(property, fn);
-  }
-
   public void appendTo(WeaviateProtoAggregate.AggregateRequest.Builder req) {
     if (filter != null) {
       filter.appendTo(req);

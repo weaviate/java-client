@@ -2,8 +2,14 @@ package io.weaviate;
 
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.assertj.core.api.Assertions;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
@@ -61,5 +67,47 @@ public abstract class ConcurrentTest {
       vector[i] = rand.nextFloat(origin, bound);
     }
     return vector;
+  }
+
+  /**
+   * Check that a condition is eventually met.
+   *
+   * @param cond           Arbitrary code that evaluates the test condition..
+   * @param intervalMillis Polling interval.
+   * @param timeoutSeconds Maximum waiting time.
+   * @param message        Optional failure message.
+   *
+   * @throws AssertionError   if the condition does not evaluate to true
+   *                          within {@code timeoutSeconds} or a thread
+   *                          was interrupted in the meantime.
+   * @throws RuntimeException if an exception occurred when envalating condition.
+   */
+  public static void eventually(Callable<Boolean> cond, int intervalMillis, int timeoutSeconds, String... message) {
+    var check = CompletableFuture.runAsync(() -> {
+      try {
+        while (!Thread.currentThread().isInterrupted() && !cond.call()) {
+          try {
+            Thread.sleep(intervalMillis);
+          } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+          }
+        }
+      } catch (Exception e) {
+        // Propagate to callee
+        throw new RuntimeException(e);
+      }
+    });
+
+    try {
+      check.get(timeoutSeconds, TimeUnit.SECONDS);
+    } catch (TimeoutException ex) {
+      check.cancel(true);
+      Assertions.fail(message.length >= 0 ? message[0] : null, ex);
+    } catch (InterruptedException ex) {
+      Thread.currentThread().interrupt();
+      Assertions.fail(ex);
+    } catch (ExecutionException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 }

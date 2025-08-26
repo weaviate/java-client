@@ -129,6 +129,15 @@ public class Weaviate extends WeaviateContainer {
       return this;
     }
 
+    public Builder withOffloadS3(String accessKey, String secretKey) {
+      addModules("offload-s3");
+      environment.put("OFFLOAD_S3_ENDPOINT", "http://minio:9000");
+      environment.put("OFFLOAD_S3_BUCKET_AUTO_CREATE", "true");
+      environment.put("AWS_ACCESS_KEY_ID", accessKey);
+      environment.put("AWS_SECRET_KEY", secretKey);
+      return this;
+    }
+
     public Builder enableTelemetry(boolean enable) {
       environment.put("DISABLE_TELEMETRY", Boolean.toString(!enable));
       return this;

@@ -9,6 +9,10 @@ import java.util.UUID;
 import com.google.protobuf.ByteString;
 
 public class ByteStringUtil {
+  /** Prevent public initialization. */
+  private ByteStringUtil() {
+  }
+
   private static final ByteOrder BYTE_ORDER = ByteOrder.LITTLE_ENDIAN;
 
   /** Decode ByteString to UUID. */
@@ -111,5 +115,37 @@ public class ByteStringUtil {
       fbuf.get(vectors[i], 0, dim);
     }
     return vectors;
+  }
+
+  /**
+   * Decode ByteString to {@code long[]}.
+   *
+   * @throws IllegalArgumentException if ByteString size is not
+   *                                  a multiple of {@link Long#BYTES}.
+   */
+  public static long[] decodeIntValues(ByteString bs) {
+    if (bs.size() % Long.BYTES != 0) {
+      throw new IllegalArgumentException(
+          "ByteString size " + bs.size() + " is not a multiple of " + String.valueOf(Long.BYTES) + " (Long.BYTES)");
+    }
+    long[] vector = new long[bs.size() / Long.BYTES];
+    bs.asReadOnlyByteBuffer().order(BYTE_ORDER).asLongBuffer().get(vector);
+    return vector;
+  }
+
+  /**
+   * Decode ByteString to {@code double[]}.
+   *
+   * @throws IllegalArgumentException if ByteString size is not
+   *                                  a multiple of {@link Double#BYTES}.
+   */
+  public static double[] decodeNumberValues(ByteString bs) {
+    if (bs.size() % Double.BYTES != 0) {
+      throw new IllegalArgumentException(
+          "ByteString size " + bs.size() + " is not a multiple of " + String.valueOf(Double.BYTES) + " (Double.BYTES)");
+    }
+    double[] vector = new double[bs.size() / Double.BYTES];
+    bs.asReadOnlyByteBuffer().order(BYTE_ORDER).asDoubleBuffer().get(vector);
+    return vector;
   }
 }

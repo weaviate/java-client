@@ -3,6 +3,7 @@ package io.weaviate.client6.v1.internal.grpc;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import com.google.protobuf.ByteString;
@@ -71,9 +72,25 @@ public class ByteStringUtilTest {
 
   @Test
   public void test_decodeVector_2d_dim_zero() {
-    byte[] bytes = new byte[] { 0, 0 };
+    byte[] bytes = { 0, 0 };
     float[][] got = ByteStringUtil.decodeVectorMulti(ByteString.copyFrom(bytes));
     assertEquals(0, got.length);
+  }
+
+  @Test
+  public void test_decodeIntValues() {
+    byte[] bytes = { 1, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0 };
+    long[] want = { 1, 2, 3 };
+    long[] got = ByteStringUtil.decodeIntValues(ByteString.copyFrom(bytes));
+    assertArrayEquals(want, got);
+  }
+
+  @Test
+  public void test_decodeNumberValues() {
+    byte[] bytes = { 0, 0, 0, 0, 0, 0, -16, 63, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 8, 64 };
+    double[] want = { 1, 2, 3 };
+    double[] got = ByteStringUtil.decodeNumberValues(ByteString.copyFrom(bytes));
+    Assertions.assertThat(got).isEqualTo(want);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -92,5 +109,17 @@ public class ByteStringUtilTest {
     bytes[1] = (byte) dimensionality;
 
     ByteStringUtil.decodeVectorMulti(ByteString.copyFrom(bytes));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void test_decodeIntValues_illegal() {
+    byte[] bytes = new byte[Long.BYTES - 1]; // must be a multiple of Long.BYTES
+    ByteStringUtil.decodeIntValues(ByteString.copyFrom(bytes));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void test_decodeNumberValues_illegal() {
+    byte[] bytes = new byte[Double.BYTES - 1]; // must be a multiple of Double.BYTES
+    ByteStringUtil.decodeNumberValues(ByteString.copyFrom(bytes));
   }
 }

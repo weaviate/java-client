@@ -3,7 +3,6 @@ package io.weaviate.client6.v1.api.collections;
 import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.function.Function;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -20,7 +19,6 @@ import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecClipVectorize
 import io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecContextionaryVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecWeaviateVectorizer;
-import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.json.JsonEnum;
 
 public interface Vectorizer {

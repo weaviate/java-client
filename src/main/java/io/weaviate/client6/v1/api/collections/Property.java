@@ -24,7 +24,15 @@ public record Property(
   }
 
   public static Property text(String name, Function<Builder, ObjectBuilder<Property>> fn) {
-    return fn.apply(new Builder(name, DataType.TEXT)).build();
+    return newProperty(name, DataType.TEXT, fn);
+  }
+
+  public static Property textArray(String name) {
+    return textArray(name, ObjectBuilder.identity());
+  }
+
+  public static Property textArray(String name, Function<Builder, ObjectBuilder<Property>> fn) {
+    return newProperty(name, DataType.TEXT_ARRAY, fn);
   }
 
   public static Property integer(String name) {
@@ -32,7 +40,15 @@ public record Property(
   }
 
   public static Property integer(String name, Function<Builder, ObjectBuilder<Property>> fn) {
-    return fn.apply(new Builder(name, DataType.INT)).build();
+    return newProperty(name, DataType.INT, fn);
+  }
+
+  public static Property integerArray(String name) {
+    return integerArray(name, ObjectBuilder.identity());
+  }
+
+  public static Property integerArray(String name, Function<Builder, ObjectBuilder<Property>> fn) {
+    return newProperty(name, DataType.INT_ARRAY, fn);
   }
 
   public static Property blob(String name) {
@@ -40,7 +56,75 @@ public record Property(
   }
 
   public static Property blob(String name, Function<Builder, ObjectBuilder<Property>> fn) {
-    return fn.apply(new Builder(name, DataType.BLOB)).build();
+    return newProperty(name, DataType.BLOB, fn);
+  }
+
+  public static Property bool(String name) {
+    return bool(name, ObjectBuilder.identity());
+  }
+
+  public static Property bool(String name, Function<Builder, ObjectBuilder<Property>> fn) {
+    return newProperty(name, DataType.BOOL, fn);
+  }
+
+  public static Property boolArray(String name) {
+    return boolArray(name, ObjectBuilder.identity());
+  }
+
+  public static Property boolArray(String name, Function<Builder, ObjectBuilder<Property>> fn) {
+    return newProperty(name, DataType.BOOL_ARRAY, fn);
+  }
+
+  public static Property date(String name) {
+    return date(name, ObjectBuilder.identity());
+  }
+
+  public static Property date(String name, Function<Builder, ObjectBuilder<Property>> fn) {
+    return newProperty(name, DataType.DATE, fn);
+  }
+
+  public static Property dateArray(String name) {
+    return dateArray(name, ObjectBuilder.identity());
+  }
+
+  public static Property dateArray(String name, Function<Builder, ObjectBuilder<Property>> fn) {
+    return newProperty(name, DataType.DATE_ARRAY, fn);
+  }
+
+  public static Property uuid(String name) {
+    return uuid(name, ObjectBuilder.identity());
+  }
+
+  public static Property uuid(String name, Function<Builder, ObjectBuilder<Property>> fn) {
+    return newProperty(name, DataType.UUID, fn);
+  }
+
+  public static Property uuidArray(String name) {
+    return uuidArray(name, ObjectBuilder.identity());
+  }
+
+  public static Property uuidArray(String name, Function<Builder, ObjectBuilder<Property>> fn) {
+    return newProperty(name, DataType.UUID_ARRAY, fn);
+  }
+
+  public static Property number(String name) {
+    return number(name, ObjectBuilder.identity());
+  }
+
+  public static Property number(String name, Function<Builder, ObjectBuilder<Property>> fn) {
+    return newProperty(name, DataType.NUMBER, fn);
+  }
+
+  public static Property numberArray(String name) {
+    return numberArray(name, ObjectBuilder.identity());
+  }
+
+  public static Property numberArray(String name, Function<Builder, ObjectBuilder<Property>> fn) {
+    return newProperty(name, DataType.NUMBER_ARRAY, fn);
+  }
+
+  private static Property newProperty(String name, String dataType, Function<Builder, ObjectBuilder<Property>> fn) {
+    return fn.apply(new Builder(name, dataType)).build();
   }
 
   public static ReferenceProperty reference(String name, String... collections) {

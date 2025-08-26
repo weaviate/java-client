@@ -2,6 +2,7 @@ package io.weaviate.client6.v1.api.collections.query;
 
 import java.util.Optional;
 
+import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
@@ -10,28 +11,36 @@ public class WeaviateQueryClient<T>
     extends
     AbstractQueryClient<T, Optional<WeaviateObject<T, Object, QueryMetadata>>, QueryResponse<T>, QueryResponseGrouped<T>> {
 
-  public WeaviateQueryClient(CollectionDescriptor<T> collection, GrpcTransport grpcTransport) {
-    super(collection, grpcTransport);
+  public WeaviateQueryClient(
+      CollectionDescriptor<T> collection,
+      GrpcTransport grpcTransport,
+      CollectionHandleDefaults defaults) {
+    super(collection, grpcTransport, defaults);
+  }
+
+  /** Copy constructor that sets new defaults. */
+  public WeaviateQueryClient(WeaviateQueryClient<T> c, CollectionHandleDefaults defaults) {
+    super(c, defaults);
   }
 
   @Override
   protected Optional<WeaviateObject<T, Object, QueryMetadata>> byId(ById byId) {
     var request = new QueryRequest(byId, null);
-    var result = this.grpcTransport.performRequest(request, QueryRequest.rpc(collection));
-    return optionalFirst(result.objects());
+    var result = this.grpcTransport.performRequest(request, QueryRequest.rpc(collection, defaults));
+    return optionalFirst(result);
 
   }
 
   @Override
   protected final QueryResponse<T> performRequest(QueryOperator operator) {
     var request = new QueryRequest(operator, null);
-    return this.grpcTransport.performRequest(request, QueryRequest.rpc(collection));
+    return this.grpcTransport.performRequest(request, QueryRequest.rpc(collection, defaults));
   }
 
   @Override
   protected final QueryResponseGrouped<T> performRequest(QueryOperator operator, GroupBy groupBy) {
     var request = new QueryRequest(operator, groupBy);
-    return this.grpcTransport.performRequest(request, QueryRequest.grouped(collection));
+    return this.grpcTransport.performRequest(request, QueryRequest.grouped(collection, defaults));
   }
 
 }

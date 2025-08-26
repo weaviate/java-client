@@ -22,8 +22,8 @@ public record InvertedIndex(
   }
 
   public record Bm25(
-      @SerializedName("b") Integer b,
-      @SerializedName("k1") Integer k1) {
+      @SerializedName("b") Float b,
+      @SerializedName("k1") Float k1) {
 
     public static Bm25 of(Function<Builder, ObjectBuilder<Bm25>> fn) {
       return fn.apply(new Builder()).build();
@@ -34,15 +34,15 @@ public record InvertedIndex(
     }
 
     public static class Builder implements ObjectBuilder<Bm25> {
-      private Integer b;
-      private Integer k1;
+      private Float b;
+      private Float k1;
 
-      public Builder b(int b) {
+      public Builder b(float b) {
         this.b = b;
         return this;
       }
 
-      public Builder k1(int k1) {
+      public Builder k1(float k1) {
         this.k1 = k1;
         return this;
       }

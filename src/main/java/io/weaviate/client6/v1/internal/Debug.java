@@ -1,5 +1,7 @@
 package io.weaviate.client6.v1.internal;
 
+import java.util.function.Consumer;
+
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.MessageOrBuilder;
 import com.google.protobuf.util.JsonFormat;
@@ -23,5 +25,31 @@ public final class Debug {
     }
 
     return out;
+  }
+
+  /**
+   * Write build info to an output. See {@link #printBuildInfo}.
+   *
+   * <p>
+   * Usage:
+   *
+   * <pre>{@code
+   * // Log to stdout
+   * Debug.writeBuildInfo(System.out::println);
+   *
+   * // Write to custom logger
+   * Debug.writeBuildInfo(mylog::info);
+   * }</pre>
+   *
+   * @param writer Output writer.
+   */
+  public static final void writeBuildInfo(Consumer<String> writer) {
+    writer.accept("[io.weaviate.client6.v1.internal.BuildInfo] branch=%s commit_id=%s"
+        .formatted(BuildInfo.BRANCH, BuildInfo.COMMIT_ID_ABBREV));
+  }
+
+  /** Print build info to stdout. */
+  public static final void printBuildInfo() {
+    writeBuildInfo(System.out::println);
   }
 }

@@ -23,7 +23,7 @@ public class SimpleEndpoint<RequestT, ResponseT> extends EndpointBase<RequestT, 
   public static <RequestT, ResponseT> SimpleEndpoint<RequestT, ResponseT> noBody(
       Function<RequestT, String> method,
       Function<RequestT, String> requestUrl,
-      Function<RequestT, Map<String, String>> queryParameters,
+      Function<RequestT, Map<String, Object>> queryParameters,
       BiFunction<Integer, String, ResponseT> deserializeResponse) {
     return new SimpleEndpoint<>(method, requestUrl, queryParameters, nullBody(), deserializeResponse);
   }
@@ -39,7 +39,7 @@ public class SimpleEndpoint<RequestT, ResponseT> extends EndpointBase<RequestT, 
   public static <RequestT> SimpleEndpoint<RequestT, Void> sideEffect(
       Function<RequestT, String> method,
       Function<RequestT, String> requestUrl,
-      Function<RequestT, Map<String, String>> queryParameters,
+      Function<RequestT, Map<String, Object>> queryParameters,
       Function<RequestT, String> body) {
     return new SimpleEndpoint<>(method, requestUrl, queryParameters, body, nullResponse());
   }
@@ -47,14 +47,14 @@ public class SimpleEndpoint<RequestT, ResponseT> extends EndpointBase<RequestT, 
   public static <RequestT> SimpleEndpoint<RequestT, Void> sideEffect(
       Function<RequestT, String> method,
       Function<RequestT, String> requestUrl,
-      Function<RequestT, Map<String, String>> queryParameters) {
+      Function<RequestT, Map<String, Object>> queryParameters) {
     return new SimpleEndpoint<>(method, requestUrl, queryParameters, nullBody(), nullResponse());
   }
 
   public SimpleEndpoint(
       Function<RequestT, String> method,
       Function<RequestT, String> requestUrl,
-      Function<RequestT, Map<String, String>> queryParameters,
+      Function<RequestT, Map<String, Object>> queryParameters,
       Function<RequestT, String> body,
       BiFunction<Integer, String, ResponseT> deserializeResponse) {
     super(method, requestUrl, queryParameters, body);
