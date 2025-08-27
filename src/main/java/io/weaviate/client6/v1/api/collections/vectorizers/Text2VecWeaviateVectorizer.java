@@ -79,8 +79,8 @@ public record Text2VecWeaviateVectorizer(
     /**
      * Select the embedding model.
      *
-     * @see {@link Text2VecWeaviateVectorizer#SNOWFLAKE_ARCTIC_EMBED_M_15},
-     *      {@link Text2VecWeaviateVectorizer#SNOWFLAKE_ARCTIC_EMBED_L_20}
+     * @see Text2VecWeaviateVectorizer#SNOWFLAKE_ARCTIC_EMBED_M_15
+     * @see Text2VecWeaviateVectorizer#SNOWFLAKE_ARCTIC_EMBED_L_20
      */
     public Builder model(String model) {
       this.model = model;

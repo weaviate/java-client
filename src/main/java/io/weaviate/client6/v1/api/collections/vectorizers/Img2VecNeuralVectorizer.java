@@ -12,7 +12,9 @@ import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Img2VecNeuralVectorizer(
+    /** BLOB properties included in the embedding. */
     @SerializedName("imageFields") List<String> imageFields,
+    /** Vector index configuration. */
     VectorIndex vectorIndex) implements Vectorizer {
 
   @Override
@@ -41,15 +43,24 @@ public record Img2VecNeuralVectorizer(
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
     private List<String> imageFields = new ArrayList<>();
 
+    /** Add BLOB properties to include in the embedding. */
     public Builder imageFields(List<String> fields) {
       this.imageFields = fields;
       return this;
     }
 
+    /** Add BLOB properties to include in the embedding. */
     public Builder imageFields(String... fields) {
       return imageFields(Arrays.asList(fields));
     }
 
+    /**
+     * Override default vector index configuration.
+     *
+     * <a href=
+     * "https://docs.weaviate.io/weaviate/config-refs/indexing/vector-index#hnsw-index-parameters">HNSW</a>
+     * is the default vector index.
+     */
     public Builder vectorIndex(VectorIndex vectorIndex) {
       this.vectorIndex = vectorIndex;
       return this;
