@@ -25,15 +25,18 @@ public record ObjectMetadata(
     private String uuid;
     private Vectors vectors;
 
+    /** Assign a custom UUID for the object. */
     public Builder uuid(UUID uuid) {
       return uuid(uuid.toString());
     }
 
+    /** Assign a custom UUID for the object. */
     public Builder uuid(String uuid) {
       this.uuid = uuid;
       return this;
     }
 
+    /** Attach custom vector to the object.. */
     public Builder vectors(Vectors vectors) {
       this.vectors = vectors;
       return this;
