@@ -5,7 +5,7 @@ import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.vectorizers.Img2VecNeuralVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecClipVectorizer;
-import io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.SelfProvidedVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecContextionaryVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecWeaviateVectorizer;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
@@ -13,22 +13,22 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 /** Static methods for creating instances of {@link Vectorizer}. */
 public final class Vectorizers {
 
-  public static Map.Entry<String, Vectorizer> none() {
-    return none(VectorIndex.DEFAULT_VECTOR_NAME);
+  public static Map.Entry<String, Vectorizer> selfProvided() {
+    return selfProvided(VectorIndex.DEFAULT_VECTOR_NAME);
   }
 
-  public static Map.Entry<String, Vectorizer> none(
-      Function<NoneVectorizer.Builder, ObjectBuilder<NoneVectorizer>> fn) {
-    return none(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  public static Map.Entry<String, Vectorizer> selfProvided(
+      Function<SelfProvidedVectorizer.Builder, ObjectBuilder<SelfProvidedVectorizer>> fn) {
+    return selfProvided(VectorIndex.DEFAULT_VECTOR_NAME, fn);
   }
 
-  public static Map.Entry<String, Vectorizer> none(String vectorName) {
-    return Map.entry(vectorName, NoneVectorizer.of());
+  public static Map.Entry<String, Vectorizer> selfProvided(String vectorName) {
+    return Map.entry(vectorName, SelfProvidedVectorizer.of());
   }
 
-  public static Map.Entry<String, Vectorizer> none(String vectorName,
-      Function<NoneVectorizer.Builder, ObjectBuilder<NoneVectorizer>> fn) {
-    return Map.entry(vectorName, NoneVectorizer.of(fn));
+  public static Map.Entry<String, Vectorizer> selfProvided(String vectorName,
+      Function<SelfProvidedVectorizer.Builder, ObjectBuilder<SelfProvidedVectorizer>> fn) {
+    return Map.entry(vectorName, SelfProvidedVectorizer.of(fn));
   }
 
   public static Map.Entry<String, Vectorizer> img2vecNeural() {

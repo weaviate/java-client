@@ -32,7 +32,7 @@ import io.weaviate.client6.v1.api.collections.vectorindex.Flat;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.api.collections.vectorizers.Img2VecNeuralVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecClipVectorizer;
-import io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.SelfProvidedVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecContextionaryVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecWeaviateVectorizer;
 
@@ -44,7 +44,7 @@ public class JSONTest {
         // Vectorizer.CustomTypeAdapterFactory
         {
             Vectorizer.class,
-            NoneVectorizer.of(),
+            SelfProvidedVectorizer.of(),
             """
                 {
                   "vectorIndexType": "hnsw",
@@ -131,7 +131,7 @@ public class JSONTest {
         // VectorIndex.CustomTypeAdapterFactory
         {
             Vectorizer.class,
-            NoneVectorizer.of(none -> none
+            SelfProvidedVectorizer.of(none -> none
                 .vectorIndex(Flat.of(flat -> flat
                     .vectorCacheMaxObjects(100)))),
             """
@@ -144,7 +144,7 @@ public class JSONTest {
         },
         {
             Vectorizer.class,
-            NoneVectorizer.of(none -> none
+            SelfProvidedVectorizer.of(none -> none
                 .vectorIndex(Hnsw.of(hnsw -> hnsw
                     .distance(Distance.DOT)
                     .ef(1)
