@@ -101,7 +101,8 @@ public class JSONTest {
                   "vectorIndexConfig": {},
                   "vectorizer": {
                     "text2vec-contextionary": {
-                      "vectorizeClassName": false
+                      "vectorizeClassName": false,
+                      "sourceProperties": []
                     }
                   }
                 }
@@ -121,7 +122,9 @@ public class JSONTest {
                     "text2vec-weaviate": {
                       "baseUrl": "http://example.com",
                       "dimensions": 4,
-                      "model": "very-good-model"
+                      "model": "very-good-model",
+                      "sourceProperties": []
+
                     }
                   }
                 }
