@@ -58,20 +58,20 @@
     <lang3.version>3.18.0</lang3.version>
     <junit.version>5.13.4</junit.version>
     <testcontainers.version>1.21.3</testcontainers.version>
-    <assertj-core.version>3.27.3</assertj-core.version>
+    <assertj-core.version>3.27.4</assertj-core.version>
     <jparams.version>1.0.4</jparams.version>
-    <mockito.version>5.18.0</mockito.version>
+    <mockito.version>5.19.0</mockito.version>
     <slf4j.version>2.0.17</slf4j.version>
     <logback.version>1.5.18</logback.version>
     <mock-server.version>5.14.0</mock-server.version>
     <jackson.version>2.19.2</jackson.version>
-    <oauth2-oidc-sdk.version>11.26.1</oauth2-oidc-sdk.version>
+    <oauth2-oidc-sdk.version>11.27.1</oauth2-oidc-sdk.version>
     <mock-server.version>5.15.0</mock-server.version>
-    <protobuf.java.version>4.31.1</protobuf.java.version>
-    <protobuf.java-util.version>4.31.1</protobuf.java-util.version>
-    <grpc-netty-shaded.version>1.73.0</grpc-netty-shaded.version>
-    <grpc-protobuf.version>1.73.0</grpc-protobuf.version>
-    <grpc-stub.version>1.73.0</grpc-stub.version>
+    <protobuf.java.version>4.32.0</protobuf.java.version>
+    <protobuf.java-util.version>4.32.0</protobuf.java-util.version>
+    <grpc-netty-shaded.version>1.75.0</grpc-netty-shaded.version>
+    <grpc-protobuf.version>1.75.0</grpc-protobuf.version>
+    <grpc-stub.version>1.75.0</grpc-stub.version>
     <annotations-api.version>6.0.53</annotations-api.version>
   </properties>
 
@@ -133,12 +133,6 @@
       <version>${oauth2-oidc-sdk.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>weaviate</artifactId>
       <version>${testcontainers.version}</version>
@@ -169,21 +163,14 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>${slf4j.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <version>${logback.version}</version>
-      <scope>test</scope>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-nop</artifactId>
+        <version>${slf4j.version}</version>
+        <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mock-server</groupId>
-      <!-- TODO: check if we can reduce JAR size by using mockserver-netty-no-dependencies -->
-      <artifactId>mockserver-netty</artifactId>
+      <artifactId>mockserver-netty-no-dependencies</artifactId>
       <version>${mock-server.version}</version>
       <scope>test</scope>
     </dependency>
