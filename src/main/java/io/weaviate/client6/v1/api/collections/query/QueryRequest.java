@@ -177,22 +177,23 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
       var metadataBuilder = new ObjectMetadata.Builder()
           .uuid(metadataResult.getId());
 
-      var vectors = new Vectors.Builder();
+      var vectors = new Vectors[metadataResult.getVectorsList().size()];
+      var i = 0;
       for (final var vector : metadataResult.getVectorsList()) {
         var vectorName = vector.getName();
         var vbytes = vector.getVectorBytes();
         switch (vector.getType()) {
           case VECTOR_TYPE_SINGLE_FP32:
-            vectors.vector(vectorName, ByteStringUtil.decodeVectorSingle(vbytes));
+            vectors[i++] = Vectors.of(vectorName, ByteStringUtil.decodeVectorSingle(vbytes));
             break;
           case VECTOR_TYPE_MULTI_FP32:
-            vectors.vector(vectorName, ByteStringUtil.decodeVectorMulti(vbytes));
+            vectors[i++] = Vectors.of(vectorName, ByteStringUtil.decodeVectorMulti(vbytes));
             break;
           default:
             continue;
         }
       }
-      metadataBuilder.vectors(vectors.build());
+      metadataBuilder.vectors(vectors);
       metadata = metadataBuilder.build();
     }
 

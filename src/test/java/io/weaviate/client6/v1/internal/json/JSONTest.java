@@ -210,9 +210,9 @@ public class JSONTest {
         },
         {
             Vectors.class,
-            Vectors.of(named -> named
-                .vector("1d", new float[] { 1f, 2f })
-                .vector("2d", new float[][] { { 1f, 2f }, { 3f, 4f } })),
+            new Vectors(
+                Vectors.of("1d", new float[] { 1f, 2f }),
+                Vectors.of("2d", new float[][] { { 1f, 2f }, { 3f, 4f } })),
             "{\"1d\": [1.0, 2.0], \"2d\": [[1.0, 2.0], [3.0, 4.0]]}",
             (CustomAssert) JSONTest::compareVectors,
         },
