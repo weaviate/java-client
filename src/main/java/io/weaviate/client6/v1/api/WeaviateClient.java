@@ -1,18 +1,20 @@
 package io.weaviate.client6.v1.api;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.alias.WeaviateAliasClient;
 import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClient;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
+import io.weaviate.client6.v1.internal.TokenProvider;
 import io.weaviate.client6.v1.internal.grpc.DefaultGrpcTransport;
+import io.weaviate.client6.v1.internal.grpc.GrpcChannelOptions;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.rest.DefaultRestTransport;
 import io.weaviate.client6.v1.internal.rest.RestTransport;
+import io.weaviate.client6.v1.internal.rest.RestTransportOptions;
 
-public class WeaviateClient implements Closeable {
+public class WeaviateClient implements AutoCloseable {
   /** Store this for {@link #async()} helper. */
   private final Config config;
 
@@ -31,8 +33,27 @@ public class WeaviateClient implements Closeable {
 
   public WeaviateClient(Config config) {
     this.config = config;
-    this.restTransport = new DefaultRestTransport(config.restTransportOptions());
-    this.grpcTransport = new DefaultGrpcTransport(config.grpcTransportOptions());
+
+    RestTransportOptions restOpt;
+    GrpcChannelOptions grpcOpt;
+    if (config.authentication() == null) {
+      restOpt = config.restTransportOptions();
+      grpcOpt = config.grpcTransportOptions();
+    } else {
+      TokenProvider tokenProvider;
+      try (final var noAuthRest = new DefaultRestTransport(config.restTransportOptions())) {
+        tokenProvider = config.authentication().getTokenProvider(noAuthRest);
+      } catch (Exception e) {
+        // Generally exceptions are caught in TokenProvider internals.
+        // This one may be thrown when noAuthRest transport is auto-closed.
+        throw new WeaviateOAuthException(e);
+      }
+      restOpt = config.restTransportOptions(tokenProvider);
+      grpcOpt = config.grpcTransportOptions(tokenProvider);
+    }
+
+    this.restTransport = new DefaultRestTransport(restOpt);
+    this.grpcTransport = new DefaultGrpcTransport(grpcOpt);
 
     this.alias = new WeaviateAliasClient(restTransport);
     this.collections = new WeaviateCollectionsClient(restTransport, grpcTransport);
@@ -100,7 +121,7 @@ public class WeaviateClient implements Closeable {
   /** Connect to a Weaviate Cloud instance. */
   public static WeaviateClient wcd(String httpHost, String apiKey,
       Function<Config.WeaviateCloud, ObjectBuilder<Config>> fn) {
-    var config = new Config.WeaviateCloud(httpHost, Authorization.apiKey(apiKey));
+    var config = new Config.WeaviateCloud(httpHost, Authentication.apiKey(apiKey));
     return new WeaviateClient(fn.apply(config).build());
   }
 
@@ -109,12 +130,27 @@ public class WeaviateClient implements Closeable {
     return new WeaviateClient(fn.apply(new Config.Custom()).build());
   }
 
+  /** Ping the server for a liveness check. */
+  public boolean isLive() throws IOException {
+    return this.restTransport.performRequest(null, IsLiveRequest._ENDPOINT);
+  }
+
+  /** Ping the server for a readiness check. */
+  public boolean isReady() throws IOException {
+    return this.restTransport.performRequest(null, IsReadyRequest._ENDPOINT);
+  }
+
+  /** Get deployement metadata for the target Weaviate instance. */
+  public InstanceMetadata meta() throws IOException {
+    return this.restTransport.performRequest(null, InstanceMetadataRequest._ENDPOINT);
+  }
+
   /**
    * Close {@link #restTransport} and {@link #grpcTransport}
    * and release associated resources.
    */
   @Override
-  public void close() throws IOException {
+  public void close() throws Exception {
     this.restTransport.close();
     this.grpcTransport.close();
   }

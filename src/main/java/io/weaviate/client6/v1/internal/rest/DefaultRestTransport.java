@@ -34,6 +34,8 @@ public class DefaultRestTransport implements RestTransport {
   private final CloseableHttpAsyncClient httpClientAsync;
   private final RestTransportOptions transportOptions;
 
+  private AuthenticationInterceptor authInterceptor;
+
   public DefaultRestTransport(RestTransportOptions transportOptions) {
     this.transportOptions = transportOptions;
 
@@ -65,9 +67,9 @@ public class DefaultRestTransport implements RestTransport {
     }
 
     if (transportOptions.tokenProvider() != null) {
-      var interceptor = new AuthorizationInterceptor(transportOptions.tokenProvider());
-      httpClient.addRequestInterceptorFirst(interceptor);
-      httpClientAsync.addRequestInterceptorFirst(interceptor);
+      this.authInterceptor = new AuthenticationInterceptor(transportOptions.tokenProvider());
+      httpClient.addRequestInterceptorFirst(authInterceptor);
+      httpClientAsync.addExecInterceptorFirst("auth", authInterceptor);
     }
 
     this.httpClient = httpClient.build();
@@ -76,8 +78,7 @@ public class DefaultRestTransport implements RestTransport {
   }
 
   private <RequestT> String uri(Endpoint<RequestT, ?> ep, RequestT req) {
-    return transportOptions.baseUrl()
-        + ep.requestUrl(req)
+    return ep.requestUrl(transportOptions, req)
         + UrlEncoder.encodeQuery(ep.queryParameters(req));
   }
 
@@ -85,6 +86,7 @@ public class DefaultRestTransport implements RestTransport {
   public <RequestT, ResponseT, ExceptionT> ResponseT performRequest(RequestT request,
       Endpoint<RequestT, ResponseT> endpoint)
       throws IOException {
+
     var req = prepareClassicRequest(request, endpoint);
     return this.httpClient.execute(req, r -> this.handleResponse(endpoint, req.getMethod(), req.getRequestUri(), r));
   }
@@ -183,8 +185,11 @@ public class DefaultRestTransport implements RestTransport {
   }
 
   @Override
-  public void close() throws IOException {
+  public void close() throws Exception {
     httpClient.close();
     httpClientAsync.close(CloseMode.GRACEFUL);
+    if (authInterceptor != null) {
+      authInterceptor.close();
+    }
   }
 }
