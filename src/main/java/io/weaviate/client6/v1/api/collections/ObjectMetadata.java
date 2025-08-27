@@ -36,9 +36,9 @@ public record ObjectMetadata(
       return this;
     }
 
-    /** Attach custom vector to the object.. */
-    public Builder vectors(Vectors vectors) {
-      this.vectors = vectors;
+    /** Attach custom vectors to the object.. */
+    public Builder vectors(Vectors... vectors) {
+      this.vectors = new Vectors(vectors);
       return this;
     }
 

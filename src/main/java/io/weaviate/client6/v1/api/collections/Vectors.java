@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -48,14 +47,6 @@ public class Vectors {
     return new Vectors(name, vector);
   }
 
-  public static Vectors of(Function<Builder, ObjectBuilder<Vectors>> fn) {
-    return fn.apply(new Builder()).build();
-  }
-
-  public Vectors(Builder builder) {
-    this.namedVectors = builder.namedVectors;
-  }
-
   /**
    * Create a single named vector.
    *
@@ -84,23 +75,13 @@ public class Vectors {
     this.namedVectors = namedVectors;
   }
 
-  public static class Builder implements ObjectBuilder<Vectors> {
-    private final Map<String, Object> namedVectors = new HashMap<>();
-
-    public Builder vector(String name, float[] vector) {
-      this.namedVectors.put(name, vector);
-      return this;
+  /** Merge all vectors in a single vector map. */
+  public Vectors(Vectors... vectors) {
+    var namedVectors = new HashMap<String, Object>();
+    for (var vec : vectors) {
+      namedVectors.putAll(vec.asMap());
     }
-
-    public Builder vector(String name, float[][] vector) {
-      this.namedVectors.put(name, vector);
-      return this;
-    }
-
-    @Override
-    public Vectors build() {
-      return new Vectors(this);
-    }
+    this.namedVectors = namedVectors;
   }
 
   /**

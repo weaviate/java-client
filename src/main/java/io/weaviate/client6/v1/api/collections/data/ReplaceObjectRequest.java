@@ -54,7 +54,7 @@ public record ReplaceObjectRequest<T>(WeaviateObject<T, Reference, ObjectMetadat
       return this;
     }
 
-    public Builder<T> vectors(Vectors vectors) {
+    public Builder<T> vectors(Vectors... vectors) {
       this.metadata.vectors(vectors);
       return this;
     }
