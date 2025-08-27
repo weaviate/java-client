@@ -28,18 +28,22 @@ public class Vectors {
   /** Elements of this map must only be {@code float[]} or {@code float[][]}. */
   private final Map<String, Object> namedVectors;
 
+  /** Create a 1-dimensional vector. */
   public static Vectors of(float[] vector) {
     return of(VectorIndex.DEFAULT_VECTOR_NAME, vector);
   }
 
+  /** Create a named 1-dimensional vector. */
   public static Vectors of(String name, float[] vector) {
     return new Vectors(name, vector);
   }
 
+  /** Create a 2-dimensional vector. */
   public static Vectors of(float[][] vector) {
     return of(VectorIndex.DEFAULT_VECTOR_NAME, vector);
   }
 
+  /** Create a named 2-dimensional vector. */
   public static Vectors of(String name, float[][] vector) {
     return new Vectors(name, vector);
   }

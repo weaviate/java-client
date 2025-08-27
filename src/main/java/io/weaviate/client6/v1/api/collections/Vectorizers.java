@@ -16,19 +16,36 @@ public final class Vectorizers {
   private Vectorizers() {
   }
 
+  /** Create a bring-your-own-vector vector index. */
   public static Map.Entry<String, Vectorizer> selfProvided() {
     return selfProvided(VectorIndex.DEFAULT_VECTOR_NAME);
   }
 
+  /**
+   * Create a bring-your-own-vector vector index.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
   public static Map.Entry<String, Vectorizer> selfProvided(
       Function<SelfProvidedVectorizer.Builder, ObjectBuilder<SelfProvidedVectorizer>> fn) {
     return selfProvided(VectorIndex.DEFAULT_VECTOR_NAME, fn);
   }
 
+  /**
+   * Create a named bring-your-own-vector vector index.
+   *
+   * @param vectorName Vector name.
+   */
   public static Map.Entry<String, Vectorizer> selfProvided(String vectorName) {
     return Map.entry(vectorName, SelfProvidedVectorizer.of());
   }
 
+  /**
+   * Create a named bring-your-own-vector vector index.
+   *
+   * @param vectorName Vector name.
+   * @param fn         Lambda expression for optional parameters.
+   */
   public static Map.Entry<String, Vectorizer> selfProvided(String vectorName,
       Function<SelfProvidedVectorizer.Builder, ObjectBuilder<SelfProvidedVectorizer>> fn) {
     return Map.entry(vectorName, SelfProvidedVectorizer.of(fn));
