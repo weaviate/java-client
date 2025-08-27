@@ -18,7 +18,7 @@ import io.weaviate.client6.v1.api.collections.Vectorizers;
 import io.weaviate.client6.v1.api.collections.config.Shard;
 import io.weaviate.client6.v1.api.collections.config.ShardStatus;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
-import io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.SelfProvidedVectorizer;
 import io.weaviate.containers.Container;
 
 public class CollectionsITest extends ConcurrentTest {
@@ -30,7 +30,7 @@ public class CollectionsITest extends ConcurrentTest {
     client.collections.create(collectionName,
         col -> col
             .properties(Property.text("username"), Property.integer("age"))
-            .vectors(Vectorizers.none()));
+            .vectors(Vectorizers.selfProvided()));
 
     var thingsCollection = client.collections.getConfig(collectionName);
 
@@ -40,7 +40,7 @@ public class CollectionsITest extends ConcurrentTest {
         .as("default vector").extractingByKey("default")
         .satisfies(defaultVector -> {
           Assertions.assertThat(defaultVector)
-              .as("has none vectorizer").isInstanceOf(NoneVectorizer.class);
+              .as("has none vectorizer").isInstanceOf(SelfProvidedVectorizer.class);
           Assertions.assertThat(defaultVector).extracting(Vectorizer::vectorIndex)
               .isInstanceOf(Hnsw.class);
         });
