@@ -133,12 +133,6 @@
       <version>${oauth2-oidc-sdk.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>weaviate</artifactId>
       <version>${testcontainers.version}</version>

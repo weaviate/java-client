@@ -1,8 +1,5 @@
 package io.weaviate.client6.v1.internal.grpc;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
@@ -21,7 +18,7 @@ public class ByteStringUtilTest {
     float[] vector = { 1f, 2f, 3f };
     byte[] want = { 0, 0, -128, 63, 0, 0, 0, 64, 0, 0, 64, 64 };
     byte[] got = ByteStringUtil.encodeVectorSingle(vector).toByteArray();
-    assertArrayEquals(want, got);
+    Assertions.assertThat(got).isEqualTo(want);
   }
 
   @Test
@@ -29,7 +26,7 @@ public class ByteStringUtilTest {
     byte[] bytes = { 0, 0, -128, 63, 0, 0, 0, 64, 0, 0, 64, 64 };
     float[] want = { 1f, 2f, 3f };
     float[] got = ByteStringUtil.decodeVectorSingle(ByteString.copyFrom(bytes));
-    assertArrayEquals(want, got, 0);
+    Assertions.assertThat(got).isEqualTo(want);
   }
 
   @Test
@@ -37,7 +34,7 @@ public class ByteStringUtilTest {
     float[][] vector = { { 1f, 2f, 3f }, { 4f, 5f, 6f } };
     byte[] want = { 3, 0, 0, 0, -128, 63, 0, 0, 0, 64, 0, 0, 64, 64, 0, 0, -128, 64, 0, 0, -96, 64, 0, 0, -64, 64 };
     byte[] got = ByteStringUtil.encodeVectorMulti(vector).toByteArray();
-    assertArrayEquals(want, got);
+    Assertions.assertThat(got).isEqualTo(want);
   }
 
   @Test
@@ -45,7 +42,7 @@ public class ByteStringUtilTest {
     byte[] bytes = { 3, 0, 0, 0, -128, 63, 0, 0, 0, 64, 0, 0, 64, 64, 0, 0, -128, 64, 0, 0, -96, 64, 0, 0, -64, 64 };
     float[][] want = { { 1f, 2f, 3f }, { 4f, 5f, 6f } };
     float[][] got = ByteStringUtil.decodeVectorMulti(ByteString.copyFrom(bytes));
-    assertArrayEquals(want, got);
+    Assertions.assertThat(got).isEqualTo(want);
   }
 
   @Test
@@ -53,28 +50,28 @@ public class ByteStringUtilTest {
     byte[] bytes = { 38, 19, -74, 24, -114, -19, 73, 43, -112, -60, 47, 96, 83, -89, -35, -23 };
     String want = "2613b618-8eed-492b-90c4-2f6053a7dde9";
     String got = ByteStringUtil.decodeUuid(ByteString.copyFrom(bytes)).toString();
-    assertEquals(want, got);
+    Assertions.assertThat(got).isEqualTo(want);
   }
 
   @Test
   public void test_decodeVector_1d_empty() {
     byte[] bytes = new byte[0];
     float[] got = ByteStringUtil.decodeVectorSingle(ByteString.copyFrom(bytes));
-    assertEquals(0, got.length);
+    Assertions.assertThat(got).isEmpty();
   }
 
   @Test
   public void test_decodeVector_2d_empty() {
     byte[] bytes = new byte[0];
     float[][] got = ByteStringUtil.decodeVectorMulti(ByteString.copyFrom(bytes));
-    assertEquals(0, got.length);
+    Assertions.assertThat(got).isEmpty();
   }
 
   @Test
   public void test_decodeVector_2d_dim_zero() {
     byte[] bytes = { 0, 0 };
     float[][] got = ByteStringUtil.decodeVectorMulti(ByteString.copyFrom(bytes));
-    assertEquals(0, got.length);
+    Assertions.assertThat(got).isEmpty();
   }
 
   @Test
@@ -82,7 +79,7 @@ public class ByteStringUtilTest {
     byte[] bytes = { 1, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0 };
     long[] want = { 1, 2, 3 };
     long[] got = ByteStringUtil.decodeIntValues(ByteString.copyFrom(bytes));
-    assertArrayEquals(want, got);
+    Assertions.assertThat(got).isEqualTo(want);
   }
 
   @Test
