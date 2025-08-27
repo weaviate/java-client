@@ -3,6 +3,7 @@ package io.weaviate.client6.v1.api;
 import java.io.IOException;
 import java.util.function.Function;
 
+import io.weaviate.client6.v1.api.alias.WeaviateAliasClient;
 import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClient;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.TokenProvider;
@@ -20,7 +21,15 @@ public class WeaviateClient implements AutoCloseable {
   private final RestTransport restTransport;
   private final GrpcTransport grpcTransport;
 
+  /**
+   * Client for {@code /schema} endpoints for managing Weaviate collections.
+   * See {@link WeaviateCollectionsClient#use} for populating and querying
+   * collections.
+   */
   public final WeaviateCollectionsClient collections;
+
+  /** Client for {@code /aliases} endpoints for managing collection aliases. */
+  public final WeaviateAliasClient alias;
 
   public WeaviateClient(Config config) {
     this.config = config;
@@ -46,6 +55,7 @@ public class WeaviateClient implements AutoCloseable {
     this.restTransport = new DefaultRestTransport(restOpt);
     this.grpcTransport = new DefaultGrpcTransport(grpcOpt);
 
+    this.alias = new WeaviateAliasClient(restTransport);
     this.collections = new WeaviateCollectionsClient(restTransport, grpcTransport);
   }
 
