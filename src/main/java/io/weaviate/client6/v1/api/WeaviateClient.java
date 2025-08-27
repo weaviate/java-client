@@ -19,7 +19,14 @@ public class WeaviateClient implements Closeable {
   private final RestTransport restTransport;
   private final GrpcTransport grpcTransport;
 
+  /**
+   * Client for {@code /schema} endpoints for managing Weaviate collections.
+   * See {@link WeaviateCollectionsClient#use} for populating and querying
+   * collections.
+   */
   public final WeaviateCollectionsClient collections;
+
+  /** Client for {@code /aliases} endpoints for managing collection aliases. */
   public final WeaviateAliasClient alias;
 
   public WeaviateClient(Config config) {

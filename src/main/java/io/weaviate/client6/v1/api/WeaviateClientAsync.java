@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.alias.WeaviateAliasClientAsync;
+import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClient;
 import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClientAsync;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.DefaultGrpcTransport;
@@ -16,7 +17,14 @@ public class WeaviateClientAsync implements Closeable {
   private final RestTransport restTransport;
   private final GrpcTransport grpcTransport;
 
+  /**
+   * Client for {@code /schema} endpoints for managing Weaviate collections.
+   * See {@link WeaviateCollectionsClient#use} for populating and querying
+   * collections.
+   */
   public final WeaviateCollectionsClientAsync collections;
+
+  /** Client for {@code /aliases} endpoints for managing collection aliases. */
   public final WeaviateAliasClientAsync alias;
 
   public WeaviateClientAsync(Config config) {

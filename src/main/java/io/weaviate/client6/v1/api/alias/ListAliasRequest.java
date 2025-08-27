@@ -19,10 +19,12 @@ public record ListAliasRequest(String collection) {
           : Collections.emptyMap(),
       (statusCode, response) -> JSON.deserialize(response, ListAliasResponse.class).aliases());
 
+  /** Create default ListAliasRequest. */
   public static ListAliasRequest of() {
     return of(ObjectBuilder.identity());
   }
 
+  /** Create ListAliasRequest with optional parameters. */
   public static ListAliasRequest of(Function<Builder, ObjectBuilder<ListAliasRequest>> fn) {
     return fn.apply(new Builder()).build();
   }
@@ -34,6 +36,7 @@ public record ListAliasRequest(String collection) {
   public static class Builder implements ObjectBuilder<ListAliasRequest> {
     private String collection;
 
+    /** Return only aliases which reference this collection. */
     public Builder collection(String collection) {
       this.collection = collection;
       return this;
