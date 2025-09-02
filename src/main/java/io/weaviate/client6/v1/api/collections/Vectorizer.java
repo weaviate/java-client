@@ -16,7 +16,7 @@ import com.google.gson.stream.JsonWriter;
 
 import io.weaviate.client6.v1.api.collections.vectorizers.Img2VecNeuralVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecClipVectorizer;
-import io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.SelfProvidedVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecContextionaryVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecWeaviateVectorizer;
 import io.weaviate.client6.v1.internal.json.JsonEnum;
@@ -63,7 +63,7 @@ public interface Vectorizer {
     }
 
     private final void init(Gson gson) {
-      addAdapter(gson, Vectorizer.Kind.NONE, NoneVectorizer.class);
+      addAdapter(gson, Vectorizer.Kind.NONE, SelfProvidedVectorizer.class);
       addAdapter(gson, Vectorizer.Kind.IMG2VEC_NEURAL, Img2VecNeuralVectorizer.class);
       addAdapter(gson, Vectorizer.Kind.MULTI2VEC_CLIP, Multi2VecClipVectorizer.class);
       addAdapter(gson, Vectorizer.Kind.TEXT2VEC_WEAVIATE, Text2VecWeaviateVectorizer.class);

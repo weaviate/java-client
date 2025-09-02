@@ -132,7 +132,7 @@ public class SearchITest extends ConcurrentTest {
   private static void createTestCollection() throws IOException {
     client.collections.create(COLLECTION, cfg -> cfg
         .properties(Property.text("category"))
-        .vectors(Vectorizers.none(VECTOR_INDEX)));
+        .vectors(Vectorizers.selfProvided(VECTOR_INDEX)));
   }
 
   @Test

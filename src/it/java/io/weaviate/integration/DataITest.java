@@ -117,7 +117,7 @@ public class DataITest extends ConcurrentTest {
                 Property.integer("age"))
             .references(
                 Property.reference("hasAwards", awardsGrammy, awardsOscar))
-            .vectors(Vectorizers.none(VECTOR_INDEX)));
+            .vectors(Vectorizers.selfProvided(VECTOR_INDEX)));
   }
 
   @Test
@@ -233,7 +233,7 @@ public class DataITest extends ConcurrentTest {
         collection -> collection
             .properties(Property.text("title"), Property.integer("year"))
             .references(Property.reference("writtenBy", nsAuthors))
-            .vectors(Vectorizers.none()));
+            .vectors(Vectorizers.selfProvided()));
 
     var authors = client.collections.use(nsAuthors);
     var walter = authors.data.insert(Map.of("name", "walter scott"));

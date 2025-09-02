@@ -32,7 +32,7 @@ import io.weaviate.client6.v1.api.collections.vectorindex.Flat;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.api.collections.vectorizers.Img2VecNeuralVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecClipVectorizer;
-import io.weaviate.client6.v1.api.collections.vectorizers.NoneVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.SelfProvidedVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecContextionaryVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecWeaviateVectorizer;
 
@@ -44,7 +44,7 @@ public class JSONTest {
         // Vectorizer.CustomTypeAdapterFactory
         {
             Vectorizer.class,
-            NoneVectorizer.of(),
+            SelfProvidedVectorizer.of(),
             """
                 {
                   "vectorIndexType": "hnsw",
@@ -101,7 +101,8 @@ public class JSONTest {
                   "vectorIndexConfig": {},
                   "vectorizer": {
                     "text2vec-contextionary": {
-                      "vectorizeClassName": false
+                      "vectorizeClassName": false,
+                      "sourceProperties": []
                     }
                   }
                 }
@@ -121,7 +122,9 @@ public class JSONTest {
                     "text2vec-weaviate": {
                       "baseUrl": "http://example.com",
                       "dimensions": 4,
-                      "model": "very-good-model"
+                      "model": "very-good-model",
+                      "sourceProperties": []
+
                     }
                   }
                 }
@@ -131,7 +134,7 @@ public class JSONTest {
         // VectorIndex.CustomTypeAdapterFactory
         {
             Vectorizer.class,
-            NoneVectorizer.of(none -> none
+            SelfProvidedVectorizer.of(none -> none
                 .vectorIndex(Flat.of(flat -> flat
                     .vectorCacheMaxObjects(100)))),
             """
@@ -144,7 +147,7 @@ public class JSONTest {
         },
         {
             Vectorizer.class,
-            NoneVectorizer.of(none -> none
+            SelfProvidedVectorizer.of(none -> none
                 .vectorIndex(Hnsw.of(hnsw -> hnsw
                     .distance(Distance.DOT)
                     .ef(1)
@@ -207,9 +210,9 @@ public class JSONTest {
         },
         {
             Vectors.class,
-            Vectors.of(named -> named
-                .vector("1d", new float[] { 1f, 2f })
-                .vector("2d", new float[][] { { 1f, 2f }, { 3f, 4f } })),
+            new Vectors(
+                Vectors.of("1d", new float[] { 1f, 2f }),
+                Vectors.of("2d", new float[][] { { 1f, 2f }, { 3f, 4f } })),
             "{\"1d\": [1.0, 2.0], \"2d\": [[1.0, 2.0], [3.0, 4.0]]}",
             (CustomAssert) JSONTest::compareVectors,
         },
