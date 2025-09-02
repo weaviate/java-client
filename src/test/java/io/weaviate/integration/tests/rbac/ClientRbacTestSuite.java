@@ -30,6 +30,7 @@ import io.weaviate.client.v1.rbac.model.ClusterPermission;
 import io.weaviate.client.v1.rbac.model.CollectionsPermission;
 import io.weaviate.client.v1.rbac.model.DataPermission;
 import io.weaviate.client.v1.rbac.model.GroupAssignment;
+import io.weaviate.client.v1.rbac.model.GroupsPermission;
 import io.weaviate.client.v1.rbac.model.NodesPermission;
 import io.weaviate.client.v1.rbac.model.Permission;
 import io.weaviate.client.v1.rbac.model.ReplicatePermission;
@@ -139,6 +140,7 @@ public class ClientRbacTestSuite {
     String myCollection = "Pizza";
     String myCollectionAlias = "PizzaAlias";
     String myShard = "shard-123";
+    String myGroup = "my-group";
 
     Permission<?>[] wantPermissions = new Permission<?>[] {
         Permission.alias(myCollectionAlias, myCollection, AliasPermission.Action.CREATE),
@@ -148,6 +150,7 @@ public class ClientRbacTestSuite {
         Permission.roles(viewerRole, RolesPermission.Action.CREATE),
         Permission.collections(myCollection, CollectionsPermission.Action.CREATE),
         Permission.data(myCollection, DataPermission.Action.UPDATE),
+        Permission.groups(myGroup, "oidc", GroupsPermission.Action.READ),
         Permission.tenants(TenantsPermission.Action.DELETE),
         Permission.users(UsersPermission.Action.READ),
         Permission.replicate(myCollection, myShard, ReplicatePermission.Action.READ),

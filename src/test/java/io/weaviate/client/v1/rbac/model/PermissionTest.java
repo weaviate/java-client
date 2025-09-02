@@ -33,6 +33,7 @@ public class PermissionTest {
     TenantsPermission tenants = new TenantsPermission(TenantsPermission.Action.READ);
     UsersPermission users = new UsersPermission(UsersPermission.Action.READ);
     ReplicatePermission replicate = new ReplicatePermission("Pizza", "shard-123", ReplicatePermission.Action.READ);
+    GroupsPermission groups = new GroupsPermission("pizza-lovers", "oidc", GroupsPermission.Action.READ);
 
     return new Object[][] {
         {
@@ -84,6 +85,11 @@ public class PermissionTest {
             "replicate permission",
             (Supplier<Permission<?>>) () -> replicate,
             new WeaviatePermission("read_replicate", replicate),
+        },
+        {
+            "groups permission",
+            (Supplier<Permission<?>>) () -> groups,
+            new WeaviatePermission("read_groups", groups),
         },
     };
   }
@@ -197,6 +203,15 @@ public class PermissionTest {
                 "read_replicate",
                 "update_replicate",
                 "delete_replicate",
+            },
+        },
+        {
+            Permission.groups("group-id", "oidc",
+                GroupsPermission.Action.READ,
+                GroupsPermission.Action.ASSIGN_AND_REVOKE),
+            new String[] {
+                "read_groups",
+                "assign_and_revoke_groups",
             },
         },
     };
