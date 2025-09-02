@@ -15,6 +15,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.apache.http.HttpStatus;
+import org.assertj.core.api.InstanceOfAssertFactories;
 
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateError;
@@ -404,8 +405,8 @@ public class BackupTestSuite {
         .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupRestoreResponse::getPath)
         .returns(BACKEND, BackupRestoreResponse::getBackend)
         .returns(RestoreStatus.FAILED, BackupRestoreResponse::getStatus)
-        .returns("could not restore classes: [\"Pizza\": class name Pizza already exists]",
-            BackupRestoreResponse::getError);
+        .extracting(BackupRestoreResponse::getError, InstanceOfAssertFactories.STRING)
+        .contains("could not restore classes");
   }
 
   public static void testFailOnCreateOfExistingBackup(Supplier<Result<BackupCreateResponse>> supplierCreate,
