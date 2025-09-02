@@ -22,6 +22,7 @@ import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateAuthClient;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
+import io.weaviate.client.v1.aliases.model.Alias;
 import io.weaviate.client.v1.async.WeaviateAsyncClient;
 import io.weaviate.client.v1.async.backup.api.BackupCanceler;
 import io.weaviate.client.v1.async.backup.api.BackupCreateStatusGetter;
@@ -546,6 +547,57 @@ public class ClientBackupTest {
               .run().get()),
           supplier(() -> async.users().db().getUser().withUserId(userName).run().get()),
           supplier(() -> async.roles().getter().withName(roleName).run().get()));
+    }
+  }
+
+  @Test
+  public void testOverwriteAlias_true() throws InterruptedException, ExecutionException, Exception {
+    String originalClass = "CollectionOverwriteAlias";
+    String alias = originalClass + "Alias";
+    String differentClass = "Different" + originalClass;
+
+    try (final WeaviateAsyncClient async = client.async()) {
+      Runnable arrange = runnable(() -> {
+        Result<?> res;
+
+        res = async.schema().classCreator()
+            .withClass(WeaviateClass.builder().className(originalClass).build())
+            .run().get();
+        Assertions.assertThat(res.getError()).isNull();
+        res = async.alias().creator().withClassName(originalClass).withAlias(alias).run().get();
+        Assertions.assertThat(res.getError()).isNull();
+
+        res = async.backup().creator()
+            .withBackupId(backupId)
+            .withBackend(BackupTestSuite.BACKEND)
+            .withIncludeClassNames(originalClass)
+            .withWaitForCompletion(true)
+            .run().get();
+        Assertions.assertThat(res.getError()).isNull();
+
+        res = async.schema().classDeleter().withClassName(originalClass).run().get();
+        Assertions.assertThat(res.getError()).isNull();
+        res = async.schema().classCreator()
+            .withClass(WeaviateClass.builder().className(differentClass).build())
+            .run().get();
+        Assertions.assertThat(res.getError()).isNull();
+        res = async.alias().updater().withAlias(alias).withNewClassName(differentClass).run().get();
+        Assertions.assertThat(res.getError()).isNull();
+
+        return null; // satisfy Callable
+      });
+
+      Callable<Result<?>> act = () -> async.backup().restorer()
+          .withBackupId(backupId)
+          .withBackend(BackupTestSuite.BACKEND)
+          .withIncludeClassNames(originalClass)
+          .withWaitForCompletion(true)
+          .withOverwriteAlias(true)
+          .run().get();
+
+      Supplier<Alias> getAlias = supplier(() -> async.alias().getter().withAlias(alias).run().get().getResult());
+
+      BackupTestSuite.testOverwriteAlias_true(arrange, act, getAlias, originalClass);
     }
   }
 
