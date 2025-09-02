@@ -19,6 +19,7 @@ import org.apache.http.HttpStatus;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateError;
 import io.weaviate.client.base.WeaviateErrorMessage;
+import io.weaviate.client.v1.aliases.model.Alias;
 import io.weaviate.client.v1.backup.model.Backend;
 import io.weaviate.client.v1.backup.model.BackupCreateResponse;
 import io.weaviate.client.v1.backup.model.BackupCreateStatusResponse;
@@ -637,6 +638,16 @@ public class BackupTestSuite {
     assertThat(supplierUser.get().getResult()).as("get restored user").isNotNull();
     assertThat(supplierRole.get().getResult()).as("get restored role").isNotNull();
 
+  }
+
+  public static void testOverwriteAlias_true(
+      Runnable arrange,
+      Callable<Result<?>> act,
+      Supplier<Alias> supplierAlias, String wantClassName) throws Exception {
+    arrange.run();
+    Result<?> result = act.call();
+    assertThat(result.getError()).isNull();
+    assertThat(supplierAlias.get().getClassName()).isEqualTo(wantClassName);
   }
 
   private static void assertThatAllPizzasExist(Function<String, Result<GraphQLResponse>> supplierGQLOfClass) {

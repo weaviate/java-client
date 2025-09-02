@@ -3,6 +3,7 @@ package io.weaviate.integration.client.backup;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Callable;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -19,6 +20,7 @@ import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateAuthClient;
 import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
+import io.weaviate.client.v1.aliases.model.Alias;
 import io.weaviate.client.v1.auth.exception.AuthException;
 import io.weaviate.client.v1.backup.api.BackupCreator;
 import io.weaviate.client.v1.backup.api.BackupRestorer;
@@ -512,6 +514,53 @@ public class ClientBackupTest {
             .run(),
         () -> client.users().db().getUser().withUserId(userName).run(),
         () -> client.roles().getter().withName(roleName).run());
+  }
+
+  @Test
+  public void testOverwriteAlias_true() throws Exception {
+    String originalClass = "CollectionOverwriteAlias";
+    String alias = originalClass + "Alias";
+    String differentClass = "Different" + originalClass;
+
+    Runnable arrange = () -> {
+      Result<?> res;
+
+      res = client.schema().classCreator()
+          .withClass(WeaviateClass.builder().className(originalClass).build())
+          .run();
+      Assertions.assertThat(res.getError()).isNull();
+      res = client.alias().creator().withClassName(originalClass).withAlias(alias).run();
+      Assertions.assertThat(res.getError()).isNull();
+
+      res = client.backup().creator()
+          .withBackupId(backupId)
+          .withBackend(BackupTestSuite.BACKEND)
+          .withIncludeClassNames(originalClass)
+          .withWaitForCompletion(true)
+          .run();
+      Assertions.assertThat(res.getError()).isNull();
+
+      res = client.schema().classDeleter().withClassName(originalClass).run();
+      Assertions.assertThat(res.getError()).isNull();
+      res = client.schema().classCreator()
+          .withClass(WeaviateClass.builder().className(differentClass).build())
+          .run();
+      Assertions.assertThat(res.getError()).isNull();
+      res = client.alias().updater().withAlias(alias).withNewClassName(differentClass).run();
+      Assertions.assertThat(res.getError()).isNull();
+    };
+
+    Callable<Result<?>> act = () -> client.backup().restorer()
+        .withBackupId(backupId)
+        .withBackend(BackupTestSuite.BACKEND)
+        .withIncludeClassNames(originalClass)
+        .withWaitForCompletion(true)
+        .withOverwriteAlias(true)
+        .run();
+
+    Supplier<Alias> getAlias = () -> client.alias().getter().withAlias(alias).run().getResult();
+
+    BackupTestSuite.testOverwriteAlias_true(arrange, act, getAlias, originalClass);
   }
 
   @NotNull

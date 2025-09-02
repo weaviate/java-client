@@ -24,6 +24,7 @@ public class BackupRestorer extends BaseClient<BackupRestoreResponse> implements
   private String[] excludeClassNames;
   private String backend;
   private String backupId;
+  private Boolean overwriteAlias;
   private BackupRestoreConfig config;
   private boolean waitForCompletion;
 
@@ -44,6 +45,11 @@ public class BackupRestorer extends BaseClient<BackupRestoreResponse> implements
 
   public BackupRestorer withBackend(String backend) {
     this.backend = backend;
+    return this;
+  }
+
+  public BackupRestorer withOverwriteAlias(Boolean overwriteAlias) {
+    this.overwriteAlias = overwriteAlias;
     return this;
   }
 
@@ -72,6 +78,7 @@ public class BackupRestorer extends BaseClient<BackupRestoreResponse> implements
     BackupRestore payload = BackupRestore.builder()
         .include(includeClassNames)
         .exclude(excludeClassNames)
+        .overwriteAlias(overwriteAlias)
         .config(config)
         .build();
 
@@ -146,6 +153,8 @@ public class BackupRestorer extends BaseClient<BackupRestoreResponse> implements
     String[] include;
     @SerializedName("exclude")
     String[] exclude;
+    @SerializedName("overwriteAlias")
+    Boolean overwriteAlias;
   }
 
   @Getter
