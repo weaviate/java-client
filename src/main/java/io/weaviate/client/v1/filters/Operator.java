@@ -15,4 +15,5 @@ public interface Operator {
   String WithinGeoRange = "WithinGeoRange";
   String ContainsAny = "ContainsAny";
   String ContainsAll = "ContainsAll";
+  String ContainsNone = "ContainsNone";
 }
