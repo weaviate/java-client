@@ -9,6 +9,7 @@ import io.weaviate.client.WeaviateAuthClient;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.async.rbac.Roles;
 import io.weaviate.client.v1.auth.exception.AuthException;
+import io.weaviate.client.v1.rbac.model.GroupAssignment;
 import io.weaviate.client.v1.rbac.model.Permission;
 import io.weaviate.client.v1.rbac.model.Role;
 import io.weaviate.client.v1.rbac.model.UserAssignment;
@@ -93,5 +94,11 @@ public class ClientRbacTest implements ClientRbacTestSuite.Rbac {
   @Override
   public Result<List<UserAssignment>> getUserAssignments(String role) {
     return rethrow(() -> roles.userAssignmentsGetter().withRole(role).run());
+  }
+
+  @Override
+
+  public Result<List<GroupAssignment>> getGroupAssignments(String role) {
+    return rethrow(() -> roles.groupAssignmentsGetter().withRole(role).run());
   }
 }

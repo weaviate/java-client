@@ -29,6 +29,7 @@ import io.weaviate.client.v1.rbac.model.BackupsPermission;
 import io.weaviate.client.v1.rbac.model.ClusterPermission;
 import io.weaviate.client.v1.rbac.model.CollectionsPermission;
 import io.weaviate.client.v1.rbac.model.DataPermission;
+import io.weaviate.client.v1.rbac.model.GroupAssignment;
 import io.weaviate.client.v1.rbac.model.NodesPermission;
 import io.weaviate.client.v1.rbac.model.Permission;
 import io.weaviate.client.v1.rbac.model.ReplicatePermission;
@@ -319,6 +320,8 @@ public class ClientRbacTestSuite {
     Result<List<Role>> getAll();
 
     Result<List<String>> getAssignedUsers(String role);
+
+    Result<List<GroupAssignment>> getGroupAssignments(String role);
 
     Result<List<UserAssignment>> getUserAssignments(String role);
 
