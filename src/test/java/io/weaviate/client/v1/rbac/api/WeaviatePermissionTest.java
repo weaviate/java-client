@@ -81,7 +81,7 @@ public class WeaviatePermissionTest {
 
         // Create and update replications
         new WeaviatePermission("read_groups", new GroupsPermission("pizza-lovers", "oidc")),
-        new WeaviatePermission("assigne_and_revoke_groups", new GroupsPermission("pizza-lovers", "oidc")),
+        new WeaviatePermission("assign_and_revoke_groups", new GroupsPermission("pizza-lovers", "oidc")),
     };
 
     Permission<?>[] libraryPermissions = {
