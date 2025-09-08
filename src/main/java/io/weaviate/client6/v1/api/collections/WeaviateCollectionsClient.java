@@ -21,6 +21,10 @@ public class WeaviateCollectionsClient {
     this.grpcTransport = grpcTransport;
   }
 
+  public <PropertiesT> CollectionHandle<PropertiesT> use(Class<PropertiesT> cls) {
+    return use(CollectionDescriptor.ofClass(cls), CollectionHandleDefaults.none());
+  }
+
   /**
    * Obtain a handle to send requests to a particular collection.
    * The returned object is thread-safe.
@@ -42,11 +46,17 @@ public class WeaviateCollectionsClient {
   public CollectionHandle<Map<String, Object>> use(
       String collectionName,
       Function<CollectionHandleDefaults.Builder, ObjectBuilder<CollectionHandleDefaults>> fn) {
-    return new CollectionHandle<>(
-        restTransport,
-        grpcTransport,
-        CollectionDescriptor.ofMap(collectionName),
-        CollectionHandleDefaults.of(fn));
+    return use(CollectionDescriptor.ofMap(collectionName), fn);
+  }
+
+  private <PropertiesT> CollectionHandle<PropertiesT> use(CollectionDescriptor<PropertiesT> collection,
+      Function<CollectionHandleDefaults.Builder, ObjectBuilder<CollectionHandleDefaults>> fn) {
+    return new CollectionHandle<>(restTransport, grpcTransport, collection, CollectionHandleDefaults.of(fn));
+  }
+
+  public <PropertiesT> CollectionConfig create(Class<PropertiesT> cls) throws IOException {
+    var collection = CollectionDescriptor.ofClass(cls);
+    return create(CollectionConfig.of(collection.name(), collection.configFn()));
   }
 
   /**
