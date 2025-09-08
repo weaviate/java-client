@@ -13,12 +13,14 @@ import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.CollectionConfig;
 import io.weaviate.client6.v1.api.collections.Property;
+import io.weaviate.client6.v1.api.collections.annotations.Collection;
 import io.weaviate.containers.Container;
 
 public class ORMITest extends ConcurrentTest {
   private static WeaviateClient client = Container.WEAVIATE.getClient();
 
-  static class Things {
+  @Collection("Things")
+  static class Thing {
     // text / text[]
     private String text;
     private String[] textArray;
@@ -77,10 +79,10 @@ public class ORMITest extends ConcurrentTest {
   @Test
   public void test_createCollection() throws Exception {
     // Arrange
-    var things = client.collections.use(Things.class);
+    var things = client.collections.use(Thing.class);
 
     // Act
-    client.collections.create(Things.class);
+    client.collections.create(Thing.class);
 
     // Assert
     var config = things.config.get();

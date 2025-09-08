@@ -14,6 +14,7 @@ import com.google.gson.reflect.TypeToken;
 
 import io.weaviate.client6.v1.api.collections.CollectionConfig;
 import io.weaviate.client6.v1.api.collections.Property;
+import io.weaviate.client6.v1.api.collections.annotations.Collection;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 final class PojoDescriptor<T> implements CollectionDescriptor<T> {
@@ -72,6 +73,10 @@ final class PojoDescriptor<T> implements CollectionDescriptor<T> {
 
   @Override
   public String name() {
+    var annotation = cls.getAnnotation(Collection.class);
+    if (annotation != null) {
+      return annotation.value();
+    }
     return cls.getSimpleName();
   }
 
