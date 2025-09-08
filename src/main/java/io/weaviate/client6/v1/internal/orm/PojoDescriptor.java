@@ -1,10 +1,13 @@
 package io.weaviate.client6.v1.internal.orm;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 import com.google.gson.reflect.TypeToken;
@@ -14,14 +17,51 @@ import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 final class PojoDescriptor<T> implements CollectionDescriptor<T> {
-  private static final Map<Class<?>, Function<String, Property>> ctors;
+  private static final Map<Class<?>, Function<String, Property>> CTORS;
 
   static {
-    Map<Class<?>, Function<String, Property>> _ctors = new HashMap<>() {
+    Map<Class<?>, Function<String, Property>> ctors = new HashMap<>() {
       {
+        put(String.class, Property::text);
+        put(String[].class, Property::textArray);
+
+        put(OffsetDateTime.class, Property::date);
+        put(OffsetDateTime[].class, Property::dateArray);
+
+        put(UUID.class, Property::uuid);
+        put(UUID[].class, Property::uuidArray);
+
+        put(boolean.class, Property::bool);
+        put(Boolean.class, Property::bool);
+        put(boolean[].class, Property::boolArray);
+        put(Boolean[].class, Property::boolArray);
+
+        put(short.class, Property::integer);
+        put(Short.class, Property::integer);
+        put(int.class, Property::integer);
+        put(Integer.class, Property::integer);
+        put(long.class, Property::integer);
+        put(Long.class, Property::integer);
+
+        put(short[].class, Property::integerArray);
+        put(Short[].class, Property::integerArray);
+        put(int[].class, Property::integerArray);
+        put(Integer[].class, Property::integerArray);
+        put(long[].class, Property::integerArray);
+        put(Long[].class, Property::integerArray);
+
+        put(float.class, Property::number);
+        put(Float.class, Property::number);
+        put(double.class, Property::number);
+        put(Double.class, Property::number);
+
+        put(float[].class, Property::numberArray);
+        put(Float[].class, Property::numberArray);
+        put(double[].class, Property::numberArray);
+        put(Double[].class, Property::numberArray);
       }
     };
-    ctors = Collections.unmodifiableMap(_ctors);
+    CTORS = Collections.unmodifiableMap(ctors);
   }
 
   private final Class<T> cls;
@@ -64,42 +104,21 @@ final class PojoDescriptor<T> implements CollectionDescriptor<T> {
       var propertyName = field.getName();
       Function<String, Property> ctor;
       var type = field.getType();
-      if (type == String.class) {
-        ctor = Property::text;
-      } else if (type == String[].class) {
-        ctor = Property::textArray;
-      } else if (type == short.class || type == Short.class
-          || type == int.class || type == Integer.class
-          || type == long.class || type == Long.class) {
-        ctor = Property::integer;
-      } else if (type == short[].class || type == Short[].class
-          || type == int[].class || type == Integer[].class
-          || type == long[].class || type == Long[].class) {
-        ctor = Property::integerArray;
-      } else if (type == float.class || type == Float.class
-          || type == double.class || type == Double.class) {
-        ctor = Property::number;
-      } else if (type == float[].class || type == Float[].class
-          || type == double[].class || type == Double[].class) {
-        ctor = Property::numberArray;
-      } else if (type == List.class) {
+
+      if (type == List.class) {
         var ptype = (ParameterizedType) field.getGenericType();
-        var ltype = (Class<?>) ptype.getActualTypeArguments()[0];
-        if (ltype == String.class) {
-          ctor = Property::textArray;
-        } else if (ltype == short.class || ltype == Short.class
-            || ltype == int.class || ltype == Integer.class
-            || ltype == long.class || ltype == Long.class) {
-          ctor = Property::integerArray;
-        } else if (ltype == float.class || ltype == Float.class
-            || ltype == double.class || ltype == Double.class) {
-          ctor = Property::numberArray;
-        } else {
-          throw new IllegalArgumentException(ltype.getCanonicalName() + " is not supported");
-        }
+        var argtype = (Class<?>) ptype.getActualTypeArguments()[0];
+        var arr = Array.newInstance(argtype, 0).getClass();
+        ctor = CTORS.get(arr);
       } else {
-        throw new IllegalArgumentException(type.getCanonicalName() + " is not supported");
+        ctor = CTORS.get(type);
       }
+
+      if (ctor == null) {
+        throw new IllegalArgumentException(type.getCanonicalName() + " fields are not supported");
+      }
+
+      assert ctor != null;
       b.properties(ctor.apply(propertyName));
     }
     return b;
