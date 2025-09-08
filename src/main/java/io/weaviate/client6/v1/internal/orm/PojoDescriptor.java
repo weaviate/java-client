@@ -17,7 +17,7 @@ import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.annotations.Collection;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-final class PojoDescriptor<T> implements CollectionDescriptor<T> {
+final class PojoDescriptor<T extends Record> implements CollectionDescriptor<T> {
   private static final Map<Class<?>, Function<String, Property>> CTORS;
 
   static {
@@ -82,20 +82,17 @@ final class PojoDescriptor<T> implements CollectionDescriptor<T> {
 
   @Override
   public TypeToken<T> typeToken() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'typeToken'");
+    return TypeToken.get(cls);
   }
 
   @Override
   public PropertiesReader<T> propertiesReader(T properties) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'propertiesReader'");
+    return new PojoReader<>(properties);
   }
 
   @Override
   public PropertiesBuilder<T> propertiesBuilder() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'propertiesBuilder'");
+    return new PojoBuilder<>(cls);
   }
 
   @Override

@@ -21,7 +21,7 @@ public class WeaviateCollectionsClient {
     this.grpcTransport = grpcTransport;
   }
 
-  public <PropertiesT> CollectionHandle<PropertiesT> use(Class<PropertiesT> cls) {
+  public <PropertiesT extends Record> CollectionHandle<PropertiesT> use(Class<PropertiesT> cls) {
     return use(CollectionDescriptor.ofClass(cls), CollectionHandleDefaults.none());
   }
 
@@ -54,7 +54,7 @@ public class WeaviateCollectionsClient {
     return new CollectionHandle<>(restTransport, grpcTransport, collection, CollectionHandleDefaults.of(fn));
   }
 
-  public <PropertiesT> CollectionConfig create(Class<PropertiesT> cls) throws IOException {
+  public <PropertiesT extends Record> CollectionConfig create(Class<PropertiesT> cls) throws IOException {
     var collection = CollectionDescriptor.ofClass(cls);
     return create(CollectionConfig.of(collection.name(), collection.configFn()));
   }
