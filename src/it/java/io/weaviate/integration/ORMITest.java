@@ -7,12 +7,14 @@ import java.util.UUID;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactories;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.CollectionConfig;
 import io.weaviate.client6.v1.api.collections.Property;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.annotations.Collection;
 import io.weaviate.containers.Container;
 
@@ -20,60 +22,65 @@ public class ORMITest extends ConcurrentTest {
   private static WeaviateClient client = Container.WEAVIATE.getClient();
 
   @Collection("Things")
-  static class Thing {
-    // text / text[]
-    private String text;
-    private String[] textArray;
-    private List<String> textList;
+  static record Thing(
+      // text / text[]
+      String text,
+      String[] textArray,
+      List<String> textList,
 
-    // date / date[]
-    private OffsetDateTime date;
-    private OffsetDateTime[] dateArray;
-    private List<OffsetDateTime> dateList;
+      // date / date[]
+      OffsetDateTime date,
+      OffsetDateTime[] dateArray,
+      List<OffsetDateTime> dateList,
 
-    // uuid / uuid[]
-    private UUID uuid;
-    private UUID[] uuidArray;
-    private List<UUID> uuidList;
+      // uuid / uuid[]
+      UUID uuid,
+      UUID[] uuidArray,
+      List<UUID> uuidList,
 
-    // int / int[]
-    private short short_;
-    private Short shortBoxed;
-    private short[] shortArray;
-    private Short[] shortBoxedArray;
-    private List<Short> shortBoxedList;
+      // int / int[]
+      short short_,
+      Short shortBoxed,
+      short[] shortArray,
+      Short[] shortBoxedArray,
+      List<Short> shortBoxedList,
 
-    private int int_;
-    private Integer intBoxed;
-    private int[] intArray;
-    private Integer[] intBoxedArray;
-    private List<Integer> intBoxedList;
+      int int_,
+      Integer intBoxed,
+      int[] intArray,
+      Integer[] intBoxedArray,
+      List<Integer> intBoxedList,
 
-    private long long_;
-    private Long longBoxed;
-    private long[] longArray;
-    private Long[] longBoxedArray;
-    private List<Long> longBoxedList;
+      long long_,
+      Long longBoxed,
+      long[] longArray,
+      Long[] longBoxedArray,
+      List<Long> longBoxedList,
 
-    // number / number[]
-    private float float_;
-    private Float floatBoxed;
-    private float[] floatArray;
-    private Float[] floatBoxedArray;
-    private List<Float> floatBoxedList;
+      // number / number[]
+      float float_,
+      Float floatBoxed,
+      float[] floatArray,
+      Float[] floatBoxedArray,
+      List<Float> floatBoxedList,
 
-    private double double_;
-    private Double doubleBoxed;
-    private double[] doubleArray;
-    private Double[] doubleBoxedArray;
-    private List<Double> doubleBoxedList;
+      double double_,
+      Double doubleBoxed,
+      double[] doubleArray,
+      Double[] doubleBoxedArray,
+      List<Double> doubleBoxedList,
 
-    // boolean / boolean[]
-    private boolean boolean_;
-    private Boolean booleanBoxed;
-    private boolean[] booleanArray;
-    private Boolean[] booleanBoxedArray;
-    private List<Boolean> booleanBoxedList;
+      // boolean / boolean[]
+      boolean boolean_,
+      Boolean booleanBoxed,
+      boolean[] booleanArray,
+      Boolean[] booleanBoxedArray,
+      List<Boolean> booleanBoxedList) {
+  }
+
+  @BeforeClass
+  public static void setUp() throws Exception {
+    client.collections.create(Thing.class);
   }
 
   @Test
@@ -82,10 +89,9 @@ public class ORMITest extends ConcurrentTest {
     var things = client.collections.use(Thing.class);
 
     // Act
-    client.collections.create(Thing.class);
+    var config = things.config.get();
 
     // Assert
-    var config = things.config.get();
     Assertions.assertThat(config).get()
         .returns("Things", CollectionConfig::collectionName)
         .extracting(CollectionConfig::properties, InstanceOfAssertFactories.list(Property.class))
@@ -140,5 +146,79 @@ public class ORMITest extends ConcurrentTest {
             Map.entry("booleanArray", "boolean[]"),
             Map.entry("booleanBoxedArray", "boolean[]"),
             Map.entry("booleanBoxedList", "boolean[]"));
+  }
+
+  @Test
+  public void test_insertAndQuery() throws Exception {
+    short short_ = 666;
+    int int_ = 666;
+    long long_ = 666L;
+    float float_ = 666f;
+    double double_ = 666d;
+    boolean boolean_ = true;
+    UUID uuid = UUID.randomUUID();
+    OffsetDateTime date = OffsetDateTime.now();
+    String text = "hello";
+
+    var thing = new Thing(
+        text,
+        new String[] { text },
+        List.of(text),
+
+        OffsetDateTime.now(),
+        new OffsetDateTime[] { date },
+        List.of(date),
+
+        UUID.randomUUID(),
+        new UUID[] { uuid },
+        List.of(uuid),
+
+        short_,
+        short_,
+        new short[] { short_ },
+        new Short[] { short_ },
+        List.of(short_),
+
+        int_,
+        int_,
+        new int[] { int_ },
+        new Integer[] { int_ },
+        List.of(int_),
+
+        long_,
+        long_,
+        new long[] { long_ },
+        new Long[] { long_ },
+        List.of(long_),
+
+        float_,
+        float_,
+        new float[] { float_ },
+        new Float[] { float_ },
+        List.of(float_),
+
+        double_,
+        double_,
+        new double[] { double_ },
+        new Double[] { double_ },
+        List.of(double_),
+
+        boolean_,
+        boolean_,
+        new boolean[] { boolean_ },
+        new Boolean[] { boolean_ },
+        List.of(boolean_));
+
+    var things = client.collections.use(Thing.class);
+
+    // Act
+    var inserted = things.data.insert(thing);
+
+    // Assert
+    var got = things.query.byId(inserted.uuid());
+    Assertions.assertThat(got).get()
+        .extracting(WeaviateObject::properties, InstanceOfAssertFactories.type(Thing.class));
+
+    // TODO: add assertions;
   }
 }

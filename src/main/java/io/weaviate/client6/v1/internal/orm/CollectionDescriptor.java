@@ -25,7 +25,7 @@ public sealed interface CollectionDescriptor<PropertiesT> permits MapDescriptor,
     return new MapDescriptor(collectionName);
   }
 
-  static <PropertiesT> CollectionDescriptor<PropertiesT> ofClass(Class<PropertiesT> cls) {
+  static <PropertiesT extends Record> CollectionDescriptor<PropertiesT> ofClass(Class<PropertiesT> cls) {
     return new PojoDescriptor<>(cls);
   }
 }
