@@ -3,6 +3,7 @@ package io.weaviate.client6.v1.api.collections;
 import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
@@ -15,11 +16,17 @@ import com.google.gson.stream.JsonWriter;
 
 import io.weaviate.client6.v1.api.collections.vectorindex.Flat;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
+import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.json.JsonEnum;
 
 public interface VectorIndex {
   static final String DEFAULT_VECTOR_NAME = "default";
   static final VectorIndex DEFAULT_VECTOR_INDEX = Hnsw.of();
+  static final Function<Function<Hnsw.Builder, ObjectBuilder<Hnsw>>, VectorIndex> DEFAULT_VECTOR_INDEX_FUNC = Hnsw::of;
+
+  static VectorIndex createDefault(Function<Hnsw.Builder, ObjectBuilder<Hnsw>> fn) {
+    return DEFAULT_VECTOR_INDEX_FUNC.apply(fn);
+  }
 
   public enum Kind implements JsonEnum<Kind> {
     HNSW("hnsw"),
