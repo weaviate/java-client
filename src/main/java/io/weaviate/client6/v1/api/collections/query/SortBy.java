@@ -7,6 +7,14 @@ public record SortBy(List<String> path, boolean ascending) {
     return new SortBy(List.of(property), true);
   }
 
+  public static SortBy creationTime() {
+    return property("_creationTimeUnix");
+  }
+
+  public static SortBy lastUpdateTime() {
+    return property("_lastUpdateTimeUnix");
+  }
+
   public SortBy asc() {
     return new SortBy(path, true);
   }

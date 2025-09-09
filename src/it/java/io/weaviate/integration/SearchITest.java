@@ -259,7 +259,7 @@ public class SearchITest extends ConcurrentTest {
   }
 
   @Test
-  public void testFetchObjectsWithSort() throws IOException {
+  public void testFetchObjectsWithSort() throws Exception {
     var nsNumbers = ns("Numbers");
 
     // Arrange
@@ -277,6 +277,7 @@ public class SearchITest extends ConcurrentTest {
         q -> q.sort(SortBy.property("value")));
 
     Assertions.assertThat(asc.objects())
+        .as("value asc")
         .hasSize(3)
         .extracting(WeaviateObject::properties)
         .extracting(object -> object.get("value"))
@@ -287,10 +288,40 @@ public class SearchITest extends ConcurrentTest {
         q -> q.sort(SortBy.property("value").desc()));
 
     Assertions.assertThat(desc.objects())
+        .as("value desc")
         .hasSize(3)
         .extracting(WeaviateObject::properties)
         .extracting(object -> object.get("value"))
         .containsExactly(3L, 2L, 1L);
+
+    // Act: sort by creation time asc
+    var created = numbers.query.fetchObjects(
+        q -> q.sort(SortBy.creationTime()));
+
+    Assertions.assertThat(created.objects())
+        .as("create time asc")
+        .hasSize(3)
+        .extracting(WeaviateObject::uuid)
+        .containsExactly(one.uuid(), two.uuid(), three.uuid());
+
+    // Act: sort by updated time desc
+    numbers.data.update(one.uuid(), upd -> upd.properties(Map.of("value", -1L)));
+    Thread.sleep(10);
+    numbers.data.update(two.uuid(), upd -> upd.properties(Map.of("value", -2L)));
+    Thread.sleep(10);
+    numbers.data.update(three.uuid(), upd -> upd.properties(Map.of("value", -3L)));
+
+    var updated = numbers.query.fetchObjects(
+        q -> q.sort(
+            // Both sort operators imply ordering 3-2-1
+            SortBy.lastUpdateTime().desc(),
+            SortBy.property("value").asc()));
+
+    Assertions.assertThat(updated.objects())
+        .as("last update time desc + value asc")
+        .hasSize(3)
+        .extracting(WeaviateObject::uuid)
+        .containsExactly(three.uuid(), two.uuid(), one.uuid());
   }
 
   @Test
