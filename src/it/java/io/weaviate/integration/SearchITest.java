@@ -29,6 +29,7 @@ import io.weaviate.client6.v1.api.collections.query.GroupBy;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.api.collections.query.QueryResponseGroup;
+import io.weaviate.client6.v1.api.collections.query.SortBy;
 import io.weaviate.client6.v1.api.collections.query.Where;
 import io.weaviate.containers.Container;
 import io.weaviate.containers.Container.ContainerGroup;
@@ -255,6 +256,41 @@ public class SearchITest extends ConcurrentTest {
             greenHat.metadata().uuid(),
             hugeHat.metadata().uuid());
 
+  }
+
+  @Test
+  public void testFetchObjectsWithSort() throws IOException {
+    var nsNumbers = ns("Numbers");
+
+    // Arrange
+    client.collections.create(nsNumbers,
+        c -> c.properties(Property.integer("value")));
+
+    var numbers = client.collections.use(nsNumbers);
+
+    var one = numbers.data.insert(Map.of("value", 1L));
+    var two = numbers.data.insert(Map.of("value", 2L));
+    var three = numbers.data.insert(Map.of("value", 3L));
+
+    // Act: sort ascending
+    var asc = numbers.query.fetchObjects(
+        q -> q.sort(SortBy.property("value")));
+
+    Assertions.assertThat(asc.objects())
+        .hasSize(3)
+        .extracting(WeaviateObject::properties)
+        .extracting(object -> object.get("value"))
+        .containsExactly(1L, 2L, 3L);
+
+    // Act: sort descending
+    var desc = numbers.query.fetchObjects(
+        q -> q.sort(SortBy.property("value").desc()));
+
+    Assertions.assertThat(desc.objects())
+        .hasSize(3)
+        .extracting(WeaviateObject::properties)
+        .extracting(object -> object.get("value"))
+        .containsExactly(3L, 2L, 1L);
   }
 
   @Test
