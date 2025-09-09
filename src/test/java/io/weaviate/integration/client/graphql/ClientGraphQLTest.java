@@ -880,6 +880,10 @@ public class ClientGraphQLTest extends AbstractClientGraphQLTest {
         .contains("Frutti di Mare", "Hawaii", "Doener");
   }
 
+  /**
+   * @see https://github.com/weaviate/java-client/pull/456#issuecomment-3270249876
+   */
+  @Ignore("Regression in Explorer API in v1.33")
   @Test
   public void testGraphQLExploreWithCertainty() {
     // given
@@ -916,6 +920,10 @@ public class ClientGraphQLTest extends AbstractClientGraphQLTest {
     assertEquals(6, get.size());
   }
 
+  /**
+   * @see https://github.com/weaviate/java-client/pull/456#issuecomment-3270249876
+   */
+  @Ignore("Regression in Explorer API in v1.33")
   @Test
   public void testGraphQLExploreWithDistance() {
     // given
