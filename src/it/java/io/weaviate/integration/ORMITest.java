@@ -225,8 +225,10 @@ public class ORMITest extends ConcurrentTest {
     var inserted = things.data.insert(thing);
 
     // Assert
-    var got = things.query.byId(inserted.uuid());
-    Assertions.assertThat(got).get()
+    var response = things.query.byId(inserted.uuid());
+    var got = Assertions.assertThat(response).get().actual();
+
+    Assertions.assertThat(got.properties())
         .usingRecursiveComparison(COMPARISON_CONFIG)
         .isEqualTo(thing);
   }
