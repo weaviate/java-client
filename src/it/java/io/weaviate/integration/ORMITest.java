@@ -14,9 +14,10 @@ import org.junit.Test;
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.CollectionConfig;
-import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.annotations.Collection;
 import io.weaviate.client6.v1.api.collections.annotations.Property;
+import io.weaviate.client6.v1.api.collections.data.InsertManyResponse.InsertObject;
+import io.weaviate.client6.v1.api.collections.query.Where;
 import io.weaviate.containers.Container;
 
 public class ORMITest extends ConcurrentTest {
@@ -224,12 +225,85 @@ public class ORMITest extends ConcurrentTest {
     var inserted = things.data.insert(thing);
 
     // Assert
-    var optional = things.query.byId(inserted.uuid());
-    var got = Assertions.assertThat(optional).get()
-        .extracting(WeaviateObject::properties).actual();
-
-    Assertions.assertThat(got)
+    var got = things.query.byId(inserted.uuid());
+    Assertions.assertThat(got).get()
         .usingRecursiveComparison(COMPARISON_CONFIG)
         .isEqualTo(thing);
+  }
+
+  @Test
+  public void test_insertManyAndQuery() throws Exception {
+    short short_ = 666;
+    int int_ = 666;
+    long long_ = 666;
+    float float_ = 666;
+    double double_ = 666;
+    boolean boolean_ = true;
+    UUID uuid = UUID.randomUUID();
+    OffsetDateTime date = OffsetDateTime.now();
+    String text = "hello";
+
+    var thing = new Thing(
+        text,
+        new String[] { text },
+        List.of(text),
+
+        OffsetDateTime.now(),
+        new OffsetDateTime[] { date },
+        List.of(date),
+
+        UUID.randomUUID(),
+        new UUID[] { uuid },
+        List.of(uuid),
+
+        short_,
+        short_,
+        new short[] { short_ },
+        new Short[] { short_ },
+        List.of(short_),
+
+        int_,
+        int_,
+        new int[] { int_ },
+        new Integer[] { int_ },
+        List.of(int_),
+
+        long_,
+        long_,
+        new long[] { long_ },
+        new Long[] { long_ },
+        List.of(long_),
+
+        float_,
+        float_,
+        new float[] { float_ },
+        new Float[] { float_ },
+        List.of(float_),
+
+        double_,
+        double_,
+        new double[] { double_ },
+        new Double[] { double_ },
+        List.of(double_),
+
+        boolean_,
+        boolean_,
+        new boolean[] { boolean_ },
+        new Boolean[] { boolean_ },
+        List.of(boolean_));
+
+    var things = client.collections.use(Thing.class);
+
+    // Act
+    var inserted = things.data.insertMany(thing, thing, thing);
+
+    // Assert
+    var uuids = inserted.responses().stream().map(InsertObject::uuid).toArray(String[]::new);
+    var got = things.query.fetchObjects(q -> q.where(Where.uuid().containsAny(uuids)));
+    Assertions.assertThat(got.objects())
+        .hasSize(3)
+        .usingRecursiveComparison(COMPARISON_CONFIG)
+        .asInstanceOf(InstanceOfAssertFactories.list(Thing.class))
+        .contains(thing, thing, thing);
   }
 }
