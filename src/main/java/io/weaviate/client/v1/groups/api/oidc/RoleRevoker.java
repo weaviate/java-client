@@ -32,7 +32,7 @@ public class RoleRevoker extends BaseClient<Void> implements ClientResult<Boolea
     return this;
   }
 
-  private String _groupId() {
+  private String encodeGroupId() {
     return UrlEncoder.encode(this.groupId);
   }
 
@@ -51,6 +51,6 @@ public class RoleRevoker extends BaseClient<Void> implements ClientResult<Boolea
   }
 
   private String path() {
-    return String.format("/authz/groups/%s/revoke", _groupId());
+    return String.format("/authz/groups/%s/revoke", encodeGroupId());
   }
 }

@@ -36,7 +36,7 @@ public class RoleRevoker extends AsyncBaseClient<Boolean> implements AsyncClient
     return this;
   }
 
-  private String _groupId() {
+  private String encodeGroupId() {
     return UrlEncoder.encode(this.groupId);
   }
 
@@ -56,6 +56,6 @@ public class RoleRevoker extends AsyncBaseClient<Boolean> implements AsyncClient
   }
 
   private String path() {
-    return String.format("/authz/groups/%s/revoke", _groupId());
+    return String.format("/authz/groups/%s/revoke", encodeGroupId());
   }
 }

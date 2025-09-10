@@ -29,7 +29,7 @@ public class AssignedRolesGetter extends BaseClient<WeaviateRole[]> implements C
     return this;
   }
 
-  private String _groupId() {
+  private String encodeGroupId() {
     return UrlEncoder.encode(this.groupId);
   }
 
@@ -39,6 +39,6 @@ public class AssignedRolesGetter extends BaseClient<WeaviateRole[]> implements C
   }
 
   private String path() {
-    return String.format("/authz/groups/%s/roles/oidc?includeFullRoles=%s", _groupId(), includePermissions);
+    return String.format("/authz/groups/%s/roles/oidc?includeFullRoles=%s", encodeGroupId(), includePermissions);
   }
 }

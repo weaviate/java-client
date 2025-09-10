@@ -32,7 +32,7 @@ public class RoleAssigner extends BaseClient<Void> implements ClientResult<Boole
     return this;
   }
 
-  private String _groupId() {
+  private String encodeGroupId() {
     return UrlEncoder.encode(this.groupId);
   }
 
@@ -51,6 +51,6 @@ public class RoleAssigner extends BaseClient<Void> implements ClientResult<Boole
   }
 
   private String path() {
-    return String.format("/authz/groups/%s/assign", _groupId());
+    return String.format("/authz/groups/%s/assign", encodeGroupId());
   }
 }

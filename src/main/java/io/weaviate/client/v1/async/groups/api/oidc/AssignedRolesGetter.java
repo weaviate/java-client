@@ -33,7 +33,7 @@ public class AssignedRolesGetter extends AsyncBaseClient<List<Role>> implements 
     return this;
   }
 
-  private String _groupId() {
+  private String encodeGroupId() {
     return UrlEncoder.encode(this.groupId);
   }
 
@@ -43,6 +43,6 @@ public class AssignedRolesGetter extends AsyncBaseClient<List<Role>> implements 
   }
 
   private String path() {
-    return String.format("/authz/groups/%s/roles/oidc?includeFullRoles=%s", _groupId(), includePermissions);
+    return String.format("/authz/groups/%s/roles/oidc?includeFullRoles=%s", encodeGroupId(), includePermissions);
   }
 }
