@@ -132,7 +132,8 @@ public class WhereFilter {
 
     private <T> void assignSingleOrArray(T[] values, Consumer<T> single, Consumer<T[]> array) {
       if (ArrayUtils.isNotEmpty(values)) {
-        if (values.length > 1 || Operator.ContainsAny.equals(operator) || Operator.ContainsAll.equals(operator)) {
+        if (values.length > 1 || Operator.ContainsAny.equals(operator) || Operator.ContainsAll.equals(operator)
+            || Operator.ContainsNone.equals(operator)) {
           array.accept(values);
         } else {
           single.accept(values[0]);
