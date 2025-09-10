@@ -134,7 +134,14 @@ public class Result<T> {
    * }</pre>
    */
   public static <T> Result<List<T>> toList(Response<T[]> response) {
-    return new Result<>(response, Arrays.asList(response.getBody()));
+    return toList(response, Function.identity());
+  }
+
+  public static <T, R> Result<List<R>> toList(Response<T[]> response, Function<? super T, ? extends R> mapper) {
+    List<R> mapped = Optional.ofNullable(response.getBody())
+        .map(Arrays::asList).orElse(new ArrayList<>())
+        .stream().map(mapper).collect(Collectors.toList());
+    return new Result<>(response, mapped);
   }
 
   /**
@@ -243,10 +250,10 @@ public class Result<T> {
       @Override
       public Result<List<R>> parse(HttpResponse response, String body, ContentType contentType) {
         Response<T[]> resp = this.serializer.toResponse(response.getCode(), body, cls);
-        List<R> roles = Optional.ofNullable(resp.getBody())
+        List<R> mapped = Optional.ofNullable(resp.getBody())
             .map(Arrays::asList).orElse(new ArrayList<>())
             .stream().map(mapper).collect(Collectors.toList());
-        return new Result<>(resp.getStatusCode(), roles, resp.getErrors());
+        return new Result<>(resp.getStatusCode(), mapped, resp.getErrors());
       }
     };
   }

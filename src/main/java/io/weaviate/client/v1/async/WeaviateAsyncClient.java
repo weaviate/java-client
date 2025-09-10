@@ -19,6 +19,7 @@ import io.weaviate.client.v1.async.classifications.Classifications;
 import io.weaviate.client.v1.async.cluster.Cluster;
 import io.weaviate.client.v1.async.data.Data;
 import io.weaviate.client.v1.async.graphql.GraphQL;
+import io.weaviate.client.v1.async.groups.Groups;
 import io.weaviate.client.v1.async.misc.Misc;
 import io.weaviate.client.v1.async.rbac.Roles;
 import io.weaviate.client.v1.async.schema.Schema;
@@ -83,6 +84,10 @@ public class WeaviateAsyncClient implements AutoCloseable {
 
   public Users users() {
     return new Users(client, config, tokenProvider);
+  }
+
+  public Groups groups() {
+    return new Groups(client, config, tokenProvider);
   }
 
   public Aliases alias() {

@@ -4,6 +4,7 @@ import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 
 import io.weaviate.client.Config;
 import io.weaviate.client.v1.async.rbac.api.AssignedUsersGetter;
+import io.weaviate.client.v1.async.rbac.api.GroupAssignmentsGetter;
 import io.weaviate.client.v1.async.rbac.api.PermissionAdder;
 import io.weaviate.client.v1.async.rbac.api.PermissionChecker;
 import io.weaviate.client.v1.async.rbac.api.PermissionRemover;
@@ -64,7 +65,7 @@ public class Roles {
   /** Get role and its assiciated permissions. */
   public RoleGetter getter() {
     return new RoleGetter(client, config, tokenProvider);
-  };
+  }
 
   /**
    * Get users assigned to a role.
@@ -74,7 +75,7 @@ public class Roles {
   @Deprecated
   public AssignedUsersGetter assignedUsersGetter() {
     return new AssignedUsersGetter(client, config, tokenProvider);
-  };
+  }
 
   /**
    * Get role assignments.
@@ -89,7 +90,11 @@ public class Roles {
    */
   public UserAssignmentsGetter userAssignmentsGetter() {
     return new UserAssignmentsGetter(client, config, tokenProvider);
-  };
+  }
+
+  public GroupAssignmentsGetter groupAssignmentsGetter() {
+    return new GroupAssignmentsGetter(client, config, tokenProvider);
+  }
 
   /** Check if a role exists. */
   public RoleExists exists() {

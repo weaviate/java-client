@@ -1,8 +1,10 @@
 package io.weaviate.client.v1.rbac.api;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import io.weaviate.client.v1.rbac.model.Permission;
@@ -28,7 +30,8 @@ public class WeaviateRole {
 
   /** Create {@link Role} from the API response object. */
   public Role toRole() {
-    List<Permission<?>> permissions = this.permissions.stream()
+    List<Permission<?>> permissions = Optional.ofNullable(this.permissions)
+        .orElse(new ArrayList<>()).stream()
         .<Permission<?>>map(perm -> Permission.fromWeaviate(perm))
         .filter(Objects::nonNull).collect(Collectors.toList());
     return new Role(this.name, Permission.merge(permissions));

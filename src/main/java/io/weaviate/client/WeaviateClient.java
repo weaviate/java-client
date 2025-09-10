@@ -18,6 +18,7 @@ import io.weaviate.client.v1.cluster.Cluster;
 import io.weaviate.client.v1.contextionary.Contextionary;
 import io.weaviate.client.v1.data.Data;
 import io.weaviate.client.v1.graphql.GraphQL;
+import io.weaviate.client.v1.groups.Groups;
 import io.weaviate.client.v1.grpc.GRPC;
 import io.weaviate.client.v1.misc.Misc;
 import io.weaviate.client.v1.misc.api.MetaGetter;
@@ -110,6 +111,10 @@ public class WeaviateClient {
 
   public Users users() {
     return new Users(httpClient, config);
+  }
+
+  public Groups groups() {
+    return new Groups(httpClient, config);
   }
 
   public Aliases alias() {

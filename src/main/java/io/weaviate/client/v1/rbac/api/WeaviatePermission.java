@@ -7,6 +7,7 @@ import io.weaviate.client.v1.rbac.model.AliasPermission;
 import io.weaviate.client.v1.rbac.model.BackupsPermission;
 import io.weaviate.client.v1.rbac.model.CollectionsPermission;
 import io.weaviate.client.v1.rbac.model.DataPermission;
+import io.weaviate.client.v1.rbac.model.GroupsPermission;
 import io.weaviate.client.v1.rbac.model.NodesPermission;
 import io.weaviate.client.v1.rbac.model.Permission;
 import io.weaviate.client.v1.rbac.model.ReplicatePermission;
@@ -31,6 +32,7 @@ public class WeaviatePermission {
   BackupsPermission backups;
   CollectionsPermission collections;
   DataPermission data;
+  GroupsPermission groups;
   NodesPermission nodes;
   RolesPermission roles;
   TenantsPermission tenants;
@@ -51,6 +53,8 @@ public class WeaviatePermission {
       this.collections = (CollectionsPermission) perm;
     } else if (perm instanceof DataPermission) {
       this.data = (DataPermission) perm;
+    } else if (perm instanceof GroupsPermission) {
+      this.groups = (GroupsPermission) perm;
     } else if (perm instanceof NodesPermission) {
       this.nodes = (NodesPermission) perm;
     } else if (perm instanceof RolesPermission) {

@@ -3,6 +3,7 @@ package io.weaviate.client.v1.rbac;
 import io.weaviate.client.Config;
 import io.weaviate.client.base.http.HttpClient;
 import io.weaviate.client.v1.rbac.api.AssignedUsersGetter;
+import io.weaviate.client.v1.rbac.api.GroupAssignmentsGetter;
 import io.weaviate.client.v1.rbac.api.PermissionAdder;
 import io.weaviate.client.v1.rbac.api.PermissionChecker;
 import io.weaviate.client.v1.rbac.api.PermissionRemover;
@@ -57,12 +58,12 @@ public class Roles {
   /** Get all existing roles. */
   public RoleAllGetter allGetter() {
     return new RoleAllGetter(httpClient, config);
-  };
+  }
 
   /** Get role and its associated permissions. */
   public RoleGetter getter() {
     return new RoleGetter(httpClient, config);
-  };
+  }
 
   /**
    * Get users assigned to a role.
@@ -72,7 +73,7 @@ public class Roles {
   @Deprecated
   public AssignedUsersGetter assignedUsersGetter() {
     return new AssignedUsersGetter(httpClient, config);
-  };
+  }
 
   /**
    * Get role assignments.
@@ -87,7 +88,11 @@ public class Roles {
    */
   public UserAssignmentsGetter userAssignmentsGetter() {
     return new UserAssignmentsGetter(httpClient, config);
-  };
+  }
+
+  public GroupAssignmentsGetter groupAssignmentsGetter() {
+    return new GroupAssignmentsGetter(httpClient, config);
+  }
 
   /** Check if a role exists. */
   public RoleExists exists() {

@@ -75,6 +75,9 @@ public abstract class Permission<P extends Permission<P>> {
       return new CollectionsPermission(perm.getCollections().getCollection(), action);
     } else if (perm.getData() != null) {
       return new DataPermission(perm.getData().getCollection(), action);
+    } else if (perm.getGroups() != null) {
+      GroupsPermission groups = perm.getGroups();
+      return new GroupsPermission(groups.getGroupId(), groups.getGroupType(), action);
     } else if (perm.getNodes() != null) {
       NodesPermission nodes = perm.getNodes();
       if (nodes.getCollection() != null) {
@@ -179,8 +182,7 @@ public abstract class Permission<P extends Permission<P>> {
   }
 
   /**
-   * Create permissions for multiple actions for managing collection's
-   * data.
+   * Create permissions for multiple actions for managing collection's data.
    * <p>
    * Example:
    * {@code Permission.data("Pizza", DataPermission.Action.READ, DataPermission.Action.UPDATE) }
@@ -188,6 +190,17 @@ public abstract class Permission<P extends Permission<P>> {
   public static DataPermission data(String collection, DataPermission.Action... actions) {
     checkDeprecation(actions);
     return new DataPermission(collection, actions);
+  }
+
+  /**
+   * Create permissions for multiple actions for managing RBAC groups.
+   * <p>
+   * Example:
+   * {@code Permission.groups("admin-group", "oidc", GroupsPermission.Action.READ, GroupsPermission.Action.ASSIGN_AND_REVOKE) }
+   */
+  public static GroupsPermission groups(String groupId, String groupType, GroupsPermission.Action... actions) {
+    checkDeprecation(actions);
+    return new GroupsPermission(groupId, groupType, actions);
   }
 
   /**
