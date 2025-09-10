@@ -1,5 +1,6 @@
 package io.weaviate.client6.v1.api.collections.data;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -138,10 +139,98 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
 
           if (value instanceof String v) {
             protoValue.setStringValue(v);
+          } else if (value instanceof UUID v) {
+            protoValue.setStringValue(v.toString());
+          } else if (value instanceof OffsetDateTime v) {
+            protoValue.setStringValue(v.toString());
+          } else if (value instanceof Boolean v) {
+            protoValue.setBoolValue(v.booleanValue());
           } else if (value instanceof Number v) {
             protoValue.setNumberValue(v.doubleValue());
+          } else if (value instanceof List v) {
+            protoValue.setListValue(
+                com.google.protobuf.ListValue.newBuilder()
+                    .addAllValues(v.stream()
+                        .map(listValue -> {
+                          var protoListValue = com.google.protobuf.Value.newBuilder();
+                          if (listValue instanceof String lv) {
+                            protoListValue.setStringValue(lv);
+                          } else if (listValue instanceof UUID lv) {
+                            protoListValue.setStringValue(lv.toString());
+                          } else if (listValue instanceof OffsetDateTime lv) {
+                            protoListValue.setStringValue(lv.toString());
+                          } else if (listValue instanceof Boolean lv) {
+                            protoListValue.setBoolValue(lv);
+                          } else if (listValue instanceof Number lv) {
+                            protoListValue.setNumberValue(lv.doubleValue());
+                          }
+                          return protoListValue.build();
+                        })
+                        .toList()));
+
+          } else if (value.getClass().isArray()) {
+            List<com.google.protobuf.Value> values;
+
+            if (value instanceof String[] v) {
+              values = Arrays.stream(v)
+                  .map(lv -> com.google.protobuf.Value.newBuilder().setStringValue(lv).build()).toList();
+            } else if (value instanceof UUID[] v) {
+              values = Arrays.stream(v)
+                  .map(lv -> com.google.protobuf.Value.newBuilder().setStringValue(lv.toString()).build()).toList();
+            } else if (value instanceof OffsetDateTime[] v) {
+              values = Arrays.stream(v)
+                  .map(lv -> com.google.protobuf.Value.newBuilder().setStringValue(lv.toString()).build()).toList();
+            } else if (value instanceof Boolean[] v) {
+              values = Arrays.stream(v)
+                  .map(lv -> com.google.protobuf.Value.newBuilder().setBoolValue(lv).build()).toList();
+            } else if (value instanceof boolean[] v) {
+              values = new ArrayList<>();
+              for (boolean b : v) {
+                values.add(com.google.protobuf.Value.newBuilder().setBoolValue(b).build());
+              }
+            } else if (value instanceof short[] v) {
+              values = new ArrayList<>();
+              for (short s : v) {
+                values.add(com.google.protobuf.Value.newBuilder().setNumberValue(s).build());
+              }
+            } else if (value instanceof int[] v) {
+              values = Arrays.stream(v).boxed()
+                  .map(lv -> com.google.protobuf.Value.newBuilder().setNumberValue(lv).build()).toList();
+            } else if (value instanceof long[] v) {
+              values = Arrays.stream(v).boxed()
+                  .map(lv -> com.google.protobuf.Value.newBuilder().setNumberValue(lv).build()).toList();
+            } else if (value instanceof float[] v) {
+              values = new ArrayList<>();
+              for (float s : v) {
+                values.add(com.google.protobuf.Value.newBuilder().setNumberValue(s).build());
+              }
+            } else if (value instanceof double[] v) {
+              values = Arrays.stream(v).boxed()
+                  .map(lv -> com.google.protobuf.Value.newBuilder().setNumberValue(lv).build()).toList();
+            } else if (value instanceof Short[] v) {
+              values = Arrays.stream(v)
+                  .map(lv -> com.google.protobuf.Value.newBuilder().setNumberValue(lv).build()).toList();
+            } else if (value instanceof Integer[] v) {
+              values = Arrays.stream(v)
+                  .map(lv -> com.google.protobuf.Value.newBuilder().setNumberValue(lv).build()).toList();
+            } else if (value instanceof Long[] v) {
+              values = Arrays.stream(v)
+                  .map(lv -> com.google.protobuf.Value.newBuilder().setNumberValue(lv).build()).toList();
+            } else if (value instanceof Float[] v) {
+              values = Arrays.stream(v)
+                  .map(lv -> com.google.protobuf.Value.newBuilder().setNumberValue(lv).build()).toList();
+            } else if (value instanceof Double[] v) {
+              values = Arrays.stream(v)
+                  .map(lv -> com.google.protobuf.Value.newBuilder().setNumberValue(lv).build()).toList();
+            } else {
+              throw new AssertionError("(insertMany) branch not covered " + value.getClass());
+            }
+
+            protoValue.setListValue(com.google.protobuf.ListValue.newBuilder()
+                .addAllValues(values)
+                .build());
           } else {
-            assert false : "(insertMany) branch not covered";
+            throw new AssertionError("(insertMany) branch not covered " + value.getClass());
           }
 
           nonRef.putFields(entry.getKey(), protoValue.build());
