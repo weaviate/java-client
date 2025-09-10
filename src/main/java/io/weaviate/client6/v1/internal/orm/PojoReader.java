@@ -14,7 +14,7 @@ final class PojoReader<PropertiesT> implements PropertiesReader<PropertiesT> {
   public Map<String, Object> readProperties() {
     var out = new HashMap<String, Object>();
     for (var field : properties.getClass().getDeclaredFields()) {
-      var propertyName = field.getName();
+      var propertyName = PojoDescriptor.propertyName(field);
       field.setAccessible(true);
       try {
         out.put(propertyName, field.get(properties));
