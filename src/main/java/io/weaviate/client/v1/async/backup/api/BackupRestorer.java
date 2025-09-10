@@ -40,6 +40,7 @@ public class BackupRestorer extends AsyncBaseClient<BackupRestoreResponse>
   private String[] excludeClassNames;
   private String backend;
   private String backupId;
+  private Boolean overwriteAlias;
   private BackupRestoreConfig config;
   private boolean waitForCompletion;
   private final Executor executor;
@@ -81,6 +82,11 @@ public class BackupRestorer extends AsyncBaseClient<BackupRestoreResponse>
     return this;
   }
 
+  public BackupRestorer withOverwriteAlias(boolean overwriteAlias) {
+    this.overwriteAlias = overwriteAlias;
+    return this;
+  }
+
   @Override
   public Future<Result<BackupRestoreResponse>> run(FutureCallback<Result<BackupRestoreResponse>> callback) {
     if (waitForCompletion) {
@@ -94,6 +100,7 @@ public class BackupRestorer extends AsyncBaseClient<BackupRestoreResponse>
         .config(BackupRestoreConfig.builder().build())
         .include(includeClassNames)
         .exclude(excludeClassNames)
+        .overwriteAlias(overwriteAlias)
         .config(config)
         .build();
     String path = String.format("/backups/%s/%s/restore", UrlEncoder.encodePathParam(backend),
@@ -236,6 +243,8 @@ public class BackupRestorer extends AsyncBaseClient<BackupRestoreResponse>
     String[] include;
     @SerializedName("exclude")
     String[] exclude;
+    @SerializedName("overwriteAlias")
+    Boolean overwriteAlias;
   }
 
   @Getter

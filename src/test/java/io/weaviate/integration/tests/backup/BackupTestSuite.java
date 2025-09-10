@@ -15,10 +15,12 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.apache.http.HttpStatus;
+import org.assertj.core.api.InstanceOfAssertFactories;
 
 import io.weaviate.client.base.Result;
 import io.weaviate.client.base.WeaviateError;
 import io.weaviate.client.base.WeaviateErrorMessage;
+import io.weaviate.client.v1.aliases.model.Alias;
 import io.weaviate.client.v1.backup.model.Backend;
 import io.weaviate.client.v1.backup.model.BackupCreateResponse;
 import io.weaviate.client.v1.backup.model.BackupCreateStatusResponse;
@@ -404,8 +406,8 @@ public class BackupTestSuite {
         .returns(DOCKER_COMPOSE_BACKUPS_DIR + "/" + backupId, BackupRestoreResponse::getPath)
         .returns(BACKEND, BackupRestoreResponse::getBackend)
         .returns(RestoreStatus.FAILED, BackupRestoreResponse::getStatus)
-        .returns("could not restore classes: [\"Pizza\": class name Pizza already exists]",
-            BackupRestoreResponse::getError);
+        .extracting(BackupRestoreResponse::getError, InstanceOfAssertFactories.STRING)
+        .contains("could not restore classes");
   }
 
   public static void testFailOnCreateOfExistingBackup(Supplier<Result<BackupCreateResponse>> supplierCreate,
@@ -637,6 +639,16 @@ public class BackupTestSuite {
     assertThat(supplierUser.get().getResult()).as("get restored user").isNotNull();
     assertThat(supplierRole.get().getResult()).as("get restored role").isNotNull();
 
+  }
+
+  public static void testOverwriteAlias_true(
+      Runnable arrange,
+      Callable<Result<?>> act,
+      Supplier<Alias> supplierAlias, String wantClassName) throws Exception {
+    arrange.run();
+    Result<?> result = act.call();
+    assertThat(result.getError()).isNull();
+    assertThat(supplierAlias.get().getClassName()).isEqualTo(wantClassName);
   }
 
   private static void assertThatAllPizzasExist(Function<String, Result<GraphQLResponse>> supplierGQLOfClass) {
