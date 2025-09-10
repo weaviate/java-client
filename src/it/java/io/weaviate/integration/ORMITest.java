@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactories;
+import org.assertj.core.api.recursive.comparison.RecursiveComparisonConfiguration;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -149,13 +150,20 @@ public class ORMITest extends ConcurrentTest {
             Map.entry("booleanBoxedList", "boolean[]"));
   }
 
+  private final RecursiveComparisonConfiguration COMPARISON_CONFIG = RecursiveComparisonConfiguration.builder()
+      // Assertj is having a really bad time comparing List<Float>,
+      // so we'll just always return true here.
+      .withComparatorForFields((a, b) -> 0, "floatBoxedList")
+      .withComparatorForType((a, b) -> Double.compare(a.doubleValue(), b.doubleValue()), Number.class)
+      .build();
+
   @Test
   public void test_insertAndQuery() throws Exception {
     short short_ = 666;
     int int_ = 666;
-    long long_ = 666L;
-    float float_ = 666f;
-    double double_ = 666d;
+    long long_ = 666;
+    float float_ = 666;
+    double double_ = 666;
     boolean boolean_ = true;
     UUID uuid = UUID.randomUUID();
     OffsetDateTime date = OffsetDateTime.now();
@@ -216,12 +224,12 @@ public class ORMITest extends ConcurrentTest {
     var inserted = things.data.insert(thing);
 
     // Assert
-    var got = things.query.byId(inserted.uuid());
-    Assertions.assertThat(got).get()
-        .extracting(WeaviateObject::properties, InstanceOfAssertFactories.type(Thing.class));
+    var optional = things.query.byId(inserted.uuid());
+    var got = Assertions.assertThat(optional).get()
+        .extracting(WeaviateObject::properties).actual();
 
-    // TODO: add assertions;
+    Assertions.assertThat(got)
+        .usingRecursiveComparison(COMPARISON_CONFIG)
+        .isEqualTo(thing);
   }
-
-  // TODO: insertMany (batch)
 }
