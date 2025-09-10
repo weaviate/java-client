@@ -13,15 +13,15 @@ import org.junit.Test;
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.CollectionConfig;
-import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.annotations.Collection;
+import io.weaviate.client6.v1.api.collections.annotations.Property;
 import io.weaviate.containers.Container;
 
 public class ORMITest extends ConcurrentTest {
   private static WeaviateClient client = Container.WEAVIATE.getClient();
 
-  @Collection("Things")
+  @Collection("ORMITest")
   static record Thing(
       // text / text[]
       String text,
@@ -39,39 +39,39 @@ public class ORMITest extends ConcurrentTest {
       List<UUID> uuidList,
 
       // int / int[]
-      short short_,
+      @Property("short") short short_,
       Short shortBoxed,
       short[] shortArray,
       Short[] shortBoxedArray,
       List<Short> shortBoxedList,
 
-      int int_,
+      @Property("int") int int_,
       Integer intBoxed,
       int[] intArray,
       Integer[] intBoxedArray,
       List<Integer> intBoxedList,
 
-      long long_,
+      @Property("long") long long_,
       Long longBoxed,
       long[] longArray,
       Long[] longBoxedArray,
       List<Long> longBoxedList,
 
       // number / number[]
-      float float_,
+      @Property("float") float float_,
       Float floatBoxed,
       float[] floatArray,
       Float[] floatBoxedArray,
       List<Float> floatBoxedList,
 
-      double double_,
+      @Property("double") double double_,
       Double doubleBoxed,
       double[] doubleArray,
       Double[] doubleBoxedArray,
       List<Double> doubleBoxedList,
 
       // boolean / boolean[]
-      boolean boolean_,
+      @Property("boolean") boolean boolean_,
       Boolean booleanBoxed,
       boolean[] booleanArray,
       Boolean[] booleanBoxedArray,
@@ -93,8 +93,9 @@ public class ORMITest extends ConcurrentTest {
 
     // Assert
     Assertions.assertThat(config).get()
-        .returns("Things", CollectionConfig::collectionName)
-        .extracting(CollectionConfig::properties, InstanceOfAssertFactories.list(Property.class))
+        .returns("ORMITest", CollectionConfig::collectionName)
+        .extracting(CollectionConfig::properties,
+            InstanceOfAssertFactories.list(io.weaviate.client6.v1.api.collections.Property.class))
         .extracting(p -> Map.entry(
             p.propertyName(),
             p.dataTypes().get(0)))
@@ -111,37 +112,37 @@ public class ORMITest extends ConcurrentTest {
             Map.entry("uuidArray", "uuid[]"),
             Map.entry("uuidList", "uuid[]"),
 
-            Map.entry("short_", "int"),
+            Map.entry("short", "int"),
             Map.entry("shortBoxed", "int"),
             Map.entry("shortArray", "int[]"),
             Map.entry("shortBoxedArray", "int[]"),
             Map.entry("shortBoxedList", "int[]"),
 
-            Map.entry("int_", "int"),
+            Map.entry("int", "int"),
             Map.entry("intBoxed", "int"),
             Map.entry("intArray", "int[]"),
             Map.entry("intBoxedArray", "int[]"),
             Map.entry("intBoxedList", "int[]"),
 
-            Map.entry("long_", "int"),
+            Map.entry("long", "int"),
             Map.entry("longBoxed", "int"),
             Map.entry("longArray", "int[]"),
             Map.entry("longBoxedArray", "int[]"),
             Map.entry("longBoxedList", "int[]"),
 
-            Map.entry("float_", "number"),
+            Map.entry("float", "number"),
             Map.entry("floatBoxed", "number"),
             Map.entry("floatArray", "number[]"),
             Map.entry("floatBoxedArray", "number[]"),
             Map.entry("floatBoxedList", "number[]"),
 
-            Map.entry("double_", "number"),
+            Map.entry("double", "number"),
             Map.entry("doubleBoxed", "number"),
             Map.entry("doubleArray", "number[]"),
             Map.entry("doubleBoxedArray", "number[]"),
             Map.entry("doubleBoxedList", "number[]"),
 
-            Map.entry("boolean_", "boolean"),
+            Map.entry("boolean", "boolean"),
             Map.entry("booleanBoxed", "boolean"),
             Map.entry("booleanArray", "boolean[]"),
             Map.entry("booleanBoxedArray", "boolean[]"),
@@ -221,4 +222,6 @@ public class ORMITest extends ConcurrentTest {
 
     // TODO: add assertions;
   }
+
+  // TODO: insertMany (batch)
 }

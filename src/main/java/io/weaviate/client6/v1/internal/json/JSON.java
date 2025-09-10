@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import io.weaviate.client6.v1.internal.orm.PropertyFieldNamingStrategy;
+
 public final class JSON {
   private static final Gson gson;
 
@@ -44,6 +46,9 @@ public final class JSON {
     gsonBuilder.registerTypeAdapter(
         io.weaviate.client6.v1.api.collections.data.ReferenceAddManyResponse.class,
         io.weaviate.client6.v1.api.collections.data.ReferenceAddManyResponse.CustomJsonDeserializer.INSTANCE);
+
+    // ORM FieldNaminsStrategy ------------------------------------------------
+    gsonBuilder.setFieldNamingStrategy(PropertyFieldNamingStrategy.INSTANCE);
     gson = gsonBuilder.create();
   }
 
