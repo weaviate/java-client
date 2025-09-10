@@ -1,14 +1,17 @@
 package io.weaviate.client6.v1.internal.orm;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.time.OffsetDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.google.gson.reflect.TypeToken;
 
@@ -66,9 +69,31 @@ final class PojoDescriptor<T extends Record> implements CollectionDescriptor<T> 
   }
 
   private final Class<T> cls;
+  private final Map<String, String> propertyToField;
 
   PojoDescriptor(Class<T> cls) {
     this.cls = cls;
+    this.propertyToField = Arrays.stream(cls.getDeclaredFields())
+        .collect(Collectors.toUnmodifiableMap(PojoDescriptor::propertyName, Field::getName));
+  }
+
+  Class<T> _class() {
+    return cls;
+  }
+
+  /** Get collection property name for a class field. */
+  static String propertyName(Field field) {
+    var annotation = field.getAnnotation(io.weaviate.client6.v1.api.collections.annotations.Property.class);
+    var propertyName = field.getName();
+    if (annotation != null) {
+      propertyName = annotation.value();
+    }
+    return propertyName;
+  }
+
+  /** Get class field name for a collection property. */
+  String fieldName(String propertyName) {
+    return propertyToField.getOrDefault(propertyName, propertyName);
   }
 
   @Override
@@ -92,7 +117,7 @@ final class PojoDescriptor<T extends Record> implements CollectionDescriptor<T> 
 
   @Override
   public PropertiesBuilder<T> propertiesBuilder() {
-    return new PojoBuilder<>(cls);
+    return new PojoBuilder<>(this);
   }
 
   @Override
@@ -103,7 +128,7 @@ final class PojoDescriptor<T extends Record> implements CollectionDescriptor<T> 
   private ObjectBuilder<CollectionConfig> inspectClass(CollectionConfig.Builder b) {
     // Add properties;
     for (var field : cls.getDeclaredFields()) {
-      var propertyName = field.getName();
+      var propertyName = propertyName(field);
       Function<String, Property> ctor;
       var type = field.getType();
 

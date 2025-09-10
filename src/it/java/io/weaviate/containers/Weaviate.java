@@ -92,13 +92,12 @@ public class Weaviate extends WeaviateContainer {
   public static class Builder {
     private String versionTag;
     private Set<String> enableModules = new HashSet<>();
-    private boolean telemetry;
 
     private Map<String, String> environment = new HashMap<>();
 
     public Builder() {
       this.versionTag = VERSION;
-      this.telemetry = false;
+      enableAutoSchema(false);
     }
 
     public Builder withVersion(String version) {
@@ -140,6 +139,11 @@ public class Weaviate extends WeaviateContainer {
 
     public Builder enableTelemetry(boolean enable) {
       environment.put("DISABLE_TELEMETRY", Boolean.toString(!enable));
+      return this;
+    }
+
+    public Builder enableAutoSchema(boolean enable) {
+      environment.put("AUTOSCHEMA_ENABLED", Boolean.toString(!enable));
       return this;
     }
 
