@@ -16,6 +16,7 @@ public record Property(
     @SerializedName("indexFilterable") Boolean indexFilterable,
     @SerializedName("indexRangeFilters") Boolean indexRangeFilters,
     @SerializedName("indexSearchable") Boolean indexSearchable,
+    @SerializedName("tokenization") Tokenization tokenization,
     @SerializedName("skipVectorization") Boolean skipVectorization,
     @SerializedName("vectorizePropertyName") Boolean vectorizePropertyName) {
 
@@ -142,6 +143,7 @@ public record Property(
         .indexFilterable(indexFilterable)
         .indexRangeFilters(indexRangeFilters)
         .indexSearchable(indexSearchable)
+        .tokenization(tokenization)
         .skipVectorization(skipVectorization)
         .vectorizePropertyName(vectorizePropertyName);
   }
@@ -159,6 +161,7 @@ public record Property(
         builder.indexFilterable,
         builder.indexRangeFilters,
         builder.indexSearchable,
+        builder.tokenization,
         builder.skipVectorization,
         builder.vectorizePropertyName);
   }
@@ -174,6 +177,7 @@ public record Property(
     private Boolean indexFilterable;
     private Boolean indexRangeFilters;
     private Boolean indexSearchable;
+    private Tokenization tokenization;
     private Boolean skipVectorization;
     private Boolean vectorizePropertyName;
 
@@ -218,6 +222,11 @@ public record Property(
 
     public Builder indexSearchable(Boolean indexSearchable) {
       this.indexSearchable = indexSearchable;
+      return this;
+    }
+
+    public Builder tokenization(Tokenization tokenization) {
+      this.tokenization = tokenization;
       return this;
     }
 
