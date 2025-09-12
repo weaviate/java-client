@@ -288,14 +288,11 @@ public record Property(
    *
    * Example: Update property description.
    *
-   * <pre>
-   * {@code
-   *  Property updated = propertyHeight.edit()
-   *    .description("How tall this building is.")
-   *    .build();
-   * }
-   *
-   * <pre>
+   * <pre>{@code
+   * Property updated = propertyHeight.edit()
+   *     .description("How tall this building is.")
+   *     .build();
+   * }</pre>
    *
    * @see #edit(Function)
    */
@@ -319,14 +316,10 @@ public record Property(
    *
    * Example: Update property description.
    *
-   * <pre>
-   * {@code
-   *  Property updated = propertyHeight.edit(
-   *    p -> p.description("How tall this building is.")
-   *  );
-   * }
-   *
-   * <pre>
+   * <pre>{@code
+   * Property updated = propertyHeight.edit(
+   *     p -> p.description("How tall this building is."));
+   * }</pre>
    *
    * @see #edit()
    */
@@ -401,7 +394,9 @@ public record Property(
      * Filterable indices are not applicable to {@code blob}, {@code object},
      * {@code geoCoordinates}, and {@code phoneNumber} properties or arrays thereof.
      *
-     * @see https://docs.weaviate.io/weaviate/concepts/indexing/inverted-index#configure-inverted-indexes
+     * @see <a href=
+     *      "https://docs.weaviate.io/weaviate/concepts/indexing/inverted-index#configure-inverted-indexes">Inverted
+     *      Indexes</a>
      */
     public Builder indexFilterable(boolean indexFilterable) {
       this.indexFilterable = indexFilterable;
@@ -415,7 +410,9 @@ public record Property(
      * <p>
      * Applicable to {code int}, {@code number}, and {@code date} properties.
      *
-     * @see https://docs.weaviate.io/weaviate/concepts/indexing/inverted-index#configure-inverted-indexes
+     * @see <a href=
+     *      "https://docs.weaviate.io/weaviate/concepts/indexing/inverted-index#configure-inverted-indexes">Inverted
+     *      Indexes</a>
      */
     public Builder indexRangeFilters(boolean indexRangeFilters) {
       this.indexRangeFilters = indexRangeFilters;
@@ -431,7 +428,9 @@ public record Property(
      * by default; you should set {@code indexInverted(false)} if you
      * do not plan to run BM25/hybrid queries on this property.
      *
-     * @see https://docs.weaviate.io/weaviate/concepts/indexing/inverted-index#configure-inverted-indexes
+     * @see <a href=
+     *      "https://docs.weaviate.io/weaviate/concepts/indexing/inverted-index#configure-inverted-indexes">Inverted
+     *      Indexes</a>
      */
     public Builder indexSearchable(boolean indexSearchable) {
       this.indexSearchable = indexSearchable;
@@ -441,7 +440,8 @@ public record Property(
     /**
      * Change tokenization method for this property.
      *
-     * @see https://docs.weaviate.io/academy/py/tokenization/options
+     * @see <a href=
+     *      "https://docs.weaviate.io/academy/py/tokenization/options">Tokenization</a>
      */
     public Builder tokenization(Tokenization tokenization) {
       this.tokenization = tokenization;
