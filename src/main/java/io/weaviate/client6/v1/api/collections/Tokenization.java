@@ -2,6 +2,7 @@ package io.weaviate.client6.v1.api.collections;
 
 import com.google.gson.annotations.SerializedName;
 
+/** Tokenization methods available within Weaviate. */
 public enum Tokenization {
   @SerializedName("word")
   WORD,
