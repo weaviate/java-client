@@ -341,6 +341,17 @@ public record Property(
         builder.vectorizePropertyName);
   }
 
+  // All methods accepting a `boolean` should have a boxed overload
+  // to be used by Property::edit.
+  //
+  // There we can't just do:
+  // .indexInverted(indexInverted == null ? false : indexInverted)
+  // because that may change the value from `null` to Boolean.FALSE,
+  // effectively updating this setting. In the context of PUT /schema/{collection}
+  // call this becomes a problem because we're not allowed to update anything
+  // except for the description.
+  //
+  // The alternative (wrapping each call in an if-block) seems too verbose.
   public static class Builder implements ObjectBuilder<Property> {
     // Required parameters.
     private final String propertyName;
@@ -387,6 +398,12 @@ public record Property(
       return this;
     }
 
+    /** Convenience method to be used by {@link Property#edit}. */
+    Builder indexInverted(Boolean indexInverted) {
+      this.indexInverted = indexInverted;
+      return this;
+    }
+
     /**
      * Set to true to create a filtering index for this property.
      *
@@ -403,6 +420,12 @@ public record Property(
       return this;
     }
 
+    /** Convenience method to be used by {@link Property#edit}. */
+    Builder indexFilterable(Boolean indexFilterable) {
+      this.indexFilterable = indexFilterable;
+      return this;
+    }
+
     /**
      * Set to true to create a range-based filter for filtering
      * by numerical ranges for this property.
@@ -415,6 +438,12 @@ public record Property(
      *      Indexes</a>
      */
     public Builder indexRangeFilters(boolean indexRangeFilters) {
+      this.indexRangeFilters = indexRangeFilters;
+      return this;
+    }
+
+    /** Convenience method to be used by {@link Property#edit}. */
+    Builder indexRangeFilters(Boolean indexRangeFilters) {
       this.indexRangeFilters = indexRangeFilters;
       return this;
     }
@@ -437,6 +466,12 @@ public record Property(
       return this;
     }
 
+    /** Convenience method to be used by {@link Property#edit}. */
+    Builder indexSearchable(Boolean indexSearchable) {
+      this.indexSearchable = indexSearchable;
+      return this;
+    }
+
     /**
      * Change tokenization method for this property.
      *
@@ -453,8 +488,20 @@ public record Property(
       return this;
     }
 
+    /** Convenience method to be used by {@link Property#edit}. */
+    Builder skipVectorization(Boolean skipVectorization) {
+      this.skipVectorization = skipVectorization;
+      return this;
+    }
+
     /** Include property name into the input for the vectorizer module. */
     public Builder vectorizePropertyName(boolean vectorizePropertyName) {
+      this.vectorizePropertyName = vectorizePropertyName;
+      return this;
+    }
+
+    /** Convenience method to be used by {@link Property#edit}. */
+    Builder vectorizePropertyName(Boolean vectorizePropertyName) {
       this.vectorizePropertyName = vectorizePropertyName;
       return this;
     }
