@@ -19,6 +19,7 @@ import io.weaviate.client6.v1.api.collections.Generative;
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.Reranker;
+import io.weaviate.client6.v1.api.collections.Tokenization;
 import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.api.collections.Vectorizers;
 import io.weaviate.client6.v1.api.collections.Vectors;
@@ -224,6 +225,7 @@ public class JSONTest {
                 .description("A collection of things")
                 .properties(
                     Property.text("shape"),
+                    Property.text("custom_id", p -> p.tokenization(Tokenization.WORD)),
                     Property.integer("size"))
                 .references(
                     Property.reference("owner", "Person", "Company"))
@@ -237,6 +239,7 @@ public class JSONTest {
                   "properties": [
                     {"name": "shape", "dataType": ["text"]},
                     {"name": "size", "dataType": ["int"]},
+                    {"name": "custom_id", "dataType": ["text"], tokenization: "word"},
                     {"name": "owner", "dataType": ["Person", "Company"]}
                   ],
                   "vectorConfig": {
