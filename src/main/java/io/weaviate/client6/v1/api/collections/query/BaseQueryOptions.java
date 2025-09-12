@@ -117,6 +117,10 @@ public record BaseQueryOptions(
       return (SELF) this;
     }
 
+    public final SELF includeVector() {
+      return returnMetadata(Metadata.VECTOR);
+    }
+
     final BaseQueryOptions baseOptions() {
       return _build();
     }

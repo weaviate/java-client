@@ -257,9 +257,8 @@ public class DataITest extends ConcurrentTest {
     var updIvanhoe = books.query.byId(
         ivanhoe.metadata().uuid(),
         query -> query
-            .returnMetadata(Metadata.VECTOR)
-            .returnReferences(
-                QueryReference.single("writtenBy")));
+            .includeVector()
+            .returnReferences(QueryReference.single("writtenBy")));
 
     Assertions.assertThat(updIvanhoe).get()
         .satisfies(book -> {
