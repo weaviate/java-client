@@ -29,6 +29,7 @@ import io.weaviate.client6.v1.api.collections.query.GroupBy;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.api.collections.query.QueryResponseGroup;
+import io.weaviate.client6.v1.api.collections.query.SortBy;
 import io.weaviate.client6.v1.api.collections.query.Where;
 import io.weaviate.containers.Container;
 import io.weaviate.containers.Container.ContainerGroup;
@@ -255,6 +256,72 @@ public class SearchITest extends ConcurrentTest {
             greenHat.metadata().uuid(),
             hugeHat.metadata().uuid());
 
+  }
+
+  @Test
+  public void testFetchObjectsWithSort() throws Exception {
+    var nsNumbers = ns("Numbers");
+
+    // Arrange
+    client.collections.create(nsNumbers,
+        c -> c.properties(Property.integer("value")));
+
+    var numbers = client.collections.use(nsNumbers);
+
+    var one = numbers.data.insert(Map.of("value", 1L));
+    var two = numbers.data.insert(Map.of("value", 2L));
+    var three = numbers.data.insert(Map.of("value", 3L));
+
+    // Act: sort ascending
+    var asc = numbers.query.fetchObjects(
+        q -> q.sort(SortBy.property("value")));
+
+    Assertions.assertThat(asc.objects())
+        .as("value asc")
+        .hasSize(3)
+        .extracting(WeaviateObject::properties)
+        .extracting(object -> object.get("value"))
+        .containsExactly(1L, 2L, 3L);
+
+    // Act: sort descending
+    var desc = numbers.query.fetchObjects(
+        q -> q.sort(SortBy.property("value").desc()));
+
+    Assertions.assertThat(desc.objects())
+        .as("value desc")
+        .hasSize(3)
+        .extracting(WeaviateObject::properties)
+        .extracting(object -> object.get("value"))
+        .containsExactly(3L, 2L, 1L);
+
+    // Act: sort by creation time asc
+    var created = numbers.query.fetchObjects(
+        q -> q.sort(SortBy.creationTime()));
+
+    Assertions.assertThat(created.objects())
+        .as("create time asc")
+        .hasSize(3)
+        .extracting(WeaviateObject::uuid)
+        .containsExactly(one.uuid(), two.uuid(), three.uuid());
+
+    // Act: sort by updated time desc
+    numbers.data.update(one.uuid(), upd -> upd.properties(Map.of("value", -1L)));
+    Thread.sleep(10);
+    numbers.data.update(two.uuid(), upd -> upd.properties(Map.of("value", -2L)));
+    Thread.sleep(10);
+    numbers.data.update(three.uuid(), upd -> upd.properties(Map.of("value", -3L)));
+
+    var updated = numbers.query.fetchObjects(
+        q -> q.sort(
+            // Both sort operators imply ordering 3-2-1
+            SortBy.lastUpdateTime().desc(),
+            SortBy.property("value").asc()));
+
+    Assertions.assertThat(updated.objects())
+        .as("last update time desc + value asc")
+        .hasSize(3)
+        .extracting(WeaviateObject::uuid)
+        .containsExactly(three.uuid(), two.uuid(), one.uuid());
   }
 
   @Test
