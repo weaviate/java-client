@@ -11,8 +11,6 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 public interface Metadata {
   void appendTo(WeaviateProtoSearchGet.MetadataRequest.Builder metadata);
 
-  /** Include UUID of the object in the metadata response. */
-  public static final Metadata UUID = MetadataField.UUID;
   /** Include associated vector in the metadata response. */
   public static final Metadata VECTOR = MetadataField.VECTOR;
   /** Include object creation time in the metadata response. */

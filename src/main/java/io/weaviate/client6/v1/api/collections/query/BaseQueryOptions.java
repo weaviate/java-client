@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import io.weaviate.client6.v1.api.collections.query.Metadata.MetadataField;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
@@ -46,6 +47,10 @@ public record BaseQueryOptions(
     private List<String> returnProperties = new ArrayList<>();
     private List<QueryReference> returnReferences = new ArrayList<>();
     private List<Metadata> returnMetadata = new ArrayList<>();
+
+    protected Builder() {
+      returnMetadata(MetadataField.UUID);
+    }
 
     public final SELF limit(int limit) {
       this.limit = limit;
@@ -151,11 +156,7 @@ public record BaseQueryOptions(
     }
 
     var metadata = WeaviateProtoSearchGet.MetadataRequest.newBuilder();
-    if (returnMetadata.isEmpty()) {
-      Metadata.UUID.appendTo(metadata);
-    } else {
-      returnMetadata.forEach(m -> m.appendTo(metadata));
-    }
+    returnMetadata.forEach(m -> m.appendTo(metadata));
     req.setMetadata(metadata);
 
     if (!returnProperties.isEmpty() || !returnReferences.isEmpty()) {

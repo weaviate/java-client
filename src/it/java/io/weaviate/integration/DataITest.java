@@ -51,7 +51,7 @@ public class DataITest extends ConcurrentTest {
     var object = artists.query.byId(id, query -> query
         .returnProperties("name")
         .returnMetadata(
-            Metadata.UUID, Metadata.VECTOR,
+            Metadata.VECTOR,
             Metadata.CREATION_TIME_UNIX, Metadata.LAST_UPDATE_TIME_UNIX));
 
     Assertions.assertThat(artists.data.exists(id))
@@ -259,8 +259,7 @@ public class DataITest extends ConcurrentTest {
         query -> query
             .returnMetadata(Metadata.VECTOR)
             .returnReferences(
-                QueryReference.single("writtenBy",
-                    writtenBy -> writtenBy.returnMetadata(Metadata.UUID))));
+                QueryReference.single("writtenBy")));
 
     Assertions.assertThat(updIvanhoe).get()
         .satisfies(book -> {
@@ -387,8 +386,7 @@ public class DataITest extends ConcurrentTest {
 
     var goodburgAirports = cities.query.byId(goodburg.metadata().uuid(),
         city -> city.returnReferences(
-            QueryReference.single("hasAirports",
-                airport -> airport.returnMetadata(Metadata.UUID))));
+            QueryReference.single("hasAirports")));
 
     Assertions.assertThat(goodburgAirports).get()
         .as("Goodburg has 3 airports")
