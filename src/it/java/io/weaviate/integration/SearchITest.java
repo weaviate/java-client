@@ -362,7 +362,7 @@ public class SearchITest extends ConcurrentTest {
     // Act
     var winterSport = hobbies.query.hybrid("winter",
         hybrid -> hybrid
-            .returnMetadata(Metadata.UUID, Metadata.SCORE, Metadata.EXPLAIN_SCORE));
+            .returnMetadata(Metadata.SCORE, Metadata.EXPLAIN_SCORE));
 
     // Assert
     Assertions.assertThat(winterSport.objects())
