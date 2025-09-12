@@ -21,6 +21,7 @@ import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.WeaviateMetadata;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.pagination.PaginationException;
+import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.containers.Container;
 
 public class PaginationITest extends ConcurrentTest {
@@ -117,11 +118,16 @@ public class PaginationITest extends ConcurrentTest {
     }
 
     // Act / Assert
-    var withSomeProperties = things.paginate(p -> p.returnProperties("fetch_me"));
+    var withSomeProperties = things.paginate(p -> p
+        .returnMetadata(Metadata.CREATION_TIME_UNIX)
+        .returnProperties("fetch_me"));
     for (var thing : withSomeProperties) {
       Assertions.assertThat(thing.properties())
-          .as("uuid=" + thing.metadata().uuid())
+          .as("uuid=" + thing.uuid())
           .doesNotContainKey("dont_fetch");
+
+      Assertions.assertThat(thing.metadata().creationTimeUnix())
+          .isNotNull();
     }
   }
 
@@ -140,7 +146,7 @@ public class PaginationITest extends ConcurrentTest {
       var inserted = new ArrayList<String>();
       for (var i = 0; i < count; i++) {
         futures[i] = things.data.insert(Collections.emptyMap())
-            .thenAccept(object -> inserted.add(object.metadata().uuid()));
+            .thenAccept(object -> inserted.add(object.uuid()));
       }
       CompletableFuture.allOf(futures).get();
 

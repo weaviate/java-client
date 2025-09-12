@@ -2,9 +2,12 @@ package io.weaviate.client6.v1.api.collections.query;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
+import io.weaviate.client6.v1.api.collections.query.Metadata.MetadataField;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
@@ -27,36 +30,53 @@ public record ById(
 
   public ById(Builder builder) {
     this(builder.uuid,
-        builder.returnProperties,
+        new ArrayList<>(builder.returnProperties),
         builder.returnReferences,
-        builder.returnMetadata);
+        new ArrayList<>(builder.returnMetadata));
   }
 
   public static class Builder implements ObjectBuilder<ById> {
     // Required query parameters.
     private final String uuid;
 
-    private List<String> returnProperties = new ArrayList<>();
+    private Set<String> returnProperties = new HashSet<>();
     private List<QueryReference> returnReferences = new ArrayList<>();
-    private List<Metadata> returnMetadata = new ArrayList<>();
+    private Set<Metadata> returnMetadata = new HashSet<>();
 
     public Builder(String uuid) {
       this.uuid = uuid;
+      returnMetadata(MetadataField.UUID);
     }
 
     public final Builder returnProperties(String... properties) {
-      this.returnProperties = Arrays.asList(properties);
+      return returnProperties(Arrays.asList(properties));
+    }
+
+    public final Builder returnProperties(List<String> properties) {
+      this.returnProperties.addAll(properties);
       return this;
     }
 
     public final Builder returnReferences(QueryReference... references) {
-      this.returnReferences = Arrays.asList(references);
+      return returnReferences(Arrays.asList(references));
+    }
+
+    public final Builder returnReferences(List<QueryReference> references) {
+      this.returnReferences.addAll(references);
       return this;
     }
 
     public final Builder returnMetadata(Metadata... metadata) {
-      this.returnMetadata = Arrays.asList(metadata);
+      return returnMetadata(Arrays.asList(metadata));
+    }
+
+    public final Builder returnMetadata(List<Metadata> metadata) {
+      this.returnMetadata.addAll(metadata);
       return this;
+    }
+
+    public final Builder includeVector() {
+      return returnMetadata(Metadata.VECTOR);
     }
 
     @Override
@@ -73,9 +93,6 @@ public record ById(
     req.setFilters(filter);
 
     var metadata = WeaviateProtoSearchGet.MetadataRequest.newBuilder();
-    if (returnMetadata.isEmpty()) {
-      returnMetadata.add(Metadata.UUID);
-    }
     returnMetadata.forEach(m -> m.appendTo(metadata));
     req.setMetadata(metadata);
 

@@ -56,7 +56,13 @@ public final class AsyncPage<PropertiesT> implements Iterable<WeaviateObject<Pro
             return new AsyncPage<>(null, pageSize, fetch, nextPage);
           }
           var last = nextPage.get(nextPage.size() - 1);
-          return new AsyncPage<>(last.metadata().uuid(), pageSize, fetch, nextPage);
+          var nextCursor = last.uuid();
+          // The cursor can only be null on the first iteration.
+          // If it is null after the first iteration it is
+          // because we haven't requested Metadata.UUID, in which
+          // case pagination will continue to run unbounded.
+          assert nextCursor != null : "page cursor is null";
+          return new AsyncPage<>(nextCursor, pageSize, fetch, nextPage);
         });
   }
 
