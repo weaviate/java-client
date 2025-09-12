@@ -2,7 +2,9 @@ package io.weaviate.client6.v1.api.collections.query;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.query.Metadata.MetadataField;
@@ -12,7 +14,6 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 public record QueryReference(
     String property,
     String collection,
-    boolean includeVector,
     List<String> includeVectors,
     List<String> returnProperties,
     List<QueryReference> returnReferences,
@@ -22,11 +23,10 @@ public record QueryReference(
     this(
         options.property,
         options.collection,
-        options.includeVector,
-        options.includeVectors,
-        options.returnProperties,
+        new ArrayList<>(options.includeVectors),
+        new ArrayList<>(options.returnProperties),
         options.returnReferences,
-        options.returnMetadata);
+        new ArrayList<>(options.returnMetadata));
   }
 
   public static QueryReference single(String property) {
@@ -51,11 +51,10 @@ public record QueryReference(
     private final String property;
     private final String collection;
 
-    private boolean includeVector;
-    private List<String> includeVectors = new ArrayList<>();
-    private List<String> returnProperties = new ArrayList<>();
+    private Set<String> includeVectors = new HashSet<>();
+    private Set<String> returnProperties = new HashSet<>();
     private List<QueryReference> returnReferences = new ArrayList<>();
-    private List<Metadata> returnMetadata = new ArrayList<>();
+    private Set<Metadata> returnMetadata = new HashSet<>();
 
     public Builder(String collection, String property) {
       this.property = property;
@@ -63,13 +62,8 @@ public record QueryReference(
       returnMetadata(MetadataField.UUID);
     }
 
-    public final Builder includeVector() {
-      this.includeVector = true;
-      return this;
-    }
-
     public final Builder includeVectors(String... vectors) {
-      this.includeVectors = Arrays.asList(vectors);
+      this.includeVectors.addAll(Arrays.asList(vectors));
       return this;
     }
 
@@ -100,6 +94,10 @@ public record QueryReference(
       return this;
     }
 
+    public final Builder includeVector() {
+      return returnMetadata(Metadata.VECTOR);
+    }
+
     @Override
     public QueryReference build() {
       return new QueryReference(this);
@@ -115,6 +113,7 @@ public record QueryReference(
     if (!returnMetadata.isEmpty()) {
       var metadata = WeaviateProtoSearchGet.MetadataRequest.newBuilder();
       returnMetadata.forEach(m -> m.appendTo(metadata));
+      metadata.addAllVectors(includeVectors);
       references.setMetadata(metadata);
     }
 

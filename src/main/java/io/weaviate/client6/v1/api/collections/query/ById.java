@@ -75,6 +75,10 @@ public record ById(
       return this;
     }
 
+    public final Builder includeVector() {
+      return returnMetadata(Metadata.VECTOR);
+    }
+
     @Override
     public ById build() {
       return new ById(this);
