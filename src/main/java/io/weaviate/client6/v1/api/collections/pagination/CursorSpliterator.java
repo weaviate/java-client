@@ -39,7 +39,14 @@ public class CursorSpliterator<PropertiesT> implements Spliterator<WeaviateObjec
     if (nextPage.isEmpty()) {
       return false;
     }
-    cursor = nextPage.get(nextPage.size() - 1).metadata().uuid();
+    cursor = nextPage.get(nextPage.size() - 1).uuid();
+
+    // The cursor can only be null on the first iteration.
+    // If it is null after the first iteration it is
+    // because we haven't requested Metadata.UUID, in which
+    // case pagination will continue to run unbounded.
+    assert cursor != null : "page cursor is null";
+
     currentPage = nextPage.iterator();
     return tryAdvance(action);
   }
