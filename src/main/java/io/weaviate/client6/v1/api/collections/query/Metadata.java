@@ -11,8 +11,8 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 public interface Metadata {
   void appendTo(WeaviateProtoSearchGet.MetadataRequest.Builder metadata);
 
-  /** Include UUID of the object in the metadata response. */
-  public static final Metadata UUID = MetadataField.UUID;
+  /** Include metadata in the metadata response. */
+  public static final Metadata ALL = MetadataField.ALL;
   /** Include associated vector in the metadata response. */
   public static final Metadata VECTOR = MetadataField.VECTOR;
   /** Include object creation time in the metadata response. */
@@ -70,6 +70,7 @@ public interface Metadata {
    * MetadataField are collection properties that can be requested for any object.
    */
   enum MetadataField implements Metadata {
+    ALL,
     UUID,
     VECTOR,
     CREATION_TIME_UNIX,
@@ -81,6 +82,13 @@ public interface Metadata {
 
     public void appendTo(WeaviateProtoSearchGet.MetadataRequest.Builder metadata) {
       switch (this) {
+        case ALL:
+          for (final var f : MetadataField.values()) {
+            if (f != ALL) {
+              f.appendTo(metadata);
+            }
+          }
+          break;
         case UUID:
           metadata.setUuid(true);
           break;

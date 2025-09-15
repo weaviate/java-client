@@ -429,7 +429,7 @@ public class SearchITest extends ConcurrentTest {
     // Act
     var winterSport = hobbies.query.hybrid("winter",
         hybrid -> hybrid
-            .returnMetadata(Metadata.UUID, Metadata.SCORE, Metadata.EXPLAIN_SCORE));
+            .returnMetadata(Metadata.SCORE, Metadata.EXPLAIN_SCORE));
 
     // Assert
     Assertions.assertThat(winterSport.objects())
@@ -481,5 +481,50 @@ public class SearchITest extends ConcurrentTest {
         throw e.getCause(); // CompletableFuture exceptions are always wrapped
       }
     }
+  }
+
+  @Test
+  public void testMetadataAll() throws IOException {
+    // Arrange
+    var nsThings = ns("Things");
+    client.collections.create(nsThings,
+        c -> c
+            .properties(Property.text("name"))
+            .vectors(Vectorizers.text2vecContextionary(
+                t2v -> t2v.sourceProperties("name"))));
+
+    var things = client.collections.use(nsThings);
+    var frisbee = things.data.insert(Map.of("name", "orange disc"));
+
+    // Act
+    var gotHybrid = things.query.hybrid("orange", q -> q
+        .queryProperties("name")
+        .returnMetadata(Metadata.ALL));
+
+    var gotNearText = things.query.nearText("frisbee", q -> q
+        .returnMetadata(Metadata.ALL));
+
+    // Assert
+    var metadataHybrid = Assertions.assertThat(gotHybrid.objects())
+        .hasSize(1)
+        .extracting(WeaviateObject::metadata)
+        .first().actual();
+
+    Assertions.assertThat(metadataHybrid.uuid()).as("uuid").isNotNull().isEqualTo(frisbee.uuid());
+    Assertions.assertThat(metadataHybrid.creationTimeUnix()).as("creationTimeUnix").isNotNull();
+    Assertions.assertThat(metadataHybrid.lastUpdateTimeUnix()).as("lastUpdateTimeUnix").isNotNull();
+    Assertions.assertThat(metadataHybrid.score()).as("score").isNotNull();
+    Assertions.assertThat(metadataHybrid.explainScore()).as("explainScore").isNotNull().isNotEqualTo("");
+
+    var metadataNearText = Assertions.assertThat(gotNearText.objects())
+        .hasSize(1)
+        .extracting(WeaviateObject::metadata)
+        .first().actual();
+
+    Assertions.assertThat(metadataNearText.uuid()).as("uuid").isNotNull().isEqualTo(frisbee.uuid());
+    Assertions.assertThat(metadataNearText.creationTimeUnix()).as("creationTimeUnix").isNotNull();
+    Assertions.assertThat(metadataNearText.lastUpdateTimeUnix()).as("lastUpdateTimeUnix").isNotNull();
+    Assertions.assertThat(metadataNearText.distance()).as("distance").isNotNull();
+    Assertions.assertThat(metadataNearText.certainty()).as("certainty").isNotNull();
   }
 }
