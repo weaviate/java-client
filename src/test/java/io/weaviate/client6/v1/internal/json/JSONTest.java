@@ -21,8 +21,7 @@ import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.ReferenceProperty;
 import io.weaviate.client6.v1.api.collections.Reranker;
 import io.weaviate.client6.v1.api.collections.Tokenization;
-import io.weaviate.client6.v1.api.collections.Vectorizer;
-import io.weaviate.client6.v1.api.collections.Vectorizers;
+import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.BatchReference;
@@ -45,7 +44,7 @@ public class JSONTest {
     return new Object[][] {
         // Vectorizer.CustomTypeAdapterFactory
         {
-            Vectorizer.class,
+            VectorConfig.class,
             SelfProvidedVectorizer.of(),
             """
                 {
@@ -56,7 +55,7 @@ public class JSONTest {
                   """,
         },
         {
-            Vectorizer.class,
+            VectorConfig.class,
             Img2VecNeuralVectorizer.of(i2v -> i2v.imageFields("jpeg", "png")),
             """
                 {
@@ -71,7 +70,7 @@ public class JSONTest {
                     """,
         },
         {
-            Vectorizer.class,
+            VectorConfig.class,
             Multi2VecClipVectorizer.of(m2v -> m2v
                 .inferenceUrl("http://example.com")
                 .imageField("img", 1f)
@@ -95,7 +94,7 @@ public class JSONTest {
                     """,
         },
         {
-            Vectorizer.class,
+            VectorConfig.class,
             Text2VecContextionaryVectorizer.of(),
             """
                 {
@@ -111,7 +110,7 @@ public class JSONTest {
                     """,
         },
         {
-            Vectorizer.class,
+            VectorConfig.class,
             Text2VecWeaviateVectorizer.of(t2v -> t2v
                 .inferenceUrl("http://example.com")
                 .dimensions(4)
@@ -135,7 +134,7 @@ public class JSONTest {
 
         // VectorIndex.CustomTypeAdapterFactory
         {
-            Vectorizer.class,
+            VectorConfig.class,
             SelfProvidedVectorizer.of(none -> none
                 .vectorIndex(Flat.of(flat -> flat
                     .vectorCacheMaxObjects(100)))),
@@ -148,7 +147,7 @@ public class JSONTest {
                 """,
         },
         {
-            Vectorizer.class,
+            VectorConfig.class,
             SelfProvidedVectorizer.of(none -> none
                 .vectorIndex(Hnsw.of(hnsw -> hnsw
                     .distance(Distance.DOT)
@@ -231,7 +230,7 @@ public class JSONTest {
                 .references(
                     ReferenceProperty.to("owner", "Person", "Company"))
                 .vectorConfig(
-                    Vectorizers.img2vecNeural("v-shape",
+                    VectorConfig.img2vecNeural("v-shape",
                         i2v -> i2v.imageFields("img")))),
             """
                 {

@@ -14,8 +14,7 @@ import io.weaviate.client6.v1.api.collections.InvertedIndex;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.ReferenceProperty;
 import io.weaviate.client6.v1.api.collections.Replication;
-import io.weaviate.client6.v1.api.collections.Vectorizer;
-import io.weaviate.client6.v1.api.collections.Vectorizers;
+import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.config.Shard;
 import io.weaviate.client6.v1.api.collections.config.ShardStatus;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
@@ -31,18 +30,18 @@ public class CollectionsITest extends ConcurrentTest {
     client.collections.create(collectionName,
         col -> col
             .properties(Property.text("username"), Property.integer("age"))
-            .vectorConfig(Vectorizers.selfProvided()));
+            .vectorConfig(VectorConfig.selfProvided()));
 
     var thingsCollection = client.collections.getConfig(collectionName);
 
     Assertions.assertThat(thingsCollection).get()
         .hasFieldOrPropertyWithValue("collectionName", collectionName)
-        .extracting(CollectionConfig::vectors, InstanceOfAssertFactories.map(String.class, Vectorizer.class))
+        .extracting(CollectionConfig::vectors, InstanceOfAssertFactories.map(String.class, VectorConfig.class))
         .as("default vector").extractingByKey("default")
         .satisfies(defaultVector -> {
           Assertions.assertThat(defaultVector)
               .as("has none vectorizer").isInstanceOf(SelfProvidedVectorizer.class);
-          Assertions.assertThat(defaultVector).extracting(Vectorizer::vectorIndex)
+          Assertions.assertThat(defaultVector).extracting(VectorConfig::vectorIndex)
               .isInstanceOf(Hnsw.class);
         });
 
