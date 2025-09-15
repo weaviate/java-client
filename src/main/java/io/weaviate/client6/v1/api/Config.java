@@ -185,7 +185,7 @@ public record Config(
     public Local() {
       scheme("http");
       host("localhost");
-      httpPort(8080);
+      port(8080);
       grpcPort(50051);
     }
 
@@ -200,7 +200,7 @@ public record Config(
     }
 
     /** Override default HTTP port. */
-    public Local httpPort(int port) {
+    public Local port(int port) {
       this.httpPort = port;
       return this;
     }
