@@ -10,6 +10,7 @@ import java.util.function.Function;
 import io.weaviate.client6.v1.api.collections.CollectionConfig;
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.api.collections.Property;
+import io.weaviate.client6.v1.api.collections.ReferenceProperty;
 import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClientAsync;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
@@ -53,7 +54,7 @@ public class WeaviateConfigClientAsync {
   }
 
   public CompletableFuture<Void> addReference(String name, String... dataTypes) throws IOException {
-    return this.addProperty(Property.reference(name, dataTypes).toProperty());
+    return this.addProperty(ReferenceProperty.to(name, dataTypes).toProperty());
   }
 
   public CompletableFuture<Void> update(String collectionName,

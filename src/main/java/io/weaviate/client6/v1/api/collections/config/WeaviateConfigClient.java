@@ -9,6 +9,7 @@ import java.util.function.Function;
 import io.weaviate.client6.v1.api.collections.CollectionConfig;
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.api.collections.Property;
+import io.weaviate.client6.v1.api.collections.ReferenceProperty;
 import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClient;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
@@ -52,7 +53,7 @@ public class WeaviateConfigClient {
   }
 
   public void addReference(String propertyName, String... dataTypes) throws IOException {
-    this.addProperty(Property.reference(propertyName, dataTypes).toProperty());
+    this.addProperty(ReferenceProperty.to(propertyName, dataTypes).toProperty());
   }
 
   public void update(String collectionName,
