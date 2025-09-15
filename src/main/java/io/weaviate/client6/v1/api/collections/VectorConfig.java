@@ -54,6 +54,8 @@ public interface VectorConfig {
 
   VectorIndex vectorIndex();
 
+  Quantization quantization();
+
   /** Create a bring-your-own-vector vector index. */
   public static Map.Entry<String, VectorConfig> selfProvided() {
     return selfProvided(VectorIndex.DEFAULT_VECTOR_NAME);
@@ -269,16 +271,23 @@ public interface VectorConfig {
           TypeAdapter<T> adapter = (TypeAdapter<T>) delegateAdapters.get(value._kind());
 
           // Serialize vectorizer config as { "vectorizer-kind": { ... } }
-          // and remove "vectorIndex" object which every vectorizer has.
+          // and remove "vectorIndex" and quantization objects which every vectorizer has.
           var vectorizer = new JsonObject();
           var config = adapter.toJsonTree((T) value._self());
 
           // This will create { "vectorIndexType": "", "vectorIndexConfig": { ... } }
-          // to which we just need to add "vectorizer": { ... } key.
+          // to which we just need to add "vectorizer": { ... } key
+          // and "bq"/"pg"/"sq"/"rq": { ... } (quantizer) key.
           var vectorIndex = config.getAsJsonObject().remove("vectorIndex");
 
           vectorizer.add(value._kind().jsonValue(), config);
           vectorIndex.getAsJsonObject().add("vectorizer", vectorizer);
+
+          if (value.quantization() != null) {
+            vectorIndex.getAsJsonObject()
+                .get("vectorIndexConfig").getAsJsonObject()
+                .add(value.quantization()._kind().jsonValue(), config.getAsJsonObject().remove("quantization"));
+          }
 
           Streams.write(vectorIndex, out);
         }
@@ -286,12 +295,26 @@ public interface VectorConfig {
         @Override
         public VectorConfig read(JsonReader in) throws IOException {
           var jsonObject = JsonParser.parseReader(in).getAsJsonObject();
+          var vectorIndexConfig = jsonObject.get("vectorIndexConfig").getAsJsonObject();
+
+          String quantizationKind = null;
+          if (vectorIndexConfig.has(Quantization.Kind.BQ.jsonValue())) {
+            quantizationKind = Quantization.Kind.BQ.jsonValue();
+          } else if (vectorIndexConfig.has(Quantization.Kind.PQ.jsonValue())) {
+            quantizationKind = Quantization.Kind.PQ.jsonValue();
+          } else if (vectorIndexConfig.has(Quantization.Kind.SQ.jsonValue())) {
+            quantizationKind = Quantization.Kind.SQ.jsonValue();
+          } else if (vectorIndexConfig.has(Quantization.Kind.RQ.jsonValue())) {
+            quantizationKind = Quantization.Kind.RQ.jsonValue();
+          } else {
+            quantizationKind = Quantization.Kind.UNCOMPRESSED.jsonValue();
+          }
 
           // VectorIndex.CustomTypeAdapterFactory expects keys
           // ["vectorIndexType", "vectorIndexConfig"].
           var vectorIndex = new JsonObject();
           vectorIndex.add("vectorIndexType", jsonObject.get("vectorIndexType"));
-          vectorIndex.add("vectorIndexConfig", jsonObject.get("vectorIndexConfig"));
+          vectorIndex.add("vectorIndexConfig", vectorIndexConfig);
 
           var vectorizerObject = jsonObject.get("vectorizer").getAsJsonObject();
           var vectorizerName = vectorizerObject.keySet().iterator().next();
@@ -309,6 +332,16 @@ public interface VectorConfig {
           // Each individual vectorizer has a `VectorIndex vectorIndex` field.
           concreteVectorizer.add("vectorIndex", vectorIndex);
 
+          // Each individual vectorizer has a `Quantization quantization` field.
+          // We need to specify the kind in order for
+          // Quantization.CustomTypeAdapterFactory to be able to find the right adapter.
+          if (vectorIndexConfig.has(quantizationKind)) {
+            JsonObject quantization = new JsonObject();
+            quantization.add(quantizationKind, vectorIndexConfig.get(quantizationKind));
+            concreteVectorizer.add("quantization", quantization);
+          } else {
+            concreteVectorizer.add("quantization", null);
+          }
           return adapter.fromJsonTree(concreteVectorizer);
         }
       }.nullSafe();
