@@ -96,13 +96,13 @@ public record UpdateCollectionRequest(CollectionConfig collection) {
     }
 
     public final Builder vectors(Map<String, Vectorizer> vectors) {
-      this.newCollection.vectors(vectors);
+      this.newCollection.vectorConfig(vectors);
       return this;
     }
 
     @SafeVarargs
     public final Builder vectors(Map.Entry<String, Vectorizer>... vectors) {
-      this.newCollection.vectors(vectors);
+      this.newCollection.vectorConfig(vectors);
       return this;
     }
 

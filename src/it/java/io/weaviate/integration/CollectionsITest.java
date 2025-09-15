@@ -31,7 +31,7 @@ public class CollectionsITest extends ConcurrentTest {
     client.collections.create(collectionName,
         col -> col
             .properties(Property.text("username"), Property.integer("age"))
-            .vectors(Vectorizers.selfProvided()));
+            .vectorConfig(Vectorizers.selfProvided()));
 
     var thingsCollection = client.collections.getConfig(collectionName);
 

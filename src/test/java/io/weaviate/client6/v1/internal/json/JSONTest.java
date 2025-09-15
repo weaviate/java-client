@@ -230,7 +230,7 @@ public class JSONTest {
                     Property.integer("size"))
                 .references(
                     ReferenceProperty.to("owner", "Person", "Company"))
-                .vectors(
+                .vectorConfig(
                     Vectorizers.img2vecNeural("v-shape",
                         i2v -> i2v.imageFields("img")))),
             """

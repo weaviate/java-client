@@ -35,7 +35,7 @@ public class AggregationITest extends ConcurrentTest {
             .properties(
                 Property.text("category"),
                 Property.integer("price"))
-            .vectors(Vectorizers.selfProvided()));
+            .vectorConfig(Vectorizers.selfProvided()));
 
     var things = client.collections.use(COLLECTION);
     for (var category : List.of("Shoes", "Hat", "Jacket")) {
