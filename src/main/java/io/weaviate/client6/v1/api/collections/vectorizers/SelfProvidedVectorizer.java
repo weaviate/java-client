@@ -2,15 +2,15 @@ package io.weaviate.client6.v1.api.collections.vectorizers;
 
 import java.util.function.Function;
 
+import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
-import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public record SelfProvidedVectorizer(VectorIndex vectorIndex) implements Vectorizer {
+public record SelfProvidedVectorizer(VectorIndex vectorIndex) implements VectorConfig {
   @Override
   public Kind _kind() {
-    return Vectorizer.Kind.NONE;
+    return VectorConfig.Kind.NONE;
   }
 
   @Override

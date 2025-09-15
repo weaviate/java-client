@@ -7,19 +7,19 @@ import java.util.function.Function;
 
 import com.google.gson.annotations.SerializedName;
 
+import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
-import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Img2VecNeuralVectorizer(
     /** BLOB properties included in the embedding. */
     @SerializedName("imageFields") List<String> imageFields,
     /** Vector index configuration. */
-    VectorIndex vectorIndex) implements Vectorizer {
+    VectorIndex vectorIndex) implements VectorConfig {
 
   @Override
-  public Vectorizer.Kind _kind() {
-    return Vectorizer.Kind.IMG2VEC_NEURAL;
+  public VectorConfig.Kind _kind() {
+    return VectorConfig.Kind.IMG2VEC_NEURAL;
   }
 
   @Override

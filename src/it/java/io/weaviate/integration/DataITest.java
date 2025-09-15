@@ -16,7 +16,7 @@ import io.weaviate.client6.v1.api.WeaviateApiException;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.ReferenceProperty;
-import io.weaviate.client6.v1.api.collections.Vectorizers;
+import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.BatchReference;
@@ -118,7 +118,7 @@ public class DataITest extends ConcurrentTest {
                 Property.integer("age"))
             .references(
                 ReferenceProperty.to("hasAwards", awardsGrammy, awardsOscar))
-            .vectorConfig(Vectorizers.selfProvided(VECTOR_INDEX)));
+            .vectorConfig(VectorConfig.selfProvided(VECTOR_INDEX)));
   }
 
   @Test
@@ -234,7 +234,7 @@ public class DataITest extends ConcurrentTest {
         collection -> collection
             .properties(Property.text("title"), Property.integer("year"))
             .references(ReferenceProperty.to("writtenBy", nsAuthors))
-            .vectorConfig(Vectorizers.selfProvided()));
+            .vectorConfig(VectorConfig.selfProvided()));
 
     var authors = client.collections.use(nsAuthors);
     var walter = authors.data.insert(Map.of("name", "walter scott"));

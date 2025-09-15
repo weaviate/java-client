@@ -7,8 +7,8 @@ import java.util.function.Function;
 
 import com.google.gson.annotations.SerializedName;
 
+import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
-import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Text2VecWeaviateVectorizer(
@@ -21,11 +21,11 @@ public record Text2VecWeaviateVectorizer(
     /** Properties included in the embedding. */
     @SerializedName("sourceProperties") List<String> sourceProperties,
     /** Vector index configuration. */
-    VectorIndex vectorIndex) implements Vectorizer {
+    VectorIndex vectorIndex) implements VectorConfig {
 
   @Override
-  public Vectorizer.Kind _kind() {
-    return Vectorizer.Kind.TEXT2VEC_WEAVIATE;
+  public VectorConfig.Kind _kind() {
+    return VectorConfig.Kind.TEXT2VEC_WEAVIATE;
   }
 
   @Override

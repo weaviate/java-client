@@ -14,7 +14,7 @@ import org.junit.Test;
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.Property;
-import io.weaviate.client6.v1.api.collections.Vectorizers;
+import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.aggregate.Aggregate;
 import io.weaviate.client6.v1.api.collections.aggregate.AggregateResponseGroup;
@@ -35,7 +35,7 @@ public class AggregationITest extends ConcurrentTest {
             .properties(
                 Property.text("category"),
                 Property.integer("price"))
-            .vectorConfig(Vectorizers.selfProvided()));
+            .vectorConfig(VectorConfig.selfProvided()));
 
     var things = client.collections.use(COLLECTION);
     for (var category : List.of("Shoes", "Hat", "Jacket")) {
