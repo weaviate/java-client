@@ -9,7 +9,6 @@ import com.google.gson.annotations.SerializedName;
 
 import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.api.collections.Vectorizer;
-import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Img2VecNeuralVectorizer(
@@ -53,17 +52,6 @@ public record Img2VecNeuralVectorizer(
     /** Add BLOB properties to include in the embedding. */
     public Builder imageFields(String... fields) {
       return imageFields(Arrays.asList(fields));
-    }
-
-    /**
-     * Override default vector index configuration.
-     *
-     * <a href=
-     * "https://docs.weaviate.io/weaviate/config-refs/indexing/vector-index#hnsw-index-parameters">HNSW</a>
-     * is the default vector index.
-     */
-    public Builder vectorIndex(Function<Hnsw.Builder, ObjectBuilder<Hnsw>> fn) {
-      return vectorIndex(VectorIndex.createDefault(fn));
     }
 
     /**
