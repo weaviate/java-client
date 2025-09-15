@@ -48,7 +48,7 @@ public class ReferencesITest extends ConcurrentTest {
                 Property.text("name"),
                 Property.integer("age"))
             .references(
-                Property.reference("hasAwards", nsGrammy, nsOscar)));
+                ReferenceProperty.to("hasAwards", nsGrammy, nsOscar)));
 
     var artists = client.collections.use(nsArtists);
     var grammies = client.collections.use(nsGrammy);
@@ -129,7 +129,7 @@ public class ReferencesITest extends ConcurrentTest {
     // Act: create Artists collection with hasAwards reference
     client.collections.create(nsGrammy,
         col -> col
-            .references(Property.reference("presentedBy", nsAcademy)));
+            .references(ReferenceProperty.to("presentedBy", nsAcademy)));
 
     client.collections.create(nsArtists,
         col -> col
@@ -137,7 +137,7 @@ public class ReferencesITest extends ConcurrentTest {
                 Property.text("name"),
                 Property.integer("age"))
             .references(
-                Property.reference("hasAwards", nsGrammy)));
+                ReferenceProperty.to("hasAwards", nsGrammy)));
 
     var artists = client.collections.use(nsArtists);
     var grammies = client.collections.use(nsGrammy);

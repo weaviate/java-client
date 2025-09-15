@@ -15,6 +15,7 @@ import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateApiException;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.Property;
+import io.weaviate.client6.v1.api.collections.ReferenceProperty;
 import io.weaviate.client6.v1.api.collections.Vectorizers;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
@@ -116,7 +117,7 @@ public class DataITest extends ConcurrentTest {
                 Property.text("name"),
                 Property.integer("age"))
             .references(
-                Property.reference("hasAwards", awardsGrammy, awardsOscar))
+                ReferenceProperty.to("hasAwards", awardsGrammy, awardsOscar))
             .vectors(Vectorizers.selfProvided(VECTOR_INDEX)));
   }
 
@@ -128,7 +129,7 @@ public class DataITest extends ConcurrentTest {
     client.collections.create(nsPersons,
         collection -> collection
             .properties(Property.text("name"))
-            .references(Property.reference("hasFriend", nsPersons)));
+            .references(ReferenceProperty.to("hasFriend", nsPersons)));
 
     var persons = client.collections.use(nsPersons);
     var john = persons.data.insert(Map.of("name", "john"));
@@ -232,7 +233,7 @@ public class DataITest extends ConcurrentTest {
     client.collections.create(nsBooks,
         collection -> collection
             .properties(Property.text("title"), Property.integer("year"))
-            .references(Property.reference("writtenBy", nsAuthors))
+            .references(ReferenceProperty.to("writtenBy", nsAuthors))
             .vectors(Vectorizers.selfProvided()));
 
     var authors = client.collections.use(nsAuthors);
@@ -364,7 +365,7 @@ public class DataITest extends ConcurrentTest {
 
     client.collections.create(nsAirports);
     client.collections.create(nsCities, c -> c
-        .references(Property.reference("hasAirports", nsAirports)));
+        .references(ReferenceProperty.to("hasAirports", nsAirports)));
 
     var airports = client.collections.use(nsAirports);
     var cities = client.collections.use(nsCities);

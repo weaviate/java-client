@@ -12,6 +12,7 @@ import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.CollectionConfig;
 import io.weaviate.client6.v1.api.collections.InvertedIndex;
 import io.weaviate.client6.v1.api.collections.Property;
+import io.weaviate.client6.v1.api.collections.ReferenceProperty;
 import io.weaviate.client6.v1.api.collections.Replication;
 import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.api.collections.Vectorizers;
@@ -59,7 +60,7 @@ public class CollectionsITest extends ConcurrentTest {
     // Act: Create Things collection with owner -> owners
     var nsThings = ns("Things");
     client.collections.create(nsThings,
-        col -> col.references(Property.reference("ownedBy", nsOwners)));
+        col -> col.references(ReferenceProperty.to("ownedBy", nsOwners)));
     var things = client.collections.use(nsThings);
 
     // Assert: Things --ownedBy-> Owners

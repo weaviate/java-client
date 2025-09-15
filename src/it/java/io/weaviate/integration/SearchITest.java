@@ -20,6 +20,7 @@ import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateApiException;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.Property;
+import io.weaviate.client6.v1.api.collections.ReferenceProperty;
 import io.weaviate.client6.v1.api.collections.Vectorizers;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateMetadata;
@@ -180,7 +181,7 @@ public class SearchITest extends ConcurrentTest {
     client.collections.create(nsSongs,
         col -> col
             .properties(Property.text("title"))
-            .references(Property.reference("performedBy", nsArtists))
+            .references(ReferenceProperty.to("performedBy", nsArtists))
             .vectors(vectorizer));
 
     var songs = client.collections.use(nsSongs);

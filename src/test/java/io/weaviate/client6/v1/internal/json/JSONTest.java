@@ -18,6 +18,7 @@ import io.weaviate.client6.v1.api.collections.CollectionConfig;
 import io.weaviate.client6.v1.api.collections.Generative;
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.Property;
+import io.weaviate.client6.v1.api.collections.ReferenceProperty;
 import io.weaviate.client6.v1.api.collections.Reranker;
 import io.weaviate.client6.v1.api.collections.Tokenization;
 import io.weaviate.client6.v1.api.collections.Vectorizer;
@@ -228,7 +229,7 @@ public class JSONTest {
                     Property.text("custom_id", p -> p.tokenization(Tokenization.WORD)),
                     Property.integer("size"))
                 .references(
-                    Property.reference("owner", "Person", "Company"))
+                    ReferenceProperty.to("owner", "Person", "Company"))
                 .vectors(
                     Vectorizers.img2vecNeural("v-shape",
                         i2v -> i2v.imageFields("img")))),
