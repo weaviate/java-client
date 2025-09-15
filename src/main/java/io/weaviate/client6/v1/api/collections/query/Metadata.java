@@ -82,12 +82,13 @@ public interface Metadata {
 
     public void appendTo(WeaviateProtoSearchGet.MetadataRequest.Builder metadata) {
       switch (this) {
-        case ALL: // fallthrough to add all
+        case ALL:
           for (final var f : MetadataField.values()) {
             if (f != ALL) {
               f.appendTo(metadata);
             }
           }
+          break;
         case UUID:
           metadata.setUuid(true);
           break;
