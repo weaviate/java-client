@@ -52,7 +52,7 @@ public record CollectionConfig(
         .description(description)
         .properties(properties)
         .references(references)
-        .vectors(vectors)
+        .vectorConfig(vectors)
         .multiTenancy(multiTenancy)
         .sharding(sharding)
         .replication(replication)
@@ -131,13 +131,13 @@ public record CollectionConfig(
       return this.references.values().stream().toList();
     }
 
-    public final Builder vectors(Map<String, Vectorizer> vectors) {
+    public final Builder vectorConfig(Map<String, Vectorizer> vectors) {
       this.vectors.putAll(vectors);
       return this;
     }
 
     @SafeVarargs
-    public final Builder vectors(Map.Entry<String, Vectorizer>... vectors) {
+    public final Builder vectorConfig(Map.Entry<String, Vectorizer>... vectors) {
       this.vectors.putAll(Map.ofEntries(vectors));
       return this;
     }
