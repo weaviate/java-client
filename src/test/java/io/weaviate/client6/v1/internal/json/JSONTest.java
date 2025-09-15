@@ -18,6 +18,7 @@ import io.weaviate.client6.v1.api.collections.CollectionConfig;
 import io.weaviate.client6.v1.api.collections.Generative;
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.Property;
+import io.weaviate.client6.v1.api.collections.Quantization;
 import io.weaviate.client6.v1.api.collections.ReferenceProperty;
 import io.weaviate.client6.v1.api.collections.Reranker;
 import io.weaviate.client6.v1.api.collections.Tokenization;
@@ -143,6 +144,40 @@ public class JSONTest {
                   "vectorIndexType": "flat",
                   "vectorizer": {"none": {}},
                   "vectorIndexConfig": {"vectorCacheMaxObjects": 100}
+                }
+                """,
+        },
+        {
+            VectorConfig.class,
+            SelfProvidedVectorizer.of(none -> none
+                .quantization(Quantization.bq(bq -> bq
+                    .rescoreLimit(10)
+                    .cache(true)))),
+            """
+                {
+                  "vectorIndexType": "hnsw",
+                  "vectorizer": {"none": {}},
+                  "vectorIndexConfig": {
+                    "bq": {
+                      "enabled": true,
+                      "rescore_limit": 10,
+                      "cache": true
+                    }
+                  }
+                }
+                """,
+        },
+        {
+            VectorConfig.class,
+            SelfProvidedVectorizer.of(none -> none
+                .quantization(Quantization.uncompressed())),
+            """
+                {
+                  "vectorIndexType": "hnsw",
+                  "vectorizer": {"none": {}},
+                  "vectorIndexConfig": {
+                    "skipDefaultQuantization": true
+                  }
                 }
                 """,
         },
