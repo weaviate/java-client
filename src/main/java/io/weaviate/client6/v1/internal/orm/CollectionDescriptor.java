@@ -21,6 +21,12 @@ public sealed interface CollectionDescriptor<PropertiesT> permits MapDescriptor,
     return ObjectBuilder.identity();
   }
 
+  // default Function<CollectionConfig.Builder, ObjectBuilder<CollectionConfig>>
+  // partial(
+  // Function<CollectionConfig.Builder, ObjectBuilder<CollectionConfig>> fn) {
+  // return configFn().andThen(b -> fn.apply((CollectionConfig.Builder) b));
+  // }
+
   static CollectionDescriptor<Map<String, Object>> ofMap(String collectionName) {
     return new MapDescriptor(collectionName);
   }

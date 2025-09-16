@@ -28,8 +28,9 @@ public interface ObjectBuilder<T> {
    * @param partialFn Function that will be applied first.
    * @return ObjectBuilder with "pre-applied" function.
    */
+  @SuppressWarnings("unchecked")
   static <B extends ObjectBuilder<T>, T> Function<B, ObjectBuilder<T>> partial(Function<B, ObjectBuilder<T>> fn,
-      Function<B, B> partialFn) {
-    return partialFn.andThen(fn);
+      Function<B, ObjectBuilder<T>> partialFn) {
+    return partialFn.andThen(b -> fn.apply((B) b));
   }
 }
