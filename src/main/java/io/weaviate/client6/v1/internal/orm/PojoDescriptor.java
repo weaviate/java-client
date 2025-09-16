@@ -97,7 +97,7 @@ final class PojoDescriptor<T extends Record> implements CollectionDescriptor<T> 
   }
 
   @Override
-  public String name() {
+  public String collectionName() {
     var annotation = cls.getAnnotation(Collection.class);
     if (annotation != null) {
       return annotation.value();

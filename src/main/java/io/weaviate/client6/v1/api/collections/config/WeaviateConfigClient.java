@@ -43,11 +43,11 @@ public class WeaviateConfigClient {
   }
 
   public Optional<CollectionConfig> get() throws IOException {
-    return collectionsClient.getConfig(collection.name());
+    return collectionsClient.getConfig(collection.collectionName());
   }
 
   public void addProperty(Property property) throws IOException {
-    this.restTransport.performRequest(new AddPropertyRequest(collection.name(), property),
+    this.restTransport.performRequest(new AddPropertyRequest(collection.collectionName(), property),
         AddPropertyRequest._ENDPOINT);
   }
 
@@ -73,7 +73,7 @@ public class WeaviateConfigClient {
   public List<Shard> updateShards(ShardStatus status, List<String> shards) throws IOException {
     for (var shard : shards) {
       this.restTransport.performRequest(
-          new UpdateShardStatusRequest(collection.name(), shard, status),
+          new UpdateShardStatusRequest(collection.collectionName(), shard, status),
           UpdateShardStatusRequest._ENDPOINT);
     }
     return getShards();

@@ -15,7 +15,8 @@ public record ReferenceReplaceRequest(String fromUuid, String fromProperty, Refe
       CollectionHandleDefaults defaults) {
     return SimpleEndpoint.sideEffect(
         request -> "PUT",
-        request -> "/objects/" + descriptor.name() + "/" + request.fromUuid + "/references/" + request.fromProperty,
+        request -> "/objects/" + descriptor.collectionName() + "/" + request.fromUuid + "/references/"
+            + request.fromProperty,
         request -> defaults.queryParameters(),
         request -> JSON.serialize(List.of(request.reference)));
   }

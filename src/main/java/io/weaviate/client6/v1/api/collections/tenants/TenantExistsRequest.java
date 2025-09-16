@@ -10,7 +10,7 @@ public record TenantExistsRequest(String tenant) {
   static Endpoint<TenantExistsRequest, Boolean> endpoint(CollectionDescriptor<?> collection) {
     return new BooleanEndpoint<>(
         __ -> "GET",
-        request -> "/schema/" + collection.name() + "/tenants/" + request.tenant,
+        request -> "/schema/" + collection.collectionName() + "/tenants/" + request.tenant,
         __ -> Collections.emptyMap(),
         __ -> null);
   }

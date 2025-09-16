@@ -21,7 +21,7 @@ public record DeleteManyRequest(Where where, Boolean verbose, Boolean dryRun) {
     return Rpc.of(
         request -> {
           var message = WeaviateProtoBatchDelete.BatchDeleteRequest.newBuilder();
-          message.setCollection(collection.name());
+          message.setCollection(collection.collectionName());
 
           if (request.verbose != null) {
             message.setVerbose(request.verbose);

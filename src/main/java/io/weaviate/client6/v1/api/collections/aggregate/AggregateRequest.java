@@ -20,10 +20,10 @@ public record AggregateRequest(Aggregation aggregation, GroupBy groupBy) {
     return Rpc.of(
         request -> {
           var message = WeaviateProtoAggregate.AggregateRequest.newBuilder();
-          message.setCollection(collection.name());
+          message.setCollection(collection.collectionName());
           request.aggregation.appendTo(message);
           if (request.groupBy != null) {
-            request.groupBy.appendTo(message, collection.name());
+            request.groupBy.appendTo(message, collection.collectionName());
           }
           if (defaults.tenant() != null) {
             message.setTenant(defaults.tenant());

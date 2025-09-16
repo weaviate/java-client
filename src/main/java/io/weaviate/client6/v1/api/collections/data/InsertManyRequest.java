@@ -94,7 +94,7 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
       WeaviateObject<T, Reference, ObjectMetadata> insert,
       CollectionDescriptor<T> collection,
       CollectionHandleDefaults defaults) {
-    object.setCollection(collection.name());
+    object.setCollection(collection.collectionName());
 
     var metadata = insert.metadata();
     if (metadata != null) {

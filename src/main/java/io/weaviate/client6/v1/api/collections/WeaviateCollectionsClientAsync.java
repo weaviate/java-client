@@ -100,7 +100,7 @@ public class WeaviateCollectionsClientAsync {
    */
   public <PropertiesT extends Record> CompletableFuture<CollectionConfig> create(Class<PropertiesT> cls) {
     var collection = CollectionDescriptor.ofClass(cls);
-    return create(CollectionConfig.of(collection.name(), collection.configFn()));
+    return create(CollectionConfig.of(collection.collectionName(), collection.configFn()));
   }
 
   /**
@@ -117,7 +117,7 @@ public class WeaviateCollectionsClientAsync {
       Function<CollectionConfig.Builder, ObjectBuilder<CollectionConfig>> fn) {
     var collection = CollectionDescriptor.ofClass(cls);
     var configFn = ObjectBuilder.partial(fn, collection.configFn());
-    return create(CollectionConfig.of(collection.name(), configFn));
+    return create(CollectionConfig.of(collection.collectionName(), configFn));
   }
 
   /**
