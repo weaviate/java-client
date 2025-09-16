@@ -491,7 +491,7 @@ public class SearchITest extends ConcurrentTest {
     client.collections.create(nsThings,
         c -> c
             .properties(Property.text("name"))
-            .vectors(Vectorizers.text2vecContextionary(
+            .vectorConfig(VectorConfig.text2vecContextionary(
                 t2v -> t2v.sourceProperties("name"))));
 
     var things = client.collections.use(nsThings);
