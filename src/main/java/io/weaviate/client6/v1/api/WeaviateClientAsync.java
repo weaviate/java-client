@@ -45,7 +45,7 @@ public class WeaviateClientAsync implements AutoCloseable {
       try (final var noAuthRest = new DefaultRestTransport(config.restTransportOptions())) {
         tokenProvider = config.authentication().getTokenProvider(noAuthRest);
       } catch (Exception e) {
-        // Generally IOExceptions are caught in TokenProvider internals.
+        // Generally exceptions are caught in TokenProvider internals.
         // This one may be thrown when noAuthRest transport is auto-closed.
         throw new WeaviateOAuthException(e);
       }
@@ -53,9 +53,30 @@ public class WeaviateClientAsync implements AutoCloseable {
       grpcOpt = config.grpcTransportOptions(tokenProvider);
     }
 
-    this.restTransport = new DefaultRestTransport(restOpt);
-    this.grpcTransport = new DefaultGrpcTransport(grpcOpt);
+    // Initialize REST transport to a temporary variable to dispose of
+    // the associated resources in case we have to throw an exception.
+    // Assign to this.restTransport only once we're in the clear to
+    // avoid publishing the object before it's fully initialized.
+    var _restTransport = new DefaultRestTransport(restOpt);
+    boolean isLive = false;
+    try {
+      isLive = _restTransport.performRequest(null, IsLiveRequest._ENDPOINT);
+    } catch (IOException e) {
+      throw new WeaviateConnectException(e);
+    }
 
+    if (!isLive) {
+      var ex = new WeaviateConnectException("Weaviate not available at " + restOpt.baseUrl());
+      try {
+        _restTransport.close();
+      } catch (Exception e) {
+        ex.addSuppressed(e);
+      }
+      throw ex;
+    }
+
+    this.restTransport = _restTransport;
+    this.grpcTransport = new DefaultGrpcTransport(grpcOpt);
     this.alias = new WeaviateAliasClientAsync(restTransport);
     this.collections = new WeaviateCollectionsClientAsync(restTransport, grpcTransport);
   }
@@ -67,8 +88,8 @@ public class WeaviateClientAsync implements AutoCloseable {
    * This call is blocking if {@link Authentication} configured,
    * as the client will need to do the initial token exchange.
    */
-  public static WeaviateClientAsync local() {
-    return local(ObjectBuilder.identity());
+  public static WeaviateClientAsync connectToLocal() {
+    return connectToLocal(ObjectBuilder.identity());
   }
 
   /**
@@ -78,7 +99,7 @@ public class WeaviateClientAsync implements AutoCloseable {
    * This call is blocking if {@link Authentication} configured,
    * as the client will need to do the initial token exchange.
    */
-  public static WeaviateClientAsync local(Function<Config.Local, ObjectBuilder<Config>> fn) {
+  public static WeaviateClientAsync connectToLocal(Function<Config.Local, ObjectBuilder<Config>> fn) {
     return new WeaviateClientAsync(fn.apply(new Config.Local()).build());
   }
 
@@ -89,8 +110,8 @@ public class WeaviateClientAsync implements AutoCloseable {
    * This call is blocking if {@link Authentication} configured,
    * as the client will need to do the initial token exchange.
    */
-  public static WeaviateClientAsync wcd(String httpHost, String apiKey) {
-    return wcd(httpHost, apiKey, ObjectBuilder.identity());
+  public static WeaviateClientAsync connectToWeaviateCloud(String httpHost, String apiKey) {
+    return connectToWeaviateCloud(httpHost, apiKey, ObjectBuilder.identity());
   }
 
   /**
@@ -100,7 +121,7 @@ public class WeaviateClientAsync implements AutoCloseable {
    * This call is blocking if {@link Authentication} configured,
    * as the client will need to do the initial token exchange.
    */
-  public static WeaviateClientAsync wcd(String httpHost, String apiKey,
+  public static WeaviateClientAsync connectToWeaviateCloud(String httpHost, String apiKey,
       Function<Config.WeaviateCloud, ObjectBuilder<Config>> fn) {
     var config = new Config.WeaviateCloud(httpHost, Authentication.apiKey(apiKey));
     return new WeaviateClientAsync(fn.apply(config).build());
@@ -113,7 +134,7 @@ public class WeaviateClientAsync implements AutoCloseable {
    * This call is blocking if {@link Authentication} configured,
    * as the client will need to do the initial token exchange.
    */
-  public static WeaviateClientAsync custom(Function<Config.Custom, ObjectBuilder<Config>> fn) {
+  public static WeaviateClientAsync connectToCustom(Function<Config.Custom, ObjectBuilder<Config>> fn) {
     return new WeaviateClientAsync(Config.of(fn));
   }
 

@@ -1,9 +1,9 @@
 package io.weaviate.client6.v1.api;
 
 /**
- * Exception class thrown by client API message when the request's reached the
- * server, but the operation did not complete successfully either either due to
- * a bad request or a server error.
+ * Exception class thrown by client when the request had reached the
+ * server, but the operation did not complete successfully either
+ * due to a bad request or a server error.
  */
 public class WeaviateApiException extends WeaviateException {
   private final String errorMessage;

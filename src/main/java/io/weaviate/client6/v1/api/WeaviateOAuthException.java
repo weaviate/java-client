@@ -1,9 +1,8 @@
 package io.weaviate.client6.v1.api;
 
 /**
- * Exception class thrown by client API message when the request's reached the
- * server, but the operation did not complete successfully either either due to
- * a bad request or a server error.
+ * Exception throws by the authentication layer if it encountered another
+ * exception at any point of obtaining the new token or rotating one.
  */
 public class WeaviateOAuthException extends WeaviateException {
   public WeaviateOAuthException(String message) {
