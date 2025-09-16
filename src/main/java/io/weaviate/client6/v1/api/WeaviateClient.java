@@ -56,8 +56,10 @@ public class WeaviateClient implements AutoCloseable {
     // avoid publishing the object before it's fully initialized.
     var _restTransport = new DefaultRestTransport(restOpt);
     boolean isLive = false;
+    InstanceMetadata meta = null;
     try {
       isLive = _restTransport.performRequest(null, IsLiveRequest._ENDPOINT);
+      meta = _restTransport.performRequest(null, InstanceMetadataRequest._ENDPOINT);
     } catch (IOException e) {
       throw new WeaviateConnectException(e);
     }
@@ -70,6 +72,10 @@ public class WeaviateClient implements AutoCloseable {
         ex.addSuppressed(e);
       }
       throw ex;
+    }
+
+    if (meta.grpcMaxMessageSize() != null) {
+      grpcOpt = grpcOpt.withMaxMessageSize(meta.grpcMaxMessageSize());
     }
 
     this.restTransport = _restTransport;

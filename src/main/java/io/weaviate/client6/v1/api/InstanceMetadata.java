@@ -8,5 +8,5 @@ public record InstanceMetadata(
     @SerializedName("hostname") String hostName,
     @SerializedName("version") String version,
     @SerializedName("modules") Map<String, Object> modules,
-    @SerializedName("grpcMaxMessageSize") Long grpcMaxMessageSize) {
+    @SerializedName("grpcMaxMessageSize") Integer grpcMaxMessageSize) {
 }
