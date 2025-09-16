@@ -78,7 +78,7 @@ public class Weaviate extends WeaviateContainer {
             .grpcHost(host)
             .httpPort(getMappedPort(8080))
             .grpcPort(getMappedPort(50051)));
-    return WeaviateClient.custom(customFn);
+    return WeaviateClient.connectToCustom(customFn);
   }
 
   public static Weaviate createDefault() {

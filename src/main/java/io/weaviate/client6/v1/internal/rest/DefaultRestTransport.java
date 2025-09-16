@@ -28,6 +28,7 @@ import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 import org.apache.hc.core5.io.CloseMode;
 
 import io.weaviate.client6.v1.api.WeaviateApiException;
+import io.weaviate.client6.v1.api.WeaviateTransportException;
 
 public class DefaultRestTransport implements RestTransport {
   private final CloseableHttpClient httpClient;
@@ -53,8 +54,7 @@ public class DefaultRestTransport implements RestTransport {
         sslCtx.init(null, transportOptions.trustManagerFactory().getTrustManagers(), null);
         tlsStrategy = new DefaultClientTlsStrategy(sslCtx);
       } catch (NoSuchAlgorithmException | KeyManagementException e) {
-        // todo: throw WeaviateConnectionException
-        throw new RuntimeException("connect to Weaviate", e);
+        throw new WeaviateTransportException("init custom SSL context", e);
       }
 
       PoolingHttpClientConnectionManager syncManager = PoolingHttpClientConnectionManagerBuilder.create()
@@ -96,7 +96,6 @@ public class DefaultRestTransport implements RestTransport {
     var method = endpoint.method(request);
     var uri = endpoint.requestUrl(transportOptions, request);
 
-    // TODO: apply options;
     var req = ClassicRequestBuilder.create(method).setUri(uri);
     var body = endpoint.body(request);
     if (body != null) {
@@ -180,8 +179,7 @@ public class DefaultRestTransport implements RestTransport {
       return (ResponseT) ((Boolean) bool.getResult(statusCode));
     }
 
-    // TODO: make it a WeaviateTransportException
-    throw new RuntimeException("Unhandled endpoint type " + endpoint.getClass().getSimpleName());
+    throw new WeaviateTransportException("Unhandled endpoint type " + endpoint.getClass().getSimpleName());
   }
 
   @Override
