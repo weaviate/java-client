@@ -111,7 +111,7 @@ public class Paginator<PropertiesT> implements Iterable<WeaviateObject<Propertie
       return applyQueryOption(q -> q.returnMetadata(metadata));
     }
 
-    private final Builder<T> applyQueryOption(Function<FetchObjects.Builder, FetchObjects.Builder> options) {
+    private final Builder<T> applyQueryOption(Function<FetchObjects.Builder, ObjectBuilder<FetchObjects>> options) {
       this.queryOptions = ObjectBuilder.partial(this.queryOptions, options);
       return this;
     }

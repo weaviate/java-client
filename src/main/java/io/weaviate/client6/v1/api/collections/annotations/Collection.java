@@ -8,7 +8,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Collection {
+  /** The name of the collection mapped by this class. */
   String value();
 
+  /** Collection description to add on creation. */
   String description() default "";
 }
