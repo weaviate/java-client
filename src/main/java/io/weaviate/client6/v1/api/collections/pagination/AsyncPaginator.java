@@ -154,7 +154,8 @@ public class AsyncPaginator<PropertiesT> {
       return applyQueryOption(q -> q.returnMetadata(metadata));
     }
 
-    private final Builder<PropertiesT> applyQueryOption(Function<FetchObjects.Builder, FetchObjects.Builder> options) {
+    private final Builder<PropertiesT> applyQueryOption(
+        Function<FetchObjects.Builder, ObjectBuilder<FetchObjects>> options) {
       this.queryOptions = ObjectBuilder.partial(this.queryOptions, options);
       return this;
     }
