@@ -126,7 +126,12 @@ final class PojoDescriptor<T extends Record> implements CollectionDescriptor<T> 
   }
 
   private ObjectBuilder<CollectionConfig> inspectClass(CollectionConfig.Builder b) {
-    // Add properties;
+    var annotation = cls.getAnnotation(Collection.class);
+    if (annotation != null) {
+      b.description(annotation.description());
+    }
+
+    // Add properties
     for (var field : cls.getDeclaredFields()) {
       var propertyName = propertyName(field);
       Function<String, Property> ctor;
