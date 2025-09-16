@@ -15,7 +15,7 @@ public record GetTenantsRequest(List<String> tenants) {
     return Rpc.of(
         request -> {
           var message = WeaviateProtoTenants.TenantsGetRequest.newBuilder()
-              .setCollection(collection.name());
+              .setCollection(collection.collectionName());
 
           if (!request.tenants.isEmpty()) {
             message.setNames(TenantNames.newBuilder()

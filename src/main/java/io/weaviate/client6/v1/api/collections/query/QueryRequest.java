@@ -34,7 +34,7 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
           message.setUses127Api(true);
           message.setUses125Api(true);
           message.setUses123Api(true);
-          message.setCollection(collection.name());
+          message.setCollection(collection.collectionName());
           request.operator.appendTo(message);
 
           if (defaults.tenant() != null) {
@@ -121,7 +121,8 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
     if (metadataResult.getExplainScorePresent()) {
       metadata.explainScore(metadataResult.getExplainScore());
     }
-    return new WeaviateObject<>(collection.name(), object.properties(), object.references(), metadata.build());
+    return new WeaviateObject<>(collection.collectionName(), object.properties(), object.references(),
+        metadata.build());
   }
 
   private static <T> WeaviateObject<T, Object, ObjectMetadata> unmarshalWithReferences(
@@ -198,7 +199,7 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
     }
 
     var obj = new WeaviateObject.Builder<T, Object, ObjectMetadata>()
-        .collection(descriptor.name())
+        .collection(descriptor.collectionName())
         .properties(properties.build())
         .references(referenceProperties)
         .metadata(metadata);

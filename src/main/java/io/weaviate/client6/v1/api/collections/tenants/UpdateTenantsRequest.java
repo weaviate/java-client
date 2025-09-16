@@ -12,7 +12,7 @@ public record UpdateTenantsRequest(List<Tenant> tenants) {
   static Endpoint<UpdateTenantsRequest, Void> endpoint(CollectionDescriptor<?> collection) {
     return SimpleEndpoint.sideEffect(
         __ -> "PUT",
-        __ -> "/schema/" + collection.name() + "/tenants",
+        __ -> "/schema/" + collection.collectionName() + "/tenants",
         __ -> Collections.emptyMap(),
         request -> JSON.serialize(request.tenants));
   }

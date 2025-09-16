@@ -9,7 +9,7 @@ import io.weaviate.client6.v1.api.collections.CollectionConfig;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public sealed interface CollectionDescriptor<PropertiesT> permits MapDescriptor, PojoDescriptor {
-  String name();
+  String collectionName();
 
   TypeToken<PropertiesT> typeToken();
 
@@ -20,12 +20,6 @@ public sealed interface CollectionDescriptor<PropertiesT> permits MapDescriptor,
   default Function<CollectionConfig.Builder, ObjectBuilder<CollectionConfig>> configFn() {
     return ObjectBuilder.identity();
   }
-
-  // default Function<CollectionConfig.Builder, ObjectBuilder<CollectionConfig>>
-  // partial(
-  // Function<CollectionConfig.Builder, ObjectBuilder<CollectionConfig>> fn) {
-  // return configFn().andThen(b -> fn.apply((CollectionConfig.Builder) b));
-  // }
 
   static CollectionDescriptor<Map<String, Object>> ofMap(String collectionName) {
     return new MapDescriptor(collectionName);

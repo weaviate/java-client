@@ -13,7 +13,8 @@ public record ReferenceDeleteRequest(String fromUuid, String fromProperty, Refer
       CollectionHandleDefaults defaults) {
     return SimpleEndpoint.sideEffect(
         request -> "DELETE",
-        request -> "/objects/" + descriptor.name() + "/" + request.fromUuid + "/references/" + request.fromProperty,
+        request -> "/objects/" + descriptor.collectionName() + "/" + request.fromUuid + "/references/"
+            + request.fromProperty,
         request -> defaults.queryParameters(),
         request -> JSON.serialize(request.reference));
   }
