@@ -27,7 +27,7 @@ public record CollectionConfig(
     @SerializedName("description") String description,
     @SerializedName("properties") List<Property> properties,
     List<ReferenceProperty> references,
-    @SerializedName("vectorConfig") Map<String, Vectorizer> vectors,
+    @SerializedName("vectorConfig") Map<String, VectorConfig> vectors,
     @SerializedName("multiTenancyConfig") MultiTenancy multiTenancy,
     @SerializedName("shardingConfig") Sharding sharding,
     @SerializedName("replicationConfig") Replication replication,
@@ -52,7 +52,7 @@ public record CollectionConfig(
         .description(description)
         .properties(properties)
         .references(references)
-        .vectors(vectors)
+        .vectorConfig(vectors)
         .multiTenancy(multiTenancy)
         .sharding(sharding)
         .replication(replication)
@@ -88,7 +88,7 @@ public record CollectionConfig(
     private String description;
     private Map<String, Property> properties = new HashMap<>();
     private Map<String, ReferenceProperty> references = new HashMap<>();
-    private Map<String, Vectorizer> vectors = new HashMap<>();
+    private Map<String, VectorConfig> vectors = new HashMap<>();
     private MultiTenancy multiTenancy;
     private Sharding sharding;
     private Replication replication;
@@ -131,29 +131,15 @@ public record CollectionConfig(
       return this.references.values().stream().toList();
     }
 
-    public final Builder vectors(Map<String, Vectorizer> vectors) {
+    public final Builder vectorConfig(Map<String, VectorConfig> vectors) {
       this.vectors.putAll(vectors);
       return this;
     }
 
     @SafeVarargs
-    public final Builder vectors(Map.Entry<String, Vectorizer>... vectors) {
+    public final Builder vectorConfig(Map.Entry<String, VectorConfig>... vectors) {
       this.vectors.putAll(Map.ofEntries(vectors));
       return this;
-    }
-
-    public static class VectorsBuilder implements ObjectBuilder<Map<String, VectorIndex>> {
-      private Map<String, VectorIndex> vectors = new HashMap<>();
-
-      public VectorsBuilder vector(String name, VectorIndex vector) {
-        vectors.put(name, vector);
-        return this;
-      }
-
-      @Override
-      public Map<String, VectorIndex> build() {
-        return this.vectors;
-      }
     }
 
     public Builder sharding(Sharding sharding) {

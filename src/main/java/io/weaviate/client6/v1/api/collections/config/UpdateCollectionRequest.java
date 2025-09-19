@@ -8,9 +8,10 @@ import java.util.function.Function;
 import io.weaviate.client6.v1.api.collections.CollectionConfig;
 import io.weaviate.client6.v1.api.collections.Generative;
 import io.weaviate.client6.v1.api.collections.InvertedIndex;
+import io.weaviate.client6.v1.api.collections.MultiTenancy;
 import io.weaviate.client6.v1.api.collections.Replication;
 import io.weaviate.client6.v1.api.collections.Reranker;
-import io.weaviate.client6.v1.api.collections.Vectorizer;
+import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.json.JSON;
 import io.weaviate.client6.v1.internal.rest.Endpoint;
@@ -95,14 +96,24 @@ public record UpdateCollectionRequest(CollectionConfig collection) {
       return this;
     }
 
-    public final Builder vectors(Map<String, Vectorizer> vectors) {
-      this.newCollection.vectors(vectors);
+    public final Builder vectorConfig(Map<String, VectorConfig> vectors) {
+      this.newCollection.vectorConfig(vectors);
       return this;
     }
 
     @SafeVarargs
-    public final Builder vectors(Map.Entry<String, Vectorizer>... vectors) {
-      this.newCollection.vectors(vectors);
+    public final Builder vectorConfig(Map.Entry<String, VectorConfig>... vectors) {
+      this.newCollection.vectorConfig(vectors);
+      return this;
+    }
+
+    public Builder multiTenancy(MultiTenancy multiTenancy) {
+      this.newCollection.multiTenancy(multiTenancy);
+      return this;
+    }
+
+    public Builder multiTenancy(Function<MultiTenancy.Builder, ObjectBuilder<MultiTenancy>> fn) {
+      this.newCollection.multiTenancy(fn);
       return this;
     }
 

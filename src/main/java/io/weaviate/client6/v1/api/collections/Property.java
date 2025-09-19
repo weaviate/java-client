@@ -1,6 +1,5 @@
 package io.weaviate.client6.v1.api.collections;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -270,14 +269,6 @@ public record Property(
 
   private static Property newProperty(String name, String dataType, Function<Builder, ObjectBuilder<Property>> fn) {
     return fn.apply(new Builder(name, dataType)).build();
-  }
-
-  public static ReferenceProperty reference(String name, String... collections) {
-    return new ReferenceProperty(name, Arrays.asList(collections));
-  }
-
-  public static ReferenceProperty reference(String name, List<String> collections) {
-    return new ReferenceProperty(name, collections);
   }
 
   /**

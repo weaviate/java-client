@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record MultiTenancy(
-    @SerializedName("enabled") Boolean enabled,
+    @SerializedName("enabled") boolean enabled,
     @SerializedName("autoTenantCreation") Boolean createAutomatically,
     @SerializedName("autoTenantActivation") Boolean activateAutomatically) {
 
@@ -23,7 +23,7 @@ public record MultiTenancy(
   }
 
   public static class Builder implements ObjectBuilder<MultiTenancy> {
-    private Boolean enabled = true;
+    private boolean enabled = true;
     private Boolean createAutomatically;
     private Boolean activateAutomatically;
 

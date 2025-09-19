@@ -18,10 +18,11 @@ import io.weaviate.client6.v1.api.collections.CollectionConfig;
 import io.weaviate.client6.v1.api.collections.Generative;
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.Property;
+import io.weaviate.client6.v1.api.collections.Quantization;
+import io.weaviate.client6.v1.api.collections.ReferenceProperty;
 import io.weaviate.client6.v1.api.collections.Reranker;
 import io.weaviate.client6.v1.api.collections.Tokenization;
-import io.weaviate.client6.v1.api.collections.Vectorizer;
-import io.weaviate.client6.v1.api.collections.Vectorizers;
+import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.BatchReference;
@@ -44,7 +45,7 @@ public class JSONTest {
     return new Object[][] {
         // Vectorizer.CustomTypeAdapterFactory
         {
-            Vectorizer.class,
+            VectorConfig.class,
             SelfProvidedVectorizer.of(),
             """
                 {
@@ -55,7 +56,7 @@ public class JSONTest {
                   """,
         },
         {
-            Vectorizer.class,
+            VectorConfig.class,
             Img2VecNeuralVectorizer.of(i2v -> i2v.imageFields("jpeg", "png")),
             """
                 {
@@ -70,7 +71,7 @@ public class JSONTest {
                     """,
         },
         {
-            Vectorizer.class,
+            VectorConfig.class,
             Multi2VecClipVectorizer.of(m2v -> m2v
                 .inferenceUrl("http://example.com")
                 .imageField("img", 1f)
@@ -94,7 +95,7 @@ public class JSONTest {
                     """,
         },
         {
-            Vectorizer.class,
+            VectorConfig.class,
             Text2VecContextionaryVectorizer.of(),
             """
                 {
@@ -110,7 +111,7 @@ public class JSONTest {
                     """,
         },
         {
-            Vectorizer.class,
+            VectorConfig.class,
             Text2VecWeaviateVectorizer.of(t2v -> t2v
                 .inferenceUrl("http://example.com")
                 .dimensions(4)
@@ -134,7 +135,7 @@ public class JSONTest {
 
         // VectorIndex.CustomTypeAdapterFactory
         {
-            Vectorizer.class,
+            VectorConfig.class,
             SelfProvidedVectorizer.of(none -> none
                 .vectorIndex(Flat.of(flat -> flat
                     .vectorCacheMaxObjects(100)))),
@@ -147,7 +148,41 @@ public class JSONTest {
                 """,
         },
         {
-            Vectorizer.class,
+            VectorConfig.class,
+            SelfProvidedVectorizer.of(none -> none
+                .quantization(Quantization.bq(bq -> bq
+                    .rescoreLimit(10)
+                    .cache(true)))),
+            """
+                {
+                  "vectorIndexType": "hnsw",
+                  "vectorizer": {"none": {}},
+                  "vectorIndexConfig": {
+                    "bq": {
+                      "enabled": true,
+                      "rescore_limit": 10,
+                      "cache": true
+                    }
+                  }
+                }
+                """,
+        },
+        {
+            VectorConfig.class,
+            SelfProvidedVectorizer.of(none -> none
+                .quantization(Quantization.uncompressed())),
+            """
+                {
+                  "vectorIndexType": "hnsw",
+                  "vectorizer": {"none": {}},
+                  "vectorIndexConfig": {
+                    "skipDefaultQuantization": true
+                  }
+                }
+                """,
+        },
+        {
+            VectorConfig.class,
             SelfProvidedVectorizer.of(none -> none
                 .vectorIndex(Hnsw.of(hnsw -> hnsw
                     .distance(Distance.DOT)
@@ -228,9 +263,9 @@ public class JSONTest {
                     Property.text("custom_id", p -> p.tokenization(Tokenization.WORD)),
                     Property.integer("size"))
                 .references(
-                    Property.reference("owner", "Person", "Company"))
-                .vectors(
-                    Vectorizers.img2vecNeural("v-shape",
+                    ReferenceProperty.to("owner", "Person", "Company"))
+                .vectorConfig(
+                    VectorConfig.img2vecNeural("v-shape",
                         i2v -> i2v.imageFields("img")))),
             """
                 {

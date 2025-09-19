@@ -8,8 +8,9 @@ import java.util.function.Function;
 
 import com.google.gson.annotations.SerializedName;
 
+import io.weaviate.client6.v1.api.collections.Quantization;
+import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
-import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Text2VecContextionaryVectorizer(
@@ -25,11 +26,13 @@ public record Text2VecContextionaryVectorizer(
     /** Properties included in the embedding. */
     @SerializedName("sourceProperties") List<String> sourceProperties,
     /** Vector index configuration. */
-    VectorIndex vectorIndex) implements Vectorizer {
+    VectorIndex vectorIndex,
+    /** Vector quantization method. */
+    Quantization quantization) implements VectorConfig {
 
   @Override
-  public Vectorizer.Kind _kind() {
-    return Vectorizer.Kind.TEXT2VEC_CONTEXTIONARY;
+  public VectorConfig.Kind _kind() {
+    return VectorConfig.Kind.TEXT2VEC_CONTEXTIONARY;
   }
 
   @Override
@@ -50,18 +53,20 @@ public record Text2VecContextionaryVectorizer(
    * Canonical constructor always sets {@link #vectorizeCollectionName} to false.
    */
   public Text2VecContextionaryVectorizer(boolean vectorizeCollectionName, List<String> sourceProperties,
-      VectorIndex vectorIndex) {
+      VectorIndex vectorIndex, Quantization quantization) {
     this.vectorizeCollectionName = false;
-    this.vectorIndex = vectorIndex;
     this.sourceProperties = Collections.emptyList();
+    this.vectorIndex = vectorIndex;
+    this.quantization = quantization;
   }
 
   public Text2VecContextionaryVectorizer(Builder builder) {
-    this(builder.vectorizeCollectionName, builder.sourceProperties, builder.vectorIndex);
+    this(builder.vectorizeCollectionName, builder.sourceProperties, builder.vectorIndex, builder.quantization);
   }
 
   public static class Builder implements ObjectBuilder<Text2VecContextionaryVectorizer> {
     private final boolean vectorizeCollectionName = false;
+    private Quantization quantization;
 
     private List<String> sourceProperties = new ArrayList<>();
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
@@ -86,6 +91,11 @@ public record Text2VecContextionaryVectorizer(
      */
     public Builder vectorIndex(VectorIndex vectorIndex) {
       this.vectorIndex = vectorIndex;
+      return this;
+    }
+
+    public Builder quantization(Quantization quantization) {
+      this.quantization = quantization;
       return this;
     }
 

@@ -20,7 +20,8 @@ import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateApiException;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.Property;
-import io.weaviate.client6.v1.api.collections.Vectorizers;
+import io.weaviate.client6.v1.api.collections.ReferenceProperty;
+import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateMetadata;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
@@ -133,7 +134,7 @@ public class SearchITest extends ConcurrentTest {
   private static void createTestCollection() throws IOException {
     client.collections.create(COLLECTION, cfg -> cfg
         .properties(Property.text("category"))
-        .vectors(Vectorizers.selfProvided(VECTOR_INDEX)));
+        .vectorConfig(VectorConfig.selfProvided(VECTOR_INDEX)));
   }
 
   @Test
@@ -142,7 +143,7 @@ public class SearchITest extends ConcurrentTest {
     client.collections.create(nsSongs,
         col -> col
             .properties(Property.text("title"))
-            .vectors(Vectorizers.text2vecContextionary()));
+            .vectorConfig(VectorConfig.text2vecContextionary()));
 
     var songs = client.collections.use(nsSongs);
     var submarine = songs.data.insert(Map.of("title", "Yellow Submarine"));
@@ -164,13 +165,13 @@ public class SearchITest extends ConcurrentTest {
 
   @Test
   public void testNearText_groupBy() throws IOException {
-    var vectorizer = Vectorizers.text2vecContextionary();
+    var vectorizer = VectorConfig.text2vecContextionary();
 
     var nsArtists = ns("Artists");
     client.collections.create(nsArtists,
         col -> col
             .properties(Property.text("name"))
-            .vectors(vectorizer));
+            .vectorConfig(vectorizer));
 
     var artists = client.collections.use(nsArtists);
     var beatles = artists.data.insert(Map.of("name", "Beatles"));
@@ -180,8 +181,8 @@ public class SearchITest extends ConcurrentTest {
     client.collections.create(nsSongs,
         col -> col
             .properties(Property.text("title"))
-            .references(Property.reference("performedBy", nsArtists))
-            .vectors(vectorizer));
+            .references(ReferenceProperty.to("performedBy", nsArtists))
+            .vectorConfig(vectorizer));
 
     var songs = client.collections.use(nsSongs);
     songs.data.insert(Map.of("title", "Yellow Submarine"),
@@ -208,7 +209,7 @@ public class SearchITest extends ConcurrentTest {
             .properties(
                 Property.text("breed"),
                 Property.blob("img"))
-            .vectors(Vectorizers.img2vecNeural(
+            .vectorConfig(VectorConfig.img2vecNeural(
                 i2v -> i2v.imageFields("img"))));
 
     var cats = client.collections.use(nsCats);
@@ -390,7 +391,7 @@ public class SearchITest extends ConcurrentTest {
     client.collections.create(nsAnimals,
         collection -> collection
             .properties(Property.text("kind"))
-            .vectors(Vectorizers.text2vecContextionary()));
+            .vectorConfig(VectorConfig.text2vecContextionary()));
 
     var animals = client.collections.use(nsAnimals);
 
@@ -419,7 +420,7 @@ public class SearchITest extends ConcurrentTest {
     client.collections.create(nsHobbies,
         collection -> collection
             .properties(Property.text("name"), Property.text("description"))
-            .vectors(Vectorizers.text2vecContextionary()));
+            .vectorConfig(VectorConfig.text2vecContextionary()));
 
     var hobbies = client.collections.use(nsHobbies);
 
@@ -452,7 +453,7 @@ public class SearchITest extends ConcurrentTest {
     client.collections.create(nsThings,
         collection -> collection
             .properties(Property.text("name"))
-            .vectors(Vectorizers.text2vecContextionary()));
+            .vectorConfig(VectorConfig.text2vecContextionary()));
 
     var things = client.collections.use(nsThings);
     var balloon = things.data.insert(Map.of("name", "balloon"));
@@ -469,7 +470,7 @@ public class SearchITest extends ConcurrentTest {
       async.collections.create(nsThings,
           collection -> collection
               .properties(Property.text("name"))
-              .vectors(Vectorizers.text2vecContextionary()))
+              .vectorConfig(VectorConfig.text2vecContextionary()))
           .join();
 
       var things = async.collections.use(nsThings);
@@ -490,7 +491,7 @@ public class SearchITest extends ConcurrentTest {
     client.collections.create(nsThings,
         c -> c
             .properties(Property.text("name"))
-            .vectors(Vectorizers.text2vecContextionary(
+            .vectorConfig(VectorConfig.text2vecContextionary(
                 t2v -> t2v.sourceProperties("name"))));
 
     var things = client.collections.use(nsThings);

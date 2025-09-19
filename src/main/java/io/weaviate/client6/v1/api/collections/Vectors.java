@@ -1,6 +1,7 @@
 package io.weaviate.client6.v1.api.collections;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,17 +16,13 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
-import io.weaviate.client6.v1.internal.ObjectBuilder;
-import lombok.ToString;
-
 /**
  * Vectors is an abstraction over named vectors, which can store
  * both 1-dimensional and 2-dimensional vectors.
  */
-@ToString
 public class Vectors {
   /** Elements of this map must only be {@code float[]} or {@code float[][]}. */
-  private final Map<String, Object> namedVectors;
+  private final Map<String, Object> vectorsMap;
 
   /** Create a 1-dimensional vector. */
   public static Vectors of(float[] vector) {
@@ -58,7 +55,7 @@ public class Vectors {
    * @param vector {@code float[]} or {@code float[][]} vector.
    */
   private Vectors(String name, Object vector) {
-    this.namedVectors = Collections.singletonMap(name, vector);
+    this.vectorsMap = Collections.singletonMap(name, vector);
   }
 
   /**
@@ -72,7 +69,7 @@ public class Vectors {
    * @param vector Map of named vectors.
    */
   private Vectors(Map<String, Object> namedVectors) {
-    this.namedVectors = namedVectors;
+    this.vectorsMap = namedVectors;
   }
 
   /** Merge all vectors in a single vector map. */
@@ -81,7 +78,7 @@ public class Vectors {
     for (var vec : vectors) {
       namedVectors.putAll(vec.asMap());
     }
-    this.namedVectors = namedVectors;
+    this.vectorsMap = namedVectors;
   }
 
   /**
@@ -91,7 +88,7 @@ public class Vectors {
    * @throws ClassCastException The underlying vector is not a {@code float[]}.
    */
   public float[] getSingle(String name) {
-    return (float[]) namedVectors.get(name);
+    return (float[]) vectorsMap.get(name);
   }
 
   /**
@@ -112,7 +109,7 @@ public class Vectors {
    *                            {@code float[][]}.
    */
   public float[][] getMulti(String name) {
-    return (float[][]) namedVectors.get(name);
+    return (float[][]) vectorsMap.get(name);
   }
 
   /**
@@ -134,7 +131,22 @@ public class Vectors {
    * @return Map of name-vector pairs. The returned map is immutable.
    */
   public Map<String, Object> asMap() {
-    return Map.copyOf(namedVectors);
+    return Map.copyOf(vectorsMap);
+  }
+
+  @Override
+  public String toString() {
+    var vectorStrings = vectorsMap.entrySet().stream()
+        .map(v -> {
+          var name = v.getKey();
+          var value = v.getValue();
+          var array = (value instanceof float[] f)
+              ? Arrays.toString((float[]) value)
+              : Arrays.deepToString((float[][]) value);
+          return "%s=%s".formatted(name, array);
+        })
+        .toList();
+    return "Vectors(%s)".formatted(String.join(", ", vectorStrings));
   }
 
   public static enum CustomTypeAdapterFactory implements TypeAdapterFactory {
@@ -154,7 +166,7 @@ public class Vectors {
 
         @Override
         public void write(JsonWriter out, Vectors value) throws IOException {
-          mapAdapter.write(out, value.namedVectors);
+          mapAdapter.write(out, value.vectorsMap);
         }
 
         @Override

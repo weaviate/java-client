@@ -4,12 +4,12 @@ import javax.annotation.Nullable;
 import javax.net.ssl.TrustManagerFactory;
 
 public abstract class TransportOptions<H> {
-  private final String scheme;
-  private final String host;
-  private final int port;
-  private final TokenProvider tokenProvider;
-  private final H headers;
-  private final TrustManagerFactory trustManagerFactory;
+  protected final String scheme;
+  protected final String host;
+  protected final int port;
+  protected final TokenProvider tokenProvider;
+  protected final H headers;
+  protected final TrustManagerFactory trustManagerFactory;
 
   protected TransportOptions(String scheme, String host, int port, H headers, TokenProvider tokenProvider,
       TrustManagerFactory tmf) {

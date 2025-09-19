@@ -7,19 +7,22 @@ import java.util.function.Function;
 
 import com.google.gson.annotations.SerializedName;
 
+import io.weaviate.client6.v1.api.collections.Quantization;
+import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
-import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Img2VecNeuralVectorizer(
     /** BLOB properties included in the embedding. */
     @SerializedName("imageFields") List<String> imageFields,
     /** Vector index configuration. */
-    VectorIndex vectorIndex) implements Vectorizer {
+    VectorIndex vectorIndex,
+    /** Vector quantization method. */
+    Quantization quantization) implements VectorConfig {
 
   @Override
-  public Vectorizer.Kind _kind() {
-    return Vectorizer.Kind.IMG2VEC_NEURAL;
+  public VectorConfig.Kind _kind() {
+    return VectorConfig.Kind.IMG2VEC_NEURAL;
   }
 
   @Override
@@ -36,12 +39,13 @@ public record Img2VecNeuralVectorizer(
   }
 
   public Img2VecNeuralVectorizer(Builder builder) {
-    this(builder.imageFields, builder.vectorIndex);
+    this(builder.imageFields, builder.vectorIndex, builder.quantization);
   }
 
   public static class Builder implements ObjectBuilder<Img2VecNeuralVectorizer> {
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
     private List<String> imageFields = new ArrayList<>();
+    private Quantization quantization;
 
     /** Add BLOB properties to include in the embedding. */
     public Builder imageFields(List<String> fields) {
@@ -63,6 +67,11 @@ public record Img2VecNeuralVectorizer(
      */
     public Builder vectorIndex(VectorIndex vectorIndex) {
       this.vectorIndex = vectorIndex;
+      return this;
+    }
+
+    public Builder quantization(Quantization quantization) {
+      this.quantization = quantization;
       return this;
     }
 

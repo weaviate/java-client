@@ -2,15 +2,19 @@ package io.weaviate.client6.v1.api.collections.vectorizers;
 
 import java.util.function.Function;
 
+import io.weaviate.client6.v1.api.collections.Quantization;
+import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
-import io.weaviate.client6.v1.api.collections.Vectorizer;
-import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public record SelfProvidedVectorizer(VectorIndex vectorIndex) implements Vectorizer {
+public record SelfProvidedVectorizer(
+    /** Vector index configuration. */
+    VectorIndex vectorIndex,
+    /** Vector quantization method. */
+    Quantization quantization) implements VectorConfig {
   @Override
   public Kind _kind() {
-    return Vectorizer.Kind.NONE;
+    return VectorConfig.Kind.NONE;
   }
 
   @Override
@@ -27,14 +31,20 @@ public record SelfProvidedVectorizer(VectorIndex vectorIndex) implements Vectori
   }
 
   public SelfProvidedVectorizer(Builder builder) {
-    this(builder.vectorIndex);
+    this(builder.vectorIndex, builder.quantization);
   }
 
   public static class Builder implements ObjectBuilder<SelfProvidedVectorizer> {
-    private VectorIndex vectorIndex = Hnsw.of();
+    private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
+    private Quantization quantization;
 
     public Builder vectorIndex(VectorIndex vectorIndex) {
       this.vectorIndex = vectorIndex;
+      return this;
+    }
+
+    public Builder quantization(Quantization quantization) {
+      this.quantization = quantization;
       return this;
     }
 

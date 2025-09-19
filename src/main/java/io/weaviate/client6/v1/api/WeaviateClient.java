@@ -32,8 +32,6 @@ public class WeaviateClient implements AutoCloseable {
   public final WeaviateAliasClient alias;
 
   public WeaviateClient(Config config) {
-    this.config = config;
-
     RestTransportOptions restOpt;
     GrpcChannelOptions grpcOpt;
     if (config.authentication() == null) {
@@ -52,11 +50,39 @@ public class WeaviateClient implements AutoCloseable {
       grpcOpt = config.grpcTransportOptions(tokenProvider);
     }
 
-    this.restTransport = new DefaultRestTransport(restOpt);
-    this.grpcTransport = new DefaultGrpcTransport(grpcOpt);
+    // Initialize REST transport to a temporary variable to dispose of
+    // the associated resources in case we have to throw an exception.
+    // Assign to this.restTransport only once we're in the clear to
+    // avoid publishing the object before it's fully initialized.
+    var _restTransport = new DefaultRestTransport(restOpt);
+    boolean isLive = false;
+    InstanceMetadata meta = null;
+    try {
+      isLive = _restTransport.performRequest(null, IsLiveRequest._ENDPOINT);
+      meta = _restTransport.performRequest(null, InstanceMetadataRequest._ENDPOINT);
+    } catch (IOException e) {
+      throw new WeaviateConnectException(e);
+    }
 
+    if (!isLive) {
+      var ex = new WeaviateConnectException("Weaviate not available at " + restOpt.baseUrl());
+      try {
+        _restTransport.close();
+      } catch (Exception e) {
+        ex.addSuppressed(e);
+      }
+      throw ex;
+    }
+
+    if (meta.grpcMaxMessageSize() != null) {
+      grpcOpt = grpcOpt.withMaxMessageSize(meta.grpcMaxMessageSize());
+    }
+
+    this.restTransport = _restTransport;
+    this.grpcTransport = new DefaultGrpcTransport(grpcOpt);
     this.alias = new WeaviateAliasClient(restTransport);
     this.collections = new WeaviateCollectionsClient(restTransport, grpcTransport);
+    this.config = config;
   }
 
   /**
@@ -77,7 +103,7 @@ public class WeaviateClient implements AutoCloseable {
    * Example:
    *
    * <pre>{@code
-   * var client = WeaviateClient.local();
+   * var client = WeaviateClient.connectToLocal();
    *
    * // Need to make the next request non-blocking
    * try (final var async = client.async()) {
@@ -92,9 +118,9 @@ public class WeaviateClient implements AutoCloseable {
    * If you only intend to use {@link WeaviateClientAsync}, prefer creating it
    * directly via one of its static factories:
    * <ul>
-   * <li>{@link WeaviateClientAsync#local}
-   * <li>{@link WeaviateClientAsync#wcd}
-   * <li>{@link WeaviateClientAsync#custom}
+   * <li>{@link WeaviateClientAsync#connectToLocal}
+   * <li>{@link WeaviateClientAsync#connectToWeaviateCloud}
+   * <li>{@link WeaviateClientAsync#connectToCustom}
    * </ul>
    *
    * Otherwise the client wastes time initializing resources it will never use.
@@ -104,29 +130,29 @@ public class WeaviateClient implements AutoCloseable {
   }
 
   /** Connect to a local Weaviate instance. */
-  public static WeaviateClient local() {
-    return local(ObjectBuilder.identity());
+  public static WeaviateClient connectToLocal() {
+    return connectToLocal(ObjectBuilder.identity());
   }
 
   /** Connect to a local Weaviate instance. */
-  public static WeaviateClient local(Function<Config.Local, ObjectBuilder<Config>> fn) {
+  public static WeaviateClient connectToLocal(Function<Config.Local, ObjectBuilder<Config>> fn) {
     return new WeaviateClient(fn.apply(new Config.Local()).build());
   }
 
   /** Connect to a Weaviate Cloud instance. */
-  public static WeaviateClient wcd(String httpHost, String apiKey) {
-    return wcd(httpHost, apiKey, ObjectBuilder.identity());
+  public static WeaviateClient connectToWeaviateCloud(String httpHost, String apiKey) {
+    return connectToWeaviateCloud(httpHost, apiKey, ObjectBuilder.identity());
   }
 
   /** Connect to a Weaviate Cloud instance. */
-  public static WeaviateClient wcd(String httpHost, String apiKey,
+  public static WeaviateClient connectToWeaviateCloud(String httpHost, String apiKey,
       Function<Config.WeaviateCloud, ObjectBuilder<Config>> fn) {
     var config = new Config.WeaviateCloud(httpHost, Authentication.apiKey(apiKey));
     return new WeaviateClient(fn.apply(config).build());
   }
 
   /** Connect to a Weaviate instance with custom configuration. */
-  public static WeaviateClient custom(Function<Config.Custom, ObjectBuilder<Config>> fn) {
+  public static WeaviateClient connectToCustom(Function<Config.Custom, ObjectBuilder<Config>> fn) {
     return new WeaviateClient(fn.apply(new Config.Custom()).build());
   }
 

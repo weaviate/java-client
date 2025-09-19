@@ -36,6 +36,12 @@ public final class DefaultGrpcTransport implements GrpcTransport {
     var futureStub = WeaviateGrpc.newFutureStub(channel)
         .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(transportOptions.headers()));
 
+    if (transportOptions.maxMessageSize() != null) {
+      var max = transportOptions.maxMessageSize();
+      blockingStub.withMaxInboundMessageSize(max).withMaxOutboundMessageSize(max);
+      futureStub.withMaxInboundMessageSize(max).withMaxOutboundMessageSize(max);
+    }
+
     if (transportOptions.tokenProvider() != null) {
       this.callCredentials = new TokenCallCredentials(transportOptions.tokenProvider());
       blockingStub = blockingStub.withCallCredentials(callCredentials);

@@ -8,8 +8,9 @@ import java.util.function.Function;
 
 import com.google.gson.annotations.SerializedName;
 
+import io.weaviate.client6.v1.api.collections.Quantization;
+import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
-import io.weaviate.client6.v1.api.collections.Vectorizer;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Multi2VecClipVectorizer(
@@ -22,7 +23,9 @@ public record Multi2VecClipVectorizer(
     /** Weights of the included properties. */
     @SerializedName("weights") Weights weights,
     /** Vector index configuration. */
-    VectorIndex vectorIndex) implements Vectorizer {
+    VectorIndex vectorIndex,
+    /** Vector quantization method. */
+    Quantization quantization) implements VectorConfig {
 
   private static record Weights(
       /**
@@ -38,8 +41,8 @@ public record Multi2VecClipVectorizer(
   }
 
   @Override
-  public Vectorizer.Kind _kind() {
-    return Vectorizer.Kind.MULTI2VEC_CLIP;
+  public VectorConfig.Kind _kind() {
+    return VectorConfig.Kind.MULTI2VEC_CLIP;
   }
 
   @Override
@@ -63,11 +66,13 @@ public record Multi2VecClipVectorizer(
         new Weights(
             builder.imageFields.values().stream().toList(),
             builder.textFields.values().stream().toList()),
-        builder.vectorIndex);
+        builder.vectorIndex,
+        builder.quantization);
   }
 
   public static class Builder implements ObjectBuilder<Multi2VecClipVectorizer> {
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
+    private Quantization quantization;
     private String inferenceUrl;
     private Map<String, Float> imageFields = new HashMap<>();
     private Map<String, Float> textFields = new HashMap<>();
@@ -131,6 +136,11 @@ public record Multi2VecClipVectorizer(
      */
     public Builder vectorIndex(VectorIndex vectorIndex) {
       this.vectorIndex = vectorIndex;
+      return this;
+    }
+
+    public Builder quantization(Quantization quantization) {
+      this.quantization = quantization;
       return this;
     }
 
