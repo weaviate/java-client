@@ -12,7 +12,7 @@ public record DeleteObjectRequest(String uuid) {
       CollectionHandleDefaults defaults) {
     return SimpleEndpoint.sideEffect(
         request -> "DELETE",
-        request -> "/objects/" + collection.name() + "/" + request.uuid,
+        request -> "/objects/" + collection.collectionName() + "/" + request.uuid,
         request -> defaults.queryParameters());
   }
 }

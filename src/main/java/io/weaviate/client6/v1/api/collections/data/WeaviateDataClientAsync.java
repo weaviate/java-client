@@ -48,12 +48,12 @@ public class WeaviateDataClientAsync<PropertiesT> {
   }
 
   public CompletableFuture<WeaviateObject<PropertiesT, Object, ObjectMetadata>> insert(PropertiesT properties) {
-    return insert(InsertObjectRequest.of(collection.name(), properties));
+    return insert(InsertObjectRequest.of(collection.collectionName(), properties));
   }
 
   public CompletableFuture<WeaviateObject<PropertiesT, Object, ObjectMetadata>> insert(PropertiesT properties,
       Function<InsertObjectRequest.Builder<PropertiesT>, ObjectBuilder<InsertObjectRequest<PropertiesT>>> fn) {
-    return insert(InsertObjectRequest.of(collection.name(), properties, fn));
+    return insert(InsertObjectRequest.of(collection.collectionName(), properties, fn));
   }
 
   public CompletableFuture<WeaviateObject<PropertiesT, Object, ObjectMetadata>> insert(
@@ -82,13 +82,13 @@ public class WeaviateDataClientAsync<PropertiesT> {
 
   public CompletableFuture<Void> update(String uuid,
       Function<UpdateObjectRequest.Builder<PropertiesT>, ObjectBuilder<UpdateObjectRequest<PropertiesT>>> fn) {
-    return this.restTransport.performRequestAsync(UpdateObjectRequest.of(collection.name(), uuid, fn),
+    return this.restTransport.performRequestAsync(UpdateObjectRequest.of(collection.collectionName(), uuid, fn),
         UpdateObjectRequest.endpoint(collection, defaults));
   }
 
   public CompletableFuture<Void> replace(String uuid,
       Function<ReplaceObjectRequest.Builder<PropertiesT>, ObjectBuilder<ReplaceObjectRequest<PropertiesT>>> fn) {
-    return this.restTransport.performRequestAsync(ReplaceObjectRequest.of(collection.name(), uuid, fn),
+    return this.restTransport.performRequestAsync(ReplaceObjectRequest.of(collection.collectionName(), uuid, fn),
         ReplaceObjectRequest.endpoint(collection, defaults));
   }
 

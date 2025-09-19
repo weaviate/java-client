@@ -46,13 +46,13 @@ public class WeaviateDataClient<PropertiesT> {
   }
 
   public WeaviateObject<PropertiesT, Object, ObjectMetadata> insert(PropertiesT properties) throws IOException {
-    return insert(InsertObjectRequest.of(collection.name(), properties));
+    return insert(InsertObjectRequest.of(collection.collectionName(), properties));
   }
 
   public WeaviateObject<PropertiesT, Object, ObjectMetadata> insert(PropertiesT properties,
       Function<InsertObjectRequest.Builder<PropertiesT>, ObjectBuilder<InsertObjectRequest<PropertiesT>>> fn)
       throws IOException {
-    return insert(InsertObjectRequest.of(collection.name(), properties, fn));
+    return insert(InsertObjectRequest.of(collection.collectionName(), properties, fn));
   }
 
   @SafeVarargs
@@ -81,14 +81,14 @@ public class WeaviateDataClient<PropertiesT> {
   public void update(String uuid,
       Function<UpdateObjectRequest.Builder<PropertiesT>, ObjectBuilder<UpdateObjectRequest<PropertiesT>>> fn)
       throws IOException {
-    this.restTransport.performRequest(UpdateObjectRequest.of(collection.name(), uuid, fn),
+    this.restTransport.performRequest(UpdateObjectRequest.of(collection.collectionName(), uuid, fn),
         UpdateObjectRequest.endpoint(collection, defaults));
   }
 
   public void replace(String uuid,
       Function<ReplaceObjectRequest.Builder<PropertiesT>, ObjectBuilder<ReplaceObjectRequest<PropertiesT>>> fn)
       throws IOException {
-    this.restTransport.performRequest(ReplaceObjectRequest.of(collection.name(), uuid, fn),
+    this.restTransport.performRequest(ReplaceObjectRequest.of(collection.collectionName(), uuid, fn),
         ReplaceObjectRequest.endpoint(collection, defaults));
   }
 

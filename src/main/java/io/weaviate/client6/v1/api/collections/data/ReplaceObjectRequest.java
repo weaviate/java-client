@@ -22,7 +22,7 @@ public record ReplaceObjectRequest<T>(WeaviateObject<T, Reference, ObjectMetadat
       CollectionHandleDefaults defaults) {
     return SimpleEndpoint.sideEffect(
         request -> "PUT",
-        request -> "/objects/" + collection.name() + "/" + request.object.metadata().uuid(),
+        request -> "/objects/" + collection.collectionName() + "/" + request.object.metadata().uuid(),
         request -> defaults.consistencyLevel() != null
             ? Map.of("consistency_level", defaults.consistencyLevel())
             : Collections.emptyMap(),

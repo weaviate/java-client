@@ -12,7 +12,7 @@ public record DeleteTenantsRequest(List<String> tenants) {
   static Endpoint<DeleteTenantsRequest, Void> endpoint(CollectionDescriptor<?> collection) {
     return SimpleEndpoint.sideEffect(
         __ -> "DELETE",
-        __ -> "/schema/" + collection.name() + "/tenants",
+        __ -> "/schema/" + collection.collectionName() + "/tenants",
         __ -> Collections.emptyMap(),
         request -> JSON.serialize(request.tenants));
   }

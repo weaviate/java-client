@@ -45,11 +45,11 @@ public class WeaviateConfigClientAsync {
   }
 
   public CompletableFuture<Optional<CollectionConfig>> get() throws IOException {
-    return collectionsClient.getConfig(collection.name());
+    return collectionsClient.getConfig(collection.collectionName());
   }
 
   public CompletableFuture<Void> addProperty(Property property) throws IOException {
-    return this.restTransport.performRequestAsync(new AddPropertyRequest(collection.name(), property),
+    return this.restTransport.performRequestAsync(new AddPropertyRequest(collection.collectionName(), property),
         AddPropertyRequest._ENDPOINT);
   }
 
@@ -77,7 +77,7 @@ public class WeaviateConfigClientAsync {
   public CompletableFuture<List<Shard>> updateShards(ShardStatus status, List<String> shards) throws IOException {
     var updates = shards.stream().map(
         shard -> this.restTransport.performRequestAsync(
-            new UpdateShardStatusRequest(collection.name(), shard, status),
+            new UpdateShardStatusRequest(collection.collectionName(), shard, status),
             UpdateShardStatusRequest._ENDPOINT))
         .toArray(CompletableFuture[]::new);
     return CompletableFuture.allOf(updates).thenCompose(__ -> getShards());

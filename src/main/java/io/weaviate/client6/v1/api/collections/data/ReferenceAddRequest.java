@@ -13,7 +13,8 @@ public record ReferenceAddRequest(String fromUuid, String fromProperty, Referenc
       CollectionHandleDefaults defaults) {
     return SimpleEndpoint.sideEffect(
         request -> "POST",
-        request -> "/objects/" + descriptor.name() + "/" + request.fromUuid + "/references/" + request.fromProperty,
+        request -> "/objects/" + descriptor.collectionName() + "/" + request.fromUuid + "/references/"
+            + request.fromProperty,
         request -> defaults.queryParameters(),
         request -> JSON.serialize(request.reference));
 

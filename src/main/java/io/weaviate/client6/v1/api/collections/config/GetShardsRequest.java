@@ -20,7 +20,7 @@ public record GetShardsRequest() {
       CollectionHandleDefaults defaults) {
     return SimpleEndpoint.noBody(
         request -> "GET",
-        request -> "/schema/" + collection.name() + "/shards",
+        request -> "/schema/" + collection.collectionName() + "/shards",
         request -> defaults.tenant() != null
             ? Map.of("tenant", defaults.tenant())
             : Collections.emptyMap(),

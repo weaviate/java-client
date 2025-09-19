@@ -12,7 +12,7 @@ public final class MapDescriptor implements CollectionDescriptor<Map<String, Obj
   }
 
   @Override
-  public String name() {
+  public String collectionName() {
     return collectionName;
   }
 
