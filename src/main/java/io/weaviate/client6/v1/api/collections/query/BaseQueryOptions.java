@@ -82,11 +82,16 @@ public record BaseQueryOptions(
      * {@code gte}, {@code like}, etc.
      * Subsequent calls to {@link #where} aggregate with an AND operator.
      *
-     * <p>
-     * See: {@link Where}
+     * @see Where
      */
     public final SELF where(Where where) {
       this.where = this.where == null ? where : Where.and(this.where, where);
+      return (SELF) this;
+    }
+
+    /** Combine several conditions using with an AND operator. */
+    public final SELF where(Where... wheres) {
+      Arrays.stream(wheres).map(this::where);
       return (SELF) this;
     }
 
