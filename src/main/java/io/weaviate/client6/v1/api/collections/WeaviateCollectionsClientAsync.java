@@ -174,6 +174,15 @@ public class WeaviateCollectionsClientAsync {
   }
 
   /**
+   * Delete a Weaviate collection.
+   *
+   * @param cls Class that represents an object in the collection.
+   */
+  public CompletableFuture<Void> delete(Class<? extends Record> cls) {
+    return delete(CollectionDescriptor.ofClass(cls).collectionName());
+  }
+
+  /**
    * Delete all collections in Weaviate.
    */
   public CompletableFuture<Void> deleteAll() throws IOException {
@@ -192,5 +201,14 @@ public class WeaviateCollectionsClientAsync {
    */
   public CompletableFuture<Boolean> exists(String collectionName) {
     return getConfig(collectionName).thenApply(Optional::isPresent);
+  }
+
+  /**
+   * Check if a collection with this name exists.
+   *
+   * @param cls Class that represents an object in the collection.
+   */
+  public CompletableFuture<Boolean> exists(Class<? extends Record> cls) {
+    return exists(CollectionDescriptor.ofClass(cls).collectionName());
   }
 }
