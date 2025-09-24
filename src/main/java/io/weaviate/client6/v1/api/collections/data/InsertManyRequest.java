@@ -147,7 +147,7 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
             protoValue.setBoolValue(v.booleanValue());
           } else if (value instanceof Number v) {
             protoValue.setNumberValue(v.doubleValue());
-          } else if (value instanceof List v) {
+          } else if (value instanceof List<?> v) {
             protoValue.setListValue(
                 com.google.protobuf.ListValue.newBuilder()
                     .addAllValues(v.stream()
