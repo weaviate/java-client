@@ -45,10 +45,12 @@ public interface VectorIndex {
 
   VectorIndex.Kind _kind();
 
+  /** Returns the on-the-wire name of the vector index type. */
   default String type() {
     return _kind().jsonValue();
   }
 
+  /** Get the concrete vector index configuration object. */
   Object config();
 
   public static enum CustomTypeAdapterFactory implements TypeAdapterFactory {

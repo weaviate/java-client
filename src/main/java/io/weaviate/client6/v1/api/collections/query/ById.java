@@ -48,33 +48,40 @@ public record ById(
       returnMetadata(MetadataField.UUID);
     }
 
+    /** Select properties to include in the query result. */
     public final Builder returnProperties(String... properties) {
       return returnProperties(Arrays.asList(properties));
     }
 
+    /** Select properties to include in the query result. */
     public final Builder returnProperties(List<String> properties) {
       this.returnProperties.addAll(properties);
       return this;
     }
 
+    /** Select cross-referenced objects to include in the query result. */
     public final Builder returnReferences(QueryReference... references) {
       return returnReferences(Arrays.asList(references));
     }
 
+    /** Select cross-referenced objects to include in the query result. */
     public final Builder returnReferences(List<QueryReference> references) {
       this.returnReferences.addAll(references);
       return this;
     }
 
+    /** Select metadata to include in the query result. */
     public final Builder returnMetadata(Metadata... metadata) {
       return returnMetadata(Arrays.asList(metadata));
     }
 
+    /** Select metadata to include in the query result. */
     public final Builder returnMetadata(List<Metadata> metadata) {
       this.returnMetadata.addAll(metadata);
       return this;
     }
 
+    /** Include default vector. */
     public final Builder includeVector() {
       return returnMetadata(Metadata.VECTOR);
     }

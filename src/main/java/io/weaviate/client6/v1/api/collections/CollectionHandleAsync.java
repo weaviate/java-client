@@ -85,23 +85,31 @@ public class CollectionHandleAsync<PropertiesT> {
         .thenApply(AggregateResponse::totalCount);
   }
 
+  /** Default consistency level for requests. */
   public ConsistencyLevel consistencyLevel() {
     return defaults.consistencyLevel();
   }
 
+  /** Obtain a collection handle with a different consistency level. */
   public CollectionHandleAsync<PropertiesT> withConsistencyLevel(ConsistencyLevel consistencyLevel) {
     return new CollectionHandleAsync<>(this, CollectionHandleDefaults.of(
         def -> def.consistencyLevel(consistencyLevel)));
   }
 
+  /** Default tenant for requests. */
   public String tenant() {
     return defaults.tenant();
   }
 
+  /** Obtain a collection handle with a different target tenant. */
   public CollectionHandleAsync<PropertiesT> withTenant(String tenant) {
     return new CollectionHandleAsync<>(this, CollectionHandleDefaults.of(with -> with.tenant(tenant)));
   }
 
+  /**
+   * Obtain a collection handle with different defaults
+   * (consistency level / tenant).
+   */
   public CollectionHandleAsync<PropertiesT> withDefaults(
       Function<CollectionHandleDefaults.Builder, ObjectBuilder<CollectionHandleDefaults>> fn) {
     return new CollectionHandleAsync<>(this, CollectionHandleDefaults.of(fn));

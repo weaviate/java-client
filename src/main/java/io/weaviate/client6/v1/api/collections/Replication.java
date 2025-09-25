@@ -36,16 +36,22 @@ public record Replication(
     private Boolean asyncEnabled;
     private DeletionStrategy deletionStrategy;
 
+    /** Set desired replication factor for this collection. */
     public Builder replicationFactor(int replicationFactor) {
       this.replicationFactor = replicationFactor;
       return this;
     }
 
+    /** Enable / disable async replication. */
     public Builder asyncEnabled(boolean asyncEnabled) {
       this.asyncEnabled = asyncEnabled;
       return this;
     }
 
+    /**
+     * Select the deletion strategy for resolving conflicts
+     * during async replication.
+     */
     public Builder deletionStrategy(DeletionStrategy deletionStrategy) {
       this.deletionStrategy = deletionStrategy;
       return this;

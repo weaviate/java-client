@@ -49,10 +49,39 @@ public class CollectionHandle<PropertiesT> {
     this.tenants = c.tenants;
   }
 
+  /**
+   * Create a Paginator over the objects in this collection.
+   *
+   * <p>
+   * Usage:
+   *
+   * <pre>
+   * {@code
+   * var things = client.collections.use("Things");
+   *
+   * // In a for-loop:
+   * for (final var thing : things.paginate()) {
+   *   // ... do something for each Thing object
+   * }
+   *
+   * // As a stream
+   * things.paginate().stream()
+   *  .map(...)
+   *  .collect(...);
+   * }</pre>
+   *
+   * @return An {@link Iterable} over this collection's objects.
+   */
   public Paginator<PropertiesT> paginate() {
     return Paginator.of(this.query);
   }
 
+  /**
+   * Create a Paginator over the objects in this collection.
+   *
+   * @param fn Lambda expression for optional parameters.
+   * @return An {@link Iterable} over this collection's objects.
+   */
   public Paginator<PropertiesT> paginate(
       Function<Paginator.Builder<PropertiesT>, ObjectBuilder<Paginator<PropertiesT>>> fn) {
     return Paginator.of(this.query, fn);
@@ -68,7 +97,7 @@ public class CollectionHandle<PropertiesT> {
    * collection exceeds {@link Long#MAX_VALUE} as this is unlikely to happen.
    *
    * <p>
-   * This is a shortcut for:
+   * This is a shorthand for:
    *
    * <pre>{@code
    * handle.aggregate.overAll(all -> all.includeTotalCount(true)).totalCount()
@@ -78,22 +107,30 @@ public class CollectionHandle<PropertiesT> {
     return this.aggregate.overAll(all -> all.includeTotalCount(true)).totalCount();
   }
 
+  /** Default consistency level for requests. */
   public ConsistencyLevel consistencyLevel() {
     return defaults.consistencyLevel();
   }
 
+  /** Obtain a collection handle with a different consistency level. */
   public CollectionHandle<PropertiesT> withConsistencyLevel(ConsistencyLevel consistencyLevel) {
     return new CollectionHandle<>(this, CollectionHandleDefaults.of(with -> with.consistencyLevel(consistencyLevel)));
   }
 
+  /** Default tenant for requests. */
   public String tenant() {
     return defaults.tenant();
   }
 
+  /** Obtain a collection handle with a different target tenant. */
   public CollectionHandle<PropertiesT> withTenant(String tenant) {
     return new CollectionHandle<>(this, CollectionHandleDefaults.of(with -> with.tenant(tenant)));
   }
 
+  /**
+   * Obtain a collection handle with different defaults
+   * (consistency level / tenant).
+   */
   public CollectionHandle<PropertiesT> withDefaults(
       Function<CollectionHandleDefaults.Builder, ObjectBuilder<CollectionHandleDefaults>> fn) {
     return new CollectionHandle<>(this, CollectionHandleDefaults.of(fn));

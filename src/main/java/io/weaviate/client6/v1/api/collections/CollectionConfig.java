@@ -23,16 +23,27 @@ import com.google.gson.stream.JsonWriter;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record CollectionConfig(
+    /** Collection name. */
     @SerializedName("class") String collectionName,
+    /** Collection description. */
     @SerializedName("description") String description,
+    /** Collection properties. */
     @SerializedName("properties") List<Property> properties,
+    /** Cross-reference properties. */
     List<ReferenceProperty> references,
+    /** Vector indexes configured for this collection. */
     @SerializedName("vectorConfig") Map<String, VectorConfig> vectors,
+    /** Multi-tenantcy options. */
     @SerializedName("multiTenancyConfig") MultiTenancy multiTenancy,
+    /** Sharding configuration. */
     @SerializedName("shardingConfig") Sharding sharding,
+    /** Replication configuration. */
     @SerializedName("replicationConfig") Replication replication,
+    /** Inverted index configuration. */
     @SerializedName("invertedIndexConfig") InvertedIndex invertedIndex,
+    /** Reranker modules. */
     List<Reranker> rerankerModules,
+    /** Generative modules. */
     Generative generativeModule) {
 
   public static CollectionConfig of(String collectionName) {
@@ -100,15 +111,26 @@ public record CollectionConfig(
       this.collectionName = collectionName;
     }
 
+    /** Add collection description. */
     public Builder description(String description) {
       this.description = description;
       return this;
     }
 
+    /**
+     * Add collection properties.
+     *
+     * @see Property
+     */
     public Builder properties(Property... properties) {
       return properties(Arrays.asList(properties));
     }
 
+    /**
+     * Add collection properties.
+     *
+     * @see Property
+     */
     public Builder properties(List<Property> properties) {
       properties.forEach(property -> this.properties.put(property.propertyName(), property));
       return this;
@@ -118,10 +140,20 @@ public record CollectionConfig(
       return this.properties.values().stream().toList();
     }
 
+    /**
+     * Add cross-reference properties.
+     *
+     * @see ReferenceProperty#to
+     */
     public Builder references(ReferenceProperty... references) {
       return references(Arrays.asList(references));
     }
 
+    /**
+     * Add cross-reference properties.
+     *
+     * @see ReferenceProperty#to
+     */
     public Builder references(List<ReferenceProperty> references) {
       references.forEach(reference -> this.references.put(reference.propertyName(), reference));
       return this;
@@ -131,66 +163,83 @@ public record CollectionConfig(
       return this.references.values().stream().toList();
     }
 
+    /** Add vector index configurations. */
     public final Builder vectorConfig(Map<String, VectorConfig> vectors) {
       this.vectors.putAll(vectors);
       return this;
     }
 
+    /**
+     * Add vector index configurations.
+     *
+     * @see VectorConfig
+     */
     @SafeVarargs
     public final Builder vectorConfig(Map.Entry<String, VectorConfig>... vectors) {
       this.vectors.putAll(Map.ofEntries(vectors));
       return this;
     }
 
+    /** Configure collection's sharding. */
     public Builder sharding(Sharding sharding) {
       this.sharding = sharding;
       return this;
     }
 
+    /** Configure collection's sharding. */
     public Builder sharding(Function<Sharding.Builder, ObjectBuilder<Sharding>> fn) {
       this.sharding = Sharding.of(fn);
       return this;
     }
 
+    /** Configure multi-tenancy. */
     public Builder multiTenancy(MultiTenancy multiTenancy) {
       this.multiTenancy = multiTenancy;
       return this;
     }
 
+    /** Configure multi-tenancy. */
     public Builder multiTenancy(Function<MultiTenancy.Builder, ObjectBuilder<MultiTenancy>> fn) {
       this.multiTenancy = MultiTenancy.of(fn);
       return this;
     }
 
+    /** Configure replication. */
     public Builder replication(Replication replication) {
       this.replication = replication;
       return this;
     }
 
+    /** Configure replication. */
     public Builder replication(Function<Replication.Builder, ObjectBuilder<Replication>> fn) {
       this.replication = Replication.of(fn);
       return this;
     }
 
+    /** Change inverted index configurations. */
     public Builder invertedIndex(InvertedIndex invertedIndex) {
       this.invertedIndex = invertedIndex;
       return this;
     }
 
+    /** Change inverted index configurations. */
     public Builder invertedIndex(Function<InvertedIndex.Builder, ObjectBuilder<InvertedIndex>> fn) {
       this.invertedIndex = InvertedIndex.of(fn);
       return this;
     }
 
+    /** Add reranker modules. */
     public Builder rerankerModules(Reranker... rerankerModules) {
       return rerankerModules(Arrays.asList(rerankerModules));
     }
 
+    /** Add reranker modules. */
     public Builder rerankerModules(List<Reranker> rerankerModules) {
       this.rerankerModules.addAll(rerankerModules);
       return this;
     }
 
+    /** Add a generative module. */
     public Builder generativeModule(Generative generativeModule) {
       this.generativeModule = generativeModule;
       return this;

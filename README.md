@@ -426,8 +426,8 @@ Passing `null` and and empty `Where[]` to any of the logical operators as well a
 Every query above has an overloaded variant that accepts a group-by clause.
 
 ```java
-songs.query.nearVector(new float[]{...}, GroupBy.property("artist")); // Required arguments + GroupBy
-songs.query.bm25("rain", bm25 -> bm25.queryProperties("lyrics"), GroupBy.property("artist")); // Required argument, optional parameters, GroupBy
+songs.query.nearVector(new float[]{...}, GroupBy.property("artist", 10, 100)); // Required arguments + GroupBy
+songs.query.bm25("rain", bm25 -> bm25.queryProperties("lyrics"), GroupBy.property("artist", 10, 100)); // Required argument, optional parameters, GroupBy
 ```
 
 The shape of the response object is different too, see [`QueryResponseGrouped`](./src/main/java/io/weaviate/client6/v1/api/collections/query/QueryResponseGrouped.java).

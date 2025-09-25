@@ -42,10 +42,16 @@ public interface Generative {
 
   Object _self();
 
+  /** Configure a default Cohere generative module. */
   public static Generative cohere() {
     return CohereGenerative.of();
   }
 
+  /**
+   * Configure a Cohere generative module.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
   public static Generative cohere(Function<CohereGenerative.Builder, ObjectBuilder<CohereGenerative>> fn) {
     return CohereGenerative.of(fn);
   }

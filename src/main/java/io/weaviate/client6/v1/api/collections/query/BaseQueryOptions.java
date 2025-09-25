@@ -52,26 +52,51 @@ public record BaseQueryOptions(
       returnMetadata(MetadataField.UUID);
     }
 
+    /**
+     * Limit the number of returned objects.
+     *
+     * <p>
+     * Combine with {@link #offset(int)} to use offset-based pagination.
+     */
     public final SELF limit(int limit) {
       this.limit = limit;
       return (SELF) this;
     }
 
+    /**
+     * Skip the first N objects in the result set.
+     *
+     * <p>
+     * Combine with {@link #limit(int)} to use offset-based pagination.
+     */
     public final SELF offset(int offset) {
       this.offset = offset;
       return (SELF) this;
     }
 
+    /**
+     * Discard results after an automatically calculated cutoff point.
+     *
+     * @param autocut The number of "groups" to keep.
+     * @see <a href=
+     *      "https://weaviate.io/learn/knowledgecards/autocut">Documentation</a>
+     */
     public final SELF autocut(int autocut) {
       this.autocut = autocut;
       return (SELF) this;
     }
 
+    /**
+     * Discard results before this object.
+     *
+     * @param after UUID of an object in this collection.
+     */
     public final SELF after(String after) {
       this.after = after;
       return (SELF) this;
     }
 
+    /** Set consitency level for query resolution. */
     public final SELF consistencyLevel(ConsistencyLevel consistencyLevel) {
       this.consistencyLevel = consistencyLevel;
       return (SELF) this;
@@ -81,8 +106,6 @@ public record BaseQueryOptions(
      * Filter result set using traditional filtering operators: {@code eq},
      * {@code gte}, {@code like}, etc.
      * Subsequent calls to {@link #where} aggregate with an AND operator.
-     *
-     * @see Where
      */
     public final SELF where(Where where) {
       this.where = this.where == null ? where : Where.and(this.where, where);
@@ -95,33 +118,40 @@ public record BaseQueryOptions(
       return (SELF) this;
     }
 
+    /** Select properties to include in the query result. */
     public final SELF returnProperties(String... properties) {
       return returnProperties(Arrays.asList(properties));
     }
 
+    /** Select properties to include in the query result. */
     public final SELF returnProperties(List<String> properties) {
       this.returnProperties.addAll(properties);
       return (SELF) this;
     }
 
+    /** Select cross-referenced objects to include in the query result. */
     public final SELF returnReferences(QueryReference... references) {
       return returnReferences(Arrays.asList(references));
     }
 
+    /** Select cross-referenced objects to include in the query result. */
     public final SELF returnReferences(List<QueryReference> references) {
       this.returnReferences.addAll(references);
       return (SELF) this;
     }
 
+    /** Select metadata to include in the query result. */
     public final SELF returnMetadata(Metadata... metadata) {
       return returnMetadata(Arrays.asList(metadata));
     }
 
+    /** Select metadata to include in the query result. */
     public final SELF returnMetadata(List<Metadata> metadata) {
       this.returnMetadata.addAll(metadata);
       return (SELF) this;
     }
 
+    /** Include default vector. */
     public final SELF includeVector() {
       return returnMetadata(Metadata.VECTOR);
     }

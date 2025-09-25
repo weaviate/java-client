@@ -52,8 +52,10 @@ public interface VectorConfig {
 
   Object _self();
 
+  /** Get vector index configuration for this vector. */
   VectorIndex vectorIndex();
 
+  /** Get quantization configuration for this vector. */
   Quantization quantization();
 
   /** Create a bring-your-own-vector vector index. */
