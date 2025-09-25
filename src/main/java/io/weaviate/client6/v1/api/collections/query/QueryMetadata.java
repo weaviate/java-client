@@ -4,7 +4,9 @@ import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateMetadata;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public record QueryMetadata(String uuid,
+public record QueryMetadata(
+    /** Object UUID. */
+    String uuid,
     /** Vector embeddings associated with the object. */
     Vectors vectors,
     /** Object creation time as a Unix timestamp. */
@@ -13,7 +15,7 @@ public record QueryMetadata(String uuid,
     Long lastUpdateTimeUnix,
     /** Distances to the search vector. */
     Float distance,
-    /** Distance metric normalized to 0 <= C <= 1 range. */
+    /** Distance metric normalized to {@code 0 <= c <= 1} range. */
     Float certainty,
     /** BM25 ranking score. */
     Float score,
