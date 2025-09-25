@@ -116,8 +116,7 @@ public record Hybrid(
     /**
      * Vector search component.
      *
-     * @see NearVector#of(float[])
-     * @see NearVector#of(float[], Function)
+     * @see NearVector#of
      */
     public Builder nearVector(NearVector nearVector) {
       this.near = nearVector;
@@ -127,8 +126,7 @@ public record Hybrid(
     /**
      * Vector search component.
      *
-     * @see NearText#of(float[])
-     * @see NearText#of(float[], Function)
+     * @see NearText#of
      */
     public Builder nearText(NearText nearText) {
       this.near = nearText;

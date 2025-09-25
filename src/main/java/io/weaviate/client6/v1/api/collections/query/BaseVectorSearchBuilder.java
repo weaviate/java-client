@@ -24,7 +24,7 @@ abstract class BaseVectorSearchBuilder<SelfT extends BaseVectorSearchBuilder<Sel
   /**
    * Discard objects whose vectors are further away
    * from the target vector than the threshold according
-   * to a normalized (0 <= c <= 0) distance.
+   * to a normalized ({@code 0 <= c <= 0}) distance.
    *
    * <p>
    * Certainty is only meaningful for {@code cosine} distance.

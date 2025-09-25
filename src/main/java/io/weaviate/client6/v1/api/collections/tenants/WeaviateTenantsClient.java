@@ -58,7 +58,6 @@ public class WeaviateTenantsClient {
    * @param tenant Tenant name.
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
-   * @throws IOException          in case the request was not sent successfully
    *                              due to a malformed request, a networking error
    *                              or the server being unavailable.
    */
@@ -72,7 +71,6 @@ public class WeaviateTenantsClient {
    *
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
-   * @throws IOException          in case the request was not sent successfully
    *                              due to a malformed request, a networking error
    *                              or the server being unavailable.
    */
@@ -86,7 +84,6 @@ public class WeaviateTenantsClient {
    * @param tenants Tenant names.
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
-   * @throws IOException          in case the request was not sent successfully
    *                              due to a malformed request, a networking error
    *                              or the server being unavailable.
    */
@@ -100,9 +97,6 @@ public class WeaviateTenantsClient {
    * @param tenants Tenant names.
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
-   * @throws IOException          in case the request was not sent successfully
-   *                              due to a malformed request, a networking error
-   *                              or the server being unavailable.
    */
   public List<Tenant> get(List<String> tenants) {
     return this.grpcTransport.performRequest(new GetTenantsRequest(tenants), GetTenantsRequest.rpc(collection));
