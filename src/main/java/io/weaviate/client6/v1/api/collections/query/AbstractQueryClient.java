@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import io.weaviate.client6.v1.api.WeaviateApiException;
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
@@ -37,7 +38,15 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
 
   // Fetch by ID --------------------------------------------------------------
 
-  /** Retrieve the object by its UUID. */
+  /**
+   * Retrieve the object by its UUID.
+   *
+   * @param uuid Object UUID.
+   *
+   * @return A collection object or empty {@link Optional}.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
   public SingleT byId(String uuid) {
     return byId(ById.of(uuid));
   }
@@ -45,8 +54,11 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
   /**
    * Retrieve the object by its UUID.
    *
-   * @param fn Lambda expression for optional parameters.
-   * @return An object from the list or empty {@link Optional}.
+   * @param uuid Object UUID.
+   * @param fn   Lambda expression for optional parameters.
+   * @return A collection object or empty {@link Optional}.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public SingleT byId(String uuid, Function<ById.Builder, ObjectBuilder<ById>> fn) {
     // Collection handle defaults (consistencyLevel / tenant) are irrelevant for
@@ -73,6 +85,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * Retrieve objects without applying a Vector Search or Keyword Search filter.
    *
    * @param fn Lambda expression for optional parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT fetchObjects(Function<FetchObjects.Builder, ObjectBuilder<FetchObjects>> fn) {
     return fetchObjects(FetchObjects.of(fn));
@@ -82,6 +96,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * Retrieve objects without applying a Vector Search or Keyword Search filter.
    *
    * @param query FetchObjects query.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT fetchObjects(FetchObjects query) {
     return performRequest(query);
@@ -94,6 +110,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param fn      Lambda expression for optional parameters.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -109,6 +127,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param query   FetchObjects query.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -123,6 +143,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * Query collection objects using keyword (BM25) search.
    *
    * @param query Query string.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT bm25(String query) {
     return bm25(Bm25.of(query));
@@ -133,6 +155,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    *
    * @param query Query string.
    * @param fn    Lambda expression for optional parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT bm25(String query, Function<Bm25.Builder, ObjectBuilder<Bm25>> fn) {
     return bm25(Bm25.of(query, fn));
@@ -142,6 +166,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * Query collection objects using keyword (BM25) search.
    *
    * @param query BM25 query request.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT bm25(Bm25 query) {
     return performRequest(query);
@@ -153,6 +179,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param query   Query string.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -168,6 +196,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param fn      Lambda expression for optional parameters.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -182,6 +212,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param query   BM25 query request.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -196,6 +228,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * Query collection objects using hybrid search.
    *
    * @param query Query string.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT hybrid(String query) {
     return hybrid(Hybrid.of(query));
@@ -206,6 +240,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    *
    * @param query Query string.
    * @param fn    Lambda expression for optional parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT hybrid(String query, Function<Hybrid.Builder, ObjectBuilder<Hybrid>> fn) {
     return hybrid(Hybrid.of(query, fn));
@@ -215,6 +251,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * Query collection objects using hybrid search.
    *
    * @param query Hybrid query request.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT hybrid(Hybrid query) {
     return performRequest(query);
@@ -226,6 +264,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param query   Query string.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -241,6 +281,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param fn      Lambda expression for optional parameters.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -255,6 +297,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param query   Query string.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -269,6 +313,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * Query collection objects using near vector search.
    *
    * @param vector Query vector.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT nearVector(float[] vector) {
     return nearVector(NearVector.of(vector));
@@ -279,6 +325,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    *
    * @param vector Query vector.
    * @param fn     Lambda expression for optional parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT nearVector(float[] vector, Function<NearVector.Builder, ObjectBuilder<NearVector>> fn) {
     return nearVector(NearVector.of(vector, fn));
@@ -288,6 +336,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * Query collection objects using near vector search.
    *
    * @param query Near vector query request.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT nearVector(NearVector query) {
     return performRequest(query);
@@ -299,6 +349,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param vector  Query vector.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -314,6 +366,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param fn      Lambda expression for optional parameters.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -329,6 +383,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param query   Near vector query request.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -343,6 +399,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * Query collection objects using near object search.
    *
    * @param uuid Query object UUID.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT nearObject(String uuid) {
     return nearObject(NearObject.of(uuid));
@@ -353,6 +411,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    *
    * @param uuid Query object UUID.
    * @param fn   Lambda expression for optional parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT nearObject(String uuid, Function<NearObject.Builder, ObjectBuilder<NearObject>> fn) {
     return nearObject(NearObject.of(uuid, fn));
@@ -362,6 +422,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * Query collection objects using near object search.
    *
    * @param query Near object query request.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT nearObject(NearObject query) {
     return performRequest(query);
@@ -373,6 +435,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param uuid    Query object UUID.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -388,6 +452,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param fn      Lambda expression for optional parameters.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -403,6 +469,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param query   Near object query request.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -417,6 +485,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * Query collection objects using near text search.
    *
    * @param text Query concepts.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT nearText(String... text) {
     return nearText(NearText.of(text));
@@ -427,6 +497,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    *
    * @param text Query concepts.
    * @param fn   Lambda expression for optional parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT nearText(String text, Function<NearText.Builder, ObjectBuilder<NearText>> fn) {
     return nearText(NearText.of(text, fn));
@@ -437,6 +509,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    *
    * @param text Query concepts.
    * @param fn   Lambda expression for optional parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT nearText(List<String> text, Function<NearText.Builder, ObjectBuilder<NearText>> fn) {
     return nearText(NearText.of(text, fn));
@@ -446,6 +520,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * Query collection objects using near text search.
    *
    * @param query Near text query request.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT nearText(NearText query) {
     return performRequest(query);
@@ -457,6 +533,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param text    Query concepts.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -471,6 +549,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param text    Query concepts.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -486,6 +566,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param fn      Lambda expression for optional parameters.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -502,6 +584,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param fn      Lambda expression for optional parameters.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -517,6 +601,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param query   Near text query request.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -531,6 +617,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * Query collection objects using near image search.
    *
    * @param image Query image (base64-encoded).
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT nearImage(String image) {
     return nearImage(NearImage.of(image));
@@ -541,6 +629,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    *
    * @param image Query image (base64-encoded).
    * @param fn    Lambda expression for optional parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT nearImage(String image, Function<NearImage.Builder, ObjectBuilder<NearImage>> fn) {
     return nearImage(NearImage.of(image, fn));
@@ -550,6 +640,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * Query collection objects using near image search.
    *
    * @param query Near image query request.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT nearImage(NearImage query) {
     return performRequest(query);
@@ -564,6 +656,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    *
    * @see GroupBy
    * @see QueryResponseGrouped
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public GroupedResponseT nearImage(String image, GroupBy groupBy) {
     return nearImage(NearImage.of(image), groupBy);
@@ -576,6 +670,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param fn      Lambda expression for optional parameters.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -591,6 +687,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param query   Near image query request.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -605,6 +703,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * Query collection objects using near audio search.
    *
    * @param audio Query audio (base64-encoded).
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT nearAudio(String audio) {
     return nearAudio(NearAudio.of(audio));
@@ -615,6 +715,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    *
    * @param audio Query audio (base64-encoded).
    * @param fn    Lambda expression for optional parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT nearAudio(String audio, Function<NearAudio.Builder, ObjectBuilder<NearAudio>> fn) {
     return nearAudio(NearAudio.of(audio, fn));
@@ -624,6 +726,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * Query collection objects using near audio search.
    *
    * @param query Near audio query request.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT nearAudio(NearAudio query) {
     return performRequest(query);
@@ -635,6 +739,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param audio   Query audio (base64-encoded).
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -650,6 +756,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param fn      Lambda expression for optional parameters.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -666,6 +774,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param query   Near audio query request.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -680,6 +790,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * Query collection objects using near video search.
    *
    * @param video Query video (base64-encoded).
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT nearVideo(String video) {
     return nearVideo(NearVideo.of(video));
@@ -690,6 +802,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    *
    * @param video Query video (base64-encoded).
    * @param fn    Lambda expression for optional parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT nearVideo(String video, Function<NearVideo.Builder, ObjectBuilder<NearVideo>> fn) {
     return nearVideo(NearVideo.of(video, fn));
@@ -699,6 +813,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * Query collection objects using near video search.
    *
    * @param query Near video query request.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT nearVideo(NearVideo query) {
     return performRequest(query);
@@ -710,6 +826,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param video   Query video (base64-encoded).
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -725,6 +843,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param fn      Lambda expression for optional parameters.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -740,6 +860,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param query   Near video query request.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -754,6 +876,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * Query collection objects using near thermal search.
    *
    * @param thermal Query thermal (base64-encoded).
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT nearThermal(String thermal) {
     return nearThermal(NearThermal.of(thermal));
@@ -764,6 +888,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    *
    * @param thermal Query thermal (base64-encoded).
    * @param fn      Lambda expression for optional parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT nearThermal(String thermal, Function<NearThermal.Builder, ObjectBuilder<NearThermal>> fn) {
     return nearThermal(NearThermal.of(thermal, fn));
@@ -773,6 +899,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * Query collection objects using near thermal search.
    *
    * @param query Near thermal query request.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT nearThermal(NearThermal query) {
     return performRequest(query);
@@ -784,6 +912,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param thermal Query thermal (base64-encoded).
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -799,6 +929,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param fn      Lambda expression for optional parameters.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -814,6 +946,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param query   Near thermal query request.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -828,6 +962,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * Query collection objects using near depth search.
    *
    * @param depth Query depth (base64-encoded).
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT nearDepth(String depth) {
     return nearDepth(NearDepth.of(depth));
@@ -838,6 +974,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    *
    * @param depth Query depth (base64-encoded).
    * @param fn    Lambda expression for optional parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT nearDepth(String depth, Function<NearDepth.Builder, ObjectBuilder<NearDepth>> fn) {
     return nearDepth(NearDepth.of(depth, fn));
@@ -847,6 +985,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * Query collection objects using near depth search.
    *
    * @param query Near depth query request.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT nearDepth(NearDepth query) {
     return performRequest(query);
@@ -858,6 +998,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param depth   Query depth (base64-encoded).
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -873,6 +1015,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param fn      Lambda expression for optional parameters.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -888,6 +1032,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param query   Near depth query request.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -902,6 +1048,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * Query collection objects using near IMU search.
    *
    * @param imu Query IMU (base64-encoded).
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT nearImu(String imu) {
     return nearImu(NearImu.of(imu));
@@ -912,6 +1060,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    *
    * @param imu Query IMU (base64-encoded).
    * @param fn  Lambda expression for optional parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT nearImu(String imu, Function<NearImu.Builder, ObjectBuilder<NearImu>> fn) {
     return nearImu(NearImu.of(imu, fn));
@@ -921,6 +1071,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * Query collection objects using near IMU search.
    *
    * @param query Near IMU query request.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    */
   public ResponseT nearImu(NearImu query) {
     return performRequest(query);
@@ -932,6 +1084,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param imu     Query IMU (base64-encoded).
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -947,6 +1101,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param fn      Lambda expression for optional parameters.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
@@ -962,6 +1118,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param query   Near IMU query request.
    * @param groupBy Group-by clause.
    * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
    *
    * @see GroupBy
    * @see QueryResponseGrouped
