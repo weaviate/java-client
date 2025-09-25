@@ -43,5 +43,4 @@ public class WeaviateQueryClientAsync<T>
     var request = new QueryRequest(operator, groupBy);
     return this.grpcTransport.performRequestAsync(request, QueryRequest.grouped(collection, defaults));
   }
-
 }

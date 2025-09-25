@@ -44,6 +44,7 @@ public record ReferenceProperty(
     return new ReferenceProperty(name, collections);
   }
 
+  /** This method is intended for client's internal use only. */
   public Property toProperty() {
     return new Property.Builder(propertyName, dataTypes).build();
   }

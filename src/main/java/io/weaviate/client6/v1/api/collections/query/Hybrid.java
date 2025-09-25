@@ -62,40 +62,74 @@ public record Hybrid(
       this.query = query;
     }
 
+    /** Select properties to be included in the results scoring. */
     public Builder queryProperties(String... properties) {
       return queryProperties(Arrays.asList(properties));
     }
 
+    /** Select properties to be included in the results scoring. */
     public Builder queryProperties(List<String> properties) {
       this.queryProperties = properties;
       return this;
     }
 
+    /**
+     * Select <a href=
+     * "https://docs.weaviate.io/weaviate/api/graphql/search-operators#bm25">BM25
+     * Search Operator</a> to use.
+     */
     public Builder searchOperator(SearchOperator searchOperator) {
       this.searchOperator = searchOperator;
       return this;
     }
 
+    /**
+     * Apply custom weighting between vector search and keyword search components.
+     *
+     * <ul>
+     * <li>{@code alpha=1}: Pure BM25 search
+     * <li>{@code alpha=0}: Pure vector search
+     * <li>{@code alpha>0.5}: More weight to vector search
+     * <li>{@code alpha<0.5}: More weight to BM25 search
+     * </ul>
+     */
     public Builder alpha(float alpha) {
       this.alpha = alpha;
       return this;
     }
 
+    /**
+     * Select the fusion algorithm for combining
+     * vector search and keyword search results.
+     */
     public Builder fusionType(FusionType fusionType) {
       this.fusionType = fusionType;
       return this;
     }
 
+    /** Set the maximum allowable distance for the vector search component. */
     public Builder maxVectorDistance(float maxVectorDistance) {
       this.maxVectorDistance = maxVectorDistance;
       return this;
     }
 
+    /**
+     * Vector search component.
+     *
+     * @see NearVector#of(float[])
+     * @see NearVector#of(float[], Function)
+     */
     public Builder nearVector(NearVector nearVector) {
       this.near = nearVector;
       return this;
     }
 
+    /**
+     * Vector search component.
+     *
+     * @see NearText#of(float[])
+     * @see NearText#of(float[], Function)
+     */
     public Builder nearText(NearText nearText) {
       this.near = nearText;
       return this;

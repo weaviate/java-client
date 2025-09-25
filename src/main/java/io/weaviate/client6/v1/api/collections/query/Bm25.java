@@ -39,15 +39,22 @@ public record Bm25(
       this.query = query;
     }
 
+    /** Select properties to be included in the results scoring. */
     public Builder queryProperties(String... properties) {
       return queryProperties(Arrays.asList(properties));
     }
 
+    /** Select properties to be included in the results scoring. */
     public Builder queryProperties(List<String> properties) {
       this.queryProperties.addAll(properties);
       return this;
     }
 
+    /**
+     * Select <a href=
+     * "https://docs.weaviate.io/weaviate/api/graphql/search-operators#bm25">BM25
+     * Search Operator</a> to use.
+     */
     public Builder searchOperator(SearchOperator searchOperator) {
       this.searchOperator = searchOperator;
       return this;

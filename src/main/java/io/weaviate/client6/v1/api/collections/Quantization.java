@@ -51,38 +51,63 @@ public interface Quantization {
 
   Object _self();
 
+  /** Disable any quantization for this collection. */
   public static Quantization uncompressed() {
     return Uncompressed.of();
   }
 
+  /** Enable binary quantization for this collection. */
   public static Quantization bq() {
     return BQ.of();
   }
 
+  /**
+   * Enable binary quantization for this collection.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
   public static Quantization bq(Function<BQ.Builder, ObjectBuilder<BQ>> fn) {
     return BQ.of(fn);
   }
 
+  /** Enable product quantization for this collection. */
   public static Quantization pq() {
     return PQ.of();
   }
 
+  /**
+   * Enable product quantization for this collection.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
   public static Quantization pq(Function<PQ.Builder, ObjectBuilder<PQ>> fn) {
     return PQ.of(fn);
   }
 
+  /** Enable scalar quantization for this collection. */
   public static Quantization sq() {
     return SQ.of();
   }
 
+  /**
+   * Enable scalar quantization for this collection.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
   public static Quantization sq(Function<SQ.Builder, ObjectBuilder<SQ>> fn) {
     return SQ.of(fn);
   }
 
+  /** Enable rotational quantization for this collection. */
   public static Quantization rq() {
     return RQ.of();
   }
 
+  /**
+   * Enable rotational quantization for this collection.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
   public static Quantization rq(Function<RQ.Builder, ObjectBuilder<RQ>> fn) {
     return RQ.of(fn);
   }

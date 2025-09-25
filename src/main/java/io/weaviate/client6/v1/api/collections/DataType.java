@@ -19,6 +19,17 @@ public interface DataType {
   public static final String UUID = "uuid";
   public static final String UUID_ARRAY = "uuid[]";
 
+  /**
+   * Scalar/array types which Weaviate and WeaviateClient recognize.
+   *
+   * <p>
+   * Other data types are considered reference types, i.e. if a user creates a
+   * property with type {@code "timestamp"}, the client will count it a
+   * cross-reference to the {@code "timestamp"} collection.
+   *
+   * This is obviously wrong, so it is recommended to always create properties
+   * using {@link Property}'s factory classes.
+   */
   public static final Set<String> KNOWN_TYPES = ImmutableSet.of(
       TEXT, INT, BLOB, BOOL, DATE, UUID, NUMBER,
       TEXT_ARRAY, INT_ARRAY, NUMBER_ARRAY, BOOL_ARRAY, DATE_ARRAY, UUID_ARRAY);
