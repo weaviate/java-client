@@ -442,7 +442,25 @@ TODO
 
 ### Error handling
 
-TODO
+The client throws exceptions extending `WeaviateException`, which can be used as a catch-all case for any package-related exceptions. Other exception types, such as `IOException` which may be thrown by the underlying HTTP / gRPC libraries are allowed to propagate, as they usually signal different kinds of errors: malformed URL, network problems, etc.
+
+`WeaviateException` is an **unchecked exception**.
+
+```java
+try (final var client = WeaviateClient.connectToLocal()) {
+    // Make some requests
+} catch (WeaviateException | IOException e) {
+    e.printStackTrace();
+}
+```
+
+Concrete exception types:
+
+- `WeaviateApiException` - Bad request.
+- `PaginationException` - Wrapper exception with pagination details (page size, last cursor UUID)
+- `WeaviateConnectException` - Weaviate instance not available, failed to connect.
+- `WeaviateOAuthException` - Error during OAuth credentials exchange.
+- `WeaviateTransportException` - Internal transport layer exception.
 
 ### ORM
 
