@@ -443,11 +443,89 @@ The shape of the response object is different too, see [`QueryResponseGrouped`](
 
 ### Pagination
 
-TODO
+Paginating a Weaviate collection is straighforward and the API should is instantly familiar. `CursorSpliterator` powers 2 patterns for iterating over objects:
+- the default Paginator object returned by `collection.paginate()` implements Iterable that can be used in a traditional for-loop
+- `.stream()` presents the internal Spliterator via an idiomatic Stream API
+
+```java
+var allSongs = songs.paginate();
+
+for (WeaviateObject song : allSongs) {
+    // Traditional for-loop
+}
+
+// Stream API
+var allSongUUIDs = allSongs.stream().map(WeaviateObject::uuid).toList();
+```
+
+Paginator can be configured to return a subset of properties / metadata fields, use a different page size (defaults to 100) or resume iteration from an arbitrary object.
+
+```java
+// Create a paginator
+var allSongs = things.paginate(
+  p -> p
+    .pageSize(10)
+    .resumeFrom("uuid-3")
+    .returnProperties("artist", "album")
+    .returnMetadata(Metadata.VECTOR));
+
+// Process data
+allSongs.stream().toList();
+```
 
 ### Aggregating data
 
-TODO
+```java
+songs.aggregate.overAll(
+    with -> with
+        .metrics(
+            Aggregate.integer("year", calc -> calc.min().max().median()),
+            Aggregate.text("album", calc -> calc.topOccurrences().topOccurencesCutoff(5)),
+            Aggregate.bool("isSingle", calc -> calc.percentageTrue().totalFalse()),
+            Aggregate.number("monthlyListeners", calc -> calc.mode().count())
+        )
+        .includeTotalCount(true)
+)
+```
+
+#### Filtered aggregations
+
+To perform aggregations over query results, use one of the other method under the `aggregate` namespace: it has the same set of methods as the `query` namespace, with the exception of `.bm25(...)`, which cannot be used as an aggregation filter.
+
+```java
+songs.aggregate.hybrid(
+    "summer of love",
+    hybrid -> hybrid
+        .queryProperties("title", "lyrics")
+        .nearVector(NearVector.of(
+            new float[]{...},
+            nv -> nv.certainty(.7f)
+        )
+        .alpha(.3f),
+    aggregate -> aggregate
+        .metrics(
+            Aggregate.text("artist", calc -> calc.topOccurrences())
+        )
+);
+```
+
+Similartly, an overload with another parameter for a group-by clause is available:
+
+```java
+songs.aggregate.nearObject(
+    yellowSubmarine.uuid(),
+    nearObject -> nearObject.excludeSelf(),
+    aggregate -> aggregate.metrics(
+        Aggregate.text("album", calc -> calc.topOccurrences())
+    ),
+    GroupBy.property("year")
+);
+```
+
+#### Counting collection objects
+
+To query the total object count in a collection use `songs.size()` shorthand.
+
 
 ### Error handling
 
