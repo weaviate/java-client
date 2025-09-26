@@ -186,7 +186,9 @@ public class Vectors {
                 vector = float_1d.fromJsonTree(array);
               }
 
-              assert (vector instanceof float[]) || (vector instanceof float[][]) : "invalid vector type";
+              assert (vector instanceof float[]) || (vector instanceof float[][])
+                  : "invalid vector type " + vector.getClass();
+
               namedVectors.put(vectorName, vector);
             }
           }

@@ -147,7 +147,7 @@ final class PojoDescriptor<T extends Record> implements CollectionDescriptor<T> 
       }
 
       if (ctor == null) {
-        throw new IllegalArgumentException(type.getCanonicalName() + " fields are not supported");
+        throw new IllegalArgumentException(type.getCanonicalName() + " property is not supported");
       }
 
       assert ctor != null;
