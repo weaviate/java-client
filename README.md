@@ -428,6 +428,7 @@ Supported **comparison operators**:
 - Like: `.like`
 - ContainsAll: `.containsAll`
 - ContainsAny: `.containsAny`
+- ContainsNone: `.containsNone`
 - WithinGeoRange: `.withinGeoRange`
 
 Comparison operators can be grouped using **logical operators** with arbitrarily deep nesting.
@@ -447,6 +448,12 @@ Comparison operators can be grouped using **logical operators** with arbitrarily
 )
 ```
 
+Supported **logical operators**:
+
+- And: `.and`
+- Or: `.or`
+- Not: `.not`
+
 Operators passed in subsequent calls to `.where` are concatenated with the `.and` operartor.
 These 3 calls are equivalent:
 
@@ -454,6 +461,13 @@ These 3 calls are equivalent:
 .where(Where.and(cond1, cond2))
 .where(cond1, cond2)
 .where(cond1).where(cond2)
+```
+
+To negate an operator, wrap it in `Where.not(...)` or use the negation shorthand.
+
+```java
+Where.not(Where.property("title").like("summer"));
+Where.property("title").like("summer").not();
 ```
 
 Passing `null` and and empty `Where[]` to any of the logical operators as well as to the `.where()` method is safe -- the empty operators will simply be ignored.
