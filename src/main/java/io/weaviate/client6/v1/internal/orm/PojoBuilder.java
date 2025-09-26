@@ -125,8 +125,7 @@ final class PojoBuilder<PropertiesT extends Record> implements PropertiesBuilder
   }
 
   @Override
-  // TODO: rename to setLong
-  public void setInteger(String propertyName, Long value) {
+  public void setLong(String propertyName, Long value) {
     if (isType(propertyName, short.class, Short.class)) {
       setValue(propertyName, value.shortValue());
     } else if (isType(propertyName, int.class, Integer.class)) {
