@@ -66,7 +66,7 @@ public class Where implements WhereOperand {
   public boolean isEmpty() {
     // Guard against Where.and(Where.or(), Where.and(), Where.not()) situation.
     return operands.isEmpty()
-        || operands.stream().allMatch(operator -> operator.isEmpty());
+        || operands.stream().allMatch(operator -> operator == null | operator.isEmpty());
   }
 
   @Override
