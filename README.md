@@ -5,7 +5,7 @@
 Official Weaviate Java Client.
 
 > [!IMPORTANT]
-> `client6` does not support many of the legacy features supported in other clients. Ensure your instance is running at least v1.32 to avoid compatibility issues.
+> `client6` does not support many of the legacy features supported in other clients. Ensure your instance is running at least `v1.32` to avoid compatibility issues.
 
 ## Usage
 
@@ -125,7 +125,7 @@ songs.query.hybrid(
 );
 ```
 
-Notice how the type of each lambda argument can be automatically deduced from the methods' signatures. This allows the autocomplete to correctly suggest possible arguments, guiding you through the query API.The builder itself is "tucked" in the method's internals, so you needn't remember how to access or import it. What's more, the code reads a lot more like a query thanks to improved [locality](https://htmx.org/essays/locality-of-behaviour/). As you'll see in the examples below, you can also get creative with naming the lambda argument to act as hint for future readers.
+Notice how the type of each lambda argument can be automatically deduced from the methods' signatures. This allows the autocomplete to correctly suggest possible arguments, guiding you through the query API. The builder itself is "tucked" in the method's internals, so you needn't remember how to access or import it. What's more, the code reads a lot more like a query thanks to improved [locality](https://htmx.org/essays/locality-of-behaviour/). As you'll see in the examples below, you can also get creative with naming the lambda argument to act as hint for future readers.
 
 In real-world programs there will be cases where you need to inject some control-flow statements in the query builder code. Consider an example of limiting the number of query results based on some external value, such as a URL query paramter. Lambda expressions are fully-fledged functions, so you could add a if-statement right in the middle of it:
 
@@ -138,7 +138,7 @@ songs.query.hybrid("rainbow", h -> {
 });
 ```
 
-This may get out of hand quickly if complex logic is involved. Or you may simply prefer the standard Builder pattern. Whichever's the case, `client6` has got you covered, as "tucked" builders are public members of the classes they build, and can be used directly:
+This may get out of hand quickly if complex logic is involved. Or you may simply prefer the standard Builder pattern. Whichever's the case, `client6` has got you covered. Tucked builders are public members of the classes they build, so they can be used directly.
 
 ```java
 Hybrid.Builder builder = new Hybrid.Builder("rainbow");
@@ -151,13 +151,11 @@ if (limitURL != null) {
 songs.query.hybrid(/* Hybrid */ builder.build());
 ```
 
-Finally, if you need to separate "query definition" from "performing the query", most objects provide two static factories: one with required arguments and one with required aruments and a tucked builder.
+Finally, if you need to separate "query definition" from "performing the query", most objects provide two static factories: one with only the required arguments and one with the required aruments and a tucked builder.
 
 ```java
 Hybrid requiredOnly = Hybrid.of("rainbow");
 Hybrid withOptional = Hybrid.of("rainbow", opt -> opt.limit(10));
-
-songs.query.hybrid(withOptional);
 ```
 
 ### Connecting to a Weaviate instance
@@ -182,28 +180,37 @@ WeaviateClient local = WeaviateClient.connectToLocal(local -> local.port(9090));
 WeaviateClient wcd = WeaviateClient.connectToWeaviateCloud("my-cluster-url.io", "my-api-key");
 ```
 
-The client holds a number of resources (HTTP connection pools, gRPC channel) which must be disposed of correclty then they are no longer needed.
-If the client's lifecycle is tied to that of your app, closing the client via `client.close()` is a good way to do that.
-
-Otherwise, it is a good idea to use the client inside a [try-with-resources](https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html) statement:
-
-```java
-try (final var client = new WeaviateClient(config)) {
-  // Do something with the client
-}
-```
-WeaviateClient will be automatically closed when execution exits the block.
+> [!TIP]
+> The client holds a number of resources (HTTP connection pools, gRPC channel) which must be disposed of correclty then they are no longer needed.
+> If the client's lifecycle is tied to that of your app, closing the client via `client.close()` is a good way to do that.
+> 
+> Otherwise, use the client inside a [try-with-resources](https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html) statement:
+>
+>```java
+> try (final var client = new WeaviateClient(config)) {
+>   // Do something with the client
+> }
+> ```
+> WeaviateClient will be automatically closed when execution exits the block.
 
 #### Authentication
 
 Weaviate supports several authentication methods:
 
-| Method  | Client API reference                                                            |
-| ------- | ------------------------------------------------------------------------------- |
+| Method                  | Client API reference                                            |
+| ----------------------- | --------------------------------------------------------------- |
 | API Key                 | `Authentication.apiKey("my-api-key")`                           |
 | Resource owner password | `Authentication.resourceOwnerPassword("username", "password")`  |
 | Client credentials      | `Authentication.clientCredentials("clientKey", "clientSecret")` |
 | Existing bearer token   | `Authentication.apiKey("access-token", "refresh-token", 900)`   |
+
+Pass the preferred authentication method as an argument to the connection builder to use it in the client:
+
+```java
+WeaviateClient.connectToCustom(
+    conn -> conn.authentication(Authentication.apiKey("my-api-key")
+);
+```
 
 Follow the [documentation](https://docs.weaviate.io/deploy/configuration/authentication) for a detailed discussion.
 
@@ -244,14 +251,14 @@ Other methods in `collections` namespace include:
 
 #### Using a Collection Handle
 
-Once a collection is created, you can obtain another client object (a "handle") that's scoped to that collection.
+Once a collection is created, you can obtain another client object that's scoped to that collection, called a _"handle"_.
 
 ```java
 CollectionHandle<Map<String,Object>> songs = client.collections.use("Songs");
 ```
 
 Using the handle, we can ingest new data into the collection and query it, as well as modify the configuration.
-The handle object is thread safe and, although lightweight, is best created once and shared across threads / callers.
+The handle object is thread safe. Although lightweight, it is best created once and shared across threads / callers.
 
 ```java
 // Bad: creates a new CollectionHandle object for each iteration, strains the GC unnecessarily.
@@ -269,11 +276,12 @@ For the rest of the document, assume `songs` is handle for the "Songs" collectio
 
 #### Generic `PropertiesT`
 
-Weaviate client lets you insert object properties in different "shapes". The compile-time type in which the properties must be passed is determied by a generic paramter in CollectionHandle object.
+Weaviate client lets you insert object properties in different "shapes". The compile-time type in which the properties must be passed is determined by a generic paramter in CollectionHandle object.
 By defalt, the value for this parameter is `Map<String, Object>`. That allows you to think of your data as JSON objects with some additional metadata (vector embedding, UUID, certainty score, etc.).
 
-In practice this means that whenever data needs to be inserted, you need to pass an instance of `Map<String, Object>` and whenever it is queried, the properties are deserialized into a `Map<String, Object>`.
-If you prefer stricter typing, you can leverage our built-in ORM to work with properties as custom Java types. We will return to this in  the **ORM** section later. Assume for now that properties are being passed around as an "untyped" map.
+In practice this means you'll be passing an instance of `Map<String, Object>` to insert a new object and receive its properties as `Map<String, Object>` when the collection is queried.
+
+If you prefer stricter typing, you can leverage our built-in ORM to work with properties as custom Java types. We will return to this in the **ORM** section later. Assume for now that properties are always being passed around as an "untyped" map.
 
 ### Ingesting data
 
@@ -282,7 +290,11 @@ Data operations are concentrated behind the `.data` namespace.
 #### Insert single object
 
 ```java
-var yellowSubmarine = songs.data.insert(Map.of("title", "Yellow Submarine", "lyrics", "...", "year", 1969);
+var yellowSubmarine = songs.data.insert(Map.of(
+  "title", "Yellow Submarine",
+  "lyrics", "In the town where I was born...",
+  "year", 1969
+));
 System.out.println("Inserted new song at "+ yellowSubmarine.metadata().createdAt());
 System.out.println("Yellow Submarine uuid="+ yellowSubmarine.uuid());
 ```
@@ -290,13 +302,20 @@ System.out.println("Yellow Submarine uuid="+ yellowSubmarine.uuid());
 You can supply your own UUID and vector embedding:
 
 ```java
-songs.data.insert(Map.of(...), obj -> obj.uuid("valid-custom-uuid").vectors(Vectors.of("title_vec", new float[]{...})));
+songs.data.insert(
+  Map.of(...),
+  obj -> obj
+    .uuid("valid-custom-uuid")
+    .vectors(Vectors.of("title_vec", new float[]{...}))
+);
 ```
 
-Weaviate supports 1-dimensional and multi-dimensional vector embeddings, thanks to ColBERT-family modules. The associated vector can be `float[] | float[][]`.
-Because Java does not support unions of primitive types, we define an abstraction called `Vectors` which is a container type for object's vector embeddings.
+#### `Vectors`?
 
-Creating a new vector object is simple:
+Weaviate supports 1-dimensional and multi-dimensional vector embeddings, thanks to ColBERT-family modules. The associated vector can be `float[] | float[][]`.
+As Java does not have unions of primitive types, we define an abstraction called `Vectors` which is a container type for object's vector embeddings.
+
+Creating a new vector is simple:
 
 - `Vectors.of(new float[]{...})`: default 1-d vector
 - `Vectors.of("custom_1d", new float[]{...})`: 1-d vector with a custom name
@@ -317,7 +336,7 @@ float[][] v = vectors.getMulti("custom_2d"); // 2-d vector with a custom name
 #### Batch insert
 
 > [!NOTE]
-> Support for Dynamic Batching in `client6` will be added once Server-Side Batching becomes GA in Weaviate (est. v1.34)
+> Support for Dynamic Batching in `client6` will be added once Server-Side Batching becomes GA in Weaviate (est. `v1.34`)
 
 ```java
 InsertManyResponse response = songs.data.insertMany(
@@ -328,7 +347,10 @@ InsertManyResponse response = songs.data.insertMany(
 if (!response.errors().isEmpty()) {
   throw new RuntimeException(String.join(", ", response.errors()));
 }
-System.out.println("Inserted %d objects, took: %.2fs".formatted(response.reponses().size(), response.took()));
+System.out.println(
+  "Inserted %d objects, took: %.2fs"
+  .formatted(response.reponses().size(), response.took())
+);
 ```
 
 To supply your own UUID and vector embedding when inserting multiple objects wrap each obejct in `WeaviateObject.of(...)`:
@@ -357,9 +379,21 @@ q -> q.returnMetadata(Metadata.SCORE, Metadata.EXPLAIN_SCORE)
 #### Semantic search
 
 ```java
-songs.query.nearVector(new float[]{...}, nv -> nv.distance(.3f));
-songs.query.nearText("a song about weather", nt -> nt.moveAway(.6f, from -> from.concepts("summertime")));
-songs.query.nearObject(yellowSubmarine.uuid(), nobj -> nobj.excludeSelf());
+songs.query.nearVector(
+  new float[]{...},
+  nv -> nv.distance(.3f)
+);
+
+songs.query.nearText(
+  "a song about weather",
+  nt -> nt.moveAway(.6f, from -> from.concepts("summertime"))
+);
+
+songs.query.nearObject(
+  yellowSubmarine.uuid(),
+  nobj -> nobj.excludeSelf()
+);
+
 songs.query.nearImage("base64-encoded-image");
 // Other "near-media" methods available: nearVideo, nearAudio, nearDepth, nearImu, nearThermal
 ```
@@ -370,7 +404,10 @@ songs.query.nearImage("base64-encoded-image");
 #### Keyword and Hybrid search
 
 ```java
-songs.query.bm25("rain", bm25 -> bm25.queryProeperties("lyrics"));
+songs.query.bm25(
+  "rain",
+  bm25 -> bm25.queryProeperties("lyrics")
+);
 
 songs.query.hybrid(
   "rain",
@@ -423,9 +460,9 @@ Operators passed in subsequent calls to `.where` are concatenated with the `.and
 These 3 calls are equivalent:
 
 ```java
-q -> q.where(Where.and(cond1, cond2))
-q -> q.where(cond1, cond2)
-q -> q.where(cond1).where(cond2)
+.where(Where.and(cond1, cond2))
+.where(cond1, cond2)
+.where(cond1).where(cond2)
 ```
 
 Passing `null` and and empty `Where[]` to any of the logical operators as well as to the `.where()` method is safe -- the empty operators will simply be ignored.
@@ -435,15 +472,26 @@ Passing `null` and and empty `Where[]` to any of the logical operators as well a
 Every query above has an overloaded variant that accepts a group-by clause.
 
 ```java
-songs.query.nearVector(new float[]{...}, GroupBy.property("artist", 10, 100)); // Required arguments + GroupBy
-songs.query.bm25("rain", bm25 -> bm25.queryProperties("lyrics"), GroupBy.property("artist", 10, 100)); // Required argument, optional parameters, GroupBy
+// Required arguments + GroupBy
+songs.query.nearVector(
+  new float[]{...},
+  GroupBy.property("artist", 10, 100)
+);
+
+// Required argument, optional parameters, GroupBy
+songs.query.bm25(
+  "rain",
+  bm25 -> bm25.queryProperties("lyrics"),
+  GroupBy.property("artist", 10, 100)
+);
 ```
 
 The shape of the response object is different too, see [`QueryResponseGrouped`](./src/main/java/io/weaviate/client6/v1/api/collections/query/QueryResponseGrouped.java).
 
 ### Pagination
 
-Paginating a Weaviate collection is straighforward and the API should is instantly familiar. `CursorSpliterator` powers 2 patterns for iterating over objects:
+Paginating a Weaviate collection is straighforward and its API should is instantly familiar. `CursorSpliterator` powers 2 patterns for iterating over objects:
+
 - the default Paginator object returned by `collection.paginate()` implements Iterable that can be used in a traditional for-loop
 - `.stream()` presents the internal Spliterator via an idiomatic Stream API
 
@@ -464,7 +512,7 @@ Paginator can be configured to return a subset of properties / metadata fields, 
 // Create a paginator
 var allSongs = things.paginate(
   p -> p
-    .pageSize(10)
+    .pageSize(500)
     .resumeFrom("uuid-3")
     .returnProperties("artist", "album")
     .returnMetadata(Metadata.VECTOR));
@@ -531,7 +579,8 @@ To query the total object count in a collection use `songs.size()` shorthand.
 
 The client throws exceptions extending `WeaviateException`, which can be used as a catch-all case for any package-related exceptions. Other exception types, such as `IOException` which may be thrown by the underlying HTTP / gRPC libraries are allowed to propagate, as they usually signal different kinds of errors: malformed URL, network problems, etc.
 
-`WeaviateException` is an **unchecked exception**.
+> [!WARNING]
+> `WeaviateException` is an **unchecked exception**.
 
 ```java
 try (final var client = WeaviateClient.connectToLocal()) {
@@ -548,6 +597,7 @@ Concrete exception types:
 - `WeaviateConnectException` - Weaviate instance not available, failed to connect.
 - `WeaviateOAuthException` - Error during OAuth credentials exchange.
 - `WeaviateTransportException` - Internal transport layer exception.
+
 
 ### ORM
 
@@ -570,6 +620,7 @@ record Song(
 ```
 
 By default, the class and field names map to the collection and property names respectively. The `@Collection` and `@Property` annotations can be used to override those defaults.
+
 To create the collection, pass the class definition to `.create`.
 
 ```java
@@ -583,21 +634,27 @@ client.collections.create(
 Ingestion and search work the same way, but will accept / return `Song.class` instances instead of `Map<String, Object>`.
 
 ```java
-Song trust = new Song("Bad", "...", "Michael Jackson", 1987, ...);
+Song bad = new Song("Bad", "...", "Michael Jackson", 1987, ...);
 Song badGuy = new Song("Bad Guy", "...", "Billie Eilish", 2019, ...);
 Song crown = new Song("You Should See Me in a Crown", "...", "Billie Eilish", 2019, ...);
 
-songs.data.insert(trust);
+songs.data.insert(bad);
 songs.data.insertMany(badGuy, crown);
 
-var result = songs.query.bm25("bad", opt -> opt.queryProperties("lyrics").returnProperties("artist"));
+var result = songs.query.bm25(
+  "bad",
+  opt -> opt
+    .queryProperties("lyrics")
+    .returnProperties("artist")
+);
 
-for (var song : result.objects()) {
-  System.out.println(song.properties().artist());
+for (var object : result.objects()) {
+  Song song = object.properties();
+  System.out.println(song.artist());
 }
 ```
 
-We want to stress that this ORM's focus is on improving type-safety around object properties and simplifying de-/serialization. The ORM is intentionally kept minimal and as such has the following limitations:
+We want to stress that this ORM's focus is on improving type-safety around object properties and simplifying serialization/deserialization. It is intentionally kept minimal and as such has the following limitations:
 
 - **Does not support BLOB properties.** On the wire, blob properties are represented as base64-encoded strings, and both logically map to the Java's `String`. Presently there isn't a good way for the client to deduce which property type should be created, so it always maps `Sting -> TEXT`.
 - **Limited configuration options.** Vector indices, replication, multi-tenancy, and such need to be configured via a tucked builder in `.create(..., here -> here)`.
@@ -608,14 +665,23 @@ record Artist(String firstName, String lastName, int age) {};
 
 record Song(String title, Artist artist) {};
 
-var song1 = songs.query.byId(uuid1, song -> song.returnReferences(QueryReference.single("artist")));
-System.out.println("Artist's last name is: " + song1.properties().artist().lastName());
+var song1 = songs.query.byId(
+  uuid1,
+  song -> song.returnReferences(QueryReference.single("artist"))
+);
+System.out.println(
+  "Artist's last name is: " + 
+  song1.properties().artist().lastName()
+);
 ```
 
 Instead you'd work with cross-references same way as without the ORM:
 
 ```java
-System.out.println("Artist's last name is: " + song1.references().get("artist").properties().get("lastName"));
+System.out.println(
+  "Artist's last name is: " +
+  song1.references().get("artist").properties().get("lastName")
+);
 ```
 
 Some of these features may be added in future releases.
