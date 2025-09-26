@@ -1,4 +1,4 @@
-# Weaviate Java client  <img alt='Weaviate logo' src='https://github.com/weaviate/java-client/blob/v6/assets/duke-client6.png' width='200' align='right' />
+# Weaviate Java client  <img alt='Weaviate logo' src='https://github.com/weaviate/java-client/blob/v6/logo.png' width='200' align='right' />
 
 [![Build Status](https://github.com/weaviate/java-client/actions/workflows/.github/workflows/test.yaml/badge.svg?branch=main)](https://github.com/weaviate/java-client/actions/workflows/.github/workflows/test.yaml)
 
@@ -183,7 +183,7 @@ WeaviateClient wcd = WeaviateClient.connectToWeaviateCloud("my-cluster-url.io", 
 > [!TIP]
 > The client holds a number of resources (HTTP connection pools, gRPC channel) which must be disposed of correclty then they are no longer needed.
 > If the client's lifecycle is tied to that of your app, closing the client via `client.close()` is a good way to do that.
-> 
+>
 > Otherwise, use the client inside a [try-with-resources](https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html) statement:
 >
 >```java
@@ -684,7 +684,7 @@ var song1 = songs.query.byId(
   song -> song.returnReferences(QueryReference.single("artist"))
 );
 System.out.println(
-  "Artist's last name is: " + 
+  "Artist's last name is: " +
   song1.properties().artist().lastName()
 );
 ```
