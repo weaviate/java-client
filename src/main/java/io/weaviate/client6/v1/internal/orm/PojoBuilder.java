@@ -11,35 +11,36 @@ import java.util.UUID;
 import org.apache.commons.lang3.ArrayUtils;
 
 final class PojoBuilder<PropertiesT extends Record> implements PropertiesBuilder<PropertiesT> {
+  private static final Map<Class<?>, Object> PRIMITIVE_DEFAULTS;
+
+  static {
+    PRIMITIVE_DEFAULTS = Map.of(
+        boolean.class, false,
+        short.class, (short) 0,
+        int.class, 0,
+        long.class, 0L,
+        float.class, 0f,
+        double.class, 0d);
+  }
+
   private final PojoDescriptor<PropertiesT> descriptor;
   private final Constructor<PropertiesT> ctor;
   private final Map<String, Arg> ctorArgs;
 
   static record Arg(Class<?> type, Object value) {
-    Arg withValue(Object value) {
-      return new Arg(this.type, value);
+    /**
+     * Create a new Arg, replacing a null value with
+     * default if the type is a known primitive class.
+     */
+    static Arg withPrimitiveDefault(Class<?> type, Object value) {
+      if (PRIMITIVE_DEFAULTS.containsKey(type)) {
+        return new Arg(type, PRIMITIVE_DEFAULTS.get(type));
+      }
+      return new Arg(type, value);
     }
 
-    public Object value() {
-      if (value != null) {
-        return value;
-      }
-
-      if (type == boolean.class) {
-        return false;
-      } else if (type == short.class) {
-        return (short) 0;
-      } else if (type == int.class) {
-        return 0;
-      } else if (type == long.class) {
-        return 0L;
-      } else if (type == float.class) {
-        return 0f;
-      } else if (type == double.class) {
-        return 0d;
-      }
-
-      throw new IllegalArgumentException(type.getName() + " property data type is not supported");
+    Arg withValue(Object value) {
+      return new Arg(this.type, value);
     }
   }
 
@@ -53,7 +54,7 @@ final class PojoBuilder<PropertiesT extends Record> implements PropertiesBuilder
         .map(arg -> {
           // LinkedHashMap allows null values.
           var type = arg.getType();
-          ctorArgs.put(arg.getName(), new Arg(type, null));
+          ctorArgs.put(arg.getName(), Arg.withPrimitiveDefault(type, null));
           return type;
         })
         .toArray(Class<?>[]::new);
