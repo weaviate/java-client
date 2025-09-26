@@ -1,5 +1,6 @@
 package io.weaviate.integration;
 
+import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import org.junit.Test;
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.CollectionConfig;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.annotations.Collection;
 import io.weaviate.client6.v1.api.collections.annotations.Property;
 import io.weaviate.client6.v1.api.collections.data.InsertManyResponse.InsertObject;
@@ -23,7 +25,7 @@ import io.weaviate.containers.Container;
 public class ORMITest extends ConcurrentTest {
   private static WeaviateClient client = Container.WEAVIATE.getClient();
 
-  @Collection("ORMITest")
+  @Collection("ORMITestThings")
   static record Thing(
       // text / text[]
       String text,
@@ -95,7 +97,7 @@ public class ORMITest extends ConcurrentTest {
 
     // Assert
     Assertions.assertThat(config).get()
-        .returns("ORMITest", CollectionConfig::collectionName)
+        .returns("ORMITestThings", CollectionConfig::collectionName)
         .extracting(CollectionConfig::properties,
             InstanceOfAssertFactories.list(io.weaviate.client6.v1.api.collections.Property.class))
         .extracting(p -> Map.entry(
@@ -306,5 +308,46 @@ public class ORMITest extends ConcurrentTest {
         .hasSize(3)
         .usingRecursiveComparison(COMPARISON_CONFIG)
         .asInstanceOf(InstanceOfAssertFactories.list(Thing.class));
+  }
+
+  @Collection("ORMITestSongs")
+  record Song(
+      String title,
+      String album,
+      int year,
+      boolean hasAward,
+      Long monthlyListeners) {
+  }
+
+  /**
+   * Test that serialization works correctly when some fields are null and
+   * deserialization works correctly when some properties are not returned.
+   */
+  @Test
+  public void test_partialScan() throws IOException {
+    client.collections.create(Song.class);
+
+    var songs = client.collections.use(Song.class);
+
+    // Act: insert with nulls
+    var dystopia = songs.data.insert(new Song(
+        "Dystopia",
+        null,
+        2016,
+        true,
+        null));
+
+    // Act: return subset of the properties
+    var got = songs.query.byId(dystopia.uuid(),
+        q -> q.returnProperties("title", "hasAward"));
+
+    // Assert
+    Assertions.assertThat(got).get()
+        .extracting(WeaviateObject::properties)
+        .returns("Dystopia", Song::title)
+        .returns(null, Song::album)
+        .returns(0, Song::year)
+        .returns(true, Song::hasAward)
+        .returns(null, Song::monthlyListeners);
   }
 }

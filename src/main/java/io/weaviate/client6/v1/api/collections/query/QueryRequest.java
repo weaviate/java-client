@@ -221,7 +221,7 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
     } else if (value.hasBoolValue()) {
       builder.setBoolean(property, value.getBoolValue());
     } else if (value.hasIntValue()) {
-      builder.setInteger(property, value.getIntValue());
+      builder.setLong(property, value.getIntValue());
     } else if (value.hasNumberValue()) {
       builder.setDouble(property, value.getNumberValue());
     } else if (value.hasBlobValue()) {

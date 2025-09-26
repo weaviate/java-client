@@ -11,11 +11,34 @@ import java.util.UUID;
 import org.apache.commons.lang3.ArrayUtils;
 
 final class PojoBuilder<PropertiesT extends Record> implements PropertiesBuilder<PropertiesT> {
+  private static final Map<Class<?>, Object> PRIMITIVE_DEFAULTS;
+
+  static {
+    PRIMITIVE_DEFAULTS = Map.of(
+        boolean.class, false,
+        short.class, (short) 0,
+        int.class, 0,
+        long.class, 0L,
+        float.class, 0f,
+        double.class, 0d);
+  }
+
   private final PojoDescriptor<PropertiesT> descriptor;
   private final Constructor<PropertiesT> ctor;
   private final Map<String, Arg> ctorArgs;
 
   static record Arg(Class<?> type, Object value) {
+    /**
+     * Create a new Arg, replacing a null value with
+     * default if the type is a known primitive class.
+     */
+    static Arg withPrimitiveDefault(Class<?> type, Object value) {
+      if (PRIMITIVE_DEFAULTS.containsKey(type)) {
+        return new Arg(type, PRIMITIVE_DEFAULTS.get(type));
+      }
+      return new Arg(type, value);
+    }
+
     Arg withValue(Object value) {
       return new Arg(this.type, value);
     }
@@ -31,7 +54,7 @@ final class PojoBuilder<PropertiesT extends Record> implements PropertiesBuilder
         .map(arg -> {
           // LinkedHashMap allows null values.
           var type = arg.getType();
-          ctorArgs.put(arg.getName(), new Arg(type, null));
+          ctorArgs.put(arg.getName(), Arg.withPrimitiveDefault(type, null));
           return type;
         })
         .toArray(Class<?>[]::new);
@@ -103,8 +126,7 @@ final class PojoBuilder<PropertiesT extends Record> implements PropertiesBuilder
   }
 
   @Override
-  // TODO: rename to setLong
-  public void setInteger(String propertyName, Long value) {
+  public void setLong(String propertyName, Long value) {
     if (isType(propertyName, short.class, Short.class)) {
       setValue(propertyName, value.shortValue());
     } else if (isType(propertyName, int.class, Integer.class)) {
