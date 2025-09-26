@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
+import io.weaviate.client6.v1.internal.DateUtil;
 import io.weaviate.client6.v1.internal.grpc.Rpc;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateBlockingStub;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateFutureStub;
@@ -78,7 +79,7 @@ public record AggregateRequest(Aggregation aggregation, GroupBy groupBy) {
           } else if (groupBy.hasBooleans()) {
             groupedBy = new GroupedBy<>(property, groupBy.getBooleans().getValuesList().toArray(Boolean[]::new));
           } else {
-            assert false : "(aggregate) branch not covered";
+            throw new IllegalArgumentException(property + " data type is not supported");
           }
 
           var properties = unmarshalAggregation(result.getAggregations());
@@ -147,7 +148,7 @@ public record AggregateRequest(Aggregation aggregation, GroupBy groupBy) {
             metric.hasMode() ? metric.getMode() : null,
             metric.hasSum() ? metric.getSum() : null);
       } else {
-        assert false : "branch not covered";
+        throw new IllegalArgumentException(property + " data type is not supported");
       }
 
       if (value != null) {

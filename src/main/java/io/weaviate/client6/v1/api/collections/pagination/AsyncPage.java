@@ -61,7 +61,9 @@ public final class AsyncPage<PropertiesT> implements Iterable<WeaviateObject<Pro
           // If it is null after the first iteration it is
           // because we haven't requested Metadata.UUID, in which
           // case pagination will continue to run unbounded.
-          assert nextCursor != null : "page cursor is null";
+          if (nextCursor == null) {
+            throw new IllegalStateException("page cursor is null");
+          }
           return new AsyncPage<>(nextCursor, pageSize, fetch, nextPage);
         });
   }
