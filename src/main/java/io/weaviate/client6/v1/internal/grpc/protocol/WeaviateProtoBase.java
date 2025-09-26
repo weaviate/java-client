@@ -147,33 +147,36 @@ public final class WeaviateProtoBase {
     /**
      * <pre>
      * will be removed in the future, use vector_bytes
+     * go client 5.4.1 depends on this field. Only remove after go client is deprecated
      * </pre>
      *
      * <code>repeated double values = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.NumberArrayProperties.values is deprecated.
-     *     See v1/base.proto;l=16
+     *     See v1/base.proto;l=18
      * @return A list containing the values.
      */
     @java.lang.Deprecated java.util.List<java.lang.Double> getValuesList();
     /**
      * <pre>
      * will be removed in the future, use vector_bytes
+     * go client 5.4.1 depends on this field. Only remove after go client is deprecated
      * </pre>
      *
      * <code>repeated double values = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.NumberArrayProperties.values is deprecated.
-     *     See v1/base.proto;l=16
+     *     See v1/base.proto;l=18
      * @return The count of values.
      */
     @java.lang.Deprecated int getValuesCount();
     /**
      * <pre>
      * will be removed in the future, use vector_bytes
+     * go client 5.4.1 depends on this field. Only remove after go client is deprecated
      * </pre>
      *
      * <code>repeated double values = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.NumberArrayProperties.values is deprecated.
-     *     See v1/base.proto;l=16
+     *     See v1/base.proto;l=18
      * @param index The index of the element to return.
      * @return The values at the given index.
      */
@@ -242,11 +245,12 @@ public final class WeaviateProtoBase {
     /**
      * <pre>
      * will be removed in the future, use vector_bytes
+     * go client 5.4.1 depends on this field. Only remove after go client is deprecated
      * </pre>
      *
      * <code>repeated double values = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.NumberArrayProperties.values is deprecated.
-     *     See v1/base.proto;l=16
+     *     See v1/base.proto;l=18
      * @return A list containing the values.
      */
     @java.lang.Override
@@ -257,11 +261,12 @@ public final class WeaviateProtoBase {
     /**
      * <pre>
      * will be removed in the future, use vector_bytes
+     * go client 5.4.1 depends on this field. Only remove after go client is deprecated
      * </pre>
      *
      * <code>repeated double values = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.NumberArrayProperties.values is deprecated.
-     *     See v1/base.proto;l=16
+     *     See v1/base.proto;l=18
      * @return The count of values.
      */
     @java.lang.Deprecated public int getValuesCount() {
@@ -270,11 +275,12 @@ public final class WeaviateProtoBase {
     /**
      * <pre>
      * will be removed in the future, use vector_bytes
+     * go client 5.4.1 depends on this field. Only remove after go client is deprecated
      * </pre>
      *
      * <code>repeated double values = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.NumberArrayProperties.values is deprecated.
-     *     See v1/base.proto;l=16
+     *     See v1/base.proto;l=18
      * @param index The index of the element to return.
      * @return The values at the given index.
      */
@@ -756,11 +762,12 @@ public final class WeaviateProtoBase {
       /**
        * <pre>
        * will be removed in the future, use vector_bytes
+       * go client 5.4.1 depends on this field. Only remove after go client is deprecated
        * </pre>
        *
        * <code>repeated double values = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.NumberArrayProperties.values is deprecated.
-       *     See v1/base.proto;l=16
+       *     See v1/base.proto;l=18
        * @return A list containing the values.
        */
       @java.lang.Deprecated public java.util.List<java.lang.Double>
@@ -771,11 +778,12 @@ public final class WeaviateProtoBase {
       /**
        * <pre>
        * will be removed in the future, use vector_bytes
+       * go client 5.4.1 depends on this field. Only remove after go client is deprecated
        * </pre>
        *
        * <code>repeated double values = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.NumberArrayProperties.values is deprecated.
-       *     See v1/base.proto;l=16
+       *     See v1/base.proto;l=18
        * @return The count of values.
        */
       @java.lang.Deprecated public int getValuesCount() {
@@ -784,11 +792,12 @@ public final class WeaviateProtoBase {
       /**
        * <pre>
        * will be removed in the future, use vector_bytes
+       * go client 5.4.1 depends on this field. Only remove after go client is deprecated
        * </pre>
        *
        * <code>repeated double values = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.NumberArrayProperties.values is deprecated.
-       *     See v1/base.proto;l=16
+       *     See v1/base.proto;l=18
        * @param index The index of the element to return.
        * @return The values at the given index.
        */
@@ -798,11 +807,12 @@ public final class WeaviateProtoBase {
       /**
        * <pre>
        * will be removed in the future, use vector_bytes
+       * go client 5.4.1 depends on this field. Only remove after go client is deprecated
        * </pre>
        *
        * <code>repeated double values = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.NumberArrayProperties.values is deprecated.
-       *     See v1/base.proto;l=16
+       *     See v1/base.proto;l=18
        * @param index The index to set the value at.
        * @param value The values to set.
        * @return This builder for chaining.
@@ -819,11 +829,12 @@ public final class WeaviateProtoBase {
       /**
        * <pre>
        * will be removed in the future, use vector_bytes
+       * go client 5.4.1 depends on this field. Only remove after go client is deprecated
        * </pre>
        *
        * <code>repeated double values = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.NumberArrayProperties.values is deprecated.
-       *     See v1/base.proto;l=16
+       *     See v1/base.proto;l=18
        * @param value The values to add.
        * @return This builder for chaining.
        */
@@ -838,11 +849,12 @@ public final class WeaviateProtoBase {
       /**
        * <pre>
        * will be removed in the future, use vector_bytes
+       * go client 5.4.1 depends on this field. Only remove after go client is deprecated
        * </pre>
        *
        * <code>repeated double values = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.NumberArrayProperties.values is deprecated.
-       *     See v1/base.proto;l=16
+       *     See v1/base.proto;l=18
        * @param values The values to add.
        * @return This builder for chaining.
        */
@@ -858,11 +870,12 @@ public final class WeaviateProtoBase {
       /**
        * <pre>
        * will be removed in the future, use vector_bytes
+       * go client 5.4.1 depends on this field. Only remove after go client is deprecated
        * </pre>
        *
        * <code>repeated double values = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.NumberArrayProperties.values is deprecated.
-       *     See v1/base.proto;l=16
+       *     See v1/base.proto;l=18
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearValues() {
@@ -10503,7 +10516,7 @@ public final class WeaviateProtoBase {
      *
      * <code>repeated string on = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.Filters.on is deprecated.
-     *     See v1/base.proto;l=94
+     *     See v1/base.proto;l=98
      * @return A list containing the on.
      */
     @java.lang.Deprecated java.util.List<java.lang.String>
@@ -10515,7 +10528,7 @@ public final class WeaviateProtoBase {
      *
      * <code>repeated string on = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.Filters.on is deprecated.
-     *     See v1/base.proto;l=94
+     *     See v1/base.proto;l=98
      * @return The count of on.
      */
     @java.lang.Deprecated int getOnCount();
@@ -10526,7 +10539,7 @@ public final class WeaviateProtoBase {
      *
      * <code>repeated string on = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.Filters.on is deprecated.
-     *     See v1/base.proto;l=94
+     *     See v1/base.proto;l=98
      * @param index The index of the element to return.
      * @return The on at the given index.
      */
@@ -10538,7 +10551,7 @@ public final class WeaviateProtoBase {
      *
      * <code>repeated string on = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.Filters.on is deprecated.
-     *     See v1/base.proto;l=94
+     *     See v1/base.proto;l=98
      * @param index The index of the value to return.
      * @return The bytes of the on at the given index.
      */
@@ -10823,6 +10836,14 @@ public final class WeaviateProtoBase {
        * <code>OPERATOR_CONTAINS_ALL = 13;</code>
        */
       OPERATOR_CONTAINS_ALL(13),
+      /**
+       * <code>OPERATOR_CONTAINS_NONE = 14;</code>
+       */
+      OPERATOR_CONTAINS_NONE(14),
+      /**
+       * <code>OPERATOR_NOT = 15;</code>
+       */
+      OPERATOR_NOT(15),
       UNRECOGNIZED(-1),
       ;
 
@@ -10882,6 +10903,14 @@ public final class WeaviateProtoBase {
        * <code>OPERATOR_CONTAINS_ALL = 13;</code>
        */
       public static final int OPERATOR_CONTAINS_ALL_VALUE = 13;
+      /**
+       * <code>OPERATOR_CONTAINS_NONE = 14;</code>
+       */
+      public static final int OPERATOR_CONTAINS_NONE_VALUE = 14;
+      /**
+       * <code>OPERATOR_NOT = 15;</code>
+       */
+      public static final int OPERATOR_NOT_VALUE = 15;
 
 
       public final int getNumber() {
@@ -10922,6 +10951,8 @@ public final class WeaviateProtoBase {
           case 11: return OPERATOR_IS_NULL;
           case 12: return OPERATOR_CONTAINS_ANY;
           case 13: return OPERATOR_CONTAINS_ALL;
+          case 14: return OPERATOR_CONTAINS_NONE;
+          case 15: return OPERATOR_NOT;
           default: return null;
         }
       }
@@ -11064,7 +11095,7 @@ public final class WeaviateProtoBase {
      *
      * <code>repeated string on = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.Filters.on is deprecated.
-     *     See v1/base.proto;l=94
+     *     See v1/base.proto;l=98
      * @return A list containing the on.
      */
     @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -11078,7 +11109,7 @@ public final class WeaviateProtoBase {
      *
      * <code>repeated string on = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.Filters.on is deprecated.
-     *     See v1/base.proto;l=94
+     *     See v1/base.proto;l=98
      * @return The count of on.
      */
     @java.lang.Deprecated public int getOnCount() {
@@ -11091,7 +11122,7 @@ public final class WeaviateProtoBase {
      *
      * <code>repeated string on = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.Filters.on is deprecated.
-     *     See v1/base.proto;l=94
+     *     See v1/base.proto;l=98
      * @param index The index of the element to return.
      * @return The on at the given index.
      */
@@ -11105,7 +11136,7 @@ public final class WeaviateProtoBase {
      *
      * <code>repeated string on = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.Filters.on is deprecated.
-     *     See v1/base.proto;l=94
+     *     See v1/base.proto;l=98
      * @param index The index of the value to return.
      * @return The bytes of the on at the given index.
      */
@@ -12322,7 +12353,7 @@ public final class WeaviateProtoBase {
        *
        * <code>repeated string on = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.Filters.on is deprecated.
-       *     See v1/base.proto;l=94
+       *     See v1/base.proto;l=98
        * @return A list containing the on.
        */
       @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -12337,7 +12368,7 @@ public final class WeaviateProtoBase {
        *
        * <code>repeated string on = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.Filters.on is deprecated.
-       *     See v1/base.proto;l=94
+       *     See v1/base.proto;l=98
        * @return The count of on.
        */
       @java.lang.Deprecated public int getOnCount() {
@@ -12350,7 +12381,7 @@ public final class WeaviateProtoBase {
        *
        * <code>repeated string on = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.Filters.on is deprecated.
-       *     See v1/base.proto;l=94
+       *     See v1/base.proto;l=98
        * @param index The index of the element to return.
        * @return The on at the given index.
        */
@@ -12364,7 +12395,7 @@ public final class WeaviateProtoBase {
        *
        * <code>repeated string on = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.Filters.on is deprecated.
-       *     See v1/base.proto;l=94
+       *     See v1/base.proto;l=98
        * @param index The index of the value to return.
        * @return The bytes of the on at the given index.
        */
@@ -12379,7 +12410,7 @@ public final class WeaviateProtoBase {
        *
        * <code>repeated string on = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.Filters.on is deprecated.
-       *     See v1/base.proto;l=94
+       *     See v1/base.proto;l=98
        * @param index The index to set the value at.
        * @param value The on to set.
        * @return This builder for chaining.
@@ -12400,7 +12431,7 @@ public final class WeaviateProtoBase {
        *
        * <code>repeated string on = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.Filters.on is deprecated.
-       *     See v1/base.proto;l=94
+       *     See v1/base.proto;l=98
        * @param value The on to add.
        * @return This builder for chaining.
        */
@@ -12420,7 +12451,7 @@ public final class WeaviateProtoBase {
        *
        * <code>repeated string on = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.Filters.on is deprecated.
-       *     See v1/base.proto;l=94
+       *     See v1/base.proto;l=98
        * @param values The on to add.
        * @return This builder for chaining.
        */
@@ -12440,7 +12471,7 @@ public final class WeaviateProtoBase {
        *
        * <code>repeated string on = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.Filters.on is deprecated.
-       *     See v1/base.proto;l=94
+       *     See v1/base.proto;l=98
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearOn() {
@@ -12457,7 +12488,7 @@ public final class WeaviateProtoBase {
        *
        * <code>repeated string on = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.Filters.on is deprecated.
-       *     See v1/base.proto;l=94
+       *     See v1/base.proto;l=98
        * @param value The bytes of the on to add.
        * @return This builder for chaining.
        */
@@ -18070,7 +18101,7 @@ public final class WeaviateProtoBase {
      *
      * <code>uint64 index = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.Vectors.index is deprecated.
-     *     See v1/base.proto;l=147
+     *     See v1/base.proto;l=151
      * @return The index.
      */
     @java.lang.Deprecated long getIndex();
@@ -18295,7 +18326,7 @@ public final class WeaviateProtoBase {
      *
      * <code>uint64 index = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.Vectors.index is deprecated.
-     *     See v1/base.proto;l=147
+     *     See v1/base.proto;l=151
      * @return The index.
      */
     @java.lang.Override
@@ -18807,7 +18838,7 @@ public final class WeaviateProtoBase {
        *
        * <code>uint64 index = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.Vectors.index is deprecated.
-       *     See v1/base.proto;l=147
+       *     See v1/base.proto;l=151
        * @return The index.
        */
       @java.lang.Override
@@ -18821,7 +18852,7 @@ public final class WeaviateProtoBase {
        *
        * <code>uint64 index = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.Vectors.index is deprecated.
-       *     See v1/base.proto;l=147
+       *     See v1/base.proto;l=151
        * @param value The index to set.
        * @return This builder for chaining.
        */
@@ -18839,7 +18870,7 @@ public final class WeaviateProtoBase {
        *
        * <code>uint64 index = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.Vectors.index is deprecated.
-       *     See v1/base.proto;l=147
+       *     See v1/base.proto;l=151
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearIndex() {
@@ -19124,7 +19155,7 @@ public final class WeaviateProtoBase {
       "\030\002 \001(\t\"\033\n\tTextArray\022\016\n\006values\030\001 \003(\t\"\032\n\010I" +
       "ntArray\022\016\n\006values\030\001 \003(\003\"\035\n\013NumberArray\022\016" +
       "\n\006values\030\001 \003(\001\"\036\n\014BooleanArray\022\016\n\006values" +
-      "\030\001 \003(\010\"\374\006\n\007Filters\022/\n\010operator\030\001 \001(\0162\035.w" +
+      "\030\001 \003(\010\"\252\007\n\007Filters\022/\n\010operator\030\001 \001(\0162\035.w" +
       "eaviate.v1.Filters.Operator\022\016\n\002on\030\002 \003(\tB" +
       "\002\030\001\022%\n\007filters\030\003 \003(\0132\024.weaviate.v1.Filte" +
       "rs\022\024\n\nvalue_text\030\004 \001(\tH\000\022\023\n\tvalue_int\030\005 " +
@@ -19137,7 +19168,7 @@ public final class WeaviateProtoBase {
       "(\0132\030.weaviate.v1.NumberArrayH\000\0226\n\tvalue_" +
       "geo\030\r \001(\0132!.weaviate.v1.GeoCoordinatesFi" +
       "lterH\000\022)\n\006target\030\024 \001(\0132\031.weaviate.v1.Fil" +
-      "terTarget\"\343\002\n\010Operator\022\030\n\024OPERATOR_UNSPE" +
+      "terTarget\"\221\003\n\010Operator\022\030\n\024OPERATOR_UNSPE" +
       "CIFIED\020\000\022\022\n\016OPERATOR_EQUAL\020\001\022\026\n\022OPERATOR" +
       "_NOT_EQUAL\020\002\022\031\n\025OPERATOR_GREATER_THAN\020\003\022" +
       "\037\n\033OPERATOR_GREATER_THAN_EQUAL\020\004\022\026\n\022OPER" +
@@ -19146,31 +19177,33 @@ public final class WeaviateProtoBase {
       "\010\022\035\n\031OPERATOR_WITHIN_GEO_RANGE\020\t\022\021\n\rOPER" +
       "ATOR_LIKE\020\n\022\024\n\020OPERATOR_IS_NULL\020\013\022\031\n\025OPE" +
       "RATOR_CONTAINS_ANY\020\014\022\031\n\025OPERATOR_CONTAIN" +
-      "S_ALL\020\rB\014\n\ntest_value\"T\n\033FilterReference" +
-      "SingleTarget\022\n\n\002on\030\001 \001(\t\022)\n\006target\030\002 \001(\013" +
-      "2\031.weaviate.v1.FilterTarget\"n\n\032FilterRef" +
-      "erenceMultiTarget\022\n\n\002on\030\001 \001(\t\022)\n\006target\030" +
-      "\002 \001(\0132\031.weaviate.v1.FilterTarget\022\031\n\021targ" +
-      "et_collection\030\003 \001(\t\"\"\n\024FilterReferenceCo" +
-      "unt\022\n\n\002on\030\001 \001(\t\"\344\001\n\014FilterTarget\022\022\n\010prop" +
-      "erty\030\001 \001(\tH\000\022A\n\rsingle_target\030\002 \001(\0132(.we" +
-      "aviate.v1.FilterReferenceSingleTargetH\000\022" +
-      "?\n\014multi_target\030\003 \001(\0132\'.weaviate.v1.Filt" +
-      "erReferenceMultiTargetH\000\0222\n\005count\030\004 \001(\0132" +
-      "!.weaviate.v1.FilterReferenceCountH\000B\010\n\006" +
-      "target\"M\n\024GeoCoordinatesFilter\022\020\n\010latitu" +
-      "de\030\001 \001(\002\022\021\n\tlongitude\030\002 \001(\002\022\020\n\010distance\030" +
-      "\003 \001(\002\"\323\001\n\007Vectors\022\014\n\004name\030\001 \001(\t\022\021\n\005index" +
-      "\030\002 \001(\004B\002\030\001\022\024\n\014vector_bytes\030\003 \001(\014\022-\n\004type" +
-      "\030\004 \001(\0162\037.weaviate.v1.Vectors.VectorType\"" +
-      "b\n\nVectorType\022\033\n\027VECTOR_TYPE_UNSPECIFIED" +
-      "\020\000\022\033\n\027VECTOR_TYPE_SINGLE_FP32\020\001\022\032\n\026VECTO" +
-      "R_TYPE_MULTI_FP32\020\002*\211\001\n\020ConsistencyLevel" +
-      "\022!\n\035CONSISTENCY_LEVEL_UNSPECIFIED\020\000\022\031\n\025C" +
-      "ONSISTENCY_LEVEL_ONE\020\001\022\034\n\030CONSISTENCY_LE" +
-      "VEL_QUORUM\020\002\022\031\n\025CONSISTENCY_LEVEL_ALL\020\003B" +
-      "B\n-io.weaviate.client6.v1.internal.grpc." +
-      "protocolB\021WeaviateProtoBaseb\006proto3"
+      "S_ALL\020\r\022\032\n\026OPERATOR_CONTAINS_NONE\020\016\022\020\n\014O" +
+      "PERATOR_NOT\020\017B\014\n\ntest_value\"T\n\033FilterRef" +
+      "erenceSingleTarget\022\n\n\002on\030\001 \001(\t\022)\n\006target" +
+      "\030\002 \001(\0132\031.weaviate.v1.FilterTarget\"n\n\032Fil" +
+      "terReferenceMultiTarget\022\n\n\002on\030\001 \001(\t\022)\n\006t" +
+      "arget\030\002 \001(\0132\031.weaviate.v1.FilterTarget\022\031" +
+      "\n\021target_collection\030\003 \001(\t\"\"\n\024FilterRefer" +
+      "enceCount\022\n\n\002on\030\001 \001(\t\"\344\001\n\014FilterTarget\022\022" +
+      "\n\010property\030\001 \001(\tH\000\022A\n\rsingle_target\030\002 \001(" +
+      "\0132(.weaviate.v1.FilterReferenceSingleTar" +
+      "getH\000\022?\n\014multi_target\030\003 \001(\0132\'.weaviate.v" +
+      "1.FilterReferenceMultiTargetH\000\0222\n\005count\030" +
+      "\004 \001(\0132!.weaviate.v1.FilterReferenceCount" +
+      "H\000B\010\n\006target\"M\n\024GeoCoordinatesFilter\022\020\n\010" +
+      "latitude\030\001 \001(\002\022\021\n\tlongitude\030\002 \001(\002\022\020\n\010dis" +
+      "tance\030\003 \001(\002\"\323\001\n\007Vectors\022\014\n\004name\030\001 \001(\t\022\021\n" +
+      "\005index\030\002 \001(\004B\002\030\001\022\024\n\014vector_bytes\030\003 \001(\014\022-" +
+      "\n\004type\030\004 \001(\0162\037.weaviate.v1.Vectors.Vecto" +
+      "rType\"b\n\nVectorType\022\033\n\027VECTOR_TYPE_UNSPE" +
+      "CIFIED\020\000\022\033\n\027VECTOR_TYPE_SINGLE_FP32\020\001\022\032\n" +
+      "\026VECTOR_TYPE_MULTI_FP32\020\002*\211\001\n\020Consistenc" +
+      "yLevel\022!\n\035CONSISTENCY_LEVEL_UNSPECIFIED\020" +
+      "\000\022\031\n\025CONSISTENCY_LEVEL_ONE\020\001\022\034\n\030CONSISTE" +
+      "NCY_LEVEL_QUORUM\020\002\022\031\n\025CONSISTENCY_LEVEL_" +
+      "ALL\020\003BB\n-io.weaviate.client6.v1.internal" +
+      ".grpc.protocolB\021WeaviateProtoBaseb\006proto" +
+      "3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

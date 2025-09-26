@@ -825,58 +825,6 @@ public final class WeaviateProtoBaseSearch {
     io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch.CombinationMethod getCombination();
 
     /**
-     * <pre>
-     * deprecated in 1.26.2 - use weights_for_targets
-     * </pre>
-     *
-     * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
-     */
-    @java.lang.Deprecated int getWeightsCount();
-    /**
-     * <pre>
-     * deprecated in 1.26.2 - use weights_for_targets
-     * </pre>
-     *
-     * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
-     */
-    @java.lang.Deprecated boolean containsWeights(
-        java.lang.String key);
-    /**
-     * Use {@link #getWeightsMap()} instead.
-     */
-    @java.lang.Deprecated
-    java.util.Map<java.lang.String, java.lang.Float>
-    getWeights();
-    /**
-     * <pre>
-     * deprecated in 1.26.2 - use weights_for_targets
-     * </pre>
-     *
-     * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
-     */
-    @java.lang.Deprecated java.util.Map<java.lang.String, java.lang.Float>
-    getWeightsMap();
-    /**
-     * <pre>
-     * deprecated in 1.26.2 - use weights_for_targets
-     * </pre>
-     *
-     * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
-     */
-    @java.lang.Deprecated float getWeightsOrDefault(
-        java.lang.String key,
-        float defaultValue);
-    /**
-     * <pre>
-     * deprecated in 1.26.2 - use weights_for_targets
-     * </pre>
-     *
-     * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
-     */
-    @java.lang.Deprecated float getWeightsOrThrow(
-        java.lang.String key);
-
-    /**
      * <code>repeated .weaviate.v1.WeightsForTarget weights_for_targets = 4;</code>
      */
     java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch.WeightsForTarget> 
@@ -931,18 +879,6 @@ public final class WeaviateProtoBaseSearch {
       return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch.internal_static_weaviate_v1_Targets_descriptor;
     }
 
-    @SuppressWarnings({"rawtypes"})
-    @java.lang.Override
-    protected com.google.protobuf.MapField internalGetMapField(
-        int number) {
-      switch (number) {
-        case 3:
-          return internalGetWeights();
-        default:
-          throw new RuntimeException(
-              "Invalid map field number: " + number);
-      }
-    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -1006,99 +942,6 @@ public final class WeaviateProtoBaseSearch {
       return result == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch.CombinationMethod.UNRECOGNIZED : result;
     }
 
-    public static final int WEIGHTS_FIELD_NUMBER = 3;
-    private static final class WeightsDefaultEntryHolder {
-      static final com.google.protobuf.MapEntry<
-          java.lang.String, java.lang.Float> defaultEntry =
-              com.google.protobuf.MapEntry
-              .<java.lang.String, java.lang.Float>newDefaultInstance(
-                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch.internal_static_weaviate_v1_Targets_WeightsEntry_descriptor, 
-                  com.google.protobuf.WireFormat.FieldType.STRING,
-                  "",
-                  com.google.protobuf.WireFormat.FieldType.FLOAT,
-                  0F);
-    }
-    @SuppressWarnings("serial")
-    private com.google.protobuf.MapField<
-        java.lang.String, java.lang.Float> weights_;
-    private com.google.protobuf.MapField<java.lang.String, java.lang.Float>
-    internalGetWeights() {
-      if (weights_ == null) {
-        return com.google.protobuf.MapField.emptyMapField(
-            WeightsDefaultEntryHolder.defaultEntry);
-      }
-      return weights_;
-    }
-    @java.lang.Deprecated public int getWeightsCount() {
-      return internalGetWeights().getMap().size();
-    }
-    /**
-     * <pre>
-     * deprecated in 1.26.2 - use weights_for_targets
-     * </pre>
-     *
-     * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
-     */
-    @java.lang.Override
-    @java.lang.Deprecated public boolean containsWeights(
-        java.lang.String key) {
-      if (key == null) { throw new NullPointerException("map key"); }
-      return internalGetWeights().getMap().containsKey(key);
-    }
-    /**
-     * Use {@link #getWeightsMap()} instead.
-     */
-    @java.lang.Override
-    @java.lang.Deprecated
-    public java.util.Map<java.lang.String, java.lang.Float> getWeights() {
-      return getWeightsMap();
-    }
-    /**
-     * <pre>
-     * deprecated in 1.26.2 - use weights_for_targets
-     * </pre>
-     *
-     * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
-     */
-    @java.lang.Override
-    @java.lang.Deprecated public java.util.Map<java.lang.String, java.lang.Float> getWeightsMap() {
-      return internalGetWeights().getMap();
-    }
-    /**
-     * <pre>
-     * deprecated in 1.26.2 - use weights_for_targets
-     * </pre>
-     *
-     * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
-     */
-    @java.lang.Override
-    @java.lang.Deprecated public float getWeightsOrDefault(
-        java.lang.String key,
-        float defaultValue) {
-      if (key == null) { throw new NullPointerException("map key"); }
-      java.util.Map<java.lang.String, java.lang.Float> map =
-          internalGetWeights().getMap();
-      return map.containsKey(key) ? map.get(key) : defaultValue;
-    }
-    /**
-     * <pre>
-     * deprecated in 1.26.2 - use weights_for_targets
-     * </pre>
-     *
-     * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
-     */
-    @java.lang.Override
-    @java.lang.Deprecated public float getWeightsOrThrow(
-        java.lang.String key) {
-      if (key == null) { throw new NullPointerException("map key"); }
-      java.util.Map<java.lang.String, java.lang.Float> map =
-          internalGetWeights().getMap();
-      if (!map.containsKey(key)) {
-        throw new java.lang.IllegalArgumentException();
-      }
-      return map.get(key);
-    }
-
     public static final int WEIGHTS_FOR_TARGETS_FIELD_NUMBER = 4;
     @SuppressWarnings("serial")
     private java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch.WeightsForTarget> weightsForTargets_;
@@ -1160,12 +1003,6 @@ public final class WeaviateProtoBaseSearch {
       if (combination_ != io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch.CombinationMethod.COMBINATION_METHOD_UNSPECIFIED.getNumber()) {
         output.writeEnum(2, combination_);
       }
-      com.google.protobuf.GeneratedMessageV3
-        .serializeStringMapTo(
-          output,
-          internalGetWeights(),
-          WeightsDefaultEntryHolder.defaultEntry,
-          3);
       for (int i = 0; i < weightsForTargets_.size(); i++) {
         output.writeMessage(4, weightsForTargets_.get(i));
       }
@@ -1190,16 +1027,6 @@ public final class WeaviateProtoBaseSearch {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(2, combination_);
       }
-      for (java.util.Map.Entry<java.lang.String, java.lang.Float> entry
-           : internalGetWeights().getMap().entrySet()) {
-        com.google.protobuf.MapEntry<java.lang.String, java.lang.Float>
-        weights__ = WeightsDefaultEntryHolder.defaultEntry.newBuilderForType()
-            .setKey(entry.getKey())
-            .setValue(entry.getValue())
-            .build();
-        size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(3, weights__);
-      }
       for (int i = 0; i < weightsForTargets_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(4, weightsForTargets_.get(i));
@@ -1222,8 +1049,6 @@ public final class WeaviateProtoBaseSearch {
       if (!getTargetVectorsList()
           .equals(other.getTargetVectorsList())) return false;
       if (combination_ != other.combination_) return false;
-      if (!internalGetWeights().equals(
-          other.internalGetWeights())) return false;
       if (!getWeightsForTargetsList()
           .equals(other.getWeightsForTargetsList())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
@@ -1243,10 +1068,6 @@ public final class WeaviateProtoBaseSearch {
       }
       hash = (37 * hash) + COMBINATION_FIELD_NUMBER;
       hash = (53 * hash) + combination_;
-      if (!internalGetWeights().getMap().isEmpty()) {
-        hash = (37 * hash) + WEIGHTS_FIELD_NUMBER;
-        hash = (53 * hash) + internalGetWeights().hashCode();
-      }
       if (getWeightsForTargetsCount() > 0) {
         hash = (37 * hash) + WEIGHTS_FOR_TARGETS_FIELD_NUMBER;
         hash = (53 * hash) + getWeightsForTargetsList().hashCode();
@@ -1360,28 +1181,6 @@ public final class WeaviateProtoBaseSearch {
         return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch.internal_static_weaviate_v1_Targets_descriptor;
       }
 
-      @SuppressWarnings({"rawtypes"})
-      protected com.google.protobuf.MapField internalGetMapField(
-          int number) {
-        switch (number) {
-          case 3:
-            return internalGetWeights();
-          default:
-            throw new RuntimeException(
-                "Invalid map field number: " + number);
-        }
-      }
-      @SuppressWarnings({"rawtypes"})
-      protected com.google.protobuf.MapField internalGetMutableMapField(
-          int number) {
-        switch (number) {
-          case 3:
-            return internalGetMutableWeights();
-          default:
-            throw new RuntimeException(
-                "Invalid map field number: " + number);
-        }
-      }
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
@@ -1407,14 +1206,13 @@ public final class WeaviateProtoBaseSearch {
         targetVectors_ =
             com.google.protobuf.LazyStringArrayList.emptyList();
         combination_ = 0;
-        internalGetMutableWeights().clear();
         if (weightsForTargetsBuilder_ == null) {
           weightsForTargets_ = java.util.Collections.emptyList();
         } else {
           weightsForTargets_ = null;
           weightsForTargetsBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000008);
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -1449,9 +1247,9 @@ public final class WeaviateProtoBaseSearch {
 
       private void buildPartialRepeatedFields(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch.Targets result) {
         if (weightsForTargetsBuilder_ == null) {
-          if (((bitField0_ & 0x00000008) != 0)) {
+          if (((bitField0_ & 0x00000004) != 0)) {
             weightsForTargets_ = java.util.Collections.unmodifiableList(weightsForTargets_);
-            bitField0_ = (bitField0_ & ~0x00000008);
+            bitField0_ = (bitField0_ & ~0x00000004);
           }
           result.weightsForTargets_ = weightsForTargets_;
         } else {
@@ -1467,10 +1265,6 @@ public final class WeaviateProtoBaseSearch {
         }
         if (((from_bitField0_ & 0x00000002) != 0)) {
           result.combination_ = combination_;
-        }
-        if (((from_bitField0_ & 0x00000004) != 0)) {
-          result.weights_ = internalGetWeights();
-          result.weights_.makeImmutable();
         }
       }
 
@@ -1531,14 +1325,11 @@ public final class WeaviateProtoBaseSearch {
         if (other.combination_ != 0) {
           setCombinationValue(other.getCombinationValue());
         }
-        internalGetMutableWeights().mergeFrom(
-            other.internalGetWeights());
-        bitField0_ |= 0x00000004;
         if (weightsForTargetsBuilder_ == null) {
           if (!other.weightsForTargets_.isEmpty()) {
             if (weightsForTargets_.isEmpty()) {
               weightsForTargets_ = other.weightsForTargets_;
-              bitField0_ = (bitField0_ & ~0x00000008);
+              bitField0_ = (bitField0_ & ~0x00000004);
             } else {
               ensureWeightsForTargetsIsMutable();
               weightsForTargets_.addAll(other.weightsForTargets_);
@@ -1551,7 +1342,7 @@ public final class WeaviateProtoBaseSearch {
               weightsForTargetsBuilder_.dispose();
               weightsForTargetsBuilder_ = null;
               weightsForTargets_ = other.weightsForTargets_;
-              bitField0_ = (bitField0_ & ~0x00000008);
+              bitField0_ = (bitField0_ & ~0x00000004);
               weightsForTargetsBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getWeightsForTargetsFieldBuilder() : null;
@@ -1597,15 +1388,6 @@ public final class WeaviateProtoBaseSearch {
                 bitField0_ |= 0x00000002;
                 break;
               } // case 16
-              case 26: {
-                com.google.protobuf.MapEntry<java.lang.String, java.lang.Float>
-                weights__ = input.readMessage(
-                    WeightsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
-                internalGetMutableWeights().getMutableMap().put(
-                    weights__.getKey(), weights__.getValue());
-                bitField0_ |= 0x00000004;
-                break;
-              } // case 26
               case 34: {
                 io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch.WeightsForTarget m =
                     input.readMessage(
@@ -1800,165 +1582,12 @@ public final class WeaviateProtoBaseSearch {
         return this;
       }
 
-      private com.google.protobuf.MapField<
-          java.lang.String, java.lang.Float> weights_;
-      @java.lang.Deprecated private com.google.protobuf.MapField<java.lang.String, java.lang.Float>
-          internalGetWeights() {
-        if (weights_ == null) {
-          return com.google.protobuf.MapField.emptyMapField(
-              WeightsDefaultEntryHolder.defaultEntry);
-        }
-        return weights_;
-      }
-      @java.lang.Deprecated private com.google.protobuf.MapField<java.lang.String, java.lang.Float>
-          internalGetMutableWeights() {
-        if (weights_ == null) {
-          weights_ = com.google.protobuf.MapField.newMapField(
-              WeightsDefaultEntryHolder.defaultEntry);
-        }
-        if (!weights_.isMutable()) {
-          weights_ = weights_.copy();
-        }
-        bitField0_ |= 0x00000004;
-        onChanged();
-        return weights_;
-      }
-      @java.lang.Deprecated public int getWeightsCount() {
-        return internalGetWeights().getMap().size();
-      }
-      /**
-       * <pre>
-       * deprecated in 1.26.2 - use weights_for_targets
-       * </pre>
-       *
-       * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
-       */
-      @java.lang.Override
-      @java.lang.Deprecated public boolean containsWeights(
-          java.lang.String key) {
-        if (key == null) { throw new NullPointerException("map key"); }
-        return internalGetWeights().getMap().containsKey(key);
-      }
-      /**
-       * Use {@link #getWeightsMap()} instead.
-       */
-      @java.lang.Override
-      @java.lang.Deprecated
-      public java.util.Map<java.lang.String, java.lang.Float> getWeights() {
-        return getWeightsMap();
-      }
-      /**
-       * <pre>
-       * deprecated in 1.26.2 - use weights_for_targets
-       * </pre>
-       *
-       * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
-       */
-      @java.lang.Override
-      @java.lang.Deprecated public java.util.Map<java.lang.String, java.lang.Float> getWeightsMap() {
-        return internalGetWeights().getMap();
-      }
-      /**
-       * <pre>
-       * deprecated in 1.26.2 - use weights_for_targets
-       * </pre>
-       *
-       * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
-       */
-      @java.lang.Override
-      @java.lang.Deprecated public float getWeightsOrDefault(
-          java.lang.String key,
-          float defaultValue) {
-        if (key == null) { throw new NullPointerException("map key"); }
-        java.util.Map<java.lang.String, java.lang.Float> map =
-            internalGetWeights().getMap();
-        return map.containsKey(key) ? map.get(key) : defaultValue;
-      }
-      /**
-       * <pre>
-       * deprecated in 1.26.2 - use weights_for_targets
-       * </pre>
-       *
-       * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
-       */
-      @java.lang.Override
-      @java.lang.Deprecated public float getWeightsOrThrow(
-          java.lang.String key) {
-        if (key == null) { throw new NullPointerException("map key"); }
-        java.util.Map<java.lang.String, java.lang.Float> map =
-            internalGetWeights().getMap();
-        if (!map.containsKey(key)) {
-          throw new java.lang.IllegalArgumentException();
-        }
-        return map.get(key);
-      }
-      @java.lang.Deprecated public Builder clearWeights() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        internalGetMutableWeights().getMutableMap()
-            .clear();
-        return this;
-      }
-      /**
-       * <pre>
-       * deprecated in 1.26.2 - use weights_for_targets
-       * </pre>
-       *
-       * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
-       */
-      @java.lang.Deprecated public Builder removeWeights(
-          java.lang.String key) {
-        if (key == null) { throw new NullPointerException("map key"); }
-        internalGetMutableWeights().getMutableMap()
-            .remove(key);
-        return this;
-      }
-      /**
-       * Use alternate mutation accessors instead.
-       */
-      @java.lang.Deprecated
-      public java.util.Map<java.lang.String, java.lang.Float>
-          getMutableWeights() {
-        bitField0_ |= 0x00000004;
-        return internalGetMutableWeights().getMutableMap();
-      }
-      /**
-       * <pre>
-       * deprecated in 1.26.2 - use weights_for_targets
-       * </pre>
-       *
-       * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
-       */
-      @java.lang.Deprecated public Builder putWeights(
-          java.lang.String key,
-          float value) {
-        if (key == null) { throw new NullPointerException("map key"); }
-
-        internalGetMutableWeights().getMutableMap()
-            .put(key, value);
-        bitField0_ |= 0x00000004;
-        return this;
-      }
-      /**
-       * <pre>
-       * deprecated in 1.26.2 - use weights_for_targets
-       * </pre>
-       *
-       * <code>map&lt;string, float&gt; weights = 3 [deprecated = true];</code>
-       */
-      @java.lang.Deprecated public Builder putAllWeights(
-          java.util.Map<java.lang.String, java.lang.Float> values) {
-        internalGetMutableWeights().getMutableMap()
-            .putAll(values);
-        bitField0_ |= 0x00000004;
-        return this;
-      }
-
       private java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch.WeightsForTarget> weightsForTargets_ =
         java.util.Collections.emptyList();
       private void ensureWeightsForTargetsIsMutable() {
-        if (!((bitField0_ & 0x00000008) != 0)) {
+        if (!((bitField0_ & 0x00000004) != 0)) {
           weightsForTargets_ = new java.util.ArrayList<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch.WeightsForTarget>(weightsForTargets_);
-          bitField0_ |= 0x00000008;
+          bitField0_ |= 0x00000004;
          }
       }
 
@@ -2108,7 +1737,7 @@ public final class WeaviateProtoBaseSearch {
       public Builder clearWeightsForTargets() {
         if (weightsForTargetsBuilder_ == null) {
           weightsForTargets_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000008);
+          bitField0_ = (bitField0_ & ~0x00000004);
           onChanged();
         } else {
           weightsForTargetsBuilder_.clear();
@@ -2185,7 +1814,7 @@ public final class WeaviateProtoBaseSearch {
           weightsForTargetsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch.WeightsForTarget, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch.WeightsForTarget.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch.WeightsForTargetOrBuilder>(
                   weightsForTargets_,
-                  ((bitField0_ & 0x00000008) != 0),
+                  ((bitField0_ & 0x00000004) != 0),
                   getParentForChildren(),
                   isClean());
           weightsForTargets_ = null;
@@ -22547,11 +22176,6 @@ com.google.protobuf.ByteString defaultValue) {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_weaviate_v1_Targets_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_weaviate_v1_Targets_WeightsEntry_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_weaviate_v1_Targets_WeightsEntry_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_weaviate_v1_VectorForTarget_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -22637,98 +22261,96 @@ com.google.protobuf.ByteString defaultValue) {
     java.lang.String[] descriptorData = {
       "\n\024v1/base_search.proto\022\013weaviate.v1\032\rv1/" +
       "base.proto\"2\n\020WeightsForTarget\022\016\n\006target" +
-      "\030\001 \001(\t\022\016\n\006weight\030\002 \001(\002\"\372\001\n\007Targets\022\026\n\016ta" +
+      "\030\001 \001(\t\022\016\n\006weight\030\002 \001(\002\"\230\001\n\007Targets\022\026\n\016ta" +
       "rget_vectors\030\001 \003(\t\0223\n\013combination\030\002 \001(\0162" +
-      "\036.weaviate.v1.CombinationMethod\0226\n\007weigh" +
-      "ts\030\003 \003(\0132!.weaviate.v1.Targets.WeightsEn" +
-      "tryB\002\030\001\022:\n\023weights_for_targets\030\004 \003(\0132\035.w" +
-      "eaviate.v1.WeightsForTarget\032.\n\014WeightsEn" +
-      "try\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\002:\0028\001\"`\n\017V" +
-      "ectorForTarget\022\014\n\004name\030\001 \001(\t\022\030\n\014vector_b" +
-      "ytes\030\002 \001(\014B\002\030\001\022%\n\007vectors\030\003 \003(\0132\024.weavia" +
-      "te.v1.Vectors\"\341\001\n\025SearchOperatorOptions\022" +
-      "=\n\010operator\030\001 \001(\0162+.weaviate.v1.SearchOp" +
-      "eratorOptions.Operator\022$\n\027minimum_or_tok" +
-      "ens_match\030\002 \001(\005H\000\210\001\001\"G\n\010Operator\022\030\n\024OPER" +
-      "ATOR_UNSPECIFIED\020\000\022\017\n\013OPERATOR_OR\020\001\022\020\n\014O" +
-      "PERATOR_AND\020\002B\032\n\030_minimum_or_tokens_matc" +
-      "h\"\320\004\n\006Hybrid\022\r\n\005query\030\001 \001(\t\022\022\n\npropertie" +
-      "s\030\002 \003(\t\022\022\n\006vector\030\003 \003(\002B\002\030\001\022\r\n\005alpha\030\004 \001" +
-      "(\002\0223\n\013fusion_type\030\005 \001(\0162\036.weaviate.v1.Hy" +
-      "brid.FusionType\022\030\n\014vector_bytes\030\006 \001(\014B\002\030" +
-      "\001\022\032\n\016target_vectors\030\007 \003(\tB\002\030\001\022.\n\tnear_te" +
-      "xt\030\010 \001(\0132\033.weaviate.v1.NearTextSearch\022,\n" +
-      "\013near_vector\030\t \001(\0132\027.weaviate.v1.NearVec" +
-      "tor\022%\n\007targets\030\n \001(\0132\024.weaviate.v1.Targe" +
-      "ts\022E\n\024bm25_search_operator\030\013 \001(\0132\".weavi" +
-      "ate.v1.SearchOperatorOptionsH\001\210\001\001\022\031\n\017vec" +
-      "tor_distance\030\024 \001(\002H\000\022%\n\007vectors\030\025 \003(\0132\024." +
-      "weaviate.v1.Vectors\"a\n\nFusionType\022\033\n\027FUS" +
-      "ION_TYPE_UNSPECIFIED\020\000\022\026\n\022FUSION_TYPE_RA" +
-      "NKED\020\001\022\036\n\032FUSION_TYPE_RELATIVE_SCORE\020\002B\013" +
-      "\n\tthresholdB\027\n\025_bm25_search_operator\"\255\003\n" +
-      "\nNearVector\022\022\n\006vector\030\001 \003(\002B\002\030\001\022\026\n\tcerta" +
-      "inty\030\002 \001(\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001\022\030" +
-      "\n\014vector_bytes\030\004 \001(\014B\002\030\001\022\032\n\016target_vecto" +
-      "rs\030\005 \003(\tB\002\030\001\022%\n\007targets\030\006 \001(\0132\024.weaviate" +
-      ".v1.Targets\022K\n\021vector_per_target\030\007 \003(\0132," +
-      ".weaviate.v1.NearVector.VectorPerTargetE" +
-      "ntryB\002\030\001\0228\n\022vector_for_targets\030\010 \003(\0132\034.w" +
-      "eaviate.v1.VectorForTarget\022%\n\007vectors\030\t " +
-      "\003(\0132\024.weaviate.v1.Vectors\0326\n\024VectorPerTa" +
-      "rgetEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\014:\0028" +
-      "\001B\014\n\n_certaintyB\013\n\t_distance\"\245\001\n\nNearObj" +
-      "ect\022\n\n\002id\030\001 \001(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022" +
-      "\025\n\010distance\030\003 \001(\001H\001\210\001\001\022\032\n\016target_vectors" +
-      "\030\004 \003(\tB\002\030\001\022%\n\007targets\030\005 \001(\0132\024.weaviate.v" +
-      "1.TargetsB\014\n\n_certaintyB\013\n\t_distance\"\360\002\n" +
-      "\016NearTextSearch\022\r\n\005query\030\001 \003(\t\022\026\n\tcertai" +
-      "nty\030\002 \001(\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001\0226\n" +
-      "\007move_to\030\004 \001(\0132 .weaviate.v1.NearTextSea" +
-      "rch.MoveH\002\210\001\001\0228\n\tmove_away\030\005 \001(\0132 .weavi" +
-      "ate.v1.NearTextSearch.MoveH\003\210\001\001\022\032\n\016targe" +
-      "t_vectors\030\006 \003(\tB\002\030\001\022%\n\007targets\030\007 \001(\0132\024.w" +
-      "eaviate.v1.Targets\0326\n\004Move\022\r\n\005force\030\001 \001(" +
-      "\002\022\020\n\010concepts\030\002 \003(\t\022\r\n\005uuids\030\003 \003(\tB\014\n\n_c" +
-      "ertaintyB\013\n\t_distanceB\n\n\010_move_toB\014\n\n_mo" +
-      "ve_away\"\255\001\n\017NearImageSearch\022\r\n\005image\030\001 \001" +
-      "(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n\010distance\030\003" +
-      " \001(\001H\001\210\001\001\022\032\n\016target_vectors\030\004 \003(\tB\002\030\001\022%\n" +
-      "\007targets\030\005 \001(\0132\024.weaviate.v1.TargetsB\014\n\n" +
-      "_certaintyB\013\n\t_distance\"\255\001\n\017NearAudioSea" +
-      "rch\022\r\n\005audio\030\001 \001(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210" +
-      "\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001\022\032\n\016target_vect" +
-      "ors\030\004 \003(\tB\002\030\001\022%\n\007targets\030\005 \001(\0132\024.weaviat" +
-      "e.v1.TargetsB\014\n\n_certaintyB\013\n\t_distance\"" +
-      "\255\001\n\017NearVideoSearch\022\r\n\005video\030\001 \001(\t\022\026\n\tce" +
-      "rtainty\030\002 \001(\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001" +
-      "\001\022\032\n\016target_vectors\030\004 \003(\tB\002\030\001\022%\n\007targets" +
-      "\030\005 \001(\0132\024.weaviate.v1.TargetsB\014\n\n_certain" +
-      "tyB\013\n\t_distance\"\255\001\n\017NearDepthSearch\022\r\n\005d" +
-      "epth\030\001 \001(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n\010di" +
-      "stance\030\003 \001(\001H\001\210\001\001\022\032\n\016target_vectors\030\004 \003(" +
-      "\tB\002\030\001\022%\n\007targets\030\005 \001(\0132\024.weaviate.v1.Tar" +
-      "getsB\014\n\n_certaintyB\013\n\t_distance\"\261\001\n\021Near" +
-      "ThermalSearch\022\017\n\007thermal\030\001 \001(\t\022\026\n\tcertai" +
-      "nty\030\002 \001(\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001\022\032\n" +
-      "\016target_vectors\030\004 \003(\tB\002\030\001\022%\n\007targets\030\005 \001" +
-      "(\0132\024.weaviate.v1.TargetsB\014\n\n_certaintyB\013" +
-      "\n\t_distance\"\251\001\n\rNearIMUSearch\022\013\n\003imu\030\001 \001" +
-      "(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n\010distance\030\003" +
-      " \001(\001H\001\210\001\001\022\032\n\016target_vectors\030\004 \003(\tB\002\030\001\022%\n" +
-      "\007targets\030\005 \001(\0132\024.weaviate.v1.TargetsB\014\n\n" +
-      "_certaintyB\013\n\t_distance\"\177\n\004BM25\022\r\n\005query" +
-      "\030\001 \001(\t\022\022\n\nproperties\030\002 \003(\t\022@\n\017search_ope" +
-      "rator\030\003 \001(\0132\".weaviate.v1.SearchOperator" +
-      "OptionsH\000\210\001\001B\022\n\020_search_operator*\356\001\n\021Com" +
-      "binationMethod\022\"\n\036COMBINATION_METHOD_UNS" +
-      "PECIFIED\020\000\022\037\n\033COMBINATION_METHOD_TYPE_SU" +
-      "M\020\001\022\037\n\033COMBINATION_METHOD_TYPE_MIN\020\002\022#\n\037" +
-      "COMBINATION_METHOD_TYPE_AVERAGE\020\003\022*\n&COM" +
-      "BINATION_METHOD_TYPE_RELATIVE_SCORE\020\004\022\"\n" +
-      "\036COMBINATION_METHOD_TYPE_MANUAL\020\005BH\n-io." +
-      "weaviate.client6.v1.internal.grpc.protoc" +
-      "olB\027WeaviateProtoBaseSearchb\006proto3"
+      "\036.weaviate.v1.CombinationMethod\022:\n\023weigh" +
+      "ts_for_targets\030\004 \003(\0132\035.weaviate.v1.Weigh" +
+      "tsForTargetJ\004\010\003\020\004\"`\n\017VectorForTarget\022\014\n\004" +
+      "name\030\001 \001(\t\022\030\n\014vector_bytes\030\002 \001(\014B\002\030\001\022%\n\007" +
+      "vectors\030\003 \003(\0132\024.weaviate.v1.Vectors\"\341\001\n\025" +
+      "SearchOperatorOptions\022=\n\010operator\030\001 \001(\0162" +
+      "+.weaviate.v1.SearchOperatorOptions.Oper" +
+      "ator\022$\n\027minimum_or_tokens_match\030\002 \001(\005H\000\210" +
+      "\001\001\"G\n\010Operator\022\030\n\024OPERATOR_UNSPECIFIED\020\000" +
+      "\022\017\n\013OPERATOR_OR\020\001\022\020\n\014OPERATOR_AND\020\002B\032\n\030_" +
+      "minimum_or_tokens_match\"\320\004\n\006Hybrid\022\r\n\005qu" +
+      "ery\030\001 \001(\t\022\022\n\nproperties\030\002 \003(\t\022\022\n\006vector\030" +
+      "\003 \003(\002B\002\030\001\022\r\n\005alpha\030\004 \001(\002\0223\n\013fusion_type\030" +
+      "\005 \001(\0162\036.weaviate.v1.Hybrid.FusionType\022\030\n" +
+      "\014vector_bytes\030\006 \001(\014B\002\030\001\022\032\n\016target_vector" +
+      "s\030\007 \003(\tB\002\030\001\022.\n\tnear_text\030\010 \001(\0132\033.weaviat" +
+      "e.v1.NearTextSearch\022,\n\013near_vector\030\t \001(\013" +
+      "2\027.weaviate.v1.NearVector\022%\n\007targets\030\n \001" +
+      "(\0132\024.weaviate.v1.Targets\022E\n\024bm25_search_" +
+      "operator\030\013 \001(\0132\".weaviate.v1.SearchOpera" +
+      "torOptionsH\001\210\001\001\022\031\n\017vector_distance\030\024 \001(\002" +
+      "H\000\022%\n\007vectors\030\025 \003(\0132\024.weaviate.v1.Vector" +
+      "s\"a\n\nFusionType\022\033\n\027FUSION_TYPE_UNSPECIFI" +
+      "ED\020\000\022\026\n\022FUSION_TYPE_RANKED\020\001\022\036\n\032FUSION_T" +
+      "YPE_RELATIVE_SCORE\020\002B\013\n\tthresholdB\027\n\025_bm" +
+      "25_search_operator\"\255\003\n\nNearVector\022\022\n\006vec" +
+      "tor\030\001 \003(\002B\002\030\001\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n" +
+      "\010distance\030\003 \001(\001H\001\210\001\001\022\030\n\014vector_bytes\030\004 \001" +
+      "(\014B\002\030\001\022\032\n\016target_vectors\030\005 \003(\tB\002\030\001\022%\n\007ta" +
+      "rgets\030\006 \001(\0132\024.weaviate.v1.Targets\022K\n\021vec" +
+      "tor_per_target\030\007 \003(\0132,.weaviate.v1.NearV" +
+      "ector.VectorPerTargetEntryB\002\030\001\0228\n\022vector" +
+      "_for_targets\030\010 \003(\0132\034.weaviate.v1.VectorF" +
+      "orTarget\022%\n\007vectors\030\t \003(\0132\024.weaviate.v1." +
+      "Vectors\0326\n\024VectorPerTargetEntry\022\013\n\003key\030\001" +
+      " \001(\t\022\r\n\005value\030\002 \001(\014:\0028\001B\014\n\n_certaintyB\013\n" +
+      "\t_distance\"\245\001\n\nNearObject\022\n\n\002id\030\001 \001(\t\022\026\n" +
+      "\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H" +
+      "\001\210\001\001\022\032\n\016target_vectors\030\004 \003(\tB\002\030\001\022%\n\007targ" +
+      "ets\030\005 \001(\0132\024.weaviate.v1.TargetsB\014\n\n_cert" +
+      "aintyB\013\n\t_distance\"\360\002\n\016NearTextSearch\022\r\n" +
+      "\005query\030\001 \003(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n\010" +
+      "distance\030\003 \001(\001H\001\210\001\001\0226\n\007move_to\030\004 \001(\0132 .w" +
+      "eaviate.v1.NearTextSearch.MoveH\002\210\001\001\0228\n\tm" +
+      "ove_away\030\005 \001(\0132 .weaviate.v1.NearTextSea" +
+      "rch.MoveH\003\210\001\001\022\032\n\016target_vectors\030\006 \003(\tB\002\030" +
+      "\001\022%\n\007targets\030\007 \001(\0132\024.weaviate.v1.Targets" +
+      "\0326\n\004Move\022\r\n\005force\030\001 \001(\002\022\020\n\010concepts\030\002 \003(" +
+      "\t\022\r\n\005uuids\030\003 \003(\tB\014\n\n_certaintyB\013\n\t_dista" +
+      "nceB\n\n\010_move_toB\014\n\n_move_away\"\255\001\n\017NearIm" +
+      "ageSearch\022\r\n\005image\030\001 \001(\t\022\026\n\tcertainty\030\002 " +
+      "\001(\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001\022\032\n\016targe" +
+      "t_vectors\030\004 \003(\tB\002\030\001\022%\n\007targets\030\005 \001(\0132\024.w" +
+      "eaviate.v1.TargetsB\014\n\n_certaintyB\013\n\t_dis" +
+      "tance\"\255\001\n\017NearAudioSearch\022\r\n\005audio\030\001 \001(\t" +
+      "\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n\010distance\030\003 \001" +
+      "(\001H\001\210\001\001\022\032\n\016target_vectors\030\004 \003(\tB\002\030\001\022%\n\007t" +
+      "argets\030\005 \001(\0132\024.weaviate.v1.TargetsB\014\n\n_c" +
+      "ertaintyB\013\n\t_distance\"\255\001\n\017NearVideoSearc" +
+      "h\022\r\n\005video\030\001 \001(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001" +
+      "\022\025\n\010distance\030\003 \001(\001H\001\210\001\001\022\032\n\016target_vector" +
+      "s\030\004 \003(\tB\002\030\001\022%\n\007targets\030\005 \001(\0132\024.weaviate." +
+      "v1.TargetsB\014\n\n_certaintyB\013\n\t_distance\"\255\001" +
+      "\n\017NearDepthSearch\022\r\n\005depth\030\001 \001(\t\022\026\n\tcert" +
+      "ainty\030\002 \001(\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001\022" +
+      "\032\n\016target_vectors\030\004 \003(\tB\002\030\001\022%\n\007targets\030\005" +
+      " \001(\0132\024.weaviate.v1.TargetsB\014\n\n_certainty" +
+      "B\013\n\t_distance\"\261\001\n\021NearThermalSearch\022\017\n\007t" +
+      "hermal\030\001 \001(\t\022\026\n\tcertainty\030\002 \001(\001H\000\210\001\001\022\025\n\010" +
+      "distance\030\003 \001(\001H\001\210\001\001\022\032\n\016target_vectors\030\004 " +
+      "\003(\tB\002\030\001\022%\n\007targets\030\005 \001(\0132\024.weaviate.v1.T" +
+      "argetsB\014\n\n_certaintyB\013\n\t_distance\"\251\001\n\rNe" +
+      "arIMUSearch\022\013\n\003imu\030\001 \001(\t\022\026\n\tcertainty\030\002 " +
+      "\001(\001H\000\210\001\001\022\025\n\010distance\030\003 \001(\001H\001\210\001\001\022\032\n\016targe" +
+      "t_vectors\030\004 \003(\tB\002\030\001\022%\n\007targets\030\005 \001(\0132\024.w" +
+      "eaviate.v1.TargetsB\014\n\n_certaintyB\013\n\t_dis" +
+      "tance\"\177\n\004BM25\022\r\n\005query\030\001 \001(\t\022\022\n\nproperti" +
+      "es\030\002 \003(\t\022@\n\017search_operator\030\003 \001(\0132\".weav" +
+      "iate.v1.SearchOperatorOptionsH\000\210\001\001B\022\n\020_s" +
+      "earch_operator*\356\001\n\021CombinationMethod\022\"\n\036" +
+      "COMBINATION_METHOD_UNSPECIFIED\020\000\022\037\n\033COMB" +
+      "INATION_METHOD_TYPE_SUM\020\001\022\037\n\033COMBINATION" +
+      "_METHOD_TYPE_MIN\020\002\022#\n\037COMBINATION_METHOD" +
+      "_TYPE_AVERAGE\020\003\022*\n&COMBINATION_METHOD_TY" +
+      "PE_RELATIVE_SCORE\020\004\022\"\n\036COMBINATION_METHO" +
+      "D_TYPE_MANUAL\020\005BH\n-io.weaviate.client6.v" +
+      "1.internal.grpc.protocolB\027WeaviateProtoB" +
+      "aseSearchb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -22746,13 +22368,7 @@ com.google.protobuf.ByteString defaultValue) {
     internal_static_weaviate_v1_Targets_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_Targets_descriptor,
-        new java.lang.String[] { "TargetVectors", "Combination", "Weights", "WeightsForTargets", });
-    internal_static_weaviate_v1_Targets_WeightsEntry_descriptor =
-      internal_static_weaviate_v1_Targets_descriptor.getNestedTypes().get(0);
-    internal_static_weaviate_v1_Targets_WeightsEntry_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_weaviate_v1_Targets_WeightsEntry_descriptor,
-        new java.lang.String[] { "Key", "Value", });
+        new java.lang.String[] { "TargetVectors", "Combination", "WeightsForTargets", });
     internal_static_weaviate_v1_VectorForTarget_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_weaviate_v1_VectorForTarget_fieldAccessorTable = new
