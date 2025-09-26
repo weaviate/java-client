@@ -1,4 +1,4 @@
-# Weaviate Java client  <img alt='Weaviate logo' src='https://raw.githubusercontent.com/weaviate/weaviate/19de0956c69b66c5552447e84d016f4fe29d12c9/docs/assets/weaviate-logo.png' width='180' align='right' />
+# Weaviate Java client  <img alt='Weaviate logo' src='https://github.com/weaviate/java-client/blob/v6-write-the-docs/assets/duke-client6.png' width='200' align='right' />
 
 [![Build Status](https://github.com/weaviate/java-client/actions/workflows/.github/workflows/test.yaml/badge.svg?branch=main)](https://github.com/weaviate/java-client/actions/workflows/.github/workflows/test.yaml)
 
