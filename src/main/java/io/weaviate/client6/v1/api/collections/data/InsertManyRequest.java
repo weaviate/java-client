@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
+import io.weaviate.client6.v1.internal.MapUtil;
 import io.weaviate.client6.v1.internal.grpc.ByteStringUtil;
 import io.weaviate.client6.v1.internal.grpc.Rpc;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateBlockingStub;
@@ -65,8 +65,10 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
           var errors = new ArrayList<String>(insertErrors.size());
           var uuids = new ArrayList<String>();
 
-          var failed = insertErrors.stream()
-              .collect(Collectors.toMap(err -> err.getIndex(), err -> err.getError()));
+          var failed = MapUtil.collect(
+              insertErrors.stream(),
+              err -> err.getIndex(),
+              err -> err.getError());
 
           var iter = insertObjects.listIterator();
           while (iter.hasNext()) {
@@ -137,6 +139,10 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
           var value = entry.getValue();
           var protoValue = com.google.protobuf.Value.newBuilder();
 
+          if (value == null) {
+            return;
+          }
+
           if (value instanceof String v) {
             protoValue.setStringValue(v);
           } else if (value instanceof UUID v) {
@@ -147,7 +153,7 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
             protoValue.setBoolValue(v.booleanValue());
           } else if (value instanceof Number v) {
             protoValue.setNumberValue(v.doubleValue());
-          } else if (value instanceof List v) {
+          } else if (value instanceof List<?> v) {
             protoValue.setListValue(
                 com.google.protobuf.ListValue.newBuilder()
                     .addAllValues(v.stream()
