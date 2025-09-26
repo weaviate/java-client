@@ -88,7 +88,13 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
                     group.getMaxDistance(),
                     group.getNumberOfObjects(),
                     objects);
-              }).collect(Collectors.toMap(QueryResponseGroup::name, Function.identity()));
+              })
+              // Collectors.toMap() throws an NPE if either key or value in the map are null.
+              // In this specific case it is safe to use it, as the function in the map above
+              // always returns a QueryResponseGroup.
+              // The name of the group should not be null either, that's something we assume
+              // about the server's response.
+              .collect(Collectors.toMap(QueryResponseGroup::name, Function.identity()));
 
           return new QueryResponseGrouped<T>(allObjects, groups);
         }, () -> rpc.method(), () -> rpc.methodAsync());
