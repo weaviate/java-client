@@ -747,34 +747,19 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
     double getNumberValue();
 
     /**
-     * <code>string string_value = 2 [deprecated = true];</code>
-     * @deprecated weaviate.v1.Value.string_value is deprecated.
-     *     See v1/properties.proto;l=16
-     * @return Whether the stringValue field is set.
-     */
-    @java.lang.Deprecated boolean hasStringValue();
-    /**
-     * <code>string string_value = 2 [deprecated = true];</code>
-     * @deprecated weaviate.v1.Value.string_value is deprecated.
-     *     See v1/properties.proto;l=16
-     * @return The stringValue.
-     */
-    @java.lang.Deprecated java.lang.String getStringValue();
-    /**
-     * <code>string string_value = 2 [deprecated = true];</code>
-     * @deprecated weaviate.v1.Value.string_value is deprecated.
-     *     See v1/properties.proto;l=16
-     * @return The bytes for stringValue.
-     */
-    @java.lang.Deprecated com.google.protobuf.ByteString
-        getStringValueBytes();
-
-    /**
+     * <pre>
+     *dont reuse 2, old field that has been removed; Was "string string_value = 2;"
+     * </pre>
+     *
      * <code>bool bool_value = 3;</code>
      * @return Whether the boolValue field is set.
      */
     boolean hasBoolValue();
     /**
+     * <pre>
+     *dont reuse 2, old field that has been removed; Was "string string_value = 2;"
+     * </pre>
+     *
      * <code>bool bool_value = 3;</code>
      * @return The boolValue.
      */
@@ -979,7 +964,6 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
         implements com.google.protobuf.Internal.EnumLite,
             com.google.protobuf.AbstractMessage.InternalOneOfEnum {
       NUMBER_VALUE(1),
-      @java.lang.Deprecated STRING_VALUE(2),
       BOOL_VALUE(3),
       OBJECT_VALUE(4),
       LIST_VALUE(5),
@@ -1009,7 +993,6 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
       public static KindCase forNumber(int value) {
         switch (value) {
           case 1: return NUMBER_VALUE;
-          case 2: return STRING_VALUE;
           case 3: return BOOL_VALUE;
           case 4: return OBJECT_VALUE;
           case 5: return LIST_VALUE;
@@ -1057,66 +1040,12 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
       return 0D;
     }
 
-    public static final int STRING_VALUE_FIELD_NUMBER = 2;
-    /**
-     * <code>string string_value = 2 [deprecated = true];</code>
-     * @deprecated weaviate.v1.Value.string_value is deprecated.
-     *     See v1/properties.proto;l=16
-     * @return Whether the stringValue field is set.
-     */
-    @java.lang.Deprecated public boolean hasStringValue() {
-      return kindCase_ == 2;
-    }
-    /**
-     * <code>string string_value = 2 [deprecated = true];</code>
-     * @deprecated weaviate.v1.Value.string_value is deprecated.
-     *     See v1/properties.proto;l=16
-     * @return The stringValue.
-     */
-    @java.lang.Deprecated public java.lang.String getStringValue() {
-      java.lang.Object ref = "";
-      if (kindCase_ == 2) {
-        ref = kind_;
-      }
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (kindCase_ == 2) {
-          kind_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>string string_value = 2 [deprecated = true];</code>
-     * @deprecated weaviate.v1.Value.string_value is deprecated.
-     *     See v1/properties.proto;l=16
-     * @return The bytes for stringValue.
-     */
-    @java.lang.Deprecated public com.google.protobuf.ByteString
-        getStringValueBytes() {
-      java.lang.Object ref = "";
-      if (kindCase_ == 2) {
-        ref = kind_;
-      }
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        if (kindCase_ == 2) {
-          kind_ = b;
-        }
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
     public static final int BOOL_VALUE_FIELD_NUMBER = 3;
     /**
+     * <pre>
+     *dont reuse 2, old field that has been removed; Was "string string_value = 2;"
+     * </pre>
+     *
      * <code>bool bool_value = 3;</code>
      * @return Whether the boolValue field is set.
      */
@@ -1125,6 +1054,10 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
       return kindCase_ == 3;
     }
     /**
+     * <pre>
+     *dont reuse 2, old field that has been removed; Was "string string_value = 2;"
+     * </pre>
+     *
      * <code>bool bool_value = 3;</code>
      * @return The boolValue.
      */
@@ -1538,9 +1471,6 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
         output.writeDouble(
             1, (double)((java.lang.Double) kind_));
       }
-      if (kindCase_ == 2) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, kind_);
-      }
       if (kindCase_ == 3) {
         output.writeBool(
             3, (boolean)((java.lang.Boolean) kind_));
@@ -1589,9 +1519,6 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(
               1, (double)((java.lang.Double) kind_));
-      }
-      if (kindCase_ == 2) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, kind_);
       }
       if (kindCase_ == 3) {
         size += com.google.protobuf.CodedOutputStream
@@ -1657,10 +1584,6 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
               != java.lang.Double.doubleToLongBits(
                   other.getNumberValue())) return false;
           break;
-        case 2:
-          if (!getStringValue()
-              .equals(other.getStringValue())) return false;
-          break;
         case 3:
           if (getBoolValue()
               != other.getBoolValue()) return false;
@@ -1724,10 +1647,6 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
           hash = (37 * hash) + NUMBER_VALUE_FIELD_NUMBER;
           hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
               java.lang.Double.doubleToLongBits(getNumberValue()));
-          break;
-        case 2:
-          hash = (37 * hash) + STRING_VALUE_FIELD_NUMBER;
-          hash = (53 * hash) + getStringValue().hashCode();
           break;
         case 3:
           hash = (37 * hash) + BOOL_VALUE_FIELD_NUMBER;
@@ -2029,12 +1948,6 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
             setNumberValue(other.getNumberValue());
             break;
           }
-          case STRING_VALUE: {
-            kindCase_ = 2;
-            kind_ = other.kind_;
-            onChanged();
-            break;
-          }
           case BOOL_VALUE: {
             setBoolValue(other.getBoolValue());
             break;
@@ -2122,12 +2035,6 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
                 kindCase_ = 1;
                 break;
               } // case 9
-              case 18: {
-                java.lang.String s = input.readStringRequireUtf8();
-                kindCase_ = 2;
-                kind_ = s;
-                break;
-              } // case 18
               case 24: {
                 kind_ = input.readBool();
                 kindCase_ = 3;
@@ -2271,111 +2178,10 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
       }
 
       /**
-       * <code>string string_value = 2 [deprecated = true];</code>
-       * @deprecated weaviate.v1.Value.string_value is deprecated.
-       *     See v1/properties.proto;l=16
-       * @return Whether the stringValue field is set.
-       */
-      @java.lang.Override
-      @java.lang.Deprecated public boolean hasStringValue() {
-        return kindCase_ == 2;
-      }
-      /**
-       * <code>string string_value = 2 [deprecated = true];</code>
-       * @deprecated weaviate.v1.Value.string_value is deprecated.
-       *     See v1/properties.proto;l=16
-       * @return The stringValue.
-       */
-      @java.lang.Override
-      @java.lang.Deprecated public java.lang.String getStringValue() {
-        java.lang.Object ref = "";
-        if (kindCase_ == 2) {
-          ref = kind_;
-        }
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (kindCase_ == 2) {
-            kind_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string string_value = 2 [deprecated = true];</code>
-       * @deprecated weaviate.v1.Value.string_value is deprecated.
-       *     See v1/properties.proto;l=16
-       * @return The bytes for stringValue.
-       */
-      @java.lang.Override
-      @java.lang.Deprecated public com.google.protobuf.ByteString
-          getStringValueBytes() {
-        java.lang.Object ref = "";
-        if (kindCase_ == 2) {
-          ref = kind_;
-        }
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          if (kindCase_ == 2) {
-            kind_ = b;
-          }
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string string_value = 2 [deprecated = true];</code>
-       * @deprecated weaviate.v1.Value.string_value is deprecated.
-       *     See v1/properties.proto;l=16
-       * @param value The stringValue to set.
-       * @return This builder for chaining.
-       */
-      @java.lang.Deprecated public Builder setStringValue(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        kindCase_ = 2;
-        kind_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string string_value = 2 [deprecated = true];</code>
-       * @deprecated weaviate.v1.Value.string_value is deprecated.
-       *     See v1/properties.proto;l=16
-       * @return This builder for chaining.
-       */
-      @java.lang.Deprecated public Builder clearStringValue() {
-        if (kindCase_ == 2) {
-          kindCase_ = 0;
-          kind_ = null;
-          onChanged();
-        }
-        return this;
-      }
-      /**
-       * <code>string string_value = 2 [deprecated = true];</code>
-       * @deprecated weaviate.v1.Value.string_value is deprecated.
-       *     See v1/properties.proto;l=16
-       * @param value The bytes for stringValue to set.
-       * @return This builder for chaining.
-       */
-      @java.lang.Deprecated public Builder setStringValueBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        kindCase_ = 2;
-        kind_ = value;
-        onChanged();
-        return this;
-      }
-
-      /**
+       * <pre>
+       *dont reuse 2, old field that has been removed; Was "string string_value = 2;"
+       * </pre>
+       *
        * <code>bool bool_value = 3;</code>
        * @return Whether the boolValue field is set.
        */
@@ -2383,6 +2189,10 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
         return kindCase_ == 3;
       }
       /**
+       * <pre>
+       *dont reuse 2, old field that has been removed; Was "string string_value = 2;"
+       * </pre>
+       *
        * <code>bool bool_value = 3;</code>
        * @return The boolValue.
        */
@@ -2393,6 +2203,10 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
         return false;
       }
       /**
+       * <pre>
+       *dont reuse 2, old field that has been removed; Was "string string_value = 2;"
+       * </pre>
+       *
        * <code>bool bool_value = 3;</code>
        * @param value The boolValue to set.
        * @return This builder for chaining.
@@ -2405,6 +2219,10 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
         return this;
       }
       /**
+       * <pre>
+       *dont reuse 2, old field that has been removed; Was "string string_value = 2;"
+       * </pre>
+       *
        * <code>bool bool_value = 3;</code>
        * @return This builder for chaining.
        */
@@ -3537,30 +3355,6 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
-     */
-    @java.lang.Deprecated java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value> 
-        getValuesList();
-    /**
-     * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
-     */
-    @java.lang.Deprecated io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value getValues(int index);
-    /**
-     * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
-     */
-    @java.lang.Deprecated int getValuesCount();
-    /**
-     * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
-     */
-    @java.lang.Deprecated java.util.List<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.ValueOrBuilder> 
-        getValuesOrBuilderList();
-    /**
-     * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
-     */
-    @java.lang.Deprecated io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.ValueOrBuilder getValuesOrBuilder(
-        int index);
-
-    /**
      * <code>.weaviate.v1.NumberValues number_values = 2;</code>
      * @return Whether the numberValues field is set.
      */
@@ -3680,7 +3474,6 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
       super(builder);
     }
     private ListValue() {
-      values_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -3753,47 +3546,6 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
     getKindCase() {
       return KindCase.forNumber(
           kindCase_);
-    }
-
-    public static final int VALUES_FIELD_NUMBER = 1;
-    @SuppressWarnings("serial")
-    private java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value> values_;
-    /**
-     * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
-     */
-    @java.lang.Override
-    @java.lang.Deprecated public java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value> getValuesList() {
-      return values_;
-    }
-    /**
-     * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
-     */
-    @java.lang.Override
-    @java.lang.Deprecated public java.util.List<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.ValueOrBuilder> 
-        getValuesOrBuilderList() {
-      return values_;
-    }
-    /**
-     * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
-     */
-    @java.lang.Override
-    @java.lang.Deprecated public int getValuesCount() {
-      return values_.size();
-    }
-    /**
-     * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
-     */
-    @java.lang.Override
-    @java.lang.Deprecated public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value getValues(int index) {
-      return values_.get(index);
-    }
-    /**
-     * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
-     */
-    @java.lang.Override
-    @java.lang.Deprecated public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.ValueOrBuilder getValuesOrBuilder(
-        int index) {
-      return values_.get(index);
     }
 
     public static final int NUMBER_VALUES_FIELD_NUMBER = 2;
@@ -4027,9 +3779,6 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      for (int i = 0; i < values_.size(); i++) {
-        output.writeMessage(1, values_.get(i));
-      }
       if (kindCase_ == 2) {
         output.writeMessage(2, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.NumberValues) kind_);
       }
@@ -4060,10 +3809,6 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
       if (size != -1) return size;
 
       size = 0;
-      for (int i = 0; i < values_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, values_.get(i));
-      }
       if (kindCase_ == 2) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.NumberValues) kind_);
@@ -4107,8 +3852,6 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
       }
       io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.ListValue other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.ListValue) obj;
 
-      if (!getValuesList()
-          .equals(other.getValuesList())) return false;
       if (!getKindCase().equals(other.getKindCase())) return false;
       switch (kindCase_) {
         case 2:
@@ -4153,10 +3896,6 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (getValuesCount() > 0) {
-        hash = (37 * hash) + VALUES_FIELD_NUMBER;
-        hash = (53 * hash) + getValuesList().hashCode();
-      }
       switch (kindCase_) {
         case 2:
           hash = (37 * hash) + NUMBER_VALUES_FIELD_NUMBER;
@@ -4320,13 +4059,6 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
       public Builder clear() {
         super.clear();
         bitField0_ = 0;
-        if (valuesBuilder_ == null) {
-          values_ = java.util.Collections.emptyList();
-        } else {
-          values_ = null;
-          valuesBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000001);
         if (numberValuesBuilder_ != null) {
           numberValuesBuilder_.clear();
         }
@@ -4376,23 +4108,10 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
       @java.lang.Override
       public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.ListValue buildPartial() {
         io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.ListValue result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.ListValue(this);
-        buildPartialRepeatedFields(result);
         if (bitField0_ != 0) { buildPartial0(result); }
         buildPartialOneofs(result);
         onBuilt();
         return result;
-      }
-
-      private void buildPartialRepeatedFields(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.ListValue result) {
-        if (valuesBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) != 0)) {
-            values_ = java.util.Collections.unmodifiableList(values_);
-            bitField0_ = (bitField0_ & ~0x00000001);
-          }
-          result.values_ = values_;
-        } else {
-          result.values_ = valuesBuilder_.build();
-        }
       }
 
       private void buildPartial0(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.ListValue result) {
@@ -4476,32 +4195,6 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
 
       public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.ListValue other) {
         if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.ListValue.getDefaultInstance()) return this;
-        if (valuesBuilder_ == null) {
-          if (!other.values_.isEmpty()) {
-            if (values_.isEmpty()) {
-              values_ = other.values_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-            } else {
-              ensureValuesIsMutable();
-              values_.addAll(other.values_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.values_.isEmpty()) {
-            if (valuesBuilder_.isEmpty()) {
-              valuesBuilder_.dispose();
-              valuesBuilder_ = null;
-              values_ = other.values_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-              valuesBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getValuesFieldBuilder() : null;
-            } else {
-              valuesBuilder_.addAllMessages(other.values_);
-            }
-          }
-        }
         switch (other.getKindCase()) {
           case NUMBER_VALUES: {
             mergeNumberValues(other.getNumberValues());
@@ -4561,19 +4254,6 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
               case 0:
                 done = true;
                 break;
-              case 10: {
-                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value m =
-                    input.readMessage(
-                        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value.parser(),
-                        extensionRegistry);
-                if (valuesBuilder_ == null) {
-                  ensureValuesIsMutable();
-                  values_.add(m);
-                } else {
-                  valuesBuilder_.addMessage(m);
-                }
-                break;
-              } // case 10
               case 18: {
                 input.readMessage(
                     getNumberValuesFieldBuilder().getBuilder(),
@@ -4654,246 +4334,6 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
       }
 
       private int bitField0_;
-
-      private java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value> values_ =
-        java.util.Collections.emptyList();
-      private void ensureValuesIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
-          values_ = new java.util.ArrayList<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value>(values_);
-          bitField0_ |= 0x00000001;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.ValueOrBuilder> valuesBuilder_;
-
-      /**
-       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
-       */
-      @java.lang.Deprecated public java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value> getValuesList() {
-        if (valuesBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(values_);
-        } else {
-          return valuesBuilder_.getMessageList();
-        }
-      }
-      /**
-       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
-       */
-      @java.lang.Deprecated public int getValuesCount() {
-        if (valuesBuilder_ == null) {
-          return values_.size();
-        } else {
-          return valuesBuilder_.getCount();
-        }
-      }
-      /**
-       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
-       */
-      @java.lang.Deprecated public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value getValues(int index) {
-        if (valuesBuilder_ == null) {
-          return values_.get(index);
-        } else {
-          return valuesBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
-       */
-      @java.lang.Deprecated public Builder setValues(
-          int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value value) {
-        if (valuesBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureValuesIsMutable();
-          values_.set(index, value);
-          onChanged();
-        } else {
-          valuesBuilder_.setMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
-       */
-      @java.lang.Deprecated public Builder setValues(
-          int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value.Builder builderForValue) {
-        if (valuesBuilder_ == null) {
-          ensureValuesIsMutable();
-          values_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          valuesBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
-       */
-      @java.lang.Deprecated public Builder addValues(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value value) {
-        if (valuesBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureValuesIsMutable();
-          values_.add(value);
-          onChanged();
-        } else {
-          valuesBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
-       */
-      @java.lang.Deprecated public Builder addValues(
-          int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value value) {
-        if (valuesBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureValuesIsMutable();
-          values_.add(index, value);
-          onChanged();
-        } else {
-          valuesBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
-       */
-      @java.lang.Deprecated public Builder addValues(
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value.Builder builderForValue) {
-        if (valuesBuilder_ == null) {
-          ensureValuesIsMutable();
-          values_.add(builderForValue.build());
-          onChanged();
-        } else {
-          valuesBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
-       */
-      @java.lang.Deprecated public Builder addValues(
-          int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value.Builder builderForValue) {
-        if (valuesBuilder_ == null) {
-          ensureValuesIsMutable();
-          values_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          valuesBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
-       */
-      @java.lang.Deprecated public Builder addAllValues(
-          java.lang.Iterable<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value> values) {
-        if (valuesBuilder_ == null) {
-          ensureValuesIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, values_);
-          onChanged();
-        } else {
-          valuesBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
-       */
-      @java.lang.Deprecated public Builder clearValues() {
-        if (valuesBuilder_ == null) {
-          values_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
-          onChanged();
-        } else {
-          valuesBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
-       */
-      @java.lang.Deprecated public Builder removeValues(int index) {
-        if (valuesBuilder_ == null) {
-          ensureValuesIsMutable();
-          values_.remove(index);
-          onChanged();
-        } else {
-          valuesBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
-       */
-      @java.lang.Deprecated public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value.Builder getValuesBuilder(
-          int index) {
-        return getValuesFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
-       */
-      @java.lang.Deprecated public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.ValueOrBuilder getValuesOrBuilder(
-          int index) {
-        if (valuesBuilder_ == null) {
-          return values_.get(index);  } else {
-          return valuesBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
-       */
-      @java.lang.Deprecated public java.util.List<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.ValueOrBuilder> 
-           getValuesOrBuilderList() {
-        if (valuesBuilder_ != null) {
-          return valuesBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(values_);
-        }
-      }
-      /**
-       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
-       */
-      @java.lang.Deprecated public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value.Builder addValuesBuilder() {
-        return getValuesFieldBuilder().addBuilder(
-            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
-       */
-      @java.lang.Deprecated public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value.Builder addValuesBuilder(
-          int index) {
-        return getValuesFieldBuilder().addBuilder(
-            index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .weaviate.v1.Value values = 1 [deprecated = true];</code>
-       */
-      @java.lang.Deprecated public java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value.Builder> 
-           getValuesBuilderList() {
-        return getValuesFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.ValueOrBuilder> 
-          getValuesFieldBuilder() {
-        if (valuesBuilder_ == null) {
-          valuesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.ValueOrBuilder>(
-                  values_,
-                  ((bitField0_ & 0x00000001) != 0),
-                  getParentForChildren(),
-                  isClean());
-          values_ = null;
-        }
-        return valuesBuilder_;
-      }
 
       private com.google.protobuf.SingleFieldBuilderV3<
           io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.NumberValues, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.NumberValues.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.NumberValuesOrBuilder> numberValuesBuilder_;
@@ -12048,41 +11488,40 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
       "3\n\006fields\030\001 \003(\0132#.weaviate.v1.Properties" +
       ".FieldsEntry\032A\n\013FieldsEntry\022\013\n\003key\030\001 \001(\t" +
       "\022!\n\005value\030\002 \001(\0132\022.weaviate.v1.Value:\0028\001\"" +
-      "\271\003\n\005Value\022\026\n\014number_value\030\001 \001(\001H\000\022\032\n\014str" +
-      "ing_value\030\002 \001(\tB\002\030\001H\000\022\024\n\nbool_value\030\003 \001(" +
-      "\010H\000\022/\n\014object_value\030\004 \001(\0132\027.weaviate.v1." +
-      "PropertiesH\000\022,\n\nlist_value\030\005 \001(\0132\026.weavi" +
-      "ate.v1.ListValueH\000\022\024\n\ndate_value\030\006 \001(\tH\000" +
-      "\022\024\n\nuuid_value\030\007 \001(\tH\000\022\023\n\tint_value\030\010 \001(" +
-      "\003H\000\022/\n\tgeo_value\030\t \001(\0132\032.weaviate.v1.Geo" +
-      "CoordinateH\000\022\024\n\nblob_value\030\n \001(\tH\000\022/\n\013ph" +
-      "one_value\030\013 \001(\0132\030.weaviate.v1.PhoneNumbe" +
-      "rH\000\0220\n\nnull_value\030\014 \001(\0162\032.google.protobu" +
-      "f.NullValueH\000\022\024\n\ntext_value\030\r \001(\tH\000B\006\n\004k" +
-      "ind\"\221\003\n\tListValue\022&\n\006values\030\001 \003(\0132\022.weav" +
-      "iate.v1.ValueB\002\030\001\0222\n\rnumber_values\030\002 \001(\013" +
-      "2\031.weaviate.v1.NumberValuesH\000\022.\n\013bool_va" +
-      "lues\030\003 \001(\0132\027.weaviate.v1.BoolValuesH\000\0222\n" +
-      "\robject_values\030\004 \001(\0132\031.weaviate.v1.Objec" +
-      "tValuesH\000\022.\n\013date_values\030\005 \001(\0132\027.weaviat" +
-      "e.v1.DateValuesH\000\022.\n\013uuid_values\030\006 \001(\0132\027" +
-      ".weaviate.v1.UuidValuesH\000\022,\n\nint_values\030" +
-      "\007 \001(\0132\026.weaviate.v1.IntValuesH\000\022.\n\013text_" +
-      "values\030\010 \001(\0132\027.weaviate.v1.TextValuesH\000B" +
-      "\006\n\004kind\"\036\n\014NumberValues\022\016\n\006values\030\001 \001(\014\"" +
-      "\034\n\nTextValues\022\016\n\006values\030\001 \003(\t\"\034\n\nBoolVal" +
-      "ues\022\016\n\006values\030\001 \003(\010\"7\n\014ObjectValues\022\'\n\006v" +
-      "alues\030\001 \003(\0132\027.weaviate.v1.Properties\"\034\n\n" +
-      "DateValues\022\016\n\006values\030\001 \003(\t\"\034\n\nUuidValues" +
-      "\022\016\n\006values\030\001 \003(\t\"\033\n\tIntValues\022\016\n\006values\030" +
-      "\001 \001(\014\"4\n\rGeoCoordinate\022\021\n\tlongitude\030\001 \001(" +
-      "\002\022\020\n\010latitude\030\002 \001(\002\"\251\001\n\013PhoneNumber\022\024\n\014c" +
-      "ountry_code\030\001 \001(\004\022\027\n\017default_country\030\002 \001" +
-      "(\t\022\r\n\005input\030\003 \001(\t\022\037\n\027international_forma" +
-      "tted\030\004 \001(\t\022\020\n\010national\030\005 \001(\004\022\032\n\022national" +
-      "_formatted\030\006 \001(\t\022\r\n\005valid\030\007 \001(\010BH\n-io.we" +
-      "aviate.client6.v1.internal.grpc.protocol" +
-      "B\027WeaviateProtoPropertiesb\006proto3"
+      "\235\003\n\005Value\022\026\n\014number_value\030\001 \001(\001H\000\022\024\n\nboo" +
+      "l_value\030\003 \001(\010H\000\022/\n\014object_value\030\004 \001(\0132\027." +
+      "weaviate.v1.PropertiesH\000\022,\n\nlist_value\030\005" +
+      " \001(\0132\026.weaviate.v1.ListValueH\000\022\024\n\ndate_v" +
+      "alue\030\006 \001(\tH\000\022\024\n\nuuid_value\030\007 \001(\tH\000\022\023\n\tin" +
+      "t_value\030\010 \001(\003H\000\022/\n\tgeo_value\030\t \001(\0132\032.wea" +
+      "viate.v1.GeoCoordinateH\000\022\024\n\nblob_value\030\n" +
+      " \001(\tH\000\022/\n\013phone_value\030\013 \001(\0132\030.weaviate.v" +
+      "1.PhoneNumberH\000\0220\n\nnull_value\030\014 \001(\0162\032.go" +
+      "ogle.protobuf.NullValueH\000\022\024\n\ntext_value\030" +
+      "\r \001(\tH\000B\006\n\004kind\"\357\002\n\tListValue\0222\n\rnumber_" +
+      "values\030\002 \001(\0132\031.weaviate.v1.NumberValuesH" +
+      "\000\022.\n\013bool_values\030\003 \001(\0132\027.weaviate.v1.Boo" +
+      "lValuesH\000\0222\n\robject_values\030\004 \001(\0132\031.weavi" +
+      "ate.v1.ObjectValuesH\000\022.\n\013date_values\030\005 \001" +
+      "(\0132\027.weaviate.v1.DateValuesH\000\022.\n\013uuid_va" +
+      "lues\030\006 \001(\0132\027.weaviate.v1.UuidValuesH\000\022,\n" +
+      "\nint_values\030\007 \001(\0132\026.weaviate.v1.IntValue" +
+      "sH\000\022.\n\013text_values\030\010 \001(\0132\027.weaviate.v1.T" +
+      "extValuesH\000B\006\n\004kindJ\004\010\001\020\002\"\036\n\014NumberValue" +
+      "s\022\016\n\006values\030\001 \001(\014\"\034\n\nTextValues\022\016\n\006value" +
+      "s\030\001 \003(\t\"\034\n\nBoolValues\022\016\n\006values\030\001 \003(\010\"7\n" +
+      "\014ObjectValues\022\'\n\006values\030\001 \003(\0132\027.weaviate" +
+      ".v1.Properties\"\034\n\nDateValues\022\016\n\006values\030\001" +
+      " \003(\t\"\034\n\nUuidValues\022\016\n\006values\030\001 \003(\t\"\033\n\tIn" +
+      "tValues\022\016\n\006values\030\001 \001(\014\"4\n\rGeoCoordinate" +
+      "\022\021\n\tlongitude\030\001 \001(\002\022\020\n\010latitude\030\002 \001(\002\"\251\001" +
+      "\n\013PhoneNumber\022\024\n\014country_code\030\001 \001(\004\022\027\n\017d" +
+      "efault_country\030\002 \001(\t\022\r\n\005input\030\003 \001(\t\022\037\n\027i" +
+      "nternational_formatted\030\004 \001(\t\022\020\n\010national" +
+      "\030\005 \001(\004\022\032\n\022national_formatted\030\006 \001(\t\022\r\n\005va" +
+      "lid\030\007 \001(\010BH\n-io.weaviate.client6.v1.inte" +
+      "rnal.grpc.protocolB\027WeaviateProtoPropert" +
+      "iesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -12106,13 +11545,13 @@ io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties.Value defa
     internal_static_weaviate_v1_Value_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_Value_descriptor,
-        new java.lang.String[] { "NumberValue", "StringValue", "BoolValue", "ObjectValue", "ListValue", "DateValue", "UuidValue", "IntValue", "GeoValue", "BlobValue", "PhoneValue", "NullValue", "TextValue", "Kind", });
+        new java.lang.String[] { "NumberValue", "BoolValue", "ObjectValue", "ListValue", "DateValue", "UuidValue", "IntValue", "GeoValue", "BlobValue", "PhoneValue", "NullValue", "TextValue", "Kind", });
     internal_static_weaviate_v1_ListValue_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_weaviate_v1_ListValue_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_ListValue_descriptor,
-        new java.lang.String[] { "Values", "NumberValues", "BoolValues", "ObjectValues", "DateValues", "UuidValues", "IntValues", "TextValues", "Kind", });
+        new java.lang.String[] { "NumberValues", "BoolValues", "ObjectValues", "DateValues", "UuidValues", "IntValues", "TextValues", "Kind", });
     internal_static_weaviate_v1_NumberValues_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_weaviate_v1_NumberValues_fieldAccessorTable = new

@@ -13,6 +13,7 @@ public class Where implements WhereOperand {
     // Logical operators
     AND("And", WeaviateProtoBase.Filters.Operator.OPERATOR_AND),
     OR("Or", WeaviateProtoBase.Filters.Operator.OPERATOR_OR),
+    NOT("Noe", WeaviateProtoBase.Filters.Operator.OPERATOR_NOT),
 
     // Comparison operators
     EQUAL("Equal", WeaviateProtoBase.Filters.Operator.OPERATOR_EQUAL),
@@ -24,6 +25,7 @@ public class Where implements WhereOperand {
     LIKE("Like", WeaviateProtoBase.Filters.Operator.OPERATOR_LIKE),
     CONTAINS_ANY("ContainsAny", WeaviateProtoBase.Filters.Operator.OPERATOR_CONTAINS_ANY),
     CONTAINS_ALL("ContainsAll", WeaviateProtoBase.Filters.Operator.OPERATOR_CONTAINS_ALL),
+    CONTAINS_NONE("ContainsNone", WeaviateProtoBase.Filters.Operator.OPERATOR_CONTAINS_NONE),
     WITHIN_GEO_RANGE("WithinGeoRange", WeaviateProtoBase.Filters.Operator.OPERATOR_WITHIN_GEO_RANGE);
 
     /** String representation for better debug logs. */
@@ -62,33 +64,45 @@ public class Where implements WhereOperand {
 
   @Override
   public boolean isEmpty() {
-    // Guard against Where.and(Where.or(), Where.and()) situation.
+    // Guard against Where.and(Where.or(), Where.and(), Where.not()) situation.
     return operands.isEmpty()
-        || operands.stream().allMatch(operator -> operator.isEmpty());
+        || operands.stream().allMatch(operator -> operator == null | operator.isEmpty());
   }
 
   @Override
   public String toString() {
+    if (operator == Operator.NOT) {
+      return "%s %s".formatted(operator, operands.get(0));
+    }
     var operandStrings = operands.stream().map(Object::toString).toList();
     return "Where(" + String.join(" " + operator.toString() + " ", operandStrings) + ")";
   }
 
   // Logical operators return a complete operand.
   // --------------------------------------------------------------------------
-  public static Where and(WhereOperand... operands) {
+  public static Where and(final WhereOperand... operands) {
     return new Where(Operator.AND, operands);
   }
 
-  public static Where and(List<WhereOperand> operands) {
+  public static Where and(final List<WhereOperand> operands) {
     return new Where(Operator.AND, operands);
   }
 
-  public static Where or(WhereOperand... operands) {
+  public static Where or(final WhereOperand... operands) {
     return new Where(Operator.OR, operands);
   }
 
-  public static Where or(List<WhereOperand> operands) {
+  public static Where or(final List<WhereOperand> operands) {
     return new Where(Operator.OR, operands);
+  }
+
+  public static Where not(final WhereOperand operand) {
+    return new Where(Operator.NOT, operand);
+  }
+
+  /** Negate this expression. */
+  public Where not() {
+    return not(this);
   }
 
   // Comparison operators return fluid builder.
@@ -463,6 +477,32 @@ public class Where implements WhereOperand {
       return new Where(Operator.CONTAINS_ALL, left, new DateArrayOperand(values));
     }
 
+    // ContainsNone
+    // ------------------------------------------------------------------------
+    public Where containsNone(String value) {
+      return new Where(Operator.CONTAINS_NONE, left, new TextOperand(value));
+    }
+
+    public Where containsNone(String... values) {
+      return new Where(Operator.CONTAINS_NONE, left, new TextArrayOperand(values));
+    }
+
+    public Where containsNone(Boolean... values) {
+      return new Where(Operator.CONTAINS_NONE, left, new BooleanArrayOperand(values));
+    }
+
+    public Where containsNone(Long... values) {
+      return new Where(Operator.CONTAINS_NONE, left, new IntegerArrayOperand(values));
+    }
+
+    public Where containsNone(Double... values) {
+      return new Where(Operator.CONTAINS_NONE, left, new NumberArrayOperand(values));
+    }
+
+    public Where containsNone(OffsetDateTime... values) {
+      return new Where(Operator.CONTAINS_NONE, left, new DateArrayOperand(values));
+    }
+
     // WithinGeoRange
     // ------------------------------------------------------------------------
     public Where withinGeoRange(float lat, float lon, float maxDistance) {
@@ -475,25 +515,19 @@ public class Where implements WhereOperand {
     if (isEmpty()) {
       return;
     }
-    switch (operands.size()) {
-      case 0:
-        return;
-      case 1: // no need for operator
-        operands.get(0).appendTo(where);
-        return;
-      default:
-        if (operator.equals(Operator.AND) || operator.equals(Operator.OR)) {
-          operands.forEach(op -> {
-            Filters.Builder nested = Filters.newBuilder();
-            op.appendTo(nested);
-            where.addFilters(nested);
-          });
-        } else {
-          // Comparison operators: eq, gt, lt, like, etc.
-          operands.forEach(op -> op.appendTo(where));
-        }
-    }
+
     operator.appendTo(where);
+
+    if (operator == Operator.AND || operator == Operator.OR || operator == Operator.NOT) {
+      operands.forEach(op -> {
+        var nested = Filters.newBuilder();
+        op.appendTo(nested);
+        where.addFilters(nested);
+      });
+    } else {
+      // Comparison operators: eq, gt, lt, like, etc.
+      operands.forEach(op -> op.appendTo(where));
+    }
   }
 
   @SuppressWarnings("unchecked")
@@ -522,13 +556,13 @@ public class Where implements WhereOperand {
       return new NumberArrayOperand(dblarr);
     } else if (value instanceof OffsetDateTime[] datearr) {
       return new DateArrayOperand(datearr);
-    } else if (value instanceof List) {
-      if (((List<?>) value).isEmpty()) {
+    } else if (value instanceof List<?> list) {
+      if (list.isEmpty()) {
         throw new IllegalArgumentException(
             "Filter with non-reifiable type (List<T>) cannot be empty, use an array instead");
       }
 
-      Object first = ((List<?>) value).get(0);
+      Object first = list.get(0);
       if (first instanceof String) {
         return new TextArrayOperand((List<String>) value);
       } else if (first instanceof Boolean) {
