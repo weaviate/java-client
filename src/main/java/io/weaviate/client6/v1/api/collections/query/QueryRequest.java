@@ -256,7 +256,7 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
         builder.setOffsetDateTimeArray(property, dates);
       }
     } else {
-      assert false : "(query) branch not covered";
+      throw new IllegalArgumentException(property + " data type is not supported");
     }
   }
 }

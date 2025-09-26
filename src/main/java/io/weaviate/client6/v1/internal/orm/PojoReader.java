@@ -15,12 +15,15 @@ final class PojoReader<PropertiesT> implements PropertiesReader<PropertiesT> {
     var out = new HashMap<String, Object>();
     for (var field : properties.getClass().getDeclaredFields()) {
       var propertyName = PojoDescriptor.propertyName(field);
-      field.setAccessible(true);
-      try {
-        out.put(propertyName, field.get(properties));
-      } catch (IllegalAccessException e) {
-        assert e == null : e.getMessage();
+      if (field.trySetAccessible()) {
+        try {
+          out.put(propertyName, field.get(properties));
+        } catch (IllegalAccessException e) {
+          new RuntimeException("accessible flag set but access denied", e);
+        }
       }
+      // TODO: how do we handle the case where a property is not accessible?
+      // E.g. we weren't able to set `accessible` flag.
     }
     return out;
   }
