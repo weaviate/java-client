@@ -23,7 +23,7 @@ if git rev-parse "$VERSION" >/dev/null 2>&1; then
 fi
 
 next_version=""
-if [[ "$VERSION" =~ "alpha" ]] || [[ "$VERSION" =~ "beta" ]]; then
+if [[ "$VERSION" =~ "alpha" ]] || [[ "$VERSION" =~ "beta" ]]|| [[ "$VERSION" =~ "M" ]]; then
   next_version=$(echo "$VERSION" | sed 's/-.*//')
 fi
 
