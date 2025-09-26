@@ -25,7 +25,7 @@ public class MapBuilder implements PropertiesBuilder<Map<String, Object>> {
   }
 
   @Override
-  public void setInteger(String property, Long value) {
+  public void setLong(String property, Long value) {
     properties.put(property, value);
   }
 

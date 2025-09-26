@@ -11,7 +11,7 @@ public interface PropertiesBuilder<T> {
 
   void setBoolean(String property, Boolean value);
 
-  void setInteger(String property, Long value);
+  void setLong(String property, Long value);
 
   void setDouble(String property, Double value);
 
