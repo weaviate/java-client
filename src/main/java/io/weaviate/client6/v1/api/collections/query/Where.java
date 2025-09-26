@@ -80,24 +80,29 @@ public class Where implements WhereOperand {
 
   // Logical operators return a complete operand.
   // --------------------------------------------------------------------------
-  public static Where and(WhereOperand... operands) {
+  public static Where and(final WhereOperand... operands) {
     return new Where(Operator.AND, operands);
   }
 
-  public static Where and(List<WhereOperand> operands) {
+  public static Where and(final List<WhereOperand> operands) {
     return new Where(Operator.AND, operands);
   }
 
-  public static Where or(WhereOperand... operands) {
+  public static Where or(final WhereOperand... operands) {
     return new Where(Operator.OR, operands);
   }
 
-  public static Where or(List<WhereOperand> operands) {
+  public static Where or(final List<WhereOperand> operands) {
     return new Where(Operator.OR, operands);
   }
 
-  public static Where not(WhereOperand operand) {
+  public static Where not(final WhereOperand operand) {
     return new Where(Operator.NOT, operand);
+  }
+
+  /** Negate this expression. */
+  public Where not() {
+    return not(this);
   }
 
   // Comparison operators return fluid builder.
