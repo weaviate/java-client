@@ -43,20 +43,22 @@ public record WeaviateObject<P, R, M extends WeaviateMetadata>(
   }
 
   public WeaviateObject(Builder<P, R, M> builder) {
-    this(builder.collection, builder.properties, builder.references, builder.metadata);
+    this(builder.collectionName, builder.properties, builder.references, builder.metadata);
   }
 
   public static class Builder<P, R, M extends WeaviateMetadata> implements ObjectBuilder<WeaviateObject<P, R, M>> {
-    private String collection;
+    private String collectionName;
     private P properties;
     private Map<String, List<R>> references = new HashMap<>();
     private M metadata;
 
-    public final Builder<P, R, M> collection(String collection) {
-      this.collection = collection;
+    /** Set the name of the collection his object belongs to. */
+    public final Builder<P, R, M> collection(String collectionName) {
+      this.collectionName = collectionName;
       return this;
     }
 
+    /** Add object properties. */
     public final Builder<P, R, M> properties(P properties) {
       this.properties = properties;
       return this;

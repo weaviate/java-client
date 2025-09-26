@@ -4,13 +4,22 @@ import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateMetadata;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public record QueryMetadata(String uuid,
+public record QueryMetadata(
+    /** Object UUID. */
+    String uuid,
+    /** Vector embeddings associated with the object. */
     Vectors vectors,
+    /** Object creation time as a Unix timestamp. */
     Long creationTimeUnix,
+    /** Unix timestamp of the latest object update. */
     Long lastUpdateTimeUnix,
+    /** Distances to the search vector. */
     Float distance,
+    /** Distance metric normalized to {@code 0 <= c <= 1} range. */
     Float certainty,
+    /** BM25 ranking score. */
     Float score,
+    /** Components of the BM25 ranking score. */
     String explainScore) implements WeaviateMetadata {
 
   private QueryMetadata(Builder builder) {
@@ -25,7 +34,7 @@ public record QueryMetadata(String uuid,
         builder.explainScore);
   }
 
-  public static class Builder implements ObjectBuilder<QueryMetadata> {
+  static class Builder implements ObjectBuilder<QueryMetadata> {
     private String uuid;
     private Vectors vectors;
     private Long creationTimeUnix;
@@ -35,42 +44,42 @@ public record QueryMetadata(String uuid,
     private Float score;
     private String explainScore;
 
-    public final Builder uuid(String uuid) {
+    final Builder uuid(String uuid) {
       this.uuid = uuid;
       return this;
     }
 
-    public final Builder vectors(Vectors vectors) {
+    final Builder vectors(Vectors vectors) {
       this.vectors = vectors;
       return this;
     }
 
-    public final Builder creationTimeUnix(Long creationTimeUnix) {
+    final Builder creationTimeUnix(Long creationTimeUnix) {
       this.creationTimeUnix = creationTimeUnix;
       return this;
     }
 
-    public final Builder lastUpdateTimeUnix(Long lastUpdateTimeUnix) {
+    final Builder lastUpdateTimeUnix(Long lastUpdateTimeUnix) {
       this.lastUpdateTimeUnix = lastUpdateTimeUnix;
       return this;
     }
 
-    public final Builder distance(Float distance) {
+    final Builder distance(Float distance) {
       this.distance = distance;
       return this;
     }
 
-    public final Builder certainty(Float certainty) {
+    final Builder certainty(Float certainty) {
       this.certainty = certainty;
       return this;
     }
 
-    public final Builder score(Float score) {
+    final Builder score(Float score) {
       this.score = score;
       return this;
     }
 
-    public final Builder explainScore(String explainScore) {
+    final Builder explainScore(String explainScore) {
       this.explainScore = explainScore;
       return this;
     }

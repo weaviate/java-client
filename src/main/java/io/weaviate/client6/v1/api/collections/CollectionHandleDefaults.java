@@ -54,6 +54,7 @@ public record CollectionHandleDefaults(ConsistencyLevel consistencyLevel, String
     }
   }
 
+  /** Serialize default values to a URL query. */
   public Map<String, Object> queryParameters() {
     if (consistencyLevel == null && tenant == null) {
       return Collections.emptyMap();

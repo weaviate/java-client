@@ -29,19 +29,44 @@ public record QueryReference(
         new ArrayList<>(options.returnMetadata));
   }
 
+  /**
+   * Retrieve object referenced by a single-target cross-reference property.
+   *
+   * @param property Name of the cross-reference property.
+   */
   public static QueryReference single(String property) {
     return single(property, ObjectBuilder.identity());
   }
 
+  /**
+   * Retrieve object referenced by a single-target cross-reference property.
+   *
+   * @param property Name of the cross-reference property.
+   * @param fn       Lambda expression for optional parameters.
+   */
   public static QueryReference single(String property, Function<Builder, ObjectBuilder<QueryReference>> fn) {
     return fn.apply(new Builder(null, property)).build();
   }
 
   // TODO: check if we can supply mutiple collections
+
+  /**
+   * Retrieve object referenced by a multi-target cross-reference property.
+   *
+   * @param property   Name of the cross-reference property.
+   * @param collection Name of the target collection.
+   */
   public static QueryReference multi(String property, String collection) {
     return multi(property, collection, ObjectBuilder.identity());
   }
 
+  /**
+   * Retrieve object referenced by a multi-target cross-reference property.
+   *
+   * @param property   Name of the cross-reference property.
+   * @param collection Name of the target collection.
+   * @param fn         Lambda expression for optional parameters.
+   */
   public static QueryReference multi(String property, String collection,
       Function<Builder, ObjectBuilder<QueryReference>> fn) {
     return fn.apply(new Builder(collection, property)).build();
@@ -62,38 +87,46 @@ public record QueryReference(
       returnMetadata(MetadataField.UUID);
     }
 
+    /** Select vectors to return for each referenced object. */
     public final Builder includeVectors(String... vectors) {
       this.includeVectors.addAll(Arrays.asList(vectors));
       return this;
     }
 
+    /** Select properties to return for each referenced object. */
     public final Builder returnProperties(String... properties) {
       return returnProperties(Arrays.asList(properties));
     }
 
+    /** Select properties to return for each referenced object. */
     public final Builder returnProperties(List<String> properties) {
       this.returnProperties.addAll(properties);
       return this;
     }
 
+    /** Select nested references to return for each referenced object. */
     public final Builder returnReferences(QueryReference... references) {
       return returnReferences(Arrays.asList(references));
     }
 
+    /** Select nested references to return for each referenced object. */
     public final Builder returnReferences(List<QueryReference> references) {
       this.returnReferences.addAll(references);
       return this;
     }
 
+    /** Select metadata to return about each referenced object. */
     public final Builder returnMetadata(Metadata... metadata) {
       return returnMetadata(Arrays.asList(metadata));
     }
 
+    /** Select metadata to return about each referenced object. */
     public final Builder returnMetadata(List<Metadata> metadata) {
       this.returnMetadata.addAll(metadata);
       return this;
     }
 
+    /** Include the default vector of the referenced object. */
     public final Builder includeVector() {
       return returnMetadata(Metadata.VECTOR);
     }

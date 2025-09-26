@@ -108,14 +108,17 @@ public class Where implements WhereOperand {
   // Comparison operators return fluid builder.
   // --------------------------------------------------------------------------
 
+  /** Filter by object UUID. */
   public static WhereBuilder uuid() {
     return property(ById.ID_PROPERTY);
   }
 
+  /** Filter by object property. */
   public static WhereBuilder property(String property) {
     return new WhereBuilder(new PathOperand(property));
   }
 
+  /** Filter by a property of the referenced object. */
   public static WhereBuilder reference(String... path) {
     return new WhereBuilder(new PathOperand(path));
   }

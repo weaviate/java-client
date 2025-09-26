@@ -42,10 +42,16 @@ public interface Reranker {
 
   Object _self();
 
+  /** Configure a default Cohere reranker module. */
   public static Reranker cohere() {
     return CohereReranker.of();
   }
 
+  /**
+   * Configure a Cohere reranker module.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
   public static Reranker cohere(Function<CohereReranker.Builder, ObjectBuilder<CohereReranker>> fn) {
     return CohereReranker.of(fn);
   }

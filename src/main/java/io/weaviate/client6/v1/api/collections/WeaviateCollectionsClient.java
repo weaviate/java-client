@@ -225,6 +225,20 @@ public class WeaviateCollectionsClient {
   }
 
   /**
+   * Delete a Weaviate collection.
+   *
+   * @param cls Class that represents an object in the collection.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @throws IOException          in case the request was not sent successfully
+   *                              due to a malformed request, a networking error
+   *                              or the server being unavailable.
+   */
+  public void delete(Class<? extends Record> cls) throws IOException {
+    delete(CollectionDescriptor.ofClass(cls).collectionName());
+  }
+
+  /**
    * Delete all collections in Weaviate.
    *
    * @throws WeaviateApiException in case the server returned with an
@@ -251,5 +265,19 @@ public class WeaviateCollectionsClient {
    */
   public boolean exists(String collectionName) throws IOException {
     return getConfig(collectionName).isPresent();
+  }
+
+  /**
+   * Check if a collection with this name exists.
+   *
+   * @param cls Class that represents an object in the collection.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @throws IOException          in case the request was not sent successfully
+   *                              due to a malformed request, a networking error
+   *                              or the server being unavailable.
+   */
+  public boolean exists(Class<? extends Record> cls) throws IOException {
+    return exists(CollectionDescriptor.ofClass(cls).collectionName());
   }
 }

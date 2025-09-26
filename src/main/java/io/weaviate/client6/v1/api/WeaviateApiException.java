@@ -43,27 +43,37 @@ public class WeaviateApiException extends WeaviateException {
     this.grpcStatusCode = null;
   }
 
+  /** Get raw error message. */
+  public String getError() {
+    return errorMessage;
+  }
+
+  /** Check if the exception originates from the gRPC transport. */
   public boolean isGPRC() {
     return source == Source.GRPC;
   }
 
+  /** Get the gRPC status code. */
   public String grpcStatusCode() {
+    if (!isGPRC()) {
+      return null;
+    }
     return grpcStatusCode.toString();
   }
 
+  /** Check if the exception originates from the HTTP transport. */
   public boolean isHTTP() {
     return source == Source.HTTP;
   }
 
+  /** Get the endpoint that the failed request was sent to. */
   public String endpoint() {
     return endpoint;
   }
 
+  /** Get the HTTP status code. */
   public Integer httpStatusCode() {
     return httpStatusCode;
   }
 
-  public String getError() {
-    return errorMessage;
-  }
 }
