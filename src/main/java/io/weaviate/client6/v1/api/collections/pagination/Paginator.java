@@ -74,6 +74,7 @@ public class Paginator<PropertiesT> implements Iterable<WeaviateObject<Propertie
 
     // Pagination options -----------------------------------------------------
 
+    /** Set a different page size. Defaults to 100. */
     public Builder<T> pageSize(int pageSize) {
       this.pageSize = pageSize;
       return this;
