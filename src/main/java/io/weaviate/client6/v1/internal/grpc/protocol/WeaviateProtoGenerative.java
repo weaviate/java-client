@@ -21,14 +21,14 @@ public final class WeaviateProtoGenerative {
     /**
      * <code>string single_response_prompt = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.GenerativeSearch.single_response_prompt is deprecated.
-     *     See v1/generative.proto;l=24
+     *     See v1/generative.proto;l=25
      * @return The singleResponsePrompt.
      */
     @java.lang.Deprecated java.lang.String getSingleResponsePrompt();
     /**
      * <code>string single_response_prompt = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.GenerativeSearch.single_response_prompt is deprecated.
-     *     See v1/generative.proto;l=24
+     *     See v1/generative.proto;l=25
      * @return The bytes for singleResponsePrompt.
      */
     @java.lang.Deprecated com.google.protobuf.ByteString
@@ -37,14 +37,14 @@ public final class WeaviateProtoGenerative {
     /**
      * <code>string grouped_response_task = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.GenerativeSearch.grouped_response_task is deprecated.
-     *     See v1/generative.proto;l=25
+     *     See v1/generative.proto;l=26
      * @return The groupedResponseTask.
      */
     @java.lang.Deprecated java.lang.String getGroupedResponseTask();
     /**
      * <code>string grouped_response_task = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.GenerativeSearch.grouped_response_task is deprecated.
-     *     See v1/generative.proto;l=25
+     *     See v1/generative.proto;l=26
      * @return The bytes for groupedResponseTask.
      */
     @java.lang.Deprecated com.google.protobuf.ByteString
@@ -53,7 +53,7 @@ public final class WeaviateProtoGenerative {
     /**
      * <code>repeated string grouped_properties = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.GenerativeSearch.grouped_properties is deprecated.
-     *     See v1/generative.proto;l=26
+     *     See v1/generative.proto;l=27
      * @return A list containing the groupedProperties.
      */
     @java.lang.Deprecated java.util.List<java.lang.String>
@@ -61,14 +61,14 @@ public final class WeaviateProtoGenerative {
     /**
      * <code>repeated string grouped_properties = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.GenerativeSearch.grouped_properties is deprecated.
-     *     See v1/generative.proto;l=26
+     *     See v1/generative.proto;l=27
      * @return The count of groupedProperties.
      */
     @java.lang.Deprecated int getGroupedPropertiesCount();
     /**
      * <code>repeated string grouped_properties = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.GenerativeSearch.grouped_properties is deprecated.
-     *     See v1/generative.proto;l=26
+     *     See v1/generative.proto;l=27
      * @param index The index of the element to return.
      * @return The groupedProperties at the given index.
      */
@@ -76,7 +76,7 @@ public final class WeaviateProtoGenerative {
     /**
      * <code>repeated string grouped_properties = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.GenerativeSearch.grouped_properties is deprecated.
-     *     See v1/generative.proto;l=26
+     *     See v1/generative.proto;l=27
      * @param index The index of the value to return.
      * @return The bytes of the groupedProperties at the given index.
      */
@@ -1341,6 +1341,12 @@ public final class WeaviateProtoGenerative {
        */
       io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeProviderOrBuilder getQueriesOrBuilder(
           int index);
+
+      /**
+       * <code>bool debug = 4;</code>
+       * @return The debug.
+       */
+      boolean getDebug();
     }
     /**
      * Protobuf type {@code weaviate.v1.GenerativeSearch.Grouped}
@@ -1506,6 +1512,17 @@ public final class WeaviateProtoGenerative {
         return queries_.get(index);
       }
 
+      public static final int DEBUG_FIELD_NUMBER = 4;
+      private boolean debug_ = false;
+      /**
+       * <code>bool debug = 4;</code>
+       * @return The debug.
+       */
+      @java.lang.Override
+      public boolean getDebug() {
+        return debug_;
+      }
+
       private byte memoizedIsInitialized = -1;
       @java.lang.Override
       public final boolean isInitialized() {
@@ -1529,6 +1546,9 @@ public final class WeaviateProtoGenerative {
         for (int i = 0; i < queries_.size(); i++) {
           output.writeMessage(3, queries_.get(i));
         }
+        if (debug_ != false) {
+          output.writeBool(4, debug_);
+        }
         getUnknownFields().writeTo(output);
       }
 
@@ -1548,6 +1568,10 @@ public final class WeaviateProtoGenerative {
         for (int i = 0; i < queries_.size(); i++) {
           size += com.google.protobuf.CodedOutputStream
             .computeMessageSize(3, queries_.get(i));
+        }
+        if (debug_ != false) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBoolSize(4, debug_);
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSize = size;
@@ -1573,6 +1597,8 @@ public final class WeaviateProtoGenerative {
         }
         if (!getQueriesList()
             .equals(other.getQueriesList())) return false;
+        if (getDebug()
+            != other.getDebug()) return false;
         if (!getUnknownFields().equals(other.getUnknownFields())) return false;
         return true;
       }
@@ -1594,6 +1620,9 @@ public final class WeaviateProtoGenerative {
           hash = (37 * hash) + QUERIES_FIELD_NUMBER;
           hash = (53 * hash) + getQueriesList().hashCode();
         }
+        hash = (37 * hash) + DEBUG_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+            getDebug());
         hash = (29 * hash) + getUnknownFields().hashCode();
         memoizedHashCode = hash;
         return hash;
@@ -1745,6 +1774,7 @@ public final class WeaviateProtoGenerative {
             queriesBuilder_.clear();
           }
           bitField0_ = (bitField0_ & ~0x00000004);
+          debug_ = false;
           return this;
         }
 
@@ -1800,6 +1830,9 @@ public final class WeaviateProtoGenerative {
                 ? properties_
                 : propertiesBuilder_.build();
             to_bitField0_ |= 0x00000001;
+          }
+          if (((from_bitField0_ & 0x00000008) != 0)) {
+            result.debug_ = debug_;
           }
           result.bitField0_ |= to_bitField0_;
         }
@@ -1882,6 +1915,9 @@ public final class WeaviateProtoGenerative {
               }
             }
           }
+          if (other.getDebug() != false) {
+            setDebug(other.getDebug());
+          }
           this.mergeUnknownFields(other.getUnknownFields());
           onChanged();
           return this;
@@ -1933,6 +1969,11 @@ public final class WeaviateProtoGenerative {
                   }
                   break;
                 } // case 26
+                case 32: {
+                  debug_ = input.readBool();
+                  bitField0_ |= 0x00000008;
+                  break;
+                } // case 32
                 default: {
                   if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                     done = true; // was an endgroup tag
@@ -2454,6 +2495,38 @@ public final class WeaviateProtoGenerative {
           }
           return queriesBuilder_;
         }
+
+        private boolean debug_ ;
+        /**
+         * <code>bool debug = 4;</code>
+         * @return The debug.
+         */
+        @java.lang.Override
+        public boolean getDebug() {
+          return debug_;
+        }
+        /**
+         * <code>bool debug = 4;</code>
+         * @param value The debug to set.
+         * @return This builder for chaining.
+         */
+        public Builder setDebug(boolean value) {
+
+          debug_ = value;
+          bitField0_ |= 0x00000008;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>bool debug = 4;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearDebug() {
+          bitField0_ = (bitField0_ & ~0x00000008);
+          debug_ = false;
+          onChanged();
+          return this;
+        }
         @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -2525,7 +2598,7 @@ public final class WeaviateProtoGenerative {
     /**
      * <code>string single_response_prompt = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.GenerativeSearch.single_response_prompt is deprecated.
-     *     See v1/generative.proto;l=24
+     *     See v1/generative.proto;l=25
      * @return The singleResponsePrompt.
      */
     @java.lang.Override
@@ -2544,7 +2617,7 @@ public final class WeaviateProtoGenerative {
     /**
      * <code>string single_response_prompt = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.GenerativeSearch.single_response_prompt is deprecated.
-     *     See v1/generative.proto;l=24
+     *     See v1/generative.proto;l=25
      * @return The bytes for singleResponsePrompt.
      */
     @java.lang.Override
@@ -2568,7 +2641,7 @@ public final class WeaviateProtoGenerative {
     /**
      * <code>string grouped_response_task = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.GenerativeSearch.grouped_response_task is deprecated.
-     *     See v1/generative.proto;l=25
+     *     See v1/generative.proto;l=26
      * @return The groupedResponseTask.
      */
     @java.lang.Override
@@ -2587,7 +2660,7 @@ public final class WeaviateProtoGenerative {
     /**
      * <code>string grouped_response_task = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.GenerativeSearch.grouped_response_task is deprecated.
-     *     See v1/generative.proto;l=25
+     *     See v1/generative.proto;l=26
      * @return The bytes for groupedResponseTask.
      */
     @java.lang.Override
@@ -2612,7 +2685,7 @@ public final class WeaviateProtoGenerative {
     /**
      * <code>repeated string grouped_properties = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.GenerativeSearch.grouped_properties is deprecated.
-     *     See v1/generative.proto;l=26
+     *     See v1/generative.proto;l=27
      * @return A list containing the groupedProperties.
      */
     @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -2622,7 +2695,7 @@ public final class WeaviateProtoGenerative {
     /**
      * <code>repeated string grouped_properties = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.GenerativeSearch.grouped_properties is deprecated.
-     *     See v1/generative.proto;l=26
+     *     See v1/generative.proto;l=27
      * @return The count of groupedProperties.
      */
     @java.lang.Deprecated public int getGroupedPropertiesCount() {
@@ -2631,7 +2704,7 @@ public final class WeaviateProtoGenerative {
     /**
      * <code>repeated string grouped_properties = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.GenerativeSearch.grouped_properties is deprecated.
-     *     See v1/generative.proto;l=26
+     *     See v1/generative.proto;l=27
      * @param index The index of the element to return.
      * @return The groupedProperties at the given index.
      */
@@ -2641,7 +2714,7 @@ public final class WeaviateProtoGenerative {
     /**
      * <code>repeated string grouped_properties = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.GenerativeSearch.grouped_properties is deprecated.
-     *     See v1/generative.proto;l=26
+     *     See v1/generative.proto;l=27
      * @param index The index of the value to return.
      * @return The bytes of the groupedProperties at the given index.
      */
@@ -3178,7 +3251,7 @@ public final class WeaviateProtoGenerative {
       /**
        * <code>string single_response_prompt = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.GenerativeSearch.single_response_prompt is deprecated.
-       *     See v1/generative.proto;l=24
+       *     See v1/generative.proto;l=25
        * @return The singleResponsePrompt.
        */
       @java.lang.Deprecated public java.lang.String getSingleResponsePrompt() {
@@ -3196,7 +3269,7 @@ public final class WeaviateProtoGenerative {
       /**
        * <code>string single_response_prompt = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.GenerativeSearch.single_response_prompt is deprecated.
-       *     See v1/generative.proto;l=24
+       *     See v1/generative.proto;l=25
        * @return The bytes for singleResponsePrompt.
        */
       @java.lang.Deprecated public com.google.protobuf.ByteString
@@ -3215,7 +3288,7 @@ public final class WeaviateProtoGenerative {
       /**
        * <code>string single_response_prompt = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.GenerativeSearch.single_response_prompt is deprecated.
-       *     See v1/generative.proto;l=24
+       *     See v1/generative.proto;l=25
        * @param value The singleResponsePrompt to set.
        * @return This builder for chaining.
        */
@@ -3230,7 +3303,7 @@ public final class WeaviateProtoGenerative {
       /**
        * <code>string single_response_prompt = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.GenerativeSearch.single_response_prompt is deprecated.
-       *     See v1/generative.proto;l=24
+       *     See v1/generative.proto;l=25
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearSingleResponsePrompt() {
@@ -3242,7 +3315,7 @@ public final class WeaviateProtoGenerative {
       /**
        * <code>string single_response_prompt = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.GenerativeSearch.single_response_prompt is deprecated.
-       *     See v1/generative.proto;l=24
+       *     See v1/generative.proto;l=25
        * @param value The bytes for singleResponsePrompt to set.
        * @return This builder for chaining.
        */
@@ -3260,7 +3333,7 @@ public final class WeaviateProtoGenerative {
       /**
        * <code>string grouped_response_task = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.GenerativeSearch.grouped_response_task is deprecated.
-       *     See v1/generative.proto;l=25
+       *     See v1/generative.proto;l=26
        * @return The groupedResponseTask.
        */
       @java.lang.Deprecated public java.lang.String getGroupedResponseTask() {
@@ -3278,7 +3351,7 @@ public final class WeaviateProtoGenerative {
       /**
        * <code>string grouped_response_task = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.GenerativeSearch.grouped_response_task is deprecated.
-       *     See v1/generative.proto;l=25
+       *     See v1/generative.proto;l=26
        * @return The bytes for groupedResponseTask.
        */
       @java.lang.Deprecated public com.google.protobuf.ByteString
@@ -3297,7 +3370,7 @@ public final class WeaviateProtoGenerative {
       /**
        * <code>string grouped_response_task = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.GenerativeSearch.grouped_response_task is deprecated.
-       *     See v1/generative.proto;l=25
+       *     See v1/generative.proto;l=26
        * @param value The groupedResponseTask to set.
        * @return This builder for chaining.
        */
@@ -3312,7 +3385,7 @@ public final class WeaviateProtoGenerative {
       /**
        * <code>string grouped_response_task = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.GenerativeSearch.grouped_response_task is deprecated.
-       *     See v1/generative.proto;l=25
+       *     See v1/generative.proto;l=26
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearGroupedResponseTask() {
@@ -3324,7 +3397,7 @@ public final class WeaviateProtoGenerative {
       /**
        * <code>string grouped_response_task = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.GenerativeSearch.grouped_response_task is deprecated.
-       *     See v1/generative.proto;l=25
+       *     See v1/generative.proto;l=26
        * @param value The bytes for groupedResponseTask to set.
        * @return This builder for chaining.
        */
@@ -3349,7 +3422,7 @@ public final class WeaviateProtoGenerative {
       /**
        * <code>repeated string grouped_properties = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.GenerativeSearch.grouped_properties is deprecated.
-       *     See v1/generative.proto;l=26
+       *     See v1/generative.proto;l=27
        * @return A list containing the groupedProperties.
        */
       @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -3360,7 +3433,7 @@ public final class WeaviateProtoGenerative {
       /**
        * <code>repeated string grouped_properties = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.GenerativeSearch.grouped_properties is deprecated.
-       *     See v1/generative.proto;l=26
+       *     See v1/generative.proto;l=27
        * @return The count of groupedProperties.
        */
       @java.lang.Deprecated public int getGroupedPropertiesCount() {
@@ -3369,7 +3442,7 @@ public final class WeaviateProtoGenerative {
       /**
        * <code>repeated string grouped_properties = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.GenerativeSearch.grouped_properties is deprecated.
-       *     See v1/generative.proto;l=26
+       *     See v1/generative.proto;l=27
        * @param index The index of the element to return.
        * @return The groupedProperties at the given index.
        */
@@ -3379,7 +3452,7 @@ public final class WeaviateProtoGenerative {
       /**
        * <code>repeated string grouped_properties = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.GenerativeSearch.grouped_properties is deprecated.
-       *     See v1/generative.proto;l=26
+       *     See v1/generative.proto;l=27
        * @param index The index of the value to return.
        * @return The bytes of the groupedProperties at the given index.
        */
@@ -3390,7 +3463,7 @@ public final class WeaviateProtoGenerative {
       /**
        * <code>repeated string grouped_properties = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.GenerativeSearch.grouped_properties is deprecated.
-       *     See v1/generative.proto;l=26
+       *     See v1/generative.proto;l=27
        * @param index The index to set the value at.
        * @param value The groupedProperties to set.
        * @return This builder for chaining.
@@ -3407,7 +3480,7 @@ public final class WeaviateProtoGenerative {
       /**
        * <code>repeated string grouped_properties = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.GenerativeSearch.grouped_properties is deprecated.
-       *     See v1/generative.proto;l=26
+       *     See v1/generative.proto;l=27
        * @param value The groupedProperties to add.
        * @return This builder for chaining.
        */
@@ -3423,7 +3496,7 @@ public final class WeaviateProtoGenerative {
       /**
        * <code>repeated string grouped_properties = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.GenerativeSearch.grouped_properties is deprecated.
-       *     See v1/generative.proto;l=26
+       *     See v1/generative.proto;l=27
        * @param values The groupedProperties to add.
        * @return This builder for chaining.
        */
@@ -3439,7 +3512,7 @@ public final class WeaviateProtoGenerative {
       /**
        * <code>repeated string grouped_properties = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.GenerativeSearch.grouped_properties is deprecated.
-       *     See v1/generative.proto;l=26
+       *     See v1/generative.proto;l=27
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearGroupedProperties() {
@@ -3452,7 +3525,7 @@ public final class WeaviateProtoGenerative {
       /**
        * <code>repeated string grouped_properties = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.GenerativeSearch.grouped_properties is deprecated.
-       *     See v1/generative.proto;l=26
+       *     See v1/generative.proto;l=27
        * @param value The bytes of the groupedProperties to add.
        * @return This builder for chaining.
        */
@@ -50171,7 +50244,7 @@ public final class WeaviateProtoGenerative {
   static {
     java.lang.String[] descriptorData = {
       "\n\023v1/generative.proto\022\013weaviate.v1\032\rv1/b" +
-      "ase.proto\"\316\003\n\020GenerativeSearch\022\"\n\026single" +
+      "ase.proto\"\335\003\n\020GenerativeSearch\022\"\n\026single" +
       "_response_prompt\030\001 \001(\tB\002\030\001\022!\n\025grouped_re" +
       "sponse_task\030\002 \001(\tB\002\030\001\022\036\n\022grouped_propert" +
       "ies\030\003 \003(\tB\002\030\001\0224\n\006single\030\004 \001(\0132$.weaviate" +
@@ -50179,255 +50252,255 @@ public final class WeaviateProtoGenerative {
       " \001(\0132%.weaviate.v1.GenerativeSearch.Grou" +
       "ped\032Y\n\006Single\022\016\n\006prompt\030\001 \001(\t\022\r\n\005debug\030\002" +
       " \001(\010\0220\n\007queries\030\003 \003(\0132\037.weaviate.v1.Gene" +
-      "rativeProvider\032\211\001\n\007Grouped\022\014\n\004task\030\001 \001(\t" +
+      "rativeProvider\032\230\001\n\007Grouped\022\014\n\004task\030\001 \001(\t" +
       "\022/\n\nproperties\030\002 \001(\0132\026.weaviate.v1.TextA" +
       "rrayH\000\210\001\001\0220\n\007queries\030\003 \003(\0132\037.weaviate.v1" +
-      ".GenerativeProviderB\r\n\013_properties\"\300\005\n\022G" +
-      "enerativeProvider\022\027\n\017return_metadata\030\001 \001" +
-      "(\010\0225\n\tanthropic\030\002 \001(\0132 .weaviate.v1.Gene" +
-      "rativeAnthropicH\000\0223\n\010anyscale\030\003 \001(\0132\037.we" +
-      "aviate.v1.GenerativeAnyscaleH\000\022)\n\003aws\030\004 " +
-      "\001(\0132\032.weaviate.v1.GenerativeAWSH\000\022/\n\006coh" +
-      "ere\030\005 \001(\0132\035.weaviate.v1.GenerativeCohere" +
-      "H\000\022-\n\005dummy\030\006 \001(\0132\034.weaviate.v1.Generati" +
-      "veDummyH\000\0221\n\007mistral\030\007 \001(\0132\036.weaviate.v1" +
-      ".GenerativeMistralH\000\022/\n\006ollama\030\010 \001(\0132\035.w" +
-      "eaviate.v1.GenerativeOllamaH\000\022/\n\006openai\030" +
-      "\t \001(\0132\035.weaviate.v1.GenerativeOpenAIH\000\022/" +
-      "\n\006google\030\n \001(\0132\035.weaviate.v1.GenerativeG" +
-      "oogleH\000\0227\n\ndatabricks\030\013 \001(\0132!.weaviate.v" +
-      "1.GenerativeDatabricksH\000\0227\n\nfriendliai\030\014" +
-      " \001(\0132!.weaviate.v1.GenerativeFriendliAIH" +
-      "\000\022/\n\006nvidia\030\r \001(\0132\035.weaviate.v1.Generati" +
-      "veNvidiaH\000\022)\n\003xai\030\016 \001(\0132\032.weaviate.v1.Ge" +
-      "nerativeXAIH\000B\006\n\004kind\"\261\003\n\023GenerativeAnth" +
-      "ropic\022\025\n\010base_url\030\001 \001(\tH\000\210\001\001\022\027\n\nmax_toke" +
-      "ns\030\002 \001(\003H\001\210\001\001\022\022\n\005model\030\003 \001(\tH\002\210\001\001\022\030\n\013tem" +
-      "perature\030\004 \001(\001H\003\210\001\001\022\022\n\005top_k\030\005 \001(\003H\004\210\001\001\022" +
-      "\022\n\005top_p\030\006 \001(\001H\005\210\001\001\0223\n\016stop_sequences\030\007 " +
-      "\001(\0132\026.weaviate.v1.TextArrayH\006\210\001\001\022+\n\006imag" +
-      "es\030\010 \001(\0132\026.weaviate.v1.TextArrayH\007\210\001\001\0225\n" +
-      "\020image_properties\030\t \001(\0132\026.weaviate.v1.Te" +
-      "xtArrayH\010\210\001\001B\013\n\t_base_urlB\r\n\013_max_tokens" +
-      "B\010\n\006_modelB\016\n\014_temperatureB\010\n\006_top_kB\010\n\006" +
-      "_top_pB\021\n\017_stop_sequencesB\t\n\007_imagesB\023\n\021" +
-      "_image_properties\"\200\001\n\022GenerativeAnyscale" +
-      "\022\025\n\010base_url\030\001 \001(\tH\000\210\001\001\022\022\n\005model\030\002 \001(\tH\001" +
-      "\210\001\001\022\030\n\013temperature\030\003 \001(\001H\002\210\001\001B\013\n\t_base_u" +
-      "rlB\010\n\006_modelB\016\n\014_temperature\"\235\003\n\rGenerat" +
-      "iveAWS\022\022\n\005model\030\003 \001(\tH\000\210\001\001\022\030\n\013temperatur" +
-      "e\030\010 \001(\001H\001\210\001\001\022\024\n\007service\030\t \001(\tH\002\210\001\001\022\023\n\006re" +
-      "gion\030\n \001(\tH\003\210\001\001\022\025\n\010endpoint\030\013 \001(\tH\004\210\001\001\022\031" +
-      "\n\014target_model\030\014 \001(\tH\005\210\001\001\022\033\n\016target_vari" +
-      "ant\030\r \001(\tH\006\210\001\001\022+\n\006images\030\016 \001(\0132\026.weaviat" +
-      "e.v1.TextArrayH\007\210\001\001\0225\n\020image_properties\030" +
-      "\017 \001(\0132\026.weaviate.v1.TextArrayH\010\210\001\001B\010\n\006_m" +
-      "odelB\016\n\014_temperatureB\n\n\010_serviceB\t\n\007_reg" +
-      "ionB\013\n\t_endpointB\017\n\r_target_modelB\021\n\017_ta" +
-      "rget_variantB\t\n\007_imagesB\023\n\021_image_proper" +
-      "ties\"\204\003\n\020GenerativeCohere\022\025\n\010base_url\030\001 " +
-      "\001(\tH\000\210\001\001\022\036\n\021frequency_penalty\030\002 \001(\001H\001\210\001\001" +
-      "\022\027\n\nmax_tokens\030\003 \001(\003H\002\210\001\001\022\022\n\005model\030\004 \001(\t" +
-      "H\003\210\001\001\022\016\n\001k\030\005 \001(\003H\004\210\001\001\022\016\n\001p\030\006 \001(\001H\005\210\001\001\022\035\n" +
-      "\020presence_penalty\030\007 \001(\001H\006\210\001\001\0223\n\016stop_seq" +
-      "uences\030\010 \001(\0132\026.weaviate.v1.TextArrayH\007\210\001" +
-      "\001\022\030\n\013temperature\030\t \001(\001H\010\210\001\001B\013\n\t_base_url" +
-      "B\024\n\022_frequency_penaltyB\r\n\013_max_tokensB\010\n" +
-      "\006_modelB\004\n\002_kB\004\n\002_pB\023\n\021_presence_penalty" +
-      "B\021\n\017_stop_sequencesB\016\n\014_temperature\"\021\n\017G" +
-      "enerativeDummy\"\305\001\n\021GenerativeMistral\022\025\n\010" +
-      "base_url\030\001 \001(\tH\000\210\001\001\022\027\n\nmax_tokens\030\002 \001(\003H" +
-      "\001\210\001\001\022\022\n\005model\030\003 \001(\tH\002\210\001\001\022\030\n\013temperature\030" +
-      "\004 \001(\001H\003\210\001\001\022\022\n\005top_p\030\005 \001(\001H\004\210\001\001B\013\n\t_base_" +
-      "urlB\r\n\013_max_tokensB\010\n\006_modelB\016\n\014_tempera" +
-      "tureB\010\n\006_top_p\"\212\002\n\020GenerativeOllama\022\031\n\014a" +
-      "pi_endpoint\030\001 \001(\tH\000\210\001\001\022\022\n\005model\030\002 \001(\tH\001\210" +
-      "\001\001\022\030\n\013temperature\030\003 \001(\001H\002\210\001\001\022+\n\006images\030\004" +
-      " \001(\0132\026.weaviate.v1.TextArrayH\003\210\001\001\0225\n\020ima" +
-      "ge_properties\030\005 \001(\0132\026.weaviate.v1.TextAr" +
-      "rayH\004\210\001\001B\017\n\r_api_endpointB\010\n\006_modelB\016\n\014_" +
-      "temperatureB\t\n\007_imagesB\023\n\021_image_propert" +
-      "ies\"\246\005\n\020GenerativeOpenAI\022\036\n\021frequency_pe" +
-      "nalty\030\001 \001(\001H\000\210\001\001\022\027\n\nmax_tokens\030\002 \001(\003H\001\210\001" +
-      "\001\022\022\n\005model\030\003 \001(\tH\002\210\001\001\022\016\n\001n\030\004 \001(\003H\003\210\001\001\022\035\n" +
-      "\020presence_penalty\030\005 \001(\001H\004\210\001\001\022)\n\004stop\030\006 \001" +
-      "(\0132\026.weaviate.v1.TextArrayH\005\210\001\001\022\030\n\013tempe" +
-      "rature\030\007 \001(\001H\006\210\001\001\022\022\n\005top_p\030\010 \001(\001H\007\210\001\001\022\025\n" +
-      "\010base_url\030\t \001(\tH\010\210\001\001\022\030\n\013api_version\030\n \001(" +
-      "\tH\t\210\001\001\022\032\n\rresource_name\030\013 \001(\tH\n\210\001\001\022\032\n\rde" +
-      "ployment_id\030\014 \001(\tH\013\210\001\001\022\025\n\010is_azure\030\r \001(\010" +
-      "H\014\210\001\001\022+\n\006images\030\016 \001(\0132\026.weaviate.v1.Text" +
-      "ArrayH\r\210\001\001\0225\n\020image_properties\030\017 \001(\0132\026.w" +
-      "eaviate.v1.TextArrayH\016\210\001\001B\024\n\022_frequency_" +
-      "penaltyB\r\n\013_max_tokensB\010\n\006_modelB\004\n\002_nB\023" +
-      "\n\021_presence_penaltyB\007\n\005_stopB\016\n\014_tempera" +
-      "tureB\010\n\006_top_pB\013\n\t_base_urlB\016\n\014_api_vers" +
-      "ionB\020\n\016_resource_nameB\020\n\016_deployment_idB" +
-      "\013\n\t_is_azureB\t\n\007_imagesB\023\n\021_image_proper" +
-      "ties\"\222\005\n\020GenerativeGoogle\022\036\n\021frequency_p" +
-      "enalty\030\001 \001(\001H\000\210\001\001\022\027\n\nmax_tokens\030\002 \001(\003H\001\210" +
-      "\001\001\022\022\n\005model\030\003 \001(\tH\002\210\001\001\022\035\n\020presence_penal" +
-      "ty\030\004 \001(\001H\003\210\001\001\022\030\n\013temperature\030\005 \001(\001H\004\210\001\001\022" +
-      "\022\n\005top_k\030\006 \001(\003H\005\210\001\001\022\022\n\005top_p\030\007 \001(\001H\006\210\001\001\022" +
-      "3\n\016stop_sequences\030\010 \001(\0132\026.weaviate.v1.Te" +
-      "xtArrayH\007\210\001\001\022\031\n\014api_endpoint\030\t \001(\tH\010\210\001\001\022" +
-      "\027\n\nproject_id\030\n \001(\tH\t\210\001\001\022\030\n\013endpoint_id\030" +
-      "\013 \001(\tH\n\210\001\001\022\023\n\006region\030\014 \001(\tH\013\210\001\001\022+\n\006image" +
-      "s\030\r \001(\0132\026.weaviate.v1.TextArrayH\014\210\001\001\0225\n\020" +
-      "image_properties\030\016 \001(\0132\026.weaviate.v1.Tex" +
-      "tArrayH\r\210\001\001B\024\n\022_frequency_penaltyB\r\n\013_ma" +
-      "x_tokensB\010\n\006_modelB\023\n\021_presence_penaltyB" +
-      "\016\n\014_temperatureB\010\n\006_top_kB\010\n\006_top_pB\021\n\017_" +
-      "stop_sequencesB\017\n\r_api_endpointB\r\n\013_proj" +
-      "ect_idB\016\n\014_endpoint_idB\t\n\007_regionB\t\n\007_im" +
-      "agesB\023\n\021_image_properties\"\320\003\n\024Generative" +
-      "Databricks\022\025\n\010endpoint\030\001 \001(\tH\000\210\001\001\022\022\n\005mod" +
-      "el\030\002 \001(\tH\001\210\001\001\022\036\n\021frequency_penalty\030\003 \001(\001" +
-      "H\002\210\001\001\022\026\n\tlog_probs\030\004 \001(\010H\003\210\001\001\022\032\n\rtop_log" +
-      "_probs\030\005 \001(\003H\004\210\001\001\022\027\n\nmax_tokens\030\006 \001(\003H\005\210" +
-      "\001\001\022\016\n\001n\030\007 \001(\003H\006\210\001\001\022\035\n\020presence_penalty\030\010" +
-      " \001(\001H\007\210\001\001\022)\n\004stop\030\t \001(\0132\026.weaviate.v1.Te" +
-      "xtArrayH\010\210\001\001\022\030\n\013temperature\030\n \001(\001H\t\210\001\001\022\022" +
-      "\n\005top_p\030\013 \001(\001H\n\210\001\001B\013\n\t_endpointB\010\n\006_mode" +
-      "lB\024\n\022_frequency_penaltyB\014\n\n_log_probsB\020\n" +
-      "\016_top_log_probsB\r\n\013_max_tokensB\004\n\002_nB\023\n\021" +
-      "_presence_penaltyB\007\n\005_stopB\016\n\014_temperatu" +
-      "reB\010\n\006_top_p\"\336\001\n\024GenerativeFriendliAI\022\025\n" +
-      "\010base_url\030\001 \001(\tH\000\210\001\001\022\022\n\005model\030\002 \001(\tH\001\210\001\001" +
-      "\022\027\n\nmax_tokens\030\003 \001(\003H\002\210\001\001\022\030\n\013temperature" +
-      "\030\004 \001(\001H\003\210\001\001\022\016\n\001n\030\005 \001(\003H\004\210\001\001\022\022\n\005top_p\030\006 \001" +
-      "(\001H\005\210\001\001B\013\n\t_base_urlB\010\n\006_modelB\r\n\013_max_t" +
-      "okensB\016\n\014_temperatureB\004\n\002_nB\010\n\006_top_p\"\304\001" +
-      "\n\020GenerativeNvidia\022\025\n\010base_url\030\001 \001(\tH\000\210\001" +
-      "\001\022\022\n\005model\030\002 \001(\tH\001\210\001\001\022\030\n\013temperature\030\003 \001" +
-      "(\001H\002\210\001\001\022\022\n\005top_p\030\004 \001(\001H\003\210\001\001\022\027\n\nmax_token" +
-      "s\030\005 \001(\003H\004\210\001\001B\013\n\t_base_urlB\010\n\006_modelB\016\n\014_" +
-      "temperatureB\010\n\006_top_pB\r\n\013_max_tokens\"\305\002\n" +
-      "\rGenerativeXAI\022\025\n\010base_url\030\001 \001(\tH\000\210\001\001\022\022\n" +
+      ".GenerativeProvider\022\r\n\005debug\030\004 \001(\010B\r\n\013_p" +
+      "roperties\"\300\005\n\022GenerativeProvider\022\027\n\017retu" +
+      "rn_metadata\030\001 \001(\010\0225\n\tanthropic\030\002 \001(\0132 .w" +
+      "eaviate.v1.GenerativeAnthropicH\000\0223\n\010anys" +
+      "cale\030\003 \001(\0132\037.weaviate.v1.GenerativeAnysc" +
+      "aleH\000\022)\n\003aws\030\004 \001(\0132\032.weaviate.v1.Generat" +
+      "iveAWSH\000\022/\n\006cohere\030\005 \001(\0132\035.weaviate.v1.G" +
+      "enerativeCohereH\000\022-\n\005dummy\030\006 \001(\0132\034.weavi" +
+      "ate.v1.GenerativeDummyH\000\0221\n\007mistral\030\007 \001(" +
+      "\0132\036.weaviate.v1.GenerativeMistralH\000\022/\n\006o" +
+      "llama\030\010 \001(\0132\035.weaviate.v1.GenerativeOlla" +
+      "maH\000\022/\n\006openai\030\t \001(\0132\035.weaviate.v1.Gener" +
+      "ativeOpenAIH\000\022/\n\006google\030\n \001(\0132\035.weaviate" +
+      ".v1.GenerativeGoogleH\000\0227\n\ndatabricks\030\013 \001" +
+      "(\0132!.weaviate.v1.GenerativeDatabricksH\000\022" +
+      "7\n\nfriendliai\030\014 \001(\0132!.weaviate.v1.Genera" +
+      "tiveFriendliAIH\000\022/\n\006nvidia\030\r \001(\0132\035.weavi" +
+      "ate.v1.GenerativeNvidiaH\000\022)\n\003xai\030\016 \001(\0132\032" +
+      ".weaviate.v1.GenerativeXAIH\000B\006\n\004kind\"\261\003\n" +
+      "\023GenerativeAnthropic\022\025\n\010base_url\030\001 \001(\tH\000" +
+      "\210\001\001\022\027\n\nmax_tokens\030\002 \001(\003H\001\210\001\001\022\022\n\005model\030\003 " +
+      "\001(\tH\002\210\001\001\022\030\n\013temperature\030\004 \001(\001H\003\210\001\001\022\022\n\005to" +
+      "p_k\030\005 \001(\003H\004\210\001\001\022\022\n\005top_p\030\006 \001(\001H\005\210\001\001\0223\n\016st" +
+      "op_sequences\030\007 \001(\0132\026.weaviate.v1.TextArr" +
+      "ayH\006\210\001\001\022+\n\006images\030\010 \001(\0132\026.weaviate.v1.Te" +
+      "xtArrayH\007\210\001\001\0225\n\020image_properties\030\t \001(\0132\026" +
+      ".weaviate.v1.TextArrayH\010\210\001\001B\013\n\t_base_url" +
+      "B\r\n\013_max_tokensB\010\n\006_modelB\016\n\014_temperatur" +
+      "eB\010\n\006_top_kB\010\n\006_top_pB\021\n\017_stop_sequences" +
+      "B\t\n\007_imagesB\023\n\021_image_properties\"\200\001\n\022Gen" +
+      "erativeAnyscale\022\025\n\010base_url\030\001 \001(\tH\000\210\001\001\022\022" +
+      "\n\005model\030\002 \001(\tH\001\210\001\001\022\030\n\013temperature\030\003 \001(\001H" +
+      "\002\210\001\001B\013\n\t_base_urlB\010\n\006_modelB\016\n\014_temperat" +
+      "ure\"\235\003\n\rGenerativeAWS\022\022\n\005model\030\003 \001(\tH\000\210\001" +
+      "\001\022\030\n\013temperature\030\010 \001(\001H\001\210\001\001\022\024\n\007service\030\t" +
+      " \001(\tH\002\210\001\001\022\023\n\006region\030\n \001(\tH\003\210\001\001\022\025\n\010endpoi" +
+      "nt\030\013 \001(\tH\004\210\001\001\022\031\n\014target_model\030\014 \001(\tH\005\210\001\001" +
+      "\022\033\n\016target_variant\030\r \001(\tH\006\210\001\001\022+\n\006images\030" +
+      "\016 \001(\0132\026.weaviate.v1.TextArrayH\007\210\001\001\0225\n\020im" +
+      "age_properties\030\017 \001(\0132\026.weaviate.v1.TextA" +
+      "rrayH\010\210\001\001B\010\n\006_modelB\016\n\014_temperatureB\n\n\010_" +
+      "serviceB\t\n\007_regionB\013\n\t_endpointB\017\n\r_targ" +
+      "et_modelB\021\n\017_target_variantB\t\n\007_imagesB\023" +
+      "\n\021_image_properties\"\204\003\n\020GenerativeCohere" +
+      "\022\025\n\010base_url\030\001 \001(\tH\000\210\001\001\022\036\n\021frequency_pen" +
+      "alty\030\002 \001(\001H\001\210\001\001\022\027\n\nmax_tokens\030\003 \001(\003H\002\210\001\001" +
+      "\022\022\n\005model\030\004 \001(\tH\003\210\001\001\022\016\n\001k\030\005 \001(\003H\004\210\001\001\022\016\n\001" +
+      "p\030\006 \001(\001H\005\210\001\001\022\035\n\020presence_penalty\030\007 \001(\001H\006" +
+      "\210\001\001\0223\n\016stop_sequences\030\010 \001(\0132\026.weaviate.v" +
+      "1.TextArrayH\007\210\001\001\022\030\n\013temperature\030\t \001(\001H\010\210" +
+      "\001\001B\013\n\t_base_urlB\024\n\022_frequency_penaltyB\r\n" +
+      "\013_max_tokensB\010\n\006_modelB\004\n\002_kB\004\n\002_pB\023\n\021_p" +
+      "resence_penaltyB\021\n\017_stop_sequencesB\016\n\014_t" +
+      "emperature\"\021\n\017GenerativeDummy\"\305\001\n\021Genera" +
+      "tiveMistral\022\025\n\010base_url\030\001 \001(\tH\000\210\001\001\022\027\n\nma" +
+      "x_tokens\030\002 \001(\003H\001\210\001\001\022\022\n\005model\030\003 \001(\tH\002\210\001\001\022" +
+      "\030\n\013temperature\030\004 \001(\001H\003\210\001\001\022\022\n\005top_p\030\005 \001(\001" +
+      "H\004\210\001\001B\013\n\t_base_urlB\r\n\013_max_tokensB\010\n\006_mo" +
+      "delB\016\n\014_temperatureB\010\n\006_top_p\"\212\002\n\020Genera" +
+      "tiveOllama\022\031\n\014api_endpoint\030\001 \001(\tH\000\210\001\001\022\022\n" +
       "\005model\030\002 \001(\tH\001\210\001\001\022\030\n\013temperature\030\003 \001(\001H\002" +
-      "\210\001\001\022\022\n\005top_p\030\004 \001(\001H\003\210\001\001\022\027\n\nmax_tokens\030\005 " +
-      "\001(\003H\004\210\001\001\022+\n\006images\030\006 \001(\0132\026.weaviate.v1.T" +
-      "extArrayH\005\210\001\001\0225\n\020image_properties\030\007 \001(\0132" +
-      "\026.weaviate.v1.TextArrayH\006\210\001\001B\013\n\t_base_ur" +
-      "lB\010\n\006_modelB\016\n\014_temperatureB\010\n\006_top_pB\r\n" +
-      "\013_max_tokensB\t\n\007_imagesB\023\n\021_image_proper" +
-      "ties\"\222\001\n\033GenerativeAnthropicMetadata\022=\n\005" +
-      "usage\030\001 \001(\0132..weaviate.v1.GenerativeAnth" +
-      "ropicMetadata.Usage\0324\n\005Usage\022\024\n\014input_to" +
-      "kens\030\001 \001(\003\022\025\n\routput_tokens\030\002 \001(\003\"\034\n\032Gen" +
-      "erativeAnyscaleMetadata\"\027\n\025GenerativeAWS" +
-      "Metadata\"\234\006\n\030GenerativeCohereMetadata\022J\n" +
-      "\013api_version\030\001 \001(\01320.weaviate.v1.Generat" +
-      "iveCohereMetadata.ApiVersionH\000\210\001\001\022L\n\014bil" +
-      "led_units\030\002 \001(\01321.weaviate.v1.Generative" +
-      "CohereMetadata.BilledUnitsH\001\210\001\001\022A\n\006token" +
-      "s\030\003 \001(\0132,.weaviate.v1.GenerativeCohereMe" +
-      "tadata.TokensH\002\210\001\001\022-\n\010warnings\030\004 \001(\0132\026.w" +
-      "eaviate.v1.TextArrayH\003\210\001\001\032\216\001\n\nApiVersion" +
-      "\022\024\n\007version\030\001 \001(\tH\000\210\001\001\022\032\n\ris_deprecated\030" +
-      "\002 \001(\010H\001\210\001\001\022\034\n\017is_experimental\030\003 \001(\010H\002\210\001\001" +
-      "B\n\n\010_versionB\020\n\016_is_deprecatedB\022\n\020_is_ex" +
-      "perimental\032\305\001\n\013BilledUnits\022\031\n\014input_toke" +
-      "ns\030\001 \001(\001H\000\210\001\001\022\032\n\routput_tokens\030\002 \001(\001H\001\210\001" +
-      "\001\022\031\n\014search_units\030\003 \001(\001H\002\210\001\001\022\034\n\017classifi" +
-      "cations\030\004 \001(\001H\003\210\001\001B\017\n\r_input_tokensB\020\n\016_" +
-      "output_tokensB\017\n\r_search_unitsB\022\n\020_class" +
-      "ifications\032b\n\006Tokens\022\031\n\014input_tokens\030\001 \001" +
-      "(\001H\000\210\001\001\022\032\n\routput_tokens\030\002 \001(\001H\001\210\001\001B\017\n\r_" +
-      "input_tokensB\020\n\016_output_tokensB\016\n\014_api_v" +
-      "ersionB\017\n\r_billed_unitsB\t\n\007_tokensB\013\n\t_w" +
-      "arnings\"\031\n\027GenerativeDummyMetadata\"\201\002\n\031G" +
-      "enerativeMistralMetadata\022@\n\005usage\030\001 \001(\0132" +
-      ",.weaviate.v1.GenerativeMistralMetadata." +
-      "UsageH\000\210\001\001\032\227\001\n\005Usage\022\032\n\rprompt_tokens\030\001 " +
-      "\001(\003H\000\210\001\001\022\036\n\021completion_tokens\030\002 \001(\003H\001\210\001\001" +
-      "\022\031\n\014total_tokens\030\003 \001(\003H\002\210\001\001B\020\n\016_prompt_t" +
-      "okensB\024\n\022_completion_tokensB\017\n\r_total_to" +
-      "kensB\010\n\006_usage\"\032\n\030GenerativeOllamaMetada" +
-      "ta\"\377\001\n\030GenerativeOpenAIMetadata\022?\n\005usage" +
-      "\030\001 \001(\0132+.weaviate.v1.GenerativeOpenAIMet" +
+      "\210\001\001\022+\n\006images\030\004 \001(\0132\026.weaviate.v1.TextAr" +
+      "rayH\003\210\001\001\0225\n\020image_properties\030\005 \001(\0132\026.wea" +
+      "viate.v1.TextArrayH\004\210\001\001B\017\n\r_api_endpoint" +
+      "B\010\n\006_modelB\016\n\014_temperatureB\t\n\007_imagesB\023\n" +
+      "\021_image_properties\"\246\005\n\020GenerativeOpenAI\022" +
+      "\036\n\021frequency_penalty\030\001 \001(\001H\000\210\001\001\022\027\n\nmax_t" +
+      "okens\030\002 \001(\003H\001\210\001\001\022\022\n\005model\030\003 \001(\tH\002\210\001\001\022\016\n\001" +
+      "n\030\004 \001(\003H\003\210\001\001\022\035\n\020presence_penalty\030\005 \001(\001H\004" +
+      "\210\001\001\022)\n\004stop\030\006 \001(\0132\026.weaviate.v1.TextArra" +
+      "yH\005\210\001\001\022\030\n\013temperature\030\007 \001(\001H\006\210\001\001\022\022\n\005top_" +
+      "p\030\010 \001(\001H\007\210\001\001\022\025\n\010base_url\030\t \001(\tH\010\210\001\001\022\030\n\013a" +
+      "pi_version\030\n \001(\tH\t\210\001\001\022\032\n\rresource_name\030\013" +
+      " \001(\tH\n\210\001\001\022\032\n\rdeployment_id\030\014 \001(\tH\013\210\001\001\022\025\n" +
+      "\010is_azure\030\r \001(\010H\014\210\001\001\022+\n\006images\030\016 \001(\0132\026.w" +
+      "eaviate.v1.TextArrayH\r\210\001\001\0225\n\020image_prope" +
+      "rties\030\017 \001(\0132\026.weaviate.v1.TextArrayH\016\210\001\001" +
+      "B\024\n\022_frequency_penaltyB\r\n\013_max_tokensB\010\n" +
+      "\006_modelB\004\n\002_nB\023\n\021_presence_penaltyB\007\n\005_s" +
+      "topB\016\n\014_temperatureB\010\n\006_top_pB\013\n\t_base_u" +
+      "rlB\016\n\014_api_versionB\020\n\016_resource_nameB\020\n\016" +
+      "_deployment_idB\013\n\t_is_azureB\t\n\007_imagesB\023" +
+      "\n\021_image_properties\"\222\005\n\020GenerativeGoogle" +
+      "\022\036\n\021frequency_penalty\030\001 \001(\001H\000\210\001\001\022\027\n\nmax_" +
+      "tokens\030\002 \001(\003H\001\210\001\001\022\022\n\005model\030\003 \001(\tH\002\210\001\001\022\035\n" +
+      "\020presence_penalty\030\004 \001(\001H\003\210\001\001\022\030\n\013temperat" +
+      "ure\030\005 \001(\001H\004\210\001\001\022\022\n\005top_k\030\006 \001(\003H\005\210\001\001\022\022\n\005to" +
+      "p_p\030\007 \001(\001H\006\210\001\001\0223\n\016stop_sequences\030\010 \001(\0132\026" +
+      ".weaviate.v1.TextArrayH\007\210\001\001\022\031\n\014api_endpo" +
+      "int\030\t \001(\tH\010\210\001\001\022\027\n\nproject_id\030\n \001(\tH\t\210\001\001\022" +
+      "\030\n\013endpoint_id\030\013 \001(\tH\n\210\001\001\022\023\n\006region\030\014 \001(" +
+      "\tH\013\210\001\001\022+\n\006images\030\r \001(\0132\026.weaviate.v1.Tex" +
+      "tArrayH\014\210\001\001\0225\n\020image_properties\030\016 \001(\0132\026." +
+      "weaviate.v1.TextArrayH\r\210\001\001B\024\n\022_frequency" +
+      "_penaltyB\r\n\013_max_tokensB\010\n\006_modelB\023\n\021_pr" +
+      "esence_penaltyB\016\n\014_temperatureB\010\n\006_top_k" +
+      "B\010\n\006_top_pB\021\n\017_stop_sequencesB\017\n\r_api_en" +
+      "dpointB\r\n\013_project_idB\016\n\014_endpoint_idB\t\n" +
+      "\007_regionB\t\n\007_imagesB\023\n\021_image_properties" +
+      "\"\320\003\n\024GenerativeDatabricks\022\025\n\010endpoint\030\001 " +
+      "\001(\tH\000\210\001\001\022\022\n\005model\030\002 \001(\tH\001\210\001\001\022\036\n\021frequenc" +
+      "y_penalty\030\003 \001(\001H\002\210\001\001\022\026\n\tlog_probs\030\004 \001(\010H" +
+      "\003\210\001\001\022\032\n\rtop_log_probs\030\005 \001(\003H\004\210\001\001\022\027\n\nmax_" +
+      "tokens\030\006 \001(\003H\005\210\001\001\022\016\n\001n\030\007 \001(\003H\006\210\001\001\022\035\n\020pre" +
+      "sence_penalty\030\010 \001(\001H\007\210\001\001\022)\n\004stop\030\t \001(\0132\026" +
+      ".weaviate.v1.TextArrayH\010\210\001\001\022\030\n\013temperatu" +
+      "re\030\n \001(\001H\t\210\001\001\022\022\n\005top_p\030\013 \001(\001H\n\210\001\001B\013\n\t_en" +
+      "dpointB\010\n\006_modelB\024\n\022_frequency_penaltyB\014" +
+      "\n\n_log_probsB\020\n\016_top_log_probsB\r\n\013_max_t" +
+      "okensB\004\n\002_nB\023\n\021_presence_penaltyB\007\n\005_sto" +
+      "pB\016\n\014_temperatureB\010\n\006_top_p\"\336\001\n\024Generati" +
+      "veFriendliAI\022\025\n\010base_url\030\001 \001(\tH\000\210\001\001\022\022\n\005m" +
+      "odel\030\002 \001(\tH\001\210\001\001\022\027\n\nmax_tokens\030\003 \001(\003H\002\210\001\001" +
+      "\022\030\n\013temperature\030\004 \001(\001H\003\210\001\001\022\016\n\001n\030\005 \001(\003H\004\210" +
+      "\001\001\022\022\n\005top_p\030\006 \001(\001H\005\210\001\001B\013\n\t_base_urlB\010\n\006_" +
+      "modelB\r\n\013_max_tokensB\016\n\014_temperatureB\004\n\002" +
+      "_nB\010\n\006_top_p\"\304\001\n\020GenerativeNvidia\022\025\n\010bas" +
+      "e_url\030\001 \001(\tH\000\210\001\001\022\022\n\005model\030\002 \001(\tH\001\210\001\001\022\030\n\013" +
+      "temperature\030\003 \001(\001H\002\210\001\001\022\022\n\005top_p\030\004 \001(\001H\003\210" +
+      "\001\001\022\027\n\nmax_tokens\030\005 \001(\003H\004\210\001\001B\013\n\t_base_url" +
+      "B\010\n\006_modelB\016\n\014_temperatureB\010\n\006_top_pB\r\n\013" +
+      "_max_tokens\"\305\002\n\rGenerativeXAI\022\025\n\010base_ur" +
+      "l\030\001 \001(\tH\000\210\001\001\022\022\n\005model\030\002 \001(\tH\001\210\001\001\022\030\n\013temp" +
+      "erature\030\003 \001(\001H\002\210\001\001\022\022\n\005top_p\030\004 \001(\001H\003\210\001\001\022\027" +
+      "\n\nmax_tokens\030\005 \001(\003H\004\210\001\001\022+\n\006images\030\006 \001(\0132" +
+      "\026.weaviate.v1.TextArrayH\005\210\001\001\0225\n\020image_pr" +
+      "operties\030\007 \001(\0132\026.weaviate.v1.TextArrayH\006" +
+      "\210\001\001B\013\n\t_base_urlB\010\n\006_modelB\016\n\014_temperatu" +
+      "reB\010\n\006_top_pB\r\n\013_max_tokensB\t\n\007_imagesB\023" +
+      "\n\021_image_properties\"\222\001\n\033GenerativeAnthro" +
+      "picMetadata\022=\n\005usage\030\001 \001(\0132..weaviate.v1" +
+      ".GenerativeAnthropicMetadata.Usage\0324\n\005Us" +
+      "age\022\024\n\014input_tokens\030\001 \001(\003\022\025\n\routput_toke" +
+      "ns\030\002 \001(\003\"\034\n\032GenerativeAnyscaleMetadata\"\027" +
+      "\n\025GenerativeAWSMetadata\"\234\006\n\030GenerativeCo" +
+      "hereMetadata\022J\n\013api_version\030\001 \001(\01320.weav" +
+      "iate.v1.GenerativeCohereMetadata.ApiVers" +
+      "ionH\000\210\001\001\022L\n\014billed_units\030\002 \001(\01321.weaviat" +
+      "e.v1.GenerativeCohereMetadata.BilledUnit" +
+      "sH\001\210\001\001\022A\n\006tokens\030\003 \001(\0132,.weaviate.v1.Gen" +
+      "erativeCohereMetadata.TokensH\002\210\001\001\022-\n\010war" +
+      "nings\030\004 \001(\0132\026.weaviate.v1.TextArrayH\003\210\001\001" +
+      "\032\216\001\n\nApiVersion\022\024\n\007version\030\001 \001(\tH\000\210\001\001\022\032\n" +
+      "\ris_deprecated\030\002 \001(\010H\001\210\001\001\022\034\n\017is_experime" +
+      "ntal\030\003 \001(\010H\002\210\001\001B\n\n\010_versionB\020\n\016_is_depre" +
+      "catedB\022\n\020_is_experimental\032\305\001\n\013BilledUnit" +
+      "s\022\031\n\014input_tokens\030\001 \001(\001H\000\210\001\001\022\032\n\routput_t" +
+      "okens\030\002 \001(\001H\001\210\001\001\022\031\n\014search_units\030\003 \001(\001H\002" +
+      "\210\001\001\022\034\n\017classifications\030\004 \001(\001H\003\210\001\001B\017\n\r_in" +
+      "put_tokensB\020\n\016_output_tokensB\017\n\r_search_" +
+      "unitsB\022\n\020_classifications\032b\n\006Tokens\022\031\n\014i" +
+      "nput_tokens\030\001 \001(\001H\000\210\001\001\022\032\n\routput_tokens\030" +
+      "\002 \001(\001H\001\210\001\001B\017\n\r_input_tokensB\020\n\016_output_t" +
+      "okensB\016\n\014_api_versionB\017\n\r_billed_unitsB\t" +
+      "\n\007_tokensB\013\n\t_warnings\"\031\n\027GenerativeDumm" +
+      "yMetadata\"\201\002\n\031GenerativeMistralMetadata\022" +
+      "@\n\005usage\030\001 \001(\0132,.weaviate.v1.GenerativeM" +
+      "istralMetadata.UsageH\000\210\001\001\032\227\001\n\005Usage\022\032\n\rp" +
+      "rompt_tokens\030\001 \001(\003H\000\210\001\001\022\036\n\021completion_to" +
+      "kens\030\002 \001(\003H\001\210\001\001\022\031\n\014total_tokens\030\003 \001(\003H\002\210" +
+      "\001\001B\020\n\016_prompt_tokensB\024\n\022_completion_toke" +
+      "nsB\017\n\r_total_tokensB\010\n\006_usage\"\032\n\030Generat" +
+      "iveOllamaMetadata\"\377\001\n\030GenerativeOpenAIMe" +
+      "tadata\022?\n\005usage\030\001 \001(\0132+.weaviate.v1.Gene" +
+      "rativeOpenAIMetadata.UsageH\000\210\001\001\032\227\001\n\005Usag" +
+      "e\022\032\n\rprompt_tokens\030\001 \001(\003H\000\210\001\001\022\036\n\021complet" +
+      "ion_tokens\030\002 \001(\003H\001\210\001\001\022\031\n\014total_tokens\030\003 " +
+      "\001(\003H\002\210\001\001B\020\n\016_prompt_tokensB\024\n\022_completio" +
+      "n_tokensB\017\n\r_total_tokensB\010\n\006_usage\"\350\006\n\030" +
+      "GenerativeGoogleMetadata\022E\n\010metadata\030\001 \001" +
+      "(\0132..weaviate.v1.GenerativeGoogleMetadat" +
+      "a.MetadataH\000\210\001\001\022P\n\016usage_metadata\030\002 \001(\0132" +
+      "3.weaviate.v1.GenerativeGoogleMetadata.U" +
+      "sageMetadataH\001\210\001\001\032~\n\nTokenCount\022&\n\031total" +
+      "_billable_characters\030\001 \001(\003H\000\210\001\001\022\031\n\014total" +
+      "_tokens\030\002 \001(\003H\001\210\001\001B\034\n\032_total_billable_ch" +
+      "aractersB\017\n\r_total_tokens\032\341\001\n\rTokenMetad" +
+      "ata\022P\n\021input_token_count\030\001 \001(\01320.weaviat" +
+      "e.v1.GenerativeGoogleMetadata.TokenCount" +
+      "H\000\210\001\001\022Q\n\022output_token_count\030\002 \001(\01320.weav" +
+      "iate.v1.GenerativeGoogleMetadata.TokenCo" +
+      "untH\001\210\001\001B\024\n\022_input_token_countB\025\n\023_outpu" +
+      "t_token_count\032o\n\010Metadata\022P\n\016token_metad" +
+      "ata\030\001 \001(\01323.weaviate.v1.GenerativeGoogle" +
+      "Metadata.TokenMetadataH\000\210\001\001B\021\n\017_token_me" +
+      "tadata\032\275\001\n\rUsageMetadata\022\037\n\022prompt_token" +
+      "_count\030\001 \001(\003H\000\210\001\001\022#\n\026candidates_token_co" +
+      "unt\030\002 \001(\003H\001\210\001\001\022\036\n\021total_token_count\030\003 \001(" +
+      "\003H\002\210\001\001B\025\n\023_prompt_token_countB\031\n\027_candid" +
+      "ates_token_countB\024\n\022_total_token_countB\013" +
+      "\n\t_metadataB\021\n\017_usage_metadata\"\207\002\n\034Gener" +
+      "ativeDatabricksMetadata\022C\n\005usage\030\001 \001(\0132/" +
+      ".weaviate.v1.GenerativeDatabricksMetadat" +
+      "a.UsageH\000\210\001\001\032\227\001\n\005Usage\022\032\n\rprompt_tokens\030" +
+      "\001 \001(\003H\000\210\001\001\022\036\n\021completion_tokens\030\002 \001(\003H\001\210" +
+      "\001\001\022\031\n\014total_tokens\030\003 \001(\003H\002\210\001\001B\020\n\016_prompt" +
+      "_tokensB\024\n\022_completion_tokensB\017\n\r_total_" +
+      "tokensB\010\n\006_usage\"\207\002\n\034GenerativeFriendliA" +
+      "IMetadata\022C\n\005usage\030\001 \001(\0132/.weaviate.v1.G" +
+      "enerativeFriendliAIMetadata.UsageH\000\210\001\001\032\227" +
+      "\001\n\005Usage\022\032\n\rprompt_tokens\030\001 \001(\003H\000\210\001\001\022\036\n\021" +
+      "completion_tokens\030\002 \001(\003H\001\210\001\001\022\031\n\014total_to" +
+      "kens\030\003 \001(\003H\002\210\001\001B\020\n\016_prompt_tokensB\024\n\022_co" +
+      "mpletion_tokensB\017\n\r_total_tokensB\010\n\006_usa" +
+      "ge\"\377\001\n\030GenerativeNvidiaMetadata\022?\n\005usage" +
+      "\030\001 \001(\0132+.weaviate.v1.GenerativeNvidiaMet" +
       "adata.UsageH\000\210\001\001\032\227\001\n\005Usage\022\032\n\rprompt_tok" +
       "ens\030\001 \001(\003H\000\210\001\001\022\036\n\021completion_tokens\030\002 \001(" +
       "\003H\001\210\001\001\022\031\n\014total_tokens\030\003 \001(\003H\002\210\001\001B\020\n\016_pr" +
       "ompt_tokensB\024\n\022_completion_tokensB\017\n\r_to" +
-      "tal_tokensB\010\n\006_usage\"\350\006\n\030GenerativeGoogl" +
-      "eMetadata\022E\n\010metadata\030\001 \001(\0132..weaviate.v" +
-      "1.GenerativeGoogleMetadata.MetadataH\000\210\001\001" +
-      "\022P\n\016usage_metadata\030\002 \001(\01323.weaviate.v1.G" +
-      "enerativeGoogleMetadata.UsageMetadataH\001\210" +
-      "\001\001\032~\n\nTokenCount\022&\n\031total_billable_chara" +
-      "cters\030\001 \001(\003H\000\210\001\001\022\031\n\014total_tokens\030\002 \001(\003H\001" +
-      "\210\001\001B\034\n\032_total_billable_charactersB\017\n\r_to" +
-      "tal_tokens\032\341\001\n\rTokenMetadata\022P\n\021input_to" +
-      "ken_count\030\001 \001(\01320.weaviate.v1.Generative" +
-      "GoogleMetadata.TokenCountH\000\210\001\001\022Q\n\022output" +
-      "_token_count\030\002 \001(\01320.weaviate.v1.Generat" +
-      "iveGoogleMetadata.TokenCountH\001\210\001\001B\024\n\022_in" +
-      "put_token_countB\025\n\023_output_token_count\032o" +
-      "\n\010Metadata\022P\n\016token_metadata\030\001 \001(\01323.wea" +
-      "viate.v1.GenerativeGoogleMetadata.TokenM" +
-      "etadataH\000\210\001\001B\021\n\017_token_metadata\032\275\001\n\rUsag" +
-      "eMetadata\022\037\n\022prompt_token_count\030\001 \001(\003H\000\210" +
-      "\001\001\022#\n\026candidates_token_count\030\002 \001(\003H\001\210\001\001\022" +
-      "\036\n\021total_token_count\030\003 \001(\003H\002\210\001\001B\025\n\023_prom" +
-      "pt_token_countB\031\n\027_candidates_token_coun" +
-      "tB\024\n\022_total_token_countB\013\n\t_metadataB\021\n\017" +
-      "_usage_metadata\"\207\002\n\034GenerativeDatabricks" +
-      "Metadata\022C\n\005usage\030\001 \001(\0132/.weaviate.v1.Ge" +
-      "nerativeDatabricksMetadata.UsageH\000\210\001\001\032\227\001" +
-      "\n\005Usage\022\032\n\rprompt_tokens\030\001 \001(\003H\000\210\001\001\022\036\n\021c" +
-      "ompletion_tokens\030\002 \001(\003H\001\210\001\001\022\031\n\014total_tok" +
-      "ens\030\003 \001(\003H\002\210\001\001B\020\n\016_prompt_tokensB\024\n\022_com" +
-      "pletion_tokensB\017\n\r_total_tokensB\010\n\006_usag" +
-      "e\"\207\002\n\034GenerativeFriendliAIMetadata\022C\n\005us" +
-      "age\030\001 \001(\0132/.weaviate.v1.GenerativeFriend" +
-      "liAIMetadata.UsageH\000\210\001\001\032\227\001\n\005Usage\022\032\n\rpro" +
-      "mpt_tokens\030\001 \001(\003H\000\210\001\001\022\036\n\021completion_toke" +
-      "ns\030\002 \001(\003H\001\210\001\001\022\031\n\014total_tokens\030\003 \001(\003H\002\210\001\001" +
-      "B\020\n\016_prompt_tokensB\024\n\022_completion_tokens" +
-      "B\017\n\r_total_tokensB\010\n\006_usage\"\377\001\n\030Generati" +
-      "veNvidiaMetadata\022?\n\005usage\030\001 \001(\0132+.weavia" +
-      "te.v1.GenerativeNvidiaMetadata.UsageH\000\210\001" +
-      "\001\032\227\001\n\005Usage\022\032\n\rprompt_tokens\030\001 \001(\003H\000\210\001\001\022" +
-      "\036\n\021completion_tokens\030\002 \001(\003H\001\210\001\001\022\031\n\014total" +
-      "_tokens\030\003 \001(\003H\002\210\001\001B\020\n\016_prompt_tokensB\024\n\022" +
-      "_completion_tokensB\017\n\r_total_tokensB\010\n\006_" +
-      "usage\"\371\001\n\025GenerativeXAIMetadata\022<\n\005usage" +
-      "\030\001 \001(\0132(.weaviate.v1.GenerativeXAIMetada" +
-      "ta.UsageH\000\210\001\001\032\227\001\n\005Usage\022\032\n\rprompt_tokens" +
-      "\030\001 \001(\003H\000\210\001\001\022\036\n\021completion_tokens\030\002 \001(\003H\001" +
-      "\210\001\001\022\031\n\014total_tokens\030\003 \001(\003H\002\210\001\001B\020\n\016_promp" +
-      "t_tokensB\024\n\022_completion_tokensB\017\n\r_total" +
-      "_tokensB\010\n\006_usage\"\217\006\n\022GenerativeMetadata" +
-      "\022=\n\tanthropic\030\001 \001(\0132(.weaviate.v1.Genera" +
-      "tiveAnthropicMetadataH\000\022;\n\010anyscale\030\002 \001(" +
-      "\0132\'.weaviate.v1.GenerativeAnyscaleMetada" +
-      "taH\000\0221\n\003aws\030\003 \001(\0132\".weaviate.v1.Generati" +
-      "veAWSMetadataH\000\0227\n\006cohere\030\004 \001(\0132%.weavia" +
-      "te.v1.GenerativeCohereMetadataH\000\0225\n\005dumm" +
-      "y\030\005 \001(\0132$.weaviate.v1.GenerativeDummyMet" +
-      "adataH\000\0229\n\007mistral\030\006 \001(\0132&.weaviate.v1.G" +
-      "enerativeMistralMetadataH\000\0227\n\006ollama\030\007 \001" +
-      "(\0132%.weaviate.v1.GenerativeOllamaMetadat" +
-      "aH\000\0227\n\006openai\030\010 \001(\0132%.weaviate.v1.Genera" +
-      "tiveOpenAIMetadataH\000\0227\n\006google\030\t \001(\0132%.w" +
-      "eaviate.v1.GenerativeGoogleMetadataH\000\022?\n" +
-      "\ndatabricks\030\n \001(\0132).weaviate.v1.Generati" +
-      "veDatabricksMetadataH\000\022?\n\nfriendliai\030\013 \001" +
-      "(\0132).weaviate.v1.GenerativeFriendliAIMet" +
-      "adataH\000\0227\n\006nvidia\030\014 \001(\0132%.weaviate.v1.Ge" +
-      "nerativeNvidiaMetadataH\000\0221\n\003xai\030\r \001(\0132\"." +
-      "weaviate.v1.GenerativeXAIMetadataH\000B\006\n\004k" +
-      "ind\"\242\001\n\017GenerativeReply\022\016\n\006result\030\001 \001(\t\022" +
-      "0\n\005debug\030\002 \001(\0132\034.weaviate.v1.GenerativeD" +
-      "ebugH\000\210\001\001\0226\n\010metadata\030\003 \001(\0132\037.weaviate.v" +
-      "1.GenerativeMetadataH\001\210\001\001B\010\n\006_debugB\013\n\t_" +
-      "metadata\"@\n\020GenerativeResult\022,\n\006values\030\001" +
-      " \003(\0132\034.weaviate.v1.GenerativeReply\";\n\017Ge" +
-      "nerativeDebug\022\030\n\013full_prompt\030\001 \001(\tH\000\210\001\001B" +
-      "\016\n\014_full_promptBH\n-io.weaviate.client6.v" +
-      "1.internal.grpc.protocolB\027WeaviateProtoG" +
-      "enerativeb\006proto3"
+      "tal_tokensB\010\n\006_usage\"\371\001\n\025GenerativeXAIMe" +
+      "tadata\022<\n\005usage\030\001 \001(\0132(.weaviate.v1.Gene" +
+      "rativeXAIMetadata.UsageH\000\210\001\001\032\227\001\n\005Usage\022\032" +
+      "\n\rprompt_tokens\030\001 \001(\003H\000\210\001\001\022\036\n\021completion" +
+      "_tokens\030\002 \001(\003H\001\210\001\001\022\031\n\014total_tokens\030\003 \001(\003" +
+      "H\002\210\001\001B\020\n\016_prompt_tokensB\024\n\022_completion_t" +
+      "okensB\017\n\r_total_tokensB\010\n\006_usage\"\217\006\n\022Gen" +
+      "erativeMetadata\022=\n\tanthropic\030\001 \001(\0132(.wea" +
+      "viate.v1.GenerativeAnthropicMetadataH\000\022;" +
+      "\n\010anyscale\030\002 \001(\0132\'.weaviate.v1.Generativ" +
+      "eAnyscaleMetadataH\000\0221\n\003aws\030\003 \001(\0132\".weavi" +
+      "ate.v1.GenerativeAWSMetadataH\000\0227\n\006cohere" +
+      "\030\004 \001(\0132%.weaviate.v1.GenerativeCohereMet" +
+      "adataH\000\0225\n\005dummy\030\005 \001(\0132$.weaviate.v1.Gen" +
+      "erativeDummyMetadataH\000\0229\n\007mistral\030\006 \001(\0132" +
+      "&.weaviate.v1.GenerativeMistralMetadataH" +
+      "\000\0227\n\006ollama\030\007 \001(\0132%.weaviate.v1.Generati" +
+      "veOllamaMetadataH\000\0227\n\006openai\030\010 \001(\0132%.wea" +
+      "viate.v1.GenerativeOpenAIMetadataH\000\0227\n\006g" +
+      "oogle\030\t \001(\0132%.weaviate.v1.GenerativeGoog" +
+      "leMetadataH\000\022?\n\ndatabricks\030\n \001(\0132).weavi" +
+      "ate.v1.GenerativeDatabricksMetadataH\000\022?\n" +
+      "\nfriendliai\030\013 \001(\0132).weaviate.v1.Generati" +
+      "veFriendliAIMetadataH\000\0227\n\006nvidia\030\014 \001(\0132%" +
+      ".weaviate.v1.GenerativeNvidiaMetadataH\000\022" +
+      "1\n\003xai\030\r \001(\0132\".weaviate.v1.GenerativeXAI" +
+      "MetadataH\000B\006\n\004kind\"\242\001\n\017GenerativeReply\022\016" +
+      "\n\006result\030\001 \001(\t\0220\n\005debug\030\002 \001(\0132\034.weaviate" +
+      ".v1.GenerativeDebugH\000\210\001\001\0226\n\010metadata\030\003 \001" +
+      "(\0132\037.weaviate.v1.GenerativeMetadataH\001\210\001\001" +
+      "B\010\n\006_debugB\013\n\t_metadata\"@\n\020GenerativeRes" +
+      "ult\022,\n\006values\030\001 \003(\0132\034.weaviate.v1.Genera" +
+      "tiveReply\";\n\017GenerativeDebug\022\030\n\013full_pro" +
+      "mpt\030\001 \001(\tH\000\210\001\001B\016\n\014_full_promptBH\n-io.wea" +
+      "viate.client6.v1.internal.grpc.protocolB" +
+      "\027WeaviateProtoGenerativeb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -50451,7 +50524,7 @@ public final class WeaviateProtoGenerative {
     internal_static_weaviate_v1_GenerativeSearch_Grouped_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_GenerativeSearch_Grouped_descriptor,
-        new java.lang.String[] { "Task", "Properties", "Queries", "Properties", });
+        new java.lang.String[] { "Task", "Properties", "Queries", "Debug", "Properties", });
     internal_static_weaviate_v1_GenerativeProvider_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_weaviate_v1_GenerativeProvider_fieldAccessorTable = new
