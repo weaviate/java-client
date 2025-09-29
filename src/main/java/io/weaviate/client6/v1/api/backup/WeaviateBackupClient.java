@@ -27,8 +27,8 @@ public class WeaviateBackupClient {
    *                              due to a malformed request, a networking error
    *                              or the server being unavailable.
    */
-  public void create(String backupId, String backend) throws IOException {
-    create(new CreateBackupRequest(CreateBackupRequest.BackupCreate.of(backupId), backend));
+  public CreateBackupResponse create(String backupId, String backend) throws IOException {
+    return create(new CreateBackupRequest(CreateBackupRequest.BackupCreate.of(backupId), backend));
   }
 
   /**
@@ -43,10 +43,10 @@ public class WeaviateBackupClient {
    *                              due to a malformed request, a networking error
    *                              or the server being unavailable.
    */
-  public void create(String backupId, String backend,
+  public CreateBackupResponse create(String backupId, String backend,
       Function<CreateBackupRequest.BackupCreate.Builder, ObjectBuilder<CreateBackupRequest.BackupCreate>> fn)
       throws IOException {
-    create(new CreateBackupRequest(CreateBackupRequest.BackupCreate.of(backupId, fn), backend));
+    return create(new CreateBackupRequest(CreateBackupRequest.BackupCreate.of(backupId, fn), backend));
   }
 
   /**
@@ -60,7 +60,8 @@ public class WeaviateBackupClient {
    *                              or the server being unavailable.
    */
   public CreateBackupResponse create(CreateBackupRequest request) throws IOException {
-    return this.restTransport.performRequest(request, CreateBackupRequest._ENDPOINT);
+    var backup = this.restTransport.performRequest(request, CreateBackupRequest._ENDPOINT);
+    return new CreateBackupResponse(backup, this);
   }
 
   /**
@@ -123,7 +124,8 @@ public class WeaviateBackupClient {
    *                              or the server being unavailable.
    */
   public RestoreBackupResponse restore(RestoreBackupRequest request) throws IOException {
-    return this.restTransport.performRequest(request, RestoreBackupRequest._ENDPOINT);
+    var backup = this.restTransport.performRequest(request, RestoreBackupRequest._ENDPOINT);
+    return new RestoreBackupResponse(backup, this);
   }
 
   /**

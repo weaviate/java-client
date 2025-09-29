@@ -137,6 +137,12 @@ public class Weaviate extends WeaviateContainer {
       return this;
     }
 
+    public Builder withFilesystemBackup(String fsPath) {
+      addModules("backup-filesystem");
+      environment.put("BACKUP_FILESYSTEM_PATH", fsPath);
+      return this;
+    }
+
     public Builder enableTelemetry(boolean enable) {
       environment.put("DISABLE_TELEMETRY", Boolean.toString(!enable));
       return this;

@@ -18,7 +18,7 @@ public class TenantsITest extends ConcurrentTest {
           .build(),
       Container.MINIO);
 
-  private static WeaviateClient client = compose.getClient();
+  private static final WeaviateClient client = compose.getClient();
 
   @Test
   public void test_tenantLifecycle() throws Exception {

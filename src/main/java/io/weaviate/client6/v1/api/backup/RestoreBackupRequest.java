@@ -15,12 +15,12 @@ import io.weaviate.client6.v1.internal.rest.SimpleEndpoint;
 
 public record RestoreBackupRequest(String backupId, String backend, BackupRestore body) {
 
-  public static Endpoint<RestoreBackupRequest, RestoreBackupResponse> _ENDPOINT = new SimpleEndpoint<>(
+  public static Endpoint<RestoreBackupRequest, Backup> _ENDPOINT = new SimpleEndpoint<>(
       request -> "POST",
       request -> "/backups/" + request.backend + "/" + request.backupId + "/restore",
       request -> Collections.emptyMap(),
       request -> JSON.serialize(request.body),
-      (statusCode, response) -> new RestoreBackupResponse(JSON.deserialize(response, Backup.class)));
+      (statusCode, response) -> JSON.deserialize(response, Backup.class));
 
   public record BackupRestore(
       @SerializedName("include") List<String> includeCollections,
