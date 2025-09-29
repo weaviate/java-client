@@ -15,6 +15,14 @@ public class OptionalEndpoint<RequestT, ResponseT> extends SimpleEndpoint<Reques
     return new OptionalEndpoint<>(method, requestUrl, queryParameters, nullBody(), deserializeResponse);
   }
 
+  public static <RequestT, ResponseT> OptionalEndpoint<RequestT, ResponseT> noBodyOptional(
+      Function<RequestT, String> method,
+      Function<RequestT, String> requestUrl,
+      Function<RequestT, Map<String, Object>> queryParameters,
+      Class<ResponseT> cls) {
+    return new OptionalEndpoint<>(method, requestUrl, queryParameters, nullBody(), deserializeClass(cls));
+  }
+
   public OptionalEndpoint(
       Function<RequestT, String> method,
       Function<RequestT, String> requestUrl,
