@@ -23,7 +23,7 @@ import io.weaviate.client6.v1.api.collections.query.Where;
 import io.weaviate.containers.Container;
 
 public class ORMITest extends ConcurrentTest {
-  private static WeaviateClient client = Container.WEAVIATE.getClient();
+  private static final WeaviateClient client = Container.WEAVIATE.getClient();
 
   @Collection("ORMITestThings")
   static record Thing(

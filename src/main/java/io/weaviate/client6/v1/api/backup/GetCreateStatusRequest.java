@@ -9,7 +9,7 @@ import io.weaviate.client6.v1.internal.rest.OptionalEndpoint;
 public record GetCreateStatusRequest(String backupId, String backend) {
   public static final Endpoint<GetCreateStatusRequest, Optional<Backup>> _ENDPOINT = OptionalEndpoint.noBodyOptional(
       request -> "GET",
-      request -> "backups/" + request.backend + "/" + request.backupId,
+      request -> "/backups/" + request.backend + "/" + request.backupId,
       request -> Collections.emptyMap(),
       Backup.class);
 }

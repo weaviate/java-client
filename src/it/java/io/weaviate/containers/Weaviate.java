@@ -133,34 +133,9 @@ public class Weaviate extends WeaviateContainer {
       return this;
     }
 
-    public Builder withAdminUsers(String... admins) {
-      adminUsers.addAll(Arrays.asList(admins));
-      return this;
-    }
-
-    public Builder withViewerUsers(String... viewers) {
-      viewerUsers.addAll(Arrays.asList(viewers));
-      return this;
-    }
-
-    /** Enable RBAC authorization for this container. */
-    public Builder withRbac() {
-      environment.put("AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED", "false");
-      environment.put("AUTHENTICATION_APIKEY_ENABLED", "true");
-      environment.put("AUTHORIZATION_RBAC_ENABLED", "true");
-      environment.put("AUTHENTICATION_DB_USERS_ENABLED", "true");
-      return this;
-    }
-
-    /**
-     * Enable API-Key authentication for this container.
-     *
-     * @param apiKeys Allowed API keys.
-     */
-    public Builder withApiKeys(String... apiKeys) {
-      environment.put("AUTHENTICATION_APIKEY_ENABLED", "true");
-      environment.put("AUTHENTICATION_APIKEY_ALLOWED_KEYS", String.join(",",
-          apiKeys));
+    public Builder withFilesystemBackup(String fsPath) {
+      addModules("backup-filesystem");
+      environment.put("BACKUP_FILESYSTEM_PATH", fsPath);
       return this;
     }
 

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.alias.WeaviateAliasClient;
+import io.weaviate.client6.v1.api.backup.WeaviateBackupClient;
 import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClient;
 import io.weaviate.client6.v1.api.rbac.groups.WeaviateGroupsClient;
 import io.weaviate.client6.v1.api.rbac.roles.WeaviateRolesClient;
@@ -34,20 +35,8 @@ public class WeaviateClient implements AutoCloseable {
   /** Client for {@code /aliases} endpoints for managing collection aliases. */
   public final WeaviateAliasClient alias;
 
-  /**
-   * Client for {@code /authz/roles} endpoints for managing RBAC roles.
-   */
-  public final WeaviateRolesClient roles;
-
-  /**
-   * Client for {@code /authz/groups} endpoints for managing RBAC groups.
-   */
-  public final WeaviateGroupsClient groups;
-
-  /**
-   * Client for {@code /users} endpoints for managing DB / OIDC users.
-   */
-  public final WeaviateUsersClient users;
+  /** Client for {@code /backups} endpoints for managing collection aliases. */
+  public final WeaviateBackupClient backup;
 
   public WeaviateClient(Config config) {
     RestTransportOptions restOpt;
@@ -99,6 +88,7 @@ public class WeaviateClient implements AutoCloseable {
     this.restTransport = _restTransport;
     this.grpcTransport = new DefaultGrpcTransport(grpcOpt);
     this.alias = new WeaviateAliasClient(restTransport);
+    this.backup = new WeaviateBackupClient(restTransport);
     this.collections = new WeaviateCollectionsClient(restTransport, grpcTransport);
     this.roles = new WeaviateRolesClient(restTransport);
     this.groups = new WeaviateGroupsClient(restTransport);

@@ -15,12 +15,12 @@ import io.weaviate.client6.v1.internal.rest.SimpleEndpoint;
 
 public record CreateBackupRequest(BackupCreate body, String backend) {
 
-  public static Endpoint<CreateBackupRequest, CreateBackupResponse> _ENDPOINT = new SimpleEndpoint<>(
+  public static Endpoint<CreateBackupRequest, Backup> _ENDPOINT = new SimpleEndpoint<>(
       request -> "POST",
       request -> "/backups/" + request.backend,
       request -> Collections.emptyMap(),
       request -> JSON.serialize(request.body),
-      (statusCode, response) -> new CreateBackupResponse(JSON.deserialize(response, Backup.class)));
+      (statusCode, response) -> JSON.deserialize(response, Backup.class));
 
   public static record BackupCreate(
       @SerializedName("id") String id,
@@ -90,12 +90,12 @@ public record CreateBackupRequest(BackupCreate body, String backend) {
         return this;
       }
 
-      public Builder cpuPercentage(Integer cpuPercentage) {
+      public Builder cpuPercentage(int cpuPercentage) {
         this.cpuPercentage = cpuPercentage;
         return this;
       }
 
-      public Builder chunkSize(Integer chunkSize) {
+      public Builder chunkSize(int chunkSize) {
         this.chunkSize = chunkSize;
         return this;
       }
@@ -116,8 +116,8 @@ public record CreateBackupRequest(BackupCreate body, String backend) {
       }
 
       @Override
-      public CreateBackupRequest build() {
-        new BackupCreate(this);
+      public BackupCreate build() {
+        return new BackupCreate(this);
       }
     }
   }
