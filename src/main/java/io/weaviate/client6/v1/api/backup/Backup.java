@@ -44,6 +44,10 @@ public record Backup(
 
   public Backup waitForStatus(WeaviateClient client, BackupStatus status,
       Function<WaitOptions.Builder, ObjectBuilder<WaitOptions>> fn) throws IOException, TimeoutException {
+    if (operation == null) {
+      throw new IllegalStateException("backup.operation is null");
+    }
+
     final var options = WaitOptions.of(fn);
     final Callable<Optional<Backup>> poll = operation == Operation.CREATE
         ? () -> client.backup.getCreateStatus(id, backend)
@@ -52,6 +56,9 @@ public record Backup(
   }
 
   public void cancel(WeaviateClient client) throws IOException {
+    if (operation == Operation.RESTORE) {
+      throw new IllegalStateException("backup restore cannot be canceled");
+    }
     client.backup.cancel(id(), backend());
   }
 }

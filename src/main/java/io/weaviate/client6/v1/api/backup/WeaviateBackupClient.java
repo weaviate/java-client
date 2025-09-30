@@ -76,8 +76,9 @@ public class WeaviateBackupClient {
    *                              or the server being unavailable.
    */
   public Optional<Backup> getCreateStatus(String backupId, String backend) throws IOException {
-    return this.restTransport.performRequest(new GetCreateStatusRequest(backupId, backend),
-        GetCreateStatusRequest._ENDPOINT);
+    return this.restTransport.performRequest(
+        new GetCreateStatusRequest(backupId, backend), GetCreateStatusRequest._ENDPOINT)
+        .map(b -> b.withOperation(Backup.Operation.CREATE));
   }
 
   /**
@@ -140,8 +141,9 @@ public class WeaviateBackupClient {
    *                              or the server being unavailable.
    */
   public Optional<Backup> getRestoreStatus(String backupId, String backend) throws IOException {
-    return this.restTransport.performRequest(new GetRestoreStatusRequest(backupId, backend),
-        GetRestoreStatusRequest._ENDPOINT);
+    return this.restTransport
+        .performRequest(new GetRestoreStatusRequest(backupId, backend), GetRestoreStatusRequest._ENDPOINT)
+        .map(b -> b.withOperation(Backup.Operation.RESTORE));
   }
 
   /**
