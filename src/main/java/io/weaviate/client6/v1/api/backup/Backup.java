@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import com.google.gson.annotations.SerializedName;
 
 import io.weaviate.client6.v1.api.WeaviateClient;
+import io.weaviate.client6.v1.api.WeaviateClientAsync;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Backup(
@@ -45,8 +48,8 @@ public record Backup(
   /**
    * Block until the backup has been created / restored successfully.
    *
-   * @param client Weaviate client. Make sure {@link WeaviateClient#close} is not
-   *               called before this method returns.
+   * @param client Weaviate client. Make sure {@link WeaviateClient#close}
+   *               is NOT called before this method returns.
    * @throws IllegalStateException if {@link #operation} is not set (null).
    * @throws TimeoutException      in case the wait times out without reaching
    *                               BackupStatus.SUCCESS.
@@ -61,8 +64,8 @@ public record Backup(
   /**
    * Block until the backup has been created / restored successfully.
    *
-   * @param client Weaviate client. Make sure {@link WeaviateClient#close} is not
-   *               called before this method returns.
+   * @param client Weaviate client. Make sure {@link WeaviateClient#close}
+   *               is NOT called before this method returns.
    * @param fn     Lambda expression for optional parameters.
    * @throws IllegalStateException if {@link #operation} is not set (null).
    * @throws TimeoutException      in case the wait times out without reaching
@@ -79,8 +82,8 @@ public record Backup(
   /**
    * Block until the backup operation reaches a certain status.
    *
-   * @param client Weaviate client. Make sure {@link WeaviateClient#close} is not
-   *               called before this method returns.
+   * @param client Weaviate client. Make sure {@link WeaviateClient#close}
+   *               is NOT called before this method returns.
    * @param status Target status.
    * @throws IllegalStateException if {@link #operation} is not set (null).
    * @throws TimeoutException      in case the wait times out without reaching
@@ -96,8 +99,8 @@ public record Backup(
   /**
    * Block until the backup operation reaches a certain status.
    *
-   * @param client Weaviate client. Make sure {@link WeaviateClient#close} is not
-   *               called before this method returns.
+   * @param client Weaviate client. Make sure {@link WeaviateClient#close}
+   *               is NOT called before this method returns.
    * @param status Target status.
    * @param fn     Lambda expression for optional parameters.
    * @throws IllegalStateException if {@link #operation} is not set (null).
@@ -117,22 +120,95 @@ public record Backup(
     final Callable<Optional<Backup>> poll = operation == Operation.CREATE
         ? () -> client.backup.getCreateStatus(id, backend)
         : () -> client.backup.getRestoreStatus(id, backend);
-    return new Waiter(this, poll, options).waitForStatus(status);
+    return new Waiter(this, options).waitForStatus(status, poll);
   }
 
   /**
    * Cancel backup creation.
    *
    * <p>
-   * This method cannot be called cancel backup restore.
+   * This method cannot be called to cancel backup restore.
    *
-   * @param client Weaviate client. Make sure {@link WeaviateClient#close} is not
-   *               called before this method returns.
+   * @param client Weaviate client. Make sure {@link WeaviateClient#close}
+   *               is NOT called before this method returns.
    * @throws IOException in case the request was not sent successfully
    *                     due to a malformed request, a networking error
    *                     or the server being unavailable.
    */
   public void cancel(WeaviateClient client) throws IOException {
     client.backup.cancel(id(), backend());
+  }
+
+  /**
+   * Poll until backup's been created / restored successfully.
+   *
+   * @param client Weaviate client. Make sure {@link WeaviateClientAsync#close}
+   *               is NOT called before this method returns.
+   * @throws IllegalStateException if {@link #operation} is not set (null).
+   * @throws TimeoutException      in case the wait times out without reaching
+   *                               BackupStatus.SUCCESS.
+   * @throws IOException           in case the request was not sent successfully
+   *                               due to a malformed request, a networking error
+   *                               or the server being unavailable.
+   */
+  public CompletableFuture<Backup> waitForCompletion(WeaviateClientAsync client) {
+    return waitForStatus(client, BackupStatus.SUCCESS);
+  }
+
+  /**
+   * Poll until backup's been created / restored successfully.
+   *
+   * @param client Weaviate client. Make sure {@link WeaviateClientAsync#close}
+   *               is NOT called before this method returns.
+   * @param fn     Lambda expression for optional parameters.
+   */
+  public CompletableFuture<Backup> waitForCompletion(WeaviateClientAsync client,
+      Function<WaitOptions.Builder, ObjectBuilder<WaitOptions>> fn) {
+    return waitForStatus(client, BackupStatus.SUCCESS, fn);
+  }
+
+  /**
+   * Poll until backup reaches a certain status or the wait times out.
+   *
+   * @param client Weaviate client. Make sure {@link WeaviateClientAsync#close}
+   *               is NOT called before this method returns.
+   * @param status Target status.
+   */
+  public CompletableFuture<Backup> waitForStatus(WeaviateClientAsync client, BackupStatus status) {
+    return waitForStatus(client, status, ObjectBuilder.identity());
+  }
+
+  /**
+   * Poll until backup reaches a certain status or the wait times out.
+   *
+   * @param client Weaviate client. Make sure {@link WeaviateClientAsync#close}
+   *               is NOT called before this method returns.
+   * @param status Target status.
+   * @param fn     Lambda expression for optional parameters.
+   */
+  public CompletableFuture<Backup> waitForStatus(WeaviateClientAsync client, BackupStatus status,
+      Function<WaitOptions.Builder, ObjectBuilder<WaitOptions>> fn) {
+    if (operation == null) {
+      throw new IllegalStateException("backup.operation is null");
+    }
+
+    final var options = WaitOptions.of(fn);
+    final Supplier<CompletableFuture<Optional<Backup>>> poll = operation == Operation.CREATE
+        ? () -> client.backup.getCreateStatus(id, backend)
+        : () -> client.backup.getRestoreStatus(id, backend);
+    return new Waiter(this, options).waitForStatusAsync(status, poll);
+  }
+
+  /**
+   * Cancel backup creation.
+   *
+   * <p>
+   * This method cannot be called to cancel backup restore.
+   *
+   * @param client Weaviate client. Make sure {@link WeaviateClientAsync#close}
+   *               is NOT called before this method returns.
+   */
+  public CompletableFuture<Void> cancel(WeaviateClientAsync client) {
+    return client.backup.cancel(id(), backend());
   }
 }

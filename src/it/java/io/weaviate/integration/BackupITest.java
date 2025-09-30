@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.IntStream;
 
@@ -48,7 +49,7 @@ public class BackupITest extends ConcurrentTest {
     // Act: start backup
     var started = client.backup.create(backup_1, backend,
         backup -> backup
-            .excludeCollections(nsC, nsBig)
+            .includeCollections(nsA, nsB)
             .compressionLevel(CompressionLevel.BEST_SPEED));
 
     // Assert
@@ -104,9 +105,8 @@ public class BackupITest extends ConcurrentTest {
     // Assert: all 3 backups are present
     var all = client.backup.list(backend);
     Assertions.assertThat(all).as("all backups")
-        .hasSize(3)
         .extracting(Backup::id)
-        .containsOnly(backup_1, backup_2, backup_3);
+        .contains(backup_1, backup_2, backup_3);
 
     // Act: delete data and restore backup #1
     client.collections.delete(nsA);
@@ -120,11 +120,107 @@ public class BackupITest extends ConcurrentTest {
     Assertions.assertThat(collectionA.size()).as("after restore backup #1").isEqualTo(1);
   }
 
-  @Test(expected = IllegalStateException.class)
-  public void test_cancelRestore() throws IOException {
-    var backup = new Backup("#1", "/tmp/bak/#1", "filesystem", List.of("Things"), BackupStatus.STARTED, null,
-        Backup.Operation.RESTORE);
-    backup.cancel(client);
+  @Test
+  public void test_lifecycle_async() throws ExecutionException, InterruptedException, Exception {
+    // Arrange
+    String nsA = ns("A"), nsB = ns("B"), nsC = ns("C"), nsBig = ns("Big");
+    String backup_1 = ns("backup_1").toLowerCase();
+    String backend = "filesystem";
+
+    try (final var async = client.async()) {
+      // Start writing data in the background so it's ready
+      // by the time we get to backup #3.
+      var spam = spamData(nsBig);
+
+      CompletableFuture.allOf(
+          async.collections.create(nsA),
+          async.collections.create(nsB),
+          async.collections.create(nsC))
+          .join();
+
+      // Insert some data to check restore later
+      var collectionA = async.collections.use(nsA);
+      collectionA.data.insert(Map.of()).join();
+
+      // Act: start backup
+      var started = async.backup.create(backup_1, backend,
+          backup -> backup
+              .includeCollections(nsA, nsB)
+              .compressionLevel(CompressionLevel.BEST_SPEED))
+          .join();
+
+      // Assert
+      Assertions.assertThat(started)
+          .as("created backup operation")
+          .returns(backup_1, Backup::id)
+          .returns(backend, Backup::backend)
+          .returns(BackupStatus.STARTED, Backup::status)
+          .returns(null, Backup::error)
+          .extracting(Backup::includesCollections, InstanceOfAssertFactories.list(String.class))
+          .containsOnly(nsA, nsB);
+
+      // Act: await backup competion
+      var completed = started.waitForCompletion(async).join();
+
+      // Assert
+      Assertions.assertThat(completed)
+          .as("await backup completion")
+          .returns(backup_1, Backup::id)
+          .returns(backend, Backup::backend)
+          .returns(BackupStatus.SUCCESS, Backup::status)
+          .returns(null, Backup::error);
+
+      // Act: create another backup
+      String backup_2 = ns("backup_2").toLowerCase();
+      async.backup.create(backup_2, backend)
+          .thenCompose(bak -> bak.waitForCompletion(async))
+          .join();
+
+      // Assert: check the second backup is created successfully
+      var status_2 = async.backup.getCreateStatus(backup_2, backend).join();
+      Assertions.assertThat(status_2).as("backup #2").get()
+          .returns(BackupStatus.SUCCESS, Backup::status);
+
+      // Act: create and cancel
+      // Try to throttle this backup by creating a lot of objects,
+      // limiting CPU resources and requiring high compression ratio.
+      // This is to avoid flaky tests and make sure we can cancel
+      // the backup before it completes successfully.
+      String backup_3 = ns("backup_3").toLowerCase();
+      spam.join();
+      async.backup.create(backup_3, backend,
+          backup -> backup
+              .includeCollections(nsA, nsB, nsC, nsBig)
+              .cpuPercentage(1)
+              .compressionLevel(CompressionLevel.BEST_COMPRESSION))
+          .thenCompose(cancelMe -> cancelMe.cancel(async)
+              .thenCompose(__ -> cancelMe.waitForStatus(async, BackupStatus.CANCELED,
+                  wait -> wait.interval(500))))
+          .join();
+
+      // Assert: check the backup is cancelled
+      var status_3 = async.backup.getCreateStatus(backup_3, backend).join();
+      Assertions.assertThat(status_3).as("backup #3").get()
+          .returns(BackupStatus.CANCELED, Backup::status);
+
+      // Assert: all 3 backups are present
+      var all = async.backup.list(backend).join();
+      Assertions.assertThat(all).as("all backups")
+          .extracting(Backup::id)
+          .contains(backup_1, backup_2, backup_3);
+
+      // Act: delete data and restore backup #1
+      async.collections.delete(nsA).join();
+      async.backup.restore(backup_1, backend, restore -> restore.includeCollections(nsA)).join();
+
+      // Assert: object inserted in the beginning of the test is present
+      var restore_1 = async.backup.getRestoreStatus(backup_1, backend)
+          .thenCompose(bak -> bak.orElseThrow().waitForCompletion(async))
+          .join();
+      Assertions.assertThat(restore_1).as("restore backup #1")
+          .returns(BackupStatus.SUCCESS, Backup::status);
+      Assertions.assertThat(collectionA.size().join()).as("after restore backup #1").isEqualTo(1);
+    }
   }
 
   @Test(expected = IllegalStateException.class)
