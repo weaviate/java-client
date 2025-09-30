@@ -50,7 +50,7 @@ public class BackupITest extends ConcurrentTest {
             .compressionLevel(CompressionLevel.BEST_SPEED));
 
     // Assert
-    Assertions.assertThat(started.backup())
+    Assertions.assertThat(started)
         .as("created backup operation")
         .returns(backup_1, Backup::id)
         .returns(backend, Backup::backend)
@@ -60,7 +60,7 @@ public class BackupITest extends ConcurrentTest {
         .containsOnly(nsA, nsB);
 
     // Act: await backup competion
-    var completed = started.waitForCompletion();
+    var completed = started.waitForCompletion(client);
 
     // Assert
     Assertions.assertThat(completed)
@@ -72,7 +72,7 @@ public class BackupITest extends ConcurrentTest {
 
     // Act: create another backup
     String backup_2 = ns("backup_2").toLowerCase();
-    client.backup.create(backup_2, backend).waitForCompletion();
+    client.backup.create(backup_2, backend).waitForCompletion(client);
 
     // Assert: check the second backup is created successfully
     var status_2 = client.backup.getCreateStatus(backup_2, backend);
@@ -91,8 +91,8 @@ public class BackupITest extends ConcurrentTest {
             .includeCollections(nsA, nsB, nsC, nsBig)
             .cpuPercentage(1)
             .compressionLevel(CompressionLevel.BEST_COMPRESSION));
-    cancelMe.cancel();
-    cancelMe.waitForStatus(BackupStatus.CANCELED);
+    cancelMe.cancel(client);
+    cancelMe.waitForStatus(client, BackupStatus.CANCELED);
 
     // Assert: check the backup is cancelled
     var status_3 = client.backup.getCreateStatus(backup_3, backend);
@@ -109,7 +109,7 @@ public class BackupITest extends ConcurrentTest {
     // Act: delete data and restore backup #1
     client.collections.delete(nsA);
     client.backup.restore(backup_1, backend, restore -> restore.includeCollections(nsA))
-        .waitForCompletion();
+        .waitForCompletion(client);
 
     // Assert: object inserted in the beginning of the test is present
     var restore_1 = client.backup.getRestoreStatus(backup_1, backend);
