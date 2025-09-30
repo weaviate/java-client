@@ -68,49 +68,69 @@ public record RestoreBackupRequest(String backupId, String backend, BackupRestor
       private final List<String> includeCollections = new ArrayList<>();
       private final List<String> excludeCollections = new ArrayList<>();
 
+      /** Collection that should be restored. */
       public Builder includeCollections(String... includeCollections) {
         return includeCollections(Arrays.asList(includeCollections));
       }
 
+      /** Collection that should be restored. */
       public Builder includeCollections(List<String> includeCollections) {
         this.includeCollections.addAll(includeCollections);
         return this;
       }
 
+      /** Collection that should be not be restored. */
       public Builder excludeCollections(String... excludeCollections) {
         return excludeCollections(Arrays.asList(excludeCollections));
       }
 
+      /** Collection that should be not be restored. */
       public Builder excludeCollections(List<String> excludeCollections) {
         this.excludeCollections.addAll(excludeCollections);
         return this;
       }
 
+      /**
+       * Set the desired CPU core utilization.
+       *
+       * @param cpuPercentage Percent value of the target CPU utilization (1% to 80%).
+       */
       public Builder cpuPercentage(int cpuPercentage) {
         this.cpuPercentage = cpuPercentage;
         return this;
       }
 
+      /**
+       * Set the bucket where backups are stored.
+       * Applicable for cloud storage backends.
+       */
       public Builder bucket(String bucket) {
         this.bucket = bucket;
         return this;
       }
 
+      /** Override default backup location. */
       public Builder path(String path) {
         this.path = path;
         return this;
       }
 
+      /**
+       * Allow restored collection aliases to overwrite existing ones
+       * in case of conflict.
+       */
       public Builder overwriteAlias(boolean overwriteAlias) {
         this.overwriteAlias = overwriteAlias;
         return this;
       }
 
+      /** Control which RBAC users should be restored. */
       public Builder restoreUsers(RbacRestoreOption restoreUsers) {
         this.restoreUsers = restoreUsers;
         return this;
       }
 
+      /** Control which RBAC roles should be restored. */
       public Builder restoreRoles(RbacRestoreOption restoreRoles) {
         this.restoreRoles = restoreRoles;
         return this;

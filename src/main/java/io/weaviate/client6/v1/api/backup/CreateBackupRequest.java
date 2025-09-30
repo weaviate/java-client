@@ -72,44 +72,64 @@ public record CreateBackupRequest(BackupCreate body, String backend) {
         this.backupId = backupId;
       }
 
+      /** Collection that should be included in the backup. */
       public Builder includeCollections(String... includeCollections) {
         return includeCollections(Arrays.asList(includeCollections));
       }
 
+      /** Collection that should be included in the backup. */
       public Builder includeCollections(List<String> includeCollections) {
         this.includeCollections.addAll(includeCollections);
         return this;
       }
 
+      /** Collection that should be excluded from the backup. */
       public Builder excludeCollections(String... excludeCollections) {
         return excludeCollections(Arrays.asList(excludeCollections));
       }
 
+      /** Collection that should be excluded from the backup. */
       public Builder excludeCollections(List<String> excludeCollections) {
         this.excludeCollections.addAll(excludeCollections);
         return this;
       }
 
+      /**
+       * Set the desired CPU core utilization.
+       *
+       * @param cpuPercentage Percent value of the target CPU utilization (1% to 80%).
+       */
       public Builder cpuPercentage(int cpuPercentage) {
         this.cpuPercentage = cpuPercentage;
         return this;
       }
 
+      /**
+       * Set the desired chunk size. Defaults to 128MB.
+       *
+       * @param chunkSize Chunk size in MB (2MB to 512 MB).
+       */
       public Builder chunkSize(int chunkSize) {
         this.chunkSize = chunkSize;
         return this;
       }
 
+      /** Adjust the parameters of the selected compression algorithm. */
       public Builder compressionLevel(CompressionLevel compressionLevel) {
         this.compressionLevel = compressionLevel;
         return this;
       }
 
+      /**
+       * Set the bucket where backups are stored.
+       * Applicable for cloud storage backends.
+       */
       public Builder bucket(String bucket) {
         this.bucket = bucket;
         return this;
       }
 
+      /** Override default backup location. */
       public Builder path(String path) {
         this.path = path;
         return this;
