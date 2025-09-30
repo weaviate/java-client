@@ -735,6 +735,9 @@ client.collections.delete("Songs_Alias");
 
 ### Managing collection backups
 
+> [!CAUTION]
+> Weaviate does not support concurrent backups. Await one backup's completion before starting another one.
+
 ```java
 // Start a backup:
 Backup backup = client.backup.create(
