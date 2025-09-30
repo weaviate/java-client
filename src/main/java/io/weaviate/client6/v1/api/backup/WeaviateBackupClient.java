@@ -163,6 +163,9 @@ public class WeaviateBackupClient {
   /**
    * Cancel in-progress backup.
    *
+   * <p>
+   * This method cannot be called cancel backup restore.
+   *
    * @param backupId Backup ID.
    * @param backend  Backup storage backend.
    * @throws WeaviateApiException in case the server returned with an

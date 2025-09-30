@@ -53,7 +53,9 @@ final class Waiter {
       try {
         Thread.sleep(wait.interval());
       } catch (InterruptedException e) {
-        System.out.println("Interrupted");
+        // TODO: the interrupted state will be cleared on the next while() check
+        // and then we will simply return the latest state. An absence of an exception
+        // might be misleading here. What should we do?
         Thread.currentThread().interrupt();
       }
     }

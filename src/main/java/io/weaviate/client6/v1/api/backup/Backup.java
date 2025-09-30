@@ -13,14 +13,27 @@ import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Backup(
+    /** Backup ID. */
     @SerializedName("id") String id,
+    /** Path to backup in the backend storage. */
     @SerializedName("path") String path,
+    /** Backup storage backend. */
     @SerializedName("backend") String backend,
+    /** Collections included in the backup. */
     @SerializedName("classes") List<String> includesCollections,
+    /** Backup creation / restoration status. */
     @SerializedName("status") BackupStatus status,
+    /** Backup creation / restoration error. */
     @SerializedName("error") String error,
+    /**
+     * This value indicates if a backup is being created or restored from.
+     * For operations like LIST this value is null.
+     */
+    // We set a bogus SerializedName to make sure we do not pick up this
+    // value from the JSON by accident, but always set it ourselves.
     @SerializedName("__operation__") Operation operation) {
 
+  /** Set operation associated with this backup. */
   public Backup withOperation(Operation operation) {
     return new Backup(id, path, backend, includesCollections, status, error, operation);
   }
@@ -29,19 +42,71 @@ public record Backup(
     CREATE, RESTORE;
   }
 
+  /**
+   * Block until the backup has been created / restored successfully.
+   *
+   * @param client Weaviate client. Make sure {@link WeaviateClient#close} is not
+   *               called before this method returns.
+   * @throws IllegalStateException if {@link #operation} is not set (null).
+   * @throws TimeoutException      in case the wait times out without reaching
+   *                               BackupStatus.SUCCESS.
+   * @throws IOException           in case the request was not sent successfully
+   *                               due to a malformed request, a networking error
+   *                               or the server being unavailable.
+   */
   public Backup waitForCompletion(WeaviateClient client) throws IOException, TimeoutException {
     return waitForStatus(client, BackupStatus.SUCCESS);
   }
 
+  /**
+   * Block until the backup has been created / restored successfully.
+   *
+   * @param client Weaviate client. Make sure {@link WeaviateClient#close} is not
+   *               called before this method returns.
+   * @param fn     Lambda expression for optional parameters.
+   * @throws IllegalStateException if {@link #operation} is not set (null).
+   * @throws TimeoutException      in case the wait times out without reaching
+   *                               BackupStatus.SUCCESS.
+   * @throws IOException           in case the request was not sent successfully
+   *                               due to a malformed request, a networking error
+   *                               or the server being unavailable.
+   */
   public Backup waitForCompletion(WeaviateClient client, Function<WaitOptions.Builder, ObjectBuilder<WaitOptions>> fn)
       throws IOException, TimeoutException {
     return waitForStatus(client, BackupStatus.SUCCESS, fn);
   }
 
+  /**
+   * Block until the backup operation reaches a certain status.
+   *
+   * @param client Weaviate client. Make sure {@link WeaviateClient#close} is not
+   *               called before this method returns.
+   * @param status Target status.
+   * @throws IllegalStateException if {@link #operation} is not set (null).
+   * @throws TimeoutException      in case the wait times out without reaching
+   *                               the target status.
+   * @throws IOException           in case the request was not sent successfully
+   *                               due to a malformed request, a networking error
+   *                               or the server being unavailable.
+   */
   public Backup waitForStatus(WeaviateClient client, BackupStatus status) throws IOException, TimeoutException {
     return waitForStatus(client, status, ObjectBuilder.identity());
   }
 
+  /**
+   * Block until the backup operation reaches a certain status.
+   *
+   * @param client Weaviate client. Make sure {@link WeaviateClient#close} is not
+   *               called before this method returns.
+   * @param status Target status.
+   * @param fn     Lambda expression for optional parameters.
+   * @throws IllegalStateException if {@link #operation} is not set (null).
+   * @throws TimeoutException      in case the wait times out without reaching
+   *                               the target status.
+   * @throws IOException           in case the request was not sent successfully
+   *                               due to a malformed request, a networking error
+   *                               or the server being unavailable.
+   */
   public Backup waitForStatus(WeaviateClient client, BackupStatus status,
       Function<WaitOptions.Builder, ObjectBuilder<WaitOptions>> fn) throws IOException, TimeoutException {
     if (operation == null) {
@@ -55,10 +120,19 @@ public record Backup(
     return new Waiter(this, poll, options).waitForStatus(status);
   }
 
+  /**
+   * Cancel backup creation.
+   *
+   * <p>
+   * This method cannot be called cancel backup restore.
+   *
+   * @param client Weaviate client. Make sure {@link WeaviateClient#close} is not
+   *               called before this method returns.
+   * @throws IOException in case the request was not sent successfully
+   *                     due to a malformed request, a networking error
+   *                     or the server being unavailable.
+   */
   public void cancel(WeaviateClient client) throws IOException {
-    if (operation == Operation.RESTORE) {
-      throw new IllegalStateException("backup restore cannot be canceled");
-    }
     client.backup.cancel(id(), backend());
   }
 }
