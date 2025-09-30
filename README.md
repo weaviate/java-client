@@ -733,83 +733,59 @@ client.collections.update("Songs_Alias", "PopSongs");
 client.collections.delete("Songs_Alias");
 ```
 
-### RBAC
-
-#### Roles
-
-The client supports all permission types existing as of `v1.33`.
+### Managing collection backups
 
 ```java
-import io.weaviate.client6.v1.api.rbac.Permission;
-
-client.roles.create(
-  "ManagerRole",
-  Permission.collections("Songs", CollectionsPermission.Action.READ, CollectionsPermission.Action.DELETE),
-  Permission.backups("Albums", BackupsPermission.Action.MANAGE)
-);
-assert !client.roles.hasPermission("ManagerRole", Permission.collections("Songs", CollectionsPermission.Action.UPDATE));
-
-client.roles.create(
-  "ArtistRole",
-  Permission.collections("Songs", CollectionsPermission.Action.CREATE)
+// Start a backup:
+Backup backup = client.backup.create(
+  "backup_1", "filesystem",
+  bak -> bak
+    .includeCollections("Songs", "Artists")
+    .compressionLevel(CompressionLevel.BEST_COMPRESSION)
+    .cpuPercentage(30)
 );
 
-client.roles.delete("PromoterRole");
-```
+// By default, the client does not monitor the backup status.
+// The above method returns as soon as the server acknowledges
+// the request and starts to process it.
+//
+// Now you can poll backup status to know when it is succeedes (or fails).
 
-#### Users
-
-> [!NOTE]
-> Not all modifications which can be done to _DB_ users (managed by Weaviate) are equally applicable to _OIDC_ users (managed by an external IdP).
-> For this reason their APIs are separated into two distinct namespaces: `users.db` and `users.oidc`.
-
-```java
-// DB users must be either defined in the server's environment configuration or created explicitly
-if (!client.users.db.exists("ManagerUser")) {
-    client.users.db.create("ManagerUser");
+Backup status = client.backup.getCreateStatus(backup.id(), backup.backend());
+if (status.status() == BackupStatus.SUCCESSFUL) {
+    System.out.println("Yay!");
+    System.exit(0);
 }
 
-client.users.db.assignRole("ManagerUser", "ManagerRole");
+// Backups may take a write to complete. To block the current thread until
+// the execution completes, call Backup::waitForCompletion(WeaviateClient).
+//
+// Notice that, while we use `backup` object we can also call it on the `status`,
+// as both will have sufficient information to identify the backup operation.
 
-
-// OIDC users originate from the IdP and do not need to be (and cannot) be created.
-client.users.oidc.assignRole("DaveMustaine", "ArtistRole");
-client.users.oidc.assignRole("Tarkan", "ArtistRole");
-
-
-// There's a number of other actions you can take on a DB user:
-Optional<DbUser> user = client.users.db.byName("ManagerUser");
-assert user.isPresent();
-
-DbUser manager = user.get();
-if (!manager.active()) {
-    client.users.db.activate(manager.id());
+try {
+    Backup completed = backup.waitForCompletion(client);
+    assert completed.errors() == null : "completed with errors";
+} catch (TimeoutException e) {
+    System.out.exit(1);
 }
 
-String newApiKey = client.users.db.rotateKey(manager.id());
-client.users.db.deactivate(manager.id());
-client.users.db.delete(manager.id());
-```
+// List exists backups:
+List<Backup> allBackups = client.backup.list();
 
-You can get a brief information about the currently authenticated user:
+// Restore from the first backup:
+var first = allBackups.getFirst();
+client.backup.restore(first.id(), first.backend());
 
-```java
-User current = client.users.myUser();
-System.out.println(current.userType()); // Prints "DB_USER", "DB_ENV", or "OIDC".
-```
+// Similarly, wait until the restore is complete using Backup::waitForCompletion.
+// It is possible to set a custom timeout and polling interval using a familiar Tucked Builder pattern:
 
-#### Groups
+var restoring = client.backup.getRestoreStatus(first.id(), first.backend());
+var restored = restoring.waitForCompletion(client, wait -> wait
+     .timeout(Duration.ofMinutes(30))
+     .interval(Duration.ofMinutes(5)));
 
-RBAC groups are created by assigning roles to a previously-inexisted groups and remove when no roles are longer assigned to a group.
-
-```java
-client.groups.assignRoles("./friend-group",  "BestFriendRole", "OldFriendRole");
-
-assert client.groups.knownGroupNames().size() == 1; // "./friend-group"
-assert client.groups.assignedRoles("./friend-group").size() == 2;
-
-client.groups.assignRoles("./friend-group",  "BestFriendRole", "OldFriendRole");
-assert client.groups.knownGroupNames().isEmpty();
+assert restored.errors() == null : "restored with errors";
 ```
 
 ## Useful resources
