@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Function;
 
 import com.google.gson.annotations.SerializedName;
 
 import io.weaviate.client6.v1.api.WeaviateClient;
+import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Backup(
     @SerializedName("id") String id,
@@ -31,11 +33,22 @@ public record Backup(
     return waitForStatus(client, BackupStatus.SUCCESS);
   }
 
+  public Backup waitForCompletion(WeaviateClient client, Function<WaitOptions.Builder, ObjectBuilder<WaitOptions>> fn)
+      throws IOException, TimeoutException {
+    return waitForStatus(client, BackupStatus.SUCCESS, fn);
+  }
+
   public Backup waitForStatus(WeaviateClient client, BackupStatus status) throws IOException, TimeoutException {
+    return waitForStatus(client, status, ObjectBuilder.identity());
+  }
+
+  public Backup waitForStatus(WeaviateClient client, BackupStatus status,
+      Function<WaitOptions.Builder, ObjectBuilder<WaitOptions>> fn) throws IOException, TimeoutException {
+    final var options = WaitOptions.of(fn);
     final Callable<Optional<Backup>> poll = operation == Operation.CREATE
         ? () -> client.backup.getCreateStatus(id, backend)
         : () -> client.backup.getRestoreStatus(id, backend);
-    return new Waiter(this, poll).waitForStatus(status);
+    return new Waiter(this, poll, options).waitForStatus(status);
   }
 
   public void cancel(WeaviateClient client) throws IOException {

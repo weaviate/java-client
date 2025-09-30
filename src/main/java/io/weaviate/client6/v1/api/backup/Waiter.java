@@ -8,15 +8,15 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeoutException;
 
 final class Waiter {
-  private static final long WAIT_INTERVAL_MILLIS = 1_000;
-  private static final long TIMEOUT_MILLIS = 3600_000;
 
   private final Backup backup;
   private final Callable<Optional<Backup>> poll;
+  private final WaitOptions wait;
 
-  Waiter(final Backup backup, Callable<Optional<Backup>> poll) {
+  Waiter(final Backup backup, Callable<Optional<Backup>> poll, WaitOptions wait) {
     this.backup = backup;
     this.poll = poll;
+    this.wait = wait;
   }
 
   Backup waitForStatus(BackupStatus wantStatus) throws IOException, TimeoutException {
@@ -28,12 +28,12 @@ final class Waiter {
       return backup;
     }
 
-    Instant deadline = Instant.now().plusMillis(TIMEOUT_MILLIS);
+    Instant deadline = Instant.now().plusMillis(wait.timeout());
     Backup latest = backup;
     while (!Thread.interrupted()) {
       if (Instant.now().isAfter(deadline)) {
         throw new TimeoutException("timed out after %s, latest status %s".formatted(
-            Duration.ofMillis(TIMEOUT_MILLIS).toSeconds(), latest.status()));
+            Duration.ofMillis(wait.timeout()).toSeconds(), latest.status()));
       }
 
       try {
@@ -51,7 +51,7 @@ final class Waiter {
       }
 
       try {
-        Thread.sleep(WAIT_INTERVAL_MILLIS);
+        Thread.sleep(wait.interval());
       } catch (InterruptedException e) {
         System.out.println("Interrupted");
         Thread.currentThread().interrupt();

@@ -17,6 +17,7 @@ import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.backup.Backup;
 import io.weaviate.client6.v1.api.backup.BackupStatus;
 import io.weaviate.client6.v1.api.backup.CompressionLevel;
+import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.containers.Weaviate;
 
 public class BackupITest extends ConcurrentTest {
@@ -92,7 +93,7 @@ public class BackupITest extends ConcurrentTest {
             .cpuPercentage(1)
             .compressionLevel(CompressionLevel.BEST_COMPRESSION));
     cancelMe.cancel(client);
-    cancelMe.waitForStatus(client, BackupStatus.CANCELED);
+    cancelMe.waitForStatus(client, BackupStatus.CANCELED, wait -> wait.interval(500));
 
     // Assert: check the backup is cancelled
     var status_3 = client.backup.getCreateStatus(backup_3, backend);
@@ -108,26 +109,30 @@ public class BackupITest extends ConcurrentTest {
 
     // Act: delete data and restore backup #1
     client.collections.delete(nsA);
-    client.backup.restore(backup_1, backend, restore -> restore.includeCollections(nsA))
-        .waitForCompletion(client);
+    client.backup.restore(backup_1, backend, restore -> restore.includeCollections(nsA));
 
     // Assert: object inserted in the beginning of the test is present
-    var restore_1 = client.backup.getRestoreStatus(backup_1, backend);
-    Assertions.assertThat(restore_1).as("restore backup #1").get()
+    var restore_1 = client.backup.getRestoreStatus(backup_1, backend)
+        .orElseThrow().waitForCompletion(client);
+    Assertions.assertThat(restore_1).as("restore backup #1")
         .returns(BackupStatus.SUCCESS, Backup::status);
     Assertions.assertThat(collectionA.size()).as("after restore backup #1").isEqualTo(1);
   }
 
+  /** Write 10_000 entries with a UUID[10] property. */
   private CompletableFuture<Void> spamData(String collectionName) {
     return CompletableFuture.supplyAsync(() -> {
-      var spam = client.collections.use(collectionName);
-      for (int i = 0; i < 10_000; i++) {
-        var uuids = IntStream.range(0, 10).mapToObj(j -> UUID.randomUUID()).toArray();
-        try {
+      try {
+        client.collections.create(collectionName,
+            c -> c.properties(Property.uuidArray("uuids")));
+
+        var spam = client.collections.use(collectionName);
+        for (int i = 0; i < 10_000; i++) {
+          var uuids = IntStream.range(0, 10).mapToObj(j -> UUID.randomUUID()).toArray();
           spam.data.insert(Map.of("uuids", uuids));
-        } catch (IOException e) {
-          throw new CompletionException(e);
         }
+      } catch (IOException e) {
+        throw new CompletionException(e);
       }
       return null;
     });
