@@ -14,6 +14,10 @@ public final class JSON {
 
     // TypeAdapterFactories ---------------------------------------------------
     gsonBuilder.registerTypeAdapterFactory(
+        io.weaviate.client6.v1.api.rbac.Permission.CustomTypeAdapterFactory.INSTANCE);
+    gsonBuilder.registerTypeAdapterFactory(
+        io.weaviate.client6.v1.api.rbac.Role.CustomTypeAdapterFactory.INSTANCE);
+    gsonBuilder.registerTypeAdapterFactory(
         io.weaviate.client6.v1.api.collections.WeaviateObject.CustomTypeAdapterFactory.INSTANCE);
     gsonBuilder.registerTypeAdapterFactory(
         io.weaviate.client6.v1.api.collections.data.WriteWeaviateObject.CustomTypeAdapterFactory.INSTANCE);
