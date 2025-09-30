@@ -27,7 +27,7 @@ public class WeaviateBackupClient {
    *                              due to a malformed request, a networking error
    *                              or the server being unavailable.
    */
-  public CreateBackupResponse create(String backupId, String backend) throws IOException {
+  public Backup create(String backupId, String backend) throws IOException {
     return create(new CreateBackupRequest(CreateBackupRequest.BackupCreate.of(backupId), backend));
   }
 
@@ -43,7 +43,7 @@ public class WeaviateBackupClient {
    *                              due to a malformed request, a networking error
    *                              or the server being unavailable.
    */
-  public CreateBackupResponse create(String backupId, String backend,
+  public Backup create(String backupId, String backend,
       Function<CreateBackupRequest.BackupCreate.Builder, ObjectBuilder<CreateBackupRequest.BackupCreate>> fn)
       throws IOException {
     return create(new CreateBackupRequest(CreateBackupRequest.BackupCreate.of(backupId, fn), backend));
@@ -59,9 +59,9 @@ public class WeaviateBackupClient {
    *                              due to a malformed request, a networking error
    *                              or the server being unavailable.
    */
-  public CreateBackupResponse create(CreateBackupRequest request) throws IOException {
-    var backup = this.restTransport.performRequest(request, CreateBackupRequest._ENDPOINT);
-    return new CreateBackupResponse(backup, this);
+  public Backup create(CreateBackupRequest request) throws IOException {
+    return this.restTransport.performRequest(request, CreateBackupRequest._ENDPOINT)
+        .withOperation(Backup.Operation.CREATE);
   }
 
   /**
@@ -91,7 +91,7 @@ public class WeaviateBackupClient {
    *                              due to a malformed request, a networking error
    *                              or the server being unavailable.
    */
-  public RestoreBackupResponse restore(String backupId, String backend) throws IOException {
+  public Backup restore(String backupId, String backend) throws IOException {
     return restore(new RestoreBackupRequest(backupId, backend, RestoreBackupRequest.BackupRestore.of()));
   }
 
@@ -107,7 +107,7 @@ public class WeaviateBackupClient {
    *                              due to a malformed request, a networking error
    *                              or the server being unavailable.
    */
-  public RestoreBackupResponse restore(String backupId, String backend,
+  public Backup restore(String backupId, String backend,
       Function<RestoreBackupRequest.BackupRestore.Builder, ObjectBuilder<RestoreBackupRequest.BackupRestore>> fn)
       throws IOException {
     return restore(new RestoreBackupRequest(backupId, backend, RestoreBackupRequest.BackupRestore.of(fn)));
@@ -123,9 +123,9 @@ public class WeaviateBackupClient {
    *                              due to a malformed request, a networking error
    *                              or the server being unavailable.
    */
-  public RestoreBackupResponse restore(RestoreBackupRequest request) throws IOException {
-    var backup = this.restTransport.performRequest(request, RestoreBackupRequest._ENDPOINT);
-    return new RestoreBackupResponse(backup, this);
+  public Backup restore(RestoreBackupRequest request) throws IOException {
+    return this.restTransport.performRequest(request, RestoreBackupRequest._ENDPOINT)
+        .withOperation(Backup.Operation.RESTORE);
   }
 
   /**
