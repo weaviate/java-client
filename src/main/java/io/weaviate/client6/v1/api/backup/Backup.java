@@ -145,11 +145,6 @@ public record Backup(
    * @param client Weaviate client. Make sure {@link WeaviateClientAsync#close}
    *               is NOT called before this method returns.
    * @throws IllegalStateException if {@link #operation} is not set (null).
-   * @throws TimeoutException      in case the wait times out without reaching
-   *                               BackupStatus.SUCCESS.
-   * @throws IOException           in case the request was not sent successfully
-   *                               due to a malformed request, a networking error
-   *                               or the server being unavailable.
    */
   public CompletableFuture<Backup> waitForCompletion(WeaviateClientAsync client) {
     return waitForStatus(client, BackupStatus.SUCCESS);
