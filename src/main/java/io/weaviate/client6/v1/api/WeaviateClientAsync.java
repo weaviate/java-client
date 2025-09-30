@@ -5,6 +5,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.alias.WeaviateAliasClientAsync;
+import io.weaviate.client6.v1.api.backup.WeaviateBackupClientAsync;
 import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClient;
 import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClientAsync;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
@@ -29,6 +30,9 @@ public class WeaviateClientAsync implements AutoCloseable {
 
   /** Client for {@code /aliases} endpoints for managing collection aliases. */
   public final WeaviateAliasClientAsync alias;
+
+  /** Client for {@code /backups} endpoints for managing backups. */
+  public final WeaviateBackupClientAsync backup;
 
   /**
    * This constructor is blocking if {@link Authentication} configured,
@@ -84,6 +88,7 @@ public class WeaviateClientAsync implements AutoCloseable {
     this.restTransport = _restTransport;
     this.grpcTransport = new DefaultGrpcTransport(grpcOpt);
     this.alias = new WeaviateAliasClientAsync(restTransport);
+    this.backup = new WeaviateBackupClientAsync(restTransport);
     this.collections = new WeaviateCollectionsClientAsync(restTransport, grpcTransport);
   }
 

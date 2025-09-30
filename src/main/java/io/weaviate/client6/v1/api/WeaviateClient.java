@@ -32,7 +32,7 @@ public class WeaviateClient implements AutoCloseable {
   /** Client for {@code /aliases} endpoints for managing collection aliases. */
   public final WeaviateAliasClient alias;
 
-  /** Client for {@code /backups} endpoints for managing collection aliases. */
+  /** Client for {@code /backups} endpoints for managing backups. */
   public final WeaviateBackupClient backup;
 
   public WeaviateClient(Config config) {
