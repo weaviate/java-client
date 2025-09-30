@@ -1,6 +1,7 @@
 package io.weaviate.integration;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -117,6 +118,20 @@ public class BackupITest extends ConcurrentTest {
     Assertions.assertThat(restore_1).as("restore backup #1")
         .returns(BackupStatus.SUCCESS, Backup::status);
     Assertions.assertThat(collectionA.size()).as("after restore backup #1").isEqualTo(1);
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void test_cancelRestore() throws IOException {
+    var backup = new Backup("#1", "/tmp/bak/#1", "filesystem", List.of("Things"), BackupStatus.STARTED, null,
+        Backup.Operation.RESTORE);
+    backup.cancel(client);
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void test_waitForCompletion_unknown() throws IOException, TimeoutException {
+    var backup = new Backup("#1", "/tmp/bak/#1", "filesystem", List.of("Things"), BackupStatus.STARTED, null,
+        null);
+    backup.waitForCompletion(client);
   }
 
   /** Write 10_000 entries with a UUID[10] property. */
