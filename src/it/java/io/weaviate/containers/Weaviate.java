@@ -15,8 +15,9 @@ import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public class Weaviate extends WeaviateContainer {
-  public static final String VERSION = "1.32.3";
+  public static final String VERSION = "1.33.0";
   public static final String DOCKER_IMAGE = "semitechnologies/weaviate";
+  public static String OIDC_ISSUER = "https://auth.wcs.api.weaviate.io/auth/realms/SeMI";
 
   private volatile SharedClient clientInstance;
 
@@ -31,6 +32,12 @@ public class Weaviate extends WeaviateContainer {
    * The lifetime of this client is tied to that of its container, which means
    * that you do not need to {@code close} it manually. It will only truly close
    * after the parent Testcontainer is stopped.
+   *
+   * FIXME: we cannot return the same client for 2 different sets of
+   * configurations.
+   * What we should do is: {@link #getClient()} returns the shared client, while
+   * this one always constructs a new instance.
+   * Otherwise we'll get a race condition once the tests are parallelized.
    */
   public WeaviateClient getClient(Function<Config.Custom, ObjectBuilder<Config>> fn) {
     if (!isRunning()) {
@@ -51,6 +58,8 @@ public class Weaviate extends WeaviateContainer {
                 .httpPort(getMappedPort(8080))
                 .grpcPort(getMappedPort(50051)));
         var config = customFn.apply(new Config.Custom()).build();
+        if (config.authentication() != null) {
+        }
         try {
           clientInstance = new SharedClient(config, this);
         } catch (Exception e) {
@@ -92,7 +101,8 @@ public class Weaviate extends WeaviateContainer {
   public static class Builder {
     private String versionTag;
     private Set<String> enableModules = new HashSet<>();
-
+    private Set<String> adminUsers = new HashSet<>();
+    private Set<String> viewerUsers = new HashSet<>();
     private Map<String, String> environment = new HashMap<>();
 
     public Builder() {
@@ -137,6 +147,37 @@ public class Weaviate extends WeaviateContainer {
       return this;
     }
 
+    public Builder withAdminUsers(String... admins) {
+      adminUsers.addAll(Arrays.asList(admins));
+      return this;
+    }
+
+    public Builder withViewerUsers(String... viewers) {
+      viewerUsers.addAll(Arrays.asList(viewers));
+      return this;
+    }
+
+    /** Enable RBAC authorization for this container. */
+    public Builder withRbac() {
+      environment.put("AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED", "false");
+      environment.put("AUTHENTICATION_APIKEY_ENABLED", "true");
+      environment.put("AUTHORIZATION_RBAC_ENABLED", "true");
+      environment.put("AUTHENTICATION_DB_USERS_ENABLED", "true");
+      return this;
+    }
+
+    /**
+     * Enable API-Key authentication for this container.
+     *
+     * @param apiKeys Allowed API keys.
+     */
+    public Builder withApiKeys(String... apiKeys) {
+      environment.put("AUTHENTICATION_APIKEY_ENABLED", "true");
+      environment.put("AUTHENTICATION_APIKEY_ALLOWED_KEYS", String.join(",",
+          apiKeys));
+      return this;
+    }
+
     public Builder enableTelemetry(boolean enable) {
       environment.put("DISABLE_TELEMETRY", Boolean.toString(!enable));
       return this;
@@ -168,6 +209,20 @@ public class Weaviate extends WeaviateContainer {
       if (!enableModules.isEmpty()) {
         c.withEnv("ENABLE_API_BASED_MODULES", Boolean.TRUE.toString());
         c.withEnv("ENABLE_MODULES", String.join(",", enableModules));
+      }
+
+      var apiKeyUsers = new HashSet<String>();
+      apiKeyUsers.addAll(adminUsers);
+      apiKeyUsers.addAll(viewerUsers);
+
+      if (!adminUsers.isEmpty()) {
+        environment.put("AUTHORIZATION_ADMIN_USERS", String.join(",", adminUsers));
+      }
+      if (!viewerUsers.isEmpty()) {
+        environment.put("AUTHORIZATION_VIEWER_USERS", String.join(",", viewerUsers));
+      }
+      if (!apiKeyUsers.isEmpty()) {
+        environment.put("AUTHENTICATION_APIKEY_USERS", String.join(",", apiKeyUsers));
       }
 
       environment.forEach((name, value) -> c.withEnv(name, value));
