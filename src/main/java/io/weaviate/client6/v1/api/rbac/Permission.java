@@ -63,52 +63,6 @@ public interface Permission {
 
   Object self();
 
-  public static final AliasPermission.Action CREATE_ALIASES = AliasPermission.Action.CREATE;
-  public static final AliasPermission.Action READ_ALIASES = AliasPermission.Action.READ;
-  public static final AliasPermission.Action UPDATE_ALIASES = AliasPermission.Action.UPDATE;
-  public static final AliasPermission.Action DELETE_ALIASES = AliasPermission.Action.DELETE;
-
-  public static final BackupsPermission.Action MANAGE_BACKUPS = BackupsPermission.Action.MANAGE;
-
-  public static final ClusterPermission.Action READ_CLUSTER = ClusterPermission.Action.READ;
-
-  public static final NodesPermission.Action READ_NODES = NodesPermission.Action.READ;
-
-  public static final CollectionsPermission.Action CREATE_COLLECTIONS = CollectionsPermission.Action.CREATE;
-  public static final CollectionsPermission.Action READ_COLLECTIONS = CollectionsPermission.Action.READ;
-  public static final CollectionsPermission.Action UPDATE_COLLECTIONS = CollectionsPermission.Action.UPDATE;
-  public static final CollectionsPermission.Action DELETE_COLLECTIONS = CollectionsPermission.Action.DELETE;
-
-  public static final DataPermission.Action CREATE_DATA = DataPermission.Action.CREATE;
-  public static final DataPermission.Action READ_DATA = DataPermission.Action.READ;
-  public static final DataPermission.Action UPDATE_DATA = DataPermission.Action.UPDATE;
-  public static final DataPermission.Action DELETE_DATA = DataPermission.Action.DELETE;
-  public static final DataPermission.Action MANAGE_DATA = DataPermission.Action.MANAGE;
-
-  public static final GroupsPermission.Action READ_GROUPS = GroupsPermission.Action.READ;
-  public static final GroupsPermission.Action ASSIGN_AND_REVOKE_GROUPS = GroupsPermission.Action.ASSIGN_AND_REVOKE;
-
-  public static final ReplicatePermission.Action CREATE_REPLICATE = ReplicatePermission.Action.CREATE;
-  public static final ReplicatePermission.Action READ_REPLICATE = ReplicatePermission.Action.READ;
-  public static final ReplicatePermission.Action UPDATE_REPLICATE = ReplicatePermission.Action.UPDATE;
-  public static final ReplicatePermission.Action DELETE_REPLICATE = ReplicatePermission.Action.DELETE;
-
-  public static final RolesPermission.Action CREATE_ROLES = RolesPermission.Action.CREATE;
-  public static final RolesPermission.Action READ_ROLES = RolesPermission.Action.READ;
-  public static final RolesPermission.Action UPDATE_ROLES = RolesPermission.Action.UPDATE;
-  public static final RolesPermission.Action DELETE_ROLES = RolesPermission.Action.DELETE;
-
-  public static final TenantsPermission.Action CREATE_TENANTS = TenantsPermission.Action.CREATE;
-  public static final TenantsPermission.Action READ_TENANTS = TenantsPermission.Action.READ;
-  public static final TenantsPermission.Action UPDATE_TENANTS = TenantsPermission.Action.UPDATE;
-  public static final TenantsPermission.Action DELETE_TENANTS = TenantsPermission.Action.DELETE;
-
-  public static final UsersPermission.Action CREATE_USERS = UsersPermission.Action.CREATE;
-  public static final UsersPermission.Action UPDATE_USERS = UsersPermission.Action.UPDATE;
-  public static final UsersPermission.Action READ_USERS = UsersPermission.Action.READ;
-  public static final UsersPermission.Action DELETE_USERS = UsersPermission.Action.DELETE;
-  public static final UsersPermission.Action ASSIGN_AND_REVOKE_USERS = UsersPermission.Action.ASSIGN_AND_REVOKE;
-
   /**
    * Create {@link AliasPermission} for an alias.
    */
