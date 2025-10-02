@@ -25,6 +25,8 @@ import io.weaviate.client6.v1.api.rbac.RolesPermission.Scope;
 import io.weaviate.client6.v1.api.rbac.TenantsPermission;
 import io.weaviate.client6.v1.api.rbac.UsersPermission;
 import io.weaviate.client6.v1.api.rbac.roles.UserAssignment;
+import io.weaviate.client6.v1.api.rbac.users.DbUser;
+import io.weaviate.client6.v1.api.rbac.users.User;
 import io.weaviate.client6.v1.api.rbac.users.UserType;
 import io.weaviate.containers.Weaviate;
 
@@ -164,6 +166,81 @@ public class RbacITest extends ConcurrentTest {
     Assertions.assertThat(client.groups.knownGroupNames())
         .as("know group names (no root)")
         .doesNotContain(mediaGroup);
+  }
 
+  @Test
+  public void test_users_myUser() throws IOException {
+    var adminRoles = Assertions.assertThat(client.users.myUser())
+        .returns(ADMIN_USER, User::id)
+        .extracting(User::roles, InstanceOfAssertFactories.list(Role.class))
+        .extracting(Role::name)
+        .actual();
+
+    Assertions.assertThat(client.users.db.assignedRoles(ADMIN_USER))
+        .extracting(Role::name)
+        .containsAll(adminRoles);
+  }
+
+  @Test
+  public void test_users_db() throws IOException {
+    var userId = ns("user");
+    var roleName = ns("rock-n-role");
+
+    client.users.db.create(userId);
+    client.roles.create(roleName);
+
+    client.users.db.assignRoles(userId, roleName);
+    Assertions.assertThat(client.users.db.assignedRoles(userId))
+        .as("role assigned")
+        .extracting(Role::name)
+        .contains(roleName);
+
+    client.users.db.revokeRoles(userId, roleName);
+    Assertions.assertThat(client.users.db.assignedRoles(userId))
+        .as("role revoked")
+        .extracting(Role::name)
+        .doesNotContain(roleName);
+
+    client.users.db.activate(userId);
+    Assertions.assertThat(client.users.db.byName(userId)).get()
+        .as("user is activated")
+        .returns(true, DbUser::active);
+
+    client.users.db.deactivate(userId);
+    Assertions.assertThat(client.users.db.byName(userId)).get()
+        .as("user is deactivated")
+        .returns(false, DbUser::active);
+
+    var all = client.users.db.list(users -> users.includeLastUsedAt(true));
+    Assertions.assertThat(all)
+        .as("list users include lastUsedTime ")
+        .allMatch(user -> user.lastUsedAt() != null)
+        .extracting(DbUser::id)
+        .contains(userId, ADMIN_USER);
+
+    client.users.db.delete(userId);
+    Assertions.assertThat(client.users.db.byName(userId))
+        .as("user is deleted")
+        .isEmpty();
+  }
+
+  @Test
+  public void test_users_oidc() throws IOException {
+    var userId = ns("user");
+    var roleName = ns("rock-n-role");
+
+    client.roles.create(roleName);
+
+    client.users.oidc.assignRoles(userId, roleName);
+    Assertions.assertThat(client.users.oidc.assignedRoles(userId))
+        .as("role assigned")
+        .extracting(Role::name)
+        .contains(roleName);
+
+    client.users.oidc.revokeRoles(userId, roleName);
+    Assertions.assertThat(client.users.oidc.assignedRoles(userId))
+        .as("role revoked")
+        .extracting(Role::name)
+        .doesNotContain(roleName);
   }
 }
