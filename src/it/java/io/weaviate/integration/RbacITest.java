@@ -54,7 +54,7 @@ public class RbacITest extends ConcurrentTest {
       .getClient(fn -> fn.authentication(Authentication.apiKey(API_KEY)));
 
   @Test
-  public void testLifecycle() throws IOException {
+  public void test_roles_Lifecycle() throws IOException {
     // Arrange
     var myCollection = "Things";
     var nsRole = ns("VectorOwner");
@@ -117,21 +117,21 @@ public class RbacITest extends ConcurrentTest {
   }
 
   @Test
-  public void test_list() throws IOException {
+  public void test_roles_list() throws IOException {
     Assertions.assertThat(client.roles.list())
         .extracting(Role::name)
         .contains(ROOT_ROLE, ADMIN_ROLE, VIEWER_ROLE);
   }
 
   @Test
-  public void test_assignedUsers() throws IOException {
+  public void test_roles_assignedUsers() throws IOException {
     Assertions.assertThat(client.roles.assignedUserIds(ROOT_ROLE))
         .hasSize(1)
         .containsOnly(ADMIN_USER);
   }
 
   @Test
-  public void test_userAssignments() throws IOException {
+  public void test_roles_userAssignments() throws IOException {
     var assignments = client.roles.userAssignments(ROOT_ROLE);
     Assertions.assertThat(assignments)
         .hasSize(2)
@@ -141,5 +141,29 @@ public class RbacITest extends ConcurrentTest {
     Assertions.assertThat(assignments)
         .extracting(UserAssignment::userType)
         .containsOnly(UserType.DB_ENV_USER, UserType.OIDC);
+  }
+
+  @Test
+  public void test_groups() throws IOException {
+    var mediaGroup = "./media-group";
+    var friendGroup = "./friend-group";
+
+    client.groups.assignRoles(mediaGroup, VIEWER_ROLE);
+    client.groups.assignRoles(friendGroup, ADMIN_ROLE, VIEWER_ROLE);
+
+    Assertions.assertThat(client.groups.assignedRoles(friendGroup))
+        .as("assigned to " + friendGroup)
+        .extracting(Role::name)
+        .containsOnly(ADMIN_ROLE, VIEWER_ROLE);
+
+    Assertions.assertThat(client.groups.knownGroupNames())
+        .as("known group names")
+        .contains(mediaGroup, friendGroup);
+
+    client.groups.revokeRoles(mediaGroup, VIEWER_ROLE);
+    Assertions.assertThat(client.groups.knownGroupNames())
+        .as("know group names (no root)")
+        .doesNotContain(mediaGroup);
+
   }
 }

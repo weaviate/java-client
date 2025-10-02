@@ -40,6 +40,9 @@ public record Role(
         @Override
         public T read(JsonReader in) throws IOException {
           var role = (Role) delegate.read(in);
+          if (role.permissions == null) {
+            return (T) role;
+          }
           return (T) new Role(role.name(), Permission.merge(role.permissions));
         }
       };
