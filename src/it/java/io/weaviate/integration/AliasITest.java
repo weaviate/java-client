@@ -12,7 +12,7 @@ import io.weaviate.client6.v1.api.alias.Alias;
 import io.weaviate.containers.Container;
 
 public class AliasITest extends ConcurrentTest {
-  private static WeaviateClient client = Container.WEAVIATE.getClient();
+  private static final WeaviateClient client = Container.WEAVIATE.getClient();
 
   @Test
   public void test_aliasLifecycle() throws IOException {

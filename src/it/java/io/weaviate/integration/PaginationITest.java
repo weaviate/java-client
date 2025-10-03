@@ -25,7 +25,7 @@ import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.containers.Container;
 
 public class PaginationITest extends ConcurrentTest {
-  private static WeaviateClient client = Container.WEAVIATE.getClient();
+  private static final WeaviateClient client = Container.WEAVIATE.getClient();
 
   @Test
   public void testIterateAll() throws IOException {

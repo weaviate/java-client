@@ -29,7 +29,7 @@ import io.weaviate.client6.v1.api.collections.query.Where;
 import io.weaviate.containers.Container;
 
 public class DataITest extends ConcurrentTest {
-  private static WeaviateClient client = Container.WEAVIATE.getClient();
+  private static final WeaviateClient client = Container.WEAVIATE.getClient();
   private static final String COLLECTION = unique("Artists");
   private static final String VECTOR_INDEX = "bring_your_own";
 
