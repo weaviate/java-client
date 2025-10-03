@@ -5,12 +5,14 @@ import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
+import io.weaviate.client6.v1.api.rbac.groups.GroupType;
+
 public record GroupsPermission(
     @SerializedName("group") String groupId,
-    @SerializedName("groupType") String groupType,
+    @SerializedName("groupType") GroupType groupType,
     @SerializedName("actions") List<Action> actions) implements Permission {
 
-  public GroupsPermission(String groupId, String groupType, Action... actions) {
+  public GroupsPermission(String groupId, GroupType groupType, Action... actions) {
     this(groupId, groupType, Arrays.asList(actions));
   }
 
