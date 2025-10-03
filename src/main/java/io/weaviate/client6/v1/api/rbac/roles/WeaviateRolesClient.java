@@ -3,6 +3,7 @@ package io.weaviate.client6.v1.api.rbac.roles;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import io.weaviate.client6.v1.api.WeaviateApiException;
 import io.weaviate.client6.v1.api.rbac.Permission;
@@ -56,7 +57,7 @@ public class WeaviateRolesClient {
    *                              due to a malformed request, a networking error
    *                              or the server being unavailable.
    */
-  public Role get(String roleName) throws IOException {
+  public Optional<Role> get(String roleName) throws IOException {
     return this.restTransport.performRequest(new GetRoleRequest(roleName), GetRoleRequest._ENDPOINT);
   }
 

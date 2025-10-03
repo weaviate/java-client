@@ -80,7 +80,7 @@ public class RbacITest extends ConcurrentTest {
     client.roles.create(nsRole, permissions);
 
     var role = client.roles.get(nsRole);
-    Assertions.assertThat(role)
+    Assertions.assertThat(role).get()
         .as("created role")
         .returns(nsRole, Role::name)
         .extracting(Role::permissions, InstanceOfAssertFactories.list(Permission.class))
