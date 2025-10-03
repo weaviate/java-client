@@ -13,6 +13,23 @@ public record SortBy(List<String> path, boolean ascending) {
   }
 
   /**
+   * Sort by object's UUID. Ascending order by default.
+   *
+   * <p>
+   * Sorting by UUID may be useful if objects are assigned
+   * custom UUIDv7 at ingestion, as those are "time-ordered".
+   *
+   * <p>
+   * It may be less useful for the auto-generated UUIDs,
+   * which will produce an essentialy random, albeit stable, order.
+   *
+   * @see #desc() to sort in descending order.
+   */
+  public static SortBy uuid() {
+    return property(ById.ID_PROPERTY);
+  }
+
+  /**
    * Sort by object creation time. Ascending order by default.
    *
    * @see #desc() to sort in descending order.
