@@ -37,7 +37,7 @@ import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecClipVectorize
 import io.weaviate.client6.v1.api.collections.vectorizers.SelfProvidedVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecContextionaryVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecWeaviateVectorizer;
-import io.weaviate.client6.v1.api.rbac.AliasPermission;
+import io.weaviate.client6.v1.api.rbac.AliasesPermission;
 import io.weaviate.client6.v1.api.rbac.BackupsPermission;
 import io.weaviate.client6.v1.api.rbac.ClusterPermission;
 import io.weaviate.client6.v1.api.rbac.CollectionsPermission;
@@ -395,14 +395,14 @@ public class JSONTest {
             new Role(
                 "rock-n-role",
                 List.of(
-                    new AliasPermission(
+                    new AliasesPermission(
                         "CollectionAlias",
                         "Collection",
                         List.of(
-                            AliasPermission.Action.CREATE,
-                            AliasPermission.Action.READ,
-                            AliasPermission.Action.UPDATE,
-                            AliasPermission.Action.DELETE)))),
+                            AliasesPermission.Action.CREATE,
+                            AliasesPermission.Action.READ,
+                            AliasesPermission.Action.UPDATE,
+                            AliasesPermission.Action.DELETE)))),
             """
                 {
                   "name": "rock-n-role",

@@ -5,12 +5,12 @@ import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
-public record AliasPermission(
+public record AliasesPermission(
     @SerializedName("alias") String alias,
     @SerializedName("collection") String collection,
     @SerializedName("actions") List<Action> actions) implements Permission {
 
-  public AliasPermission(String alias, String collection, Action... actions) {
+  public AliasesPermission(String alias, String collection, Action... actions) {
     this(alias, collection, Arrays.asList(actions));
   }
 

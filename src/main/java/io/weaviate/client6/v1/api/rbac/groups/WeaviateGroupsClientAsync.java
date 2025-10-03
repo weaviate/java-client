@@ -1,6 +1,5 @@
 package io.weaviate.client6.v1.api.rbac.groups;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;

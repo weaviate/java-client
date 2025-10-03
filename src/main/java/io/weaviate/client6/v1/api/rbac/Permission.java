@@ -65,11 +65,11 @@ public interface Permission {
   Object self();
 
   /**
-   * Create {@link AliasPermission} for an alias.
+   * Create {@link AliasesPermission} for an alias.
    */
-  public static AliasPermission alias(String alias, String collection, AliasPermission.Action... actions) {
+  public static AliasesPermission aliases(String alias, String collection, AliasesPermission.Action... actions) {
     checkDeprecation(actions);
-    return new AliasPermission(alias, collection, actions);
+    return new AliasesPermission(alias, collection, actions);
   }
 
   /**
@@ -214,7 +214,7 @@ public interface Permission {
     }
 
     private final void init(Gson gson) {
-      addAdapter(gson, Permission.Kind.ALIASES, AliasPermission.class);
+      addAdapter(gson, Permission.Kind.ALIASES, AliasesPermission.class);
       addAdapter(gson, Permission.Kind.BACKUPS, BackupsPermission.class);
       addAdapter(gson, Permission.Kind.COLLECTIONS, CollectionsPermission.class);
       addAdapter(gson, Permission.Kind.DATA, DataPermission.class);

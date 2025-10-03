@@ -10,7 +10,7 @@ import org.junit.Test;
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.Authentication;
 import io.weaviate.client6.v1.api.WeaviateClient;
-import io.weaviate.client6.v1.api.rbac.AliasPermission;
+import io.weaviate.client6.v1.api.rbac.AliasesPermission;
 import io.weaviate.client6.v1.api.rbac.BackupsPermission;
 import io.weaviate.client6.v1.api.rbac.ClusterPermission;
 import io.weaviate.client6.v1.api.rbac.CollectionsPermission;
@@ -63,7 +63,7 @@ public class RbacITest extends ConcurrentTest {
     var nsRole = ns("VectorOwner");
 
     Permission[] permissions = new Permission[] {
-        Permission.alias("ThingsAlias", myCollection, AliasPermission.Action.CREATE),
+        Permission.aliases("ThingsAlias", myCollection, AliasesPermission.Action.CREATE),
         Permission.backups(myCollection, BackupsPermission.Action.MANAGE),
         Permission.cluster(ClusterPermission.Action.READ),
         Permission.nodes(myCollection, NodesPermission.Action.READ),
