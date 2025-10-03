@@ -28,6 +28,7 @@ import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.BatchReference;
 import io.weaviate.client6.v1.api.collections.data.Reference;
 import io.weaviate.client6.v1.api.collections.data.ReferenceAddManyResponse;
+import io.weaviate.client6.v1.api.collections.quantizers.PQ;
 import io.weaviate.client6.v1.api.collections.rerankers.CohereReranker;
 import io.weaviate.client6.v1.api.collections.vectorindex.Distance;
 import io.weaviate.client6.v1.api.collections.vectorindex.Flat;
@@ -144,6 +145,76 @@ public class JSONTest {
                   "vectorIndexType": "flat",
                   "vectorizer": {"none": {}},
                   "vectorIndexConfig": {"vectorCacheMaxObjects": 100}
+                }
+                """,
+        },
+        {
+            VectorConfig.class,
+            SelfProvidedVectorizer.of(none -> none
+                .quantization(Quantization.pq(pq -> pq
+                    .centroids(8)
+                    .encoderDistribution(PQ.EncoderDistribution.NORMAL)
+                    .encoderType(PQ.EncoderType.TILE)
+                    .segments(16)
+                    .trainingLimit(1024)
+                    .bitCompression(true)))),
+            """
+                {
+                  "vectorIndexType": "hnsw",
+                  "vectorizer": {"none": {}},
+                  "vectorIndexConfig": {
+                    "pq": {
+                      "enabled": true,
+                      "centroids": 8,
+                      "encoder_distribution": "normal",
+                      "encoder_type": "tile",
+                      "segments": 16,
+                      "training_limit": 1024,
+                      "bit_compression": true
+                    }
+                  }
+                }
+                """,
+        },
+        {
+            VectorConfig.class,
+            SelfProvidedVectorizer.of(none -> none
+                .quantization(Quantization.sq(sq -> sq
+                    .rescoreLimit(10)
+                    .trainingLimit(1024)
+                    .cache(true)))),
+            """
+                {
+                  "vectorIndexType": "hnsw",
+                  "vectorizer": {"none": {}},
+                  "vectorIndexConfig": {
+                    "sq": {
+                      "enabled": true,
+                      "rescore_limit": 10,
+                      "training_limit": 1024,
+                      "cache": true
+                    }
+                  }
+                }
+                """,
+        },
+        {
+            VectorConfig.class,
+            SelfProvidedVectorizer.of(none -> none
+                .quantization(Quantization.rq(rq -> rq
+                    .rescoreLimit(10)
+                    .bits(8)))),
+            """
+                {
+                  "vectorIndexType": "hnsw",
+                  "vectorizer": {"none": {}},
+                  "vectorIndexConfig": {
+                    "rq": {
+                      "enabled": true,
+                      "rescore_limit": 10,
+                      "bits": 8
+                    }
+                  }
                 }
                 """,
         },
