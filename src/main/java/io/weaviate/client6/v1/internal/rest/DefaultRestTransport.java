@@ -110,6 +110,7 @@ public class DefaultRestTransport implements RestTransport {
     var body = httpResponse.getEntity() != null
         ? EntityUtils.toString(httpResponse.getEntity())
         : "";
+
     return _handleResponse(endpoint, method, url, statusCode, body);
   }
 
@@ -169,6 +170,7 @@ public class DefaultRestTransport implements RestTransport {
   @SuppressWarnings("unchecked")
   private <ResponseT> ResponseT _handleResponse(Endpoint<?, ResponseT> endpoint, String method, String url,
       int statusCode, String body) {
+
     if (endpoint.isError(statusCode)) {
       var message = endpoint.deserializeError(statusCode, body);
       throw WeaviateApiException.http(method, url, statusCode, message);

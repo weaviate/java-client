@@ -61,6 +61,12 @@ public class SimpleEndpoint<RequestT, ResponseT> extends EndpointBase<RequestT, 
     this.deserializeResponse = deserializeResponse;
   }
 
+  @SuppressWarnings("unchecked")
+  public <R> SimpleEndpoint<R, ResponseT> allowStatus(Integer... statusCodes) {
+    super._allowStatusCodes(statusCodes);
+    return (SimpleEndpoint<R, ResponseT>) this;
+  }
+
   @Override
   public ResponseT deserializeResponse(int statusCode, String responseBody) {
     return deserializeResponse.apply(statusCode, responseBody);

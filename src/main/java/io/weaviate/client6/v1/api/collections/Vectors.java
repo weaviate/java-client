@@ -140,7 +140,7 @@ public class Vectors {
         .map(v -> {
           var name = v.getKey();
           var value = v.getValue();
-          var array = (value instanceof float[] f)
+          var array = (value instanceof float[])
               ? Arrays.toString((float[]) value)
               : Arrays.deepToString((float[][]) value);
           return "%s=%s".formatted(name, array);
