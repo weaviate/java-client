@@ -38,6 +38,21 @@ import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecClipVectorize
 import io.weaviate.client6.v1.api.collections.vectorizers.SelfProvidedVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecContextionaryVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecWeaviateVectorizer;
+import io.weaviate.client6.v1.api.rbac.AliasPermission;
+import io.weaviate.client6.v1.api.rbac.BackupsPermission;
+import io.weaviate.client6.v1.api.rbac.ClusterPermission;
+import io.weaviate.client6.v1.api.rbac.CollectionsPermission;
+import io.weaviate.client6.v1.api.rbac.DataPermission;
+import io.weaviate.client6.v1.api.rbac.GroupsPermission;
+import io.weaviate.client6.v1.api.rbac.NodesPermission;
+import io.weaviate.client6.v1.api.rbac.NodesPermission.Verbosity;
+import io.weaviate.client6.v1.api.rbac.ReplicatePermission;
+import io.weaviate.client6.v1.api.rbac.Role;
+import io.weaviate.client6.v1.api.rbac.RolesPermission;
+import io.weaviate.client6.v1.api.rbac.RolesPermission.Scope;
+import io.weaviate.client6.v1.api.rbac.TenantsPermission;
+import io.weaviate.client6.v1.api.rbac.UsersPermission;
+import io.weaviate.client6.v1.api.rbac.groups.GroupType;
 
 /** Unit tests for custom POJO-to-JSON serialization. */
 @RunWith(JParamsTestRunner.class)
@@ -408,6 +423,7 @@ public class JSONTest {
                   """,
         },
 
+        // Generative.CustomTypeAdapterFactory
         {
             Generative.class,
             Generative.cohere(generate -> generate
@@ -430,6 +446,8 @@ public class JSONTest {
                 }
                   """,
         },
+
+        // BatchReference.CustomTypeAdapterFactory
         {
             BatchReference.class,
             new BatchReference("FromCollection", "fromProperty", "from-uuid",
@@ -440,6 +458,438 @@ public class JSONTest {
                   "to": "weaviate://localhost/ToCollection/to-uuid"
                 }
                   """,
+        },
+
+        // Role.CustomTypeAdapterFactory & Permission.CustomTypeAdapterFactory
+        {
+            Role.class,
+            new Role(
+                "rock-n-role",
+                List.of(
+                    new AliasPermission(
+                        "CollectionAlias",
+                        "Collection",
+                        List.of(
+                            AliasPermission.Action.CREATE,
+                            AliasPermission.Action.READ,
+                            AliasPermission.Action.UPDATE,
+                            AliasPermission.Action.DELETE)))),
+            """
+                {
+                  "name": "rock-n-role",
+                  "permissions": [
+                    {
+                      "action": "create_aliases",
+                      "aliases": {
+                        "alias": "CollectionAlias",
+                        "collection": "Collection"
+                      }
+                    },
+                    {
+                      "action": "read_aliases",
+                      "aliases": {
+                        "alias": "CollectionAlias",
+                        "collection": "Collection"
+                      }
+                    },
+                    {
+                      "action": "update_aliases",
+                      "aliases": {
+                        "alias": "CollectionAlias",
+                        "collection": "Collection"
+                      }
+                    },
+                    {
+                      "action": "delete_aliases",
+                      "aliases": {
+                        "alias": "CollectionAlias",
+                        "collection": "Collection"
+                      }
+                    }
+                  ]
+                }
+                  """
+        },
+        {
+            Role.class,
+            new Role(
+                "rock-n-role",
+                List.of(
+                    new BackupsPermission(
+                        "Collection",
+                        List.of(BackupsPermission.Action.MANAGE)))),
+            """
+                {
+                  "name": "rock-n-role",
+                  "permissions": [
+                    {
+                      "action": "manage_backups",
+                      "backups": {
+                        "collection": "Collection"
+                      }
+                    }
+                  ]
+                }
+                  """
+        },
+        {
+            Role.class,
+            new Role(
+                "rock-n-role",
+                List.of(
+                    new ClusterPermission(
+                        List.of(ClusterPermission.Action.READ)))),
+            """
+                {
+                  "name": "rock-n-role",
+                  "permissions": [
+                    { "action": "read_cluster" }
+                  ]
+                }
+                  """
+        },
+        {
+            Role.class,
+            new Role(
+                "rock-n-role",
+                List.of(
+                    new CollectionsPermission(
+                        "Collection",
+                        List.of(
+                            CollectionsPermission.Action.CREATE,
+                            CollectionsPermission.Action.READ,
+                            CollectionsPermission.Action.UPDATE,
+                            CollectionsPermission.Action.DELETE)))),
+            """
+                {
+                  "name": "rock-n-role",
+                  "permissions": [
+                    {
+                      "action": "create_collections",
+                      "collections": {
+                        "collection": "Collection"
+                      }
+                    },
+                    {
+                      "action": "read_collections",
+                      "collections": {
+                        "collection": "Collection"
+                      }
+                    },
+                    {
+                      "action": "update_collections",
+                      "collections": {
+                        "collection": "Collection"
+                      }
+                    },
+                    {
+                      "action": "delete_collections",
+                      "collections": {
+                        "collection": "Collection"
+                      }
+                    }
+                  ]
+                }
+                  """
+        },
+        {
+            Role.class,
+            new Role(
+                "rock-n-role",
+                List.of(
+                    new DataPermission(
+                        "Collection",
+                        List.of(
+                            DataPermission.Action.CREATE,
+                            DataPermission.Action.READ,
+                            DataPermission.Action.UPDATE,
+                            DataPermission.Action.DELETE)))),
+            """
+                {
+                  "name": "rock-n-role",
+                  "permissions": [
+                    {
+                      "action": "create_data",
+                      "data": {
+                        "collection": "Collection"
+                      }
+                    },
+                    {
+                      "action": "read_data",
+                      "data": {
+                        "collection": "Collection"
+                      }
+                    },
+                    {
+                      "action": "update_data",
+                      "data": {
+                        "collection": "Collection"
+                      }
+                    },
+                    {
+                      "action": "delete_data",
+                      "data": {
+                        "collection": "Collection"
+                      }
+                    }
+                  ]
+                }
+                  """
+        },
+        {
+            Role.class,
+            new Role(
+                "rock-n-role",
+                List.of(
+                    new GroupsPermission(
+                        "friend-group",
+                        GroupType.OIDC,
+                        List.of(
+                            GroupsPermission.Action.READ,
+                            GroupsPermission.Action.ASSIGN_AND_REVOKE)))),
+            """
+                {
+                  "name": "rock-n-role",
+                  "permissions": [
+                    {
+                      "action": "read_groups",
+                      "groups": {
+                        "group": "friend-group",
+                        "groupType": "oidc"
+                      }
+                    },
+                    {
+                      "action": "assign_and_revoke_groups",
+                      "groups": {
+                        "group": "friend-group",
+                        "groupType": "oidc"
+                      }
+                    }
+                  ]
+                }
+                  """
+        },
+        {
+            Role.class,
+            new Role(
+                "rock-n-role",
+                List.of(
+                    new NodesPermission(
+                        "Collection",
+                        Verbosity.MINIMAL,
+                        List.of(NodesPermission.Action.READ)))),
+            """
+                {
+                  "name": "rock-n-role",
+                  "permissions": [
+                    {
+                      "action": "read_nodes",
+                      "nodes": {
+                        "collection": "Collection",
+                        "verbosity": "minimal"
+                      }
+                    }
+                  ]
+                }
+                  """
+        },
+        {
+            Role.class,
+            new Role(
+                "rock-n-role",
+                List.of(
+                    new ReplicatePermission(
+                        "Collection",
+                        "shard-123",
+                        List.of(
+                            ReplicatePermission.Action.CREATE,
+                            ReplicatePermission.Action.READ,
+                            ReplicatePermission.Action.UPDATE,
+                            ReplicatePermission.Action.DELETE)))),
+            """
+                {
+                  "name": "rock-n-role",
+                  "permissions": [
+                    {
+                      "action": "create_replicate",
+                      "replicate": {
+                        "collection": "Collection",
+                        "shard": "shard-123"
+                      }
+                    },
+                    {
+                      "action": "read_replicate",
+                      "replicate": {
+                        "collection": "Collection",
+                        "shard": "shard-123"
+                      }
+                    },
+                    {
+                      "action": "update_replicate",
+                      "replicate": {
+                        "collection": "Collection",
+                        "shard": "shard-123"
+                      }
+                    },
+                    {
+                      "action": "delete_replicate",
+                      "replicate": {
+                        "collection": "Collection",
+                        "shard": "shard-123"
+                      }
+                    }
+                  ]
+                }
+                  """
+        },
+        {
+            Role.class,
+            new Role(
+                "rock-n-role",
+                List.of(
+                    new RolesPermission(
+                        "rock-n-role",
+                        Scope.MATCH,
+                        List.of(
+                            RolesPermission.Action.CREATE,
+                            RolesPermission.Action.READ,
+                            RolesPermission.Action.UPDATE,
+                            RolesPermission.Action.DELETE)))),
+            """
+                {
+                  "name": "rock-n-role",
+                  "permissions": [
+                    {
+                      "action": "create_roles",
+                      "roles": {
+                        "role": "rock-n-role",
+                        "scope": "match"
+                      }
+                    },
+                    {
+                      "action": "read_roles",
+                      "roles": {
+                        "role": "rock-n-role",
+                        "scope": "match"
+                      }
+                    },
+                    {
+                      "action": "update_roles",
+                      "roles": {
+                        "role": "rock-n-role",
+                        "scope": "match"
+                      }
+                    },
+                    {
+                      "action": "delete_roles",
+                      "roles": {
+                        "role": "rock-n-role",
+                        "scope": "match"
+                      }
+                    }
+                  ]
+                }
+                  """
+        },
+        {
+            Role.class,
+            new Role(
+                "rock-n-role",
+                List.of(
+                    new TenantsPermission(
+                        "Collection",
+                        "TeenageMutenantNinjaTurtles",
+                        List.of(
+                            TenantsPermission.Action.CREATE,
+                            TenantsPermission.Action.READ,
+                            TenantsPermission.Action.UPDATE,
+                            TenantsPermission.Action.DELETE)))),
+            """
+                {
+                  "name": "rock-n-role",
+                  "permissions": [
+                    {
+                      "action": "create_tenants",
+                      "tenants": {
+                        "collection": "Collection",
+                        "tenant": "TeenageMutenantNinjaTurtles"
+                      }
+                    },
+                    {
+                      "action": "read_tenants",
+                      "tenants": {
+                        "collection": "Collection",
+                        "tenant": "TeenageMutenantNinjaTurtles"
+                      }
+                    },
+                    {
+                      "action": "update_tenants",
+                      "tenants": {
+                        "collection": "Collection",
+                        "tenant": "TeenageMutenantNinjaTurtles"
+                      }
+                    },
+                    {
+                      "action": "delete_tenants",
+                      "tenants": {
+                        "collection": "Collection",
+                        "tenant": "TeenageMutenantNinjaTurtles"
+                      }
+                    }
+                  ]
+                }
+                  """
+        },
+        {
+            Role.class,
+            new Role(
+                "rock-n-role",
+                List.of(
+                    new UsersPermission(
+                        "john-doe",
+                        List.of(
+                            UsersPermission.Action.CREATE,
+                            UsersPermission.Action.READ,
+                            UsersPermission.Action.UPDATE,
+                            UsersPermission.Action.DELETE,
+                            UsersPermission.Action.ASSIGN_AND_REVOKE)))),
+            """
+                {
+                  "name": "rock-n-role",
+                  "permissions": [
+                    {
+                      "action": "create_users",
+                      "users": {
+                        "users": "john-doe"
+                      }
+                    },
+                    {
+                      "action": "read_users",
+                      "users": {
+                        "users": "john-doe"
+                      }
+                    },
+                    {
+                      "action": "update_users",
+                      "users": {
+                        "users": "john-doe"
+                      }
+                    },
+                    {
+                      "action": "delete_users",
+                      "users": {
+                        "users": "john-doe"
+                      }
+                    },
+                    {
+                      "action": "assign_and_revoke_users",
+                      "users": {
+                        "users": "john-doe"
+                      }
+                    }
+                  ]
+                }
+                  """
         },
     };
   }

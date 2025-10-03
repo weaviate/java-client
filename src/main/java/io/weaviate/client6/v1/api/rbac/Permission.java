@@ -22,6 +22,7 @@ import com.google.gson.stream.JsonWriter;
 
 import io.weaviate.client6.v1.api.rbac.NodesPermission.Verbosity;
 import io.weaviate.client6.v1.api.rbac.RolesPermission.Scope;
+import io.weaviate.client6.v1.api.rbac.groups.GroupType;
 import io.weaviate.client6.v1.internal.json.JsonEnum;
 
 public interface Permission {
@@ -106,7 +107,7 @@ public interface Permission {
   /**
    * Create permissions for managing RBAC groups.
    */
-  public static GroupsPermission groups(String groupId, String groupType, GroupsPermission.Action... actions) {
+  public static GroupsPermission groups(String groupId, GroupType groupType, GroupsPermission.Action... actions) {
     checkDeprecation(actions);
     return new GroupsPermission(groupId, groupType, actions);
   }
@@ -147,9 +148,9 @@ public interface Permission {
   /**
    * Create {@link UsersPermission}.
    */
-  public static UsersPermission users(String user, UsersPermission.Action... actions) {
+  public static UsersPermission users(String userId, UsersPermission.Action... actions) {
     checkDeprecation(actions);
-    return new UsersPermission(user, actions);
+    return new UsersPermission(userId, actions);
   }
 
   /**
@@ -243,24 +244,24 @@ public interface Permission {
 
         @Override
         public void write(JsonWriter out, Permission value) throws IOException {
-          out.beginObject();
-
-          if (!value.actions().isEmpty()) {
-            // User might not have provided any actions by mistake
-            var action = (RbacAction<?>) value.actions().get(0);
+          for (RbacAction<?> action : value.actions()) {
+            out.beginObject();
+            // User might not have provided many actions by mistake
             out.name("action");
             out.value(action.jsonValue());
-          }
 
-          if (value.self() != null) {
-            var permission = writeAdapter.toJsonTree((T) value.self());
-            // Some permission types do not have a body
-            permission.getAsJsonObject().remove("actions");
-            out.name(value._kind().jsonValue());
-            Streams.write(permission, out);
-          }
+            if (value.self() != null) {
+              var permission = writeAdapter.toJsonTree((T) value.self());
+              permission.getAsJsonObject().remove("actions");
 
-          out.endObject();
+              // Some permission types do not have a body
+              if (!permission.getAsJsonObject().keySet().isEmpty()) {
+                out.name(value._kind().jsonValue());
+                Streams.write(permission, out);
+              }
+            }
+            out.endObject();
+          }
         }
 
         @Override

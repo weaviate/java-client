@@ -6,11 +6,11 @@ import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
 public record UsersPermission(
-    @SerializedName("users") String user,
+    @SerializedName("users") String userId,
     @SerializedName("actions") List<Action> actions) implements Permission {
 
-  public UsersPermission(String user, Action... actions) {
-    this(user, Arrays.asList(actions));
+  public UsersPermission(String userId, Action... actions) {
+    this(userId, Arrays.asList(actions));
   }
 
   @Override

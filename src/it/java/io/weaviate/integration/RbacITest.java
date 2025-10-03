@@ -24,6 +24,7 @@ import io.weaviate.client6.v1.api.rbac.RolesPermission;
 import io.weaviate.client6.v1.api.rbac.RolesPermission.Scope;
 import io.weaviate.client6.v1.api.rbac.TenantsPermission;
 import io.weaviate.client6.v1.api.rbac.UsersPermission;
+import io.weaviate.client6.v1.api.rbac.groups.GroupType;
 import io.weaviate.client6.v1.api.rbac.roles.UserAssignment;
 import io.weaviate.client6.v1.api.rbac.users.DbUser;
 import io.weaviate.client6.v1.api.rbac.users.User;
@@ -69,7 +70,7 @@ public class RbacITest extends ConcurrentTest {
         Permission.roles(VIEWER_ROLE, Scope.MATCH, RolesPermission.Action.CREATE),
         Permission.collections(myCollection, CollectionsPermission.Action.CREATE),
         Permission.data(myCollection, DataPermission.Action.UPDATE),
-        Permission.groups("my-group", "oidc", GroupsPermission.Action.READ),
+        Permission.groups("my-group", GroupType.OIDC, GroupsPermission.Action.READ),
         Permission.tenants(myCollection, "my-tenant", TenantsPermission.Action.DELETE),
         Permission.users("my-user", UsersPermission.Action.READ),
         Permission.replicate(myCollection, "my-shard", ReplicatePermission.Action.READ),
