@@ -33,5 +33,7 @@ public interface PropertiesBuilder<T> {
 
   void setOffsetDateTimeArray(String property, List<OffsetDateTime> value);
 
+  void setNestedObject(String property, Object value);
+
   T build();
 }

@@ -80,6 +80,11 @@ public class MapBuilder implements PropertiesBuilder<Map<String, Object>> {
   }
 
   @Override
+  public void setNestedObject(String property, Object value) {
+    properties.put(property, value);
+  }
+
+  @Override
   public Map<String, Object> build() {
     return properties;
   }

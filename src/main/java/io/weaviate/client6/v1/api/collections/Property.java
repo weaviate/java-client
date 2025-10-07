@@ -1,5 +1,7 @@
 package io.weaviate.client6.v1.api.collections;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -17,7 +19,8 @@ public record Property(
     @SerializedName("indexSearchable") Boolean indexSearchable,
     @SerializedName("tokenization") Tokenization tokenization,
     @SerializedName("skipVectorization") Boolean skipVectorization,
-    @SerializedName("vectorizePropertyName") Boolean vectorizePropertyName) {
+    @SerializedName("vectorizePropertyName") Boolean vectorizePropertyName,
+    @SerializedName("nestedProperties") List<Property> nestedProperties) {
 
   /**
    * Create a {@code text} property.
@@ -96,7 +99,7 @@ public record Property(
   }
 
   /**
-   * Create a {@code bool} property.
+   * Create a {@code blob} property.
    *
    * @param name Property name.
    */
@@ -267,6 +270,44 @@ public record Property(
     return newProperty(name, DataType.NUMBER_ARRAY, fn);
   }
 
+  /**
+   * Create a {@code object} property.
+   *
+   * @param name Property name.
+   */
+  public static Property object(String name) {
+    return object(name, ObjectBuilder.identity());
+  }
+
+  /**
+   * Create a {@code object} property with additional configuration.
+   *
+   * @param name Property name.
+   * @param fn   Lambda expression for optional parameters.
+   */
+  public static Property object(String name, Function<Builder, ObjectBuilder<Property>> fn) {
+    return newProperty(name, DataType.OBJECT, fn);
+  }
+
+  /**
+   * Create a {@code object[]} property.
+   *
+   * @param name Property name.
+   */
+  public static Property objectArray(String name) {
+    return objectArray(name, ObjectBuilder.identity());
+  }
+
+  /**
+   * Create a {@code objectArray[]} property with additional configuration.
+   *
+   * @param name Property name.
+   * @param fn   Lambda expression for optional parameters.
+   */
+  public static Property objectArray(String name, Function<Builder, ObjectBuilder<Property>> fn) {
+    return newProperty(name, DataType.OBJECT_ARRAY, fn);
+  }
+
   private static Property newProperty(String name, String dataType, Function<Builder, ObjectBuilder<Property>> fn) {
     return fn.apply(new Builder(name, dataType)).build();
   }
@@ -329,7 +370,8 @@ public record Property(
         builder.indexSearchable,
         builder.tokenization,
         builder.skipVectorization,
-        builder.vectorizePropertyName);
+        builder.vectorizePropertyName,
+        builder.nestedProperties.isEmpty() ? null : builder.nestedProperties);
   }
 
   // All methods accepting a `boolean` should have a boxed overload
@@ -346,9 +388,9 @@ public record Property(
   public static class Builder implements ObjectBuilder<Property> {
     // Required parameters.
     private final String propertyName;
+    private final List<String> dataTypes = new ArrayList<>();
 
     // Optional parameters.
-    private List<String> dataTypes;
     private String description;
     private Boolean indexInverted;
     private Boolean indexFilterable;
@@ -357,6 +399,7 @@ public record Property(
     private Tokenization tokenization;
     private Boolean skipVectorization;
     private Boolean vectorizePropertyName;
+    private List<Property> nestedProperties = new ArrayList<>();
 
     /**
      * Create a scalar / array type property.
@@ -365,7 +408,7 @@ public record Property(
      */
     public Builder(String propertyName, String dataType) {
       this.propertyName = propertyName;
-      this.dataTypes = List.of(dataType);
+      this.dataTypes.add(dataType);
     }
 
     /**
@@ -375,7 +418,7 @@ public record Property(
      */
     public Builder(String propertyName, List<String> dataTypes) {
       this.propertyName = propertyName;
-      this.dataTypes = List.copyOf(dataTypes);
+      this.dataTypes.addAll(dataTypes);
     }
 
     /** Add property description. */
@@ -488,6 +531,32 @@ public record Property(
     /** Include property name into the input for the vectorizer module. */
     public Builder vectorizePropertyName(boolean vectorizePropertyName) {
       this.vectorizePropertyName = vectorizePropertyName;
+      return this;
+    }
+
+    /**
+     * Defined nested properties. This configuration is only applicable to a
+     * property of type {@code object} and {@code object[]}.
+     *
+     * <pre>{@code
+     * Property.object("address",
+     *     p -> p.nestedProperties(
+     *         Property.text("street"),
+     *         Property.integer("building_nr")))
+     * }</pre>
+     */
+    public Builder nestedProperties(Property... properties) {
+      return nestedProperties(Arrays.asList(properties));
+    }
+
+    /**
+     * Defined nested properties. This configuration is only applicable to a
+     * property of type {@code object} and {@code object[]}.
+     *
+     * @see Builder#nestedProperties(Property...)
+     */
+    public Builder nestedProperties(List<Property> properties) {
+      this.nestedProperties.addAll(properties);
       return this;
     }
 

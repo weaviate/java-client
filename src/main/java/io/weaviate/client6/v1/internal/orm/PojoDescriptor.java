@@ -63,6 +63,8 @@ final class PojoDescriptor<T extends Record> implements CollectionDescriptor<T> 
         put(Float[].class, Property::numberArray);
         put(double[].class, Property::numberArray);
         put(Double[].class, Property::numberArray);
+
+        put(Map.class, Property::object);
       }
     };
     CTORS = Collections.unmodifiableMap(ctors);

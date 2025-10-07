@@ -431,7 +431,10 @@ public class DataITest extends ConcurrentTest {
                 Property.boolArray("prop_bool_array"),
                 Property.dateArray("prop_date_array"),
                 Property.uuidArray("prop_uuid_array"),
-                Property.textArray("prop_text_array")));
+                Property.textArray("prop_text_array"),
+                Property.object("prop_object",
+                    p -> p.nestedProperties(
+                        Property.text("marco")))));
 
     var types = client.collections.use(nsDataTypes);
 
@@ -450,13 +453,12 @@ public class DataITest extends ConcurrentTest {
         Map.entry("prop_bool_array", List.of(true, false)),
         Map.entry("prop_date_array", List.of(now, now)),
         Map.entry("prop_uuid_array", List.of(uuid, uuid)),
-        Map.entry("prop_text_array", List.of("a", "b", "c")));
-    var returnProperties = want.keySet().toArray(String[]::new);
+        Map.entry("prop_text_array", List.of("a", "b", "c")),
+        Map.entry("prop_object", Map.of("marco", "polo")));
 
     // Act
     var object = types.data.insert(want);
-    var got = types.query.byId(object.uuid(),
-        q -> q.returnProperties(returnProperties));
+    var got = types.query.byId(object.uuid()); // return all properties
 
     // Assert
     Assertions.assertThat(got).get()
@@ -464,5 +466,9 @@ public class DataITest extends ConcurrentTest {
         .asInstanceOf(InstanceOfAssertFactories.map(String.class, Object.class))
         .containsAllEntriesOf(want);
 
+  }
+
+  @Test
+  public void testNestedProperties() throws IOException {
   }
 }
