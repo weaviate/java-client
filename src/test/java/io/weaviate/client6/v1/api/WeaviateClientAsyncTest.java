@@ -14,7 +14,7 @@ public class WeaviateClientAsyncTest {
 
   @Test(expected = WeaviateConnectException.class)
   public void testFailedConnection_Local() {
-    WeaviateClientAsync.connectToLocal();
+    WeaviateClientAsync.connectToLocal(conn -> conn.port(1234));
   }
 
   @Test(expected = WeaviateConnectException.class)
