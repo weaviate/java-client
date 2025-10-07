@@ -481,7 +481,7 @@ public class DataITest extends ConcurrentTest {
   @Test
   public void testNestedProperties_insertMany() throws IOException {
     // Arrange
-    var nsBuildings = "Buildings";
+    var nsBuildings = ns("Buildings");
 
     client.collections.create(
         nsBuildings, c -> c.properties(
