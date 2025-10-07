@@ -200,6 +200,15 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
                       protoListValue.setBoolValue(lv);
                     } else if (listValue instanceof Number lv) {
                       protoListValue.setNumberValue(lv.doubleValue());
+                    } else if (listValue instanceof Map<?, ?> properties) {
+                      protoListValue.setStructValue(marshalStruct((Map<String, Object>) properties));
+                    } else if (listValue instanceof Record r) {
+                      CollectionDescriptor<? super Record> recordDescriptor = (CollectionDescriptor<? super Record>) CollectionDescriptor
+                          .ofClass(r.getClass());
+                      var properties = recordDescriptor.propertiesReader(r).readProperties();
+                      protoListValue.setStructValue(marshalStruct(properties));
+                    } else {
+                      throw new IllegalArgumentException("data type " + value.getClass() + " is not supported");
                     }
                     return protoListValue.build();
                   })
@@ -259,6 +268,24 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
       } else if (value instanceof Double[] v) {
         values = Arrays.stream(v)
             .map(lv -> com.google.protobuf.Value.newBuilder().setNumberValue(lv).build()).toList();
+      } else if (value instanceof Map[] v) {
+        values = Arrays.stream(v)
+            .map(lv -> com.google.protobuf.Value.newBuilder()
+                .setStructValue(marshalStruct((Map<String, Object>) lv))
+                .build())
+            .toList();
+      } else if (value instanceof Record[] v) {
+        values = Arrays.stream(v)
+            .map(lv -> {
+              // Get the descriptor for each iteration in case the array is heterogenous.
+              final CollectionDescriptor<? super Record> recordDescriptor = (CollectionDescriptor<? super Record>) CollectionDescriptor
+                  .ofClass(lv.getClass());
+              var properties = recordDescriptor.propertiesReader(lv).readProperties();
+              return com.google.protobuf.Value.newBuilder()
+                  .setStructValue(marshalStruct(properties))
+                  .build();
+            })
+            .toList();
       } else {
         throw new IllegalArgumentException("array type " + value.getClass() + " is not supported");
       }

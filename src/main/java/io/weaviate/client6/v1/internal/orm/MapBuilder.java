@@ -85,6 +85,11 @@ public class MapBuilder implements PropertiesBuilder<Map<String, Object>> {
   }
 
   @Override
+  public void setNestedObjectArray(String property, List<? extends Object> value) {
+    properties.put(property, value);
+  }
+
+  @Override
   public Map<String, Object> build() {
     return properties;
   }

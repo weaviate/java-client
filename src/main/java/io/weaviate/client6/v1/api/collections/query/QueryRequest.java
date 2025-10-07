@@ -254,6 +254,15 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
         var dates = list.getDateValues().getValuesList().stream()
             .map(DateUtil::fromISO8601).toList();
         builder.setOffsetDateTimeArray(property, dates);
+      } else if (list.hasObjectValues()) {
+        List<? extends Object> objects = list.getObjectValues().getValuesList().stream()
+            .map(object -> {
+              var properties = descriptor.propertiesBuilder();
+              object.getFieldsMap().entrySet().stream()
+                  .forEach(entry -> setProperty(entry.getKey(), entry.getValue(), properties, descriptor));
+              return properties.build();
+            }).toList();
+        builder.setNestedObjectArray(property, objects);
       }
     } else if (value.hasObjectValue()) {
       var object = value.getObjectValue();

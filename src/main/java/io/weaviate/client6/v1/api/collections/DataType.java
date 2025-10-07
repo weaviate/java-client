@@ -34,5 +34,5 @@ public interface DataType {
    */
   public static final Set<String> KNOWN_TYPES = ImmutableSet.of(
       TEXT, INT, BLOB, BOOL, DATE, UUID, NUMBER, OBJECT,
-      TEXT_ARRAY, INT_ARRAY, NUMBER_ARRAY, BOOL_ARRAY, DATE_ARRAY, UUID_ARRAY);
+      TEXT_ARRAY, INT_ARRAY, NUMBER_ARRAY, BOOL_ARRAY, DATE_ARRAY, UUID_ARRAY, OBJECT_ARRAY);
 }
