@@ -468,6 +468,12 @@ public class DataITest extends ConcurrentTest {
 
   }
 
+  record Address(
+      String street,
+      @io.weaviate.client6.v1.api.collections.annotations.Property("building_nr") int buildingNr,
+      @io.weaviate.client6.v1.api.collections.annotations.Property("isOneWay") boolean oneWay) {
+  }
+
   @Test
   public void testNestedProperties_insertMany() throws IOException {
     // Arrange
@@ -486,10 +492,10 @@ public class DataITest extends ConcurrentTest {
         "street", "Burggasse",
         "building_nr", 51,
         "isOneWay", true));
-    Map<String, Object> house_2 = Map.of("address", Map.of(
-        "street", "Port Mariland St.",
-        "building_nr", 111,
-        "isOneWay", false));
+    Map<String, Object> house_2 = Map.of("address", new Address(
+        "Port Mariland St.",
+        111,
+        false));
 
     // Act
     var result = buildings.data.insertMany(house_1, house_2);

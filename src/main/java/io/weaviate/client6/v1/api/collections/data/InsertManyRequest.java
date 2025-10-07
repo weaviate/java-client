@@ -293,6 +293,20 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
             protoNested.putFields((String) nested.getKey(), nestedValue);
           });
       protoValue.setStructValue(protoNested);
+    } else if (value instanceof Record r) {
+      @SuppressWarnings("unchecked")
+      CollectionDescriptor<? super Record> recordDescriptor = (CollectionDescriptor<? super Record>) CollectionDescriptor
+          .ofClass(r.getClass());
+      var protoRecord = com.google.protobuf.Struct.newBuilder();
+      recordDescriptor.propertiesReader(r).readProperties().entrySet().stream()
+          .forEach(recordField -> {
+            var nestedValue = marshalValue(recordField.getValue());
+            if (nestedValue == null) {
+              return;
+            }
+            protoRecord.putFields((String) recordField.getKey(), nestedValue);
+          });
+      protoValue.setStructValue(protoRecord);
     } else {
       throw new IllegalArgumentException("data type " + value.getClass() + " is not supported");
     }
