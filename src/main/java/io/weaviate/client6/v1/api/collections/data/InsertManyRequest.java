@@ -130,24 +130,8 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
       }
     }
 
-    var properties = WeaviateProtoBatch.BatchObject.Properties.newBuilder();
-    var nonRef = com.google.protobuf.Struct.newBuilder();
     var singleRef = new ArrayList<WeaviateProtoBatch.BatchObject.SingleTargetRefProps>();
     var multiRef = new ArrayList<WeaviateProtoBatch.BatchObject.MultiTargetRefProps>();
-
-    collection
-        .propertiesReader(insert.properties()).readProperties()
-        .entrySet().stream().forEach(entry -> {
-          try {
-            var protoValue = marshalValue(entry.getValue());
-            if (protoValue == null) {
-              return;
-            }
-            nonRef.putFields(entry.getKey(), protoValue);
-          } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("marshal property " + entry.getKey(), e);
-          }
-        });
 
     insert.references()
         .entrySet().stream().forEach(entry -> {
@@ -173,16 +157,16 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
           }
         });
 
-    properties
+    var nonRef = marshalStruct(collection.propertiesReader(insert.properties()).readProperties());
+    object.setProperties(WeaviateProtoBatch.BatchObject.Properties.newBuilder()
         .setNonRefProperties(nonRef)
         .addAllSingleTargetRefProps(singleRef)
-        .addAllMultiTargetRefProps(multiRef);
-
-    object.setProperties(properties);
+        .addAllMultiTargetRefProps(multiRef));
 
     Debug.printProto(object);
   }
 
+  @SuppressWarnings("unchecked")
   private static com.google.protobuf.Value marshalValue(Object value) {
     var protoValue = com.google.protobuf.Value.newBuilder();
 
@@ -282,35 +266,30 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
       protoValue.setListValue(com.google.protobuf.ListValue.newBuilder()
           .addAllValues(values)
           .build());
-    } else if (value instanceof Map<?, ?> v) {
-      var protoNested = com.google.protobuf.Struct.newBuilder();
-      v.entrySet().stream()
-          .forEach(nested -> {
-            var nestedValue = marshalValue(nested.getValue());
-            if (nestedValue == null) {
-              return;
-            }
-            protoNested.putFields((String) nested.getKey(), nestedValue);
-          });
-      protoValue.setStructValue(protoNested);
+    } else if (value instanceof Map<?, ?> properties) {
+      protoValue.setStructValue(marshalStruct((Map<String, Object>) properties));
     } else if (value instanceof Record r) {
-      @SuppressWarnings("unchecked")
       CollectionDescriptor<? super Record> recordDescriptor = (CollectionDescriptor<? super Record>) CollectionDescriptor
           .ofClass(r.getClass());
-      var protoRecord = com.google.protobuf.Struct.newBuilder();
-      recordDescriptor.propertiesReader(r).readProperties().entrySet().stream()
-          .forEach(recordField -> {
-            var nestedValue = marshalValue(recordField.getValue());
-            if (nestedValue == null) {
-              return;
-            }
-            protoRecord.putFields((String) recordField.getKey(), nestedValue);
-          });
-      protoValue.setStructValue(protoRecord);
+      var properties = recordDescriptor.propertiesReader(r).readProperties();
+      protoValue.setStructValue(marshalStruct(properties));
     } else {
       throw new IllegalArgumentException("data type " + value.getClass() + " is not supported");
     }
 
     return protoValue.build();
+  }
+
+  private static com.google.protobuf.Struct marshalStruct(Map<String, Object> properties) {
+    var struct = com.google.protobuf.Struct.newBuilder();
+    properties.entrySet().stream()
+        .forEach(entry -> {
+          var nestedValue = marshalValue(entry.getValue());
+          if (nestedValue == null) {
+            return;
+          }
+          struct.putFields((String) entry.getKey(), nestedValue);
+        });
+    return struct.build();
   }
 }

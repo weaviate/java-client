@@ -486,7 +486,7 @@ public class DataITest extends ConcurrentTest {
                 Property.integer("buildingNr"),
                 Property.bool("isOneWay")))));
 
-    var buildings = client.collections.use("nsBuildings");
+    var buildings = client.collections.use(nsBuildings);
 
     Map<String, Object> house_1 = Map.of("address", Map.of(
         "street", "Burggasse",
