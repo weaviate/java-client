@@ -10,6 +10,7 @@ import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateApiException;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.CollectionConfig;
+import io.weaviate.client6.v1.api.collections.DataType;
 import io.weaviate.client6.v1.api.collections.InvertedIndex;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.ReferenceProperty;
@@ -190,5 +191,27 @@ public class CollectionsITest extends ConcurrentTest {
   @Test(expected = WeaviateApiException.class)
   public void testInvalidCollectionName() throws IOException {
     client.collections.create("^collection@weaviate.io$");
+  }
+
+  @Test
+  public void testNestedProperties() throws IOException, Exception {
+    var nsBuildings = "Buildings";
+
+    client.collections.create(
+        nsBuildings, c -> c.properties(
+            Property.object("address", p -> p.nestedProperties(
+                Property.text("street"),
+                Property.integer("buildingNr"),
+                Property.bool("isOneWay")))));
+
+    var config = client.collections.getConfig(nsBuildings);
+
+    Assertions.assertThat(config).get()
+        .extracting(CollectionConfig::properties, InstanceOfAssertFactories.list(Property.class))
+        .hasSize(1).first()
+        .returns("address", Property::propertyName)
+        .extracting(Property::nestedProperties, InstanceOfAssertFactories.list(Property.class))
+        .extracting(Property::dataTypes).extracting(types -> types.get(0))
+        .containsExactly(DataType.TEXT, DataType.INT, DataType.BOOL);
   }
 }

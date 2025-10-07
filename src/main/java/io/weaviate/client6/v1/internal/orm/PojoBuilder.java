@@ -228,6 +228,11 @@ final class PojoBuilder<PropertiesT extends Record> implements PropertiesBuilder
   }
 
   @Override
+  public void setNestedObject(String propertyName, Object value) {
+    setValue(propertyName, value);
+  }
+
+  @Override
   public PropertiesT build() {
     Object[] args = ctorArgs.values().stream().map(Arg::value).toArray();
     try {
