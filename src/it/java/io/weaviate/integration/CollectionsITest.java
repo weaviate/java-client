@@ -195,7 +195,7 @@ public class CollectionsITest extends ConcurrentTest {
 
   @Test
   public void testNestedProperties() throws IOException, Exception {
-    var nsBuildings = "Buildings";
+    var nsBuildings = ns("Buildings");
 
     client.collections.create(
         nsBuildings, c -> c.properties(
