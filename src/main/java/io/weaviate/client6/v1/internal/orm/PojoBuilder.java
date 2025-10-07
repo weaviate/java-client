@@ -229,7 +229,12 @@ final class PojoBuilder<PropertiesT extends Record> implements PropertiesBuilder
 
   @Override
   public void setNestedObject(String propertyName, Object value) {
-    setValue(propertyName, value);
+    throw new UnsupportedOperationException("Unimplemented method 'setNestedObjectArray'");
+  }
+
+  @Override
+  public void setNestedObjectArray(String property, List<? extends Object> value) {
+    throw new UnsupportedOperationException("Unimplemented method 'setNestedObjectArray'");
   }
 
   @Override

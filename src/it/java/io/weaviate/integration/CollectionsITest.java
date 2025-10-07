@@ -201,17 +201,30 @@ public class CollectionsITest extends ConcurrentTest {
         nsBuildings, c -> c.properties(
             Property.object("address", p -> p.nestedProperties(
                 Property.text("street"),
-                Property.integer("buildingNr"),
-                Property.bool("isOneWay")))));
+                Property.integer("building_nr"),
+                Property.bool("isOneWay"))),
+            Property.objectArray("apartments", p -> p.nestedProperties(
+                Property.integer("door_nr"),
+                Property.number("area")))));
 
     var config = client.collections.getConfig(nsBuildings);
 
-    Assertions.assertThat(config).get()
+    var properties = Assertions.assertThat(config).get()
         .extracting(CollectionConfig::properties, InstanceOfAssertFactories.list(Property.class))
-        .hasSize(1).first()
+        .hasSize(2).actual();
+
+    Assertions.assertThat(properties.get(0))
         .returns("address", Property::propertyName)
+        .returns(DataType.OBJECT, p -> p.dataTypes().get(0))
         .extracting(Property::nestedProperties, InstanceOfAssertFactories.list(Property.class))
         .extracting(Property::dataTypes).extracting(types -> types.get(0))
         .containsExactly(DataType.TEXT, DataType.INT, DataType.BOOL);
+
+    Assertions.assertThat(properties.get(1))
+        .returns("apartments", Property::propertyName)
+        .returns(DataType.OBJECT_ARRAY, p -> p.dataTypes().get(0))
+        .extracting(Property::nestedProperties, InstanceOfAssertFactories.list(Property.class))
+        .extracting(Property::dataTypes).extracting(types -> types.get(0))
+        .containsExactly(DataType.INT, DataType.NUMBER);
   }
 }
