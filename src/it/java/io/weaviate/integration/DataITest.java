@@ -469,6 +469,32 @@ public class DataITest extends ConcurrentTest {
   }
 
   @Test
-  public void testNestedProperties() throws IOException {
+  public void testNestedProperties_insertMany() throws IOException {
+    // Arrange
+    var nsBuildings = "Buildings";
+
+    client.collections.create(
+        nsBuildings, c -> c.properties(
+            Property.object("address", p -> p.nestedProperties(
+                Property.text("street"),
+                Property.integer("buildingNr"),
+                Property.bool("isOneWay")))));
+
+    var buildings = client.collections.use("nsBuildings");
+
+    Map<String, Object> house_1 = Map.of("address", Map.of(
+        "street", "Burggasse",
+        "building_nr", 51,
+        "isOneWay", true));
+    Map<String, Object> house_2 = Map.of("address", Map.of(
+        "street", "Port Mariland St.",
+        "building_nr", 111,
+        "isOneWay", false));
+
+    // Act
+    var result = buildings.data.insertMany(house_1, house_2);
+
+    // Assert
+    Assertions.assertThat(result.errors()).isEmpty();
   }
 }
