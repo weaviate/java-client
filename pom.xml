@@ -62,7 +62,7 @@
     <oauth2-oidc-sdk.version>11.27.1</oauth2-oidc-sdk.version>
     <mock-server.version>5.15.0</mock-server.version>
     <protobuf.java.version>4.32.0</protobuf.java.version>
-    <protobuf.java-util.version>4.32.0</protobuf.java-util.version>
+    <protobuf.java-util.version>4.32.1</protobuf.java-util.version>
     <grpc-protobuf.version>1.75.0</grpc-protobuf.version>
     <grpc-stub.version>1.75.0</grpc-stub.version>
     <grpc-netty-shaded.version>1.75.0</grpc-netty-shaded.version>
