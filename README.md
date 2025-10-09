@@ -668,10 +668,22 @@ for (var object : result.objects()) {
 }
 ```
 
+When _ingetsting_ data, Java records can be used to represent nested object properties:
+
+```java
+record MusicVideo(@Property("link") String url, long runtimeSeconds) {}
+
+songs.data.insert(Map.of(
+    "title", "Billie Jean",
+    "musicVideo", new MusicVideo("https://youtube.com/billijean", 294L),
+));
+```
+
 We want to stress that this ORM's focus is on improving type-safety around object properties and simplifying serialization/deserialization. It is intentionally kept minimal and as such has the following limitations:
 
 - **Does not support BLOB properties.** On the wire, blob properties are represented as base64-encoded strings, and both logically map to the Java's `String`. Presently there isn't a good way for the client to deduce which property type should be created, so it always maps `Sting -> TEXT`.
 - **Limited configuration options.** Vector indices, replication, multi-tenancy, and such need to be configured via a tucked builder in `.create(..., here -> here)`.
+- **Cannot include nested objects.** Java records can be used as nested properties in a `Map`, but cannot include nested properties themselves.
 - **Does not support cross-references.** Properties and Cross-References are conceptually and "physically" separated in Weaviate' client libraries, so doing something like in the snippet below is not supported.
 
 ```java
