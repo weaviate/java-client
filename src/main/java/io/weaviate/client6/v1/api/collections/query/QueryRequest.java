@@ -136,8 +136,8 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
       WeaviateProtoSearchGet.MetadataResult metadataResult,
       CollectionDescriptor<T> descriptor) {
     var properties = descriptor.propertiesBuilder();
-    propertiesResult.getNonRefProps().getFieldsMap()
-        .entrySet().stream().forEach(entry -> setProperty(entry.getKey(), entry.getValue(), properties));
+    propertiesResult.getNonRefProps().getFieldsMap().entrySet().stream()
+        .forEach(entry -> setProperty(entry.getKey(), entry.getValue(), properties, descriptor));
 
     // In case a reference is multi-target, there will be a separate
     // "reference property" for each of the targets, so instead of
@@ -213,7 +213,7 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
   }
 
   private static <T> void setProperty(String property, WeaviateProtoProperties.Value value,
-      PropertiesBuilder<T> builder) {
+      PropertiesBuilder<T> builder, CollectionDescriptor<T> descriptor) {
     if (value.hasNullValue()) {
       builder.setNull(property);
     } else if (value.hasTextValue()) {
@@ -254,7 +254,22 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
         var dates = list.getDateValues().getValuesList().stream()
             .map(DateUtil::fromISO8601).toList();
         builder.setOffsetDateTimeArray(property, dates);
+      } else if (list.hasObjectValues()) {
+        List<? extends Object> objects = list.getObjectValues().getValuesList().stream()
+            .map(object -> {
+              var properties = descriptor.propertiesBuilder();
+              object.getFieldsMap().entrySet().stream()
+                  .forEach(entry -> setProperty(entry.getKey(), entry.getValue(), properties, descriptor));
+              return properties.build();
+            }).toList();
+        builder.setNestedObjectArray(property, objects);
       }
+    } else if (value.hasObjectValue()) {
+      var object = value.getObjectValue();
+      var properties = descriptor.propertiesBuilder();
+      object.getFieldsMap().entrySet().stream()
+          .forEach(entry -> setProperty(entry.getKey(), entry.getValue(), properties, descriptor));
+      builder.setNestedObject(property, properties.build());
     } else {
       throw new IllegalArgumentException(property + " data type is not supported");
     }

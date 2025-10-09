@@ -2,6 +2,7 @@ package io.weaviate.client6.v1.internal.json;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.ToNumberPolicy;
 import com.google.gson.reflect.TypeToken;
 
 import io.weaviate.client6.v1.internal.orm.PropertyFieldNamingStrategy;
@@ -49,6 +50,8 @@ public final class JSON {
 
     // ORM FieldNaminsStrategy ------------------------------------------------
     gsonBuilder.setFieldNamingStrategy(PropertyFieldNamingStrategy.INSTANCE);
+
+    gsonBuilder.setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE);
     gson = gsonBuilder.create();
   }
 

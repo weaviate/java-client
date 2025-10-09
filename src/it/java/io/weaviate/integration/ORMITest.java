@@ -350,4 +350,8 @@ public class ORMITest extends ConcurrentTest {
         .returns(true, Song::hasAward)
         .returns(null, Song::monthlyListeners);
   }
+
+  @Test
+  public void test_nestedProperties() throws IOException {
+  }
 }

@@ -18,6 +18,8 @@ public interface DataType {
   public static final String DATE_ARRAY = "date[]";
   public static final String UUID = "uuid";
   public static final String UUID_ARRAY = "uuid[]";
+  public static final String OBJECT = "object";
+  public static final String OBJECT_ARRAY = "object[]";
 
   /**
    * Scalar/array types which Weaviate and WeaviateClient recognize.
@@ -31,6 +33,6 @@ public interface DataType {
    * using {@link Property}'s factory classes.
    */
   public static final Set<String> KNOWN_TYPES = ImmutableSet.of(
-      TEXT, INT, BLOB, BOOL, DATE, UUID, NUMBER,
-      TEXT_ARRAY, INT_ARRAY, NUMBER_ARRAY, BOOL_ARRAY, DATE_ARRAY, UUID_ARRAY);
+      TEXT, INT, BLOB, BOOL, DATE, UUID, NUMBER, OBJECT,
+      TEXT_ARRAY, INT_ARRAY, NUMBER_ARRAY, BOOL_ARRAY, DATE_ARRAY, UUID_ARRAY, OBJECT_ARRAY);
 }
