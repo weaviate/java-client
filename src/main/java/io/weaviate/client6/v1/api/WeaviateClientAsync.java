@@ -7,6 +7,9 @@ import java.util.function.Function;
 import io.weaviate.client6.v1.api.alias.WeaviateAliasClientAsync;
 import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClient;
 import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClientAsync;
+import io.weaviate.client6.v1.api.rbac.groups.WeaviateGroupsClientAsync;
+import io.weaviate.client6.v1.api.rbac.roles.WeaviateRolesClientAsync;
+import io.weaviate.client6.v1.api.rbac.users.WeaviateUsersClientAsync;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.TokenProvider;
 import io.weaviate.client6.v1.internal.grpc.DefaultGrpcTransport;
@@ -29,6 +32,21 @@ public class WeaviateClientAsync implements AutoCloseable {
 
   /** Client for {@code /aliases} endpoints for managing collection aliases. */
   public final WeaviateAliasClientAsync alias;
+
+  /**
+   * Client for {@code /authz/roles} endpoints for managing RBAC roles.
+   */
+  public final WeaviateRolesClientAsync roles;
+
+  /**
+   * Client for {@code /authz/groups} endpoints for managing RBAC groups.
+   */
+  public final WeaviateGroupsClientAsync groups;
+
+  /**
+   * Client for {@code /users} endpoints for managing DB / OIDC users.
+   */
+  public final WeaviateUsersClientAsync users;
 
   /**
    * This constructor is blocking if {@link Authentication} configured,
@@ -84,6 +102,9 @@ public class WeaviateClientAsync implements AutoCloseable {
     this.restTransport = _restTransport;
     this.grpcTransport = new DefaultGrpcTransport(grpcOpt);
     this.alias = new WeaviateAliasClientAsync(restTransport);
+    this.roles = new WeaviateRolesClientAsync(restTransport);
+    this.groups = new WeaviateGroupsClientAsync(restTransport);
+    this.users = new WeaviateUsersClientAsync(restTransport);
     this.collections = new WeaviateCollectionsClientAsync(restTransport, grpcTransport);
   }
 
