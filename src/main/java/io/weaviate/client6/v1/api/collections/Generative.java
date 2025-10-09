@@ -14,12 +14,14 @@ import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 import io.weaviate.client6.v1.api.collections.generative.CohereGenerative;
+import io.weaviate.client6.v1.api.collections.generative.DummyGenerative;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.json.JsonEnum;
 
 public interface Generative {
   public enum Kind implements JsonEnum<Kind> {
-    COHERE("generative-cohere");
+    COHERE("generative-cohere"),
+    DUMMY("generative-dummy");
 
     private static final Map<String, Kind> jsonValueMap = JsonEnum.collectNames(Kind.values());
     private final String jsonValue;
@@ -68,6 +70,7 @@ public interface Generative {
 
     private final void init(Gson gson) {
       addAdapter(gson, Generative.Kind.COHERE, CohereGenerative.class);
+      addAdapter(gson, Generative.Kind.DUMMY, DummyGenerative.class);
     }
 
     @SuppressWarnings("unchecked")
@@ -100,6 +103,7 @@ public interface Generative {
           try {
             var kind = Generative.Kind.valueOfJson(moduleName);
             var adapter = readAdapters.get(kind);
+            assert adapter != null : "no generative adapter for kind " + kind;
             return adapter.read(in);
           } catch (IllegalArgumentException e) {
             return null;

@@ -6,6 +6,7 @@ import java.util.function.Function;
 import io.weaviate.client6.v1.api.collections.aggregate.WeaviateAggregateClient;
 import io.weaviate.client6.v1.api.collections.config.WeaviateConfigClient;
 import io.weaviate.client6.v1.api.collections.data.WeaviateDataClient;
+import io.weaviate.client6.v1.api.collections.generate.WeaviateGenerateClient;
 import io.weaviate.client6.v1.api.collections.pagination.Paginator;
 import io.weaviate.client6.v1.api.collections.query.ConsistencyLevel;
 import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClient;
@@ -20,6 +21,7 @@ public class CollectionHandle<PropertiesT> {
   public final WeaviateDataClient<PropertiesT> data;
   public final WeaviateQueryClient<PropertiesT> query;
   public final WeaviateAggregateClient aggregate;
+  public final WeaviateGenerateClient<PropertiesT> generate;
   public final WeaviateTenantsClient tenants;
 
   private final CollectionHandleDefaults defaults;
@@ -32,6 +34,7 @@ public class CollectionHandle<PropertiesT> {
     this.config = new WeaviateConfigClient(collection, restTransport, grpcTransport, defaults);
     this.aggregate = new WeaviateAggregateClient(collection, grpcTransport, defaults);
     this.query = new WeaviateQueryClient<>(collection, grpcTransport, defaults);
+    this.generate = new WeaviateGenerateClient<>(collection, grpcTransport, defaults);
     this.data = new WeaviateDataClient<>(collection, restTransport, grpcTransport, defaults);
     this.defaults = defaults;
 
@@ -43,6 +46,7 @@ public class CollectionHandle<PropertiesT> {
     this.config = new WeaviateConfigClient(c.config, defaults);
     this.aggregate = new WeaviateAggregateClient(c.aggregate, defaults);
     this.query = new WeaviateQueryClient<>(c.query, defaults);
+    this.generate = new WeaviateGenerateClient<>(c.generate, defaults);
     this.data = new WeaviateDataClient<>(c.data, defaults);
     this.defaults = defaults;
 
