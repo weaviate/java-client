@@ -21,10 +21,6 @@ public class Weaviate extends WeaviateContainer {
 
   private volatile SharedClient clientInstance;
 
-  public WeaviateClient getClient() {
-    return getClient(ObjectBuilder.identity());
-  }
-
   /**
    * Create a new instance of WeaviateClient connected to this container if none
    * exist. Get an existing client otherwise.
@@ -32,14 +28,8 @@ public class Weaviate extends WeaviateContainer {
    * The lifetime of this client is tied to that of its container, which means
    * that you do not need to {@code close} it manually. It will only truly close
    * after the parent Testcontainer is stopped.
-   *
-   * FIXME: we cannot return the same client for 2 different sets of
-   * configurations.
-   * What we should do is: {@link #getClient()} returns the shared client, while
-   * this one always constructs a new instance.
-   * Otherwise we'll get a race condition once the tests are parallelized.
    */
-  public WeaviateClient getClient(Function<Config.Custom, ObjectBuilder<Config>> fn) {
+  public WeaviateClient getClient() {
     if (!isRunning()) {
       start();
     }
@@ -49,19 +39,8 @@ public class Weaviate extends WeaviateContainer {
 
     synchronized (this) {
       if (clientInstance == null) {
-        var host = getHost();
-        var customFn = ObjectBuilder.partial(fn,
-            conn -> conn
-                .scheme("http")
-                .httpHost(host)
-                .grpcHost(host)
-                .httpPort(getMappedPort(8080))
-                .grpcPort(getMappedPort(50051)));
-        var config = customFn.apply(new Config.Custom()).build();
-        if (config.authentication() != null) {
-        }
         try {
-          clientInstance = new SharedClient(config, this);
+          clientInstance = new SharedClient(Config.of(defaultConfigFn()), this);
         } catch (Exception e) {
           throw new RuntimeException("create WeaviateClient for Weaviate container", e);
         }
@@ -75,19 +54,26 @@ public class Weaviate extends WeaviateContainer {
    * Prefer using {@link #getClient} unless your test needs the initialization
    * steps to run, e.g. OIDC authorization grant exchange.
    */
-  public WeaviateClient getNewClient(Function<Config.Custom, ObjectBuilder<Config>> fn) {
+  public WeaviateClient getClient(Function<Config.Custom, ObjectBuilder<Config>> fn) {
     if (!isRunning()) {
       start();
     }
+
+    var customFn = ObjectBuilder.partial(fn, defaultConfigFn());
+    var config = customFn.apply(new Config.Custom()).build();
+    try {
+      return new WeaviateClient(config);
+    } catch (Exception e) {
+      throw new RuntimeException("create WeaviateClient for Weaviate container", e);
+    }
+  }
+
+  private Function<Config.Custom, ObjectBuilder<Config>> defaultConfigFn() {
     var host = getHost();
-    var customFn = ObjectBuilder.partial(fn,
-        conn -> conn
-            .scheme("http")
-            .httpHost(host)
-            .grpcHost(host)
-            .httpPort(getMappedPort(8080))
-            .grpcPort(getMappedPort(50051)));
-    return WeaviateClient.connectToCustom(customFn);
+    return conn -> conn
+        .scheme("http")
+        .httpHost(host).httpPort(getMappedPort(8080))
+        .grpcHost(host).grpcPort(getMappedPort(50051));
   }
 
   public static Weaviate createDefault() {

@@ -128,7 +128,7 @@ public class OIDCSupportITest extends ConcurrentTest {
 
   /** Send an HTTP and gRPC requests using a "sync" client. */
   private static void pingWeaviate(final Weaviate container, Authentication auth) throws Exception {
-    try (final var client = container.getNewClient(conn -> conn.authentication(auth))) {
+    try (final var client = container.getClient(conn -> conn.authentication(auth))) {
       // Make an authenticated HTTP call
       Assertions.assertThat(client.isLive()).isTrue();
 
@@ -143,7 +143,7 @@ public class OIDCSupportITest extends ConcurrentTest {
 
   /** Send an HTTP and gRPC requests using an "async" client. */
   private static void pingWeaviateAsync(final Weaviate container, Authentication auth) throws Exception {
-    try (final var client = container.getNewClient(conn -> conn.authentication(auth))) {
+    try (final var client = container.getClient(conn -> conn.authentication(auth))) {
       try (final var async = client.async()) {
         // Make an authenticated HTTP call
         Assertions.assertThat(async.isLive().join()).isTrue();

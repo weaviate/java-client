@@ -19,8 +19,9 @@ public class DbUsersClientAsync extends NamespacedUsersClientAsync {
    * Create a new "db" user.
    *
    * @param userId User ID.
+   * @return API key for the created user.
    */
-  public CompletableFuture<Void> create(String userId) throws IOException {
+  public CompletableFuture<String> create(String userId) throws IOException {
     return this.restTransport.performRequestAsync(new CreateDbUserRequest(userId), CreateDbUserRequest._ENDPOINT);
   }
 
