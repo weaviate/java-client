@@ -19,14 +19,15 @@ public class DbUsersClient extends NamespacedUsersClient {
    * Create a new "db" user.
    *
    * @param userId User ID.
+   * @return API key for the created user.
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
    * @throws IOException          in case the request was not sent successfully
    *                              due to a malformed request, a networking error
    *                              or the server being unavailable.
    */
-  public void create(String userId) throws IOException {
-    this.restTransport.performRequest(new CreateDbUserRequest(userId), CreateDbUserRequest._ENDPOINT);
+  public String create(String userId) throws IOException {
+    return this.restTransport.performRequest(new CreateDbUserRequest(userId), CreateDbUserRequest._ENDPOINT);
   }
 
   /**

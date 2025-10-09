@@ -44,7 +44,7 @@ public class RbacITest extends ConcurrentTest {
   /** Name of the viewer role, which exists by default. */
   private static final String VIEWER_ROLE = "viewer";
 
-  private static final WeaviateClient client = Weaviate.custom()
+  private static final Weaviate container = Weaviate.custom()
       .withAdminUsers(ADMIN_USER)
       .withApiKeys(API_KEY)
       .withRbac()
@@ -53,7 +53,9 @@ public class RbacITest extends ConcurrentTest {
           "https://auth.wcs.api.weaviate.io/auth/realms/SeMI",
           "email",
           "groups")
-      .build()
+      .build();
+
+  private static final WeaviateClient client = container
       .getClient(fn -> fn.authentication(Authentication.apiKey(API_KEY)));
 
   @Test
@@ -187,7 +189,9 @@ public class RbacITest extends ConcurrentTest {
     var userId = ns("user");
     var roleName = ns("rock-n-role");
 
-    client.users.db.create(userId);
+    var apiKey = client.users.db.create(userId);
+    assertValidApiKey(apiKey);
+
     client.roles.create(roleName);
 
     client.users.db.assignRoles(userId, roleName);
@@ -206,6 +210,9 @@ public class RbacITest extends ConcurrentTest {
     Assertions.assertThat(client.users.db.byName(userId)).get()
         .as("user is activated")
         .returns(true, DbUser::active);
+
+    apiKey = client.users.db.rotateKey(userId);
+    assertValidApiKey(apiKey);
 
     client.users.db.deactivate(userId);
     Assertions.assertThat(client.users.db.byName(userId)).get()
@@ -243,5 +250,17 @@ public class RbacITest extends ConcurrentTest {
         .as("role revoked")
         .extracting(Role::name)
         .doesNotContain(roleName);
+  }
+
+  /**
+   * Create a new client with API-key authentication
+   * and check that it can make authenticated requests.
+   */
+  private void assertValidApiKey(String apiKey) {
+    try (final var c = container.getClient(cfg -> cfg.authentication(Authentication.apiKey(apiKey)))) {
+      Assertions.assertThatCode(() -> c.isLive()).as("check API key is valid").doesNotThrowAnyException();
+    } catch (Exception e) {
+      throw new AssertionError(e);
+    }
   }
 }
