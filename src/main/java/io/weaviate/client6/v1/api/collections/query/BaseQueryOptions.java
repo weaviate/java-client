@@ -3,12 +3,14 @@ package io.weaviate.client6.v1.api.collections.query;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
 
 import io.weaviate.client6.v1.api.collections.query.Metadata.MetadataField;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
 public record BaseQueryOptions(
@@ -18,6 +20,7 @@ public record BaseQueryOptions(
     String after,
     ConsistencyLevel consistencyLevel,
     Where where,
+    GenerativeSearch generativeSearch,
     List<String> returnProperties,
     List<QueryReference> returnReferences,
     List<Metadata> returnMetadata) {
@@ -30,6 +33,7 @@ public record BaseQueryOptions(
         builder.after,
         builder.consistencyLevel,
         builder.where,
+        builder.generativeSearch,
         builder.returnProperties,
         builder.returnReferences,
         builder.returnMetadata);
@@ -44,6 +48,7 @@ public record BaseQueryOptions(
     private String after;
     private ConsistencyLevel consistencyLevel;
     private Where where;
+    private GenerativeSearch generativeSearch;
     private List<String> returnProperties = new ArrayList<>();
     private List<QueryReference> returnReferences = new ArrayList<>();
     private List<Metadata> returnMetadata = new ArrayList<>();
@@ -99,6 +104,17 @@ public record BaseQueryOptions(
     /** Set consitency level for query resolution. */
     public final SELF consistencyLevel(ConsistencyLevel consistencyLevel) {
       this.consistencyLevel = consistencyLevel;
+      return (SELF) this;
+    }
+
+    /**
+     * Add arguments for generative query.
+     * Builders which support this parameter should make the method public.
+     *
+     * @param fn Lambda expression for optional parameters.
+     */
+    protected SELF generate(Function<GenerativeSearch.Builder, ObjectBuilder<GenerativeSearch>> fn) {
+      this.generativeSearch = GenerativeSearch.of(fn);
       return (SELF) this;
     }
 
@@ -192,6 +208,12 @@ public record BaseQueryOptions(
       var filter = WeaviateProtoBase.Filters.newBuilder();
       where.appendTo(filter);
       req.setFilters(filter);
+    }
+
+    if (generativeSearch != null) {
+      var generative = WeaviateProtoGenerative.GenerativeSearch.newBuilder();
+      generativeSearch.appendTo(generative);
+      req.setGenerative(generative);
     }
 
     var metadata = WeaviateProtoSearchGet.MetadataRequest.newBuilder();
