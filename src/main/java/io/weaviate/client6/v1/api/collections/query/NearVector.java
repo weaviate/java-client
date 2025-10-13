@@ -4,33 +4,31 @@ import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.aggregate.AggregateObjectFilter;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
-import io.weaviate.client6.v1.internal.grpc.ByteStringUtil;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate;
-import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
-public record NearVector(float[] vector, Float distance, Float certainty, BaseQueryOptions common)
+public record NearVector(NearVectorTarget searchTarget, Float distance, Float certainty, BaseQueryOptions common)
     implements QueryOperator, AggregateObjectFilter {
 
-  public static final NearVector of(float[] vector) {
-    return of(vector, ObjectBuilder.identity());
+  public static final NearVector of(NearVectorTarget searchTarget) {
+    return of(searchTarget, ObjectBuilder.identity());
   }
 
-  public static final NearVector of(float[] vector, Function<Builder, ObjectBuilder<NearVector>> fn) {
-    return fn.apply(new Builder(vector)).build();
+  public static final NearVector of(NearVectorTarget searchTarget, Function<Builder, ObjectBuilder<NearVector>> fn) {
+    return fn.apply(new Builder(searchTarget)).build();
   }
 
   public NearVector(Builder builder) {
-    this(builder.vector, builder.distance, builder.certainty, builder.baseOptions());
+    this(builder.searchTarget, builder.distance, builder.certainty, builder.baseOptions());
   }
 
   public static class Builder extends BaseVectorSearchBuilder<Builder, NearVector> {
     // Required query parameters.
-    private final float[] vector;
+    private final NearVectorTarget searchTarget;
 
-    public Builder(float[] vector) {
-      this.vector = vector;
+    public Builder(NearVectorTarget searchTarget) {
+      this.searchTarget = searchTarget;
     }
 
     @Override
@@ -56,9 +54,12 @@ public record NearVector(float[] vector, Float distance, Float certainty, BaseQu
   // This is made package-private for Hybrid to see. Should we refactor?
   WeaviateProtoBaseSearch.NearVector.Builder protoBuilder() {
     var nearVector = WeaviateProtoBaseSearch.NearVector.newBuilder();
-    nearVector.addVectors(WeaviateProtoBase.Vectors.newBuilder()
-        .setType(WeaviateProtoBase.Vectors.VectorType.VECTOR_TYPE_SINGLE_FP32)
-        .setVectorBytes(ByteStringUtil.encodeVectorSingle(vector)));
+
+    searchTarget.appendVectors(nearVector);
+    var targets = WeaviateProtoBaseSearch.Targets.newBuilder();
+    if (searchTarget.appendTargets(targets)) {
+      nearVector.setTargets(targets);
+    }
 
     if (certainty != null) {
       nearVector.setCertainty(certainty);

@@ -15,6 +15,7 @@ import io.weaviate.client6.v1.api.collections.query.NearText;
 import io.weaviate.client6.v1.api.collections.query.NearThermal;
 import io.weaviate.client6.v1.api.collections.query.NearVector;
 import io.weaviate.client6.v1.api.collections.query.NearVideo;
+import io.weaviate.client6.v1.api.collections.query.Target;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
@@ -197,7 +198,7 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    * @see AggregateResponse
    */
   public ResponseT nearVector(float[] vector, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
-    return nearVector(NearVector.of(vector), fn);
+    return nearVector(NearVector.of(Target.vector(vector)), fn);
   }
 
   /**
@@ -214,7 +215,7 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    */
   public ResponseT nearVector(float[] vector, Function<NearVector.Builder, ObjectBuilder<NearVector>> nv,
       Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
-    return nearVector(NearVector.of(vector, nv), fn);
+    return nearVector(NearVector.of(Target.vector(vector), nv), fn);
   }
 
   /**
@@ -248,7 +249,7 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    */
   public GroupedResponseT nearVector(float[] vector, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
       GroupBy groupBy) {
-    return nearVector(NearVector.of(vector), fn, groupBy);
+    return nearVector(NearVector.of(Target.vector(vector)), fn, groupBy);
   }
 
   /**
@@ -268,7 +269,7 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    */
   public GroupedResponseT nearVector(float[] vector, Function<NearVector.Builder, ObjectBuilder<NearVector>> nv,
       Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn, GroupBy groupBy) {
-    return nearVector(NearVector.of(vector, nv), fn, groupBy);
+    return nearVector(NearVector.of(Target.vector(vector), nv), fn, groupBy);
   }
 
   /**

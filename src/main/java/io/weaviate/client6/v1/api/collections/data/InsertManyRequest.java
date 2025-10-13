@@ -10,7 +10,6 @@ import java.util.UUID;
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
-import io.weaviate.client6.v1.internal.Debug;
 import io.weaviate.client6.v1.internal.MapUtil;
 import io.weaviate.client6.v1.internal.grpc.ByteStringUtil;
 import io.weaviate.client6.v1.internal.grpc.Rpc;
@@ -162,8 +161,6 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
         .setNonRefProperties(nonRef)
         .addAllSingleTargetRefProps(singleRef)
         .addAllMultiTargetRefProps(multiRef));
-
-    Debug.printProto(object);
   }
 
   @SuppressWarnings("unchecked")
