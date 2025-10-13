@@ -1,7 +1,10 @@
 package io.weaviate.client6.v1.internal.rest;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 import com.google.gson.annotations.SerializedName;
@@ -15,6 +18,8 @@ public abstract class EndpointBase<RequestT, ResponseT> implements Endpoint<Requ
   protected final Function<RequestT, String> requestUrl;
   protected final Function<RequestT, String> body;
   protected final Function<RequestT, Map<String, Object>> queryParameters;
+
+  private final Set<Integer> acceptStatusCodes = new HashSet<>();
 
   @SuppressWarnings("unchecked")
   protected static <RequestT> Function<RequestT, String> nullBody() {
@@ -54,7 +59,11 @@ public abstract class EndpointBase<RequestT, ResponseT> implements Endpoint<Requ
 
   @Override
   public boolean isError(int statusCode) {
-    return statusCode >= 400;
+    return statusCode >= 400 && !acceptStatusCodes.contains(statusCode);
+  }
+
+  protected void _allowStatusCodes(Integer... statusCodes) {
+    acceptStatusCodes.addAll(Arrays.asList(statusCodes));
   }
 
   @Override

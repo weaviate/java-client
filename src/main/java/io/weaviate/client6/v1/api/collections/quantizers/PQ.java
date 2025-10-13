@@ -12,7 +12,7 @@ public record PQ(
     @SerializedName("centroids") Integer centroids,
     @SerializedName("segments") Integer segments,
     @SerializedName("encoder_type") EncoderType encoderType,
-    @SerializedName("encoder_distribusion") EncoderDistribution encoderDistribution,
+    @SerializedName("encoder_distribution") EncoderDistribution encoderDistribution,
     @SerializedName("training_limit") Integer trainingLimit,
     @SerializedName("bit_compression") Boolean bitCompression) implements Quantization {
 
@@ -24,15 +24,15 @@ public record PQ(
   }
 
   public enum EncoderDistribution {
-    @SerializedName("log-normal")
-    NORMAL,
     @SerializedName("normal")
+    NORMAL,
+    @SerializedName("log-normal")
     LOG_NORMAL;
   }
 
   @Override
   public Quantization.Kind _kind() {
-    return Quantization.Kind.RQ;
+    return Quantization.Kind.PQ;
   }
 
   @Override

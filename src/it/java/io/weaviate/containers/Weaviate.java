@@ -15,14 +15,11 @@ import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public class Weaviate extends WeaviateContainer {
-  public static final String VERSION = "1.32.3";
+  public static final String VERSION = "1.33.0";
   public static final String DOCKER_IMAGE = "semitechnologies/weaviate";
+  public static String OIDC_ISSUER = "https://auth.wcs.api.weaviate.io/auth/realms/SeMI";
 
   private volatile SharedClient clientInstance;
-
-  public WeaviateClient getClient() {
-    return getClient(ObjectBuilder.identity());
-  }
 
   /**
    * Create a new instance of WeaviateClient connected to this container if none
@@ -32,7 +29,7 @@ public class Weaviate extends WeaviateContainer {
    * that you do not need to {@code close} it manually. It will only truly close
    * after the parent Testcontainer is stopped.
    */
-  public WeaviateClient getClient(Function<Config.Custom, ObjectBuilder<Config>> fn) {
+  public WeaviateClient getClient() {
     if (!isRunning()) {
       start();
     }
@@ -42,17 +39,8 @@ public class Weaviate extends WeaviateContainer {
 
     synchronized (this) {
       if (clientInstance == null) {
-        var host = getHost();
-        var customFn = ObjectBuilder.partial(fn,
-            conn -> conn
-                .scheme("http")
-                .httpHost(host)
-                .grpcHost(host)
-                .httpPort(getMappedPort(8080))
-                .grpcPort(getMappedPort(50051)));
-        var config = customFn.apply(new Config.Custom()).build();
         try {
-          clientInstance = new SharedClient(config, this);
+          clientInstance = new SharedClient(Config.of(defaultConfigFn()), this);
         } catch (Exception e) {
           throw new RuntimeException("create WeaviateClient for Weaviate container", e);
         }
@@ -66,19 +54,26 @@ public class Weaviate extends WeaviateContainer {
    * Prefer using {@link #getClient} unless your test needs the initialization
    * steps to run, e.g. OIDC authorization grant exchange.
    */
-  public WeaviateClient getNewClient(Function<Config.Custom, ObjectBuilder<Config>> fn) {
+  public WeaviateClient getClient(Function<Config.Custom, ObjectBuilder<Config>> fn) {
     if (!isRunning()) {
       start();
     }
+
+    var customFn = ObjectBuilder.partial(fn, defaultConfigFn());
+    var config = customFn.apply(new Config.Custom()).build();
+    try {
+      return new WeaviateClient(config);
+    } catch (Exception e) {
+      throw new RuntimeException("create WeaviateClient for Weaviate container", e);
+    }
+  }
+
+  private Function<Config.Custom, ObjectBuilder<Config>> defaultConfigFn() {
     var host = getHost();
-    var customFn = ObjectBuilder.partial(fn,
-        conn -> conn
-            .scheme("http")
-            .httpHost(host)
-            .grpcHost(host)
-            .httpPort(getMappedPort(8080))
-            .grpcPort(getMappedPort(50051)));
-    return WeaviateClient.connectToCustom(customFn);
+    return conn -> conn
+        .scheme("http")
+        .httpHost(host).httpPort(getMappedPort(8080))
+        .grpcHost(host).grpcPort(getMappedPort(50051));
   }
 
   public static Weaviate createDefault() {
@@ -92,7 +87,8 @@ public class Weaviate extends WeaviateContainer {
   public static class Builder {
     private String versionTag;
     private Set<String> enableModules = new HashSet<>();
-
+    private Set<String> adminUsers = new HashSet<>();
+    private Set<String> viewerUsers = new HashSet<>();
     private Map<String, String> environment = new HashMap<>();
 
     public Builder() {
@@ -142,6 +138,36 @@ public class Weaviate extends WeaviateContainer {
       environment.put("BACKUP_FILESYSTEM_PATH", fsPath);
       return this;
     }
+    public Builder withAdminUsers(String... admins) {
+      adminUsers.addAll(Arrays.asList(admins));
+      return this;
+    }
+
+    public Builder withViewerUsers(String... viewers) {
+      viewerUsers.addAll(Arrays.asList(viewers));
+      return this;
+    }
+
+    /** Enable RBAC authorization for this container. */
+    public Builder withRbac() {
+      environment.put("AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED", "false");
+      environment.put("AUTHENTICATION_APIKEY_ENABLED", "true");
+      environment.put("AUTHORIZATION_RBAC_ENABLED", "true");
+      environment.put("AUTHENTICATION_DB_USERS_ENABLED", "true");
+      return this;
+    }
+
+    /**
+     * Enable API-Key authentication for this container.
+     *
+     * @param apiKeys Allowed API keys.
+     */
+    public Builder withApiKeys(String... apiKeys) {
+      environment.put("AUTHENTICATION_APIKEY_ENABLED", "true");
+      environment.put("AUTHENTICATION_APIKEY_ALLOWED_KEYS", String.join(",",
+          apiKeys));
+      return this;
+    }
 
     public Builder enableTelemetry(boolean enable) {
       environment.put("DISABLE_TELEMETRY", Boolean.toString(!enable));
@@ -174,6 +200,20 @@ public class Weaviate extends WeaviateContainer {
       if (!enableModules.isEmpty()) {
         c.withEnv("ENABLE_API_BASED_MODULES", Boolean.TRUE.toString());
         c.withEnv("ENABLE_MODULES", String.join(",", enableModules));
+      }
+
+      var apiKeyUsers = new HashSet<String>();
+      apiKeyUsers.addAll(adminUsers);
+      apiKeyUsers.addAll(viewerUsers);
+
+      if (!adminUsers.isEmpty()) {
+        environment.put("AUTHORIZATION_ADMIN_USERS", String.join(",", adminUsers));
+      }
+      if (!viewerUsers.isEmpty()) {
+        environment.put("AUTHORIZATION_VIEWER_USERS", String.join(",", viewerUsers));
+      }
+      if (!apiKeyUsers.isEmpty()) {
+        environment.put("AUTHENTICATION_APIKEY_USERS", String.join(",", apiKeyUsers));
       }
 
       environment.forEach((name, value) -> c.withEnv(name, value));

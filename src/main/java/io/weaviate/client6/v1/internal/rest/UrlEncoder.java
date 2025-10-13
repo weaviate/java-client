@@ -6,9 +6,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-final class UrlEncoder {
+public final class UrlEncoder {
 
-  private static String encodeValue(Object value) {
+  public static String encodeValue(Object value) {
     try {
       return URLEncoder.encode(value.toString(), StandardCharsets.UTF_8.toString());
     } catch (UnsupportedEncodingException e) {

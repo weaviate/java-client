@@ -72,6 +72,7 @@ applicationDefaultJvmArgs += listOf(
 
 ## Supported APIs
 
+
 ### Tucked Builder
 
 Tucked Builder is an iteration of the Builder pattern that reduces boilerplate and leverages static typing and autocompletion to help API discovery.
@@ -193,6 +194,7 @@ WeaviateClient wcd = WeaviateClient.connectToWeaviateCloud("my-cluster-url.io", 
 > ```
 > WeaviateClient will be automatically closed when execution exits the block.
 
+
 #### Authentication
 
 Weaviate supports several authentication methods:
@@ -213,6 +215,7 @@ WeaviateClient.connectToCustom(
 ```
 
 Follow the [documentation](https://docs.weaviate.io/deploy/configuration/authentication) for a detailed discussion.
+
 
 ### Collection management
 
@@ -249,6 +252,7 @@ Other methods in `collections` namespace include:
 - `list()` to fetch collection configurations for all existing collections
 - `deleteAll()` to drop all collections and their data
 
+
 #### Using a Collection Handle
 
 Once a collection is created, you can obtain another client object that's scoped to that collection, called a _"handle"_.
@@ -274,6 +278,7 @@ Thread.run(() -> popSongs.forEach(song -> songs.data.insert(song)));
 
 For the rest of the document, assume `songs` is handle for the "Songs" collection defined elsewhere.
 
+
 #### Generic `PropertiesT`
 
 Weaviate client lets you insert object properties in different "shapes". The compile-time type in which the properties must be passed is determined by a generic paramter in CollectionHandle object.
@@ -283,9 +288,11 @@ In practice this means you'll be passing an instance of `Map<String, Object>` to
 
 If you prefer stricter typing, you can leverage our built-in ORM to work with properties as custom Java types. We will return to this in the **ORM** section later. Assume for now that properties are always being passed around as an "untyped" map.
 
+
 ### Ingesting data
 
 Data operations are concentrated behind the `.data` namespace.
+
 
 #### Insert single object
 
@@ -401,6 +408,7 @@ songs.query.nearImage("base64-encoded-image");
 > [!TIP]
 > The first object returned in a NearObject query will _always_ be the search object itself. To filter it out, use the `.excludeSelf()` helper as in the example above.
 
+
 #### Keyword and Hybrid search
 
 ```java
@@ -481,6 +489,7 @@ Where.property("title").like("summer").not();
 
 Passing `null` and and empty `Where[]` to any of the logical operators as well as to the `.where()` method is safe -- the empty operators will simply be ignored.
 
+
 #### Grouping results
 
 Every query above has an overloaded variant that accepts a group-by clause.
@@ -501,6 +510,7 @@ songs.query.bm25(
 ```
 
 The shape of the response object is different too, see [`QueryResponseGrouped`](./src/main/java/io/weaviate/client6/v1/api/collections/query/QueryResponseGrouped.java).
+
 
 ### Pagination
 
@@ -700,6 +710,7 @@ System.out.println(
 
 Some of these features may be added in future releases.
 
+
 ### Collection alias
 
 ```java
@@ -766,6 +777,85 @@ var restored = restoring.waitForCompletion(client, wait -> wait
      .interval(Duration.ofMinutes(5)));
 
 assert restored.errors() == null : "restored with errors";
+```
+
+### RBAC
+
+#### Roles
+
+The client supports all permission types existing as of `v1.33`.
+
+```java
+import io.weaviate.client6.v1.api.rbac.Permission;
+
+client.roles.create(
+  "ManagerRole",
+  Permission.collections("Songs", CollectionsPermission.Action.READ, CollectionsPermission.Action.DELETE),
+  Permission.backups("Albums", BackupsPermission.Action.MANAGE)
+);
+assert !client.roles.hasPermission("ManagerRole", Permission.collections("Songs", CollectionsPermission.Action.UPDATE));
+
+client.roles.create(
+  "ArtistRole",
+  Permission.collections("Songs", CollectionsPermission.Action.CREATE)
+);
+
+client.roles.delete("PromoterRole");
+```
+
+#### Users
+
+> [!NOTE]
+> Not all modifications which can be done to _DB_ users (managed by Weaviate) are equally applicable to _OIDC_ users (managed by an external IdP).
+> For this reason their APIs are separated into two distinct namespaces: `users.db` and `users.oidc`.
+
+```java
+// DB users must be either defined in the server's environment configuration or created explicitly
+if (!client.users.db.exists("ManagerUser")) {
+    client.users.db.create("ManagerUser");
+}
+
+client.users.db.assignRole("ManagerUser", "ManagerRole");
+
+
+// OIDC users originate from the IdP and do not need to be (and cannot) be created.
+client.users.oidc.assignRole("DaveMustaine", "ArtistRole");
+client.users.oidc.assignRole("Tarkan", "ArtistRole");
+
+
+// There's a number of other actions you can take on a DB user:
+Optional<DbUser> user = client.users.db.byName("ManagerUser");
+assert user.isPresent();
+
+DbUser manager = user.get();
+if (!manager.active()) {
+    client.users.db.activate(manager.id());
+}
+
+String newApiKey = client.users.db.rotateKey(manager.id());
+client.users.db.deactivate(manager.id());
+client.users.db.delete(manager.id());
+```
+
+You can get a brief information about the currently authenticated user:
+
+```java
+User current = client.users.myUser();
+System.out.println(current.userType()); // Prints "DB_USER", "DB_ENV", or "OIDC".
+```
+
+#### Groups
+
+RBAC groups are created by assigning roles to a previously-inexisted groups and remove when no roles are longer assigned to a group.
+
+```java
+client.groups.assignRoles("./friend-group",  "BestFriendRole", "OldFriendRole");
+
+assert client.groups.knownGroupNames().size() == 1; // "./friend-group"
+assert client.groups.assignedRoles("./friend-group").size() == 2;
+
+client.groups.assignRoles("./friend-group",  "BestFriendRole", "OldFriendRole");
+assert client.groups.knownGroupNames().isEmpty();
 ```
 
 ## Useful resources
