@@ -427,7 +427,7 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    * @see AggregateResponse
    */
   public ResponseT nearText(List<String> concepts, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
-    return nearText(NearText.of(concepts), fn);
+    return nearText(NearText.of(Target.text(concepts)), fn);
   }
 
   /**
@@ -444,7 +444,7 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    */
   public ResponseT nearText(String text, Function<NearText.Builder, ObjectBuilder<NearText>> nt,
       Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
-    return nearText(NearText.of(text, nt), fn);
+    return nearText(NearText.of(Target.text(List.of(text)), nt), fn);
   }
 
   /**
@@ -461,7 +461,7 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    */
   public ResponseT nearText(List<String> concepts, Function<NearText.Builder, ObjectBuilder<NearText>> nt,
       Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
-    return nearText(NearText.of(concepts, nt), fn);
+    return nearText(NearText.of(Target.text(concepts), nt), fn);
   }
 
   /**
@@ -513,7 +513,7 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    */
   public GroupedResponseT nearText(List<String> concepts, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
       GroupBy groupBy) {
-    return nearText(NearText.of(concepts), fn, groupBy);
+    return nearText(NearText.of(Target.text(concepts)), fn, groupBy);
   }
 
   /**
@@ -553,7 +553,7 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    */
   public GroupedResponseT nearText(List<String> concepts, Function<NearText.Builder, ObjectBuilder<NearText>> nt,
       Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn, GroupBy groupBy) {
-    return nearText(NearText.of(concepts, nt), fn, groupBy);
+    return nearText(NearText.of(Target.text(concepts), nt), fn, groupBy);
   }
 
   /**
