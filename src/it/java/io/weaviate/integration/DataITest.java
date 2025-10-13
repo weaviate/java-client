@@ -431,7 +431,13 @@ public class DataITest extends ConcurrentTest {
                 Property.boolArray("prop_bool_array"),
                 Property.dateArray("prop_date_array"),
                 Property.uuidArray("prop_uuid_array"),
-                Property.textArray("prop_text_array")));
+                Property.textArray("prop_text_array"),
+                Property.object("prop_object",
+                    p -> p.nestedProperties(
+                        Property.text("marco"))),
+                Property.objectArray("prop_object_array",
+                    p -> p.nestedProperties(
+                        Property.text("marco")))));
 
     var types = client.collections.use(nsDataTypes);
 
@@ -450,13 +456,13 @@ public class DataITest extends ConcurrentTest {
         Map.entry("prop_bool_array", List.of(true, false)),
         Map.entry("prop_date_array", List.of(now, now)),
         Map.entry("prop_uuid_array", List.of(uuid, uuid)),
-        Map.entry("prop_text_array", List.of("a", "b", "c")));
-    var returnProperties = want.keySet().toArray(String[]::new);
+        Map.entry("prop_text_array", List.of("a", "b", "c")),
+        Map.entry("prop_object", Map.of("marco", "polo")),
+        Map.entry("prop_object_array", List.of(Map.of("marco", "polo"))));
 
     // Act
     var object = types.data.insert(want);
-    var got = types.query.byId(object.uuid(),
-        q -> q.returnProperties(returnProperties));
+    var got = types.query.byId(object.uuid()); // return all properties
 
     // Assert
     Assertions.assertThat(got).get()
@@ -464,5 +470,53 @@ public class DataITest extends ConcurrentTest {
         .asInstanceOf(InstanceOfAssertFactories.map(String.class, Object.class))
         .containsAllEntriesOf(want);
 
+  }
+
+  record Address(
+      String street,
+      @io.weaviate.client6.v1.api.collections.annotations.Property("building_nr") int buildingNr,
+      @io.weaviate.client6.v1.api.collections.annotations.Property("isOneWay") boolean oneWay) {
+  }
+
+  @Test
+  public void testNestedProperties_insertMany() throws IOException {
+    // Arrange
+    var nsBuildings = ns("Buildings");
+
+    client.collections.create(
+        nsBuildings, c -> c.properties(
+            Property.object("address", p -> p.nestedProperties(
+                Property.text("street"),
+                Property.integer("building_nr"),
+                Property.bool("isOneWay"))),
+            Property.objectArray("apartments", p -> p.nestedProperties(
+                Property.integer("door_nr"),
+                Property.number("area")))));
+
+    var buildings = client.collections.use(nsBuildings);
+
+    Map<String, Object> house_1 = Map.of(
+        "address", Map.of(
+            "street", "Burggasse",
+            "building_nr", 51,
+            "isOneWay", true),
+        "apartments", List.of(
+            Map.of("door_nr", 11, "area", 42.2),
+            Map.of("door_nr", 12, "area", 26.7)));
+    Map<String, Object> house_2 = Map.of(
+        "address", new Address(
+            "Port Mariland St.",
+            111,
+            false),
+        "apartments", new Map[] {
+            Map.of("door_nr", 21, "area", 42.2),
+            Map.of("door_nr", 22, "area", 26.7),
+        });
+
+    // Act
+    var result = buildings.data.insertMany(house_1, house_2);
+
+    // Assert
+    Assertions.assertThat(result.errors()).isEmpty();
   }
 }
