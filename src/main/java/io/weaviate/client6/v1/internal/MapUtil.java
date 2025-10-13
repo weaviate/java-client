@@ -28,9 +28,9 @@ public final class MapUtil {
    * // Result: {1: 1, 2: 2, 3: null};
    * }</pre>
    *
-   * @param stream Stream of elements {@link T}.
-   * @param keyFn  Transforms element {@link T} to key {@link K}.
-   * @param keyFn  Transforms element {@link T} to value {@link V}.
+   * @param stream  Stream of elements {@link T}.
+   * @param keyFn   Transforms element {@link T} to key {@link K}.
+   * @param valueFn Transforms element {@link T} to value {@link V}.
    * @return Map
    */
   public static <K, V, T> Map<K, V> collect(Stream<T> stream, Function<T, K> keyFn, Function<T, V> valueFn) {

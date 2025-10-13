@@ -133,6 +133,11 @@ public class Weaviate extends WeaviateContainer {
       return this;
     }
 
+    public Builder withFilesystemBackup(String fsPath) {
+      addModules("backup-filesystem");
+      environment.put("BACKUP_FILESYSTEM_PATH", fsPath);
+      return this;
+    }
     public Builder withAdminUsers(String... admins) {
       adminUsers.addAll(Arrays.asList(admins));
       return this;

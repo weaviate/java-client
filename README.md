@@ -733,6 +733,64 @@ client.collections.update("Songs_Alias", "PopSongs");
 client.collections.delete("Songs_Alias");
 ```
 
+### Managing collection backups
+
+> [!CAUTION]
+> Weaviate does not support concurrent backups. Await one backup's completion before starting another one.
+
+```java
+// Start a backup:
+Backup backup = client.backup.create(
+  "backup_1", "filesystem",
+  bak -> bak
+    .includeCollections("Songs", "Artists")
+    .compressionLevel(CompressionLevel.BEST_COMPRESSION)
+    .cpuPercentage(30)
+);
+
+// By default, the client does not monitor the backup status.
+// The above method returns as soon as the server acknowledges
+// the request and starts to process it.
+//
+// Now you can poll backup status to know when it is succeedes (or fails).
+
+Backup status = client.backup.getCreateStatus(backup.id(), backup.backend());
+if (status.status() == BackupStatus.SUCCESSFUL) {
+    System.out.println("Yay!");
+    System.exit(0);
+}
+
+// Backups may take a write to complete. To block the current thread until
+// the execution completes, call Backup::waitForCompletion(WeaviateClient).
+//
+// Notice that, while we use `backup` object we can also call it on the `status`,
+// as both will have sufficient information to identify the backup operation.
+
+try {
+    Backup completed = backup.waitForCompletion(client);
+    assert completed.errors() == null : "completed with errors";
+} catch (TimeoutException e) {
+    System.out.exit(1);
+}
+
+// List exists backups:
+List<Backup> allBackups = client.backup.list();
+
+// Restore from the first backup:
+var first = allBackups.getFirst();
+client.backup.restore(first.id(), first.backend());
+
+// Similarly, wait until the restore is complete using Backup::waitForCompletion.
+// It is possible to set a custom timeout and polling interval using a familiar Tucked Builder pattern:
+
+var restoring = client.backup.getRestoreStatus(first.id(), first.backend());
+var restored = restoring.waitForCompletion(client, wait -> wait
+     .timeout(Duration.ofMinutes(30))
+     .interval(Duration.ofMinutes(5)));
+
+assert restored.errors() == null : "restored with errors";
+```
+
 ### RBAC
 
 #### Roles

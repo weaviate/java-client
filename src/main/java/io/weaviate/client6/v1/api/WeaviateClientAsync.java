@@ -5,6 +5,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.alias.WeaviateAliasClientAsync;
+import io.weaviate.client6.v1.api.backup.WeaviateBackupClientAsync;
 import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClient;
 import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClientAsync;
 import io.weaviate.client6.v1.api.rbac.groups.WeaviateGroupsClientAsync;
@@ -32,6 +33,9 @@ public class WeaviateClientAsync implements AutoCloseable {
 
   /** Client for {@code /aliases} endpoints for managing collection aliases. */
   public final WeaviateAliasClientAsync alias;
+
+  /** Client for {@code /backups} endpoints for managing backups. */
+  public final WeaviateBackupClientAsync backup;
 
   /**
    * Client for {@code /authz/roles} endpoints for managing RBAC roles.
@@ -102,6 +106,7 @@ public class WeaviateClientAsync implements AutoCloseable {
     this.restTransport = _restTransport;
     this.grpcTransport = new DefaultGrpcTransport(grpcOpt);
     this.alias = new WeaviateAliasClientAsync(restTransport);
+    this.backup = new WeaviateBackupClientAsync(restTransport);
     this.roles = new WeaviateRolesClientAsync(restTransport);
     this.groups = new WeaviateGroupsClientAsync(restTransport);
     this.users = new WeaviateUsersClientAsync(restTransport);
