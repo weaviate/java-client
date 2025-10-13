@@ -6,33 +6,36 @@ import java.util.List;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.aggregate.AggregateObjectFilter;
+import io.weaviate.client6.v1.api.collections.query.Target.CombinedTextTarget;
+import io.weaviate.client6.v1.api.collections.query.Target.TextTarget;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
-public record NearText(List<String> concepts, Float distance, Float certainty, Move moveTo, Move moveAway,
+public record NearText(Target searchTarget, Float distance, Float certainty, Move moveTo,
+    Move moveAway,
     BaseQueryOptions common) implements QueryOperator, AggregateObjectFilter {
 
   public static NearText of(String... concepts) {
-    return of(Arrays.asList(concepts), ObjectBuilder.identity());
+    return of(Target.text(Arrays.asList(concepts)), ObjectBuilder.identity());
   }
 
-  public static NearText of(List<String> concepts) {
-    return of(concepts, ObjectBuilder.identity());
+  public static NearText of(Target searchTarget) {
+    return of(searchTarget, ObjectBuilder.identity());
   }
 
   public static NearText of(String text, Function<Builder, ObjectBuilder<NearText>> fn) {
-    return of(List.of(text), fn);
+    return of(Target.text(List.of(text)), fn);
   }
 
-  public static NearText of(List<String> concepts, Function<Builder, ObjectBuilder<NearText>> fn) {
-    return fn.apply(new Builder(concepts)).build();
+  public static NearText of(Target searchTarget, Function<Builder, ObjectBuilder<NearText>> fn) {
+    return fn.apply(new Builder(searchTarget)).build();
   }
 
   public NearText(Builder builder) {
     this(
-        builder.concepts,
+        builder.searchTarget,
         builder.distance,
         builder.certainty,
         builder.moveTo,
@@ -42,14 +45,14 @@ public record NearText(List<String> concepts, Float distance, Float certainty, M
 
   public static class Builder extends BaseVectorSearchBuilder<Builder, NearText> {
     // Required query parameters.
-    private final List<String> concepts;
+    private final Target searchTarget;
 
     // Optional query parameter.
     private Move moveTo;
     private Move moveAway;
 
-    public Builder(List<String> concepts) {
-      this.concepts = concepts;
+    public Builder(Target searchTarget) {
+      this.searchTarget = searchTarget;
     }
 
     public final Builder moveTo(float force, Function<Move.Builder, ObjectBuilder<Move>> fn) {
@@ -128,7 +131,17 @@ public record NearText(List<String> concepts, Float distance, Float certainty, M
   // Package-private for Hybrid to see.
   WeaviateProtoBaseSearch.NearTextSearch.Builder protoBuilder() {
     var nearText = WeaviateProtoBaseSearch.NearTextSearch.newBuilder();
-    nearText.addAllQuery(concepts);
+
+    if (searchTarget instanceof TextTarget text) {
+      nearText.addAllQuery(text.query());
+    } else if (searchTarget instanceof CombinedTextTarget combined) {
+      nearText.addAllQuery(combined.query());
+    }
+
+    var targets = WeaviateProtoBaseSearch.Targets.newBuilder();
+    if (searchTarget.appendTargets(targets)) {
+      nearText.setTargets(targets);
+    }
 
     if (certainty != null) {
       nearText.setCertainty(certainty);
@@ -136,7 +149,6 @@ public record NearText(List<String> concepts, Float distance, Float certainty, M
       nearText.setDistance(distance);
     }
 
-    // TODO: add targets
     if (moveTo != null) {
       var to = WeaviateProtoBaseSearch.NearTextSearch.Move.newBuilder();
       moveTo.appendTo(to);

@@ -1,5 +1,6 @@
 package io.weaviate.client6.v1.api.collections.query;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -548,7 +549,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    *                              error status code.
    */
   public ResponseT nearText(String... text) {
-    return nearText(NearText.of(text));
+    return nearText(Target.text(Arrays.asList(text)));
   }
 
   /**
@@ -560,7 +561,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    *                              error status code.
    */
   public ResponseT nearText(String text, Function<NearText.Builder, ObjectBuilder<NearText>> fn) {
-    return nearText(NearText.of(text, fn));
+    return nearText(Target.text(List.of(text)), fn);
   }
 
   /**
@@ -572,7 +573,30 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    *                              error status code.
    */
   public ResponseT nearText(List<String> text, Function<NearText.Builder, ObjectBuilder<NearText>> fn) {
-    return nearText(NearText.of(text, fn));
+    return nearText(Target.text(text), fn);
+  }
+
+  /**
+   * Query collection objects using near text search.
+   *
+   * @param searchTarget Target query concepts.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearText(Target searchTarget) {
+    return nearText(NearText.of(searchTarget));
+  }
+
+  /**
+   * Query collection objects using near text search.
+   *
+   * @param searchTarget Target query concepts.
+   * @param fn           Lambda expression for optional parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearText(Target searchTarget, Function<NearText.Builder, ObjectBuilder<NearText>> fn) {
+    return nearText(NearText.of(searchTarget, fn));
   }
 
   /**
@@ -599,7 +623,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @see QueryResponseGrouped
    */
   public GroupedResponseT nearText(String text, GroupBy groupBy) {
-    return nearText(NearText.of(text), groupBy);
+    return nearText(Target.text(List.of(text)), groupBy);
   }
 
   /**
@@ -615,7 +639,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @see QueryResponseGrouped
    */
   public GroupedResponseT nearText(List<String> text, GroupBy groupBy) {
-    return nearText(NearText.of(text), groupBy);
+    return nearText(Target.text(text), groupBy);
   }
 
   /**
@@ -631,9 +655,10 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @see GroupBy
    * @see QueryResponseGrouped
    */
-  public GroupedResponseT nearText(String text, Function<NearText.Builder, ObjectBuilder<NearText>> fn,
+  public GroupedResponseT nearText(String text,
+      Function<NearText.Builder, ObjectBuilder<NearText>> fn,
       GroupBy groupBy) {
-    return nearText(NearText.of(text), groupBy);
+    return nearText(Target.text(List.of(text)), fn, groupBy);
   }
 
   /**
@@ -649,9 +674,45 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @see GroupBy
    * @see QueryResponseGrouped
    */
-  public GroupedResponseT nearText(List<String> text, Function<NearText.Builder, ObjectBuilder<NearText>> fn,
+  public GroupedResponseT nearText(List<String> text,
+      Function<NearText.Builder, ObjectBuilder<NearText>> fn,
       GroupBy groupBy) {
-    return nearText(NearText.of(text), groupBy);
+    return nearText(Target.text(text), groupBy);
+  }
+
+  /**
+   * Query collection objects using near text search.
+   *
+   * @param searchTarget Target query concepts.
+   * @param groupBy      Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see QueryResponseGrouped
+   */
+  public GroupedResponseT nearText(Target searchTarget, GroupBy groupBy) {
+    return nearText(NearText.of(searchTarget), groupBy);
+  }
+
+  /**
+   * Query collection objects using near text search.
+   *
+   * @param searchTarget Target query concepts.
+   * @param fn           Lambda expression for optional parameters.
+   * @param groupBy      Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see QueryResponseGrouped
+   */
+  public GroupedResponseT nearText(Target searchTarget,
+      Function<NearText.Builder, ObjectBuilder<NearText>> fn,
+      GroupBy groupBy) {
+    return nearText(NearText.of(searchTarget, fn), groupBy);
   }
 
   /**
