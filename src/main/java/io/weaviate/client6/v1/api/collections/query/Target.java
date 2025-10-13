@@ -9,7 +9,6 @@ import com.google.protobuf.ByteString;
 import io.weaviate.client6.v1.internal.grpc.ByteStringUtil;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch;
-import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch.Targets.Builder;
 
 public interface Target {
 
@@ -171,23 +170,15 @@ public interface Target {
     }
   }
 
-  record TextTarget(String vectorName, Float weight, List<String> query) implements Target {
+  record TextTarget(VectorWeight weight, List<String> query) implements Target {
+
+    private TextTarget(String vectorName, Float weight, List<String> query) {
+      this(new VectorWeight(vectorName, weight), query);
+    }
 
     @Override
-    public boolean appendTargets(Builder req) {
-      if (vectorName == null) {
-        return false;
-      }
-      req.addTargetVectors(vectorName);
-
-      var weightsForTarget = WeaviateProtoBaseSearch.WeightsForTarget.newBuilder()
-          .setTarget(vectorName);
-      if (weight != null) {
-        weightsForTarget.setWeight(weight);
-      }
-      req.addWeightsForTargets(weightsForTarget);
-      return true;
-
+    public boolean appendTargets(WeaviateProtoBaseSearch.Targets.Builder req) {
+      return weight.appendTargets(req);
     }
   }
 
@@ -203,12 +194,34 @@ public interface Target {
     return new TextTarget(vectorName, weight, Arrays.asList(text));
   }
 
-  record CombinedTextTarget(List<String> query, CombinationMethod combinationMethod, List<TextTarget> targets)
+  /**
+   * Weight to be applied to the vector distance. Used for text-based
+   * queries where only a single input is allowed.
+   */
+  record VectorWeight(String vectorName, Float weight) implements Target {
+    @Override
+    public boolean appendTargets(WeaviateProtoBaseSearch.Targets.Builder req) {
+      if (vectorName == null) {
+        return false;
+      }
+      req.addTargetVectors(vectorName);
+
+      var weightsForTarget = WeaviateProtoBaseSearch.WeightsForTarget.newBuilder()
+          .setTarget(vectorName);
+      if (weight != null) {
+        weightsForTarget.setWeight(weight);
+      }
+      req.addWeightsForTargets(weightsForTarget);
+      return true;
+    }
+  }
+
+  record CombinedTextTarget(List<String> query, CombinationMethod combinationMethod, List<VectorWeight> vectorWeights)
       implements Target {
 
     @Override
     public boolean appendTargets(WeaviateProtoBaseSearch.Targets.Builder req) {
-      if (targets.isEmpty()) {
+      if (vectorWeights.isEmpty()) {
         return false;
       }
       switch (combinationMethod) {
@@ -228,8 +241,43 @@ public interface Target {
           req.setCombination(WeaviateProtoBaseSearch.CombinationMethod.COMBINATION_METHOD_TYPE_MANUAL);
           break;
       }
-      targets.forEach(t -> t.appendTargets(req));
+      vectorWeights.forEach(t -> t.appendTargets(req));
       return true;
     }
+  }
+
+  static VectorWeight weight(String vectorName, float weight) {
+    return new VectorWeight(vectorName, weight);
+  }
+
+  static Target combine(List<String> query, CombinationMethod combinationMethod, VectorWeight... vectorWeights) {
+    return new CombinedTextTarget(query, combinationMethod, Arrays.asList(vectorWeights));
+  }
+
+  static Target combine(List<String> query, CombinationMethod combinationMethod, String... targetVectors) {
+    var vectorWeights = Arrays.stream(targetVectors)
+        .map(vw -> new VectorWeight(vw, null))
+        .toArray(VectorWeight[]::new);
+    return combine(query, combinationMethod, vectorWeights);
+  }
+
+  static Target sum(List<String> query, String... targetVectors) {
+    return combine(query, CombinationMethod.SUM, targetVectors);
+  }
+
+  static Target min(List<String> query, String... targetVectors) {
+    return combine(query, CombinationMethod.MIN, targetVectors);
+  }
+
+  static Target average(List<String> query, String... targetVectors) {
+    return combine(query, CombinationMethod.AVERAGE, targetVectors);
+  }
+
+  static Target relativeScore(List<String> query, VectorWeight... weights) {
+    return combine(query, CombinationMethod.RELATIVE_SCORE, weights);
+  }
+
+  static Target manualWeights(List<String> query, VectorWeight... weights) {
+    return combine(query, CombinationMethod.MANUAL_WEIGHTS, weights);
   }
 }
