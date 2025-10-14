@@ -110,6 +110,122 @@ public class TargetTest {
     assertEqualJson(want, got);
   }
 
+  public static Object[][] appendVectorsTestCases() {
+    return new Object[][] {
+        {
+            Target.vector(new float[] { 1, 2, 3 }),
+            """
+                {
+                  "vectors": [{
+                    "vectorBytes": "AACAPwAAAEAAAEBA",
+                    "type": "VECTOR_TYPE_SINGLE_FP32"
+                  }]
+                }
+                    """,
+        },
+        {
+            Target.vector(new float[][] { { 1, 2, 3 }, { 4, 5, 6 } }),
+            """
+                {
+                  "vectors": [{
+                    "vectorBytes": "AwAAAIA/AAAAQAAAQEAAAIBAAACgQAAAwEA=",
+                    "type": "VECTOR_TYPE_MULTI_FP32"
+                  }]
+                }
+                    """,
+        },
+        {
+            Target.vector("title_vec", new float[] { 1, 2, 3 }),
+            """
+                {
+                  "vectorForTargets": [{
+                    "name": "title_vec",
+                    "vectors": [{
+                      "vectorBytes": "AACAPwAAAEAAAEBA",
+                      "type": "VECTOR_TYPE_SINGLE_FP32"
+                    }]
+                  }]
+                }
+                    """,
+        },
+        {
+            Target.vector("title_vec", new float[][] { { 1, 2, 3 }, { 4, 5, 6 } }),
+            """
+                {
+                  "vectorForTargets": [{
+                    "name": "title_vec",
+                    "vectors": [{
+                      "vectorBytes": "AwAAAIA/AAAAQAAAQEAAAIBAAACgQAAAwEA=",
+                      "type": "VECTOR_TYPE_MULTI_FP32"
+                    }]
+                  }]
+                }
+                    """,
+        },
+        {
+            Target.average(
+                Target.vector("title_vec", new float[] { 1, 2, 3 }),
+                Target.vector("title_vec", new float[] { 4, 5, 6 }),
+                Target.vector("lyrics_vec", new float[] { 7, 8, 9 })),
+            """
+                {
+                  "vectorForTargets": [
+                    {
+                      "name": "title_vec",
+                      "vectors": [
+                        {"vectorBytes": "AACAPwAAAEAAAEBA", "type": "VECTOR_TYPE_SINGLE_FP32" },
+                        {"vectorBytes": "AACAQAAAoEAAAMBA", "type": "VECTOR_TYPE_SINGLE_FP32" }
+                      ]
+                    },
+                    {
+                      "name": "lyrics_vec",
+                      "vectors": [
+                        {"vectorBytes": "AADgQAAAAEEAABBB", "type": "VECTOR_TYPE_SINGLE_FP32" }
+                      ]
+                    }
+                  ]
+                }
+                    """,
+        },
+        {
+            Target.average(
+                Target.vector("title_vec", new float[][] { { 1, 2, 3 }, { 4, 5, 6 } }),
+                Target.vector("title_vec", new float[][] { { 4, 5, 6 }, { 7, 8, 9 } }),
+                Target.vector("lyrics_vec", new float[][] { { 7, 8, 9 }, { 1, 2, 3 } })),
+            """
+                {
+                  "vectorForTargets": [
+                    {
+                      "name": "title_vec",
+                      "vectors": [
+                        {"vectorBytes": "AwAAAIA/AAAAQAAAQEAAAIBAAACgQAAAwEA=", "type": "VECTOR_TYPE_MULTI_FP32" },
+                        {"vectorBytes": "AwAAAIBAAACgQAAAwEAAAOBAAAAAQQAAEEE=", "type": "VECTOR_TYPE_MULTI_FP32" }
+                      ]
+                    },
+                    {
+                      "name": "lyrics_vec",
+                      "vectors": [
+                        {"vectorBytes": "AwAAAOBAAAAAQQAAEEEAAIA/AAAAQAAAQEA=", "type": "VECTOR_TYPE_MULTI_FP32" }
+                      ]
+                    }
+                  ]
+                }
+                    """,
+        },
+    };
+  }
+
+  @Test
+  @DataMethod(source = TargetTest.class, method = "appendVectorsTestCases")
+  public void test_appendVectors(NearVectorTarget target, String want) {
+    var req = WeaviateProtoBaseSearch.NearVector.newBuilder();
+
+    target.appendVectors(req);
+
+    var got = proto2json(req);
+    assertEqualJson(want, got);
+  }
+
   private static final String proto2json(MessageOrBuilder proto) {
     String out;
     try {
