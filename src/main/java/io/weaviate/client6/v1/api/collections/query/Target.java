@@ -1,6 +1,7 @@
 package io.weaviate.client6.v1.api.collections.query;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -80,11 +81,23 @@ public interface Target {
     return new VectorTarget(null, null, vector);
   }
 
+  static VectorTarget vector(float[][] vector) {
+    return new VectorTarget(null, null, vector);
+  }
+
   static VectorTarget vector(String vectorName, float[] vector) {
     return new VectorTarget(vectorName, null, vector);
   }
 
+  static VectorTarget vector(String vectorName, float[][] vector) {
+    return new VectorTarget(vectorName, null, vector);
+  }
+
   static VectorTarget vector(String vectorName, float weight, float[] vector) {
+    return new VectorTarget(vectorName, weight, vector);
+  }
+
+  static VectorTarget vector(String vectorName, float weight, float[][] vector) {
     return new VectorTarget(vectorName, weight, vector);
   }
 
@@ -156,16 +169,23 @@ public interface Target {
         return;
       }
 
+      // We use LinkedHashMap to preserve insertion order.
+      // This has negligble performance penalty, if any,
+      // but allows for a predictable output in tests.
       targets
           .stream()
-          .collect(Collectors.groupingBy(VectorTarget::vectorName, Collectors.toList()))
+          .collect(Collectors.groupingBy(
+              VectorTarget::vectorName,
+              LinkedHashMap::new,
+              Collectors.toList()))
           .entrySet()
           .forEach(target -> {
-            var vectorForTarget = WeaviateProtoBaseSearch.VectorForTarget.newBuilder()
+            var vectorForTargets = WeaviateProtoBaseSearch.VectorForTarget.newBuilder()
                 .setName(target.getKey());
             target.getValue().forEach(vt -> {
-              vectorForTarget.addVectors(vt.encodeVectors());
+              vectorForTargets.addVectors(vt.encodeVectors());
             });
+            req.addVectorForTargets(vectorForTargets);
           });
     }
   }
