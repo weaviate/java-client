@@ -278,20 +278,40 @@ public interface Target {
     return combine(query, combinationMethod, vectorWeights);
   }
 
+  static Target sum(String query, String... targetVectors) {
+    return sum(List.of(query), targetVectors);
+  }
+
   static Target sum(List<String> query, String... targetVectors) {
     return combine(query, CombinationMethod.SUM, targetVectors);
+  }
+
+  static Target min(String query, String... targetVectors) {
+    return min(List.of(query), targetVectors);
   }
 
   static Target min(List<String> query, String... targetVectors) {
     return combine(query, CombinationMethod.MIN, targetVectors);
   }
 
+  static Target average(String query, String... targetVectors) {
+    return average(List.of(query), targetVectors);
+  }
+
   static Target average(List<String> query, String... targetVectors) {
     return combine(query, CombinationMethod.AVERAGE, targetVectors);
   }
 
+  static Target relativeScore(String query, VectorWeight... weights) {
+    return relativeScore(List.of(query), weights);
+  }
+
   static Target relativeScore(List<String> query, VectorWeight... weights) {
     return combine(query, CombinationMethod.RELATIVE_SCORE, weights);
+  }
+
+  static Target manualWeights(String query, VectorWeight... weights) {
+    return manualWeights(List.of(query), weights);
   }
 
   static Target manualWeights(List<String> query, VectorWeight... weights) {
