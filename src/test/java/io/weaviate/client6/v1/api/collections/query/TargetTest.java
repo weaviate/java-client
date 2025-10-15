@@ -1,7 +1,5 @@
 package io.weaviate.client6.v1.api.collections.query;
 
-import java.util.List;
-
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,7 +66,7 @@ public class TargetTest {
         },
         {
             Target.min(
-                List.of("day", "night"),
+                "in the summertime",
                 "title_vec", "body_vec"),
             """
                 {
@@ -80,7 +78,7 @@ public class TargetTest {
         },
         {
             Target.relativeScore(
-                List.of("one", "two", "three"),
+                "one and two and three and four",
                 Target.weight("title_vec", 2),
                 Target.weight("body_vec", 3)),
             """
