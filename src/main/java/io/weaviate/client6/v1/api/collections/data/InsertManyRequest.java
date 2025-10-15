@@ -31,9 +31,7 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
   public static final <T> InsertManyRequest<T> of(T... properties) {
     var objects = Arrays.stream(properties)
         .map(p -> WeaviateObject.<T, Reference, ObjectMetadata>of(
-            obj -> obj
-                .properties(p)
-                .metadata(ObjectMetadata.of(m -> m.uuid(UUID.randomUUID())))))
+            obj -> obj.properties(p).metadata(ObjectMetadata.of())))
         .toList();
     return new InsertManyRequest<T>(objects);
   }
@@ -101,9 +99,7 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
 
     var metadata = insert.metadata();
     if (metadata != null) {
-      if (metadata.uuid() != null) {
-        object.setUuid(metadata.uuid());
-      }
+      object.setUuid(metadata.uuid());
 
       if (metadata.vectors() != null) {
         var vectors = metadata.vectors().asMap()
@@ -156,11 +152,15 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
           }
         });
 
-    var nonRef = marshalStruct(collection.propertiesReader(insert.properties()).readProperties());
-    object.setProperties(WeaviateProtoBatch.BatchObject.Properties.newBuilder()
-        .setNonRefProperties(nonRef)
+    var properties = WeaviateProtoBatch.BatchObject.Properties.newBuilder()
         .addAllSingleTargetRefProps(singleRef)
-        .addAllMultiTargetRefProps(multiRef));
+        .addAllMultiTargetRefProps(multiRef);
+
+    if (insert.properties() != null) {
+      var nonRef = marshalStruct(collection.propertiesReader(insert.properties()).readProperties());
+      properties.setNonRefProperties(nonRef);
+    }
+    object.setProperties(properties);
   }
 
   @SuppressWarnings("unchecked")

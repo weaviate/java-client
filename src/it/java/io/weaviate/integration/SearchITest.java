@@ -19,6 +19,7 @@ import org.junit.rules.TestRule;
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateApiException;
 import io.weaviate.client6.v1.api.WeaviateClient;
+import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.ReferenceProperty;
 import io.weaviate.client6.v1.api.collections.VectorConfig;
@@ -31,7 +32,10 @@ import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.api.collections.query.QueryResponseGroup;
 import io.weaviate.client6.v1.api.collections.query.SortBy;
+import io.weaviate.client6.v1.api.collections.query.Target;
 import io.weaviate.client6.v1.api.collections.query.Where;
+import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
+import io.weaviate.client6.v1.api.collections.vectorindex.MultiVector;
 import io.weaviate.containers.Container;
 import io.weaviate.containers.Container.ContainerGroup;
 import io.weaviate.containers.Contextionary;
@@ -498,5 +502,51 @@ public class SearchITest extends ConcurrentTest {
     Assertions.assertThat(metadataNearText.lastUpdateTimeUnix()).as("lastUpdateTimeUnix").isNotNull();
     Assertions.assertThat(metadataNearText.distance()).as("distance").isNotNull();
     Assertions.assertThat(metadataNearText.certainty()).as("certainty").isNotNull();
+  }
+
+  @Test
+  public void testNearVector_targetVectors() throws IOException {
+    // Arrange
+    var nsThings = ns("Things");
+
+    client.collections.create(nsThings,
+        c -> c.vectorConfig(
+            VectorConfig.selfProvided("v1d"),
+            VectorConfig.selfProvided("v2d",
+                none -> none
+                    .vectorIndex(Hnsw.of(
+                        hnsw -> hnsw.multiVector(MultiVector.of()))))));
+
+    var things = client.collections.use(nsThings);
+
+    var thing123 = things.data.insert(Map.of(), thing -> thing.vectors(
+        Vectors.of("v1d", new float[] { 1, 2, 3 }),
+        Vectors.of("v2d", new float[][] { { 1, 2, 3 }, { 1, 2, 3 } })));
+
+    var thing456 = things.data.insertMany(List.of(
+        WeaviateObject.of(thing -> thing
+            .metadata(ObjectMetadata.of(
+                meta -> meta
+                    .vectors(
+                        Vectors.of("v1d", new float[] { 4, 5, 6 }),
+                        Vectors.of("v2d", new float[][] { { 4, 5, 6 }, { 4, 5, 6 } })))))));
+    Assertions.assertThat(thing456.errors()).as("insert many").isEmpty();
+
+    // Act
+    var got123 = things.query.nearVector(
+        Target.vector("v1d", new float[] { 1, 2, 3 }),
+        q -> q.limit(1));
+    Assertions.assertThat(got123.objects())
+        .as("search v1d")
+        .hasSize(1).extracting(WeaviateObject::uuid)
+        .containsExactly(thing123.uuid());
+
+    var got456 = things.query.nearVector(
+        Target.vector("v2d", new float[][] { { 4, 5, 6 }, { 4, 5, 6 } }),
+        q -> q.limit(1));
+    Assertions.assertThat(got456.objects())
+        .as("search v2d")
+        .hasSize(1).extracting(WeaviateObject::uuid)
+        .containsExactly(thing456.uuids().get(0));
   }
 }

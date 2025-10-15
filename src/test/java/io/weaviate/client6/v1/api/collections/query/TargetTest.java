@@ -25,17 +25,25 @@ public class TargetTest {
             null,
         },
         {
+            Target.vector("title_vec", new float[] { 1, 2, 3 }),
+            """
+                { "targetVectors": ["title_vec"] }
+                    """,
+        },
+        {
+            Target.text("title_vec", "one", "two"),
+            """
+                { "targetVectors": ["title_vec"] }
+                    """,
+        },
+        {
             Target.average(
                 Target.vector("title_vec", new float[] { 1, 2, 3 }),
                 Target.vector("body_vec", new float[] { 4, 5, 6 })),
             """
                 {
                   "combination": "COMBINATION_METHOD_TYPE_AVERAGE",
-                  "targetVectors": ["title_vec", "body_vec"],
-                  "weightsForTargets": [
-                    {"target": "title_vec"},
-                    {"target": "body_vec"}
-                  ]
+                  "targetVectors": ["title_vec", "body_vec"]
                 }
                     """,
 
@@ -65,11 +73,7 @@ public class TargetTest {
             """
                 {
                   "combination": "COMBINATION_METHOD_TYPE_MIN",
-                  "targetVectors": ["title_vec", "body_vec"],
-                  "weightsForTargets": [
-                    {"target": "title_vec"},
-                    {"target": "body_vec"}
-                  ]
+                  "targetVectors": ["title_vec", "body_vec"]
                 }
                     """,
 
@@ -77,15 +81,13 @@ public class TargetTest {
         {
             Target.relativeScore(
                 List.of("one", "two", "three"),
-                Target.weight("title_vec", 1),
                 Target.weight("title_vec", 2),
                 Target.weight("body_vec", 3)),
             """
                 {
                   "combination": "COMBINATION_METHOD_TYPE_RELATIVE_SCORE",
-                  "targetVectors": ["title_vec", "title_vec", "body_vec"],
+                  "targetVectors": ["title_vec", "body_vec"],
                   "weightsForTargets": [
-                    {"target": "title_vec", "weight": 1.0},
                     {"target": "title_vec", "weight": 2.0},
                     {"target": "body_vec", "weight": 3.0}
                   ]
