@@ -217,8 +217,7 @@ public interface Target {
    * Weight to be applied to the vector distance. Used for text-based
    * queries where only a single input is allowed.
    */
-  record VectorWeight(String vectorName, Float weight) implements Target {
-    @Override
+  record VectorWeight(String vectorName, Float weight) {
     public boolean appendTargets(WeaviateProtoBaseSearch.Targets.Builder req) {
       if (vectorName == null) {
         return false;
