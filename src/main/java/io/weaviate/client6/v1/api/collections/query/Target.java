@@ -36,12 +36,11 @@ public interface Target {
       }
       req.addTargetVectors(vectorName);
 
-      var weightsForTarget = WeaviateProtoBaseSearch.WeightsForTarget.newBuilder()
-          .setTarget(vectorName);
       if (weight != null) {
-        weightsForTarget.setWeight(weight);
+        req.addWeightsForTargets(WeaviateProtoBaseSearch.WeightsForTarget.newBuilder()
+            .setTarget(vectorName)
+            .setWeight(weight));
       }
-      req.addWeightsForTargets(weightsForTarget);
       return true;
     }
 
@@ -226,12 +225,11 @@ public interface Target {
       }
       req.addTargetVectors(vectorName);
 
-      var weightsForTarget = WeaviateProtoBaseSearch.WeightsForTarget.newBuilder()
-          .setTarget(vectorName);
       if (weight != null) {
-        weightsForTarget.setWeight(weight);
+        req.addWeightsForTargets(WeaviateProtoBaseSearch.WeightsForTarget.newBuilder()
+            .setTarget(vectorName)
+            .setWeight(weight));
       }
-      req.addWeightsForTargets(weightsForTarget);
       return true;
     }
   }

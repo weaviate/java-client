@@ -148,7 +148,6 @@ public interface Quantization {
         @Override
         public void write(JsonWriter out, Quantization value) throws IOException {
           if (value._kind() == Quantization.Kind.UNCOMPRESSED) {
-            // out.name(value._kind().jsonValue());
             out.value(true);
             return;
           }
