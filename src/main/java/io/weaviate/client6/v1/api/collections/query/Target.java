@@ -1,6 +1,7 @@
 package io.weaviate.client6.v1.api.collections.query;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -211,6 +212,30 @@ public interface Target {
 
   static TextTarget text(String vectorName, float weight, String... text) {
     return new TextTarget(vectorName, weight, Arrays.asList(text));
+  }
+
+  static TextTarget blob(String blob) {
+    return new TextTarget(null, null, Collections.singletonList(blob));
+  }
+
+  static TextTarget blob(String vectorName, String blob) {
+    return new TextTarget(vectorName, null, Collections.singletonList(blob));
+  }
+
+  static TextTarget blob(String vectorName, float weight, String blob) {
+    return new TextTarget(vectorName, weight, Collections.singletonList(blob));
+  }
+
+  static TextTarget uuid(String uuid) {
+    return new TextTarget(null, null, Collections.singletonList(uuid));
+  }
+
+  static TextTarget uuid(String vectorName, String uuid) {
+    return new TextTarget(vectorName, null, Collections.singletonList(uuid));
+  }
+
+  static TextTarget uuid(String vectorName, float weight, String uuid) {
+    return new TextTarget(vectorName, weight, Collections.singletonList(uuid));
   }
 
   /**
