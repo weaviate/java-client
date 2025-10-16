@@ -15,6 +15,7 @@ public record Hnsw(
     @SerializedName("vectorCacheMaxObjects") Long vectorCacheMaxObjects,
     @SerializedName("cleanupIntervalSeconds") Integer cleanupIntervalSeconds,
     @SerializedName("filterStrategy") FilterStrategy filterStrategy,
+    @SerializedName("multivector") MultiVector multiVector,
 
     @SerializedName("dynamicEfMin") Integer dynamicEfMin,
     @SerializedName("dynamicEfMax") Integer dynamicEfMax,
@@ -49,6 +50,7 @@ public record Hnsw(
         builder.vectorCacheMaxObjects,
         builder.cleanupIntervalSeconds,
         builder.filterStrategy,
+        builder.multiVector,
         builder.dynamicEfMin,
         builder.dynamicEfMax,
         builder.dynamicEfFactor,
@@ -64,6 +66,7 @@ public record Hnsw(
     private Long vectorCacheMaxObjects;
     private Integer cleanupIntervalSeconds;
     private FilterStrategy filterStrategy;
+    private MultiVector multiVector;
 
     private Integer dynamicEfMin;
     private Integer dynamicEfMax;
@@ -103,6 +106,11 @@ public record Hnsw(
 
     public final Builder filterStrategy(FilterStrategy filterStrategy) {
       this.filterStrategy = filterStrategy;
+      return this;
+    }
+
+    public final Builder multiVector(MultiVector multiVector) {
+      this.multiVector = multiVector;
       return this;
     }
 

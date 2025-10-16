@@ -55,7 +55,7 @@ public class OIDCSupportITest extends ConcurrentTest {
    */
   @Test
   public void test_bearerToken() throws Exception {
-    Assume.assumeTrue("WCS_DUMMY_CI_PW is not set", WCS_DUMMY_CI_PW != null);
+    Assume.assumeTrue("WCS_DUMMY_CI_PW is not set", WCS_DUMMY_CI_PW != null && !WCS_DUMMY_CI_PW.isBlank());
     Assume.assumeTrue("no internet connection", hasInternetConnection());
 
     var passwordAuth = Authentication.resourceOwnerPassword(WCS_DUMMY_CI_USERNAME, WCS_DUMMY_CI_PW, List.of());
@@ -78,7 +78,7 @@ public class OIDCSupportITest extends ConcurrentTest {
 
   @Test
   public void test_resourceOwnerPassword() throws Exception {
-    Assume.assumeTrue("WCS_DUMMY_CI_PW is not set", WCS_DUMMY_CI_PW != null);
+    Assume.assumeTrue("WCS_DUMMY_CI_PW is not set", WCS_DUMMY_CI_PW != null && !WCS_DUMMY_CI_PW.isBlank());
     Assume.assumeTrue("no internet connection", hasInternetConnection());
 
     // Check norwal resource owner password flow works.
@@ -103,7 +103,7 @@ public class OIDCSupportITest extends ConcurrentTest {
 
   @Test
   public void test_clientCredentials() throws Exception {
-    Assume.assumeTrue("OKTA_CLIENT_SECRET is not set", OKTA_CLIENT_SECRET != null);
+    Assume.assumeTrue("OKTA_CLIENT_SECRET is not set", OKTA_CLIENT_SECRET != null && !OKTA_CLIENT_SECRET.isBlank());
     Assume.assumeTrue("no internet connection", hasInternetConnection());
 
     // Check norwal client credentials flow works.

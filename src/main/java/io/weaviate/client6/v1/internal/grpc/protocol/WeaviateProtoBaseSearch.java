@@ -3694,7 +3694,7 @@ public final class WeaviateProtoBaseSearch {
      *
      * <code>repeated float vector = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-     *     See v1/base_search.proto;l=50
+     *     See v1/base_search.proto;l=51
      * @return A list containing the vector.
      */
     @java.lang.Deprecated java.util.List<java.lang.Float> getVectorList();
@@ -3705,7 +3705,7 @@ public final class WeaviateProtoBaseSearch {
      *
      * <code>repeated float vector = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-     *     See v1/base_search.proto;l=50
+     *     See v1/base_search.proto;l=51
      * @return The count of vector.
      */
     @java.lang.Deprecated int getVectorCount();
@@ -3716,7 +3716,7 @@ public final class WeaviateProtoBaseSearch {
      *
      * <code>repeated float vector = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-     *     See v1/base_search.proto;l=50
+     *     See v1/base_search.proto;l=51
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
@@ -3746,7 +3746,7 @@ public final class WeaviateProtoBaseSearch {
      *
      * <code>bytes vector_bytes = 6 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.vector_bytes is deprecated.
-     *     See v1/base_search.proto;l=58
+     *     See v1/base_search.proto;l=60
      * @return The vectorBytes.
      */
     @java.lang.Deprecated com.google.protobuf.ByteString getVectorBytes();
@@ -3758,7 +3758,7 @@ public final class WeaviateProtoBaseSearch {
      *
      * <code>repeated string target_vectors = 7 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=59
+     *     See v1/base_search.proto;l=62
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated java.util.List<java.lang.String>
@@ -3770,7 +3770,7 @@ public final class WeaviateProtoBaseSearch {
      *
      * <code>repeated string target_vectors = 7 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=59
+     *     See v1/base_search.proto;l=62
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated int getTargetVectorsCount();
@@ -3781,7 +3781,7 @@ public final class WeaviateProtoBaseSearch {
      *
      * <code>repeated string target_vectors = 7 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=59
+     *     See v1/base_search.proto;l=62
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -3793,7 +3793,7 @@ public final class WeaviateProtoBaseSearch {
      *
      * <code>repeated string target_vectors = 7 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=59
+     *     See v1/base_search.proto;l=62
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -4210,7 +4210,7 @@ public final class WeaviateProtoBaseSearch {
      *
      * <code>repeated float vector = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-     *     See v1/base_search.proto;l=50
+     *     See v1/base_search.proto;l=51
      * @return A list containing the vector.
      */
     @java.lang.Override
@@ -4225,7 +4225,7 @@ public final class WeaviateProtoBaseSearch {
      *
      * <code>repeated float vector = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-     *     See v1/base_search.proto;l=50
+     *     See v1/base_search.proto;l=51
      * @return The count of vector.
      */
     @java.lang.Deprecated public int getVectorCount() {
@@ -4238,7 +4238,7 @@ public final class WeaviateProtoBaseSearch {
      *
      * <code>repeated float vector = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-     *     See v1/base_search.proto;l=50
+     *     See v1/base_search.proto;l=51
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
@@ -4285,7 +4285,7 @@ public final class WeaviateProtoBaseSearch {
      *
      * <code>bytes vector_bytes = 6 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.vector_bytes is deprecated.
-     *     See v1/base_search.proto;l=58
+     *     See v1/base_search.proto;l=60
      * @return The vectorBytes.
      */
     @java.lang.Override
@@ -4304,7 +4304,7 @@ public final class WeaviateProtoBaseSearch {
      *
      * <code>repeated string target_vectors = 7 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=59
+     *     See v1/base_search.proto;l=62
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -4318,7 +4318,7 @@ public final class WeaviateProtoBaseSearch {
      *
      * <code>repeated string target_vectors = 7 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=59
+     *     See v1/base_search.proto;l=62
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -4331,7 +4331,7 @@ public final class WeaviateProtoBaseSearch {
      *
      * <code>repeated string target_vectors = 7 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=59
+     *     See v1/base_search.proto;l=62
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -4345,7 +4345,7 @@ public final class WeaviateProtoBaseSearch {
      *
      * <code>repeated string target_vectors = 7 [deprecated = true];</code>
      * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=59
+     *     See v1/base_search.proto;l=62
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -5576,7 +5576,7 @@ public final class WeaviateProtoBaseSearch {
        *
        * <code>repeated float vector = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-       *     See v1/base_search.proto;l=50
+       *     See v1/base_search.proto;l=51
        * @return A list containing the vector.
        */
       @java.lang.Deprecated public java.util.List<java.lang.Float>
@@ -5591,7 +5591,7 @@ public final class WeaviateProtoBaseSearch {
        *
        * <code>repeated float vector = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-       *     See v1/base_search.proto;l=50
+       *     See v1/base_search.proto;l=51
        * @return The count of vector.
        */
       @java.lang.Deprecated public int getVectorCount() {
@@ -5604,7 +5604,7 @@ public final class WeaviateProtoBaseSearch {
        *
        * <code>repeated float vector = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-       *     See v1/base_search.proto;l=50
+       *     See v1/base_search.proto;l=51
        * @param index The index of the element to return.
        * @return The vector at the given index.
        */
@@ -5618,7 +5618,7 @@ public final class WeaviateProtoBaseSearch {
        *
        * <code>repeated float vector = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-       *     See v1/base_search.proto;l=50
+       *     See v1/base_search.proto;l=51
        * @param index The index to set the value at.
        * @param value The vector to set.
        * @return This builder for chaining.
@@ -5639,7 +5639,7 @@ public final class WeaviateProtoBaseSearch {
        *
        * <code>repeated float vector = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-       *     See v1/base_search.proto;l=50
+       *     See v1/base_search.proto;l=51
        * @param value The vector to add.
        * @return This builder for chaining.
        */
@@ -5658,7 +5658,7 @@ public final class WeaviateProtoBaseSearch {
        *
        * <code>repeated float vector = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-       *     See v1/base_search.proto;l=50
+       *     See v1/base_search.proto;l=51
        * @param values The vector to add.
        * @return This builder for chaining.
        */
@@ -5678,7 +5678,7 @@ public final class WeaviateProtoBaseSearch {
        *
        * <code>repeated float vector = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.vector is deprecated.
-       *     See v1/base_search.proto;l=50
+       *     See v1/base_search.proto;l=51
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearVector() {
@@ -5781,7 +5781,7 @@ public final class WeaviateProtoBaseSearch {
        *
        * <code>bytes vector_bytes = 6 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.vector_bytes is deprecated.
-       *     See v1/base_search.proto;l=58
+       *     See v1/base_search.proto;l=60
        * @return The vectorBytes.
        */
       @java.lang.Override
@@ -5795,7 +5795,7 @@ public final class WeaviateProtoBaseSearch {
        *
        * <code>bytes vector_bytes = 6 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.vector_bytes is deprecated.
-       *     See v1/base_search.proto;l=58
+       *     See v1/base_search.proto;l=60
        * @param value The vectorBytes to set.
        * @return This builder for chaining.
        */
@@ -5813,7 +5813,7 @@ public final class WeaviateProtoBaseSearch {
        *
        * <code>bytes vector_bytes = 6 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.vector_bytes is deprecated.
-       *     See v1/base_search.proto;l=58
+       *     See v1/base_search.proto;l=60
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearVectorBytes() {
@@ -5838,7 +5838,7 @@ public final class WeaviateProtoBaseSearch {
        *
        * <code>repeated string target_vectors = 7 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=59
+       *     See v1/base_search.proto;l=62
        * @return A list containing the targetVectors.
        */
       @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -5853,7 +5853,7 @@ public final class WeaviateProtoBaseSearch {
        *
        * <code>repeated string target_vectors = 7 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=59
+       *     See v1/base_search.proto;l=62
        * @return The count of targetVectors.
        */
       @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -5866,7 +5866,7 @@ public final class WeaviateProtoBaseSearch {
        *
        * <code>repeated string target_vectors = 7 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=59
+       *     See v1/base_search.proto;l=62
        * @param index The index of the element to return.
        * @return The targetVectors at the given index.
        */
@@ -5880,7 +5880,7 @@ public final class WeaviateProtoBaseSearch {
        *
        * <code>repeated string target_vectors = 7 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=59
+       *     See v1/base_search.proto;l=62
        * @param index The index of the value to return.
        * @return The bytes of the targetVectors at the given index.
        */
@@ -5895,7 +5895,7 @@ public final class WeaviateProtoBaseSearch {
        *
        * <code>repeated string target_vectors = 7 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=59
+       *     See v1/base_search.proto;l=62
        * @param index The index to set the value at.
        * @param value The targetVectors to set.
        * @return This builder for chaining.
@@ -5916,7 +5916,7 @@ public final class WeaviateProtoBaseSearch {
        *
        * <code>repeated string target_vectors = 7 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=59
+       *     See v1/base_search.proto;l=62
        * @param value The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -5936,7 +5936,7 @@ public final class WeaviateProtoBaseSearch {
        *
        * <code>repeated string target_vectors = 7 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=59
+       *     See v1/base_search.proto;l=62
        * @param values The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -5956,7 +5956,7 @@ public final class WeaviateProtoBaseSearch {
        *
        * <code>repeated string target_vectors = 7 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=59
+       *     See v1/base_search.proto;l=62
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearTargetVectors() {
@@ -5973,7 +5973,7 @@ public final class WeaviateProtoBaseSearch {
        *
        * <code>repeated string target_vectors = 7 [deprecated = true];</code>
        * @deprecated weaviate.v1.Hybrid.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=59
+       *     See v1/base_search.proto;l=62
        * @param value The bytes of the targetVectors to add.
        * @return This builder for chaining.
        */
@@ -6900,7 +6900,7 @@ public final class WeaviateProtoBaseSearch {
      *
      * <code>repeated float vector = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.vector is deprecated.
-     *     See v1/base_search.proto;l=75
+     *     See v1/base_search.proto;l=79
      * @return A list containing the vector.
      */
     @java.lang.Deprecated java.util.List<java.lang.Float> getVectorList();
@@ -6911,7 +6911,7 @@ public final class WeaviateProtoBaseSearch {
      *
      * <code>repeated float vector = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.vector is deprecated.
-     *     See v1/base_search.proto;l=75
+     *     See v1/base_search.proto;l=79
      * @return The count of vector.
      */
     @java.lang.Deprecated int getVectorCount();
@@ -6922,7 +6922,7 @@ public final class WeaviateProtoBaseSearch {
      *
      * <code>repeated float vector = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.vector is deprecated.
-     *     See v1/base_search.proto;l=75
+     *     See v1/base_search.proto;l=79
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
@@ -6957,7 +6957,7 @@ public final class WeaviateProtoBaseSearch {
      *
      * <code>bytes vector_bytes = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.vector_bytes is deprecated.
-     *     See v1/base_search.proto;l=78
+     *     See v1/base_search.proto;l=83
      * @return The vectorBytes.
      */
     @java.lang.Deprecated com.google.protobuf.ByteString getVectorBytes();
@@ -6969,7 +6969,7 @@ public final class WeaviateProtoBaseSearch {
      *
      * <code>repeated string target_vectors = 5 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=79
+     *     See v1/base_search.proto;l=85
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated java.util.List<java.lang.String>
@@ -6981,7 +6981,7 @@ public final class WeaviateProtoBaseSearch {
      *
      * <code>repeated string target_vectors = 5 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=79
+     *     See v1/base_search.proto;l=85
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated int getTargetVectorsCount();
@@ -6992,7 +6992,7 @@ public final class WeaviateProtoBaseSearch {
      *
      * <code>repeated string target_vectors = 5 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=79
+     *     See v1/base_search.proto;l=85
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -7004,7 +7004,7 @@ public final class WeaviateProtoBaseSearch {
      *
      * <code>repeated string target_vectors = 5 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=79
+     *     See v1/base_search.proto;l=85
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -7193,7 +7193,7 @@ com.google.protobuf.ByteString defaultValue);
      *
      * <code>repeated float vector = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.vector is deprecated.
-     *     See v1/base_search.proto;l=75
+     *     See v1/base_search.proto;l=79
      * @return A list containing the vector.
      */
     @java.lang.Override
@@ -7208,7 +7208,7 @@ com.google.protobuf.ByteString defaultValue);
      *
      * <code>repeated float vector = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.vector is deprecated.
-     *     See v1/base_search.proto;l=75
+     *     See v1/base_search.proto;l=79
      * @return The count of vector.
      */
     @java.lang.Deprecated public int getVectorCount() {
@@ -7221,7 +7221,7 @@ com.google.protobuf.ByteString defaultValue);
      *
      * <code>repeated float vector = 1 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.vector is deprecated.
-     *     See v1/base_search.proto;l=75
+     *     See v1/base_search.proto;l=79
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
@@ -7277,7 +7277,7 @@ com.google.protobuf.ByteString defaultValue);
      *
      * <code>bytes vector_bytes = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.vector_bytes is deprecated.
-     *     See v1/base_search.proto;l=78
+     *     See v1/base_search.proto;l=83
      * @return The vectorBytes.
      */
     @java.lang.Override
@@ -7296,7 +7296,7 @@ com.google.protobuf.ByteString defaultValue);
      *
      * <code>repeated string target_vectors = 5 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=79
+     *     See v1/base_search.proto;l=85
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -7310,7 +7310,7 @@ com.google.protobuf.ByteString defaultValue);
      *
      * <code>repeated string target_vectors = 5 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=79
+     *     See v1/base_search.proto;l=85
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -7323,7 +7323,7 @@ com.google.protobuf.ByteString defaultValue);
      *
      * <code>repeated string target_vectors = 5 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=79
+     *     See v1/base_search.proto;l=85
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -7337,7 +7337,7 @@ com.google.protobuf.ByteString defaultValue);
      *
      * <code>repeated string target_vectors = 5 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=79
+     *     See v1/base_search.proto;l=85
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -8301,7 +8301,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated float vector = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.vector is deprecated.
-       *     See v1/base_search.proto;l=75
+       *     See v1/base_search.proto;l=79
        * @return A list containing the vector.
        */
       @java.lang.Deprecated public java.util.List<java.lang.Float>
@@ -8316,7 +8316,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated float vector = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.vector is deprecated.
-       *     See v1/base_search.proto;l=75
+       *     See v1/base_search.proto;l=79
        * @return The count of vector.
        */
       @java.lang.Deprecated public int getVectorCount() {
@@ -8329,7 +8329,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated float vector = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.vector is deprecated.
-       *     See v1/base_search.proto;l=75
+       *     See v1/base_search.proto;l=79
        * @param index The index of the element to return.
        * @return The vector at the given index.
        */
@@ -8343,7 +8343,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated float vector = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.vector is deprecated.
-       *     See v1/base_search.proto;l=75
+       *     See v1/base_search.proto;l=79
        * @param index The index to set the value at.
        * @param value The vector to set.
        * @return This builder for chaining.
@@ -8364,7 +8364,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated float vector = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.vector is deprecated.
-       *     See v1/base_search.proto;l=75
+       *     See v1/base_search.proto;l=79
        * @param value The vector to add.
        * @return This builder for chaining.
        */
@@ -8383,7 +8383,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated float vector = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.vector is deprecated.
-       *     See v1/base_search.proto;l=75
+       *     See v1/base_search.proto;l=79
        * @param values The vector to add.
        * @return This builder for chaining.
        */
@@ -8403,7 +8403,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated float vector = 1 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.vector is deprecated.
-       *     See v1/base_search.proto;l=75
+       *     See v1/base_search.proto;l=79
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearVector() {
@@ -8501,7 +8501,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>bytes vector_bytes = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.vector_bytes is deprecated.
-       *     See v1/base_search.proto;l=78
+       *     See v1/base_search.proto;l=83
        * @return The vectorBytes.
        */
       @java.lang.Override
@@ -8515,7 +8515,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>bytes vector_bytes = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.vector_bytes is deprecated.
-       *     See v1/base_search.proto;l=78
+       *     See v1/base_search.proto;l=83
        * @param value The vectorBytes to set.
        * @return This builder for chaining.
        */
@@ -8533,7 +8533,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>bytes vector_bytes = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.vector_bytes is deprecated.
-       *     See v1/base_search.proto;l=78
+       *     See v1/base_search.proto;l=83
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearVectorBytes() {
@@ -8558,7 +8558,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 5 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=79
+       *     See v1/base_search.proto;l=85
        * @return A list containing the targetVectors.
        */
       @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -8573,7 +8573,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 5 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=79
+       *     See v1/base_search.proto;l=85
        * @return The count of targetVectors.
        */
       @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -8586,7 +8586,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 5 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=79
+       *     See v1/base_search.proto;l=85
        * @param index The index of the element to return.
        * @return The targetVectors at the given index.
        */
@@ -8600,7 +8600,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 5 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=79
+       *     See v1/base_search.proto;l=85
        * @param index The index of the value to return.
        * @return The bytes of the targetVectors at the given index.
        */
@@ -8615,7 +8615,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 5 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=79
+       *     See v1/base_search.proto;l=85
        * @param index The index to set the value at.
        * @param value The targetVectors to set.
        * @return This builder for chaining.
@@ -8636,7 +8636,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 5 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=79
+       *     See v1/base_search.proto;l=85
        * @param value The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -8656,7 +8656,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 5 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=79
+       *     See v1/base_search.proto;l=85
        * @param values The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -8676,7 +8676,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 5 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=79
+       *     See v1/base_search.proto;l=85
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearTargetVectors() {
@@ -8693,7 +8693,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 5 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVector.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=79
+       *     See v1/base_search.proto;l=85
        * @param value The bytes of the targetVectors to add.
        * @return This builder for chaining.
        */
@@ -9572,7 +9572,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=90
+     *     See v1/base_search.proto;l=98
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated java.util.List<java.lang.String>
@@ -9584,7 +9584,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=90
+     *     See v1/base_search.proto;l=98
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated int getTargetVectorsCount();
@@ -9595,7 +9595,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=90
+     *     See v1/base_search.proto;l=98
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -9607,7 +9607,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=90
+     *     See v1/base_search.proto;l=98
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -9756,7 +9756,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=90
+     *     See v1/base_search.proto;l=98
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -9770,7 +9770,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=90
+     *     See v1/base_search.proto;l=98
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -9783,7 +9783,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=90
+     *     See v1/base_search.proto;l=98
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -9797,7 +9797,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=90
+     *     See v1/base_search.proto;l=98
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -10471,7 +10471,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=90
+       *     See v1/base_search.proto;l=98
        * @return A list containing the targetVectors.
        */
       @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -10486,7 +10486,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=90
+       *     See v1/base_search.proto;l=98
        * @return The count of targetVectors.
        */
       @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -10499,7 +10499,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=90
+       *     See v1/base_search.proto;l=98
        * @param index The index of the element to return.
        * @return The targetVectors at the given index.
        */
@@ -10513,7 +10513,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=90
+       *     See v1/base_search.proto;l=98
        * @param index The index of the value to return.
        * @return The bytes of the targetVectors at the given index.
        */
@@ -10528,7 +10528,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=90
+       *     See v1/base_search.proto;l=98
        * @param index The index to set the value at.
        * @param value The targetVectors to set.
        * @return This builder for chaining.
@@ -10549,7 +10549,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=90
+       *     See v1/base_search.proto;l=98
        * @param value The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -10569,7 +10569,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=90
+       *     See v1/base_search.proto;l=98
        * @param values The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -10589,7 +10589,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=90
+       *     See v1/base_search.proto;l=98
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearTargetVectors() {
@@ -10606,7 +10606,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearObject.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=90
+       *     See v1/base_search.proto;l=98
        * @param value The bytes of the targetVectors to add.
        * @return This builder for chaining.
        */
@@ -10909,7 +10909,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 6 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=107
+     *     See v1/base_search.proto;l=116
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated java.util.List<java.lang.String>
@@ -10921,7 +10921,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 6 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=107
+     *     See v1/base_search.proto;l=116
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated int getTargetVectorsCount();
@@ -10932,7 +10932,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 6 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=107
+     *     See v1/base_search.proto;l=116
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -10944,7 +10944,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 6 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=107
+     *     See v1/base_search.proto;l=116
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -12066,7 +12066,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 6 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=107
+     *     See v1/base_search.proto;l=116
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -12080,7 +12080,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 6 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=107
+     *     See v1/base_search.proto;l=116
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -12093,7 +12093,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 6 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=107
+     *     See v1/base_search.proto;l=116
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -12107,7 +12107,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 6 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=107
+     *     See v1/base_search.proto;l=116
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -13189,7 +13189,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 6 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=107
+       *     See v1/base_search.proto;l=116
        * @return A list containing the targetVectors.
        */
       @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -13204,7 +13204,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 6 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=107
+       *     See v1/base_search.proto;l=116
        * @return The count of targetVectors.
        */
       @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -13217,7 +13217,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 6 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=107
+       *     See v1/base_search.proto;l=116
        * @param index The index of the element to return.
        * @return The targetVectors at the given index.
        */
@@ -13231,7 +13231,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 6 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=107
+       *     See v1/base_search.proto;l=116
        * @param index The index of the value to return.
        * @return The bytes of the targetVectors at the given index.
        */
@@ -13246,7 +13246,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 6 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=107
+       *     See v1/base_search.proto;l=116
        * @param index The index to set the value at.
        * @param value The targetVectors to set.
        * @return This builder for chaining.
@@ -13267,7 +13267,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 6 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=107
+       *     See v1/base_search.proto;l=116
        * @param value The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -13287,7 +13287,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 6 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=107
+       *     See v1/base_search.proto;l=116
        * @param values The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -13307,7 +13307,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 6 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=107
+       *     See v1/base_search.proto;l=116
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearTargetVectors() {
@@ -13324,7 +13324,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 6 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearTextSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=107
+       *     See v1/base_search.proto;l=116
        * @param value The bytes of the targetVectors to add.
        * @return This builder for chaining.
        */
@@ -13568,7 +13568,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=115
+     *     See v1/base_search.proto;l=125
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated java.util.List<java.lang.String>
@@ -13580,7 +13580,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=115
+     *     See v1/base_search.proto;l=125
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated int getTargetVectorsCount();
@@ -13591,7 +13591,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=115
+     *     See v1/base_search.proto;l=125
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -13603,7 +13603,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=115
+     *     See v1/base_search.proto;l=125
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -13752,7 +13752,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=115
+     *     See v1/base_search.proto;l=125
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -13766,7 +13766,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=115
+     *     See v1/base_search.proto;l=125
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -13779,7 +13779,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=115
+     *     See v1/base_search.proto;l=125
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -13793,7 +13793,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=115
+     *     See v1/base_search.proto;l=125
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -14467,7 +14467,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=115
+       *     See v1/base_search.proto;l=125
        * @return A list containing the targetVectors.
        */
       @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -14482,7 +14482,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=115
+       *     See v1/base_search.proto;l=125
        * @return The count of targetVectors.
        */
       @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -14495,7 +14495,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=115
+       *     See v1/base_search.proto;l=125
        * @param index The index of the element to return.
        * @return The targetVectors at the given index.
        */
@@ -14509,7 +14509,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=115
+       *     See v1/base_search.proto;l=125
        * @param index The index of the value to return.
        * @return The bytes of the targetVectors at the given index.
        */
@@ -14524,7 +14524,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=115
+       *     See v1/base_search.proto;l=125
        * @param index The index to set the value at.
        * @param value The targetVectors to set.
        * @return This builder for chaining.
@@ -14545,7 +14545,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=115
+       *     See v1/base_search.proto;l=125
        * @param value The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -14565,7 +14565,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=115
+       *     See v1/base_search.proto;l=125
        * @param values The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -14585,7 +14585,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=115
+       *     See v1/base_search.proto;l=125
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearTargetVectors() {
@@ -14602,7 +14602,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearImageSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=115
+       *     See v1/base_search.proto;l=125
        * @param value The bytes of the targetVectors to add.
        * @return This builder for chaining.
        */
@@ -14846,7 +14846,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=123
+     *     See v1/base_search.proto;l=134
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated java.util.List<java.lang.String>
@@ -14858,7 +14858,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=123
+     *     See v1/base_search.proto;l=134
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated int getTargetVectorsCount();
@@ -14869,7 +14869,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=123
+     *     See v1/base_search.proto;l=134
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -14881,7 +14881,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=123
+     *     See v1/base_search.proto;l=134
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -15030,7 +15030,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=123
+     *     See v1/base_search.proto;l=134
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -15044,7 +15044,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=123
+     *     See v1/base_search.proto;l=134
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -15057,7 +15057,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=123
+     *     See v1/base_search.proto;l=134
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -15071,7 +15071,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=123
+     *     See v1/base_search.proto;l=134
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -15745,7 +15745,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=123
+       *     See v1/base_search.proto;l=134
        * @return A list containing the targetVectors.
        */
       @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -15760,7 +15760,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=123
+       *     See v1/base_search.proto;l=134
        * @return The count of targetVectors.
        */
       @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -15773,7 +15773,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=123
+       *     See v1/base_search.proto;l=134
        * @param index The index of the element to return.
        * @return The targetVectors at the given index.
        */
@@ -15787,7 +15787,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=123
+       *     See v1/base_search.proto;l=134
        * @param index The index of the value to return.
        * @return The bytes of the targetVectors at the given index.
        */
@@ -15802,7 +15802,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=123
+       *     See v1/base_search.proto;l=134
        * @param index The index to set the value at.
        * @param value The targetVectors to set.
        * @return This builder for chaining.
@@ -15823,7 +15823,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=123
+       *     See v1/base_search.proto;l=134
        * @param value The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -15843,7 +15843,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=123
+       *     See v1/base_search.proto;l=134
        * @param values The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -15863,7 +15863,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=123
+       *     See v1/base_search.proto;l=134
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearTargetVectors() {
@@ -15880,7 +15880,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearAudioSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=123
+       *     See v1/base_search.proto;l=134
        * @param value The bytes of the targetVectors to add.
        * @return This builder for chaining.
        */
@@ -16124,7 +16124,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=131
+     *     See v1/base_search.proto;l=143
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated java.util.List<java.lang.String>
@@ -16136,7 +16136,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=131
+     *     See v1/base_search.proto;l=143
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated int getTargetVectorsCount();
@@ -16147,7 +16147,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=131
+     *     See v1/base_search.proto;l=143
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -16159,7 +16159,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=131
+     *     See v1/base_search.proto;l=143
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -16308,7 +16308,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=131
+     *     See v1/base_search.proto;l=143
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -16322,7 +16322,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=131
+     *     See v1/base_search.proto;l=143
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -16335,7 +16335,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=131
+     *     See v1/base_search.proto;l=143
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -16349,7 +16349,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=131
+     *     See v1/base_search.proto;l=143
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -17023,7 +17023,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=131
+       *     See v1/base_search.proto;l=143
        * @return A list containing the targetVectors.
        */
       @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -17038,7 +17038,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=131
+       *     See v1/base_search.proto;l=143
        * @return The count of targetVectors.
        */
       @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -17051,7 +17051,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=131
+       *     See v1/base_search.proto;l=143
        * @param index The index of the element to return.
        * @return The targetVectors at the given index.
        */
@@ -17065,7 +17065,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=131
+       *     See v1/base_search.proto;l=143
        * @param index The index of the value to return.
        * @return The bytes of the targetVectors at the given index.
        */
@@ -17080,7 +17080,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=131
+       *     See v1/base_search.proto;l=143
        * @param index The index to set the value at.
        * @param value The targetVectors to set.
        * @return This builder for chaining.
@@ -17101,7 +17101,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=131
+       *     See v1/base_search.proto;l=143
        * @param value The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -17121,7 +17121,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=131
+       *     See v1/base_search.proto;l=143
        * @param values The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -17141,7 +17141,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=131
+       *     See v1/base_search.proto;l=143
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearTargetVectors() {
@@ -17158,7 +17158,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearVideoSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=131
+       *     See v1/base_search.proto;l=143
        * @param value The bytes of the targetVectors to add.
        * @return This builder for chaining.
        */
@@ -17402,7 +17402,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=139
+     *     See v1/base_search.proto;l=152
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated java.util.List<java.lang.String>
@@ -17414,7 +17414,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=139
+     *     See v1/base_search.proto;l=152
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated int getTargetVectorsCount();
@@ -17425,7 +17425,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=139
+     *     See v1/base_search.proto;l=152
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -17437,7 +17437,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=139
+     *     See v1/base_search.proto;l=152
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -17586,7 +17586,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=139
+     *     See v1/base_search.proto;l=152
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -17600,7 +17600,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=139
+     *     See v1/base_search.proto;l=152
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -17613,7 +17613,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=139
+     *     See v1/base_search.proto;l=152
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -17627,7 +17627,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=139
+     *     See v1/base_search.proto;l=152
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -18301,7 +18301,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=139
+       *     See v1/base_search.proto;l=152
        * @return A list containing the targetVectors.
        */
       @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -18316,7 +18316,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=139
+       *     See v1/base_search.proto;l=152
        * @return The count of targetVectors.
        */
       @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -18329,7 +18329,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=139
+       *     See v1/base_search.proto;l=152
        * @param index The index of the element to return.
        * @return The targetVectors at the given index.
        */
@@ -18343,7 +18343,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=139
+       *     See v1/base_search.proto;l=152
        * @param index The index of the value to return.
        * @return The bytes of the targetVectors at the given index.
        */
@@ -18358,7 +18358,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=139
+       *     See v1/base_search.proto;l=152
        * @param index The index to set the value at.
        * @param value The targetVectors to set.
        * @return This builder for chaining.
@@ -18379,7 +18379,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=139
+       *     See v1/base_search.proto;l=152
        * @param value The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -18399,7 +18399,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=139
+       *     See v1/base_search.proto;l=152
        * @param values The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -18419,7 +18419,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=139
+       *     See v1/base_search.proto;l=152
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearTargetVectors() {
@@ -18436,7 +18436,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearDepthSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=139
+       *     See v1/base_search.proto;l=152
        * @param value The bytes of the targetVectors to add.
        * @return This builder for chaining.
        */
@@ -18680,7 +18680,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=147
+     *     See v1/base_search.proto;l=161
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated java.util.List<java.lang.String>
@@ -18692,7 +18692,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=147
+     *     See v1/base_search.proto;l=161
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated int getTargetVectorsCount();
@@ -18703,7 +18703,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=147
+     *     See v1/base_search.proto;l=161
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -18715,7 +18715,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=147
+     *     See v1/base_search.proto;l=161
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -18864,7 +18864,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=147
+     *     See v1/base_search.proto;l=161
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -18878,7 +18878,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=147
+     *     See v1/base_search.proto;l=161
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -18891,7 +18891,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=147
+     *     See v1/base_search.proto;l=161
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -18905,7 +18905,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=147
+     *     See v1/base_search.proto;l=161
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -19579,7 +19579,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=147
+       *     See v1/base_search.proto;l=161
        * @return A list containing the targetVectors.
        */
       @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -19594,7 +19594,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=147
+       *     See v1/base_search.proto;l=161
        * @return The count of targetVectors.
        */
       @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -19607,7 +19607,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=147
+       *     See v1/base_search.proto;l=161
        * @param index The index of the element to return.
        * @return The targetVectors at the given index.
        */
@@ -19621,7 +19621,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=147
+       *     See v1/base_search.proto;l=161
        * @param index The index of the value to return.
        * @return The bytes of the targetVectors at the given index.
        */
@@ -19636,7 +19636,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=147
+       *     See v1/base_search.proto;l=161
        * @param index The index to set the value at.
        * @param value The targetVectors to set.
        * @return This builder for chaining.
@@ -19657,7 +19657,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=147
+       *     See v1/base_search.proto;l=161
        * @param value The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -19677,7 +19677,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=147
+       *     See v1/base_search.proto;l=161
        * @param values The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -19697,7 +19697,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=147
+       *     See v1/base_search.proto;l=161
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearTargetVectors() {
@@ -19714,7 +19714,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearThermalSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=147
+       *     See v1/base_search.proto;l=161
        * @param value The bytes of the targetVectors to add.
        * @return This builder for chaining.
        */
@@ -19958,7 +19958,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=155
+     *     See v1/base_search.proto;l=170
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated java.util.List<java.lang.String>
@@ -19970,7 +19970,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=155
+     *     See v1/base_search.proto;l=170
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated int getTargetVectorsCount();
@@ -19981,7 +19981,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=155
+     *     See v1/base_search.proto;l=170
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -19993,7 +19993,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=155
+     *     See v1/base_search.proto;l=170
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -20142,7 +20142,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=155
+     *     See v1/base_search.proto;l=170
      * @return A list containing the targetVectors.
      */
     @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -20156,7 +20156,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=155
+     *     See v1/base_search.proto;l=170
      * @return The count of targetVectors.
      */
     @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -20169,7 +20169,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=155
+     *     See v1/base_search.proto;l=170
      * @param index The index of the element to return.
      * @return The targetVectors at the given index.
      */
@@ -20183,7 +20183,7 @@ com.google.protobuf.ByteString defaultValue) {
      *
      * <code>repeated string target_vectors = 4 [deprecated = true];</code>
      * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-     *     See v1/base_search.proto;l=155
+     *     See v1/base_search.proto;l=170
      * @param index The index of the value to return.
      * @return The bytes of the targetVectors at the given index.
      */
@@ -20857,7 +20857,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=155
+       *     See v1/base_search.proto;l=170
        * @return A list containing the targetVectors.
        */
       @java.lang.Deprecated public com.google.protobuf.ProtocolStringList
@@ -20872,7 +20872,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=155
+       *     See v1/base_search.proto;l=170
        * @return The count of targetVectors.
        */
       @java.lang.Deprecated public int getTargetVectorsCount() {
@@ -20885,7 +20885,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=155
+       *     See v1/base_search.proto;l=170
        * @param index The index of the element to return.
        * @return The targetVectors at the given index.
        */
@@ -20899,7 +20899,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=155
+       *     See v1/base_search.proto;l=170
        * @param index The index of the value to return.
        * @return The bytes of the targetVectors at the given index.
        */
@@ -20914,7 +20914,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=155
+       *     See v1/base_search.proto;l=170
        * @param index The index to set the value at.
        * @param value The targetVectors to set.
        * @return This builder for chaining.
@@ -20935,7 +20935,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=155
+       *     See v1/base_search.proto;l=170
        * @param value The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -20955,7 +20955,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=155
+       *     See v1/base_search.proto;l=170
        * @param values The targetVectors to add.
        * @return This builder for chaining.
        */
@@ -20975,7 +20975,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=155
+       *     See v1/base_search.proto;l=170
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearTargetVectors() {
@@ -20992,7 +20992,7 @@ com.google.protobuf.ByteString defaultValue) {
        *
        * <code>repeated string target_vectors = 4 [deprecated = true];</code>
        * @deprecated weaviate.v1.NearIMUSearch.target_vectors is deprecated.
-       *     See v1/base_search.proto;l=155
+       *     See v1/base_search.proto;l=170
        * @param value The bytes of the targetVectors to add.
        * @return This builder for chaining.
        */

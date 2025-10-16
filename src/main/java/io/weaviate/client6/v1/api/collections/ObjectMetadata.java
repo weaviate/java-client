@@ -17,12 +17,16 @@ public record ObjectMetadata(
     this(builder.uuid, builder.vectors, null, null);
   }
 
+  public static ObjectMetadata of() {
+    return of(ObjectBuilder.identity());
+  }
+
   public static ObjectMetadata of(Function<Builder, ObjectBuilder<ObjectMetadata>> fn) {
     return fn.apply(new Builder()).build();
   }
 
   public static class Builder implements ObjectBuilder<ObjectMetadata> {
-    private String uuid;
+    private String uuid = UUID.randomUUID().toString();
     private Vectors vectors;
 
     /** Assign a custom UUID for the object. */

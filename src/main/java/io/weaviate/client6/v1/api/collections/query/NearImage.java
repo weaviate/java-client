@@ -3,20 +3,30 @@ package io.weaviate.client6.v1.api.collections.query;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.aggregate.AggregateObjectFilter;
+import io.weaviate.client6.v1.api.collections.query.Target.CombinedTextTarget;
+import io.weaviate.client6.v1.api.collections.query.Target.TextTarget;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
-public record NearImage(String image, Float distance, Float certainty, BaseQueryOptions common)
+public record NearImage(Target searchTarget, Float distance, Float certainty, BaseQueryOptions common)
     implements QueryOperator, AggregateObjectFilter {
 
   public static NearImage of(String image) {
-    return of(image, ObjectBuilder.identity());
+    return of(Target.blob(image));
   }
 
   public static NearImage of(String image, Function<Builder, ObjectBuilder<NearImage>> fn) {
-    return fn.apply(new Builder(image)).build();
+    return of(Target.blob(image), fn);
+  }
+
+  public static NearImage of(Target searchTarget) {
+    return of(searchTarget, ObjectBuilder.identity());
+  }
+
+  public static NearImage of(Target searchTarget, Function<Builder, ObjectBuilder<NearImage>> fn) {
+    return fn.apply(new Builder(searchTarget)).build();
   }
 
   public NearImage(Builder builder) {
@@ -28,8 +38,8 @@ public record NearImage(String image, Float distance, Float certainty, BaseQuery
   }
 
   public static class Builder extends NearMediaBuilder<Builder, NearImage> {
-    public Builder(String image) {
-      super(image);
+    public Builder(Target searchTarget) {
+      super(searchTarget);
     }
 
     @Override
@@ -54,7 +64,16 @@ public record NearImage(String image, Float distance, Float certainty, BaseQuery
 
   private WeaviateProtoBaseSearch.NearImageSearch.Builder protoBuilder() {
     var nearImage = WeaviateProtoBaseSearch.NearImageSearch.newBuilder();
-    nearImage.setImage(image);
+    if (searchTarget instanceof TextTarget image) {
+      nearImage.setImage(image.query().get(0));
+    } else if (searchTarget instanceof CombinedTextTarget combined) {
+      nearImage.setImage(combined.query().get(0));
+    }
+
+    var targets = WeaviateProtoBaseSearch.Targets.newBuilder();
+    if (searchTarget.appendTargets(targets)) {
+      nearImage.setTargets(targets);
+    }
 
     if (certainty != null) {
       nearImage.setCertainty(certainty);

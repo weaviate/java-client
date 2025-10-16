@@ -37,6 +37,10 @@ public final class JSON {
     gsonBuilder.registerTypeAdapterFactory(
         io.weaviate.client6.v1.api.collections.Quantization.CustomTypeAdapterFactory.INSTANCE);
     gsonBuilder.registerTypeAdapterFactory(
+        io.weaviate.client6.v1.api.collections.vectorindex.MultiVector.CustomTypeAdapterFactory.INSTANCE);
+    gsonBuilder.registerTypeAdapterFactory(
+        io.weaviate.client6.v1.api.collections.Encoding.CustomTypeAdapterFactory.INSTANCE);
+    gsonBuilder.registerTypeAdapterFactory(
         io.weaviate.client6.v1.internal.DateUtil.CustomTypeAdapterFactory.INSTANCE);
 
     // TypeAdapters -----------------------------------------------------------

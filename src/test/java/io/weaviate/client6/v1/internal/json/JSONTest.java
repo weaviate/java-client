@@ -15,6 +15,7 @@ import com.jparams.junit4.JParamsTestRunner;
 import com.jparams.junit4.data.DataMethod;
 
 import io.weaviate.client6.v1.api.collections.CollectionConfig;
+import io.weaviate.client6.v1.api.collections.Encoding;
 import io.weaviate.client6.v1.api.collections.Generative;
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.Property;
@@ -33,6 +34,8 @@ import io.weaviate.client6.v1.api.collections.rerankers.CohereReranker;
 import io.weaviate.client6.v1.api.collections.vectorindex.Distance;
 import io.weaviate.client6.v1.api.collections.vectorindex.Flat;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
+import io.weaviate.client6.v1.api.collections.vectorindex.MultiVector;
+import io.weaviate.client6.v1.api.collections.vectorindex.MultiVector.Aggregation;
 import io.weaviate.client6.v1.api.collections.vectorizers.Img2VecNeuralVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecClipVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.SelfProvidedVectorizer;
@@ -888,6 +891,29 @@ public class JSONTest {
                       }
                     }
                   ]
+                }
+                  """
+        },
+        {
+            MultiVector.class,
+            MultiVector.of(
+                mv -> mv
+                    .aggregation(Aggregation.MAX_SIM)
+                    .encoding(Encoding.muvera(
+                        enc -> enc
+                            .dprojections(1)
+                            .repetitions(2)
+                            .ksim(3)))),
+            """
+                {
+                  "enabled": true,
+                  "aggregation": "MAX_SIM",
+                  "muvera": {
+                    "enabled": true,
+                    "dprojections": 1,
+                    "repetitions": 2,
+                    "ksim": 3
+                  }
                 }
                   """
         },
