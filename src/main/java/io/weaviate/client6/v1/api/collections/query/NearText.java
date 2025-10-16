@@ -117,7 +117,7 @@ public record NearText(Target searchTarget, Float distance, Float certainty, Mov
   @Override
   public void appendTo(WeaviateProtoSearchGet.SearchRequest.Builder req) {
     common.appendTo(req);
-    req.setNearText(protoBuilder());
+    req.setNearText(protoBuilder(true));
   }
 
   @Override
@@ -125,11 +125,11 @@ public record NearText(Target searchTarget, Float distance, Float certainty, Mov
     if (common.limit() != null) {
       req.setLimit(common.limit());
     }
-    req.setNearText(protoBuilder());
+    req.setNearText(protoBuilder(true));
   }
 
   // Package-private for Hybrid to see.
-  WeaviateProtoBaseSearch.NearTextSearch.Builder protoBuilder() {
+  WeaviateProtoBaseSearch.NearTextSearch.Builder protoBuilder(boolean withTargets) {
     var nearText = WeaviateProtoBaseSearch.NearTextSearch.newBuilder();
 
     if (searchTarget instanceof TextTarget text) {
@@ -139,7 +139,7 @@ public record NearText(Target searchTarget, Float distance, Float certainty, Mov
     }
 
     var targets = WeaviateProtoBaseSearch.Targets.newBuilder();
-    if (searchTarget.appendTargets(targets)) {
+    if (withTargets && searchTarget.appendTargets(targets)) {
       nearText.setTargets(targets);
     }
 

@@ -40,7 +40,7 @@ public record NearVector(NearVectorTarget searchTarget, Float distance, Float ce
   @Override
   public final void appendTo(WeaviateProtoSearchGet.SearchRequest.Builder req) {
     common.appendTo(req);
-    req.setNearVector(protoBuilder());
+    req.setNearVector(protoBuilder(true));
   }
 
   @Override
@@ -48,16 +48,16 @@ public record NearVector(NearVectorTarget searchTarget, Float distance, Float ce
     if (common.limit() != null) {
       req.setLimit(common.limit());
     }
-    req.setNearVector(protoBuilder());
+    req.setNearVector(protoBuilder(true));
   }
 
-  // This is made package-private for Hybrid to see. Should we refactor?
-  WeaviateProtoBaseSearch.NearVector.Builder protoBuilder() {
+  WeaviateProtoBaseSearch.NearVector.Builder protoBuilder(boolean withTargets) {
     var nearVector = WeaviateProtoBaseSearch.NearVector.newBuilder();
 
     searchTarget.appendVectors(nearVector);
+
     var targets = WeaviateProtoBaseSearch.Targets.newBuilder();
-    if (searchTarget.appendTargets(targets)) {
+    if (withTargets && searchTarget.appendTargets(targets)) {
       nearVector.setTargets(targets);
     }
 

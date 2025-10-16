@@ -251,6 +251,29 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
   /**
    * Query collection objects using hybrid search.
    *
+   * @param searchTarget Query target.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT hybrid(Target searchTarget) {
+    return hybrid(Hybrid.of(searchTarget));
+  }
+
+  /**
+   * Query collection objects using hybrid search.
+   *
+   * @param searchTarget Query target.
+   * @param fn           Lambda expression for optional parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT hybrid(Target searchTarget, Function<Hybrid.Builder, ObjectBuilder<Hybrid>> fn) {
+    return hybrid(Hybrid.of(searchTarget, fn));
+  }
+
+  /**
+   * Query collection objects using hybrid search.
+   *
    * @param query Hybrid query request.
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
@@ -290,6 +313,40 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    */
   public GroupedResponseT hybrid(String query, Function<Hybrid.Builder, ObjectBuilder<Hybrid>> fn, GroupBy groupBy) {
     return hybrid(Hybrid.of(query, fn), groupBy);
+  }
+
+  /**
+   * Query collection objects using hybrid search.
+   *
+   * @param searchTarget Query target.
+   * @param groupBy      Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see QueryResponseGrouped
+   */
+  public GroupedResponseT hybrid(Target searchTarget, GroupBy groupBy) {
+    return hybrid(Hybrid.of(searchTarget), groupBy);
+  }
+
+  /**
+   * Query collection objects using hybrid search.
+   *
+   * @param searchTarget Query target.
+   * @param fn           Lambda expression for optional parameters.
+   * @param groupBy      Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see QueryResponseGrouped
+   */
+  public GroupedResponseT hybrid(Target searchTarget, Function<Hybrid.Builder, ObjectBuilder<Hybrid>> fn,
+      GroupBy groupBy) {
+    return hybrid(Hybrid.of(searchTarget, fn), groupBy);
   }
 
   /**
