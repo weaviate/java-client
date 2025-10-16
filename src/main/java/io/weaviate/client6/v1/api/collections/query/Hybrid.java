@@ -6,13 +6,15 @@ import java.util.List;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.aggregate.AggregateObjectFilter;
+import io.weaviate.client6.v1.api.collections.query.Target.CombinedTextTarget;
+import io.weaviate.client6.v1.api.collections.query.Target.TextTarget;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
 public record Hybrid(
-    String query,
+    Target searchTarget,
     List<String> queryProperties,
     SearchOperator searchOperator,
     Float alpha,
@@ -27,16 +29,24 @@ public record Hybrid(
   }
 
   public static final Hybrid of(String query) {
-    return of(query, ObjectBuilder.identity());
+    return of(Target.text(List.of(query)));
   }
 
   public static final Hybrid of(String query, Function<Builder, ObjectBuilder<Hybrid>> fn) {
-    return fn.apply(new Builder(query)).build();
+    return of(Target.text(List.of(query)), fn);
+  }
+
+  public static final Hybrid of(Target searchTarget) {
+    return of(searchTarget, ObjectBuilder.identity());
+  }
+
+  public static final Hybrid of(Target searchTarget, Function<Builder, ObjectBuilder<Hybrid>> fn) {
+    return fn.apply(new Builder(searchTarget)).build();
   }
 
   public Hybrid(Builder builder) {
     this(
-        builder.query,
+        builder.searchTarget,
         builder.queryProperties,
         builder.searchOperator,
         builder.alpha,
@@ -48,7 +58,7 @@ public record Hybrid(
 
   public static class Builder extends BaseQueryOptions.Builder<Builder, Hybrid> {
     // Required query parameters.
-    private final String query;
+    private final Target searchTarget;
 
     // Optional query parameters.
     List<String> queryProperties = new ArrayList<>();
@@ -58,8 +68,8 @@ public record Hybrid(
     FusionType fusionType;
     Float maxVectorDistance;
 
-    public Builder(String query) {
-      this.query = query;
+    public Builder(Target searchTarget) {
+      this.searchTarget = searchTarget;
     }
 
     /** Select properties to be included in the results scoring. */
@@ -155,8 +165,13 @@ public record Hybrid(
 
   private WeaviateProtoBaseSearch.Hybrid.Builder protoBuilder() {
     var hybrid = WeaviateProtoBaseSearch.Hybrid.newBuilder()
-        .setQuery(query)
         .addAllProperties(queryProperties);
+
+    if (searchTarget instanceof TextTarget text) {
+      hybrid.setQuery(text.query().get(0));
+    } else if (searchTarget instanceof CombinedTextTarget combined) {
+      hybrid.setQuery(combined.query().get(0));
+    }
 
     if (alpha != null) {
       hybrid.setAlpha(alpha);
@@ -177,10 +192,15 @@ public record Hybrid(
 
     if (near != null) {
       if (near instanceof NearVector nv) {
-        hybrid.setNearVector(nv.protoBuilder());
+        hybrid.setNearVector(nv.protoBuilder(false));
       } else if (near instanceof NearText nt) {
-        hybrid.setNearText(nt.protoBuilder());
+        hybrid.setNearText(nt.protoBuilder(false));
       }
+    }
+
+    var targets = WeaviateProtoBaseSearch.Targets.newBuilder();
+    if (searchTarget.appendTargets(targets)) {
+      hybrid.setTargets(targets);
     }
 
     return hybrid;
