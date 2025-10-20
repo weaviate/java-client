@@ -3,20 +3,30 @@ package io.weaviate.client6.v1.api.collections.query;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.aggregate.AggregateObjectFilter;
+import io.weaviate.client6.v1.api.collections.query.Target.CombinedTextTarget;
+import io.weaviate.client6.v1.api.collections.query.Target.TextTarget;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
-public record NearThermal(String thermal, Float distance, Float certainty, BaseQueryOptions common)
+public record NearThermal(Target searchTarget, Float distance, Float certainty, BaseQueryOptions common)
     implements QueryOperator, AggregateObjectFilter {
 
   public static NearThermal of(String thermal) {
-    return of(thermal, ObjectBuilder.identity());
+    return of(Target.blob(thermal));
   }
 
   public static NearThermal of(String thermal, Function<Builder, ObjectBuilder<NearThermal>> fn) {
-    return fn.apply(new Builder(thermal)).build();
+    return of(Target.blob(thermal), fn);
+  }
+
+  public static NearThermal of(Target searchTarget) {
+    return of(searchTarget, ObjectBuilder.identity());
+  }
+
+  public static NearThermal of(Target searchTarget, Function<Builder, ObjectBuilder<NearThermal>> fn) {
+    return fn.apply(new Builder(searchTarget)).build();
   }
 
   public NearThermal(Builder builder) {
@@ -28,8 +38,8 @@ public record NearThermal(String thermal, Float distance, Float certainty, BaseQ
   }
 
   public static class Builder extends NearMediaBuilder<Builder, NearThermal> {
-    public Builder(String thermal) {
-      super(thermal);
+    public Builder(Target searchTarget) {
+      super(searchTarget);
     }
 
     @Override
@@ -54,7 +64,16 @@ public record NearThermal(String thermal, Float distance, Float certainty, BaseQ
 
   private WeaviateProtoBaseSearch.NearThermalSearch.Builder protoBuilder() {
     var nearThermal = WeaviateProtoBaseSearch.NearThermalSearch.newBuilder();
-    nearThermal.setThermal(thermal);
+    if (searchTarget instanceof TextTarget thermal) {
+      nearThermal.setThermal(thermal.query().get(0));
+    } else if (searchTarget instanceof CombinedTextTarget combined) {
+      nearThermal.setThermal(combined.query().get(0));
+    }
+
+    var targets = WeaviateProtoBaseSearch.Targets.newBuilder();
+    if (searchTarget.appendTargets(targets)) {
+      nearThermal.setTargets(targets);
+    }
 
     if (certainty != null) {
       nearThermal.setCertainty(certainty);
