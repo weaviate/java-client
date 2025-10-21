@@ -5,6 +5,7 @@ import java.util.function.Function;
 import com.google.gson.annotations.SerializedName;
 
 import io.weaviate.client6.v1.api.collections.Generative;
+import io.weaviate.client6.v1.api.collections.generate.ProviderMetadata;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record AnyscaleGenerative(
@@ -64,6 +65,14 @@ public record AnyscaleGenerative(
     @Override
     public AnyscaleGenerative build() {
       return new AnyscaleGenerative(this);
+    }
+  }
+
+  public static record Metadata() implements ProviderMetadata {
+
+    @Override
+    public Generative.Kind _kind() {
+      return Generative.Kind.ANYSCALE;
     }
   }
 }

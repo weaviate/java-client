@@ -85,4 +85,12 @@ public record DatabricksGenerative(
       return new DatabricksGenerative(this);
     }
   }
+
+  public static record Metadata(ProviderMetadata.Usage usage) implements ProviderMetadata {
+
+    @Override
+    public Generative.Kind _kind() {
+      return Generative.Kind.DATABRICKS;
+    }
+  }
 }

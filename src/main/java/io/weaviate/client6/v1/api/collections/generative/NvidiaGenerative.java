@@ -77,4 +77,12 @@ public record NvidiaGenerative(
       return new NvidiaGenerative(this);
     }
   }
+
+  public static record Metadata(ProviderMetadata.Usage usage) implements ProviderMetadata {
+
+    @Override
+    public Generative.Kind _kind() {
+      return Generative.Kind.NVIDIA;
+    }
+  }
 }

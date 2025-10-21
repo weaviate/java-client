@@ -103,4 +103,21 @@ public record GoogleGenerative(
       return new GoogleGenerative(this);
     }
   }
+
+  public static record Metadata(TokenMetadata tokens, Usage usage) implements ProviderMetadata {
+
+    @Override
+    public Generative.Kind _kind() {
+      return Generative.Kind.GOOGLE;
+    }
+
+    public static record TokenCount(Long totalBillableCharacters, Long totalTokens) {
+    }
+
+    public static record TokenMetadata(TokenCount inputTokens, TokenCount outputTokens) {
+    }
+
+    public static record Usage(Long promptTokenCount, Long candidatesTokenCount, Long totalTokenCount) {
+    }
+  }
 }
