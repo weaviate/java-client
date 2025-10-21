@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 import io.weaviate.client6.v1.api.collections.Generative;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public record MistralGenerative(
+public record XaiGenerative(
     @SerializedName("baseURL") String baseUrl,
     @SerializedName("model") String model,
     @SerializedName("maxTokens") Integer maxTokens,
@@ -15,7 +15,7 @@ public record MistralGenerative(
 
   @Override
   public Kind _kind() {
-    return Generative.Kind.MISTRAL;
+    return Generative.Kind.XAI;
   }
 
   @Override
@@ -23,15 +23,15 @@ public record MistralGenerative(
     return this;
   }
 
-  public static MistralGenerative of() {
+  public static XaiGenerative of() {
     return of(ObjectBuilder.identity());
   }
 
-  public static MistralGenerative of(Function<Builder, ObjectBuilder<MistralGenerative>> fn) {
+  public static XaiGenerative of(Function<Builder, ObjectBuilder<XaiGenerative>> fn) {
     return fn.apply(new Builder()).build();
   }
 
-  public MistralGenerative(Builder builder) {
+  public XaiGenerative(Builder builder) {
     this(
         builder.baseUrl,
         builder.model,
@@ -39,7 +39,7 @@ public record MistralGenerative(
         builder.temperature);
   }
 
-  public static class Builder implements ObjectBuilder<MistralGenerative> {
+  public static class Builder implements ObjectBuilder<XaiGenerative> {
     private String baseUrl;
     private String model;
     private Integer maxTokens;
@@ -73,8 +73,8 @@ public record MistralGenerative(
     }
 
     @Override
-    public MistralGenerative build() {
-      return new MistralGenerative(this);
+    public XaiGenerative build() {
+      return new XaiGenerative(this);
     }
   }
 }
