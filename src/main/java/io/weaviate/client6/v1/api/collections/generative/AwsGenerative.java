@@ -5,6 +5,7 @@ import java.util.function.Function;
 import com.google.gson.annotations.SerializedName;
 
 import io.weaviate.client6.v1.api.collections.Generative;
+import io.weaviate.client6.v1.api.collections.generate.ProviderMetadata;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record AwsGenerative(
@@ -14,7 +15,7 @@ public record AwsGenerative(
     @SerializedName("model") String model) implements Generative {
 
   @Override
-  public Kind _kind() {
+  public Generative.Kind _kind() {
     return Generative.Kind.AWS;
   }
 
@@ -66,6 +67,14 @@ public record AwsGenerative(
     @Override
     public AwsGenerative build() {
       return new AwsGenerative(this);
+    }
+  }
+
+  public static record Metadata() implements ProviderMetadata {
+
+    @Override
+    public Generative.Kind _kind() {
+      return Generative.Kind.AWS;
     }
   }
 }

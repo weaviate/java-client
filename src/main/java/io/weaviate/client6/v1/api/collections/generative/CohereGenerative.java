@@ -108,4 +108,23 @@ public record CohereGenerative(
       return new CohereGenerative(this);
     }
   }
+
+  public static record Metadata(ApiVersion apiVersion, BilledUnits billedUnits, Tokens tokens, List<String> warnings)
+      implements ProviderMetadata {
+
+    @Override
+    public Generative.Kind _kind() {
+      return Generative.Kind.COHERE;
+    }
+
+    public static record ApiVersion(String version, Boolean deprecated, Boolean experimental) {
+    }
+
+    public static record BilledUnits(Double inputTokens, Double outputTokens, Double searchUnits,
+        Double classifications) {
+    }
+
+    public static record Tokens(Double inputTokens, Double outputTokens) {
+    }
+  }
 }

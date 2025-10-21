@@ -77,4 +77,12 @@ public record FriendliaiGenerative(
       return new FriendliaiGenerative(this);
     }
   }
+
+  public static record Metadata(ProviderMetadata.Usage usage) implements ProviderMetadata {
+
+    @Override
+    public Generative.Kind _kind() {
+      return Generative.Kind.FRIENDLIAI;
+    }
+  }
 }

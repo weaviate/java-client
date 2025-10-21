@@ -91,4 +91,15 @@ public record AnthropicGenerative(
       return new AnthropicGenerative(this);
     }
   }
+
+  public static record Metadata(Usage usage) implements ProviderMetadata {
+
+    @Override
+    public Generative.Kind _kind() {
+      return Generative.Kind.ANTHROPIC;
+    }
+
+    public static record Usage(Long inputTokens, Long outputTokens) {
+    }
+  }
 }
