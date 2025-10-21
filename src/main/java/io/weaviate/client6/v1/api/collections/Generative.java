@@ -68,18 +68,213 @@ public interface Generative {
 
   Object _self();
 
-  /** Configure a default Cohere generative module. */
+  /** Configure a default {@code generative-anthropic} module. */
+  public static Generative anthropic() {
+    return AnthropicGenerative.of();
+  }
+
+  /**
+   * Configure a {@code generative-anthropic} module.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Generative anthropic(Function<AnthropicGenerative.Builder, ObjectBuilder<AnthropicGenerative>> fn) {
+    return AnthropicGenerative.of(fn);
+  }
+
+  /** Configure a default {@code generative-anyscale} module. */
+  public static Generative anyscale() {
+    return AnyscaleGenerative.of();
+  }
+
+  /**
+   * Configure a {@code generative-anyscale} module.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Generative anyscale(Function<AnyscaleGenerative.Builder, ObjectBuilder<AnyscaleGenerative>> fn) {
+    return AnyscaleGenerative.of(fn);
+  }
+
+  /**
+   * Configure a default {@code generative-aws} module.
+   *
+   * @param region  AWS region.
+   * @param service AWS service to use, e.g. {@code "bedrock"} or
+   *                {@code "sagemaker"}.
+   */
+  public static Generative aws(String region, String service) {
+    return AwsGenerative.of(region, service);
+  }
+
+  /**
+   * Configure a {@code generative-aws} module.
+   *
+   * @param region  AWS region.
+   * @param service AWS service to use, e.g. {@code "bedrock"} or
+   *                {@code "sagemaker"}.
+   * @param fn      Lambda expression for optional parameters.
+   */
+  public static Generative aws(String region, String service,
+      Function<AwsGenerative.Builder, ObjectBuilder<AwsGenerative>> fn) {
+    return AwsGenerative.of(region, service, fn);
+  }
+
+  /** Configure a default {@code generative-cohere} module. */
   public static Generative cohere() {
     return CohereGenerative.of();
   }
 
   /**
-   * Configure a Cohere generative module.
+   * Configure a {@code generative-cohere} module.
    *
    * @param fn Lambda expression for optional parameters.
    */
   public static Generative cohere(Function<CohereGenerative.Builder, ObjectBuilder<CohereGenerative>> fn) {
     return CohereGenerative.of(fn);
+  }
+
+  /**
+   * Configure a default {@code generative-databricks} module.
+   *
+   * @param baseURL Base URL for the generative service.
+   */
+  public static Generative databricks(String baseURL) {
+    return DatabricksGenerative.of(baseURL);
+  }
+
+  /**
+   * Configure a {@code generative-databricks} module.
+   *
+   * @param baseURL Base URL for the generative service.
+   * @param fn      Lambda expression for optional parameters.
+   */
+  public static Generative databricks(String baseURL,
+      Function<DatabricksGenerative.Builder, ObjectBuilder<DatabricksGenerative>> fn) {
+    return DatabricksGenerative.of(baseURL, fn);
+  }
+
+  /** Configure a default {@code generative-frienliai} module. */
+  public static Generative frienliai() {
+    return FriendliaiGenerative.of();
+  }
+
+  /**
+   * Configure a {@code generative-frienliai} module.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Generative frienliai(Function<FriendliaiGenerative.Builder, ObjectBuilder<FriendliaiGenerative>> fn) {
+    return FriendliaiGenerative.of(fn);
+  }
+
+  /** Configure a default {@code generative-palm} module. */
+  public static Generative google(String projectId) {
+    return GoogleGenerative.of(projectId);
+  }
+
+  /**
+   * Configure a {@code generative-palm} module.
+   *
+   * @param projectId Project ID.
+   * @param fn        Lambda expression for optional parameters.
+   */
+  public static Generative google(String projectId,
+      Function<GoogleGenerative.Builder, ObjectBuilder<GoogleGenerative>> fn) {
+    return GoogleGenerative.of(projectId, fn);
+  }
+
+  /** Configure a default {@code generative-mistral} module. */
+  public static Generative mistral() {
+    return MistralGenerative.of();
+  }
+
+  /**
+   * Configure a {@code generative-mistral} module.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Generative mistral(Function<MistralGenerative.Builder, ObjectBuilder<MistralGenerative>> fn) {
+    return MistralGenerative.of(fn);
+  }
+
+  /** Configure a default {@code generative-nvidia} module. */
+  public static Generative nvidia() {
+    return NvidiaGenerative.of();
+  }
+
+  /**
+   * Configure a {@code generative-nvidia} module.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Generative nvidia(Function<NvidiaGenerative.Builder, ObjectBuilder<NvidiaGenerative>> fn) {
+    return NvidiaGenerative.of(fn);
+  }
+
+  /** Configure a default {@code generative-ollama} module. */
+  public static Generative ollama() {
+    return OllamaGenerative.of();
+  }
+
+  /**
+   * Configure a {@code generative-ollama} module.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Generative ollama(Function<OllamaGenerative.Builder, ObjectBuilder<OllamaGenerative>> fn) {
+    return OllamaGenerative.of(fn);
+  }
+
+  /** Configure a default {@code generative-openai} module. */
+  public static Generative openai() {
+    return OpenAiGenerative.of();
+  }
+
+  /**
+   * Configure a {@code generative-openai} module.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Generative openai(Function<OpenAiGenerative.Builder, ObjectBuilder<OpenAiGenerative>> fn) {
+    return OpenAiGenerative.of(fn);
+  }
+
+  /**
+   * Configure a default {@code generative-openai} module
+   * hosted on Microsoft Azure.
+   *
+   * @param resourceName Name of the Azure OpenAI resource.
+   * @param deploymentId Azure OpenAI deployment ID.
+   */
+  public static Generative azure(String resourceName, String deploymentId) {
+    return AzureOpenAiGenerative.of(resourceName, deploymentId);
+  }
+
+  /**
+   * Configure a {@code generative-openai} module hosted on Microsoft Azure.
+   *
+   * @param resourceName Name of the Azure OpenAI resource.
+   * @param deploymentId Azure OpenAI deployment ID.
+   * @param fn           Lambda expression for optional parameters.
+   */
+  public static Generative azure(String resourceName, String deploymentId,
+      Function<AzureOpenAiGenerative.Builder, ObjectBuilder<AzureOpenAiGenerative>> fn) {
+    return AzureOpenAiGenerative.of(resourceName, deploymentId, fn);
+  }
+
+  /** Configure a default {@code generative-xai} module. */
+  public static Generative xai() {
+    return XaiGenerative.of();
+  }
+
+  /**
+   * Configure a {@code generative-xai} module.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Generative xai(Function<XaiGenerative.Builder, ObjectBuilder<XaiGenerative>> fn) {
+    return XaiGenerative.of(fn);
   }
 
   public static enum CustomTypeAdapterFactory implements TypeAdapterFactory {
