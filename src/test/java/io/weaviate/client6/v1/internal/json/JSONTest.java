@@ -430,21 +430,21 @@ public class JSONTest {
         {
             Generative.class,
             Generative.cohere(generate -> generate
-                .kProperty("k-property")
-                .maxTokensProperty(10)
+                .k(1)
+                .maxTokens(10)
                 .model("example-model")
                 .returnLikelihoodsProperty("likelihood")
-                .stopSequencesProperty("stop", "halt")
-                .temperatureProperty("celcius")),
+                .stopSequences("stop", "halt")
+                .temperature(.2f)),
             """
                 {
                   "generative-cohere": {
-                    "kProperty": "k-property",
+                    "kProperty": 1,
                     "maxTokensProperty": 10,
                     "model": "example-model",
                     "returnLikelihoodsProperty": "likelihood",
                     "stopSequencesProperty": ["stop", "halt"],
-                    "temperatureProperty": "celcius"
+                    "temperatureProperty": 0.2
                   }
                 }
                   """,
