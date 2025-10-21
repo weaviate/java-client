@@ -7,8 +7,10 @@ import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.api.collections.query.Bm25;
 import io.weaviate.client6.v1.api.collections.query.FetchObjects;
 import io.weaviate.client6.v1.api.collections.query.GroupBy;
+import io.weaviate.client6.v1.api.collections.query.Hybrid;
 import io.weaviate.client6.v1.api.collections.query.QueryOperator;
 import io.weaviate.client6.v1.api.collections.query.QueryResponseGrouped;
+import io.weaviate.client6.v1.api.collections.query.Target;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
@@ -196,6 +198,179 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
    * @see QueryResponseGrouped
    */
   public GroupedResponseT bm25(Bm25 query, GenerativeTask generate, GroupBy groupBy) {
+    return performRequest(query, generate, groupBy);
+  }
+
+  // Hybrid queries -----------------------------------------------------------
+
+  /**
+   * Query collection objects using hybrid search.
+   *
+   * @param query      Query string.
+   * @param generateFn Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT hybrid(String query,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return hybrid(Hybrid.of(query), GenerativeTask.of(generateFn));
+  }
+
+  /**
+   * Query collection objects using hybrid search.
+   *
+   * @param query      Query string.
+   * @param fn         Lambda expression for optional parameters.
+   * @param generateFn Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT hybrid(
+      String query,
+      Function<Hybrid.Builder, ObjectBuilder<Hybrid>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return hybrid(Hybrid.of(query, fn), GenerativeTask.of(generateFn));
+  }
+
+  /**
+   * Query collection objects using hybrid search.
+   *
+   * @param searchTarget Query target.
+   * @param generateFn   Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT hybrid(
+      Target searchTarget,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return hybrid(Hybrid.of(searchTarget), GenerativeTask.of(generateFn));
+  }
+
+  /**
+   * Query collection objects using hybrid search.
+   *
+   * @param searchTarget Query target.
+   * @param fn           Lambda expression for optional parameters.
+   * @param generateFn   Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT hybrid(
+      Target searchTarget,
+      Function<Hybrid.Builder, ObjectBuilder<Hybrid>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return hybrid(Hybrid.of(searchTarget, fn), GenerativeTask.of(generateFn));
+  }
+
+  /**
+   * Query collection objects using hybrid search.
+   *
+   * @param query    Hybrid query request.
+   * @param generate Generative task.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT hybrid(Hybrid query, GenerativeTask generate) {
+    return performRequest(query, generate);
+  }
+
+  /**
+   * Query collection objects using hybrid search.
+   *
+   * @param query      Query string.
+   * @param generateFn Lambda expression for generative task parameters.
+   * @param groupBy    Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see QueryResponseGrouped
+   */
+  public GroupedResponseT hybrid(
+      String query,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn,
+      GroupBy groupBy) {
+    return hybrid(Hybrid.of(query), GenerativeTask.of(generateFn), groupBy);
+  }
+
+  /**
+   * Query collection objects using hybrid search.
+   *
+   * @param query      Query string.
+   * @param fn         Lambda expression for optional parameters.
+   * @param generateFn Lambda expression for generative task parameters.
+   * @param groupBy    Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see QueryResponseGrouped
+   */
+  public GroupedResponseT hybrid(
+      String query,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn,
+      Function<Hybrid.Builder, ObjectBuilder<Hybrid>> fn, GroupBy groupBy) {
+    return hybrid(Hybrid.of(query, fn), GenerativeTask.of(generateFn), groupBy);
+  }
+
+  /**
+   * Query collection objects using hybrid search.
+   *
+   * @param searchTarget Query target.
+   * @param generateFn   Lambda expression for generative task parameters.
+   * @param groupBy      Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see QueryResponseGrouped
+   */
+  public GroupedResponseT hybrid(
+      Target searchTarget,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn,
+      GroupBy groupBy) {
+    return hybrid(Hybrid.of(searchTarget), GenerativeTask.of(generateFn), groupBy);
+  }
+
+  /**
+   * Query collection objects using hybrid search.
+   *
+   * @param searchTarget Query target.
+   * @param fn           Lambda expression for optional parameters.
+   * @param generateFn   Lambda expression for generative task parameters.
+   * @param groupBy      Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see QueryResponseGrouped
+   */
+  public GroupedResponseT hybrid(
+      Target searchTarget,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn,
+      Function<Hybrid.Builder, ObjectBuilder<Hybrid>> fn,
+      GroupBy groupBy) {
+    return hybrid(Hybrid.of(searchTarget, fn), GenerativeTask.of(generateFn), groupBy);
+  }
+
+  /**
+   * Query collection objects using hybrid search.
+   *
+   * @param query    Query string.
+   * @param generate Generative task.
+   * @param groupBy  Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see QueryResponseGrouped
+   */
+  public GroupedResponseT hybrid(Hybrid query, GenerativeTask generate, GroupBy groupBy) {
     return performRequest(query, generate, groupBy);
   }
 }
