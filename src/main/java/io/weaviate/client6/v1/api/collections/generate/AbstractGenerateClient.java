@@ -8,6 +8,8 @@ import io.weaviate.client6.v1.api.collections.query.Bm25;
 import io.weaviate.client6.v1.api.collections.query.FetchObjects;
 import io.weaviate.client6.v1.api.collections.query.GroupBy;
 import io.weaviate.client6.v1.api.collections.query.Hybrid;
+import io.weaviate.client6.v1.api.collections.query.NearVector;
+import io.weaviate.client6.v1.api.collections.query.NearVectorTarget;
 import io.weaviate.client6.v1.api.collections.query.QueryOperator;
 import io.weaviate.client6.v1.api.collections.query.QueryResponseGrouped;
 import io.weaviate.client6.v1.api.collections.query.Target;
@@ -167,7 +169,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
    * Query collection objects using keyword (BM25) search.
    *
    * @param query      Query string.
-   * @param fn         Lambda expression for optional parameters.
+   * @param fn         Lambda expression for optional search parameters.
    * @param generateFn Lambda expression for generative task parameters.
    * @param groupBy    Group-by clause.
    * @return Grouped query result.
@@ -220,7 +222,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
    * Query collection objects using hybrid search.
    *
    * @param query      Query string.
-   * @param fn         Lambda expression for optional parameters.
+   * @param fn         Lambda expression for optional search parameters.
    * @param generateFn Lambda expression for generative task parameters.
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
@@ -250,7 +252,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
    * Query collection objects using hybrid search.
    *
    * @param searchTarget Query target.
-   * @param fn           Lambda expression for optional parameters.
+   * @param fn           Lambda expression for optional search parameters.
    * @param generateFn   Lambda expression for generative task parameters.
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
@@ -298,7 +300,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
    * Query collection objects using hybrid search.
    *
    * @param query      Query string.
-   * @param fn         Lambda expression for optional parameters.
+   * @param fn         Lambda expression for optional search parameters.
    * @param generateFn Lambda expression for generative task parameters.
    * @param groupBy    Group-by clause.
    * @return Grouped query result.
@@ -339,7 +341,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
    * Query collection objects using hybrid search.
    *
    * @param searchTarget Query target.
-   * @param fn           Lambda expression for optional parameters.
+   * @param fn           Lambda expression for optional search parameters.
    * @param generateFn   Lambda expression for generative task parameters.
    * @param groupBy      Group-by clause.
    * @return Grouped query result.
@@ -371,6 +373,173 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
    * @see QueryResponseGrouped
    */
   public GroupedResponseT hybrid(Hybrid query, GenerativeTask generate, GroupBy groupBy) {
+    return performRequest(query, generate, groupBy);
+  }
+
+  // NearVector queries -------------------------------------------------------
+
+  /**
+   * Query collection objects using near vector search.
+   *
+   * @param vector     Query vector.
+   * @param generateFn Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearVector(float[] vector,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return nearVector(Target.vector(vector), generateFn);
+  }
+
+  /**
+   * Query collection objects using near vector search.
+   *
+   * @param vector     Query vector.
+   * @param fn         Lambda expression for optional search parameters.
+   * @param generateFn Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearVector(float[] vector,
+      Function<NearVector.Builder, ObjectBuilder<NearVector>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return nearVector(Target.vector(vector), fn, generateFn);
+  }
+
+  /**
+   * Query collection objects using near vector search.
+   *
+   * @param searchTarget Target query vectors.
+   * @param generateFn   Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearVector(NearVectorTarget searchTarget,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return nearVector(NearVector.of(searchTarget), GenerativeTask.of(generateFn));
+  }
+
+  /**
+   * Query collection objects using near vector search.
+   *
+   * @param searchTarget Target query vectors.
+   * @param fn           Lambda expression for optional search parameters.
+   * @param generateFn   Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearVector(NearVectorTarget searchTarget,
+      Function<NearVector.Builder, ObjectBuilder<NearVector>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return nearVector(NearVector.of(searchTarget, fn), GenerativeTask.of(generateFn));
+  }
+
+  /**
+   * Query collection objects using near vector search.
+   *
+   * @param query    Near vector query request.
+   * @param generate Generative task.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearVector(NearVector query, GenerativeTask generate) {
+    return performRequest(query, generate);
+  }
+
+  /**
+   * Query collection objects using near vector search.
+   *
+   * @param vector     Query vector.
+   * @param generateFn Lambda expression for generative task parameters.
+   * @param groupBy    Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see QueryResponseGrouped
+   */
+  public GroupedResponseT nearVector(float[] vector,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn,
+      GroupBy groupBy) {
+    return nearVector(Target.vector(vector), generateFn, groupBy);
+  }
+
+  /**
+   * Query collection objects using near vector search.
+   *
+   * @param vector     Query vector.
+   * @param fn         Lambda expression for optional search parameters.
+   * @param generateFn Lambda expression for generative task parameters.
+   * @param groupBy    Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see QueryResponseGrouped
+   */
+  public GroupedResponseT nearVector(float[] vector,
+      Function<NearVector.Builder, ObjectBuilder<NearVector>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn,
+      GroupBy groupBy) {
+    return nearVector(Target.vector(vector), fn, generateFn, groupBy);
+  }
+
+  /**
+   * Query collection objects using near vector search.
+   *
+   * @param searchTarget Target query vectors.
+   * @param generateFn   Lambda expression for generative task parameters.
+   * @param groupBy      Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see QueryResponseGrouped
+   */
+  public GroupedResponseT nearVector(
+      NearVectorTarget searchTarget,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn,
+      GroupBy groupBy) {
+    return nearVector(NearVector.of(searchTarget), GenerativeTask.of(generateFn), groupBy);
+  }
+
+  /**
+   * Query collection objects using near vector search.
+   *
+   * @param searchTarget Target query vectors.
+   * @param fn           Lambda expression for optional search parameters.
+   * @param generateFn   Lambda expression for generative task parameters.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see QueryResponseGrouped
+   */
+  public GroupedResponseT nearVector(NearVectorTarget searchTarget,
+      Function<NearVector.Builder, ObjectBuilder<NearVector>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn,
+      GroupBy groupBy) {
+    return nearVector(NearVector.of(searchTarget, fn), GenerativeTask.of(generateFn), groupBy);
+  }
+
+  /**
+   * Query collection objects using near vector search.
+   *
+   * @param query    Near vector query request.
+   * @param generate Generative task.
+   * @param groupBy  Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see QueryResponseGrouped
+   */
+  public GroupedResponseT nearVector(NearVector query, GenerativeTask generate, GroupBy groupBy) {
     return performRequest(query, generate, groupBy);
   }
 }

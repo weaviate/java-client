@@ -398,7 +398,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    *                              error status code.
    */
   public ResponseT nearVector(NearVectorTarget searchTarget) {
-    return performRequest(NearVector.of(searchTarget));
+    return nearVector(NearVector.of(searchTarget));
   }
 
   /**
@@ -411,7 +411,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    */
   public ResponseT nearVector(NearVectorTarget searchTarget,
       Function<NearVector.Builder, ObjectBuilder<NearVector>> fn) {
-    return performRequest(NearVector.of(searchTarget, fn));
+    return nearVector(NearVector.of(searchTarget, fn));
   }
 
   /**
@@ -473,7 +473,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    */
   public GroupedResponseT nearVector(NearVectorTarget searchTarget,
       GroupBy groupBy) {
-    return performRequest(NearVector.of(searchTarget), groupBy);
+    return nearVector(NearVector.of(searchTarget), groupBy);
   }
 
   /**
@@ -491,7 +491,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
   public GroupedResponseT nearVector(NearVectorTarget searchTarget,
       Function<NearVector.Builder, ObjectBuilder<NearVector>> fn,
       GroupBy groupBy) {
-    return performRequest(NearVector.of(searchTarget, fn), groupBy);
+    return nearVector(NearVector.of(searchTarget, fn), groupBy);
   }
 
   /**
