@@ -10,11 +10,15 @@ import io.weaviate.client6.v1.api.collections.query.FetchObjects;
 import io.weaviate.client6.v1.api.collections.query.GroupBy;
 import io.weaviate.client6.v1.api.collections.query.Hybrid;
 import io.weaviate.client6.v1.api.collections.query.NearAudio;
+import io.weaviate.client6.v1.api.collections.query.NearDepth;
 import io.weaviate.client6.v1.api.collections.query.NearImage;
+import io.weaviate.client6.v1.api.collections.query.NearImu;
 import io.weaviate.client6.v1.api.collections.query.NearObject;
 import io.weaviate.client6.v1.api.collections.query.NearText;
+import io.weaviate.client6.v1.api.collections.query.NearThermal;
 import io.weaviate.client6.v1.api.collections.query.NearVector;
 import io.weaviate.client6.v1.api.collections.query.NearVectorTarget;
+import io.weaviate.client6.v1.api.collections.query.NearVideo;
 import io.weaviate.client6.v1.api.collections.query.QueryOperator;
 import io.weaviate.client6.v1.api.collections.query.Target;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
@@ -1172,6 +1176,650 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
    * @see GenerativeResponseGrouped
    */
   public GroupedResponseT nearAudio(NearAudio query, GenerativeTask generate, GroupBy groupBy) {
+    return performRequest(query, generate, groupBy);
+  }
+
+  // NearVideo queries --------------------------------------------------------
+
+  /**
+   * Query collection objects using near video search.
+   *
+   * @param video      Query video (base64-encoded).
+   * @param generateFn Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearVideo(String video,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return nearVideo(NearVideo.of(video), GenerativeTask.of(generateFn));
+  }
+
+  /**
+   * Query collection objects using near video search.
+   *
+   * @param video      Query video (base64-encoded).
+   * @param fn         Lambda expression for optional search parameters.
+   * @param generateFn Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearVideo(String video, Function<NearVideo.Builder, ObjectBuilder<NearVideo>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return nearVideo(NearVideo.of(video, fn), GenerativeTask.of(generateFn));
+  }
+
+  /**
+   * Query collection objects using near video search.
+   *
+   * @param searchTarget Query target (base64-encoded video).
+   * @param generateFn   Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearVideo(Target searchTarget,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return nearVideo(NearVideo.of(searchTarget), GenerativeTask.of(generateFn));
+  }
+
+  /**
+   * Query collection objects using near video search.
+   *
+   * @param searchTarget Query target (base64-encoded video).
+   * @param fn           Lambda expression for optional search parameters.
+   * @param generateFn   Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearVideo(Target searchTarget, Function<NearVideo.Builder, ObjectBuilder<NearVideo>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return nearVideo(NearVideo.of(searchTarget, fn), GenerativeTask.of(generateFn));
+  }
+
+  /**
+   * Query collection objects using near video search.
+   *
+   * @param query    Near video query request.
+   * @param generate Generative task.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearVideo(NearVideo query, GenerativeTask generate) {
+    return performRequest(query, generate);
+  }
+
+  /**
+   * Query collection objects using near video search.
+   *
+   * @param video      Query video (base64-encoded).
+   * @param generateFn Lambda expression for generative task parameters.
+   * @param groupBy    Group-by clause.
+   * @return Grouped query result.
+   *
+   * @see GroupBy
+   * @see GenerativeResponseGrouped
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public GroupedResponseT nearVideo(String video,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn, GroupBy groupBy) {
+    return nearVideo(NearVideo.of(video), GenerativeTask.of(generateFn), groupBy);
+  }
+
+  /**
+   * Query collection objects using near video search.
+   *
+   * @param searchTarget Query target (base64-encoded video).
+   * @param fn           Lambda expression for optional search parameters.
+   * @param generateFn   Lambda expression for generative task parameters.
+   * @param groupBy      Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see GenerativeResponseGrouped
+   */
+  public GroupedResponseT nearVideo(Target searchTarget, Function<NearVideo.Builder, ObjectBuilder<NearVideo>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn,
+      GroupBy groupBy) {
+    return nearVideo(NearVideo.of(searchTarget, fn), GenerativeTask.of(generateFn), groupBy);
+  }
+
+  /**
+   * Query collection objects using near video search.
+   *
+   * @param searchTarget Query target (base64-encoded video).
+   * @param generateFn   Lambda expression for generative task parameters.
+   * @param groupBy      Group-by clause.
+   * @return Grouped query result.
+   *
+   * @see GroupBy
+   * @see GenerativeResponseGrouped
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public GroupedResponseT nearVideo(Target searchTarget,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn, GroupBy groupBy) {
+    return nearVideo(NearVideo.of(searchTarget), GenerativeTask.of(generateFn), groupBy);
+  }
+
+  /**
+   * Query collection objects using near video search.
+   *
+   * @param video      Query video (base64-encoded).
+   * @param fn         Lambda expression for optional search parameters.
+   * @param generateFn Lambda expression for generative task parameters.
+   * @param groupBy    Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see GenerativeResponseGrouped
+   */
+  public GroupedResponseT nearVideo(String video, Function<NearVideo.Builder, ObjectBuilder<NearVideo>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn,
+      GroupBy groupBy) {
+    return nearVideo(NearVideo.of(video, fn), GenerativeTask.of(generateFn), groupBy);
+  }
+
+  /**
+   * Query collection objects using near video search.
+   *
+   * @param query    Near video query request.
+   * @param generate Generative task.
+   * @param groupBy  Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see GenerativeResponseGrouped
+   */
+  public GroupedResponseT nearVideo(NearVideo query, GenerativeTask generate, GroupBy groupBy) {
+    return performRequest(query, generate, groupBy);
+  }
+
+  // NearThermal queries --------------------------------------------------------
+
+  /**
+   * Query collection objects using near thermal search.
+   *
+   * @param thermal    Query thermal (base64-encoded).
+   * @param generateFn Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearThermal(String thermal,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return nearThermal(NearThermal.of(thermal), GenerativeTask.of(generateFn));
+  }
+
+  /**
+   * Query collection objects using near thermal search.
+   *
+   * @param thermal    Query thermal (base64-encoded).
+   * @param fn         Lambda expression for optional search parameters.
+   * @param generateFn Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearThermal(String thermal, Function<NearThermal.Builder, ObjectBuilder<NearThermal>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return nearThermal(NearThermal.of(thermal, fn), GenerativeTask.of(generateFn));
+  }
+
+  /**
+   * Query collection objects using near thermal search.
+   *
+   * @param searchTarget Query target (base64-encoded thermal).
+   * @param generateFn   Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearThermal(Target searchTarget,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return nearThermal(NearThermal.of(searchTarget), GenerativeTask.of(generateFn));
+  }
+
+  /**
+   * Query collection objects using near thermal search.
+   *
+   * @param searchTarget Query target (base64-encoded thermal).
+   * @param fn           Lambda expression for optional search parameters.
+   * @param generateFn   Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearThermal(Target searchTarget, Function<NearThermal.Builder, ObjectBuilder<NearThermal>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return nearThermal(NearThermal.of(searchTarget, fn), GenerativeTask.of(generateFn));
+  }
+
+  /**
+   * Query collection objects using near thermal search.
+   *
+   * @param query    Near thermal query request.
+   * @param generate Generative task.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearThermal(NearThermal query, GenerativeTask generate) {
+    return performRequest(query, generate);
+  }
+
+  /**
+   * Query collection objects using near thermal search.
+   *
+   * @param thermal    Query thermal (base64-encoded).
+   * @param generateFn Lambda expression for generative task parameters.
+   * @param groupBy    Group-by clause.
+   * @return Grouped query result.
+   *
+   * @see GroupBy
+   * @see GenerativeResponseGrouped
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public GroupedResponseT nearThermal(String thermal,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn, GroupBy groupBy) {
+    return nearThermal(NearThermal.of(thermal), GenerativeTask.of(generateFn), groupBy);
+  }
+
+  /**
+   * Query collection objects using near thermal search.
+   *
+   * @param searchTarget Query target (base64-encoded thermal).
+   * @param fn           Lambda expression for optional search parameters.
+   * @param generateFn   Lambda expression for generative task parameters.
+   * @param groupBy      Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see GenerativeResponseGrouped
+   */
+  public GroupedResponseT nearThermal(Target searchTarget, Function<NearThermal.Builder, ObjectBuilder<NearThermal>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn,
+      GroupBy groupBy) {
+    return nearThermal(NearThermal.of(searchTarget, fn), GenerativeTask.of(generateFn), groupBy);
+  }
+
+  /**
+   * Query collection objects using near thermal search.
+   *
+   * @param searchTarget Query target (base64-encoded thermal).
+   * @param generateFn   Lambda expression for generative task parameters.
+   * @param groupBy      Group-by clause.
+   * @return Grouped query result.
+   *
+   * @see GroupBy
+   * @see GenerativeResponseGrouped
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public GroupedResponseT nearThermal(Target searchTarget,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn, GroupBy groupBy) {
+    return nearThermal(NearThermal.of(searchTarget), GenerativeTask.of(generateFn), groupBy);
+  }
+
+  /**
+   * Query collection objects using near thermal search.
+   *
+   * @param thermal    Query thermal (base64-encoded).
+   * @param fn         Lambda expression for optional search parameters.
+   * @param generateFn Lambda expression for generative task parameters.
+   * @param groupBy    Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see GenerativeResponseGrouped
+   */
+  public GroupedResponseT nearThermal(String thermal, Function<NearThermal.Builder, ObjectBuilder<NearThermal>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn,
+      GroupBy groupBy) {
+    return nearThermal(NearThermal.of(thermal, fn), GenerativeTask.of(generateFn), groupBy);
+  }
+
+  /**
+   * Query collection objects using near thermal search.
+   *
+   * @param query    Near thermal query request.
+   * @param generate Generative task.
+   * @param groupBy  Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see GenerativeResponseGrouped
+   */
+  public GroupedResponseT nearThermal(NearThermal query, GenerativeTask generate, GroupBy groupBy) {
+    return performRequest(query, generate, groupBy);
+  }
+
+  // NearDepth queries --------------------------------------------------------
+
+  /**
+   * Query collection objects using near depth search.
+   *
+   * @param depth      Query depth (base64-encoded).
+   * @param generateFn Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearDepth(String depth,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return nearDepth(NearDepth.of(depth), GenerativeTask.of(generateFn));
+  }
+
+  /**
+   * Query collection objects using near depth search.
+   *
+   * @param depth      Query depth (base64-encoded).
+   * @param fn         Lambda expression for optional search parameters.
+   * @param generateFn Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearDepth(String depth, Function<NearDepth.Builder, ObjectBuilder<NearDepth>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return nearDepth(NearDepth.of(depth, fn), GenerativeTask.of(generateFn));
+  }
+
+  /**
+   * Query collection objects using near depth search.
+   *
+   * @param searchTarget Query target (base64-encoded depth).
+   * @param generateFn   Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearDepth(Target searchTarget,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return nearDepth(NearDepth.of(searchTarget), GenerativeTask.of(generateFn));
+  }
+
+  /**
+   * Query collection objects using near depth search.
+   *
+   * @param searchTarget Query target (base64-encoded depth).
+   * @param fn           Lambda expression for optional search parameters.
+   * @param generateFn   Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearDepth(Target searchTarget, Function<NearDepth.Builder, ObjectBuilder<NearDepth>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return nearDepth(NearDepth.of(searchTarget, fn), GenerativeTask.of(generateFn));
+  }
+
+  /**
+   * Query collection objects using near depth search.
+   *
+   * @param query    Near depth query request.
+   * @param generate Generative task.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearDepth(NearDepth query, GenerativeTask generate) {
+    return performRequest(query, generate);
+  }
+
+  /**
+   * Query collection objects using near depth search.
+   *
+   * @param depth      Query depth (base64-encoded).
+   * @param generateFn Lambda expression for generative task parameters.
+   * @param groupBy    Group-by clause.
+   * @return Grouped query result.
+   *
+   * @see GroupBy
+   * @see GenerativeResponseGrouped
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public GroupedResponseT nearDepth(String depth,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn, GroupBy groupBy) {
+    return nearDepth(NearDepth.of(depth), GenerativeTask.of(generateFn), groupBy);
+  }
+
+  /**
+   * Query collection objects using near depth search.
+   *
+   * @param searchTarget Query target (base64-encoded depth).
+   * @param fn           Lambda expression for optional search parameters.
+   * @param generateFn   Lambda expression for generative task parameters.
+   * @param groupBy      Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see GenerativeResponseGrouped
+   */
+  public GroupedResponseT nearDepth(Target searchTarget, Function<NearDepth.Builder, ObjectBuilder<NearDepth>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn,
+      GroupBy groupBy) {
+    return nearDepth(NearDepth.of(searchTarget, fn), GenerativeTask.of(generateFn), groupBy);
+  }
+
+  /**
+   * Query collection objects using near depth search.
+   *
+   * @param searchTarget Query target (base64-encoded depth).
+   * @param generateFn   Lambda expression for generative task parameters.
+   * @param groupBy      Group-by clause.
+   * @return Grouped query result.
+   *
+   * @see GroupBy
+   * @see GenerativeResponseGrouped
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public GroupedResponseT nearDepth(Target searchTarget,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn, GroupBy groupBy) {
+    return nearDepth(NearDepth.of(searchTarget), GenerativeTask.of(generateFn), groupBy);
+  }
+
+  /**
+   * Query collection objects using near depth search.
+   *
+   * @param depth      Query depth (base64-encoded).
+   * @param fn         Lambda expression for optional search parameters.
+   * @param generateFn Lambda expression for generative task parameters.
+   * @param groupBy    Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see GenerativeResponseGrouped
+   */
+  public GroupedResponseT nearDepth(String depth, Function<NearDepth.Builder, ObjectBuilder<NearDepth>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn,
+      GroupBy groupBy) {
+    return nearDepth(NearDepth.of(depth, fn), GenerativeTask.of(generateFn), groupBy);
+  }
+
+  /**
+   * Query collection objects using near depth search.
+   *
+   * @param query    Near depth query request.
+   * @param generate Generative task.
+   * @param groupBy  Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see GenerativeResponseGrouped
+   */
+  public GroupedResponseT nearDepth(NearDepth query, GenerativeTask generate, GroupBy groupBy) {
+    return performRequest(query, generate, groupBy);
+  }
+
+  // NearImu queries --------------------------------------------------------
+
+  /**
+   * Query collection objects using near IMU search.
+   *
+   * @param imu        Query IMU (base64-encoded).
+   * @param generateFn Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearImu(String imu,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return nearImu(NearImu.of(imu), GenerativeTask.of(generateFn));
+  }
+
+  /**
+   * Query collection objects using near IMU search.
+   *
+   * @param imu        Query IMU (base64-encoded).
+   * @param fn         Lambda expression for optional search parameters.
+   * @param generateFn Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearImu(String imu, Function<NearImu.Builder, ObjectBuilder<NearImu>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return nearImu(NearImu.of(imu, fn), GenerativeTask.of(generateFn));
+  }
+
+  /**
+   * Query collection objects using near IMU search.
+   *
+   * @param searchTarget Query target (base64-encoded IMU).
+   * @param generateFn   Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearImu(Target searchTarget,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return nearImu(NearImu.of(searchTarget), GenerativeTask.of(generateFn));
+  }
+
+  /**
+   * Query collection objects using near IMU search.
+   *
+   * @param searchTarget Query target (base64-encoded IMU).
+   * @param fn           Lambda expression for optional search parameters.
+   * @param generateFn   Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearImu(Target searchTarget, Function<NearImu.Builder, ObjectBuilder<NearImu>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return nearImu(NearImu.of(searchTarget, fn), GenerativeTask.of(generateFn));
+  }
+
+  /**
+   * Query collection objects using near IMU search.
+   *
+   * @param query    Near IMU query request.
+   * @param generate Generative task.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearImu(NearImu query, GenerativeTask generate) {
+    return performRequest(query, generate);
+  }
+
+  /**
+   * Query collection objects using near IMU search.
+   *
+   * @param imu        Query IMU (base64-encoded).
+   * @param generateFn Lambda expression for generative task parameters.
+   * @param groupBy    Group-by clause.
+   * @return Grouped query result.
+   *
+   * @see GroupBy
+   * @see GenerativeResponseGrouped
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public GroupedResponseT nearImu(String imu,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn, GroupBy groupBy) {
+    return nearImu(NearImu.of(imu), GenerativeTask.of(generateFn), groupBy);
+  }
+
+  /**
+   * Query collection objects using near IMU search.
+   *
+   * @param searchTarget Query target (base64-encoded IMU).
+   * @param fn           Lambda expression for optional search parameters.
+   * @param generateFn   Lambda expression for generative task parameters.
+   * @param groupBy      Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see GenerativeResponseGrouped
+   */
+  public GroupedResponseT nearImu(Target searchTarget, Function<NearImu.Builder, ObjectBuilder<NearImu>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn,
+      GroupBy groupBy) {
+    return nearImu(NearImu.of(searchTarget, fn), GenerativeTask.of(generateFn), groupBy);
+  }
+
+  /**
+   * Query collection objects using near IMU search.
+   *
+   * @param searchTarget Query target (base64-encoded IMU).
+   * @param generateFn   Lambda expression for generative task parameters.
+   * @param groupBy      Group-by clause.
+   * @return Grouped query result.
+   *
+   * @see GroupBy
+   * @see GenerativeResponseGrouped
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public GroupedResponseT nearImu(Target searchTarget,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn, GroupBy groupBy) {
+    return nearImu(NearImu.of(searchTarget), GenerativeTask.of(generateFn), groupBy);
+  }
+
+  /**
+   * Query collection objects using near IMU search.
+   *
+   * @param imu        Query IMU (base64-encoded).
+   * @param fn         Lambda expression for optional search parameters.
+   * @param generateFn Lambda expression for generative task parameters.
+   * @param groupBy    Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see GenerativeResponseGrouped
+   */
+  public GroupedResponseT nearImu(String imu, Function<NearImu.Builder, ObjectBuilder<NearImu>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn,
+      GroupBy groupBy) {
+    return nearImu(NearImu.of(imu, fn), GenerativeTask.of(generateFn), groupBy);
+  }
+
+  /**
+   * Query collection objects using near IMU search.
+   *
+   * @param query    Near IMU query request.
+   * @param generate Generative task.
+   * @param groupBy  Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see GenerativeResponseGrouped
+   */
+  public GroupedResponseT nearImu(NearImu query, GenerativeTask generate, GroupBy groupBy) {
     return performRequest(query, generate, groupBy);
   }
 }
