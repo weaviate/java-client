@@ -52,6 +52,10 @@ public record AnyscaleGenerative(
       return this;
     }
 
+    /**
+     * Control the randomness of the model's output.
+     * Higher values make output more random.
+     */
     public Builder temperature(float temperature) {
       this.temperature = temperature;
       return this;

@@ -10,18 +10,16 @@ import com.google.gson.annotations.SerializedName;
 import io.weaviate.client6.v1.api.collections.Generative;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public record CohereGenerative(
-    @SerializedName("baseURL") String baseUrl,
-    @SerializedName("kProperty") Integer k,
+public record AnthropicGenerative(
     @SerializedName("model") String model,
-    @SerializedName("maxTokensProperty") Integer maxTokens,
-    @SerializedName("temperatureProperty") Float temperature,
-    @SerializedName("returnLikelihoodsProperty") String returnLikelihoodsProperty,
-    @SerializedName("stopSequencesProperty") List<String> stopSequences) implements Generative {
+    @SerializedName("maxTokens") Integer maxTokens,
+    @SerializedName("temperature") Float temperature,
+    @SerializedName("topK") Integer topK,
+    @SerializedName("stopSequences") List<String> stopSequences) implements Generative {
 
   @Override
   public Kind _kind() {
-    return Generative.Kind.COHERE;
+    return Generative.Kind.ANTHROPIC;
   }
 
   @Override
@@ -29,42 +27,32 @@ public record CohereGenerative(
     return this;
   }
 
-  public static CohereGenerative of() {
+  public static AnthropicGenerative of() {
     return of(ObjectBuilder.identity());
   }
 
-  public static CohereGenerative of(Function<Builder, ObjectBuilder<CohereGenerative>> fn) {
+  public static AnthropicGenerative of(Function<Builder, ObjectBuilder<AnthropicGenerative>> fn) {
     return fn.apply(new Builder()).build();
   }
 
-  public CohereGenerative(Builder builder) {
+  public AnthropicGenerative(Builder builder) {
     this(
-        builder.baseUrl,
-        builder.k,
         builder.model,
         builder.maxTokens,
         builder.temperature,
-        builder.returnLikelihoodsProperty,
+        builder.topK,
         builder.stopSequences);
   }
 
-  public static class Builder implements ObjectBuilder<CohereGenerative> {
-    private String baseUrl;
-    private Integer k;
+  public static class Builder implements ObjectBuilder<AnthropicGenerative> {
+    private Integer topK;
     private String model;
     private Integer maxTokens;
     private Float temperature;
-    private String returnLikelihoodsProperty;
     private List<String> stopSequences = new ArrayList<>();
 
-    /** Base URL of the generative provider. */
-    public Builder baseUrl(String baseUrl) {
-      this.baseUrl = baseUrl;
-      return this;
-    }
-
-    public Builder k(int k) {
-      this.k = k;
+    public Builder topK(int topK) {
+      this.topK = topK;
       return this;
     }
 
@@ -77,11 +65,6 @@ public record CohereGenerative(
     /** Limit the number of tokens to generate in the response. */
     public Builder maxTokens(int maxTokens) {
       this.maxTokens = maxTokens;
-      return this;
-    }
-
-    public Builder returnLikelihoodsProperty(String returnLikelihoodsProperty) {
-      this.returnLikelihoodsProperty = returnLikelihoodsProperty;
       return this;
     }
 
@@ -104,8 +87,8 @@ public record CohereGenerative(
     }
 
     @Override
-    public CohereGenerative build() {
-      return new CohereGenerative(this);
+    public AnthropicGenerative build() {
+      return new AnthropicGenerative(this);
     }
   }
 }
