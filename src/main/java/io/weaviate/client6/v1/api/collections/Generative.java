@@ -13,14 +13,20 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
+import io.weaviate.client6.v1.api.collections.generative.AnyscaleGenerative;
 import io.weaviate.client6.v1.api.collections.generative.CohereGenerative;
+import io.weaviate.client6.v1.api.collections.generative.DatabricksGenerative;
 import io.weaviate.client6.v1.api.collections.generative.DummyGenerative;
+import io.weaviate.client6.v1.api.collections.generative.MistralGenerative;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.json.JsonEnum;
 
 public interface Generative {
   public enum Kind implements JsonEnum<Kind> {
+    ANYSCALE("generative-anyscale"),
     COHERE("generative-cohere"),
+    DATABRICKS("generative-databricks"),
+    MISTRAL("generative-mistral"),
     DUMMY("generative-dummy");
 
     private static final Map<String, Kind> jsonValueMap = JsonEnum.collectNames(Kind.values());
@@ -69,7 +75,10 @@ public interface Generative {
     }
 
     private final void init(Gson gson) {
+      addAdapter(gson, Generative.Kind.ANYSCALE, AnyscaleGenerative.class);
       addAdapter(gson, Generative.Kind.COHERE, CohereGenerative.class);
+      addAdapter(gson, Generative.Kind.DATABRICKS, DatabricksGenerative.class);
+      addAdapter(gson, Generative.Kind.MISTRAL, MistralGenerative.class);
       addAdapter(gson, Generative.Kind.DUMMY, DummyGenerative.class);
     }
 
