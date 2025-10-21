@@ -5,6 +5,7 @@ import java.util.function.Function;
 import io.weaviate.client6.v1.api.WeaviateApiException;
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.api.collections.query.Bm25;
+import io.weaviate.client6.v1.api.collections.query.FetchObjects;
 import io.weaviate.client6.v1.api.collections.query.GroupBy;
 import io.weaviate.client6.v1.api.collections.query.QueryOperator;
 import io.weaviate.client6.v1.api.collections.query.QueryResponseGrouped;
@@ -12,7 +13,7 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 
-abstract class AbstractGenerateClient<PropertiesT, SingleT, ResponseT, GroupedResponseT> {
+abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> {
   protected final CollectionDescriptor<PropertiesT> collection;
   protected final GrpcTransport grpcTransport;
   protected final CollectionHandleDefaults defaults;
@@ -26,7 +27,7 @@ abstract class AbstractGenerateClient<PropertiesT, SingleT, ResponseT, GroupedRe
 
   /** Copy constructor that sets new defaults. */
   AbstractGenerateClient(
-      AbstractGenerateClient<PropertiesT, SingleT, ResponseT, GroupedResponseT> c,
+      AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> c,
       CollectionHandleDefaults defaults) {
     this(c.collection, c.grpcTransport, defaults);
   }
@@ -35,6 +36,69 @@ abstract class AbstractGenerateClient<PropertiesT, SingleT, ResponseT, GroupedRe
 
   protected abstract GroupedResponseT performRequest(QueryOperator operator, GenerativeTask generate, GroupBy groupBy);
 
+  // Object queries -----------------------------------------------------------
+
+  /**
+   * Retrieve objects without applying a Vector Search or Keyword Search filter.
+   *
+   * @param fn         Lambda expression for optional search parameters.
+   * @param generateFn Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT fetchObjects(Function<FetchObjects.Builder, ObjectBuilder<FetchObjects>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return fetchObjects(FetchObjects.of(fn), GenerativeTask.of(generateFn));
+  }
+
+  /**
+   * Retrieve objects without applying a Vector Search or Keyword Search filter.
+   *
+   * @param query    FetchObjects query.
+   * @param generate Generative task.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT fetchObjects(FetchObjects query, GenerativeTask generate) {
+    return performRequest(query, generate);
+  }
+
+  /**
+   * Retrieve objects without applying a Vector Search or Keyword Search filter.
+   *
+   *
+   * @param fn         Lambda expression for optional search parameters.
+   * @param generateFn Lambda expression for generative task parameters.
+   * @param groupBy    Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see QueryResponseGrouped
+   */
+  public GroupedResponseT fetchObjects(Function<FetchObjects.Builder, ObjectBuilder<FetchObjects>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn,
+      GroupBy groupBy) {
+    return fetchObjects(FetchObjects.of(fn), GenerativeTask.of(generateFn), groupBy);
+  }
+
+  /**
+   * Retrieve objects without applying a Vector Search or Keyword Search filter.
+   *
+   * @param query    FetchObjects query.
+   * @param generate Generative task.
+   * @param groupBy  Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see QueryResponseGrouped
+   */
+  public GroupedResponseT fetchObjects(FetchObjects query, GenerativeTask generate, GroupBy groupBy) {
+    return performRequest(query, generate, groupBy);
+  }
   // BM25 queries -------------------------------------------------------------
 
   /**

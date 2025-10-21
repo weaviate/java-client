@@ -1,18 +1,14 @@
 package io.weaviate.client6.v1.api.collections.generate;
 
-import java.util.Optional;
-
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
-import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.query.GroupBy;
-import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.api.collections.query.QueryOperator;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 
 public class WeaviateGenerateClient<PropertiesT>
     extends
-    AbstractGenerateClient<PropertiesT, Optional<WeaviateObject<PropertiesT, Object, QueryMetadata>>, GenerativeResponse<PropertiesT>, GenerativeResponseGrouped<PropertiesT>> {
+    AbstractGenerateClient<PropertiesT, GenerativeResponse<PropertiesT>, GenerativeResponseGrouped<PropertiesT>> {
 
   public WeaviateGenerateClient(
       CollectionDescriptor<PropertiesT> collection,
