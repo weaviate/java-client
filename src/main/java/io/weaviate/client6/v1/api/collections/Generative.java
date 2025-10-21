@@ -38,7 +38,7 @@ public interface Generative {
     COHERE("generative-cohere"),
     DATABRICKS("generative-databricks"),
     FRIENDLIAI("generative-friendliai"),
-    GOOGLE("generative-google"),
+    GOOGLE("generative-palm"),
     MISTRAL("generative-mistral"),
     NVIDIA("generative-nvidia"),
     OLLAMA("generative-ollama"),
