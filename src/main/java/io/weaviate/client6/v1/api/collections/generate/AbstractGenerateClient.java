@@ -51,7 +51,8 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   // Object queries -----------------------------------------------------------
 
   /**
-   * Retrieve objects without applying a Vector Search or Keyword Search filter.
+   * Retrieve objects without applying a Vector Search or Keyword Search filter
+   * and run a generative task on the query results.
    *
    * @param fn         Lambda expression for optional search parameters.
    * @param generateFn Lambda expression for generative task parameters.
@@ -64,7 +65,8 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Retrieve objects without applying a Vector Search or Keyword Search filter.
+   * Retrieve objects without applying a Vector Search or Keyword Search filter
+   * and run a generative task on the query results.
    *
    * @param query    FetchObjects query.
    * @param generate Generative task.
@@ -76,7 +78,8 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Retrieve objects without applying a Vector Search or Keyword Search filter.
+   * Retrieve objects without applying a Vector Search or Keyword Search filter
+   * and run a generative task on the query results.
    *
    *
    * @param fn         Lambda expression for optional search parameters.
@@ -96,7 +99,8 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Retrieve objects without applying a Vector Search or Keyword Search filter.
+   * Retrieve objects without applying a Vector Search or Keyword Search filter
+   * and run a generative task on the query results.
    *
    * @param query    FetchObjects query.
    * @param generate Generative task.
@@ -111,10 +115,11 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   public GroupedResponseT fetchObjects(FetchObjects query, GenerativeTask generate, GroupBy groupBy) {
     return performRequest(query, generate, groupBy);
   }
+
   // BM25 queries -------------------------------------------------------------
 
   /**
-   * Query collection objects using keyword (BM25) search.
+   * Run a generative task on the results of a keyword (BM25) search.
    *
    * @param query      Query string.
    * @param generateFn Lambda expression for generative task parameters.
@@ -127,7 +132,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using keyword (BM25) search.
+   * Run a generative task on the results of a keyword (BM25) search.
    *
    * @param query      Query string.
    * @param fn         Lambda expression for optional search parameters.
@@ -143,7 +148,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using keyword (BM25) search.
+   * Run a generative task on the results of a keyword (BM25) search.
    *
    * @param query    BM25 query request.
    * @param generate Generative task.
@@ -155,7 +160,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using keyword (BM25) search.
+   * Run a generative task on the results of a keyword (BM25) search.
    *
    * @param query      Query string.
    * @param generateFn Lambda expression for generative task parameters.
@@ -174,7 +179,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using keyword (BM25) search.
+   * Run a generative task on the results of a keyword (BM25) search.
    *
    * @param query      Query string.
    * @param fn         Lambda expression for optional search parameters.
@@ -195,7 +200,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using keyword (BM25) search.
+   * Run a generative task on the results of a keyword (BM25) search.
    *
    * @param query    BM25 query request.
    * @param generate Generative task.
@@ -214,7 +219,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   // Hybrid queries -----------------------------------------------------------
 
   /**
-   * Query collection objects using hybrid search.
+   * Run a generative task on the results of a hybrid search.
    *
    * @param query      Query string.
    * @param generateFn Lambda expression for generative task parameters.
@@ -227,7 +232,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using hybrid search.
+   * Run a generative task on the results of a hybrid search.
    *
    * @param query      Query string.
    * @param fn         Lambda expression for optional search parameters.
@@ -243,7 +248,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using hybrid search.
+   * Run a generative task on the results of a hybrid search.
    *
    * @param searchTarget Query target.
    * @param generateFn   Lambda expression for generative task parameters.
@@ -257,7 +262,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using hybrid search.
+   * Run a generative task on the results of a hybrid search.
    *
    * @param searchTarget Query target.
    * @param fn           Lambda expression for optional search parameters.
@@ -273,7 +278,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using hybrid search.
+   * Run a generative task on the results of a hybrid search.
    *
    * @param query    Hybrid query request.
    * @param generate Generative task.
@@ -285,7 +290,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using hybrid search.
+   * Run a generative task on the results of a hybrid search.
    *
    * @param query      Query string.
    * @param generateFn Lambda expression for generative task parameters.
@@ -305,7 +310,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using hybrid search.
+   * Run a generative task on the results of a hybrid search.
    *
    * @param query      Query string.
    * @param fn         Lambda expression for optional search parameters.
@@ -326,7 +331,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using hybrid search.
+   * Run a generative task on the results of a hybrid search.
    *
    * @param searchTarget Query target.
    * @param generateFn   Lambda expression for generative task parameters.
@@ -346,7 +351,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using hybrid search.
+   * Run a generative task on the results of a hybrid search.
    *
    * @param searchTarget Query target.
    * @param fn           Lambda expression for optional search parameters.
@@ -368,7 +373,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using hybrid search.
+   * Run a generative task on the results of a hybrid search.
    *
    * @param query    Query string.
    * @param generate Generative task.
@@ -387,7 +392,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   // NearVector queries -------------------------------------------------------
 
   /**
-   * Query collection objects using near vector search.
+   * Run a generative task on the results of a near vector search.
    *
    * @param vector     Query vector.
    * @param generateFn Lambda expression for generative task parameters.
@@ -400,7 +405,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near vector search.
+   * Run a generative task on the results of a near vector search.
    *
    * @param vector     Query vector.
    * @param fn         Lambda expression for optional search parameters.
@@ -415,7 +420,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near vector search.
+   * Run a generative task on the results of a near vector search.
    *
    * @param searchTarget Target query vectors.
    * @param generateFn   Lambda expression for generative task parameters.
@@ -428,7 +433,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near vector search.
+   * Run a generative task on the results of a near vector search.
    *
    * @param searchTarget Target query vectors.
    * @param fn           Lambda expression for optional search parameters.
@@ -443,7 +448,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near vector search.
+   * Run a generative task on the results of a near vector search.
    *
    * @param query    Near vector query request.
    * @param generate Generative task.
@@ -455,7 +460,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near vector search.
+   * Run a generative task on the results of a near vector search.
    *
    * @param vector     Query vector.
    * @param generateFn Lambda expression for generative task parameters.
@@ -474,7 +479,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near vector search.
+   * Run a generative task on the results of a near vector search.
    *
    * @param vector     Query vector.
    * @param fn         Lambda expression for optional search parameters.
@@ -495,7 +500,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near vector search.
+   * Run a generative task on the results of a near vector search.
    *
    * @param searchTarget Target query vectors.
    * @param generateFn   Lambda expression for generative task parameters.
@@ -515,7 +520,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near vector search.
+   * Run a generative task on the results of a near vector search.
    *
    * @param searchTarget Target query vectors.
    * @param fn           Lambda expression for optional search parameters.
@@ -535,7 +540,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near vector search.
+   * Run a generative task on the results of a near vector search.
    *
    * @param query    Near vector query request.
    * @param generate Generative task.
@@ -554,7 +559,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   // NearObject queries -------------------------------------------------------
 
   /**
-   * Query collection objects using near object search.
+   * Run a generative task on the results of a near object search.
    *
    * @param uuid       Query object UUID.
    * @param generateFn Lambda expression for generative task parameters.
@@ -567,7 +572,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near object search.
+   * Run a generative task on the results of a near object search.
    *
    * @param uuid       Query object UUID.
    * @param fn         Lambda expression for optional search parameters.
@@ -582,7 +587,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near object search.
+   * Run a generative task on the results of a near object search.
    *
    * @param query    Near object query request.
    * @param generate Generative task.
@@ -594,7 +599,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near object search.
+   * Run a generative task on the results of a near object search.
    *
    * @param uuid       Query object UUID.
    * @param generateFn Lambda expression for generative task parameters.
@@ -613,7 +618,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near object search.
+   * Run a generative task on the results of a near object search.
    *
    * @param uuid       Query object UUID.
    * @param fn         Lambda expression for optional search parameters.
@@ -634,7 +639,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near object search.
+   * Run a generative task on the results of a near object search.
    *
    * @param query    Near object query request.
    * @param generate Generative task.
@@ -653,7 +658,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   // NearText queries ---------------------------------------------------------
 
   /**
-   * Query collection objects using near text search.
+   * Run a generative task on the results of a near text search.
    *
    * @param text       Query concepts.
    * @param fn         Lambda expression for optional parameters.
@@ -668,7 +673,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near text search.
+   * Run a generative task on the results of a near text search.
    *
    * @param text       Query concepts.
    * @param fn         Lambda expression for optional parameters.
@@ -683,7 +688,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near text search.
+   * Run a generative task on the results of a near text search.
    *
    * @param searchTarget Target query concepts.
    * @param generateFn   Lambda expression for generative task parameters.
@@ -696,7 +701,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near text search.
+   * Run a generative task on the results of a near text search.
    *
    * @param searchTarget Target query concepts.
    * @param fn           Lambda expression for optional parameters.
@@ -711,7 +716,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near text search.
+   * Run a generative task on the results of a near text search.
    *
    * @param query    Near text query request.
    * @param generate Generative task.
@@ -723,7 +728,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near text search.
+   * Run a generative task on the results of a near text search.
    *
    * @param text       Query concepts.
    * @param generateFn Lambda expression for generative task parameters.
@@ -742,7 +747,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near text search.
+   * Run a generative task on the results of a near text search.
    *
    * @param text       Query concepts.
    * @param generateFn Lambda expression for generative task parameters.
@@ -760,7 +765,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near text search.
+   * Run a generative task on the results of a near text search.
    *
    * @param text       Query concepts.
    * @param fn         Lambda expression for optional parameters.
@@ -781,7 +786,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near text search.
+   * Run a generative task on the results of a near text search.
    *
    * @param text       Query concepts.
    * @param fn         Lambda expression for optional parameters.
@@ -802,7 +807,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near text search.
+   * Run a generative task on the results of a near text search.
    *
    * @param searchTarget Target query concepts.
    * @param generateFn   Lambda expression for generative task parameters.
@@ -820,7 +825,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near text search.
+   * Run a generative task on the results of a near text search.
    *
    * @param searchTarget Target query concepts.
    * @param fn           Lambda expression for optional parameters.
@@ -841,7 +846,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near text search.
+   * Run a generative task on the results of a near text search.
    *
    * @param query    Near text query request.
    * @param generate Generative task.
@@ -860,7 +865,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   // NearImage queries --------------------------------------------------------
 
   /**
-   * Query collection objects using near image search.
+   * Run a generative task on the results of a near image search.
    *
    * @param image      Query image (base64-encoded).
    * @param generateFn Lambda expression for generative task parameters.
@@ -873,7 +878,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near image search.
+   * Run a generative task on the results of a near image search.
    *
    * @param image      Query image (base64-encoded).
    * @param fn         Lambda expression for optional search parameters.
@@ -887,7 +892,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near image search.
+   * Run a generative task on the results of a near image search.
    *
    * @param searchTarget Query target (base64-encoded image).
    * @param generateFn   Lambda expression for generative task parameters.
@@ -900,7 +905,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near image search.
+   * Run a generative task on the results of a near image search.
    *
    * @param searchTarget Query target (base64-encoded image).
    * @param fn           Lambda expression for optional search parameters.
@@ -914,7 +919,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near image search.
+   * Run a generative task on the results of a near image search.
    *
    * @param query    Near image query request.
    * @param generate Generative task.
@@ -926,7 +931,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near image search.
+   * Run a generative task on the results of a near image search.
    *
    * @param image      Query image (base64-encoded).
    * @param generateFn Lambda expression for generative task parameters.
@@ -944,7 +949,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near image search.
+   * Run a generative task on the results of a near image search.
    *
    * @param searchTarget Query target (base64-encoded image).
    * @param fn           Lambda expression for optional search parameters.
@@ -964,7 +969,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near image search.
+   * Run a generative task on the results of a near image search.
    *
    * @param searchTarget Query target (base64-encoded image).
    * @param generateFn   Lambda expression for generative task parameters.
@@ -982,7 +987,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near image search.
+   * Run a generative task on the results of a near image search.
    *
    * @param image      Query image (base64-encoded).
    * @param fn         Lambda expression for optional search parameters.
@@ -1002,7 +1007,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near image search.
+   * Run a generative task on the results of a near image search.
    *
    * @param query    Near image query request.
    * @param generate Generative task.
@@ -1021,7 +1026,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   // NearAudio queries --------------------------------------------------------
 
   /**
-   * Query collection objects using near audio search.
+   * Run a generative task on the results of a near audio search.
    *
    * @param audio      Query audio (base64-encoded).
    * @param generateFn Lambda expression for generative task parameters.
@@ -1034,7 +1039,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near audio search.
+   * Run a generative task on the results of a near audio search.
    *
    * @param audio      Query audio (base64-encoded).
    * @param fn         Lambda expression for optional search parameters.
@@ -1048,7 +1053,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near audio search.
+   * Run a generative task on the results of a near audio search.
    *
    * @param searchTarget Query target (base64-encoded audio).
    * @param generateFn   Lambda expression for generative task parameters.
@@ -1061,7 +1066,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near audio search.
+   * Run a generative task on the results of a near audio search.
    *
    * @param searchTarget Query target (base64-encoded audio).
    * @param fn           Lambda expression for optional search parameters.
@@ -1075,7 +1080,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near audio search.
+   * Run a generative task on the results of a near audio search.
    *
    * @param query    Near audio query request.
    * @param generate Generative task.
@@ -1087,7 +1092,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near audio search.
+   * Run a generative task on the results of a near audio search.
    *
    * @param audio      Query audio (base64-encoded).
    * @param generateFn Lambda expression for generative task parameters.
@@ -1105,7 +1110,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near audio search.
+   * Run a generative task on the results of a near audio search.
    *
    * @param searchTarget Query target (base64-encoded audio).
    * @param fn           Lambda expression for optional search parameters.
@@ -1125,7 +1130,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near audio search.
+   * Run a generative task on the results of a near audio search.
    *
    * @param searchTarget Query target (base64-encoded audio).
    * @param generateFn   Lambda expression for generative task parameters.
@@ -1143,7 +1148,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near audio search.
+   * Run a generative task on the results of a near audio search.
    *
    * @param audio      Query audio (base64-encoded).
    * @param fn         Lambda expression for optional search parameters.
@@ -1163,7 +1168,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near audio search.
+   * Run a generative task on the results of a near audio search.
    *
    * @param query    Near audio query request.
    * @param generate Generative task.
@@ -1182,7 +1187,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   // NearVideo queries --------------------------------------------------------
 
   /**
-   * Query collection objects using near video search.
+   * Run a generative task on the results of a near video search.
    *
    * @param video      Query video (base64-encoded).
    * @param generateFn Lambda expression for generative task parameters.
@@ -1195,7 +1200,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near video search.
+   * Run a generative task on the results of a near video search.
    *
    * @param video      Query video (base64-encoded).
    * @param fn         Lambda expression for optional search parameters.
@@ -1209,7 +1214,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near video search.
+   * Run a generative task on the results of a near video search.
    *
    * @param searchTarget Query target (base64-encoded video).
    * @param generateFn   Lambda expression for generative task parameters.
@@ -1222,7 +1227,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near video search.
+   * Run a generative task on the results of a near video search.
    *
    * @param searchTarget Query target (base64-encoded video).
    * @param fn           Lambda expression for optional search parameters.
@@ -1236,7 +1241,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near video search.
+   * Run a generative task on the results of a near video search.
    *
    * @param query    Near video query request.
    * @param generate Generative task.
@@ -1248,7 +1253,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near video search.
+   * Run a generative task on the results of a near video search.
    *
    * @param video      Query video (base64-encoded).
    * @param generateFn Lambda expression for generative task parameters.
@@ -1266,7 +1271,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near video search.
+   * Run a generative task on the results of a near video search.
    *
    * @param searchTarget Query target (base64-encoded video).
    * @param fn           Lambda expression for optional search parameters.
@@ -1286,7 +1291,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near video search.
+   * Run a generative task on the results of a near video search.
    *
    * @param searchTarget Query target (base64-encoded video).
    * @param generateFn   Lambda expression for generative task parameters.
@@ -1304,7 +1309,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near video search.
+   * Run a generative task on the results of a near video search.
    *
    * @param video      Query video (base64-encoded).
    * @param fn         Lambda expression for optional search parameters.
@@ -1324,7 +1329,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near video search.
+   * Run a generative task on the results of a near video search.
    *
    * @param query    Near video query request.
    * @param generate Generative task.
@@ -1343,7 +1348,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   // NearThermal queries --------------------------------------------------------
 
   /**
-   * Query collection objects using near thermal search.
+   * Run a generative task on the results of a near thermal search.
    *
    * @param thermal    Query thermal (base64-encoded).
    * @param generateFn Lambda expression for generative task parameters.
@@ -1356,7 +1361,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near thermal search.
+   * Run a generative task on the results of a near thermal search.
    *
    * @param thermal    Query thermal (base64-encoded).
    * @param fn         Lambda expression for optional search parameters.
@@ -1370,7 +1375,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near thermal search.
+   * Run a generative task on the results of a near thermal search.
    *
    * @param searchTarget Query target (base64-encoded thermal).
    * @param generateFn   Lambda expression for generative task parameters.
@@ -1383,7 +1388,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near thermal search.
+   * Run a generative task on the results of a near thermal search.
    *
    * @param searchTarget Query target (base64-encoded thermal).
    * @param fn           Lambda expression for optional search parameters.
@@ -1397,7 +1402,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near thermal search.
+   * Run a generative task on the results of a near thermal search.
    *
    * @param query    Near thermal query request.
    * @param generate Generative task.
@@ -1409,7 +1414,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near thermal search.
+   * Run a generative task on the results of a near thermal search.
    *
    * @param thermal    Query thermal (base64-encoded).
    * @param generateFn Lambda expression for generative task parameters.
@@ -1427,7 +1432,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near thermal search.
+   * Run a generative task on the results of a near thermal search.
    *
    * @param searchTarget Query target (base64-encoded thermal).
    * @param fn           Lambda expression for optional search parameters.
@@ -1447,7 +1452,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near thermal search.
+   * Run a generative task on the results of a near thermal search.
    *
    * @param searchTarget Query target (base64-encoded thermal).
    * @param generateFn   Lambda expression for generative task parameters.
@@ -1465,7 +1470,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near thermal search.
+   * Run a generative task on the results of a near thermal search.
    *
    * @param thermal    Query thermal (base64-encoded).
    * @param fn         Lambda expression for optional search parameters.
@@ -1485,7 +1490,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near thermal search.
+   * Run a generative task on the results of a near thermal search.
    *
    * @param query    Near thermal query request.
    * @param generate Generative task.
@@ -1504,7 +1509,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   // NearDepth queries --------------------------------------------------------
 
   /**
-   * Query collection objects using near depth search.
+   * Run a generative task on the results of a near depth search.
    *
    * @param depth      Query depth (base64-encoded).
    * @param generateFn Lambda expression for generative task parameters.
@@ -1517,7 +1522,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near depth search.
+   * Run a generative task on the results of a near depth search.
    *
    * @param depth      Query depth (base64-encoded).
    * @param fn         Lambda expression for optional search parameters.
@@ -1531,7 +1536,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near depth search.
+   * Run a generative task on the results of a near depth search.
    *
    * @param searchTarget Query target (base64-encoded depth).
    * @param generateFn   Lambda expression for generative task parameters.
@@ -1544,7 +1549,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near depth search.
+   * Run a generative task on the results of a near depth search.
    *
    * @param searchTarget Query target (base64-encoded depth).
    * @param fn           Lambda expression for optional search parameters.
@@ -1558,7 +1563,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near depth search.
+   * Run a generative task on the results of a near depth search.
    *
    * @param query    Near depth query request.
    * @param generate Generative task.
@@ -1570,7 +1575,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near depth search.
+   * Run a generative task on the results of a near depth search.
    *
    * @param depth      Query depth (base64-encoded).
    * @param generateFn Lambda expression for generative task parameters.
@@ -1588,7 +1593,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near depth search.
+   * Run a generative task on the results of a near depth search.
    *
    * @param searchTarget Query target (base64-encoded depth).
    * @param fn           Lambda expression for optional search parameters.
@@ -1608,7 +1613,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near depth search.
+   * Run a generative task on the results of a near depth search.
    *
    * @param searchTarget Query target (base64-encoded depth).
    * @param generateFn   Lambda expression for generative task parameters.
@@ -1626,7 +1631,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near depth search.
+   * Run a generative task on the results of a near depth search.
    *
    * @param depth      Query depth (base64-encoded).
    * @param fn         Lambda expression for optional search parameters.
@@ -1646,7 +1651,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near depth search.
+   * Run a generative task on the results of a near depth search.
    *
    * @param query    Near depth query request.
    * @param generate Generative task.
@@ -1665,7 +1670,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   // NearImu queries --------------------------------------------------------
 
   /**
-   * Query collection objects using near IMU search.
+   * Run a generative task on the results of a near IMU search.
    *
    * @param imu        Query IMU (base64-encoded).
    * @param generateFn Lambda expression for generative task parameters.
@@ -1678,7 +1683,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near IMU search.
+   * Run a generative task on the results of a near IMU search.
    *
    * @param imu        Query IMU (base64-encoded).
    * @param fn         Lambda expression for optional search parameters.
@@ -1692,7 +1697,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near IMU search.
+   * Run a generative task on the results of a near IMU search.
    *
    * @param searchTarget Query target (base64-encoded IMU).
    * @param generateFn   Lambda expression for generative task parameters.
@@ -1705,7 +1710,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near IMU search.
+   * Run a generative task on the results of a near IMU search.
    *
    * @param searchTarget Query target (base64-encoded IMU).
    * @param fn           Lambda expression for optional search parameters.
@@ -1719,7 +1724,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near IMU search.
+   * Run a generative task on the results of a near IMU search.
    *
    * @param query    Near IMU query request.
    * @param generate Generative task.
@@ -1731,7 +1736,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near IMU search.
+   * Run a generative task on the results of a near IMU search.
    *
    * @param imu        Query IMU (base64-encoded).
    * @param generateFn Lambda expression for generative task parameters.
@@ -1749,7 +1754,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near IMU search.
+   * Run a generative task on the results of a near IMU search.
    *
    * @param searchTarget Query target (base64-encoded IMU).
    * @param fn           Lambda expression for optional search parameters.
@@ -1769,7 +1774,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near IMU search.
+   * Run a generative task on the results of a near IMU search.
    *
    * @param searchTarget Query target (base64-encoded IMU).
    * @param generateFn   Lambda expression for generative task parameters.
@@ -1787,7 +1792,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near IMU search.
+   * Run a generative task on the results of a near IMU search.
    *
    * @param imu        Query IMU (base64-encoded).
    * @param fn         Lambda expression for optional search parameters.
@@ -1807,7 +1812,7 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   }
 
   /**
-   * Query collection objects using near IMU search.
+   * Run a generative task on the results of a near IMU search.
    *
    * @param query    Near IMU query request.
    * @param generate Generative task.
