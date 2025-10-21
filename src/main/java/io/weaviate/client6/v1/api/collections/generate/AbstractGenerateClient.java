@@ -1,5 +1,6 @@
 package io.weaviate.client6.v1.api.collections.generate;
 
+import java.util.List;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.WeaviateApiException;
@@ -9,6 +10,7 @@ import io.weaviate.client6.v1.api.collections.query.FetchObjects;
 import io.weaviate.client6.v1.api.collections.query.GroupBy;
 import io.weaviate.client6.v1.api.collections.query.Hybrid;
 import io.weaviate.client6.v1.api.collections.query.NearObject;
+import io.weaviate.client6.v1.api.collections.query.NearText;
 import io.weaviate.client6.v1.api.collections.query.NearVector;
 import io.weaviate.client6.v1.api.collections.query.NearVectorTarget;
 import io.weaviate.client6.v1.api.collections.query.QueryOperator;
@@ -640,6 +642,213 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
    * @see QueryResponseGrouped
    */
   public GroupedResponseT nearObject(NearObject query, GenerativeTask generate, GroupBy groupBy) {
+    return performRequest(query, generate, groupBy);
+  }
+
+  // NearText queries ---------------------------------------------------------
+
+  /**
+   * Query collection objects using near text search.
+   *
+   * @param text       Query concepts.
+   * @param fn         Lambda expression for optional parameters.
+   * @param generateFn Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearText(String text,
+      Function<NearText.Builder, ObjectBuilder<NearText>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return nearText(Target.text(List.of(text)), fn, generateFn);
+  }
+
+  /**
+   * Query collection objects using near text search.
+   *
+   * @param text       Query concepts.
+   * @param fn         Lambda expression for optional parameters.
+   * @param generateFn Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearText(List<String> text,
+      Function<NearText.Builder, ObjectBuilder<NearText>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return nearText(Target.text(text), fn, generateFn);
+  }
+
+  /**
+   * Query collection objects using near text search.
+   *
+   * @param searchTarget Target query concepts.
+   * @param generateFn   Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearText(Target searchTarget,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return nearText(NearText.of(searchTarget), GenerativeTask.of(generateFn));
+  }
+
+  /**
+   * Query collection objects using near text search.
+   *
+   * @param searchTarget Target query concepts.
+   * @param fn           Lambda expression for optional parameters.
+   * @param generateFn   Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearText(Target searchTarget,
+      Function<NearText.Builder, ObjectBuilder<NearText>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return nearText(NearText.of(searchTarget, fn), GenerativeTask.of(generateFn));
+  }
+
+  /**
+   * Query collection objects using near text search.
+   *
+   * @param query    Near text query request.
+   * @param generate Generative task.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearText(NearText query, GenerativeTask generate) {
+    return performRequest(query, generate);
+  }
+
+  /**
+   * Query collection objects using near text search.
+   *
+   * @param text       Query concepts.
+   * @param generateFn Lambda expression for generative task parameters.
+   * @param groupBy    Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see QueryResponseGrouped
+   */
+  public GroupedResponseT nearText(String text,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn,
+      GroupBy groupBy) {
+    return nearText(Target.text(List.of(text)), generateFn, groupBy);
+  }
+
+  /**
+   * Query collection objects using near text search.
+   *
+   * @param text       Query concepts.
+   * @param generateFn Lambda expression for generative task parameters.
+   * @param groupBy    Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see QueryResponseGrouped
+   */
+  public GroupedResponseT nearText(List<String> text,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn, GroupBy groupBy) {
+    return nearText(Target.text(text), generateFn, groupBy);
+  }
+
+  /**
+   * Query collection objects using near text search.
+   *
+   * @param text       Query concepts.
+   * @param fn         Lambda expression for optional parameters.
+   * @param generateFn Lambda expression for generative task parameters.
+   * @param groupBy    Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see QueryResponseGrouped
+   */
+  public GroupedResponseT nearText(String text,
+      Function<NearText.Builder, ObjectBuilder<NearText>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn,
+      GroupBy groupBy) {
+    return nearText(Target.text(List.of(text)), fn, generateFn, groupBy);
+  }
+
+  /**
+   * Query collection objects using near text search.
+   *
+   * @param text       Query concepts.
+   * @param fn         Lambda expression for optional parameters.
+   * @param generateFn Lambda expression for generative task parameters.
+   * @param groupBy    Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see QueryResponseGrouped
+   */
+  public GroupedResponseT nearText(List<String> text,
+      Function<NearText.Builder, ObjectBuilder<NearText>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn,
+      GroupBy groupBy) {
+    return nearText(Target.text(text), fn, generateFn, groupBy);
+  }
+
+  /**
+   * Query collection objects using near text search.
+   *
+   * @param searchTarget Target query concepts.
+   * @param generateFn   Lambda expression for generative task parameters.
+   * @param groupBy      Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see QueryResponseGrouped
+   */
+  public GroupedResponseT nearText(Target searchTarget,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn, GroupBy groupBy) {
+    return nearText(NearText.of(searchTarget), GenerativeTask.of(generateFn), groupBy);
+  }
+
+  /**
+   * Query collection objects using near text search.
+   *
+   * @param searchTarget Target query concepts.
+   * @param fn           Lambda expression for optional parameters.
+   * @param generateFn   Lambda expression for generative task parameters.
+   * @param groupBy      Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see QueryResponseGrouped
+   */
+  public GroupedResponseT nearText(Target searchTarget,
+      Function<NearText.Builder, ObjectBuilder<NearText>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn,
+      GroupBy groupBy) {
+    return nearText(NearText.of(searchTarget, fn), GenerativeTask.of(generateFn), groupBy);
+  }
+
+  /**
+   * Query collection objects using near text search.
+   *
+   * @param query    Near text query request.
+   * @param generate Generative task.
+   * @param groupBy  Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see QueryResponseGrouped
+   */
+  public GroupedResponseT nearText(NearText query, GenerativeTask generate, GroupBy groupBy) {
     return performRequest(query, generate, groupBy);
   }
 }

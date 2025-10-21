@@ -734,7 +734,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
   public GroupedResponseT nearText(List<String> text,
       Function<NearText.Builder, ObjectBuilder<NearText>> fn,
       GroupBy groupBy) {
-    return nearText(Target.text(text), groupBy);
+    return nearText(Target.text(text), fn, groupBy);
   }
 
   /**
