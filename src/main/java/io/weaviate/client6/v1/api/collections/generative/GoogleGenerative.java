@@ -1,11 +1,17 @@
 package io.weaviate.client6.v1.api.collections.generative;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
 
 import com.google.gson.annotations.SerializedName;
 
 import io.weaviate.client6.v1.api.collections.Generative;
+import io.weaviate.client6.v1.api.collections.generate.DynamicProvider;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative;
 
 public record GoogleGenerative(
     @SerializedName("apiEndpoint") String baseUrl,
@@ -118,6 +124,209 @@ public record GoogleGenerative(
     }
 
     public static record Usage(Long promptTokenCount, Long candidatesTokenCount, Long totalTokenCount) {
+    }
+  }
+
+  public static record Provider(
+      String baseUrl,
+      Integer maxTokens,
+      String model,
+      Float temperature,
+      Integer topK,
+      Float topP,
+      Float frequencyPenalty,
+      Float presencePenalty,
+      String projectId,
+      String endpointId,
+      String region,
+      List<String> stopSequences,
+      List<String> images,
+      List<String> imageProperties) implements DynamicProvider {
+
+    public static Provider of(
+        Function<GoogleGenerative.Provider.Builder, ObjectBuilder<GoogleGenerative.Provider>> fn) {
+      return fn.apply(new Builder()).build();
+    }
+
+    @Override
+    public void appendTo(
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeProvider.Builder req) {
+      var provider = WeaviateProtoGenerative.GenerativeGoogle.newBuilder();
+      if (baseUrl != null) {
+        provider.setApiEndpoint(baseUrl);
+      }
+      if (maxTokens != null) {
+        provider.setMaxTokens(maxTokens);
+      }
+      if (model != null) {
+        provider.setModel(model);
+      }
+      if (temperature != null) {
+        provider.setTemperature(temperature);
+      }
+      if (topK != null) {
+        provider.setTopK(topK);
+      }
+      if (topP != null) {
+        provider.setTopP(topP);
+      }
+      if (projectId != null) {
+        provider.setProjectId(projectId);
+      }
+      if (endpointId != null) {
+        provider.setEndpointId(endpointId);
+      }
+      if (region != null) {
+        provider.setRegion(region);
+      }
+      if (frequencyPenalty != null) {
+        provider.setFrequencyPenalty(frequencyPenalty);
+      }
+      if (presencePenalty != null) {
+        provider.setPresencePenalty(presencePenalty);
+      }
+      if (stopSequences != null) {
+        provider.setStopSequences(WeaviateProtoBase.TextArray.newBuilder()
+            .addAllValues(stopSequences));
+      }
+      req.setGoogle(provider);
+    }
+
+    public Provider(Builder builder) {
+      this(
+          builder.baseUrl,
+          builder.maxTokens,
+          builder.model,
+          builder.temperature,
+          builder.topK,
+          builder.topP,
+          builder.frequencyPenalty,
+          builder.presencePenalty,
+          builder.projectId,
+          builder.endpointId,
+          builder.region,
+          builder.stopSequences,
+          builder.images,
+          builder.imageProperties);
+    }
+
+    public static class Builder implements ObjectBuilder<GoogleGenerative.Provider> {
+      private String baseUrl;
+      private Integer topK;
+      private Float topP;
+      private String model;
+      private Integer maxTokens;
+      private Float temperature;
+      private Float frequencyPenalty;
+      private Float presencePenalty;
+      private String projectId;
+      private String endpointId;
+      private String region;
+      private final List<String> stopSequences = new ArrayList<>();
+      private final List<String> images = new ArrayList<>();
+      private final List<String> imageProperties = new ArrayList<>();
+
+      /** Base URL of the generative provider. */
+      public Builder baseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+        return this;
+      }
+
+      public Builder topK(int topK) {
+        this.topK = topK;
+        return this;
+      }
+
+      /** Top P value for nucleus sampling. */
+      public Builder topP(float topP) {
+        this.topP = topP;
+        return this;
+      }
+
+      public Builder frequencyPenalty(float frequencyPenalty) {
+        this.frequencyPenalty = frequencyPenalty;
+        return this;
+      }
+
+      /** Top P value for nucleus sampling. */
+      public Builder presencePenalty(float presencePenalty) {
+        this.presencePenalty = presencePenalty;
+        return this;
+      }
+
+      /** Select generative model. */
+      public Builder model(String model) {
+        this.model = model;
+        return this;
+      }
+
+      /** Limit the number of tokens to generate in the response. */
+      public Builder maxTokens(int maxTokens) {
+        this.maxTokens = maxTokens;
+        return this;
+      }
+
+      /**
+       * Set tokens which should signal the model to stop generating further output.
+       */
+      public Builder stopSequences(String... stopSequences) {
+        return stopSequences(Arrays.asList(stopSequences));
+      }
+
+      /**
+       * Set tokens which should signal the model to stop generating further output.
+       */
+      public Builder stopSequences(List<String> stopSequences) {
+        this.stopSequences.addAll(stopSequences);
+        return this;
+      }
+
+      public Builder projectId(String projectId) {
+        this.projectId = projectId;
+        return this;
+      }
+
+      public Builder endpointId(String endpointId) {
+        this.endpointId = endpointId;
+        return this;
+      }
+
+      public Builder region(String region) {
+        this.region = region;
+        return this;
+      }
+
+      public Builder images(String... images) {
+        return images(Arrays.asList(images));
+      }
+
+      public Builder images(List<String> images) {
+        this.images.addAll(images);
+        return this;
+      }
+
+      public Builder imageProperties(String... imageProperties) {
+        return imageProperties(Arrays.asList(imageProperties));
+      }
+
+      public Builder imageProperties(List<String> imageProperties) {
+        this.imageProperties.addAll(imageProperties);
+        return this;
+      }
+
+      /**
+       * Control the randomness of the model's output.
+       * Higher values make output more random.
+       */
+      public Builder temperature(float temperature) {
+        this.temperature = temperature;
+        return this;
+      }
+
+      @Override
+      public GoogleGenerative.Provider build() {
+        return new GoogleGenerative.Provider(this);
+      }
     }
   }
 }
