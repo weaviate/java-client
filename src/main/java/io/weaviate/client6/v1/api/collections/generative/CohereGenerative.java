@@ -122,11 +122,6 @@ public record CohereGenerative(
   public static record Metadata(ApiVersion apiVersion, BilledUnits billedUnits, Tokens tokens, List<String> warnings)
       implements ProviderMetadata {
 
-    @Override
-    public Generative.Kind _kind() {
-      return Generative.Kind.COHERE;
-    }
-
     public static record ApiVersion(String version, Boolean deprecated, Boolean experimental) {
     }
 

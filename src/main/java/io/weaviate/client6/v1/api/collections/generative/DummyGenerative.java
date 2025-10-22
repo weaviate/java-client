@@ -14,10 +14,5 @@ public record DummyGenerative() implements Generative {
   }
 
   public static record Metadata() implements ProviderMetadata {
-
-    @Override
-    public Kind _kind() {
-      return Generative.Kind.DUMMY;
-    }
   }
 }

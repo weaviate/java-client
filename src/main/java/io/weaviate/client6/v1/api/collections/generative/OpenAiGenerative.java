@@ -111,11 +111,6 @@ public record OpenAiGenerative(
   }
 
   public static record Metadata(ProviderMetadata.Usage usage) implements ProviderMetadata {
-
-    @Override
-    public Generative.Kind _kind() {
-      return Generative.Kind.OPENAI;
-    }
   }
 
   public static record Provider(

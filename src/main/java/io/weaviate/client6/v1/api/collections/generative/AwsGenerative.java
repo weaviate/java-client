@@ -76,11 +76,6 @@ public record AwsGenerative(
   }
 
   public static record Metadata() implements ProviderMetadata {
-
-    @Override
-    public Generative.Kind _kind() {
-      return Generative.Kind.AWS;
-    }
   }
 
   public static record Provider(

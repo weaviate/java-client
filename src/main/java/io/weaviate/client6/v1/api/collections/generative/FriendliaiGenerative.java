@@ -81,11 +81,6 @@ public record FriendliaiGenerative(
   }
 
   public static record Metadata(ProviderMetadata.Usage usage) implements ProviderMetadata {
-
-    @Override
-    public Generative.Kind _kind() {
-      return Generative.Kind.FRIENDLIAI;
-    }
   }
 
   public static record Provider(

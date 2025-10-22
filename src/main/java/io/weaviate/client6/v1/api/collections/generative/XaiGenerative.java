@@ -85,11 +85,6 @@ public record XaiGenerative(
   }
 
   public static record Metadata(ProviderMetadata.Usage usage) implements ProviderMetadata {
-
-    @Override
-    public Generative.Kind _kind() {
-      return Generative.Kind.XAI;
-    }
   }
 
   public static record Provider(
