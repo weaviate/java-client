@@ -58,7 +58,7 @@ public record GenerativeTask(Single single, Grouped grouped) {
     }
   }
 
-  public record Single(String prompt, boolean debug) {
+  public record Single(String prompt, boolean debug, List<DynamicProvider> providers) {
     public static Single of(String prompt) {
       return of(prompt, ObjectBuilder.identity());
     }
@@ -68,11 +68,12 @@ public record GenerativeTask(Single single, Grouped grouped) {
     }
 
     public Single(Builder builder) {
-      this(builder.prompt, builder.debug);
+      this(builder.prompt, builder.debug, builder.providers);
     }
 
     public static class Builder implements ObjectBuilder<Single> {
       private final String prompt;
+      private final List<DynamicProvider> providers = new ArrayList<>();
       private boolean debug = false;
 
       public Builder(String prompt) {
@@ -84,6 +85,12 @@ public record GenerativeTask(Single single, Grouped grouped) {
         return this;
       }
 
+      public Builder generativeProvider(DynamicProvider provider) {
+        providers.clear(); // Protobuf allows `repeated` but the server expects there to be 1.
+        providers.add(provider);
+        return this;
+      }
+
       @Override
       public Single build() {
         return new Single(this);
@@ -91,14 +98,23 @@ public record GenerativeTask(Single single, Grouped grouped) {
     }
 
     public void appendTo(WeaviateProtoGenerative.GenerativeSearch.Builder req) {
+      var ragProviders = providers.stream()
+          .map(provider -> {
+            var proto = WeaviateProtoGenerative.GenerativeProvider.newBuilder();
+            provider.appendTo(proto);
+            return proto.build();
+          })
+          .toList();
+
       req.setSingle(
           WeaviateProtoGenerative.GenerativeSearch.Single.newBuilder()
               .setPrompt(prompt)
-              .setDebug(debug));
+              .setDebug(debug)
+              .addAllQueries(ragProviders));
     }
   }
 
-  public record Grouped(String prompt, boolean debug, List<String> properties) {
+  public record Grouped(String prompt, boolean debug, List<String> properties, List<DynamicProvider> providers) {
     public static Grouped of(String prompt) {
       return of(prompt, ObjectBuilder.identity());
     }
@@ -108,11 +124,12 @@ public record GenerativeTask(Single single, Grouped grouped) {
     }
 
     public Grouped(Builder builder) {
-      this(builder.prompt, builder.debug, builder.properties);
+      this(builder.prompt, builder.debug, builder.properties, builder.providers);
     }
 
     public static class Builder implements ObjectBuilder<Grouped> {
       private final String prompt;
+      private final List<DynamicProvider> providers = new ArrayList<>();
       private final List<String> properties = new ArrayList<>();
       private boolean debug = false;
 
@@ -126,6 +143,12 @@ public record GenerativeTask(Single single, Grouped grouped) {
 
       public Builder properties(List<String> properties) {
         this.properties.addAll(properties);
+        return this;
+      }
+
+      public Builder generativeProvider(DynamicProvider provider) {
+        providers.clear(); // Protobuf allows `repeated` but the server expects there to be 1.
+        providers.add(provider);
         return this;
       }
 
@@ -151,6 +174,16 @@ public record GenerativeTask(Single single, Grouped grouped) {
                 .addAllValues(properties));
 
       }
+
+      var ragProviders = providers.stream()
+          .map(provider -> {
+            var proto = WeaviateProtoGenerative.GenerativeProvider.newBuilder();
+            provider.appendTo(proto);
+            return proto.build();
+          })
+          .toList();
+      grouped.addAllQueries(ragProviders);
+
       req.setGrouped(grouped);
     }
   }

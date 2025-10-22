@@ -5,7 +5,9 @@ import java.util.function.Function;
 import com.google.gson.annotations.SerializedName;
 
 import io.weaviate.client6.v1.api.collections.Generative;
+import io.weaviate.client6.v1.api.collections.generate.DynamicProvider;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative;
 
 public record AnyscaleGenerative(
     @SerializedName("baseURL") String baseUrl,
@@ -72,6 +74,72 @@ public record AnyscaleGenerative(
     @Override
     public Generative.Kind _kind() {
       return Generative.Kind.ANYSCALE;
+    }
+  }
+
+  public static record Provider(
+      String baseUrl,
+      String model,
+      Float temperature) implements DynamicProvider {
+
+    public static Provider of(
+        Function<AnyscaleGenerative.Provider.Builder, ObjectBuilder<AnyscaleGenerative.Provider>> fn) {
+      return fn.apply(new Builder()).build();
+    }
+
+    @Override
+    public void appendTo(
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeProvider.Builder req) {
+      var provider = WeaviateProtoGenerative.GenerativeAnyscale.newBuilder();
+      if (baseUrl != null) {
+        provider.setBaseUrl(baseUrl);
+      }
+      if (model != null) {
+        provider.setModel(model);
+      }
+      if (temperature != null) {
+        provider.setTemperature(temperature);
+      }
+      req.setAnyscale(provider);
+    }
+
+    public Provider(Builder builder) {
+      this(
+          builder.baseUrl,
+          builder.model,
+          builder.temperature);
+    }
+
+    public static class Builder implements ObjectBuilder<AnyscaleGenerative.Provider> {
+      private String baseUrl;
+      private String model;
+      private Float temperature;
+
+      /** Base URL of the generative provider. */
+      public Builder baseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+        return this;
+      }
+
+      /** Select generative model. */
+      public Builder model(String model) {
+        this.model = model;
+        return this;
+      }
+
+      /**
+       * Control the randomness of the model's output.
+       * Higher values make output more random.
+       */
+      public Builder temperature(float temperature) {
+        this.temperature = temperature;
+        return this;
+      }
+
+      @Override
+      public AnyscaleGenerative.Provider build() {
+        return new AnyscaleGenerative.Provider(this);
+      }
     }
   }
 }
