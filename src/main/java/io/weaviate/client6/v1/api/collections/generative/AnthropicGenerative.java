@@ -9,7 +9,6 @@ import com.google.gson.annotations.SerializedName;
 
 import io.weaviate.client6.v1.api.collections.Generative;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
-import io.weaviate.client6.v1.internal.TaggedUnion;
 
 public record AnthropicGenerative(
     @SerializedName("model") String model,

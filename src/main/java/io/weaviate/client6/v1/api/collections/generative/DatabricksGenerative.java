@@ -34,7 +34,7 @@ public record DatabricksGenerative(
 
   public DatabricksGenerative(Builder builder) {
     this(
-        builder.baseURL,
+        builder.baseUrl,
         builder.maxTokens,
         builder.topK,
         builder.topP,
@@ -42,15 +42,15 @@ public record DatabricksGenerative(
   }
 
   public static class Builder implements ObjectBuilder<DatabricksGenerative> {
-    private final String baseURL;
+    private final String baseUrl;
 
     private Integer maxTokens;
     private Integer topK;
     private Float topP;
     private Float temperature;
 
-    public Builder(String baseURL) {
-      this.baseURL = baseURL;
+    public Builder(String baseUrl) {
+      this.baseUrl = baseUrl;
     }
 
     /** Limit the number of tokens to generate in the response. */
