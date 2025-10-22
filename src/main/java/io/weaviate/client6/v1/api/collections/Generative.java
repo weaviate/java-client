@@ -28,9 +28,10 @@ import io.weaviate.client6.v1.api.collections.generative.OllamaGenerative;
 import io.weaviate.client6.v1.api.collections.generative.OpenAiGenerative;
 import io.weaviate.client6.v1.api.collections.generative.XaiGenerative;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
+import io.weaviate.client6.v1.internal.TaggedUnion;
 import io.weaviate.client6.v1.internal.json.JsonEnum;
 
-public interface Generative {
+public interface Generative extends TaggedUnion<Generative.Kind, Object> {
   public enum Kind implements JsonEnum<Kind> {
     ANYSCALE("generative-anyscale"),
     AWS("generative-aws"),
@@ -63,10 +64,6 @@ public interface Generative {
       return JsonEnum.valueOfJson(jsonValue, jsonValueMap, Kind.class);
     }
   }
-
-  Kind _kind();
-
-  Object _self();
 
   /** Configure a default {@code generative-anthropic} module. */
   public static Generative anthropic() {
@@ -277,6 +274,201 @@ public interface Generative {
     return XaiGenerative.of(fn);
   }
 
+  /** Is this a {@code generative-anyscale} provider? */
+  default boolean isAnyscale() {
+    return _is(Generative.Kind.ANYSCALE);
+  }
+
+  /**
+   * Get as {@link AnyscaleGenerative} instance.
+   *
+   * @throws IllegalStateException if the current kind is not
+   *                               {@code generative-anyscale}.
+   */
+  default AnyscaleGenerative asAnyscale() {
+    return _as(Generative.Kind.ANYSCALE);
+  }
+
+  /** Is this a {@code generative-aws} provider? */
+  default boolean isAws() {
+    return _is(Generative.Kind.AWS);
+  }
+
+  /**
+   * Get as {@link AwsGenerative} instance.
+   *
+   * @throws IllegalStateException if the current kind is not
+   *                               {@code generative-aws}.
+   */
+  default AwsGenerative asAws() {
+    return _as(Generative.Kind.AWS);
+  }
+
+  /** Is this a {@code generative-anthropic} provider? */
+  default boolean isAnthropic() {
+    return _is(Generative.Kind.ANTHROPIC);
+  }
+
+  /**
+   * Get as {@link AnthropicGenerative} instance.
+   *
+   * @throws IllegalStateException if the current kind is not
+   *                               {@code generative-anthropic}.
+   */
+  default AnthropicGenerative asAnthropic() {
+    return _as(Generative.Kind.ANTHROPIC);
+  }
+
+  /** Is this a {@code generative-cohere} provider? */
+  default boolean isCohere() {
+    return _is(Generative.Kind.COHERE);
+  }
+
+  /**
+   * Get as {@link CohereGenerative} instance.
+   *
+   * @throws IllegalStateException if the current kind is not
+   *                               {@code generative-cohere}.
+   */
+  default CohereGenerative asCohere() {
+    return _as(Generative.Kind.COHERE);
+  }
+
+  /** Is this a {@code generative-databricks} provider? */
+  default boolean isDatabricks() {
+    return _is(Generative.Kind.DATABRICKS);
+  }
+
+  /**
+   * Get as {@link DatabricksGenerative} instance.
+   *
+   * @throws IllegalStateException if the current kind is not
+   *                               {@code generative-databricks}.
+   */
+  default DatabricksGenerative asDatabricks() {
+    return _as(Generative.Kind.DATABRICKS);
+  }
+
+  /** Is this a {@code generative-friendliai} provider? */
+  default boolean isFriendliai() {
+    return _is(Generative.Kind.FRIENDLIAI);
+  }
+
+  /**
+   * Get as {@link FriendliaiGenerative} instance.
+   *
+   * @throws IllegalStateException if the current kind is not
+   *                               {@code generative-friendliai}.
+   */
+  default FriendliaiGenerative asFriendliai() {
+    return _as(Generative.Kind.FRIENDLIAI);
+  }
+
+  /** Is this a {@code generative-palm} provider? */
+  default boolean isGoogle() {
+    return _is(Generative.Kind.GOOGLE);
+  }
+
+  /**
+   * Get as {@link GoogleGenerative} instance.
+   *
+   * @throws IllegalStateException if the current kind is not
+   *                               {@code generative-palm}.
+   */
+  default GoogleGenerative asGoogle() {
+    return _as(Generative.Kind.GOOGLE);
+  }
+
+  /** Is this a {@code generative-mistral} provider? */
+  default boolean isMistral() {
+    return _is(Generative.Kind.MISTRAL);
+  }
+
+  /**
+   * Get as {@link MistralGenerative} instance.
+   *
+   * @throws IllegalStateException if the current kind is not
+   *                               {@code generative-mistral}.
+   */
+  default MistralGenerative asMistral() {
+    return _as(Generative.Kind.MISTRAL);
+  }
+
+  /** Is this a {@code generative-nvidia} provider? */
+  default boolean isNvidia() {
+    return _is(Generative.Kind.NVIDIA);
+  }
+
+  /**
+   * Get as {@link NvidiaGenerative} instance.
+   *
+   * @throws IllegalStateException if the current kind is not
+   *                               {@code generative-nvidia}.
+   */
+  default NvidiaGenerative asNvidia() {
+    return _as(Generative.Kind.NVIDIA);
+  }
+
+  /** Is this a {@code generative-ollama} provider? */
+  default boolean isOllama() {
+    return _is(Generative.Kind.OLLAMA);
+  }
+
+  /**
+   * Get as {@link OllamaGenerative} instance.
+   *
+   * @throws IllegalStateException if the current kind is not
+   *                               {@code generative-ollama}.
+   */
+  default OllamaGenerative asOllama() {
+    return _as(Generative.Kind.OLLAMA);
+  }
+
+  /** Is this a {@code generative-openai} provider? */
+  default boolean isOpenAi() {
+    return _is(Generative.Kind.OPENAI);
+  }
+
+  /**
+   * Get as {@link OpenAiGenerative} instance.
+   *
+   * @throws IllegalStateException if the current kind is not
+   *                               {@code generative-openai}.
+   */
+  default OpenAiGenerative asOpenAi() {
+    return _as(Generative.Kind.OPENAI);
+  }
+
+  /** Is this an Azure-specific {@code generative-openai} provider? */
+  default boolean isAzure() {
+    return _is(Generative.Kind.AZURE_OPENAI);
+  }
+
+  /**
+   * Get as {@link AzureOpenAiGenerative} instance.
+   *
+   * @throws IllegalStateException if the current kind is not
+   *                               {@code generative-openai}.
+   */
+  default AzureOpenAiGenerative asAzure() {
+    return _as(Generative.Kind.AZURE_OPENAI);
+  }
+
+  /** Is this a {@code generative-xai} provider? */
+  default boolean isXai() {
+    return _is(Generative.Kind.XAI);
+  }
+
+  /**
+   * Get as {@link XaiGenerative} instance.
+   *
+   * @throws IllegalStateException if the current kind is not
+   *                               {@code generative-xai}.
+   */
+  default XaiGenerative asXai() {
+    return _as(Generative.Kind.XAI);
+  }
+
   public static enum CustomTypeAdapterFactory implements TypeAdapterFactory {
     INSTANCE;
 
@@ -316,14 +508,15 @@ public interface Generative {
         init(gson);
       }
 
-      final TypeAdapter<T> writeAdapter = (TypeAdapter<T>) gson.getDelegateAdapter(this, TypeToken.get(rawType));
+      final TypeAdapter<Generative> writeAdapter = (TypeAdapter<Generative>) gson.getDelegateAdapter(this,
+          TypeToken.get(rawType));
       return (TypeAdapter<T>) new TypeAdapter<Generative>() {
 
         @Override
         public void write(JsonWriter out, Generative value) throws IOException {
           out.beginObject();
           out.name(value._kind().jsonValue());
-          writeAdapter.write(out, (T) value._self());
+          writeAdapter.write(out, value._self());
           out.endObject();
         }
 
