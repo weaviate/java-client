@@ -85,7 +85,7 @@ public record GenerativeTask(Single single, Grouped grouped) {
         return this;
       }
 
-      public Builder generativeProvider(DynamicProvider provider) {
+      public Builder dynamicProvider(DynamicProvider provider) {
         providers.clear(); // Protobuf allows `repeated` but the server expects there to be 1.
         providers.add(provider);
         return this;
@@ -146,7 +146,7 @@ public record GenerativeTask(Single single, Grouped grouped) {
         return this;
       }
 
-      public Builder generativeProvider(DynamicProvider provider) {
+      public Builder dynamicProvider(DynamicProvider provider) {
         providers.clear(); // Protobuf allows `repeated` but the server expects there to be 1.
         providers.add(provider);
         return this;
