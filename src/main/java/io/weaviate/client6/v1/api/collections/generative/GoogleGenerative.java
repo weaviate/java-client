@@ -112,11 +112,6 @@ public record GoogleGenerative(
 
   public static record Metadata(TokenMetadata tokens, Usage usage) implements ProviderMetadata {
 
-    @Override
-    public Generative.Kind _kind() {
-      return Generative.Kind.GOOGLE;
-    }
-
     public static record TokenCount(Long totalBillableCharacters, Long totalTokens) {
     }
 

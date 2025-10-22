@@ -70,11 +70,6 @@ public record AnyscaleGenerative(
   }
 
   public static record Metadata() implements ProviderMetadata {
-
-    @Override
-    public Generative.Kind _kind() {
-      return Generative.Kind.ANYSCALE;
-    }
   }
 
   public static record Provider(

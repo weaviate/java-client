@@ -64,11 +64,6 @@ public record OllamaGenerative(
   }
 
   public static record Metadata() implements ProviderMetadata {
-
-    @Override
-    public Generative.Kind _kind() {
-      return Generative.Kind.OLLAMA;
-    }
   }
 
   public static record Provider(

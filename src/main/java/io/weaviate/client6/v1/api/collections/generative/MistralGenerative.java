@@ -81,11 +81,6 @@ public record MistralGenerative(
   }
 
   public static record Metadata(ProviderMetadata.Usage usage) implements ProviderMetadata {
-
-    @Override
-    public Generative.Kind _kind() {
-      return Generative.Kind.MISTRAL;
-    }
   }
 
   public static record Provider(
