@@ -127,9 +127,6 @@ public record OpenAiGenerative(
       Float topP,
       Float frequencyPenalty,
       Float presencePenalty,
-      String apiVersion,
-      String resourceName,
-      String deploymentId,
       List<String> stopSequences,
       List<String> images,
       List<String> imageProperties) implements DynamicProvider {
@@ -167,15 +164,6 @@ public record OpenAiGenerative(
       if (presencePenalty != null) {
         provider.setPresencePenalty(presencePenalty);
       }
-      if (apiVersion != null) {
-        provider.setApiVersion(apiVersion);
-      }
-      if (resourceName != null) {
-        provider.setResourceName(resourceName);
-      }
-      if (deploymentId != null) {
-        provider.setDeploymentId(deploymentId);
-      }
       if (stopSequences != null) {
         provider.setStop(WeaviateProtoBase.TextArray.newBuilder()
             .addAllValues(stopSequences));
@@ -194,9 +182,6 @@ public record OpenAiGenerative(
           builder.topP,
           builder.frequencyPenalty,
           builder.presencePenalty,
-          builder.apiVersion,
-          builder.resourceName,
-          builder.deploymentId,
           builder.stopSequences,
           builder.images,
           builder.imageProperties);
@@ -211,9 +196,6 @@ public record OpenAiGenerative(
       private Float temperature;
       private Float frequencyPenalty;
       private Float presencePenalty;
-      private String apiVersion;
-      private String resourceName;
-      private String deploymentId;
       private final List<String> stopSequences = new ArrayList<>();
       private final List<String> images = new ArrayList<>();
       private final List<String> imageProperties = new ArrayList<>();
@@ -270,21 +252,6 @@ public record OpenAiGenerative(
        */
       public Builder stopSequences(List<String> stopSequences) {
         this.stopSequences.addAll(stopSequences);
-        return this;
-      }
-
-      public Builder apiVersion(String apiVersion) {
-        this.apiVersion = apiVersion;
-        return this;
-      }
-
-      public Builder resourceName(String resourceName) {
-        this.resourceName = resourceName;
-        return this;
-      }
-
-      public Builder deploymentId(String deploymentId) {
-        this.deploymentId = deploymentId;
         return this;
       }
 
