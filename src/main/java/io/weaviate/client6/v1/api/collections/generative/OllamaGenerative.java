@@ -8,7 +8,7 @@ import io.weaviate.client6.v1.api.collections.Generative;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record OllamaGenerative(
-    @SerializedName("apiEndpoint") String apiEndpoint,
+    @SerializedName("apiEndpoint") String baseUrl,
     @SerializedName("model") String model) implements Generative {
 
   @Override
@@ -31,17 +31,17 @@ public record OllamaGenerative(
 
   public OllamaGenerative(Builder builder) {
     this(
-        builder.apiEndpoint,
+        builder.baseUrl,
         builder.model);
   }
 
   public static class Builder implements ObjectBuilder<OllamaGenerative> {
-    private String apiEndpoint;
+    private String baseUrl;
     private String model;
 
-    /** Destination endpoint of the generative provider. */
-    public Builder apiEndpoint(String apiEndpoint) {
-      this.apiEndpoint = apiEndpoint;
+    /** Base URL of the generative model. */
+    public Builder baseUrl(String baseUrl) {
+      this.baseUrl = baseUrl;
       return this;
     }
 

@@ -10,7 +10,7 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 public record AwsGenerative(
     @SerializedName("region") String region,
     @SerializedName("service") String service,
-    @SerializedName("endpoint") String baseURL,
+    @SerializedName("endpoint") String baseUrl,
     @SerializedName("model") String model) implements Generative {
 
   @Override

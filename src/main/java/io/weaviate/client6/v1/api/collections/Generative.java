@@ -6,11 +6,11 @@ import java.util.Map;
 import java.util.function.Function;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 import io.weaviate.client6.v1.api.collections.generative.AnthropicGenerative;
@@ -161,7 +161,7 @@ public interface Generative extends TaggedUnion<Generative.Kind, Object> {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static Generative frienliai(Function<FriendliaiGenerative.Builder, ObjectBuilder<FriendliaiGenerative>> fn) {
+  public static Generative friendliai(Function<FriendliaiGenerative.Builder, ObjectBuilder<FriendliaiGenerative>> fn) {
     return FriendliaiGenerative.of(fn);
   }
 
@@ -508,7 +508,7 @@ public interface Generative extends TaggedUnion<Generative.Kind, Object> {
         init(gson);
       }
 
-      final TypeAdapter<Generative> writeAdapter = (TypeAdapter<Generative>) gson.getDelegateAdapter(this,
+      final TypeAdapter<T> writeAdapter = (TypeAdapter<T>) gson.getDelegateAdapter(this,
           TypeToken.get(rawType));
       return (TypeAdapter<T>) new TypeAdapter<Generative>() {
 
@@ -516,27 +516,31 @@ public interface Generative extends TaggedUnion<Generative.Kind, Object> {
         public void write(JsonWriter out, Generative value) throws IOException {
           out.beginObject();
           out.name(value._kind().jsonValue());
-          writeAdapter.write(out, value._self());
+          writeAdapter.write(out, (T) value._self());
           out.endObject();
         }
 
         @Override
         public Generative read(JsonReader in) throws IOException {
-          in.beginObject();
-          var moduleName = in.nextName();
-          try {
-            var kind = Generative.Kind.valueOfJson(moduleName);
-            var adapter = readAdapters.get(kind);
-            assert adapter != null : "no generative adapter for kind " + kind;
-            return adapter.read(in);
-          } catch (IllegalArgumentException e) {
-            return null;
-          } finally {
-            if (in.peek() == JsonToken.BEGIN_OBJECT) {
-              in.beginObject();
+          var jsonObject = JsonParser.parseReader(in).getAsJsonObject();
+          var provider = jsonObject.keySet().iterator().next();
+
+          var generative = jsonObject.get(provider).getAsJsonObject();
+          Generative.Kind kind;
+          if (provider.equals(Generative.Kind.OPENAI.jsonValue())) {
+            kind = generative.has("deploymentId") && generative.has("resourceName")
+                ? Generative.Kind.AZURE_OPENAI
+                : Generative.Kind.OPENAI;
+          } else {
+            try {
+              kind = Generative.Kind.valueOfJson(provider);
+            } catch (IllegalArgumentException e) {
+              return null;
             }
-            in.endObject();
           }
+          var adapter = readAdapters.get(kind);
+          assert adapter != null : "no generative adapter for kind " + kind;
+          return adapter.fromJsonTree(generative);
         }
       }.nullSafe();
     }

@@ -12,7 +12,7 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record CohereGenerative(
     @SerializedName("baseURL") String baseUrl,
-    @SerializedName("kProperty") Integer k,
+    @SerializedName("kProperty") Integer topK,
     @SerializedName("model") String model,
     @SerializedName("maxTokensProperty") Integer maxTokens,
     @SerializedName("temperatureProperty") Float temperature,
@@ -40,7 +40,7 @@ public record CohereGenerative(
   public CohereGenerative(Builder builder) {
     this(
         builder.baseUrl,
-        builder.k,
+        builder.topK,
         builder.model,
         builder.maxTokens,
         builder.temperature,
@@ -50,7 +50,7 @@ public record CohereGenerative(
 
   public static class Builder implements ObjectBuilder<CohereGenerative> {
     private String baseUrl;
-    private Integer k;
+    private Integer topK;
     private String model;
     private Integer maxTokens;
     private Float temperature;
@@ -63,8 +63,8 @@ public record CohereGenerative(
       return this;
     }
 
-    public Builder k(int k) {
-      this.k = k;
+    public Builder topK(int topK) {
+      this.topK = topK;
       return this;
     }
 
