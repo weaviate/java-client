@@ -13,18 +13,20 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative;
 
-public record CohereGenerative(
+public record AzureOpenAiGenerative(
     @SerializedName("baseURL") String baseUrl,
-    @SerializedName("kProperty") Integer topK,
-    @SerializedName("model") String model,
+    @SerializedName("frequencyPenaltyProperty") Float frequencyPenalty,
+    @SerializedName("presencePenaltyProperty") Float presencePenalty,
     @SerializedName("maxTokensProperty") Integer maxTokens,
     @SerializedName("temperatureProperty") Float temperature,
-    @SerializedName("returnLikelihoodsProperty") String returnLikelihoodsProperty,
-    @SerializedName("stopSequencesProperty") List<String> stopSequences) implements Generative {
+    @SerializedName("topPProperty") Float topP,
+
+    @SerializedName("resourceName") String resourceName,
+    @SerializedName("deploymentId") String deploymentId) implements Generative {
 
   @Override
   public Kind _kind() {
-    return Generative.Kind.COHERE;
+    return Generative.Kind.AZURE_OPENAI;
   }
 
   @Override
@@ -32,33 +34,42 @@ public record CohereGenerative(
     return this;
   }
 
-  public static CohereGenerative of() {
-    return of(ObjectBuilder.identity());
+  public static AzureOpenAiGenerative of(String resourceName, String deploymentId) {
+    return of(resourceName, deploymentId, ObjectBuilder.identity());
   }
 
-  public static CohereGenerative of(Function<Builder, ObjectBuilder<CohereGenerative>> fn) {
-    return fn.apply(new Builder()).build();
+  public static AzureOpenAiGenerative of(String resourceName, String deploymentId,
+      Function<Builder, ObjectBuilder<AzureOpenAiGenerative>> fn) {
+    return fn.apply(new Builder(resourceName, deploymentId)).build();
   }
 
-  public CohereGenerative(Builder builder) {
+  public AzureOpenAiGenerative(Builder builder) {
     this(
         builder.baseUrl,
-        builder.topK,
-        builder.model,
+        builder.frequencyPenalty,
+        builder.presencePenalty,
         builder.maxTokens,
         builder.temperature,
-        builder.returnLikelihoodsProperty,
-        builder.stopSequences);
+        builder.topP,
+        builder.resourceName,
+        builder.deploymentId);
   }
 
-  public static class Builder implements ObjectBuilder<CohereGenerative> {
+  public static class Builder implements ObjectBuilder<AzureOpenAiGenerative> {
+    private final String resourceName;
+    private final String deploymentId;
+
     private String baseUrl;
-    private Integer topK;
-    private String model;
+    private Float frequencyPenalty;
+    private Float presencePenalty;
     private Integer maxTokens;
     private Float temperature;
-    private String returnLikelihoodsProperty;
-    private List<String> stopSequences = new ArrayList<>();
+    private Float topP;
+
+    public Builder(String resourceName, String deploymentId) {
+      this.resourceName = resourceName;
+      this.deploymentId = deploymentId;
+    }
 
     /** Base URL of the generative provider. */
     public Builder baseUrl(String baseUrl) {
@@ -66,41 +77,9 @@ public record CohereGenerative(
       return this;
     }
 
-    /** Top K value for sampling. */
-    public Builder topK(int topK) {
-      this.topK = topK;
-      return this;
-    }
-
-    /** Select generative model. */
-    public Builder model(String model) {
-      this.model = model;
-      return this;
-    }
-
     /** Limit the number of tokens to generate in the response. */
     public Builder maxTokens(int maxTokens) {
       this.maxTokens = maxTokens;
-      return this;
-    }
-
-    public Builder returnLikelihoodsProperty(String returnLikelihoodsProperty) {
-      this.returnLikelihoodsProperty = returnLikelihoodsProperty;
-      return this;
-    }
-
-    /**
-     * Set tokens which should signal the model to stop generating further output.
-     */
-    public Builder stopSequences(String... stopSequences) {
-      return stopSequences(Arrays.asList(stopSequences));
-    }
-
-    /**
-     * Set tokens which should signal the model to stop generating further output.
-     */
-    public Builder stopSequences(List<String> stopSequences) {
-      this.stopSequences = stopSequences;
       return this;
     }
 
@@ -113,23 +92,25 @@ public record CohereGenerative(
       return this;
     }
 
+    public Builder frequencyPenalty(float frequencyPenalty) {
+      this.frequencyPenalty = frequencyPenalty;
+      return this;
+    }
+
+    public Builder presencePenalty(float presencePenalty) {
+      this.presencePenalty = presencePenalty;
+      return this;
+    }
+
+    /** Top P value for nucleus sampling. */
+    public Builder topP(float topP) {
+      this.topP = topP;
+      return this;
+    }
+
     @Override
-    public CohereGenerative build() {
-      return new CohereGenerative(this);
-    }
-  }
-
-  public static record Metadata(ApiVersion apiVersion, BilledUnits billedUnits, Tokens tokens, List<String> warnings)
-      implements ProviderMetadata {
-
-    public static record ApiVersion(String version, Boolean deprecated, Boolean experimental) {
-    }
-
-    public static record BilledUnits(Double inputTokens, Double outputTokens, Double searchUnits,
-        Double classifications) {
-    }
-
-    public static record Tokens(Double inputTokens, Double outputTokens) {
+    public AzureOpenAiGenerative build() {
+      return new AzureOpenAiGenerative(this);
     }
   }
 
@@ -138,21 +119,26 @@ public record CohereGenerative(
       Integer maxTokens,
       String model,
       Float temperature,
-      Integer topK,
+      Integer n,
       Float topP,
       Float frequencyPenalty,
       Float presencePenalty,
-      List<String> stopSequences) implements DynamicProvider {
+      String apiVersion,
+      String resourceName,
+      String deploymentId,
+      List<String> stopSequences,
+      List<String> images,
+      List<String> imageProperties) implements DynamicProvider {
 
     public static Provider of(
-        Function<CohereGenerative.Provider.Builder, ObjectBuilder<CohereGenerative.Provider>> fn) {
+        Function<AzureOpenAiGenerative.Provider.Builder, ObjectBuilder<AzureOpenAiGenerative.Provider>> fn) {
       return fn.apply(new Builder()).build();
     }
 
     @Override
     public void appendTo(
         io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeProvider.Builder req) {
-      var provider = WeaviateProtoGenerative.GenerativeCohere.newBuilder();
+      var provider = WeaviateProtoGenerative.GenerativeOpenAI.newBuilder();
       if (baseUrl != null) {
         provider.setBaseUrl(baseUrl);
       }
@@ -165,25 +151,33 @@ public record CohereGenerative(
       if (temperature != null) {
         provider.setTemperature(temperature);
       }
-      if (topK != null) {
-        provider.setK(topK);
+      if (n != null) {
+        provider.setN(n);
       }
       if (topP != null) {
-        provider.setP(topP);
+        provider.setTopP(topP);
       }
-
       if (frequencyPenalty != null) {
         provider.setFrequencyPenalty(frequencyPenalty);
       }
       if (presencePenalty != null) {
         provider.setPresencePenalty(presencePenalty);
       }
-
+      if (apiVersion != null) {
+        provider.setApiVersion(apiVersion);
+      }
+      if (resourceName != null) {
+        provider.setResourceName(resourceName);
+      }
+      if (deploymentId != null) {
+        provider.setDeploymentId(deploymentId);
+      }
       if (stopSequences != null) {
-        provider.setStopSequences(WeaviateProtoBase.TextArray.newBuilder()
+        provider.setStop(WeaviateProtoBase.TextArray.newBuilder()
             .addAllValues(stopSequences));
       }
-      req.setCohere(provider);
+      provider.setIsAzure(true);
+      req.setOpenai(provider);
     }
 
     public Provider(Builder builder) {
@@ -192,23 +186,33 @@ public record CohereGenerative(
           builder.maxTokens,
           builder.model,
           builder.temperature,
-          builder.topK,
+          builder.n,
           builder.topP,
           builder.frequencyPenalty,
           builder.presencePenalty,
-          builder.stopSequences);
+          builder.apiVersion,
+          builder.resourceName,
+          builder.deploymentId,
+          builder.stopSequences,
+          builder.images,
+          builder.imageProperties);
     }
 
-    public static class Builder implements ObjectBuilder<CohereGenerative.Provider> {
+    public static class Builder implements ObjectBuilder<AzureOpenAiGenerative.Provider> {
       private String baseUrl;
-      private Integer topK;
+      private Integer n;
       private Float topP;
       private String model;
       private Integer maxTokens;
       private Float temperature;
       private Float frequencyPenalty;
       private Float presencePenalty;
+      private String apiVersion;
+      private String resourceName;
+      private String deploymentId;
       private final List<String> stopSequences = new ArrayList<>();
+      private final List<String> images = new ArrayList<>();
+      private final List<String> imageProperties = new ArrayList<>();
 
       /** Base URL of the generative provider. */
       public Builder baseUrl(String baseUrl) {
@@ -216,9 +220,8 @@ public record CohereGenerative(
         return this;
       }
 
-      /** Top K value for sampling. */
-      public Builder topK(int topK) {
-        this.topK = topK;
+      public Builder n(int n) {
+        this.n = n;
         return this;
       }
 
@@ -266,6 +269,39 @@ public record CohereGenerative(
         return this;
       }
 
+      public Builder apiVersion(String apiVersion) {
+        this.apiVersion = apiVersion;
+        return this;
+      }
+
+      public Builder resourceName(String resourceName) {
+        this.resourceName = resourceName;
+        return this;
+      }
+
+      public Builder deploymentId(String deploymentId) {
+        this.deploymentId = deploymentId;
+        return this;
+      }
+
+      public Builder images(String... images) {
+        return images(Arrays.asList(images));
+      }
+
+      public Builder images(List<String> images) {
+        this.images.addAll(images);
+        return this;
+      }
+
+      public Builder imageProperties(String... imageProperties) {
+        return imageProperties(Arrays.asList(imageProperties));
+      }
+
+      public Builder imageProperties(List<String> imageProperties) {
+        this.imageProperties.addAll(imageProperties);
+        return this;
+      }
+
       /**
        * Control the randomness of the model's output.
        * Higher values make output more random.
@@ -276,8 +312,8 @@ public record CohereGenerative(
       }
 
       @Override
-      public CohereGenerative.Provider build() {
-        return new CohereGenerative.Provider(this);
+      public AzureOpenAiGenerative.Provider build() {
+        return new AzureOpenAiGenerative.Provider(this);
       }
     }
   }

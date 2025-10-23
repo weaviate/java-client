@@ -13,18 +13,18 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative;
 
-public record CohereGenerative(
-    @SerializedName("baseURL") String baseUrl,
-    @SerializedName("kProperty") Integer topK,
-    @SerializedName("model") String model,
-    @SerializedName("maxTokensProperty") Integer maxTokens,
-    @SerializedName("temperatureProperty") Float temperature,
-    @SerializedName("returnLikelihoodsProperty") String returnLikelihoodsProperty,
-    @SerializedName("stopSequencesProperty") List<String> stopSequences) implements Generative {
+public record GoogleGenerative(
+    @SerializedName("apiEndpoint") String baseUrl,
+    @SerializedName("modelId") String model,
+    @SerializedName("projectId") String projectId,
+    @SerializedName("maxOutputTokens") Integer maxTokens,
+    @SerializedName("topK") Integer topK,
+    @SerializedName("topP") Float topP,
+    @SerializedName("temperature") Float temperature) implements Generative {
 
   @Override
   public Kind _kind() {
-    return Generative.Kind.COHERE;
+    return Generative.Kind.GOOGLE;
   }
 
   @Override
@@ -32,43 +32,42 @@ public record CohereGenerative(
     return this;
   }
 
-  public static CohereGenerative of() {
-    return of(ObjectBuilder.identity());
+  public static GoogleGenerative of(String projectId) {
+    return of(projectId, ObjectBuilder.identity());
   }
 
-  public static CohereGenerative of(Function<Builder, ObjectBuilder<CohereGenerative>> fn) {
-    return fn.apply(new Builder()).build();
+  public static GoogleGenerative of(String projectId, Function<Builder, ObjectBuilder<GoogleGenerative>> fn) {
+    return fn.apply(new Builder(projectId)).build();
   }
 
-  public CohereGenerative(Builder builder) {
+  public GoogleGenerative(Builder builder) {
     this(
         builder.baseUrl,
-        builder.topK,
         builder.model,
+        builder.projectId,
         builder.maxTokens,
-        builder.temperature,
-        builder.returnLikelihoodsProperty,
-        builder.stopSequences);
+        builder.topK,
+        builder.topP,
+        builder.temperature);
   }
 
-  public static class Builder implements ObjectBuilder<CohereGenerative> {
+  public static class Builder implements ObjectBuilder<GoogleGenerative> {
+    private final String projectId;
+
     private String baseUrl;
-    private Integer topK;
     private String model;
     private Integer maxTokens;
+    private Integer topK;
+    private Float topP;
     private Float temperature;
-    private String returnLikelihoodsProperty;
-    private List<String> stopSequences = new ArrayList<>();
+
+    public Builder(String projectId) {
+      this.projectId = projectId;
+    }
 
     /** Base URL of the generative provider. */
     public Builder baseUrl(String baseUrl) {
       this.baseUrl = baseUrl;
-      return this;
-    }
-
-    /** Top K value for sampling. */
-    public Builder topK(int topK) {
-      this.topK = topK;
       return this;
     }
 
@@ -84,23 +83,15 @@ public record CohereGenerative(
       return this;
     }
 
-    public Builder returnLikelihoodsProperty(String returnLikelihoodsProperty) {
-      this.returnLikelihoodsProperty = returnLikelihoodsProperty;
+    /** Top K value for sampling. */
+    public Builder topK(int topK) {
+      this.topK = topK;
       return this;
     }
 
-    /**
-     * Set tokens which should signal the model to stop generating further output.
-     */
-    public Builder stopSequences(String... stopSequences) {
-      return stopSequences(Arrays.asList(stopSequences));
-    }
-
-    /**
-     * Set tokens which should signal the model to stop generating further output.
-     */
-    public Builder stopSequences(List<String> stopSequences) {
-      this.stopSequences = stopSequences;
+    /** Top P value for nucleus sampling. */
+    public Builder topP(float topP) {
+      this.topP = topP;
       return this;
     }
 
@@ -114,22 +105,20 @@ public record CohereGenerative(
     }
 
     @Override
-    public CohereGenerative build() {
-      return new CohereGenerative(this);
+    public GoogleGenerative build() {
+      return new GoogleGenerative(this);
     }
   }
 
-  public static record Metadata(ApiVersion apiVersion, BilledUnits billedUnits, Tokens tokens, List<String> warnings)
-      implements ProviderMetadata {
+  public static record Metadata(TokenMetadata tokens, Usage usage) implements ProviderMetadata {
 
-    public static record ApiVersion(String version, Boolean deprecated, Boolean experimental) {
+    public static record TokenCount(Long totalBillableCharacters, Long totalTokens) {
     }
 
-    public static record BilledUnits(Double inputTokens, Double outputTokens, Double searchUnits,
-        Double classifications) {
+    public static record TokenMetadata(TokenCount inputTokens, TokenCount outputTokens) {
     }
 
-    public static record Tokens(Double inputTokens, Double outputTokens) {
+    public static record Usage(Long promptTokenCount, Long candidatesTokenCount, Long totalTokenCount) {
     }
   }
 
@@ -142,19 +131,24 @@ public record CohereGenerative(
       Float topP,
       Float frequencyPenalty,
       Float presencePenalty,
-      List<String> stopSequences) implements DynamicProvider {
+      String projectId,
+      String endpointId,
+      String region,
+      List<String> stopSequences,
+      List<String> images,
+      List<String> imageProperties) implements DynamicProvider {
 
     public static Provider of(
-        Function<CohereGenerative.Provider.Builder, ObjectBuilder<CohereGenerative.Provider>> fn) {
+        Function<GoogleGenerative.Provider.Builder, ObjectBuilder<GoogleGenerative.Provider>> fn) {
       return fn.apply(new Builder()).build();
     }
 
     @Override
     public void appendTo(
         io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeProvider.Builder req) {
-      var provider = WeaviateProtoGenerative.GenerativeCohere.newBuilder();
+      var provider = WeaviateProtoGenerative.GenerativeGoogle.newBuilder();
       if (baseUrl != null) {
-        provider.setBaseUrl(baseUrl);
+        provider.setApiEndpoint(baseUrl);
       }
       if (maxTokens != null) {
         provider.setMaxTokens(maxTokens);
@@ -166,24 +160,31 @@ public record CohereGenerative(
         provider.setTemperature(temperature);
       }
       if (topK != null) {
-        provider.setK(topK);
+        provider.setTopK(topK);
       }
       if (topP != null) {
-        provider.setP(topP);
+        provider.setTopP(topP);
       }
-
+      if (projectId != null) {
+        provider.setProjectId(projectId);
+      }
+      if (endpointId != null) {
+        provider.setEndpointId(endpointId);
+      }
+      if (region != null) {
+        provider.setRegion(region);
+      }
       if (frequencyPenalty != null) {
         provider.setFrequencyPenalty(frequencyPenalty);
       }
       if (presencePenalty != null) {
         provider.setPresencePenalty(presencePenalty);
       }
-
       if (stopSequences != null) {
         provider.setStopSequences(WeaviateProtoBase.TextArray.newBuilder()
             .addAllValues(stopSequences));
       }
-      req.setCohere(provider);
+      req.setGoogle(provider);
     }
 
     public Provider(Builder builder) {
@@ -196,10 +197,15 @@ public record CohereGenerative(
           builder.topP,
           builder.frequencyPenalty,
           builder.presencePenalty,
-          builder.stopSequences);
+          builder.projectId,
+          builder.endpointId,
+          builder.region,
+          builder.stopSequences,
+          builder.images,
+          builder.imageProperties);
     }
 
-    public static class Builder implements ObjectBuilder<CohereGenerative.Provider> {
+    public static class Builder implements ObjectBuilder<GoogleGenerative.Provider> {
       private String baseUrl;
       private Integer topK;
       private Float topP;
@@ -208,7 +214,12 @@ public record CohereGenerative(
       private Float temperature;
       private Float frequencyPenalty;
       private Float presencePenalty;
+      private String projectId;
+      private String endpointId;
+      private String region;
       private final List<String> stopSequences = new ArrayList<>();
+      private final List<String> images = new ArrayList<>();
+      private final List<String> imageProperties = new ArrayList<>();
 
       /** Base URL of the generative provider. */
       public Builder baseUrl(String baseUrl) {
@@ -216,7 +227,6 @@ public record CohereGenerative(
         return this;
       }
 
-      /** Top K value for sampling. */
       public Builder topK(int topK) {
         this.topK = topK;
         return this;
@@ -266,6 +276,39 @@ public record CohereGenerative(
         return this;
       }
 
+      public Builder projectId(String projectId) {
+        this.projectId = projectId;
+        return this;
+      }
+
+      public Builder endpointId(String endpointId) {
+        this.endpointId = endpointId;
+        return this;
+      }
+
+      public Builder region(String region) {
+        this.region = region;
+        return this;
+      }
+
+      public Builder images(String... images) {
+        return images(Arrays.asList(images));
+      }
+
+      public Builder images(List<String> images) {
+        this.images.addAll(images);
+        return this;
+      }
+
+      public Builder imageProperties(String... imageProperties) {
+        return imageProperties(Arrays.asList(imageProperties));
+      }
+
+      public Builder imageProperties(List<String> imageProperties) {
+        this.imageProperties.addAll(imageProperties);
+        return this;
+      }
+
       /**
        * Control the randomness of the model's output.
        * Higher values make output more random.
@@ -276,8 +319,8 @@ public record CohereGenerative(
       }
 
       @Override
-      public CohereGenerative.Provider build() {
-        return new CohereGenerative.Provider(this);
+      public GoogleGenerative.Provider build() {
+        return new GoogleGenerative.Provider(this);
       }
     }
   }

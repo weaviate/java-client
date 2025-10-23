@@ -16,7 +16,7 @@ public record Flat(@SerializedName("vectorCacheMaxObjects") Long vectorCacheMaxO
   }
 
   @Override
-  public Object config() {
+  public Object _self() {
     return this;
   }
 
