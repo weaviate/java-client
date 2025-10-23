@@ -39,8 +39,6 @@ public class WeaviateClusterClientAsync {
 
   /**
    * Get the status of all nodes in the cluster.
-   *
-   * @param fn Lambda expression for optional parameters.
    */
   public CompletableFuture<List<Node>> listNodes()
       throws IOException {

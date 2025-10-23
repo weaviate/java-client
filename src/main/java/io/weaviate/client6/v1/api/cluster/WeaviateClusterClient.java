@@ -50,7 +50,6 @@ public class WeaviateClusterClient {
   /**
    * Get the status of all nodes in the cluster.
    *
-   * @param fn Lambda expression for optional parameters.
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
    * @throws IOException          in case the request was not sent successfully
