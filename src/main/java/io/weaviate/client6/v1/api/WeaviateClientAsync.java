@@ -6,6 +6,7 @@ import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.alias.WeaviateAliasClientAsync;
 import io.weaviate.client6.v1.api.backup.WeaviateBackupClientAsync;
+import io.weaviate.client6.v1.api.cluster.WeaviateClusterClientAsync;
 import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClient;
 import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClientAsync;
 import io.weaviate.client6.v1.api.rbac.groups.WeaviateGroupsClientAsync;
@@ -51,6 +52,12 @@ public class WeaviateClientAsync implements AutoCloseable {
    * Client for {@code /users} endpoints for managing DB / OIDC users.
    */
   public final WeaviateUsersClientAsync users;
+
+  /**
+   * Client for {@code /nodes} and {@code /replication} endpoints
+   * for managing replication and sharding.
+   */
+  public final WeaviateClusterClientAsync cluster;
 
   /**
    * This constructor is blocking if {@link Authentication} configured,
@@ -110,6 +117,7 @@ public class WeaviateClientAsync implements AutoCloseable {
     this.roles = new WeaviateRolesClientAsync(restTransport);
     this.groups = new WeaviateGroupsClientAsync(restTransport);
     this.users = new WeaviateUsersClientAsync(restTransport);
+    this.cluster = new WeaviateClusterClientAsync(restTransport);
     this.collections = new WeaviateCollectionsClientAsync(restTransport, grpcTransport);
   }
 
