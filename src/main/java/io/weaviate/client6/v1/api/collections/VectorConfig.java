@@ -285,7 +285,7 @@ public interface VectorConfig {
           vectorizer.add(value._kind().jsonValue(), config);
           vectorIndex.getAsJsonObject().add("vectorizer", vectorizer);
 
-          if (value.quantization() != null) {
+          if (value.quantization() != null && !config.getAsJsonObject().get("quantization").isJsonNull()) {
             vectorIndex.getAsJsonObject()
                 .get("vectorIndexConfig").getAsJsonObject()
                 .add(value.quantization()._kind().jsonValue(), config.getAsJsonObject().remove("quantization"));

@@ -1,8 +1,18 @@
 package io.weaviate.client6.v1.api.collections.vectorindex;
 
+import java.io.IOException;
 import java.util.function.Function;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.TypeAdapter;
+import com.google.gson.TypeAdapterFactory;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.internal.Streams;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 
 import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
@@ -62,6 +72,49 @@ public record Dynamic(
     @Override
     public Dynamic build() {
       return new Dynamic(this);
+    }
+  }
+
+  public static enum CustomTypeAdapterFactory implements TypeAdapterFactory {
+    INSTANCE;
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+      var rawType = type.getRawType();
+      if (!Dynamic.class.isAssignableFrom(rawType)) {
+        return null;
+      }
+
+      final var hnswAdapter = gson.getDelegateAdapter(VectorIndex.CustomTypeAdapterFactory.INSTANCE,
+          TypeToken.get(Hnsw.class));
+      final var flatAdapter = gson.getDelegateAdapter(VectorIndex.CustomTypeAdapterFactory.INSTANCE,
+          TypeToken.get(Flat.class));
+
+      return (TypeAdapter<T>) new TypeAdapter<Dynamic>() {
+
+        @Override
+        public void write(JsonWriter out, Dynamic value) throws IOException {
+
+          var dynamic = new JsonObject();
+
+          dynamic.addProperty("threshold", value.threshold);
+          dynamic.add("hnsw", hnswAdapter.toJsonTree(value.hnsw));
+          dynamic.add("flat", flatAdapter.toJsonTree(value.flat));
+
+          Streams.write(dynamic, out);
+        }
+
+        @Override
+        public Dynamic read(JsonReader in) throws IOException {
+          var jsonObject = JsonParser.parseReader(in).getAsJsonObject();
+
+          var hnsw = hnswAdapter.fromJsonTree(jsonObject.get("hnsw"));
+          var flat = flatAdapter.fromJsonTree(jsonObject.get("flat"));
+          var threshold = jsonObject.get("threshold").getAsLong();
+          return new Dynamic(hnsw, flat, threshold);
+        }
+      }.nullSafe();
     }
   }
 }
