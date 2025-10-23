@@ -5,12 +5,14 @@ import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
+import io.weaviate.client6.v1.api.cluster.NodeVerbosity;
+
 public record NodesPermission(
     @SerializedName("collection") String collection,
-    @SerializedName("verbosity") Verbosity verbosity,
+    @SerializedName("verbosity") NodeVerbosity verbosity,
     @SerializedName("actions") List<Action> actions) implements Permission {
 
-  public NodesPermission(String collection, Verbosity verbosity, Action... actions) {
+  public NodesPermission(String collection, NodeVerbosity verbosity, Action... actions) {
     this(collection, verbosity, Arrays.asList(actions));
   }
 
@@ -38,12 +40,5 @@ public record NodesPermission(
     public String jsonValue() {
       return jsonValue;
     }
-  }
-
-  public enum Verbosity {
-    @SerializedName("minimal")
-    MINIMAL,
-    @SerializedName("verbose")
-    VERBOSE;
   }
 }
