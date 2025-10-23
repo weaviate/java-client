@@ -5,6 +5,7 @@ import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.alias.WeaviateAliasClient;
 import io.weaviate.client6.v1.api.backup.WeaviateBackupClient;
+import io.weaviate.client6.v1.api.cluster.WeaviateClusterClient;
 import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClient;
 import io.weaviate.client6.v1.api.rbac.groups.WeaviateGroupsClient;
 import io.weaviate.client6.v1.api.rbac.roles.WeaviateRolesClient;
@@ -37,6 +38,27 @@ public class WeaviateClient implements AutoCloseable {
 
   /** Client for {@code /backups} endpoints for managing backups. */
   public final WeaviateBackupClient backup;
+
+  /**
+   * Client for {@code /authz/roles} endpoints for managing RBAC roles.
+   */
+  public final WeaviateRolesClient roles;
+
+  /**
+   * Client for {@code /authz/groups} endpoints for managing RBAC groups.
+   */
+  public final WeaviateGroupsClient groups;
+
+  /**
+   * Client for {@code /users} endpoints for managing DB / OIDC users.
+   */
+  public final WeaviateUsersClient users;
+
+  /**
+   * Client for {@code /nodes} and {@code /replication} endpoints
+   * for managing replication and sharding.
+   */
+  public final WeaviateClusterClient cluster;
 
   public WeaviateClient(Config config) {
     RestTransportOptions restOpt;
@@ -93,6 +115,7 @@ public class WeaviateClient implements AutoCloseable {
     this.roles = new WeaviateRolesClient(restTransport);
     this.groups = new WeaviateGroupsClient(restTransport);
     this.users = new WeaviateUsersClient(restTransport);
+    this.cluster = new WeaviateClusterClient(restTransport);
     this.config = config;
   }
 

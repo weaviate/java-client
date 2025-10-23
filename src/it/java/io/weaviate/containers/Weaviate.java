@@ -1,13 +1,19 @@
 package io.weaviate.containers;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
+import org.testcontainers.containers.Network;
+import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.lifecycle.Startable;
 import org.testcontainers.weaviate.WeaviateContainer;
 
 import io.weaviate.client6.v1.api.Config;
@@ -20,6 +26,7 @@ public class Weaviate extends WeaviateContainer {
   public static String OIDC_ISSUER = "https://auth.wcs.api.weaviate.io/auth/realms/SeMI";
 
   private volatile SharedClient clientInstance;
+  private final String containerName;
 
   /**
    * Create a new instance of WeaviateClient connected to this container if none
@@ -85,15 +92,20 @@ public class Weaviate extends WeaviateContainer {
   }
 
   public static class Builder {
-    private String versionTag;
+    private String versionTag = VERSION;
+    private String containerName = "weaviate";
     private Set<String> enableModules = new HashSet<>();
     private Set<String> adminUsers = new HashSet<>();
     private Set<String> viewerUsers = new HashSet<>();
     private Map<String, String> environment = new HashMap<>();
 
     public Builder() {
-      this.versionTag = VERSION;
       enableAutoSchema(false);
+    }
+
+    public Builder withContainerName(String containerName) {
+      this.containerName = containerName;
+      return this;
     }
 
     public Builder withVersion(String version) {
@@ -139,6 +151,37 @@ public class Weaviate extends WeaviateContainer {
       return this;
     }
 
+    public Builder withAdminUsers(String... admins) {
+      adminUsers.addAll(Arrays.asList(admins));
+      return this;
+    }
+
+    public Builder withViewerUsers(String... viewers) {
+      viewerUsers.addAll(Arrays.asList(viewers));
+      return this;
+    }
+
+    /** Enable RBAC authorization for this container. */
+    public Builder withRbac() {
+      environment.put("AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED", "false");
+      environment.put("AUTHENTICATION_APIKEY_ENABLED", "true");
+      environment.put("AUTHORIZATION_RBAC_ENABLED", "true");
+      environment.put("AUTHENTICATION_DB_USERS_ENABLED", "true");
+      return this;
+    }
+
+    /**
+     * Enable API-Key authentication for this container.
+     *
+     * @param apiKeys Allowed API keys.
+     */
+    public Builder withApiKeys(String... apiKeys) {
+      environment.put("AUTHENTICATION_APIKEY_ENABLED", "true");
+      environment.put("AUTHENTICATION_APIKEY_ALLOWED_KEYS", String.join(",",
+          apiKeys));
+      return this;
+    }
+
     public Builder enableTelemetry(boolean enable) {
       environment.put("DISABLE_TELEMETRY", Boolean.toString(!enable));
       return this;
@@ -165,7 +208,7 @@ public class Weaviate extends WeaviateContainer {
     }
 
     public Weaviate build() {
-      var c = new Weaviate(DOCKER_IMAGE + ":" + versionTag);
+      var c = new Weaviate(containerName, DOCKER_IMAGE + ":" + versionTag);
 
       if (!enableModules.isEmpty()) {
         c.withEnv("ENABLE_API_BASED_MODULES", Boolean.TRUE.toString());
@@ -187,13 +230,18 @@ public class Weaviate extends WeaviateContainer {
       }
 
       environment.forEach((name, value) -> c.withEnv(name, value));
-      c.withCreateContainerCmdModifier(cmd -> cmd.withHostName("weaviate"));
+      c.withCreateContainerCmdModifier(cmd -> cmd.withName(containerName).withHostName(containerName));
       return c;
     }
   }
 
-  private Weaviate(String dockerImageName) {
+  private Weaviate() {
+    this("weaviate", DOCKER_IMAGE + ":" + VERSION);
+  }
+
+  private Weaviate(String containerName, String dockerImageName) {
     super(dockerImageName);
+    this.containerName = containerName;
   }
 
   @Override
@@ -232,6 +280,94 @@ public class Weaviate extends WeaviateContainer {
 
     @Override
     public void close() throws IOException {
+    }
+  }
+
+  public static Weaviate cluster(int replicas) {
+    List<Weaviate> nodes = new ArrayList<>();
+    for (var i = 0; i < replicas; i++) {
+      nodes.add(Weaviate.custom()
+          .withContainerName("weaviate-" + i)
+          .build());
+    }
+    return new Cluster(nodes);
+  }
+
+  public static class Cluster extends Weaviate {
+    /** Leader and followers combined. */
+    private final List<Weaviate> nodes;
+
+    private final Weaviate leader;
+    private final List<Weaviate> followers;
+
+    private Cluster(List<Weaviate> nodes) {
+      assert nodes.size() > 1 : "cluster must have 1+ nodes";
+
+      this.nodes = List.copyOf(nodes);
+      this.leader = nodes.remove(0);
+      this.followers = List.copyOf(nodes);
+
+      for (var follower : followers) {
+        follower.dependsOn(leader);
+      }
+      setNetwork(Network.SHARED);
+      bindNodes(7110, 7111, 8300);
+    }
+
+    @Override
+    public WeaviateContainer dependsOn(List<? extends Startable> startables) {
+      leader.dependsOn(startables);
+      return this;
+    }
+
+    @Override
+    public void setNetwork(Network network) {
+      nodes.forEach(node -> node.setNetwork(network));
+    }
+
+    @Override
+    public WeaviateClient getClient() {
+      if (!isRunning()) {
+        start();
+      }
+      return leader.getClient();
+    }
+
+    @Override
+    public void start() {
+      followers.forEach(Startable::start); // testcontainers will resolve dependencies
+    }
+
+    @Override
+    public void stop() {
+      followers.forEach(Startable::stop);
+      leader.stop();
+    }
+
+    /**
+     * Set environment variables for inter-cluster communication.
+     *
+     * @param gossip Gossip bind port.
+     * @param data   Data bind port.
+     * @param raft   RAFT port.
+     */
+    private void bindNodes(int gossip, int data, int raft) {
+      var publicPort = leader.getExposedPorts().get(0); // see WeaviateContainer Testcontainer.
+
+      nodes.forEach(node -> node
+          .withEnv("CLUSTER_GOSSIP_BIND_PORT", String.valueOf(gossip))
+          .withEnv("CLUSTER_DATA_BIND_PORT", String.valueOf(data))
+          .withEnv("RAFT_PORT", String.valueOf(raft))
+          .withEnv("RAFT_BOOTSTRAP_EXPECT", "1")
+          .withEnv("RAFT_JOIN", leader.containerName));
+
+      followers.forEach(node -> node
+          .withEnv("CLUSTER_JOIN", leader.containerName + ":" + gossip)
+          .waitingFor(
+              Wait.forHttp("/v1/.well-known/ready")
+                  .forPort(publicPort)
+                  .forStatusCode(200)
+                  .withStartupTimeout(Duration.ofSeconds(10))));
     }
   }
 }
