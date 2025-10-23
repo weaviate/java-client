@@ -32,6 +32,7 @@ import io.weaviate.client6.v1.api.collections.data.ReferenceAddManyResponse;
 import io.weaviate.client6.v1.api.collections.quantizers.PQ;
 import io.weaviate.client6.v1.api.collections.rerankers.CohereReranker;
 import io.weaviate.client6.v1.api.collections.vectorindex.Distance;
+import io.weaviate.client6.v1.api.collections.vectorindex.Dynamic;
 import io.weaviate.client6.v1.api.collections.vectorindex.Flat;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.api.collections.vectorindex.MultiVector;
@@ -163,6 +164,28 @@ public class JSONTest {
                   "vectorIndexType": "flat",
                   "vectorizer": {"none": {}},
                   "vectorIndexConfig": {"vectorCacheMaxObjects": 100}
+                }
+                """,
+        },
+        {
+            VectorConfig.class,
+            SelfProvidedVectorizer.of(none -> none
+                .vectorIndex(Dynamic.of(idx -> idx
+                    .hnsw(Hnsw.of(hnsw -> hnsw
+                        .ef(1)
+                        .efConstruction(2)))
+                    .flat(Flat.of(flat -> flat
+                        .vectorCacheMaxObjects(100)))
+                    .threshold(5)))),
+            """
+                {
+                  "vectorIndexType": "dynamic",
+                  "vectorizer": {"none": {}},
+                  "vectorIndexConfig": {
+                    "flat": {"vectorCacheMaxObjects": 100},
+                    "hnsw": {"ef": 1, "efConstruction": 2},
+                    "threshold": 5
+                  }
                 }
                 """,
         },
