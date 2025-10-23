@@ -373,11 +373,11 @@ public class Weaviate extends WeaviateContainer {
           .withEnv("CLUSTER_GOSSIP_BIND_PORT", String.valueOf(gossip))
           .withEnv("CLUSTER_DATA_BIND_PORT", String.valueOf(data))
           .withEnv("RAFT_PORT", String.valueOf(raft))
-          .withEnv("RAFT_BOOTSTRAP_EXPECT", "1")
-          .withEnv("RAFT_JOIN", leader.containerName));
+          .withEnv("RAFT_BOOTSTRAP_EXPECT", "1"));
 
       followers.forEach(node -> node
           .withEnv("CLUSTER_JOIN", leader.containerName + ":" + gossip)
+          .withEnv("RAFT_JOIN", leader.containerName)
           .waitingFor(
               Wait.forHttp("/v1/.well-known/ready")
                   .forPort(publicPort)
