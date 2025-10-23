@@ -29,6 +29,21 @@ public class Weaviate extends WeaviateContainer {
   private final String containerName;
 
   /**
+   * By default, testcontainer's name is only available after calling
+   * {@link #start}.
+   * We need to know each container's name in advance to run a cluster
+   * of several nodes, in which case we alse set the name manually.
+   *
+   * @see Builder#build()
+   */
+  @Override
+  public String getContainerName() {
+    return containerName != null
+        ? containerName
+        : super.getContainerName();
+  }
+
+  /**
    * Create a new instance of WeaviateClient connected to this container if none
    * exist. Get an existing client otherwise.
    *
@@ -230,7 +245,7 @@ public class Weaviate extends WeaviateContainer {
       }
 
       environment.forEach((name, value) -> c.withEnv(name, value));
-      c.withCreateContainerCmdModifier(cmd -> cmd.withName(containerName).withHostName(containerName));
+      c.withCreateContainerCmdModifier(cmd -> cmd.withHostName(containerName));
       return c;
     }
   }
