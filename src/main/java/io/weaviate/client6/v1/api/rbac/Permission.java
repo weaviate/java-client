@@ -20,7 +20,7 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
-import io.weaviate.client6.v1.api.rbac.NodesPermission.Verbosity;
+import io.weaviate.client6.v1.api.cluster.NodeVerbosity;
 import io.weaviate.client6.v1.api.rbac.RolesPermission.Scope;
 import io.weaviate.client6.v1.api.rbac.groups.GroupType;
 import io.weaviate.client6.v1.internal.json.JsonEnum;
@@ -115,18 +115,18 @@ public interface Permission {
   /**
    * Create {@link NodesPermission} scoped to all collections.
    */
-  public static NodesPermission nodes(NodesPermission.Verbosity verbosity, NodesPermission.Action... actions) {
+  public static NodesPermission nodes(NodeVerbosity verbosity, NodesPermission.Action... actions) {
     checkDeprecation(actions);
     return new NodesPermission("*", verbosity, actions);
   }
 
   /**
    * Create {@link NodesPermission} scoped to a specific collection. Verbosity is
-   * set to {@link Verbosity#VERBOSE} by default.
+   * set to {@link NodeVerbosity#VERBOSE} by default.
    */
   public static NodesPermission nodes(String collection, NodesPermission.Action... actions) {
     checkDeprecation(actions);
-    return new NodesPermission(collection, Verbosity.VERBOSE, actions);
+    return new NodesPermission(collection, NodeVerbosity.VERBOSE, actions);
   }
 
   /**

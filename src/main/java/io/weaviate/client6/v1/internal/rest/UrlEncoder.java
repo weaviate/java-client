@@ -28,7 +28,7 @@ public final class UrlEncoder {
     if (queryParams == null || queryParams.isEmpty()) {
       return "";
     }
-    return queryParams.entrySet().stream()
+    var query = queryParams.entrySet().stream()
         .filter(qp -> {
           if (qp == null) {
             return false;
@@ -38,7 +38,10 @@ public final class UrlEncoder {
           }
           return true;
         })
+        .filter(qp -> qp.getKey() != null && qp.getValue() != null)
         .map(qp -> qp.getKey() + "=" + encodeValue(qp.getValue()))
         .collect(Collectors.joining("&", "?", ""));
+
+    return query.equals("?") ? "" : query;
   }
 }
