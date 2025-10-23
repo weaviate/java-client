@@ -13,15 +13,17 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
+import io.weaviate.client6.v1.api.collections.vectorindex.Dynamic;
 import io.weaviate.client6.v1.api.collections.vectorindex.Flat;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
+import io.weaviate.client6.v1.internal.TaggedUnion;
 import io.weaviate.client6.v1.internal.json.JsonEnum;
 
-public interface VectorIndex {
+public interface VectorIndex extends TaggedUnion<VectorIndex.Kind, Object> {
   static final String DEFAULT_VECTOR_NAME = "default";
   static final VectorIndex DEFAULT_VECTOR_INDEX = Hnsw.of();
 
-  public enum Kind implements JsonEnum<Kind> {
+  enum Kind implements JsonEnum<Kind> {
     HNSW("hnsw"),
     FLAT("flat"),
     DYNAMIC("dynamic");
@@ -43,17 +45,37 @@ public interface VectorIndex {
     }
   }
 
-  VectorIndex.Kind _kind();
-
-  /** Returns the on-the-wire name of the vector index type. */
-  default String type() {
-    return _kind().jsonValue();
+  /** Is this vector index of type HNSW? */
+  default Hnsw isHnsw() {
+    return _as(VectorIndex.Kind.HNSW);
   }
 
-  /** Get the concrete vector index configuration object. */
-  Object config();
+  /** Get as {@link Hnsw} instance. */
+  default Hnsw asHnsw() {
+    return _as(VectorIndex.Kind.HNSW);
+  }
 
-  public static enum CustomTypeAdapterFactory implements TypeAdapterFactory {
+  /** Is this vector index of type FLAT? */
+  default Flat isFlat() {
+    return _as(VectorIndex.Kind.FLAT);
+  }
+
+  /** Get as {@link Flat} instance. */
+  default Flat asFlat() {
+    return _as(VectorIndex.Kind.FLAT);
+  }
+
+  /** Is this vector index of type DYNAMIC? */
+  default Dynamic isDynamic() {
+    return _as(VectorIndex.Kind.DYNAMIC);
+  }
+
+  /** Get as {@link Dynamic} instance. */
+  default Dynamic asDynamic() {
+    return _as(VectorIndex.Kind.DYNAMIC);
+  }
+
+  static enum CustomTypeAdapterFactory implements TypeAdapterFactory {
     INSTANCE;
 
     private static final EnumMap<VectorIndex.Kind, TypeAdapter<? extends VectorIndex>> readAdapters = new EnumMap<>(
@@ -66,6 +88,7 @@ public interface VectorIndex {
     private final void init(Gson gson) {
       addAdapter(gson, VectorIndex.Kind.HNSW, Hnsw.class);
       addAdapter(gson, VectorIndex.Kind.FLAT, Flat.class);
+      addAdapter(gson, VectorIndex.Kind.DYNAMIC, Dynamic.class);
     }
 
     @SuppressWarnings("unchecked")
@@ -90,7 +113,7 @@ public interface VectorIndex {
           out.value(value._kind().jsonValue());
 
           out.name("vectorIndexConfig");
-          var config = writeAdapter.toJsonTree((T) value.config());
+          var config = writeAdapter.toJsonTree((T) value._self());
           config.getAsJsonObject().remove("name");
           Streams.write(config, out);
 

@@ -19,7 +19,7 @@ public record Dynamic(
   }
 
   @Override
-  public Object config() {
+  public Object _self() {
     return this;
   }
 
