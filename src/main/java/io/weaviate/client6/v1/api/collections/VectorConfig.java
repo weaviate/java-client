@@ -21,13 +21,15 @@ import io.weaviate.client6.v1.api.collections.vectorizers.SelfProvidedVectorizer
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecContextionaryVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecWeaviateVectorizer;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
+import io.weaviate.client6.v1.internal.TaggedUnion;
 import io.weaviate.client6.v1.internal.json.JsonEnum;
 
-public interface VectorConfig {
+public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
   public enum Kind implements JsonEnum<Kind> {
     NONE("none"),
     IMG2VEC_NEURAL("img2vec-neural"),
     TEXT2VEC_CONTEXTIONARY("text2vec-contextionary"),
+    TEXT2VEC_COHERE("text2vec-cohere"),
     TEXT2VEC_WEAVIATE("text2vec-weaviate"),
     MULTI2VEC_CLIP("multi2vec-clip");
 
@@ -47,10 +49,6 @@ public interface VectorConfig {
       return JsonEnum.valueOfJson(jsonValue, jsonValueMap, Kind.class);
     }
   }
-
-  Kind _kind();
-
-  Object _self();
 
   /** Get vector index configuration for this vector. */
   VectorIndex vectorIndex();
