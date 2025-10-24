@@ -8,6 +8,7 @@ import io.weaviate.client6.v1.api.collections.aggregate.AggregateResponse;
 import io.weaviate.client6.v1.api.collections.aggregate.WeaviateAggregateClientAsync;
 import io.weaviate.client6.v1.api.collections.config.WeaviateConfigClientAsync;
 import io.weaviate.client6.v1.api.collections.data.WeaviateDataClientAsync;
+import io.weaviate.client6.v1.api.collections.generate.WeaviateGenerateClientAsync;
 import io.weaviate.client6.v1.api.collections.pagination.AsyncPaginator;
 import io.weaviate.client6.v1.api.collections.query.ConsistencyLevel;
 import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClientAsync;
@@ -21,6 +22,7 @@ public class CollectionHandleAsync<PropertiesT> {
   public final WeaviateConfigClientAsync config;
   public final WeaviateDataClientAsync<PropertiesT> data;
   public final WeaviateQueryClientAsync<PropertiesT> query;
+  public final WeaviateGenerateClientAsync<PropertiesT> generate;
   public final WeaviateAggregateClientAsync aggregate;
   public final WeaviateTenantsClientAsync tenants;
 
@@ -35,6 +37,7 @@ public class CollectionHandleAsync<PropertiesT> {
     this.config = new WeaviateConfigClientAsync(collection, restTransport, grpcTransport, defaults);
     this.aggregate = new WeaviateAggregateClientAsync(collection, grpcTransport, defaults);
     this.query = new WeaviateQueryClientAsync<>(collection, grpcTransport, defaults);
+    this.generate = new WeaviateGenerateClientAsync<>(collection, grpcTransport, defaults);
     this.data = new WeaviateDataClientAsync<>(collection, restTransport, grpcTransport, defaults);
     this.defaults = defaults;
 
@@ -46,6 +49,7 @@ public class CollectionHandleAsync<PropertiesT> {
     this.config = new WeaviateConfigClientAsync(c.config, defaults);
     this.aggregate = new WeaviateAggregateClientAsync(c.aggregate, defaults);
     this.query = new WeaviateQueryClientAsync<>(c.query, defaults);
+    this.generate = new WeaviateGenerateClientAsync<>(c.generate, defaults);
     this.data = new WeaviateDataClientAsync<>(c.data, defaults);
     this.defaults = defaults;
 

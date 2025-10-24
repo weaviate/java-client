@@ -16,6 +16,8 @@ import java.util.stream.Collectors;
 import com.google.gson.reflect.TypeToken;
 
 import io.weaviate.client6.v1.api.collections.CollectionConfig;
+import io.weaviate.client6.v1.api.collections.GeoCoordinates;
+import io.weaviate.client6.v1.api.collections.PhoneNumber;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.annotations.Collection;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
@@ -65,6 +67,9 @@ final class PojoDescriptor<T extends Record> implements CollectionDescriptor<T> 
         put(Double[].class, Property::numberArray);
 
         put(Map.class, Property::object);
+
+        put(PhoneNumber.class, Property::phoneNumber);
+        put(GeoCoordinates.class, Property::geoCoordinates);
       }
     };
     CTORS = Collections.unmodifiableMap(ctors);

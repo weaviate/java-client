@@ -20,6 +20,8 @@ public interface DataType {
   public static final String UUID_ARRAY = "uuid[]";
   public static final String OBJECT = "object";
   public static final String OBJECT_ARRAY = "object[]";
+  public static final String PHONE_NUMBER = "phoneNumber";
+  public static final String GEO_COORDINATES = "geoCoordinates";
 
   /**
    * Scalar/array types which Weaviate and WeaviateClient recognize.
@@ -34,5 +36,6 @@ public interface DataType {
    */
   public static final Set<String> KNOWN_TYPES = ImmutableSet.of(
       TEXT, INT, BLOB, BOOL, DATE, UUID, NUMBER, OBJECT,
-      TEXT_ARRAY, INT_ARRAY, NUMBER_ARRAY, BOOL_ARRAY, DATE_ARRAY, UUID_ARRAY, OBJECT_ARRAY);
+      TEXT_ARRAY, INT_ARRAY, NUMBER_ARRAY, BOOL_ARRAY, DATE_ARRAY, UUID_ARRAY, OBJECT_ARRAY,
+      PHONE_NUMBER, GEO_COORDINATES);
 }
