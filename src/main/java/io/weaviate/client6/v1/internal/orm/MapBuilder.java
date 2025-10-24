@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import io.weaviate.client6.v1.api.collections.GeoCoordinates;
+import io.weaviate.client6.v1.api.collections.PhoneNumber;
+
 public class MapBuilder implements PropertiesBuilder<Map<String, Object>> {
   private final Map<String, Object> properties = new HashMap<>();
 
@@ -90,7 +93,17 @@ public class MapBuilder implements PropertiesBuilder<Map<String, Object>> {
   }
 
   @Override
+  public void setPhoneNumber(String property, PhoneNumber value) {
+    properties.put(property, value);
+  }
+
+  @Override
+  public void setGeoCoordinates(String property, GeoCoordinates value) {
+    properties.put(property, value);
+  }
+
+  @Override
   public Map<String, Object> build() {
-    return properties;
+    return new HashMap<>(properties);
   }
 }

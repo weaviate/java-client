@@ -14,6 +14,7 @@ import org.junit.Test;
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateApiException;
 import io.weaviate.client6.v1.api.WeaviateClient;
+import io.weaviate.client6.v1.api.collections.GeoCoordinates;
 import io.weaviate.client6.v1.api.collections.PhoneNumber;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.ReferenceProperty;
@@ -461,6 +462,7 @@ public class DataITest extends ConcurrentTest {
         Map.entry("prop_uuid_array", List.of(uuid, uuid)),
         Map.entry("prop_text_array", List.of("a", "b", "c")),
         Map.entry("prop_phone_number", PhoneNumber.international("+380 95 1433336")),
+        Map.entry("prop_geo_coordinates", new GeoCoordinates(1f, 2f)),
         Map.entry("prop_object", Map.of("marco", "polo")),
         Map.entry("prop_object_array", List.of(Map.of("marco", "polo"))));
 
@@ -472,8 +474,10 @@ public class DataITest extends ConcurrentTest {
     Assertions.assertThat(got).get()
         .extracting(WeaviateObject::properties)
         .asInstanceOf(InstanceOfAssertFactories.map(String.class, Object.class))
-        .containsAllEntriesOf(want);
-
+        // Most of PhoneNumber fields are only present on read and are null on write.
+        .usingRecursiveComparison()
+        .withComparatorForType(ORMITest::comparePhoneNumbers, PhoneNumber.class)
+        .isEqualTo(want);
   }
 
   record Address(

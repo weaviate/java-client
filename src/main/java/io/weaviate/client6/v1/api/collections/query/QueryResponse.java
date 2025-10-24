@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import io.weaviate.client6.v1.api.collections.GeoCoordinates;
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
+import io.weaviate.client6.v1.api.collections.PhoneNumber;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.internal.DateUtil;
@@ -159,6 +161,21 @@ public record QueryResponse<PropertiesT>(
       builder.setOffsetDateTime(property, DateUtil.fromISO8601(value.getDateValue()));
     } else if (value.hasUuidValue()) {
       builder.setUuid(property, UUID.fromString(value.getUuidValue()));
+    } else if (value.hasPhoneValue()) {
+      var phone = value.getPhoneValue();
+      builder.setPhoneNumber(property, new PhoneNumber(
+          phone.getInput(),
+          phone.getDefaultCountry(),
+          Long.valueOf(phone.getCountryCode()).intValue(),
+          phone.getInternationalFormatted(),
+          Long.valueOf(phone.getNational()).intValue(),
+          phone.getNationalFormatted(),
+          phone.getValid()));
+    } else if (value.hasGeoValue()) {
+      var geo = value.getGeoValue();
+      builder.setGeoCoordinates(property, new GeoCoordinates(
+          geo.getLatitude(),
+          geo.getLongitude()));
     } else if (value.hasListValue()) {
       var list = value.getListValue();
       if (list.hasTextValues()) {
