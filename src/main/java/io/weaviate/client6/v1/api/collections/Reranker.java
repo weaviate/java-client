@@ -14,11 +14,20 @@ import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 import io.weaviate.client6.v1.api.collections.rerankers.CohereReranker;
+import io.weaviate.client6.v1.api.collections.rerankers.JinaAiReranker;
+import io.weaviate.client6.v1.api.collections.rerankers.NvidiaReranker;
+import io.weaviate.client6.v1.api.collections.rerankers.TransformersReranker;
+import io.weaviate.client6.v1.api.collections.rerankers.VoyageAiReranker;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
+import io.weaviate.client6.v1.internal.TaggedUnion;
 import io.weaviate.client6.v1.internal.json.JsonEnum;
 
-public interface Reranker {
+public interface Reranker extends TaggedUnion<Reranker.Kind, Object> {
   public enum Kind implements JsonEnum<Kind> {
+    JINAAI("reranker-jinaai"),
+    VOYAGEAI("reranker-voyageai"),
+    NVIDIA("reranker-nvidia"),
+    TRANSFORMERS("reranker-transformers"),
     COHERE("reranker-cohere");
 
     private static final Map<String, Kind> jsonValueMap = JsonEnum.collectNames(Kind.values());
@@ -38,10 +47,6 @@ public interface Reranker {
     }
   }
 
-  Kind _kind();
-
-  Object _self();
-
   /** Configure a default Cohere reranker module. */
   public static Reranker cohere() {
     return CohereReranker.of();
@@ -54,6 +59,53 @@ public interface Reranker {
    */
   public static Reranker cohere(Function<CohereReranker.Builder, ObjectBuilder<CohereReranker>> fn) {
     return CohereReranker.of(fn);
+  }
+
+  /** Configure a default JinaAI reranker module. */
+  public static Reranker jinaai() {
+    return JinaAiReranker.of();
+  }
+
+  /**
+   * Configure a JinaAI reranker module.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Reranker jinaai(Function<JinaAiReranker.Builder, ObjectBuilder<JinaAiReranker>> fn) {
+    return JinaAiReranker.of(fn);
+  }
+
+  /** Configure a default VoyageAI reranker module. */
+  public static Reranker voyageai() {
+    return VoyageAiReranker.of();
+  }
+
+  /**
+   * Configure a VoyageAI reranker module.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Reranker voyageai(Function<VoyageAiReranker.Builder, ObjectBuilder<VoyageAiReranker>> fn) {
+    return VoyageAiReranker.of(fn);
+  }
+
+  /** Configure a default Nvidia reranker module. */
+  public static Reranker nvidia() {
+    return NvidiaReranker.of();
+  }
+
+  /**
+   * Configure a Nvidia reranker module.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Reranker nvidia(Function<NvidiaReranker.Builder, ObjectBuilder<NvidiaReranker>> fn) {
+    return NvidiaReranker.of(fn);
+  }
+
+  /** Configure a default Transformers reranker module. */
+  public static Reranker transformers() {
+    return new TransformersReranker();
   }
 
   public static enum CustomTypeAdapterFactory implements TypeAdapterFactory {
