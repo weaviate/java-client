@@ -299,13 +299,51 @@ public record Property(
   }
 
   /**
-   * Create a {@code objectArray[]} property with additional configuration.
+   * Create a {@code object[]} property with additional configuration.
    *
    * @param name Property name.
    * @param fn   Lambda expression for optional parameters.
    */
   public static Property objectArray(String name, Function<Builder, ObjectBuilder<Property>> fn) {
     return newProperty(name, DataType.OBJECT_ARRAY, fn);
+  }
+
+  /**
+   * Create a {@code phoneNumber} property.
+   *
+   * @param name Property name.
+   */
+  public static Property phoneNumber(String name) {
+    return phoneNumber(name, ObjectBuilder.identity());
+  }
+
+  /**
+   * Create a {@code phoneNumber} property with additional configuration.
+   *
+   * @param name Property name.
+   * @param fn   Lambda expression for optional parameters.
+   */
+  public static Property phoneNumber(String name, Function<Builder, ObjectBuilder<Property>> fn) {
+    return newProperty(name, DataType.PHONE_NUMBER, fn);
+  }
+
+  /**
+   * Create a {@code geoCoordinates} property.
+   *
+   * @param name Property name.
+   */
+  public static Property geoCoordinates(String name) {
+    return geoCoordinates(name, ObjectBuilder.identity());
+  }
+
+  /**
+   * Create a {@code geoCoordinates} property with additional configuration.
+   *
+   * @param name Property name.
+   * @param fn   Lambda expression for optional parameters.
+   */
+  public static Property geoCoordinates(String name, Function<Builder, ObjectBuilder<Property>> fn) {
+    return newProperty(name, DataType.GEO_COORDINATES, fn);
   }
 
   private static Property newProperty(String name, String dataType, Function<Builder, ObjectBuilder<Property>> fn) {
