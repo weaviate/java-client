@@ -8,7 +8,9 @@ import java.util.Map;
 import java.util.UUID;
 
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
+import io.weaviate.client6.v1.api.collections.GeoCoordinates;
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
+import io.weaviate.client6.v1.api.collections.PhoneNumber;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.internal.MapUtil;
 import io.weaviate.client6.v1.internal.grpc.ByteStringUtil;
@@ -181,6 +183,23 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
       protoValue.setBoolValue(v.booleanValue());
     } else if (value instanceof Number v) {
       protoValue.setNumberValue(v.doubleValue());
+    } else if (value instanceof PhoneNumber phone) {
+      var phoneProto = com.google.protobuf.Struct.newBuilder();
+      if (phone.rawInput() != null) {
+        var input = com.google.protobuf.Value.newBuilder().setStringValue(phone.rawInput());
+        phoneProto.putFields("input", input.build());
+      }
+      if (phone.defaultCountry() != null) {
+        var defaultCountry = com.google.protobuf.Value.newBuilder().setStringValue(phone.defaultCountry());
+        phoneProto.putFields("defaultCountry", defaultCountry.build());
+      }
+      protoValue.setStructValue(phoneProto);
+    } else if (value instanceof GeoCoordinates geo) {
+      var latitude = com.google.protobuf.Value.newBuilder().setNumberValue(geo.latitude());
+      var longitude = com.google.protobuf.Value.newBuilder().setNumberValue(geo.longitude());
+      protoValue.setStructValue(com.google.protobuf.Struct.newBuilder()
+          .putFields("latitude", latitude.build())
+          .putFields("longitude", longitude.build()));
     } else if (value instanceof List<?> v) {
       protoValue.setListValue(
           com.google.protobuf.ListValue.newBuilder()
