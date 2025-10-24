@@ -10,6 +10,9 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import io.weaviate.client6.v1.api.collections.GeoCoordinates;
+import io.weaviate.client6.v1.api.collections.PhoneNumber;
+
 final class PojoBuilder<PropertiesT extends Record> implements PropertiesBuilder<PropertiesT> {
   private static final Map<Class<?>, Object> PRIMITIVE_DEFAULTS;
 
@@ -235,6 +238,16 @@ final class PojoBuilder<PropertiesT extends Record> implements PropertiesBuilder
   @Override
   public void setNestedObjectArray(String property, List<? extends Object> value) {
     throw new UnsupportedOperationException("Unimplemented method 'setNestedObjectArray'");
+  }
+
+  @Override
+  public void setPhoneNumber(String propertyName, PhoneNumber value) {
+    setValue(propertyName, value);
+  }
+
+  @Override
+  public void setGeoCoordinates(String propertyName, GeoCoordinates value) {
+    setValue(propertyName, value);
   }
 
   @Override
