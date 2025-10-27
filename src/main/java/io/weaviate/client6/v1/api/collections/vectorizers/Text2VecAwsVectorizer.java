@@ -109,16 +109,20 @@ public record Text2VecAwsVectorizer(
         builder.quantization);
   }
 
-  private abstract static class Builder implements ObjectBuilder<Text2VecAwsVectorizer> {
+  public abstract static class Builder implements ObjectBuilder<Text2VecAwsVectorizer> {
     private final boolean vectorizeCollectionName = false;
     private Quantization quantization;
     private List<String> sourceProperties = new ArrayList<>();
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
 
+    private final Service service;
     private String baseUrl;
     private String model;
     private String region;
-    private Service service;
+
+    protected Builder(Service service) {
+      this.service = service;
+    }
 
     /** Required for {@link Service#SAGEMAKER}. */
     protected Builder baseUrl(String baseUrl) {
@@ -134,11 +138,6 @@ public record Text2VecAwsVectorizer(
 
     public Builder region(String region) {
       this.region = region;
-      return this;
-    }
-
-    public Builder service(Service service) {
-      this.service = service;
       return this;
     }
 
@@ -177,8 +176,7 @@ public record Text2VecAwsVectorizer(
 
   public static class BedrockBuilder extends Builder {
     public BedrockBuilder(String model) {
-      super();
-      super.service(Service.BEDROCK);
+      super(Service.BEDROCK);
       super.model(model);
     }
 
@@ -191,8 +189,7 @@ public record Text2VecAwsVectorizer(
 
   public static class SagemakerBuilder extends Builder {
     public SagemakerBuilder(String baseUrl) {
-      super();
-      super.service(Service.SAGEMAKER);
+      super(Service.SAGEMAKER);
       super.baseUrl(baseUrl);
     }
 
