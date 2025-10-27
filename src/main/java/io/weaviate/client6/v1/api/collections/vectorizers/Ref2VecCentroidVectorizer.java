@@ -16,8 +16,6 @@ public record Ref2VecCentroidVectorizer(
     @SerializedName("referenceProperties") List<String> referenceProperties,
     @SerializedName("method") Method method,
 
-    /** Properties included in the embedding. */
-    @SerializedName("sourceProperties") List<String> sourceProperties,
     /** Vector index configuration. */
     VectorIndex vectorIndex,
     /** Vector quantization method. */
@@ -51,14 +49,12 @@ public record Ref2VecCentroidVectorizer(
     this(
         builder.referenceProperties,
         builder.method,
-        builder.sourceProperties,
         builder.vectorIndex,
         builder.quantization);
   }
 
   public static class Builder implements ObjectBuilder<Ref2VecCentroidVectorizer> {
     private Quantization quantization;
-    private List<String> sourceProperties = new ArrayList<>();
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
 
     private List<String> referenceProperties = new ArrayList<>();
@@ -77,17 +73,6 @@ public record Ref2VecCentroidVectorizer(
 
     public Builder method(Method method) {
       this.method = method;
-      return this;
-    }
-
-    /** Add properties to include in the embedding. */
-    public Builder sourceProperties(String... properties) {
-      return sourceProperties(Arrays.asList(properties));
-    }
-
-    /** Add properties to include in the embedding. */
-    public Builder sourceProperties(List<String> properties) {
-      this.sourceProperties.addAll(properties);
       return this;
     }
 
