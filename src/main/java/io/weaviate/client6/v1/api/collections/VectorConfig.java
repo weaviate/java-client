@@ -36,6 +36,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
     TEXT2VEC_MORPH("text2vec-morph"),
     TEXT2VEC_MODEL2VEC("text2vec-model2vec"),
     TEXT2VEC_OPENAI("text2vec-openai"),
+    TEXT2VEC_OLLAMA("text2vec-ollama"),
     TEXT2VEC_TRANSFORMERS("text2vec-transformers"),
     TEXT2VEC_VOYAGEAI("text2vec-voyageai"),
     TEXT2VEC_WEAVIATE("text2vec-weaviate"),
