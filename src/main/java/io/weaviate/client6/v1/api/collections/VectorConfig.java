@@ -48,6 +48,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
     TEXT2VEC_TRANSFORMERS("text2vec-transformers"),
     TEXT2VEC_VOYAGEAI("text2vec-voyageai"),
     TEXT2VEC_WEAVIATE("text2vec-weaviate"),
+    MULTI2VEC_AWS("multi2vec-aws"),
     MULTI2VEC_CLIP("multi2vec-clip");
 
     private static final Map<String, Kind> jsonValueMap = JsonEnum.collectNames(Kind.values());
