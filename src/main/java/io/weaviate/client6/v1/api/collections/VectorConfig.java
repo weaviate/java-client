@@ -16,9 +16,35 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 import io.weaviate.client6.v1.api.collections.vectorizers.Img2VecNeuralVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Multi2MultiVecJinaAiVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecAwsVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecBindVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecClipVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecCohereVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecGoogleVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecJinaAiVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecNvidiaVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecVoyageAiVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Ref2VecCentroidVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.SelfProvidedVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2MultiVecJinaAiVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecAwsVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecAzureOpenAiVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecCohereVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecContextionaryVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecDatabricksVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecGoogleAiStudioVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecGoogleVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecHuggingfaceVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecJinaAiVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecMistralVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecModel2VecVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecMorphVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecNvidiaVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecOllamaVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecOpenAiVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecTransformersVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecVoyageAiVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecWeaviateVectorizer;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.TaggedUnion;
@@ -271,10 +297,36 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
 
     private final void init(Gson gson) {
       addAdapter(gson, VectorConfig.Kind.NONE, SelfProvidedVectorizer.class);
-      addAdapter(gson, VectorConfig.Kind.IMG2VEC_NEURAL, Img2VecNeuralVectorizer.class);
-      addAdapter(gson, VectorConfig.Kind.MULTI2VEC_CLIP, Multi2VecClipVectorizer.class);
-      addAdapter(gson, VectorConfig.Kind.TEXT2VEC_WEAVIATE, Text2VecWeaviateVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.TEXT2VEC_AWS, Text2VecAwsVectorizer.class);
       addAdapter(gson, VectorConfig.Kind.TEXT2VEC_CONTEXTIONARY, Text2VecContextionaryVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.TEXT2VEC_COHERE, Text2VecCohereVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.TEXT2VEC_DATABRICKS, Text2VecDatabricksVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.TEXT2VEC_GOOGLE, Text2VecGoogleVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.TEXT2VEC_GOOGLEAISTUDIO, Text2VecGoogleAiStudioVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.TEXT2VEC_HUGGINGFACE, Text2VecHuggingfaceVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.REF2VEC_CENTROID, Ref2VecCentroidVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.TEXT2VEC_JINAAI, Text2VecJinaAiVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.TEXT2VEC_MISTRAL, Text2VecMistralVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.TEXT2VEC_MORPH, Text2VecMorphVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.TEXT2VEC_MODEL2VEC, Text2VecModel2VecVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.TEXT2VEC_NVIDIA, Text2VecNvidiaVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.TEXT2VEC_OPENAI, Text2VecOpenAiVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.TEXT2VEC_AZURE_OPENAI, Text2VecAzureOpenAiVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.TEXT2VEC_OLLAMA, Text2VecOllamaVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.TEXT2VEC_TRANSFORMERS, Text2VecTransformersVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.TEXT2VEC_VOYAGEAI, Text2VecVoyageAiVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.TEXT2VEC_WEAVIATE, Text2VecWeaviateVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.IMG2VEC_NEURAL, Img2VecNeuralVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.MULTI2VEC_AWS, Multi2VecAwsVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.MULTI2VEC_BIND, Multi2VecBindVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.MULTI2VEC_CLIP, Multi2VecClipVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.MULTI2VEC_GOOGLE, Multi2VecGoogleVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.MULTI2VEC_COHERE, Multi2VecCohereVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.MULTI2VEC_JINAAI, Multi2VecJinaAiVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.MULTI2VEC_NVIDIA, Multi2VecNvidiaVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.MULTI2VEC_VOYAGEAI, Multi2VecVoyageAiVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.TEXT2MULTIVEC_JINAAI, Text2MultiVecJinaAiVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.MULTI2MULTIVEC_JINAAI, Multi2MultiVecJinaAiVectorizer.class);
     }
 
     @SuppressWarnings("unchecked")
