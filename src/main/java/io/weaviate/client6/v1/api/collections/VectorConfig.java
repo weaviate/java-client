@@ -49,9 +49,11 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
     IMG2VEC_NEURAL("img2vec-neural"),
     MULTI2VEC_AWS("multi2vec-aws"),
     MULTI2VEC_BIND("multi2vec-bind"),
-    MULTI2VEC_COHERE("multi2vec-cohere"),
-    MULTI2VEC_NVIDIA("multi2vec-nvidia"),
     MULTI2VEC_CLIP("multi2vec-clip"),
+    MULTI2VEC_COHERE("multi2vec-cohere"),
+    MULTI2VEC_JINAAI("multi2vec-jinaai"),
+    MULTI2VEC_NVIDIA("multi2vec-nvidia"),
+    MULTI2VEC_VOYAGEAI("multi2vec-voyageai"),
     TEXT2MULTIVEC_JINAAI("text2multivec-jinaai"),
     MULTI2MULTIVEC_JINAAI("multi2multivec-jinaai");
 
