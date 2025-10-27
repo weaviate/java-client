@@ -50,6 +50,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
     MULTI2VEC_AWS("multi2vec-aws"),
     MULTI2VEC_BIND("multi2vec-bind"),
     MULTI2VEC_CLIP("multi2vec-clip"),
+    MULTI2VEC_GOOGLE("multi2vec-google"),
     MULTI2VEC_COHERE("multi2vec-cohere"),
     MULTI2VEC_JINAAI("multi2vec-jinaai"),
     MULTI2VEC_NVIDIA("multi2vec-nvidia"),
