@@ -42,9 +42,9 @@ public record Text2VecAwsVectorizer(
   }
 
   public enum Service {
-    @SerializedName("BEDROCK")
+    @SerializedName("bedrock")
     BEDROCK,
-    @SerializedName("SAGEMAKER")
+    @SerializedName("sagemaker")
     SAGEMAKER;
   }
 

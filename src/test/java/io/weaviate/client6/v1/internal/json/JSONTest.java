@@ -93,7 +93,7 @@ public class JSONTest {
         {
             VectorConfig.class,
             Multi2VecClipVectorizer.of(m2v -> m2v
-                .inferenceUrl("http://example.com")
+                .baseUrl("http://example.com")
                 .imageField("img", 1f)
                 .textField("txt", 2f)),
             """
@@ -133,7 +133,7 @@ public class JSONTest {
         {
             VectorConfig.class,
             Text2VecWeaviateVectorizer.of(t2v -> t2v
-                .inferenceUrl("http://example.com")
+                .baseUrl("http://example.com")
                 .dimensions(4)
                 .model("very-good-model")),
             """
@@ -142,7 +142,7 @@ public class JSONTest {
                   "vectorIndexConfig": {},
                   "vectorizer": {
                     "text2vec-weaviate": {
-                      "baseUrl": "http://example.com",
+                      "baseURL": "http://example.com",
                       "dimensions": 4,
                       "model": "very-good-model",
                       "sourceProperties": []
