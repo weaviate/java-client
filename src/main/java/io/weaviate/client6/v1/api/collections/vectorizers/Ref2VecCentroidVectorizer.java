@@ -32,7 +32,7 @@ public record Ref2VecCentroidVectorizer(
   }
 
   public enum Method {
-    @SerializedName("MEAN")
+    @SerializedName("mean")
     MEAN;
   }
 

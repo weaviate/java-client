@@ -82,7 +82,7 @@ public record Multi2VecBindVectorizer(
 
   @Override
   public VectorConfig.Kind _kind() {
-    return VectorConfig.Kind.MULTI2VEC_COHERE;
+    return VectorConfig.Kind.MULTI2VEC_BIND;
   }
 
   @Override
