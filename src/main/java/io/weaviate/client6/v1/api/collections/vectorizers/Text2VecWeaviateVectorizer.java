@@ -14,7 +14,7 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Text2VecWeaviateVectorizer(
     /** Weaviate Embeddings Service base URL. */
-    @SerializedName("baseUrl") String inferenceUrl,
+    @SerializedName("baseURL") String baseUrl,
     /** Dimensionality of the generated vectors. */
     @SerializedName("dimensions") Integer dimensions,
     /** Embedding model. */
@@ -46,7 +46,7 @@ public record Text2VecWeaviateVectorizer(
 
   public Text2VecWeaviateVectorizer(Builder builder) {
     this(
-        builder.inferenceUrl,
+        builder.baseUrl,
         builder.dimensions,
         builder.model,
         builder.sourceProperties,
@@ -60,7 +60,7 @@ public record Text2VecWeaviateVectorizer(
   public static class Builder implements ObjectBuilder<Text2VecWeaviateVectorizer> {
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
     private Quantization quantization;
-    private String inferenceUrl;
+    private String baseUrl;
     private Integer dimensions;
     private String model;
     private List<String> sourceProperties = new ArrayList<>();
@@ -70,8 +70,8 @@ public record Text2VecWeaviateVectorizer(
      * to a Weaviate Cloud instance: the client will automatically set the necessary
      * headers.
      */
-    public Builder inferenceUrl(String inferenceUrl) {
-      this.inferenceUrl = inferenceUrl;
+    public Builder baseUrl(String baseUrl) {
+      this.baseUrl = baseUrl;
       return this;
     }
 
