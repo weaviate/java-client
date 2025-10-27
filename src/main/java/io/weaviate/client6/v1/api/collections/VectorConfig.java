@@ -28,6 +28,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
   public enum Kind implements JsonEnum<Kind> {
     NONE("none"),
     IMG2VEC_NEURAL("img2vec-neural"),
+    TEXT2VEC_AWS("text2vec-aws"),
     TEXT2VEC_CONTEXTIONARY("text2vec-contextionary"),
     TEXT2VEC_COHERE("text2vec-cohere"),
     TEXT2VEC_DATABRICKS("text2vec-databricks"),
