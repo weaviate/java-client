@@ -13,10 +13,8 @@ import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public record Text2VecCohereVectorizer(
-    @SerializedName("baseUrl") String baseUrl,
-    @SerializedName("model") String model,
-    @SerializedName("truncate") Truncate truncate,
+public record Text2VecModel2VecVectorizer(
+    @SerializedName("inferenceURL") String baseUrl,
 
     /**
      * Weaviate defaults to {@code true} if the value is not provided.
@@ -41,42 +39,25 @@ public record Text2VecCohereVectorizer(
     return this;
   }
 
-  public enum Truncate {
-    @SerializedName("NONE")
-    NONE,
-    @SerializedName("START")
-    START,
-    @SerializedName("END")
-    END,
-    @SerializedName("LEFT")
-    LEFT,
-    @SerializedName("RIGHT")
-    RIGHT;
-  }
-
-  public static Text2VecCohereVectorizer of() {
+  public static Text2VecModel2VecVectorizer of() {
     return of(ObjectBuilder.identity());
   }
 
-  public static Text2VecCohereVectorizer of(
-      Function<Builder, ObjectBuilder<Text2VecCohereVectorizer>> fn) {
+  public static Text2VecModel2VecVectorizer of(
+      Function<Builder, ObjectBuilder<Text2VecModel2VecVectorizer>> fn) {
     return fn.apply(new Builder()).build();
   }
 
   /**
    * Canonical constructor always sets {@link #vectorizeCollectionName} to false.
    */
-  public Text2VecCohereVectorizer(
+  public Text2VecModel2VecVectorizer(
       String baseUrl,
-      String model,
-      Truncate truncate,
 
       boolean vectorizeCollectionName,
       List<String> sourceProperties,
       VectorIndex vectorIndex,
       Quantization quantization) {
-    this.model = model;
-    this.truncate = truncate;
     this.baseUrl = baseUrl;
 
     this.vectorizeCollectionName = false;
@@ -85,39 +66,25 @@ public record Text2VecCohereVectorizer(
     this.quantization = quantization;
   }
 
-  public Text2VecCohereVectorizer(Builder builder) {
+  public Text2VecModel2VecVectorizer(Builder builder) {
     this(
         builder.baseUrl,
-        builder.model,
-        builder.truncate,
         builder.vectorizeCollectionName,
         builder.sourceProperties,
         builder.vectorIndex,
         builder.quantization);
   }
 
-  public static class Builder implements ObjectBuilder<Text2VecCohereVectorizer> {
+  public static class Builder implements ObjectBuilder<Text2VecModel2VecVectorizer> {
     private final boolean vectorizeCollectionName = false;
     private Quantization quantization;
     private List<String> sourceProperties = new ArrayList<>();
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
 
-    private String model;
-    private Truncate truncate;
     private String baseUrl;
 
     public Builder baseUrl(String baseUrl) {
       this.baseUrl = baseUrl;
-      return this;
-    }
-
-    public Builder model(String model) {
-      this.model = model;
-      return this;
-    }
-
-    public Builder truncate(Truncate truncate) {
-      this.truncate = truncate;
       return this;
     }
 
@@ -149,8 +116,8 @@ public record Text2VecCohereVectorizer(
       return this;
     }
 
-    public Text2VecCohereVectorizer build() {
-      return new Text2VecCohereVectorizer(this);
+    public Text2VecModel2VecVectorizer build() {
+      return new Text2VecModel2VecVectorizer(this);
     }
   }
 }
