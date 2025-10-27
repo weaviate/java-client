@@ -41,6 +41,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
     TEXT2VEC_MODEL2VEC("text2vec-model2vec"),
     TEXT2VEC_NVIDIA("text2vec-nvidia"),
     TEXT2VEC_OPENAI("text2vec-openai"),
+    TEXT2VEC_AZURE_OPENAI("text2vec-openai"),
     TEXT2VEC_OLLAMA("text2vec-ollama"),
     TEXT2VEC_TRANSFORMERS("text2vec-transformers"),
     TEXT2VEC_VOYAGEAI("text2vec-voyageai"),
@@ -342,6 +343,10 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
             kind = concreteVectorizer.has("projectId")
                 ? VectorConfig.Kind.TEXT2VEC_GOOGLE
                 : VectorConfig.Kind.TEXT2VEC_GOOGLEAISTUDIO;
+          } else if (vectorizerName.equals(VectorConfig.Kind.TEXT2VEC_OPENAI.jsonValue())) {
+            kind = concreteVectorizer.has("deployementId")
+                ? VectorConfig.Kind.TEXT2VEC_AZURE_OPENAI
+                : VectorConfig.Kind.TEXT2VEC_OPENAI;
           } else {
             try {
               kind = VectorConfig.Kind.valueOfJson(vectorizerName);

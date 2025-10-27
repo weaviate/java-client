@@ -12,12 +12,10 @@ import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public record Text2VecOpenAiVectorizer(
+public record Text2VecAzureOpenAiVectorizer(
     @SerializedName("baseURL") String baseUrl,
-    @SerializedName("model") String model,
-    @SerializedName("modelVersion") String modelVersion,
-    @SerializedName("dimensions") Integer dimensions,
-    @SerializedName("type") ModelType modelType,
+    @SerializedName("deploymentId") String deploymentId,
+    @SerializedName("resourceName") String resourceName,
 
     /**
      * Weaviate defaults to {@code true} if the value is not provided.
@@ -34,53 +32,38 @@ public record Text2VecOpenAiVectorizer(
 
   @Override
   public VectorConfig.Kind _kind() {
-    return VectorConfig.Kind.TEXT2VEC_OPENAI;
+    return VectorConfig.Kind.TEXT2VEC_AZURE_OPENAI;
   }
-
-  public static String TEXT_EMBEDDING_3_SMALL = "text-embeding-3-small";
-  public static String TEXT_EMBEDDING_3_LARGE = "text-embeding-3-large";
-  public static String TEXT_EMBEDDING_ADA_002 = "text-embeding-ada-002";
 
   @Override
   public Object _self() {
     return this;
   }
 
-  public enum ModelType {
-    @SerializedName("CODE")
-    CODE,
-    @SerializedName("TEXT")
-    TEXT;
-  }
-
-  public static Text2VecOpenAiVectorizer of() {
+  public static Text2VecAzureOpenAiVectorizer of() {
     return of(ObjectBuilder.identity());
   }
 
-  public static Text2VecOpenAiVectorizer of(
-      Function<Builder, ObjectBuilder<Text2VecOpenAiVectorizer>> fn) {
+  public static Text2VecAzureOpenAiVectorizer of(
+      Function<Builder, ObjectBuilder<Text2VecAzureOpenAiVectorizer>> fn) {
     return fn.apply(new Builder()).build();
   }
 
   /**
    * Canonical constructor always sets {@link #vectorizeCollectionName} to false.
    */
-  public Text2VecOpenAiVectorizer(
+  public Text2VecAzureOpenAiVectorizer(
       String baseUrl,
-      String model,
-      String modelVersion,
-      Integer dimensions,
-      ModelType modelType,
+      String deploymentId,
+      String resourceName,
 
       boolean vectorizeCollectionName,
       List<String> sourceProperties,
       VectorIndex vectorIndex,
       Quantization quantization) {
     this.baseUrl = baseUrl;
-    this.model = model;
-    this.modelVersion = modelVersion;
-    this.dimensions = dimensions;
-    this.modelType = modelType;
+    this.deploymentId = deploymentId;
+    this.resourceName = resourceName;
 
     this.vectorizeCollectionName = false;
     this.sourceProperties = sourceProperties;
@@ -88,13 +71,11 @@ public record Text2VecOpenAiVectorizer(
     this.quantization = quantization;
   }
 
-  public Text2VecOpenAiVectorizer(Builder builder) {
+  public Text2VecAzureOpenAiVectorizer(Builder builder) {
     this(
         builder.baseUrl,
-        builder.model,
-        builder.modelVersion,
-        builder.dimensions,
-        builder.modelType,
+        builder.deploymentId,
+        builder.resourceName,
 
         builder.vectorizeCollectionName,
         builder.sourceProperties,
@@ -102,40 +83,28 @@ public record Text2VecOpenAiVectorizer(
         builder.quantization);
   }
 
-  public static class Builder implements ObjectBuilder<Text2VecOpenAiVectorizer> {
+  public static class Builder implements ObjectBuilder<Text2VecAzureOpenAiVectorizer> {
     private final boolean vectorizeCollectionName = false;
     private Quantization quantization;
     private List<String> sourceProperties = new ArrayList<>();
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
 
     private String baseUrl;
-    private String model;
-    private String modelVersion;
-    private Integer dimensions;
-    private ModelType modelType;
+    private String deploymentId;
+    private String resourceName;
 
     public Builder baseUrl(String baseUrl) {
       this.baseUrl = baseUrl;
       return this;
     }
 
-    public Builder model(String model) {
-      this.model = model;
+    public Builder deploymentId(String deploymentId) {
+      this.deploymentId = deploymentId;
       return this;
     }
 
-    public Builder dimensions(int dimensions) {
-      this.dimensions = dimensions;
-      return this;
-    }
-
-    public Builder modelVersion(String modelVersion) {
-      this.modelVersion = modelVersion;
-      return this;
-    }
-
-    public Builder modelType(ModelType modelType) {
-      this.modelType = modelType;
+    public Builder resourceName(String resourceName) {
+      this.resourceName = resourceName;
       return this;
     }
 
@@ -167,8 +136,8 @@ public record Text2VecOpenAiVectorizer(
       return this;
     }
 
-    public Text2VecOpenAiVectorizer build() {
-      return new Text2VecOpenAiVectorizer(this);
+    public Text2VecAzureOpenAiVectorizer build() {
+      return new Text2VecAzureOpenAiVectorizer(this);
     }
   }
 }
