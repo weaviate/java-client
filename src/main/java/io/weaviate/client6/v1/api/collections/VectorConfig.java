@@ -30,6 +30,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
     IMG2VEC_NEURAL("img2vec-neural"),
     TEXT2VEC_CONTEXTIONARY("text2vec-contextionary"),
     TEXT2VEC_COHERE("text2vec-cohere"),
+    TEXT2VEC_DATABRICKS("text2vec-databricks"),
     TEXT2VEC_GOOGLE("text2vec-google"),
     TEXT2VEC_GOOGLEAISTUDIO("text2vec-google"),
     TEXT2VEC_HUGGINGFACE("text2vec-huggingface"),
