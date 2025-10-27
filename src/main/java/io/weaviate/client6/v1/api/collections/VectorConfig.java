@@ -30,11 +30,13 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
     IMG2VEC_NEURAL("img2vec-neural"),
     TEXT2VEC_CONTEXTIONARY("text2vec-contextionary"),
     TEXT2VEC_COHERE("text2vec-cohere"),
-    TEXT2VEC_VOYAGEAI("text2vec-voyageai"),
+    TEXT2VEC_GOOGLE("text2vec-google"),
+    TEXT2VEC_GOOGLEAISTUDIO("text2vec-google"),
     TEXT2VEC_HUGGINGFACE("text2vec-huggingface"),
     TEXT2VEC_MORPH("text2vec-morph"),
     TEXT2VEC_MODEL2VEC("text2vec-model2vec"),
     TEXT2VEC_TRANSFORMERS("text2vec-transformers"),
+    TEXT2VEC_VOYAGEAI("text2vec-voyageai"),
     TEXT2VEC_WEAVIATE("text2vec-weaviate"),
     MULTI2VEC_CLIP("multi2vec-clip");
 
@@ -323,19 +325,25 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
 
           var vectorizerObject = jsonObject.get("vectorizer").getAsJsonObject();
           var vectorizerName = vectorizerObject.keySet().iterator().next();
-
-          VectorConfig.Kind kind;
-          try {
-            kind = VectorConfig.Kind.valueOfJson(vectorizerName);
-          } catch (IllegalArgumentException e) {
-            return null;
-          }
-
-          var adapter = delegateAdapters.get(kind);
           var concreteVectorizer = vectorizerObject.get(vectorizerName).getAsJsonObject();
 
           // Each individual vectorizer has a `VectorIndex vectorIndex` field.
           concreteVectorizer.add("vectorIndex", vectorIndex);
+
+          VectorConfig.Kind kind;
+          if (vectorizerName.equals(VectorConfig.Kind.TEXT2VEC_GOOGLE.jsonValue())) {
+            kind = concreteVectorizer.has("projectId")
+                ? VectorConfig.Kind.TEXT2VEC_GOOGLE
+                : VectorConfig.Kind.TEXT2VEC_GOOGLEAISTUDIO;
+          } else {
+            try {
+              kind = VectorConfig.Kind.valueOfJson(vectorizerName);
+            } catch (IllegalArgumentException e) {
+              return null;
+            }
+          }
+
+          var adapter = delegateAdapters.get(kind);
 
           // Each individual vectorizer has a `Quantization quantization` field.
           // We need to specify the kind in order for

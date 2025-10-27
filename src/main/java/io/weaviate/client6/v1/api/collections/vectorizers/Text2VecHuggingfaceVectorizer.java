@@ -79,7 +79,7 @@ public record Text2VecHuggingfaceVectorizer(
     this.waitForModel = waitForModel;
 
     this.vectorizeCollectionName = false;
-    this.sourceProperties = Collections.emptyList();
+    this.sourceProperties = sourceProperties;
     this.vectorIndex = vectorIndex;
     this.quantization = quantization;
   }
