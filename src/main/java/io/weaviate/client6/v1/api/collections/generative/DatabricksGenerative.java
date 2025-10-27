@@ -13,18 +13,16 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative;
 
-public record CohereGenerative(
-    @SerializedName("baseURL") String baseUrl,
-    @SerializedName("kProperty") Integer topK,
-    @SerializedName("model") String model,
-    @SerializedName("maxTokensProperty") Integer maxTokens,
-    @SerializedName("temperatureProperty") Float temperature,
-    @SerializedName("returnLikelihoodsProperty") String returnLikelihoodsProperty,
-    @SerializedName("stopSequencesProperty") List<String> stopSequences) implements Generative {
+public record DatabricksGenerative(
+    @SerializedName("endpoint") String baseUrl,
+    @SerializedName("maxTokens") Integer maxTokens,
+    @SerializedName("topK") Integer topK,
+    @SerializedName("topP") Float topP,
+    @SerializedName("temperature") Float temperature) implements Generative {
 
   @Override
   public Kind _kind() {
-    return Generative.Kind.COHERE;
+    return Generative.Kind.DATABRICKS;
   }
 
   @Override
@@ -32,37 +30,38 @@ public record CohereGenerative(
     return this;
   }
 
-  public static CohereGenerative of() {
-    return of(ObjectBuilder.identity());
+  public static DatabricksGenerative of(String baseURL) {
+    return of(baseURL, ObjectBuilder.identity());
   }
 
-  public static CohereGenerative of(Function<Builder, ObjectBuilder<CohereGenerative>> fn) {
-    return fn.apply(new Builder()).build();
+  public static DatabricksGenerative of(String baseURL, Function<Builder, ObjectBuilder<DatabricksGenerative>> fn) {
+    return fn.apply(new Builder(baseURL)).build();
   }
 
-  public CohereGenerative(Builder builder) {
+  public DatabricksGenerative(Builder builder) {
     this(
         builder.baseUrl,
-        builder.topK,
-        builder.model,
         builder.maxTokens,
-        builder.temperature,
-        builder.returnLikelihoodsProperty,
-        builder.stopSequences);
+        builder.topK,
+        builder.topP,
+        builder.temperature);
   }
 
-  public static class Builder implements ObjectBuilder<CohereGenerative> {
-    private String baseUrl;
-    private Integer topK;
-    private String model;
-    private Integer maxTokens;
-    private Float temperature;
-    private String returnLikelihoodsProperty;
-    private List<String> stopSequences = new ArrayList<>();
+  public static class Builder implements ObjectBuilder<DatabricksGenerative> {
+    private final String baseUrl;
 
-    /** Base URL of the generative provider. */
-    public Builder baseUrl(String baseUrl) {
+    private Integer maxTokens;
+    private Integer topK;
+    private Float topP;
+    private Float temperature;
+
+    public Builder(String baseUrl) {
       this.baseUrl = baseUrl;
+    }
+
+    /** Limit the number of tokens to generate in the response. */
+    public Builder maxTokens(int maxTokens) {
+      this.maxTokens = maxTokens;
       return this;
     }
 
@@ -72,35 +71,9 @@ public record CohereGenerative(
       return this;
     }
 
-    /** Select generative model. */
-    public Builder model(String model) {
-      this.model = model;
-      return this;
-    }
-
-    /** Limit the number of tokens to generate in the response. */
-    public Builder maxTokens(int maxTokens) {
-      this.maxTokens = maxTokens;
-      return this;
-    }
-
-    public Builder returnLikelihoodsProperty(String returnLikelihoodsProperty) {
-      this.returnLikelihoodsProperty = returnLikelihoodsProperty;
-      return this;
-    }
-
-    /**
-     * Set tokens which should signal the model to stop generating further output.
-     */
-    public Builder stopSequences(String... stopSequences) {
-      return stopSequences(Arrays.asList(stopSequences));
-    }
-
-    /**
-     * Set tokens which should signal the model to stop generating further output.
-     */
-    public Builder stopSequences(List<String> stopSequences) {
-      this.stopSequences = stopSequences;
+    /** Top P value for nucleus sampling. */
+    public Builder topP(float topP) {
+      this.topP = topP;
       return this;
     }
 
@@ -114,23 +87,12 @@ public record CohereGenerative(
     }
 
     @Override
-    public CohereGenerative build() {
-      return new CohereGenerative(this);
+    public DatabricksGenerative build() {
+      return new DatabricksGenerative(this);
     }
   }
 
-  public static record Metadata(ApiVersion apiVersion, BilledUnits billedUnits, Tokens tokens, List<String> warnings)
-      implements ProviderMetadata {
-
-    public static record ApiVersion(String version, Boolean deprecated, Boolean experimental) {
-    }
-
-    public static record BilledUnits(Double inputTokens, Double outputTokens, Double searchUnits,
-        Double classifications) {
-    }
-
-    public static record Tokens(Double inputTokens, Double outputTokens) {
-    }
+  public static record Metadata(ProviderMetadata.Usage usage) implements ProviderMetadata {
   }
 
   public static record Provider(
@@ -138,23 +100,25 @@ public record CohereGenerative(
       Integer maxTokens,
       String model,
       Float temperature,
-      Integer topK,
+      Integer n,
       Float topP,
       Float frequencyPenalty,
       Float presencePenalty,
+      Boolean logProbs,
+      Integer topLogProbs,
       List<String> stopSequences) implements DynamicProvider {
 
     public static Provider of(
-        Function<CohereGenerative.Provider.Builder, ObjectBuilder<CohereGenerative.Provider>> fn) {
+        Function<DatabricksGenerative.Provider.Builder, ObjectBuilder<DatabricksGenerative.Provider>> fn) {
       return fn.apply(new Builder()).build();
     }
 
     @Override
     public void appendTo(
         io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeProvider.Builder req) {
-      var provider = WeaviateProtoGenerative.GenerativeCohere.newBuilder();
+      var provider = WeaviateProtoGenerative.GenerativeDatabricks.newBuilder();
       if (baseUrl != null) {
-        provider.setBaseUrl(baseUrl);
+        provider.setEndpoint(baseUrl);
       }
       if (maxTokens != null) {
         provider.setMaxTokens(maxTokens);
@@ -165,25 +129,29 @@ public record CohereGenerative(
       if (temperature != null) {
         provider.setTemperature(temperature);
       }
-      if (topK != null) {
-        provider.setK(topK);
+      if (n != null) {
+        provider.setN(n);
       }
       if (topP != null) {
-        provider.setP(topP);
+        provider.setTopP(topP);
       }
-
       if (frequencyPenalty != null) {
         provider.setFrequencyPenalty(frequencyPenalty);
       }
       if (presencePenalty != null) {
         provider.setPresencePenalty(presencePenalty);
       }
-
+      if (logProbs != null) {
+        provider.setLogProbs(logProbs);
+      }
+      if (topLogProbs != null) {
+        provider.setTopLogProbs(topLogProbs);
+      }
       if (stopSequences != null) {
-        provider.setStopSequences(WeaviateProtoBase.TextArray.newBuilder()
+        provider.setStop(WeaviateProtoBase.TextArray.newBuilder()
             .addAllValues(stopSequences));
       }
-      req.setCohere(provider);
+      req.setDatabricks(provider);
     }
 
     public Provider(Builder builder) {
@@ -192,22 +160,26 @@ public record CohereGenerative(
           builder.maxTokens,
           builder.model,
           builder.temperature,
-          builder.topK,
+          builder.n,
           builder.topP,
           builder.frequencyPenalty,
           builder.presencePenalty,
+          builder.logProbs,
+          builder.topLogProbs,
           builder.stopSequences);
     }
 
-    public static class Builder implements ObjectBuilder<CohereGenerative.Provider> {
+    public static class Builder implements ObjectBuilder<DatabricksGenerative.Provider> {
       private String baseUrl;
-      private Integer topK;
+      private Integer n;
       private Float topP;
       private String model;
       private Integer maxTokens;
       private Float temperature;
       private Float frequencyPenalty;
       private Float presencePenalty;
+      private Boolean logProbs;
+      private Integer topLogProbs;
       private final List<String> stopSequences = new ArrayList<>();
 
       /** Base URL of the generative provider. */
@@ -216,9 +188,8 @@ public record CohereGenerative(
         return this;
       }
 
-      /** Top K value for sampling. */
-      public Builder topK(int topK) {
-        this.topK = topK;
+      public Builder n(int n) {
+        this.n = n;
         return this;
       }
 
@@ -266,6 +237,16 @@ public record CohereGenerative(
         return this;
       }
 
+      public Builder logProbs(boolean logProbs) {
+        this.logProbs = logProbs;
+        return this;
+      }
+
+      public Builder topLogProbs(int topLogProbs) {
+        this.topLogProbs = topLogProbs;
+        return this;
+      }
+
       /**
        * Control the randomness of the model's output.
        * Higher values make output more random.
@@ -276,8 +257,8 @@ public record CohereGenerative(
       }
 
       @Override
-      public CohereGenerative.Provider build() {
-        return new CohereGenerative.Provider(this);
+      public DatabricksGenerative.Provider build() {
+        return new DatabricksGenerative.Provider(this);
       }
     }
   }

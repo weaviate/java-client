@@ -27,6 +27,9 @@ import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateMetadata;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.Reference;
+import io.weaviate.client6.v1.api.collections.generate.GenerativeObject;
+import io.weaviate.client6.v1.api.collections.generate.TaskOutput;
+import io.weaviate.client6.v1.api.collections.generative.DummyGenerative;
 import io.weaviate.client6.v1.api.collections.query.GroupBy;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
@@ -47,6 +50,7 @@ public class SearchITest extends ConcurrentTest {
       Weaviate.custom()
           .withContextionaryUrl(Contextionary.URL)
           .withImageInference(Img2VecNeural.URL, Img2VecNeural.MODULE)
+          .addModules("generative-dummy")
           .build(),
       Container.IMG2VEC_NEURAL,
       Container.CONTEXTIONARY);
@@ -548,5 +552,99 @@ public class SearchITest extends ConcurrentTest {
         .as("search v2d")
         .hasSize(1).extracting(WeaviateObject::uuid)
         .containsExactly(thing456.uuids().get(0));
+  }
+
+  @Test
+  public void testGenerative_bm25() throws IOException {
+    // Arrange
+    var nsThings = ns("Things");
+
+    client.collections.create(nsThings,
+        c -> c
+            .properties(Property.text("title"))
+            .generativeModule(new DummyGenerative())
+            .vectorConfig(VectorConfig.text2vecContextionary(
+                t2v -> t2v.sourceProperties("title"))));
+
+    var things = client.collections.use(nsThings);
+
+    things.data.insertMany(
+        Map.of("title", "Salad Fork"),
+        Map.of("title", "Dessert Fork"));
+
+    // Act
+    var french = things.generate.bm25(
+        "fork",
+        bm25 -> bm25.queryProperties("title").limit(2),
+        generate -> generate
+            .singlePrompt("translate to French")
+            .groupedTask("count letters R"));
+
+    // Assert
+    Assertions.assertThat(french.objects())
+        .as("individual results")
+        .hasSize(2)
+        .extracting(GenerativeObject::generated)
+        .allSatisfy(generated -> {
+          Assertions.assertThat(generated.text()).isNotBlank();
+        });
+
+    Assertions.assertThat(french.generated())
+        .as("summary")
+        .extracting(TaskOutput::text, InstanceOfAssertFactories.STRING)
+        .isNotBlank();
+  }
+
+  @Test
+  public void testGenerative_bm25_groupBy() throws IOException {
+    // Arrange
+    var nsThings = ns("Things");
+
+    client.collections.create(nsThings,
+        c -> c
+            .properties(Property.text("title"))
+            .generativeModule(new DummyGenerative())
+            .vectorConfig(VectorConfig.text2vecContextionary(
+                t2v -> t2v.sourceProperties("title"))));
+
+    var things = client.collections.use(nsThings);
+
+    things.data.insertMany(
+        Map.of("title", "Salad Fork"),
+        Map.of("title", "Dessert Fork"));
+
+    // Act
+    var french = things.generate.bm25(
+        "fork",
+        bm25 -> bm25.queryProperties("title").limit(2),
+        generate -> generate
+            .singlePrompt("translate to French")
+            .groupedTask("count letters R"),
+        GroupBy.property("title", 5, 5));
+
+    // Assert
+    Assertions.assertThat(french.objects())
+        .as("individual results")
+        .hasSize(2);
+
+    Assertions.assertThat(french.groups())
+        .as("grouped results")
+        .hasSize(2)
+        .allSatisfy((groupName, group) -> {
+          Assertions.assertThat(group.objects())
+              .describedAs("objects in group %s", groupName)
+              .hasSize(1);
+
+          Assertions.assertThat(group.generated())
+              .describedAs("summary group %s", groupName)
+              .extracting(TaskOutput::text, InstanceOfAssertFactories.STRING)
+              .isNotBlank();
+
+        });
+
+    Assertions.assertThat(french.generated())
+        .as("summary")
+        .extracting(TaskOutput::text, InstanceOfAssertFactories.STRING)
+        .isNotBlank();
   }
 }

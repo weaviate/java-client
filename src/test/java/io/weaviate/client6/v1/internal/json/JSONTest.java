@@ -426,30 +426,6 @@ public class JSONTest {
                   """,
         },
 
-        // Generative.CustomTypeAdapterFactory
-        {
-            Generative.class,
-            Generative.cohere(generate -> generate
-                .kProperty("k-property")
-                .maxTokensProperty(10)
-                .model("example-model")
-                .returnLikelihoodsProperty("likelihood")
-                .stopSequencesProperty("stop", "halt")
-                .temperatureProperty("celcius")),
-            """
-                {
-                  "generative-cohere": {
-                    "kProperty": "k-property",
-                    "maxTokensProperty": 10,
-                    "model": "example-model",
-                    "returnLikelihoodsProperty": "likelihood",
-                    "stopSequencesProperty": ["stop", "halt"],
-                    "temperatureProperty": "celcius"
-                  }
-                }
-                  """,
-        },
-
         // BatchReference.CustomTypeAdapterFactory
         {
             BatchReference.class,
@@ -913,6 +889,268 @@ public class JSONTest {
                     "dprojections": 1,
                     "repetitions": 2,
                     "ksim": 3
+                  }
+                }
+                  """
+        },
+
+        // Generative.CustomTypeAdapterFactory
+        {
+            Generative.class,
+            Generative.anyscale(cfg -> cfg
+                .baseUrl("https://example.com")
+                .model("example-model")
+                .temperature(3f)),
+            """
+                {
+                  "generative-anyscale": {
+                    "baseURL": "https://example.com",
+                    "temperature": 3.0,
+                    "model": "example-model"
+                  }
+                }
+                  """,
+        },
+        {
+            Generative.class,
+            Generative.anthropic(cfg -> cfg
+                .topK(1)
+                .maxTokens(2)
+                .temperature(3f)
+                .model("example-model")
+                .stopSequences("stop", "halt")),
+            """
+                {
+                  "generative-anthropic": {
+                    "topK": 1,
+                    "maxTokens": 2,
+                    "temperature": 3.0,
+                    "model": "example-model",
+                    "stopSequences": ["stop", "halt"]
+                  }
+                }
+                  """,
+        },
+        {
+            Generative.class,
+            Generative.aws(
+                "aws-region",
+                "aws-service",
+                cfg -> cfg
+                    .baseUrl("https://example.com")
+                    .model("example-model")),
+            """
+                {
+                  "generative-aws": {
+                    "endpoint": "https://example.com",
+                    "model": "example-model",
+                    "region": "aws-region",
+                    "service": "aws-service"
+                  }
+                }
+                  """,
+        },
+        {
+            Generative.class,
+            Generative.cohere(cfg -> cfg
+                .topK(1)
+                .maxTokens(2)
+                .temperature(3f)
+                .model("example-model")
+                .returnLikelihoodsProperty("likelihood")
+                .stopSequences("stop", "halt")),
+            """
+                {
+                  "generative-cohere": {
+                    "kProperty": 1,
+                    "maxTokensProperty": 2,
+                    "temperatureProperty": 3.0,
+                    "model": "example-model",
+                    "returnLikelihoodsProperty": "likelihood",
+                    "stopSequencesProperty": ["stop", "halt"]
+                  }
+                }
+                  """,
+        },
+        {
+            Generative.class,
+            Generative.databricks(
+                "https://example.com",
+                cfg -> cfg
+                    .topK(1)
+                    .maxTokens(2)
+                    .temperature(3f)
+                    .topP(4f)),
+            """
+                {
+                  "generative-databricks": {
+                    "endpoint": "https://example.com",
+                    "topK": 1,
+                    "maxTokens": 2,
+                    "temperature": 3.0,
+                    "topP": 4.0
+                  }
+                }
+                  """,
+        },
+        {
+            Generative.class,
+            Generative.friendliai(cfg -> cfg
+                .baseUrl("https://example.com")
+                .maxTokens(2)
+                .temperature(3f)
+                .model("example-model")),
+            """
+                {
+                  "generative-friendliai": {
+                    "baseURL": "https://example.com",
+                    "maxTokens": 2,
+                    "temperature": 3.0,
+                    "model": "example-model"
+                  }
+                }
+                  """,
+        },
+        {
+            Generative.class,
+            Generative.mistral(cfg -> cfg
+                .baseUrl("https://example.com")
+                .maxTokens(2)
+                .temperature(3f)
+                .model("example-model")),
+            """
+                {
+                  "generative-mistral": {
+                    "baseURL": "https://example.com",
+                    "maxTokens": 2,
+                    "temperature": 3.0,
+                    "model": "example-model"
+                  }
+                }
+                  """,
+        },
+        {
+            Generative.class,
+            Generative.nvidia(cfg -> cfg
+                .baseUrl("https://example.com")
+                .maxTokens(2)
+                .temperature(3f)
+                .model("example-model")),
+            """
+                {
+                  "generative-nvidia": {
+                    "baseURL": "https://example.com",
+                    "maxTokens": 2,
+                    "temperature": 3.0,
+                    "model": "example-model"
+                  }
+                }
+                  """,
+        },
+        {
+            Generative.class,
+            Generative.google(
+                "google-project",
+                cfg -> cfg
+                    .baseUrl("https://example.com")
+                    .maxTokens(2)
+                    .temperature(3f)
+                    .topK(4)
+                    .topP(5f)
+                    .model("example-model")),
+            """
+                {
+                  "generative-palm": {
+                    "apiEndpoint": "https://example.com",
+                    "maxOutputTokens": 2,
+                    "temperature": 3.0,
+                    "topK": 4,
+                    "topP": 5,
+                    "projectId": "google-project",
+                    "modelId": "example-model"
+                  }
+                }
+                  """,
+        },
+        {
+            Generative.class,
+            Generative.ollama(cfg -> cfg
+                .baseUrl("https://example.com")
+                .model("example-model")),
+            """
+                {
+                  "generative-ollama": {
+                    "apiEndpoint": "https://example.com",
+                    "model": "example-model"
+                  }
+                }
+                  """,
+        },
+        {
+            Generative.class,
+            Generative.xai(cfg -> cfg
+                .baseUrl("https://example.com")
+                .maxTokens(2)
+                .temperature(3f)
+                .model("example-model")),
+            """
+                {
+                  "generative-xai": {
+                    "baseURL": "https://example.com",
+                    "maxTokens": 2,
+                    "temperature": 3.0,
+                    "model": "example-model"
+                  }
+                }
+                  """,
+        },
+        {
+            Generative.class,
+            Generative.openai(cfg -> cfg
+                .baseUrl("https://example.com")
+                .frequencyPenalty(1f)
+                .presencePenalty(2f)
+                .temperature(3f)
+                .topP(4f)
+                .maxTokens(5)
+                .model("o3-mini")),
+            """
+                {
+                  "generative-openai": {
+                    "baseURL": "https://example.com",
+                    "frequencyPenaltyProperty": 1.0,
+                    "presencePenaltyProperty": 2.0,
+                    "temperatureProperty": 3.0,
+                    "topPProperty": 4.0,
+                    "maxTokensProperty": 5,
+                    "model": "o3-mini"
+                  }
+                }
+                  """
+        },
+        {
+            Generative.class,
+            Generative.azure(
+                "azure-resource",
+                "azure-deployment",
+                cfg -> cfg
+                    .baseUrl("https://example.com")
+                    .frequencyPenalty(1f)
+                    .presencePenalty(2f)
+                    .temperature(3f)
+                    .topP(4f)
+                    .maxTokens(5)),
+            """
+                {
+                  "generative-openai": {
+                    "baseURL": "https://example.com",
+                    "frequencyPenaltyProperty": 1.0,
+                    "presencePenaltyProperty": 2.0,
+                    "temperatureProperty": 3.0,
+                    "topPProperty": 4.0,
+                    "maxTokensProperty": 5,
+                    "resourceName": "azure-resource",
+                    "deploymentId": "azure-deployment"
                   }
                 }
                   """
