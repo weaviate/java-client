@@ -2,7 +2,6 @@ package io.weaviate.client6.v1.api.collections.vectorizers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -13,12 +12,15 @@ import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public record Text2VecContextionaryVectorizer(
+public record Text2VecGoogleVectorizer(
+    @SerializedName("apiEndpoint") String baseUrl,
+    @SerializedName("model") String model,
+    @SerializedName("titleProperty") String titleProperty,
+    @SerializedName("dimensions") Integer dimensions,
+    @SerializedName("projectId") String projectId,
+
     /**
      * Weaviate defaults to {@code true} if the value is not provided.
-     * Because text2vec-contextionary cannot handle underscores in collection names,
-     * this quickly becomes inconvenient.
-     *
      * To avoid that we send "vectorizeClassName": false all the time
      * and make it impossible to enable this feature, as it is deprecated.
      */
@@ -32,7 +34,7 @@ public record Text2VecContextionaryVectorizer(
 
   @Override
   public VectorConfig.Kind _kind() {
-    return VectorConfig.Kind.TEXT2VEC_CONTEXTIONARY;
+    return VectorConfig.Kind.TEXT2VEC_GOOGLE;
   }
 
   @Override
@@ -40,36 +42,91 @@ public record Text2VecContextionaryVectorizer(
     return this;
   }
 
-  public static Text2VecContextionaryVectorizer of() {
+  public static Text2VecGoogleVectorizer of() {
     return of(ObjectBuilder.identity());
   }
 
-  public static Text2VecContextionaryVectorizer of(
-      Function<Builder, ObjectBuilder<Text2VecContextionaryVectorizer>> fn) {
+  public static Text2VecGoogleVectorizer of(
+      Function<Builder, ObjectBuilder<Text2VecGoogleVectorizer>> fn) {
     return fn.apply(new Builder()).build();
   }
 
   /**
    * Canonical constructor always sets {@link #vectorizeCollectionName} to false.
    */
-  public Text2VecContextionaryVectorizer(boolean vectorizeCollectionName, List<String> sourceProperties,
-      VectorIndex vectorIndex, Quantization quantization) {
+  public Text2VecGoogleVectorizer(
+      String baseUrl,
+      String model,
+      String titleProperty,
+      Integer dimensions,
+      String projectId,
+
+      boolean vectorizeCollectionName,
+      List<String> sourceProperties,
+      VectorIndex vectorIndex,
+      Quantization quantization) {
+    this.baseUrl = baseUrl;
+    this.model = model;
+    this.titleProperty = titleProperty;
+    this.dimensions = dimensions;
+    this.projectId = projectId;
+
     this.vectorizeCollectionName = false;
     this.sourceProperties = sourceProperties;
     this.vectorIndex = vectorIndex;
     this.quantization = quantization;
   }
 
-  public Text2VecContextionaryVectorizer(Builder builder) {
-    this(builder.vectorizeCollectionName, builder.sourceProperties, builder.vectorIndex, builder.quantization);
+  public Text2VecGoogleVectorizer(Builder builder) {
+    this(
+        builder.baseUrl,
+        builder.model,
+        builder.titleProperty,
+        builder.dimensions,
+        builder.projectId,
+
+        builder.vectorizeCollectionName,
+        builder.sourceProperties,
+        builder.vectorIndex,
+        builder.quantization);
   }
 
-  public static class Builder implements ObjectBuilder<Text2VecContextionaryVectorizer> {
+  public static class Builder implements ObjectBuilder<Text2VecGoogleVectorizer> {
     private final boolean vectorizeCollectionName = false;
     private Quantization quantization;
-
     private List<String> sourceProperties = new ArrayList<>();
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
+
+    private String baseUrl;
+    private String model;
+    private String titleProperty;
+    private Integer dimensions;
+    private String projectId;
+
+    public Builder baseUrl(String baseUrl) {
+      this.baseUrl = baseUrl;
+      return this;
+    }
+
+    public Builder model(String model) {
+      this.model = model;
+      return this;
+    }
+
+    public Builder dimensions(int dimensions) {
+      this.dimensions = dimensions;
+      return this;
+    }
+
+    public Builder titleProperty(String titleProperty) {
+      this.titleProperty = titleProperty;
+      return this;
+    }
+
+    public Builder projectId(String projectId) {
+      this.projectId = projectId;
+      return this;
+    }
 
     /** Add properties to include in the embedding. */
     public Builder sourceProperties(String... properties) {
@@ -99,8 +156,8 @@ public record Text2VecContextionaryVectorizer(
       return this;
     }
 
-    public Text2VecContextionaryVectorizer build() {
-      return new Text2VecContextionaryVectorizer(this);
+    public Text2VecGoogleVectorizer build() {
+      return new Text2VecGoogleVectorizer(this);
     }
   }
 }

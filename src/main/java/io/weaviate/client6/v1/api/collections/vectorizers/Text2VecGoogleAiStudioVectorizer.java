@@ -2,7 +2,6 @@ package io.weaviate.client6.v1.api.collections.vectorizers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -13,16 +12,10 @@ import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public record Text2VecContextionaryVectorizer(
-    /**
-     * Weaviate defaults to {@code true} if the value is not provided.
-     * Because text2vec-contextionary cannot handle underscores in collection names,
-     * this quickly becomes inconvenient.
-     *
-     * To avoid that we send "vectorizeClassName": false all the time
-     * and make it impossible to enable this feature, as it is deprecated.
-     */
-    @Deprecated @SerializedName("vectorizeClassName") boolean vectorizeCollectionName,
+public record Text2VecGoogleAiStudioVectorizer(
+    @SerializedName("model") String model,
+    @SerializedName("titleProperty") String titleProperty,
+
     /** Properties included in the embedding. */
     @SerializedName("sourceProperties") List<String> sourceProperties,
     /** Vector index configuration. */
@@ -32,7 +25,7 @@ public record Text2VecContextionaryVectorizer(
 
   @Override
   public VectorConfig.Kind _kind() {
-    return VectorConfig.Kind.TEXT2VEC_CONTEXTIONARY;
+    return VectorConfig.Kind.TEXT2VEC_GOOGLEAISTUDIO;
   }
 
   @Override
@@ -40,36 +33,41 @@ public record Text2VecContextionaryVectorizer(
     return this;
   }
 
-  public static Text2VecContextionaryVectorizer of() {
+  public static Text2VecGoogleAiStudioVectorizer of() {
     return of(ObjectBuilder.identity());
   }
 
-  public static Text2VecContextionaryVectorizer of(
-      Function<Builder, ObjectBuilder<Text2VecContextionaryVectorizer>> fn) {
+  public static Text2VecGoogleAiStudioVectorizer of(
+      Function<Builder, ObjectBuilder<Text2VecGoogleAiStudioVectorizer>> fn) {
     return fn.apply(new Builder()).build();
   }
 
-  /**
-   * Canonical constructor always sets {@link #vectorizeCollectionName} to false.
-   */
-  public Text2VecContextionaryVectorizer(boolean vectorizeCollectionName, List<String> sourceProperties,
-      VectorIndex vectorIndex, Quantization quantization) {
-    this.vectorizeCollectionName = false;
-    this.sourceProperties = sourceProperties;
-    this.vectorIndex = vectorIndex;
-    this.quantization = quantization;
+  public Text2VecGoogleAiStudioVectorizer(Builder builder) {
+    this(
+        builder.model,
+        builder.titleProperty,
+        builder.sourceProperties,
+        builder.vectorIndex,
+        builder.quantization);
   }
 
-  public Text2VecContextionaryVectorizer(Builder builder) {
-    this(builder.vectorizeCollectionName, builder.sourceProperties, builder.vectorIndex, builder.quantization);
-  }
-
-  public static class Builder implements ObjectBuilder<Text2VecContextionaryVectorizer> {
-    private final boolean vectorizeCollectionName = false;
+  public static class Builder implements ObjectBuilder<Text2VecGoogleAiStudioVectorizer> {
     private Quantization quantization;
-
     private List<String> sourceProperties = new ArrayList<>();
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
+
+    private String model;
+    private String titleProperty;
+
+    public Builder model(String model) {
+      this.model = model;
+      return this;
+    }
+
+    public Builder titleProperty(String titleProperty) {
+      this.titleProperty = titleProperty;
+      return this;
+    }
 
     /** Add properties to include in the embedding. */
     public Builder sourceProperties(String... properties) {
@@ -99,8 +97,8 @@ public record Text2VecContextionaryVectorizer(
       return this;
     }
 
-    public Text2VecContextionaryVectorizer build() {
-      return new Text2VecContextionaryVectorizer(this);
+    public Text2VecGoogleAiStudioVectorizer build() {
+      return new Text2VecGoogleAiStudioVectorizer(this);
     }
   }
 }

@@ -2,7 +2,6 @@ package io.weaviate.client6.v1.api.collections.vectorizers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -61,7 +60,7 @@ public record Text2VecModel2VecVectorizer(
     this.baseUrl = baseUrl;
 
     this.vectorizeCollectionName = false;
-    this.sourceProperties = Collections.emptyList();
+    this.sourceProperties = sourceProperties;
     this.vectorIndex = vectorIndex;
     this.quantization = quantization;
   }
