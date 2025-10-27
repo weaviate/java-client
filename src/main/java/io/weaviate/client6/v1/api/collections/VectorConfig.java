@@ -31,6 +31,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
     TEXT2VEC_CONTEXTIONARY("text2vec-contextionary"),
     TEXT2VEC_COHERE("text2vec-cohere"),
     TEXT2VEC_HUGGINGFACE("text2vec-huggingface"),
+    TEXT2VEC_MORPH("text2vec-morph"),
     TEXT2VEC_WEAVIATE("text2vec-weaviate"),
     MULTI2VEC_CLIP("multi2vec-clip");
 
