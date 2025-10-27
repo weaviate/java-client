@@ -956,19 +956,34 @@ public class JSONTest {
         },
         {
             Generative.class,
-            Generative.aws(
+            Generative.awsBedrock(
                 "aws-region",
-                "aws-service",
+                "example-model",
                 cfg -> cfg
-                    .baseUrl("https://example.com")
                     .model("example-model")),
             """
                 {
                   "generative-aws": {
-                    "endpoint": "https://example.com",
                     "model": "example-model",
                     "region": "aws-region",
-                    "service": "aws-service"
+                    "service": "bedrock"
+                  }
+                }
+                  """,
+        },
+        {
+            Generative.class,
+            Generative.awsSagemaker(
+                "aws-region",
+                "https://example.com",
+                cfg -> cfg
+                    .baseUrl("https://example.com")),
+            """
+                {
+                  "generative-aws": {
+                    "endpoint": "https://example.com",
+                    "region": "aws-region",
+                    "service": "sagemaker"
                   }
                 }
                   """,

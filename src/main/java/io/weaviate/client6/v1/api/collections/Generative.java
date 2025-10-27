@@ -94,27 +94,47 @@ public interface Generative extends TaggedUnion<Generative.Kind, Object> {
   }
 
   /**
-   * Configure a default {@code generative-aws} module.
+   * Configure a default {@code generative-aws} module with Bedrock integration.
    *
-   * @param region  AWS region.
-   * @param service AWS service to use, e.g. {@code "bedrock"} or
-   *                {@code "sagemaker"}.
+   * @param region AWS region.
+   * @param model  Model to use with Bedrock service.
    */
-  public static Generative aws(String region, String service) {
-    return AwsGenerative.of(region, service);
+  public static Generative awsBedrock(String region, String model) {
+    return AwsGenerative.bedrock(region, model);
   }
 
   /**
-   * Configure a {@code generative-aws} module.
+   * Configure a {@code generative-aws} module with Bedrock integration.
+   *
+   * @param region AWS region.
+   * @param model  Model to use with Bedrock service.
+   * @param fn     Lambda expression for optional parameters.
+   */
+  public static Generative awsBedrock(String region, String model,
+      Function<AwsGenerative.BedrockBuilder, ObjectBuilder<AwsGenerative>> fn) {
+    return AwsGenerative.bedrock(region, model, fn);
+  }
+
+  /**
+   * Configure a default {@code generative-aws} module with Sagemaker integration.
    *
    * @param region  AWS region.
-   * @param service AWS service to use, e.g. {@code "bedrock"} or
-   *                {@code "sagemaker"}.
+   * @param baseUrl Base inference URL.
+   */
+  public static Generative awsSagemaker(String region, String baseUrl) {
+    return AwsGenerative.sagemaker(region, baseUrl);
+  }
+
+  /**
+   * Configure a {@code generative-aws} module with Sagemaker integration.
+   *
+   * @param region  AWS region.
+   * @param baseUrl Base inference URL.
    * @param fn      Lambda expression for optional parameters.
    */
-  public static Generative aws(String region, String service,
-      Function<AwsGenerative.Builder, ObjectBuilder<AwsGenerative>> fn) {
-    return AwsGenerative.of(region, service, fn);
+  public static Generative awsSagemaker(String region, String baseUrl,
+      Function<AwsGenerative.SagemakerBuilder, ObjectBuilder<AwsGenerative>> fn) {
+    return AwsGenerative.sagemaker(region, baseUrl, fn);
   }
 
   /** Configure a default {@code generative-cohere} module. */
