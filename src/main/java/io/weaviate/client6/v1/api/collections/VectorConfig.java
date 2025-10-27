@@ -33,6 +33,8 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
     TEXT2VEC_GOOGLE("text2vec-google"),
     TEXT2VEC_GOOGLEAISTUDIO("text2vec-google"),
     TEXT2VEC_HUGGINGFACE("text2vec-huggingface"),
+    TEXT2VEC_JINAAI("text2vec-jinaai"),
+    TEXT2MULTIVEC_JINAAI("text2multivec-jinaai"),
     TEXT2VEC_MISTRAL("text2vec-mistral"),
     TEXT2VEC_MORPH("text2vec-morph"),
     TEXT2VEC_MODEL2VEC("text2vec-model2vec"),
