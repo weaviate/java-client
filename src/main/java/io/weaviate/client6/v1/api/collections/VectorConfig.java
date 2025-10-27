@@ -27,7 +27,6 @@ import io.weaviate.client6.v1.internal.json.JsonEnum;
 public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
   public enum Kind implements JsonEnum<Kind> {
     NONE("none"),
-    IMG2VEC_NEURAL("img2vec-neural"),
     TEXT2VEC_AWS("text2vec-aws"),
     TEXT2VEC_CONTEXTIONARY("text2vec-contextionary"),
     TEXT2VEC_COHERE("text2vec-cohere"),
@@ -37,7 +36,6 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
     TEXT2VEC_HUGGINGFACE("text2vec-huggingface"),
     REF2VEC_CENTROID("text2vec-huggingface"),
     TEXT2VEC_JINAAI("text2vec-jinaai"),
-    TEXT2MULTIVEC_JINAAI("text2multivec-jinaai"),
     TEXT2VEC_MISTRAL("text2vec-mistral"),
     TEXT2VEC_MORPH("text2vec-morph"),
     TEXT2VEC_MODEL2VEC("text2vec-model2vec"),
@@ -48,10 +46,14 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
     TEXT2VEC_TRANSFORMERS("text2vec-transformers"),
     TEXT2VEC_VOYAGEAI("text2vec-voyageai"),
     TEXT2VEC_WEAVIATE("text2vec-weaviate"),
+    IMG2VEC_NEURAL("img2vec-neural"),
     MULTI2VEC_AWS("multi2vec-aws"),
+    MULTI2VEC_BIND("multi2vec-bind"),
     MULTI2VEC_COHERE("multi2vec-cohere"),
     MULTI2VEC_NVIDIA("multi2vec-nvidia"),
-    MULTI2VEC_CLIP("multi2vec-clip");
+    MULTI2VEC_CLIP("multi2vec-clip"),
+    TEXT2MULTIVEC_JINAAI("text2multivec-jinaai"),
+    MULTI2MULTIVEC_JINAAI("multi2multivec-jinaai");
 
     private static final Map<String, Kind> jsonValueMap = JsonEnum.collectNames(Kind.values());
     private final String jsonValue;
