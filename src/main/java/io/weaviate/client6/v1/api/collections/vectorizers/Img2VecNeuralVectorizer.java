@@ -44,8 +44,9 @@ public record Img2VecNeuralVectorizer(
 
   public static class Builder implements ObjectBuilder<Img2VecNeuralVectorizer> {
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
-    private List<String> imageFields = new ArrayList<>();
     private Quantization quantization;
+
+    private List<String> imageFields = new ArrayList<>();
 
     /** Add BLOB properties to include in the embedding. */
     public Builder imageFields(List<String> fields) {
