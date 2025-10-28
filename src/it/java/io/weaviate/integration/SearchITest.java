@@ -151,7 +151,7 @@ public class SearchITest extends ConcurrentTest {
     client.collections.create(nsSongs,
         col -> col
             .properties(Property.text("title"))
-            .vectorConfig(VectorConfig.text2vecContextionary()));
+            .vectorConfig(VectorConfig.text2VecTransformers()));
 
     var songs = client.collections.use(nsSongs);
     var submarine = songs.data.insert(Map.of("title", "Yellow Submarine"));
@@ -173,7 +173,7 @@ public class SearchITest extends ConcurrentTest {
 
   @Test
   public void testNearText_groupBy() throws IOException {
-    var vectorizer = VectorConfig.text2vecContextionary();
+    var vectorizer = VectorConfig.text2VecTransformers();
 
     var nsArtists = ns("Artists");
     client.collections.create(nsArtists,
@@ -370,7 +370,7 @@ public class SearchITest extends ConcurrentTest {
     client.collections.create(nsAnimals,
         collection -> collection
             .properties(Property.text("kind"))
-            .vectorConfig(VectorConfig.text2vecContextionary()));
+            .vectorConfig(VectorConfig.text2VecTransformers()));
 
     var animals = client.collections.use(nsAnimals);
 
@@ -399,7 +399,7 @@ public class SearchITest extends ConcurrentTest {
     client.collections.create(nsHobbies,
         collection -> collection
             .properties(Property.text("name"), Property.text("description"))
-            .vectorConfig(VectorConfig.text2vecContextionary()));
+            .vectorConfig(VectorConfig.text2VecTransformers()));
 
     var hobbies = client.collections.use(nsHobbies);
 
@@ -432,7 +432,7 @@ public class SearchITest extends ConcurrentTest {
     client.collections.create(nsThings,
         collection -> collection
             .properties(Property.text("name"))
-            .vectorConfig(VectorConfig.text2vecContextionary()));
+            .vectorConfig(VectorConfig.text2VecTransformers()));
 
     var things = client.collections.use(nsThings);
     var balloon = things.data.insert(Map.of("name", "balloon"));
@@ -449,7 +449,7 @@ public class SearchITest extends ConcurrentTest {
       async.collections.create(nsThings,
           collection -> collection
               .properties(Property.text("name"))
-              .vectorConfig(VectorConfig.text2vecContextionary()))
+              .vectorConfig(VectorConfig.text2VecTransformers()))
           .join();
 
       var things = async.collections.use(nsThings);
@@ -470,7 +470,7 @@ public class SearchITest extends ConcurrentTest {
     client.collections.create(nsThings,
         c -> c
             .properties(Property.text("name"))
-            .vectorConfig(VectorConfig.text2vecContextionary(
+            .vectorConfig(VectorConfig.text2VecTransformers(
                 t2v -> t2v.sourceProperties("name"))));
 
     var things = client.collections.use(nsThings);
@@ -563,7 +563,7 @@ public class SearchITest extends ConcurrentTest {
         c -> c
             .properties(Property.text("title"))
             .generativeModule(new DummyGenerative())
-            .vectorConfig(VectorConfig.text2vecContextionary(
+            .vectorConfig(VectorConfig.text2VecTransformers(
                 t2v -> t2v.sourceProperties("title"))));
 
     var things = client.collections.use(nsThings);
@@ -604,7 +604,7 @@ public class SearchITest extends ConcurrentTest {
         c -> c
             .properties(Property.text("title"))
             .generativeModule(new DummyGenerative())
-            .vectorConfig(VectorConfig.text2vecContextionary(
+            .vectorConfig(VectorConfig.text2VecTransformers(
                 t2v -> t2v.sourceProperties("title"))));
 
     var things = client.collections.use(nsThings);
