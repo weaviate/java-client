@@ -141,7 +141,7 @@ public class Weaviate extends WeaviateContainer {
 
     public Builder withTransformersUrl(String url) {
       addModules(Transformers.MODULE);
-      environment.put("TRANSFORMERS_INFERENCE_API", url);
+      environment.put("TRANSFORMERS_INFERENCE_API", "http://" + url);
       return this;
     }
 
@@ -153,7 +153,7 @@ public class Weaviate extends WeaviateContainer {
 
     public Builder withOffloadS3(String accessKey, String secretKey) {
       addModules("offload-s3");
-      environment.put("OFFLOAD_S3_ENDPOINT", "http://minio:9000");
+      environment.put("OFFLOAD_S3_ENDPOINT", "http://" + MinIo.URL);
       environment.put("OFFLOAD_S3_BUCKET_AUTO_CREATE", "true");
       environment.put("AWS_ACCESS_KEY_ID", accessKey);
       environment.put("AWS_SECRET_KEY", secretKey);
