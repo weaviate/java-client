@@ -28,8 +28,17 @@ public final class JSON {
         io.weaviate.client6.v1.api.collections.Vectors.CustomTypeAdapterFactory.INSTANCE);
     gsonBuilder.registerTypeAdapterFactory(
         io.weaviate.client6.v1.api.collections.VectorConfig.CustomTypeAdapterFactory.INSTANCE);
+
+    // These 2 adapters need to be registered in this exact order: Dynamic
+    // (narrower), VectorIndex (broader).
+    // When searching for an adapter, Gson will pick the first adapter factory that
+    // can process the class, and it's important that Dynamic.class is processed by
+    // this factory.
+    gsonBuilder.registerTypeAdapterFactory(
+        io.weaviate.client6.v1.api.collections.vectorindex.Dynamic.CustomTypeAdapterFactory.INSTANCE);
     gsonBuilder.registerTypeAdapterFactory(
         io.weaviate.client6.v1.api.collections.VectorIndex.CustomTypeAdapterFactory.INSTANCE);
+
     gsonBuilder.registerTypeAdapterFactory(
         io.weaviate.client6.v1.api.collections.Reranker.CustomTypeAdapterFactory.INSTANCE);
     gsonBuilder.registerTypeAdapterFactory(

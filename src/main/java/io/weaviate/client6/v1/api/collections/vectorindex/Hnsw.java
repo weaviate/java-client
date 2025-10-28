@@ -29,7 +29,7 @@ public record Hnsw(
   }
 
   @Override
-  public Object config() {
+  public Object _self() {
     return this;
   }
 
