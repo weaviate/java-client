@@ -1239,6 +1239,296 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
     return Map.entry(vectorName, Text2VecWeaviateVectorizer.of(fn));
   }
 
+  /** Is this an instance of {@link Img2VecNeuralVectorizer}? */
+  default public boolean isImg2VecNeural() {
+    return _is(VectorConfig.Kind.IMG2VEC_NEURAL);
+  }
+
+  /** Convert this instance to {@link Img2VecNeuralVectorizer}. */
+  default public Img2VecNeuralVectorizer asImg2VecNeural() {
+    return _as(VectorConfig.Kind.IMG2VEC_NEURAL);
+  }
+
+  /** Is this an instance of {@link Multi2MultiVecJinaAiVectorizer}? */
+  default public boolean isMulti2MultiVecJinaAi() {
+    return _is(VectorConfig.Kind.MULTI2MULTIVEC_JINAAI);
+  }
+
+  /** Convert this instance to {@link Multi2MultiVecJinaAiVectorizer}. */
+  default public Multi2MultiVecJinaAiVectorizer asMulti2MultiVecJinaAi() {
+    return _as(VectorConfig.Kind.MULTI2MULTIVEC_JINAAI);
+  }
+
+  /** Is this an instance of {@link Multi2VecAwsVectorizer}? */
+  default public boolean isMulti2VecAws() {
+    return _is(VectorConfig.Kind.MULTI2VEC_AWS);
+  }
+
+  /** Convert this instance to {@link Multi2VecAwsVectorizer}. */
+  default public Multi2VecAwsVectorizer asMulti2VecAws() {
+    return _as(VectorConfig.Kind.MULTI2VEC_AWS);
+  }
+
+  /** Is this an instance of {@link Multi2VecBindVectorizer}? */
+  default public boolean isMulti2VecBind() {
+    return _is(VectorConfig.Kind.MULTI2VEC_BIND);
+  }
+
+  /** Convert this instance to {@link Multi2VecBindVectorizer}. */
+  default public Multi2VecBindVectorizer asMulti2VecBind() {
+    return _as(VectorConfig.Kind.MULTI2VEC_BIND);
+  }
+
+  /** Is this an instance of {@link Multi2VecClipVectorizer}? */
+  default public boolean isMulti2VecClip() {
+    return _is(VectorConfig.Kind.MULTI2VEC_CLIP);
+  }
+
+  /** Convert this instance to {@link Multi2VecClipVectorizer}. */
+  default public Multi2VecClipVectorizer asMulti2VecClip() {
+    return _as(VectorConfig.Kind.MULTI2VEC_CLIP);
+  }
+
+  /** Is this an instance of {@link Multi2VecCohereVectorizer}? */
+  default public boolean isMulti2VecCohere() {
+    return _is(VectorConfig.Kind.MULTI2VEC_COHERE);
+  }
+
+  /** Convert this instance to {@link Multi2VecCohereVectorizer}. */
+  default public Multi2VecCohereVectorizer asMulti2VecCohere() {
+    return _as(VectorConfig.Kind.MULTI2VEC_COHERE);
+  }
+
+  /** Is this an instance of {@link Multi2VecGoogleVectorizer}? */
+  default public boolean isMulti2VecGoogle() {
+    return _is(VectorConfig.Kind.MULTI2VEC_GOOGLE);
+  }
+
+  /** Convert this instance to {@link Multi2VecGoogleVectorizer}. */
+  default public Multi2VecGoogleVectorizer asMulti2VecGoogle() {
+    return _as(VectorConfig.Kind.MULTI2VEC_GOOGLE);
+  }
+
+  /** Is this an instance of {@link Multi2VecJinaAiVectorizer}? */
+  default public boolean isMulti2VecJinaAi() {
+    return _is(VectorConfig.Kind.MULTI2VEC_JINAAI);
+  }
+
+  /** Convert this instance to {@link Multi2VecJinaAiVectorizer}. */
+  default public Multi2VecJinaAiVectorizer asMulti2VecJinaAi() {
+    return _as(VectorConfig.Kind.MULTI2VEC_JINAAI);
+  }
+
+  /** Is this an instance of {@link Multi2VecNvidiaVectorizer}? */
+  default public boolean isMulti2VecNvidia() {
+    return _is(VectorConfig.Kind.MULTI2VEC_NVIDIA);
+  }
+
+  /** Convert this instance to {@link Multi2VecNvidiaVectorizer}. */
+  default public Multi2VecNvidiaVectorizer asMulti2VecNvidia() {
+    return _as(VectorConfig.Kind.MULTI2VEC_NVIDIA);
+  }
+
+  /** Is this an instance of {@link Multi2VecVoyageAiVectorizer}? */
+  default public boolean isMulti2VecVoyageAi() {
+    return _is(VectorConfig.Kind.MULTI2VEC_VOYAGEAI);
+  }
+
+  /** Convert this instance to {@link Multi2VecVoyageAiVectorizer}. */
+  default public Multi2VecVoyageAiVectorizer asMulti2VecVoyageAi() {
+    return _as(VectorConfig.Kind.MULTI2VEC_VOYAGEAI);
+  }
+
+  /** Is this an instance of {@link Ref2VecCentroidVectorizer}? */
+  default public boolean isRef2VecCentroid() {
+    return _is(VectorConfig.Kind.REF2VEC_CENTROID);
+  }
+
+  /** Convert this instance to {@link Ref2VecCentroidVectorizer}. */
+  default public Ref2VecCentroidVectorizer asRef2VecCentroid() {
+    return _as(VectorConfig.Kind.REF2VEC_CENTROID);
+  }
+
+  /** Is this an instance of {@link Text2VecAwsVectorizer}? */
+  default public boolean isText2VecAws() {
+    return _is(VectorConfig.Kind.TEXT2VEC_AWS);
+  }
+
+  /** Convert this instance to {@link Text2VecAwsVectorizer}. */
+  default public Text2VecAwsVectorizer asText2VecAws() {
+    return _as(VectorConfig.Kind.TEXT2VEC_AWS);
+  }
+
+  /** Is this an instance of {@link Text2VecAzureOpenAiVectorizer}? */
+  default public boolean isText2VecAzureOpenAi() {
+    return _is(VectorConfig.Kind.TEXT2VEC_AZURE_OPENAI);
+  }
+
+  /** Convert this instance to {@link Text2VecAzureOpenAiVectorizer}. */
+  default public Text2VecAzureOpenAiVectorizer asText2VecAzureOpenAi() {
+    return _as(VectorConfig.Kind.TEXT2VEC_AZURE_OPENAI);
+  }
+
+  /** Is this an instance of {@link Text2VecCohereVectorizer}? */
+  default public boolean isText2VecCohere() {
+    return _is(VectorConfig.Kind.TEXT2VEC_COHERE);
+  }
+
+  /** Convert this instance to {@link Text2VecCohereVectorizer}. */
+  default public Text2VecCohereVectorizer asText2VecCohere() {
+    return _as(VectorConfig.Kind.TEXT2VEC_COHERE);
+  }
+
+  /** Is this an instance of {@link Text2VecDatabricksVectorizer}? */
+  default public boolean isText2VecDatabricks() {
+    return _is(VectorConfig.Kind.TEXT2VEC_DATABRICKS);
+  }
+
+  /** Convert this instance to {@link Text2VecDatabricksVectorizer}. */
+  default public Text2VecDatabricksVectorizer asText2VecDatabricks() {
+    return _as(VectorConfig.Kind.TEXT2VEC_DATABRICKS);
+  }
+
+  /** Is this an instance of {@link Text2VecGoogleAiStudioVectorizer}? */
+  default public boolean isText2VecGoogleAiStudio() {
+    return _is(VectorConfig.Kind.TEXT2VEC_GOOGLEAISTUDIO);
+  }
+
+  /** Convert this instance to {@link Text2VecGoogleAiStudioVectorizer}. */
+  default public Text2VecGoogleAiStudioVectorizer asText2VecGoogleAiStudio() {
+    return _as(VectorConfig.Kind.TEXT2VEC_GOOGLEAISTUDIO);
+  }
+
+  /** Is this an instance of {@link Text2VecGoogleVectorizer}? */
+  default public boolean isText2VecGoogle() {
+    return _is(VectorConfig.Kind.TEXT2VEC_GOOGLE);
+  }
+
+  /** Convert this instance to {@link Text2VecGoogleVectorizer}. */
+  default public Text2VecGoogleVectorizer asText2VecGoogle() {
+    return _as(VectorConfig.Kind.TEXT2VEC_GOOGLE);
+  }
+
+  /** Is this an instance of {@link Text2VecHuggingFaceVectorizer}? */
+  default public boolean isText2VecHuggingFace() {
+    return _is(VectorConfig.Kind.TEXT2VEC_HUGGINGFACE);
+  }
+
+  /** Convert this instance to {@link Text2VecHuggingFaceVectorizer}. */
+  default public Text2VecHuggingFaceVectorizer asText2VecHuggingFace() {
+    return _as(VectorConfig.Kind.TEXT2VEC_HUGGINGFACE);
+  }
+
+  /** Is this an instance of {@link Text2MultiVecJinaAiVectorizer}? */
+  default public boolean isText2MultiVecJinaAi() {
+    return _is(VectorConfig.Kind.TEXT2MULTIVEC_JINAAI);
+  }
+
+  /** Convert this instance to {@link Text2MultiVecJinaAiVectorizer}. */
+  default public Text2MultiVecJinaAiVectorizer asText2MultiVecJinaAi() {
+    return _as(VectorConfig.Kind.TEXT2MULTIVEC_JINAAI);
+  }
+
+  /** Is this an instance of {@link Text2VecJinaAiVectorizer}? */
+  default public boolean isText2VecJinaAi() {
+    return _is(VectorConfig.Kind.TEXT2VEC_JINAAI);
+  }
+
+  /** Convert this instance to {@link Text2VecJinaAiVectorizer}. */
+  default public Text2VecJinaAiVectorizer asText2VecJinaAi() {
+    return _as(VectorConfig.Kind.TEXT2VEC_JINAAI);
+  }
+
+  /** Is this an instance of {@link Text2VecMistralVectorizer}? */
+  default public boolean isText2VecMistral() {
+    return _is(VectorConfig.Kind.TEXT2VEC_MISTRAL);
+  }
+
+  /** Convert this instance to {@link Text2VecMistralVectorizer}. */
+  default public Text2VecMistralVectorizer asText2VecMistral() {
+    return _as(VectorConfig.Kind.TEXT2VEC_MISTRAL);
+  }
+
+  /** Is this an instance of {@link Text2VecModel2VecVectorizer}? */
+  default public boolean isText2VecModel2Vec() {
+    return _is(VectorConfig.Kind.TEXT2VEC_MODEL2VEC);
+  }
+
+  /** Convert this instance to {@link Text2VecModel2VecVectorizer}. */
+  default public Text2VecModel2VecVectorizer asText2VecModel2Vec() {
+    return _as(VectorConfig.Kind.TEXT2VEC_MODEL2VEC);
+  }
+
+  /** Is this an instance of {@link Text2VecMorphVectorizer}? */
+  default public boolean isText2VecMorph() {
+    return _is(VectorConfig.Kind.TEXT2VEC_MORPH);
+  }
+
+  /** Convert this instance to {@link Text2VecMorphVectorizer}. */
+  default public Text2VecMorphVectorizer asText2VecMorph() {
+    return _as(VectorConfig.Kind.TEXT2VEC_MORPH);
+  }
+
+  /** Is this an instance of {@link Text2VecNvidiaVectorizer}? */
+  default public boolean isText2VecNvidia() {
+    return _is(VectorConfig.Kind.TEXT2VEC_NVIDIA);
+  }
+
+  /** Convert this instance to {@link Text2VecNvidiaVectorizer}. */
+  default public Text2VecNvidiaVectorizer asText2VecNvidia() {
+    return _as(VectorConfig.Kind.TEXT2VEC_NVIDIA);
+  }
+
+  /** Is this an instance of {@link Text2VecOllamaVectorizer}? */
+  default public boolean isText2VecOllama() {
+    return _is(VectorConfig.Kind.TEXT2VEC_OLLAMA);
+  }
+
+  /** Convert this instance to {@link Text2VecOllamaVectorizer}. */
+  default public Text2VecOllamaVectorizer asText2VecOllama() {
+    return _as(VectorConfig.Kind.TEXT2VEC_OLLAMA);
+  }
+
+  /** Is this an instance of {@link Text2VecOpenAiVectorizer}? */
+  default public boolean isText2VecOpenAi() {
+    return _is(VectorConfig.Kind.TEXT2VEC_OPENAI);
+  }
+
+  /** Convert this instance to {@link Text2VecOpenAiVectorizer}. */
+  default public Text2VecOpenAiVectorizer asText2VecOpenAi() {
+    return _as(VectorConfig.Kind.TEXT2VEC_OPENAI);
+  }
+
+  /** Is this an instance of {@link Text2VecTransformersVectorizer}? */
+  default public boolean isText2VecTransformers() {
+    return _is(VectorConfig.Kind.TEXT2VEC_TRANSFORMERS);
+  }
+
+  /** Convert this instance to {@link Text2VecTransformersVectorizer}. */
+  default public Text2VecTransformersVectorizer asText2VecTransformers() {
+    return _as(VectorConfig.Kind.TEXT2VEC_TRANSFORMERS);
+  }
+
+  /** Is this an instance of {@link Text2VecVoyageAiVectorizer}? */
+  default public boolean isText2VecVoyageAi() {
+    return _is(VectorConfig.Kind.TEXT2VEC_VOYAGEAI);
+  }
+
+  /** Convert this instance to {@link Text2VecVoyageAiVectorizer}. */
+  default public Text2VecVoyageAiVectorizer asText2VecVoyageAi() {
+    return _as(VectorConfig.Kind.TEXT2VEC_VOYAGEAI);
+  }
+
+  /** Is this an instance of {@link Text2VecWeaviateVectorizer}? */
+  default public boolean isText2VecWeaviate() {
+    return _is(VectorConfig.Kind.TEXT2VEC_WEAVIATE);
+  }
+
+  /** Convert this instance to {@link Text2VecWeaviateVectorizer}. */
+  default public Text2VecWeaviateVectorizer asText2VecWeaviate() {
+    return _as(VectorConfig.Kind.TEXT2VEC_WEAVIATE);
+  }
+
   public static enum CustomTypeAdapterFactory implements TypeAdapterFactory {
     INSTANCE;
 
