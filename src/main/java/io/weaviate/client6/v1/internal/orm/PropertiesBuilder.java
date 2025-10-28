@@ -4,6 +4,9 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import io.weaviate.client6.v1.api.collections.GeoCoordinates;
+import io.weaviate.client6.v1.api.collections.PhoneNumber;
+
 public interface PropertiesBuilder<T> {
   void setNull(String property);
 
@@ -36,6 +39,10 @@ public interface PropertiesBuilder<T> {
   void setNestedObject(String property, Object value);
 
   void setNestedObjectArray(String property, List<? extends Object> value);
+
+  void setPhoneNumber(String property, PhoneNumber value);
+
+  void setGeoCoordinates(String property, GeoCoordinates value);
 
   T build();
 }

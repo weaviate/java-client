@@ -826,11 +826,11 @@ public class Where implements WhereOperand {
   }
 
   private static class GeoRangeOperand implements WhereOperand {
-    private final Float lat;
-    private final Float lon;
-    private final Float distance;
+    private final float lat;
+    private final float lon;
+    private final float distance;
 
-    private GeoRangeOperand(Float lat, Float lon, Float distance) {
+    private GeoRangeOperand(float lat, float lon, float distance) {
       this.lat = lat;
       this.lon = lon;
       this.distance = distance;

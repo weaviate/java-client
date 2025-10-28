@@ -15,6 +15,8 @@ import org.junit.Test;
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.CollectionConfig;
+import io.weaviate.client6.v1.api.collections.GeoCoordinates;
+import io.weaviate.client6.v1.api.collections.PhoneNumber;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.annotations.Collection;
 import io.weaviate.client6.v1.api.collections.annotations.Property;
@@ -79,7 +81,10 @@ public class ORMITest extends ConcurrentTest {
       Boolean booleanBoxed,
       boolean[] booleanArray,
       Boolean[] booleanBoxedArray,
-      List<Boolean> booleanBoxedList) {
+      List<Boolean> booleanBoxedList,
+
+      PhoneNumber phoneNumber,
+      GeoCoordinates geoCoordinates) {
   }
 
   @BeforeClass
@@ -150,14 +155,18 @@ public class ORMITest extends ConcurrentTest {
             Map.entry("booleanBoxed", "boolean"),
             Map.entry("booleanArray", "boolean[]"),
             Map.entry("booleanBoxedArray", "boolean[]"),
-            Map.entry("booleanBoxedList", "boolean[]"));
+            Map.entry("booleanBoxedList", "boolean[]"),
+
+            Map.entry("phoneNumber", "phoneNumber"),
+            Map.entry("geoCoordinates", "geoCoordinates"));
   }
 
-  private final RecursiveComparisonConfiguration COMPARISON_CONFIG = RecursiveComparisonConfiguration.builder()
+  private static final RecursiveComparisonConfiguration COMPARISON_CONFIG = RecursiveComparisonConfiguration.builder()
       // Assertj is having a really bad time comparing List<Float>,
       // so we'll just always return true here.
       .withComparatorForFields((a, b) -> 0, "floatBoxedList")
       .withComparatorForType((a, b) -> Double.compare(a.doubleValue(), b.doubleValue()), Number.class)
+      .withComparatorForType(ORMITest::comparePhoneNumbers, PhoneNumber.class)
       .build();
 
   @Test
@@ -219,7 +228,10 @@ public class ORMITest extends ConcurrentTest {
         boolean_,
         new boolean[] { boolean_ },
         new Boolean[] { boolean_ },
-        List.of(boolean_));
+        List.of(boolean_),
+
+        PhoneNumber.international("+380 95 1433336"),
+        new GeoCoordinates(1f, 2f));
 
     var things = client.collections.use(Thing.class);
 
@@ -294,7 +306,10 @@ public class ORMITest extends ConcurrentTest {
         boolean_,
         new boolean[] { boolean_ },
         new Boolean[] { boolean_ },
-        List.of(boolean_));
+        List.of(boolean_),
+
+        PhoneNumber.international("+380 95 1433336"),
+        new GeoCoordinates(1f, 2f));
 
     var things = client.collections.use(Thing.class);
 
@@ -351,7 +366,7 @@ public class ORMITest extends ConcurrentTest {
         .returns(null, Song::monthlyListeners);
   }
 
-  @Test
-  public void test_nestedProperties() throws IOException {
+  static int comparePhoneNumbers(PhoneNumber phone1, PhoneNumber phone2) {
+    return phone1.rawInput().compareTo(phone2.rawInput());
   }
 }
