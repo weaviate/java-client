@@ -14,7 +14,7 @@ import io.weaviate.client6.v1.api.WeaviateClient;
 
 public class Container {
   public static final Weaviate WEAVIATE = Weaviate.createDefault();
-  public static final Contextionary CONTEXTIONARY = Contextionary.createDefault();
+  public static final Transformers TRANSFORMERS = Transformers.createDefault();
   public static final Img2VecNeural IMG2VEC_NEURAL = Img2VecNeural.createDefault();
   public static final MinIo MINIO = MinIo.createDefault();
 

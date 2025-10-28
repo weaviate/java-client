@@ -41,19 +41,19 @@ import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.api.collections.vectorindex.MultiVector;
 import io.weaviate.containers.Container;
 import io.weaviate.containers.Container.ContainerGroup;
-import io.weaviate.containers.Contextionary;
 import io.weaviate.containers.Img2VecNeural;
+import io.weaviate.containers.Transformers;
 import io.weaviate.containers.Weaviate;
 
 public class SearchITest extends ConcurrentTest {
   private static final ContainerGroup compose = Container.compose(
       Weaviate.custom()
-          .withContextionaryUrl(Contextionary.URL)
+          .withTransformersUrl(Transformers.URL)
           .withImageInference(Img2VecNeural.URL, Img2VecNeural.MODULE)
           .addModules("generative-dummy")
           .build(),
       Container.IMG2VEC_NEURAL,
-      Container.CONTEXTIONARY);
+      Container.TRANSFORMERS);
   @ClassRule // Bind containers to the lifetime of the test
   public static final TestRule _rule = compose.asTestRule();
   private static final WeaviateClient client = compose.getClient();

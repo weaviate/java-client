@@ -58,7 +58,7 @@ public record Text2VecAwsVectorizer(
 
   public static Text2VecAwsVectorizer bedrock(
       String model,
-      Function<Builder, ObjectBuilder<Text2VecAwsVectorizer>> fn) {
+      Function<BedrockBuilder, ObjectBuilder<Text2VecAwsVectorizer>> fn) {
     return fn.apply(new BedrockBuilder(model)).build();
   }
 
@@ -68,7 +68,7 @@ public record Text2VecAwsVectorizer(
 
   public static Text2VecAwsVectorizer sagemaker(
       String baseUrl,
-      Function<Builder, ObjectBuilder<Text2VecAwsVectorizer>> fn) {
+      Function<SagemakerBuilder, ObjectBuilder<Text2VecAwsVectorizer>> fn) {
     return fn.apply(new SagemakerBuilder(baseUrl)).build();
   }
 

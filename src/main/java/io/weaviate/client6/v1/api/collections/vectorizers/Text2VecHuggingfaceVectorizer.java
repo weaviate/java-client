@@ -2,7 +2,6 @@ package io.weaviate.client6.v1.api.collections.vectorizers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -13,7 +12,7 @@ import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public record Text2VecHuggingfaceVectorizer(
+public record Text2VecHuggingFaceVectorizer(
     @SerializedName("endpointURL") String baseUrl,
     @SerializedName("model") String model,
     @SerializedName("passageModel") String passageModel,
@@ -45,19 +44,19 @@ public record Text2VecHuggingfaceVectorizer(
     return this;
   }
 
-  public static Text2VecHuggingfaceVectorizer of() {
+  public static Text2VecHuggingFaceVectorizer of() {
     return of(ObjectBuilder.identity());
   }
 
-  public static Text2VecHuggingfaceVectorizer of(
-      Function<Builder, ObjectBuilder<Text2VecHuggingfaceVectorizer>> fn) {
+  public static Text2VecHuggingFaceVectorizer of(
+      Function<Builder, ObjectBuilder<Text2VecHuggingFaceVectorizer>> fn) {
     return fn.apply(new Builder()).build();
   }
 
   /**
    * Canonical constructor always sets {@link #vectorizeCollectionName} to false.
    */
-  public Text2VecHuggingfaceVectorizer(
+  public Text2VecHuggingFaceVectorizer(
       String baseUrl,
       String model,
       String passageModel,
@@ -84,7 +83,7 @@ public record Text2VecHuggingfaceVectorizer(
     this.quantization = quantization;
   }
 
-  public Text2VecHuggingfaceVectorizer(Builder builder) {
+  public Text2VecHuggingFaceVectorizer(Builder builder) {
     this(
         builder.baseUrl,
         builder.model,
@@ -99,7 +98,7 @@ public record Text2VecHuggingfaceVectorizer(
         builder.quantization);
   }
 
-  public static class Builder implements ObjectBuilder<Text2VecHuggingfaceVectorizer> {
+  public static class Builder implements ObjectBuilder<Text2VecHuggingFaceVectorizer> {
     private final boolean vectorizeCollectionName = false;
     private Quantization quantization;
     private List<String> sourceProperties = new ArrayList<>();
@@ -178,8 +177,8 @@ public record Text2VecHuggingfaceVectorizer(
       return this;
     }
 
-    public Text2VecHuggingfaceVectorizer build() {
-      return new Text2VecHuggingfaceVectorizer(this);
+    public Text2VecHuggingFaceVectorizer build() {
+      return new Text2VecHuggingFaceVectorizer(this);
     }
   }
 }

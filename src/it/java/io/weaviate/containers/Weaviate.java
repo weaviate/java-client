@@ -112,9 +112,9 @@ public class Weaviate extends WeaviateContainer {
       return this;
     }
 
-    public Builder withContextionaryUrl(String url) {
-      addModules(Contextionary.MODULE);
-      environment.put("CONTEXTIONARY_URL", url);
+    public Builder withTransformersUrl(String url) {
+      addModules(Transformers.MODULE);
+      environment.put("TRANSFORMERS_INFERENCE_API", url);
       return this;
     }
 
@@ -138,6 +138,7 @@ public class Weaviate extends WeaviateContainer {
       environment.put("BACKUP_FILESYSTEM_PATH", fsPath);
       return this;
     }
+
     public Builder withAdminUsers(String... admins) {
       adminUsers.addAll(Arrays.asList(admins));
       return this;
