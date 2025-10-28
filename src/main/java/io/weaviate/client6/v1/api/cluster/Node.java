@@ -4,8 +4,6 @@ import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
-import io.weaviate.client6.v1.api.collections.config.ShardStatus;
-
 public record Node(
     @SerializedName("name") String name,
     @SerializedName("status") String status,
