@@ -1257,7 +1257,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
       addAdapter(gson, VectorConfig.Kind.TEXT2VEC_DATABRICKS, Text2VecDatabricksVectorizer.class);
       addAdapter(gson, VectorConfig.Kind.TEXT2VEC_GOOGLE, Text2VecGoogleVectorizer.class);
       addAdapter(gson, VectorConfig.Kind.TEXT2VEC_GOOGLEAISTUDIO, Text2VecGoogleAiStudioVectorizer.class);
-      addAdapter(gson, VectorConfig.Kind.TEXT2VEC_HUGGINGFACE, Text2VecHuggingfaceVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.TEXT2VEC_HUGGINGFACE, Text2VecHuggingFaceVectorizer.class);
       addAdapter(gson, VectorConfig.Kind.REF2VEC_CENTROID, Ref2VecCentroidVectorizer.class);
       addAdapter(gson, VectorConfig.Kind.TEXT2VEC_JINAAI, Text2VecJinaAiVectorizer.class);
       addAdapter(gson, VectorConfig.Kind.TEXT2VEC_MISTRAL, Text2VecMistralVectorizer.class);
