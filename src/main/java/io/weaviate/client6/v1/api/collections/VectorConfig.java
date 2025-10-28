@@ -31,11 +31,10 @@ import io.weaviate.client6.v1.api.collections.vectorizers.Text2MultiVecJinaAiVec
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecAwsVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecAzureOpenAiVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecCohereVectorizer;
-import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecContextionaryVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecDatabricksVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecGoogleAiStudioVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecGoogleVectorizer;
-import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecHuggingfaceVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecHuggingFaceVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecJinaAiVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecMistralVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecModel2VecVectorizer;
@@ -54,7 +53,6 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
   public enum Kind implements JsonEnum<Kind> {
     NONE("none"),
     TEXT2VEC_AWS("text2vec-aws"),
-    TEXT2VEC_CONTEXTIONARY("text2vec-contextionary"),
     TEXT2VEC_COHERE("text2vec-cohere"),
     TEXT2VEC_DATABRICKS("text2vec-databricks"),
     TEXT2VEC_GOOGLE("text2vec-google"),
@@ -177,6 +175,111 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
     return Map.entry(vectorName, Img2VecNeuralVectorizer.of(fn));
   }
 
+  /** Create a vector index with an {@code multi2multivec-jinaai} vectorizer. */
+  public static Map.Entry<String, VectorConfig> multi2multivecJinaai() {
+    return multi2multivecJinaai(VectorIndex.DEFAULT_VECTOR_NAME);
+  }
+
+  /**
+   * Create a vector index with an {@code multi2multivec-jinaai} vectorizer.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> multi2multivecJinaai(
+      Function<Multi2MultiVecJinaAiVectorizer.Builder, ObjectBuilder<Multi2MultiVecJinaAiVectorizer>> fn) {
+    return multi2multivecJinaai(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code multi2multivec-jinaai} vectorizer.
+   *
+   * @param vectorName Vector name.
+   */
+  public static Map.Entry<String, VectorConfig> multi2multivecJinaai(String vectorName) {
+    return Map.entry(vectorName, Multi2MultiVecJinaAiVectorizer.of());
+  }
+
+  /**
+   * Create a named vector index with an {@code multi2multivec-jinaai} vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> multi2multivecJinaai(String vectorName,
+      Function<Multi2MultiVecJinaAiVectorizer.Builder, ObjectBuilder<Multi2MultiVecJinaAiVectorizer>> fn) {
+    return Map.entry(vectorName, Multi2MultiVecJinaAiVectorizer.of(fn));
+  }
+
+  /** Create a vector index with an {@code multi2vec-aws} vectorizer. */
+  public static Map.Entry<String, VectorConfig> multi2vecAws() {
+    return multi2vecAws(VectorIndex.DEFAULT_VECTOR_NAME);
+  }
+
+  /**
+   * Create a vector index with an {@code multi2vec-aws} vectorizer.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecAws(
+      Function<Multi2VecAwsVectorizer.Builder, ObjectBuilder<Multi2VecAwsVectorizer>> fn) {
+    return multi2vecAws(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code multi2vec-aws} vectorizer.
+   *
+   * @param vectorName Vector name.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecAws(String vectorName) {
+    return Map.entry(vectorName, Multi2VecAwsVectorizer.of());
+  }
+
+  /**
+   * Create a named vector index with an {@code multi2vec-aws} vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecAws(String vectorName,
+      Function<Multi2VecAwsVectorizer.Builder, ObjectBuilder<Multi2VecAwsVectorizer>> fn) {
+    return Map.entry(vectorName, Multi2VecAwsVectorizer.of(fn));
+  }
+
+  /** Create a vector index with an {@code multi2vec-bind} vectorizer. */
+  public static Map.Entry<String, VectorConfig> multi2vecBind() {
+    return multi2vecBind(VectorIndex.DEFAULT_VECTOR_NAME);
+  }
+
+  /**
+   * Create a vector index with an {@code multi2vec-bind} vectorizer.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecBind(
+      Function<Multi2VecBindVectorizer.Builder, ObjectBuilder<Multi2VecBindVectorizer>> fn) {
+    return multi2vecBind(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code multi2vec-bind} vectorizer.
+   *
+   * @param vectorName Vector name.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecBind(String vectorName) {
+    return Map.entry(vectorName, Multi2VecBindVectorizer.of());
+  }
+
+  /**
+   * Create a named vector index with an {@code multi2vec-bind} vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecBind(String vectorName,
+      Function<Multi2VecBindVectorizer.Builder, ObjectBuilder<Multi2VecBindVectorizer>> fn) {
+    return Map.entry(vectorName, Multi2VecBindVectorizer.of(fn));
+  }
+
   /** Create a vector index with an {@code multi2vec-clip} vectorizer. */
   public static Map.Entry<String, VectorConfig> multi2vecClip() {
     return multi2vecClip(VectorIndex.DEFAULT_VECTOR_NAME);
@@ -212,41 +315,893 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
     return Map.entry(vectorName, Multi2VecClipVectorizer.of(fn));
   }
 
-  /** Create a vector index with an {@code text2vec-contextionary} vectorizer. */
-  public static Map.Entry<String, VectorConfig> text2vecContextionary() {
-    return text2vecContextionary(VectorIndex.DEFAULT_VECTOR_NAME);
+  /** Create a vector index with an {@code multi2vec-cohere} vectorizer. */
+  public static Map.Entry<String, VectorConfig> multi2vecCohere() {
+    return multi2vecBind(VectorIndex.DEFAULT_VECTOR_NAME);
   }
 
   /**
-   * Create a vector index with an {@code text2vec-contextionary} vectorizer.
+   * Create a vector index with an {@code multi2vec-cohere} vectorizer.
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2vecContextionary(
-      Function<Text2VecContextionaryVectorizer.Builder, ObjectBuilder<Text2VecContextionaryVectorizer>> fn) {
-    return text2vecContextionary(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  public static Map.Entry<String, VectorConfig> multi2vecCohere(
+      Function<Multi2VecCohereVectorizer.Builder, ObjectBuilder<Multi2VecCohereVectorizer>> fn) {
+    return multi2vecCohere(VectorIndex.DEFAULT_VECTOR_NAME, fn);
   }
 
   /**
-   * Create a named vector index with an {@code text2vec-contextionary}
+   * Create a named vector index with an {@code multi2vec-cohere} vectorizer.
+   *
+   * @param vectorName Vector name.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecCohere(String vectorName) {
+    return Map.entry(vectorName, Multi2VecCohereVectorizer.of());
+  }
+
+  /**
+   * Create a named vector index with an {@code multi2vec-cohere} vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecCohere(String vectorName,
+      Function<Multi2VecCohereVectorizer.Builder, ObjectBuilder<Multi2VecCohereVectorizer>> fn) {
+    return Map.entry(vectorName, Multi2VecCohereVectorizer.of(fn));
+  }
+
+  /**
+   * Create a vector index with an {@code multi2vec-google} vectorizer.
+   *
+   * @param location Geographic region the Google Cloud model runs in.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecGoogle(String location) {
+    return multi2vecGoogle(VectorIndex.DEFAULT_VECTOR_NAME, location);
+  }
+
+  /**
+   * Create a vector index with an {@code multi2vec-google} vectorizer.
+   *
+   * @param location Geographic region the Google Cloud model runs in.
+   * @param fn       Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecGoogle(
+      String location,
+      Function<Multi2VecGoogleVectorizer.Builder, ObjectBuilder<Multi2VecGoogleVectorizer>> fn) {
+    return multi2vecGoogle(VectorIndex.DEFAULT_VECTOR_NAME, location, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code multi2vec-google} vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param location   Geographic region the Google Cloud model runs in.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecGoogle(String vectorName, String location) {
+    return Map.entry(vectorName, Multi2VecGoogleVectorizer.of(location));
+  }
+
+  /**
+   * Create a named vector index with an {@code multi2vec-google} vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param location   Geographic region the Google Cloud model runs in.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecGoogle(String vectorName,
+      String location,
+      Function<Multi2VecGoogleVectorizer.Builder, ObjectBuilder<Multi2VecGoogleVectorizer>> fn) {
+    return Map.entry(vectorName, Multi2VecGoogleVectorizer.of(location, fn));
+  }
+
+  /** Create a vector index with an {@code multi2vec-jinaai} vectorizer. */
+  public static Map.Entry<String, VectorConfig> multi2vecJinaAi() {
+    return multi2vecJinaAi(VectorIndex.DEFAULT_VECTOR_NAME);
+  }
+
+  /**
+   * Create a vector index with an {@code multi2vec-jinaai} vectorizer.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecJinaAi(
+      Function<Multi2VecJinaAiVectorizer.Builder, ObjectBuilder<Multi2VecJinaAiVectorizer>> fn) {
+    return multi2vecJinaAi(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code multi2vec-jinaai} vectorizer.
+   *
+   * @param vectorName Vector name.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecJinaAi(String vectorName) {
+    return Map.entry(vectorName, Multi2VecJinaAiVectorizer.of());
+  }
+
+  /**
+   * Create a named vector index with an {@code multi2vec-jinaai} vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecJinaAi(String vectorName,
+      Function<Multi2VecJinaAiVectorizer.Builder, ObjectBuilder<Multi2VecJinaAiVectorizer>> fn) {
+    return Map.entry(vectorName, Multi2VecJinaAiVectorizer.of(fn));
+  }
+
+  /** Create a vector index with an {@code multi2vec-nvidia} vectorizer. */
+  public static Map.Entry<String, VectorConfig> multi2vecNvidia() {
+    return multi2vecNvidia(VectorIndex.DEFAULT_VECTOR_NAME);
+  }
+
+  /**
+   * Create a vector index with an {@code multi2vec-nvidia} vectorizer.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecNvidia(
+      Function<Multi2VecNvidiaVectorizer.Builder, ObjectBuilder<Multi2VecNvidiaVectorizer>> fn) {
+    return multi2vecNvidia(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code multi2vec-nvidia} vectorizer.
+   *
+   * @param vectorName Vector name.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecNvidia(String vectorName) {
+    return Map.entry(vectorName, Multi2VecNvidiaVectorizer.of());
+  }
+
+  /**
+   * Create a named vector index with an {@code multi2vec-nvidia} vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecNvidia(String vectorName,
+      Function<Multi2VecNvidiaVectorizer.Builder, ObjectBuilder<Multi2VecNvidiaVectorizer>> fn) {
+    return Map.entry(vectorName, Multi2VecNvidiaVectorizer.of(fn));
+  }
+
+  /** Create a vector index with an {@code multi2vec-voyageai} vectorizer. */
+  public static Map.Entry<String, VectorConfig> multi2vecVoyageAi() {
+    return multi2vecVoyageAi(VectorIndex.DEFAULT_VECTOR_NAME);
+  }
+
+  /**
+   * Create a vector index with an {@code multi2vec-voyageai} vectorizer.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecVoyageAi(
+      Function<Multi2VecVoyageAiVectorizer.Builder, ObjectBuilder<Multi2VecVoyageAiVectorizer>> fn) {
+    return multi2vecVoyageAi(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code multi2vec-voyageai} vectorizer.
+   *
+   * @param vectorName Vector name.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecVoyageAi(String vectorName) {
+    return Map.entry(vectorName, Multi2VecVoyageAiVectorizer.of());
+  }
+
+  /**
+   * Create a named vector index with an {@code multi2vec-voyageai} vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecVoyageAi(String vectorName,
+      Function<Multi2VecVoyageAiVectorizer.Builder, ObjectBuilder<Multi2VecVoyageAiVectorizer>> fn) {
+    return Map.entry(vectorName, Multi2VecVoyageAiVectorizer.of(fn));
+  }
+
+  /** Create a vector index with an {@code ref2vec-centroid} vectorizer. */
+  public static Map.Entry<String, VectorConfig> ref2vecCentroid() {
+    return ref2vecCentroid(VectorIndex.DEFAULT_VECTOR_NAME);
+  }
+
+  /**
+   * Create a vector index with an {@code ref2vec-centroid} vectorizer.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> ref2vecCentroid(
+      Function<Ref2VecCentroidVectorizer.Builder, ObjectBuilder<Ref2VecCentroidVectorizer>> fn) {
+    return ref2vecCentroid(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code ref2vec-centroid} vectorizer.
+   *
+   * @param vectorName Vector name.
+   */
+  public static Map.Entry<String, VectorConfig> ref2vecCentroid(String vectorName) {
+    return Map.entry(vectorName, Ref2VecCentroidVectorizer.of());
+  }
+
+  /**
+   * Create a named vector index with an {@code ref2vec-centroid} vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> ref2vecCentroid(String vectorName,
+      Function<Ref2VecCentroidVectorizer.Builder, ObjectBuilder<Ref2VecCentroidVectorizer>> fn) {
+    return Map.entry(vectorName, Ref2VecCentroidVectorizer.of(fn));
+  }
+
+  /** Create a vector index with an {@code text2multivec-jinaai} vectorizer. */
+  public static Map.Entry<String, VectorConfig> text2multivecJinaAi() {
+    return text2multivecJinaAi(VectorIndex.DEFAULT_VECTOR_NAME);
+  }
+
+  /**
+   * Create a vector index with an {@code text2multivec-jinaai} vectorizer.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2multivecJinaAi(
+      Function<Text2MultiVecJinaAiVectorizer.Builder, ObjectBuilder<Text2MultiVecJinaAiVectorizer>> fn) {
+    return text2multivecJinaAi(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code text2multivec-jinaai} vectorizer.
+   *
+   * @param vectorName Vector name.
+   */
+  public static Map.Entry<String, VectorConfig> text2multivecJinaAi(String vectorName) {
+    return Map.entry(vectorName, Text2MultiVecJinaAiVectorizer.of());
+  }
+
+  /**
+   * Create a named vector index with an {@code text2multivec-jinaai} vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2multivecJinaAi(String vectorName,
+      Function<Text2MultiVecJinaAiVectorizer.Builder, ObjectBuilder<Text2MultiVecJinaAiVectorizer>> fn) {
+    return Map.entry(vectorName, Text2MultiVecJinaAiVectorizer.of(fn));
+  }
+
+  /**
+   * Create a vector index with an {@code text2vec-aws} vectorizer with Bedrock
+   * integration.
+   *
+   * @param model Inference model.
+   */
+  public static Map.Entry<String, VectorConfig> text2vecAwsBedrock(String model) {
+    return text2vecAwsBedrock(VectorIndex.DEFAULT_VECTOR_NAME, model);
+  }
+
+  /**
+   * Create a vector index with an {@code text2vec-aws} vectorizer with Bedrock
+   * integration.
+   *
+   * @param model Inference model.
+   * @param fn    Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2vecAwsBedrock(
+      String model,
+      Function<Text2VecAwsVectorizer.BedrockBuilder, ObjectBuilder<Text2VecAwsVectorizer>> fn) {
+    return text2vecAwsBedrock(VectorIndex.DEFAULT_VECTOR_NAME, model, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-aws}
+   * vectorizer with Bedrock integration.
+   *
+   * @param vectorName Vector name.
+   * @param model      Inference model.
+   */
+  public static Map.Entry<String, VectorConfig> text2vecAwsBedrock(String vectorName, String model) {
+    return Map.entry(vectorName, Text2VecAwsVectorizer.bedrock(model));
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-aws}
+   * vectorizer with Bedrock integration.
+   *
+   * @param vectorName Vector name.
+   * @param model      Inference model.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2vecAwsBedrock(String vectorName,
+      String model,
+      Function<Text2VecAwsVectorizer.BedrockBuilder, ObjectBuilder<Text2VecAwsVectorizer>> fn) {
+    return Map.entry(vectorName, Text2VecAwsVectorizer.bedrock(model, fn));
+  }
+
+  /**
+   * Create a vector index with an {@code text2vec-aws} vectorizer with Sagemaker
+   * integration.
+   *
+   * @param baseUrl Base URL of the inference service.
+   */
+  public static Map.Entry<String, VectorConfig> text2vecAwsSagemaker(String baseUrl) {
+    return text2vecAwsSagemaker(VectorIndex.DEFAULT_VECTOR_NAME, baseUrl);
+  }
+
+  /**
+   * Create a vector index with an {@code text2vec-aws} vectorizer with Sagemaker
+   * integration.
+   *
+   * @param baseUrl Base URL of the inference service.
+   * @param fn      Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2vecAwsSagemaker(
+      String baseUrl,
+      Function<Text2VecAwsVectorizer.SagemakerBuilder, ObjectBuilder<Text2VecAwsVectorizer>> fn) {
+    return text2vecAwsSagemaker(VectorIndex.DEFAULT_VECTOR_NAME, baseUrl, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-aws}
+   * vectorizer with Sagemaker integration.
+   *
+   * @param vectorName Vector name.
+   * @param baseUrl    Base URL of the inference service.
+   */
+  public static Map.Entry<String, VectorConfig> text2vecAwsSagemaker(String vectorName, String baseUrl) {
+    return Map.entry(vectorName, Text2VecAwsVectorizer.sagemaker(baseUrl));
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-aws}
+   * vectorizer with Sagemaker integration.
+   *
+   * @param vectorName Vector name.
+   * @param baseUrl    Base URL of the inference service.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2vecAwsSagemaker(String vectorName,
+      String baseUrl,
+      Function<Text2VecAwsVectorizer.SagemakerBuilder, ObjectBuilder<Text2VecAwsVectorizer>> fn) {
+    return Map.entry(vectorName, Text2VecAwsVectorizer.sagemaker(baseUrl, fn));
+  }
+
+  /**
+   * Create a vector index with an {@code text2vec-openai} vectorizer deployed on
+   * Azure.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecAzureOpenAi() {
+    return text2VecAzureOpenAi(VectorIndex.DEFAULT_VECTOR_NAME);
+  }
+
+  /**
+   * Create a vector index with an {@code text2vec-openai} vectorizer deployed on
+   * Azure.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecAzureOpenAi(
+      Function<Text2VecAzureOpenAiVectorizer.Builder, ObjectBuilder<Text2VecAzureOpenAiVectorizer>> fn) {
+    return text2VecAzureOpenAi(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-openai} vectorizer
+   * deployed on Azure.
+   *
+   * @param vectorName Vector name.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecAzureOpenAi(String vectorName) {
+    return Map.entry(vectorName, Text2VecAzureOpenAiVectorizer.of());
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-openai} vectorizer
+   * deployed on Azure.
+   *
+   * @param vectorName Vector name.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecAzureOpenAi(String vectorName,
+      Function<Text2VecAzureOpenAiVectorizer.Builder, ObjectBuilder<Text2VecAzureOpenAiVectorizer>> fn) {
+    return Map.entry(vectorName, Text2VecAzureOpenAiVectorizer.of(fn));
+  }
+
+  /** Create a vector index with an {@code text2vec-cohere} vectorizer. */
+  public static Map.Entry<String, VectorConfig> text2vecCohere() {
+    return text2vecCohere(VectorIndex.DEFAULT_VECTOR_NAME);
+  }
+
+  /**
+   * Create a vector index with an {@code text2vec-cohere} vectorizer.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2vecCohere(
+      Function<Text2VecCohereVectorizer.Builder, ObjectBuilder<Text2VecCohereVectorizer>> fn) {
+    return text2vecCohere(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-cohere}
    * vectorizer.
    *
    * @param vectorName Vector name.
    */
-  public static Map.Entry<String, VectorConfig> text2vecContextionary(String vectorName) {
-    return Map.entry(vectorName, Text2VecContextionaryVectorizer.of());
+  public static Map.Entry<String, VectorConfig> text2vecCohere(String vectorName) {
+    return Map.entry(vectorName, Text2VecCohereVectorizer.of());
   }
 
   /**
-   * Create a named vector index with an {@code text2vec-contextionary}
+   * Create a named vector index with an {@code text2vec-cohere}
    * vectorizer.
    *
    * @param vectorName Vector name.
    * @param fn         Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2vecContextionary(String vectorName,
-      Function<Text2VecContextionaryVectorizer.Builder, ObjectBuilder<Text2VecContextionaryVectorizer>> fn) {
-    return Map.entry(vectorName, Text2VecContextionaryVectorizer.of(fn));
+  public static Map.Entry<String, VectorConfig> text2vecCohere(String vectorName,
+      Function<Text2VecCohereVectorizer.Builder, ObjectBuilder<Text2VecCohereVectorizer>> fn) {
+    return Map.entry(vectorName, Text2VecCohereVectorizer.of(fn));
+  }
+
+  /** Create a vector index with an {@code text2vec-databricks} vectorizer. */
+  public static Map.Entry<String, VectorConfig> text2VecDatabricks() {
+    return text2VecDatabricks(VectorIndex.DEFAULT_VECTOR_NAME);
+  }
+
+  /**
+   * Create a vector index with an {@code text2vec-databricks} vectorizer.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecDatabricks(
+      Function<Text2VecDatabricksVectorizer.Builder, ObjectBuilder<Text2VecDatabricksVectorizer>> fn) {
+    return text2VecDatabricks(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-databricks} vectorizer.
+   *
+   * @param vectorName Vector name.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecDatabricks(String vectorName) {
+    return Map.entry(vectorName, Text2VecDatabricksVectorizer.of());
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-databricks} vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecDatabricks(String vectorName,
+      Function<Text2VecDatabricksVectorizer.Builder, ObjectBuilder<Text2VecDatabricksVectorizer>> fn) {
+    return Map.entry(vectorName, Text2VecDatabricksVectorizer.of(fn));
+  }
+
+  /**
+   * Create a vector index with an {@code text2vec-google} vectorizer with Google
+   * AI Studio integration.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecGoogleAiStudio() {
+    return text2VecGoogleAiStudio(VectorIndex.DEFAULT_VECTOR_NAME);
+  }
+
+  /**
+   * Create a vector index with an {@code text2vec-google} vectorizer with Google
+   * AI Studio integration.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecGoogleAiStudio(
+      Function<Text2VecGoogleAiStudioVectorizer.Builder, ObjectBuilder<Text2VecGoogleAiStudioVectorizer>> fn) {
+    return text2VecGoogleAiStudio(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-google} vectorizer with
+   * Google AI Studio integration.
+   *
+   * @param vectorName Vector name.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecGoogleAiStudio(String vectorName) {
+    return Map.entry(vectorName, Text2VecGoogleAiStudioVectorizer.of());
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-google} vectorizer with
+   * Google AI Studio integration.
+   *
+   * @param vectorName Vector name.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecGoogleAiStudio(String vectorName,
+      Function<Text2VecGoogleAiStudioVectorizer.Builder, ObjectBuilder<Text2VecGoogleAiStudioVectorizer>> fn) {
+    return Map.entry(vectorName, Text2VecGoogleAiStudioVectorizer.of(fn));
+  }
+
+  /** Create a vector index with an {@code text2vec-google} vectorizer. */
+  public static Map.Entry<String, VectorConfig> text2VecGoogle() {
+    return text2VecGoogle(VectorIndex.DEFAULT_VECTOR_NAME);
+  }
+
+  /**
+   * Create a vector index with an {@code text2vec-google} vectorizer.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecGoogle(
+      Function<Text2VecGoogleVectorizer.Builder, ObjectBuilder<Text2VecGoogleVectorizer>> fn) {
+    return text2VecGoogle(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-google} vectorizer.
+   *
+   * @param vectorName Vector name.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecGoogle(String vectorName) {
+    return Map.entry(vectorName, Text2VecGoogleVectorizer.of());
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-google} vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecGoogle(String vectorName,
+      Function<Text2VecGoogleVectorizer.Builder, ObjectBuilder<Text2VecGoogleVectorizer>> fn) {
+    return Map.entry(vectorName, Text2VecGoogleVectorizer.of(fn));
+  }
+
+  /** Create a vector index with an {@code text2vec-huggingface} vectorizer. */
+  public static Map.Entry<String, VectorConfig> text2VecHuggingFace() {
+    return text2VecHuggingFace(VectorIndex.DEFAULT_VECTOR_NAME);
+  }
+
+  /**
+   * Create a vector index with an {@code text2vec-huggingface} vectorizer.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecHuggingFace(
+      Function<Text2VecHuggingFaceVectorizer.Builder, ObjectBuilder<Text2VecHuggingFaceVectorizer>> fn) {
+    return text2VecHuggingFace(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-huggingface} vectorizer.
+   *
+   * @param vectorName Vector name.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecHuggingFace(String vectorName) {
+    return Map.entry(vectorName, Text2VecHuggingFaceVectorizer.of());
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-huggingface} vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecHuggingFace(String vectorName,
+      Function<Text2VecHuggingFaceVectorizer.Builder, ObjectBuilder<Text2VecHuggingFaceVectorizer>> fn) {
+    return Map.entry(vectorName, Text2VecHuggingFaceVectorizer.of(fn));
+  }
+
+  /** Create a vector index with an {@code text2vec-jinaai} vectorizer. */
+  public static Map.Entry<String, VectorConfig> text2VecJinaAi() {
+    return text2VecJinaAi(VectorIndex.DEFAULT_VECTOR_NAME);
+  }
+
+  /**
+   * Create a vector index with an {@code text2vec-jinaai} vectorizer.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecJinaAi(
+      Function<Text2VecJinaAiVectorizer.Builder, ObjectBuilder<Text2VecJinaAiVectorizer>> fn) {
+    return text2VecJinaAi(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-jinaai} vectorizer.
+   *
+   * @param vectorName Vector name.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecJinaAi(String vectorName) {
+    return Map.entry(vectorName, Text2VecJinaAiVectorizer.of());
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-jinaai} vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecJinaAi(String vectorName,
+      Function<Text2VecJinaAiVectorizer.Builder, ObjectBuilder<Text2VecJinaAiVectorizer>> fn) {
+    return Map.entry(vectorName, Text2VecJinaAiVectorizer.of(fn));
+  }
+
+  /** Create a vector index with an {@code text2vec-mistral} vectorizer. */
+  public static Map.Entry<String, VectorConfig> text2VecMistral() {
+    return text2VecMistral(VectorIndex.DEFAULT_VECTOR_NAME);
+  }
+
+  /**
+   * Create a vector index with an {@code text2vec-mistral} vectorizer.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecMistral(
+      Function<Text2VecMistralVectorizer.Builder, ObjectBuilder<Text2VecMistralVectorizer>> fn) {
+    return text2VecMistral(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-mistral} vectorizer.
+   *
+   * @param vectorName Vector name.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecMistral(String vectorName) {
+    return Map.entry(vectorName, Text2VecMistralVectorizer.of());
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-mistral} vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecMistral(String vectorName,
+      Function<Text2VecMistralVectorizer.Builder, ObjectBuilder<Text2VecMistralVectorizer>> fn) {
+    return Map.entry(vectorName, Text2VecMistralVectorizer.of(fn));
+  }
+
+  /** Create a vector index with an {@code text2vec-model2vec} vectorizer. */
+  public static Map.Entry<String, VectorConfig> text2VecModel2Vec() {
+    return text2VecModel2Vec(VectorIndex.DEFAULT_VECTOR_NAME);
+  }
+
+  /**
+   * Create a vector index with an {@code text2vec-model2vec} vectorizer.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecModel2Vec(
+      Function<Text2VecModel2VecVectorizer.Builder, ObjectBuilder<Text2VecModel2VecVectorizer>> fn) {
+    return text2VecModel2Vec(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-model2vec} vectorizer.
+   *
+   * @param vectorName Vector name.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecModel2Vec(String vectorName) {
+    return Map.entry(vectorName, Text2VecModel2VecVectorizer.of());
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-model2vec} vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecModel2Vec(String vectorName,
+      Function<Text2VecModel2VecVectorizer.Builder, ObjectBuilder<Text2VecModel2VecVectorizer>> fn) {
+    return Map.entry(vectorName, Text2VecModel2VecVectorizer.of(fn));
+  }
+
+  /** Create a vector index with an {@code text2vec-morph} vectorizer. */
+  public static Map.Entry<String, VectorConfig> text2VecMorph() {
+    return text2VecMorph(VectorIndex.DEFAULT_VECTOR_NAME);
+  }
+
+  /**
+   * Create a vector index with an {@code text2vec-morph} vectorizer.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecMorph(
+      Function<Text2VecMorphVectorizer.Builder, ObjectBuilder<Text2VecMorphVectorizer>> fn) {
+    return text2VecMorph(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-morph} vectorizer.
+   *
+   * @param vectorName Vector name.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecMorph(String vectorName) {
+    return Map.entry(vectorName, Text2VecMorphVectorizer.of());
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-morph} vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecMorph(String vectorName,
+      Function<Text2VecMorphVectorizer.Builder, ObjectBuilder<Text2VecMorphVectorizer>> fn) {
+    return Map.entry(vectorName, Text2VecMorphVectorizer.of(fn));
+  }
+
+  /** Create a vector index with an {@code text2vec-nvidia} vectorizer. */
+  public static Map.Entry<String, VectorConfig> text2VecNvidia() {
+    return text2VecNvidia(VectorIndex.DEFAULT_VECTOR_NAME);
+  }
+
+  /**
+   * Create a vector index with an {@code text2vec-nvidia} vectorizer.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecNvidia(
+      Function<Text2VecNvidiaVectorizer.Builder, ObjectBuilder<Text2VecNvidiaVectorizer>> fn) {
+    return text2VecNvidia(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-nvidia} vectorizer.
+   *
+   * @param vectorName Vector name.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecNvidia(String vectorName) {
+    return Map.entry(vectorName, Text2VecNvidiaVectorizer.of());
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-nvidia} vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecNvidia(String vectorName,
+      Function<Text2VecNvidiaVectorizer.Builder, ObjectBuilder<Text2VecNvidiaVectorizer>> fn) {
+    return Map.entry(vectorName, Text2VecNvidiaVectorizer.of(fn));
+  }
+
+  /** Create a vector index with an {@code text2vec-ollama} vectorizer. */
+  public static Map.Entry<String, VectorConfig> text2VecOllama() {
+    return text2VecOllama(VectorIndex.DEFAULT_VECTOR_NAME);
+  }
+
+  /**
+   * Create a vector index with an {@code text2vec-ollama} vectorizer.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecOllama(
+      Function<Text2VecOllamaVectorizer.Builder, ObjectBuilder<Text2VecOllamaVectorizer>> fn) {
+    return text2VecOllama(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-ollama} vectorizer.
+   *
+   * @param vectorName Vector name.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecOllama(String vectorName) {
+    return Map.entry(vectorName, Text2VecOllamaVectorizer.of());
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-ollama} vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecOllama(String vectorName,
+      Function<Text2VecOllamaVectorizer.Builder, ObjectBuilder<Text2VecOllamaVectorizer>> fn) {
+    return Map.entry(vectorName, Text2VecOllamaVectorizer.of(fn));
+  }
+
+  /** Create a vector index with an {@code text2vec-openai} vectorizer. */
+  public static Map.Entry<String, VectorConfig> text2VecOpenAi() {
+    return text2VecOpenAi(VectorIndex.DEFAULT_VECTOR_NAME);
+  }
+
+  /**
+   * Create a vector index with an {@code text2vec-openai} vectorizer.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecOpenAi(
+      Function<Text2VecOpenAiVectorizer.Builder, ObjectBuilder<Text2VecOpenAiVectorizer>> fn) {
+    return text2VecOpenAi(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-openai} vectorizer.
+   *
+   * @param vectorName Vector name.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecOpenAi(String vectorName) {
+    return Map.entry(vectorName, Text2VecOpenAiVectorizer.of());
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-openai} vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecOpenAi(String vectorName,
+      Function<Text2VecOpenAiVectorizer.Builder, ObjectBuilder<Text2VecOpenAiVectorizer>> fn) {
+    return Map.entry(vectorName, Text2VecOpenAiVectorizer.of(fn));
+  }
+
+  /** Create a vector index with an {@code text2vec-transformers} vectorizer. */
+  public static Map.Entry<String, VectorConfig> text2VecTransformers() {
+    return text2VecTransformers(VectorIndex.DEFAULT_VECTOR_NAME);
+  }
+
+  /**
+   * Create a vector index with an {@code text2vec-transformers} vectorizer.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecTransformers(
+      Function<Text2VecTransformersVectorizer.Builder, ObjectBuilder<Text2VecTransformersVectorizer>> fn) {
+    return text2VecTransformers(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-transformers} vectorizer.
+   *
+   * @param vectorName Vector name.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecTransformers(String vectorName) {
+    return Map.entry(vectorName, Text2VecTransformersVectorizer.of());
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-transformers} vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecTransformers(String vectorName,
+      Function<Text2VecTransformersVectorizer.Builder, ObjectBuilder<Text2VecTransformersVectorizer>> fn) {
+    return Map.entry(vectorName, Text2VecTransformersVectorizer.of(fn));
+  }
+
+  /** Create a vector index with an {@code text2vec-voyageai} vectorizer. */
+  public static Map.Entry<String, VectorConfig> text2VecVoyageAi() {
+    return text2VecVoyageAi(VectorIndex.DEFAULT_VECTOR_NAME);
+  }
+
+  /**
+   * Create a vector index with an {@code text2vec-voyageai} vectorizer.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecVoyageAi(
+      Function<Text2VecVoyageAiVectorizer.Builder, ObjectBuilder<Text2VecVoyageAiVectorizer>> fn) {
+    return text2VecVoyageAi(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-voyageai} vectorizer.
+   *
+   * @param vectorName Vector name.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecVoyageAi(String vectorName) {
+    return Map.entry(vectorName, Text2VecVoyageAiVectorizer.of());
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-voyageai} vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2VecVoyageAi(String vectorName,
+      Function<Text2VecVoyageAiVectorizer.Builder, ObjectBuilder<Text2VecVoyageAiVectorizer>> fn) {
+    return Map.entry(vectorName, Text2VecVoyageAiVectorizer.of(fn));
   }
 
   /** Create a vector index with an {@code text2vec-weaviate} vectorizer. */
@@ -298,7 +1253,6 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
     private final void init(Gson gson) {
       addAdapter(gson, VectorConfig.Kind.NONE, SelfProvidedVectorizer.class);
       addAdapter(gson, VectorConfig.Kind.TEXT2VEC_AWS, Text2VecAwsVectorizer.class);
-      addAdapter(gson, VectorConfig.Kind.TEXT2VEC_CONTEXTIONARY, Text2VecContextionaryVectorizer.class);
       addAdapter(gson, VectorConfig.Kind.TEXT2VEC_COHERE, Text2VecCohereVectorizer.class);
       addAdapter(gson, VectorConfig.Kind.TEXT2VEC_DATABRICKS, Text2VecDatabricksVectorizer.class);
       addAdapter(gson, VectorConfig.Kind.TEXT2VEC_GOOGLE, Text2VecGoogleVectorizer.class);

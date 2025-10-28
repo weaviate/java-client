@@ -139,9 +139,9 @@ public class Weaviate extends WeaviateContainer {
       return this;
     }
 
-    public Builder withContextionaryUrl(String url) {
-      addModules(Contextionary.MODULE);
-      environment.put("CONTEXTIONARY_URL", url);
+    public Builder withTransformersUrl(String url) {
+      addModules(Transformers.MODULE);
+      environment.put("TRANSFORMERS_INFERENCE_API", url);
       return this;
     }
 

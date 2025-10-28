@@ -41,7 +41,7 @@ import io.weaviate.client6.v1.api.collections.vectorindex.MultiVector.Aggregatio
 import io.weaviate.client6.v1.api.collections.vectorizers.Img2VecNeuralVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecClipVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.SelfProvidedVectorizer;
-import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecContextionaryVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecCohereVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecWeaviateVectorizer;
 import io.weaviate.client6.v1.api.rbac.AliasesPermission;
 import io.weaviate.client6.v1.api.rbac.BackupsPermission;
@@ -116,13 +116,13 @@ public class JSONTest {
         },
         {
             VectorConfig.class,
-            Text2VecContextionaryVectorizer.of(),
+            Text2VecCohereVectorizer.of(),
             """
                 {
                   "vectorIndexType": "hnsw",
                   "vectorIndexConfig": {},
                   "vectorizer": {
-                    "text2vec-contextionary": {
+                    "text2vec-cohere": {
                       "vectorizeClassName": false,
                       "sourceProperties": []
                     }
