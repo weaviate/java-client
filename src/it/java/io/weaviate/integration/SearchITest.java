@@ -160,7 +160,7 @@ public class SearchITest extends ConcurrentTest {
 
     var result = songs.query.nearText("forest",
         opt -> opt
-            .distance(0.5f)
+            .distance(0.9f)
             .moveTo(.98f, to -> to.concepts("tropical"))
             .moveAway(.4f, away -> away.uuids(submarine.metadata().uuid()))
             .returnProperties("title"));

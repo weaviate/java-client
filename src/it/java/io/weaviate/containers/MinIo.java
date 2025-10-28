@@ -7,6 +7,9 @@ public class MinIo extends MinIOContainer {
   public static final String ACCESS_KEY = "minioadmin";
   public static final String SECRET_KEY = "minioadmin";
 
+  public static final String HOST_NAME = "minio";
+  public static final String URL = HOST_NAME + ":9000";
+
   static MinIo createDefault() {
     return new MinIo();
   }
