@@ -58,7 +58,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
     TEXT2VEC_GOOGLE("text2vec-google"),
     TEXT2VEC_GOOGLEAISTUDIO("text2vec-google"),
     TEXT2VEC_HUGGINGFACE("text2vec-huggingface"),
-    REF2VEC_CENTROID("text2vec-huggingface"),
+    REF2VEC_CENTROID("ref2vec-centroid"),
     TEXT2VEC_JINAAI("text2vec-jinaai"),
     TEXT2VEC_MISTRAL("text2vec-mistral"),
     TEXT2VEC_MORPH("text2vec-morph"),

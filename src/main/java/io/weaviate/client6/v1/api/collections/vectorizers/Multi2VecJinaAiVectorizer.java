@@ -51,7 +51,7 @@ public record Multi2VecJinaAiVectorizer(
 
   @Override
   public VectorConfig.Kind _kind() {
-    return VectorConfig.Kind.MULTI2VEC_COHERE;
+    return VectorConfig.Kind.MULTI2VEC_JINAAI;
   }
 
   @Override

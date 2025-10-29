@@ -25,7 +25,7 @@ public record Text2VecMorphVectorizer(
 
   @Override
   public VectorConfig.Kind _kind() {
-    return VectorConfig.Kind.TEXT2VEC_HUGGINGFACE;
+    return VectorConfig.Kind.TEXT2VEC_MORPH;
   }
 
   @Override

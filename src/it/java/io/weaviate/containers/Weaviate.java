@@ -139,9 +139,9 @@ public class Weaviate extends WeaviateContainer {
       return this;
     }
 
-    public Builder withTransformersUrl(String url) {
-      addModules(Transformers.MODULE);
-      environment.put("TRANSFORMERS_INFERENCE_API", "http://" + url);
+    public Builder withModel2VecUrl(String url) {
+      addModules(Model2Vec.MODULE);
+      environment.put("MODEL2VEC_INFERENCE_API", "http://" + url);
       return this;
     }
 

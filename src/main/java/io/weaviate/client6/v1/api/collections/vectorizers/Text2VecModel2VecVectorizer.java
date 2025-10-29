@@ -30,7 +30,7 @@ public record Text2VecModel2VecVectorizer(
 
   @Override
   public VectorConfig.Kind _kind() {
-    return VectorConfig.Kind.TEXT2VEC_COHERE;
+    return VectorConfig.Kind.TEXT2VEC_MODEL2VEC;
   }
 
   @Override
