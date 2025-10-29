@@ -669,8 +669,8 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * Create a vector index with an {@code text2vec-openai} vectorizer deployed on
    * Azure.
    */
-  public static Map.Entry<String, VectorConfig> text2VecAzureOpenAi() {
-    return text2VecAzureOpenAi(VectorIndex.DEFAULT_VECTOR_NAME);
+  public static Map.Entry<String, VectorConfig> text2vecAzureOpenAi() {
+    return text2vecAzureOpenAi(VectorIndex.DEFAULT_VECTOR_NAME);
   }
 
   /**
@@ -679,9 +679,9 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecAzureOpenAi(
+  public static Map.Entry<String, VectorConfig> text2vecAzureOpenAi(
       Function<Text2VecAzureOpenAiVectorizer.Builder, ObjectBuilder<Text2VecAzureOpenAiVectorizer>> fn) {
-    return text2VecAzureOpenAi(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+    return text2vecAzureOpenAi(VectorIndex.DEFAULT_VECTOR_NAME, fn);
   }
 
   /**
@@ -690,7 +690,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param vectorName Vector name.
    */
-  public static Map.Entry<String, VectorConfig> text2VecAzureOpenAi(String vectorName) {
+  public static Map.Entry<String, VectorConfig> text2vecAzureOpenAi(String vectorName) {
     return Map.entry(vectorName, Text2VecAzureOpenAiVectorizer.of());
   }
 
@@ -701,7 +701,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * @param vectorName Vector name.
    * @param fn         Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecAzureOpenAi(String vectorName,
+  public static Map.Entry<String, VectorConfig> text2vecAzureOpenAi(String vectorName,
       Function<Text2VecAzureOpenAiVectorizer.Builder, ObjectBuilder<Text2VecAzureOpenAiVectorizer>> fn) {
     return Map.entry(vectorName, Text2VecAzureOpenAiVectorizer.of(fn));
   }
@@ -744,8 +744,8 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
   }
 
   /** Create a vector index with an {@code text2vec-databricks} vectorizer. */
-  public static Map.Entry<String, VectorConfig> text2VecDatabricks() {
-    return text2VecDatabricks(VectorIndex.DEFAULT_VECTOR_NAME);
+  public static Map.Entry<String, VectorConfig> text2vecDatabricks() {
+    return text2vecDatabricks(VectorIndex.DEFAULT_VECTOR_NAME);
   }
 
   /**
@@ -753,9 +753,9 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecDatabricks(
+  public static Map.Entry<String, VectorConfig> text2vecDatabricks(
       Function<Text2VecDatabricksVectorizer.Builder, ObjectBuilder<Text2VecDatabricksVectorizer>> fn) {
-    return text2VecDatabricks(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+    return text2vecDatabricks(VectorIndex.DEFAULT_VECTOR_NAME, fn);
   }
 
   /**
@@ -763,7 +763,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param vectorName Vector name.
    */
-  public static Map.Entry<String, VectorConfig> text2VecDatabricks(String vectorName) {
+  public static Map.Entry<String, VectorConfig> text2vecDatabricks(String vectorName) {
     return Map.entry(vectorName, Text2VecDatabricksVectorizer.of());
   }
 
@@ -773,7 +773,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * @param vectorName Vector name.
    * @param fn         Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecDatabricks(String vectorName,
+  public static Map.Entry<String, VectorConfig> text2vecDatabricks(String vectorName,
       Function<Text2VecDatabricksVectorizer.Builder, ObjectBuilder<Text2VecDatabricksVectorizer>> fn) {
     return Map.entry(vectorName, Text2VecDatabricksVectorizer.of(fn));
   }
@@ -782,8 +782,8 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * Create a vector index with an {@code text2vec-google} vectorizer with Google
    * AI Studio integration.
    */
-  public static Map.Entry<String, VectorConfig> text2VecGoogleAiStudio() {
-    return text2VecGoogleAiStudio(VectorIndex.DEFAULT_VECTOR_NAME);
+  public static Map.Entry<String, VectorConfig> text2vecGoogleAiStudio() {
+    return text2vecGoogleAiStudio(VectorIndex.DEFAULT_VECTOR_NAME);
   }
 
   /**
@@ -792,9 +792,9 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecGoogleAiStudio(
+  public static Map.Entry<String, VectorConfig> text2vecGoogleAiStudio(
       Function<Text2VecGoogleAiStudioVectorizer.Builder, ObjectBuilder<Text2VecGoogleAiStudioVectorizer>> fn) {
-    return text2VecGoogleAiStudio(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+    return text2vecGoogleAiStudio(VectorIndex.DEFAULT_VECTOR_NAME, fn);
   }
 
   /**
@@ -803,7 +803,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param vectorName Vector name.
    */
-  public static Map.Entry<String, VectorConfig> text2VecGoogleAiStudio(String vectorName) {
+  public static Map.Entry<String, VectorConfig> text2vecGoogleAiStudio(String vectorName) {
     return Map.entry(vectorName, Text2VecGoogleAiStudioVectorizer.of());
   }
 
@@ -814,14 +814,14 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * @param vectorName Vector name.
    * @param fn         Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecGoogleAiStudio(String vectorName,
+  public static Map.Entry<String, VectorConfig> text2vecGoogleAiStudio(String vectorName,
       Function<Text2VecGoogleAiStudioVectorizer.Builder, ObjectBuilder<Text2VecGoogleAiStudioVectorizer>> fn) {
     return Map.entry(vectorName, Text2VecGoogleAiStudioVectorizer.of(fn));
   }
 
   /** Create a vector index with an {@code text2vec-google} vectorizer. */
-  public static Map.Entry<String, VectorConfig> text2VecGoogle() {
-    return text2VecGoogle(VectorIndex.DEFAULT_VECTOR_NAME);
+  public static Map.Entry<String, VectorConfig> text2vecGoogle() {
+    return text2vecGoogle(VectorIndex.DEFAULT_VECTOR_NAME);
   }
 
   /**
@@ -829,9 +829,9 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecGoogle(
+  public static Map.Entry<String, VectorConfig> text2vecGoogle(
       Function<Text2VecGoogleVectorizer.Builder, ObjectBuilder<Text2VecGoogleVectorizer>> fn) {
-    return text2VecGoogle(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+    return text2vecGoogle(VectorIndex.DEFAULT_VECTOR_NAME, fn);
   }
 
   /**
@@ -839,7 +839,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param vectorName Vector name.
    */
-  public static Map.Entry<String, VectorConfig> text2VecGoogle(String vectorName) {
+  public static Map.Entry<String, VectorConfig> text2vecGoogle(String vectorName) {
     return Map.entry(vectorName, Text2VecGoogleVectorizer.of());
   }
 
@@ -849,14 +849,14 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * @param vectorName Vector name.
    * @param fn         Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecGoogle(String vectorName,
+  public static Map.Entry<String, VectorConfig> text2vecGoogle(String vectorName,
       Function<Text2VecGoogleVectorizer.Builder, ObjectBuilder<Text2VecGoogleVectorizer>> fn) {
     return Map.entry(vectorName, Text2VecGoogleVectorizer.of(fn));
   }
 
   /** Create a vector index with an {@code text2vec-huggingface} vectorizer. */
-  public static Map.Entry<String, VectorConfig> text2VecHuggingFace() {
-    return text2VecHuggingFace(VectorIndex.DEFAULT_VECTOR_NAME);
+  public static Map.Entry<String, VectorConfig> text2vecHuggingFace() {
+    return text2vecHuggingFace(VectorIndex.DEFAULT_VECTOR_NAME);
   }
 
   /**
@@ -864,9 +864,9 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecHuggingFace(
+  public static Map.Entry<String, VectorConfig> text2vecHuggingFace(
       Function<Text2VecHuggingFaceVectorizer.Builder, ObjectBuilder<Text2VecHuggingFaceVectorizer>> fn) {
-    return text2VecHuggingFace(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+    return text2vecHuggingFace(VectorIndex.DEFAULT_VECTOR_NAME, fn);
   }
 
   /**
@@ -874,7 +874,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param vectorName Vector name.
    */
-  public static Map.Entry<String, VectorConfig> text2VecHuggingFace(String vectorName) {
+  public static Map.Entry<String, VectorConfig> text2vecHuggingFace(String vectorName) {
     return Map.entry(vectorName, Text2VecHuggingFaceVectorizer.of());
   }
 
@@ -884,14 +884,14 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * @param vectorName Vector name.
    * @param fn         Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecHuggingFace(String vectorName,
+  public static Map.Entry<String, VectorConfig> text2vecHuggingFace(String vectorName,
       Function<Text2VecHuggingFaceVectorizer.Builder, ObjectBuilder<Text2VecHuggingFaceVectorizer>> fn) {
     return Map.entry(vectorName, Text2VecHuggingFaceVectorizer.of(fn));
   }
 
   /** Create a vector index with an {@code text2vec-jinaai} vectorizer. */
-  public static Map.Entry<String, VectorConfig> text2VecJinaAi() {
-    return text2VecJinaAi(VectorIndex.DEFAULT_VECTOR_NAME);
+  public static Map.Entry<String, VectorConfig> text2vecJinaAi() {
+    return text2vecJinaAi(VectorIndex.DEFAULT_VECTOR_NAME);
   }
 
   /**
@@ -899,9 +899,9 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecJinaAi(
+  public static Map.Entry<String, VectorConfig> text2vecJinaAi(
       Function<Text2VecJinaAiVectorizer.Builder, ObjectBuilder<Text2VecJinaAiVectorizer>> fn) {
-    return text2VecJinaAi(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+    return text2vecJinaAi(VectorIndex.DEFAULT_VECTOR_NAME, fn);
   }
 
   /**
@@ -909,7 +909,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param vectorName Vector name.
    */
-  public static Map.Entry<String, VectorConfig> text2VecJinaAi(String vectorName) {
+  public static Map.Entry<String, VectorConfig> text2vecJinaAi(String vectorName) {
     return Map.entry(vectorName, Text2VecJinaAiVectorizer.of());
   }
 
@@ -919,14 +919,14 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * @param vectorName Vector name.
    * @param fn         Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecJinaAi(String vectorName,
+  public static Map.Entry<String, VectorConfig> text2vecJinaAi(String vectorName,
       Function<Text2VecJinaAiVectorizer.Builder, ObjectBuilder<Text2VecJinaAiVectorizer>> fn) {
     return Map.entry(vectorName, Text2VecJinaAiVectorizer.of(fn));
   }
 
   /** Create a vector index with an {@code text2vec-mistral} vectorizer. */
-  public static Map.Entry<String, VectorConfig> text2VecMistral() {
-    return text2VecMistral(VectorIndex.DEFAULT_VECTOR_NAME);
+  public static Map.Entry<String, VectorConfig> text2vecMistral() {
+    return text2vecMistral(VectorIndex.DEFAULT_VECTOR_NAME);
   }
 
   /**
@@ -934,9 +934,9 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecMistral(
+  public static Map.Entry<String, VectorConfig> text2vecMistral(
       Function<Text2VecMistralVectorizer.Builder, ObjectBuilder<Text2VecMistralVectorizer>> fn) {
-    return text2VecMistral(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+    return text2vecMistral(VectorIndex.DEFAULT_VECTOR_NAME, fn);
   }
 
   /**
@@ -944,7 +944,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param vectorName Vector name.
    */
-  public static Map.Entry<String, VectorConfig> text2VecMistral(String vectorName) {
+  public static Map.Entry<String, VectorConfig> text2vecMistral(String vectorName) {
     return Map.entry(vectorName, Text2VecMistralVectorizer.of());
   }
 
@@ -954,14 +954,14 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * @param vectorName Vector name.
    * @param fn         Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecMistral(String vectorName,
+  public static Map.Entry<String, VectorConfig> text2vecMistral(String vectorName,
       Function<Text2VecMistralVectorizer.Builder, ObjectBuilder<Text2VecMistralVectorizer>> fn) {
     return Map.entry(vectorName, Text2VecMistralVectorizer.of(fn));
   }
 
   /** Create a vector index with an {@code text2vec-model2vec} vectorizer. */
-  public static Map.Entry<String, VectorConfig> text2VecModel2Vec() {
-    return text2VecModel2Vec(VectorIndex.DEFAULT_VECTOR_NAME);
+  public static Map.Entry<String, VectorConfig> text2vecModel2Vec() {
+    return text2vecModel2Vec(VectorIndex.DEFAULT_VECTOR_NAME);
   }
 
   /**
@@ -969,9 +969,9 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecModel2Vec(
+  public static Map.Entry<String, VectorConfig> text2vecModel2Vec(
       Function<Text2VecModel2VecVectorizer.Builder, ObjectBuilder<Text2VecModel2VecVectorizer>> fn) {
-    return text2VecModel2Vec(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+    return text2vecModel2Vec(VectorIndex.DEFAULT_VECTOR_NAME, fn);
   }
 
   /**
@@ -979,7 +979,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param vectorName Vector name.
    */
-  public static Map.Entry<String, VectorConfig> text2VecModel2Vec(String vectorName) {
+  public static Map.Entry<String, VectorConfig> text2vecModel2Vec(String vectorName) {
     return Map.entry(vectorName, Text2VecModel2VecVectorizer.of());
   }
 
@@ -989,14 +989,14 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * @param vectorName Vector name.
    * @param fn         Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecModel2Vec(String vectorName,
+  public static Map.Entry<String, VectorConfig> text2vecModel2Vec(String vectorName,
       Function<Text2VecModel2VecVectorizer.Builder, ObjectBuilder<Text2VecModel2VecVectorizer>> fn) {
     return Map.entry(vectorName, Text2VecModel2VecVectorizer.of(fn));
   }
 
   /** Create a vector index with an {@code text2vec-morph} vectorizer. */
-  public static Map.Entry<String, VectorConfig> text2VecMorph() {
-    return text2VecMorph(VectorIndex.DEFAULT_VECTOR_NAME);
+  public static Map.Entry<String, VectorConfig> text2vecMorph() {
+    return text2vecMorph(VectorIndex.DEFAULT_VECTOR_NAME);
   }
 
   /**
@@ -1004,9 +1004,9 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecMorph(
+  public static Map.Entry<String, VectorConfig> text2vecMorph(
       Function<Text2VecMorphVectorizer.Builder, ObjectBuilder<Text2VecMorphVectorizer>> fn) {
-    return text2VecMorph(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+    return text2vecMorph(VectorIndex.DEFAULT_VECTOR_NAME, fn);
   }
 
   /**
@@ -1014,7 +1014,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param vectorName Vector name.
    */
-  public static Map.Entry<String, VectorConfig> text2VecMorph(String vectorName) {
+  public static Map.Entry<String, VectorConfig> text2vecMorph(String vectorName) {
     return Map.entry(vectorName, Text2VecMorphVectorizer.of());
   }
 
@@ -1024,14 +1024,14 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * @param vectorName Vector name.
    * @param fn         Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecMorph(String vectorName,
+  public static Map.Entry<String, VectorConfig> text2vecMorph(String vectorName,
       Function<Text2VecMorphVectorizer.Builder, ObjectBuilder<Text2VecMorphVectorizer>> fn) {
     return Map.entry(vectorName, Text2VecMorphVectorizer.of(fn));
   }
 
   /** Create a vector index with an {@code text2vec-nvidia} vectorizer. */
-  public static Map.Entry<String, VectorConfig> text2VecNvidia() {
-    return text2VecNvidia(VectorIndex.DEFAULT_VECTOR_NAME);
+  public static Map.Entry<String, VectorConfig> text2vecNvidia() {
+    return text2vecNvidia(VectorIndex.DEFAULT_VECTOR_NAME);
   }
 
   /**
@@ -1039,9 +1039,9 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecNvidia(
+  public static Map.Entry<String, VectorConfig> text2vecNvidia(
       Function<Text2VecNvidiaVectorizer.Builder, ObjectBuilder<Text2VecNvidiaVectorizer>> fn) {
-    return text2VecNvidia(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+    return text2vecNvidia(VectorIndex.DEFAULT_VECTOR_NAME, fn);
   }
 
   /**
@@ -1049,7 +1049,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param vectorName Vector name.
    */
-  public static Map.Entry<String, VectorConfig> text2VecNvidia(String vectorName) {
+  public static Map.Entry<String, VectorConfig> text2vecNvidia(String vectorName) {
     return Map.entry(vectorName, Text2VecNvidiaVectorizer.of());
   }
 
@@ -1059,14 +1059,14 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * @param vectorName Vector name.
    * @param fn         Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecNvidia(String vectorName,
+  public static Map.Entry<String, VectorConfig> text2vecNvidia(String vectorName,
       Function<Text2VecNvidiaVectorizer.Builder, ObjectBuilder<Text2VecNvidiaVectorizer>> fn) {
     return Map.entry(vectorName, Text2VecNvidiaVectorizer.of(fn));
   }
 
   /** Create a vector index with an {@code text2vec-ollama} vectorizer. */
-  public static Map.Entry<String, VectorConfig> text2VecOllama() {
-    return text2VecOllama(VectorIndex.DEFAULT_VECTOR_NAME);
+  public static Map.Entry<String, VectorConfig> text2vecOllama() {
+    return text2vecOllama(VectorIndex.DEFAULT_VECTOR_NAME);
   }
 
   /**
@@ -1074,9 +1074,9 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecOllama(
+  public static Map.Entry<String, VectorConfig> text2vecOllama(
       Function<Text2VecOllamaVectorizer.Builder, ObjectBuilder<Text2VecOllamaVectorizer>> fn) {
-    return text2VecOllama(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+    return text2vecOllama(VectorIndex.DEFAULT_VECTOR_NAME, fn);
   }
 
   /**
@@ -1084,7 +1084,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param vectorName Vector name.
    */
-  public static Map.Entry<String, VectorConfig> text2VecOllama(String vectorName) {
+  public static Map.Entry<String, VectorConfig> text2vecOllama(String vectorName) {
     return Map.entry(vectorName, Text2VecOllamaVectorizer.of());
   }
 
@@ -1094,14 +1094,14 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * @param vectorName Vector name.
    * @param fn         Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecOllama(String vectorName,
+  public static Map.Entry<String, VectorConfig> text2vecOllama(String vectorName,
       Function<Text2VecOllamaVectorizer.Builder, ObjectBuilder<Text2VecOllamaVectorizer>> fn) {
     return Map.entry(vectorName, Text2VecOllamaVectorizer.of(fn));
   }
 
   /** Create a vector index with an {@code text2vec-openai} vectorizer. */
-  public static Map.Entry<String, VectorConfig> text2VecOpenAi() {
-    return text2VecOpenAi(VectorIndex.DEFAULT_VECTOR_NAME);
+  public static Map.Entry<String, VectorConfig> text2vecOpenAi() {
+    return text2vecOpenAi(VectorIndex.DEFAULT_VECTOR_NAME);
   }
 
   /**
@@ -1109,9 +1109,9 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecOpenAi(
+  public static Map.Entry<String, VectorConfig> text2vecOpenAi(
       Function<Text2VecOpenAiVectorizer.Builder, ObjectBuilder<Text2VecOpenAiVectorizer>> fn) {
-    return text2VecOpenAi(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+    return text2vecOpenAi(VectorIndex.DEFAULT_VECTOR_NAME, fn);
   }
 
   /**
@@ -1119,7 +1119,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param vectorName Vector name.
    */
-  public static Map.Entry<String, VectorConfig> text2VecOpenAi(String vectorName) {
+  public static Map.Entry<String, VectorConfig> text2vecOpenAi(String vectorName) {
     return Map.entry(vectorName, Text2VecOpenAiVectorizer.of());
   }
 
@@ -1129,14 +1129,14 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * @param vectorName Vector name.
    * @param fn         Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecOpenAi(String vectorName,
+  public static Map.Entry<String, VectorConfig> text2vecOpenAi(String vectorName,
       Function<Text2VecOpenAiVectorizer.Builder, ObjectBuilder<Text2VecOpenAiVectorizer>> fn) {
     return Map.entry(vectorName, Text2VecOpenAiVectorizer.of(fn));
   }
 
   /** Create a vector index with an {@code text2vec-transformers} vectorizer. */
-  public static Map.Entry<String, VectorConfig> text2VecTransformers() {
-    return text2VecTransformers(VectorIndex.DEFAULT_VECTOR_NAME);
+  public static Map.Entry<String, VectorConfig> text2vecTransformers() {
+    return text2vecTransformers(VectorIndex.DEFAULT_VECTOR_NAME);
   }
 
   /**
@@ -1144,9 +1144,9 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecTransformers(
+  public static Map.Entry<String, VectorConfig> text2vecTransformers(
       Function<Text2VecTransformersVectorizer.Builder, ObjectBuilder<Text2VecTransformersVectorizer>> fn) {
-    return text2VecTransformers(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+    return text2vecTransformers(VectorIndex.DEFAULT_VECTOR_NAME, fn);
   }
 
   /**
@@ -1154,7 +1154,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param vectorName Vector name.
    */
-  public static Map.Entry<String, VectorConfig> text2VecTransformers(String vectorName) {
+  public static Map.Entry<String, VectorConfig> text2vecTransformers(String vectorName) {
     return Map.entry(vectorName, Text2VecTransformersVectorizer.of());
   }
 
@@ -1164,14 +1164,14 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * @param vectorName Vector name.
    * @param fn         Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecTransformers(String vectorName,
+  public static Map.Entry<String, VectorConfig> text2vecTransformers(String vectorName,
       Function<Text2VecTransformersVectorizer.Builder, ObjectBuilder<Text2VecTransformersVectorizer>> fn) {
     return Map.entry(vectorName, Text2VecTransformersVectorizer.of(fn));
   }
 
   /** Create a vector index with an {@code text2vec-voyageai} vectorizer. */
-  public static Map.Entry<String, VectorConfig> text2VecVoyageAi() {
-    return text2VecVoyageAi(VectorIndex.DEFAULT_VECTOR_NAME);
+  public static Map.Entry<String, VectorConfig> text2vecVoyageAi() {
+    return text2vecVoyageAi(VectorIndex.DEFAULT_VECTOR_NAME);
   }
 
   /**
@@ -1179,9 +1179,9 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecVoyageAi(
+  public static Map.Entry<String, VectorConfig> text2vecVoyageAi(
       Function<Text2VecVoyageAiVectorizer.Builder, ObjectBuilder<Text2VecVoyageAiVectorizer>> fn) {
-    return text2VecVoyageAi(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+    return text2vecVoyageAi(VectorIndex.DEFAULT_VECTOR_NAME, fn);
   }
 
   /**
@@ -1189,7 +1189,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param vectorName Vector name.
    */
-  public static Map.Entry<String, VectorConfig> text2VecVoyageAi(String vectorName) {
+  public static Map.Entry<String, VectorConfig> text2vecVoyageAi(String vectorName) {
     return Map.entry(vectorName, Text2VecVoyageAiVectorizer.of());
   }
 
@@ -1199,14 +1199,14 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * @param vectorName Vector name.
    * @param fn         Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecVoyageAi(String vectorName,
+  public static Map.Entry<String, VectorConfig> text2vecVoyageAi(String vectorName,
       Function<Text2VecVoyageAiVectorizer.Builder, ObjectBuilder<Text2VecVoyageAiVectorizer>> fn) {
     return Map.entry(vectorName, Text2VecVoyageAiVectorizer.of(fn));
   }
 
   /** Create a vector index with an {@code text2vec-weaviate} vectorizer. */
-  public static Map.Entry<String, VectorConfig> text2VecWeaviate() {
-    return text2VecWeaviate(VectorIndex.DEFAULT_VECTOR_NAME);
+  public static Map.Entry<String, VectorConfig> text2vecWeaviate() {
+    return text2vecWeaviate(VectorIndex.DEFAULT_VECTOR_NAME);
   }
 
   /**
@@ -1214,9 +1214,9 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecWeaviate(
+  public static Map.Entry<String, VectorConfig> text2vecWeaviate(
       Function<Text2VecWeaviateVectorizer.Builder, ObjectBuilder<Text2VecWeaviateVectorizer>> fn) {
-    return text2VecWeaviate(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+    return text2vecWeaviate(VectorIndex.DEFAULT_VECTOR_NAME, fn);
   }
 
   /**
@@ -1224,7 +1224,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param vectorName Vector name.
    */
-  public static Map.Entry<String, VectorConfig> text2VecWeaviate(String vectorName) {
+  public static Map.Entry<String, VectorConfig> text2vecWeaviate(String vectorName) {
     return Map.entry(vectorName, Text2VecWeaviateVectorizer.of());
   }
 
@@ -1234,7 +1234,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * @param vectorName Vector name.
    * @param fn         Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2VecWeaviate(String vectorName,
+  public static Map.Entry<String, VectorConfig> text2vecWeaviate(String vectorName,
       Function<Text2VecWeaviateVectorizer.Builder, ObjectBuilder<Text2VecWeaviateVectorizer>> fn) {
     return Map.entry(vectorName, Text2VecWeaviateVectorizer.of(fn));
   }
