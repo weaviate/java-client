@@ -3,7 +3,7 @@ package io.weaviate.client6.v1.internal;
 import java.util.Arrays;
 
 public final class VersionSupport {
-  public static final SemanticVersion MINIMAL_SUPPORTED_VERSION = new SemanticVersion(1, 32);
+  public static final SemanticVersion MINIMAL_SUPPORTED_VERSION = new SemanticVersion(1, 33);
 
   /**
    * Returns true if the {@code version} is the same as or older than the
@@ -21,16 +21,14 @@ public final class VersionSupport {
     }
 
     /**
-     * Parse semantic version from a formatted string,
-     * e.g. {@code "(v)1.23.6-rc.1"}.
+     * Parse semantic version from a formatted string, e.g.
+     * {@code "(v)1.23.6-rc.1"}.
      */
     public static SemanticVersion of(String version) {
       var parts = version.replaceFirst("v", "").split("\\.");
       var major = Integer.valueOf(parts[0].replaceAll("[^0-9]", ""));
       var minor = Integer.valueOf(parts[1].replaceAll("[^0-9]", ""));
-      var patch = parts.length > 2
-          ? String.join(".", Arrays.stream(parts, 2, parts.length).toList())
-          : null;
+      var patch = String.join(".", Arrays.stream(parts, 2, parts.length).toList());
       return new SemanticVersion(major, minor, patch);
     }
 
@@ -42,7 +40,7 @@ public final class VersionSupport {
     }
 
     public String toString() {
-      return String.join(".", String.valueOf(major), String.valueOf(minor), patch != null ? patch : "");
+      return String.join(".", String.valueOf(major), String.valueOf(minor), patch);
     }
   }
 }

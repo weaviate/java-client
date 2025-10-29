@@ -4,7 +4,9 @@ import io.weaviate.client6.v1.internal.VersionSupport;
 
 /**
  * This exception is thrown when the client refuses to talk to an unsupported
- * version of the server, see {@link VersionSupport#MINIMAL_SUPPORTED_VERSION}.
+ * version of the server.
+ *
+ * @see VersionSupport#MINIMAL_SUPPORTED_VERSION.
  */
 public class WeaviateUnsupportedVersionException extends WeaviateException {
   public WeaviateUnsupportedVersionException(String actual) {
