@@ -14,6 +14,7 @@ import com.google.gson.reflect.TypeToken;
 import com.jparams.junit4.JParamsTestRunner;
 import com.jparams.junit4.data.DataMethod;
 
+import io.weaviate.client6.v1.api.cluster.NodeVerbosity;
 import io.weaviate.client6.v1.api.collections.CollectionConfig;
 import io.weaviate.client6.v1.api.collections.Encoding;
 import io.weaviate.client6.v1.api.collections.Generative;
@@ -49,7 +50,6 @@ import io.weaviate.client6.v1.api.rbac.CollectionsPermission;
 import io.weaviate.client6.v1.api.rbac.DataPermission;
 import io.weaviate.client6.v1.api.rbac.GroupsPermission;
 import io.weaviate.client6.v1.api.rbac.NodesPermission;
-import io.weaviate.client6.v1.api.rbac.NodesPermission.Verbosity;
 import io.weaviate.client6.v1.api.rbac.ReplicatePermission;
 import io.weaviate.client6.v1.api.rbac.Role;
 import io.weaviate.client6.v1.api.rbac.RolesPermission;
@@ -678,7 +678,7 @@ public class JSONTest {
                 List.of(
                     new NodesPermission(
                         "Collection",
-                        Verbosity.MINIMAL,
+                        NodeVerbosity.MINIMAL,
                         List.of(NodesPermission.Action.READ)))),
             """
                 {
