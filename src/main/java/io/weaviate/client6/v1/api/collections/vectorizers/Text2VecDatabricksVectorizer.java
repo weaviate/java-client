@@ -31,7 +31,7 @@ public record Text2VecDatabricksVectorizer(
 
   @Override
   public VectorConfig.Kind _kind() {
-    return VectorConfig.Kind.TEXT2VEC_MISTRAL;
+    return VectorConfig.Kind.TEXT2VEC_DATABRICKS;
   }
 
   @Override
