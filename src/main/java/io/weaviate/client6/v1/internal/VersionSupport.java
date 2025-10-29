@@ -28,7 +28,9 @@ public final class VersionSupport {
       var parts = version.replaceFirst("v", "").split("\\.");
       var major = Integer.valueOf(parts[0].replaceAll("[^0-9]", ""));
       var minor = Integer.valueOf(parts[1].replaceAll("[^0-9]", ""));
-      var patch = String.join(".", Arrays.stream(parts, 2, parts.length).toList());
+      var patch = parts.length > 2
+          ? String.join(".", Arrays.stream(parts, 2, parts.length).toList())
+          : null;
       return new SemanticVersion(major, minor, patch);
     }
 
@@ -40,7 +42,7 @@ public final class VersionSupport {
     }
 
     public String toString() {
-      return String.join(".", String.valueOf(major), String.valueOf(minor), patch);
+      return String.join(".", String.valueOf(major), String.valueOf(minor), patch != null ? patch : "");
     }
   }
 }
