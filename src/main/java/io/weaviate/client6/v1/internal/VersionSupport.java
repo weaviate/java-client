@@ -21,8 +21,8 @@ public final class VersionSupport {
     }
 
     /**
-     * Parse semantic version from a formatted string, e.g.
-     * {@code "(v)1.23.6-rc.1"}.
+     * Parse semantic version from a formatted string,
+     * e.g. {@code "(v)1.23.6-rc.1"}.
      */
     public static SemanticVersion of(String version) {
       var parts = version.replaceFirst("v", "").split("\\.");
