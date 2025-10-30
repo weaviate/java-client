@@ -12,13 +12,12 @@ import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public record Text2VecWeaviateVectorizer(
-    /** Weaviate Embeddings Service base URL. */
-    @SerializedName("baseURL") String baseUrl,
-    /** Dimensionality of the generated vectors. */
-    @SerializedName("dimensions") Integer dimensions,
-    /** Embedding model. */
-    @SerializedName("model") String model,
+public record Text2VecTransformersVectorizer(
+    @SerializedName("inferenceUrl") String baseUrl,
+    @SerializedName("passageInferenceUrl") String passageInferenceUrl,
+    @SerializedName("queryInferenceUrl") String queryInferenceUrl,
+    @SerializedName("poolingStrategy") PoolingStrategy poolingStrategy,
+
     /** Properties included in the embedding. */
     @SerializedName("sourceProperties") List<String> sourceProperties,
     /** Vector index configuration. */
@@ -28,7 +27,7 @@ public record Text2VecWeaviateVectorizer(
 
   @Override
   public VectorConfig.Kind _kind() {
-    return VectorConfig.Kind.TEXT2VEC_WEAVIATE;
+    return VectorConfig.Kind.TEXT2VEC_TRANSFORMERS;
   }
 
   @Override
@@ -36,59 +35,60 @@ public record Text2VecWeaviateVectorizer(
     return this;
   }
 
-  public static Text2VecWeaviateVectorizer of() {
+  public enum PoolingStrategy {
+    @SerializedName("MASKED_MEAN")
+    MASKED_MEAN,
+    @SerializedName("CLS")
+    CLS;
+  }
+
+  public static Text2VecTransformersVectorizer of() {
     return of(ObjectBuilder.identity());
   }
 
-  public static Text2VecWeaviateVectorizer of(Function<Builder, ObjectBuilder<Text2VecWeaviateVectorizer>> fn) {
+  public static Text2VecTransformersVectorizer of(
+      Function<Builder, ObjectBuilder<Text2VecTransformersVectorizer>> fn) {
     return fn.apply(new Builder()).build();
   }
 
-  public Text2VecWeaviateVectorizer(Builder builder) {
+  public Text2VecTransformersVectorizer(Builder builder) {
     this(
         builder.baseUrl,
-        builder.dimensions,
-        builder.model,
+        builder.passageInferenceUrl,
+        builder.queryInferenceUrl,
+        builder.poolingStrategy,
         builder.sourceProperties,
         builder.vectorIndex,
         builder.quantization);
   }
 
-  public static final String SNOWFLAKE_ARCTIC_EMBED_M_15 = "Snowflake/snowflake-arctic-embed-m-v1.5";
-  public static final String SNOWFLAKE_ARCTIC_EMBED_L_20 = "Snowflake/snowflake-arctic-embed-l-v2.0";
-
-  public static class Builder implements ObjectBuilder<Text2VecWeaviateVectorizer> {
-    private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
+  public static class Builder implements ObjectBuilder<Text2VecTransformersVectorizer> {
     private Quantization quantization;
-    private String baseUrl;
-    private Integer dimensions;
-    private String model;
     private List<String> sourceProperties = new ArrayList<>();
+    private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
 
-    /**
-     * Base URL for Weaviate Embeddings Service. This can be omitted when connecting
-     * to a Weaviate Cloud instance: the client will automatically set the necessary
-     * headers.
-     */
+    private String baseUrl;
+    private String passageInferenceUrl;
+    private String queryInferenceUrl;
+    private PoolingStrategy poolingStrategy;
+
     public Builder baseUrl(String baseUrl) {
       this.baseUrl = baseUrl;
       return this;
     }
 
-    /** Set target dimensionality for generated embeddings. */
-    public Builder dimensions(int dimensions) {
-      this.dimensions = dimensions;
+    public Builder passageInferenceUrl(String passageInferenceUrl) {
+      this.passageInferenceUrl = passageInferenceUrl;
       return this;
     }
 
-    /**
-     * Select the embedding model.
-     *
-     * @see Text2VecWeaviateVectorizer#SNOWFLAKE_ARCTIC_EMBED_M_15
-     * @see Text2VecWeaviateVectorizer#SNOWFLAKE_ARCTIC_EMBED_L_20
-     */
-    public Builder model(String model) {
-      this.model = model;
+    public Builder queryInferenceUrl(String queryInferenceUrl) {
+      this.queryInferenceUrl = queryInferenceUrl;
+      return this;
+    }
+
+    public Builder poolingStrategy(PoolingStrategy poolingStrategy) {
+      this.poolingStrategy = poolingStrategy;
       return this;
     }
 
@@ -120,8 +120,8 @@ public record Text2VecWeaviateVectorizer(
       return this;
     }
 
-    public Text2VecWeaviateVectorizer build() {
-      return new Text2VecWeaviateVectorizer(this);
+    public Text2VecTransformersVectorizer build() {
+      return new Text2VecTransformersVectorizer(this);
     }
   }
 }

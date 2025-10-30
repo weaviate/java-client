@@ -2,7 +2,6 @@ package io.weaviate.client6.v1.api.collections.vectorizers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -13,12 +12,13 @@ import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public record Text2VecContextionaryVectorizer(
+public record Text2VecAzureOpenAiVectorizer(
+    @SerializedName("baseURL") String baseUrl,
+    @SerializedName("deploymentId") String deploymentId,
+    @SerializedName("resourceName") String resourceName,
+
     /**
      * Weaviate defaults to {@code true} if the value is not provided.
-     * Because text2vec-contextionary cannot handle underscores in collection names,
-     * this quickly becomes inconvenient.
-     *
      * To avoid that we send "vectorizeClassName": false all the time
      * and make it impossible to enable this feature, as it is deprecated.
      */
@@ -32,7 +32,7 @@ public record Text2VecContextionaryVectorizer(
 
   @Override
   public VectorConfig.Kind _kind() {
-    return VectorConfig.Kind.TEXT2VEC_CONTEXTIONARY;
+    return VectorConfig.Kind.TEXT2VEC_AZURE_OPENAI;
   }
 
   @Override
@@ -40,36 +40,73 @@ public record Text2VecContextionaryVectorizer(
     return this;
   }
 
-  public static Text2VecContextionaryVectorizer of() {
+  public static Text2VecAzureOpenAiVectorizer of() {
     return of(ObjectBuilder.identity());
   }
 
-  public static Text2VecContextionaryVectorizer of(
-      Function<Builder, ObjectBuilder<Text2VecContextionaryVectorizer>> fn) {
+  public static Text2VecAzureOpenAiVectorizer of(
+      Function<Builder, ObjectBuilder<Text2VecAzureOpenAiVectorizer>> fn) {
     return fn.apply(new Builder()).build();
   }
 
   /**
    * Canonical constructor always sets {@link #vectorizeCollectionName} to false.
    */
-  public Text2VecContextionaryVectorizer(boolean vectorizeCollectionName, List<String> sourceProperties,
-      VectorIndex vectorIndex, Quantization quantization) {
+  public Text2VecAzureOpenAiVectorizer(
+      String baseUrl,
+      String deploymentId,
+      String resourceName,
+
+      boolean vectorizeCollectionName,
+      List<String> sourceProperties,
+      VectorIndex vectorIndex,
+      Quantization quantization) {
+    this.baseUrl = baseUrl;
+    this.deploymentId = deploymentId;
+    this.resourceName = resourceName;
+
     this.vectorizeCollectionName = false;
-    this.sourceProperties = Collections.emptyList();
+    this.sourceProperties = sourceProperties;
     this.vectorIndex = vectorIndex;
     this.quantization = quantization;
   }
 
-  public Text2VecContextionaryVectorizer(Builder builder) {
-    this(builder.vectorizeCollectionName, builder.sourceProperties, builder.vectorIndex, builder.quantization);
+  public Text2VecAzureOpenAiVectorizer(Builder builder) {
+    this(
+        builder.baseUrl,
+        builder.deploymentId,
+        builder.resourceName,
+
+        builder.vectorizeCollectionName,
+        builder.sourceProperties,
+        builder.vectorIndex,
+        builder.quantization);
   }
 
-  public static class Builder implements ObjectBuilder<Text2VecContextionaryVectorizer> {
+  public static class Builder implements ObjectBuilder<Text2VecAzureOpenAiVectorizer> {
     private final boolean vectorizeCollectionName = false;
     private Quantization quantization;
-
     private List<String> sourceProperties = new ArrayList<>();
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
+
+    private String baseUrl;
+    private String deploymentId;
+    private String resourceName;
+
+    public Builder baseUrl(String baseUrl) {
+      this.baseUrl = baseUrl;
+      return this;
+    }
+
+    public Builder deploymentId(String deploymentId) {
+      this.deploymentId = deploymentId;
+      return this;
+    }
+
+    public Builder resourceName(String resourceName) {
+      this.resourceName = resourceName;
+      return this;
+    }
 
     /** Add properties to include in the embedding. */
     public Builder sourceProperties(String... properties) {
@@ -99,8 +136,8 @@ public record Text2VecContextionaryVectorizer(
       return this;
     }
 
-    public Text2VecContextionaryVectorizer build() {
-      return new Text2VecContextionaryVectorizer(this);
+    public Text2VecAzureOpenAiVectorizer build() {
+      return new Text2VecAzureOpenAiVectorizer(this);
     }
   }
 }

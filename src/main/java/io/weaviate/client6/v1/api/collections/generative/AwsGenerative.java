@@ -9,13 +9,14 @@ import com.google.gson.annotations.SerializedName;
 
 import io.weaviate.client6.v1.api.collections.Generative;
 import io.weaviate.client6.v1.api.collections.generate.DynamicProvider;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecAwsVectorizer.Service;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative;
 
 public record AwsGenerative(
     @SerializedName("region") String region,
-    @SerializedName("service") String service,
+    @SerializedName("service") Service service,
     @SerializedName("endpoint") String baseUrl,
     @SerializedName("model") String model) implements Generative {
 
@@ -29,27 +30,37 @@ public record AwsGenerative(
     return this;
   }
 
-  public static AwsGenerative of(String region, String service) {
-    return of(region, service, ObjectBuilder.identity());
+  public static AwsGenerative bedrock(String region, String model) {
+    return bedrock(region, model, ObjectBuilder.identity());
   }
 
-  public static AwsGenerative of(String region, String service, Function<Builder, ObjectBuilder<AwsGenerative>> fn) {
-    return fn.apply(new Builder(region, service)).build();
+  public static AwsGenerative bedrock(String region, String model,
+      Function<BedrockBuilder, ObjectBuilder<AwsGenerative>> fn) {
+    return fn.apply(new BedrockBuilder(region, model)).build();
+  }
+
+  public static AwsGenerative sagemaker(String region, String baseUrl) {
+    return sagemaker(region, baseUrl, ObjectBuilder.identity());
+  }
+
+  public static AwsGenerative sagemaker(String region, String baseUrl,
+      Function<SagemakerBuilder, ObjectBuilder<AwsGenerative>> fn) {
+    return fn.apply(new SagemakerBuilder(region, baseUrl)).build();
   }
 
   public AwsGenerative(Builder builder) {
     this(
-        builder.service,
         builder.region,
+        builder.service,
         builder.baseUrl,
         builder.model);
   }
 
   public static class Builder implements ObjectBuilder<AwsGenerative> {
     private final String region;
-    private final String service;
+    private final Service service;
 
-    public Builder(String service, String region) {
+    public Builder(Service service, String region) {
       this.service = service;
       this.region = region;
     }
@@ -58,13 +69,13 @@ public record AwsGenerative(
     private String model;
 
     /** Base URL of the generative provider. */
-    public Builder baseUrl(String baseUrl) {
+    protected Builder baseUrl(String baseUrl) {
       this.baseUrl = baseUrl;
       return this;
     }
 
     /** Select generative model. */
-    public Builder model(String model) {
+    protected Builder model(String model) {
       this.model = model;
       return this;
     }
@@ -75,12 +86,37 @@ public record AwsGenerative(
     }
   }
 
+  public static class BedrockBuilder extends Builder {
+    public BedrockBuilder(String region, String model) {
+      super(Service.BEDROCK, region);
+      super.model(model);
+    }
+
+    @Override
+    /** Required for {@link Service#BEDROCK}. */
+    public Builder model(String model) {
+      return super.model(model);
+    }
+  }
+
+  public static class SagemakerBuilder extends Builder {
+    public SagemakerBuilder(String region, String baseUrl) {
+      super(Service.SAGEMAKER, region);
+      super.baseUrl(baseUrl);
+    }
+
+    /** Required for {@link Service#SAGEMAKER}. */
+    public Builder baseUrl(String baseUrl) {
+      return super.baseUrl(baseUrl);
+    }
+  }
+
   public static record Metadata() implements ProviderMetadata {
   }
 
   public static record Provider(
       String region,
-      String service,
+      Service service,
       String baseUrl,
       String model,
       String targetModel,
@@ -89,9 +125,18 @@ public record AwsGenerative(
       List<String> images,
       List<String> imageProperties) implements DynamicProvider {
 
-    public static Provider of(
-        Function<AwsGenerative.Provider.Builder, ObjectBuilder<AwsGenerative.Provider>> fn) {
-      return fn.apply(new Builder()).build();
+    public static Provider bedrock(
+        String region,
+        String model,
+        Function<AwsGenerative.Provider.BedrockBuilder, ObjectBuilder<AwsGenerative.Provider>> fn) {
+      return fn.apply(new BedrockBuilder(region, model)).build();
+    }
+
+    public static Provider sagemaker(
+        String region,
+        String baseUrl,
+        Function<AwsGenerative.Provider.SagemakerBuilder, ObjectBuilder<AwsGenerative.Provider>> fn) {
+      return fn.apply(new SagemakerBuilder(region, baseUrl)).build();
     }
 
     @Override
@@ -102,7 +147,10 @@ public record AwsGenerative(
         provider.setRegion(region);
       }
       if (service != null) {
-        provider.setService(service);
+        provider.setService(
+            service == Service.BEDROCK ? "bedrock"
+                : service == Service.SAGEMAKER ? "sagemaker"
+                    : "unknown");
       }
       if (baseUrl != null) {
         provider.setEndpoint(baseUrl);
@@ -143,9 +191,9 @@ public record AwsGenerative(
           builder.imageProperties);
     }
 
-    public static class Builder implements ObjectBuilder<AwsGenerative.Provider> {
-      private String region;
-      private String service;
+    public abstract static class Builder implements ObjectBuilder<AwsGenerative.Provider> {
+      private final Service service;
+      private final String region;
       private String baseUrl;
       private String model;
       private String targetModel;
@@ -154,24 +202,19 @@ public record AwsGenerative(
       private final List<String> images = new ArrayList<>();
       private final List<String> imageProperties = new ArrayList<>();
 
-      public Builder region(String region) {
-        this.region = region;
-        return this;
-      }
-
-      public Builder service(String service) {
+      protected Builder(Service service, String region) {
         this.service = service;
-        return this;
+        this.region = region;
       }
 
       /** Base URL of the generative provider. */
-      public Builder baseUrl(String baseUrl) {
+      protected Builder baseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
         return this;
       }
 
       /** Select generative model. */
-      public Builder model(String model) {
+      protected Builder model(String model) {
         this.model = model;
         return this;
       }
@@ -216,6 +259,31 @@ public record AwsGenerative(
       @Override
       public AwsGenerative.Provider build() {
         return new AwsGenerative.Provider(this);
+      }
+    }
+
+    public static class BedrockBuilder extends Builder {
+      public BedrockBuilder(String region, String model) {
+        super(Service.BEDROCK, region);
+        super.model(model);
+      }
+
+      @Override
+      /** Required for {@link Service#BEDROCK}. */
+      public Builder model(String model) {
+        return super.model(model);
+      }
+    }
+
+    public static class SagemakerBuilder extends Builder {
+      public SagemakerBuilder(String region, String baseUrl) {
+        super(Service.SAGEMAKER, region);
+        super.baseUrl(baseUrl);
+      }
+
+      /** Required for {@link Service#SAGEMAKER}. */
+      public Builder baseUrl(String baseUrl) {
+        return super.baseUrl(baseUrl);
       }
     }
   }

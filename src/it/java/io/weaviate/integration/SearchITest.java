@@ -41,19 +41,19 @@ import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.api.collections.vectorindex.MultiVector;
 import io.weaviate.containers.Container;
 import io.weaviate.containers.Container.ContainerGroup;
-import io.weaviate.containers.Contextionary;
 import io.weaviate.containers.Img2VecNeural;
+import io.weaviate.containers.Model2Vec;
 import io.weaviate.containers.Weaviate;
 
 public class SearchITest extends ConcurrentTest {
   private static final ContainerGroup compose = Container.compose(
       Weaviate.custom()
-          .withContextionaryUrl(Contextionary.URL)
+          .withModel2VecUrl(Model2Vec.URL)
           .withImageInference(Img2VecNeural.URL, Img2VecNeural.MODULE)
           .addModules("generative-dummy")
           .build(),
       Container.IMG2VEC_NEURAL,
-      Container.CONTEXTIONARY);
+      Container.MODEL2VEC);
   @ClassRule // Bind containers to the lifetime of the test
   public static final TestRule _rule = compose.asTestRule();
   private static final WeaviateClient client = compose.getClient();
@@ -151,7 +151,7 @@ public class SearchITest extends ConcurrentTest {
     client.collections.create(nsSongs,
         col -> col
             .properties(Property.text("title"))
-            .vectorConfig(VectorConfig.text2vecContextionary()));
+            .vectorConfig(VectorConfig.text2vecModel2Vec()));
 
     var songs = client.collections.use(nsSongs);
     var submarine = songs.data.insert(Map.of("title", "Yellow Submarine"));
@@ -160,7 +160,7 @@ public class SearchITest extends ConcurrentTest {
 
     var result = songs.query.nearText("forest",
         opt -> opt
-            .distance(0.5f)
+            .distance(0.9f)
             .moveTo(.98f, to -> to.concepts("tropical"))
             .moveAway(.4f, away -> away.uuids(submarine.metadata().uuid()))
             .returnProperties("title"));
@@ -173,7 +173,7 @@ public class SearchITest extends ConcurrentTest {
 
   @Test
   public void testNearText_groupBy() throws IOException {
-    var vectorizer = VectorConfig.text2vecContextionary();
+    var vectorizer = VectorConfig.text2vecModel2Vec();
 
     var nsArtists = ns("Artists");
     client.collections.create(nsArtists,
@@ -370,7 +370,7 @@ public class SearchITest extends ConcurrentTest {
     client.collections.create(nsAnimals,
         collection -> collection
             .properties(Property.text("kind"))
-            .vectorConfig(VectorConfig.text2vecContextionary()));
+            .vectorConfig(VectorConfig.text2vecModel2Vec()));
 
     var animals = client.collections.use(nsAnimals);
 
@@ -399,7 +399,7 @@ public class SearchITest extends ConcurrentTest {
     client.collections.create(nsHobbies,
         collection -> collection
             .properties(Property.text("name"), Property.text("description"))
-            .vectorConfig(VectorConfig.text2vecContextionary()));
+            .vectorConfig(VectorConfig.text2vecModel2Vec()));
 
     var hobbies = client.collections.use(nsHobbies);
 
@@ -432,7 +432,7 @@ public class SearchITest extends ConcurrentTest {
     client.collections.create(nsThings,
         collection -> collection
             .properties(Property.text("name"))
-            .vectorConfig(VectorConfig.text2vecContextionary()));
+            .vectorConfig(VectorConfig.text2vecModel2Vec()));
 
     var things = client.collections.use(nsThings);
     var balloon = things.data.insert(Map.of("name", "balloon"));
@@ -449,7 +449,7 @@ public class SearchITest extends ConcurrentTest {
       async.collections.create(nsThings,
           collection -> collection
               .properties(Property.text("name"))
-              .vectorConfig(VectorConfig.text2vecContextionary()))
+              .vectorConfig(VectorConfig.text2vecModel2Vec()))
           .join();
 
       var things = async.collections.use(nsThings);
@@ -470,7 +470,7 @@ public class SearchITest extends ConcurrentTest {
     client.collections.create(nsThings,
         c -> c
             .properties(Property.text("name"))
-            .vectorConfig(VectorConfig.text2vecContextionary(
+            .vectorConfig(VectorConfig.text2vecModel2Vec(
                 t2v -> t2v.sourceProperties("name"))));
 
     var things = client.collections.use(nsThings);
@@ -563,7 +563,7 @@ public class SearchITest extends ConcurrentTest {
         c -> c
             .properties(Property.text("title"))
             .generativeModule(new DummyGenerative())
-            .vectorConfig(VectorConfig.text2vecContextionary(
+            .vectorConfig(VectorConfig.text2vecModel2Vec(
                 t2v -> t2v.sourceProperties("title"))));
 
     var things = client.collections.use(nsThings);
@@ -604,7 +604,7 @@ public class SearchITest extends ConcurrentTest {
         c -> c
             .properties(Property.text("title"))
             .generativeModule(new DummyGenerative())
-            .vectorConfig(VectorConfig.text2vecContextionary(
+            .vectorConfig(VectorConfig.text2vecModel2Vec(
                 t2v -> t2v.sourceProperties("title"))));
 
     var things = client.collections.use(nsThings);
