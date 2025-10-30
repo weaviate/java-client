@@ -33,7 +33,9 @@ public final class UrlEncoder {
           if (qp == null) {
             return false;
           }
-          if (qp.getValue() instanceof String str) {
+          if (qp.getValue() == null) {
+            return false;
+          } else if (qp.getValue() instanceof String str) {
             return !str.isBlank();
           }
           return true;

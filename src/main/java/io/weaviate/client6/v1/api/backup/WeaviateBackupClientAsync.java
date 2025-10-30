@@ -109,7 +109,18 @@ public class WeaviateBackupClientAsync {
    * @param backend Backup storage backend.
    */
   public CompletableFuture<List<Backup>> list(String backend) {
-    return this.restTransport.performRequestAsync(new ListBackupsRequest(backend), ListBackupsRequest._ENDPOINT);
+    return this.restTransport.performRequestAsync(ListBackupsRequest.of(backend), ListBackupsRequest._ENDPOINT);
+  }
+
+  /**
+   * List backups in the backend storage.
+   *
+   * @param backend Backup storage backend.
+   * @param fn      Lambda expression for optional parameters.
+   */
+  public CompletableFuture<List<Backup>> list(String backend,
+      Function<ListBackupsRequest.Builder, ObjectBuilder<ListBackupsRequest>> fn) {
+    return this.restTransport.performRequestAsync(ListBackupsRequest.of(backend, fn), ListBackupsRequest._ENDPOINT);
   }
 
   /**

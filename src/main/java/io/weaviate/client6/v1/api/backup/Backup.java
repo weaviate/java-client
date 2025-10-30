@@ -1,6 +1,7 @@
 package io.weaviate.client6.v1.api.backup;
 
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -28,6 +29,12 @@ public record Backup(
     @SerializedName("status") BackupStatus status,
     /** Backup creation / restoration error. */
     @SerializedName("error") String error,
+    /** Time at which the backup creation. */
+    @SerializedName("startedAt") OffsetDateTime startedAt,
+    /** Time at which the backup was completed, successfully or otherwise. */
+    @SerializedName("completedAt") OffsetDateTime completedAt,
+    /** Backup size in GiB. */
+    @SerializedName("size") Integer sizeGiB,
     /**
      * This value indicates if a backup is being created or restored from.
      * For operations like LIST this value is null.
@@ -37,8 +44,18 @@ public record Backup(
     @SerializedName("__operation__") Operation operation) {
 
   /** Set operation associated with this backup. */
-  public Backup withOperation(Operation operation) {
-    return new Backup(id, path, backend, includesCollections, status, error, operation);
+  Backup withOperation(Operation operation) {
+    return new Backup(
+        id,
+        path,
+        backend,
+        includesCollections,
+        status,
+        error,
+        startedAt,
+        completedAt,
+        sizeGiB,
+        operation);
   }
 
   public enum Operation {

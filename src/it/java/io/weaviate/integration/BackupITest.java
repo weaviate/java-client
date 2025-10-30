@@ -103,10 +103,10 @@ public class BackupITest extends ConcurrentTest {
         .returns(BackupStatus.CANCELED, Backup::status);
 
     // Assert: all 3 backups are present
-    var all = client.backup.list(backend);
+    var all = client.backup.list(backend, bu -> bu.sortByStartingTimeAsc(true));
     Assertions.assertThat(all).as("all backups")
         .extracting(Backup::id)
-        .contains(backup_1, backup_2, backup_3);
+        .containsExactly(backup_1, backup_2, backup_3);
 
     // Act: delete data and restore backup #1
     client.collections.delete(nsA);
@@ -225,8 +225,8 @@ public class BackupITest extends ConcurrentTest {
 
   @Test(expected = IllegalStateException.class)
   public void test_waitForCompletion_unknown() throws IOException, TimeoutException {
-    var backup = new Backup("#1", "/tmp/bak/#1", "filesystem", List.of("Things"), BackupStatus.STARTED, null,
-        null);
+    var backup = new Backup("#1", "/tmp/bak/#1", "filesystem", List.of("Things"), BackupStatus.STARTED,
+        null, null, null, null, null);
     backup.waitForCompletion(client);
   }
 
