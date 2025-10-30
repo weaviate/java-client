@@ -157,7 +157,23 @@ public class WeaviateBackupClient {
    *                              or the server being unavailable.
    */
   public List<Backup> list(String backend) throws IOException {
-    return this.restTransport.performRequest(new ListBackupsRequest(backend), ListBackupsRequest._ENDPOINT);
+    return this.restTransport.performRequest(ListBackupsRequest.of(backend), ListBackupsRequest._ENDPOINT);
+  }
+
+  /**
+   * List backups in the backend storage.
+   *
+   * @param backend Backup storage backend.
+   * @param fn      Lambda expression for optional parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @throws IOException          in case the request was not sent successfully
+   *                              due to a malformed request, a networking error
+   *                              or the server being unavailable.
+   */
+  public List<Backup> list(String backend, Function<ListBackupsRequest.Builder, ObjectBuilder<ListBackupsRequest>> fn)
+      throws IOException {
+    return this.restTransport.performRequest(ListBackupsRequest.of(backend, fn), ListBackupsRequest._ENDPOINT);
   }
 
   /**
