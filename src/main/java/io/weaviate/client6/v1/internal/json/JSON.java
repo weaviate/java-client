@@ -1,5 +1,7 @@
 package io.weaviate.client6.v1.internal.json;
 
+import java.util.List;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.ToNumberPolicy;
@@ -89,6 +91,11 @@ public final class JSON {
 
   public static final <T> T deserialize(String json, Class<T> cls) {
     return gson.fromJson(json, cls);
+  }
+
+  @SuppressWarnings("unchecked")
+  public static final <T> List<T> deserializeList(String json, Class<T> cls) {
+    return (List<T>) deserialize(json, TypeToken.getParameterized(List.class, cls));
   }
 
   public static final <T> T deserialize(String json, TypeToken<T> token) {
