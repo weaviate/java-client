@@ -30,7 +30,7 @@ public final class UrlEncoder {
     }
     var query = queryParams.entrySet().stream()
         .filter(qp -> {
-          if (qp == null) {
+          if (qp == null || qp.getValue() == null) {
             return false;
           }
           if (qp.getValue() instanceof String str) {
