@@ -10,14 +10,16 @@ public abstract class TransportOptions<H> {
   protected final TokenProvider tokenProvider;
   protected final H headers;
   protected final TrustManagerFactory trustManagerFactory;
+  protected final Timeout timeout;
 
   protected TransportOptions(String scheme, String host, int port, H headers, TokenProvider tokenProvider,
-      TrustManagerFactory tmf) {
+      TrustManagerFactory tmf, Timeout timeout) {
     this.scheme = scheme;
     this.host = host;
     this.port = port;
     this.tokenProvider = tokenProvider;
     this.headers = headers;
+    this.timeout = timeout;
     this.trustManagerFactory = tmf;
   }
 
@@ -35,6 +37,11 @@ public abstract class TransportOptions<H> {
 
   public int port() {
     return this.port;
+  }
+
+  @Nullable
+  public Timeout timeout() {
+    return this.timeout;
   }
 
   @Nullable

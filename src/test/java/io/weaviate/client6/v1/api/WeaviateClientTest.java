@@ -14,7 +14,10 @@ public class WeaviateClientTest {
 
   @Test(expected = WeaviateConnectException.class)
   public void testFailedConnection_Local() {
-    WeaviateClient.connectToLocal();
+    try (final var __ = WeaviateClient.connectToLocal()) {
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Test(expected = WeaviateConnectException.class)
