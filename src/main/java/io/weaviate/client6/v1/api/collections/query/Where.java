@@ -438,6 +438,10 @@ public class Where implements WhereOperand {
       return new Where(Operator.CONTAINS_ANY, left, new TextArrayOperand(values));
     }
 
+    public Where containsAny(List<String> values) {
+      return new Where(Operator.CONTAINS_ANY, left, new TextArrayOperand(values));
+    }
+
     public Where containsAny(Boolean... values) {
       return new Where(Operator.CONTAINS_ANY, left, new BooleanArrayOperand(values));
     }
@@ -464,6 +468,10 @@ public class Where implements WhereOperand {
       return new Where(Operator.CONTAINS_ALL, left, new TextArrayOperand(values));
     }
 
+    public Where containsAll(List<String> values) {
+      return new Where(Operator.CONTAINS_ALL, left, new TextArrayOperand(values));
+    }
+
     public Where containsAll(Boolean... values) {
       return new Where(Operator.CONTAINS_ALL, left, new BooleanArrayOperand(values));
     }
@@ -487,6 +495,10 @@ public class Where implements WhereOperand {
     }
 
     public Where containsNone(String... values) {
+      return new Where(Operator.CONTAINS_NONE, left, new TextArrayOperand(values));
+    }
+
+    public Where containsNone(List<String> values) {
       return new Where(Operator.CONTAINS_NONE, left, new TextArrayOperand(values));
     }
 
