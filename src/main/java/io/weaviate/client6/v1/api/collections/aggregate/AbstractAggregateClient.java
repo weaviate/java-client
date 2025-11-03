@@ -63,6 +63,22 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
   /**
    * Aggregate metrics over all objects in this collection.
    *
+   * @param groupBy GroupBy clause.
+   * @return Grouped aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see AggregateResponseGrouped
+   */
+  public GroupedResponseT overAll(GroupBy groupBy) {
+    return performRequest(Aggregation.of(), groupBy);
+  }
+
+  /**
+   * Aggregate metrics over all objects in this collection.
+   *
    * @param fn      Lambda expression for optional aggregation parameters.
    * @param groupBy GroupBy clause.
    * @return Grouped aggregation result.
