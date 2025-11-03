@@ -83,6 +83,16 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
   // Object queries -----------------------------------------------------------
 
   /**
+   * Retrieve objects in ascending UUID order.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT fetchObjects() {
+    return fetchObjects(FetchObjects.of());
+  }
+
+  /**
    * Retrieve objects without applying a Vector Search or Keyword Search filter.
    *
    * @param fn Lambda expression for optional parameters.
@@ -102,6 +112,21 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    */
   public ResponseT fetchObjects(FetchObjects query) {
     return performRequest(query);
+  }
+
+  /**
+   * Retrieve objects in ascending UUID order.
+   *
+   * @param groupBy Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see QueryResponseGrouped
+   */
+  public GroupedResponseT fetchObjects(GroupBy groupBy) {
+    return fetchObjects(FetchObjects.of(), groupBy);
   }
 
   /**

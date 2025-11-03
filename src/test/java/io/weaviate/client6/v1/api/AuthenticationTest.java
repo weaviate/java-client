@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpRequest;
 
+import io.weaviate.client6.v1.internal.Timeout;
 import io.weaviate.client6.v1.internal.rest.DefaultRestTransport;
 import io.weaviate.client6.v1.internal.rest.RestTransport;
 import io.weaviate.client6.v1.internal.rest.RestTransportOptions;
@@ -33,7 +34,7 @@ public class AuthenticationTest {
     noAuthTransport = new DefaultRestTransport(
         new RestTransportOptions(
             "http", "localhost", mockServer.getLocalPort(),
-            Collections.emptyMap(), null, null));
+            Collections.emptyMap(), null, null, new Timeout()));
   }
 
   @Test
@@ -41,7 +42,7 @@ public class AuthenticationTest {
     var authz = Authentication.apiKey("my-api-key");
     var transportOptions = new RestTransportOptions(
         "http", "localhost", mockServer.getLocalPort(),
-        Collections.emptyMap(), authz.getTokenProvider(noAuthTransport), null);
+        Collections.emptyMap(), authz.getTokenProvider(noAuthTransport), null, new Timeout());
 
     try (final var restClient = new DefaultRestTransport(transportOptions)) {
       restClient.performRequest(null, SimpleEndpoint.sideEffect(

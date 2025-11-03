@@ -18,32 +18,23 @@ public interface Rpc<RequestT, RequestM, ResponseT, ReplyM> {
 
   BiFunction<WeaviateFutureStub, RequestM, ListenableFuture<ReplyM>> methodAsync();
 
-  public static <RequestT, RequestM, ResponseT, ReplyM> Rpc<RequestT, RequestM, ResponseT, ReplyM> of(
+  default boolean isInsert() {
+    return false;
+  }
+
+  public static <RequestT, RequestM, ResponseT, ReplyM> SimpleRpc<RequestT, RequestM, ResponseT, ReplyM> of(
       Function<RequestT, RequestM> marshal,
       Function<ReplyM, ResponseT> unmarshal,
       Supplier<BiFunction<WeaviateBlockingStub, RequestM, ReplyM>> method,
       Supplier<BiFunction<WeaviateFutureStub, RequestM, ListenableFuture<ReplyM>>> methodAsync) {
-    return new Rpc<RequestT, RequestM, ResponseT, ReplyM>() {
+    return new SimpleRpc<>(marshal, unmarshal, method, methodAsync, false);
+  }
 
-      @Override
-      public RequestM marshal(RequestT request) {
-        return marshal.apply(request);
-      }
-
-      @Override
-      public ResponseT unmarshal(ReplyM reply) {
-        return unmarshal.apply(reply);
-      }
-
-      @Override
-      public BiFunction<WeaviateBlockingStub, RequestM, ReplyM> method() {
-        return method.get();
-      }
-
-      @Override
-      public BiFunction<WeaviateFutureStub, RequestM, ListenableFuture<ReplyM>> methodAsync() {
-        return methodAsync.get();
-      }
-    };
+  public static <RequestT, RequestM, ResponseT, ReplyM> SimpleRpc<RequestT, RequestM, ResponseT, ReplyM> insert(
+      Function<RequestT, RequestM> marshal,
+      Function<ReplyM, ResponseT> unmarshal,
+      Supplier<BiFunction<WeaviateBlockingStub, RequestM, ReplyM>> method,
+      Supplier<BiFunction<WeaviateFutureStub, RequestM, ListenableFuture<ReplyM>>> methodAsync) {
+    return new SimpleRpc<>(marshal, unmarshal, method, methodAsync, true);
   }
 }

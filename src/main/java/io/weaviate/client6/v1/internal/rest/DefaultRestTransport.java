@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
 
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
+import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -66,6 +68,14 @@ public class DefaultRestTransport implements RestTransport {
       httpClientAsync.setConnectionManager(asyncManager);
     }
 
+    if (transportOptions.timeout() != null) {
+      var config = RequestConfig.custom()
+          .setResponseTimeout(transportOptions.timeout().querySeconds(), TimeUnit.SECONDS)
+          .build();
+      httpClient.setDefaultRequestConfig(config);
+      httpClientAsync.setDefaultRequestConfig(config);
+    }
+
     if (transportOptions.tokenProvider() != null) {
       this.authInterceptor = new AuthenticationInterceptor(transportOptions.tokenProvider());
       httpClient.addRequestInterceptorFirst(authInterceptor);
@@ -100,6 +110,8 @@ public class DefaultRestTransport implements RestTransport {
     var body = endpoint.body(request);
     if (body != null) {
       req.setEntity(body, ContentType.APPLICATION_JSON);
+    }
+    if (true) {
     }
     return req.build();
   }

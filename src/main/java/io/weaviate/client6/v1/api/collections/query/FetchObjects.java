@@ -10,6 +10,10 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
 public record FetchObjects(BaseQueryOptions common, List<SortBy> sortBy) implements QueryOperator {
 
+  public static FetchObjects of() {
+    return of(ObjectBuilder.identity());
+  }
+
   public static FetchObjects of(Function<Builder, ObjectBuilder<FetchObjects>> fn) {
     return fn.apply(new Builder()).build();
   }

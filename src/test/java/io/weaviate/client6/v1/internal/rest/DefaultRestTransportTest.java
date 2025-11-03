@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpRequest;
 
+import io.weaviate.client6.v1.internal.Timeout;
 import io.weaviate.testutil.truststore.SingleTrustManagerFactory;
 import io.weaviate.testutil.truststore.SpyTrustManager;
 
@@ -37,7 +38,7 @@ public class DefaultRestTransportTest {
     tmf = SingleTrustManagerFactory.create(new SpyTrustManager());
     transport = new DefaultRestTransport(new RestTransportOptions(
         "https", "localhost", mockServer.getLocalPort(),
-        Collections.emptyMap(), null, tmf));
+        Collections.emptyMap(), null, tmf, new Timeout()));
   }
 
   @Test

@@ -1,6 +1,7 @@
 package io.weaviate.client6.v1.internal.grpc;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLException;
 
@@ -13,6 +14,7 @@ import io.grpc.StatusRuntimeException;
 import io.grpc.netty.shaded.io.grpc.netty.GrpcSslContexts;
 import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
+import io.grpc.stub.AbstractStub;
 import io.grpc.stub.MetadataUtils;
 import io.weaviate.client6.v1.api.WeaviateApiException;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc;
@@ -25,9 +27,12 @@ public final class DefaultGrpcTransport implements GrpcTransport {
   private final WeaviateBlockingStub blockingStub;
   private final WeaviateFutureStub futureStub;
 
+  private final GrpcChannelOptions transportOptions;
+
   private TokenCallCredentials callCredentials;
 
   public DefaultGrpcTransport(GrpcChannelOptions transportOptions) {
+    this.transportOptions = transportOptions;
     this.channel = buildChannel(transportOptions);
 
     var blockingStub = WeaviateGrpc.newBlockingStub(channel)
@@ -52,13 +57,24 @@ public final class DefaultGrpcTransport implements GrpcTransport {
     this.futureStub = futureStub;
   }
 
+  private <StubT extends AbstractStub<StubT>> StubT applyTimeout(StubT stub, Rpc<?, ?, ?, ?> rpc) {
+    if (transportOptions.timeout() == null) {
+      return stub;
+    }
+    var timeout = rpc.isInsert()
+        ? transportOptions.timeout().insertSeconds()
+        : transportOptions.timeout().querySeconds();
+    return stub.withDeadlineAfter(timeout, TimeUnit.SECONDS);
+  }
+
   @Override
   public <RequestT, RequestM, ReplyM, ResponseT> ResponseT performRequest(RequestT request,
       Rpc<RequestT, RequestM, ResponseT, ReplyM> rpc) {
     var message = rpc.marshal(request);
     var method = rpc.method();
+    var stub = applyTimeout(blockingStub, rpc);
     try {
-      var reply = method.apply(blockingStub, message);
+      var reply = method.apply(stub, message);
       return rpc.unmarshal(reply);
     } catch (io.grpc.StatusRuntimeException e) {
       throw WeaviateApiException.gRPC(e);
@@ -70,7 +86,8 @@ public final class DefaultGrpcTransport implements GrpcTransport {
       Rpc<RequestT, RequestM, ResponseT, ReplyM> rpc) {
     var message = rpc.marshal(request);
     var method = rpc.methodAsync();
-    var reply = method.apply(futureStub, message);
+    var stub = applyTimeout(futureStub, rpc);
+    var reply = method.apply(stub, message);
     return toCompletableFuture(reply).thenApply(r -> rpc.unmarshal(r));
   }
 
