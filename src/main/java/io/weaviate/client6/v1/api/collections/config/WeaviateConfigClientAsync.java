@@ -57,7 +57,7 @@ public class WeaviateConfigClientAsync {
     return this.addProperty(ReferenceProperty.to(name, dataTypes).toProperty());
   }
 
-  public CompletableFuture<Void> update(String collectionName,
+  public CompletableFuture<Void> update(
       Function<UpdateCollectionRequest.Builder, ObjectBuilder<UpdateCollectionRequest>> fn) throws IOException {
     return get().thenCompose(maybeCollection -> {
       var thisCollection = maybeCollection.orElseThrow();

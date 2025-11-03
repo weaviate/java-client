@@ -56,8 +56,8 @@ public class WeaviateConfigClient {
     this.addProperty(ReferenceProperty.to(propertyName, dataTypes).toProperty());
   }
 
-  public void update(String collectionName,
-      Function<UpdateCollectionRequest.Builder, ObjectBuilder<UpdateCollectionRequest>> fn) throws IOException {
+  public void update(Function<UpdateCollectionRequest.Builder, ObjectBuilder<UpdateCollectionRequest>> fn)
+      throws IOException {
     var thisCollection = get().orElseThrow(); // TODO: use descriptive error
     this.restTransport.performRequest(UpdateCollectionRequest.of(thisCollection, fn),
         UpdateCollectionRequest._ENDPOINT);
