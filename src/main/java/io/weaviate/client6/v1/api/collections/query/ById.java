@@ -16,7 +16,8 @@ public record ById(
     String uuid,
     List<String> returnProperties,
     List<QueryReference> returnReferences,
-    List<Metadata> returnMetadata) implements QueryOperator {
+    List<Metadata> returnMetadata,
+    List<String> includeVectors) implements QueryOperator {
 
   static final String ID_PROPERTY = "_id";
 
@@ -32,7 +33,8 @@ public record ById(
     this(builder.uuid,
         new ArrayList<>(builder.returnProperties),
         builder.returnReferences,
-        new ArrayList<>(builder.returnMetadata));
+        new ArrayList<>(builder.returnMetadata),
+        builder.includeVectors);
   }
 
   public static class Builder implements ObjectBuilder<ById> {
@@ -42,6 +44,7 @@ public record ById(
     private Set<String> returnProperties = new HashSet<>();
     private List<QueryReference> returnReferences = new ArrayList<>();
     private Set<Metadata> returnMetadata = new HashSet<>();
+    private List<String> includeVectors = new ArrayList<>();
 
     public Builder(String uuid) {
       this.uuid = uuid;
@@ -86,6 +89,17 @@ public record ById(
       return returnMetadata(Metadata.VECTOR);
     }
 
+    /** Include one or more named vectors in the metadata response. */
+    public final Builder includeVector(String... vectors) {
+      return includeVector(Arrays.asList(vectors));
+    }
+
+    /** Include one or more named vectors in the metadata response. */
+    public final Builder includeVector(List<String> vectors) {
+      this.includeVectors.addAll(vectors);
+      return this;
+    }
+
     @Override
     public ById build() {
       return new ById(this);
@@ -101,6 +115,7 @@ public record ById(
 
     var metadata = WeaviateProtoSearchGet.MetadataRequest.newBuilder();
     returnMetadata.forEach(m -> m.appendTo(metadata));
+    metadata.addAllVectors(includeVectors);
     req.setMetadata(metadata);
 
     if (!returnProperties.isEmpty() || !returnReferences.isEmpty()) {

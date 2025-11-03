@@ -463,6 +463,34 @@ public class SearchITest extends ConcurrentTest {
   }
 
   @Test
+  public void test_includeVectors() throws IOException {
+    // Arrange
+    var nsThings = ns("Things");
+    var things = client.collections.create(nsThings,
+        c -> c.vectorConfig(
+            VectorConfig.selfProvided("v1"),
+            VectorConfig.selfProvided("v2"),
+            VectorConfig.selfProvided("v3")));
+
+    var thing_1 = things.data.insert(Map.of(), thing -> thing.vectors(
+        Vectors.of("v1", new float[] { 1, 2, 3 }),
+        Vectors.of("v2", new float[] { 4, 5, 6 }),
+        Vectors.of("v3", new float[] { 7, 8, 9 })));
+
+    // Act
+    var got = things.query.byId(
+        thing_1.uuid(),
+        q -> q.includeVector("v1", "v2"));
+
+    // Assert
+    Assertions.assertThat(got).get()
+        .extracting(WeaviateObject::vectors)
+        .returns(true, v -> v.contains("v1"))
+        .returns(true, v -> v.contains("v2"))
+        .returns(false, v -> v.contains("v3"));
+  }
+
+  @Test
   public void testMetadataAll() throws IOException {
     // Arrange
     var nsThings = ns("Things");
