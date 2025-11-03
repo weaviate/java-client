@@ -35,7 +35,11 @@ public class TextAggregation
       super(property);
     }
 
-    public final Builder count() {
+    /**
+     * Include the number of occurrences (frequency count) for each top most
+     * occuring value in the results.
+     */
+    public final Builder topOccurrencesCount() {
       return addMetric(WeaviateProtoAggregate.AggregateRequest.Aggregation.Text.Builder::setCount);
     }
 
@@ -43,13 +47,19 @@ public class TextAggregation
       return addMetric(WeaviateProtoAggregate.AggregateRequest.Aggregation.Text.Builder::setType);
     }
 
-    public Builder topOccurences() {
+    /**
+     * Include the value of the top occurrences in the aggregation results.
+     */
+    public Builder topOccurrencesValue() {
       return addMetric(WeaviateProtoAggregate.AggregateRequest.Aggregation.Text.Builder::setTopOccurences);
     }
 
-    public Builder topOccurencesCutoff(int cutoff) {
+    /**
+     * Set a <i>minimum</i> cutoff point after which groups should be discarded.
+     */
+    public Builder minOccurrences(int cutoff) {
       this.topOccurrencesCutoff = cutoff;
-      return topOccurences();
+      return topOccurrencesCount();
     }
 
     @Override
