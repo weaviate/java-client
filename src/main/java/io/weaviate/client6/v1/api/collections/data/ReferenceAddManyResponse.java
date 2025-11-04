@@ -24,11 +24,17 @@ public record ReferenceAddManyResponse(List<BatchError> errors) {
       int i = 0;
       for (var el : json.getAsJsonArray()) {
         var result = el.getAsJsonObject().get("result").getAsJsonObject();
-        if (result.get("status").getAsString().equals("FAILED")) {
-          var errorMsg = result
-              .get("errors").getAsJsonObject()
-              .get("error").getAsJsonArray()
-              .get(0).getAsString();
+        if (result.get("status").getAsString().equals("FAILED")
+            && result.has("errors")) {
+          String errorMsg;
+          try {
+            errorMsg = result
+                .get("errors").getAsJsonObject()
+                .get("error").getAsJsonArray()
+                .get(0).getAsString();
+          } catch (Exception e) {
+            errorMsg = result.get("errors").toString();
+          }
 
           var batchErr = new BatchError(errorMsg, null, i);
           errors.add(batchErr);

@@ -72,6 +72,22 @@ public class Weaviate extends WeaviateContainer {
   }
 
   /**
+   * Get client that is not shared with other tests / callers.
+   * The returned client is not wrapped in an instance of {@link SharedClient},
+   * so it can be auto-closed by the try-with-resources statement when it exists.
+   */
+  public WeaviateClient getBareClient() {
+    if (!isRunning()) {
+      start();
+    }
+    try {
+      return new WeaviateClient(Config.of(defaultConfigFn()));
+    } catch (Exception e) {
+      throw new RuntimeException("create WeaviateClient for Weaviate container", e);
+    }
+  }
+
+  /**
    * Create a new instance of WeaviateClient connected to this container.
    * Prefer using {@link #getClient} unless your test needs the initialization
    * steps to run, e.g. OIDC authorization grant exchange.
