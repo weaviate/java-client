@@ -678,6 +678,21 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
   /**
    * Aggregate results of a near text query.
    *
+   * @param searchTarget Query target.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @return Aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @see AggregateResponse
+   */
+  public ResponseT nearText(Target searchTarget, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return nearText(NearText.of(searchTarget), fn);
+  }
+
+  /**
+   * Aggregate results of a near text query.
+   *
    * @param text Query string.
    * @param nt   Lambda expression for optional near text parameters.
    * @param fn   Lambda expression for optional aggregation parameters.
@@ -687,7 +702,8 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    *                              error status code.
    * @see AggregateResponse
    */
-  public ResponseT nearText(String text, Function<NearText.Builder, ObjectBuilder<NearText>> nt,
+  public ResponseT nearText(String text,
+      Function<NearText.Builder, ObjectBuilder<NearText>> nt,
       Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
     return nearText(NearText.of(Target.text(List.of(text)), nt), fn);
   }
@@ -704,9 +720,28 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    *                              error status code.
    * @see AggregateResponse
    */
-  public ResponseT nearText(List<String> concepts, Function<NearText.Builder, ObjectBuilder<NearText>> nt,
+  public ResponseT nearText(List<String> concepts,
+      Function<NearText.Builder, ObjectBuilder<NearText>> nt,
       Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
     return nearText(NearText.of(Target.text(concepts), nt), fn);
+  }
+
+  /**
+   * Aggregate results of a near text query.
+   *
+   * @param searchTarget Query target.
+   * @param nt           Lambda expression for optional near text parameters.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @return Aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @see AggregateResponse
+   */
+  public ResponseT nearText(Target searchTarget,
+      Function<NearText.Builder, ObjectBuilder<NearText>> nt,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return nearText(NearText.of(searchTarget, nt), fn);
   }
 
   /**
@@ -719,7 +754,8 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
    */
-  public ResponseT nearText(NearText filter, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+  public ResponseT nearText(NearText filter,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
     return performRequest(Aggregation.of(filter, fn));
   }
 
@@ -737,7 +773,8 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    * @see GroupBy
    * @see AggregateResponseGrouped
    */
-  public GroupedResponseT nearText(String text, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+  public GroupedResponseT nearText(String text,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
       GroupBy groupBy) {
     return nearText(NearText.of(text), fn, groupBy);
   }
@@ -756,9 +793,30 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    * @see GroupBy
    * @see AggregateResponseGrouped
    */
-  public GroupedResponseT nearText(List<String> concepts, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+  public GroupedResponseT nearText(List<String> concepts,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
       GroupBy groupBy) {
     return nearText(NearText.of(Target.text(concepts)), fn, groupBy);
+  }
+
+  /**
+   * Aggregate results of a near text query.
+   *
+   * @param searchTarget Query target.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @param groupBy      GroupBy clause.
+   * @return Grouped aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see AggregateResponseGrouped
+   */
+  public GroupedResponseT nearText(Target searchTarget,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
+    return nearText(NearText.of(searchTarget), fn, groupBy);
   }
 
   /**
@@ -776,8 +834,10 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    * @see GroupBy
    * @see AggregateResponseGrouped
    */
-  public GroupedResponseT nearText(String text, Function<NearText.Builder, ObjectBuilder<NearText>> nt,
-      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn, GroupBy groupBy) {
+  public GroupedResponseT nearText(String text,
+      Function<NearText.Builder, ObjectBuilder<NearText>> nt,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
     return nearText(NearText.of(text, nt), fn, groupBy);
   }
 
@@ -796,9 +856,33 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    * @see GroupBy
    * @see AggregateResponseGrouped
    */
-  public GroupedResponseT nearText(List<String> concepts, Function<NearText.Builder, ObjectBuilder<NearText>> nt,
-      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn, GroupBy groupBy) {
+  public GroupedResponseT nearText(List<String> concepts,
+      Function<NearText.Builder, ObjectBuilder<NearText>> nt,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
     return nearText(NearText.of(Target.text(concepts), nt), fn, groupBy);
+  }
+
+  /**
+   * Aggregate results of a near text query.
+   *
+   * @param searchTarget Query target.
+   * @param nt           Lambda expression for optional near text parameters.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @param groupBy      GroupBy clause.
+   * @return Grouped aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see AggregateResponseGrouped
+   */
+  public GroupedResponseT nearText(Target searchTarget,
+      Function<NearText.Builder, ObjectBuilder<NearText>> nt,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
+    return nearText(NearText.of(searchTarget, nt), fn, groupBy);
   }
 
   /**
