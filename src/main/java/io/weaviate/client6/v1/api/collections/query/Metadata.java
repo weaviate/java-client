@@ -13,8 +13,6 @@ public interface Metadata {
 
   /** Include metadata in the metadata response. */
   public static final Metadata ALL = MetadataField.ALL;
-  /** Include associated vector in the metadata response. */
-  public static final Metadata VECTOR = MetadataField.VECTOR;
   /** Include object creation time in the metadata response. */
   public static final Metadata CREATION_TIME_UNIX = MetadataField.CREATION_TIME_UNIX;
   /** Include last update time in the metadata response. */
