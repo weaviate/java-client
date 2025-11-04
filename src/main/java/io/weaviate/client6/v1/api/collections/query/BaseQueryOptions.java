@@ -172,7 +172,7 @@ public record BaseQueryOptions(
 
     /** Include default vector. */
     public final SelfT includeVector() {
-      return returnMetadata(Metadata.VECTOR);
+      return returnMetadata(MetadataField.VECTOR);
     }
 
     /** Include one or more named vectors in the metadata response. */

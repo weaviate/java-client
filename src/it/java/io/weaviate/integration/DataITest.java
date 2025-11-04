@@ -25,6 +25,7 @@ import io.weaviate.client6.v1.api.collections.data.BatchReference;
 import io.weaviate.client6.v1.api.collections.data.DeleteManyResponse;
 import io.weaviate.client6.v1.api.collections.data.Reference;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
+import io.weaviate.client6.v1.api.collections.query.Metadata.MetadataField;
 import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.api.collections.query.QueryReference;
 import io.weaviate.client6.v1.api.collections.query.Where;
@@ -54,7 +55,7 @@ public class DataITest extends ConcurrentTest {
     var object = artists.query.byId(id, query -> query
         .returnProperties("name")
         .returnMetadata(
-            Metadata.VECTOR,
+            MetadataField.VECTOR,
             Metadata.CREATION_TIME_UNIX, Metadata.LAST_UPDATE_TIME_UNIX));
 
     Assertions.assertThat(artists.data.exists(id))

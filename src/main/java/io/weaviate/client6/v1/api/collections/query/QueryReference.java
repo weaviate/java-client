@@ -128,7 +128,18 @@ public record QueryReference(
 
     /** Include the default vector of the referenced object. */
     public final Builder includeVector() {
-      return returnMetadata(Metadata.VECTOR);
+      return returnMetadata(MetadataField.VECTOR);
+    }
+
+    /** Include one or more named vectors in the metadata response. */
+    public final Builder includeVector(String... vectors) {
+      return includeVector(Arrays.asList(vectors));
+    }
+
+    /** Include one or more named vectors in the metadata response. */
+    public final Builder includeVector(List<String> vectors) {
+      this.includeVectors.addAll(vectors);
+      return this;
     }
 
     @Override
