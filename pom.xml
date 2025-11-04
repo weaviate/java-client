@@ -238,15 +238,6 @@
             <threadCount>1</threadCount>
             <perCoreThreadCount>true</perCoreThreadCount>
             <runOrder>balanced</runOrder>
-            <argLine>
-              <!--
-                Gson (used for JSON serialization) utilizes reflection and needs to be able to access private fields of
-                Java core classes. For that to work correctly after Java 9, we need to open up some of the core Java
-                classes to reflection.
-                @see: https://www.oracle.com/corporate/features/understanding-java-9-modules.html
-              -->
-              --add-opens=java.base/java.lang=ALL-UNNAMED
-              </argLine>
           </configuration>
         </plugin>
         <plugin>
