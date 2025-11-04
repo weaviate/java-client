@@ -10,7 +10,8 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 public record RQ(
     @SerializedName("enabled") boolean enabled,
     @SerializedName("rescore_limit") Integer rescoreLimit,
-    @SerializedName("bits") Integer bits) implements Quantization {
+    @SerializedName("bits") Integer bits,
+    @SerializedName("cache") Boolean cache) implements Quantization {
 
   @Override
   public Quantization.Kind _kind() {
@@ -31,13 +32,14 @@ public record RQ(
   }
 
   public RQ(Builder builder) {
-    this(builder.enabled, builder.rescoreLimit, builder.bits);
+    this(builder.enabled, builder.rescoreLimit, builder.bits, builder.cache);
   }
 
   public static class Builder implements ObjectBuilder<RQ> {
     private boolean enabled = true;
     private Integer rescoreLimit;
     private Integer bits;
+    private Boolean cache;
 
     public Builder enabled(boolean enabled) {
       this.enabled = enabled;
@@ -51,6 +53,11 @@ public record RQ(
 
     public Builder bits(int bits) {
       this.bits = bits;
+      return this;
+    }
+
+    public Builder cache(boolean enabled) {
+      this.cache = enabled;
       return this;
     }
 
