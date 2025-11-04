@@ -113,6 +113,21 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
   /**
    * Aggregate results of a hybrid search query.
    *
+   * @param searchTarget Query target.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @return Aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @see AggregateResponse
+   */
+  public ResponseT hybrid(Target searchTarget, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return hybrid(Hybrid.of(searchTarget), fn);
+  }
+
+  /**
+   * Aggregate results of a hybrid search query.
+   *
    * @param query  Query string.
    * @param hybrid Lambda expression for optional hybrid search parameters.
    * @param fn     Lambda expression for optional aggregation parameters.
@@ -125,6 +140,23 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
   public ResponseT hybrid(String query, Function<Hybrid.Builder, ObjectBuilder<Hybrid>> hybrid,
       Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
     return hybrid(Hybrid.of(query, hybrid), fn);
+  }
+
+  /**
+   * Aggregate results of a hybrid search query.
+   *
+   * @param searchTarget Query target.
+   * @param hybrid       Lambda expression for optional hybrid search parameters.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @return Aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @see AggregateResponse
+   */
+  public ResponseT hybrid(Target searchTarget, Function<Hybrid.Builder, ObjectBuilder<Hybrid>> hybrid,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return hybrid(Hybrid.of(searchTarget, hybrid), fn);
   }
 
   /**
@@ -164,6 +196,25 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
   /**
    * Aggregate results of a hybrid search query.
    *
+   * @param searchTarget Query target.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @param groupBy      GroupBy clause.
+   * @return Grouped aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see AggregateResponseGrouped
+   */
+  public GroupedResponseT hybrid(Target searchTarget, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
+    return hybrid(Hybrid.of(searchTarget), fn, groupBy);
+  }
+
+  /**
+   * Aggregate results of a hybrid search query.
+   *
    * @param query   Query string.
    * @param hybrid  Lambda expression for optional hybrid search parameters.
    * @param fn      Lambda expression for optional aggregation parameters.
@@ -179,6 +230,26 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
   public GroupedResponseT hybrid(String query, Function<Hybrid.Builder, ObjectBuilder<Hybrid>> hybrid,
       Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn, GroupBy groupBy) {
     return hybrid(Hybrid.of(query, hybrid), fn, groupBy);
+  }
+
+  /**
+   * Aggregate results of a hybrid search query.
+   *
+   * @param searchTarget Query target.
+   * @param hybrid       Lambda expression for optional hybrid search parameters.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @param groupBy      GroupBy clause.
+   * @return Grouped aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see AggregateResponseGrouped
+   */
+  public GroupedResponseT hybrid(Target searchTarget, Function<Hybrid.Builder, ObjectBuilder<Hybrid>> hybrid,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn, GroupBy groupBy) {
+    return hybrid(Hybrid.of(searchTarget, hybrid), fn, groupBy);
   }
 
   /**
