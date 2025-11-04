@@ -232,6 +232,12 @@
           <version>3.5.4</version>
           <configuration>
             <trimStackTrace>false</trimStackTrace>
+            <parallel>classes</parallel>
+            <forkCount>4</forkCount>
+            <reuseForks>true</reuseForks>
+            <threadCount>1</threadCount>
+            <perCoreThreadCount>true</perCoreThreadCount>
+            <runOrder>balanced</runOrder>
             <argLine>
               <!--
                 Gson (used for JSON serialization) utilizes reflection and needs to be able to access private fields of
@@ -241,12 +247,6 @@
               -->
               --add-opens=java.base/java.lang=ALL-UNNAMED
               </argLine>
-              <properties>
-                <property>
-                  <name>listener</name>
-                  <value>io.weaviate.containers.TestListener</value>
-                </property>
-              </properties>
           </configuration>
         </plugin>
         <plugin>
