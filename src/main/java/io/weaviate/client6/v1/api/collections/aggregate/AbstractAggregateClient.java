@@ -308,6 +308,38 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
   /**
    * Aggregate results of a near vector query.
    *
+   * @param vector Query vector.
+   * @param fn     Lambda expression for optional aggregation parameters.
+   * @return Aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @see AggregateResponse
+   */
+  public ResponseT nearVector(float[][] vector, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return nearVector(NearVector.of(Target.vector(vector)), fn);
+  }
+
+  /**
+   * Aggregate results of a near vector query.
+   *
+   * @param vector Query vector.
+   * @param nv     Lambda expression for optional near vector parameters.
+   * @param fn     Lambda expression for optional aggregation parameters.
+   * @return Aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @see AggregateResponse
+   */
+  public ResponseT nearVector(float[][] vector, Function<NearVector.Builder, ObjectBuilder<NearVector>> nv,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return nearVector(NearVector.of(Target.vector(vector), nv), fn);
+  }
+
+  /**
+   * Aggregate results of a near vector query.
+   *
    * @param filter Near vector query request.
    * @param fn     Lambda expression for optional aggregation parameters.
    * @return Aggregation result.
@@ -355,6 +387,45 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    * @see AggregateResponseGrouped
    */
   public GroupedResponseT nearVector(float[] vector, Function<NearVector.Builder, ObjectBuilder<NearVector>> nv,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn, GroupBy groupBy) {
+    return nearVector(NearVector.of(Target.vector(vector), nv), fn, groupBy);
+  }
+
+  /**
+   * Aggregate results of a near vector query.
+   *
+   * @param vector  Query vector.
+   * @param fn      Lambda expression for optional aggregation parameters.
+   * @param groupBy GroupBy clause.
+   * @return Grouped aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see AggregateResponseGrouped
+   */
+  public GroupedResponseT nearVector(float[][] vector, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
+    return nearVector(NearVector.of(Target.vector(vector)), fn, groupBy);
+  }
+
+  /**
+   * Aggregate results of a near vector query.
+   *
+   * @param vector  Query vector.
+   * @param nv      Lambda expression for optional near vector parameters.
+   * @param fn      Lambda expression for optional aggregation parameters.
+   * @param groupBy GroupBy clause.
+   * @return Grouped aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see AggregateResponseGrouped
+   */
+  public GroupedResponseT nearVector(float[][] vector, Function<NearVector.Builder, ObjectBuilder<NearVector>> nv,
       Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn, GroupBy groupBy) {
     return nearVector(NearVector.of(Target.vector(vector), nv), fn, groupBy);
   }
