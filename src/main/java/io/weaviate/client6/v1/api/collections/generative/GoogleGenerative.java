@@ -9,6 +9,7 @@ import com.google.gson.annotations.SerializedName;
 
 import io.weaviate.client6.v1.api.collections.Generative;
 import io.weaviate.client6.v1.api.collections.generate.DynamicProvider;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecGoogleVectorizer;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative;
@@ -32,12 +33,20 @@ public record GoogleGenerative(
     return this;
   }
 
-  public static GoogleGenerative of(String projectId) {
-    return of(projectId, ObjectBuilder.identity());
+  public static GoogleGenerative aiStudio() {
+    return aiStudio(ObjectBuilder.identity());
   }
 
-  public static GoogleGenerative of(String projectId, Function<Builder, ObjectBuilder<GoogleGenerative>> fn) {
-    return fn.apply(new Builder(projectId)).build();
+  public static GoogleGenerative aiStudio(Function<AiStudioBuilder, ObjectBuilder<GoogleGenerative>> fn) {
+    return fn.apply(new AiStudioBuilder()).build();
+  }
+
+  public static GoogleGenerative vertex(String projectId) {
+    return vertex(projectId, ObjectBuilder.identity());
+  }
+
+  public static GoogleGenerative vertex(String projectId, Function<VertexBuilder, ObjectBuilder<GoogleGenerative>> fn) {
+    return fn.apply(new VertexBuilder(projectId)).build();
   }
 
   public GoogleGenerative(Builder builder) {
@@ -51,22 +60,23 @@ public record GoogleGenerative(
         builder.temperature);
   }
 
-  public static class Builder implements ObjectBuilder<GoogleGenerative> {
+  public abstract static class Builder implements ObjectBuilder<GoogleGenerative> {
+    private String baseUrl;
     private final String projectId;
 
-    private String baseUrl;
     private String model;
     private Integer maxTokens;
     private Integer topK;
     private Float topP;
     private Float temperature;
 
-    public Builder(String projectId) {
+    public Builder(String baseUrl, String projectId) {
       this.projectId = projectId;
+      this.baseUrl = baseUrl;
     }
 
     /** Base URL of the generative provider. */
-    public Builder baseUrl(String baseUrl) {
+    protected Builder baseUrl(String baseUrl) {
       this.baseUrl = baseUrl;
       return this;
     }
@@ -110,6 +120,24 @@ public record GoogleGenerative(
     }
   }
 
+  public static class AiStudioBuilder extends Builder {
+    public AiStudioBuilder() {
+      super(Text2VecGoogleVectorizer.AiStudioBuilder.BASE_URL, null);
+    }
+  }
+
+  public static class VertexBuilder extends Builder {
+    public VertexBuilder(String projectId) {
+      super(Text2VecGoogleVectorizer.VertexBuilder.DEFAULT_BASE_URL, projectId);
+    }
+
+    /** Base URL of the generative provider. */
+    public VertexBuilder baseUrl(String baseUrl) {
+      super.baseUrl(baseUrl);
+      return this;
+    }
+  }
+
   public static record Metadata(TokenMetadata tokens, Usage usage) implements ProviderMetadata {
 
     public static record TokenCount(Long totalBillableCharacters, Long totalTokens) {
@@ -138,9 +166,15 @@ public record GoogleGenerative(
       List<String> images,
       List<String> imageProperties) implements DynamicProvider {
 
-    public static Provider of(
-        Function<GoogleGenerative.Provider.Builder, ObjectBuilder<GoogleGenerative.Provider>> fn) {
-      return fn.apply(new Builder()).build();
+    public static Provider vertex(
+        String projectId,
+        Function<GoogleGenerative.Provider.VertexBuilder, ObjectBuilder<GoogleGenerative.Provider>> fn) {
+      return fn.apply(new VertexBuilder(projectId)).build();
+    }
+
+    public static Provider aiStudio(
+        Function<GoogleGenerative.Provider.AiStudioBuilder, ObjectBuilder<GoogleGenerative.Provider>> fn) {
+      return fn.apply(new AiStudioBuilder()).build();
     }
 
     @Override
@@ -205,8 +239,10 @@ public record GoogleGenerative(
           builder.imageProperties);
     }
 
-    public static class Builder implements ObjectBuilder<GoogleGenerative.Provider> {
+    public abstract static class Builder implements ObjectBuilder<GoogleGenerative.Provider> {
+      private final String projectId;
       private String baseUrl;
+
       private Integer topK;
       private Float topP;
       private String model;
@@ -214,15 +250,19 @@ public record GoogleGenerative(
       private Float temperature;
       private Float frequencyPenalty;
       private Float presencePenalty;
-      private String projectId;
       private String endpointId;
       private String region;
       private final List<String> stopSequences = new ArrayList<>();
       private final List<String> images = new ArrayList<>();
       private final List<String> imageProperties = new ArrayList<>();
 
+      public Builder(String baseUrl, String projectId) {
+        this.projectId = projectId;
+        this.baseUrl = baseUrl;
+      }
+
       /** Base URL of the generative provider. */
-      public Builder baseUrl(String baseUrl) {
+      protected Builder baseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
         return this;
       }
@@ -276,11 +316,6 @@ public record GoogleGenerative(
         return this;
       }
 
-      public Builder projectId(String projectId) {
-        this.projectId = projectId;
-        return this;
-      }
-
       public Builder endpointId(String endpointId) {
         this.endpointId = endpointId;
         return this;
@@ -321,6 +356,24 @@ public record GoogleGenerative(
       @Override
       public GoogleGenerative.Provider build() {
         return new GoogleGenerative.Provider(this);
+      }
+    }
+
+    public static class AiStudioBuilder extends Builder {
+      public AiStudioBuilder() {
+        super(Text2VecGoogleVectorizer.AiStudioBuilder.BASE_URL, null);
+      }
+    }
+
+    public static class VertexBuilder extends Builder {
+      public VertexBuilder(String projectId) {
+        super(Text2VecGoogleVectorizer.VertexBuilder.DEFAULT_BASE_URL, projectId);
+      }
+
+      /** Base URL of the generative provider. */
+      public VertexBuilder baseUrl(String baseUrl) {
+        super.baseUrl(baseUrl);
+        return this;
       }
     }
   }
