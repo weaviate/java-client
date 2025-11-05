@@ -1087,7 +1087,7 @@ public class JSONTest {
         },
         {
             Generative.class,
-            Generative.google(
+            Generative.googleVertex(
                 "google-project",
                 cfg -> cfg
                     .baseUrl("https://example.com")
