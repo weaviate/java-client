@@ -10,7 +10,7 @@ concurrency:
 
 env:
   IMG2VEC: cr.weaviate.io/semitechnologies/img2vec-pytorch:resnet50
-  MINIO: minio/minio:latest
+  MINIO: minio/minio
   MODEL2VEC: cr.weaviate.io/semitechnologies/model2vec-inference:minishlab-potion-base-4M
   DOCKER_IMAGES_TAR: docker-images.tar
 
@@ -39,7 +39,7 @@ jobs:
         docker pull $IMG2VEC
         docker pull $MINIO
         # docker pull $MODEL2VEC
-        docker save $IMG2VEC $MINIO $MODEL2VEC -o $DOCKER_IMAGES_TAR
+        docker save $IMG2VEC $MINIO -o $DOCKER_IMAGES_TAR
 
   maven-cache:
       name: Cache Maven dependencies
