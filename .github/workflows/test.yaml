@@ -12,8 +12,6 @@ env:
   IMG2VEC: cr.weaviate.io/semitechnologies/img2vec-pytorch:resnet50
   MINIO: minio/minio:latest
   MODEL2VEC: cr.weaviate.io/semitechnologies/model2vec-inference:minishlab-potion-retrieval-32M
-  SUPPORTED_VERSIONS: '["1.32.0", "1.33.0"]'
-  DOCKER_CACHE_KEY: docker-images-${{ env.IMG2VEC }}-${{ env.MINIO }}-${{ env.MODEL2VEC }}
   DOCKER_IMAGES_TAR: docker-images.tar
 
 jobs:
@@ -30,6 +28,8 @@ jobs:
     - name: Restore and update Docker cache
       id: docker-cache-restore
       uses: actions/cache@v4
+      env:
+        DOCKER_CACHE_KEY: docker-images-${{ env.IMG2VEC }}-${{ env.MINIO }}-${{ env.MODEL2VEC }}
       with:
         path: ${{ env.DOCKER_IMAGES_TAR }}
         key: ${{ env.DOCKER_CACHE_KEY }}
@@ -59,11 +59,13 @@ jobs:
     needs: [ docker-cache, maven-cache]
     strategy:
       matrix:
-        WEAVIATE_VERSION: ${{ fromJson(env.SUPPORTED_VERSIONS) }}
+        WEAVIATE_VERSION: ["1.32", "1.33"]
     steps:
     - uses: actions/checkout@v4
 
     - uses: actions/cache@v4
+      env:
+        DOCKER_CACHE_KEY: docker-images-${{ env.IMG2VEC }}-${{ env.MINIO }}-${{ env.MODEL2VEC }}
       with:
         path: ${{ env.DOCKER_IMAGES_TAR }}
         key: ${{ env.DOCKER_CACHE_KEY }}
