@@ -66,6 +66,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ docker-cache, maven-cache]
     strategy:
+      fail-fast: false
       matrix:
         WEAVIATE_VERSION: ["1.32.0", "1.33.0"]
     steps:
