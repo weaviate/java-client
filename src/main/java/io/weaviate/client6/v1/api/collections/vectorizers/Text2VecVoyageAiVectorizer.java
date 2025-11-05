@@ -2,6 +2,7 @@ package io.weaviate.client6.v1.api.collections.vectorizers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -12,13 +13,17 @@ import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public record Text2VecWeaviateVectorizer(
-    /** Weaviate Embeddings Service base URL. */
-    @SerializedName("baseURL") String baseUrl,
-    /** Dimensionality of the generated vectors. */
-    @SerializedName("dimensions") Integer dimensions,
-    /** Embedding model. */
+public record Text2VecVoyageAiVectorizer(
+    @SerializedName("baseUrl") String baseUrl,
     @SerializedName("model") String model,
+    @SerializedName("truncate") Boolean truncate,
+
+    /**
+     * Weaviate defaults to {@code true} if the value is not provided.
+     * To avoid that we send "vectorizeClassName": false all the time
+     * and make it impossible to enable this feature, as it is deprecated.
+     */
+    @Deprecated @SerializedName("vectorizeClassName") boolean vectorizeCollectionName,
     /** Properties included in the embedding. */
     @SerializedName("sourceProperties") List<String> sourceProperties,
     /** Vector index configuration. */
@@ -28,7 +33,7 @@ public record Text2VecWeaviateVectorizer(
 
   @Override
   public VectorConfig.Kind _kind() {
-    return VectorConfig.Kind.TEXT2VEC_WEAVIATE;
+    return VectorConfig.Kind.TEXT2VEC_VOYAGEAI;
   }
 
   @Override
@@ -36,59 +41,70 @@ public record Text2VecWeaviateVectorizer(
     return this;
   }
 
-  public static Text2VecWeaviateVectorizer of() {
+  public static Text2VecVoyageAiVectorizer of() {
     return of(ObjectBuilder.identity());
   }
 
-  public static Text2VecWeaviateVectorizer of(Function<Builder, ObjectBuilder<Text2VecWeaviateVectorizer>> fn) {
+  public static Text2VecVoyageAiVectorizer of(
+      Function<Builder, ObjectBuilder<Text2VecVoyageAiVectorizer>> fn) {
     return fn.apply(new Builder()).build();
   }
 
-  public Text2VecWeaviateVectorizer(Builder builder) {
+  /**
+   * Canonical constructor always sets {@link #vectorizeCollectionName} to false.
+   */
+  public Text2VecVoyageAiVectorizer(
+      String baseUrl,
+      String model,
+      Boolean truncate,
+
+      boolean vectorizeCollectionName,
+      List<String> sourceProperties,
+      VectorIndex vectorIndex,
+      Quantization quantization) {
+    this.model = model;
+    this.truncate = truncate;
+    this.baseUrl = baseUrl;
+
+    this.vectorizeCollectionName = false;
+    this.sourceProperties = Collections.emptyList();
+    this.vectorIndex = vectorIndex;
+    this.quantization = quantization;
+  }
+
+  public Text2VecVoyageAiVectorizer(Builder builder) {
     this(
         builder.baseUrl,
-        builder.dimensions,
         builder.model,
+        builder.truncate,
+        builder.vectorizeCollectionName,
         builder.sourceProperties,
         builder.vectorIndex,
         builder.quantization);
   }
 
-  public static final String SNOWFLAKE_ARCTIC_EMBED_M_15 = "Snowflake/snowflake-arctic-embed-m-v1.5";
-  public static final String SNOWFLAKE_ARCTIC_EMBED_L_20 = "Snowflake/snowflake-arctic-embed-l-v2.0";
-
-  public static class Builder implements ObjectBuilder<Text2VecWeaviateVectorizer> {
-    private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
+  public static class Builder implements ObjectBuilder<Text2VecVoyageAiVectorizer> {
+    private final boolean vectorizeCollectionName = false;
     private Quantization quantization;
-    private String baseUrl;
-    private Integer dimensions;
-    private String model;
     private List<String> sourceProperties = new ArrayList<>();
+    private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
 
-    /**
-     * Base URL for Weaviate Embeddings Service. This can be omitted when connecting
-     * to a Weaviate Cloud instance: the client will automatically set the necessary
-     * headers.
-     */
+    private String model;
+    private Boolean truncate;
+    private String baseUrl;
+
     public Builder baseUrl(String baseUrl) {
       this.baseUrl = baseUrl;
       return this;
     }
 
-    /** Set target dimensionality for generated embeddings. */
-    public Builder dimensions(int dimensions) {
-      this.dimensions = dimensions;
+    public Builder model(String model) {
+      this.model = model;
       return this;
     }
 
-    /**
-     * Select the embedding model.
-     *
-     * @see Text2VecWeaviateVectorizer#SNOWFLAKE_ARCTIC_EMBED_M_15
-     * @see Text2VecWeaviateVectorizer#SNOWFLAKE_ARCTIC_EMBED_L_20
-     */
-    public Builder model(String model) {
-      this.model = model;
+    public Builder truncate(boolean truncate) {
+      this.truncate = truncate;
       return this;
     }
 
@@ -120,8 +136,8 @@ public record Text2VecWeaviateVectorizer(
       return this;
     }
 
-    public Text2VecWeaviateVectorizer build() {
-      return new Text2VecWeaviateVectorizer(this);
+    public Text2VecVoyageAiVectorizer build() {
+      return new Text2VecVoyageAiVectorizer(this);
     }
   }
 }

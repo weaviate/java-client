@@ -12,9 +12,11 @@ import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public record Img2VecNeuralVectorizer(
+public record Multi2MultiVecJinaAiVectorizer(
     /** BLOB properties included in the embedding. */
     @SerializedName("imageFields") List<String> imageFields,
+    /** TEXT properties included in the embedding. */
+    @SerializedName("textFields") List<String> textFields,
     /** Vector index configuration. */
     VectorIndex vectorIndex,
     /** Vector quantization method. */
@@ -22,7 +24,7 @@ public record Img2VecNeuralVectorizer(
 
   @Override
   public VectorConfig.Kind _kind() {
-    return VectorConfig.Kind.IMG2VEC_NEURAL;
+    return VectorConfig.Kind.MULTI2MULTIVEC_JINAAI;
   }
 
   @Override
@@ -30,33 +32,49 @@ public record Img2VecNeuralVectorizer(
     return this;
   }
 
-  public static Img2VecNeuralVectorizer of() {
+  public static Multi2MultiVecJinaAiVectorizer of() {
     return of(ObjectBuilder.identity());
   }
 
-  public static Img2VecNeuralVectorizer of(Function<Builder, ObjectBuilder<Img2VecNeuralVectorizer>> fn) {
+  public static Multi2MultiVecJinaAiVectorizer of(Function<Builder, ObjectBuilder<Multi2MultiVecJinaAiVectorizer>> fn) {
     return fn.apply(new Builder()).build();
   }
 
-  public Img2VecNeuralVectorizer(Builder builder) {
-    this(builder.imageFields, builder.vectorIndex, builder.quantization);
+  public Multi2MultiVecJinaAiVectorizer(Builder builder) {
+    this(
+        builder.imageFields,
+        builder.textFields,
+        builder.vectorIndex,
+        builder.quantization);
   }
 
-  public static class Builder implements ObjectBuilder<Img2VecNeuralVectorizer> {
+  public static class Builder implements ObjectBuilder<Multi2MultiVecJinaAiVectorizer> {
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
     private Quantization quantization;
 
-    private List<String> imageFields = new ArrayList<>();
+    private final List<String> imageFields = new ArrayList<>();
+    private final List<String> textFields = new ArrayList<>();
 
     /** Add BLOB properties to include in the embedding. */
     public Builder imageFields(List<String> fields) {
-      this.imageFields = fields;
+      imageFields.addAll(fields);
       return this;
     }
 
     /** Add BLOB properties to include in the embedding. */
     public Builder imageFields(String... fields) {
       return imageFields(Arrays.asList(fields));
+    }
+
+    /** Add TEXT properties to include in the embedding. */
+    public Builder textFields(List<String> fields) {
+      textFields.addAll(fields);
+      return this;
+    }
+
+    /** Add TEXT properties to include in the embedding. */
+    public Builder textFields(String... fields) {
+      return textFields(Arrays.asList(fields));
     }
 
     /**
@@ -77,8 +95,8 @@ public record Img2VecNeuralVectorizer(
     }
 
     @Override
-    public Img2VecNeuralVectorizer build() {
-      return new Img2VecNeuralVectorizer(this);
+    public Multi2MultiVecJinaAiVectorizer build() {
+      return new Multi2MultiVecJinaAiVectorizer(this);
     }
   }
 }

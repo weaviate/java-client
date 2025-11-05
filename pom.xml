@@ -52,26 +52,26 @@
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
     <maven.compiler.release>17</maven.compiler.release>
-    <lombok.version>1.18.38</lombok.version>
-    <gson.version>2.13.1</gson.version>
-    <httpclient.version>5.5</httpclient.version>
-    <lang3.version>3.18.0</lang3.version>
+    <lombok.version>1.18.42</lombok.version>
+    <gson.version>2.13.2</gson.version>
+    <httpclient.version>5.5.1</httpclient.version>
+    <lang3.version>3.19.0</lang3.version>
     <junit.version>5.13.4</junit.version>
     <testcontainers.version>1.21.3</testcontainers.version>
-    <assertj-core.version>3.27.4</assertj-core.version>
+    <assertj-core.version>3.27.6</assertj-core.version>
     <jparams.version>1.0.4</jparams.version>
-    <mockito.version>5.19.0</mockito.version>
-    <slf4j.version>1.7.36</slf4j.version>
+    <mockito.version>5.20.0</mockito.version>
+    <slf4j.version>2.0.17</slf4j.version>
     <logback.version>1.5.18</logback.version>
     <mock-server.version>5.14.0</mock-server.version>
-    <jackson.version>2.19.2</jackson.version>
-    <oauth2-oidc-sdk.version>11.27.1</oauth2-oidc-sdk.version>
+    <jackson.version>2.20</jackson.version>
+    <oauth2-oidc-sdk.version>11.30</oauth2-oidc-sdk.version>
     <mock-server.version>5.15.0</mock-server.version>
-    <protobuf.java.version>4.32.0</protobuf.java.version>
-    <protobuf.java-util.version>4.32.0</protobuf.java-util.version>
-    <grpc-netty-shaded.version>1.75.0</grpc-netty-shaded.version>
-    <grpc-protobuf.version>1.75.0</grpc-protobuf.version>
-    <grpc-stub.version>1.75.0</grpc-stub.version>
+    <protobuf.java.version>4.33.0</protobuf.java.version>
+    <protobuf.java-util.version>4.33.0</protobuf.java-util.version>
+    <grpc-netty-shaded.version>1.76.0</grpc-netty-shaded.version>
+    <grpc-protobuf.version>1.76.0</grpc-protobuf.version>
+    <grpc-stub.version>1.76.0</grpc-stub.version>
     <annotations-api.version>6.0.53</annotations-api.version>
   </properties>
 

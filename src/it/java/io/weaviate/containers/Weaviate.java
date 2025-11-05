@@ -139,9 +139,9 @@ public class Weaviate extends WeaviateContainer {
       return this;
     }
 
-    public Builder withContextionaryUrl(String url) {
-      addModules(Contextionary.MODULE);
-      environment.put("CONTEXTIONARY_URL", url);
+    public Builder withModel2VecUrl(String url) {
+      addModules(Model2Vec.MODULE);
+      environment.put("MODEL2VEC_INFERENCE_API", "http://" + url);
       return this;
     }
 
@@ -153,7 +153,7 @@ public class Weaviate extends WeaviateContainer {
 
     public Builder withOffloadS3(String accessKey, String secretKey) {
       addModules("offload-s3");
-      environment.put("OFFLOAD_S3_ENDPOINT", "http://minio:9000");
+      environment.put("OFFLOAD_S3_ENDPOINT", "http://" + MinIo.URL);
       environment.put("OFFLOAD_S3_BUCKET_AUTO_CREATE", "true");
       environment.put("AWS_ACCESS_KEY_ID", accessKey);
       environment.put("AWS_SECRET_KEY", secretKey);

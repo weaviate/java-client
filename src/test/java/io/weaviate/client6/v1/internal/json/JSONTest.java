@@ -41,7 +41,7 @@ import io.weaviate.client6.v1.api.collections.vectorindex.MultiVector.Aggregatio
 import io.weaviate.client6.v1.api.collections.vectorizers.Img2VecNeuralVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecClipVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.SelfProvidedVectorizer;
-import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecContextionaryVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecCohereVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecWeaviateVectorizer;
 import io.weaviate.client6.v1.api.rbac.AliasesPermission;
 import io.weaviate.client6.v1.api.rbac.BackupsPermission;
@@ -93,7 +93,7 @@ public class JSONTest {
         {
             VectorConfig.class,
             Multi2VecClipVectorizer.of(m2v -> m2v
-                .inferenceUrl("http://example.com")
+                .baseUrl("http://example.com")
                 .imageField("img", 1f)
                 .textField("txt", 2f)),
             """
@@ -116,13 +116,13 @@ public class JSONTest {
         },
         {
             VectorConfig.class,
-            Text2VecContextionaryVectorizer.of(),
+            Text2VecCohereVectorizer.of(),
             """
                 {
                   "vectorIndexType": "hnsw",
                   "vectorIndexConfig": {},
                   "vectorizer": {
-                    "text2vec-contextionary": {
+                    "text2vec-cohere": {
                       "vectorizeClassName": false,
                       "sourceProperties": []
                     }
@@ -133,7 +133,7 @@ public class JSONTest {
         {
             VectorConfig.class,
             Text2VecWeaviateVectorizer.of(t2v -> t2v
-                .inferenceUrl("http://example.com")
+                .baseUrl("http://example.com")
                 .dimensions(4)
                 .model("very-good-model")),
             """
@@ -142,7 +142,7 @@ public class JSONTest {
                   "vectorIndexConfig": {},
                   "vectorizer": {
                     "text2vec-weaviate": {
-                      "baseUrl": "http://example.com",
+                      "baseURL": "http://example.com",
                       "dimensions": 4,
                       "model": "very-good-model",
                       "sourceProperties": []
@@ -956,19 +956,34 @@ public class JSONTest {
         },
         {
             Generative.class,
-            Generative.aws(
+            Generative.awsBedrock(
                 "aws-region",
-                "aws-service",
+                "example-model",
                 cfg -> cfg
-                    .baseUrl("https://example.com")
                     .model("example-model")),
             """
                 {
                   "generative-aws": {
-                    "endpoint": "https://example.com",
                     "model": "example-model",
                     "region": "aws-region",
-                    "service": "aws-service"
+                    "service": "bedrock"
+                  }
+                }
+                  """,
+        },
+        {
+            Generative.class,
+            Generative.awsSagemaker(
+                "aws-region",
+                "https://example.com",
+                cfg -> cfg
+                    .baseUrl("https://example.com")),
+            """
+                {
+                  "generative-aws": {
+                    "endpoint": "https://example.com",
+                    "region": "aws-region",
+                    "service": "sagemaker"
                   }
                 }
                   """,
@@ -1072,7 +1087,7 @@ public class JSONTest {
         },
         {
             Generative.class,
-            Generative.google(
+            Generative.googleVertex(
                 "google-project",
                 cfg -> cfg
                     .baseUrl("https://example.com")

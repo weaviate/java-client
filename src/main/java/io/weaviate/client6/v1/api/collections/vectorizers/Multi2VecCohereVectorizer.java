@@ -13,15 +13,25 @@ import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public record Multi2VecClipVectorizer(
+public record Multi2VecCohereVectorizer(
     /** Base URL of the embedding service. */
-    @SerializedName("inferenceUrl") String baseUrl,
+    @SerializedName("baseURL") String baseUrl,
+    /** Inference model to use. */
+    @SerializedName("model") String model,
+    /** The truncate strategy to use. */
+    @SerializedName("truncate") String truncate,
     /** BLOB properties included in the embedding. */
     @SerializedName("imageFields") List<String> imageFields,
     /** TEXT properties included in the embedding. */
     @SerializedName("textFields") List<String> textFields,
     /** Weights of the included properties. */
     @SerializedName("weights") Weights weights,
+    /**
+     * Weaviate defaults to {@code true} if the value is not provided.
+     * To avoid that we send "vectorizeClassName": false all the time
+     * and make it impossible to enable this feature, as it is deprecated.
+     */
+    @Deprecated @SerializedName("vectorizeClassName") boolean vectorizeCollectionName,
     /** Vector index configuration. */
     VectorIndex vectorIndex,
     /** Vector quantization method. */
@@ -42,7 +52,7 @@ public record Multi2VecClipVectorizer(
 
   @Override
   public VectorConfig.Kind _kind() {
-    return VectorConfig.Kind.MULTI2VEC_CLIP;
+    return VectorConfig.Kind.MULTI2VEC_COHERE;
   }
 
   @Override
@@ -50,27 +60,52 @@ public record Multi2VecClipVectorizer(
     return this;
   }
 
-  public static Multi2VecClipVectorizer of() {
+  public static Multi2VecCohereVectorizer of() {
     return of(ObjectBuilder.identity());
   }
 
-  public static Multi2VecClipVectorizer of(Function<Builder, ObjectBuilder<Multi2VecClipVectorizer>> fn) {
+  public static Multi2VecCohereVectorizer of(Function<Builder, ObjectBuilder<Multi2VecCohereVectorizer>> fn) {
     return fn.apply(new Builder()).build();
   }
 
-  public Multi2VecClipVectorizer(Builder builder) {
+  public Multi2VecCohereVectorizer(
+      String baseUrl,
+      String model,
+      String truncate,
+      List<String> imageFields,
+      List<String> textFields,
+      Weights weights,
+      boolean vectorizeCollectionName,
+      VectorIndex vectorIndex,
+      Quantization quantization) {
+    this.vectorizeCollectionName = false;
+    this.baseUrl = baseUrl;
+    this.model = model;
+    this.truncate = truncate;
+    this.imageFields = imageFields;
+    this.textFields = textFields;
+    this.weights = weights;
+    this.vectorIndex = vectorIndex;
+    this.quantization = quantization;
+  }
+
+  public Multi2VecCohereVectorizer(Builder builder) {
     this(
         builder.baseUrl,
+        builder.model,
+        builder.truncate,
         builder.imageFields.keySet().stream().toList(),
         builder.textFields.keySet().stream().toList(),
         new Weights(
             builder.imageFields.values().stream().toList(),
             builder.textFields.values().stream().toList()),
+        builder.vectorizeCollectionName,
         builder.vectorIndex,
         builder.quantization);
   }
 
-  public static class Builder implements ObjectBuilder<Multi2VecClipVectorizer> {
+  public static class Builder implements ObjectBuilder<Multi2VecCohereVectorizer> {
+    private final boolean vectorizeCollectionName = false;
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
     private Quantization quantization;
 
@@ -78,10 +113,22 @@ public record Multi2VecClipVectorizer(
     private Map<String, Float> textFields = new LinkedHashMap<>();
 
     private String baseUrl;
+    private String model;
+    private String truncate;
 
     /** Set base URL of the embedding service. */
     public Builder baseUrl(String baseUrl) {
       this.baseUrl = baseUrl;
+      return this;
+    }
+
+    public Builder model(String model) {
+      this.model = model;
+      return this;
+    }
+
+    public Builder truncate(String truncate) {
+      this.truncate = truncate;
       return this;
     }
 
@@ -147,8 +194,8 @@ public record Multi2VecClipVectorizer(
     }
 
     @Override
-    public Multi2VecClipVectorizer build() {
-      return new Multi2VecClipVectorizer(this);
+    public Multi2VecCohereVectorizer build() {
+      return new Multi2VecCohereVectorizer(this);
     }
   }
 }

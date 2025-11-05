@@ -13,9 +13,10 @@ import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public record Multi2VecClipVectorizer(
-    /** Base URL of the embedding service. */
-    @SerializedName("inferenceUrl") String baseUrl,
+public record Multi2VecAwsVectorizer(
+    @SerializedName("model") String model,
+    @SerializedName("dimensions") Integer dimensions,
+    @SerializedName("region") String region,
     /** BLOB properties included in the embedding. */
     @SerializedName("imageFields") List<String> imageFields,
     /** TEXT properties included in the embedding. */
@@ -42,7 +43,7 @@ public record Multi2VecClipVectorizer(
 
   @Override
   public VectorConfig.Kind _kind() {
-    return VectorConfig.Kind.MULTI2VEC_CLIP;
+    return VectorConfig.Kind.MULTI2VEC_AWS;
   }
 
   @Override
@@ -50,17 +51,19 @@ public record Multi2VecClipVectorizer(
     return this;
   }
 
-  public static Multi2VecClipVectorizer of() {
+  public static Multi2VecAwsVectorizer of() {
     return of(ObjectBuilder.identity());
   }
 
-  public static Multi2VecClipVectorizer of(Function<Builder, ObjectBuilder<Multi2VecClipVectorizer>> fn) {
+  public static Multi2VecAwsVectorizer of(Function<Builder, ObjectBuilder<Multi2VecAwsVectorizer>> fn) {
     return fn.apply(new Builder()).build();
   }
 
-  public Multi2VecClipVectorizer(Builder builder) {
+  public Multi2VecAwsVectorizer(Builder builder) {
     this(
-        builder.baseUrl,
+        builder.model,
+        builder.dimensions,
+        builder.region,
         builder.imageFields.keySet().stream().toList(),
         builder.textFields.keySet().stream().toList(),
         new Weights(
@@ -70,18 +73,29 @@ public record Multi2VecClipVectorizer(
         builder.quantization);
   }
 
-  public static class Builder implements ObjectBuilder<Multi2VecClipVectorizer> {
+  public static class Builder implements ObjectBuilder<Multi2VecAwsVectorizer> {
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
     private Quantization quantization;
 
     private Map<String, Float> imageFields = new LinkedHashMap<>();
     private Map<String, Float> textFields = new LinkedHashMap<>();
 
-    private String baseUrl;
+    private String model;
+    private Integer dimensions;
+    private String region;
 
-    /** Set base URL of the embedding service. */
-    public Builder baseUrl(String baseUrl) {
-      this.baseUrl = baseUrl;
+    public Builder model(String model) {
+      this.model = model;
+      return this;
+    }
+
+    public Builder dimensions(int dimensions) {
+      this.dimensions = dimensions;
+      return this;
+    }
+
+    public Builder region(String region) {
+      this.region = region;
       return this;
     }
 
@@ -147,8 +161,8 @@ public record Multi2VecClipVectorizer(
     }
 
     @Override
-    public Multi2VecClipVectorizer build() {
-      return new Multi2VecClipVectorizer(this);
+    public Multi2VecAwsVectorizer build() {
+      return new Multi2VecAwsVectorizer(this);
     }
   }
 }

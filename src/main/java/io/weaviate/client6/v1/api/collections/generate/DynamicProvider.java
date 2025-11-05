@@ -44,11 +44,29 @@ public interface DynamicProvider {
   /**
    * Configure {@code generative-aws} as a dynamic provider.
    *
-   * @param fn Lambda expression for optional parameters.
+   * @param region AWS region.
+   * @param model  Inference model.
+   * @param fn     Lambda expression for optional parameters.
    */
-  public static DynamicProvider aws(
-      Function<AwsGenerative.Provider.Builder, ObjectBuilder<AwsGenerative.Provider>> fn) {
-    return AwsGenerative.Provider.of(fn);
+  public static DynamicProvider awsBedrock(
+      String region,
+      String model,
+      Function<AwsGenerative.Provider.BedrockBuilder, ObjectBuilder<AwsGenerative.Provider>> fn) {
+    return AwsGenerative.Provider.bedrock(region, model, fn);
+  }
+
+  /**
+   * Configure {@code generative-aws} as a dynamic provider.
+   *
+   * @param region  AWS region.
+   * @param baseUrl Base inference URL.
+   * @param fn      Lambda expression for optional parameters.
+   */
+  public static DynamicProvider awsSagemaker(
+      String region,
+      String baseUrl,
+      Function<AwsGenerative.Provider.SagemakerBuilder, ObjectBuilder<AwsGenerative.Provider>> fn) {
+    return AwsGenerative.Provider.sagemaker(region, baseUrl, fn);
   }
 
   /**
@@ -86,9 +104,21 @@ public interface DynamicProvider {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static DynamicProvider google(
-      Function<GoogleGenerative.Provider.Builder, ObjectBuilder<GoogleGenerative.Provider>> fn) {
-    return GoogleGenerative.Provider.of(fn);
+  public static DynamicProvider googleAiStudio(
+      Function<GoogleGenerative.Provider.AiStudioBuilder, ObjectBuilder<GoogleGenerative.Provider>> fn) {
+    return GoogleGenerative.Provider.aiStudio(fn);
+  }
+
+  /**
+   * Configure {@code generative-palm} as a dynamic provider.
+   *
+   * @param projectId Google project ID.
+   * @param fn        Lambda expression for optional parameters.
+   */
+  public static DynamicProvider googleVertex(
+      String projectId,
+      Function<GoogleGenerative.Provider.VertexBuilder, ObjectBuilder<GoogleGenerative.Provider>> fn) {
+    return GoogleGenerative.Provider.vertex(projectId, fn);
   }
 
   /**
