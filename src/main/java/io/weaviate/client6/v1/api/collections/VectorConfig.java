@@ -32,7 +32,6 @@ import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecAwsVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecAzureOpenAiVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecCohereVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecDatabricksVectorizer;
-import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecGoogleAiStudioVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecGoogleVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecHuggingFaceVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecJinaAiVectorizer;
@@ -56,7 +55,6 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
     TEXT2VEC_COHERE("text2vec-cohere"),
     TEXT2VEC_DATABRICKS("text2vec-databricks"),
     TEXT2VEC_GOOGLE("text2vec-google"),
-    TEXT2VEC_GOOGLEAISTUDIO("text2vec-google"),
     TEXT2VEC_HUGGINGFACE("text2vec-huggingface"),
     REF2VEC_CENTROID("ref2vec-centroid"),
     TEXT2VEC_JINAAI("text2vec-jinaai"),
@@ -793,7 +791,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * @param fn Lambda expression for optional parameters.
    */
   public static Map.Entry<String, VectorConfig> text2vecGoogleAiStudio(
-      Function<Text2VecGoogleAiStudioVectorizer.Builder, ObjectBuilder<Text2VecGoogleAiStudioVectorizer>> fn) {
+      Function<Text2VecGoogleVectorizer.AiStudioBuilder, ObjectBuilder<Text2VecGoogleVectorizer>> fn) {
     return text2vecGoogleAiStudio(VectorIndex.DEFAULT_VECTOR_NAME, fn);
   }
 
@@ -804,7 +802,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * @param vectorName Vector name.
    */
   public static Map.Entry<String, VectorConfig> text2vecGoogleAiStudio(String vectorName) {
-    return Map.entry(vectorName, Text2VecGoogleAiStudioVectorizer.of());
+    return Map.entry(vectorName, Text2VecGoogleVectorizer.aiStudio());
   }
 
   /**
@@ -815,13 +813,13 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * @param fn         Lambda expression for optional parameters.
    */
   public static Map.Entry<String, VectorConfig> text2vecGoogleAiStudio(String vectorName,
-      Function<Text2VecGoogleAiStudioVectorizer.Builder, ObjectBuilder<Text2VecGoogleAiStudioVectorizer>> fn) {
-    return Map.entry(vectorName, Text2VecGoogleAiStudioVectorizer.of(fn));
+      Function<Text2VecGoogleVectorizer.AiStudioBuilder, ObjectBuilder<Text2VecGoogleVectorizer>> fn) {
+    return Map.entry(vectorName, Text2VecGoogleVectorizer.aiStudio(fn));
   }
 
   /** Create a vector index with an {@code text2vec-google} vectorizer. */
-  public static Map.Entry<String, VectorConfig> text2vecGoogle() {
-    return text2vecGoogle(VectorIndex.DEFAULT_VECTOR_NAME);
+  public static Map.Entry<String, VectorConfig> text2vecGoogleVertex(String projectId) {
+    return text2vecGoogleVertex(VectorIndex.DEFAULT_VECTOR_NAME, projectId);
   }
 
   /**
@@ -829,9 +827,9 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2vecGoogle(
-      Function<Text2VecGoogleVectorizer.Builder, ObjectBuilder<Text2VecGoogleVectorizer>> fn) {
-    return text2vecGoogle(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  public static Map.Entry<String, VectorConfig> text2vecGoogleVertex(String projectId,
+      Function<Text2VecGoogleVectorizer.VertexBuilder, ObjectBuilder<Text2VecGoogleVectorizer>> fn) {
+    return text2vecGoogleVertex(VectorIndex.DEFAULT_VECTOR_NAME, projectId, fn);
   }
 
   /**
@@ -839,8 +837,8 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param vectorName Vector name.
    */
-  public static Map.Entry<String, VectorConfig> text2vecGoogle(String vectorName) {
-    return Map.entry(vectorName, Text2VecGoogleVectorizer.of());
+  public static Map.Entry<String, VectorConfig> text2vecGoogleVertex(String vectorName, String projectId) {
+    return Map.entry(vectorName, Text2VecGoogleVectorizer.vertex(projectId));
   }
 
   /**
@@ -849,9 +847,9 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * @param vectorName Vector name.
    * @param fn         Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> text2vecGoogle(String vectorName,
-      Function<Text2VecGoogleVectorizer.Builder, ObjectBuilder<Text2VecGoogleVectorizer>> fn) {
-    return Map.entry(vectorName, Text2VecGoogleVectorizer.of(fn));
+  public static Map.Entry<String, VectorConfig> text2vecGoogleVertex(String vectorName, String projectId,
+      Function<Text2VecGoogleVectorizer.VertexBuilder, ObjectBuilder<Text2VecGoogleVectorizer>> fn) {
+    return Map.entry(vectorName, Text2VecGoogleVectorizer.vertex(projectId, fn));
   }
 
   /** Create a vector index with an {@code text2vec-huggingface} vectorizer. */
@@ -1389,16 +1387,6 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
     return _as(VectorConfig.Kind.TEXT2VEC_DATABRICKS);
   }
 
-  /** Is this an instance of {@link Text2VecGoogleAiStudioVectorizer}? */
-  default public boolean isText2VecGoogleAiStudio() {
-    return _is(VectorConfig.Kind.TEXT2VEC_GOOGLEAISTUDIO);
-  }
-
-  /** Convert this instance to {@link Text2VecGoogleAiStudioVectorizer}. */
-  default public Text2VecGoogleAiStudioVectorizer asText2VecGoogleAiStudio() {
-    return _as(VectorConfig.Kind.TEXT2VEC_GOOGLEAISTUDIO);
-  }
-
   /** Is this an instance of {@link Text2VecGoogleVectorizer}? */
   default public boolean isText2VecGoogle() {
     return _is(VectorConfig.Kind.TEXT2VEC_GOOGLE);
@@ -1546,7 +1534,6 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
       addAdapter(gson, VectorConfig.Kind.TEXT2VEC_COHERE, Text2VecCohereVectorizer.class);
       addAdapter(gson, VectorConfig.Kind.TEXT2VEC_DATABRICKS, Text2VecDatabricksVectorizer.class);
       addAdapter(gson, VectorConfig.Kind.TEXT2VEC_GOOGLE, Text2VecGoogleVectorizer.class);
-      addAdapter(gson, VectorConfig.Kind.TEXT2VEC_GOOGLEAISTUDIO, Text2VecGoogleAiStudioVectorizer.class);
       addAdapter(gson, VectorConfig.Kind.TEXT2VEC_HUGGINGFACE, Text2VecHuggingFaceVectorizer.class);
       addAdapter(gson, VectorConfig.Kind.REF2VEC_CENTROID, Ref2VecCentroidVectorizer.class);
       addAdapter(gson, VectorConfig.Kind.TEXT2VEC_JINAAI, Text2VecJinaAiVectorizer.class);
@@ -1645,11 +1632,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
           concreteVectorizer.add("vectorIndex", vectorIndex);
 
           VectorConfig.Kind kind;
-          if (vectorizerName.equals(VectorConfig.Kind.TEXT2VEC_GOOGLE.jsonValue())) {
-            kind = concreteVectorizer.has("projectId")
-                ? VectorConfig.Kind.TEXT2VEC_GOOGLE
-                : VectorConfig.Kind.TEXT2VEC_GOOGLEAISTUDIO;
-          } else if (vectorizerName.equals(VectorConfig.Kind.TEXT2VEC_OPENAI.jsonValue())) {
+          if (vectorizerName.equals(VectorConfig.Kind.TEXT2VEC_OPENAI.jsonValue())) {
             kind = concreteVectorizer.has("deployementId")
                 ? VectorConfig.Kind.TEXT2VEC_AZURE_OPENAI
                 : VectorConfig.Kind.TEXT2VEC_OPENAI;
