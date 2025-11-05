@@ -4,33 +4,87 @@ on:
     branches:
       - main
   pull_request:
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  IMG2VEC: cr.weaviate.io/semitechnologies/img2vec-pytorch:resnet50
+  MINIO: minio/minio:latest
+  MODEL2VEC: cr.weaviate.io/semitechnologies/model2vec-inference:minishlab-potion-retrieval-32M
+  SUPPORTED_VERSIONS: '["1.32.0", "1.33.0"]'
+  DOCKER_CACHE_KEY: docker-images-${{ env.IMG2VEC }}-${{ env.MINIO }}-${{ env.MODEL2VEC }}
+  DOCKER_IMAGES_TAR: docker-images.tar
 
 jobs:
-  tests:
-    name: Tests
+  docker-cache:
+    name: Cache shared Docker images
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-      with:
-        ref: ${{ github.sha }}
     - name: Login to Docker Hub
       if: ${{ !github.event.pull_request.head.repo.fork }}
-      uses: docker/login-action@v2
+      uses: docker/login-action@v3
       with:
-        username: ${{secrets.DOCKER_USERNAME}}
-        password: ${{secrets.DOCKER_PASSWORD}}
-    - name: Setup JDK
-      uses: actions/setup-java@v4
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Restore and update Docker cache
+      id: docker-cache-restore
+      uses: actions/cache@v4
+      with:
+        path: ${{ env.DOCKER_IMAGES_TAR }}
+        key: ${{ env.DOCKER_CACHE_KEY }}
+    - name: Pull images
+      if: steps.docker-cache-restore.outputs.cache-hit != 'true'
+      run: |
+        docker pull $IMG2VEC
+        docker pull $MINIO
+        docker pull $MODEL2VEC
+        docker save $IMG2VEC $MINIO $MODEL2VEC -o $DOCKER_IMAGES_TAR
+
+  maven-cache:
+      name: Cache Maven dependencies
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+        - uses: actions/setup-java@v4
+          with:
+            distribution: 'zulu'
+            java-version: '17'
+            cache: 'maven'
+        - run: mvn dependency:go-offline
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: [ docker-cache, maven-cache]
+    strategy:
+      matrix:
+        WEAVIATE_VERSION: ${{ fromJson(env.SUPPORTED_VERSIONS) }}
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/cache@v4
+      with:
+        path: ${{ env.DOCKER_IMAGES_TAR }}
+        key: ${{ env.DOCKER_CACHE_KEY }}
+    - name: Load Docker images
+      run: |
+        if [ -f $DOCKER_IMAGES_TAR ]; then
+          docker load -i $DOCKER_IMAGES_TAR
+        fi
+    - uses: actions/setup-java@v4
+      name: Setup JDK
       with:
         distribution: 'zulu'
         java-version: '17'
-    - name: Run Build
-      run: mvn -DskipTests clean package
-    - name: Run Tests
+        cache: 'maven'
+
+    - name: Run Tests (v${{ matrix.WEAVIATE_VERSION }})
       env:
         OKTA_DUMMY_CI_PW: ${{ secrets.OKTA_DUMMY_CI_PW }}
         WCS_DUMMY_CI_PW: ${{ secrets.WCS_DUMMY_CI_PW }}
         OKTA_CLIENT_SECRET: ${{ secrets.OKTA_CLIENT_SECRET }}
         AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
         OPENAI_APIKEY: ${{ secrets.OPENAI_APIKEY }}
-      run: mvn clean test
+        WEAVIATE_VERSION: ${{ matrix.WEAVIATE_VERSION }}
+      run: mvn verify
