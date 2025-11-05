@@ -5,7 +5,7 @@ import org.testcontainers.containers.GenericContainer;
 import io.weaviate.client6.v1.api.collections.VectorConfig;
 
 public class Model2Vec extends GenericContainer<Model2Vec> {
-  public static final String VERSION = "minishlab-potion-retrieval-32M";
+  public static final String VERSION = "minishlab-potion-base-4M";
   public static final String DOCKER_IMAGE = "cr.weaviate.io/semitechnologies/model2vec-inference";
   public static final String MODULE = VectorConfig.Kind.TEXT2VEC_MODEL2VEC.jsonValue();
 
