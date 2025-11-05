@@ -203,14 +203,18 @@ public record Text2VecGoogleVectorizer(
   }
 
   public static class AiStudioBuilder extends Builder {
+    public static final String BASE_URL = "generativelanguage.googleapis.com";
+
     public AiStudioBuilder() {
-      super("generativelanguage.googleapis.com", null);
+      super(BASE_URL, null);
     }
   }
 
   public static class VertexBuilder extends Builder {
+    public static final String DEFAULT_BASE_URL = "us-central1-aiplatform.googleapis.com";
+
     public VertexBuilder(String projectId) {
-      super("us-central1-aiplatform.googleapis.com", projectId);
+      super(DEFAULT_BASE_URL, projectId);
     }
 
     public VertexBuilder baseUrl(String baseUrl) {

@@ -104,9 +104,21 @@ public interface DynamicProvider {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static DynamicProvider google(
-      Function<GoogleGenerative.Provider.Builder, ObjectBuilder<GoogleGenerative.Provider>> fn) {
-    return GoogleGenerative.Provider.of(fn);
+  public static DynamicProvider googleAiStudio(
+      Function<GoogleGenerative.Provider.AiStudioBuilder, ObjectBuilder<GoogleGenerative.Provider>> fn) {
+    return GoogleGenerative.Provider.aiStudio(fn);
+  }
+
+  /**
+   * Configure {@code generative-palm} as a dynamic provider.
+   *
+   * @param projectId Google project ID.
+   * @param fn        Lambda expression for optional parameters.
+   */
+  public static DynamicProvider googleVertex(
+      String projectId,
+      Function<GoogleGenerative.Provider.VertexBuilder, ObjectBuilder<GoogleGenerative.Provider>> fn) {
+    return GoogleGenerative.Provider.vertex(projectId, fn);
   }
 
   /**

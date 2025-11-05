@@ -186,8 +186,8 @@ public interface Generative extends TaggedUnion<Generative.Kind, Object> {
   }
 
   /** Configure a default {@code generative-palm} module. */
-  public static Generative google(String projectId) {
-    return GoogleGenerative.of(projectId);
+  public static Generative googleVertex(String projectId) {
+    return GoogleGenerative.vertex(projectId);
   }
 
   /**
@@ -196,9 +196,24 @@ public interface Generative extends TaggedUnion<Generative.Kind, Object> {
    * @param projectId Project ID.
    * @param fn        Lambda expression for optional parameters.
    */
-  public static Generative google(String projectId,
-      Function<GoogleGenerative.Builder, ObjectBuilder<GoogleGenerative>> fn) {
-    return GoogleGenerative.of(projectId, fn);
+  public static Generative googleVertex(String projectId,
+      Function<GoogleGenerative.VertexBuilder, ObjectBuilder<GoogleGenerative>> fn) {
+    return GoogleGenerative.vertex(projectId, fn);
+  }
+
+  /** Configure a default {@code generative-palm} module. */
+  public static Generative googleAiStudio() {
+    return GoogleGenerative.aiStudio();
+  }
+
+  /**
+   * Configure a {@code generative-palm} module.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Generative googleAiStudio(
+      Function<GoogleGenerative.AiStudioBuilder, ObjectBuilder<GoogleGenerative>> fn) {
+    return GoogleGenerative.aiStudio(fn);
   }
 
   /** Configure a default {@code generative-mistral} module. */
