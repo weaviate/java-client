@@ -10,8 +10,10 @@ concurrency:
 
 env:
   IMG2VEC: cr.weaviate.io/semitechnologies/img2vec-pytorch:resnet50
-  MINIO: minio/minio
-  MODEL2VEC: cr.weaviate.io/semitechnologies/model2vec-inference:minishlab-potion-base-4M
+  MINIO: minio/minio:latest
+  MODEL2VEC: cr.weaviate.io/semitechnologies/model2vec-inference:minishlab-potion-retrieval-32M
+  SUPPORTED_VERSIONS: '["1.32.0", "1.33.0"]'
+  DOCKER_CACHE_KEY: docker-images-${{ env.IMG2VEC }}-${{ env.MINIO }}-${{ env.MODEL2VEC }}
   DOCKER_IMAGES_TAR: docker-images.tar
 
 jobs:
@@ -25,39 +27,19 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-    - id: cache-check
-      uses: actions/cache/restore@v4
-      env:
-        DOCKER_CACHE_KEY: docker-images-${{ env.IMG2VEC }}-${{ env.MINIO }}-${{ env.MODEL2VEC }}
+    - name: Restore and update Docker cache
+      id: docker-cache-restore
+      uses: actions/cache@v4
       with:
         path: ${{ env.DOCKER_IMAGES_TAR }}
         key: ${{ env.DOCKER_CACHE_KEY }}
-        lookup-only: true  # Only check if cache exists, don't download
-    - name: Free Disk Space (Ubuntu)
-      uses: jlumbroso/free-disk-space@v1.3.1
-      with:
-        tool-cache: false
-        android: true
-        dotnet: true
-        haskell: true
-        large-packages: true
-        docker-images: false
-        swap-storage: false
     - name: Pull images
-      if: steps.cache-check.outputs.cache-hit != 'true'
+      if: steps.docker-cache-restore.outputs.cache-hit != 'true'
       run: |
         docker pull $IMG2VEC
         docker pull $MINIO
-        # docker pull $MODEL2VEC
-        docker save $IMG2VEC $MINIO -o $DOCKER_IMAGES_TAR
-    - name: Cache images
-      if: steps.cache-check.outputs.cache-hit != 'true'
-      uses: actions/cache/save@v4
-      env:
-        DOCKER_CACHE_KEY: docker-images-${{ env.IMG2VEC }}-${{ env.MINIO }}-${{ env.MODEL2VEC }}
-      with:
-        path: ${{ env.DOCKER_IMAGES_TAR }}
-        key: ${{ env.DOCKER_CACHE_KEY }}
+        docker pull $MODEL2VEC
+        docker save $IMG2VEC $MINIO $MODEL2VEC -o $DOCKER_IMAGES_TAR
 
   maven-cache:
       name: Cache Maven dependencies
@@ -76,28 +58,15 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ docker-cache, maven-cache]
     strategy:
-      fail-fast: false
       matrix:
-        WEAVIATE_VERSION: ["1.32.16", "1.33.4", "1.34.0"]
+        WEAVIATE_VERSION: ${{ fromJson(env.SUPPORTED_VERSIONS) }}
     steps:
     - uses: actions/checkout@v4
 
-    - uses: actions/cache/restore@v4
-      env:
-        DOCKER_CACHE_KEY: docker-images-${{ env.IMG2VEC }}-${{ env.MINIO }}-${{ env.MODEL2VEC }}
+    - uses: actions/cache@v4
       with:
         path: ${{ env.DOCKER_IMAGES_TAR }}
         key: ${{ env.DOCKER_CACHE_KEY }}
-    - name: Free Disk Space (Ubuntu)
-      uses: jlumbroso/free-disk-space@v1.3.1
-      with:
-        tool-cache: false
-        android: true
-        dotnet: true
-        haskell: true
-        large-packages: true
-        docker-images: false
-        swap-storage: false
     - name: Load Docker images
       run: |
         if [ -f $DOCKER_IMAGES_TAR ]; then
@@ -118,4 +87,4 @@ jobs:
         AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
         OPENAI_APIKEY: ${{ secrets.OPENAI_APIKEY }}
         WEAVIATE_VERSION: ${{ matrix.WEAVIATE_VERSION }}
-      run: mvn verify -Dgpg.skip
+      run: mvn verify

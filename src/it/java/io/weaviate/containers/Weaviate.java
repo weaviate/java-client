@@ -24,12 +24,13 @@ import io.weaviate.client6.v1.internal.VersionSupport.SemanticVersion;
 
 public class Weaviate extends WeaviateContainer {
   public static final String DOCKER_IMAGE = "semitechnologies/weaviate";
-  public static final String LATEST_VERSION = "1.34.0";
+  public static final String LATEST_VERSION = "1.33.0";
   public static final String VERSION;
 
   static {
     VERSION = System.getenv().getOrDefault("WEAVIATE_VERSION", LATEST_VERSION);
   }
+
   public static String OIDC_ISSUER = "https://auth.wcs.api.weaviate.io/auth/realms/SeMI";
 
   private volatile SharedClient clientInstance;
