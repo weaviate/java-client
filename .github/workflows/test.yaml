@@ -11,7 +11,7 @@ concurrency:
 env:
   IMG2VEC: cr.weaviate.io/semitechnologies/img2vec-pytorch:resnet50
   MINIO: minio/minio:latest
-  MODEL2VEC: cr.weaviate.io/semitechnologies/model2vec-inference:minishlab-potion-retrieval-32M
+  MODEL2VEC: cr.weaviate.io/semitechnologies/model2vec-inference:minishlab-potion-base-4M
   DOCKER_IMAGES_TAR: docker-images.tar
 
 jobs:
