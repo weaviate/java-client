@@ -16,9 +16,11 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.lifecycle.Startable;
 import org.testcontainers.weaviate.WeaviateContainer;
 
+import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.Config;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
+import io.weaviate.client6.v1.internal.VersionSupport.SemanticVersion;
 
 public class Weaviate extends WeaviateContainer {
   public static final String DOCKER_IMAGE = "semitechnologies/weaviate";
@@ -28,11 +30,25 @@ public class Weaviate extends WeaviateContainer {
   static {
     VERSION = System.getenv().getOrDefault("WEAVIATE_VERSION", LATEST_VERSION);
   }
-
   public static String OIDC_ISSUER = "https://auth.wcs.api.weaviate.io/auth/realms/SeMI";
 
   private volatile SharedClient clientInstance;
   private final String containerName;
+
+  public enum Version {
+    V132(1, 32),
+    V133(1, 33);
+
+    public final SemanticVersion semver;
+
+    private Version(int major, int minor) {
+      this.semver = new SemanticVersion(major, minor);
+    }
+
+    public void orSkip() {
+      ConcurrentTest.requireAtLeast(this);
+    }
+  }
 
   /**
    * By default, testcontainer's name is only available after calling

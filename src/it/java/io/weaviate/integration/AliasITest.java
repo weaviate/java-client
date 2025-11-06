@@ -11,13 +11,14 @@ import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.alias.Alias;
 import io.weaviate.containers.Container;
+import io.weaviate.containers.Weaviate;
 
 public class AliasITest extends ConcurrentTest {
   private static final WeaviateClient client = Container.WEAVIATE.getClient();
 
   @BeforeClass
   public static void __() {
-    requireAtLeast(1, 32);
+    Weaviate.Version.V132.orSkip();
   }
 
   @Test

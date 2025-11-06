@@ -119,18 +119,16 @@ public abstract class ConcurrentTest {
    * Skip the test if the version that the {@link Weaviate}
    * container is running is older than the required one.
    */
-  public static void requireAtLeast(int major, int minor) {
-    var required = new SemanticVersion(major, minor);
+  public static void requireAtLeast(Weaviate.Version required) {
     var actual = SemanticVersion.of(Weaviate.VERSION);
     Assumptions.assumeThat(actual)
-        .as("requires at least %s, but running %s", required, actual)
-        .isGreaterThanOrEqualTo(required);
+        .as("requires at least %s, but running %s", required.semver, actual)
+        .isGreaterThanOrEqualTo(required.semver);
   }
 
-  public static void requireAtLeast(int major, int minor, Runnable r) {
-    var required = new SemanticVersion(major, minor);
+  public static void requireAtLeast(Weaviate.Version required, Runnable r) {
     var actual = SemanticVersion.of(Weaviate.VERSION);
-    if (actual.compareTo(required) >= 0) {
+    if (actual.compareTo(required.semver) >= 0) {
       r.run();
     }
   }
