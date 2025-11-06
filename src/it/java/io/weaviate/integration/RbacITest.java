@@ -65,7 +65,6 @@ public class RbacITest extends ConcurrentTest {
     var nsRole = ns("VectorOwner");
 
     List<Permission> permissions = List.of(
-        Permission.aliases("ThingsAlias", myCollection, AliasesPermission.Action.CREATE),
         Permission.backups(myCollection, BackupsPermission.Action.MANAGE),
         Permission.cluster(ClusterPermission.Action.READ),
         Permission.nodes(myCollection, NodesPermission.Action.READ),
@@ -76,6 +75,10 @@ public class RbacITest extends ConcurrentTest {
         Permission.users("my-user", UsersPermission.Action.READ),
         Permission.replicate(myCollection, "my-shard", ReplicatePermission.Action.READ));
 
+    requireAtLeast(1, 32, () -> {
+      permissions.add(
+          Permission.aliases("ThingsAlias", myCollection, AliasesPermission.Action.CREATE));
+    });
     requireAtLeast(1, 33, () -> {
       permissions.add(
           Permission.groups("my-group", GroupType.OIDC, GroupsPermission.Action.READ));
