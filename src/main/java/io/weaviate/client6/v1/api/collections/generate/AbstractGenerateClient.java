@@ -422,6 +422,34 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
   /**
    * Run a generative task on the results of a near vector search.
    *
+   * @param vector     Query vector.
+   * @param generateFn Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearVector(float[][] vector,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return nearVector(Target.vector(vector), generateFn);
+  }
+
+  /**
+   * Run a generative task on the results of a near vector search.
+   *
+   * @param vector     Query vector.
+   * @param fn         Lambda expression for optional search parameters.
+   * @param generateFn Lambda expression for generative task parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearVector(float[][] vector,
+      Function<NearVector.Builder, ObjectBuilder<NearVector>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn) {
+    return nearVector(Target.vector(vector), fn, generateFn);
+  }
+
+  /**
+   * Run a generative task on the results of a near vector search.
+   *
    * @param searchTarget Target query vectors.
    * @param generateFn   Lambda expression for generative task parameters.
    * @throws WeaviateApiException in case the server returned with an
@@ -493,6 +521,46 @@ abstract class AbstractGenerateClient<PropertiesT, ResponseT, GroupedResponseT> 
    * @see GenerativeResponseGrouped
    */
   public GroupedResponseT nearVector(float[] vector,
+      Function<NearVector.Builder, ObjectBuilder<NearVector>> fn,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn,
+      GroupBy groupBy) {
+    return nearVector(Target.vector(vector), fn, generateFn, groupBy);
+  }
+
+  /**
+   * Run a generative task on the results of a near vector search.
+   *
+   * @param vector     Query vector.
+   * @param generateFn Lambda expression for generative task parameters.
+   * @param groupBy    Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see GenerativeResponseGrouped
+   */
+  public GroupedResponseT nearVector(float[][] vector,
+      Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn,
+      GroupBy groupBy) {
+    return nearVector(Target.vector(vector), generateFn, groupBy);
+  }
+
+  /**
+   * Run a generative task on the results of a near vector search.
+   *
+   * @param vector     Query vector.
+   * @param fn         Lambda expression for optional search parameters.
+   * @param generateFn Lambda expression for generative task parameters.
+   * @param groupBy    Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see GenerativeResponseGrouped
+   */
+  public GroupedResponseT nearVector(float[][] vector,
       Function<NearVector.Builder, ObjectBuilder<NearVector>> fn,
       Function<GenerativeTask.Builder, ObjectBuilder<GenerativeTask>> generateFn,
       GroupBy groupBy) {

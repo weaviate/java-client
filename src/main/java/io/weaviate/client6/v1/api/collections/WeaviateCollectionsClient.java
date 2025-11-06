@@ -95,7 +95,7 @@ public class WeaviateCollectionsClient {
    * }</pre>
    *
    * @param cls Class that represents an object in the collection.
-   * @return the configuration of the created collection.
+   * @return Handle for the created collection.
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
    * @throws IOException          in case the request was not sent successfully
@@ -104,9 +104,10 @@ public class WeaviateCollectionsClient {
    * @see io.weaviate.client6.v1.api.collections.annotations.Collection
    * @see io.weaviate.client6.v1.api.collections.annotations.Property
    */
-  public <PropertiesT extends Record> CollectionConfig create(Class<PropertiesT> cls) throws IOException {
+  public <PropertiesT extends Record> CollectionHandle<PropertiesT> create(Class<PropertiesT> cls) throws IOException {
     var collection = CollectionDescriptor.ofClass(cls);
-    return create(CollectionConfig.of(collection.collectionName(), collection.configFn()));
+    create(CollectionConfig.of(collection.collectionName(), collection.configFn()));
+    return use(cls);
   }
 
   /**
@@ -115,7 +116,7 @@ public class WeaviateCollectionsClient {
    *
    * @param cls Class that represents an object in the collection.
    * @param fn  Lamda expression for optional parameters.
-   * @return the configuration of the created collection.
+   * @return Handle for the created collection.
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
    * @throws IOException          in case the request was not sent successfully
@@ -125,26 +126,27 @@ public class WeaviateCollectionsClient {
    * @see io.weaviate.client6.v1.api.collections.annotations.Property
    * @see WeaviateCollectionsClient#create(Class)
    */
-  public <PropertiesT extends Record> CollectionConfig create(
+  public <PropertiesT extends Record> CollectionHandle<PropertiesT> create(
       Class<PropertiesT> cls,
       Function<CollectionConfig.Builder, ObjectBuilder<CollectionConfig>> fn) throws IOException {
     var collection = CollectionDescriptor.ofClass(cls);
     var configFn = ObjectBuilder.partial(fn, collection.configFn());
-    return create(CollectionConfig.of(collection.collectionName(), configFn));
+    create(CollectionConfig.of(collection.collectionName(), configFn));
+    return use(cls);
   }
 
   /**
    * Create a new Weaviate collection with default configuration.
    *
    * @param collectionName Collection name.
-   * @return the configuration of the created collection.
+   * @return Handle for the created collection.
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
    * @throws IOException          in case the request was not sent successfully
    *                              due to a malformed request, a networking error
    *                              or the server being unavailable.
    */
-  public CollectionConfig create(String collectionName) throws IOException {
+  public CollectionHandle<Map<String, Object>> create(String collectionName) throws IOException {
     return create(CollectionConfig.of(collectionName));
   }
 
@@ -154,14 +156,14 @@ public class WeaviateCollectionsClient {
    *
    * @param collectionName Collection name.
    * @param fn             Lamda expression for optional parameters.
-   * @return the configuration of the created collection.
+   * @return Handle for the created collection.
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
    * @throws IOException          in case the request was not sent successfully
    *                              due to a malformed request, a networking error
    *                              or the server being unavailable.
    */
-  public CollectionConfig create(String collectionName,
+  public CollectionHandle<Map<String, Object>> create(String collectionName,
       Function<CollectionConfig.Builder, ObjectBuilder<CollectionConfig>> fn) throws IOException {
     return create(CollectionConfig.of(collectionName, fn));
   }
@@ -169,16 +171,17 @@ public class WeaviateCollectionsClient {
   /**
    * Create a new Weaviate collection with {@link CollectionConfig}.
    *
-   * @return the configuration of the created collection.
+   * @return Handle for the created collection.
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
    * @throws IOException          in case the request was not sent successfully
    *                              due to a malformed request, a networking error
    *                              or the server being unavailable.
    */
-  public CollectionConfig create(CollectionConfig collection) throws IOException {
-    return this.restTransport.performRequest(new CreateCollectionRequest(collection),
+  public CollectionHandle<Map<String, Object>> create(CollectionConfig collection) throws IOException {
+    this.restTransport.performRequest(new CreateCollectionRequest(collection),
         CreateCollectionRequest._ENDPOINT);
+    return use(collection.collectionName());
   }
 
   /**

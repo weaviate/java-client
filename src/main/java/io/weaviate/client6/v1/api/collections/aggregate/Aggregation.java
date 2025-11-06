@@ -14,6 +14,10 @@ public record Aggregation(
     boolean includeTotalCount,
     List<PropertyAggregation> returnMetrics) {
 
+  public static Aggregation of() {
+    return of(AggregateObjectFilter.NONE, ObjectBuilder.identity());
+  }
+
   public static Aggregation of(Function<Builder, ObjectBuilder<Aggregation>> fn) {
     return of(AggregateObjectFilter.NONE, fn);
   }

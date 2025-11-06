@@ -13,6 +13,7 @@ import io.weaviate.client6.v1.api.rbac.groups.WeaviateGroupsClientAsync;
 import io.weaviate.client6.v1.api.rbac.roles.WeaviateRolesClientAsync;
 import io.weaviate.client6.v1.api.rbac.users.WeaviateUsersClientAsync;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
+import io.weaviate.client6.v1.internal.Timeout;
 import io.weaviate.client6.v1.internal.TokenProvider;
 import io.weaviate.client6.v1.internal.grpc.DefaultGrpcTransport;
 import io.weaviate.client6.v1.internal.grpc.GrpcChannelOptions;
@@ -86,7 +87,8 @@ public class WeaviateClientAsync implements AutoCloseable {
     // the associated resources in case we have to throw an exception.
     // Assign to this.restTransport only once we're in the clear to
     // avoid publishing the object before it's fully initialized.
-    var _restTransport = new DefaultRestTransport(restOpt);
+    var _restTransport = new DefaultRestTransport(restOpt.withTimeout(
+        new Timeout(restOpt.timeout().initSeconds())));
     boolean isLive = false;
     InstanceMetadata meta = null;
     try {

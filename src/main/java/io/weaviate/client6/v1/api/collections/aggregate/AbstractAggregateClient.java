@@ -14,6 +14,7 @@ import io.weaviate.client6.v1.api.collections.query.NearObject;
 import io.weaviate.client6.v1.api.collections.query.NearText;
 import io.weaviate.client6.v1.api.collections.query.NearThermal;
 import io.weaviate.client6.v1.api.collections.query.NearVector;
+import io.weaviate.client6.v1.api.collections.query.NearVectorTarget;
 import io.weaviate.client6.v1.api.collections.query.NearVideo;
 import io.weaviate.client6.v1.api.collections.query.Target;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
@@ -63,6 +64,22 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
   /**
    * Aggregate metrics over all objects in this collection.
    *
+   * @param groupBy GroupBy clause.
+   * @return Grouped aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see AggregateResponseGrouped
+   */
+  public GroupedResponseT overAll(GroupBy groupBy) {
+    return performRequest(Aggregation.of(), groupBy);
+  }
+
+  /**
+   * Aggregate metrics over all objects in this collection.
+   *
    * @param fn      Lambda expression for optional aggregation parameters.
    * @param groupBy GroupBy clause.
    * @return Grouped aggregation result.
@@ -97,6 +114,21 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
   /**
    * Aggregate results of a hybrid search query.
    *
+   * @param searchTarget Query target.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @return Aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @see AggregateResponse
+   */
+  public ResponseT hybrid(Target searchTarget, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return hybrid(Hybrid.of(searchTarget), fn);
+  }
+
+  /**
+   * Aggregate results of a hybrid search query.
+   *
    * @param query  Query string.
    * @param hybrid Lambda expression for optional hybrid search parameters.
    * @param fn     Lambda expression for optional aggregation parameters.
@@ -109,6 +141,23 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
   public ResponseT hybrid(String query, Function<Hybrid.Builder, ObjectBuilder<Hybrid>> hybrid,
       Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
     return hybrid(Hybrid.of(query, hybrid), fn);
+  }
+
+  /**
+   * Aggregate results of a hybrid search query.
+   *
+   * @param searchTarget Query target.
+   * @param hybrid       Lambda expression for optional hybrid search parameters.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @return Aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @see AggregateResponse
+   */
+  public ResponseT hybrid(Target searchTarget, Function<Hybrid.Builder, ObjectBuilder<Hybrid>> hybrid,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return hybrid(Hybrid.of(searchTarget, hybrid), fn);
   }
 
   /**
@@ -148,6 +197,25 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
   /**
    * Aggregate results of a hybrid search query.
    *
+   * @param searchTarget Query target.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @param groupBy      GroupBy clause.
+   * @return Grouped aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see AggregateResponseGrouped
+   */
+  public GroupedResponseT hybrid(Target searchTarget, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
+    return hybrid(Hybrid.of(searchTarget), fn, groupBy);
+  }
+
+  /**
+   * Aggregate results of a hybrid search query.
+   *
    * @param query   Query string.
    * @param hybrid  Lambda expression for optional hybrid search parameters.
    * @param fn      Lambda expression for optional aggregation parameters.
@@ -163,6 +231,26 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
   public GroupedResponseT hybrid(String query, Function<Hybrid.Builder, ObjectBuilder<Hybrid>> hybrid,
       Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn, GroupBy groupBy) {
     return hybrid(Hybrid.of(query, hybrid), fn, groupBy);
+  }
+
+  /**
+   * Aggregate results of a hybrid search query.
+   *
+   * @param searchTarget Query target.
+   * @param hybrid       Lambda expression for optional hybrid search parameters.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @param groupBy      GroupBy clause.
+   * @return Grouped aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see AggregateResponseGrouped
+   */
+  public GroupedResponseT hybrid(Target searchTarget, Function<Hybrid.Builder, ObjectBuilder<Hybrid>> hybrid,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn, GroupBy groupBy) {
+    return hybrid(Hybrid.of(searchTarget, hybrid), fn, groupBy);
   }
 
   /**
@@ -197,7 +285,8 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    *                              error status code.
    * @see AggregateResponse
    */
-  public ResponseT nearVector(float[] vector, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+  public ResponseT nearVector(float[] vector,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
     return nearVector(NearVector.of(Target.vector(vector)), fn);
   }
 
@@ -213,9 +302,77 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    *                              error status code.
    * @see AggregateResponse
    */
-  public ResponseT nearVector(float[] vector, Function<NearVector.Builder, ObjectBuilder<NearVector>> nv,
+  public ResponseT nearVector(float[] vector,
+      Function<NearVector.Builder, ObjectBuilder<NearVector>> nv,
       Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
     return nearVector(NearVector.of(Target.vector(vector), nv), fn);
+  }
+
+  /**
+   * Aggregate results of a near vector query.
+   *
+   * @param vector Query vector.
+   * @param fn     Lambda expression for optional aggregation parameters.
+   * @return Aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @see AggregateResponse
+   */
+  public ResponseT nearVector(float[][] vector, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return nearVector(NearVector.of(Target.vector(vector)), fn);
+  }
+
+  /**
+   * Aggregate results of a near vector query.
+   *
+   * @param vector Query vector.
+   * @param nv     Lambda expression for optional near vector parameters.
+   * @param fn     Lambda expression for optional aggregation parameters.
+   * @return Aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @see AggregateResponse
+   */
+  public ResponseT nearVector(float[][] vector,
+      Function<NearVector.Builder, ObjectBuilder<NearVector>> nv,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return nearVector(NearVector.of(Target.vector(vector), nv), fn);
+  }
+
+  /**
+   * Aggregate results of a near vector query.
+   *
+   * @param searchTarget Query target.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @return Aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @see AggregateResponse
+   */
+  public ResponseT nearVector(NearVectorTarget searchTarget,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return nearVector(NearVector.of(searchTarget), fn);
+  }
+
+  /**
+   * Aggregate results of a near vector query.
+   *
+   * @param searchTarget Query target.
+   * @param nv           Lambda expression for optional near vector parameters.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @return Aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @see AggregateResponse
+   */
+  public ResponseT nearVector(NearVectorTarget searchTarget,
+      Function<NearVector.Builder, ObjectBuilder<NearVector>> nv,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return nearVector(NearVector.of(searchTarget), fn);
   }
 
   /**
@@ -229,7 +386,8 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    *                              error status code.
    * @see AggregateResponse
    */
-  public ResponseT nearVector(NearVector filter, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+  public ResponseT nearVector(NearVector filter,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
     return performRequest(Aggregation.of(filter, fn));
   }
 
@@ -247,7 +405,8 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    * @see GroupBy
    * @see AggregateResponseGrouped
    */
-  public GroupedResponseT nearVector(float[] vector, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+  public GroupedResponseT nearVector(float[] vector,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
       GroupBy groupBy) {
     return nearVector(NearVector.of(Target.vector(vector)), fn, groupBy);
   }
@@ -267,9 +426,94 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    * @see GroupBy
    * @see AggregateResponseGrouped
    */
-  public GroupedResponseT nearVector(float[] vector, Function<NearVector.Builder, ObjectBuilder<NearVector>> nv,
-      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn, GroupBy groupBy) {
+  public GroupedResponseT nearVector(float[] vector,
+      Function<NearVector.Builder, ObjectBuilder<NearVector>> nv,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
     return nearVector(NearVector.of(Target.vector(vector), nv), fn, groupBy);
+  }
+
+  /**
+   * Aggregate results of a near vector query.
+   *
+   * @param vector  Query vector.
+   * @param fn      Lambda expression for optional aggregation parameters.
+   * @param groupBy GroupBy clause.
+   * @return Grouped aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see AggregateResponseGrouped
+   */
+  public GroupedResponseT nearVector(float[][] vector,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
+    return nearVector(NearVector.of(Target.vector(vector)), fn, groupBy);
+  }
+
+  /**
+   * Aggregate results of a near vector query.
+   *
+   * @param vector  Query vector.
+   * @param nv      Lambda expression for optional near vector parameters.
+   * @param fn      Lambda expression for optional aggregation parameters.
+   * @param groupBy GroupBy clause.
+   * @return Grouped aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see AggregateResponseGrouped
+   */
+  public GroupedResponseT nearVector(float[][] vector,
+      Function<NearVector.Builder, ObjectBuilder<NearVector>> nv,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
+    return nearVector(NearVector.of(Target.vector(vector), nv), fn, groupBy);
+  }
+
+  /**
+   * Aggregate results of a near vector query.
+   *
+   * @param searchTarget Query target.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @param groupBy      GroupBy clause.
+   * @return Grouped aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see AggregateResponseGrouped
+   */
+  public GroupedResponseT nearVector(NearVectorTarget searchTarget,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
+    return nearVector(NearVector.of(searchTarget), fn, groupBy);
+  }
+
+  /**
+   * Aggregate results of a near vector query.
+   *
+   * @param searchTarget Query target.
+   * @param nv           Lambda expression for optional near vector parameters.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @param groupBy      GroupBy clause.
+   * @return Grouped aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see AggregateResponseGrouped
+   */
+  public GroupedResponseT nearVector(NearVectorTarget searchTarget,
+      Function<NearVector.Builder, ObjectBuilder<NearVector>> nv,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn, GroupBy groupBy) {
+    return nearVector(NearVector.of(searchTarget, nv), fn, groupBy);
   }
 
   /**
@@ -286,7 +530,8 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    * @see GroupBy
    * @see AggregateResponseGrouped
    */
-  public GroupedResponseT nearVector(NearVector filter, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+  public GroupedResponseT nearVector(NearVector filter,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
       GroupBy groupBy) {
     return performRequest(Aggregation.of(filter, fn), groupBy);
   }
@@ -433,6 +678,21 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
   /**
    * Aggregate results of a near text query.
    *
+   * @param searchTarget Query target.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @return Aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @see AggregateResponse
+   */
+  public ResponseT nearText(Target searchTarget, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return nearText(NearText.of(searchTarget), fn);
+  }
+
+  /**
+   * Aggregate results of a near text query.
+   *
    * @param text Query string.
    * @param nt   Lambda expression for optional near text parameters.
    * @param fn   Lambda expression for optional aggregation parameters.
@@ -442,7 +702,8 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    *                              error status code.
    * @see AggregateResponse
    */
-  public ResponseT nearText(String text, Function<NearText.Builder, ObjectBuilder<NearText>> nt,
+  public ResponseT nearText(String text,
+      Function<NearText.Builder, ObjectBuilder<NearText>> nt,
       Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
     return nearText(NearText.of(Target.text(List.of(text)), nt), fn);
   }
@@ -459,9 +720,28 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    *                              error status code.
    * @see AggregateResponse
    */
-  public ResponseT nearText(List<String> concepts, Function<NearText.Builder, ObjectBuilder<NearText>> nt,
+  public ResponseT nearText(List<String> concepts,
+      Function<NearText.Builder, ObjectBuilder<NearText>> nt,
       Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
     return nearText(NearText.of(Target.text(concepts), nt), fn);
+  }
+
+  /**
+   * Aggregate results of a near text query.
+   *
+   * @param searchTarget Query target.
+   * @param nt           Lambda expression for optional near text parameters.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @return Aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @see AggregateResponse
+   */
+  public ResponseT nearText(Target searchTarget,
+      Function<NearText.Builder, ObjectBuilder<NearText>> nt,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return nearText(NearText.of(searchTarget, nt), fn);
   }
 
   /**
@@ -474,7 +754,8 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
    */
-  public ResponseT nearText(NearText filter, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+  public ResponseT nearText(NearText filter,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
     return performRequest(Aggregation.of(filter, fn));
   }
 
@@ -492,7 +773,8 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    * @see GroupBy
    * @see AggregateResponseGrouped
    */
-  public GroupedResponseT nearText(String text, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+  public GroupedResponseT nearText(String text,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
       GroupBy groupBy) {
     return nearText(NearText.of(text), fn, groupBy);
   }
@@ -511,9 +793,30 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    * @see GroupBy
    * @see AggregateResponseGrouped
    */
-  public GroupedResponseT nearText(List<String> concepts, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+  public GroupedResponseT nearText(List<String> concepts,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
       GroupBy groupBy) {
     return nearText(NearText.of(Target.text(concepts)), fn, groupBy);
+  }
+
+  /**
+   * Aggregate results of a near text query.
+   *
+   * @param searchTarget Query target.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @param groupBy      GroupBy clause.
+   * @return Grouped aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see AggregateResponseGrouped
+   */
+  public GroupedResponseT nearText(Target searchTarget,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
+    return nearText(NearText.of(searchTarget), fn, groupBy);
   }
 
   /**
@@ -531,8 +834,10 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    * @see GroupBy
    * @see AggregateResponseGrouped
    */
-  public GroupedResponseT nearText(String text, Function<NearText.Builder, ObjectBuilder<NearText>> nt,
-      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn, GroupBy groupBy) {
+  public GroupedResponseT nearText(String text,
+      Function<NearText.Builder, ObjectBuilder<NearText>> nt,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
     return nearText(NearText.of(text, nt), fn, groupBy);
   }
 
@@ -551,9 +856,33 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    * @see GroupBy
    * @see AggregateResponseGrouped
    */
-  public GroupedResponseT nearText(List<String> concepts, Function<NearText.Builder, ObjectBuilder<NearText>> nt,
-      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn, GroupBy groupBy) {
+  public GroupedResponseT nearText(List<String> concepts,
+      Function<NearText.Builder, ObjectBuilder<NearText>> nt,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
     return nearText(NearText.of(Target.text(concepts), nt), fn, groupBy);
+  }
+
+  /**
+   * Aggregate results of a near text query.
+   *
+   * @param searchTarget Query target.
+   * @param nt           Lambda expression for optional near text parameters.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @param groupBy      GroupBy clause.
+   * @return Grouped aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see AggregateResponseGrouped
+   */
+  public GroupedResponseT nearText(Target searchTarget,
+      Function<NearText.Builder, ObjectBuilder<NearText>> nt,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
+    return nearText(NearText.of(searchTarget, nt), fn, groupBy);
   }
 
   /**
@@ -588,7 +917,8 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    *                              error status code.
    * @see AggregateResponse
    */
-  public ResponseT nearImage(String image, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+  public ResponseT nearImage(String image,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
     return nearImage(NearImage.of(image), fn);
   }
 
@@ -604,9 +934,44 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    *                              error status code.
    * @see AggregateResponse
    */
-  public ResponseT nearImage(String image, Function<NearImage.Builder, ObjectBuilder<NearImage>> ni,
+  public ResponseT nearImage(String image,
+      Function<NearImage.Builder, ObjectBuilder<NearImage>> ni,
       Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
     return nearImage(NearImage.of(image, ni), fn);
+  }
+
+  /**
+   * Aggregate results of a near image query.
+   *
+   * @param searchTarget Query target.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @return Aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @see AggregateResponse
+   */
+  public ResponseT nearImage(Target searchTarget,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return nearImage(NearImage.of(searchTarget), fn);
+  }
+
+  /**
+   * Aggregate results of a near image query.
+   *
+   * @param searchTarget Query target.
+   * @param ni           Lambda expression for optional near image parameters.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @return Aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @see AggregateResponse
+   */
+  public ResponseT nearImage(Target searchTarget,
+      Function<NearImage.Builder, ObjectBuilder<NearImage>> ni,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return nearImage(NearImage.of(searchTarget, ni), fn);
   }
 
   /**
@@ -638,7 +1003,8 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    * @see GroupBy
    * @see AggregateResponseGrouped
    */
-  public GroupedResponseT nearImage(String image, Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+  public GroupedResponseT nearImage(String image,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
       GroupBy groupBy) {
     return nearImage(NearImage.of(image), fn, groupBy);
   }
@@ -658,9 +1024,53 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
    * @see GroupBy
    * @see AggregateResponseGrouped
    */
-  public GroupedResponseT nearImage(String image, Function<NearImage.Builder, ObjectBuilder<NearImage>> ni,
-      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn, GroupBy groupBy) {
+  public GroupedResponseT nearImage(String image,
+      Function<NearImage.Builder, ObjectBuilder<NearImage>> ni,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
     return nearImage(NearImage.of(image, ni), fn, groupBy);
+  }
+
+  /**
+   * Aggregate results of a near image query.
+   *
+   * @param searchTarget Query target.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @param groupBy      GroupBy clause.
+   * @return Grouped aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see AggregateResponseGrouped
+   */
+  public GroupedResponseT nearImage(Target searchTarget,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
+    return nearImage(NearImage.of(searchTarget), fn, groupBy);
+  }
+
+  /**
+   * Aggregate results of a near image query.
+   *
+   * @param searchTarget Query target.
+   * @param ni           Lambda expression for optional near image parameters.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @param groupBy      GroupBy clause.
+   * @return Grouped aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see AggregateResponseGrouped
+   */
+  public GroupedResponseT nearImage(Target searchTarget,
+      Function<NearImage.Builder, ObjectBuilder<NearImage>> ni,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
+    return nearImage(NearImage.of(searchTarget, ni), fn, groupBy);
   }
 
   /**
@@ -714,6 +1124,40 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
   public ResponseT nearAudio(String audio, Function<NearAudio.Builder, ObjectBuilder<NearAudio>> na,
       Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
     return nearAudio(NearAudio.of(audio, na), fn);
+  }
+
+  /**
+   * Aggregate results of a near audio query.
+   *
+   * @param searchTarget Query target.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @return Aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @see AggregateResponse
+   */
+  public ResponseT nearAudio(Target searchTarget,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return nearAudio(NearAudio.of(searchTarget), fn);
+  }
+
+  /**
+   * Aggregate results of a near audio query.
+   *
+   * @param searchTarget Query target.
+   * @param na           Lambda expression for optional near audio parameters.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @return Aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @see AggregateResponse
+   */
+  public ResponseT nearAudio(Target searchTarget,
+      Function<NearAudio.Builder, ObjectBuilder<NearAudio>> na,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return nearAudio(NearAudio.of(searchTarget, na), fn);
   }
 
   /**
@@ -773,6 +1217,48 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
   /**
    * Aggregate results of a near audio query.
    *
+   * @param searchTarget Query target.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @param groupBy      GroupBy clause.
+   * @return Grouped aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see AggregateResponseGrouped
+   */
+  public GroupedResponseT nearAudio(Target searchTarget,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
+    return nearAudio(NearAudio.of(searchTarget), fn, groupBy);
+  }
+
+  /**
+   * Aggregate results of a near audio query.
+   *
+   * @param searchTarget Query target.
+   * @param na           Lambda expression for optional near audio parameters.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @param groupBy      GroupBy clause.
+   * @return Grouped aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see AggregateResponseGrouped
+   */
+  public GroupedResponseT nearAudio(Target searchTarget,
+      Function<NearAudio.Builder, ObjectBuilder<NearAudio>> na,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
+    return nearAudio(NearAudio.of(searchTarget, na), fn, groupBy);
+  }
+
+  /**
+   * Aggregate results of a near audio query.
+   *
    * @param filter  Near audio query request.
    * @param fn      Lambda expression for optional aggregation parameters.
    * @param groupBy GroupBy clause.
@@ -821,6 +1307,40 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
   public ResponseT nearVideo(String video, Function<NearVideo.Builder, ObjectBuilder<NearVideo>> nv,
       Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
     return nearVideo(NearVideo.of(video, nv), fn);
+  }
+
+  /**
+   * Aggregate results of a near video query.
+   *
+   * @param searchTarget Query target.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @return Aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @see AggregateResponse
+   */
+  public ResponseT nearVideo(Target searchTarget,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return nearVideo(NearVideo.of(searchTarget), fn);
+  }
+
+  /**
+   * Aggregate results of a near video query.
+   *
+   * @param searchTarget Query target.
+   * @param nv           Lambda expression for optional near video parameters.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @return Aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @see AggregateResponse
+   */
+  public ResponseT nearVideo(Target searchTarget,
+      Function<NearVideo.Builder, ObjectBuilder<NearVideo>> nv,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return nearVideo(NearVideo.of(searchTarget, nv), fn);
   }
 
   /**
@@ -880,6 +1400,48 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
   /**
    * Aggregate results of a near video query.
    *
+   * @param searchTarget Query target.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @param groupBy      GroupBy clause.
+   * @return Grouped aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see AggregateResponseGrouped
+   */
+  public GroupedResponseT nearVideo(Target searchTarget,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
+    return nearVideo(NearVideo.of(searchTarget), fn, groupBy);
+  }
+
+  /**
+   * Aggregate results of a near video query.
+   *
+   * @param searchTarget Query target.
+   * @param nv           Lambda expression for optional near video parameters.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @param groupBy      GroupBy clause.
+   * @return Grouped aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see AggregateResponseGrouped
+   */
+  public GroupedResponseT nearVideo(Target searchTarget,
+      Function<NearVideo.Builder, ObjectBuilder<NearVideo>> nv,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
+    return nearVideo(NearVideo.of(searchTarget, nv), fn, groupBy);
+  }
+
+  /**
+   * Aggregate results of a near video query.
+   *
    * @param filter  Near video query request.
    * @param fn      Lambda expression for optional aggregation parameters.
    * @param groupBy GroupBy clause.
@@ -928,6 +1490,40 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
   public ResponseT nearThermal(String thermal, Function<NearThermal.Builder, ObjectBuilder<NearThermal>> nt,
       Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
     return nearThermal(NearThermal.of(thermal, nt), fn);
+  }
+
+  /**
+   * Aggregate results of a near thermal query.
+   *
+   * @param searchTarget Query target.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @return Aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @see AggregateResponse
+   */
+  public ResponseT nearThermal(Target searchTarget,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return nearThermal(NearThermal.of(searchTarget), fn);
+  }
+
+  /**
+   * Aggregate results of a near thermal query.
+   *
+   * @param searchTarget Query target.
+   * @param nt           Lambda expression for optional near thermal parameters.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @return Aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @see AggregateResponse
+   */
+  public ResponseT nearThermal(Target searchTarget,
+      Function<NearThermal.Builder, ObjectBuilder<NearThermal>> nt,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return nearThermal(NearThermal.of(searchTarget, nt), fn);
   }
 
   /**
@@ -987,6 +1583,48 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
   /**
    * Aggregate results of a near thermal query.
    *
+   * @param searchTarget Query target.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @param groupBy      GroupBy clause.
+   * @return Grouped aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see AggregateResponseGrouped
+   */
+  public GroupedResponseT nearThermal(Target searchTarget,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
+    return nearThermal(NearThermal.of(searchTarget), fn, groupBy);
+  }
+
+  /**
+   * Aggregate results of a near thermal query.
+   *
+   * @param searchTarget Query target.
+   * @param nt           Lambda expression for optional near thermal parameters.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @param groupBy      GroupBy clause.
+   * @return Grouped aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see AggregateResponseGrouped
+   */
+  public GroupedResponseT nearThermal(Target searchTarget,
+      Function<NearThermal.Builder, ObjectBuilder<NearThermal>> nt,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
+    return nearThermal(NearThermal.of(searchTarget, nt), fn, groupBy);
+  }
+
+  /**
+   * Aggregate results of a near thermal query.
+   *
    * @param filter  Near thermal query request.
    * @param fn      Lambda expression for optional aggregation parameters.
    * @param groupBy GroupBy clause.
@@ -1035,6 +1673,40 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
   public ResponseT nearDepth(String depth, Function<NearDepth.Builder, ObjectBuilder<NearDepth>> nd,
       Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
     return nearDepth(NearDepth.of(depth, nd), fn);
+  }
+
+  /**
+   * Aggregate results of a near depth query.
+   *
+   * @param searchTarget Query target.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @return Aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @see AggregateResponse
+   */
+  public ResponseT nearDepth(Target searchTarget,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return nearDepth(NearDepth.of(searchTarget), fn);
+  }
+
+  /**
+   * Aggregate results of a near depth query.
+   *
+   * @param searchTarget Query target.
+   * @param nd           Lambda expression for optional near depth parameters.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @return Aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @see AggregateResponse
+   */
+  public ResponseT nearDepth(Target searchTarget,
+      Function<NearDepth.Builder, ObjectBuilder<NearDepth>> nd,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return nearDepth(NearDepth.of(searchTarget, nd), fn);
   }
 
   /**
@@ -1094,6 +1766,48 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
   /**
    * Aggregate results of a near depth query.
    *
+   * @param searchTarget Query target.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @param groupBy      GroupBy clause.
+   * @return Grouped aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see AggregateResponseGrouped
+   */
+  public GroupedResponseT nearDepth(Target searchTarget,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
+    return nearDepth(NearDepth.of(searchTarget), fn, groupBy);
+  }
+
+  /**
+   * Aggregate results of a near depth query.
+   *
+   * @param searchTarget Query target.
+   * @param nd           Lambda expression for optional near depth parameters.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @param groupBy      GroupBy clause.
+   * @return Grouped aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see AggregateResponseGrouped
+   */
+  public GroupedResponseT nearDepth(Target searchTarget,
+      Function<NearDepth.Builder, ObjectBuilder<NearDepth>> nd,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
+    return nearDepth(NearDepth.of(searchTarget, nd), fn, groupBy);
+  }
+
+  /**
+   * Aggregate results of a near depth query.
+   *
    * @param filter  Near depth query request.
    * @param fn      Lambda expression for optional aggregation parameters.
    * @param groupBy GroupBy clause.
@@ -1142,6 +1856,40 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
   public ResponseT nearImu(String imu, Function<NearImu.Builder, ObjectBuilder<NearImu>> ni,
       Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
     return nearImu(NearImu.of(imu, ni), fn);
+  }
+
+  /**
+   * Aggregate results of a near IMU query.
+   *
+   * @param searchTarget Query target.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @return Aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @see AggregateResponse
+   */
+  public ResponseT nearImu(Target searchTarget,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return nearImu(NearImu.of(searchTarget), fn);
+  }
+
+  /**
+   * Aggregate results of a near IMU query.
+   *
+   * @param searchTarget Query target.
+   * @param ni           Lambda expression for optional near IMU parameters.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @return Aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @see AggregateResponse
+   */
+  public ResponseT nearImu(Target searchTarget,
+      Function<NearImu.Builder, ObjectBuilder<NearImu>> ni,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn) {
+    return nearImu(NearImu.of(searchTarget, ni), fn);
   }
 
   /**
@@ -1196,6 +1944,48 @@ abstract class AbstractAggregateClient<ResponseT, GroupedResponseT> {
   public GroupedResponseT nearImu(String imu, Function<NearImu.Builder, ObjectBuilder<NearImu>> ni,
       Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn, GroupBy groupBy) {
     return nearImu(NearImu.of(imu, ni), fn, groupBy);
+  }
+
+  /**
+   * Aggregate results of a near IMU query.
+   *
+   * @param searchTarget Query target.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @param groupBy      GroupBy clause.
+   * @return Grouped aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see AggregateResponseGrouped
+   */
+  public GroupedResponseT nearImu(Target searchTarget,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
+    return nearImu(NearImu.of(searchTarget), fn, groupBy);
+  }
+
+  /**
+   * Aggregate results of a near IMU query.
+   *
+   * @param searchTarget Query target.
+   * @param ni           Lambda expression for optional near IMU parameters.
+   * @param fn           Lambda expression for optional aggregation parameters.
+   * @param groupBy      GroupBy clause.
+   * @return Grouped aggregation result.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see AggregateResponseGrouped
+   */
+  public GroupedResponseT nearImu(Target searchTarget,
+      Function<NearImu.Builder, ObjectBuilder<NearImu>> ni,
+      Function<Aggregation.Builder, ObjectBuilder<Aggregation>> fn,
+      GroupBy groupBy) {
+    return nearImu(NearImu.of(searchTarget, ni), fn, groupBy);
   }
 
   /**

@@ -83,6 +83,16 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
   // Object queries -----------------------------------------------------------
 
   /**
+   * Retrieve objects in ascending UUID order.
+   *
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT fetchObjects() {
+    return fetchObjects(FetchObjects.of());
+  }
+
+  /**
    * Retrieve objects without applying a Vector Search or Keyword Search filter.
    *
    * @param fn Lambda expression for optional parameters.
@@ -102,6 +112,21 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    */
   public ResponseT fetchObjects(FetchObjects query) {
     return performRequest(query);
+  }
+
+  /**
+   * Retrieve objects in ascending UUID order.
+   *
+   * @param groupBy Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see QueryResponseGrouped
+   */
+  public GroupedResponseT fetchObjects(GroupBy groupBy) {
+    return fetchObjects(FetchObjects.of(), groupBy);
   }
 
   /**
@@ -393,6 +418,29 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
   /**
    * Query collection objects using near vector search.
    *
+   * @param vector Query vector.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearVector(float[][] vector) {
+    return nearVector(Target.vector(vector));
+  }
+
+  /**
+   * Query collection objects using near vector search.
+   *
+   * @param vector Query vector.
+   * @param fn     Lambda expression for optional parameters.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   */
+  public ResponseT nearVector(float[][] vector, Function<NearVector.Builder, ObjectBuilder<NearVector>> fn) {
+    return nearVector(Target.vector(vector), fn);
+  }
+
+  /**
+   * Query collection objects using near vector search.
+   *
    * @param searchTarget Target query vectors.
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
@@ -455,6 +503,40 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @see QueryResponseGrouped
    */
   public GroupedResponseT nearVector(float[] vector, Function<NearVector.Builder, ObjectBuilder<NearVector>> fn,
+      GroupBy groupBy) {
+    return nearVector(Target.vector(vector), fn, groupBy);
+  }
+
+  /**
+   * Query collection objects using near vector search.
+   *
+   * @param vector  Query vector.
+   * @param groupBy Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see QueryResponseGrouped
+   */
+  public GroupedResponseT nearVector(float[][] vector, GroupBy groupBy) {
+    return nearVector(Target.vector(vector), groupBy);
+  }
+
+  /**
+   * Query collection objects using near vector search.
+   *
+   * @param vector  Query vector.
+   * @param fn      Lambda expression for optional parameters.
+   * @param groupBy Group-by clause.
+   * @return Grouped query result.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   *
+   * @see GroupBy
+   * @see QueryResponseGrouped
+   */
+  public GroupedResponseT nearVector(float[][] vector, Function<NearVector.Builder, ObjectBuilder<NearVector>> fn,
       GroupBy groupBy) {
     return nearVector(Target.vector(vector), fn, groupBy);
   }

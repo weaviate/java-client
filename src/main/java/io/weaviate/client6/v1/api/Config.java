@@ -8,6 +8,7 @@ import java.util.function.Function;
 import javax.net.ssl.TrustManagerFactory;
 
 import io.weaviate.client6.v1.internal.ObjectBuilder;
+import io.weaviate.client6.v1.internal.Timeout;
 import io.weaviate.client6.v1.internal.TokenProvider;
 import io.weaviate.client6.v1.internal.grpc.GrpcChannelOptions;
 import io.weaviate.client6.v1.internal.rest.RestTransportOptions;
@@ -20,7 +21,8 @@ public record Config(
     int grpcPort,
     Map<String, String> headers,
     Authentication authentication,
-    TrustManagerFactory trustManagerFactory) {
+    TrustManagerFactory trustManagerFactory,
+    Timeout timeout) {
 
   public static Config of(Function<Custom, ObjectBuilder<Config>> fn) {
     return fn.apply(new Custom()).build();
@@ -35,7 +37,8 @@ public record Config(
         builder.grpcPort,
         builder.headers,
         builder.authentication,
-        builder.trustManagerFactory);
+        builder.trustManagerFactory,
+        builder.timeout);
   }
 
   RestTransportOptions restTransportOptions() {
@@ -43,7 +46,7 @@ public record Config(
   }
 
   RestTransportOptions restTransportOptions(TokenProvider tokenProvider) {
-    return new RestTransportOptions(scheme, httpHost, httpPort, headers, tokenProvider, trustManagerFactory);
+    return new RestTransportOptions(scheme, httpHost, httpPort, headers, tokenProvider, trustManagerFactory, timeout);
   }
 
   GrpcChannelOptions grpcTransportOptions() {
@@ -51,10 +54,10 @@ public record Config(
   }
 
   GrpcChannelOptions grpcTransportOptions(TokenProvider tokenProvider) {
-    return new GrpcChannelOptions(scheme, grpcHost, grpcPort, headers, tokenProvider, trustManagerFactory);
+    return new GrpcChannelOptions(scheme, grpcHost, grpcPort, headers, tokenProvider, trustManagerFactory, timeout);
   }
 
-  private abstract static class Builder<SELF extends Builder<SELF>> implements ObjectBuilder<Config> {
+  private abstract static class Builder<SelfT extends Builder<SelfT>> implements ObjectBuilder<Config> {
     protected String scheme;
 
     protected String httpHost;
@@ -63,6 +66,7 @@ public record Config(
     protected int grpcPort;
     protected Authentication authentication;
     protected TrustManagerFactory trustManagerFactory;
+    protected Timeout timeout = new Timeout();
     protected Map<String, String> headers = new HashMap<>();
 
     /**
@@ -70,9 +74,9 @@ public record Config(
      * {@code public} if using a different scheme is allowed.
      */
     @SuppressWarnings("unchecked")
-    protected SELF scheme(String scheme) {
+    protected SelfT scheme(String scheme) {
       this.scheme = scheme;
-      return (SELF) this;
+      return (SelfT) this;
     }
 
     /**
@@ -80,9 +84,9 @@ public record Config(
      * method to {@code public} if using a different port is allowed.
      */
     @SuppressWarnings("unchecked")
-    protected SELF httpHost(String httpHost) {
+    protected SelfT httpHost(String httpHost) {
       this.httpHost = trimScheme(httpHost);
-      return (SELF) this;
+      return (SelfT) this;
     }
 
     /**
@@ -90,9 +94,9 @@ public record Config(
      * method to {@code public} if using a different port is allowed.
      */
     @SuppressWarnings("unchecked")
-    protected SELF grpcHost(String grpcHost) {
+    protected SelfT grpcHost(String grpcHost) {
       this.grpcHost = trimScheme(grpcHost);
-      return (SELF) this;
+      return (SelfT) this;
     }
 
     /** Remove leading http(s):// prefix from a URL, if present. */
@@ -105,9 +109,9 @@ public record Config(
      * secure connection should expose this method.
      */
     @SuppressWarnings("unchecked")
-    protected SELF trustManagerFactory(TrustManagerFactory tmf) {
+    protected SelfT trustManagerFactory(TrustManagerFactory tmf) {
       this.trustManagerFactory = tmf;
-      return (SELF) this;
+      return (SelfT) this;
     }
 
     /**
@@ -115,9 +119,9 @@ public record Config(
      * will not use any authentication mechanism.
      */
     @SuppressWarnings("unchecked")
-    public SELF authentication(Authentication authz) {
+    public SelfT authentication(Authentication authz) {
       this.authentication = authz;
-      return (SELF) this;
+      return (SelfT) this;
     }
 
     /**
@@ -126,9 +130,9 @@ public record Config(
      * This will be applied both to REST and gRPC requests.
      */
     @SuppressWarnings("unchecked")
-    public SELF setHeader(String key, String value) {
+    public SelfT setHeader(String key, String value) {
       this.headers.put(key, value);
-      return (SELF) this;
+      return (SelfT) this;
     }
 
     /**
@@ -136,9 +140,37 @@ public record Config(
      * This will be applied both to REST and gRPC requests.
      */
     @SuppressWarnings("unchecked")
-    public SELF setHeaders(Map<String, String> headers) {
+    public SelfT setHeaders(Map<String, String> headers) {
       this.headers.putAll(Map.copyOf(headers));
-      return (SELF) this;
+      return (SelfT) this;
+    }
+
+    /**
+     * Set connection, query, and insert timeout to the same value.
+     *
+     * @param timeoutSeconds Response timeout in seconds.
+     */
+    @SuppressWarnings("unchecked")
+    public SelfT timeout(int timeoutSeconds) {
+      this.timeout = new Timeout(timeoutSeconds);
+      return (SelfT) this;
+    }
+
+    /**
+     * Set individual connection, query, and insert timeouts.
+     *
+     * <p>
+     * Because all inserts go over gRPC connection, the REST requests
+     * will assume {@code querySeconds} timeouts.
+     *
+     * @param initSeconds   Connection timeout in seconds.
+     * @param querySeconds  Response timeout for query requests.
+     * @param insertSeconds Response timeout for insert requests.
+     */
+    @SuppressWarnings("unchecked")
+    public SelfT timeout(int initSeconds, int querySeconds, int insertSeconds) {
+      this.timeout = new Timeout(initSeconds, querySeconds, insertSeconds);
+      return (SelfT) this;
     }
 
     /**

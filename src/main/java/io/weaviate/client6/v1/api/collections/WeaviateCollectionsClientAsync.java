@@ -26,8 +26,7 @@ public class WeaviateCollectionsClientAsync {
    * The returned object is thread-safe.
    *
    * @param cls Class that represents an object in the collection.
-   * @return a handle for a collection with {@code Class<PropertiesT>}
-   *         properties.
+   * @return a handle for a collection with {@code PropertiesT} properties.
    */
   public <PropertiesT extends Record> CollectionHandleAsync<PropertiesT> use(Class<PropertiesT> cls) {
     return use(CollectionDescriptor.ofClass(cls), CollectionHandleDefaults.none());
@@ -39,8 +38,7 @@ public class WeaviateCollectionsClientAsync {
    *
    * @param cls Class that represents an object in the collection.
    * @param fn  Lamda expression for optional parameters.
-   * @return a handle for a collection with {@code Class<PropertiesT>}
-   *         properties.
+   * @return a handle for a collection with {@code PropertiesT} properties.
    */
   public <PropertiesT extends Record> CollectionHandleAsync<PropertiesT> use(
       Class<PropertiesT> cls,
@@ -98,9 +96,11 @@ public class WeaviateCollectionsClientAsync {
    * @see io.weaviate.client6.v1.api.collections.annotations.Collection
    * @see io.weaviate.client6.v1.api.collections.annotations.Property
    */
-  public <PropertiesT extends Record> CompletableFuture<CollectionConfig> create(Class<PropertiesT> cls) {
+  public <PropertiesT extends Record> CompletableFuture<CollectionHandleAsync<PropertiesT>> create(
+      Class<PropertiesT> cls) {
     var collection = CollectionDescriptor.ofClass(cls);
-    return create(CollectionConfig.of(collection.collectionName(), collection.configFn()));
+    return create(CollectionConfig.of(collection.collectionName(), collection.configFn()))
+        .thenApply(__ -> use(cls));
   }
 
   /**
@@ -113,20 +113,21 @@ public class WeaviateCollectionsClientAsync {
    * @see io.weaviate.client6.v1.api.collections.annotations.Property
    * @see WeaviateCollectionsClientAsync#create(Class)
    */
-  public <PropertiesT extends Record> CompletableFuture<CollectionConfig> create(Class<PropertiesT> cls,
+  public <PropertiesT extends Record> CompletableFuture<CollectionHandleAsync<PropertiesT>> create(
+      Class<PropertiesT> cls,
       Function<CollectionConfig.Builder, ObjectBuilder<CollectionConfig>> fn) {
     var collection = CollectionDescriptor.ofClass(cls);
     var configFn = ObjectBuilder.partial(fn, collection.configFn());
-    return create(CollectionConfig.of(collection.collectionName(), configFn));
+    return create(CollectionConfig.of(collection.collectionName(), configFn))
+        .thenApply(__ -> use(cls));
   }
 
   /**
    * Create a new Weaviate collection with default configuration.
    *
    * @param collectionName Collection name.
-   * @return the configuration of the created collection.
    */
-  public CompletableFuture<CollectionConfig> create(String collectionName) {
+  public CompletableFuture<CollectionHandleAsync<Map<String, Object>>> create(String collectionName) {
     return create(CollectionConfig.of(collectionName));
   }
 
@@ -137,7 +138,7 @@ public class WeaviateCollectionsClientAsync {
    * @param collectionName Collection name.
    * @param fn             Lamda expression for optional parameters.
    */
-  public CompletableFuture<CollectionConfig> create(String collectionName,
+  public CompletableFuture<CollectionHandleAsync<Map<String, Object>>> create(String collectionName,
       Function<CollectionConfig.Builder, ObjectBuilder<CollectionConfig>> fn) {
     return create(CollectionConfig.of(collectionName, fn));
   }
@@ -145,9 +146,9 @@ public class WeaviateCollectionsClientAsync {
   /**
    * Create a new Weaviate collection with {@link CollectionConfig}.
    */
-  public CompletableFuture<CollectionConfig> create(CollectionConfig collection) {
+  public CompletableFuture<CollectionHandleAsync<Map<String, Object>>> create(CollectionConfig collection) {
     return this.restTransport.performRequestAsync(new CreateCollectionRequest(collection),
-        CreateCollectionRequest._ENDPOINT);
+        CreateCollectionRequest._ENDPOINT).thenApply(__ -> use(collection.collectionName()));
   }
 
   /**

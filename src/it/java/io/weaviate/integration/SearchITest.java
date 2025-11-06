@@ -446,13 +446,12 @@ public class SearchITest extends ConcurrentTest {
     var nsThings = ns("Things");
 
     try (final var async = client.async()) {
-      async.collections.create(nsThings,
+      var things = async.collections.create(nsThings,
           collection -> collection
               .properties(Property.text("name"))
               .vectorConfig(VectorConfig.text2vecModel2Vec()))
           .join();
 
-      var things = async.collections.use(nsThings);
       var balloon = things.data.insert(Map.of("name", "balloon")).join();
 
       try {
@@ -464,16 +463,43 @@ public class SearchITest extends ConcurrentTest {
   }
 
   @Test
+  public void test_includeVectors() throws IOException {
+    // Arrange
+    var nsThings = ns("Things");
+    var things = client.collections.create(nsThings,
+        c -> c.vectorConfig(
+            VectorConfig.selfProvided("v1"),
+            VectorConfig.selfProvided("v2"),
+            VectorConfig.selfProvided("v3")));
+
+    var thing_1 = things.data.insert(Map.of(), thing -> thing.vectors(
+        Vectors.of("v1", new float[] { 1, 2, 3 }),
+        Vectors.of("v2", new float[] { 4, 5, 6 }),
+        Vectors.of("v3", new float[] { 7, 8, 9 })));
+
+    // Act
+    var got = things.query.byId(
+        thing_1.uuid(),
+        q -> q.includeVector("v1", "v2"));
+
+    // Assert
+    Assertions.assertThat(got).get()
+        .extracting(WeaviateObject::vectors)
+        .returns(true, v -> v.contains("v1"))
+        .returns(true, v -> v.contains("v2"))
+        .returns(false, v -> v.contains("v3"));
+  }
+
+  @Test
   public void testMetadataAll() throws IOException {
     // Arrange
     var nsThings = ns("Things");
-    client.collections.create(nsThings,
+    var things = client.collections.create(nsThings,
         c -> c
             .properties(Property.text("name"))
             .vectorConfig(VectorConfig.text2vecModel2Vec(
                 t2v -> t2v.sourceProperties("name"))));
 
-    var things = client.collections.use(nsThings);
     var frisbee = things.data.insert(Map.of("name", "orange disc"));
 
     // Act
@@ -513,15 +539,13 @@ public class SearchITest extends ConcurrentTest {
     // Arrange
     var nsThings = ns("Things");
 
-    client.collections.create(nsThings,
+    var things = client.collections.create(nsThings,
         c -> c.vectorConfig(
             VectorConfig.selfProvided("v1d"),
             VectorConfig.selfProvided("v2d",
                 none -> none
                     .vectorIndex(Hnsw.of(
                         hnsw -> hnsw.multiVector(MultiVector.of()))))));
-
-    var things = client.collections.use(nsThings);
 
     var thing123 = things.data.insert(Map.of(), thing -> thing.vectors(
         Vectors.of("v1d", new float[] { 1, 2, 3 }),
@@ -559,14 +583,12 @@ public class SearchITest extends ConcurrentTest {
     // Arrange
     var nsThings = ns("Things");
 
-    client.collections.create(nsThings,
+    var things = client.collections.create(nsThings,
         c -> c
             .properties(Property.text("title"))
             .generativeModule(new DummyGenerative())
             .vectorConfig(VectorConfig.text2vecModel2Vec(
                 t2v -> t2v.sourceProperties("title"))));
-
-    var things = client.collections.use(nsThings);
 
     things.data.insertMany(
         Map.of("title", "Salad Fork"),
@@ -600,14 +622,12 @@ public class SearchITest extends ConcurrentTest {
     // Arrange
     var nsThings = ns("Things");
 
-    client.collections.create(nsThings,
+    var things = client.collections.create(nsThings,
         c -> c
             .properties(Property.text("title"))
             .generativeModule(new DummyGenerative())
             .vectorConfig(VectorConfig.text2vecModel2Vec(
                 t2v -> t2v.sourceProperties("title"))));
-
-    var things = client.collections.use(nsThings);
 
     things.data.insertMany(
         Map.of("title", "Salad Fork"),

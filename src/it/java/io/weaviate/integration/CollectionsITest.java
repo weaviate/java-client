@@ -142,7 +142,7 @@ public class CollectionsITest extends ConcurrentTest {
     var things = client.collections.use(nsThings);
 
     // Act
-    things.config.update(nsThings, collection -> collection
+    things.config.update(c -> c
         .description("Things stored on shelves")
         .propertyDescription("width", "not height")
         .invertedIndex(idx -> idx.cleanupIntervalSeconds(30))

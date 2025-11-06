@@ -13,7 +13,15 @@ public class WeaviateClientTest {
   }
 
   @Test(expected = WeaviateConnectException.class)
-  public void testFailedConnection_Local() {
+  public void testFailedConnection_Local() throws Exception {
+    // This test will fail if SOME Weaviate container is running on your machine
+    // with default :8080 port exposed. All Testcontainer instances started by
+    // the client's test suite expose random ports, which will not interferen with
+    // this test.
+    //
+    // You might also see a warning from gRPC saying that the channel has been
+    // garbage-collected before it was closed. The stack trace will probably
+    // show that it's related to this test.
     WeaviateClient.connectToLocal();
   }
 

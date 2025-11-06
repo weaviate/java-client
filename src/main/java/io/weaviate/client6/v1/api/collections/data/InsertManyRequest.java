@@ -42,7 +42,7 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
       List<WeaviateObject<T, Reference, ObjectMetadata>> insertObjects,
       CollectionDescriptor<T> collection,
       CollectionHandleDefaults defaults) {
-    return Rpc.of(
+    return Rpc.insert(
         request -> {
           var message = WeaviateProtoBatch.BatchObjectsRequest.newBuilder();
 

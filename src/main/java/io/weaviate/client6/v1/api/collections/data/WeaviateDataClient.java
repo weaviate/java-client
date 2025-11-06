@@ -64,6 +64,11 @@ public class WeaviateDataClient<PropertiesT> {
     return insertMany(new InsertManyRequest<>(objects));
   }
 
+  @SafeVarargs
+  public final InsertManyResponse insertMany(WeaviateObject<PropertiesT, Reference, ObjectMetadata>... objects) {
+    return insertMany(Arrays.asList(objects));
+  }
+
   public InsertManyResponse insertMany(InsertManyRequest<PropertiesT> request) {
     return this.grpcTransport.performRequest(request,
         InsertManyRequest.rpc(request.objects(), collection, defaults));

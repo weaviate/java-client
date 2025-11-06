@@ -23,7 +23,8 @@ public record BaseQueryOptions(
     GenerativeSearch generativeSearch,
     List<String> returnProperties,
     List<QueryReference> returnReferences,
-    List<Metadata> returnMetadata) {
+    List<Metadata> returnMetadata,
+    List<String> includeVectors) {
 
   private <T extends Object> BaseQueryOptions(Builder<? extends Builder<?, T>, T> builder) {
     this(
@@ -36,12 +37,13 @@ public record BaseQueryOptions(
         builder.generativeSearch,
         builder.returnProperties,
         builder.returnReferences,
-        builder.returnMetadata);
+        builder.returnMetadata,
+        builder.includeVectors);
 
   }
 
   @SuppressWarnings("unchecked")
-  public static abstract class Builder<SELF extends Builder<SELF, T>, T extends Object> implements ObjectBuilder<T> {
+  public static abstract class Builder<SelfT extends Builder<SelfT, T>, T extends Object> implements ObjectBuilder<T> {
     private Integer limit;
     private Integer offset;
     private Integer autocut;
@@ -52,6 +54,7 @@ public record BaseQueryOptions(
     private List<String> returnProperties = new ArrayList<>();
     private List<QueryReference> returnReferences = new ArrayList<>();
     private List<Metadata> returnMetadata = new ArrayList<>();
+    private List<String> includeVectors = new ArrayList<>();
 
     protected Builder() {
       returnMetadata(MetadataField.UUID);
@@ -63,9 +66,9 @@ public record BaseQueryOptions(
      * <p>
      * Combine with {@link #offset(int)} to use offset-based pagination.
      */
-    public final SELF limit(int limit) {
+    public final SelfT limit(int limit) {
       this.limit = limit;
-      return (SELF) this;
+      return (SelfT) this;
     }
 
     /**
@@ -74,9 +77,9 @@ public record BaseQueryOptions(
      * <p>
      * Combine with {@link #limit(int)} to use offset-based pagination.
      */
-    public final SELF offset(int offset) {
+    public final SelfT offset(int offset) {
       this.offset = offset;
-      return (SELF) this;
+      return (SelfT) this;
     }
 
     /**
@@ -86,9 +89,9 @@ public record BaseQueryOptions(
      * @see <a href=
      *      "https://weaviate.io/learn/knowledgecards/autocut">Documentation</a>
      */
-    public final SELF autocut(int autocut) {
+    public final SelfT autocut(int autocut) {
       this.autocut = autocut;
-      return (SELF) this;
+      return (SelfT) this;
     }
 
     /**
@@ -96,15 +99,15 @@ public record BaseQueryOptions(
      *
      * @param after UUID of an object in this collection.
      */
-    public final SELF after(String after) {
+    public final SelfT after(String after) {
       this.after = after;
-      return (SELF) this;
+      return (SelfT) this;
     }
 
     /** Set consitency level for query resolution. */
-    public final SELF consistencyLevel(ConsistencyLevel consistencyLevel) {
+    public final SelfT consistencyLevel(ConsistencyLevel consistencyLevel) {
       this.consistencyLevel = consistencyLevel;
-      return (SELF) this;
+      return (SelfT) this;
     }
 
     /**
@@ -113,9 +116,9 @@ public record BaseQueryOptions(
      *
      * @param fn Lambda expression for optional parameters.
      */
-    protected SELF generate(Function<GenerativeSearch.Builder, ObjectBuilder<GenerativeSearch>> fn) {
+    protected SelfT generate(Function<GenerativeSearch.Builder, ObjectBuilder<GenerativeSearch>> fn) {
       this.generativeSearch = GenerativeSearch.of(fn);
-      return (SELF) this;
+      return (SelfT) this;
     }
 
     /**
@@ -123,53 +126,64 @@ public record BaseQueryOptions(
      * {@code gte}, {@code like}, etc.
      * Subsequent calls to {@link #where} aggregate with an AND operator.
      */
-    public final SELF where(Where where) {
+    public final SelfT where(Where where) {
       this.where = this.where == null ? where : Where.and(this.where, where);
-      return (SELF) this;
+      return (SelfT) this;
     }
 
     /** Combine several conditions using with an AND operator. */
-    public final SELF where(Where... wheres) {
+    public final SelfT where(Where... wheres) {
       Arrays.stream(wheres).map(this::where);
-      return (SELF) this;
+      return (SelfT) this;
     }
 
     /** Select properties to include in the query result. */
-    public final SELF returnProperties(String... properties) {
+    public final SelfT returnProperties(String... properties) {
       return returnProperties(Arrays.asList(properties));
     }
 
     /** Select properties to include in the query result. */
-    public final SELF returnProperties(List<String> properties) {
+    public final SelfT returnProperties(List<String> properties) {
       this.returnProperties.addAll(properties);
-      return (SELF) this;
+      return (SelfT) this;
     }
 
     /** Select cross-referenced objects to include in the query result. */
-    public final SELF returnReferences(QueryReference... references) {
+    public final SelfT returnReferences(QueryReference... references) {
       return returnReferences(Arrays.asList(references));
     }
 
     /** Select cross-referenced objects to include in the query result. */
-    public final SELF returnReferences(List<QueryReference> references) {
+    public final SelfT returnReferences(List<QueryReference> references) {
       this.returnReferences.addAll(references);
-      return (SELF) this;
+      return (SelfT) this;
     }
 
     /** Select metadata to include in the query result. */
-    public final SELF returnMetadata(Metadata... metadata) {
+    public final SelfT returnMetadata(Metadata... metadata) {
       return returnMetadata(Arrays.asList(metadata));
     }
 
     /** Select metadata to include in the query result. */
-    public final SELF returnMetadata(List<Metadata> metadata) {
+    public final SelfT returnMetadata(List<Metadata> metadata) {
       this.returnMetadata.addAll(metadata);
-      return (SELF) this;
+      return (SelfT) this;
     }
 
     /** Include default vector. */
-    public final SELF includeVector() {
-      return returnMetadata(Metadata.VECTOR);
+    public final SelfT includeVector() {
+      return returnMetadata(MetadataField.VECTOR);
+    }
+
+    /** Include one or more named vectors in the metadata response. */
+    public final SelfT includeVector(String... vectors) {
+      return includeVector(Arrays.asList(vectors));
+    }
+
+    /** Include one or more named vectors in the metadata response. */
+    public final SelfT includeVector(List<String> vectors) {
+      this.includeVectors.addAll(vectors);
+      return (SelfT) this;
     }
 
     final BaseQueryOptions baseOptions() {
@@ -218,6 +232,7 @@ public record BaseQueryOptions(
 
     var metadata = WeaviateProtoSearchGet.MetadataRequest.newBuilder();
     returnMetadata.forEach(m -> m.appendTo(metadata));
+    metadata.addAllVectors(includeVectors);
     req.setMetadata(metadata);
 
     if (!returnProperties.isEmpty() || !returnReferences.isEmpty()) {

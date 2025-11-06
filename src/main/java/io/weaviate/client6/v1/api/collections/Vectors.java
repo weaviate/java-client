@@ -82,6 +82,15 @@ public class Vectors {
   }
 
   /**
+   * Check if a vector exists in the query result.
+   *
+   * @param name Vector name.
+   */
+  public boolean contains(String name) {
+    return vectorsMap.containsKey(name);
+  }
+
+  /**
    * Get 1-dimensional vector by name.
    *
    * @return Vector as {@code float[]} or {@code null}.
