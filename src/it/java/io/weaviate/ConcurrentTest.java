@@ -10,8 +10,12 @@ import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.Assumptions;
 import org.junit.Rule;
 import org.junit.rules.TestName;
+
+import io.weaviate.client6.v1.internal.VersionSupport.SemanticVersion;
+import io.weaviate.containers.Weaviate;
 
 /**
  * ConcurrentTest is the base class for integration tests, which provides
@@ -108,6 +112,26 @@ public abstract class ConcurrentTest {
       Assertions.fail(ex);
     } catch (ExecutionException ex) {
       throw new RuntimeException(ex);
+    }
+  }
+
+  /**
+   * Skip the test if the version that the {@link Weaviate}
+   * container is running is older than the required one.
+   */
+  public static void requireAtLeast(int major, int minor) {
+    var required = new SemanticVersion(major, minor);
+    var actual = SemanticVersion.of(Weaviate.VERSION);
+    Assumptions.assumeThat(actual)
+        .as("requires at least %s, but running %s", required, actual)
+        .isGreaterThanOrEqualTo(required);
+  }
+
+  public static void requireAtLeast(int major, int minor, Runnable r) {
+    var required = new SemanticVersion(major, minor);
+    var actual = SemanticVersion.of(Weaviate.VERSION);
+    if (actual.compareTo(required) >= 0) {
+      r.run();
     }
   }
 }
