@@ -52,7 +52,6 @@
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
     <maven.compiler.release>17</maven.compiler.release>
-    <lombok.version>1.18.42</lombok.version>
     <gson.version>2.13.2</gson.version>
     <httpclient.version>5.5.1</httpclient.version>
     <lang3.version>3.19.0</lang3.version>
@@ -111,11 +110,6 @@
       <groupId>org.apache.httpcomponents.client5</groupId>
       <artifactId>httpclient5</artifactId>
       <version>${httpclient.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <version>${lombok.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>
@@ -241,52 +235,6 @@
           </configuration>
         </plugin>
         <plugin>
-          <groupId>org.projectlombok</groupId>
-          <artifactId>lombok-maven-plugin</artifactId>
-          <version>1.18.20.0</version>
-          <executions>
-            <execution>
-              <id>delombok-sources</id>
-              <phase>generate-sources</phase>
-              <goals>
-                <goal>delombok</goal>
-              </goals>
-              <configuration>
-                <sourceDirectory>src/main/java</sourceDirectory>
-                <outputDirectory>${project.build.directory}/delombok</outputDirectory>
-                <addOutputDirectory>false</addOutputDirectory>
-                <encoding>UTF-8</encoding>
-              </configuration>
-            </execution>
-          </executions>
-          <dependencies>
-            <dependency>
-              <groupId>org.projectlombok</groupId>
-              <artifactId>lombok</artifactId>
-              <version>${lombok.version}</version>
-            </dependency>
-          </dependencies>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-antrun-plugin</artifactId>
-          <version>3.0.0</version>
-          <executions>
-            <execution>
-              <id>generate-delomboked-sources-jar</id>
-              <phase>package</phase>
-              <goals>
-                <goal>run</goal>
-              </goals>
-              <configuration>
-                <target>
-                  <jar destfile="${project.build.directory}/${project.build.finalName}-sources.jar" basedir="${project.build.directory}/delombok"/>
-                </target>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>versions-maven-plugin</artifactId>
           <version>2.18.0</version>
@@ -308,22 +256,6 @@
           <artifactId>build-helper-maven-plugin</artifactId>
           <version>3.2.0</version>
           <executions>
-            <execution>
-              <id>attach-delomboked-sources-jar</id>
-              <phase>package</phase>
-              <goals>
-                <goal>attach-artifact</goal>
-              </goals>
-              <configuration>
-                <artifacts>
-                  <artifact>
-                    <file>${project.build.directory}/${project.build.finalName}-sources.jar</file>
-                    <type>jar</type>
-                    <classifier>sources</classifier>
-                  </artifact>
-                </artifacts>
-              </configuration>
-            </execution>
             <execution>
               <id>add-test-source</id>
               <phase>generate-test-sources</phase>
@@ -375,7 +307,6 @@
             </execution>
           </executions>
           <configuration>
-            <sourcepath>${project.build.directory}/delombok</sourcepath>
             <!--Disable warnings about missing docstrings.-->
             <doclint>all,-missing</doclint>
           </configuration>
@@ -503,10 +434,6 @@
       </plugins>
     </pluginManagement>
     <plugins>
-      <plugin>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok-maven-plugin</artifactId>
-      </plugin>
       <plugin>
         <groupId>org.xolstice.maven.plugins</groupId>
         <artifactId>protobuf-maven-plugin</artifactId>
