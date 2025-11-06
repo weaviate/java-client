@@ -3,7 +3,7 @@ package io.weaviate.client6.v1.internal;
 import java.util.Arrays;
 
 public final class VersionSupport {
-  public static final SemanticVersion MINIMAL_SUPPORTED_VERSION = new SemanticVersion(1, 31);
+  public static final SemanticVersion MINIMAL_SUPPORTED_VERSION = new SemanticVersion(1, 32);
 
   /**
    * Returns true if the {@code version} is the same as or older than the
