@@ -16,17 +16,39 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.lifecycle.Startable;
 import org.testcontainers.weaviate.WeaviateContainer;
 
+import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.Config;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
+import io.weaviate.client6.v1.internal.VersionSupport.SemanticVersion;
 
 public class Weaviate extends WeaviateContainer {
-  public static final String VERSION = "1.33.0";
   public static final String DOCKER_IMAGE = "semitechnologies/weaviate";
+  public static final String LATEST_VERSION = "1.33.0";
+  public static final String VERSION;
+
+  static {
+    VERSION = System.getenv().getOrDefault("WEAVIATE_VERSION", LATEST_VERSION);
+  }
   public static String OIDC_ISSUER = "https://auth.wcs.api.weaviate.io/auth/realms/SeMI";
 
   private volatile SharedClient clientInstance;
   private final String containerName;
+
+  public enum Version {
+    V132(1, 32),
+    V133(1, 33);
+
+    public final SemanticVersion semver;
+
+    private Version(int major, int minor) {
+      this.semver = new SemanticVersion(major, minor);
+    }
+
+    public void orSkip() {
+      ConcurrentTest.requireAtLeast(this);
+    }
+  }
 
   /**
    * By default, testcontainer's name is only available after calling
@@ -69,6 +91,22 @@ public class Weaviate extends WeaviateContainer {
       }
     }
     return clientInstance;
+  }
+
+  /**
+   * Get client that is not shared with other tests / callers.
+   * The returned client is not wrapped in an instance of {@link SharedClient},
+   * so it can be auto-closed by the try-with-resources statement when it exists.
+   */
+  public WeaviateClient getBareClient() {
+    if (!isRunning()) {
+      start();
+    }
+    try {
+      return new WeaviateClient(Config.of(defaultConfigFn()));
+    } catch (Exception e) {
+      throw new RuntimeException("create WeaviateClient for Weaviate container", e);
+    }
   }
 
   /**

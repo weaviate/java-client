@@ -4,15 +4,22 @@ import java.io.IOException;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.alias.Alias;
 import io.weaviate.containers.Container;
+import io.weaviate.containers.Weaviate;
 
 public class AliasITest extends ConcurrentTest {
   private static final WeaviateClient client = Container.WEAVIATE.getClient();
+
+  @BeforeClass
+  public static void __() {
+    Weaviate.Version.V132.orSkip();
+  }
 
   @Test
   public void test_aliasLifecycle() throws IOException {

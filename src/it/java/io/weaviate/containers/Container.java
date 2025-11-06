@@ -18,18 +18,6 @@ public class Container {
   public static final Img2VecNeural IMG2VEC_NEURAL = Img2VecNeural.createDefault();
   public static final MinIo MINIO = MinIo.createDefault();
 
-  /**
-   * Stop all shared Testcontainers created in {@link #startAll}.
-   * <p>
-   * Testcontainer's Ryuk will reap any dangling containers after the tests
-   * finish. However, since {@link Weaviate} instances also hold a
-   * {@link WeaviateClient}, we want to stop them proactively to
-   * close client connections.
-   */
-  static void stopAll() {
-    WEAVIATE.stop();
-  }
-
   public static ContainerGroup compose(Weaviate weaviate, GenericContainer<?>... containers) {
     return new ContainerGroup(weaviate, containers);
   }

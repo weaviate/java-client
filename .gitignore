@@ -11,3 +11,5 @@
 target/
 # maven-lombok-plugin
 .factorypath
+# Surefire statistics for optimized execution time
+.surefire-*

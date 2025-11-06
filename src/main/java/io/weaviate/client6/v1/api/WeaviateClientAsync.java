@@ -15,6 +15,7 @@ import io.weaviate.client6.v1.api.rbac.users.WeaviateUsersClientAsync;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.Timeout;
 import io.weaviate.client6.v1.internal.TokenProvider;
+import io.weaviate.client6.v1.internal.VersionSupport;
 import io.weaviate.client6.v1.internal.grpc.DefaultGrpcTransport;
 import io.weaviate.client6.v1.internal.grpc.GrpcChannelOptions;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
@@ -106,6 +107,10 @@ public class WeaviateClientAsync implements AutoCloseable {
         ex.addSuppressed(e);
       }
       throw ex;
+    }
+
+    if (!VersionSupport.isSupported(meta.version())) {
+      throw new WeaviateUnsupportedVersionException(meta.version());
     }
 
     if (meta.grpcMaxMessageSize() != null) {
