@@ -169,7 +169,7 @@ public class RbacITest extends ConcurrentTest {
 
   @Test
   public void test_groups() throws IOException {
-    requireAtLeast(1, 33);
+    Weaviate.Version.V133.orSkip();
 
     var mediaGroup = "./media-group";
     var friendGroup = "./friend-group";
