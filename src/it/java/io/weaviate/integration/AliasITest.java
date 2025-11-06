@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
@@ -13,6 +14,11 @@ import io.weaviate.containers.Container;
 
 public class AliasITest extends ConcurrentTest {
   private static final WeaviateClient client = Container.WEAVIATE.getClient();
+
+  @BeforeClass
+  public static void __() {
+    requireAtLeast(1, 32);
+  }
 
   @Test
   public void test_aliasLifecycle() throws IOException {
