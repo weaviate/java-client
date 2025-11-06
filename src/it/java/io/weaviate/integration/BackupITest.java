@@ -29,6 +29,8 @@ public class BackupITest extends ConcurrentTest {
 
   @Test
   public void test_lifecycle() throws IOException, TimeoutException {
+    requireAtLeast(1, 32); // List backups not implemented in earlier versions
+
     // Arrange
     String nsA = ns("A"), nsB = ns("B"), nsC = ns("C"), nsBig = ns("Big");
     String backup_1 = ns("backup_1").toLowerCase();
@@ -122,6 +124,8 @@ public class BackupITest extends ConcurrentTest {
 
   @Test
   public void test_lifecycle_async() throws ExecutionException, InterruptedException, Exception {
+    requireAtLeast(1, 32); // List backups not implemented in earlier versions
+
     // Arrange
     String nsA = ns("A"), nsB = ns("B"), nsC = ns("C"), nsBig = ns("Big");
     String backup_1 = ns("backup_1").toLowerCase();
