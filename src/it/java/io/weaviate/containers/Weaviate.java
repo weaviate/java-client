@@ -30,7 +30,6 @@ public class Weaviate extends WeaviateContainer {
   static {
     VERSION = System.getenv().getOrDefault("WEAVIATE_VERSION", LATEST_VERSION);
   }
-
   public static String OIDC_ISSUER = "https://auth.wcs.api.weaviate.io/auth/realms/SeMI";
 
   private volatile SharedClient clientInstance;
@@ -38,8 +37,7 @@ public class Weaviate extends WeaviateContainer {
 
   public enum Version {
     V132(1, 32),
-    V133(1, 33),
-    V134(1, 34);
+    V133(1, 33);
 
     public final SemanticVersion semver;
 

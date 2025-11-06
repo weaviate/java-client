@@ -18,7 +18,7 @@ public class AliasITest extends ConcurrentTest {
 
   @BeforeClass
   public static void __() {
-    requireAtLeast(1, 32);
+    Weaviate.Version.V132.orSkip();
   }
 
   @Test

@@ -75,11 +75,11 @@ public class RbacITest extends ConcurrentTest {
         Permission.users("my-user", UsersPermission.Action.READ),
         Permission.replicate(myCollection, "my-shard", ReplicatePermission.Action.READ));
 
-    requireAtLeast(1, 32, () -> {
+    requireAtLeast(Weaviate.Version.V132, () -> {
       permissions.add(
           Permission.aliases("ThingsAlias", myCollection, AliasesPermission.Action.CREATE));
     });
-    requireAtLeast(1, 33, () -> {
+    requireAtLeast(Weaviate.Version.V133, () -> {
       permissions.add(
           Permission.groups("my-group", GroupType.OIDC, GroupsPermission.Action.READ));
     });
