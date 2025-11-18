@@ -65,7 +65,14 @@ public class WeaviateDataClientAsync<PropertiesT> {
     return insertMany(InsertManyRequest.of(objects));
   }
 
-  public CompletableFuture<InsertManyResponse> insertMany(List<WriteWeaviateObject<PropertiesT>> objects) {
+  @SafeVarargs
+  public final CompletableFuture<InsertManyResponse> insertMany(
+      WeaviateObject<PropertiesT, Reference, ObjectMetadata>... objects) {
+    return insertMany(Arrays.asList(objects));
+  }
+
+  public CompletableFuture<InsertManyResponse> insertMany(
+      List<WeaviateObject<PropertiesT, Reference, ObjectMetadata>> objects) {
     return insertMany(new InsertManyRequest<>(objects));
   }
 
