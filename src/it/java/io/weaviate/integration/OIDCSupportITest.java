@@ -103,11 +103,11 @@ public class OIDCSupportITest extends ConcurrentTest {
 
   @Test
   public void test_clientCredentials() throws Exception {
-    Assume.assumeTrue("OKTA_CLIENT_SECRET is not set", OKTA_CLIENT_SECRET != null && !OKTA_CLIENT_SECRET.isBlank());
+    Assume.assumeTrue("OKTA_CLIENT_SECRET is not set", OKTA_CLIENT_SECRET != null && OKTA_CLIENT_SECRET.isBlank());
     Assume.assumeTrue("no internet connection", hasInternetConnection());
 
     // Check norwal client credentials flow works.
-    var cc = Authentication.clientCredentials(OKTA_CLIENT_ID, OKTA_CLIENT_SECRET, List.of());
+    var cc = Authentication.clientCredentials(OKTA_CLIENT_SECRET, List.of());
     var auth = SpyTokenProvider.spyOn(cc);
     pingWeaviate(oktaContainer, auth);
     pingWeaviateAsync(oktaContainer, auth);
