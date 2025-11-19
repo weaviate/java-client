@@ -8,7 +8,7 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
-import io.weaviate.client6.v1.api.collections.IWeaviateObject;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 
 public record Reference(String collection, List<String> uuids) {
 
@@ -27,13 +27,13 @@ public record Reference(String collection, List<String> uuids) {
     return new Reference(null, Arrays.asList(uuids));
   }
 
-  /** Create references to single {@link IWeaviateObject}. */
-  public static Reference object(IWeaviateObject object) {
+  /** Create references to single {@link WeaviateObject}. */
+  public static Reference object(WeaviateObject object) {
     return new Reference(object.collection(), object.uuid());
   }
 
-  /** Create references to multiple {@link IWeaviateObject}. */
-  public static Reference[] objects(IWeaviateObject... objects) {
+  /** Create references to multiple {@link WeaviateObject}. */
+  public static Reference[] objects(WeaviateObject... objects) {
     return Arrays.stream(objects)
         .map(o -> new Reference(o.collection(), o.uuid()))
         .toArray(Reference[]::new);

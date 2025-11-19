@@ -19,7 +19,7 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
-import io.weaviate.client6.v1.api.collections.IWeaviateObject;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
@@ -32,7 +32,7 @@ public record WriteWeaviateObject<PropertiesT>(
     @SerializedName("creationTimeUnix") Long createdAt,
     @SerializedName("lastUpdateTimeUnix") Long lastUpdatedAt,
 
-    Map<String, List<Reference>> references) implements IWeaviateObject {
+    Map<String, List<Reference>> references) implements WeaviateObject {
 
   public static <PropertiesT> WriteWeaviateObject<PropertiesT> of(
       Function<Builder<PropertiesT>, ObjectBuilder<WriteWeaviateObject<PropertiesT>>> fn) {
