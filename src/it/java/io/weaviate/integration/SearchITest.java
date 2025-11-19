@@ -605,12 +605,11 @@ public class SearchITest extends ConcurrentTest {
         .as("individual results")
         .hasSize(2)
         .allSatisfy(obj -> {
-          Assertions.assertThat(obj.uuid()).as("uuid shorthand").isNotBlank()
-              .isEqualTo(obj.metadata().uuid());
-          Assertions.assertThat(obj.vectors()).as("vectors shorthand").isNotNull()
-              .isEqualTo(obj.metadata().vectors());
+          Assertions.assertThat(obj).as("uuid shorthand")
+          .returns(obj.uuid(), GenerativeObject::uuid);
+          Assertions.assertThat(obj).as("vectors shorthand")
+          .returns(obj.vectors(), GenerativeObject::vectors);
         })
-        // **END SHORTHAND TESTS**
         .extracting(GenerativeObject::generative)
         .allSatisfy(generated -> {
           Assertions.assertThat(generated.text()).isNotBlank();
