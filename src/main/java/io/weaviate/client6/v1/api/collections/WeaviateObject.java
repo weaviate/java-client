@@ -4,4 +4,6 @@ public interface WeaviateObject {
   String uuid();
 
   String collection();
+
+  Vectors vectors();
 }

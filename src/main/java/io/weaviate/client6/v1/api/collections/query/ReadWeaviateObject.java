@@ -19,6 +19,7 @@ public record ReadWeaviateObject<PropertiesT>(
   }
 
   /** Shorthand for accesing objects's vectors from metadata. */
+  @Override
   public Vectors vectors() {
     return metadata.vectors();
   }
