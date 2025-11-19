@@ -21,7 +21,7 @@ import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.pagination.PaginationException;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
-import io.weaviate.client6.v1.api.collections.query.QueryWeaviateObject;
+import io.weaviate.client6.v1.api.collections.query.ReadWeaviateObject;
 import io.weaviate.containers.Container;
 
 public class PaginationITest extends ConcurrentTest {
@@ -47,7 +47,7 @@ public class PaginationITest extends ConcurrentTest {
 
     // Act: stream
     var gotStream = allThings.stream()
-        .map(QueryWeaviateObject::metadata).map(QueryMetadata::uuid).toList();
+        .map(ReadWeaviateObject::metadata).map(QueryMetadata::uuid).toList();
 
     // Assert
     Assertions.assertThat(gotStream)

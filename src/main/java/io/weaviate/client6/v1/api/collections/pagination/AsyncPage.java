@@ -7,31 +7,31 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 
-import io.weaviate.client6.v1.api.collections.query.QueryWeaviateObject;
+import io.weaviate.client6.v1.api.collections.query.ReadWeaviateObject;
 
-public final class AsyncPage<PropertiesT> implements Iterable<QueryWeaviateObject<PropertiesT>> {
+public final class AsyncPage<PropertiesT> implements Iterable<ReadWeaviateObject<PropertiesT>> {
 
   private final int pageSize;
-  private final BiFunction<String, Integer, CompletableFuture<List<QueryWeaviateObject<PropertiesT>>>> fetch;
+  private final BiFunction<String, Integer, CompletableFuture<List<ReadWeaviateObject<PropertiesT>>>> fetch;
 
   private final String cursor;
-  private List<QueryWeaviateObject<PropertiesT>> currentPage = new ArrayList<>();
+  private List<ReadWeaviateObject<PropertiesT>> currentPage = new ArrayList<>();
 
   AsyncPage(String cursor, int pageSize,
-      BiFunction<String, Integer, CompletableFuture<List<QueryWeaviateObject<PropertiesT>>>> fetch) {
+      BiFunction<String, Integer, CompletableFuture<List<ReadWeaviateObject<PropertiesT>>>> fetch) {
     this.cursor = cursor;
     this.pageSize = pageSize;
     this.fetch = fetch;
   }
 
   AsyncPage(String cursor, int pageSize,
-      BiFunction<String, Integer, CompletableFuture<List<QueryWeaviateObject<PropertiesT>>>> fetch,
-      List<QueryWeaviateObject<PropertiesT>> currentPage) {
+      BiFunction<String, Integer, CompletableFuture<List<ReadWeaviateObject<PropertiesT>>>> fetch,
+      List<ReadWeaviateObject<PropertiesT>> currentPage) {
     this(cursor, pageSize, fetch);
     this.currentPage = Collections.unmodifiableList(currentPage);
   }
 
-  List<QueryWeaviateObject<PropertiesT>> items() {
+  List<ReadWeaviateObject<PropertiesT>> items() {
     return currentPage;
   }
 
@@ -68,7 +68,7 @@ public final class AsyncPage<PropertiesT> implements Iterable<QueryWeaviateObjec
   }
 
   @Override
-  public Iterator<QueryWeaviateObject<PropertiesT>> iterator() {
+  public Iterator<ReadWeaviateObject<PropertiesT>> iterator() {
     return currentPage.iterator();
   }
 }

@@ -9,7 +9,7 @@ import io.weaviate.client6.v1.api.collections.query.FetchObjects;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.QueryReference;
 import io.weaviate.client6.v1.api.collections.query.QueryResponse;
-import io.weaviate.client6.v1.api.collections.query.QueryWeaviateObject;
+import io.weaviate.client6.v1.api.collections.query.ReadWeaviateObject;
 import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClientAsync;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
@@ -45,25 +45,25 @@ public class AsyncPaginator<PropertiesT> {
     this.resultSet = builder.prefetch ? rs.fetchNextPage() : CompletableFuture.completedFuture(rs);
   }
 
-  public CompletableFuture<Void> forEach(Consumer<QueryWeaviateObject<PropertiesT>> action) {
+  public CompletableFuture<Void> forEach(Consumer<ReadWeaviateObject<PropertiesT>> action) {
     return resultSet
         .thenCompose(rs -> rs.isEmpty() ? rs.fetchNextPage() : CompletableFuture.completedFuture(rs))
         .thenCompose(processEachAndAdvance(action));
   }
 
-  public CompletableFuture<Void> forPage(Consumer<List<QueryWeaviateObject<PropertiesT>>> action) {
+  public CompletableFuture<Void> forPage(Consumer<List<ReadWeaviateObject<PropertiesT>>> action) {
     return resultSet
         .thenCompose(rs -> rs.isEmpty() ? rs.fetchNextPage() : CompletableFuture.completedFuture(rs))
         .thenCompose(processPageAndAdvance(action));
   }
 
   private static <PropertiesT> Function<AsyncPage<PropertiesT>, CompletableFuture<Void>> processEachAndAdvance(
-      Consumer<QueryWeaviateObject<PropertiesT>> action) {
+      Consumer<ReadWeaviateObject<PropertiesT>> action) {
     return processAndAdvanceFunc(rs -> rs.forEach(action));
   }
 
   private static <PropertiesT> Function<AsyncPage<PropertiesT>, CompletableFuture<Void>> processPageAndAdvance(
-      Consumer<List<QueryWeaviateObject<PropertiesT>>> action) {
+      Consumer<List<ReadWeaviateObject<PropertiesT>>> action) {
     return processAndAdvanceFunc(rs -> action.accept(rs.items()));
   }
 

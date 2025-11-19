@@ -17,7 +17,7 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 import io.weaviate.client6.v1.internal.orm.PropertiesBuilder;
 
 public record QueryResponse<PropertiesT>(
-    List<QueryWeaviateObject<PropertiesT>> objects) {
+    List<ReadWeaviateObject<PropertiesT>> objects) {
 
   static <PropertiesT> QueryResponse<PropertiesT> unmarshal(WeaviateProtoSearchGet.SearchReply reply,
       CollectionDescriptor<PropertiesT> collection) {
@@ -30,7 +30,7 @@ public record QueryResponse<PropertiesT>(
     return new QueryResponse<>(objects);
   }
 
-  public static <PropertiesT> QueryWeaviateObject<PropertiesT> unmarshalResultObject(
+  public static <PropertiesT> ReadWeaviateObject<PropertiesT> unmarshalResultObject(
       WeaviateProtoSearchGet.PropertiesResult propertiesResult,
       WeaviateProtoSearchGet.MetadataResult metadataResult,
       CollectionDescriptor<PropertiesT> collection) {
@@ -57,11 +57,11 @@ public record QueryResponse<PropertiesT>(
     if (metadataResult.getExplainScorePresent()) {
       metadata.explainScore(metadataResult.getExplainScore());
     }
-    return new QueryWeaviateObject<>(collection.collectionName(), object.properties(), object.references(),
+    return new ReadWeaviateObject<>(collection.collectionName(), object.properties(), object.references(),
         metadata.build());
   }
 
-  static <PropertiesT> QueryWeaviateObject<PropertiesT> unmarshalWithReferences(
+  static <PropertiesT> ReadWeaviateObject<PropertiesT> unmarshalWithReferences(
       WeaviateProtoSearchGet.PropertiesResult propertiesResult,
       WeaviateProtoSearchGet.MetadataResult metadataResult,
       CollectionDescriptor<PropertiesT> descriptor) {
@@ -76,14 +76,14 @@ public record QueryResponse<PropertiesT>(
     // I.e. { "ref": A-1 } , { "ref": B-1 } => { "ref": [A-1, B-1] }
     var referenceProperties = propertiesResult.getRefPropsList()
         .stream().reduce(
-            new HashMap<String, List<QueryWeaviateObject<Object>>>(),
+            new HashMap<String, List<ReadWeaviateObject<Object>>>(),
             (map, ref) -> {
               var refObjects = ref.getPropertiesList().stream()
                   .map(property -> {
                     var reference = unmarshalWithReferences(
                         property, property.getMetadata(),
                         CollectionDescriptor.ofMap(property.getTargetCollection()));
-                    return new QueryWeaviateObject<>(
+                    return new ReadWeaviateObject<>(
                         reference.collection(),
                         (Object) reference.properties(),
                         reference.references(),
@@ -133,7 +133,7 @@ public record QueryResponse<PropertiesT>(
       metadata = metadataBuilder.build();
     }
 
-    return new QueryWeaviateObject<>(
+    return new ReadWeaviateObject<>(
         descriptor.collectionName(),
         properties.build(),
         referenceProperties,

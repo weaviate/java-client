@@ -9,7 +9,7 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 
 public class WeaviateQueryClientAsync<PropertiesT>
     extends
-    AbstractQueryClient<PropertiesT, CompletableFuture<Optional<QueryWeaviateObject<PropertiesT>>>, CompletableFuture<QueryResponse<PropertiesT>>, CompletableFuture<QueryResponseGrouped<PropertiesT>>> {
+    AbstractQueryClient<PropertiesT, CompletableFuture<Optional<ReadWeaviateObject<PropertiesT>>>, CompletableFuture<QueryResponse<PropertiesT>>, CompletableFuture<QueryResponseGrouped<PropertiesT>>> {
 
   public WeaviateQueryClientAsync(
       CollectionDescriptor<PropertiesT> collection,
@@ -24,7 +24,7 @@ public class WeaviateQueryClientAsync<PropertiesT>
   }
 
   @Override
-  protected CompletableFuture<Optional<WeaviateObject<T, Object, QueryMetadata>>> fetchObjectById(
+  protected CompletableFuture<Optional<ReadWeaviateObject<PropertiesT>>> fetchObjectById(
       FetchObjectById byId) {
     var request = new QueryRequest(byId, null);
     var result = this.grpcTransport.performRequestAsync(request, QueryRequest.rpc(collection, defaults));
