@@ -75,7 +75,7 @@ public class WeaviateDataClientAsync<PropertiesT> {
   }
 
   public CompletableFuture<Boolean> exists(String uuid) {
-    return this.query.byId(uuid).thenApply(Optional::isPresent);
+    return this.query.fetchObjectById(uuid).thenApply(Optional::isPresent);
   }
 
   public CompletableFuture<Void> update(

@@ -13,7 +13,7 @@ import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Text2VecHuggingFaceVectorizer(
-    @SerializedName("endpointURL") String baseUrl,
+    @SerializedName("endpointURL") String endpointUrl,
     @SerializedName("model") String model,
     @SerializedName("passageModel") String passageModel,
     @SerializedName("queryModel") String queryModel,
@@ -57,7 +57,7 @@ public record Text2VecHuggingFaceVectorizer(
    * Canonical constructor always sets {@link #vectorizeCollectionName} to false.
    */
   public Text2VecHuggingFaceVectorizer(
-      String baseUrl,
+      String endpointUrl,
       String model,
       String passageModel,
       String queryModel,
@@ -69,7 +69,7 @@ public record Text2VecHuggingFaceVectorizer(
       List<String> sourceProperties,
       VectorIndex vectorIndex,
       Quantization quantization) {
-    this.baseUrl = baseUrl;
+    this.endpointUrl = endpointUrl;
     this.model = model;
     this.passageModel = passageModel;
     this.queryModel = queryModel;
@@ -85,7 +85,7 @@ public record Text2VecHuggingFaceVectorizer(
 
   public Text2VecHuggingFaceVectorizer(Builder builder) {
     this(
-        builder.baseUrl,
+        builder.endpointUrl,
         builder.model,
         builder.passageModel,
         builder.queryModel,
@@ -104,7 +104,7 @@ public record Text2VecHuggingFaceVectorizer(
     private List<String> sourceProperties = new ArrayList<>();
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
 
-    private String baseUrl;
+    private String endpointUrl;
     private String model;
     private String passageModel;
     private String queryModel;
@@ -112,8 +112,8 @@ public record Text2VecHuggingFaceVectorizer(
     private Boolean useGpu;
     private Boolean waitForModel;
 
-    public Builder baseUrl(String baseUrl) {
-      this.baseUrl = baseUrl;
+    public Builder endpointUrl(String endpointUrl) {
+      this.endpointUrl = endpointUrl;
       return this;
     }
 

@@ -110,7 +110,7 @@ public class Where implements WhereOperand {
 
   /** Filter by object UUID. */
   public static WhereBuilder uuid() {
-    return property(ById.ID_PROPERTY);
+    return property(FetchObjectById.ID_PROPERTY);
   }
 
   /** Filter by object property. */

@@ -92,7 +92,7 @@ public class JSONTest {
         {
             VectorConfig.class,
             Multi2VecClipVectorizer.of(m2v -> m2v
-                .baseUrl("http://example.com")
+                .inferenceUrl("http://example.com")
                 .imageField("img", 1f)
                 .textField("txt", 2f)),
             """
@@ -981,7 +981,7 @@ public class JSONTest {
                 "aws-region",
                 "https://example.com",
                 cfg -> cfg
-                    .baseUrl("https://example.com")),
+                    .endpoint("https://example.com")),
             """
                 {
                   "generative-aws": {
@@ -1094,12 +1094,12 @@ public class JSONTest {
             Generative.googleVertex(
                 "google-project",
                 cfg -> cfg
-                    .baseUrl("https://example.com")
+                    .apiEndpoint("https://example.com")
                     .maxTokens(2)
                     .temperature(3f)
                     .topK(4)
                     .topP(5f)
-                    .model("example-model")),
+                    .modelId("example-model")),
             """
                 {
                   "generative-palm": {
@@ -1117,7 +1117,7 @@ public class JSONTest {
         {
             Generative.class,
             Generative.ollama(cfg -> cfg
-                .baseUrl("https://example.com")
+                .apiEndpoint("https://example.com")
                 .model("example-model")),
             """
                 {

@@ -701,7 +701,7 @@ record Artist(String firstName, String lastName, int age) {};
 
 record Song(String title, Artist artist) {};
 
-var song1 = songs.query.byId(
+var song1 = songs.query.fetchObjectById(
   uuid1,
   song -> song.returnReferences(QueryReference.single("artist"))
 );

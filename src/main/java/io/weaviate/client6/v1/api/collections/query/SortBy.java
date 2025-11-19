@@ -26,7 +26,7 @@ public record SortBy(List<String> path, boolean ascending) {
    * @see #desc() to sort in descending order.
    */
   public static SortBy uuid() {
-    return property(ById.ID_PROPERTY);
+    return property(FetchObjectById.ID_PROPERTY);
   }
 
   /**

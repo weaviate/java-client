@@ -13,7 +13,7 @@ import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Text2VecAwsVectorizer(
-    @SerializedName("endpoint") String baseUrl,
+    @SerializedName("endpoint") String endpoint,
     @SerializedName("model") String model,
     @SerializedName("region") String region,
     @SerializedName("service") Service service,
@@ -62,21 +62,21 @@ public record Text2VecAwsVectorizer(
     return fn.apply(new BedrockBuilder(model)).build();
   }
 
-  public static Text2VecAwsVectorizer sagemaker(String baseUrl) {
-    return sagemaker(baseUrl, ObjectBuilder.identity());
+  public static Text2VecAwsVectorizer sagemaker(String endpoint) {
+    return sagemaker(endpoint, ObjectBuilder.identity());
   }
 
   public static Text2VecAwsVectorizer sagemaker(
-      String baseUrl,
+      String endpoint,
       Function<SagemakerBuilder, ObjectBuilder<Text2VecAwsVectorizer>> fn) {
-    return fn.apply(new SagemakerBuilder(baseUrl)).build();
+    return fn.apply(new SagemakerBuilder(endpoint)).build();
   }
 
   /**
    * Canonical constructor always sets {@link #vectorizeCollectionName} to false.
    */
   public Text2VecAwsVectorizer(
-      String baseUrl,
+      String endpoint,
       String model,
       String region,
       Service service,
@@ -85,7 +85,7 @@ public record Text2VecAwsVectorizer(
       List<String> sourceProperties,
       VectorIndex vectorIndex,
       Quantization quantization) {
-    this.baseUrl = baseUrl;
+    this.endpoint = endpoint;
     this.model = model;
     this.region = region;
     this.service = service;
@@ -98,7 +98,7 @@ public record Text2VecAwsVectorizer(
 
   public Text2VecAwsVectorizer(Builder builder) {
     this(
-        builder.baseUrl,
+        builder.endpoint,
         builder.model,
         builder.region,
         builder.service,
@@ -116,7 +116,7 @@ public record Text2VecAwsVectorizer(
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
 
     private final Service service;
-    private String baseUrl;
+    private String endpoint;
     private String model;
     private String region;
 
@@ -125,8 +125,8 @@ public record Text2VecAwsVectorizer(
     }
 
     /** Required for {@link Service#SAGEMAKER}. */
-    protected Builder baseUrl(String baseUrl) {
-      this.baseUrl = baseUrl;
+    protected Builder endpoint(String endpoint) {
+      this.endpoint = endpoint;
       return this;
     }
 
@@ -188,14 +188,14 @@ public record Text2VecAwsVectorizer(
   }
 
   public static class SagemakerBuilder extends Builder {
-    public SagemakerBuilder(String baseUrl) {
+    public SagemakerBuilder(String endpoint) {
       super(Service.SAGEMAKER);
-      super.baseUrl(baseUrl);
+      super.endpoint(endpoint);
     }
 
     /** Required for {@link Service#SAGEMAKER}. */
-    protected Builder baseUrl(String baseUrl) {
-      return super.baseUrl(baseUrl);
+    protected Builder endpoint(String endpoint) {
+      return super.endpoint(endpoint);
     }
   }
 }

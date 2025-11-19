@@ -79,7 +79,7 @@ public class WeaviateDataClient<PropertiesT> {
   }
 
   public boolean exists(String uuid) {
-    return this.query.byId(uuid).isPresent();
+    return this.query.fetchObjectById(uuid).isPresent();
   }
 
   public void update(
