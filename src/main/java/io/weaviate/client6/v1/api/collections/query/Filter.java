@@ -18,10 +18,10 @@ public class Filter implements FilterOperand {
     // Comparison operators
     EQUAL("Equal", WeaviateProtoBase.Filters.Operator.OPERATOR_EQUAL),
     NOT_EQUAL("NotEqual", WeaviateProtoBase.Filters.Operator.OPERATOR_NOT_EQUAL),
-    LESS_THAN("LessThen", WeaviateProtoBase.Filters.Operator.OPERATOR_LESS_THAN),
+    LESS_THAN("LessThan", WeaviateProtoBase.Filters.Operator.OPERATOR_LESS_THAN),
     LESS_THAN_EQUAL("LessThenEqual", WeaviateProtoBase.Filters.Operator.OPERATOR_LESS_THAN_EQUAL),
-    GREATER_THAN("GreaterThen", WeaviateProtoBase.Filters.Operator.OPERATOR_GREATER_THAN),
-    GREATER_THAN_EQUAL("GreaterThenEqual", WeaviateProtoBase.Filters.Operator.OPERATOR_GREATER_THAN_EQUAL),
+    GREATER_THAN("GreaterThan", WeaviateProtoBase.Filters.Operator.OPERATOR_GREATER_THAN),
+    GREATER_THAN_EQUAL("GreaterThanEqual", WeaviateProtoBase.Filters.Operator.OPERATOR_GREATER_THAN_EQUAL),
     IS_NULL("IsNull", WeaviateProtoBase.Filters.Operator.OPERATOR_IS_NULL),
     LIKE("Like", WeaviateProtoBase.Filters.Operator.OPERATOR_LIKE),
     CONTAINS_ANY("ContainsAny", WeaviateProtoBase.Filters.Operator.OPERATOR_CONTAINS_ANY),
@@ -111,7 +111,17 @@ public class Filter implements FilterOperand {
 
   /** Filter by object UUID. */
   public static FilterBuilder uuid() {
-    return property(FetchObjectById.ID_PROPERTY);
+    return property(BaseQueryOptions.ID_PROPERTY);
+  }
+
+  /** Filter by object creation time. */
+  public static DateProperty createdAt() {
+    return new DateProperty(BaseQueryOptions.CREATION_TIME_PROPERTY);
+  }
+
+  /** Filter by object last update time. */
+  public static DateProperty lastUpdatedAt() {
+    return new DateProperty(BaseQueryOptions.LAST_UPDATE_TIME_PROPERTY);
   }
 
   /** Filter by object property. */
@@ -632,6 +642,44 @@ public class Filter implements FilterOperand {
     @Override
     public String toString() {
       return String.join("::", path);
+    }
+  }
+
+  public static class DateProperty extends PathOperand {
+    private DateProperty(String propertyName) {
+      super(propertyName);
+    }
+
+    public Filter eq(OffsetDateTime value) {
+      return new Filter(Operator.EQUAL, this, new DateOperand(value));
+    }
+
+    public Filter ne(OffsetDateTime value) {
+      return new Filter(Operator.NOT_EQUAL, this, new DateOperand(value));
+    }
+
+    public Filter gt(OffsetDateTime value) {
+      return new Filter(Operator.GREATER_THAN, this, new DateOperand(value));
+    }
+
+    public Filter gte(OffsetDateTime value) {
+      return new Filter(Operator.GREATER_THAN_EQUAL, this, new DateOperand(value));
+    }
+
+    public Filter lt(OffsetDateTime value) {
+      return new Filter(Operator.LESS_THAN, this, new DateOperand(value));
+    }
+
+    public Filter lte(OffsetDateTime value) {
+      return new Filter(Operator.LESS_THAN_EQUAL, this, new DateOperand(value));
+    }
+
+    public Filter containsAny(OffsetDateTime... values) {
+      return new Filter(Operator.CONTAINS_ANY, this, new DateArrayOperand(values));
+    }
+
+    public Filter containsNone(OffsetDateTime... values) {
+      return new Filter(Operator.CONTAINS_NONE, this, new DateArrayOperand(values));
     }
   }
 

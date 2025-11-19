@@ -1,6 +1,7 @@
 package io.weaviate.integration;
 
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -699,5 +700,27 @@ public class SearchITest extends ConcurrentTest {
         .as("objects WHERE never IS NOT NULL")
         .hasSize(1).first().actual();
     Assertions.assertThat(isNull_1).isNotEqualTo(isNotNull_1);
+  }
+
+  @Test
+  public void test_filterCreateUpdateTime() throws IOException {
+    // Arrange
+    var now = OffsetDateTime.now().minusHours(1);
+    var nsCounter = ns("Counter");
+
+    var counter = client.collections.create(nsCounter,
+        c -> c
+            .invertedIndex(idx -> idx.indexTimestamps(true))
+            .properties(Property.integer("count")));
+
+    counter.data.insert(Map.of("count", 0));
+
+    // Act
+    var beforeNow = counter.query.fetchObjects(q -> q.filters(Filter.createdAt().lt(now)));
+    var afterNow = counter.query.fetchObjects(q -> q.filters(Filter.createdAt().gt(now)));
+
+    // Assert
+    Assertions.assertThat(beforeNow.objects()).isEmpty();
+    Assertions.assertThat(afterNow.objects()).hasSize(1);
   }
 }
