@@ -13,7 +13,7 @@ import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Text2VecOllamaVectorizer(
-    @SerializedName("apiEndpoint") String baseUrl,
+    @SerializedName("apiEndpoint") String apiEndpoint,
     @SerializedName("model") String model,
 
     /**
@@ -52,14 +52,14 @@ public record Text2VecOllamaVectorizer(
    * Canonical constructor always sets {@link #vectorizeCollectionName} to false.
    */
   public Text2VecOllamaVectorizer(
-      String baseUrl,
+      String apiEndpoint,
       String model,
 
       boolean vectorizeCollectionName,
       List<String> sourceProperties,
       VectorIndex vectorIndex,
       Quantization quantization) {
-    this.baseUrl = baseUrl;
+    this.apiEndpoint = apiEndpoint;
     this.model = model;
 
     this.vectorizeCollectionName = false;
@@ -70,7 +70,7 @@ public record Text2VecOllamaVectorizer(
 
   public Text2VecOllamaVectorizer(Builder builder) {
     this(
-        builder.baseUrl,
+        builder.apiEndpoint,
         builder.model,
 
         builder.vectorizeCollectionName,
@@ -85,11 +85,11 @@ public record Text2VecOllamaVectorizer(
     private List<String> sourceProperties = new ArrayList<>();
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
 
-    private String baseUrl;
+    private String apiEndpoint;
     private String model;
 
-    public Builder baseUrl(String baseUrl) {
-      this.baseUrl = baseUrl;
+    public Builder apiEndpoint(String apiEndpoint) {
+      this.apiEndpoint = apiEndpoint;
       return this;
     }
 

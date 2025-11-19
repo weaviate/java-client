@@ -31,7 +31,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
     this(c.collection, c.grpcTransport, defaults);
   }
 
-  protected abstract SingleT byId(ById byId);
+  protected abstract SingleT fetchObjectById(FetchObjectById byId);
 
   protected abstract ResponseT performRequest(QueryOperator operator);
 
@@ -48,8 +48,8 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
    */
-  public SingleT byId(String uuid) {
-    return byId(ById.of(uuid));
+  public SingleT fetchObjectById(String uuid) {
+    return fetchObjectById(FetchObjectById.of(uuid));
   }
 
   /**
@@ -61,10 +61,10 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
    */
-  public SingleT byId(String uuid, Function<ById.Builder, ObjectBuilder<ById>> fn) {
+  public SingleT fetchObjectById(String uuid, Function<FetchObjectById.Builder, ObjectBuilder<FetchObjectById>> fn) {
     // Collection handle defaults (consistencyLevel / tenant) are irrelevant for
     // by-ID lookup. Do not `applyDefaults` to `fn`.
-    return byId(ById.of(uuid, fn));
+    return fetchObjectById(FetchObjectById.of(uuid, fn));
   }
 
   /**

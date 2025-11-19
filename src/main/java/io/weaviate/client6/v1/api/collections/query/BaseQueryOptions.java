@@ -16,7 +16,7 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 public record BaseQueryOptions(
     Integer limit,
     Integer offset,
-    Integer autocut,
+    Integer autolimit,
     String after,
     ConsistencyLevel consistencyLevel,
     Filter filters,
@@ -30,7 +30,7 @@ public record BaseQueryOptions(
     this(
         builder.limit,
         builder.offset,
-        builder.autocut,
+        builder.autolimit,
         builder.after,
         builder.consistencyLevel,
         builder.filter,
@@ -46,7 +46,7 @@ public record BaseQueryOptions(
   public static abstract class Builder<SelfT extends Builder<SelfT, T>, T extends Object> implements ObjectBuilder<T> {
     private Integer limit;
     private Integer offset;
-    private Integer autocut;
+    private Integer autolimit;
     private String after;
     private ConsistencyLevel consistencyLevel;
     private Filter filter;
@@ -85,12 +85,12 @@ public record BaseQueryOptions(
     /**
      * Discard results after an automatically calculated cutoff point.
      *
-     * @param autocut The number of "groups" to keep.
+     * @param autolimit The number of "groups" to keep.
      * @see <a href=
      *      "https://weaviate.io/learn/knowledgecards/autocut">Documentation</a>
      */
-    public final SelfT autocut(int autocut) {
-      this.autocut = autocut;
+    public final SelfT autolimit(int autolimit) {
+      this.autolimit = autolimit;
       return (SelfT) this;
     }
 
@@ -210,8 +210,8 @@ public record BaseQueryOptions(
     if (StringUtils.isNotBlank(after)) {
       req.setAfter(after);
     }
-    if (autocut != null) {
-      req.setAutocut(autocut);
+    if (autolimit != null) {
+      req.setAutocut(autolimit);
     }
 
     if (consistencyLevel != null) {

@@ -13,7 +13,7 @@ import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Text2VecModel2VecVectorizer(
-    @SerializedName("inferenceURL") String baseUrl,
+    @SerializedName("inferenceURL") String inferenceUrl,
 
     /**
      * Weaviate defaults to {@code true} if the value is not provided.
@@ -51,13 +51,13 @@ public record Text2VecModel2VecVectorizer(
    * Canonical constructor always sets {@link #vectorizeCollectionName} to false.
    */
   public Text2VecModel2VecVectorizer(
-      String baseUrl,
+      String inferenceUrl,
 
       boolean vectorizeCollectionName,
       List<String> sourceProperties,
       VectorIndex vectorIndex,
       Quantization quantization) {
-    this.baseUrl = baseUrl;
+    this.inferenceUrl = inferenceUrl;
 
     this.vectorizeCollectionName = false;
     this.sourceProperties = sourceProperties;
@@ -67,7 +67,7 @@ public record Text2VecModel2VecVectorizer(
 
   public Text2VecModel2VecVectorizer(Builder builder) {
     this(
-        builder.baseUrl,
+        builder.inferenceUrl,
         builder.vectorizeCollectionName,
         builder.sourceProperties,
         builder.vectorIndex,
@@ -80,10 +80,10 @@ public record Text2VecModel2VecVectorizer(
     private List<String> sourceProperties = new ArrayList<>();
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
 
-    private String baseUrl;
+    private String inferenceUrl;
 
-    public Builder baseUrl(String baseUrl) {
-      this.baseUrl = baseUrl;
+    public Builder inferenceUrl(String inferenceUrl) {
+      this.inferenceUrl = inferenceUrl;
       return this;
     }
 
