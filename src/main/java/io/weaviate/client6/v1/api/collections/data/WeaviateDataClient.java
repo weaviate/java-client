@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
-import io.weaviate.client6.v1.api.collections.ObjectMetadata;
-import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClient;
 import io.weaviate.client6.v1.api.collections.query.Where;
 import io.weaviate.client6.v1.api.collections.query.WhereOperand;
@@ -45,14 +43,20 @@ public class WeaviateDataClient<PropertiesT> {
     this.defaults = defaults;
   }
 
-  public WeaviateObject<PropertiesT, Object, ObjectMetadata> insert(PropertiesT properties) throws IOException {
-    return insert(InsertObjectRequest.of(collection.collectionName(), properties));
+  public WriteWeaviateObject<PropertiesT> insert(PropertiesT properties) throws IOException {
+    return insert(InsertObjectRequest.of(properties));
   }
 
-  public WeaviateObject<PropertiesT, Object, ObjectMetadata> insert(PropertiesT properties,
-      Function<InsertObjectRequest.Builder<PropertiesT>, ObjectBuilder<InsertObjectRequest<PropertiesT>>> fn)
+  public WriteWeaviateObject<PropertiesT> insert(
+      PropertiesT properties,
+      Function<WriteWeaviateObject.Builder<PropertiesT>, ObjectBuilder<WriteWeaviateObject<PropertiesT>>> fn)
       throws IOException {
-    return insert(InsertObjectRequest.of(collection.collectionName(), properties, fn));
+    return insert(InsertObjectRequest.of(properties, fn));
+  }
+
+  public WriteWeaviateObject<PropertiesT> insert(InsertObjectRequest<PropertiesT> request)
+      throws IOException {
+    return this.restTransport.performRequest(request, InsertObjectRequest.endpoint(collection, defaults));
   }
 
   @SafeVarargs
@@ -60,12 +64,12 @@ public class WeaviateDataClient<PropertiesT> {
     return insertMany(InsertManyRequest.of(objects));
   }
 
-  public InsertManyResponse insertMany(List<WeaviateObject<PropertiesT, Reference, ObjectMetadata>> objects) {
+  public InsertManyResponse insertMany(List<WriteWeaviateObject<PropertiesT>> objects) {
     return insertMany(new InsertManyRequest<>(objects));
   }
 
   @SafeVarargs
-  public final InsertManyResponse insertMany(WeaviateObject<PropertiesT, Reference, ObjectMetadata>... objects) {
+  public final InsertManyResponse insertMany(WriteWeaviateObject<PropertiesT>... objects) {
     return insertMany(Arrays.asList(objects));
   }
 
@@ -74,26 +78,23 @@ public class WeaviateDataClient<PropertiesT> {
         InsertManyRequest.rpc(request.objects(), collection, defaults));
   }
 
-  public WeaviateObject<PropertiesT, Object, ObjectMetadata> insert(InsertObjectRequest<PropertiesT> request)
-      throws IOException {
-    return this.restTransport.performRequest(request, InsertObjectRequest.endpoint(collection, defaults));
-  }
-
   public boolean exists(String uuid) {
     return this.query.byId(uuid).isPresent();
   }
 
-  public void update(String uuid,
+  public void update(
+      String uuid,
       Function<UpdateObjectRequest.Builder<PropertiesT>, ObjectBuilder<UpdateObjectRequest<PropertiesT>>> fn)
       throws IOException {
-    this.restTransport.performRequest(UpdateObjectRequest.of(collection.collectionName(), uuid, fn),
+    this.restTransport.performRequest(UpdateObjectRequest.of(uuid, fn),
         UpdateObjectRequest.endpoint(collection, defaults));
   }
 
-  public void replace(String uuid,
+  public void replace(
+      String uuid,
       Function<ReplaceObjectRequest.Builder<PropertiesT>, ObjectBuilder<ReplaceObjectRequest<PropertiesT>>> fn)
       throws IOException {
-    this.restTransport.performRequest(ReplaceObjectRequest.of(collection.collectionName(), uuid, fn),
+    this.restTransport.performRequest(ReplaceObjectRequest.of(uuid, fn),
         ReplaceObjectRequest.endpoint(collection, defaults));
   }
 
