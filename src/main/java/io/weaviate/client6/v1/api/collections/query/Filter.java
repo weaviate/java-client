@@ -22,6 +22,7 @@ public class Filter implements FilterOperand {
     LESS_THAN_EQUAL("LessThenEqual", WeaviateProtoBase.Filters.Operator.OPERATOR_LESS_THAN_EQUAL),
     GREATER_THAN("GreaterThen", WeaviateProtoBase.Filters.Operator.OPERATOR_GREATER_THAN),
     GREATER_THAN_EQUAL("GreaterThenEqual", WeaviateProtoBase.Filters.Operator.OPERATOR_GREATER_THAN_EQUAL),
+    IS_NULL("IsNull", WeaviateProtoBase.Filters.Operator.OPERATOR_IS_NULL),
     LIKE("Like", WeaviateProtoBase.Filters.Operator.OPERATOR_LIKE),
     CONTAINS_ANY("ContainsAny", WeaviateProtoBase.Filters.Operator.OPERATOR_CONTAINS_ANY),
     CONTAINS_ALL("ContainsAll", WeaviateProtoBase.Filters.Operator.OPERATOR_CONTAINS_ALL),
@@ -420,6 +421,20 @@ public class Filter implements FilterOperand {
 
     public Filter gte(Object value) {
       return new Filter(Operator.GREATER_THAN_EQUAL, left, fromObject(value));
+    }
+
+    // IsNull
+    // ------------------------------------------------------------------------
+    public Filter isNull() {
+      return isNull(true);
+    }
+
+    public Filter isNotNull() {
+      return isNull(false);
+    }
+
+    public Filter isNull(boolean isNull) {
+      return new Filter(Operator.IS_NULL, left, new BooleanOperand(isNull));
     }
 
     // Like
