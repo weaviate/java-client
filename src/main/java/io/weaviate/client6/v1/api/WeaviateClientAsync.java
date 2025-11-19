@@ -33,6 +33,9 @@ public class WeaviateClientAsync implements AutoCloseable {
    */
   public final WeaviateCollectionsClientAsync collections;
 
+  /** Client for {@code /aliases} endpoints for managing collection aliases. */
+  public final WeaviateAliasClientAsync alias;
+
   /**
    * Client for {@code /authz/roles} endpoints for managing RBAC roles.
    */

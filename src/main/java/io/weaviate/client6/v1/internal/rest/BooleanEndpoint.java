@@ -5,10 +5,10 @@ import java.util.function.Function;
 
 public class BooleanEndpoint<RequestT> extends EndpointBase<RequestT, Boolean> {
 
-  public static BooleanEndpoint<Void> noBody(
-      Function<Void, String> method,
-      Function<Void, String> requestUrl,
-      Function<Void, Map<String, String>> queryParameters) {
+  public static <RequestT> BooleanEndpoint<RequestT> noBody(
+      Function<RequestT, String> method,
+      Function<RequestT, String> requestUrl,
+      Function<RequestT, Map<String, Object>> queryParameters) {
     return new BooleanEndpoint<>(method, requestUrl, queryParameters, nullBody());
   }
 
