@@ -48,10 +48,10 @@ public record ReplaceObjectRequest<PropertiesT>(WriteWeaviateObject<PropertiesT>
   }
 
   public ReplaceObjectRequest(Builder<PropertiesT> builder) {
-    this(builder.build());
+    this(builder.object.build());
   }
 
-  public static class Builder<PropertiesT> implements ObjectBuilder<WriteWeaviateObject<PropertiesT>> {
+  public static class Builder<PropertiesT> implements ObjectBuilder<ReplaceObjectRequest<PropertiesT>> {
     private final WriteWeaviateObject.Builder<PropertiesT> object = new WriteWeaviateObject.Builder<>();
 
     public Builder(String uuid) {
@@ -74,8 +74,8 @@ public record ReplaceObjectRequest<PropertiesT>(WriteWeaviateObject<PropertiesT>
     }
 
     @Override
-    public WriteWeaviateObject<PropertiesT> build() {
-      return this.object.build();
+    public ReplaceObjectRequest<PropertiesT> build() {
+      return new ReplaceObjectRequest<>(this);
     }
   }
 }

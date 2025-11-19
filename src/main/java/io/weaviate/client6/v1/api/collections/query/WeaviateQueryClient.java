@@ -3,28 +3,27 @@ package io.weaviate.client6.v1.api.collections.query;
 import java.util.Optional;
 
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
-import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 
-public class WeaviateQueryClient<T>
+public class WeaviateQueryClient<PropertiesT>
     extends
-    AbstractQueryClient<T, Optional<WeaviateObject<T, Object, QueryMetadata>>, QueryResponse<T>, QueryResponseGrouped<T>> {
+    AbstractQueryClient<PropertiesT, Optional<QueryWeaviateObject<PropertiesT>>, QueryResponse<PropertiesT>, QueryResponseGrouped<PropertiesT>> {
 
   public WeaviateQueryClient(
-      CollectionDescriptor<T> collection,
+      CollectionDescriptor<PropertiesT> collection,
       GrpcTransport grpcTransport,
       CollectionHandleDefaults defaults) {
     super(collection, grpcTransport, defaults);
   }
 
   /** Copy constructor that sets new defaults. */
-  public WeaviateQueryClient(WeaviateQueryClient<T> c, CollectionHandleDefaults defaults) {
+  public WeaviateQueryClient(WeaviateQueryClient<PropertiesT> c, CollectionHandleDefaults defaults) {
     super(c, defaults);
   }
 
   @Override
-  protected Optional<WeaviateObject<T, Object, QueryMetadata>> byId(ById byId) {
+  protected Optional<QueryWeaviateObject<PropertiesT>> byId(ById byId) {
     var request = new QueryRequest(byId, null);
     var result = this.grpcTransport.performRequest(request, QueryRequest.rpc(collection, defaults));
     return optionalFirst(result);
@@ -32,13 +31,13 @@ public class WeaviateQueryClient<T>
   }
 
   @Override
-  protected final QueryResponse<T> performRequest(QueryOperator operator) {
+  protected final QueryResponse<PropertiesT> performRequest(QueryOperator operator) {
     var request = new QueryRequest(operator, null);
     return this.grpcTransport.performRequest(request, QueryRequest.rpc(collection, defaults));
   }
 
   @Override
-  protected final QueryResponseGrouped<T> performRequest(QueryOperator operator, GroupBy groupBy) {
+  protected final QueryResponseGrouped<PropertiesT> performRequest(QueryOperator operator, GroupBy groupBy) {
     var request = new QueryRequest(operator, groupBy);
     return this.grpcTransport.performRequest(request, QueryRequest.grouped(collection, defaults));
   }
