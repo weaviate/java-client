@@ -24,7 +24,7 @@ public class WeaviateQueryClient<T>
   }
 
   @Override
-  protected Optional<WeaviateObject<T, Object, QueryMetadata>> byId(ById byId) {
+  protected Optional<WeaviateObject<T, Object, QueryMetadata>> fetchObjectById(FetchObjectById byId) {
     var request = new QueryRequest(byId, null);
     var result = this.grpcTransport.performRequest(request, QueryRequest.rpc(collection, defaults));
     return optionalFirst(result);

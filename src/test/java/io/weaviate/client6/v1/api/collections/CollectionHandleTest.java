@@ -152,7 +152,7 @@ public class CollectionHandleTest {
         { "data::object exists", (Act) c -> c.data.exists("test-uuid") },
         { "data::delete many", (Act) c -> c.data.deleteMany() },
 
-        { "query::get by id", (Act) c -> c.query.byId("test-uuid") },
+        { "query::get by id", (Act) c -> c.query.fetchObjectById("test-uuid") },
         { "query::fetch objects", (Act) c -> c.query.fetchObjects(ObjectBuilder.identity()) },
         { "query::bm25", (Act) c -> c.query.bm25("red ballon") },
         { "query::hybrid", (Act) c -> c.query.hybrid("red ballon") },

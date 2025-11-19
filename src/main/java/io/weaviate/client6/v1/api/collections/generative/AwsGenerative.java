@@ -17,7 +17,7 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative;
 public record AwsGenerative(
     @SerializedName("region") String region,
     @SerializedName("service") Service service,
-    @SerializedName("endpoint") String baseUrl,
+    @SerializedName("endpoint") String endpoint,
     @SerializedName("model") String model) implements Generative {
 
   @Override
@@ -39,20 +39,20 @@ public record AwsGenerative(
     return fn.apply(new BedrockBuilder(region, model)).build();
   }
 
-  public static AwsGenerative sagemaker(String region, String baseUrl) {
-    return sagemaker(region, baseUrl, ObjectBuilder.identity());
+  public static AwsGenerative sagemaker(String region, String endpoint) {
+    return sagemaker(region, endpoint, ObjectBuilder.identity());
   }
 
-  public static AwsGenerative sagemaker(String region, String baseUrl,
+  public static AwsGenerative sagemaker(String region, String endpoint,
       Function<SagemakerBuilder, ObjectBuilder<AwsGenerative>> fn) {
-    return fn.apply(new SagemakerBuilder(region, baseUrl)).build();
+    return fn.apply(new SagemakerBuilder(region, endpoint)).build();
   }
 
   public AwsGenerative(Builder builder) {
     this(
         builder.region,
         builder.service,
-        builder.baseUrl,
+        builder.endpoint,
         builder.model);
   }
 
@@ -65,12 +65,12 @@ public record AwsGenerative(
       this.region = region;
     }
 
-    private String baseUrl;
+    private String endpoint;
     private String model;
 
     /** Base URL of the generative provider. */
-    protected Builder baseUrl(String baseUrl) {
-      this.baseUrl = baseUrl;
+    protected Builder endpoint(String endpoint) {
+      this.endpoint = endpoint;
       return this;
     }
 
@@ -100,14 +100,14 @@ public record AwsGenerative(
   }
 
   public static class SagemakerBuilder extends Builder {
-    public SagemakerBuilder(String region, String baseUrl) {
+    public SagemakerBuilder(String region, String endpoint) {
       super(Service.SAGEMAKER, region);
-      super.baseUrl(baseUrl);
+      super.endpoint(endpoint);
     }
 
     /** Required for {@link Service#SAGEMAKER}. */
-    public Builder baseUrl(String baseUrl) {
-      return super.baseUrl(baseUrl);
+    public Builder endpoint(String endpoint) {
+      return super.endpoint(endpoint);
     }
   }
 
@@ -117,7 +117,7 @@ public record AwsGenerative(
   public static record Provider(
       String region,
       Service service,
-      String baseUrl,
+      String endpoint,
       String model,
       String targetModel,
       String targetModelVariant,
@@ -134,9 +134,9 @@ public record AwsGenerative(
 
     public static Provider sagemaker(
         String region,
-        String baseUrl,
+        String endpoint,
         Function<AwsGenerative.Provider.SagemakerBuilder, ObjectBuilder<AwsGenerative.Provider>> fn) {
-      return fn.apply(new SagemakerBuilder(region, baseUrl)).build();
+      return fn.apply(new SagemakerBuilder(region, endpoint)).build();
     }
 
     @Override
@@ -152,8 +152,8 @@ public record AwsGenerative(
                 : service == Service.SAGEMAKER ? "sagemaker"
                     : "unknown");
       }
-      if (baseUrl != null) {
-        provider.setEndpoint(baseUrl);
+      if (endpoint != null) {
+        provider.setEndpoint(endpoint);
       }
       if (model != null) {
         provider.setModel(model);
@@ -182,7 +182,7 @@ public record AwsGenerative(
       this(
           builder.region,
           builder.service,
-          builder.baseUrl,
+          builder.endpoint,
           builder.model,
           builder.targetModel,
           builder.targetModelVariant,
@@ -194,7 +194,7 @@ public record AwsGenerative(
     public abstract static class Builder implements ObjectBuilder<AwsGenerative.Provider> {
       private final Service service;
       private final String region;
-      private String baseUrl;
+      private String endpoint;
       private String model;
       private String targetModel;
       private String targetModelVariant;
@@ -208,8 +208,8 @@ public record AwsGenerative(
       }
 
       /** Base URL of the generative provider. */
-      protected Builder baseUrl(String baseUrl) {
-        this.baseUrl = baseUrl;
+      protected Builder endpoint(String endpoint) {
+        this.endpoint = endpoint;
         return this;
       }
 
@@ -276,14 +276,14 @@ public record AwsGenerative(
     }
 
     public static class SagemakerBuilder extends Builder {
-      public SagemakerBuilder(String region, String baseUrl) {
+      public SagemakerBuilder(String region, String endpoint) {
         super(Service.SAGEMAKER, region);
-        super.baseUrl(baseUrl);
+        super.endpoint(endpoint);
       }
 
       /** Required for {@link Service#SAGEMAKER}. */
-      public Builder baseUrl(String baseUrl) {
-        return super.baseUrl(baseUrl);
+      public Builder endpoint(String endpoint) {
+        return super.endpoint(endpoint);
       }
     }
   }

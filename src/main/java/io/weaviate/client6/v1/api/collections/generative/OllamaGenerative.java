@@ -14,7 +14,7 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative;
 
 public record OllamaGenerative(
-    @SerializedName("apiEndpoint") String baseUrl,
+    @SerializedName("apiEndpoint") String apiEndpoint,
     @SerializedName("model") String model) implements Generative {
 
   @Override
@@ -37,17 +37,17 @@ public record OllamaGenerative(
 
   public OllamaGenerative(Builder builder) {
     this(
-        builder.baseUrl,
+        builder.apiEndpoint,
         builder.model);
   }
 
   public static class Builder implements ObjectBuilder<OllamaGenerative> {
-    private String baseUrl;
+    private String apiEndpoint;
     private String model;
 
     /** Base URL of the generative model. */
-    public Builder baseUrl(String baseUrl) {
-      this.baseUrl = baseUrl;
+    public Builder apiEndpoint(String apiEndpoint) {
+      this.apiEndpoint = apiEndpoint;
       return this;
     }
 
@@ -67,7 +67,7 @@ public record OllamaGenerative(
   }
 
   public static record Provider(
-      String baseUrl,
+      String apiEndpoint,
       String model,
       Float temperature,
       List<String> images,
@@ -82,8 +82,8 @@ public record OllamaGenerative(
     public void appendTo(
         io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeProvider.Builder req) {
       var provider = WeaviateProtoGenerative.GenerativeOllama.newBuilder();
-      if (baseUrl != null) {
-        provider.setApiEndpoint(baseUrl);
+      if (apiEndpoint != null) {
+        provider.setApiEndpoint(apiEndpoint);
       }
       if (model != null) {
         provider.setModel(model);
@@ -104,7 +104,7 @@ public record OllamaGenerative(
 
     public Provider(Builder builder) {
       this(
-          builder.baseUrl,
+          builder.apiEndpoint,
           builder.model,
           builder.temperature,
           builder.images,
@@ -112,15 +112,15 @@ public record OllamaGenerative(
     }
 
     public static class Builder implements ObjectBuilder<OllamaGenerative.Provider> {
-      private String baseUrl;
+      private String apiEndpoint;
       private String model;
       private Float temperature;
       private final List<String> images = new ArrayList<>();
       private final List<String> imageProperties = new ArrayList<>();
 
       /** Base URL of the generative provider. */
-      public Builder baseUrl(String baseUrl) {
-        this.baseUrl = baseUrl;
+      public Builder apiEndpoint(String apiEndpoint) {
+        this.apiEndpoint = apiEndpoint;
         return this;
       }
 
