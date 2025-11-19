@@ -72,7 +72,7 @@ abstract class AbstractQueryClient<PropertiesT, SingleT, ResponseT, GroupedRespo
    * @param response Query response.
    * @return An object from the list or empty {@link Optional}.
    */
-  protected final <P> Optional<QueryWeaviateObject<P>> optionalFirst(QueryResponse<P> response) {
+  protected final <P> Optional<ReadWeaviateObject<P>> optionalFirst(QueryResponse<P> response) {
     return response == null || response.objects().isEmpty()
         ? Optional.empty()
         : Optional.ofNullable(response.objects().get(0));

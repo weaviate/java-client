@@ -11,12 +11,12 @@ import java.util.stream.StreamSupport;
 import io.weaviate.client6.v1.api.collections.query.FetchObjects;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.QueryReference;
-import io.weaviate.client6.v1.api.collections.query.QueryWeaviateObject;
+import io.weaviate.client6.v1.api.collections.query.ReadWeaviateObject;
 import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClient;
 import io.weaviate.client6.v1.api.collections.query.Where;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public class Paginator<PropertiesT> implements Iterable<QueryWeaviateObject<PropertiesT>> {
+public class Paginator<PropertiesT> implements Iterable<ReadWeaviateObject<PropertiesT>> {
   static final int DEFAULT_PAGE_SIZE = 100;
 
   private final WeaviateQueryClient<PropertiesT> query;
@@ -25,15 +25,15 @@ public class Paginator<PropertiesT> implements Iterable<QueryWeaviateObject<Prop
   private final String cursor;
 
   @Override
-  public Iterator<QueryWeaviateObject<PropertiesT>> iterator() {
+  public Iterator<ReadWeaviateObject<PropertiesT>> iterator() {
     return Spliterators.iterator(spliterator());
   }
 
-  public Stream<QueryWeaviateObject<PropertiesT>> stream() {
+  public Stream<ReadWeaviateObject<PropertiesT>> stream() {
     return StreamSupport.stream(spliterator(), false);
   }
 
-  public Spliterator<QueryWeaviateObject<PropertiesT>> spliterator() {
+  public Spliterator<ReadWeaviateObject<PropertiesT>> spliterator() {
     return new CursorSpliterator<PropertiesT>(cursor, pageSize,
         (after, limit) -> {
           var fn = ObjectBuilder.partial(queryOptions, q -> q.after(after).limit(limit));

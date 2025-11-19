@@ -8,7 +8,7 @@ public record QueryObjectGrouped<PropertiesT>(
     /** Name of the group that the object belongs to. */
     String belongsToGroup) {
 
-  QueryObjectGrouped(QueryWeaviateObject<PropertiesT> object,
+  QueryObjectGrouped(ReadWeaviateObject<PropertiesT> object,
       String belongsToGroup) {
     this(object.properties(), object.metadata(), belongsToGroup);
   }

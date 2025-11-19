@@ -33,7 +33,7 @@ import io.weaviate.client6.v1.api.collections.query.GroupBy;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.api.collections.query.QueryResponseGroup;
-import io.weaviate.client6.v1.api.collections.query.QueryWeaviateObject;
+import io.weaviate.client6.v1.api.collections.query.ReadWeaviateObject;
 import io.weaviate.client6.v1.api.collections.query.SortBy;
 import io.weaviate.client6.v1.api.collections.query.Target;
 import io.weaviate.client6.v1.api.collections.query.Where;
@@ -166,7 +166,7 @@ public class SearchITest extends ConcurrentTest {
             .returnProperties("title"));
 
     Assertions.assertThat(result.objects()).hasSize(2)
-        .extracting(QueryWeaviateObject::properties).allSatisfy(
+        .extracting(ReadWeaviateObject::properties).allSatisfy(
             properties -> Assertions.assertThat(properties)
                 .allSatisfy((_k, v) -> Assertions.assertThat((String) v).contains("Jungle")));
   }
@@ -229,7 +229,7 @@ public class SearchITest extends ConcurrentTest {
         opt -> opt.returnProperties("breed"));
 
     Assertions.assertThat(got.objects()).hasSize(1).first()
-        .extracting(QueryWeaviateObject::properties, InstanceOfAssertFactories.MAP)
+        .extracting(ReadWeaviateObject::properties, InstanceOfAssertFactories.MAP)
         .extractingByKey("breed").isEqualTo("ragdoll");
   }
 
@@ -288,7 +288,7 @@ public class SearchITest extends ConcurrentTest {
     Assertions.assertThat(asc.objects())
         .as("value asc")
         .hasSize(3)
-        .extracting(QueryWeaviateObject::properties)
+        .extracting(ReadWeaviateObject::properties)
         .extracting(object -> object.get("value"))
         .containsExactly(1L, 2L, 3L);
 
@@ -299,7 +299,7 @@ public class SearchITest extends ConcurrentTest {
     Assertions.assertThat(desc.objects())
         .as("value desc")
         .hasSize(3)
-        .extracting(QueryWeaviateObject::properties)
+        .extracting(ReadWeaviateObject::properties)
         .extracting(object -> object.get("value"))
         .containsExactly(3L, 2L, 1L);
   }
@@ -325,7 +325,7 @@ public class SearchITest extends ConcurrentTest {
 
     Assertions.assertThat(dollarWorlds.objects())
         .hasSize(1)
-        .extracting(QueryWeaviateObject::metadata).extracting(QueryMetadata::uuid)
+        .extracting(ReadWeaviateObject::metadata).extracting(QueryMetadata::uuid)
         .containsOnly(want.uuid());
   }
 
@@ -357,7 +357,7 @@ public class SearchITest extends ConcurrentTest {
 
       Assertions.assertThat(dollarWorlds.objects())
           .hasSize(1)
-          .extracting(QueryWeaviateObject::metadata).extracting(QueryMetadata::uuid)
+          .extracting(ReadWeaviateObject::metadata).extracting(QueryMetadata::uuid)
           .containsOnly(want.uuid());
     }
   }
@@ -387,7 +387,7 @@ public class SearchITest extends ConcurrentTest {
     // Assert
     Assertions.assertThat(terrestrial.objects())
         .hasSize(1)
-        .extracting(QueryWeaviateObject::metadata).extracting(WeaviateMetadata::uuid)
+        .extracting(ReadWeaviateObject::metadata).extracting(WeaviateMetadata::uuid)
         .containsOnly(lion.uuid());
   }
 
@@ -414,7 +414,7 @@ public class SearchITest extends ConcurrentTest {
     // Assert
     Assertions.assertThat(winterSport.objects())
         .hasSize(1)
-        .extracting(QueryWeaviateObject::metadata).extracting(WeaviateMetadata::uuid)
+        .extracting(ReadWeaviateObject::metadata).extracting(WeaviateMetadata::uuid)
         .containsOnly(skiing.uuid());
 
     var first = winterSport.objects().get(0);
@@ -484,7 +484,7 @@ public class SearchITest extends ConcurrentTest {
 
     // Assert
     Assertions.assertThat(got).get()
-        .extracting(QueryWeaviateObject::vectors)
+        .extracting(ReadWeaviateObject::vectors)
         .returns(true, v -> v.contains("v1"))
         .returns(true, v -> v.contains("v2"))
         .returns(false, v -> v.contains("v3"));
@@ -513,7 +513,7 @@ public class SearchITest extends ConcurrentTest {
     // Assert
     var metadataHybrid = Assertions.assertThat(gotHybrid.objects())
         .hasSize(1)
-        .extracting(QueryWeaviateObject::metadata)
+        .extracting(ReadWeaviateObject::metadata)
         .first().actual();
 
     Assertions.assertThat(metadataHybrid.uuid()).as("uuid").isNotNull().isEqualTo(frisbee.uuid());
@@ -524,7 +524,7 @@ public class SearchITest extends ConcurrentTest {
 
     var metadataNearText = Assertions.assertThat(gotNearText.objects())
         .hasSize(1)
-        .extracting(QueryWeaviateObject::metadata)
+        .extracting(ReadWeaviateObject::metadata)
         .first().actual();
 
     Assertions.assertThat(metadataNearText.uuid()).as("uuid").isNotNull().isEqualTo(frisbee.uuid());
@@ -564,7 +564,7 @@ public class SearchITest extends ConcurrentTest {
         q -> q.limit(1));
     Assertions.assertThat(got123.objects())
         .as("search v1d")
-        .hasSize(1).extracting(QueryWeaviateObject::uuid)
+        .hasSize(1).extracting(ReadWeaviateObject::uuid)
         .containsExactly(thing123.uuid());
 
     var got456 = things.query.nearVector(
@@ -572,7 +572,7 @@ public class SearchITest extends ConcurrentTest {
         q -> q.limit(1));
     Assertions.assertThat(got456.objects())
         .as("search v2d")
-        .hasSize(1).extracting(QueryWeaviateObject::uuid)
+        .hasSize(1).extracting(ReadWeaviateObject::uuid)
         .containsExactly(thing456.uuids().get(0));
   }
 
@@ -606,9 +606,9 @@ public class SearchITest extends ConcurrentTest {
         .hasSize(2)
         .allSatisfy(obj -> {
           Assertions.assertThat(obj).as("uuid shorthand")
-          .returns(obj.uuid(), GenerativeObject::uuid);
+              .returns(obj.uuid(), GenerativeObject::uuid);
           Assertions.assertThat(obj).as("vectors shorthand")
-          .returns(obj.vectors(), GenerativeObject::vectors);
+              .returns(obj.vectors(), GenerativeObject::vectors);
         })
         .extracting(GenerativeObject::generative)
         .allSatisfy(generated -> {
