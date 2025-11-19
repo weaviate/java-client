@@ -90,7 +90,7 @@ public class ReferencesITest extends ConcurrentTest {
         .extracting(ReferenceProperty::dataTypes, InstanceOfAssertFactories.list(String.class))
         .containsOnly(nsMovies);
 
-    var gotAlex = artists.query.byId(alex.uuid(),
+    var gotAlex = artists.query.fetchObjectById(alex.uuid(),
         opt -> opt.returnReferences(
             QueryReference.multi("hasAwards", nsOscar),
             QueryReference.multi("hasAwards", nsGrammy)));
@@ -154,7 +154,7 @@ public class ReferencesITest extends ConcurrentTest {
             .reference("hasAwards", Reference.objects(grammy_1)));
 
     // Assert: fetch nested references
-    var gotAlex = artists.query.byId(alex.uuid(),
+    var gotAlex = artists.query.fetchObjectById(alex.uuid(),
         opt -> opt.returnReferences(
             QueryReference.single("hasAwards",
                 ref -> ref

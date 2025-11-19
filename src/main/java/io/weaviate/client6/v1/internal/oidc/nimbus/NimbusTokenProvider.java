@@ -55,15 +55,14 @@ public final class NimbusTokenProvider implements TokenProvider {
    * Create a TokenProvider that uses Client Credentials authorization grant.
    *
    * @param oidc         OIDC config.
-   * @param clientId     Client ID.
    * @param clientSecret Client secret.
    *
    * @return A new instance of NimbusTokenProvider. Instances are never cached.
    * @throws WeaviateOAuthException if an error occured at any point of the
    *                                exchange process.
    */
-  public static NimbusTokenProvider clientCredentials(OidcConfig oidc, String clientId, String clientSecret) {
-    return new NimbusTokenProvider(oidc, Flow.clientCredentials(clientId, clientSecret));
+  public static NimbusTokenProvider clientCredentials(OidcConfig oidc, String clientSecret) {
+    return new NimbusTokenProvider(oidc, Flow.clientCredentials(oidc.clientId(), clientSecret));
   }
 
   private NimbusTokenProvider(OidcConfig oidc, Flow flow) {

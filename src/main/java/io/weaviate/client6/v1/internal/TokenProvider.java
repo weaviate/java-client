@@ -145,15 +145,14 @@ public interface TokenProvider extends AutoCloseable {
    * Create a TokenProvider that uses Client Credentials authorization grant.
    *
    * @param oidc         OIDC config.
-   * @param clientId     Client ID.
    * @param clientSecret Client secret.
    *
    * @return Internal TokenProvider implementation.
    * @throws WeaviateOAuthException if an error occurred at any point while
    *                                obtaining a new token.
    */
-  public static TokenProvider clientCredentials(OidcConfig oidc, String clientId, String clientSecret) {
-    final var provider = NimbusTokenProvider.clientCredentials(oidc, clientId, clientSecret);
+  public static TokenProvider clientCredentials(OidcConfig oidc, String clientSecret) {
+    final var provider = NimbusTokenProvider.clientCredentials(oidc, clientSecret);
     return reuse(null, provider, DEFAULT_EARLY_EXPIRY);
   }
 

@@ -13,7 +13,7 @@ import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Text2VecDatabricksVectorizer(
-    @SerializedName("endpoint") String baseUrl,
+    @SerializedName("endpoint") String endpoint,
     @SerializedName("instruction") String instruction,
 
     /**
@@ -52,14 +52,14 @@ public record Text2VecDatabricksVectorizer(
    * Canonical constructor always sets {@link #vectorizeCollectionName} to false.
    */
   public Text2VecDatabricksVectorizer(
-      String baseUrl,
+      String endpoint,
       String instruction,
 
       boolean vectorizeCollectionName,
       List<String> sourceProperties,
       VectorIndex vectorIndex,
       Quantization quantization) {
-    this.baseUrl = baseUrl;
+    this.endpoint = endpoint;
     this.instruction = instruction;
 
     this.vectorizeCollectionName = false;
@@ -70,7 +70,7 @@ public record Text2VecDatabricksVectorizer(
 
   public Text2VecDatabricksVectorizer(Builder builder) {
     this(
-        builder.baseUrl,
+        builder.endpoint,
         builder.instruction,
 
         builder.vectorizeCollectionName,
@@ -85,11 +85,11 @@ public record Text2VecDatabricksVectorizer(
     private List<String> sourceProperties = new ArrayList<>();
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
 
-    private String baseUrl;
+    private String endpoint;
     private String instruction;
 
-    public Builder baseUrl(String baseUrl) {
-      this.baseUrl = baseUrl;
+    public Builder endpoint(String endpoint) {
+      this.endpoint = endpoint;
       return this;
     }
 

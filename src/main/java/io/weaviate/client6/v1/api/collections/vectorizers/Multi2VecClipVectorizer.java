@@ -15,7 +15,7 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Multi2VecClipVectorizer(
     /** Base URL of the embedding service. */
-    @SerializedName("inferenceUrl") String baseUrl,
+    @SerializedName("inferenceUrl") String inferenceUrl,
     /** BLOB properties included in the embedding. */
     @SerializedName("imageFields") List<String> imageFields,
     /** TEXT properties included in the embedding. */
@@ -60,7 +60,7 @@ public record Multi2VecClipVectorizer(
 
   public Multi2VecClipVectorizer(Builder builder) {
     this(
-        builder.baseUrl,
+        builder.inferenceUrl,
         builder.imageFields.keySet().stream().toList(),
         builder.textFields.keySet().stream().toList(),
         new Weights(
@@ -77,11 +77,11 @@ public record Multi2VecClipVectorizer(
     private Map<String, Float> imageFields = new LinkedHashMap<>();
     private Map<String, Float> textFields = new LinkedHashMap<>();
 
-    private String baseUrl;
+    private String inferenceUrl;
 
     /** Set base URL of the embedding service. */
-    public Builder baseUrl(String baseUrl) {
-      this.baseUrl = baseUrl;
+    public Builder inferenceUrl(String inferenceUrl) {
+      this.inferenceUrl = inferenceUrl;
       return this;
     }
 

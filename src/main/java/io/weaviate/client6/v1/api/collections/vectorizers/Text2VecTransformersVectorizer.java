@@ -13,7 +13,7 @@ import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Text2VecTransformersVectorizer(
-    @SerializedName("inferenceUrl") String baseUrl,
+    @SerializedName("inferenceUrl") String inferenceUrl,
     @SerializedName("passageInferenceUrl") String passageInferenceUrl,
     @SerializedName("queryInferenceUrl") String queryInferenceUrl,
     @SerializedName("poolingStrategy") PoolingStrategy poolingStrategy,
@@ -53,7 +53,7 @@ public record Text2VecTransformersVectorizer(
 
   public Text2VecTransformersVectorizer(Builder builder) {
     this(
-        builder.baseUrl,
+        builder.inferenceUrl,
         builder.passageInferenceUrl,
         builder.queryInferenceUrl,
         builder.poolingStrategy,
@@ -67,13 +67,13 @@ public record Text2VecTransformersVectorizer(
     private List<String> sourceProperties = new ArrayList<>();
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
 
-    private String baseUrl;
+    private String inferenceUrl;
     private String passageInferenceUrl;
     private String queryInferenceUrl;
     private PoolingStrategy poolingStrategy;
 
-    public Builder baseUrl(String baseUrl) {
-      this.baseUrl = baseUrl;
+    public Builder inferenceUrl(String inferenceUrl) {
+      this.inferenceUrl = inferenceUrl;
       return this;
     }
 

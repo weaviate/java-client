@@ -118,23 +118,23 @@ public interface Generative extends TaggedUnion<Generative.Kind, Object> {
   /**
    * Configure a default {@code generative-aws} module with Sagemaker integration.
    *
-   * @param region  AWS region.
-   * @param baseUrl Base inference URL.
+   * @param region   AWS region.
+   * @param endpoint Base inference URL.
    */
-  public static Generative awsSagemaker(String region, String baseUrl) {
-    return AwsGenerative.sagemaker(region, baseUrl);
+  public static Generative awsSagemaker(String region, String endpoint) {
+    return AwsGenerative.sagemaker(region, endpoint);
   }
 
   /**
    * Configure a {@code generative-aws} module with Sagemaker integration.
    *
-   * @param region  AWS region.
-   * @param baseUrl Base inference URL.
-   * @param fn      Lambda expression for optional parameters.
+   * @param region   AWS region.
+   * @param endpoint Base inference URL.
+   * @param fn       Lambda expression for optional parameters.
    */
-  public static Generative awsSagemaker(String region, String baseUrl,
+  public static Generative awsSagemaker(String region, String endpoint,
       Function<AwsGenerative.SagemakerBuilder, ObjectBuilder<AwsGenerative>> fn) {
-    return AwsGenerative.sagemaker(region, baseUrl, fn);
+    return AwsGenerative.sagemaker(region, endpoint, fn);
   }
 
   /** Configure a default {@code generative-cohere} module. */
@@ -154,21 +154,21 @@ public interface Generative extends TaggedUnion<Generative.Kind, Object> {
   /**
    * Configure a default {@code generative-databricks} module.
    *
-   * @param baseURL Base URL for the generative service.
+   * @param endpoint Base URL for the generative service.
    */
-  public static Generative databricks(String baseURL) {
-    return DatabricksGenerative.of(baseURL);
+  public static Generative databricks(String endpoint) {
+    return DatabricksGenerative.of(endpoint);
   }
 
   /**
    * Configure a {@code generative-databricks} module.
    *
-   * @param baseURL Base URL for the generative service.
-   * @param fn      Lambda expression for optional parameters.
+   * @param endpoint Base URL for the generative service.
+   * @param fn       Lambda expression for optional parameters.
    */
-  public static Generative databricks(String baseURL,
+  public static Generative databricks(String endpoint,
       Function<DatabricksGenerative.Builder, ObjectBuilder<DatabricksGenerative>> fn) {
-    return DatabricksGenerative.of(baseURL, fn);
+    return DatabricksGenerative.of(endpoint, fn);
   }
 
   /** Configure a default {@code generative-frienliai} module. */

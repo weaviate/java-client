@@ -59,7 +59,6 @@ public interface Authentication {
   /**
    * Authenticate using Client Credentials authorization grant.
    *
-   * @param clientId     Client ID.
    * @param clientSecret Client secret.
    * @param scopes       Client scopes.
    *
@@ -67,13 +66,13 @@ public interface Authentication {
    * @throws WeaviateOAuthException if an error occurred at any point while
    *                                obtaining a new token.
    */
-  public static Authentication clientCredentials(String clientId, String clientSecret, List<String> scopes) {
+  public static Authentication clientCredentials(String clientSecret, List<String> scopes) {
     return transport -> {
       OidcConfig oidc = OidcUtils.getConfig(transport).withScopes(scopes);
       if (oidc.scopes().isEmpty() && TokenProvider.isMicrosoft(oidc)) {
-        oidc = oidc.withScopes(clientId + "/.default");
+        oidc = oidc.withScopes(oidc.clientId() + "/.default");
       }
-      return TokenProvider.clientCredentials(oidc, clientId, clientSecret);
+      return TokenProvider.clientCredentials(oidc, clientSecret);
     };
   }
 }

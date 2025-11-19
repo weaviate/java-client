@@ -58,15 +58,15 @@ public interface DynamicProvider {
   /**
    * Configure {@code generative-aws} as a dynamic provider.
    *
-   * @param region  AWS region.
-   * @param baseUrl Base inference URL.
-   * @param fn      Lambda expression for optional parameters.
+   * @param region   AWS region.
+   * @param endpoint Base inference URL.
+   * @param fn       Lambda expression for optional parameters.
    */
   public static DynamicProvider awsSagemaker(
       String region,
-      String baseUrl,
+      String endpoint,
       Function<AwsGenerative.Provider.SagemakerBuilder, ObjectBuilder<AwsGenerative.Provider>> fn) {
-    return AwsGenerative.Provider.sagemaker(region, baseUrl, fn);
+    return AwsGenerative.Provider.sagemaker(region, endpoint, fn);
   }
 
   /**

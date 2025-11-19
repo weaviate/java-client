@@ -13,7 +13,7 @@ import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Text2VecGoogleVectorizer(
-    @SerializedName("apiEndpoint") String baseUrl,
+    @SerializedName("apiEndpoint") String apiEndpoint,
     @SerializedName("model") String model,
     @SerializedName("titleProperty") String titleProperty,
     @SerializedName("dimensions") Integer dimensions,
@@ -85,7 +85,7 @@ public record Text2VecGoogleVectorizer(
    * Canonical constructor always sets {@link #vectorizeCollectionName} to false.
    */
   public Text2VecGoogleVectorizer(
-      String baseUrl,
+      String apiEndpoint,
       String model,
       String titleProperty,
       Integer dimensions,
@@ -96,7 +96,7 @@ public record Text2VecGoogleVectorizer(
       List<String> sourceProperties,
       VectorIndex vectorIndex,
       Quantization quantization) {
-    this.baseUrl = baseUrl;
+    this.apiEndpoint = apiEndpoint;
     this.model = model;
     this.titleProperty = titleProperty;
     this.dimensions = dimensions;
@@ -111,7 +111,7 @@ public record Text2VecGoogleVectorizer(
 
   public Text2VecGoogleVectorizer(Builder builder) {
     this(
-        builder.baseUrl,
+        builder.apiEndpoint,
         builder.model,
         builder.titleProperty,
         builder.dimensions,
@@ -131,7 +131,7 @@ public record Text2VecGoogleVectorizer(
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
 
     /** Embedding service base URL. */
-    private String baseUrl;
+    private String apiEndpoint;
     /** Google project ID. Only relevant for Vertex AI integration. */
     private final String projectId;
 
@@ -140,13 +140,13 @@ public record Text2VecGoogleVectorizer(
     private Integer dimensions;
     private TaskType taskType;
 
-    public Builder(String baseUrl, String projectId) {
-      this.baseUrl = baseUrl;
+    public Builder(String apiEndpoint, String projectId) {
+      this.apiEndpoint = apiEndpoint;
       this.projectId = projectId;
     }
 
-    protected Builder baseUrl(String baseUrl) {
-      this.baseUrl = baseUrl;
+    protected Builder apiEndpoint(String apiEndpoint) {
+      this.apiEndpoint = apiEndpoint;
       return this;
     }
 
@@ -217,8 +217,8 @@ public record Text2VecGoogleVectorizer(
       super(DEFAULT_BASE_URL, projectId);
     }
 
-    public VertexBuilder baseUrl(String baseUrl) {
-      super.baseUrl(baseUrl);
+    public VertexBuilder apiEndpoint(String apiEndpoint) {
+      super.apiEndpoint(apiEndpoint);
       return this;
     }
   }
