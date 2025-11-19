@@ -7,67 +7,75 @@ import java.util.function.Function;
 import com.google.gson.reflect.TypeToken;
 
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
-import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.Vectors;
-import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.json.JSON;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 import io.weaviate.client6.v1.internal.rest.Endpoint;
 import io.weaviate.client6.v1.internal.rest.SimpleEndpoint;
 
-public record ReplaceObjectRequest<T>(WeaviateObject<T, Reference, ObjectMetadata> object) {
+public record ReplaceObjectRequest<PropertiesT>(WriteWeaviateObject<PropertiesT> object) {
 
-  static final <T> Endpoint<ReplaceObjectRequest<T>, Void> endpoint(CollectionDescriptor<T> collection,
+  static final <PropertiesT> Endpoint<ReplaceObjectRequest<PropertiesT>, Void> endpoint(
+      CollectionDescriptor<PropertiesT> collection,
       CollectionHandleDefaults defaults) {
+
+    final var typeToken = TypeToken.getParameterized(WriteWeaviateObject.class, collection.typeToken().getType());
+
     return SimpleEndpoint.sideEffect(
         request -> "PUT",
-        request -> "/objects/" + collection.collectionName() + "/" + request.object.metadata().uuid(),
+        request -> "/objects/" + collection.collectionName() + "/" + request.object.uuid(),
         request -> defaults.consistencyLevel() != null
             ? Map.of("consistency_level", defaults.consistencyLevel())
             : Collections.emptyMap(),
         request -> JSON.serialize(
-            new WriteWeaviateObject<>(request.object, defaults.tenant()),
-            TypeToken.getParameterized(WriteWeaviateObject.class, collection.typeToken().getType())));
+            new WriteWeaviateObject<>(
+                request.object.uuid(),
+                collection.collectionName(),
+                defaults.tenant(),
+                request.object.properties(),
+                request.object.vectors(),
+                request.object.createdAt(),
+                request.object.lastUpdatedAt(),
+                request.object.references()),
+            typeToken));
   }
 
-  public static <T> ReplaceObjectRequest<T> of(String collectionName, String uuid,
-      Function<ReplaceObjectRequest.Builder<T>, ObjectBuilder<ReplaceObjectRequest<T>>> fn) {
-    return fn.apply(new Builder<>(collectionName, uuid)).build();
+  public static <PropertiesT> ReplaceObjectRequest<PropertiesT> of(
+      String uuid,
+      Function<ReplaceObjectRequest.Builder<PropertiesT>, ObjectBuilder<ReplaceObjectRequest<PropertiesT>>> fn) {
+    return fn.apply(new Builder<>(uuid)).build();
   }
 
-  public ReplaceObjectRequest(Builder<T> builder) {
-    this(builder.object.build());
+  public ReplaceObjectRequest(Builder<PropertiesT> builder) {
+    this(builder.build());
   }
 
-  public static class Builder<T> implements ObjectBuilder<ReplaceObjectRequest<T>> {
-    private final WeaviateObject.Builder<T, Reference, ObjectMetadata> object = new WeaviateObject.Builder<>();
-    private final ObjectMetadata.Builder metadata = new ObjectMetadata.Builder();
+  public static class Builder<PropertiesT> implements ObjectBuilder<WriteWeaviateObject<PropertiesT>> {
+    private final WriteWeaviateObject.Builder<PropertiesT> object = new WriteWeaviateObject.Builder<>();
 
-    public Builder(String collectionName, String uuid) {
-      this.object.collection(collectionName);
-      this.metadata.uuid(uuid);
+    public Builder(String uuid) {
+      this.object.uuid(uuid);
     }
 
-    public Builder<T> properties(T properties) {
+    public Builder<PropertiesT> properties(PropertiesT properties) {
       this.object.properties(properties);
       return this;
     }
 
-    public Builder<T> vectors(Vectors... vectors) {
-      this.metadata.vectors(vectors);
+    public Builder<PropertiesT> vectors(Vectors... vectors) {
+      this.object.vectors(vectors);
       return this;
     }
 
-    public Builder<T> reference(String property, Reference... references) {
+    public Builder<PropertiesT> reference(String property, Reference... references) {
       this.object.reference(property, references);
       return this;
     }
 
     @Override
-    public ReplaceObjectRequest<T> build() {
-      this.object.metadata(this.metadata.build());
-      return new ReplaceObjectRequest<>(this);
+    public WriteWeaviateObject<PropertiesT> build() {
+      return this.object.build();
     }
   }
 }

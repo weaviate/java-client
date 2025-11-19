@@ -99,7 +99,7 @@ public class DataITest extends ConcurrentTest {
         "breed", "ragdoll",
         "img", ragdollPng));
 
-    var got = cats.query.byId(ragdoll.metadata().uuid(),
+    var got = cats.query.byId(ragdoll.uuid(),
         cat -> cat.returnProperties("img"));
 
     Assertions.assertThat(got).get()
@@ -140,12 +140,12 @@ public class DataITest extends ConcurrentTest {
 
     // Act: add reference
     persons.data.referenceAdd(
-        john.metadata().uuid(),
+        john.uuid(),
         "hasFriend",
         Reference.object(albie));
 
     // Assert
-    var johnWithFriends = persons.query.byId(john.metadata().uuid(),
+    var johnWithFriends = persons.query.byId(john.uuid(),
         query -> query.returnReferences(
             QueryReference.single("hasFriend",
                 friend -> friend.returnProperties("name"))));
@@ -161,11 +161,11 @@ public class DataITest extends ConcurrentTest {
     // Act: replace reference
     var barbara = persons.data.insert(Map.of("name", "barbara"));
     persons.data.referenceReplace(
-        john.metadata().uuid(),
+        john.uuid(),
         "hasFriend",
         Reference.object(barbara));
 
-    johnWithFriends = persons.query.byId(john.metadata().uuid(),
+    johnWithFriends = persons.query.byId(john.uuid(),
         query -> query.returnReferences(
             QueryReference.single("hasFriend",
                 friend -> friend.returnProperties("name"))));
@@ -180,12 +180,12 @@ public class DataITest extends ConcurrentTest {
 
     // Act: delete reference
     persons.data.referenceDelete(
-        john.metadata().uuid(),
+        john.uuid(),
         "hasFriend",
         Reference.object(barbara));
 
     // Assert
-    johnWithFriends = persons.query.byId(john.metadata().uuid(),
+    johnWithFriends = persons.query.byId(john.uuid(),
         query -> query.returnReferences(
             QueryReference.single("hasFriend")));
 
@@ -210,11 +210,11 @@ public class DataITest extends ConcurrentTest {
     var ivanhoe = books.data.insert(Map.of("title", "ivanhoe"));
 
     // Act
-    books.data.replace(ivanhoe.metadata().uuid(),
+    books.data.replace(ivanhoe.uuid(),
         replace -> replace.properties(Map.of("year", 1819)));
 
     // Assert
-    var replacedIvanhoe = books.query.byId(ivanhoe.metadata().uuid());
+    var replacedIvanhoe = books.query.byId(ivanhoe.uuid());
 
     Assertions.assertThat(replacedIvanhoe).get()
         .as("has ONLY year property")
@@ -251,7 +251,7 @@ public class DataITest extends ConcurrentTest {
     var ivanhoe = books.data.insert(Map.of("title", "ivanhoe"));
 
     // Act
-    books.data.update(ivanhoe.metadata().uuid(),
+    books.data.update(ivanhoe.uuid(),
         update -> update
             .properties(Map.of("year", 1819))
             .reference("writtenBy", Reference.objects(walter))
@@ -259,7 +259,7 @@ public class DataITest extends ConcurrentTest {
 
     // Assert
     var updIvanhoe = books.query.byId(
-        ivanhoe.metadata().uuid(),
+        ivanhoe.uuid(),
         query -> query
             .includeVector()
             .returnReferences(QueryReference.single("writtenBy")));
@@ -298,8 +298,8 @@ public class DataITest extends ConcurrentTest {
 
     var things = client.collections.use(nsThings);
     things.data.insert(Map.of("last_used", 1));
-    var delete_1 = things.data.insert(Map.of("last_used", 5)).metadata().uuid();
-    var delete_2 = things.data.insert(Map.of("last_used", 9)).metadata().uuid();
+    var delete_1 = things.data.insert(Map.of("last_used", 5)).uuid();
+    var delete_2 = things.data.insert(Map.of("last_used", 9)).uuid();
 
     // Act (dry run)
     things.data.deleteMany(
@@ -387,7 +387,7 @@ public class DataITest extends ConcurrentTest {
     // Assert
     Assertions.assertThat(response.errors()).isEmpty();
 
-    var goodburgAirports = cities.query.byId(goodburg.metadata().uuid(),
+    var goodburgAirports = cities.query.byId(goodburg.uuid(),
         city -> city.returnReferences(
             QueryReference.single("hasAirports")));
 

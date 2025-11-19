@@ -11,7 +11,7 @@ public record ObjectMetadata(
     @SerializedName("id") String uuid,
     @SerializedName("vectors") Vectors vectors,
     @SerializedName("creationTimeUnix") Long createdAt,
-    @SerializedName("lastUpdateTImeUnix") Long lastUpdatedAt) implements WeaviateMetadata {
+    @SerializedName("lastUpdateTimeUnix") Long lastUpdatedAt) implements WeaviateMetadata {
 
   public ObjectMetadata(Builder builder) {
     this(builder.uuid, builder.vectors, null, null);

@@ -9,9 +9,7 @@ import java.util.UUID;
 
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.api.collections.GeoCoordinates;
-import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.PhoneNumber;
-import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.internal.MapUtil;
 import io.weaviate.client6.v1.internal.grpc.ByteStringUtil;
 import io.weaviate.client6.v1.internal.grpc.Rpc;
@@ -22,25 +20,25 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.Vectors.V
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 
-public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetadata>> objects) {
+public record InsertManyRequest<PropertiesT>(List<WriteWeaviateObject<PropertiesT>> objects) {
 
   @SafeVarargs
-  public InsertManyRequest(WeaviateObject<T, Reference, ObjectMetadata>... objects) {
+  public InsertManyRequest(WriteWeaviateObject<PropertiesT>... objects) {
     this(Arrays.asList(objects));
   }
 
+  @SuppressWarnings("unchecked")
   @SafeVarargs
-  public static final <T> InsertManyRequest<T> of(T... properties) {
+  public static final <PropertiesT> InsertManyRequest<PropertiesT> of(PropertiesT... properties) {
     var objects = Arrays.stream(properties)
-        .map(p -> WeaviateObject.<T, Reference, ObjectMetadata>of(
-            obj -> obj.properties(p).metadata(ObjectMetadata.of())))
+        .map(p -> (WriteWeaviateObject<PropertiesT>) WriteWeaviateObject.of(obj -> obj.properties(p)))
         .toList();
-    return new InsertManyRequest<T>(objects);
+    return new InsertManyRequest<>(objects);
   }
 
-  public static <T> Rpc<InsertManyRequest<T>, WeaviateProtoBatch.BatchObjectsRequest, InsertManyResponse, WeaviateProtoBatch.BatchObjectsReply> rpc(
-      List<WeaviateObject<T, Reference, ObjectMetadata>> insertObjects,
-      CollectionDescriptor<T> collection,
+  public static <PropertiesT> Rpc<InsertManyRequest<PropertiesT>, WeaviateProtoBatch.BatchObjectsRequest, InsertManyResponse, WeaviateProtoBatch.BatchObjectsReply> rpc(
+      List<WriteWeaviateObject<PropertiesT>> insertObjects,
+      CollectionDescriptor<PropertiesT> collection,
       CollectionHandleDefaults defaults) {
     return Rpc.insert(
         request -> {
@@ -75,8 +73,8 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
           while (iter.hasNext()) {
             var idx = iter.nextIndex();
             var next = iter.next();
-            var uuid = next.metadata() != null ? next.metadata().uuid() : null;
 
+            var uuid = next.uuid();
             if (failed.containsKey(idx)) {
               var err = failed.get(idx);
               errors.add(err);
@@ -94,72 +92,62 @@ public record InsertManyRequest<T>(List<WeaviateObject<T, Reference, ObjectMetad
   }
 
   public static <T> void buildObject(WeaviateProtoBatch.BatchObject.Builder object,
-      WeaviateObject<T, Reference, ObjectMetadata> insert,
+      WriteWeaviateObject<T> insert,
       CollectionDescriptor<T> collection,
       CollectionHandleDefaults defaults) {
     object.setCollection(collection.collectionName());
 
-    var metadata = insert.metadata();
-    if (metadata != null) {
-      object.setUuid(metadata.uuid());
+    object.setUuid(insert.uuid());
 
-      if (metadata.vectors() != null) {
-        var vectors = metadata.vectors().asMap()
-            .entrySet().stream().map(entry -> {
-              var value = entry.getValue();
-              var vector = WeaviateProtoBase.Vectors.newBuilder()
-                  .setName(entry.getKey());
+    if (insert.vectors() != null) {
+      var vectors = insert.vectors().asMap()
+          .entrySet().stream().map(entry -> {
+            var value = entry.getValue();
+            var vector = WeaviateProtoBase.Vectors.newBuilder()
+                .setName(entry.getKey());
 
-              if (value instanceof float[] single) {
-                vector.setType(VectorType.VECTOR_TYPE_SINGLE_FP32);
-                vector.setVectorBytes(ByteStringUtil.encodeVectorSingle(single));
-              } else if (value instanceof float[][] multi) {
-                vector.setVectorBytes(ByteStringUtil.encodeVectorMulti(multi));
-                vector.setType(VectorType.VECTOR_TYPE_MULTI_FP32);
-              }
+            if (value instanceof float[] single) {
+              vector.setType(VectorType.VECTOR_TYPE_SINGLE_FP32);
+              vector.setVectorBytes(ByteStringUtil.encodeVectorSingle(single));
+            } else if (value instanceof float[][] multi) {
+              vector.setVectorBytes(ByteStringUtil.encodeVectorMulti(multi));
+              vector.setType(VectorType.VECTOR_TYPE_MULTI_FP32);
+            }
 
-              return vector.build();
-            }).toList();
-        object.addAllVectors(vectors);
-      }
-      if (defaults.tenant() != null) {
-        object.setTenant(defaults.tenant());
-      }
+            return vector.build();
+          }).toList();
+      object.addAllVectors(vectors);
+    }
+    if (defaults.tenant() != null) {
+      object.setTenant(defaults.tenant());
     }
 
     var singleRef = new ArrayList<WeaviateProtoBatch.BatchObject.SingleTargetRefProps>();
     var multiRef = new ArrayList<WeaviateProtoBatch.BatchObject.MultiTargetRefProps>();
 
-    insert.references()
-        .entrySet().stream().forEach(entry -> {
-          var references = entry.getValue();
+    insert.references().entrySet().stream().forEach(entry -> {
+      var references = entry.getValue();
 
-          // dyma: How are we supposed to know if the reference
-          // is single- or multi-target?
-          for (var ref : references) {
-            if (ref.collection() == null) {
-              singleRef.add(
-                  WeaviateProtoBatch.BatchObject.SingleTargetRefProps.newBuilder()
-                      .addAllUuids(ref.uuids())
-                      .setPropName(entry.getKey())
-                      .build());
-            } else {
-              multiRef.add(
-                  WeaviateProtoBatch.BatchObject.MultiTargetRefProps.newBuilder()
-                      .setTargetCollection(ref.collection())
-                      .addAllUuids(ref.uuids())
-                      .setPropName(entry.getKey())
-                      .build());
-            }
-          }
-        });
+      // dyma: How are we supposed to know if the reference
+      // is single- or multi-target?
+      for (var ref : references) {
+        if (ref.collection() == null) {
+          singleRef.add(WeaviateProtoBatch.BatchObject.SingleTargetRefProps.newBuilder().addAllUuids(ref.uuids())
+              .setPropName(entry.getKey()).build());
+        } else {
+          multiRef.add(WeaviateProtoBatch.BatchObject.MultiTargetRefProps.newBuilder()
+              .setTargetCollection(ref.collection()).addAllUuids(ref.uuids()).setPropName(entry.getKey()).build());
+        }
+      }
+    });
 
     var properties = WeaviateProtoBatch.BatchObject.Properties.newBuilder()
         .addAllSingleTargetRefProps(singleRef)
         .addAllMultiTargetRefProps(multiRef);
 
     if (insert.properties() != null) {
-      var nonRef = marshalStruct(collection.propertiesReader(insert.properties()).readProperties());
+      var nonRef = marshalStruct(collection.propertiesReader(insert.properties())
+          .readProperties());
       properties.setNonRefProperties(nonRef);
     }
     object.setProperties(properties);
