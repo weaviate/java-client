@@ -32,7 +32,7 @@ public record NearObject(String uuid, Float distance, Float certainty, BaseQuery
     }
 
     public Builder excludeSelf() {
-      return where(Where.uuid().ne(uuid));
+      return filters(Filter.uuid().ne(uuid));
     }
 
     @Override

@@ -28,7 +28,7 @@ import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.Metadata.MetadataField;
 import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.api.collections.query.QueryReference;
-import io.weaviate.client6.v1.api.collections.query.Where;
+import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.containers.Container;
 
 public class DataITest extends ConcurrentTest {
@@ -303,7 +303,7 @@ public class DataITest extends ConcurrentTest {
 
     // Act (dry run)
     things.data.deleteMany(
-        Where.property("last_used").gte(4),
+        Filter.property("last_used").gte(4),
         opt -> opt.dryRun(true));
 
     // Assert
@@ -312,7 +312,7 @@ public class DataITest extends ConcurrentTest {
 
     // Act (live run)
     var deleted = things.data.deleteMany(
-        Where.property("last_used").gte(4),
+        Filter.property("last_used").gte(4),
         opt -> opt.verbose(true));
 
     // Assert

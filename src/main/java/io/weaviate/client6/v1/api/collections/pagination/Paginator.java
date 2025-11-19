@@ -14,7 +14,7 @@ import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.api.collections.query.QueryReference;
 import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClient;
-import io.weaviate.client6.v1.api.collections.query.Where;
+import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public class Paginator<PropertiesT> implements Iterable<WeaviateObject<PropertiesT, Object, QueryMetadata>> {
@@ -90,8 +90,8 @@ public class Paginator<PropertiesT> implements Iterable<WeaviateObject<Propertie
     // Query options ----------------------------------------------------------
 
     /** Combine several conditions using with an AND operator. */
-    public final Builder<T> where(Where... where) {
-      return applyQueryOption(q -> q.where(where));
+    public final Builder<T> filters(Filter... filters) {
+      return applyQueryOption(q -> q.filters(filters));
     }
 
     public final Builder<T> returnProperties(String... properties) {
