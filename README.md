@@ -487,7 +487,7 @@ Filter.not(Filter.property("title").like("summer"));
 Filter.property("title").like("summer").not();
 ```
 
-Passing `null` and empty `[]` to any of the logical operators as well as to the `.filters()` method is safe -- the empty operators will simply be ignored.
+Passing `null` and empty `Filter[]` to any of the logical operators as well as to the `.filters()` method is safe -- the empty operators will simply be ignored.
 
 
 #### Grouping results
