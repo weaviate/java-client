@@ -32,7 +32,7 @@ public record InsertObjectRequest<PropertiesT>(WriteWeaviateObject<PropertiesT> 
         request -> JSON.serialize(
             new WriteWeaviateObject<>(
                 request.object.uuid(),
-                request.object.collection(),
+                collection.collectionName(),
                 defaults.tenant(),
                 request.object.properties(),
                 request.object.vectors(),
