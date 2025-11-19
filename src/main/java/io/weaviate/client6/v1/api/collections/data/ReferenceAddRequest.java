@@ -17,6 +17,5 @@ public record ReferenceAddRequest(String fromUuid, String fromProperty, Referenc
             + request.fromProperty,
         request -> defaults.queryParameters(),
         request -> JSON.serialize(request.reference));
-
   }
 }

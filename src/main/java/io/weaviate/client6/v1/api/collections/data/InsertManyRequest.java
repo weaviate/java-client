@@ -97,7 +97,9 @@ public record InsertManyRequest<PropertiesT>(List<WriteWeaviateObject<Properties
       CollectionHandleDefaults defaults) {
     object.setCollection(collection.collectionName());
 
-    object.setUuid(insert.uuid());
+    if (insert.uuid() != null) {
+      object.setUuid(insert.uuid());
+    }
 
     if (insert.vectors() != null) {
       var vectors = insert.vectors().asMap()
@@ -125,21 +127,23 @@ public record InsertManyRequest<PropertiesT>(List<WriteWeaviateObject<Properties
     var singleRef = new ArrayList<WeaviateProtoBatch.BatchObject.SingleTargetRefProps>();
     var multiRef = new ArrayList<WeaviateProtoBatch.BatchObject.MultiTargetRefProps>();
 
-    insert.references().entrySet().stream().forEach(entry -> {
-      var references = entry.getValue();
+    if (insert.references() != null) {
+      insert.references().entrySet().stream().forEach(entry -> {
+        var references = entry.getValue();
 
-      // dyma: How are we supposed to know if the reference
-      // is single- or multi-target?
-      for (var ref : references) {
-        if (ref.collection() == null) {
-          singleRef.add(WeaviateProtoBatch.BatchObject.SingleTargetRefProps.newBuilder().addAllUuids(ref.uuids())
-              .setPropName(entry.getKey()).build());
-        } else {
-          multiRef.add(WeaviateProtoBatch.BatchObject.MultiTargetRefProps.newBuilder()
-              .setTargetCollection(ref.collection()).addAllUuids(ref.uuids()).setPropName(entry.getKey()).build());
+        // dyma: How are we supposed to know if the reference
+        // is single- or multi-target?
+        for (var ref : references) {
+          if (ref.collection() == null) {
+            singleRef.add(WeaviateProtoBatch.BatchObject.SingleTargetRefProps.newBuilder().addAllUuids(ref.uuids())
+                .setPropName(entry.getKey()).build());
+          } else {
+            multiRef.add(WeaviateProtoBatch.BatchObject.MultiTargetRefProps.newBuilder()
+                .setTargetCollection(ref.collection()).addAllUuids(ref.uuids()).setPropName(entry.getKey()).build());
+          }
         }
-      }
-    });
+      });
+    }
 
     var properties = WeaviateProtoBatch.BatchObject.Properties.newBuilder()
         .addAllSingleTargetRefProps(singleRef)
