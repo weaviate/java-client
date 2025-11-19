@@ -7,27 +7,26 @@ import java.util.Spliterator;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
-import io.weaviate.client6.v1.api.collections.WeaviateObject;
-import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
+import io.weaviate.client6.v1.api.collections.query.QueryWeaviateObject;
 
-public class CursorSpliterator<PropertiesT> implements Spliterator<WeaviateObject<PropertiesT, Object, QueryMetadata>> {
+public class CursorSpliterator<PropertiesT> implements Spliterator<QueryWeaviateObject<PropertiesT>> {
   private final int pageSize;
-  private final BiFunction<String, Integer, List<WeaviateObject<PropertiesT, Object, QueryMetadata>>> fetch;
+  private final BiFunction<String, Integer, List<QueryWeaviateObject<PropertiesT>>> fetch;
 
   // Spliterators do not promise thread-safety, so there's no mechanism
   // to protect access to its internal state.
   private String cursor;
-  private Iterator<WeaviateObject<PropertiesT, Object, QueryMetadata>> currentPage = Collections.emptyIterator();
+  private Iterator<QueryWeaviateObject<PropertiesT>> currentPage = Collections.emptyIterator();
 
   public CursorSpliterator(String cursor, int pageSize,
-      BiFunction<String, Integer, List<WeaviateObject<PropertiesT, Object, QueryMetadata>>> fetch) {
+      BiFunction<String, Integer, List<QueryWeaviateObject<PropertiesT>>> fetch) {
     this.cursor = cursor;
     this.pageSize = pageSize;
     this.fetch = fetch;
   }
 
   @Override
-  public boolean tryAdvance(Consumer<? super WeaviateObject<PropertiesT, Object, QueryMetadata>> action) {
+  public boolean tryAdvance(Consumer<? super QueryWeaviateObject<PropertiesT>> action) {
     // Happy path: there are remaining objects in the current page.
     if (currentPage.hasNext()) {
       action.accept(currentPage.next());
@@ -54,7 +53,7 @@ public class CursorSpliterator<PropertiesT> implements Spliterator<WeaviateObjec
   }
 
   @Override
-  public Spliterator<WeaviateObject<PropertiesT, Object, QueryMetadata>> trySplit() {
+  public Spliterator<QueryWeaviateObject<PropertiesT>> trySplit() {
     // Do not support splitting just now;
     return null;
   }

@@ -18,10 +18,10 @@ import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.WeaviateException;
 import io.weaviate.client6.v1.api.collections.Property;
-import io.weaviate.client6.v1.api.collections.WeaviateMetadata;
-import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.pagination.PaginationException;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
+import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
+import io.weaviate.client6.v1.api.collections.query.QueryWeaviateObject;
 import io.weaviate.containers.Container;
 
 public class PaginationITest extends ConcurrentTest {
@@ -39,7 +39,7 @@ public class PaginationITest extends ConcurrentTest {
     var inserted = new ArrayList<String>();
     for (var i = 0; i < count; i++) {
       var object = things.data.insert(Collections.emptyMap());
-      inserted.add(object.metadata().uuid());
+      inserted.add(object.uuid());
     }
     assumeTrue("all objects were inserted", inserted.size() == count);
 
@@ -47,7 +47,7 @@ public class PaginationITest extends ConcurrentTest {
 
     // Act: stream
     var gotStream = allThings.stream()
-        .map(WeaviateObject::metadata).map(WeaviateMetadata::uuid).toList();
+        .map(QueryWeaviateObject::metadata).map(QueryMetadata::uuid).toList();
 
     // Assert
     Assertions.assertThat(gotStream)
@@ -84,7 +84,7 @@ public class PaginationITest extends ConcurrentTest {
     var inserted = new ArrayList<String>();
     for (var i = 0; i < count; i++) {
       var object = things.data.insert(Collections.emptyMap());
-      inserted.add(object.metadata().uuid());
+      inserted.add(object.uuid());
     }
 
     // Iterate over first 5 objects
@@ -114,7 +114,7 @@ public class PaginationITest extends ConcurrentTest {
     var inserted = new ArrayList<String>();
     for (var i = 0; i < count; i++) {
       var object = things.data.insert(Collections.emptyMap());
-      inserted.add(object.metadata().uuid());
+      inserted.add(object.uuid());
     }
 
     // Act / Assert

@@ -47,10 +47,10 @@ public record UpdateObjectRequest<PropertiesT>(WriteWeaviateObject<PropertiesT> 
   }
 
   public UpdateObjectRequest(Builder<PropertiesT> builder) {
-    this(builder.build());
+    this(builder.object.build());
   }
 
-  public static class Builder<PropertiesT> implements ObjectBuilder<WriteWeaviateObject<PropertiesT>> {
+  public static class Builder<PropertiesT> implements ObjectBuilder<UpdateObjectRequest<PropertiesT>> {
     private final WriteWeaviateObject.Builder<PropertiesT> object = new WriteWeaviateObject.Builder<>();
 
     public Builder(String uuid) {
@@ -73,8 +73,8 @@ public record UpdateObjectRequest<PropertiesT>(WriteWeaviateObject<PropertiesT> 
     }
 
     @Override
-    public WriteWeaviateObject<PropertiesT> build() {
-      return this.object.build();
+    public UpdateObjectRequest<PropertiesT> build() {
+      return new UpdateObjectRequest<>(this);
     }
   }
 }
