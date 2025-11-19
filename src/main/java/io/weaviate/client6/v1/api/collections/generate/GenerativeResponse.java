@@ -25,7 +25,7 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 public record GenerativeResponse<PropertiesT>(
     float took,
     List<GenerativeObject<PropertiesT>> objects,
-    TaskOutput generated) {
+    TaskOutput generative) {
   static <PropertiesT> GenerativeResponse<PropertiesT> unmarshal(
       WeaviateProtoSearchGet.SearchReply reply,
       CollectionDescriptor<PropertiesT> collection) {
@@ -57,9 +57,9 @@ public record GenerativeResponse<PropertiesT>(
     if (values.isEmpty()) {
       return null;
     }
-    var generated = values.get(0);
+    var generative = values.get(0);
 
-    var metadata = generated.getMetadata();
+    var metadata = generative.getMetadata();
     ProviderMetadata providerMetadata = null;
     if (metadata.hasDummy()) {
       providerMetadata = new DummyGenerative.Metadata();
@@ -162,10 +162,10 @@ public record GenerativeResponse<PropertiesT>(
     }
 
     GenerativeDebug debug = null;
-    if (generated.getDebug() != null && generated.getDebug().getFullPrompt() != null) {
-      debug = new GenerativeDebug(generated.getDebug().getFullPrompt());
+    if (generative.getDebug() != null && generative.getDebug().getFullPrompt() != null) {
+      debug = new GenerativeDebug(generative.getDebug().getFullPrompt());
     }
-    return new TaskOutput(generated.getResult(), providerMetadata, debug);
+    return new TaskOutput(generative.getResult(), providerMetadata, debug);
   }
 
   static TaskOutput unmarshalTaskOutput(WeaviateProtoGenerative.GenerativeResult result) {

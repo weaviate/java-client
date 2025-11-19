@@ -27,12 +27,12 @@ public record WeaviateObject<P, R, M extends WeaviateMetadata>(
     Map<String, List<R>> references,
     M metadata) {
 
-  /** Shorthand for accesing objects's UUID from metadata. */
+  /** Shorthand for accessing objects's UUID from metadata. */
   public String uuid() {
     return metadata.uuid();
   }
 
-  /** Shorthand for accesing objects's vectors from metadata. */
+  /** Shorthand for accessing objects's vectors from metadata. */
   public Vectors vectors() {
     return metadata.vectors();
   }

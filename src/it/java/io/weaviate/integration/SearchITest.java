@@ -478,7 +478,7 @@ public class SearchITest extends ConcurrentTest {
         Vectors.of("v3", new float[] { 7, 8, 9 })));
 
     // Act
-    var got = things.query.byId(
+    var got = things.query.fetchObjectById(
         thing_1.uuid(),
         q -> q.includeVector("v1", "v2"));
 
@@ -597,7 +597,7 @@ public class SearchITest extends ConcurrentTest {
     // Act
     var french = things.generate.bm25(
         "fork",
-        bm25 -> bm25.queryProperties("title").limit(2),
+        bm25 -> bm25.queryProperties("title").limit(2).includeVector(),
         generate -> generate
             .singlePrompt("translate to French")
             .groupedTask("count letters R"));
@@ -606,12 +606,19 @@ public class SearchITest extends ConcurrentTest {
     Assertions.assertThat(french.objects())
         .as("individual results")
         .hasSize(2)
-        .extracting(GenerativeObject::generated)
+        .allSatisfy(obj -> {
+          Assertions.assertThat(obj.uuid()).as("uuid shorthand").isNotBlank()
+              .isEqualTo(obj.metadata().uuid());
+          Assertions.assertThat(obj.vectors()).as("vectors shorthand").isNotNull()
+              .isEqualTo(obj.metadata().vectors());
+        })
+        // **END SHORTHAND TESTS**
+        .extracting(GenerativeObject::generative)
         .allSatisfy(generated -> {
           Assertions.assertThat(generated.text()).isNotBlank();
         });
 
-    Assertions.assertThat(french.generated())
+    Assertions.assertThat(french.generative())
         .as("summary")
         .extracting(TaskOutput::text, InstanceOfAssertFactories.STRING)
         .isNotBlank();
@@ -655,14 +662,14 @@ public class SearchITest extends ConcurrentTest {
               .describedAs("objects in group %s", groupName)
               .hasSize(1);
 
-          Assertions.assertThat(group.generated())
+          Assertions.assertThat(group.generative())
               .describedAs("summary group %s", groupName)
               .extracting(TaskOutput::text, InstanceOfAssertFactories.STRING)
               .isNotBlank();
 
         });
 
-    Assertions.assertThat(french.generated())
+    Assertions.assertThat(french.generative())
         .as("summary")
         .extracting(TaskOutput::text, InstanceOfAssertFactories.STRING)
         .isNotBlank();

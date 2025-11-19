@@ -25,8 +25,8 @@ public class WeaviateQueryClientAsync<T>
   }
 
   @Override
-  protected CompletableFuture<Optional<WeaviateObject<T, Object, QueryMetadata>>> byId(
-      ById byId) {
+  protected CompletableFuture<Optional<WeaviateObject<T, Object, QueryMetadata>>> fetchObjectById(
+      FetchObjectById byId) {
     var request = new QueryRequest(byId, null);
     var result = this.grpcTransport.performRequestAsync(request, QueryRequest.rpc(collection, defaults));
     return result.thenApply(this::optionalFirst);

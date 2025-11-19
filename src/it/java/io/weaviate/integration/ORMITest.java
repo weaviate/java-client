@@ -239,7 +239,7 @@ public class ORMITest extends ConcurrentTest {
     var inserted = things.data.insert(thing);
 
     // Assert
-    var response = things.query.byId(inserted.uuid());
+    var response = things.query.fetchObjectById(inserted.uuid());
     var got = Assertions.assertThat(response).get().actual();
 
     Assertions.assertThat(got.properties())
@@ -353,7 +353,7 @@ public class ORMITest extends ConcurrentTest {
         null));
 
     // Act: return subset of the properties
-    var got = songs.query.byId(dystopia.uuid(),
+    var got = songs.query.fetchObjectById(dystopia.uuid(),
         q -> q.returnProperties("title", "hasAward"));
 
     // Assert

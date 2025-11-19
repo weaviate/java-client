@@ -20,7 +20,7 @@ public record GenerativeResponseGrouped<PropertiesT>(
     /** Grouped results with per-group generated output. */
     Map<String, GenerativeResponseGroup<PropertiesT>> groups,
     /** Output of the summary group task. */
-    TaskOutput generated) {
+    TaskOutput generative) {
 
   static <PropertiesT> GenerativeResponseGrouped<PropertiesT> unmarshal(
       WeaviateProtoSearchGet.SearchReply reply,

@@ -619,23 +619,23 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * Create a vector index with an {@code text2vec-aws} vectorizer with Sagemaker
    * integration.
    *
-   * @param baseUrl Base URL of the inference service.
+   * @param endpoint Base URL of the inference service.
    */
-  public static Map.Entry<String, VectorConfig> text2vecAwsSagemaker(String baseUrl) {
-    return text2vecAwsSagemaker(VectorIndex.DEFAULT_VECTOR_NAME, baseUrl);
+  public static Map.Entry<String, VectorConfig> text2vecAwsSagemaker(String endpoint) {
+    return text2vecAwsSagemaker(VectorIndex.DEFAULT_VECTOR_NAME, endpoint);
   }
 
   /**
    * Create a vector index with an {@code text2vec-aws} vectorizer with Sagemaker
    * integration.
    *
-   * @param baseUrl Base URL of the inference service.
-   * @param fn      Lambda expression for optional parameters.
+   * @param endpoint Base URL of the inference service.
+   * @param fn       Lambda expression for optional parameters.
    */
   public static Map.Entry<String, VectorConfig> text2vecAwsSagemaker(
-      String baseUrl,
+      String endpoint,
       Function<Text2VecAwsVectorizer.SagemakerBuilder, ObjectBuilder<Text2VecAwsVectorizer>> fn) {
-    return text2vecAwsSagemaker(VectorIndex.DEFAULT_VECTOR_NAME, baseUrl, fn);
+    return text2vecAwsSagemaker(VectorIndex.DEFAULT_VECTOR_NAME, endpoint, fn);
   }
 
   /**
@@ -643,10 +643,10 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * vectorizer with Sagemaker integration.
    *
    * @param vectorName Vector name.
-   * @param baseUrl    Base URL of the inference service.
+   * @param endpoint   Base URL of the inference service.
    */
-  public static Map.Entry<String, VectorConfig> text2vecAwsSagemaker(String vectorName, String baseUrl) {
-    return Map.entry(vectorName, Text2VecAwsVectorizer.sagemaker(baseUrl));
+  public static Map.Entry<String, VectorConfig> text2vecAwsSagemaker(String vectorName, String endpoint) {
+    return Map.entry(vectorName, Text2VecAwsVectorizer.sagemaker(endpoint));
   }
 
   /**
@@ -654,13 +654,13 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * vectorizer with Sagemaker integration.
    *
    * @param vectorName Vector name.
-   * @param baseUrl    Base URL of the inference service.
+   * @param endpoint   Base URL of the inference service.
    * @param fn         Lambda expression for optional parameters.
    */
   public static Map.Entry<String, VectorConfig> text2vecAwsSagemaker(String vectorName,
-      String baseUrl,
+      String endpoint,
       Function<Text2VecAwsVectorizer.SagemakerBuilder, ObjectBuilder<Text2VecAwsVectorizer>> fn) {
-    return Map.entry(vectorName, Text2VecAwsVectorizer.sagemaker(baseUrl, fn));
+    return Map.entry(vectorName, Text2VecAwsVectorizer.sagemaker(endpoint, fn));
   }
 
   /**
