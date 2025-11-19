@@ -108,9 +108,9 @@ public record ById(
 
   @Override
   public void appendTo(WeaviateProtoSearchGet.SearchRequest.Builder req) {
-    var where = Where.uuid().eq(uuid);
+    var filters = Filter.uuid().eq(uuid);
     var filter = WeaviateProtoBase.Filters.newBuilder();
-    where.appendTo(filter);
+    filters.appendTo(filter);
     req.setFilters(filter);
 
     var metadata = WeaviateProtoSearchGet.MetadataRequest.newBuilder();

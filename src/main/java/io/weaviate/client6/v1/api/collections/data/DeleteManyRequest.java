@@ -3,7 +3,7 @@ package io.weaviate.client6.v1.api.collections.data;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
-import io.weaviate.client6.v1.api.collections.query.Where;
+import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.ByteStringUtil;
 import io.weaviate.client6.v1.internal.grpc.Rpc;
@@ -13,7 +13,7 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatchDelete;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 
-public record DeleteManyRequest(Where where, Boolean verbose, Boolean dryRun) {
+public record DeleteManyRequest(Filter filters, Boolean verbose, Boolean dryRun) {
 
   public static Rpc<DeleteManyRequest, WeaviateProtoBatchDelete.BatchDeleteRequest, DeleteManyResponse, WeaviateProtoBatchDelete.BatchDeleteReply> rpc(
       CollectionDescriptor<?> collection,
@@ -37,7 +37,7 @@ public record DeleteManyRequest(Where where, Boolean verbose, Boolean dryRun) {
           }
 
           var filters = WeaviateProtoBase.Filters.newBuilder();
-          request.where.appendTo(filters);
+          request.filters.appendTo(filters);
           message.setFilters(filters);
 
           return message.build();
@@ -62,30 +62,30 @@ public record DeleteManyRequest(Where where, Boolean verbose, Boolean dryRun) {
         () -> WeaviateFutureStub::batchDelete);
   }
 
-  public static DeleteManyRequest of(Where where) {
-    return of(where, ObjectBuilder.identity());
+  public static DeleteManyRequest of(Filter filters) {
+    return of(filters, ObjectBuilder.identity());
   }
 
   public DeleteManyRequest(Builder builder) {
     this(
-        builder.where,
+        builder.filters,
         builder.verbose,
         builder.dryRun);
   }
 
-  public static DeleteManyRequest of(Where where, Function<Builder, ObjectBuilder<DeleteManyRequest>> fn) {
-    return fn.apply(new Builder(where)).build();
+  public static DeleteManyRequest of(Filter filters, Function<Builder, ObjectBuilder<DeleteManyRequest>> fn) {
+    return fn.apply(new Builder(filters)).build();
   }
 
   public static class Builder implements ObjectBuilder<DeleteManyRequest> {
     // Required request parameters;
-    private final Where where;
+    private final Filter filters;
 
     private Boolean verbose;
     private Boolean dryRun;
 
-    public Builder(Where where) {
-      this.where = where;
+    public Builder(Filter filters) {
+      this.filters = filters;
     }
 
     public Builder verbose(boolean verbose) {

@@ -36,7 +36,7 @@ import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.api.collections.query.QueryResponseGroup;
 import io.weaviate.client6.v1.api.collections.query.SortBy;
 import io.weaviate.client6.v1.api.collections.query.Target;
-import io.weaviate.client6.v1.api.collections.query.Where;
+import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.api.collections.vectorindex.MultiVector;
 import io.weaviate.containers.Container;
@@ -251,12 +251,12 @@ public class SearchITest extends ConcurrentTest {
     var hugeHat = hats.data.insert(Map.of("colour", "orange", "size", 40));
 
     var got = hats.query.fetchObjects(
-        query -> query.where(
-            Where.or(
-                Where.property("colour").eq("orange"),
-                Where.and(
-                    Where.property("size").gte(1),
-                    Where.property("size").lt(6)))));
+        query -> query.filters(
+            Filter.or(
+                Filter.property("colour").eq("orange"),
+                Filter.and(
+                    Filter.property("size").gte(1),
+                    Filter.property("size").lt(6)))));
 
     Assertions.assertThat(got.objects())
         .extracting(hat -> hat.metadata().uuid())

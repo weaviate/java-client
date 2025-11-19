@@ -430,8 +430,8 @@ songs.query.hybrid(
 Objects can be filtered by property or reference values. In the latter case you need to pass the "path" to the property in the referenced collection.
 
 ```java
-.where(Where.property("year").gte(1969))
-.where(Where.reference("hasAwards", "GrammyAwards", "category").eq("New Artist"))
+.filters(Filter.property("year").gte(1969))
+.filters(Filter.reference("hasAwards", "GrammyAwards", "category").eq("New Artist"))
 ```
 
 Supported **comparison operators**:
@@ -451,15 +451,15 @@ Supported **comparison operators**:
 Comparison operators can be grouped using **logical operators** with arbitrarily deep nesting.
 
 ```java
-.where(
-  Where.or(
-    Where.and(
-      Where.property("year").gt(2000),
-      Where.property("year").lt(2017)
+.filters(
+  Filter.or(
+    Filter.and(
+      Filter.property("year").gt(2000),
+      Filter.property("year").lt(2017)
     ),
-    Where.or(
-      Where.property("artist").like("Boys"),
-      Where.property("genres").containsAny("#rock", "#rocknroll", "#grunge")
+    Filter.or(
+      Filter.property("artist").like("Boys"),
+      Filter.property("genres").containsAny("#rock", "#rocknroll", "#grunge")
     )
   )
 )
@@ -471,23 +471,23 @@ Supported **logical operators**:
 - Or: `.or`
 - Not: `.not`
 
-Operators passed in subsequent calls to `.where` are concatenated with the `.and` operartor.
+Operators passed in subsequent calls to `.filters` are concatenated with the `.and` operartor.
 These 3 calls are equivalent:
 
 ```java
-.where(Where.and(cond1, cond2))
-.where(cond1, cond2)
-.where(cond1).where(cond2)
+.filters(Filter.and(cond1, cond2))
+.filters(cond1, cond2)
+.filters(cond1).filters(cond2)
 ```
 
-To negate an operator, wrap it in `Where.not(...)` or use the negation shorthand.
+To negate an operator, wrap it in `Filter.not(...)` or use the negation shorthand.
 
 ```java
-Where.not(Where.property("title").like("summer"));
-Where.property("title").like("summer").not();
+Filter.not(Filter.property("title").like("summer"));
+Filter.property("title").like("summer").not();
 ```
 
-Passing `null` and and empty `Where[]` to any of the logical operators as well as to the `.where()` method is safe -- the empty operators will simply be ignored.
+Passing `null` and empty `[]` to any of the logical operators as well as to the `.filters()` method is safe -- the empty operators will simply be ignored.
 
 
 #### Grouping results

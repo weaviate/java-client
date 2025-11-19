@@ -21,7 +21,7 @@ import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.annotations.Collection;
 import io.weaviate.client6.v1.api.collections.annotations.Property;
 import io.weaviate.client6.v1.api.collections.data.InsertManyResponse.InsertObject;
-import io.weaviate.client6.v1.api.collections.query.Where;
+import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.containers.Container;
 
 public class ORMITest extends ConcurrentTest {
@@ -318,7 +318,7 @@ public class ORMITest extends ConcurrentTest {
 
     // Assert
     var uuids = inserted.responses().stream().map(InsertObject::uuid).toArray(String[]::new);
-    var got = things.query.fetchObjects(q -> q.where(Where.uuid().containsAny(uuids)));
+    var got = things.query.fetchObjects(q -> q.filters(Filter.uuid().containsAny(uuids)));
     Assertions.assertThat(got.objects())
         .hasSize(3)
         .usingRecursiveComparison(COMPARISON_CONFIG)
