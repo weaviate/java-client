@@ -30,13 +30,13 @@ import io.weaviate.client6.v1.api.collections.data.Reference;
 import io.weaviate.client6.v1.api.collections.generate.GenerativeObject;
 import io.weaviate.client6.v1.api.collections.generate.TaskOutput;
 import io.weaviate.client6.v1.api.collections.generative.DummyGenerative;
+import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.client6.v1.api.collections.query.GroupBy;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.api.collections.query.QueryResponseGroup;
 import io.weaviate.client6.v1.api.collections.query.SortBy;
 import io.weaviate.client6.v1.api.collections.query.Target;
-import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.api.collections.vectorindex.MultiVector;
 import io.weaviate.containers.Container;
@@ -608,9 +608,9 @@ public class SearchITest extends ConcurrentTest {
         .hasSize(2)
         .allSatisfy(obj -> {
           Assertions.assertThat(obj).as("uuid shorthand")
-          .returns(obj.uuid(), GenerativeObject::uuid);
+              .returns(obj.uuid(), GenerativeObject::uuid);
           Assertions.assertThat(obj).as("vectors shorthand")
-          .returns(obj.vectors(), GenerativeObject::vectors);
+              .returns(obj.vectors(), GenerativeObject::vectors);
         })
         .extracting(GenerativeObject::generative)
         .allSatisfy(generated -> {
@@ -672,5 +672,32 @@ public class SearchITest extends ConcurrentTest {
         .as("summary")
         .extracting(TaskOutput::text, InstanceOfAssertFactories.STRING)
         .isNotBlank();
+  }
+
+  @Test
+  public void test_filterIsNull() throws IOException {
+    // Arrange
+    var nsNulls = ns("Nulls");
+
+    var nulls = client.collections.create(nsNulls,
+        c -> c
+            .invertedIndex(idx -> idx.indexNulls(true))
+            .properties(Property.text("never")));
+
+    var inserted = nulls.data.insertMany(Map.of(), Map.of("never", "notNull"));
+    Assertions.assertThat(inserted.errors()).isEmpty();
+
+    // Act
+    var isNull = nulls.query.fetchObjects(q -> q.filters(Filter.property("never").isNull()));
+    var isNotNull = nulls.query.fetchObjects(q -> q.filters(Filter.property("never").isNotNull()));
+
+    // Assert
+    var isNull_1 = Assertions.assertThat(isNull.objects())
+        .as("objects WHERE never IS NULL")
+        .hasSize(1).first().actual();
+    var isNotNull_1 = Assertions.assertThat(isNotNull.objects())
+        .as("objects WHERE never IS NOT NULL")
+        .hasSize(1).first().actual();
+    Assertions.assertThat(isNull_1).isNotEqualTo(isNotNull_1);
   }
 }
