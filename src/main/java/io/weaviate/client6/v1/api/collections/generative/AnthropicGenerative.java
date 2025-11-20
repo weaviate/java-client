@@ -8,7 +8,7 @@ import java.util.function.Function;
 import com.google.gson.annotations.SerializedName;
 
 import io.weaviate.client6.v1.api.collections.Generative;
-import io.weaviate.client6.v1.api.collections.generate.DynamicProvider;
+import io.weaviate.client6.v1.api.collections.generate.GenerativeProvider;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative;
@@ -125,7 +125,7 @@ public record AnthropicGenerative(
       Float topP,
       List<String> stopSequences,
       List<String> images,
-      List<String> imageProperties) implements DynamicProvider {
+      List<String> imageProperties) implements GenerativeProvider {
 
     public static Provider of(
         Function<AnthropicGenerative.Provider.Builder, ObjectBuilder<AnthropicGenerative.Provider>> fn) {
