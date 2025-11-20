@@ -11,6 +11,22 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 public record NearVector(NearVectorTarget searchTarget, Float distance, Float certainty, BaseQueryOptions common)
     implements QueryOperator, AggregateObjectFilter {
 
+  public static final NearVector of(float[] vector) {
+    return of(vector, ObjectBuilder.identity());
+  }
+
+  public static final NearVector of(float[] vector, Function<Builder, ObjectBuilder<NearVector>> fn) {
+    return fn.apply(new Builder(Target.vector(vector))).build();
+  }
+
+  public static final NearVector of(float[][] vector) {
+    return of(vector, ObjectBuilder.identity());
+  }
+
+  public static final NearVector of(float[][] vector, Function<Builder, ObjectBuilder<NearVector>> fn) {
+    return fn.apply(new Builder(Target.vector(vector))).build();
+  }
+
   public static final NearVector of(NearVectorTarget searchTarget) {
     return of(searchTarget, ObjectBuilder.identity());
   }
