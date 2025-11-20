@@ -8,7 +8,7 @@ import java.util.function.Function;
 import com.google.gson.annotations.SerializedName;
 
 import io.weaviate.client6.v1.api.collections.Generative;
-import io.weaviate.client6.v1.api.collections.generate.DynamicProvider;
+import io.weaviate.client6.v1.api.collections.generate.GenerativeProvider;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecAwsVectorizer.Service;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
@@ -123,7 +123,7 @@ public record AwsGenerative(
       String targetModelVariant,
       Float temperature,
       List<String> images,
-      List<String> imageProperties) implements DynamicProvider {
+      List<String> imageProperties) implements GenerativeProvider {
 
     public static Provider bedrock(
         String region,
