@@ -1606,15 +1606,18 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
           var vectorIndexConfig = jsonObject.get("vectorIndexConfig").getAsJsonObject();
 
           String quantizationKind = null;
-          if (vectorIndexConfig.has(Quantization.Kind.BQ.jsonValue())) {
-            quantizationKind = Quantization.Kind.BQ.jsonValue();
-          } else if (vectorIndexConfig.has(Quantization.Kind.PQ.jsonValue())) {
-            quantizationKind = Quantization.Kind.PQ.jsonValue();
-          } else if (vectorIndexConfig.has(Quantization.Kind.SQ.jsonValue())) {
-            quantizationKind = Quantization.Kind.SQ.jsonValue();
-          } else if (vectorIndexConfig.has(Quantization.Kind.RQ.jsonValue())) {
-            quantizationKind = Quantization.Kind.RQ.jsonValue();
-          } else {
+          for (var kind : new String[] {
+              Quantization.Kind.BQ.jsonValue(),
+              Quantization.Kind.PQ.jsonValue(),
+              Quantization.Kind.SQ.jsonValue(),
+              Quantization.Kind.RQ.jsonValue() }) {
+            if (vectorIndexConfig.has(kind)
+                && vectorIndexConfig.get(kind).getAsJsonObject().get("enabled").getAsBoolean()) {
+              quantizationKind = kind;
+            }
+          }
+          if (quantizationKind == null && vectorIndexConfig.has(Quantization.Kind.UNCOMPRESSED.jsonValue())
+              && vectorIndexConfig.get(Quantization.Kind.UNCOMPRESSED.jsonValue()).getAsBoolean()) {
             quantizationKind = Quantization.Kind.UNCOMPRESSED.jsonValue();
           }
 
@@ -1649,7 +1652,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
           // Each individual vectorizer has a `Quantization quantization` field.
           // We need to specify the kind in order for
           // Quantization.CustomTypeAdapterFactory to be able to find the right adapter.
-          if (vectorIndexConfig.has(quantizationKind)) {
+          if (quantizationKind != null && vectorIndexConfig.has(quantizationKind)) {
             JsonObject quantization = new JsonObject();
             quantization.add(quantizationKind, vectorIndexConfig.get(quantizationKind));
             concreteVectorizer.add("quantization", quantization);

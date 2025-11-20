@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.google.gson.ToNumberPolicy;
 import com.google.gson.reflect.TypeToken;
 
@@ -81,6 +83,10 @@ public final class JSON {
       return null;
     }
     return serialize(value, TypeToken.get(value.getClass()));
+  }
+
+  public static final JsonElement toJsonElement(String json) {
+    return JsonParser.parseString(json);
   }
 
   public static final String serialize(Object value, TypeToken<?> typeToken) {
