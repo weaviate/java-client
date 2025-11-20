@@ -18,7 +18,7 @@ import io.weaviate.client6.v1.api.collections.generative.XaiGenerative;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative;
 
-public interface DynamicProvider {
+public interface GenerativeProvider {
   void appendTo(WeaviateProtoGenerative.GenerativeProvider.Builder req);
 
   /**
@@ -26,7 +26,7 @@ public interface DynamicProvider {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static DynamicProvider anthropic(
+  public static GenerativeProvider anthropic(
       Function<AnthropicGenerative.Provider.Builder, ObjectBuilder<AnthropicGenerative.Provider>> fn) {
     return AnthropicGenerative.Provider.of(fn);
   }
@@ -36,7 +36,7 @@ public interface DynamicProvider {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static DynamicProvider anyscale(
+  public static GenerativeProvider anyscale(
       Function<AnyscaleGenerative.Provider.Builder, ObjectBuilder<AnyscaleGenerative.Provider>> fn) {
     return AnyscaleGenerative.Provider.of(fn);
   }
@@ -48,7 +48,7 @@ public interface DynamicProvider {
    * @param model  Inference model.
    * @param fn     Lambda expression for optional parameters.
    */
-  public static DynamicProvider awsBedrock(
+  public static GenerativeProvider awsBedrock(
       String region,
       String model,
       Function<AwsGenerative.Provider.BedrockBuilder, ObjectBuilder<AwsGenerative.Provider>> fn) {
@@ -62,7 +62,7 @@ public interface DynamicProvider {
    * @param endpoint Base inference URL.
    * @param fn       Lambda expression for optional parameters.
    */
-  public static DynamicProvider awsSagemaker(
+  public static GenerativeProvider awsSagemaker(
       String region,
       String endpoint,
       Function<AwsGenerative.Provider.SagemakerBuilder, ObjectBuilder<AwsGenerative.Provider>> fn) {
@@ -74,7 +74,7 @@ public interface DynamicProvider {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static DynamicProvider cohere(
+  public static GenerativeProvider cohere(
       Function<CohereGenerative.Provider.Builder, ObjectBuilder<CohereGenerative.Provider>> fn) {
     return CohereGenerative.Provider.of(fn);
   }
@@ -84,7 +84,7 @@ public interface DynamicProvider {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static DynamicProvider databricks(
+  public static GenerativeProvider databricks(
       Function<DatabricksGenerative.Provider.Builder, ObjectBuilder<DatabricksGenerative.Provider>> fn) {
     return DatabricksGenerative.Provider.of(fn);
   }
@@ -94,7 +94,7 @@ public interface DynamicProvider {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static DynamicProvider friendliai(
+  public static GenerativeProvider friendliai(
       Function<FriendliaiGenerative.Provider.Builder, ObjectBuilder<FriendliaiGenerative.Provider>> fn) {
     return FriendliaiGenerative.Provider.of(fn);
   }
@@ -104,7 +104,7 @@ public interface DynamicProvider {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static DynamicProvider googleAiStudio(
+  public static GenerativeProvider googleAiStudio(
       Function<GoogleGenerative.Provider.AiStudioBuilder, ObjectBuilder<GoogleGenerative.Provider>> fn) {
     return GoogleGenerative.Provider.aiStudio(fn);
   }
@@ -115,7 +115,7 @@ public interface DynamicProvider {
    * @param projectId Google project ID.
    * @param fn        Lambda expression for optional parameters.
    */
-  public static DynamicProvider googleVertex(
+  public static GenerativeProvider googleVertex(
       String projectId,
       Function<GoogleGenerative.Provider.VertexBuilder, ObjectBuilder<GoogleGenerative.Provider>> fn) {
     return GoogleGenerative.Provider.vertex(projectId, fn);
@@ -126,7 +126,7 @@ public interface DynamicProvider {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static DynamicProvider mistral(
+  public static GenerativeProvider mistral(
       Function<MistralGenerative.Provider.Builder, ObjectBuilder<MistralGenerative.Provider>> fn) {
     return MistralGenerative.Provider.of(fn);
   }
@@ -136,7 +136,7 @@ public interface DynamicProvider {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static DynamicProvider nvidia(
+  public static GenerativeProvider nvidia(
       Function<NvidiaGenerative.Provider.Builder, ObjectBuilder<NvidiaGenerative.Provider>> fn) {
     return NvidiaGenerative.Provider.of(fn);
   }
@@ -146,7 +146,7 @@ public interface DynamicProvider {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static DynamicProvider ollama(
+  public static GenerativeProvider ollama(
       Function<OllamaGenerative.Provider.Builder, ObjectBuilder<OllamaGenerative.Provider>> fn) {
     return OllamaGenerative.Provider.of(fn);
   }
@@ -156,7 +156,7 @@ public interface DynamicProvider {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static DynamicProvider openai(
+  public static GenerativeProvider openai(
       Function<OpenAiGenerative.Provider.Builder, ObjectBuilder<OpenAiGenerative.Provider>> fn) {
     return OpenAiGenerative.Provider.of(fn);
   }
@@ -166,7 +166,7 @@ public interface DynamicProvider {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static DynamicProvider azure(
+  public static GenerativeProvider azure(
       Function<AzureOpenAiGenerative.Provider.Builder, ObjectBuilder<AzureOpenAiGenerative.Provider>> fn) {
     return AzureOpenAiGenerative.Provider.of(fn);
   }
@@ -176,7 +176,7 @@ public interface DynamicProvider {
    *
    * @param fn Lambda expression for optional parameters.
    */
-  public static DynamicProvider xai(
+  public static GenerativeProvider xai(
       Function<XaiGenerative.Provider.Builder, ObjectBuilder<XaiGenerative.Provider>> fn) {
     return XaiGenerative.Provider.of(fn);
   }
