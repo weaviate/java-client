@@ -126,7 +126,12 @@ public class Filter implements FilterOperand {
 
   /** Filter by object property. */
   public static FilterBuilder property(String property) {
-    return new FilterBuilder(new PathOperand(property));
+    return new FilterBuilder(new PathOperand(false, property));
+  }
+
+  /** Filter by object property's length. */
+  public static FilterBuilder propertyLen(String property) {
+    return new FilterBuilder(new PathOperand(true, property));
   }
 
   public static class FilterBuilder {
@@ -616,22 +621,27 @@ public class Filter implements FilterOperand {
 
   private static class PathOperand implements FilterOperand {
     private final List<String> path;
+    private final boolean length;
 
-    private PathOperand(List<String> path) {
+    private PathOperand(boolean length, List<String> path) {
       this.path = path;
+      this.length = length;
     }
 
-    private PathOperand(String... path) {
-      this(Arrays.asList(path));
+    private PathOperand(boolean length, String... path) {
+      this(length, Arrays.asList(path));
     }
 
     @Override
     public void appendTo(WeaviateProtoBase.Filters.Builder filter) {
       if (!path.isEmpty()) {
+        var property = path.get(0);
+        if (length) {
+          property = "len(" + property + ")";
+        }
         filter.setTarget(WeaviateProtoBase.FilterTarget.newBuilder()
-            .setProperty(path.get(0)));
+            .setProperty(property));
       }
-
       // FIXME: no way to reference objects rn?
     }
 
@@ -643,7 +653,7 @@ public class Filter implements FilterOperand {
 
   public static class UuidProperty extends PathOperand {
     private UuidProperty() {
-      super(BaseQueryOptions.ID_PROPERTY);
+      super(false, BaseQueryOptions.ID_PROPERTY);
     }
 
     public Filter eq(String value) {
@@ -681,7 +691,7 @@ public class Filter implements FilterOperand {
 
   public static class DateProperty extends PathOperand {
     private DateProperty(String propertyName) {
-      super(propertyName);
+      super(false, propertyName);
     }
 
     public Filter eq(OffsetDateTime value) {
