@@ -10,11 +10,11 @@ import java.util.stream.StreamSupport;
 
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.query.FetchObjects;
+import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.api.collections.query.QueryReference;
 import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClient;
-import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public class Paginator<PropertiesT> implements Iterable<WeaviateObject<PropertiesT, Object, QueryMetadata>> {
@@ -92,6 +92,21 @@ public class Paginator<PropertiesT> implements Iterable<WeaviateObject<Propertie
     /** Combine several conditions using with an AND operator. */
     public final Builder<T> filters(Filter... filters) {
       return applyQueryOption(q -> q.filters(filters));
+    }
+
+    /** Include default vector. */
+    public final Builder<T> includeVector() {
+      return applyQueryOption(q -> q.includeVector());
+    }
+
+    /** Include one or more named vectors in the metadata response. */
+    public final Builder<T> includeVector(String... vectors) {
+      return applyQueryOption(q -> q.includeVector(vectors));
+    }
+
+    /** Include one or more named vectors in the metadata response. */
+    public final Builder<T> includeVector(List<String> vectors) {
+      return applyQueryOption(q -> q.includeVector(vectors));
     }
 
     public final Builder<T> returnProperties(String... properties) {
