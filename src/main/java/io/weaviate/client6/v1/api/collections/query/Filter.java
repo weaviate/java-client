@@ -129,11 +129,6 @@ public class Filter implements FilterOperand {
     return new FilterBuilder(new PathOperand(property));
   }
 
-  /** Filter by a property of the referenced object. */
-  public static FilterBuilder reference(String... path) {
-    return new FilterBuilder(new PathOperand(path));
-  }
-
   public static class FilterBuilder {
     private final FilterOperand left;
 
@@ -632,10 +627,11 @@ public class Filter implements FilterOperand {
 
     @Override
     public void appendTo(WeaviateProtoBase.Filters.Builder filter) {
-      // "on" is deprecated, but the current proto doesn't have "path".
       if (!path.isEmpty()) {
-        filter.addOn(path.get(0));
+        filter.setTarget(WeaviateProtoBase.FilterTarget.newBuilder()
+            .setProperty(path.get(0)));
       }
+
       // FIXME: no way to reference objects rn?
     }
 
