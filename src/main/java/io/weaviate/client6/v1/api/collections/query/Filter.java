@@ -110,8 +110,8 @@ public class Filter implements FilterOperand {
   // --------------------------------------------------------------------------
 
   /** Filter by object UUID. */
-  public static FilterBuilder uuid() {
-    return property(BaseQueryOptions.ID_PROPERTY);
+  public static UuidProperty uuid() {
+    return new UuidProperty();
   }
 
   /** Filter by object creation time. */
@@ -642,6 +642,44 @@ public class Filter implements FilterOperand {
     @Override
     public String toString() {
       return String.join("::", path);
+    }
+  }
+
+  public static class UuidProperty extends PathOperand {
+    private UuidProperty() {
+      super(BaseQueryOptions.ID_PROPERTY);
+    }
+
+    public Filter eq(String value) {
+      return new Filter(Operator.EQUAL, this, new TextOperand(value));
+    }
+
+    public Filter ne(String value) {
+      return new Filter(Operator.NOT_EQUAL, this, new TextOperand(value));
+    }
+
+    public Filter gt(String value) {
+      return new Filter(Operator.GREATER_THAN, this, new TextOperand(value));
+    }
+
+    public Filter gte(String value) {
+      return new Filter(Operator.GREATER_THAN_EQUAL, this, new TextOperand(value));
+    }
+
+    public Filter lt(String value) {
+      return new Filter(Operator.LESS_THAN, this, new TextOperand(value));
+    }
+
+    public Filter lte(String value) {
+      return new Filter(Operator.LESS_THAN_EQUAL, this, new TextOperand(value));
+    }
+
+    public Filter containsAny(String... values) {
+      return new Filter(Operator.CONTAINS_ANY, this, new TextArrayOperand(values));
+    }
+
+    public Filter containsNone(String... values) {
+      return new Filter(Operator.CONTAINS_NONE, this, new TextArrayOperand(values));
     }
   }
 
