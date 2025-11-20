@@ -723,4 +723,21 @@ public class SearchITest extends ConcurrentTest {
     Assertions.assertThat(beforeNow.objects()).isEmpty();
     Assertions.assertThat(afterNow.objects()).hasSize(1);
   }
+
+  @Test
+  public void teset_filterPropertyLength() throws IOException {
+    // Arrange
+    var nsStrings = ns("Strings");
+
+    var strings = client.collections.create(nsStrings, c -> c
+        .invertedIndex(idx -> idx.indexPropertyLength(true))
+        .properties(Property.text("letters")));
+    strings.data.insertMany(Map.of("letters", "abc"), Map.of("letters", "abcd"), Map.of("letters", "a"));
+
+    // Act
+    var got = strings.query.fetchObjects(q -> q.filters(Filter.propertyLen("letters").gte(3)));
+
+    // Assertions
+    Assertions.assertThat(got.objects()).hasSize(2);
+  }
 }
