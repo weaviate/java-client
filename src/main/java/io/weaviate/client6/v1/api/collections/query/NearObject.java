@@ -8,7 +8,12 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
-public record NearObject(String uuid, Float distance, Float certainty, BaseQueryOptions common)
+public record NearObject(
+    String uuid,
+    Float distance,
+    Float certainty,
+    Rerank rerank,
+    BaseQueryOptions common)
     implements QueryOperator, AggregateObjectFilter {
 
   public static final NearObject of(String uuid) {
@@ -20,7 +25,12 @@ public record NearObject(String uuid, Float distance, Float certainty, BaseQuery
   }
 
   public NearObject(Builder builder) {
-    this(builder.uuid, builder.distance, builder.certainty, builder.baseOptions());
+    this(
+        builder.uuid,
+        builder.distance,
+        builder.certainty,
+        builder.rerank,
+        builder.baseOptions());
   }
 
   public static class Builder extends BaseVectorSearchBuilder<Builder, NearObject> {
