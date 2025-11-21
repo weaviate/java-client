@@ -15,7 +15,7 @@ To start using Weaviate Java Client add the dependency to `pom.xml`:
 <dependency>
     <groupId>io.weaviate</groupId>
     <artifactId>client6</artifactId>
-    <version>6.0.0-M2</version>
+    <version>6.0.0-rc1</version>
 </dependency>
 ```
 
@@ -28,7 +28,7 @@ This ensures that all dynamically-loaded dependecies of `io.grpc` are resolved c
 <dependency>
     <groupId>io.weaviate</groupId>
     <artifactId>client6</artifactId>
-    <version>6.0.0-M2</version>
+    <version>6.0.0-rc1</version>
     <classifier>all</classifier>
 </dependency>
 ```
