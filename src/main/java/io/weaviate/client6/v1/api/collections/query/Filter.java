@@ -18,10 +18,11 @@ public class Filter implements FilterOperand {
     // Comparison operators
     EQUAL("Equal", WeaviateProtoBase.Filters.Operator.OPERATOR_EQUAL),
     NOT_EQUAL("NotEqual", WeaviateProtoBase.Filters.Operator.OPERATOR_NOT_EQUAL),
-    LESS_THAN("LessThen", WeaviateProtoBase.Filters.Operator.OPERATOR_LESS_THAN),
+    LESS_THAN("LessThan", WeaviateProtoBase.Filters.Operator.OPERATOR_LESS_THAN),
     LESS_THAN_EQUAL("LessThenEqual", WeaviateProtoBase.Filters.Operator.OPERATOR_LESS_THAN_EQUAL),
-    GREATER_THAN("GreaterThen", WeaviateProtoBase.Filters.Operator.OPERATOR_GREATER_THAN),
-    GREATER_THAN_EQUAL("GreaterThenEqual", WeaviateProtoBase.Filters.Operator.OPERATOR_GREATER_THAN_EQUAL),
+    GREATER_THAN("GreaterThan", WeaviateProtoBase.Filters.Operator.OPERATOR_GREATER_THAN),
+    GREATER_THAN_EQUAL("GreaterThanEqual", WeaviateProtoBase.Filters.Operator.OPERATOR_GREATER_THAN_EQUAL),
+    IS_NULL("IsNull", WeaviateProtoBase.Filters.Operator.OPERATOR_IS_NULL),
     LIKE("Like", WeaviateProtoBase.Filters.Operator.OPERATOR_LIKE),
     CONTAINS_ANY("ContainsAny", WeaviateProtoBase.Filters.Operator.OPERATOR_CONTAINS_ANY),
     CONTAINS_ALL("ContainsAll", WeaviateProtoBase.Filters.Operator.OPERATOR_CONTAINS_ALL),
@@ -109,18 +110,28 @@ public class Filter implements FilterOperand {
   // --------------------------------------------------------------------------
 
   /** Filter by object UUID. */
-  public static FilterBuilder uuid() {
-    return property(FetchObjectById.ID_PROPERTY);
+  public static UuidProperty uuid() {
+    return new UuidProperty();
+  }
+
+  /** Filter by object creation time. */
+  public static DateProperty createdAt() {
+    return new DateProperty(BaseQueryOptions.CREATION_TIME_PROPERTY);
+  }
+
+  /** Filter by object last update time. */
+  public static DateProperty lastUpdatedAt() {
+    return new DateProperty(BaseQueryOptions.LAST_UPDATE_TIME_PROPERTY);
   }
 
   /** Filter by object property. */
   public static FilterBuilder property(String property) {
-    return new FilterBuilder(new PathOperand(property));
+    return new FilterBuilder(new PathOperand(false, property));
   }
 
-  /** Filter by a property of the referenced object. */
-  public static FilterBuilder reference(String... path) {
-    return new FilterBuilder(new PathOperand(path));
+  /** Filter by object property's length. */
+  public static FilterBuilder propertyLen(String property) {
+    return new FilterBuilder(new PathOperand(true, property));
   }
 
   public static class FilterBuilder {
@@ -422,6 +433,20 @@ public class Filter implements FilterOperand {
       return new Filter(Operator.GREATER_THAN_EQUAL, left, fromObject(value));
     }
 
+    // IsNull
+    // ------------------------------------------------------------------------
+    public Filter isNull() {
+      return isNull(true);
+    }
+
+    public Filter isNotNull() {
+      return isNull(false);
+    }
+
+    public Filter isNull(boolean isNull) {
+      return new Filter(Operator.IS_NULL, left, new BooleanOperand(isNull));
+    }
+
     // Like
     // ------------------------------------------------------------------------
     public Filter like(String value) {
@@ -596,20 +621,26 @@ public class Filter implements FilterOperand {
 
   private static class PathOperand implements FilterOperand {
     private final List<String> path;
+    private final boolean length;
 
-    private PathOperand(List<String> path) {
+    private PathOperand(boolean length, List<String> path) {
       this.path = path;
+      this.length = length;
     }
 
-    private PathOperand(String... path) {
-      this(Arrays.asList(path));
+    private PathOperand(boolean length, String... path) {
+      this(length, Arrays.asList(path));
     }
 
     @Override
     public void appendTo(WeaviateProtoBase.Filters.Builder filter) {
-      // "on" is deprecated, but the current proto doesn't have "path".
       if (!path.isEmpty()) {
-        filter.addOn(path.get(0));
+        var property = path.get(0);
+        if (length) {
+          property = "len(" + property + ")";
+        }
+        filter.setTarget(WeaviateProtoBase.FilterTarget.newBuilder()
+            .setProperty(property));
       }
       // FIXME: no way to reference objects rn?
     }
@@ -617,6 +648,82 @@ public class Filter implements FilterOperand {
     @Override
     public String toString() {
       return String.join("::", path);
+    }
+  }
+
+  public static class UuidProperty extends PathOperand {
+    private UuidProperty() {
+      super(false, BaseQueryOptions.ID_PROPERTY);
+    }
+
+    public Filter eq(String value) {
+      return new Filter(Operator.EQUAL, this, new TextOperand(value));
+    }
+
+    public Filter ne(String value) {
+      return new Filter(Operator.NOT_EQUAL, this, new TextOperand(value));
+    }
+
+    public Filter gt(String value) {
+      return new Filter(Operator.GREATER_THAN, this, new TextOperand(value));
+    }
+
+    public Filter gte(String value) {
+      return new Filter(Operator.GREATER_THAN_EQUAL, this, new TextOperand(value));
+    }
+
+    public Filter lt(String value) {
+      return new Filter(Operator.LESS_THAN, this, new TextOperand(value));
+    }
+
+    public Filter lte(String value) {
+      return new Filter(Operator.LESS_THAN_EQUAL, this, new TextOperand(value));
+    }
+
+    public Filter containsAny(String... values) {
+      return new Filter(Operator.CONTAINS_ANY, this, new TextArrayOperand(values));
+    }
+
+    public Filter containsNone(String... values) {
+      return new Filter(Operator.CONTAINS_NONE, this, new TextArrayOperand(values));
+    }
+  }
+
+  public static class DateProperty extends PathOperand {
+    private DateProperty(String propertyName) {
+      super(false, propertyName);
+    }
+
+    public Filter eq(OffsetDateTime value) {
+      return new Filter(Operator.EQUAL, this, new DateOperand(value));
+    }
+
+    public Filter ne(OffsetDateTime value) {
+      return new Filter(Operator.NOT_EQUAL, this, new DateOperand(value));
+    }
+
+    public Filter gt(OffsetDateTime value) {
+      return new Filter(Operator.GREATER_THAN, this, new DateOperand(value));
+    }
+
+    public Filter gte(OffsetDateTime value) {
+      return new Filter(Operator.GREATER_THAN_EQUAL, this, new DateOperand(value));
+    }
+
+    public Filter lt(OffsetDateTime value) {
+      return new Filter(Operator.LESS_THAN, this, new DateOperand(value));
+    }
+
+    public Filter lte(OffsetDateTime value) {
+      return new Filter(Operator.LESS_THAN_EQUAL, this, new DateOperand(value));
+    }
+
+    public Filter containsAny(OffsetDateTime... values) {
+      return new Filter(Operator.CONTAINS_ANY, this, new DateArrayOperand(values));
+    }
+
+    public Filter containsNone(OffsetDateTime... values) {
+      return new Filter(Operator.CONTAINS_NONE, this, new DateArrayOperand(values));
     }
   }
 

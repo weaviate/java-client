@@ -20,6 +20,12 @@ public class BooleanEndpoint<RequestT> extends EndpointBase<RequestT, Boolean> {
     super(method, requestUrl, queryParameters, body);
   }
 
+  @SuppressWarnings("unchecked")
+  public <R> BooleanEndpoint<R> allowStatus(Integer... statusCodes) {
+    super._allowStatusCodes(statusCodes);
+    return (BooleanEndpoint<R>) this;
+  }
+
   @Override
   public boolean isError(int statusCode) {
     return statusCode != 404 && super.isError(statusCode);

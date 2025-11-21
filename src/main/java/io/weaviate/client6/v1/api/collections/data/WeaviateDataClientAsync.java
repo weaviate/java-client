@@ -65,6 +65,11 @@ public class WeaviateDataClientAsync<PropertiesT> {
     return insertMany(InsertManyRequest.of(objects));
   }
 
+  @SafeVarargs
+  public final CompletableFuture<InsertManyResponse> insertMany(WriteWeaviateObject<PropertiesT>... objects) {
+    return insertMany(Arrays.asList(objects));
+  }
+
   public CompletableFuture<InsertManyResponse> insertMany(List<WriteWeaviateObject<PropertiesT>> objects) {
     return insertMany(new InsertManyRequest<>(objects));
   }
@@ -92,7 +97,7 @@ public class WeaviateDataClientAsync<PropertiesT> {
         ReplaceObjectRequest.endpoint(collection, defaults));
   }
 
-  public CompletableFuture<Void> delete(String uuid) {
+  public CompletableFuture<Boolean> delete(String uuid) {
     return this.restTransport.performRequestAsync(new DeleteObjectRequest(uuid),
         DeleteObjectRequest.endpoint(collection, defaults));
   }

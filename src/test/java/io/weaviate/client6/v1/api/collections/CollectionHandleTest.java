@@ -80,7 +80,7 @@ public class CollectionHandleTest {
             "data::delete by id",
             ConsistencyLevel.ONE, Location.QUERY,
             "john_doe", Location.QUERY,
-            (Act) c -> c.data.delete("test-uuid"),
+            (Act) c -> c.data.deleteById("test-uuid"),
         },
         {
             "data::add reference",
