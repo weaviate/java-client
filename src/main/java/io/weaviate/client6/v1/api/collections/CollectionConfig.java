@@ -276,19 +276,23 @@ public record CollectionConfig(
           // Reranker and Generative module configs belong to the "moduleConfig".
           var rerankerModules = jsonObject.remove("rerankerModules").getAsJsonArray();
           var generativeModule = jsonObject.remove("generativeModule");
-          if (!rerankerModules.isEmpty() || !generativeModule.isJsonNull()) {
-            var modules = new JsonObject();
 
+          var modules = new JsonObject();
+          if (!rerankerModules.isEmpty()) {
             // Copy configuration for each reranker module.
             rerankerModules.forEach(reranker -> {
               reranker.getAsJsonObject().entrySet()
                   .stream().forEach(entry -> modules.add(entry.getKey(), entry.getValue()));
             });
+          }
 
+          if (!generativeModule.isJsonNull()) {
             // Copy configuration for each generative module.
             generativeModule.getAsJsonObject().entrySet()
                 .stream().forEach(entry -> modules.add(entry.getKey(), entry.getValue()));
+          }
 
+          if (!modules.isEmpty()) {
             jsonObject.add("moduleConfig", modules);
           }
 

@@ -5,11 +5,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
+import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
 
 public record Aggregation(
     AggregateObjectFilter filter,
+    Filter whereFilter,
     Integer objectLimit,
     boolean includeTotalCount,
     List<PropertyAggregation> returnMetrics) {
@@ -29,6 +32,7 @@ public record Aggregation(
   public Aggregation(Builder builder) {
     this(
         builder.objectFilter,
+        builder.whereFilter,
         builder.objectLimit,
         builder.includeTotalCount,
         builder.metrics);
@@ -41,6 +45,7 @@ public record Aggregation(
       this.objectFilter = objectFilter;
     }
 
+    private Filter whereFilter;
     private List<PropertyAggregation> metrics = new ArrayList<>();
     private Integer objectLimit;
     private boolean includeTotalCount = false;
@@ -52,6 +57,24 @@ public record Aggregation(
 
     public final Builder includeTotalCount(boolean include) {
       this.includeTotalCount = include;
+      return this;
+    }
+
+    /**
+     * Filter result set using traditional filtering operators: {@code eq},
+     * {@code gte}, {@code like}, etc.
+     * Subsequent calls to {@link #filter} aggregate with an AND operator.
+     */
+    public final Builder filters(Filter filter) {
+      this.whereFilter = this.whereFilter == null
+          ? filter
+          : Filter.and(this.whereFilter, filter);
+      return this;
+    }
+
+    /** Combine several conditions using with an AND operator. */
+    public final Builder filters(Filter... filters) {
+      Arrays.stream(filters).map(this::filters);
       return this;
     }
 
@@ -78,6 +101,12 @@ public record Aggregation(
 
     if (objectLimit != null) {
       req.setObjectLimit(objectLimit);
+    }
+
+    if (whereFilter != null) {
+      var protoFilters = WeaviateProtoBase.Filters.newBuilder();
+      whereFilter.appendTo(protoFilters);
+      req.setFilters(protoFilters);
     }
 
     for (final var metric : returnMetrics) {

@@ -10,7 +10,12 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
-public record NearImage(Target searchTarget, Float distance, Float certainty, BaseQueryOptions common)
+public record NearImage(
+    Target searchTarget,
+    Float distance,
+    Float certainty,
+    Rerank rerank,
+    BaseQueryOptions common)
     implements QueryOperator, AggregateObjectFilter {
 
   public static NearImage of(String image) {
@@ -34,6 +39,7 @@ public record NearImage(Target searchTarget, Float distance, Float certainty, Ba
         builder.media,
         builder.distance,
         builder.certainty,
+        builder.rerank,
         builder.baseOptions());
   }
 

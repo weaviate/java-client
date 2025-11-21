@@ -58,7 +58,7 @@ public record GenerativeTask(Single single, Grouped grouped) {
     }
   }
 
-  public record Single(String prompt, boolean debug, List<GenerativeProvider> providers) {
+  public record Single(String prompt, boolean debug, boolean returnMetadata, List<GenerativeProvider> providers) {
     public static Single of(String prompt) {
       return of(prompt, ObjectBuilder.identity());
     }
@@ -68,13 +68,17 @@ public record GenerativeTask(Single single, Grouped grouped) {
     }
 
     public Single(Builder builder) {
-      this(builder.prompt, builder.debug, builder.providers);
+      this(builder.prompt,
+          builder.debug,
+          builder.returnMetadata,
+          builder.providers);
     }
 
     public static class Builder implements ObjectBuilder<Single> {
       private final String prompt;
       private final List<GenerativeProvider> providers = new ArrayList<>();
       private boolean debug = false;
+      private boolean returnMetadata = false;
 
       public Builder(String prompt) {
         this.prompt = prompt;
@@ -82,6 +86,16 @@ public record GenerativeTask(Single single, Grouped grouped) {
 
       public Builder debug(boolean enable) {
         this.debug = enable;
+        return this;
+      }
+
+      /**
+       * Return generative provider metadata alongside the query result. Metadata is
+       * only available if {@link #generativeProvider(GenerativeProvider)} is set
+       * explicitly..
+       */
+      public Builder metadata(boolean enable) {
+        this.returnMetadata = enable;
         return this;
       }
 
@@ -102,6 +116,7 @@ public record GenerativeTask(Single single, Grouped grouped) {
           .map(provider -> {
             var proto = WeaviateProtoGenerative.GenerativeProvider.newBuilder();
             provider.appendTo(proto);
+            proto.setReturnMetadata(returnMetadata);
             return proto.build();
           })
           .toList();
@@ -114,7 +129,8 @@ public record GenerativeTask(Single single, Grouped grouped) {
     }
   }
 
-  public record Grouped(String prompt, boolean debug, List<String> properties, List<GenerativeProvider> providers) {
+  public record Grouped(String prompt, boolean debug, boolean returnMetadata, List<String> properties,
+      List<GenerativeProvider> providers) {
     public static Grouped of(String prompt) {
       return of(prompt, ObjectBuilder.identity());
     }
@@ -124,7 +140,12 @@ public record GenerativeTask(Single single, Grouped grouped) {
     }
 
     public Grouped(Builder builder) {
-      this(builder.prompt, builder.debug, builder.properties, builder.providers);
+      this(
+          builder.prompt,
+          builder.debug,
+          builder.returnMetadata,
+          builder.properties,
+          builder.providers);
     }
 
     public static class Builder implements ObjectBuilder<Grouped> {
@@ -132,6 +153,7 @@ public record GenerativeTask(Single single, Grouped grouped) {
       private final List<GenerativeProvider> providers = new ArrayList<>();
       private final List<String> properties = new ArrayList<>();
       private boolean debug = false;
+      private boolean returnMetadata = false;
 
       public Builder(String prompt) {
         this.prompt = prompt;
@@ -149,6 +171,16 @@ public record GenerativeTask(Single single, Grouped grouped) {
       public Builder generativeProvider(GenerativeProvider provider) {
         providers.clear(); // Protobuf allows `repeated` but the server expects there to be 1.
         providers.add(provider);
+        return this;
+      }
+
+      /**
+       * Return generative provider metadata alongside the query result. Metadata is
+       * only available if {@link #generativeProvider(GenerativeProvider)} is set
+       * explicitly..
+       */
+      public Builder metadata(boolean enable) {
+        this.returnMetadata = enable;
         return this;
       }
 
@@ -179,6 +211,7 @@ public record GenerativeTask(Single single, Grouped grouped) {
           .map(provider -> {
             var proto = WeaviateProtoGenerative.GenerativeProvider.newBuilder();
             provider.appendTo(proto);
+            proto.setReturnMetadata(returnMetadata);
             return proto.build();
           })
           .toList();

@@ -8,8 +8,28 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
-public record NearVector(NearVectorTarget searchTarget, Float distance, Float certainty, BaseQueryOptions common)
+public record NearVector(NearVectorTarget searchTarget,
+    Float distance,
+    Float certainty,
+    Rerank rerank,
+    BaseQueryOptions common)
     implements QueryOperator, AggregateObjectFilter {
+
+  public static final NearVector of(float[] vector) {
+    return of(vector, ObjectBuilder.identity());
+  }
+
+  public static final NearVector of(float[] vector, Function<Builder, ObjectBuilder<NearVector>> fn) {
+    return fn.apply(new Builder(Target.vector(vector))).build();
+  }
+
+  public static final NearVector of(float[][] vector) {
+    return of(vector, ObjectBuilder.identity());
+  }
+
+  public static final NearVector of(float[][] vector, Function<Builder, ObjectBuilder<NearVector>> fn) {
+    return fn.apply(new Builder(Target.vector(vector))).build();
+  }
 
   public static final NearVector of(NearVectorTarget searchTarget) {
     return of(searchTarget, ObjectBuilder.identity());
@@ -20,7 +40,11 @@ public record NearVector(NearVectorTarget searchTarget, Float distance, Float ce
   }
 
   public NearVector(Builder builder) {
-    this(builder.searchTarget, builder.distance, builder.certainty, builder.baseOptions());
+    this(builder.searchTarget,
+        builder.distance,
+        builder.certainty,
+        builder.rerank,
+        builder.baseOptions());
   }
 
   public static class Builder extends BaseVectorSearchBuilder<Builder, NearVector> {

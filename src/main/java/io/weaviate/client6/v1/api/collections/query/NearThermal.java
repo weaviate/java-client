@@ -10,7 +10,11 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
-public record NearThermal(Target searchTarget, Float distance, Float certainty, BaseQueryOptions common)
+public record NearThermal(Target searchTarget,
+    Float distance,
+    Float certainty,
+    Rerank rerank,
+    BaseQueryOptions common)
     implements QueryOperator, AggregateObjectFilter {
 
   public static NearThermal of(String thermal) {
@@ -34,6 +38,7 @@ public record NearThermal(Target searchTarget, Float distance, Float certainty, 
         builder.media,
         builder.distance,
         builder.certainty,
+        builder.rerank,
         builder.baseOptions());
   }
 

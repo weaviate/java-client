@@ -13,6 +13,7 @@ import io.weaviate.client6.v1.api.collections.CollectionConfig;
 import io.weaviate.client6.v1.api.collections.DataType;
 import io.weaviate.client6.v1.api.collections.InvertedIndex;
 import io.weaviate.client6.v1.api.collections.Property;
+import io.weaviate.client6.v1.api.collections.Quantization;
 import io.weaviate.client6.v1.api.collections.ReferenceProperty;
 import io.weaviate.client6.v1.api.collections.Replication;
 import io.weaviate.client6.v1.api.collections.VectorConfig;
@@ -198,7 +199,7 @@ public class CollectionsITest extends ConcurrentTest {
   }
 
   @Test
-  public void testNestedProperties() throws IOException, Exception {
+  public void testNestedProperties() throws IOException {
     var nsBuildings = ns("Buildings");
 
     client.collections.create(
@@ -230,5 +231,28 @@ public class CollectionsITest extends ConcurrentTest {
         .extracting(Property::nestedProperties, InstanceOfAssertFactories.list(Property.class))
         .extracting(Property::dataTypes).extracting(types -> types.get(0))
         .containsExactly(DataType.INT, DataType.NUMBER);
+  }
+
+  @Test
+  public void test_updateQuantization() throws IOException {
+    // Arrange
+    var nsThings = ns("Things");
+
+    var things = client.collections.create(nsThings,
+        c -> c.vectorConfig(VectorConfig.selfProvided(
+            self -> self.quantization(Quantization.uncompressed()))));
+
+    // Act
+    things.config.update(
+        c -> c.vectorConfig(VectorConfig.selfProvided(
+            self -> self.quantization(Quantization.bq()))));
+
+    // Assert
+    var config = things.config.get();
+    Assertions.assertThat(config).get()
+        .extracting(CollectionConfig::vectors)
+        .extracting("default", InstanceOfAssertFactories.type(VectorConfig.class))
+        .extracting(VectorConfig::quantization)
+        .returns(Quantization.Kind.BQ, Quantization::_kind);
   }
 }

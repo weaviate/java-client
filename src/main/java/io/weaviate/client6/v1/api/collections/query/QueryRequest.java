@@ -28,6 +28,13 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
     message.setUses125Api(true);
     message.setUses123Api(true);
     message.setCollection(collection.collectionName());
+
+    if (request.operator.common() != null) {
+      request.operator.common().appendTo(message);
+    }
+    if (request.operator.rerank() != null) {
+      request.operator.rerank().appendTo(message);
+    }
     request.operator.appendTo(message);
 
     if (defaults.tenant() != null) {
