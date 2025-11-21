@@ -15,6 +15,7 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 public record Text2VecCohereVectorizer(
     @SerializedName("baseUrl") String baseUrl,
     @SerializedName("model") String model,
+    @SerializedName("dimensions") Integer dimensions,
     @SerializedName("truncate") Truncate truncate,
 
     /**
@@ -68,6 +69,7 @@ public record Text2VecCohereVectorizer(
   public Text2VecCohereVectorizer(
       String baseUrl,
       String model,
+      Integer dimensions,
       Truncate truncate,
 
       boolean vectorizeCollectionName,
@@ -75,6 +77,7 @@ public record Text2VecCohereVectorizer(
       VectorIndex vectorIndex,
       Quantization quantization) {
     this.model = model;
+    this.dimensions = dimensions;
     this.truncate = truncate;
     this.baseUrl = baseUrl;
 
@@ -88,6 +91,7 @@ public record Text2VecCohereVectorizer(
     this(
         builder.baseUrl,
         builder.model,
+        builder.dimensions,
         builder.truncate,
         builder.vectorizeCollectionName,
         builder.sourceProperties,
@@ -102,6 +106,7 @@ public record Text2VecCohereVectorizer(
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
 
     private String model;
+    private Integer dimensions;
     private Truncate truncate;
     private String baseUrl;
 
@@ -112,6 +117,11 @@ public record Text2VecCohereVectorizer(
 
     public Builder model(String model) {
       this.model = model;
+      return this;
+    }
+
+    public Builder dimensions(Integer dimensions) {
+      this.dimensions = dimensions;
       return this;
     }
 
