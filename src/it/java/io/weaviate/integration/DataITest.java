@@ -23,14 +23,11 @@ import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.data.BatchReference;
 import io.weaviate.client6.v1.api.collections.data.DeleteManyResponse;
 import io.weaviate.client6.v1.api.collections.data.Reference;
-import io.weaviate.client6.v1.api.collections.data.WriteWeaviateObject;
 import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.Metadata.MetadataField;
 import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.api.collections.query.QueryReference;
-import io.weaviate.client6.v1.api.collections.query.ReadWeaviateObject;
-import io.weaviate.client6.v1.api.collections.tenants.Tenant;
 import io.weaviate.containers.Container;
 
 public class DataITest extends ConcurrentTest {
