@@ -49,8 +49,12 @@ public record QueryMetadata(
       return this;
     }
 
-    final Builder vectors(Vectors vectors) {
-      this.vectors = vectors;
+    public Builder vectors(Vectors... vectors) {
+      if (this.vectors == null) {
+        this.vectors = vectors.length == 1 ? vectors[0] : new Vectors(vectors);
+      } else {
+        this.vectors = this.vectors.withVectors(vectors);
+      }
       return this;
     }
 

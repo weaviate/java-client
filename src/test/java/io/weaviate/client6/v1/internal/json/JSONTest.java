@@ -18,7 +18,6 @@ import io.weaviate.client6.v1.api.cluster.NodeVerbosity;
 import io.weaviate.client6.v1.api.collections.CollectionConfig;
 import io.weaviate.client6.v1.api.collections.Encoding;
 import io.weaviate.client6.v1.api.collections.Generative;
-import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.Quantization;
 import io.weaviate.client6.v1.api.collections.ReferenceProperty;
@@ -26,10 +25,10 @@ import io.weaviate.client6.v1.api.collections.Reranker;
 import io.weaviate.client6.v1.api.collections.Tokenization;
 import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.Vectors;
-import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.BatchReference;
 import io.weaviate.client6.v1.api.collections.data.Reference;
 import io.weaviate.client6.v1.api.collections.data.ReferenceAddManyResponse;
+import io.weaviate.client6.v1.api.collections.data.WriteWeaviateObject;
 import io.weaviate.client6.v1.api.collections.quantizers.PQ;
 import io.weaviate.client6.v1.api.collections.rerankers.CohereReranker;
 import io.weaviate.client6.v1.api.collections.vectorindex.Distance;
@@ -414,15 +413,20 @@ public class JSONTest {
             "{\"beacon\": \"weaviate://localhost/Doodlebops/id-1\"}",
         },
 
-        // WeaviateObject.CustomTypeAdapterFactory.INSTANCE
+        // WriteWeaviateObject.CustomTypeAdapterFactory.INSTANCE
         {
-            new TypeToken<WeaviateObject<Map<String, Object>, Reference, ObjectMetadata>>() {
+            new TypeToken<WriteWeaviateObject<Map<String, Object>>>() {
             },
-            new WeaviateObject<>(
+            new WriteWeaviateObject<>(
+                "thing-1",
                 "Things",
+                /* tenant */ null,
                 Map.of("title", "ThingOne"),
-                Map.of("hasRef", List.of(Reference.uuids("ref-1"))),
-                ObjectMetadata.of(meta -> meta.uuid("thing-1"))),
+                /* vectors */ null,
+                /* creationTimeUnix */ null,
+                /* lastUpdateTimeUnix */ null,
+                Map.of("hasRef", List.of(Reference.uuids("ref-1")))),
+
             """
                 {
                   "class": "Things",

@@ -7,10 +7,8 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import io.weaviate.client6.v1.api.collections.GeoCoordinates;
-import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.PhoneNumber;
 import io.weaviate.client6.v1.api.collections.Vectors;
-import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.internal.DateUtil;
 import io.weaviate.client6.v1.internal.grpc.ByteStringUtil;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties;
@@ -19,7 +17,7 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 import io.weaviate.client6.v1.internal.orm.PropertiesBuilder;
 
 public record QueryResponse<PropertiesT>(
-    List<WeaviateObject<PropertiesT, Object, QueryMetadata>> objects) {
+    List<ReadWeaviateObject<PropertiesT>> objects) {
 
   static <PropertiesT> QueryResponse<PropertiesT> unmarshal(WeaviateProtoSearchGet.SearchReply reply,
       CollectionDescriptor<PropertiesT> collection) {
@@ -32,7 +30,7 @@ public record QueryResponse<PropertiesT>(
     return new QueryResponse<>(objects);
   }
 
-  public static <PropertiesT> WeaviateObject<PropertiesT, Object, QueryMetadata> unmarshalResultObject(
+  public static <PropertiesT> ReadWeaviateObject<PropertiesT> unmarshalResultObject(
       WeaviateProtoSearchGet.PropertiesResult propertiesResult,
       WeaviateProtoSearchGet.MetadataResult metadataResult,
       CollectionDescriptor<PropertiesT> collection) {
@@ -59,11 +57,11 @@ public record QueryResponse<PropertiesT>(
     if (metadataResult.getExplainScorePresent()) {
       metadata.explainScore(metadataResult.getExplainScore());
     }
-    return new WeaviateObject<>(collection.collectionName(), object.properties(), object.references(),
+    return new ReadWeaviateObject<>(collection.collectionName(), object.properties(), object.references(),
         metadata.build());
   }
 
-  static <PropertiesT> WeaviateObject<PropertiesT, Object, ObjectMetadata> unmarshalWithReferences(
+  static <PropertiesT> ReadWeaviateObject<PropertiesT> unmarshalWithReferences(
       WeaviateProtoSearchGet.PropertiesResult propertiesResult,
       WeaviateProtoSearchGet.MetadataResult metadataResult,
       CollectionDescriptor<PropertiesT> descriptor) {
@@ -78,14 +76,14 @@ public record QueryResponse<PropertiesT>(
     // I.e. { "ref": A-1 } , { "ref": B-1 } => { "ref": [A-1, B-1] }
     var referenceProperties = propertiesResult.getRefPropsList()
         .stream().reduce(
-            new HashMap<String, List<Object>>(),
+            new HashMap<String, List<ReadWeaviateObject<Object>>>(),
             (map, ref) -> {
               var refObjects = ref.getPropertiesList().stream()
                   .map(property -> {
                     var reference = unmarshalWithReferences(
                         property, property.getMetadata(),
                         CollectionDescriptor.ofMap(property.getTargetCollection()));
-                    return (Object) new WeaviateObject<>(
+                    return new ReadWeaviateObject<>(
                         reference.collection(),
                         (Object) reference.properties(),
                         reference.references(),
@@ -110,9 +108,9 @@ public record QueryResponse<PropertiesT>(
               return left;
             });
 
-    ObjectMetadata metadata = null;
+    QueryMetadata metadata = null;
     if (metadataResult != null) {
-      var metadataBuilder = new ObjectMetadata.Builder()
+      var metadataBuilder = new QueryMetadata.Builder()
           .uuid(metadataResult.getId());
 
       var vectors = new Vectors[metadataResult.getVectorsList().size()];
@@ -141,12 +139,11 @@ public record QueryResponse<PropertiesT>(
       metadata = metadataBuilder.build();
     }
 
-    var obj = new WeaviateObject.Builder<PropertiesT, Object, ObjectMetadata>()
-        .collection(descriptor.collectionName())
-        .properties(properties.build())
-        .references(referenceProperties)
-        .metadata(metadata);
-    return obj.build();
+    return new ReadWeaviateObject<>(
+        descriptor.collectionName(),
+        properties.build(),
+        referenceProperties,
+        metadata);
   }
 
   static <PropertiesT> void setProperty(String property, WeaviateProtoProperties.Value value,

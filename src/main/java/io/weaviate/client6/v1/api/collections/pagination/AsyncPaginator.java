@@ -5,12 +5,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.query.FetchObjects;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
-import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.api.collections.query.QueryReference;
 import io.weaviate.client6.v1.api.collections.query.QueryResponse;
+import io.weaviate.client6.v1.api.collections.query.ReadWeaviateObject;
 import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClientAsync;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
@@ -46,25 +45,25 @@ public class AsyncPaginator<PropertiesT> {
     this.resultSet = builder.prefetch ? rs.fetchNextPage() : CompletableFuture.completedFuture(rs);
   }
 
-  public CompletableFuture<Void> forEach(Consumer<WeaviateObject<PropertiesT, Object, QueryMetadata>> action) {
+  public CompletableFuture<Void> forEach(Consumer<ReadWeaviateObject<PropertiesT>> action) {
     return resultSet
         .thenCompose(rs -> rs.isEmpty() ? rs.fetchNextPage() : CompletableFuture.completedFuture(rs))
         .thenCompose(processEachAndAdvance(action));
   }
 
-  public CompletableFuture<Void> forPage(Consumer<List<WeaviateObject<PropertiesT, Object, QueryMetadata>>> action) {
+  public CompletableFuture<Void> forPage(Consumer<List<ReadWeaviateObject<PropertiesT>>> action) {
     return resultSet
         .thenCompose(rs -> rs.isEmpty() ? rs.fetchNextPage() : CompletableFuture.completedFuture(rs))
         .thenCompose(processPageAndAdvance(action));
   }
 
   private static <PropertiesT> Function<AsyncPage<PropertiesT>, CompletableFuture<Void>> processEachAndAdvance(
-      Consumer<WeaviateObject<PropertiesT, Object, QueryMetadata>> action) {
+      Consumer<ReadWeaviateObject<PropertiesT>> action) {
     return processAndAdvanceFunc(rs -> rs.forEach(action));
   }
 
   private static <PropertiesT> Function<AsyncPage<PropertiesT>, CompletableFuture<Void>> processPageAndAdvance(
-      Consumer<List<WeaviateObject<PropertiesT, Object, QueryMetadata>>> action) {
+      Consumer<List<ReadWeaviateObject<PropertiesT>>> action) {
     return processAndAdvanceFunc(rs -> action.accept(rs.items()));
   }
 

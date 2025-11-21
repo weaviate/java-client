@@ -82,12 +82,31 @@ public class Vectors {
   }
 
   /**
+   * Add more vector objects.
+   *
+   * @param vectors Vector objects.
+   * @return A new {@code Vectors} object containing all vectors.
+   */
+  public Vectors withVectors(Vectors... vectors) {
+    var combined = new HashMap<>(vectorsMap);
+    for (var v : vectors) {
+      combined.putAll(v.vectorsMap);
+    }
+    return new Vectors(combined);
+  }
+
+  /**
    * Check if a vector exists in the query result.
    *
    * @param name Vector name.
    */
   public boolean contains(String name) {
     return vectorsMap.containsKey(name);
+  }
+
+  /** Returns the number of vectors contained. */
+  public int size() {
+    return vectorsMap.size();
   }
 
   /**

@@ -7,21 +7,22 @@ import java.util.function.Function;
 import com.google.gson.reflect.TypeToken;
 
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
-import io.weaviate.client6.v1.api.collections.ObjectMetadata;
-import io.weaviate.client6.v1.api.collections.Vectors;
-import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.json.JSON;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 import io.weaviate.client6.v1.internal.rest.Endpoint;
 import io.weaviate.client6.v1.internal.rest.SimpleEndpoint;
 
-public record InsertObjectRequest<T>(WeaviateObject<T, Reference, ObjectMetadata> object) {
+public record InsertObjectRequest<PropertiesT>(WriteWeaviateObject<PropertiesT> object) {
 
   @SuppressWarnings("unchecked")
-  public static final <T> Endpoint<InsertObjectRequest<T>, WeaviateObject<T, Object, ObjectMetadata>> endpoint(
-      CollectionDescriptor<T> collection,
+  public static final <PropertiesT> Endpoint<InsertObjectRequest<PropertiesT>, WriteWeaviateObject<PropertiesT>> endpoint(
+      CollectionDescriptor<PropertiesT> collection,
       CollectionHandleDefaults defaults) {
+
+    final var typeToken = (TypeToken<WriteWeaviateObject<PropertiesT>>) TypeToken
+        .getParameterized(WriteWeaviateObject.class, collection.typeToken().getType());
+
     return new SimpleEndpoint<>(
         request -> "POST",
         request -> "/objects/",
@@ -29,55 +30,26 @@ public record InsertObjectRequest<T>(WeaviateObject<T, Reference, ObjectMetadata
             ? Map.of("consistency_level", defaults.consistencyLevel())
             : Collections.emptyMap(),
         request -> JSON.serialize(
-            new WriteWeaviateObject<>(request.object, defaults.tenant()),
-            TypeToken.getParameterized(
-                WriteWeaviateObject.class, collection.typeToken().getType())),
-        (statusCode, response) -> JSON.deserialize(response,
-            (TypeToken<WeaviateObject<T, Object, ObjectMetadata>>) TypeToken.getParameterized(
-                WeaviateObject.class, collection.typeToken().getType(), Object.class, ObjectMetadata.class)));
+            new WriteWeaviateObject<>(
+                request.object.uuid(),
+                collection.collectionName(),
+                defaults.tenant(),
+                request.object.properties(),
+                request.object.vectors(),
+                request.object.createdAt(),
+                request.object.lastUpdatedAt(),
+                request.object.references()),
+            typeToken),
+        (statusCode, response) -> JSON.deserialize(response, typeToken));
   }
 
-  public static <T> InsertObjectRequest<T> of(String collectionName, T properties) {
-    return of(collectionName, properties, ObjectBuilder.identity());
+  static <PropertiesT> InsertObjectRequest<PropertiesT> of(PropertiesT properties) {
+    return of(properties, ObjectBuilder.identity());
   }
 
-  public static <T> InsertObjectRequest<T> of(String collectionName, T properties,
-      Function<Builder<T>, ObjectBuilder<InsertObjectRequest<T>>> fn) {
-    return fn.apply(new Builder<T>(collectionName, properties)).build();
+  static <PropertiesT> InsertObjectRequest<PropertiesT> of(
+      PropertiesT properties,
+      Function<WriteWeaviateObject.Builder<PropertiesT>, ObjectBuilder<WriteWeaviateObject<PropertiesT>>> fn) {
+    return new InsertObjectRequest<>(WriteWeaviateObject.of(ObjectBuilder.partial(fn, b -> b.properties(properties))));
   }
-
-  public InsertObjectRequest(Builder<T> builder) {
-    this(builder.object.build());
-  }
-
-  public static class Builder<T> implements ObjectBuilder<InsertObjectRequest<T>> {
-    private final WeaviateObject.Builder<T, Reference, ObjectMetadata> object = new WeaviateObject.Builder<>();
-    private final ObjectMetadata.Builder metadata = new ObjectMetadata.Builder();
-
-    public Builder(String collectionName, T properties) {
-      this.object.collection(collectionName).properties(properties);
-    }
-
-    public Builder<T> uuid(String uuid) {
-      this.metadata.uuid(uuid);
-      return this;
-    }
-
-    public Builder<T> vectors(Vectors... vectors) {
-      this.metadata.vectors(vectors);
-      return this;
-    }
-
-    public Builder<T> reference(String property, Reference... references) {
-      this.object.reference(property, references);
-      return this;
-    }
-
-    @Override
-    public InsertObjectRequest<T> build() {
-      this.object.metadata(this.metadata.build());
-      return new InsertObjectRequest<>(this);
-    }
-  }
-
 }

@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
@@ -28,14 +29,14 @@ public record Reference(String collection, List<String> uuids) {
   }
 
   /** Create references to single {@link WeaviateObject}. */
-  public static Reference object(WeaviateObject<?, ?, ?> object) {
-    return new Reference(object.collection(), object.metadata().uuid());
+  public static Reference object(WeaviateObject object) {
+    return new Reference(object.collection(), object.uuid());
   }
 
   /** Create references to multiple {@link WeaviateObject}. */
-  public static Reference[] objects(WeaviateObject<?, ?, ?>... objects) {
+  public static Reference[] objects(WeaviateObject... objects) {
     return Arrays.stream(objects)
-        .map(o -> new Reference(o.collection(), o.metadata().uuid()))
+        .map(o -> new Reference(o.collection(), o.uuid()))
         .toArray(Reference[]::new);
   }
 
@@ -80,6 +81,12 @@ public record Reference(String collection, List<String> uuids) {
       in.beginObject();
       in.nextName(); // expect "beacon"?
       var beacon = in.nextString();
+
+      // Skip to the end of the object. There's going to be the "href"
+      // key too, which is irrelevant for us.
+      while (in.peek() != JsonToken.END_OBJECT) {
+        in.skipValue();
+      }
       in.endObject();
 
       beacon = beacon.replaceFirst("weaviate://localhost/", "");

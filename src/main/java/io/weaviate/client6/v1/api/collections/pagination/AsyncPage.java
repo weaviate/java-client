@@ -7,32 +7,31 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 
-import io.weaviate.client6.v1.api.collections.WeaviateObject;
-import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
+import io.weaviate.client6.v1.api.collections.query.ReadWeaviateObject;
 
-public final class AsyncPage<PropertiesT> implements Iterable<WeaviateObject<PropertiesT, Object, QueryMetadata>> {
+public final class AsyncPage<PropertiesT> implements Iterable<ReadWeaviateObject<PropertiesT>> {
 
   private final int pageSize;
-  private final BiFunction<String, Integer, CompletableFuture<List<WeaviateObject<PropertiesT, Object, QueryMetadata>>>> fetch;
+  private final BiFunction<String, Integer, CompletableFuture<List<ReadWeaviateObject<PropertiesT>>>> fetch;
 
   private final String cursor;
-  private List<WeaviateObject<PropertiesT, Object, QueryMetadata>> currentPage = new ArrayList<>();
+  private List<ReadWeaviateObject<PropertiesT>> currentPage = new ArrayList<>();
 
   AsyncPage(String cursor, int pageSize,
-      BiFunction<String, Integer, CompletableFuture<List<WeaviateObject<PropertiesT, Object, QueryMetadata>>>> fetch) {
+      BiFunction<String, Integer, CompletableFuture<List<ReadWeaviateObject<PropertiesT>>>> fetch) {
     this.cursor = cursor;
     this.pageSize = pageSize;
     this.fetch = fetch;
   }
 
   AsyncPage(String cursor, int pageSize,
-      BiFunction<String, Integer, CompletableFuture<List<WeaviateObject<PropertiesT, Object, QueryMetadata>>>> fetch,
-      List<WeaviateObject<PropertiesT, Object, QueryMetadata>> currentPage) {
+      BiFunction<String, Integer, CompletableFuture<List<ReadWeaviateObject<PropertiesT>>>> fetch,
+      List<ReadWeaviateObject<PropertiesT>> currentPage) {
     this(cursor, pageSize, fetch);
     this.currentPage = Collections.unmodifiableList(currentPage);
   }
 
-  List<WeaviateObject<PropertiesT, Object, QueryMetadata>> items() {
+  List<ReadWeaviateObject<PropertiesT>> items() {
     return currentPage;
   }
 
@@ -69,7 +68,7 @@ public final class AsyncPage<PropertiesT> implements Iterable<WeaviateObject<Pro
   }
 
   @Override
-  public Iterator<WeaviateObject<PropertiesT, Object, QueryMetadata>> iterator() {
+  public Iterator<ReadWeaviateObject<PropertiesT>> iterator() {
     return currentPage.iterator();
   }
 }

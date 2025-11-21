@@ -4,28 +4,27 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
-import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 
-public class WeaviateQueryClientAsync<T>
+public class WeaviateQueryClientAsync<PropertiesT>
     extends
-    AbstractQueryClient<T, CompletableFuture<Optional<WeaviateObject<T, Object, QueryMetadata>>>, CompletableFuture<QueryResponse<T>>, CompletableFuture<QueryResponseGrouped<T>>> {
+    AbstractQueryClient<PropertiesT, CompletableFuture<Optional<ReadWeaviateObject<PropertiesT>>>, CompletableFuture<QueryResponse<PropertiesT>>, CompletableFuture<QueryResponseGrouped<PropertiesT>>> {
 
   public WeaviateQueryClientAsync(
-      CollectionDescriptor<T> collection,
+      CollectionDescriptor<PropertiesT> collection,
       GrpcTransport grpcTransport,
       CollectionHandleDefaults defaults) {
     super(collection, grpcTransport, defaults);
   }
 
   /** Copy constructor that sets new defaults. */
-  public WeaviateQueryClientAsync(WeaviateQueryClientAsync<T> qc, CollectionHandleDefaults defaults) {
+  public WeaviateQueryClientAsync(WeaviateQueryClientAsync<PropertiesT> qc, CollectionHandleDefaults defaults) {
     super(qc, defaults);
   }
 
   @Override
-  protected CompletableFuture<Optional<WeaviateObject<T, Object, QueryMetadata>>> fetchObjectById(
+  protected CompletableFuture<Optional<ReadWeaviateObject<PropertiesT>>> fetchObjectById(
       FetchObjectById byId) {
     var request = new QueryRequest(byId, null);
     var result = this.grpcTransport.performRequestAsync(request, QueryRequest.rpc(collection, defaults));
@@ -33,13 +32,14 @@ public class WeaviateQueryClientAsync<T>
   }
 
   @Override
-  protected final CompletableFuture<QueryResponse<T>> performRequest(QueryOperator operator) {
+  protected final CompletableFuture<QueryResponse<PropertiesT>> performRequest(QueryOperator operator) {
     var request = new QueryRequest(operator, null);
     return this.grpcTransport.performRequestAsync(request, QueryRequest.rpc(collection, defaults));
   }
 
   @Override
-  protected final CompletableFuture<QueryResponseGrouped<T>> performRequest(QueryOperator operator, GroupBy groupBy) {
+  protected final CompletableFuture<QueryResponseGrouped<PropertiesT>> performRequest(QueryOperator operator,
+      GroupBy groupBy) {
     var request = new QueryRequest(operator, groupBy);
     return this.grpcTransport.performRequestAsync(request, QueryRequest.grouped(collection, defaults));
   }

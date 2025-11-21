@@ -8,8 +8,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
-import io.weaviate.client6.v1.api.collections.ObjectMetadata;
-import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClientAsync;
 import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.client6.v1.api.collections.query.FilterOperand;
@@ -47,16 +45,17 @@ public class WeaviateDataClientAsync<PropertiesT> {
     this.defaults = defaults;
   }
 
-  public CompletableFuture<WeaviateObject<PropertiesT, Object, ObjectMetadata>> insert(PropertiesT properties) {
-    return insert(InsertObjectRequest.of(collection.collectionName(), properties));
+  public CompletableFuture<WriteWeaviateObject<PropertiesT>> insert(PropertiesT properties) {
+    return insert(InsertObjectRequest.of(properties));
   }
 
-  public CompletableFuture<WeaviateObject<PropertiesT, Object, ObjectMetadata>> insert(PropertiesT properties,
-      Function<InsertObjectRequest.Builder<PropertiesT>, ObjectBuilder<InsertObjectRequest<PropertiesT>>> fn) {
-    return insert(InsertObjectRequest.of(collection.collectionName(), properties, fn));
+  public CompletableFuture<WriteWeaviateObject<PropertiesT>> insert(
+      PropertiesT properties,
+      Function<WriteWeaviateObject.Builder<PropertiesT>, ObjectBuilder<WriteWeaviateObject<PropertiesT>>> fn) {
+    return insert(InsertObjectRequest.of(properties, fn));
   }
 
-  public CompletableFuture<WeaviateObject<PropertiesT, Object, ObjectMetadata>> insert(
+  public CompletableFuture<WriteWeaviateObject<PropertiesT>> insert(
       InsertObjectRequest<PropertiesT> request) {
     return this.restTransport.performRequestAsync(request, InsertObjectRequest.endpoint(collection, defaults));
   }
@@ -67,13 +66,11 @@ public class WeaviateDataClientAsync<PropertiesT> {
   }
 
   @SafeVarargs
-  public final CompletableFuture<InsertManyResponse> insertMany(
-      WeaviateObject<PropertiesT, Reference, ObjectMetadata>... objects) {
+  public final CompletableFuture<InsertManyResponse> insertMany(WriteWeaviateObject<PropertiesT>... objects) {
     return insertMany(Arrays.asList(objects));
   }
 
-  public CompletableFuture<InsertManyResponse> insertMany(
-      List<WeaviateObject<PropertiesT, Reference, ObjectMetadata>> objects) {
+  public CompletableFuture<InsertManyResponse> insertMany(List<WriteWeaviateObject<PropertiesT>> objects) {
     return insertMany(new InsertManyRequest<>(objects));
   }
 
@@ -86,15 +83,17 @@ public class WeaviateDataClientAsync<PropertiesT> {
     return this.query.fetchObjectById(uuid).thenApply(Optional::isPresent);
   }
 
-  public CompletableFuture<Void> update(String uuid,
+  public CompletableFuture<Void> update(
+      String uuid,
       Function<UpdateObjectRequest.Builder<PropertiesT>, ObjectBuilder<UpdateObjectRequest<PropertiesT>>> fn) {
-    return this.restTransport.performRequestAsync(UpdateObjectRequest.of(collection.collectionName(), uuid, fn),
+    return this.restTransport.performRequestAsync(UpdateObjectRequest.of(uuid, fn),
         UpdateObjectRequest.endpoint(collection, defaults));
   }
 
-  public CompletableFuture<Void> replace(String uuid,
+  public CompletableFuture<Void> replace(
+      String uuid,
       Function<ReplaceObjectRequest.Builder<PropertiesT>, ObjectBuilder<ReplaceObjectRequest<PropertiesT>>> fn) {
-    return this.restTransport.performRequestAsync(ReplaceObjectRequest.of(collection.collectionName(), uuid, fn),
+    return this.restTransport.performRequestAsync(ReplaceObjectRequest.of(uuid, fn),
         ReplaceObjectRequest.endpoint(collection, defaults));
   }
 
