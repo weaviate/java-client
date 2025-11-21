@@ -37,7 +37,8 @@ public class Weaviate extends WeaviateContainer {
 
   public enum Version {
     V132(1, 32),
-    V133(1, 33);
+    V133(1, 33),
+    V134(1, 34);
 
     public final SemanticVersion semver;
 
