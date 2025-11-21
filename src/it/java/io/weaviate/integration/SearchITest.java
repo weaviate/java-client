@@ -21,13 +21,11 @@ import org.junit.rules.TestRule;
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateApiException;
 import io.weaviate.client6.v1.api.WeaviateClient;
-import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.ReferenceProperty;
 import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateMetadata;
-import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.Reference;
 import io.weaviate.client6.v1.api.collections.data.WriteWeaviateObject;
 import io.weaviate.client6.v1.api.collections.generate.GenerativeObject;
@@ -758,9 +756,8 @@ public class SearchITest extends ConcurrentTest {
           .vectorConfig(VectorConfig.selfProvided()));
 
       final var vector = randomVector(5000, -.01f, .01f);
-      final WeaviateObject<Map<String, Object>, Reference, ObjectMetadata> hugeObject = WeaviateObject.of(obj -> obj
-          .metadata(ObjectMetadata.of(m -> m
-              .vectors(Vectors.of(vector)))));
+      final WriteWeaviateObject<Map<String, Object>> hugeObject = WriteWeaviateObject.of(
+          obj -> obj.vectors(Vectors.of(vector)));
 
       Assertions.assertThatThrownBy(() -> {
         // insertMany to route this request through gRPC.
