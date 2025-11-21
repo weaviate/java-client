@@ -411,18 +411,14 @@ public class Weaviate extends WeaviateContainer {
      * @param raft   RAFT port.
      */
     private void bindNodes(int gossip, int data, int raft) {
-      var publicPort = leader.getExposedPorts().get(0);
-      var clusterSize = String.valueOf(nodes.size());
+      var publicPort = leader.getExposedPorts().get(0); // see WeaviateContainer Testcontainer.
 
       nodes.forEach(node -> node
           .withEnv("CLUSTER_GOSSIP_BIND_PORT", String.valueOf(gossip))
           .withEnv("CLUSTER_DATA_BIND_PORT", String.valueOf(data))
-          .withEnv("RAFT_PORT", String.valueOf(raft)));
+          .withEnv("RAFT_PORT", String.valueOf(raft))
+          .withEnv("RAFT_BOOTSTRAP_EXPECT", "1"));
 
-      // Leader bootstraps the cluster
-      leader.withEnv("RAFT_BOOTSTRAP_EXPECT", clusterSize);
-
-      // Followers join the existing cluster
       followers.forEach(node -> node
           .withEnv("CLUSTER_JOIN", leader.containerName + ":" + gossip)
           .withEnv("RAFT_JOIN", leader.containerName)

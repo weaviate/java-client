@@ -65,7 +65,7 @@ public class ClusterITest extends ConcurrentTest {
 
     // We must create the collection first before any shards exist on the nodes.
     var nsThings = ns("Things");
-    client.collections.create(nsThings, c -> c.replication(r -> r.replicationFactor(2)));
+    client.collections.create(nsThings);
 
     var nodes = client.cluster.listNodes(opt -> opt.verbosity(NodeVerbosity.VERBOSE));
     Assertions.assertThat(nodes)
