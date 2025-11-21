@@ -9,6 +9,7 @@ import io.weaviate.client6.v1.api.collections.CollectionConfig;
 import io.weaviate.client6.v1.api.collections.Generative;
 import io.weaviate.client6.v1.api.collections.InvertedIndex;
 import io.weaviate.client6.v1.api.collections.MultiTenancy;
+import io.weaviate.client6.v1.api.collections.Quantization;
 import io.weaviate.client6.v1.api.collections.Replication;
 import io.weaviate.client6.v1.api.collections.Reranker;
 import io.weaviate.client6.v1.api.collections.VectorConfig;
@@ -17,21 +18,49 @@ import io.weaviate.client6.v1.internal.json.JSON;
 import io.weaviate.client6.v1.internal.rest.Endpoint;
 import io.weaviate.client6.v1.internal.rest.SimpleEndpoint;
 
-public record UpdateCollectionRequest(CollectionConfig collection) {
+public record UpdateCollectionRequest(CollectionConfig updated, CollectionConfig original) {
 
   public static final Endpoint<UpdateCollectionRequest, Void> _ENDPOINT = SimpleEndpoint.sideEffect(
       request -> "PUT",
-      request -> "/schema/" + request.collection.collectionName(),
+      request -> "/schema/" + request.updated.collectionName(),
       request -> Collections.emptyMap(),
-      request -> JSON.serialize(request.collection));
+      request -> {
+        var json = JSON.serialize(request.updated);
 
-  public static UpdateCollectionRequest of(CollectionConfig collection,
+        // Workaround: when doing updates, the server *insists* that
+        // "skipDefaultQuantization" property remains unchanged for each vector,
+        // even in cases when it is irrelevant [shrug].
+        // To mitigate that we will set that field to its original value for all
+        // vectors which were present in the original configuration.
+        var jsonObject = JSON.toJsonElement(json).getAsJsonObject();
+        var vectorsAny = jsonObject.get("vectorConfig");
+        if (request.original.vectors() != null && !request.original.vectors().isEmpty()
+            && vectorsAny != null && vectorsAny.isJsonObject()) {
+          var vectors = vectorsAny.getAsJsonObject();
+          for (var origVector : request.original.vectors().entrySet()) {
+            var vectorName = origVector.getKey();
+            var origQuantization = origVector.getValue().quantization();
+            if (vectors.has(vectorName)) {
+              vectors
+                  .get(vectorName).getAsJsonObject()
+                  .get("vectorIndexConfig").getAsJsonObject()
+                  .addProperty(Quantization.Kind.UNCOMPRESSED.jsonValue(), origQuantization.isUncompressed());
+            }
+          }
+
+          json = jsonObject.toString();
+        }
+
+        return json;
+      });
+
+  public static UpdateCollectionRequest of(CollectionConfig original,
       Function<Builder, ObjectBuilder<UpdateCollectionRequest>> fn) {
-    return fn.apply(new Builder(collection)).build();
+    return fn.apply(new Builder(original)).build();
   }
 
   public UpdateCollectionRequest(Builder builder) {
-    this(builder.newCollection.build());
+    this(builder.newCollection.build(), builder.currentCollection);
   }
 
   public static class Builder implements ObjectBuilder<UpdateCollectionRequest> {

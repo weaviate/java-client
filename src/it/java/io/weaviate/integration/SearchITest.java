@@ -23,12 +23,13 @@ import io.weaviate.client6.v1.api.WeaviateApiException;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.ReferenceProperty;
+import io.weaviate.client6.v1.api.collections.Reranker;
 import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateMetadata;
 import io.weaviate.client6.v1.api.collections.data.Reference;
 import io.weaviate.client6.v1.api.collections.data.WriteWeaviateObject;
-import io.weaviate.client6.v1.api.collections.generate.GenerativeObject;
+import io.weaviate.client6.v1.api.collections.generate.
 import io.weaviate.client6.v1.api.collections.generate.TaskOutput;
 import io.weaviate.client6.v1.api.collections.generative.DummyGenerative;
 import io.weaviate.client6.v1.api.collections.query.Filter;
@@ -37,8 +38,10 @@ import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.api.collections.query.QueryResponseGroup;
 import io.weaviate.client6.v1.api.collections.query.ReadWeaviateObject;
+import io.weaviate.client6.v1.api.collections.query.Rerank;
 import io.weaviate.client6.v1.api.collections.query.SortBy;
 import io.weaviate.client6.v1.api.collections.query.Target;
+import io.weaviate.client6.v1.api.collections.rerankers.DummyReranker;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.api.collections.vectorindex.MultiVector;
 import io.weaviate.containers.Container;
@@ -52,7 +55,7 @@ public class SearchITest extends ConcurrentTest {
       Weaviate.custom()
           .withModel2VecUrl(Model2Vec.URL)
           .withImageInference(Img2VecNeural.URL, Img2VecNeural.MODULE)
-          .addModules("generative-dummy")
+          .addModules(Generative.Kind.DUMMY.jsonValue(), Reranker.Kind.DUMMY.jsonValue())
           .build(),
       Container.IMG2VEC_NEURAL,
       Container.MODEL2VEC);
@@ -764,5 +767,31 @@ public class SearchITest extends ConcurrentTest {
         huge.data.insertMany(hugeObject);
       }).isInstanceOf(io.grpc.StatusRuntimeException.class);
     }
+  }
+
+  @Test
+  public void test_rerankQueries() throws IOException {
+    // Arrange
+    var nsThigns = ns("Things");
+
+    var things = client.collections.create(nsThigns,
+        c -> c
+            .properties(Property.text("title"), Property.integer("price"))
+            .vectorConfig(VectorConfig.text2vecModel2Vec(
+                t2v -> t2v.sourceProperties("title", "price")))
+            .rerankerModules(new DummyReranker()));
+
+    things.data.insertMany(
+        Map.of("title", "Ergonomic chair", "price", 269),
+        Map.of("title", "Height-adjustable desk", "price", 349));
+
+    // Act
+    var got = things.query.nearText(
+        "office supplies",
+        nt -> nt.rerank(Rerank.by("price",
+            rank -> rank.query("cheaper first"))));
+
+    // Assert: ranking not important really, just that the request was valid.
+    Assertions.assertThat(got.objects()).hasSize(2);
   }
 }

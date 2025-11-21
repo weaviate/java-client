@@ -14,6 +14,7 @@ import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 import io.weaviate.client6.v1.api.collections.rerankers.CohereReranker;
+import io.weaviate.client6.v1.api.collections.rerankers.DummyReranker;
 import io.weaviate.client6.v1.api.collections.rerankers.JinaAiReranker;
 import io.weaviate.client6.v1.api.collections.rerankers.NvidiaReranker;
 import io.weaviate.client6.v1.api.collections.rerankers.TransformersReranker;
@@ -24,6 +25,7 @@ import io.weaviate.client6.v1.internal.json.JsonEnum;
 
 public interface Reranker extends TaggedUnion<Reranker.Kind, Object> {
   public enum Kind implements JsonEnum<Kind> {
+    DUMMY("reranker-dummy"),
     JINAAI("reranker-jinaai"),
     VOYAGEAI("reranker-voyageai"),
     NVIDIA("reranker-nvidia"),
@@ -120,6 +122,11 @@ public interface Reranker extends TaggedUnion<Reranker.Kind, Object> {
 
     private final void init(Gson gson) {
       addAdapter(gson, Reranker.Kind.COHERE, CohereReranker.class);
+      addAdapter(gson, Reranker.Kind.JINAAI, JinaAiReranker.class);
+      addAdapter(gson, Reranker.Kind.NVIDIA, NvidiaReranker.class);
+      addAdapter(gson, Reranker.Kind.TRANSFORMERS, TransformersReranker.class);
+      addAdapter(gson, Reranker.Kind.VOYAGEAI, VoyageAiReranker.class);
+      addAdapter(gson, Reranker.Kind.DUMMY, DummyReranker.class);
     }
 
     @SuppressWarnings("unchecked")

@@ -130,6 +130,12 @@ public record QueryResponse<PropertiesT>(
         }
       }
       metadataBuilder.vectors(vectors);
+
+      if (metadataResult.getVectorBytes() != null && !metadataResult.getVectorBytes().isEmpty()) {
+        var unnamed = ByteStringUtil.decodeVectorSingle(metadataResult.getVectorBytes());
+        metadataBuilder.vectors(Vectors.of(unnamed));
+      }
+
       metadata = metadataBuilder.build();
     }
 
