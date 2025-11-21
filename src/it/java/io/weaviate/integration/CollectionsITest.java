@@ -22,6 +22,7 @@ import io.weaviate.client6.v1.api.collections.config.ShardStatus;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.api.collections.vectorizers.SelfProvidedVectorizer;
 import io.weaviate.containers.Container;
+import io.weaviate.containers.Weaviate;
 
 public class CollectionsITest extends ConcurrentTest {
   private static WeaviateClient client = Container.WEAVIATE.getClient();
@@ -96,31 +97,34 @@ public class CollectionsITest extends ConcurrentTest {
   }
 
   @Test
-  public void testListDeleteAll() throws IOException {
-    var nsA = ns("A");
-    var nsB = ns("B");
-    var nsC = ns("C");
+  public void testListDeleteAll() throws Exception {
+    // Use a separate container for this test so as not to interfere
+    // with other tests.
+    try (final var _client = Weaviate.createDefault().getBareClient()) {
+      var nsA = ns("A");
+      var nsB = ns("B");
+      var nsC = ns("C");
 
-    client.collections.create(nsA);
-    client.collections.create(nsB);
-    client.collections.create(nsC);
+      _client.collections.create(nsA);
+      _client.collections.create(nsB);
+      _client.collections.create(nsC);
 
-    Assertions.assertThat(client.collections.exists(nsA)).isTrue();
-    Assertions.assertThat(client.collections.exists(nsB)).isTrue();
-    Assertions.assertThat(client.collections.exists(nsC)).isTrue();
-    Assertions.assertThat(client.collections.exists(ns("X"))).isFalse();
+      Assertions.assertThat(_client.collections.exists(nsA)).isTrue();
+      Assertions.assertThat(_client.collections.exists(nsB)).isTrue();
+      Assertions.assertThat(_client.collections.exists(nsC)).isTrue();
+      Assertions.assertThat(_client.collections.exists(ns("X"))).isFalse();
 
-    var all = client.collections.list();
-    Assertions.assertThat(all)
-        .hasSizeGreaterThanOrEqualTo(3)
-        .extracting(CollectionConfig::collectionName)
-        .contains(nsA, nsB, nsC);
+      var all = _client.collections.list();
+      Assertions.assertThat(all)
+          .hasSizeGreaterThanOrEqualTo(3)
+          .extracting(CollectionConfig::collectionName)
+          .contains(nsA, nsB, nsC);
 
-    client.collections.deleteAll();
+      _client.collections.deleteAll();
 
-    all = client.collections.list();
-    Assertions.assertThat(all.isEmpty());
-
+      all = _client.collections.list();
+      Assertions.assertThat(all.isEmpty());
+    }
   }
 
   @Test

@@ -29,6 +29,21 @@ public class WeaviateRolesClient {
    *                              or the server being unavailable.
    */
   public void create(String roleName, Permission... permissions) throws IOException {
+    create(roleName, Arrays.asList(permissions));
+  }
+
+  /**
+   * Create a new role.
+   *
+   * @param roleName    Role name.
+   * @param permissions Permissions granted to the role.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @throws IOException          in case the request was not sent successfully
+   *                              due to a malformed request, a networking error
+   *                              or the server being unavailable.
+   */
+  public void create(String roleName, List<Permission> permissions) throws IOException {
     var role = new Role(roleName, permissions);
     this.restTransport.performRequest(new CreateRoleRequest(role), CreateRoleRequest._ENDPOINT);
   }

@@ -1,7 +1,8 @@
 package io.weaviate.integration;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactories;
@@ -64,19 +65,28 @@ public class RbacITest extends ConcurrentTest {
     var myCollection = "Things";
     var nsRole = ns("VectorOwner");
 
-    Permission[] permissions = new Permission[] {
-        Permission.aliases("ThingsAlias", myCollection, AliasesPermission.Action.CREATE),
-        Permission.backups(myCollection, BackupsPermission.Action.MANAGE),
-        Permission.cluster(ClusterPermission.Action.READ),
-        Permission.nodes(myCollection, NodesPermission.Action.READ),
-        Permission.roles(VIEWER_ROLE, Scope.MATCH, RolesPermission.Action.CREATE),
-        Permission.collections(myCollection, CollectionsPermission.Action.CREATE),
-        Permission.data(myCollection, DataPermission.Action.UPDATE),
-        Permission.groups("my-group", GroupType.OIDC, GroupsPermission.Action.READ),
-        Permission.tenants(myCollection, "my-tenant", TenantsPermission.Action.DELETE),
-        Permission.users("my-user", UsersPermission.Action.READ),
-        Permission.replicate(myCollection, "my-shard", ReplicatePermission.Action.READ),
+    List<Permission> permissions = new ArrayList<>() {
+      {
+        add(Permission.backups(myCollection, BackupsPermission.Action.MANAGE));
+        add(Permission.cluster(ClusterPermission.Action.READ));
+        add(Permission.nodes(myCollection, NodesPermission.Action.READ));
+        add(Permission.roles(VIEWER_ROLE, Scope.MATCH, RolesPermission.Action.CREATE));
+        add(Permission.collections(myCollection, CollectionsPermission.Action.CREATE));
+        add(Permission.data(myCollection, DataPermission.Action.UPDATE));
+        add(Permission.tenants(myCollection, "my-tenant", TenantsPermission.Action.DELETE));
+        add(Permission.users("my-user", UsersPermission.Action.READ));
+        add(Permission.replicate(myCollection, "my-shard", ReplicatePermission.Action.READ));
+      }
     };
+
+    requireAtLeast(Weaviate.Version.V132, () -> {
+      permissions.add(
+          Permission.aliases("ThingsAlias", myCollection, AliasesPermission.Action.CREATE));
+    });
+    requireAtLeast(Weaviate.Version.V133, () -> {
+      permissions.add(
+          Permission.groups("my-group", GroupType.OIDC, GroupsPermission.Action.READ));
+    });
 
     // Act: create role
     client.roles.create(nsRole, permissions);
@@ -86,7 +96,7 @@ public class RbacITest extends ConcurrentTest {
         .as("created role")
         .returns(nsRole, Role::name)
         .extracting(Role::permissions, InstanceOfAssertFactories.list(Permission.class))
-        .containsAll(Arrays.asList(permissions));
+        .containsAll(permissions);
 
     // Act:: add extra permissions
     var extra = new Permission[] {
@@ -150,6 +160,8 @@ public class RbacITest extends ConcurrentTest {
 
   @Test
   public void test_groups() throws IOException {
+    Weaviate.Version.V133.orSkip();
+
     var mediaGroup = "./media-group";
     var friendGroup = "./friend-group";
 

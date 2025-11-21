@@ -14,6 +14,7 @@ import io.weaviate.client6.v1.api.cluster.replication.Replication;
 import io.weaviate.client6.v1.api.cluster.replication.ReplicationState;
 import io.weaviate.client6.v1.api.cluster.replication.ReplicationType;
 import io.weaviate.containers.Weaviate;
+import io.weaviate.containers.Weaviate.Version;
 
 public class ClusterITest extends ConcurrentTest {
   private static final WeaviateClient client = Weaviate.cluster(3).getClient();
@@ -58,6 +59,8 @@ public class ClusterITest extends ConcurrentTest {
 
   @Test
   public void test_replicateLifecycle() throws IOException {
+    Version.V132.orSkip();
+
     // Arrange
 
     // We must create the collection first before any shards exist on the nodes.

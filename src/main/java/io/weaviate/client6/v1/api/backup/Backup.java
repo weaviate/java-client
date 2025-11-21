@@ -34,7 +34,7 @@ public record Backup(
     /** Time at which the backup was completed, successfully or otherwise. */
     @SerializedName("completedAt") OffsetDateTime completedAt,
     /** Backup size in GiB. */
-    @SerializedName("size") Integer sizeGiB,
+    @SerializedName("size") Float sizeGiB,
     /**
      * This value indicates if a backup is being created or restored from.
      * For operations like LIST this value is null.
