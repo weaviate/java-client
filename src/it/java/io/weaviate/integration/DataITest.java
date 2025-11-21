@@ -78,9 +78,16 @@ public class DataITest extends ConcurrentTest {
               .as("lastUpdateTimeUnix").isNotNull();
         });
 
-    artists.data.delete(id);
+    var deleted = artists.data.deleteById(id);
+    Assertions.assertThat(deleted)
+        .as("object was deleted").isTrue();
     Assertions.assertThat(artists.data.exists(id))
         .as("object not exists after deletion").isFalse();
+
+    deleted = artists.data.deleteById(id);
+    // TODO: Change to isFalse() after fixed in Weaviate server
+    Assertions.assertThat(deleted)
+        .as("object wasn't deleted").isTrue();
   }
 
   @Test

@@ -99,7 +99,7 @@ public class WeaviateDataClientAsync<PropertiesT> {
         ReplaceObjectRequest.endpoint(collection, defaults));
   }
 
-  public CompletableFuture<Void> delete(String uuid) {
+  public CompletableFuture<Boolean> delete(String uuid) {
     return this.restTransport.performRequestAsync(new DeleteObjectRequest(uuid),
         DeleteObjectRequest.endpoint(collection, defaults));
   }

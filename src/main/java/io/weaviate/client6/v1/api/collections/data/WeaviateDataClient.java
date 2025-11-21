@@ -98,8 +98,15 @@ public class WeaviateDataClient<PropertiesT> {
         ReplaceObjectRequest.endpoint(collection, defaults));
   }
 
-  public void delete(String uuid) throws IOException {
-    this.restTransport.performRequest(new DeleteObjectRequest(uuid),
+  /**
+   * Delete an object by its UUID.
+   *
+   * @param uuid The UUID of the object to delete.
+   * @return {@code true} if the object was deleted, {@code false} if there was no object to delete.
+   * @throws IOException in case the request was not sent successfully.
+   */
+  public boolean deleteById(String uuid) throws IOException {
+    return this.restTransport.performRequest(new DeleteObjectRequest(uuid),
         DeleteObjectRequest.endpoint(collection, defaults));
   }
 
