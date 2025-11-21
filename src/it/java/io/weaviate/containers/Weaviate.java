@@ -24,7 +24,7 @@ import io.weaviate.client6.v1.internal.VersionSupport.SemanticVersion;
 
 public class Weaviate extends WeaviateContainer {
   public static final String DOCKER_IMAGE = "semitechnologies/weaviate";
-  public static final String LATEST_VERSION = "1.33.0";
+  public static final String LATEST_VERSION = Version.V134.semver.toString();
   public static final String VERSION;
 
   static {
@@ -37,7 +37,8 @@ public class Weaviate extends WeaviateContainer {
 
   public enum Version {
     V132(1, 32),
-    V133(1, 33);
+    V133(1, 33),
+    V134(1, 34);
 
     public final SemanticVersion semver;
 
@@ -415,6 +416,7 @@ public class Weaviate extends WeaviateContainer {
       nodes.forEach(node -> node
           .withEnv("CLUSTER_GOSSIP_BIND_PORT", String.valueOf(gossip))
           .withEnv("CLUSTER_DATA_BIND_PORT", String.valueOf(data))
+          .withEnv("REPLICA_MOVEMENT_ENABLED", "true")
           .withEnv("RAFT_PORT", String.valueOf(raft))
           .withEnv("RAFT_BOOTSTRAP_EXPECT", "1"));
 
