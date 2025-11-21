@@ -36,13 +36,14 @@ public class Weaviate extends WeaviateContainer {
   private final String containerName;
 
   public enum Version {
-    V132(1, 32),
-    V133(1, 33);
+    V132(1, 32, 16),
+    V133(1, 33, 4),
+    V134(1, 34, 0);
 
     public final SemanticVersion semver;
 
-    private Version(int major, int minor) {
-      this.semver = new SemanticVersion(major, minor);
+    private Version(int major, int minor, int patch) {
+      this.semver = new SemanticVersion(major, minor, patch);
     }
 
     public void orSkip() {
