@@ -6,6 +6,7 @@ abstract class BaseVectorSearchBuilder<SelfT extends BaseVectorSearchBuilder<Sel
   // Optional query parameters.
   Float distance;
   Float certainty;
+  Rerank rerank;
 
   /**
    * Discard objects whose vectors are further away
@@ -33,6 +34,15 @@ abstract class BaseVectorSearchBuilder<SelfT extends BaseVectorSearchBuilder<Sel
   @SuppressWarnings("unchecked")
   public SelfT certainty(float certainty) {
     this.certainty = certainty;
+    return (SelfT) this;
+  }
+
+  /**
+   * Control the ranking of the query results.
+   */
+  @SuppressWarnings("unchecked")
+  public SelfT rerank(Rerank rerank) {
+    this.rerank = rerank;
     return (SelfT) this;
   }
 }

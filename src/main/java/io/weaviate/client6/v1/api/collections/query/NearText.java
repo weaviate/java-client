@@ -13,7 +13,12 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
-public record NearText(Target searchTarget, Float distance, Float certainty, Move moveTo,
+public record NearText(
+    Target searchTarget,
+    Float distance,
+    Float certainty,
+    Rerank rerank,
+    Move moveTo,
     Move moveAway,
     BaseQueryOptions common) implements QueryOperator, AggregateObjectFilter {
 
@@ -38,6 +43,7 @@ public record NearText(Target searchTarget, Float distance, Float certainty, Mov
         builder.searchTarget,
         builder.distance,
         builder.certainty,
+        builder.rerank,
         builder.moveTo,
         builder.moveAway,
         builder.baseOptions());
