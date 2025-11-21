@@ -20,6 +20,10 @@ public final class VersionSupport {
       this(major, minor, null);
     }
 
+    public SemanticVersion(int major, int minor, int patch) {
+      this(major, minor, String.valueOf(patch));
+    }
+
     /**
      * Parse semantic version from a formatted string,
      * e.g. {@code "(v)1.23.6-rc.1"}.
@@ -42,7 +46,7 @@ public final class VersionSupport {
     }
 
     public String toString() {
-      return String.join(".", String.valueOf(major), String.valueOf(minor), patch != null ? patch : "");
+      return String.join(".", String.valueOf(major), String.valueOf(minor), patch != null ? patch : "0");
     }
   }
 }
