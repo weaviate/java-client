@@ -23,11 +23,14 @@ import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.data.BatchReference;
 import io.weaviate.client6.v1.api.collections.data.DeleteManyResponse;
 import io.weaviate.client6.v1.api.collections.data.Reference;
+import io.weaviate.client6.v1.api.collections.data.WriteWeaviateObject;
+import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.Metadata.MetadataField;
 import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.api.collections.query.QueryReference;
-import io.weaviate.client6.v1.api.collections.query.Filter;
+import io.weaviate.client6.v1.api.collections.query.ReadWeaviateObject;
+import io.weaviate.client6.v1.api.collections.tenants.Tenant;
 import io.weaviate.containers.Container;
 
 public class DataITest extends ConcurrentTest {
@@ -85,6 +88,7 @@ public class DataITest extends ConcurrentTest {
         .as("object not exists after deletion").isFalse();
 
     deleted = artists.data.deleteById(id);
+
     // TODO: Change to isFalse() after fixed in Weaviate server
     Assertions.assertThat(deleted)
         .as("object wasn't deleted").isTrue();
@@ -534,5 +538,23 @@ public class DataITest extends ConcurrentTest {
 
     // Assert
     Assertions.assertThat(result.errors()).isEmpty();
+  }
+
+  @Test
+  public void test_multiTenant() throws IOException {
+    // Arrange
+    var nsEmails = ns("Emails");
+    var emails = client.collections.create(nsEmails,
+        c -> c.multiTenancy(mt -> mt.enabled(true)));
+
+    var johndoe = "john-doe";
+    emails.tenants.create(Tenant.active(johndoe));
+    emails = emails.withTenant(johndoe);
+
+    // Act
+    var inserted = emails.data.insert(Map.of("subject", "McDonald's Xmas Bonanza"));
+
+    // Assert
+    Assertions.assertThat(inserted).returns(johndoe, WriteWeaviateObject::tenant);
   }
 }
