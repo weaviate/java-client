@@ -61,13 +61,13 @@ public class ClusterITest extends ConcurrentTest {
 
   @Test
   public void test_replicateLifecycle() throws IOException {
-    Version.V134.orSkip(); // Replicate endpoint not implemented in earlier versions
+    Version.V132.orSkip();
 
     // Arrange
 
     // We must create the collection first before any shards exist on the nodes.
     var nsThings = ns("Things");
-    client.collections.create(nsThings);
+    client.collections.create(nsThings, c -> c.replication(r -> r.replicationFactor(2)));
 
     var nodes = client.cluster.listNodes(opt -> opt.verbosity(NodeVerbosity.VERBOSE));
     Assertions.assertThat(nodes)
