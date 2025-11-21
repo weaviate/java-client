@@ -1,6 +1,7 @@
 package io.weaviate.integration;
 
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -31,13 +32,13 @@ import io.weaviate.client6.v1.api.collections.data.Reference;
 import io.weaviate.client6.v1.api.collections.generate.GenerativeObject;
 import io.weaviate.client6.v1.api.collections.generate.TaskOutput;
 import io.weaviate.client6.v1.api.collections.generative.DummyGenerative;
+import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.client6.v1.api.collections.query.GroupBy;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.api.collections.query.QueryResponseGroup;
 import io.weaviate.client6.v1.api.collections.query.SortBy;
 import io.weaviate.client6.v1.api.collections.query.Target;
-import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.api.collections.vectorindex.MultiVector;
 import io.weaviate.containers.Container;
@@ -609,9 +610,9 @@ public class SearchITest extends ConcurrentTest {
         .hasSize(2)
         .allSatisfy(obj -> {
           Assertions.assertThat(obj).as("uuid shorthand")
-          .returns(obj.uuid(), GenerativeObject::uuid);
+              .returns(obj.uuid(), GenerativeObject::uuid);
           Assertions.assertThat(obj).as("vectors shorthand")
-          .returns(obj.vectors(), GenerativeObject::vectors);
+              .returns(obj.vectors(), GenerativeObject::vectors);
         })
         .extracting(GenerativeObject::generative)
         .allSatisfy(generated -> {
@@ -675,6 +676,72 @@ public class SearchITest extends ConcurrentTest {
         .isNotBlank();
   }
 
+  @Test
+  public void test_filterIsNull() throws IOException {
+    // Arrange
+    var nsNulls = ns("Nulls");
+
+    var nulls = client.collections.create(nsNulls,
+        c -> c
+            .invertedIndex(idx -> idx.indexNulls(true))
+            .properties(Property.text("never")));
+
+    var inserted = nulls.data.insertMany(Map.of(), Map.of("never", "notNull"));
+    Assertions.assertThat(inserted.errors()).isEmpty();
+
+    // Act
+    var isNull = nulls.query.fetchObjects(q -> q.filters(Filter.property("never").isNull()));
+    var isNotNull = nulls.query.fetchObjects(q -> q.filters(Filter.property("never").isNotNull()));
+
+    // Assert
+    var isNull_1 = Assertions.assertThat(isNull.objects())
+        .as("objects WHERE never IS NULL")
+        .hasSize(1).first().actual();
+    var isNotNull_1 = Assertions.assertThat(isNotNull.objects())
+        .as("objects WHERE never IS NOT NULL")
+        .hasSize(1).first().actual();
+    Assertions.assertThat(isNull_1).isNotEqualTo(isNotNull_1);
+  }
+
+  @Test
+  public void test_filterCreateUpdateTime() throws IOException {
+    // Arrange
+    var now = OffsetDateTime.now().minusHours(1);
+    var nsCounter = ns("Counter");
+
+    var counter = client.collections.create(nsCounter,
+        c -> c
+            .invertedIndex(idx -> idx.indexTimestamps(true))
+            .properties(Property.integer("count")));
+
+    counter.data.insert(Map.of("count", 0));
+
+    // Act
+    var beforeNow = counter.query.fetchObjects(q -> q.filters(Filter.createdAt().lt(now)));
+    var afterNow = counter.query.fetchObjects(q -> q.filters(Filter.createdAt().gt(now)));
+
+    // Assert
+    Assertions.assertThat(beforeNow.objects()).isEmpty();
+    Assertions.assertThat(afterNow.objects()).hasSize(1);
+  }
+
+  @Test
+  public void teset_filterPropertyLength() throws IOException {
+    // Arrange
+    var nsStrings = ns("Strings");
+
+    var strings = client.collections.create(nsStrings, c -> c
+        .invertedIndex(idx -> idx.indexPropertyLength(true))
+        .properties(Property.text("letters")));
+    strings.data.insertMany(Map.of("letters", "abc"), Map.of("letters", "abcd"), Map.of("letters", "a"));
+
+    // Act
+    var got = strings.query.fetchObjects(q -> q.filters(Filter.propertyLen("letters").gte(3)));
+
+    // Assertions
+    Assertions.assertThat(got.objects()).hasSize(2);
+  }
+  
   /**
    * Ensure the client respects server's configuration for max gRPC size:
    * we create a server with 1-byte message size and try to send a large payload
@@ -700,6 +767,5 @@ public class SearchITest extends ConcurrentTest {
         huge.data.insertMany(hugeObject);
       }).isInstanceOf(io.grpc.StatusRuntimeException.class);
     }
-    System.out.println("here?");
   }
 }

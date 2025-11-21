@@ -19,8 +19,6 @@ public record FetchObjectById(
     List<Metadata> returnMetadata,
     List<String> includeVectors) implements QueryOperator {
 
-  static final String ID_PROPERTY = "_id";
-
   public static FetchObjectById of(String uuid) {
     return of(uuid, ObjectBuilder.identity());
   }
