@@ -14,12 +14,15 @@ import io.weaviate.client6.v1.api.cluster.replication.Replication;
 import io.weaviate.client6.v1.api.cluster.replication.ReplicationState;
 import io.weaviate.client6.v1.api.cluster.replication.ReplicationType;
 import io.weaviate.containers.Weaviate;
+import io.weaviate.containers.Weaviate.Version;
 
 public class ClusterITest extends ConcurrentTest {
   private static final WeaviateClient client = Weaviate.cluster(3).getClient();
 
   @Test
   public void test_shardingState() throws IOException {
+    Version.V134.orSkip();
+
     // Arrange
     var nsA = ns("A");
     var nsB = ns("B");
@@ -58,6 +61,8 @@ public class ClusterITest extends ConcurrentTest {
 
   @Test
   public void test_replicateLifecycle() throws IOException {
+    Version.V134.orSkip(); // Replicate endpoint not implemented in earlier versions
+
     // Arrange
 
     // We must create the collection first before any shards exist on the nodes.
