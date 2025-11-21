@@ -23,7 +23,7 @@ if git rev-parse "$VERSION" >/dev/null 2>&1; then
 fi
 
 next_version=""
-if [[ "$VERSION" =~ -(alpha|beta|M|rc)[0-9]*$ ]]; then
+if [[ "$VERSION" =~ -(alpha|beta|M|RC)[0-9]*$ ]]; then
   next_version="${VERSION%%-*}"
 fi
 
