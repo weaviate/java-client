@@ -14,6 +14,7 @@ import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
@@ -739,5 +740,32 @@ public class SearchITest extends ConcurrentTest {
 
     // Assertions
     Assertions.assertThat(got.objects()).hasSize(2);
+  }
+  
+  /**
+   * Ensure the client respects server's configuration for max gRPC size:
+   * we create a server with 1-byte message size and try to send a large payload
+   * there. If the channel is configured correctly, it will refuse to send it.
+   */
+  @Test
+  @Ignore("Exception thrown by gRPC transport causes a deadlock")
+  public void test_maxGrpcMessageSize() throws Exception {
+    var w = Weaviate.custom().withGrpcMaxMessageSize(1).build();
+    var nsHugeVectors = ns("HugeVectors");
+
+    try (final var _client = w.getClient()) {
+      var huge = _client.collections.create(nsHugeVectors, c -> c
+          .vectorConfig(VectorConfig.selfProvided()));
+
+      final var vector = randomVector(5000, -.01f, .01f);
+      final WeaviateObject<Map<String, Object>, Reference, ObjectMetadata> hugeObject = WeaviateObject.of(obj -> obj
+          .metadata(ObjectMetadata.of(m -> m
+              .vectors(Vectors.of(vector)))));
+
+      Assertions.assertThatThrownBy(() -> {
+        // insertMany to route this request through gRPC.
+        huge.data.insertMany(hugeObject);
+      }).isInstanceOf(io.grpc.StatusRuntimeException.class);
+    }
   }
 }

@@ -43,8 +43,8 @@ public final class DefaultGrpcTransport implements GrpcTransport {
 
     if (transportOptions.maxMessageSize() != null) {
       var max = transportOptions.maxMessageSize();
-      blockingStub.withMaxInboundMessageSize(max).withMaxOutboundMessageSize(max);
-      futureStub.withMaxInboundMessageSize(max).withMaxOutboundMessageSize(max);
+      blockingStub = blockingStub.withMaxInboundMessageSize(max).withMaxOutboundMessageSize(max);
+      futureStub = futureStub.withMaxInboundMessageSize(max).withMaxOutboundMessageSize(max);
     }
 
     if (transportOptions.tokenProvider() != null) {
