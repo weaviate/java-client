@@ -68,7 +68,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        WEAVIATE_VERSION: ["1.32.0", "1.33.0"]
+        WEAVIATE_VERSION: ["1.32.16", "1.33.4", "1.34.0"]
     steps:
     - uses: actions/checkout@v4
 
