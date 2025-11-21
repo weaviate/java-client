@@ -19,9 +19,10 @@ import io.weaviate.client6.v1.api.collections.quantizers.RQ;
 import io.weaviate.client6.v1.api.collections.quantizers.SQ;
 import io.weaviate.client6.v1.api.collections.quantizers.Uncompressed;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
+import io.weaviate.client6.v1.internal.TaggedUnion;
 import io.weaviate.client6.v1.internal.json.JsonEnum;
 
-public interface Quantization {
+public interface Quantization extends TaggedUnion<Quantization.Kind, Object> {
 
   public enum Kind implements JsonEnum<Kind> {
     UNCOMPRESSED("skipDefaultQuantization"),
@@ -110,6 +111,46 @@ public interface Quantization {
    */
   public static Quantization rq(Function<RQ.Builder, ObjectBuilder<RQ>> fn) {
     return RQ.of(fn);
+  }
+
+  default BQ asBQ() {
+    return _as(Quantization.Kind.BQ);
+  }
+
+  default RQ asRQ() {
+    return _as(Quantization.Kind.RQ);
+  }
+
+  default PQ asPQ() {
+    return _as(Quantization.Kind.PQ);
+  }
+
+  default SQ asSQ() {
+    return _as(Quantization.Kind.SQ);
+  }
+
+  default Uncompressed asUncompressed() {
+    return _as(Quantization.Kind.UNCOMPRESSED);
+  }
+
+  default boolean isBQ() {
+    return _is(Quantization.Kind.BQ);
+  }
+
+  default boolean isRQ() {
+    return _is(Quantization.Kind.RQ);
+  }
+
+  default boolean isPQ() {
+    return _is(Quantization.Kind.PQ);
+  }
+
+  default boolean isSQ() {
+    return _is(Quantization.Kind.SQ);
+  }
+
+  default boolean isUncompressed() {
+    return _is(Quantization.Kind.UNCOMPRESSED);
   }
 
   public static enum CustomTypeAdapterFactory implements TypeAdapterFactory {

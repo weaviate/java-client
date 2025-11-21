@@ -131,7 +131,9 @@ public record BaseQueryOptions(
      * Subsequent calls to {@link #filter} aggregate with an AND operator.
      */
     public final SelfT filters(Filter filter) {
-      this.filter = this.filter == null ? filter : Filter.and(this.filter, filter);
+      this.filter = this.filter == null
+          ? filter
+          : Filter.and(this.filter, filter);
       return (SelfT) this;
     }
 

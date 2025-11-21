@@ -101,27 +101,27 @@ public interface Target {
     return new VectorTarget(vectorName, weight, vector);
   }
 
-  static Target combine(CombinationMethod combinationMethod, VectorTarget... vectorTargets) {
+  static NearVectorTarget combine(CombinationMethod combinationMethod, VectorTarget... vectorTargets) {
     return new CombinedVectorTarget(combinationMethod, Arrays.asList(vectorTargets));
   }
 
-  static Target sum(VectorTarget... vectorTargets) {
+  static NearVectorTarget sum(VectorTarget... vectorTargets) {
     return combine(CombinationMethod.SUM, vectorTargets);
   }
 
-  static Target min(VectorTarget... vectorTargets) {
+  static NearVectorTarget min(VectorTarget... vectorTargets) {
     return combine(CombinationMethod.MIN, vectorTargets);
   }
 
-  static Target average(VectorTarget... vectorTargets) {
+  static NearVectorTarget average(VectorTarget... vectorTargets) {
     return combine(CombinationMethod.AVERAGE, vectorTargets);
   }
 
-  static Target relativeScore(VectorTarget... vectorTargets) {
+  static NearVectorTarget relativeScore(VectorTarget... vectorTargets) {
     return combine(CombinationMethod.RELATIVE_SCORE, vectorTargets);
   }
 
-  static Target manualWeights(VectorTarget... vectorTargets) {
+  static NearVectorTarget manualWeights(VectorTarget... vectorTargets) {
     return combine(CombinationMethod.MANUAL_WEIGHTS, vectorTargets);
   }
 
