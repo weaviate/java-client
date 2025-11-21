@@ -218,18 +218,34 @@ public class RbacITest extends ConcurrentTest {
         .extracting(Role::name)
         .doesNotContain(roleName);
 
-    client.users.db.activate(userId);
+    var deactivated = client.users.db.deactivate(userId);
+    Assertions.assertThat(deactivated)
+        .as("user was deactivated")
+        .isTrue();
+    Assertions.assertThat(client.users.db.byName(userId)).get()
+        .as("user is deactivated")
+        .returns(false, DbUser::active);
+
+    deactivated = client.users.db.deactivate(userId);
+    Assertions.assertThat(deactivated)
+        .as("user was already deactivated")
+        .isFalse();
+
+    var activated = client.users.db.activate(userId);
+    Assertions.assertThat(activated)
+        .as("user was activated")
+        .isTrue();
     Assertions.assertThat(client.users.db.byName(userId)).get()
         .as("user is activated")
         .returns(true, DbUser::active);
 
+    activated = client.users.db.activate(userId);
+    Assertions.assertThat(activated)
+        .as("user was already active")
+        .isFalse();
+
     apiKey = client.users.db.rotateKey(userId);
     assertValidApiKey(apiKey);
-
-    client.users.db.deactivate(userId);
-    Assertions.assertThat(client.users.db.byName(userId)).get()
-        .as("user is deactivated")
-        .returns(false, DbUser::active);
 
     var all = client.users.db.list(users -> users.includeLastUsedAt(true));
     Assertions.assertThat(all)
@@ -238,10 +254,18 @@ public class RbacITest extends ConcurrentTest {
         .extracting(DbUser::id)
         .contains(userId, ADMIN_USER);
 
-    client.users.db.delete(userId);
+    var deleted = client.users.db.delete(userId);
+    Assertions.assertThat(deleted)
+        .as("user was deleted")
+        .isTrue();
     Assertions.assertThat(client.users.db.byName(userId))
         .as("user is deleted")
         .isEmpty();
+
+    deleted = client.users.db.delete(userId);
+    Assertions.assertThat(deleted)
+        .as("user was already deleted")
+        .isFalse();
   }
 
   @Test

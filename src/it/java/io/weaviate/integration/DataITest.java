@@ -28,7 +28,7 @@ import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.Metadata.MetadataField;
 import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.api.collections.query.QueryReference;
-import io.weaviate.client6.v1.api.collections.query.Where;
+import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.containers.Container;
 
 public class DataITest extends ConcurrentTest {
@@ -52,7 +52,7 @@ public class DataITest extends ConcurrentTest {
             .uuid(id)
             .vectors(Vectors.of(VECTOR_INDEX, vector)));
 
-    var object = artists.query.byId(id, query -> query
+    var object = artists.query.fetchObjectById(id, query -> query
         .returnProperties("name")
         .returnMetadata(
             MetadataField.VECTOR,
@@ -79,9 +79,16 @@ public class DataITest extends ConcurrentTest {
               .as("lastUpdateTimeUnix").isNotNull();
         });
 
-    artists.data.delete(id);
+    var deleted = artists.data.deleteById(id);
+    Assertions.assertThat(deleted)
+        .as("object was deleted").isTrue();
     Assertions.assertThat(artists.data.exists(id))
         .as("object not exists after deletion").isFalse();
+
+    deleted = artists.data.deleteById(id);
+    // TODO: Change to isFalse() after fixed in Weaviate server
+    Assertions.assertThat(deleted)
+        .as("object wasn't deleted").isTrue();
   }
 
   @Test
@@ -99,7 +106,7 @@ public class DataITest extends ConcurrentTest {
         "breed", "ragdoll",
         "img", ragdollPng));
 
-    var got = cats.query.byId(ragdoll.metadata().uuid(),
+    var got = cats.query.fetchObjectById(ragdoll.metadata().uuid(),
         cat -> cat.returnProperties("img"));
 
     Assertions.assertThat(got).get()
@@ -145,7 +152,7 @@ public class DataITest extends ConcurrentTest {
         Reference.object(albie));
 
     // Assert
-    var johnWithFriends = persons.query.byId(john.metadata().uuid(),
+    var johnWithFriends = persons.query.fetchObjectById(john.metadata().uuid(),
         query -> query.returnReferences(
             QueryReference.single("hasFriend",
                 friend -> friend.returnProperties("name"))));
@@ -165,7 +172,7 @@ public class DataITest extends ConcurrentTest {
         "hasFriend",
         Reference.object(barbara));
 
-    johnWithFriends = persons.query.byId(john.metadata().uuid(),
+    johnWithFriends = persons.query.fetchObjectById(john.metadata().uuid(),
         query -> query.returnReferences(
             QueryReference.single("hasFriend",
                 friend -> friend.returnProperties("name"))));
@@ -185,7 +192,7 @@ public class DataITest extends ConcurrentTest {
         Reference.object(barbara));
 
     // Assert
-    johnWithFriends = persons.query.byId(john.metadata().uuid(),
+    johnWithFriends = persons.query.fetchObjectById(john.metadata().uuid(),
         query -> query.returnReferences(
             QueryReference.single("hasFriend")));
 
@@ -214,7 +221,7 @@ public class DataITest extends ConcurrentTest {
         replace -> replace.properties(Map.of("year", 1819)));
 
     // Assert
-    var replacedIvanhoe = books.query.byId(ivanhoe.metadata().uuid());
+    var replacedIvanhoe = books.query.fetchObjectById(ivanhoe.metadata().uuid());
 
     Assertions.assertThat(replacedIvanhoe).get()
         .as("has ONLY year property")
@@ -258,7 +265,7 @@ public class DataITest extends ConcurrentTest {
             .vectors(Vectors.of(vector)));
 
     // Assert
-    var updIvanhoe = books.query.byId(
+    var updIvanhoe = books.query.fetchObjectById(
         ivanhoe.metadata().uuid(),
         query -> query
             .includeVector()
@@ -303,7 +310,7 @@ public class DataITest extends ConcurrentTest {
 
     // Act (dry run)
     things.data.deleteMany(
-        Where.property("last_used").gte(4),
+        Filter.property("last_used").gte(4),
         opt -> opt.dryRun(true));
 
     // Assert
@@ -312,7 +319,7 @@ public class DataITest extends ConcurrentTest {
 
     // Act (live run)
     var deleted = things.data.deleteMany(
-        Where.property("last_used").gte(4),
+        Filter.property("last_used").gte(4),
         opt -> opt.verbose(true));
 
     // Assert
@@ -387,7 +394,7 @@ public class DataITest extends ConcurrentTest {
     // Assert
     Assertions.assertThat(response.errors()).isEmpty();
 
-    var goodburgAirports = cities.query.byId(goodburg.metadata().uuid(),
+    var goodburgAirports = cities.query.fetchObjectById(goodburg.metadata().uuid(),
         city -> city.returnReferences(
             QueryReference.single("hasAirports")));
 
@@ -469,7 +476,7 @@ public class DataITest extends ConcurrentTest {
 
     // Act
     var object = types.data.insert(want);
-    var got = types.query.byId(object.uuid()); // return all properties
+    var got = types.query.fetchObjectById(object.uuid()); // return all properties
 
     // Assert
     Assertions.assertThat(got).get()

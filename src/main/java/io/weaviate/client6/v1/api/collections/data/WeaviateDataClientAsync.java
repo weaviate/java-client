@@ -11,8 +11,8 @@ import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClientAsync;
-import io.weaviate.client6.v1.api.collections.query.Where;
-import io.weaviate.client6.v1.api.collections.query.WhereOperand;
+import io.weaviate.client6.v1.api.collections.query.Filter;
+import io.weaviate.client6.v1.api.collections.query.FilterOperand;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
@@ -66,6 +66,12 @@ public class WeaviateDataClientAsync<PropertiesT> {
     return insertMany(InsertManyRequest.of(objects));
   }
 
+  @SafeVarargs
+  public final CompletableFuture<InsertManyResponse> insertMany(
+      WeaviateObject<PropertiesT, Reference, ObjectMetadata>... objects) {
+    return insertMany(Arrays.asList(objects));
+  }
+
   public CompletableFuture<InsertManyResponse> insertMany(
       List<WeaviateObject<PropertiesT, Reference, ObjectMetadata>> objects) {
     return insertMany(new InsertManyRequest<>(objects));
@@ -77,7 +83,7 @@ public class WeaviateDataClientAsync<PropertiesT> {
   }
 
   public CompletableFuture<Boolean> exists(String uuid) {
-    return this.query.byId(uuid).thenApply(Optional::isPresent);
+    return this.query.fetchObjectById(uuid).thenApply(Optional::isPresent);
   }
 
   public CompletableFuture<Void> update(String uuid,
@@ -92,25 +98,25 @@ public class WeaviateDataClientAsync<PropertiesT> {
         ReplaceObjectRequest.endpoint(collection, defaults));
   }
 
-  public CompletableFuture<Void> delete(String uuid) {
+  public CompletableFuture<Boolean> delete(String uuid) {
     return this.restTransport.performRequestAsync(new DeleteObjectRequest(uuid),
         DeleteObjectRequest.endpoint(collection, defaults));
   }
 
   public CompletableFuture<DeleteManyResponse> deleteMany(String... uuids) {
     var either = Arrays.stream(uuids)
-        .map(uuid -> (WhereOperand) Where.uuid().eq(uuid))
+        .map(uuid -> (FilterOperand) Filter.uuid().eq(uuid))
         .toList();
-    return deleteMany(DeleteManyRequest.of(Where.or(either)));
+    return deleteMany(DeleteManyRequest.of(Filter.or(either)));
   }
 
-  public CompletableFuture<DeleteManyResponse> deleteMany(Where where) {
-    return deleteMany(DeleteManyRequest.of(where));
+  public CompletableFuture<DeleteManyResponse> deleteMany(Filter filters) {
+    return deleteMany(DeleteManyRequest.of(filters));
   }
 
-  public CompletableFuture<DeleteManyResponse> deleteMany(Where where,
+  public CompletableFuture<DeleteManyResponse> deleteMany(Filter filters,
       Function<DeleteManyRequest.Builder, ObjectBuilder<DeleteManyRequest>> fn) {
-    return deleteMany(DeleteManyRequest.of(where, fn));
+    return deleteMany(DeleteManyRequest.of(filters, fn));
   }
 
   public CompletableFuture<DeleteManyResponse> deleteMany(DeleteManyRequest request) {

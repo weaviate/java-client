@@ -8,15 +8,15 @@ import java.util.function.Function;
 import com.google.gson.annotations.SerializedName;
 
 import io.weaviate.client6.v1.api.collections.Generative;
-import io.weaviate.client6.v1.api.collections.generate.DynamicProvider;
+import io.weaviate.client6.v1.api.collections.generate.GenerativeProvider;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecGoogleVectorizer;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative;
 
 public record GoogleGenerative(
-    @SerializedName("apiEndpoint") String baseUrl,
-    @SerializedName("modelId") String model,
+    @SerializedName("apiEndpoint") String apiEndpoint,
+    @SerializedName("modelId") String modelId,
     @SerializedName("projectId") String projectId,
     @SerializedName("maxOutputTokens") Integer maxTokens,
     @SerializedName("topK") Integer topK,
@@ -51,8 +51,8 @@ public record GoogleGenerative(
 
   public GoogleGenerative(Builder builder) {
     this(
-        builder.baseUrl,
-        builder.model,
+        builder.apiEndpoint,
+        builder.modelId,
         builder.projectId,
         builder.maxTokens,
         builder.topK,
@@ -61,29 +61,29 @@ public record GoogleGenerative(
   }
 
   public abstract static class Builder implements ObjectBuilder<GoogleGenerative> {
-    private String baseUrl;
+    private String apiEndpoint;
     private final String projectId;
 
-    private String model;
+    private String modelId;
     private Integer maxTokens;
     private Integer topK;
     private Float topP;
     private Float temperature;
 
-    public Builder(String baseUrl, String projectId) {
+    public Builder(String apiEndpoint, String projectId) {
       this.projectId = projectId;
-      this.baseUrl = baseUrl;
+      this.apiEndpoint = apiEndpoint;
     }
 
     /** Base URL of the generative provider. */
-    protected Builder baseUrl(String baseUrl) {
-      this.baseUrl = baseUrl;
+    protected Builder apiEndpoint(String apiEndpoint) {
+      this.apiEndpoint = apiEndpoint;
       return this;
     }
 
     /** Select generative model. */
-    public Builder model(String model) {
-      this.model = model;
+    public Builder modelId(String modelId) {
+      this.modelId = modelId;
       return this;
     }
 
@@ -132,8 +132,8 @@ public record GoogleGenerative(
     }
 
     /** Base URL of the generative provider. */
-    public VertexBuilder baseUrl(String baseUrl) {
-      super.baseUrl(baseUrl);
+    public VertexBuilder apiEndpoint(String apiEndpoint) {
+      super.apiEndpoint(apiEndpoint);
       return this;
     }
   }
@@ -151,9 +151,9 @@ public record GoogleGenerative(
   }
 
   public static record Provider(
-      String baseUrl,
+      String apiEndpoint,
       Integer maxTokens,
-      String model,
+      String modelId,
       Float temperature,
       Integer topK,
       Float topP,
@@ -164,7 +164,7 @@ public record GoogleGenerative(
       String region,
       List<String> stopSequences,
       List<String> images,
-      List<String> imageProperties) implements DynamicProvider {
+      List<String> imageProperties) implements GenerativeProvider {
 
     public static Provider vertex(
         String projectId,
@@ -181,14 +181,14 @@ public record GoogleGenerative(
     public void appendTo(
         io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeProvider.Builder req) {
       var provider = WeaviateProtoGenerative.GenerativeGoogle.newBuilder();
-      if (baseUrl != null) {
-        provider.setApiEndpoint(baseUrl);
+      if (apiEndpoint != null) {
+        provider.setApiEndpoint(apiEndpoint);
       }
       if (maxTokens != null) {
         provider.setMaxTokens(maxTokens);
       }
-      if (model != null) {
-        provider.setModel(model);
+      if (modelId != null) {
+        provider.setModel(modelId);
       }
       if (temperature != null) {
         provider.setTemperature(temperature);
@@ -223,9 +223,9 @@ public record GoogleGenerative(
 
     public Provider(Builder builder) {
       this(
-          builder.baseUrl,
+          builder.apiEndpoint,
           builder.maxTokens,
-          builder.model,
+          builder.modelId,
           builder.temperature,
           builder.topK,
           builder.topP,
@@ -241,11 +241,11 @@ public record GoogleGenerative(
 
     public abstract static class Builder implements ObjectBuilder<GoogleGenerative.Provider> {
       private final String projectId;
-      private String baseUrl;
+      private String apiEndpoint;
 
       private Integer topK;
       private Float topP;
-      private String model;
+      private String modelId;
       private Integer maxTokens;
       private Float temperature;
       private Float frequencyPenalty;
@@ -256,14 +256,14 @@ public record GoogleGenerative(
       private final List<String> images = new ArrayList<>();
       private final List<String> imageProperties = new ArrayList<>();
 
-      public Builder(String baseUrl, String projectId) {
+      public Builder(String apiEndpoint, String projectId) {
         this.projectId = projectId;
-        this.baseUrl = baseUrl;
+        this.apiEndpoint = apiEndpoint;
       }
 
       /** Base URL of the generative provider. */
-      protected Builder baseUrl(String baseUrl) {
-        this.baseUrl = baseUrl;
+      protected Builder apiEndpoint(String apiEndpoint) {
+        this.apiEndpoint = apiEndpoint;
         return this;
       }
 
@@ -290,8 +290,8 @@ public record GoogleGenerative(
       }
 
       /** Select generative model. */
-      public Builder model(String model) {
-        this.model = model;
+      public Builder modelId(String modelId) {
+        this.modelId = modelId;
         return this;
       }
 
@@ -371,8 +371,8 @@ public record GoogleGenerative(
       }
 
       /** Base URL of the generative provider. */
-      public VertexBuilder baseUrl(String baseUrl) {
-        super.baseUrl(baseUrl);
+      public VertexBuilder apiEndpoint(String apiEndpoint) {
+        super.apiEndpoint(apiEndpoint);
         return this;
       }
     }

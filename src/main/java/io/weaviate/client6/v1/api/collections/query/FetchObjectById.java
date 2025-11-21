@@ -12,24 +12,22 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
-public record ById(
+public record FetchObjectById(
     String uuid,
     List<String> returnProperties,
     List<QueryReference> returnReferences,
     List<Metadata> returnMetadata,
     List<String> includeVectors) implements QueryOperator {
 
-  static final String ID_PROPERTY = "_id";
-
-  public static ById of(String uuid) {
+  public static FetchObjectById of(String uuid) {
     return of(uuid, ObjectBuilder.identity());
   }
 
-  public static ById of(String uuid, Function<Builder, ObjectBuilder<ById>> fn) {
+  public static FetchObjectById of(String uuid, Function<Builder, ObjectBuilder<FetchObjectById>> fn) {
     return fn.apply(new Builder(uuid)).build();
   }
 
-  public ById(Builder builder) {
+  public FetchObjectById(Builder builder) {
     this(builder.uuid,
         new ArrayList<>(builder.returnProperties),
         builder.returnReferences,
@@ -37,7 +35,7 @@ public record ById(
         builder.includeVectors);
   }
 
-  public static class Builder implements ObjectBuilder<ById> {
+  public static class Builder implements ObjectBuilder<FetchObjectById> {
     // Required query parameters.
     private final String uuid;
 
@@ -101,16 +99,16 @@ public record ById(
     }
 
     @Override
-    public ById build() {
-      return new ById(this);
+    public FetchObjectById build() {
+      return new FetchObjectById(this);
     }
   }
 
   @Override
   public void appendTo(WeaviateProtoSearchGet.SearchRequest.Builder req) {
-    var where = Where.uuid().eq(uuid);
+    var filters = Filter.uuid().eq(uuid);
     var filter = WeaviateProtoBase.Filters.newBuilder();
-    where.appendTo(filter);
+    filters.appendTo(filter);
     req.setFilters(filter);
 
     var metadata = WeaviateProtoSearchGet.MetadataRequest.newBuilder();

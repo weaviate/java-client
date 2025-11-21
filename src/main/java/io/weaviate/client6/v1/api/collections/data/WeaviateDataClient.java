@@ -9,8 +9,8 @@ import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClient;
-import io.weaviate.client6.v1.api.collections.query.Where;
-import io.weaviate.client6.v1.api.collections.query.WhereOperand;
+import io.weaviate.client6.v1.api.collections.query.Filter;
+import io.weaviate.client6.v1.api.collections.query.FilterOperand;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
@@ -80,7 +80,7 @@ public class WeaviateDataClient<PropertiesT> {
   }
 
   public boolean exists(String uuid) {
-    return this.query.byId(uuid).isPresent();
+    return this.query.fetchObjectById(uuid).isPresent();
   }
 
   public void update(String uuid,
@@ -97,25 +97,32 @@ public class WeaviateDataClient<PropertiesT> {
         ReplaceObjectRequest.endpoint(collection, defaults));
   }
 
-  public void delete(String uuid) throws IOException {
-    this.restTransport.performRequest(new DeleteObjectRequest(uuid),
+  /**
+   * Delete an object by its UUID.
+   *
+   * @param uuid The UUID of the object to delete.
+   * @return {@code true} if the object was deleted, {@code false} if there was no object to delete.
+   * @throws IOException in case the request was not sent successfully.
+   */
+  public boolean deleteById(String uuid) throws IOException {
+    return this.restTransport.performRequest(new DeleteObjectRequest(uuid),
         DeleteObjectRequest.endpoint(collection, defaults));
   }
 
   public DeleteManyResponse deleteMany(String... uuids) {
     var either = Arrays.stream(uuids)
-        .map(uuid -> (WhereOperand) Where.uuid().eq(uuid))
+        .map(uuid -> (FilterOperand) Filter.uuid().eq(uuid))
         .toList();
-    return deleteMany(DeleteManyRequest.of(Where.or(either)));
+    return deleteMany(DeleteManyRequest.of(Filter.or(either)));
   }
 
-  public DeleteManyResponse deleteMany(Where where) {
-    return deleteMany(DeleteManyRequest.of(where));
+  public DeleteManyResponse deleteMany(Filter filters) {
+    return deleteMany(DeleteManyRequest.of(filters));
   }
 
-  public DeleteManyResponse deleteMany(Where where,
+  public DeleteManyResponse deleteMany(Filter filters,
       Function<DeleteManyRequest.Builder, ObjectBuilder<DeleteManyRequest>> fn) {
-    return deleteMany(DeleteManyRequest.of(where, fn));
+    return deleteMany(DeleteManyRequest.of(filters, fn));
   }
 
   public DeleteManyResponse deleteMany(DeleteManyRequest request) {

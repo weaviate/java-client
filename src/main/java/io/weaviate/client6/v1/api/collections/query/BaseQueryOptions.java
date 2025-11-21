@@ -16,24 +16,28 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 public record BaseQueryOptions(
     Integer limit,
     Integer offset,
-    Integer autocut,
+    Integer autolimit,
     String after,
     ConsistencyLevel consistencyLevel,
-    Where where,
+    Filter filters,
     GenerativeSearch generativeSearch,
     List<String> returnProperties,
     List<QueryReference> returnReferences,
     List<Metadata> returnMetadata,
     List<String> includeVectors) {
 
+  static final String ID_PROPERTY = "_id";
+  static final String CREATION_TIME_PROPERTY = "_creationTimeUnix";
+  static final String LAST_UPDATE_TIME_PROPERTY = "_lastUpdateTimeUnix";
+
   private <T extends Object> BaseQueryOptions(Builder<? extends Builder<?, T>, T> builder) {
     this(
         builder.limit,
         builder.offset,
-        builder.autocut,
+        builder.autolimit,
         builder.after,
         builder.consistencyLevel,
-        builder.where,
+        builder.filter,
         builder.generativeSearch,
         builder.returnProperties,
         builder.returnReferences,
@@ -46,10 +50,10 @@ public record BaseQueryOptions(
   public static abstract class Builder<SelfT extends Builder<SelfT, T>, T extends Object> implements ObjectBuilder<T> {
     private Integer limit;
     private Integer offset;
-    private Integer autocut;
+    private Integer autolimit;
     private String after;
     private ConsistencyLevel consistencyLevel;
-    private Where where;
+    private Filter filter;
     private GenerativeSearch generativeSearch;
     private List<String> returnProperties = new ArrayList<>();
     private List<QueryReference> returnReferences = new ArrayList<>();
@@ -85,12 +89,12 @@ public record BaseQueryOptions(
     /**
      * Discard results after an automatically calculated cutoff point.
      *
-     * @param autocut The number of "groups" to keep.
+     * @param autolimit The number of "groups" to keep.
      * @see <a href=
      *      "https://weaviate.io/learn/knowledgecards/autocut">Documentation</a>
      */
-    public final SelfT autocut(int autocut) {
-      this.autocut = autocut;
+    public final SelfT autolimit(int autolimit) {
+      this.autolimit = autolimit;
       return (SelfT) this;
     }
 
@@ -124,16 +128,16 @@ public record BaseQueryOptions(
     /**
      * Filter result set using traditional filtering operators: {@code eq},
      * {@code gte}, {@code like}, etc.
-     * Subsequent calls to {@link #where} aggregate with an AND operator.
+     * Subsequent calls to {@link #filter} aggregate with an AND operator.
      */
-    public final SelfT where(Where where) {
-      this.where = this.where == null ? where : Where.and(this.where, where);
+    public final SelfT filters(Filter filter) {
+      this.filter = this.filter == null ? filter : Filter.and(this.filter, filter);
       return (SelfT) this;
     }
 
     /** Combine several conditions using with an AND operator. */
-    public final SelfT where(Where... wheres) {
-      Arrays.stream(wheres).map(this::where);
+    public final SelfT filters(Filter... filters) {
+      Arrays.stream(filters).map(this::filters);
       return (SelfT) this;
     }
 
@@ -210,17 +214,17 @@ public record BaseQueryOptions(
     if (StringUtils.isNotBlank(after)) {
       req.setAfter(after);
     }
-    if (autocut != null) {
-      req.setAutocut(autocut);
+    if (autolimit != null) {
+      req.setAutocut(autolimit);
     }
 
     if (consistencyLevel != null) {
       consistencyLevel.appendTo(req);
     }
 
-    if (where != null) {
+    if (filters != null) {
       var filter = WeaviateProtoBase.Filters.newBuilder();
-      where.appendTo(filter);
+      filters.appendTo(filter);
       req.setFilters(filter);
     }
 

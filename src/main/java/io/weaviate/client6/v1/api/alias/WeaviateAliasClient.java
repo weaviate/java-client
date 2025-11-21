@@ -117,8 +117,11 @@ public class WeaviateAliasClient {
    * @throws IOException          in case the request was not sent successfully
    *                              due to a malformed request, a networking error
    *                              or the server being unavailable.
+   * 
+   * @return {@code true} if the alias was deleted, {@code false} if there was no
+   *         alias to delete.
    */
-  public void delete(String alias) throws IOException {
-    this.restTransport.performRequest(new DeleteAliasRequest(alias), DeleteAliasRequest._ENDPOINT);
+  public boolean delete(String alias) throws IOException {
+    return this.restTransport.performRequest(new DeleteAliasRequest(alias), DeleteAliasRequest._ENDPOINT);
   }
 }

@@ -1,6 +1,7 @@
 package io.weaviate.integration;
 
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
@@ -30,13 +32,13 @@ import io.weaviate.client6.v1.api.collections.data.Reference;
 import io.weaviate.client6.v1.api.collections.generate.GenerativeObject;
 import io.weaviate.client6.v1.api.collections.generate.TaskOutput;
 import io.weaviate.client6.v1.api.collections.generative.DummyGenerative;
+import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.client6.v1.api.collections.query.GroupBy;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.api.collections.query.QueryResponseGroup;
 import io.weaviate.client6.v1.api.collections.query.SortBy;
 import io.weaviate.client6.v1.api.collections.query.Target;
-import io.weaviate.client6.v1.api.collections.query.Where;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.api.collections.vectorindex.MultiVector;
 import io.weaviate.containers.Container;
@@ -251,12 +253,12 @@ public class SearchITest extends ConcurrentTest {
     var hugeHat = hats.data.insert(Map.of("colour", "orange", "size", 40));
 
     var got = hats.query.fetchObjects(
-        query -> query.where(
-            Where.or(
-                Where.property("colour").eq("orange"),
-                Where.and(
-                    Where.property("size").gte(1),
-                    Where.property("size").lt(6)))));
+        query -> query.filters(
+            Filter.or(
+                Filter.property("colour").eq("orange"),
+                Filter.and(
+                    Filter.property("size").gte(1),
+                    Filter.property("size").lt(6)))));
 
     Assertions.assertThat(got.objects())
         .extracting(hat -> hat.metadata().uuid())
@@ -478,7 +480,7 @@ public class SearchITest extends ConcurrentTest {
         Vectors.of("v3", new float[] { 7, 8, 9 })));
 
     // Act
-    var got = things.query.byId(
+    var got = things.query.fetchObjectById(
         thing_1.uuid(),
         q -> q.includeVector("v1", "v2"));
 
@@ -597,7 +599,7 @@ public class SearchITest extends ConcurrentTest {
     // Act
     var french = things.generate.bm25(
         "fork",
-        bm25 -> bm25.queryProperties("title").limit(2),
+        bm25 -> bm25.queryProperties("title").limit(2).includeVector(),
         generate -> generate
             .singlePrompt("translate to French")
             .groupedTask("count letters R"));
@@ -606,12 +608,18 @@ public class SearchITest extends ConcurrentTest {
     Assertions.assertThat(french.objects())
         .as("individual results")
         .hasSize(2)
-        .extracting(GenerativeObject::generated)
+        .allSatisfy(obj -> {
+          Assertions.assertThat(obj).as("uuid shorthand")
+              .returns(obj.uuid(), GenerativeObject::uuid);
+          Assertions.assertThat(obj).as("vectors shorthand")
+              .returns(obj.vectors(), GenerativeObject::vectors);
+        })
+        .extracting(GenerativeObject::generative)
         .allSatisfy(generated -> {
           Assertions.assertThat(generated.text()).isNotBlank();
         });
 
-    Assertions.assertThat(french.generated())
+    Assertions.assertThat(french.generative())
         .as("summary")
         .extracting(TaskOutput::text, InstanceOfAssertFactories.STRING)
         .isNotBlank();
@@ -655,16 +663,109 @@ public class SearchITest extends ConcurrentTest {
               .describedAs("objects in group %s", groupName)
               .hasSize(1);
 
-          Assertions.assertThat(group.generated())
+          Assertions.assertThat(group.generative())
               .describedAs("summary group %s", groupName)
               .extracting(TaskOutput::text, InstanceOfAssertFactories.STRING)
               .isNotBlank();
 
         });
 
-    Assertions.assertThat(french.generated())
+    Assertions.assertThat(french.generative())
         .as("summary")
         .extracting(TaskOutput::text, InstanceOfAssertFactories.STRING)
         .isNotBlank();
+  }
+
+  @Test
+  public void test_filterIsNull() throws IOException {
+    // Arrange
+    var nsNulls = ns("Nulls");
+
+    var nulls = client.collections.create(nsNulls,
+        c -> c
+            .invertedIndex(idx -> idx.indexNulls(true))
+            .properties(Property.text("never")));
+
+    var inserted = nulls.data.insertMany(Map.of(), Map.of("never", "notNull"));
+    Assertions.assertThat(inserted.errors()).isEmpty();
+
+    // Act
+    var isNull = nulls.query.fetchObjects(q -> q.filters(Filter.property("never").isNull()));
+    var isNotNull = nulls.query.fetchObjects(q -> q.filters(Filter.property("never").isNotNull()));
+
+    // Assert
+    var isNull_1 = Assertions.assertThat(isNull.objects())
+        .as("objects WHERE never IS NULL")
+        .hasSize(1).first().actual();
+    var isNotNull_1 = Assertions.assertThat(isNotNull.objects())
+        .as("objects WHERE never IS NOT NULL")
+        .hasSize(1).first().actual();
+    Assertions.assertThat(isNull_1).isNotEqualTo(isNotNull_1);
+  }
+
+  @Test
+  public void test_filterCreateUpdateTime() throws IOException {
+    // Arrange
+    var now = OffsetDateTime.now().minusHours(1);
+    var nsCounter = ns("Counter");
+
+    var counter = client.collections.create(nsCounter,
+        c -> c
+            .invertedIndex(idx -> idx.indexTimestamps(true))
+            .properties(Property.integer("count")));
+
+    counter.data.insert(Map.of("count", 0));
+
+    // Act
+    var beforeNow = counter.query.fetchObjects(q -> q.filters(Filter.createdAt().lt(now)));
+    var afterNow = counter.query.fetchObjects(q -> q.filters(Filter.createdAt().gt(now)));
+
+    // Assert
+    Assertions.assertThat(beforeNow.objects()).isEmpty();
+    Assertions.assertThat(afterNow.objects()).hasSize(1);
+  }
+
+  @Test
+  public void teset_filterPropertyLength() throws IOException {
+    // Arrange
+    var nsStrings = ns("Strings");
+
+    var strings = client.collections.create(nsStrings, c -> c
+        .invertedIndex(idx -> idx.indexPropertyLength(true))
+        .properties(Property.text("letters")));
+    strings.data.insertMany(Map.of("letters", "abc"), Map.of("letters", "abcd"), Map.of("letters", "a"));
+
+    // Act
+    var got = strings.query.fetchObjects(q -> q.filters(Filter.propertyLen("letters").gte(3)));
+
+    // Assertions
+    Assertions.assertThat(got.objects()).hasSize(2);
+  }
+  
+  /**
+   * Ensure the client respects server's configuration for max gRPC size:
+   * we create a server with 1-byte message size and try to send a large payload
+   * there. If the channel is configured correctly, it will refuse to send it.
+   */
+  @Test
+  @Ignore("Exception thrown by gRPC transport causes a deadlock")
+  public void test_maxGrpcMessageSize() throws Exception {
+    var w = Weaviate.custom().withGrpcMaxMessageSize(1).build();
+    var nsHugeVectors = ns("HugeVectors");
+
+    try (final var _client = w.getClient()) {
+      var huge = _client.collections.create(nsHugeVectors, c -> c
+          .vectorConfig(VectorConfig.selfProvided()));
+
+      final var vector = randomVector(5000, -.01f, .01f);
+      final WeaviateObject<Map<String, Object>, Reference, ObjectMetadata> hugeObject = WeaviateObject.of(obj -> obj
+          .metadata(ObjectMetadata.of(m -> m
+              .vectors(Vectors.of(vector)))));
+
+      Assertions.assertThatThrownBy(() -> {
+        // insertMany to route this request through gRPC.
+        huge.data.insertMany(hugeObject);
+      }).isInstanceOf(io.grpc.StatusRuntimeException.class);
+    }
   }
 }

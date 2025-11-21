@@ -8,13 +8,13 @@ import java.util.function.Function;
 import com.google.gson.annotations.SerializedName;
 
 import io.weaviate.client6.v1.api.collections.Generative;
-import io.weaviate.client6.v1.api.collections.generate.DynamicProvider;
+import io.weaviate.client6.v1.api.collections.generate.GenerativeProvider;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative;
 
 public record DatabricksGenerative(
-    @SerializedName("endpoint") String baseUrl,
+    @SerializedName("endpoint") String endpoint,
     @SerializedName("maxTokens") Integer maxTokens,
     @SerializedName("topK") Integer topK,
     @SerializedName("topP") Float topP,
@@ -30,17 +30,17 @@ public record DatabricksGenerative(
     return this;
   }
 
-  public static DatabricksGenerative of(String baseURL) {
-    return of(baseURL, ObjectBuilder.identity());
+  public static DatabricksGenerative of(String endpoint) {
+    return of(endpoint, ObjectBuilder.identity());
   }
 
-  public static DatabricksGenerative of(String baseURL, Function<Builder, ObjectBuilder<DatabricksGenerative>> fn) {
-    return fn.apply(new Builder(baseURL)).build();
+  public static DatabricksGenerative of(String endpoint, Function<Builder, ObjectBuilder<DatabricksGenerative>> fn) {
+    return fn.apply(new Builder(endpoint)).build();
   }
 
   public DatabricksGenerative(Builder builder) {
     this(
-        builder.baseUrl,
+        builder.endpoint,
         builder.maxTokens,
         builder.topK,
         builder.topP,
@@ -48,15 +48,15 @@ public record DatabricksGenerative(
   }
 
   public static class Builder implements ObjectBuilder<DatabricksGenerative> {
-    private final String baseUrl;
+    private final String endpoint;
 
     private Integer maxTokens;
     private Integer topK;
     private Float topP;
     private Float temperature;
 
-    public Builder(String baseUrl) {
-      this.baseUrl = baseUrl;
+    public Builder(String endpoint) {
+      this.endpoint = endpoint;
     }
 
     /** Limit the number of tokens to generate in the response. */
@@ -96,7 +96,7 @@ public record DatabricksGenerative(
   }
 
   public static record Provider(
-      String baseUrl,
+      String endpoint,
       Integer maxTokens,
       String model,
       Float temperature,
@@ -106,7 +106,7 @@ public record DatabricksGenerative(
       Float presencePenalty,
       Boolean logProbs,
       Integer topLogProbs,
-      List<String> stopSequences) implements DynamicProvider {
+      List<String> stopSequences) implements GenerativeProvider {
 
     public static Provider of(
         Function<DatabricksGenerative.Provider.Builder, ObjectBuilder<DatabricksGenerative.Provider>> fn) {
@@ -117,8 +117,8 @@ public record DatabricksGenerative(
     public void appendTo(
         io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeProvider.Builder req) {
       var provider = WeaviateProtoGenerative.GenerativeDatabricks.newBuilder();
-      if (baseUrl != null) {
-        provider.setEndpoint(baseUrl);
+      if (endpoint != null) {
+        provider.setEndpoint(endpoint);
       }
       if (maxTokens != null) {
         provider.setMaxTokens(maxTokens);
@@ -156,7 +156,7 @@ public record DatabricksGenerative(
 
     public Provider(Builder builder) {
       this(
-          builder.baseUrl,
+          builder.endpoint,
           builder.maxTokens,
           builder.model,
           builder.temperature,
@@ -170,7 +170,7 @@ public record DatabricksGenerative(
     }
 
     public static class Builder implements ObjectBuilder<DatabricksGenerative.Provider> {
-      private String baseUrl;
+      private String endpoint;
       private Integer n;
       private Float topP;
       private String model;
@@ -183,8 +183,8 @@ public record DatabricksGenerative(
       private final List<String> stopSequences = new ArrayList<>();
 
       /** Base URL of the generative provider. */
-      public Builder baseUrl(String baseUrl) {
-        this.baseUrl = baseUrl;
+      public Builder endpoint(String endpoint) {
+        this.endpoint = endpoint;
         return this;
       }
 

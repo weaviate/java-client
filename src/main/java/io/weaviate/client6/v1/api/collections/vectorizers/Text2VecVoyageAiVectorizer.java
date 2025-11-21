@@ -17,6 +17,7 @@ public record Text2VecVoyageAiVectorizer(
     @SerializedName("baseUrl") String baseUrl,
     @SerializedName("model") String model,
     @SerializedName("truncate") Boolean truncate,
+    @SerializedName("dimensions") Integer dimensions,
 
     /**
      * Weaviate defaults to {@code true} if the value is not provided.
@@ -57,6 +58,7 @@ public record Text2VecVoyageAiVectorizer(
       String baseUrl,
       String model,
       Boolean truncate,
+      Integer dimensions,
 
       boolean vectorizeCollectionName,
       List<String> sourceProperties,
@@ -65,6 +67,7 @@ public record Text2VecVoyageAiVectorizer(
     this.model = model;
     this.truncate = truncate;
     this.baseUrl = baseUrl;
+    this.dimensions = dimensions;
 
     this.vectorizeCollectionName = false;
     this.sourceProperties = Collections.emptyList();
@@ -77,6 +80,7 @@ public record Text2VecVoyageAiVectorizer(
         builder.baseUrl,
         builder.model,
         builder.truncate,
+        builder.dimensions,
         builder.vectorizeCollectionName,
         builder.sourceProperties,
         builder.vectorIndex,
@@ -92,6 +96,7 @@ public record Text2VecVoyageAiVectorizer(
     private String model;
     private Boolean truncate;
     private String baseUrl;
+    private Integer dimensions;
 
     public Builder baseUrl(String baseUrl) {
       this.baseUrl = baseUrl;
@@ -105,6 +110,11 @@ public record Text2VecVoyageAiVectorizer(
 
     public Builder truncate(boolean truncate) {
       this.truncate = truncate;
+      return this;
+    }
+
+    public Builder dimensions(Integer dimensions) {
+      this.dimensions = dimensions;
       return this;
     }
 

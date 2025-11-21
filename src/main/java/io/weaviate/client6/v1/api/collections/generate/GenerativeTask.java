@@ -58,7 +58,7 @@ public record GenerativeTask(Single single, Grouped grouped) {
     }
   }
 
-  public record Single(String prompt, boolean debug, List<DynamicProvider> providers) {
+  public record Single(String prompt, boolean debug, List<GenerativeProvider> providers) {
     public static Single of(String prompt) {
       return of(prompt, ObjectBuilder.identity());
     }
@@ -73,7 +73,7 @@ public record GenerativeTask(Single single, Grouped grouped) {
 
     public static class Builder implements ObjectBuilder<Single> {
       private final String prompt;
-      private final List<DynamicProvider> providers = new ArrayList<>();
+      private final List<GenerativeProvider> providers = new ArrayList<>();
       private boolean debug = false;
 
       public Builder(String prompt) {
@@ -85,7 +85,7 @@ public record GenerativeTask(Single single, Grouped grouped) {
         return this;
       }
 
-      public Builder dynamicProvider(DynamicProvider provider) {
+      public Builder generativeProvider(GenerativeProvider provider) {
         providers.clear(); // Protobuf allows `repeated` but the server expects there to be 1.
         providers.add(provider);
         return this;
@@ -114,7 +114,7 @@ public record GenerativeTask(Single single, Grouped grouped) {
     }
   }
 
-  public record Grouped(String prompt, boolean debug, List<String> properties, List<DynamicProvider> providers) {
+  public record Grouped(String prompt, boolean debug, List<String> properties, List<GenerativeProvider> providers) {
     public static Grouped of(String prompt) {
       return of(prompt, ObjectBuilder.identity());
     }
@@ -129,7 +129,7 @@ public record GenerativeTask(Single single, Grouped grouped) {
 
     public static class Builder implements ObjectBuilder<Grouped> {
       private final String prompt;
-      private final List<DynamicProvider> providers = new ArrayList<>();
+      private final List<GenerativeProvider> providers = new ArrayList<>();
       private final List<String> properties = new ArrayList<>();
       private boolean debug = false;
 
@@ -146,7 +146,7 @@ public record GenerativeTask(Single single, Grouped grouped) {
         return this;
       }
 
-      public Builder dynamicProvider(DynamicProvider provider) {
+      public Builder generativeProvider(GenerativeProvider provider) {
         providers.clear(); // Protobuf allows `repeated` but the server expects there to be 1.
         providers.add(provider);
         return this;

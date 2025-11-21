@@ -22,5 +22,5 @@ public record GenerativeResponseGroup<PropertiesT>(
     /** Objects retrieved in the query. */
     List<QueryObjectGrouped<PropertiesT>> objects,
     /** Output of the summary task for this group. */
-    TaskOutput generated) {
+    TaskOutput generative) {
 }

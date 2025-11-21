@@ -55,9 +55,12 @@ public class AliasITest extends ConcurrentTest {
         .returns(nsColsonBaker, Alias::collection);
 
     // Act: delete Bono alias
-    client.alias.delete("Bono");
+    var deleted = client.alias.delete("Bono");
+    Assertions.assertThat(deleted).as("object was deleted").isTrue();
 
-    // Assert
+    // Act: delete non-existent alias
+    deleted = client.alias.delete("Bono");
+    Assertions.assertThat(deleted).as("object wasn't deleted").isFalse();
     var paulHewsonAliases = client.alias.list(all -> all.collection(nsPaulHewson));
     Assertions.assertThat(paulHewsonAliases)
         .as("no aliases once Bono is deleted")
