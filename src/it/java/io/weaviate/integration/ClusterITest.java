@@ -21,8 +21,6 @@ public class ClusterITest extends ConcurrentTest {
 
   @Test
   public void test_shardingState() throws IOException {
-    Version.V134.orSkip();
-
     // Arrange
     var nsA = ns("A");
     var nsB = ns("B");
