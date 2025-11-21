@@ -416,6 +416,7 @@ public class Weaviate extends WeaviateContainer {
       nodes.forEach(node -> node
           .withEnv("CLUSTER_GOSSIP_BIND_PORT", String.valueOf(gossip))
           .withEnv("CLUSTER_DATA_BIND_PORT", String.valueOf(data))
+          .withEnv("REPLICA_MOVEMENT_ENABLED", "true")
           .withEnv("RAFT_PORT", String.valueOf(raft))
           .withEnv("RAFT_BOOTSTRAP_EXPECT", "1"));
 
@@ -426,7 +427,7 @@ public class Weaviate extends WeaviateContainer {
               Wait.forHttp("/v1/.well-known/ready")
                   .forPort(publicPort)
                   .forStatusCode(200)
-                  .withStartupTimeout(Duration.ofSeconds(60))));
+                  .withStartupTimeout(Duration.ofSeconds(10))));
     }
   }
 }
