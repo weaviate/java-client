@@ -33,7 +33,7 @@ public record CollectionConfig(
     List<ReferenceProperty> references,
     /** Vector indexes configured for this collection. */
     @SerializedName("vectorConfig") Map<String, VectorConfig> vectors,
-    /** Multi-tenantcy options. */
+    /** Multi-tenancy options. */
     @SerializedName("multiTenancyConfig") MultiTenancy multiTenancy,
     /** Sharding configuration. */
     @SerializedName("shardingConfig") Sharding sharding,
@@ -193,14 +193,13 @@ public record CollectionConfig(
     }
 
     /** Configure multi-tenancy. */
-    public Builder multiTenancy(MultiTenancy multiTenancy) {
-      this.multiTenancy = multiTenancy;
-      return this;
+    public Builder multiTenancy(Function<MultiTenancy.Builder, ObjectBuilder<MultiTenancy>> fn) {
+      return multiTenancy(MultiTenancy.of(fn));
     }
 
     /** Configure multi-tenancy. */
-    public Builder multiTenancy(Function<MultiTenancy.Builder, ObjectBuilder<MultiTenancy>> fn) {
-      this.multiTenancy = MultiTenancy.of(fn);
+    public Builder multiTenancy(MultiTenancy multiTenancy) {
+      this.multiTenancy = multiTenancy;
       return this;
     }
 
