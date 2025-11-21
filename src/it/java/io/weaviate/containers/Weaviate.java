@@ -197,6 +197,11 @@ public class Weaviate extends WeaviateContainer {
       return this;
     }
 
+    public Builder withGrpcMaxMessageSize(int bytes) {
+      environment.put("GRPC_MAX_MESSAGE_SIZE", String.valueOf(bytes));
+      return this;
+    }
+
     public Builder enableTelemetry(boolean enable) {
       environment.put("DISABLE_TELEMETRY", Boolean.toString(!enable));
       return this;
