@@ -24,7 +24,7 @@ import io.weaviate.client6.v1.internal.VersionSupport.SemanticVersion;
 
 public class Weaviate extends WeaviateContainer {
   public static final String DOCKER_IMAGE = "semitechnologies/weaviate";
-  public static final String LATEST_VERSION = "1.34.0";
+  public static final String LATEST_VERSION = Version.V134.semver.toString();
   public static final String VERSION;
 
   static {
