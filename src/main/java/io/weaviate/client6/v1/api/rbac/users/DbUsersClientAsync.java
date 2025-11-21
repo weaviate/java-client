@@ -30,7 +30,7 @@ public class DbUsersClientAsync extends NamespacedUsersClientAsync {
    *
    * @param userId User ID.
    */
-  public CompletableFuture<Void> delete(String userId) throws IOException {
+  public CompletableFuture<Boolean> delete(String userId) throws IOException {
     return this.restTransport.performRequestAsync(new DeleteDbUserRequest(userId), DeleteDbUserRequest._ENDPOINT);
   }
 
@@ -39,7 +39,7 @@ public class DbUsersClientAsync extends NamespacedUsersClientAsync {
    *
    * @param userId User ID.
    */
-  public CompletableFuture<Void> activate(String userId) throws IOException {
+  public CompletableFuture<Boolean> activate(String userId) throws IOException {
     return this.restTransport.performRequestAsync(new ActivateDbUserRequest(userId), ActivateDbUserRequest._ENDPOINT);
   }
 
@@ -48,7 +48,7 @@ public class DbUsersClientAsync extends NamespacedUsersClientAsync {
    *
    * @param userId User ID.
    */
-  public CompletableFuture<Void> deactivate(String userId) throws IOException {
+  public CompletableFuture<Boolean> deactivate(String userId) throws IOException {
     return this.restTransport.performRequestAsync(new DeactivateDbUserRequest(userId),
         DeactivateDbUserRequest._ENDPOINT);
   }
