@@ -21,11 +21,13 @@ import org.junit.rules.TestRule;
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateApiException;
 import io.weaviate.client6.v1.api.WeaviateClient;
+import io.weaviate.client6.v1.api.collections.ObjectMetadata;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.ReferenceProperty;
 import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateMetadata;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.Reference;
 import io.weaviate.client6.v1.api.collections.data.WriteWeaviateObject;
 import io.weaviate.client6.v1.api.collections.generate.GenerativeObject;
@@ -739,7 +741,7 @@ public class SearchITest extends ConcurrentTest {
     // Assertions
     Assertions.assertThat(got.objects()).hasSize(2);
   }
-  
+
   /**
    * Ensure the client respects server's configuration for max gRPC size:
    * we create a server with 1-byte message size and try to send a large payload
