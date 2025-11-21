@@ -94,7 +94,7 @@ public class WeaviateAliasClientAsync {
    *
    * @return A future holding the server's response.
    */
-  public CompletableFuture<Void> delete(String alias) {
+  public CompletableFuture<Boolean> delete(String alias) {
     return this.restTransport.performRequestAsync(new DeleteAliasRequest(alias), DeleteAliasRequest._ENDPOINT);
   }
 }

@@ -34,42 +34,45 @@ public class DbUsersClient extends NamespacedUsersClient {
    * Delete a "db" user.
    *
    * @param userId User ID.
+   * @return {@code true} if the user was deleted, {@code false} if there was no user to delete.
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
    * @throws IOException          in case the request was not sent successfully
    *                              due to a malformed request, a networking error
    *                              or the server being unavailable.
    */
-  public void delete(String userId) throws IOException {
-    this.restTransport.performRequest(new DeleteDbUserRequest(userId), DeleteDbUserRequest._ENDPOINT);
+  public boolean delete(String userId) throws IOException {
+    return this.restTransport.performRequest(new DeleteDbUserRequest(userId), DeleteDbUserRequest._ENDPOINT);
   }
 
   /**
    * Activate a "db" user.
    *
    * @param userId User ID.
+   * @return {@code true} if the user was activated, {@code false} if the user was already active.
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
    * @throws IOException          in case the request was not sent successfully
    *                              due to a malformed request, a networking error
    *                              or the server being unavailable.
    */
-  public void activate(String userId) throws IOException {
-    this.restTransport.performRequest(new ActivateDbUserRequest(userId), ActivateDbUserRequest._ENDPOINT);
+  public boolean activate(String userId) throws IOException {
+    return this.restTransport.performRequest(new ActivateDbUserRequest(userId), ActivateDbUserRequest._ENDPOINT);
   }
 
   /**
    * Deactivate a "db" user.
    *
    * @param userId User ID.
+   * @return {@code true} if the user was deactivated, {@code false} if the user was already deactivated.
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
    * @throws IOException          in case the request was not sent successfully
    *                              due to a malformed request, a networking error
    *                              or the server being unavailable.
    */
-  public void deactivate(String userId) throws IOException {
-    this.restTransport.performRequest(new DeactivateDbUserRequest(userId), DeactivateDbUserRequest._ENDPOINT);
+  public boolean deactivate(String userId) throws IOException {
+    return this.restTransport.performRequest(new DeactivateDbUserRequest(userId), DeactivateDbUserRequest._ENDPOINT);
   }
 
   /**

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import io.weaviate.client6.v1.internal.rest.BooleanEndpoint;
 import io.weaviate.client6.v1.internal.rest.Endpoint;
 import io.weaviate.client6.v1.internal.rest.RestTransport;
 
@@ -38,10 +39,14 @@ public class MockRestTransport implements RestTransport {
     }
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public <RequestT, ResponseT, ExceptionT> ResponseT performRequest(RequestT request,
       Endpoint<RequestT, ResponseT> endpoint) throws IOException {
     requests.add(new Request<>(request, endpoint));
+    if (endpoint instanceof BooleanEndpoint) {
+      return (ResponseT) Boolean.TRUE;
+    }
     return null;
   }
 
