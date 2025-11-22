@@ -11,6 +11,7 @@ import io.weaviate.client6.v1.api.WeaviateApiException;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.CollectionConfig;
 import io.weaviate.client6.v1.api.collections.DataType;
+import io.weaviate.client6.v1.api.collections.Generative;
 import io.weaviate.client6.v1.api.collections.InvertedIndex;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.Quantization;
@@ -19,6 +20,7 @@ import io.weaviate.client6.v1.api.collections.Replication;
 import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.config.Shard;
 import io.weaviate.client6.v1.api.collections.config.ShardStatus;
+import io.weaviate.client6.v1.api.collections.generative.DummyGenerative;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.api.collections.vectorizers.SelfProvidedVectorizer;
 import io.weaviate.containers.Container;
@@ -234,7 +236,7 @@ public class CollectionsITest extends ConcurrentTest {
   }
 
   @Test
-  public void test_updateQuantization() throws IOException {
+  public void test_updateQuantization_uncompressed() throws IOException {
     // Arrange
     var nsThings = ns("Things");
 
@@ -254,5 +256,23 @@ public class CollectionsITest extends ConcurrentTest {
         .extracting("default", InstanceOfAssertFactories.type(VectorConfig.class))
         .extracting(VectorConfig::quantization)
         .returns(Quantization.Kind.BQ, Quantization::_kind);
+  }
+
+  @Test
+  public void test_updateGenerative() throws IOException {
+    // Arrange
+    var nsThings = ns("Things");
+
+    var things = client.collections.create(nsThings,
+        c -> c.vectorConfig(VectorConfig.selfProvided()));
+
+    // Act
+    things.config.update(c -> c.generativeModule(new DummyGenerative()));
+
+    // Assert
+    var config = things.config.get();
+    Assertions.assertThat(config).get()
+        .extracting(CollectionConfig::generativeModule).isNotNull()
+        .returns(Generative.Kind.DUMMY, Generative::_kind);
   }
 }

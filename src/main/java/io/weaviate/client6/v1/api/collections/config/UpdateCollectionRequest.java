@@ -40,7 +40,7 @@ public record UpdateCollectionRequest(CollectionConfig updated, CollectionConfig
           for (var origVector : request.original.vectors().entrySet()) {
             var vectorName = origVector.getKey();
             var origQuantization = origVector.getValue().quantization();
-            if (vectors.has(vectorName)) {
+            if (vectors.has(vectorName) && origQuantization != null) {
               vectors
                   .get(vectorName).getAsJsonObject()
                   .get("vectorIndexConfig").getAsJsonObject()
