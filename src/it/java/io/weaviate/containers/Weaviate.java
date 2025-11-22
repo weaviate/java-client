@@ -19,6 +19,8 @@ import org.testcontainers.weaviate.WeaviateContainer;
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.Config;
 import io.weaviate.client6.v1.api.WeaviateClient;
+import io.weaviate.client6.v1.api.collections.Generative;
+import io.weaviate.client6.v1.api.collections.Reranker;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.VersionSupport.SemanticVersion;
 
@@ -154,6 +156,7 @@ public class Weaviate extends WeaviateContainer {
     private Map<String, String> environment = new HashMap<>();
 
     public Builder() {
+      addModules(Reranker.Kind.DUMMY.jsonValue(), Generative.Kind.DUMMY.jsonValue());
       enableAutoSchema(false);
     }
 
