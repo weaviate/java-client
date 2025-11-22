@@ -73,7 +73,7 @@ public record Multi2VecCohereVectorizer(
   public Multi2VecCohereVectorizer(
       String baseUrl,
       String model,
-      String dimensions,
+      Integer dimensions,
       String truncate,
       List<String> imageFields,
       List<String> textFields,
