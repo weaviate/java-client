@@ -18,6 +18,8 @@ public record Multi2VecCohereVectorizer(
     @SerializedName("baseURL") String baseUrl,
     /** Inference model to use. */
     @SerializedName("model") String model,
+    /** The number of dimensions for the generated embeddings. */
+    @SerializedName("dimensions") Integer dimensions,
     /** The truncate strategy to use. */
     @SerializedName("truncate") String truncate,
     /** BLOB properties included in the embedding. */
@@ -71,6 +73,7 @@ public record Multi2VecCohereVectorizer(
   public Multi2VecCohereVectorizer(
       String baseUrl,
       String model,
+      Integer dimensions,
       String truncate,
       List<String> imageFields,
       List<String> textFields,
@@ -81,6 +84,7 @@ public record Multi2VecCohereVectorizer(
     this.vectorizeCollectionName = false;
     this.baseUrl = baseUrl;
     this.model = model;
+    this.dimensions = dimensions;
     this.truncate = truncate;
     this.imageFields = imageFields;
     this.textFields = textFields;
@@ -93,6 +97,7 @@ public record Multi2VecCohereVectorizer(
     this(
         builder.baseUrl,
         builder.model,
+        builder.dimensions,
         builder.truncate,
         builder.imageFields.keySet().stream().toList(),
         builder.textFields.keySet().stream().toList(),
@@ -114,6 +119,7 @@ public record Multi2VecCohereVectorizer(
 
     private String baseUrl;
     private String model;
+    private Integer dimensions;
     private String truncate;
 
     /** Set base URL of the embedding service. */
@@ -124,6 +130,11 @@ public record Multi2VecCohereVectorizer(
 
     public Builder model(String model) {
       this.model = model;
+      return this;
+    }
+
+    public Builder dimensions(Integer dimensions) {
+      this.dimensions = dimensions;
       return this;
     }
 
