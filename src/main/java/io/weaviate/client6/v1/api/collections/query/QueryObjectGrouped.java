@@ -1,6 +1,6 @@
 package io.weaviate.client6.v1.api.collections.query;
 
-import io.weaviate.client6.v1.api.collections.XWriteWeaviateObject;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 
 public record QueryObjectGrouped<PropertiesT>(
     /** Object properties. */
@@ -10,7 +10,7 @@ public record QueryObjectGrouped<PropertiesT>(
     /** Name of the group that the object belongs to. */
     String belongsToGroup) {
 
-  QueryObjectGrouped(XWriteWeaviateObject<PropertiesT> object,
+  QueryObjectGrouped(WeaviateObject<PropertiesT> object,
       String belongsToGroup) {
     this(object.properties(), object.queryMetadata(), belongsToGroup);
   }

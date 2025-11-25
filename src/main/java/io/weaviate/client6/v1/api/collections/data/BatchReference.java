@@ -7,12 +7,12 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
-import io.weaviate.client6.v1.api.collections.XWriteWeaviateObject;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 
 public record BatchReference(String fromCollection, String fromProperty, String fromUuid, Reference reference) {
 
-  public static BatchReference[] objects(XWriteWeaviateObject<?> fromObject, String fromProperty,
-      XWriteWeaviateObject<?>... toObjects) {
+  public static BatchReference[] objects(WeaviateObject<?> fromObject, String fromProperty,
+      WeaviateObject<?>... toObjects) {
     return Arrays.stream(toObjects)
         .map(to -> new BatchReference(
             fromObject.collection(), fromProperty, fromObject.uuid(),
@@ -20,7 +20,7 @@ public record BatchReference(String fromCollection, String fromProperty, String 
         .toArray(BatchReference[]::new);
   }
 
-  public static BatchReference[] uuids(XWriteWeaviateObject<?> fromObject, String fromProperty,
+  public static BatchReference[] uuids(WeaviateObject<?> fromObject, String fromProperty,
       String... toUuids) {
     return Arrays.stream(toUuids)
         .map(to -> new BatchReference(

@@ -11,7 +11,7 @@ import io.weaviate.client6.v1.api.collections.GeoCoordinates;
 import io.weaviate.client6.v1.api.collections.IReference;
 import io.weaviate.client6.v1.api.collections.PhoneNumber;
 import io.weaviate.client6.v1.api.collections.Vectors;
-import io.weaviate.client6.v1.api.collections.XWriteWeaviateObject;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.internal.DateUtil;
 import io.weaviate.client6.v1.internal.grpc.ByteStringUtil;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties;
@@ -20,7 +20,7 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 import io.weaviate.client6.v1.internal.orm.PropertiesBuilder;
 
 public record QueryResponse<PropertiesT>(
-    List<XWriteWeaviateObject<PropertiesT>> objects) {
+    List<WeaviateObject<PropertiesT>> objects) {
 
   static <PropertiesT> QueryResponse<PropertiesT> unmarshal(WeaviateProtoSearchGet.SearchReply reply,
       CollectionDescriptor<PropertiesT> collection) {
@@ -33,7 +33,7 @@ public record QueryResponse<PropertiesT>(
     return new QueryResponse<>(objects);
   }
 
-  public static <PropertiesT> XWriteWeaviateObject<PropertiesT> unmarshalResultObject(
+  public static <PropertiesT> WeaviateObject<PropertiesT> unmarshalResultObject(
       WeaviateProtoSearchGet.PropertiesResult propertiesResult,
       WeaviateProtoSearchGet.MetadataResult metadataResult,
       CollectionDescriptor<PropertiesT> collection) {
@@ -61,7 +61,7 @@ public record QueryResponse<PropertiesT>(
     if (metadataResult.getExplainScorePresent()) {
       metadata.explainScore(metadataResult.getExplainScore());
     }
-    return new XWriteWeaviateObject<>(
+    return new WeaviateObject<>(
         object.uuid(),
         collection.collectionName(),
         null, // tenant is not reeturned in the query
@@ -73,7 +73,7 @@ public record QueryResponse<PropertiesT>(
         object.references());
   }
 
-  static <PropertiesT> XWriteWeaviateObject<PropertiesT> unmarshalWithReferences(
+  static <PropertiesT> WeaviateObject<PropertiesT> unmarshalWithReferences(
       WeaviateProtoSearchGet.PropertiesResult propertiesResult,
       WeaviateProtoSearchGet.MetadataResult metadataResult,
       CollectionDescriptor<PropertiesT> descriptor) {
@@ -95,7 +95,7 @@ public record QueryResponse<PropertiesT>(
                     var reference = unmarshalWithReferences(
                         property, property.getMetadata(),
                         CollectionDescriptor.ofMap(property.getTargetCollection()));
-                    return (IReference) new XWriteWeaviateObject<>(
+                    return (IReference) new WeaviateObject<>(
                         reference.uuid(),
                         reference.collection(),
                         null, // tenant is not returned in the query
@@ -160,7 +160,7 @@ public record QueryResponse<PropertiesT>(
       metadata = metadataBuilder.build();
     }
 
-    return new XWriteWeaviateObject<>(
+    return new WeaviateObject<>(
         uuid,
         descriptor.collectionName(),
         null, // tenant is not returned in the query

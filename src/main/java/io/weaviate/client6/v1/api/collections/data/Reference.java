@@ -11,7 +11,7 @@ import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 import io.weaviate.client6.v1.api.collections.IReference;
-import io.weaviate.client6.v1.api.collections.XWriteWeaviateObject;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 
 public record Reference(String collection, List<String> uuids) implements IReference {
 
@@ -21,7 +21,7 @@ public record Reference(String collection, List<String> uuids) implements IRefer
   }
 
   @Override
-  public XWriteWeaviateObject<Map<String, Object>> asWeaviateObject() {
+  public WeaviateObject<Map<String, Object>> asWeaviateObject() {
     throw new IllegalStateException("cannot convert to WeaviateObject");
   }
 
@@ -40,13 +40,13 @@ public record Reference(String collection, List<String> uuids) implements IRefer
     return new Reference(null, Arrays.asList(uuids));
   }
 
-  /** Create references to single {@link XWriteWeaviateObject}. */
-  public static Reference object(XWriteWeaviateObject<?> object) {
+  /** Create references to single {@link WeaviateObject}. */
+  public static Reference object(WeaviateObject<?> object) {
     return new Reference(object.collection(), object.uuid());
   }
 
-  /** Create references to multiple {@link XWriteWeaviateObject}. */
-  public static Reference[] objects(XWriteWeaviateObject<?>... objects) {
+  /** Create references to multiple {@link WeaviateObject}. */
+  public static Reference[] objects(WeaviateObject<?>... objects) {
     return Arrays.stream(objects)
         .map(o -> new Reference(o.collection(), o.uuid()))
         .toArray(Reference[]::new);

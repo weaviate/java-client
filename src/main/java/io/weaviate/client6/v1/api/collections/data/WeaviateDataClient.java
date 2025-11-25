@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
-import io.weaviate.client6.v1.api.collections.XWriteWeaviateObject;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.client6.v1.api.collections.query.FilterOperand;
 import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClient;
@@ -44,18 +44,18 @@ public class WeaviateDataClient<PropertiesT> {
     this.defaults = defaults;
   }
 
-  public XWriteWeaviateObject<PropertiesT> insert(PropertiesT properties) throws IOException {
+  public WeaviateObject<PropertiesT> insert(PropertiesT properties) throws IOException {
     return insert(InsertObjectRequest.of(properties));
   }
 
-  public XWriteWeaviateObject<PropertiesT> insert(
+  public WeaviateObject<PropertiesT> insert(
       PropertiesT properties,
-      Function<XWriteWeaviateObject.Builder<PropertiesT>, ObjectBuilder<XWriteWeaviateObject<PropertiesT>>> fn)
+      Function<WeaviateObject.Builder<PropertiesT>, ObjectBuilder<WeaviateObject<PropertiesT>>> fn)
       throws IOException {
     return insert(InsertObjectRequest.of(properties, fn));
   }
 
-  public XWriteWeaviateObject<PropertiesT> insert(InsertObjectRequest<PropertiesT> request)
+  public WeaviateObject<PropertiesT> insert(InsertObjectRequest<PropertiesT> request)
       throws IOException {
     return this.restTransport.performRequest(request, InsertObjectRequest.endpoint(collection, defaults));
   }
@@ -65,12 +65,12 @@ public class WeaviateDataClient<PropertiesT> {
     return insertMany(InsertManyRequest.of(objects));
   }
 
-  public InsertManyResponse insertMany(List<XWriteWeaviateObject<PropertiesT>> objects) {
+  public InsertManyResponse insertMany(List<WeaviateObject<PropertiesT>> objects) {
     return insertMany(new InsertManyRequest<>(objects));
   }
 
   @SafeVarargs
-  public final InsertManyResponse insertMany(XWriteWeaviateObject<PropertiesT>... objects) {
+  public final InsertManyResponse insertMany(WeaviateObject<PropertiesT>... objects) {
     return insertMany(Arrays.asList(objects));
   }
 

@@ -7,5 +7,5 @@ public interface IReference {
 
   String collection();
 
-  XWriteWeaviateObject<Map<String, Object>> asWeaviateObject();
+  WeaviateObject<Map<String, Object>> asWeaviateObject();
 }
