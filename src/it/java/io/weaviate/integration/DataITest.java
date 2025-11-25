@@ -80,32 +80,6 @@ public class DataITest extends ConcurrentTest {
               .as("lastUpdatedAt").isNotNull();
         });
 
-    // var write = WriteWeaviateObject.of(null);
-    // write.tenant(); // can be null, but that's perfectly fine
-    //
-    // write.references().get("").getFirst().asWeaviateObject();
-    //
-    // // Three key changes:
-    // var wv = WeaviateObject.write(null); // 1: you can use WeaviateObject, and
-    // not WriteWeaviateObject
-    // write.queryMetadata(); // 2: This should be called "queryMetadata" to avoid
-    // confusion
-    // wv.references().forEach((key, references) -> {
-    // references.forEach(ref -> {
-    // ref.collection();
-    // ref.uuid();
-    //
-    // // get "title" property from a referenced object
-    // var title = ref.asWeaviateObject().properties().get("title");
-    //
-    // ref.asWeaviateObject().references().forEach((__, nestedRefs) -> {
-    // nestedRefs.forEach(nref -> {
-    // var n_title = ref.asWeaviateObject().properties().get("title");
-    // });
-    // });
-    // });
-    // });
-
     var deleted = artists.data.deleteById(id);
     Assertions.assertThat(deleted)
         .as("object was deleted").isTrue();
