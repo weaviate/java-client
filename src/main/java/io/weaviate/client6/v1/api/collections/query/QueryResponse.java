@@ -8,7 +8,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import io.weaviate.client6.v1.api.collections.GeoCoordinates;
-import io.weaviate.client6.v1.api.collections.IReference;
+import io.weaviate.client6.v1.api.collections.Reference;
 import io.weaviate.client6.v1.api.collections.PhoneNumber;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
@@ -88,14 +88,14 @@ public record QueryResponse<PropertiesT>(
     // I.e. { "ref": A-1 } , { "ref": B-1 } => { "ref": [A-1, B-1] }
     var referenceProperties = propertiesResult.getRefPropsList()
         .stream().reduce(
-            new HashMap<String, List<IReference>>(),
+            new HashMap<String, List<Reference>>(),
             (map, ref) -> {
               var refObjects = ref.getPropertiesList().stream()
                   .map(property -> {
                     var reference = unmarshalWithReferences(
                         property, property.getMetadata(),
                         CollectionDescriptor.ofMap(property.getTargetCollection()));
-                    return (IReference) new WeaviateObject<>(
+                    return (Reference) new WeaviateObject<>(
                         reference.uuid(),
                         reference.collection(),
                         null, // tenant is not returned in the query

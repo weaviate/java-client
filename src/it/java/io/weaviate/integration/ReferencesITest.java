@@ -14,7 +14,7 @@ import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.ReferenceProperty;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
-import io.weaviate.client6.v1.api.collections.data.Reference;
+import io.weaviate.client6.v1.api.collections.data.ObjectReference;
 import io.weaviate.client6.v1.api.collections.query.QueryReference;
 import io.weaviate.containers.Container;
 
@@ -72,9 +72,9 @@ public class ReferencesITest extends ConcurrentTest {
     var alex = artists.data.insert(
         Map.of("name", "Alex"),
         opt -> opt
-            .reference("hasAwards", Reference.uuids(
+            .reference("hasAwards", ObjectReference.uuids(
                 grammy_1.uuid(), oscar_1.uuid()))
-            .reference("hasAwards", Reference.objects(grammy_2, oscar_2)));
+            .reference("hasAwards", ObjectReference.objects(grammy_2, oscar_2)));
 
     // Act: add one more reference
     var nsMovies = ns("Movies");
@@ -146,12 +146,12 @@ public class ReferencesITest extends ConcurrentTest {
     var musicAcademy = academies.data.insert(Map.of("ceo", "Harvy Mason"));
 
     var grammy_1 = grammies.data.insert(Map.of(),
-        opt -> opt.reference("presentedBy", Reference.objects(musicAcademy)));
+        opt -> opt.reference("presentedBy", ObjectReference.objects(musicAcademy)));
 
     var alex = artists.data.insert(
         Map.of("name", "Alex"),
         opt -> opt
-            .reference("hasAwards", Reference.objects(grammy_1)));
+            .reference("hasAwards", ObjectReference.objects(grammy_1)));
 
     // Assert: fetch nested references
     var gotAlex = artists.query.fetchObjectById(alex.uuid(),

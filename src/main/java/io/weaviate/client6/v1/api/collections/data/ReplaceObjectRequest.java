@@ -70,7 +70,7 @@ public record ReplaceObjectRequest<PropertiesT>(WeaviateObject<PropertiesT> obje
       return this;
     }
 
-    public Builder<PropertiesT> reference(String property, Reference... references) {
+    public Builder<PropertiesT> reference(String property, ObjectReference... references) {
       this.object.reference(property, references);
       return this;
     }

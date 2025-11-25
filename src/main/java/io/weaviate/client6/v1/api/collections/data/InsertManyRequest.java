@@ -137,11 +137,11 @@ public record InsertManyRequest<PropertiesT>(List<WeaviateObject<PropertiesT>> o
         for (var ref : references) {
           if (ref.collection() == null) {
             singleRef.add(WeaviateProtoBatch.BatchObject.SingleTargetRefProps.newBuilder()
-                .addAllUuids(((Reference) ref).uuids())
+                .addAllUuids(((ObjectReference) ref).uuids())
                 .setPropName(entry.getKey()).build());
           } else {
             multiRef.add(WeaviateProtoBatch.BatchObject.MultiTargetRefProps.newBuilder()
-                .setTargetCollection(ref.collection()).addAllUuids(((Reference) ref).uuids())
+                .setTargetCollection(ref.collection()).addAllUuids(((ObjectReference) ref).uuids())
                 .setPropName(entry.getKey()).build());
           }
         }

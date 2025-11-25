@@ -14,7 +14,7 @@ import com.jparams.junit4.JParamsTestRunner;
 import com.jparams.junit4.data.DataMethod;
 import com.jparams.junit4.description.Name;
 
-import io.weaviate.client6.v1.api.collections.data.Reference;
+import io.weaviate.client6.v1.api.collections.data.ObjectReference;
 import io.weaviate.client6.v1.api.collections.query.ConsistencyLevel;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
@@ -86,7 +86,7 @@ public class CollectionHandleTest {
             "data::add reference",
             ConsistencyLevel.ONE, Location.QUERY,
             "john_doe", Location.QUERY,
-            (Act) c -> c.data.referenceAdd("from-uuid", "from_property", Reference.uuids("to-uuid")),
+            (Act) c -> c.data.referenceAdd("from-uuid", "from_property", ObjectReference.uuids("to-uuid")),
         },
         {
             "data::add reference many",
@@ -98,13 +98,13 @@ public class CollectionHandleTest {
             "data::replace reference",
             ConsistencyLevel.ONE, Location.QUERY,
             "john_doe", Location.QUERY,
-            (Act) c -> c.data.referenceReplace("from-uuid", "from_property", Reference.uuids("to-uuid")),
+            (Act) c -> c.data.referenceReplace("from-uuid", "from_property", ObjectReference.uuids("to-uuid")),
         },
         {
             "data::delete reference",
             ConsistencyLevel.ONE, Location.QUERY,
             "john_doe", Location.QUERY,
-            (Act) c -> c.data.referenceDelete("from-uuid", "from_property", Reference.uuids("to-uuid")),
+            (Act) c -> c.data.referenceDelete("from-uuid", "from_property", ObjectReference.uuids("to-uuid")),
         },
     };
   }

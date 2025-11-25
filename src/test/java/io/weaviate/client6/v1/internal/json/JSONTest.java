@@ -27,7 +27,7 @@ import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.BatchReference;
-import io.weaviate.client6.v1.api.collections.data.Reference;
+import io.weaviate.client6.v1.api.collections.data.ObjectReference;
 import io.weaviate.client6.v1.api.collections.data.ReferenceAddManyResponse;
 import io.weaviate.client6.v1.api.collections.quantizers.PQ;
 import io.weaviate.client6.v1.api.collections.rerankers.CohereReranker;
@@ -403,13 +403,13 @@ public class JSONTest {
 
         // Reference.TYPE_ADAPTER
         {
-            Reference.class,
-            Reference.uuids("id-1"),
+            ObjectReference.class,
+            ObjectReference.uuids("id-1"),
             "{\"beacon\": \"weaviate://localhost/id-1\"}",
         },
         {
-            Reference.class,
-            Reference.collection("Doodlebops", "id-1"),
+            ObjectReference.class,
+            ObjectReference.collection("Doodlebops", "id-1"),
             "{\"beacon\": \"weaviate://localhost/Doodlebops/id-1\"}",
         },
 
@@ -426,7 +426,7 @@ public class JSONTest {
                 /* creationTimeUnix */ null,
                 /* lastUpdateTimeUnix */ null,
                 /* queryMetadata */ null,
-                Map.of("hasRef", List.of(Reference.uuids("ref-1")))),
+                Map.of("hasRef", List.of(ObjectReference.uuids("ref-1")))),
 
             """
                 {
@@ -458,7 +458,7 @@ public class JSONTest {
         {
             BatchReference.class,
             new BatchReference("FromCollection", "fromProperty", "from-uuid",
-                Reference.collection("ToCollection", "to-uuid")),
+                ObjectReference.collection("ToCollection", "to-uuid")),
             """
                 {
                   "from": "weaviate://localhost/FromCollection/from-uuid/fromProperty",
