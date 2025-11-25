@@ -10,6 +10,7 @@ import java.util.UUID;
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.api.collections.GeoCoordinates;
 import io.weaviate.client6.v1.api.collections.PhoneNumber;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.internal.MapUtil;
 import io.weaviate.client6.v1.internal.grpc.ByteStringUtil;
 import io.weaviate.client6.v1.internal.grpc.Rpc;
@@ -20,10 +21,10 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.Vectors.V
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 
-public record InsertManyRequest<PropertiesT>(List<WriteWeaviateObject<PropertiesT>> objects) {
+public record InsertManyRequest<PropertiesT>(List<WeaviateObject<PropertiesT>> objects) {
 
   @SafeVarargs
-  public InsertManyRequest(WriteWeaviateObject<PropertiesT>... objects) {
+  public InsertManyRequest(WeaviateObject<PropertiesT>... objects) {
     this(Arrays.asList(objects));
   }
 
@@ -31,13 +32,13 @@ public record InsertManyRequest<PropertiesT>(List<WriteWeaviateObject<Properties
   @SafeVarargs
   public static final <PropertiesT> InsertManyRequest<PropertiesT> of(PropertiesT... properties) {
     var objects = Arrays.stream(properties)
-        .map(p -> (WriteWeaviateObject<PropertiesT>) WriteWeaviateObject.of(obj -> obj.properties(p)))
+        .map(p -> (WeaviateObject<PropertiesT>) WeaviateObject.write(obj -> obj.properties(p)))
         .toList();
     return new InsertManyRequest<>(objects);
   }
 
   public static <PropertiesT> Rpc<InsertManyRequest<PropertiesT>, WeaviateProtoBatch.BatchObjectsRequest, InsertManyResponse, WeaviateProtoBatch.BatchObjectsReply> rpc(
-      List<WriteWeaviateObject<PropertiesT>> insertObjects,
+      List<WeaviateObject<PropertiesT>> insertObjects,
       CollectionDescriptor<PropertiesT> collection,
       CollectionHandleDefaults defaults) {
     return Rpc.insert(
@@ -46,7 +47,7 @@ public record InsertManyRequest<PropertiesT>(List<WriteWeaviateObject<Properties
 
           var batch = request.objects.stream().map(obj -> {
             var batchObject = WeaviateProtoBatch.BatchObject.newBuilder();
-            buildObject(batchObject, obj, collection, defaults);
+            buildObject(batchObject, (WriteWeaviateObject) obj, collection, defaults);
             return batchObject.build();
           }).toList();
 
@@ -135,11 +136,13 @@ public record InsertManyRequest<PropertiesT>(List<WriteWeaviateObject<Properties
         // is single- or multi-target?
         for (var ref : references) {
           if (ref.collection() == null) {
-            singleRef.add(WeaviateProtoBatch.BatchObject.SingleTargetRefProps.newBuilder().addAllUuids(ref.uuids())
+            singleRef.add(WeaviateProtoBatch.BatchObject.SingleTargetRefProps.newBuilder()
+                .addAllUuids(((Reference) ref).uuids())
                 .setPropName(entry.getKey()).build());
           } else {
             multiRef.add(WeaviateProtoBatch.BatchObject.MultiTargetRefProps.newBuilder()
-                .setTargetCollection(ref.collection()).addAllUuids(ref.uuids()).setPropName(entry.getKey()).build());
+                .setTargetCollection(ref.collection()).addAllUuids(((Reference) ref).uuids())
+                .setPropName(entry.getKey()).build());
           }
         }
       });

@@ -3,15 +3,27 @@ package io.weaviate.client6.v1.api.collections.data;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
+import io.weaviate.client6.v1.api.collections.IReference;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 
-public record Reference(String collection, List<String> uuids) {
+public record Reference(String collection, List<String> uuids) implements IReference {
+
+  @Override
+  public String uuid() {
+    return uuids.get(0);
+  }
+
+  @Override
+  public WeaviateObject<Map<String, Object>> asWeaviateObject() {
+    throw new IllegalStateException("cannot convert to WeaviateObject");
+  }
 
   public Reference(String collection, String uuid) {
     this(collection, List.of(uuid));

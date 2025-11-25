@@ -41,7 +41,7 @@ public record GenerativeResponse<PropertiesT>(
           }
           return new GenerativeObject<>(
               object.properties(),
-              object.metadata(),
+              object.queryMetadata(),
               generative);
         })
         .toList();

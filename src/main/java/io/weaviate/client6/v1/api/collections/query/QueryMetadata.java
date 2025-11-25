@@ -10,9 +10,9 @@ public record QueryMetadata(
     /** Vector embeddings associated with the object. */
     Vectors vectors,
     /** Object creation time as a Unix timestamp. */
-    Long creationTimeUnix,
+    Long createdAt,
     /** Unix timestamp of the latest object update. */
-    Long lastUpdateTimeUnix,
+    Long lastUpdatedAt,
     /** Distances to the search vector. */
     Float distance,
     /** Distance metric normalized to {@code 0 <= c <= 1} range. */
@@ -26,8 +26,8 @@ public record QueryMetadata(
     this(
         builder.uuid,
         builder.vectors,
-        builder.creationTimeUnix,
-        builder.lastUpdateTimeUnix,
+        builder.createdAt,
+        builder.lastUpdatedAt,
         builder.distance,
         builder.certainty,
         builder.score,
@@ -37,8 +37,8 @@ public record QueryMetadata(
   static class Builder implements ObjectBuilder<QueryMetadata> {
     private String uuid;
     private Vectors vectors;
-    private Long creationTimeUnix;
-    private Long lastUpdateTimeUnix;
+    private Long createdAt;
+    private Long lastUpdatedAt;
     private Float distance;
     private Float certainty;
     private Float score;
@@ -58,13 +58,13 @@ public record QueryMetadata(
       return this;
     }
 
-    final Builder creationTimeUnix(Long creationTimeUnix) {
-      this.creationTimeUnix = creationTimeUnix;
+    final Builder createdAt(Long createdAt) {
+      this.createdAt = createdAt;
       return this;
     }
 
-    final Builder lastUpdateTimeUnix(Long lastUpdateTimeUnix) {
-      this.lastUpdateTimeUnix = lastUpdateTimeUnix;
+    final Builder lastUpdatedAt(Long lastUpdatedAt) {
+      this.lastUpdatedAt = lastUpdatedAt;
       return this;
     }
 

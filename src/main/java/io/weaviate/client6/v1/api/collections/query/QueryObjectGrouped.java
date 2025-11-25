@@ -10,6 +10,6 @@ public record QueryObjectGrouped<PropertiesT>(
 
   QueryObjectGrouped(ReadWeaviateObject<PropertiesT> object,
       String belongsToGroup) {
-    this(object.properties(), object.metadata(), belongsToGroup);
+    this(object.properties(), object.queryMetadata(), belongsToGroup);
   }
 }

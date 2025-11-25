@@ -47,7 +47,7 @@ public class PaginationITest extends ConcurrentTest {
 
     // Act: stream
     var gotStream = allThings.stream()
-        .map(ReadWeaviateObject::metadata).map(QueryMetadata::uuid).toList();
+        .map(ReadWeaviateObject::queryMetadata).map(QueryMetadata::uuid).toList();
 
     // Assert
     Assertions.assertThat(gotStream)
@@ -58,7 +58,7 @@ public class PaginationITest extends ConcurrentTest {
     // Act: for-loop
     var gotLoop = new ArrayList<String>();
     for (var thing : allThings) {
-      gotLoop.add(thing.metadata().uuid());
+      gotLoop.add(thing.queryMetadata().uuid());
     }
 
     // Assert
@@ -89,7 +89,7 @@ public class PaginationITest extends ConcurrentTest {
 
     // Iterate over first 5 objects
     String lastId = things.paginate(p -> p.pageSize(5)).stream()
-        .limit(5).map(thing -> thing.metadata().uuid())
+        .limit(5).map(thing -> thing.queryMetadata().uuid())
         .reduce((prev, next) -> next).get();
 
     // Act
@@ -126,7 +126,7 @@ public class PaginationITest extends ConcurrentTest {
           .as("uuid=" + thing.uuid())
           .doesNotContainKey("dont_fetch");
 
-      Assertions.assertThat(thing.metadata().creationTimeUnix())
+      Assertions.assertThat(thing.queryMetadata().createdAt())
           .isNotNull();
     }
   }

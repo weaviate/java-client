@@ -21,6 +21,7 @@ import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.ReferenceProperty;
 import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.Vectors;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.BatchReference;
 import io.weaviate.client6.v1.api.collections.data.DeleteManyResponse;
 import io.weaviate.client6.v1.api.collections.data.Reference;
@@ -63,21 +64,47 @@ public class DataITest extends ConcurrentTest {
     Assertions.assertThat(object)
         .as("object has correct properties").get()
         .satisfies(obj -> {
-          Assertions.assertThat(obj.metadata().uuid())
+          Assertions.assertThat(obj.queryMetadata().uuid())
               .as("object id").isEqualTo(id);
 
-          Assertions.assertThat(obj.metadata().vectors().getSingle(VECTOR_INDEX))
+          Assertions.assertThat(obj.queryMetadata().vectors().getSingle(VECTOR_INDEX))
               .containsExactly(vector);
 
           Assertions.assertThat(obj.properties())
               .as("has expected properties")
               .containsEntry("name", "john doe");
 
-          Assertions.assertThat(obj.metadata().creationTimeUnix())
-              .as("creationTimeUnix").isNotNull();
-          Assertions.assertThat(obj.metadata().lastUpdateTimeUnix())
-              .as("lastUpdateTimeUnix").isNotNull();
+          Assertions.assertThat(obj.queryMetadata().createdAt())
+              .as("createdAt").isNotNull();
+          Assertions.assertThat(obj.queryMetadata().lastUpdatedAt())
+              .as("lastUpdatedAt").isNotNull();
         });
+
+    // var write = WriteWeaviateObject.of(null);
+    // write.tenant(); // can be null, but that's perfectly fine
+    //
+    // write.references().get("").getFirst().asWeaviateObject();
+    //
+    // // Three key changes:
+    // var wv = WeaviateObject.write(null); // 1: you can use WeaviateObject, and
+    // not WriteWeaviateObject
+    // write.queryMetadata(); // 2: This should be called "queryMetadata" to avoid
+    // confusion
+    // wv.references().forEach((key, references) -> {
+    // references.forEach(ref -> {
+    // ref.collection();
+    // ref.uuid();
+    //
+    // // get "title" property from a referenced object
+    // var title = ref.asWeaviateObject().properties().get("title");
+    //
+    // ref.asWeaviateObject().references().forEach((__, nestedRefs) -> {
+    // nestedRefs.forEach(nref -> {
+    // var n_title = ref.asWeaviateObject().properties().get("title");
+    // });
+    // });
+    // });
+    // });
 
     var deleted = artists.data.deleteById(id);
     Assertions.assertThat(deleted)
@@ -289,7 +316,7 @@ public class DataITest extends ConcurrentTest {
 
           Assertions.assertThat(book)
               .as("has a vector")
-              .extracting(ReadWeaviateObject::metadata)
+              .extracting(ReadWeaviateObject::queryMetadata)
               .extracting(QueryMetadata::vectors)
               .returns(vector, Vectors::getDefaultSingle);
         });
@@ -554,6 +581,6 @@ public class DataITest extends ConcurrentTest {
     var inserted = emails.data.insert(Map.of("subject", "McDonald's Xmas Bonanza"));
 
     // Assert
-    Assertions.assertThat(inserted).returns(johndoe, WriteWeaviateObject::tenant);
+    Assertions.assertThat(inserted).returns(johndoe, WeaviateObject::tenant);
   }
 }
