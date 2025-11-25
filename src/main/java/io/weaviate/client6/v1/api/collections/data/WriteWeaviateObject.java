@@ -44,7 +44,7 @@ public record WriteWeaviateObject<PropertiesT>(
   public WriteWeaviateObject(Builder<PropertiesT> builder) {
     this(
         builder.uuid,
-        builder.collection,
+        null, // collection name is set on insert
         builder.tenant,
         builder.properties,
         builder.vectors,
@@ -61,7 +61,6 @@ public record WriteWeaviateObject<PropertiesT>(
      * to provide a fallback UUID "globally".
      */
     private String uuid = UUID.randomUUID().toString();
-    private String collection;
     private String tenant;
     private PropertiesT properties;
     private Vectors vectors;
