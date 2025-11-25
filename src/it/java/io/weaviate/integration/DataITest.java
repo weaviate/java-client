@@ -21,7 +21,7 @@ import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.ReferenceProperty;
 import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.Vectors;
-import io.weaviate.client6.v1.api.collections.XWriteWeaviateObject;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.BatchReference;
 import io.weaviate.client6.v1.api.collections.data.DeleteManyResponse;
 import io.weaviate.client6.v1.api.collections.data.Reference;
@@ -138,7 +138,7 @@ public class DataITest extends ConcurrentTest {
         cat -> cat.returnProperties("img"));
 
     Assertions.assertThat(got).get()
-        .extracting(XWriteWeaviateObject::properties, InstanceOfAssertFactories.MAP)
+        .extracting(WeaviateObject::properties, InstanceOfAssertFactories.MAP)
         .extractingByKey("img").isEqualTo(ragdollPng);
   }
 
@@ -187,10 +187,10 @@ public class DataITest extends ConcurrentTest {
 
     Assertions.assertThat(johnWithFriends).get()
         .as("friends after ADD")
-        .extracting(XWriteWeaviateObject::references).extracting("hasFriend")
-        .asInstanceOf(InstanceOfAssertFactories.list(XWriteWeaviateObject.class))
+        .extracting(WeaviateObject::references).extracting("hasFriend")
+        .asInstanceOf(InstanceOfAssertFactories.list(WeaviateObject.class))
         .hasSize(1)
-        .first().extracting(XWriteWeaviateObject::properties, InstanceOfAssertFactories.MAP)
+        .first().extracting(WeaviateObject::properties, InstanceOfAssertFactories.MAP)
         .returns("albie", friend -> friend.get("name"));
 
     // Act: replace reference
@@ -207,10 +207,10 @@ public class DataITest extends ConcurrentTest {
 
     Assertions.assertThat(johnWithFriends).get()
         .as("friends after REPLACE")
-        .extracting(XWriteWeaviateObject::references).extracting("hasFriend")
-        .asInstanceOf(InstanceOfAssertFactories.list(XWriteWeaviateObject.class))
+        .extracting(WeaviateObject::references).extracting("hasFriend")
+        .asInstanceOf(InstanceOfAssertFactories.list(WeaviateObject.class))
         .hasSize(1)
-        .first().extracting(XWriteWeaviateObject::properties, InstanceOfAssertFactories.MAP)
+        .first().extracting(WeaviateObject::properties, InstanceOfAssertFactories.MAP)
         .returns("barbara", friend -> friend.get("name"));
 
     // Act: delete reference
@@ -226,8 +226,8 @@ public class DataITest extends ConcurrentTest {
 
     Assertions.assertThat(johnWithFriends).get()
         .as("friends after DELETE")
-        .extracting(XWriteWeaviateObject::references).extracting("hasFriend")
-        .asInstanceOf(InstanceOfAssertFactories.list(XWriteWeaviateObject.class))
+        .extracting(WeaviateObject::references).extracting("hasFriend")
+        .asInstanceOf(InstanceOfAssertFactories.list(WeaviateObject.class))
         .isEmpty();
   }
 
@@ -253,7 +253,7 @@ public class DataITest extends ConcurrentTest {
 
     Assertions.assertThat(replacedIvanhoe).get()
         .as("has ONLY year property")
-        .extracting(XWriteWeaviateObject::properties, InstanceOfAssertFactories.MAP)
+        .extracting(WeaviateObject::properties, InstanceOfAssertFactories.MAP)
         .doesNotContain(Map.entry("title", "ivanhoe"))
         .contains(Map.entry("year", 1819L));
   }
@@ -303,20 +303,20 @@ public class DataITest extends ConcurrentTest {
         .satisfies(book -> {
           Assertions.assertThat(book)
               .as("has both year and title property")
-              .extracting(XWriteWeaviateObject::properties, InstanceOfAssertFactories.MAP)
+              .extracting(WeaviateObject::properties, InstanceOfAssertFactories.MAP)
               .contains(Map.entry("title", "ivanhoe"), Map.entry("year", 1819L));
 
           Assertions.assertThat(book)
               .as("has reference to Authors")
-              .extracting(XWriteWeaviateObject::references, InstanceOfAssertFactories.MAP)
-              .extractingByKey("writtenBy", InstanceOfAssertFactories.list(XWriteWeaviateObject.class))
+              .extracting(WeaviateObject::references, InstanceOfAssertFactories.MAP)
+              .extractingByKey("writtenBy", InstanceOfAssertFactories.list(WeaviateObject.class))
               .first()
-              .extracting(XWriteWeaviateObject::properties, InstanceOfAssertFactories.MAP)
+              .extracting(WeaviateObject::properties, InstanceOfAssertFactories.MAP)
               .contains(Map.entry("name", "walter scott"));
 
           Assertions.assertThat(book)
               .as("has a vector")
-              .extracting(XWriteWeaviateObject::vectors)
+              .extracting(WeaviateObject::vectors)
               .returns(vector, Vectors::getDefaultSingle);
         });
   }
@@ -427,10 +427,10 @@ public class DataITest extends ConcurrentTest {
 
     Assertions.assertThat(goodburgAirports).get()
         .as("Goodburg has 3 airports")
-        .extracting(XWriteWeaviateObject::references)
+        .extracting(WeaviateObject::references)
         .extracting(references -> references.get("hasAirports"),
-            InstanceOfAssertFactories.list(XWriteWeaviateObject.class))
-        .extracting(XWriteWeaviateObject::uuid)
+            InstanceOfAssertFactories.list(WeaviateObject.class))
+        .extracting(WeaviateObject::uuid)
         .contains(alpha, bravo, charlie);
   }
 
@@ -508,7 +508,7 @@ public class DataITest extends ConcurrentTest {
 
     // Assert
     Assertions.assertThat(got).get()
-        .extracting(XWriteWeaviateObject::properties)
+        .extracting(WeaviateObject::properties)
         .asInstanceOf(InstanceOfAssertFactories.map(String.class, Object.class))
         // Most of PhoneNumber fields are only present on read and are null on write.
         .usingRecursiveComparison()
@@ -580,6 +580,6 @@ public class DataITest extends ConcurrentTest {
     var inserted = emails.data.insert(Map.of("subject", "McDonald's Xmas Bonanza"));
 
     // Assert
-    Assertions.assertThat(inserted).returns(johndoe, XWriteWeaviateObject::tenant);
+    Assertions.assertThat(inserted).returns(johndoe, WeaviateObject::tenant);
   }
 }

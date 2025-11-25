@@ -5,7 +5,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import io.weaviate.client6.v1.api.collections.XWriteWeaviateObject;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.query.FetchObjects;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.QueryReference;
@@ -45,25 +45,25 @@ public class AsyncPaginator<PropertiesT> {
     this.resultSet = builder.prefetch ? rs.fetchNextPage() : CompletableFuture.completedFuture(rs);
   }
 
-  public CompletableFuture<Void> forEach(Consumer<XWriteWeaviateObject<PropertiesT>> action) {
+  public CompletableFuture<Void> forEach(Consumer<WeaviateObject<PropertiesT>> action) {
     return resultSet
         .thenCompose(rs -> rs.isEmpty() ? rs.fetchNextPage() : CompletableFuture.completedFuture(rs))
         .thenCompose(processEachAndAdvance(action));
   }
 
-  public CompletableFuture<Void> forPage(Consumer<List<XWriteWeaviateObject<PropertiesT>>> action) {
+  public CompletableFuture<Void> forPage(Consumer<List<WeaviateObject<PropertiesT>>> action) {
     return resultSet
         .thenCompose(rs -> rs.isEmpty() ? rs.fetchNextPage() : CompletableFuture.completedFuture(rs))
         .thenCompose(processPageAndAdvance(action));
   }
 
   private static <PropertiesT> Function<AsyncPage<PropertiesT>, CompletableFuture<Void>> processEachAndAdvance(
-      Consumer<XWriteWeaviateObject<PropertiesT>> action) {
+      Consumer<WeaviateObject<PropertiesT>> action) {
     return processAndAdvanceFunc(rs -> rs.forEach(action));
   }
 
   private static <PropertiesT> Function<AsyncPage<PropertiesT>, CompletableFuture<Void>> processPageAndAdvance(
-      Consumer<List<XWriteWeaviateObject<PropertiesT>>> action) {
+      Consumer<List<WeaviateObject<PropertiesT>>> action) {
     return processAndAdvanceFunc(rs -> action.accept(rs.items()));
   }
 

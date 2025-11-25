@@ -27,7 +27,7 @@ import io.weaviate.client6.v1.api.collections.ReferenceProperty;
 import io.weaviate.client6.v1.api.collections.Reranker;
 import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.Vectors;
-import io.weaviate.client6.v1.api.collections.XWriteWeaviateObject;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.Reference;
 import io.weaviate.client6.v1.api.collections.generate.GenerativeObject;
 import io.weaviate.client6.v1.api.collections.generate.TaskOutput;
@@ -169,7 +169,7 @@ public class SearchITest extends ConcurrentTest {
             .returnProperties("title"));
 
     Assertions.assertThat(result.objects()).hasSize(2)
-        .extracting(XWriteWeaviateObject::properties).allSatisfy(
+        .extracting(WeaviateObject::properties).allSatisfy(
             properties -> Assertions.assertThat(properties)
                 .allSatisfy((_k, v) -> Assertions.assertThat((String) v).contains("Jungle")));
   }
@@ -232,7 +232,7 @@ public class SearchITest extends ConcurrentTest {
         opt -> opt.returnProperties("breed"));
 
     Assertions.assertThat(got.objects()).hasSize(1).first()
-        .extracting(XWriteWeaviateObject::properties, InstanceOfAssertFactories.MAP)
+        .extracting(WeaviateObject::properties, InstanceOfAssertFactories.MAP)
         .extractingByKey("breed").isEqualTo("ragdoll");
   }
 
@@ -262,7 +262,7 @@ public class SearchITest extends ConcurrentTest {
                     Filter.property("size").lt(6)))));
 
     Assertions.assertThat(got.objects())
-        .extracting(XWriteWeaviateObject::uuid)
+        .extracting(WeaviateObject::uuid)
         .containsOnly(
             redHat.uuid(),
             greenHat.uuid(),
@@ -291,7 +291,7 @@ public class SearchITest extends ConcurrentTest {
     Assertions.assertThat(asc.objects())
         .as("value asc")
         .hasSize(3)
-        .extracting(XWriteWeaviateObject::properties)
+        .extracting(WeaviateObject::properties)
         .extracting(object -> object.get("value"))
         .containsExactly(1L, 2L, 3L);
 
@@ -302,7 +302,7 @@ public class SearchITest extends ConcurrentTest {
     Assertions.assertThat(desc.objects())
         .as("value desc")
         .hasSize(3)
-        .extracting(XWriteWeaviateObject::properties)
+        .extracting(WeaviateObject::properties)
         .extracting(object -> object.get("value"))
         .containsExactly(3L, 2L, 1L);
   }
@@ -328,7 +328,7 @@ public class SearchITest extends ConcurrentTest {
 
     Assertions.assertThat(dollarWorlds.objects())
         .hasSize(1)
-        .extracting(XWriteWeaviateObject::uuid)
+        .extracting(WeaviateObject::uuid)
         .containsOnly(want.uuid());
   }
 
@@ -360,7 +360,7 @@ public class SearchITest extends ConcurrentTest {
 
       Assertions.assertThat(dollarWorlds.objects())
           .hasSize(1)
-          .extracting(XWriteWeaviateObject::uuid)
+          .extracting(WeaviateObject::uuid)
           .containsOnly(want.uuid());
     }
   }
@@ -390,7 +390,7 @@ public class SearchITest extends ConcurrentTest {
     // Assert
     Assertions.assertThat(terrestrial.objects())
         .hasSize(1)
-        .extracting(XWriteWeaviateObject::uuid)
+        .extracting(WeaviateObject::uuid)
         .containsOnly(lion.uuid());
   }
 
@@ -417,7 +417,7 @@ public class SearchITest extends ConcurrentTest {
     // Assert
     Assertions.assertThat(winterSport.objects())
         .hasSize(1)
-        .extracting(XWriteWeaviateObject::uuid)
+        .extracting(WeaviateObject::uuid)
         .containsOnly(skiing.uuid());
 
     var first = winterSport.objects().get(0);
@@ -487,7 +487,7 @@ public class SearchITest extends ConcurrentTest {
 
     // Assert
     Assertions.assertThat(got).get()
-        .extracting(XWriteWeaviateObject::vectors)
+        .extracting(WeaviateObject::vectors)
         .returns(true, v -> v.contains("v1"))
         .returns(true, v -> v.contains("v2"))
         .returns(false, v -> v.contains("v3"));
@@ -553,7 +553,7 @@ public class SearchITest extends ConcurrentTest {
         Vectors.of("v2d", new float[][] { { 1, 2, 3 }, { 1, 2, 3 } })));
 
     var thing456 = things.data.insertMany(List.of(
-        XWriteWeaviateObject.of(thing -> thing
+        WeaviateObject.of(thing -> thing
             .vectors(
                 Vectors.of("v1d", new float[] { 4, 5, 6 }),
                 Vectors.of("v2d", new float[][] { { 4, 5, 6 }, { 4, 5, 6 } })))));
@@ -565,7 +565,7 @@ public class SearchITest extends ConcurrentTest {
         q -> q.limit(1));
     Assertions.assertThat(got123.objects())
         .as("search v1d")
-        .hasSize(1).extracting(XWriteWeaviateObject::uuid)
+        .hasSize(1).extracting(WeaviateObject::uuid)
         .containsExactly(thing123.uuid());
 
     var got456 = things.query.nearVector(
@@ -573,7 +573,7 @@ public class SearchITest extends ConcurrentTest {
         q -> q.limit(1));
     Assertions.assertThat(got456.objects())
         .as("search v2d")
-        .hasSize(1).extracting(XWriteWeaviateObject::uuid)
+        .hasSize(1).extracting(WeaviateObject::uuid)
         .containsExactly(thing456.uuids().get(0));
   }
 
@@ -755,7 +755,7 @@ public class SearchITest extends ConcurrentTest {
           .vectorConfig(VectorConfig.selfProvided()));
 
       final var vector = randomVector(5000, -.01f, .01f);
-      final XWriteWeaviateObject<Map<String, Object>> hugeObject = XWriteWeaviateObject.of(
+      final WeaviateObject<Map<String, Object>> hugeObject = WeaviateObject.of(
           obj -> obj.vectors(Vectors.of(vector)));
 
       Assertions.assertThatThrownBy(() -> {

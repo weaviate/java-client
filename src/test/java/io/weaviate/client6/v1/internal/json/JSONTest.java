@@ -25,7 +25,7 @@ import io.weaviate.client6.v1.api.collections.Reranker;
 import io.weaviate.client6.v1.api.collections.Tokenization;
 import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.Vectors;
-import io.weaviate.client6.v1.api.collections.XWriteWeaviateObject;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.BatchReference;
 import io.weaviate.client6.v1.api.collections.data.Reference;
 import io.weaviate.client6.v1.api.collections.data.ReferenceAddManyResponse;
@@ -415,9 +415,9 @@ public class JSONTest {
 
         // XWriteWeaviateObject.CustomTypeAdapterFactory.INSTANCE
         {
-            new TypeToken<XWriteWeaviateObject<Map<String, Object>>>() {
+            new TypeToken<WeaviateObject<Map<String, Object>>>() {
             },
-            new XWriteWeaviateObject<>(
+            new WeaviateObject<>(
                 "thing-1",
                 "Things",
                 /* tenant */ null,

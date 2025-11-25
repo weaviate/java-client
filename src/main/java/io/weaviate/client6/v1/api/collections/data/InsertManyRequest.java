@@ -10,7 +10,7 @@ import java.util.UUID;
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.api.collections.GeoCoordinates;
 import io.weaviate.client6.v1.api.collections.PhoneNumber;
-import io.weaviate.client6.v1.api.collections.XWriteWeaviateObject;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.internal.MapUtil;
 import io.weaviate.client6.v1.internal.grpc.ByteStringUtil;
 import io.weaviate.client6.v1.internal.grpc.Rpc;
@@ -21,10 +21,10 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.Vectors.V
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 
-public record InsertManyRequest<PropertiesT>(List<XWriteWeaviateObject<PropertiesT>> objects) {
+public record InsertManyRequest<PropertiesT>(List<WeaviateObject<PropertiesT>> objects) {
 
   @SafeVarargs
-  public InsertManyRequest(XWriteWeaviateObject<PropertiesT>... objects) {
+  public InsertManyRequest(WeaviateObject<PropertiesT>... objects) {
     this(Arrays.asList(objects));
   }
 
@@ -32,13 +32,13 @@ public record InsertManyRequest<PropertiesT>(List<XWriteWeaviateObject<Propertie
   @SafeVarargs
   public static final <PropertiesT> InsertManyRequest<PropertiesT> of(PropertiesT... properties) {
     var objects = Arrays.stream(properties)
-        .map(p -> (XWriteWeaviateObject<PropertiesT>) XWriteWeaviateObject.of(obj -> obj.properties(p)))
+        .map(p -> (WeaviateObject<PropertiesT>) WeaviateObject.of(obj -> obj.properties(p)))
         .toList();
     return new InsertManyRequest<>(objects);
   }
 
   public static <PropertiesT> Rpc<InsertManyRequest<PropertiesT>, WeaviateProtoBatch.BatchObjectsRequest, InsertManyResponse, WeaviateProtoBatch.BatchObjectsReply> rpc(
-      List<XWriteWeaviateObject<PropertiesT>> insertObjects,
+      List<WeaviateObject<PropertiesT>> insertObjects,
       CollectionDescriptor<PropertiesT> collection,
       CollectionHandleDefaults defaults) {
     return Rpc.insert(
@@ -93,7 +93,7 @@ public record InsertManyRequest<PropertiesT>(List<XWriteWeaviateObject<Propertie
   }
 
   public static <T> void buildObject(WeaviateProtoBatch.BatchObject.Builder object,
-      XWriteWeaviateObject<T> insert,
+      WeaviateObject<T> insert,
       CollectionDescriptor<T> collection,
       CollectionHandleDefaults defaults) {
     object.setCollection(collection.collectionName());

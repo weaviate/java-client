@@ -25,7 +25,7 @@ import io.weaviate.client6.v1.api.collections.data.Reference;
 import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public record XWriteWeaviateObject<PropertiesT>(
+public record WeaviateObject<PropertiesT>(
     @SerializedName("id") String uuid,
     @SerializedName("class") String collection,
     @SerializedName("tenant") String tenant,
@@ -64,16 +64,16 @@ public record XWriteWeaviateObject<PropertiesT>(
    */
   @SuppressWarnings("unchecked")
   @Override
-  public XWriteWeaviateObject<Map<String, Object>> asWeaviateObject() {
-    return (XWriteWeaviateObject<Map<String, Object>>) this;
+  public WeaviateObject<Map<String, Object>> asWeaviateObject() {
+    return (WeaviateObject<Map<String, Object>>) this;
   }
 
-  public static <PropertiesT> XWriteWeaviateObject<PropertiesT> of(
-      Function<Builder<PropertiesT>, ObjectBuilder<XWriteWeaviateObject<PropertiesT>>> fn) {
+  public static <PropertiesT> WeaviateObject<PropertiesT> of(
+      Function<Builder<PropertiesT>, ObjectBuilder<WeaviateObject<PropertiesT>>> fn) {
     return fn.apply(new Builder<>()).build();
   }
 
-  public XWriteWeaviateObject(Builder<PropertiesT> builder) {
+  public WeaviateObject(Builder<PropertiesT> builder) {
     this(
         builder.uuid,
         null, // collection name is derived from CollectionHandle
@@ -86,7 +86,7 @@ public record XWriteWeaviateObject<PropertiesT>(
         builder.references);
   }
 
-  public static class Builder<PropertiesT> implements ObjectBuilder<XWriteWeaviateObject<PropertiesT>> {
+  public static class Builder<PropertiesT> implements ObjectBuilder<WeaviateObject<PropertiesT>> {
     /**
      * The server <i>should be</i> providing default UUIDs, but it does not do that
      * during batch inserts and we have to provide our own.
@@ -147,8 +147,8 @@ public record XWriteWeaviateObject<PropertiesT>(
     }
 
     @Override
-    public XWriteWeaviateObject<PropertiesT> build() {
-      return new XWriteWeaviateObject<>(this);
+    public WeaviateObject<PropertiesT> build() {
+      return new WeaviateObject<>(this);
     }
   }
 
@@ -160,7 +160,7 @@ public record XWriteWeaviateObject<PropertiesT>(
     public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> typeToken) {
       var type = typeToken.getType();
       var rawType = typeToken.getRawType();
-      if (rawType != XWriteWeaviateObject.class ||
+      if (rawType != WeaviateObject.class ||
           !(type instanceof ParameterizedType parameterized)
           || parameterized.getActualTypeArguments().length != 1) {
         return null;
@@ -169,15 +169,15 @@ public record XWriteWeaviateObject<PropertiesT>(
       var typeParams = parameterized.getActualTypeArguments();
       final var propertiesType = typeParams[0];
 
-      final var delegate = (TypeAdapter<XWriteWeaviateObject<?>>) gson
+      final var delegate = (TypeAdapter<WeaviateObject<?>>) gson
           .getDelegateAdapter(this, typeToken);
       final var propertiesAdapter = (TypeAdapter<Object>) gson.getAdapter(TypeToken.get(propertiesType));
       final var referencesAdapter = gson.getAdapter(Reference.class);
 
-      return (TypeAdapter<T>) new TypeAdapter<XWriteWeaviateObject<?>>() {
+      return (TypeAdapter<T>) new TypeAdapter<WeaviateObject<?>>() {
 
         @Override
-        public void write(JsonWriter out, XWriteWeaviateObject<?> value) throws IOException {
+        public void write(JsonWriter out, WeaviateObject<?> value) throws IOException {
           var json = delegate.toJsonTree(value).getAsJsonObject();
           var properties = value.properties() != null
               ? propertiesAdapter.toJsonTree(value.properties()).getAsJsonObject()
@@ -200,7 +200,7 @@ public record XWriteWeaviateObject<PropertiesT>(
         }
 
         @Override
-        public XWriteWeaviateObject<?> read(JsonReader in) throws IOException {
+        public WeaviateObject<?> read(JsonReader in) throws IOException {
           var json = JsonParser.parseReader(in).getAsJsonObject();
 
           var jsonProperties = json.get("properties").getAsJsonObject();
