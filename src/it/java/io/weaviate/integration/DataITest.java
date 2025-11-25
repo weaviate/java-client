@@ -409,7 +409,7 @@ public class DataITest extends ConcurrentTest {
 
     var alpha = airports.data.insert(Map.of()).uuid();
     var goodburg = cities.data.insert(Map.of(), city -> city
-        .reference("hasAirports", ObjectReference.uuids(alpha)));
+        .reference("hasAirports", ObjectReference.uuid(alpha)));
 
     // Act
     var newAirports = airports.data.insertMany(Map.of(), Map.of());

@@ -404,7 +404,7 @@ public class JSONTest {
         // Reference.TYPE_ADAPTER
         {
             ObjectReference.class,
-            ObjectReference.uuids("id-1"),
+            ObjectReference.uuid("id-1"),
             "{\"beacon\": \"weaviate://localhost/id-1\"}",
         },
         {
@@ -413,7 +413,7 @@ public class JSONTest {
             "{\"beacon\": \"weaviate://localhost/Doodlebops/id-1\"}",
         },
 
-        // XWriteWeaviateObject.CustomTypeAdapterFactory.INSTANCE
+        // WriteWeaviateObject.CustomTypeAdapterFactory.INSTANCE
         {
             new TypeToken<WeaviateObject<Map<String, Object>>>() {
             },
@@ -426,7 +426,7 @@ public class JSONTest {
                 /* creationTimeUnix */ null,
                 /* lastUpdateTimeUnix */ null,
                 /* queryMetadata */ null,
-                Map.of("hasRef", List.of(ObjectReference.uuids("ref-1")))),
+                Map.of("hasRef", List.of(ObjectReference.uuid("ref-1")))),
 
             """
                 {

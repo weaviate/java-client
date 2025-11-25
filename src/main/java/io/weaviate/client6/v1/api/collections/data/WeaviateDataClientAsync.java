@@ -1,7 +1,6 @@
 package io.weaviate.client6.v1.api.collections.data;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -124,11 +123,8 @@ public class WeaviateDataClientAsync<PropertiesT> {
   }
 
   public CompletableFuture<Void> referenceAdd(String fromUuid, String fromProperty, ObjectReference reference) {
-    return forEachAsync(reference.uuids(), uuid -> {
-      var singleRef = new ObjectReference(reference.collection(), (String) uuid);
-      return this.restTransport.performRequestAsync(new ReferenceAddRequest(fromUuid, fromProperty, singleRef),
-          ReferenceAddRequest.endpoint(collection, defaults));
-    });
+    return this.restTransport.performRequestAsync(new ReferenceAddRequest(fromUuid, fromProperty, reference),
+        ReferenceAddRequest.endpoint(collection, defaults));
   }
 
   public CompletableFuture<ReferenceAddManyResponse> referenceAddMany(BatchReference... references) {
@@ -141,40 +137,12 @@ public class WeaviateDataClientAsync<PropertiesT> {
   }
 
   public CompletableFuture<Void> referenceDelete(String fromUuid, String fromProperty, ObjectReference reference) {
-    return forEachAsync(reference.uuids(), uuid -> {
-      var singleRef = new ObjectReference(reference.collection(), (String) uuid);
-      return this.restTransport.performRequestAsync(new ReferenceDeleteRequest(fromUuid, fromProperty, singleRef),
-          ReferenceDeleteRequest.endpoint(collection, defaults));
-    });
+    return this.restTransport.performRequestAsync(new ReferenceDeleteRequest(fromUuid, fromProperty, reference),
+        ReferenceDeleteRequest.endpoint(collection, defaults));
   }
 
   public CompletableFuture<Void> referenceReplace(String fromUuid, String fromProperty, ObjectReference reference) {
-    return forEachAsync(reference.uuids(), uuid -> {
-      var singleRef = new ObjectReference(reference.collection(), (String) uuid);
-      return this.restTransport.performRequestAsync(new ReferenceReplaceRequest(fromUuid, fromProperty, singleRef),
-          ReferenceReplaceRequest.endpoint(collection, defaults));
-    });
-  }
-
-  /**
-   * Spawn execution {@code fn} for each of the {@code elements} and return a
-   * flattened {@link CompletableFuture#allOf}.
-   *
-   * <p>
-   * Usage:
-   *
-   * <pre>{@code
-   *  // With elements immediately available
-   *  forEachAsync(myElements, element -> doNetworkIo(element));
-   *
-   *  // Chain to another CompletableFuture
-   *  fetch(request).thenCompose(elements -> forEachAsync(...));
-   * }</pre>
-   */
-  private static <T> CompletableFuture<Void> forEachAsync(Collection<T> elements,
-      Function<T, CompletableFuture<?>> fn) {
-    var futures = elements.stream().map(el -> fn.apply(el))
-        .toArray(CompletableFuture[]::new);
-    return CompletableFuture.allOf(futures);
+    return this.restTransport.performRequestAsync(new ReferenceReplaceRequest(fromUuid, fromProperty, reference),
+        ReferenceReplaceRequest.endpoint(collection, defaults));
   }
 }
