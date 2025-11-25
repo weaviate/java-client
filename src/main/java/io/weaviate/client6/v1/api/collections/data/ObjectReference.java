@@ -10,10 +10,10 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
-import io.weaviate.client6.v1.api.collections.IReference;
+import io.weaviate.client6.v1.api.collections.Reference;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 
-public record Reference(String collection, List<String> uuids) implements IReference {
+public record ObjectReference(String collection, List<String> uuids) implements Reference {
 
   @Override
   public String uuid() {
@@ -25,7 +25,7 @@ public record Reference(String collection, List<String> uuids) implements IRefer
     throw new IllegalStateException("cannot convert to WeaviateObject");
   }
 
-  public Reference(String collection, String uuid) {
+  public ObjectReference(String collection, String uuid) {
     this(collection, List.of(uuid));
   }
 
@@ -36,25 +36,25 @@ public record Reference(String collection, List<String> uuids) implements IRefer
    * the objects before inserting the references, so this may include
    * some performance overhead.
    */
-  public static Reference uuids(String... uuids) {
-    return new Reference(null, Arrays.asList(uuids));
+  public static ObjectReference uuids(String... uuids) {
+    return new ObjectReference(null, Arrays.asList(uuids));
   }
 
   /** Create references to single {@link WeaviateObject}. */
-  public static Reference object(WeaviateObject<?> object) {
-    return new Reference(object.collection(), object.uuid());
+  public static ObjectReference object(WeaviateObject<?> object) {
+    return new ObjectReference(object.collection(), object.uuid());
   }
 
   /** Create references to multiple {@link WeaviateObject}. */
-  public static Reference[] objects(WeaviateObject<?>... objects) {
+  public static ObjectReference[] objects(WeaviateObject<?>... objects) {
     return Arrays.stream(objects)
-        .map(o -> new Reference(o.collection(), o.uuid()))
-        .toArray(Reference[]::new);
+        .map(o -> new ObjectReference(o.collection(), o.uuid()))
+        .toArray(ObjectReference[]::new);
   }
 
   /** Create references to objects in a collection by their UUIDs. */
-  public static Reference collection(String collection, String... uuids) {
-    return new Reference(collection, Arrays.asList(uuids));
+  public static ObjectReference collection(String collection, String... uuids) {
+    return new ObjectReference(collection, Arrays.asList(uuids));
   }
 
   public static String toBeacon(String collection, String uuid) {
@@ -73,10 +73,10 @@ public record Reference(String collection, List<String> uuids) implements IRefer
     return beacon;
   }
 
-  public static final TypeAdapter<Reference> TYPE_ADAPTER = new TypeAdapter<Reference>() {
+  public static final TypeAdapter<ObjectReference> TYPE_ADAPTER = new TypeAdapter<ObjectReference>() {
 
     @Override
-    public void write(JsonWriter out, Reference value) throws IOException {
+    public void write(JsonWriter out, ObjectReference value) throws IOException {
       for (var uuid : value.uuids()) {
         out.beginObject();
         out.name("beacon");
@@ -86,7 +86,7 @@ public record Reference(String collection, List<String> uuids) implements IRefer
     }
 
     @Override
-    public Reference read(JsonReader in) throws IOException {
+    public ObjectReference read(JsonReader in) throws IOException {
       String collection = null;
       String id = null;
 
@@ -110,7 +110,7 @@ public record Reference(String collection, List<String> uuids) implements IRefer
         id = beacon;
       }
 
-      return new Reference(collection, id);
+      return new ObjectReference(collection, id);
     }
 
   }.nullSafe();

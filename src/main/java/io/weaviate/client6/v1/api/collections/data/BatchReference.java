@@ -9,14 +9,14 @@ import com.google.gson.stream.JsonWriter;
 
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 
-public record BatchReference(String fromCollection, String fromProperty, String fromUuid, Reference reference) {
+public record BatchReference(String fromCollection, String fromProperty, String fromUuid, ObjectReference reference) {
 
   public static BatchReference[] objects(WeaviateObject<?> fromObject, String fromProperty,
       WeaviateObject<?>... toObjects) {
     return Arrays.stream(toObjects)
         .map(to -> new BatchReference(
             fromObject.collection(), fromProperty, fromObject.uuid(),
-            Reference.object(to)))
+            ObjectReference.object(to)))
         .toArray(BatchReference[]::new);
   }
 
@@ -25,7 +25,7 @@ public record BatchReference(String fromCollection, String fromProperty, String 
     return Arrays.stream(toUuids)
         .map(to -> new BatchReference(
             fromObject.collection(), fromProperty, fromObject.uuid(),
-            Reference.uuids(to)))
+            ObjectReference.uuids(to)))
         .toArray(BatchReference[]::new);
   }
 
@@ -36,10 +36,10 @@ public record BatchReference(String fromCollection, String fromProperty, String 
       out.beginObject();
 
       out.name("from");
-      out.value(Reference.toBeacon(value.fromCollection, value.fromProperty, value.fromUuid));
+      out.value(ObjectReference.toBeacon(value.fromCollection, value.fromProperty, value.fromUuid));
 
       out.name("to");
-      out.value(Reference.toBeacon(value.reference.collection(), value.reference.uuids().get(0)));
+      out.value(ObjectReference.toBeacon(value.reference.collection(), value.reference.uuids().get(0)));
 
       // TODO: add tenant
 
@@ -51,7 +51,7 @@ public record BatchReference(String fromCollection, String fromProperty, String 
       String fromCollection = null;
       String fromProperty = null;
       String fromUuid = null;
-      Reference toReference = null;
+      ObjectReference toReference = null;
 
       in.beginObject();
       while (in.hasNext()) {
@@ -81,7 +81,7 @@ public record BatchReference(String fromCollection, String fromProperty, String 
             } else {
               id = beacon;
             }
-            toReference = new Reference(collection, id);
+            toReference = new ObjectReference(collection, id);
             break;
           }
 

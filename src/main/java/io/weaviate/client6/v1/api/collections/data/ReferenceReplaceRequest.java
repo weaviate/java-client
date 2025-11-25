@@ -8,7 +8,7 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 import io.weaviate.client6.v1.internal.rest.Endpoint;
 import io.weaviate.client6.v1.internal.rest.SimpleEndpoint;
 
-public record ReferenceReplaceRequest(String fromUuid, String fromProperty, Reference reference) {
+public record ReferenceReplaceRequest(String fromUuid, String fromProperty, ObjectReference reference) {
 
   public static final Endpoint<ReferenceReplaceRequest, Void> endpoint(
       CollectionDescriptor<?> descriptor,

@@ -21,7 +21,7 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
-import io.weaviate.client6.v1.api.collections.data.Reference;
+import io.weaviate.client6.v1.api.collections.data.ObjectReference;
 import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
@@ -35,33 +35,8 @@ public record WeaviateObject<PropertiesT>(
     @SerializedName("lastUpdateTimeUnix") Long lastUpdatedAt,
 
     QueryMetadata queryMetadata,
-    Map<String, List<IReference>> references) implements IReference {
+    Map<String, List<Reference>> references) implements Reference {
 
-  /**
-   * Cast {@code this} into an instance of {@link IWeaviateObject<Map<String,
-   * Object>>}. Useful when working with references retrieved in a query.
-   *
-   * <pre>{@code
-   *  var metalSongs = songs.query.fetchObjects(q -> q
-   *    .filters(Filter.property("genres").containsAll("metal")
-   *    .returnReferences(QueryReference.multi("performedBy"));
-   *
-   *  metalSongs.objects().forEach(song -> {
-   *    var songName = song.properties().get("name");
-   *    song.references().forEach(ref -> {
-   *      var artistName = ref.asWeaviateObject().properties().get("artistName");
-   *      System.out.printf("%s is performed by %s", songName, artistName);
-   *    });
-   *  });
-   * }</pre>
-   *
-   * <p>
-   * Only call this method on objects returned from methods under {@code .query}
-   * namespace, as insert-references do not implement this interface.
-   *
-   * @throws IllegalStateException if reference object is an instance of
-   *                               {@link Reference}. See usage guidelines above.
-   */
   @SuppressWarnings("unchecked")
   @Override
   public WeaviateObject<Map<String, Object>> asWeaviateObject() {
@@ -97,7 +72,7 @@ public record WeaviateObject<PropertiesT>(
     private String tenant;
     private PropertiesT properties;
     private Vectors vectors;
-    private Map<String, List<IReference>> references = new HashMap<>();
+    private Map<String, List<Reference>> references = new HashMap<>();
 
     public Builder<PropertiesT> uuid(String uuid) {
       this.uuid = uuid;
@@ -118,19 +93,19 @@ public record WeaviateObject<PropertiesT>(
      * Add a reference. Calls to {@link #reference} can be chained
      * to add multiple references.
      */
-    public Builder<PropertiesT> reference(String property, IReference... references) {
+    public Builder<PropertiesT> reference(String property, Reference... references) {
       for (var ref : references) {
         addReference(property, ref);
       }
       return this;
     }
 
-    public Builder<PropertiesT> references(Map<String, List<IReference>> references) {
+    public Builder<PropertiesT> references(Map<String, List<Reference>> references) {
       this.references = references;
       return this;
     }
 
-    private void addReference(String property, IReference reference) {
+    private void addReference(String property, Reference reference) {
       if (!references.containsKey(property)) {
         references.put(property, new ArrayList<>());
       }
@@ -172,7 +147,7 @@ public record WeaviateObject<PropertiesT>(
       final var delegate = (TypeAdapter<WeaviateObject<?>>) gson
           .getDelegateAdapter(this, typeToken);
       final var propertiesAdapter = (TypeAdapter<Object>) gson.getAdapter(TypeToken.get(propertiesType));
-      final var referencesAdapter = gson.getAdapter(Reference.class);
+      final var referencesAdapter = gson.getAdapter(ObjectReference.class);
 
       return (TypeAdapter<T>) new TypeAdapter<WeaviateObject<?>>() {
 
@@ -187,7 +162,7 @@ public record WeaviateObject<PropertiesT>(
             for (var refEntry : value.references().entrySet()) {
               var beacons = new JsonArray();
               for (var reference : refEntry.getValue()) {
-                var beacon = referencesAdapter.toJsonTree((Reference) reference);
+                var beacon = referencesAdapter.toJsonTree((ObjectReference) reference);
                 beacons.add(beacon);
               }
               properties.add(refEntry.getKey(), beacons);

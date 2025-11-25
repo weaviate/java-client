@@ -28,7 +28,7 @@ import io.weaviate.client6.v1.api.collections.Reranker;
 import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
-import io.weaviate.client6.v1.api.collections.data.Reference;
+import io.weaviate.client6.v1.api.collections.data.ObjectReference;
 import io.weaviate.client6.v1.api.collections.generate.GenerativeObject;
 import io.weaviate.client6.v1.api.collections.generate.TaskOutput;
 import io.weaviate.client6.v1.api.collections.generative.DummyGenerative;
@@ -197,9 +197,9 @@ public class SearchITest extends ConcurrentTest {
 
     var songs = client.collections.use(nsSongs);
     songs.data.insert(Map.of("title", "Yellow Submarine"),
-        s -> s.reference("performedBy", Reference.objects(beatles)));
+        s -> s.reference("performedBy", ObjectReference.objects(beatles)));
     songs.data.insert(Map.of("title", "Run Through The Jungle"),
-        s -> s.reference("performedBy", Reference.objects(ccr)));
+        s -> s.reference("performedBy", ObjectReference.objects(ccr)));
 
     var result = songs.query.nearText("nature",
         opt -> opt.returnProperties("title"),

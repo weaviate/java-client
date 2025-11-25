@@ -132,9 +132,9 @@ public class WeaviateDataClient<PropertiesT> {
     return this.grpcTransport.performRequest(request, DeleteManyRequest.rpc(collection, defaults));
   }
 
-  public void referenceAdd(String fromUuid, String fromProperty, Reference reference) throws IOException {
+  public void referenceAdd(String fromUuid, String fromProperty, ObjectReference reference) throws IOException {
     for (var uuid : reference.uuids()) {
-      var singleRef = new Reference(reference.collection(), uuid);
+      var singleRef = new ObjectReference(reference.collection(), uuid);
       this.restTransport.performRequest(new ReferenceAddRequest(fromUuid, fromProperty, singleRef),
           ReferenceAddRequest.endpoint(collection, defaults));
     }
@@ -149,17 +149,17 @@ public class WeaviateDataClient<PropertiesT> {
         ReferenceAddManyRequest.endpoint(references, defaults));
   }
 
-  public void referenceDelete(String fromUuid, String fromProperty, Reference reference) throws IOException {
+  public void referenceDelete(String fromUuid, String fromProperty, ObjectReference reference) throws IOException {
     for (var uuid : reference.uuids()) {
-      var singleRef = new Reference(reference.collection(), uuid);
+      var singleRef = new ObjectReference(reference.collection(), uuid);
       this.restTransport.performRequest(new ReferenceDeleteRequest(fromUuid, fromProperty, singleRef),
           ReferenceDeleteRequest.endpoint(collection, defaults));
     }
   }
 
-  public void referenceReplace(String fromUuid, String fromProperty, Reference reference) throws IOException {
+  public void referenceReplace(String fromUuid, String fromProperty, ObjectReference reference) throws IOException {
     for (var uuid : reference.uuids()) {
-      var singleRef = new Reference(reference.collection(), uuid);
+      var singleRef = new ObjectReference(reference.collection(), uuid);
       this.restTransport.performRequest(new ReferenceReplaceRequest(fromUuid, fromProperty, singleRef),
           ReferenceReplaceRequest.endpoint(collection, defaults));
     }

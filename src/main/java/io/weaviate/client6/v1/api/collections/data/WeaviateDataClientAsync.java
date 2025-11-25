@@ -123,9 +123,9 @@ public class WeaviateDataClientAsync<PropertiesT> {
     return this.grpcTransport.performRequestAsync(request, DeleteManyRequest.rpc(collection, defaults));
   }
 
-  public CompletableFuture<Void> referenceAdd(String fromUuid, String fromProperty, Reference reference) {
+  public CompletableFuture<Void> referenceAdd(String fromUuid, String fromProperty, ObjectReference reference) {
     return forEachAsync(reference.uuids(), uuid -> {
-      var singleRef = new Reference(reference.collection(), (String) uuid);
+      var singleRef = new ObjectReference(reference.collection(), (String) uuid);
       return this.restTransport.performRequestAsync(new ReferenceAddRequest(fromUuid, fromProperty, singleRef),
           ReferenceAddRequest.endpoint(collection, defaults));
     });
@@ -140,17 +140,17 @@ public class WeaviateDataClientAsync<PropertiesT> {
         ReferenceAddManyRequest.endpoint(references, defaults));
   }
 
-  public CompletableFuture<Void> referenceDelete(String fromUuid, String fromProperty, Reference reference) {
+  public CompletableFuture<Void> referenceDelete(String fromUuid, String fromProperty, ObjectReference reference) {
     return forEachAsync(reference.uuids(), uuid -> {
-      var singleRef = new Reference(reference.collection(), (String) uuid);
+      var singleRef = new ObjectReference(reference.collection(), (String) uuid);
       return this.restTransport.performRequestAsync(new ReferenceDeleteRequest(fromUuid, fromProperty, singleRef),
           ReferenceDeleteRequest.endpoint(collection, defaults));
     });
   }
 
-  public CompletableFuture<Void> referenceReplace(String fromUuid, String fromProperty, Reference reference) {
+  public CompletableFuture<Void> referenceReplace(String fromUuid, String fromProperty, ObjectReference reference) {
     return forEachAsync(reference.uuids(), uuid -> {
-      var singleRef = new Reference(reference.collection(), (String) uuid);
+      var singleRef = new ObjectReference(reference.collection(), (String) uuid);
       return this.restTransport.performRequestAsync(new ReferenceReplaceRequest(fromUuid, fromProperty, singleRef),
           ReferenceReplaceRequest.endpoint(collection, defaults));
     });

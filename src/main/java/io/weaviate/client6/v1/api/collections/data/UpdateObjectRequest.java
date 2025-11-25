@@ -69,7 +69,7 @@ public record UpdateObjectRequest<PropertiesT>(WeaviateObject<PropertiesT> objec
       return this;
     }
 
-    public Builder<PropertiesT> reference(String property, Reference... references) {
+    public Builder<PropertiesT> reference(String property, ObjectReference... references) {
       this.object.reference(property, references);
       return this;
     }

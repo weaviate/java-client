@@ -24,7 +24,7 @@ import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.BatchReference;
 import io.weaviate.client6.v1.api.collections.data.DeleteManyResponse;
-import io.weaviate.client6.v1.api.collections.data.Reference;
+import io.weaviate.client6.v1.api.collections.data.ObjectReference;
 import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.Metadata.MetadataField;
@@ -177,7 +177,7 @@ public class DataITest extends ConcurrentTest {
     persons.data.referenceAdd(
         john.uuid(),
         "hasFriend",
-        Reference.object(albie));
+        ObjectReference.object(albie));
 
     // Assert
     var johnWithFriends = persons.query.fetchObjectById(john.metadata().uuid(),
@@ -198,7 +198,7 @@ public class DataITest extends ConcurrentTest {
     persons.data.referenceReplace(
         john.uuid(),
         "hasFriend",
-        Reference.object(barbara));
+        ObjectReference.object(barbara));
 
     johnWithFriends = persons.query.fetchObjectById(john.metadata().uuid(),
         query -> query.returnReferences(
@@ -217,7 +217,7 @@ public class DataITest extends ConcurrentTest {
     persons.data.referenceDelete(
         john.uuid(),
         "hasFriend",
-        Reference.object(barbara));
+        ObjectReference.object(barbara));
 
     // Assert
     johnWithFriends = persons.query.fetchObjectById(john.metadata().uuid(),
@@ -289,7 +289,7 @@ public class DataITest extends ConcurrentTest {
     books.data.update(ivanhoe.uuid(),
         update -> update
             .properties(Map.of("year", 1819))
-            .reference("writtenBy", Reference.objects(walter))
+            .reference("writtenBy", ObjectReference.objects(walter))
             .vectors(Vectors.of(vector)));
 
     // Assert
@@ -409,7 +409,7 @@ public class DataITest extends ConcurrentTest {
 
     var alpha = airports.data.insert(Map.of()).uuid();
     var goodburg = cities.data.insert(Map.of(), city -> city
-        .reference("hasAirports", Reference.uuids(alpha)));
+        .reference("hasAirports", ObjectReference.uuids(alpha)));
 
     // Act
     var newAirports = airports.data.insertMany(Map.of(), Map.of());
