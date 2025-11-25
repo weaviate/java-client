@@ -16,11 +16,14 @@ public class ByteStringUtil {
   private static final ByteOrder BYTE_ORDER = ByteOrder.LITTLE_ENDIAN;
 
   /** Decode ByteString to UUID. */
-  public static UUID decodeUuid(ByteString bs) {
+  public static String decodeUuid(ByteString bs) {
+    if (bs.size() != Long.BYTES * 2) {
+      return null;
+    }
     var buf = ByteBuffer.wrap(bs.toByteArray());
     var most = buf.getLong();
     var least = buf.getLong();
-    return new UUID(most, least);
+    return new UUID(most, least).toString();
   }
 
   /** Encode float[] to ByteString. */

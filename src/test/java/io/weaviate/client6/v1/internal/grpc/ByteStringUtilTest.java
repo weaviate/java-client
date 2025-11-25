@@ -49,8 +49,15 @@ public class ByteStringUtilTest {
   public void test_decodeUuid() {
     byte[] bytes = { 38, 19, -74, 24, -114, -19, 73, 43, -112, -60, 47, 96, 83, -89, -35, -23 };
     String want = "2613b618-8eed-492b-90c4-2f6053a7dde9";
-    String got = ByteStringUtil.decodeUuid(ByteString.copyFrom(bytes)).toString();
+    String got = ByteStringUtil.decodeUuid(ByteString.copyFrom(bytes));
     Assertions.assertThat(got).isEqualTo(want);
+  }
+
+  @Test
+  public void test_decodeUuid_bufferUnderflow() {
+    byte[] bytes = { 38, 19 }; // A valid UUID is exactly 16 bytes
+    String got = ByteStringUtil.decodeUuid(ByteString.copyFrom(bytes));
+    Assertions.assertThat(got).isNull();
   }
 
   @Test

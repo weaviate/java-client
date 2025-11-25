@@ -46,7 +46,7 @@ public record DeleteManyRequest(Filter filters, Boolean verbose, Boolean dryRun)
           var objects = reply.getObjectsList()
               .stream()
               .map(obj -> new DeleteManyResponse.DeletedObject(
-                  ByteStringUtil.decodeUuid(obj.getUuid()).toString(),
+                  ByteStringUtil.decodeUuid(obj.getUuid()),
                   obj.getSuccessful(),
                   obj.getError()))
               .toList();
