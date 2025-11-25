@@ -41,8 +41,6 @@ public record BatchReference(String fromCollection, String fromProperty, String 
       out.name("to");
       out.value(ObjectReference.toBeacon(value.reference.collection(), value.reference.uuid()));
 
-      // TODO: add tenant
-
       out.endObject();
     }
 
@@ -84,20 +82,6 @@ public record BatchReference(String fromCollection, String fromProperty, String 
             toReference = new ObjectReference(collection, id);
             break;
           }
-
-          // case "tenant":
-          // switch (in.peek()) {
-          // case STRING:
-          // in.nextString();
-          // case NULL:
-          // in.nextNull();
-          // default:
-          // // We don't expect anything else
-          // }
-          // System.out.println("processed tenant");
-          // break;
-          // default:
-          // in.skipValue();
         }
       }
       in.endObject();
