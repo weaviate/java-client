@@ -7,26 +7,26 @@ import java.util.Spliterator;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
-import io.weaviate.client6.v1.api.collections.query.ReadWeaviateObject;
+import io.weaviate.client6.v1.api.collections.XWriteWeaviateObject;
 
-public class CursorSpliterator<PropertiesT> implements Spliterator<ReadWeaviateObject<PropertiesT>> {
+public class CursorSpliterator<PropertiesT> implements Spliterator<XWriteWeaviateObject<PropertiesT>> {
   private final int pageSize;
-  private final BiFunction<String, Integer, List<ReadWeaviateObject<PropertiesT>>> fetch;
+  private final BiFunction<String, Integer, List<XWriteWeaviateObject<PropertiesT>>> fetch;
 
   // Spliterators do not promise thread-safety, so there's no mechanism
   // to protect access to its internal state.
   private String cursor;
-  private Iterator<ReadWeaviateObject<PropertiesT>> currentPage = Collections.emptyIterator();
+  private Iterator<XWriteWeaviateObject<PropertiesT>> currentPage = Collections.emptyIterator();
 
   public CursorSpliterator(String cursor, int pageSize,
-      BiFunction<String, Integer, List<ReadWeaviateObject<PropertiesT>>> fetch) {
+      BiFunction<String, Integer, List<XWriteWeaviateObject<PropertiesT>>> fetch) {
     this.cursor = cursor;
     this.pageSize = pageSize;
     this.fetch = fetch;
   }
 
   @Override
-  public boolean tryAdvance(Consumer<? super ReadWeaviateObject<PropertiesT>> action) {
+  public boolean tryAdvance(Consumer<? super XWriteWeaviateObject<PropertiesT>> action) {
     // Happy path: there are remaining objects in the current page.
     if (currentPage.hasNext()) {
       action.accept(currentPage.next());
@@ -53,7 +53,7 @@ public class CursorSpliterator<PropertiesT> implements Spliterator<ReadWeaviateO
   }
 
   @Override
-  public Spliterator<ReadWeaviateObject<PropertiesT>> trySplit() {
+  public Spliterator<XWriteWeaviateObject<PropertiesT>> trySplit() {
     // Do not support splitting just now;
     return null;
   }

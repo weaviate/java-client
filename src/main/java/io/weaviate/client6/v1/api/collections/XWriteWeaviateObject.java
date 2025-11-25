@@ -1,4 +1,4 @@
-package io.weaviate.client6.v1.api.collections.data;
+package io.weaviate.client6.v1.api.collections;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
@@ -21,13 +21,11 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
-import io.weaviate.client6.v1.api.collections.IReference;
-import io.weaviate.client6.v1.api.collections.Vectors;
-import io.weaviate.client6.v1.api.collections.WeaviateObject;
+import io.weaviate.client6.v1.api.collections.data.Reference;
 import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public record WriteWeaviateObject<PropertiesT>(
+public record XWriteWeaviateObject<PropertiesT>(
     @SerializedName("id") String uuid,
     @SerializedName("class") String collection,
     @SerializedName("tenant") String tenant,
@@ -36,31 +34,59 @@ public record WriteWeaviateObject<PropertiesT>(
     @SerializedName("creationTimeUnix") Long createdAt,
     @SerializedName("lastUpdateTimeUnix") Long lastUpdatedAt,
 
-    Map<String, List<IReference>> references) implements WeaviateObject<PropertiesT> {
+    QueryMetadata queryMetadata,
+    Map<String, List<IReference>> references) implements IReference {
 
+  /**
+   * Cast {@code this} into an instance of {@link IWeaviateObject<Map<String,
+   * Object>>}. Useful when working with references retrieved in a query.
+   *
+   * <pre>{@code
+   *  var metalSongs = songs.query.fetchObjects(q -> q
+   *    .filters(Filter.property("genres").containsAll("metal")
+   *    .returnReferences(QueryReference.multi("performedBy"));
+   *
+   *  metalSongs.objects().forEach(song -> {
+   *    var songName = song.properties().get("name");
+   *    song.references().forEach(ref -> {
+   *      var artistName = ref.asWeaviateObject().properties().get("artistName");
+   *      System.out.printf("%s is performed by %s", songName, artistName);
+   *    });
+   *  });
+   * }</pre>
+   *
+   * <p>
+   * Only call this method on objects returned from methods under {@code .query}
+   * namespace, as insert-references do not implement this interface.
+   *
+   * @throws IllegalStateException if reference object is an instance of
+   *                               {@link Reference}. See usage guidelines above.
+   */
+  @SuppressWarnings("unchecked")
   @Override
-  public QueryMetadata queryMetadata() {
-    return new QueryMetadata(uuid, vectors, createdAt, lastUpdatedAt, null, null, null, null);
+  public XWriteWeaviateObject<Map<String, Object>> asWeaviateObject() {
+    return (XWriteWeaviateObject<Map<String, Object>>) this;
   }
 
-  public static <PropertiesT> WriteWeaviateObject<PropertiesT> of(
-      Function<Builder<PropertiesT>, ObjectBuilder<WriteWeaviateObject<PropertiesT>>> fn) {
+  public static <PropertiesT> XWriteWeaviateObject<PropertiesT> of(
+      Function<Builder<PropertiesT>, ObjectBuilder<XWriteWeaviateObject<PropertiesT>>> fn) {
     return fn.apply(new Builder<>()).build();
   }
 
-  public WriteWeaviateObject(Builder<PropertiesT> builder) {
+  public XWriteWeaviateObject(Builder<PropertiesT> builder) {
     this(
         builder.uuid,
-        null, // collection name is set on insert
-        builder.tenant,
+        null, // collection name is derived from CollectionHandle
+        builder.tenant, // tenant MAY be derived from CollectionHandle
         builder.properties,
         builder.vectors,
-        null, // creationTimeUnix is read-only
-        null, // lastUpdateTimeUnix is read-only
+        null, // createdAt is read-only
+        null, // lastUpdatedAt is read-only
+        null, // queryMetadata is read-only
         builder.references);
   }
 
-  public static class Builder<PropertiesT> implements ObjectBuilder<WriteWeaviateObject<PropertiesT>> {
+  public static class Builder<PropertiesT> implements ObjectBuilder<XWriteWeaviateObject<PropertiesT>> {
     /**
      * The server <i>should be</i> providing default UUIDs, but it does not do that
      * during batch inserts and we have to provide our own.
@@ -121,8 +147,8 @@ public record WriteWeaviateObject<PropertiesT>(
     }
 
     @Override
-    public WriteWeaviateObject<PropertiesT> build() {
-      return new WriteWeaviateObject<>(this);
+    public XWriteWeaviateObject<PropertiesT> build() {
+      return new XWriteWeaviateObject<>(this);
     }
   }
 
@@ -134,7 +160,7 @@ public record WriteWeaviateObject<PropertiesT>(
     public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> typeToken) {
       var type = typeToken.getType();
       var rawType = typeToken.getRawType();
-      if (rawType != WriteWeaviateObject.class ||
+      if (rawType != XWriteWeaviateObject.class ||
           !(type instanceof ParameterizedType parameterized)
           || parameterized.getActualTypeArguments().length != 1) {
         return null;
@@ -143,15 +169,15 @@ public record WriteWeaviateObject<PropertiesT>(
       var typeParams = parameterized.getActualTypeArguments();
       final var propertiesType = typeParams[0];
 
-      final var delegate = (TypeAdapter<WriteWeaviateObject<?>>) gson
+      final var delegate = (TypeAdapter<XWriteWeaviateObject<?>>) gson
           .getDelegateAdapter(this, typeToken);
       final var propertiesAdapter = (TypeAdapter<Object>) gson.getAdapter(TypeToken.get(propertiesType));
       final var referencesAdapter = gson.getAdapter(Reference.class);
 
-      return (TypeAdapter<T>) new TypeAdapter<WriteWeaviateObject<?>>() {
+      return (TypeAdapter<T>) new TypeAdapter<XWriteWeaviateObject<?>>() {
 
         @Override
-        public void write(JsonWriter out, WriteWeaviateObject<?> value) throws IOException {
+        public void write(JsonWriter out, XWriteWeaviateObject<?> value) throws IOException {
           var json = delegate.toJsonTree(value).getAsJsonObject();
           var properties = value.properties() != null
               ? propertiesAdapter.toJsonTree(value.properties()).getAsJsonObject()
@@ -174,7 +200,7 @@ public record WriteWeaviateObject<PropertiesT>(
         }
 
         @Override
-        public WriteWeaviateObject<?> read(JsonReader in) throws IOException {
+        public XWriteWeaviateObject<?> read(JsonReader in) throws IOException {
           var json = JsonParser.parseReader(in).getAsJsonObject();
 
           var jsonProperties = json.get("properties").getAsJsonObject();

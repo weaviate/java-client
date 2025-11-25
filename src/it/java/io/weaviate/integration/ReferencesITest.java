@@ -13,9 +13,9 @@ import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.ReferenceProperty;
+import io.weaviate.client6.v1.api.collections.XWriteWeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.Reference;
 import io.weaviate.client6.v1.api.collections.query.QueryReference;
-import io.weaviate.client6.v1.api.collections.query.ReadWeaviateObject;
 import io.weaviate.containers.Container;
 
 /**
@@ -99,9 +99,9 @@ public class ReferencesITest extends ConcurrentTest {
         .as("Artists: fetch by id including hasAwards references")
 
         // Cast references to Map<String, List<QueryWeaviateObject>>
-        .extracting(ReadWeaviateObject::references, InstanceOfAssertFactories.map(String.class, List.class))
+        .extracting(XWriteWeaviateObject::references, InstanceOfAssertFactories.map(String.class, List.class))
         .as("hasAwards object reference").extractingByKey("hasAwards")
-        .asInstanceOf(InstanceOfAssertFactories.list(ReadWeaviateObject.class))
+        .asInstanceOf(InstanceOfAssertFactories.list(XWriteWeaviateObject.class))
 
         .extracting(object -> object.uuid())
         .containsOnly(
@@ -166,19 +166,19 @@ public class ReferencesITest extends ConcurrentTest {
         .as("Artists: fetch by id including nested references")
 
         // Cast references to Map<String, List<QueryWeaviateObject>>
-        .extracting(ReadWeaviateObject::references, InstanceOfAssertFactories.map(String.class, List.class))
+        .extracting(XWriteWeaviateObject::references, InstanceOfAssertFactories.map(String.class, List.class))
         .as("hasAwards object reference").extractingByKey("hasAwards")
-        .asInstanceOf(InstanceOfAssertFactories.list(ReadWeaviateObject.class))
+        .asInstanceOf(InstanceOfAssertFactories.list(XWriteWeaviateObject.class))
 
         .hasSize(1).allSatisfy(award -> Assertions.assertThat(award)
             .returns(grammy_1.uuid(), grammy -> grammy.uuid())
 
             // Cast references to Map<String, List<QueryWeaviateObject>>
-            .extracting(ReadWeaviateObject::references, InstanceOfAssertFactories.map(String.class, List.class))
+            .extracting(XWriteWeaviateObject::references, InstanceOfAssertFactories.map(String.class, List.class))
             .as("presentedBy object reference").extractingByKey("presentedBy")
-            .asInstanceOf(InstanceOfAssertFactories.list(ReadWeaviateObject.class))
+            .asInstanceOf(InstanceOfAssertFactories.list(XWriteWeaviateObject.class))
 
-            .hasSize(1).extracting(ReadWeaviateObject::properties)
+            .hasSize(1).extracting(XWriteWeaviateObject::properties)
             .allSatisfy(properties -> Assertions.assertThat(properties)
                 .asInstanceOf(InstanceOfAssertFactories.map(String.class, Object.class))
                 .containsEntry("ceo", "Harvy Mason")));
