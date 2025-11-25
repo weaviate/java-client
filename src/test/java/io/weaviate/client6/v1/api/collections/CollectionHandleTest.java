@@ -86,7 +86,7 @@ public class CollectionHandleTest {
             "data::add reference",
             ConsistencyLevel.ONE, Location.QUERY,
             "john_doe", Location.QUERY,
-            (Act) c -> c.data.referenceAdd("from-uuid", "from_property", ObjectReference.uuids("to-uuid")),
+            (Act) c -> c.data.referenceAdd("from-uuid", "from_property", ObjectReference.uuid("to-uuid")),
         },
         {
             "data::add reference many",
@@ -98,13 +98,13 @@ public class CollectionHandleTest {
             "data::replace reference",
             ConsistencyLevel.ONE, Location.QUERY,
             "john_doe", Location.QUERY,
-            (Act) c -> c.data.referenceReplace("from-uuid", "from_property", ObjectReference.uuids("to-uuid")),
+            (Act) c -> c.data.referenceReplace("from-uuid", "from_property", ObjectReference.uuid("to-uuid")),
         },
         {
             "data::delete reference",
             ConsistencyLevel.ONE, Location.QUERY,
             "john_doe", Location.QUERY,
-            (Act) c -> c.data.referenceDelete("from-uuid", "from_property", ObjectReference.uuids("to-uuid")),
+            (Act) c -> c.data.referenceDelete("from-uuid", "from_property", ObjectReference.uuid("to-uuid")),
         },
     };
   }

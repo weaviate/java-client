@@ -25,7 +25,7 @@ public record BatchReference(String fromCollection, String fromProperty, String 
     return Arrays.stream(toUuids)
         .map(to -> new BatchReference(
             fromObject.collection(), fromProperty, fromObject.uuid(),
-            ObjectReference.uuids(to)))
+            ObjectReference.uuid(to)))
         .toArray(BatchReference[]::new);
   }
 
@@ -39,7 +39,7 @@ public record BatchReference(String fromCollection, String fromProperty, String 
       out.value(ObjectReference.toBeacon(value.fromCollection, value.fromProperty, value.fromUuid));
 
       out.name("to");
-      out.value(ObjectReference.toBeacon(value.reference.collection(), value.reference.uuids().get(0)));
+      out.value(ObjectReference.toBeacon(value.reference.collection(), value.reference.uuid()));
 
       // TODO: add tenant
 

@@ -133,11 +133,8 @@ public class WeaviateDataClient<PropertiesT> {
   }
 
   public void referenceAdd(String fromUuid, String fromProperty, ObjectReference reference) throws IOException {
-    for (var uuid : reference.uuids()) {
-      var singleRef = new ObjectReference(reference.collection(), uuid);
-      this.restTransport.performRequest(new ReferenceAddRequest(fromUuid, fromProperty, singleRef),
-          ReferenceAddRequest.endpoint(collection, defaults));
-    }
+    this.restTransport.performRequest(new ReferenceAddRequest(fromUuid, fromProperty, reference),
+        ReferenceAddRequest.endpoint(collection, defaults));
   }
 
   public ReferenceAddManyResponse referenceAddMany(BatchReference... references) throws IOException {
@@ -150,18 +147,12 @@ public class WeaviateDataClient<PropertiesT> {
   }
 
   public void referenceDelete(String fromUuid, String fromProperty, ObjectReference reference) throws IOException {
-    for (var uuid : reference.uuids()) {
-      var singleRef = new ObjectReference(reference.collection(), uuid);
-      this.restTransport.performRequest(new ReferenceDeleteRequest(fromUuid, fromProperty, singleRef),
-          ReferenceDeleteRequest.endpoint(collection, defaults));
-    }
+    this.restTransport.performRequest(new ReferenceDeleteRequest(fromUuid, fromProperty, reference),
+        ReferenceDeleteRequest.endpoint(collection, defaults));
   }
 
   public void referenceReplace(String fromUuid, String fromProperty, ObjectReference reference) throws IOException {
-    for (var uuid : reference.uuids()) {
-      var singleRef = new ObjectReference(reference.collection(), uuid);
-      this.restTransport.performRequest(new ReferenceReplaceRequest(fromUuid, fromProperty, singleRef),
-          ReferenceReplaceRequest.endpoint(collection, defaults));
-    }
+    this.restTransport.performRequest(new ReferenceReplaceRequest(fromUuid, fromProperty, reference),
+        ReferenceReplaceRequest.endpoint(collection, defaults));
   }
 }

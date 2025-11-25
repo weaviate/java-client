@@ -2,7 +2,6 @@ package io.weaviate.client6.v1.api.collections.data;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import com.google.gson.TypeAdapter;
@@ -13,20 +12,22 @@ import com.google.gson.stream.JsonWriter;
 import io.weaviate.client6.v1.api.collections.Reference;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 
-public record ObjectReference(String collection, List<String> uuids) implements Reference {
-
-  @Override
-  public String uuid() {
-    return uuids.get(0);
-  }
+public record ObjectReference(String collection, String uuid) implements Reference {
 
   @Override
   public WeaviateObject<Map<String, Object>> asWeaviateObject() {
     throw new IllegalStateException("cannot convert to WeaviateObject");
   }
 
-  public ObjectReference(String collection, String uuid) {
-    this(collection, List.of(uuid));
+  /**
+   * Create reference to a single object by UUID.
+   * <p>
+   * Weaviate will search each of the existing collections to identify
+   * the objects before inserting the references, so this may include
+   * some performance overhead.
+   */
+  public static ObjectReference uuid(String uuid) {
+    return new ObjectReference(null, uuid);
   }
 
   /**
@@ -36,8 +37,10 @@ public record ObjectReference(String collection, List<String> uuids) implements 
    * the objects before inserting the references, so this may include
    * some performance overhead.
    */
-  public static ObjectReference uuids(String... uuids) {
-    return new ObjectReference(null, Arrays.asList(uuids));
+  public static ObjectReference[] uuids(String... uuids) {
+    return Arrays.stream(uuids)
+        .map(ObjectReference::uuid)
+        .toArray(ObjectReference[]::new);
   }
 
   /** Create references to single {@link WeaviateObject}. */
@@ -52,9 +55,16 @@ public record ObjectReference(String collection, List<String> uuids) implements 
         .toArray(ObjectReference[]::new);
   }
 
+  /** Create a reference to an single object in a collection by its UUID. */
+  public static ObjectReference collection(String collection, String uuid) {
+    return new ObjectReference(collection, uuid);
+  }
+
   /** Create references to objects in a collection by their UUIDs. */
-  public static ObjectReference collection(String collection, String... uuids) {
-    return new ObjectReference(collection, Arrays.asList(uuids));
+  public static ObjectReference[] collection(String collection, String... uuids) {
+    return Arrays.stream(uuids)
+        .map(uuid -> new ObjectReference(collection, uuid))
+        .toArray(ObjectReference[]::new);
   }
 
   public static String toBeacon(String collection, String uuid) {
@@ -77,12 +87,10 @@ public record ObjectReference(String collection, List<String> uuids) implements 
 
     @Override
     public void write(JsonWriter out, ObjectReference value) throws IOException {
-      for (var uuid : value.uuids()) {
-        out.beginObject();
-        out.name("beacon");
-        out.value(toBeacon(value.collection(), uuid));
-        out.endObject();
-      }
+      out.beginObject();
+      out.name("beacon");
+      out.value(toBeacon(value.collection(), value.uuid()));
+      out.endObject();
     }
 
     @Override
