@@ -7,22 +7,22 @@ import java.util.function.Function;
 import com.google.gson.reflect.TypeToken;
 
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
-import io.weaviate.client6.v1.api.collections.WeaviateObject;
+import io.weaviate.client6.v1.api.collections.XWriteWeaviateObject;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.json.JSON;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 import io.weaviate.client6.v1.internal.rest.Endpoint;
 import io.weaviate.client6.v1.internal.rest.SimpleEndpoint;
 
-public record InsertObjectRequest<PropertiesT>(WeaviateObject<PropertiesT> object) {
+public record InsertObjectRequest<PropertiesT>(XWriteWeaviateObject<PropertiesT> object) {
 
   @SuppressWarnings("unchecked")
-  public static final <PropertiesT> Endpoint<InsertObjectRequest<PropertiesT>, WeaviateObject<PropertiesT>> endpoint(
+  public static final <PropertiesT> Endpoint<InsertObjectRequest<PropertiesT>, XWriteWeaviateObject<PropertiesT>> endpoint(
       CollectionDescriptor<PropertiesT> collection,
       CollectionHandleDefaults defaults) {
 
-    final var typeToken = (TypeToken<WriteWeaviateObject<PropertiesT>>) TypeToken
-        .getParameterized(WriteWeaviateObject.class, collection.typeToken().getType());
+    final var typeToken = (TypeToken<XWriteWeaviateObject<PropertiesT>>) TypeToken
+        .getParameterized(XWriteWeaviateObject.class, collection.typeToken().getType());
 
     return new SimpleEndpoint<>(
         request -> "POST",
@@ -31,7 +31,7 @@ public record InsertObjectRequest<PropertiesT>(WeaviateObject<PropertiesT> objec
             ? Map.of("consistency_level", defaults.consistencyLevel())
             : Collections.emptyMap(),
         request -> JSON.serialize(
-            new WriteWeaviateObject<>(
+            new XWriteWeaviateObject<>(
                 request.object.uuid(),
                 collection.collectionName(),
                 defaults.tenant(),
@@ -39,6 +39,7 @@ public record InsertObjectRequest<PropertiesT>(WeaviateObject<PropertiesT> objec
                 request.object.vectors(),
                 request.object.createdAt(),
                 request.object.lastUpdatedAt(),
+                null, // no queryMetadata no insert
                 request.object.references()),
             typeToken),
         (statusCode, response) -> JSON.deserialize(response, typeToken));
@@ -50,7 +51,7 @@ public record InsertObjectRequest<PropertiesT>(WeaviateObject<PropertiesT> objec
 
   static <PropertiesT> InsertObjectRequest<PropertiesT> of(
       PropertiesT properties,
-      Function<WriteWeaviateObject.Builder<PropertiesT>, ObjectBuilder<WriteWeaviateObject<PropertiesT>>> fn) {
-    return new InsertObjectRequest<>(WriteWeaviateObject.of(ObjectBuilder.partial(fn, b -> b.properties(properties))));
+      Function<XWriteWeaviateObject.Builder<PropertiesT>, ObjectBuilder<XWriteWeaviateObject<PropertiesT>>> fn) {
+    return new InsertObjectRequest<>(XWriteWeaviateObject.of(ObjectBuilder.partial(fn, b -> b.properties(properties))));
   }
 }

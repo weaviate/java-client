@@ -18,10 +18,9 @@ import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.WeaviateException;
 import io.weaviate.client6.v1.api.collections.Property;
+import io.weaviate.client6.v1.api.collections.XWriteWeaviateObject;
 import io.weaviate.client6.v1.api.collections.pagination.PaginationException;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
-import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
-import io.weaviate.client6.v1.api.collections.query.ReadWeaviateObject;
 import io.weaviate.containers.Container;
 
 public class PaginationITest extends ConcurrentTest {
@@ -46,8 +45,7 @@ public class PaginationITest extends ConcurrentTest {
     var allThings = things.paginate();
 
     // Act: stream
-    var gotStream = allThings.stream()
-        .map(ReadWeaviateObject::queryMetadata).map(QueryMetadata::uuid).toList();
+    var gotStream = allThings.stream().map(XWriteWeaviateObject::uuid).toList();
 
     // Assert
     Assertions.assertThat(gotStream)
@@ -58,7 +56,7 @@ public class PaginationITest extends ConcurrentTest {
     // Act: for-loop
     var gotLoop = new ArrayList<String>();
     for (var thing : allThings) {
-      gotLoop.add(thing.queryMetadata().uuid());
+      gotLoop.add(thing.uuid());
     }
 
     // Assert
@@ -89,7 +87,7 @@ public class PaginationITest extends ConcurrentTest {
 
     // Iterate over first 5 objects
     String lastId = things.paginate(p -> p.pageSize(5)).stream()
-        .limit(5).map(thing -> thing.queryMetadata().uuid())
+        .limit(5).map(thing -> thing.uuid())
         .reduce((prev, next) -> next).get();
 
     // Act
@@ -126,8 +124,7 @@ public class PaginationITest extends ConcurrentTest {
           .as("uuid=" + thing.uuid())
           .doesNotContainKey("dont_fetch");
 
-      Assertions.assertThat(thing.queryMetadata().createdAt())
-          .isNotNull();
+      Assertions.assertThat(thing.createdAt()).isNotNull();
     }
   }
 

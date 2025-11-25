@@ -8,7 +8,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
-import io.weaviate.client6.v1.api.collections.WeaviateObject;
+import io.weaviate.client6.v1.api.collections.XWriteWeaviateObject;
 import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.client6.v1.api.collections.query.FilterOperand;
 import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClientAsync;
@@ -46,17 +46,17 @@ public class WeaviateDataClientAsync<PropertiesT> {
     this.defaults = defaults;
   }
 
-  public CompletableFuture<WeaviateObject<PropertiesT>> insert(PropertiesT properties) {
+  public CompletableFuture<XWriteWeaviateObject<PropertiesT>> insert(PropertiesT properties) {
     return insert(InsertObjectRequest.of(properties));
   }
 
-  public CompletableFuture<WeaviateObject<PropertiesT>> insert(
+  public CompletableFuture<XWriteWeaviateObject<PropertiesT>> insert(
       PropertiesT properties,
-      Function<WriteWeaviateObject.Builder<PropertiesT>, ObjectBuilder<WriteWeaviateObject<PropertiesT>>> fn) {
+      Function<XWriteWeaviateObject.Builder<PropertiesT>, ObjectBuilder<XWriteWeaviateObject<PropertiesT>>> fn) {
     return insert(InsertObjectRequest.of(properties, fn));
   }
 
-  public CompletableFuture<WeaviateObject<PropertiesT>> insert(
+  public CompletableFuture<XWriteWeaviateObject<PropertiesT>> insert(
       InsertObjectRequest<PropertiesT> request) {
     return this.restTransport.performRequestAsync(request, InsertObjectRequest.endpoint(collection, defaults));
   }
@@ -67,11 +67,11 @@ public class WeaviateDataClientAsync<PropertiesT> {
   }
 
   @SafeVarargs
-  public final CompletableFuture<InsertManyResponse> insertMany(WeaviateObject<PropertiesT>... objects) {
+  public final CompletableFuture<InsertManyResponse> insertMany(XWriteWeaviateObject<PropertiesT>... objects) {
     return insertMany(Arrays.asList(objects));
   }
 
-  public CompletableFuture<InsertManyResponse> insertMany(List<WeaviateObject<PropertiesT>> objects) {
+  public CompletableFuture<InsertManyResponse> insertMany(List<XWriteWeaviateObject<PropertiesT>> objects) {
     return insertMany(new InsertManyRequest<>(objects));
   }
 

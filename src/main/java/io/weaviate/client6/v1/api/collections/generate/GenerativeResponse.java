@@ -40,6 +40,8 @@ public record GenerativeResponse<PropertiesT>(
             generative = GenerativeResponse.unmarshalTaskOutput(result.getGenerative());
           }
           return new GenerativeObject<>(
+              object.uuid(),
+              object.vectors(),
               object.properties(),
               object.queryMetadata(),
               generative);

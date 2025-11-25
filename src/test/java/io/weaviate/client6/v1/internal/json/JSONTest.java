@@ -25,10 +25,10 @@ import io.weaviate.client6.v1.api.collections.Reranker;
 import io.weaviate.client6.v1.api.collections.Tokenization;
 import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.Vectors;
+import io.weaviate.client6.v1.api.collections.XWriteWeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.BatchReference;
 import io.weaviate.client6.v1.api.collections.data.Reference;
 import io.weaviate.client6.v1.api.collections.data.ReferenceAddManyResponse;
-import io.weaviate.client6.v1.api.collections.data.WriteWeaviateObject;
 import io.weaviate.client6.v1.api.collections.quantizers.PQ;
 import io.weaviate.client6.v1.api.collections.rerankers.CohereReranker;
 import io.weaviate.client6.v1.api.collections.vectorindex.Distance;
@@ -413,11 +413,11 @@ public class JSONTest {
             "{\"beacon\": \"weaviate://localhost/Doodlebops/id-1\"}",
         },
 
-        // WriteWeaviateObject.CustomTypeAdapterFactory.INSTANCE
+        // XWriteWeaviateObject.CustomTypeAdapterFactory.INSTANCE
         {
-            new TypeToken<WriteWeaviateObject<Map<String, Object>>>() {
+            new TypeToken<XWriteWeaviateObject<Map<String, Object>>>() {
             },
-            new WriteWeaviateObject<>(
+            new XWriteWeaviateObject<>(
                 "thing-1",
                 "Things",
                 /* tenant */ null,
@@ -425,6 +425,7 @@ public class JSONTest {
                 /* vectors */ null,
                 /* creationTimeUnix */ null,
                 /* lastUpdateTimeUnix */ null,
+                /* queryMetadata */ null,
                 Map.of("hasRef", List.of(Reference.uuids("ref-1")))),
 
             """

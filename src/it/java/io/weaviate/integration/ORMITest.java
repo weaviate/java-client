@@ -17,10 +17,10 @@ import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.CollectionConfig;
 import io.weaviate.client6.v1.api.collections.GeoCoordinates;
 import io.weaviate.client6.v1.api.collections.PhoneNumber;
+import io.weaviate.client6.v1.api.collections.XWriteWeaviateObject;
 import io.weaviate.client6.v1.api.collections.annotations.Collection;
 import io.weaviate.client6.v1.api.collections.annotations.Property;
 import io.weaviate.client6.v1.api.collections.data.InsertManyResponse.InsertObject;
-import io.weaviate.client6.v1.api.collections.query.ReadWeaviateObject;
 import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.containers.Container;
 
@@ -358,7 +358,7 @@ public class ORMITest extends ConcurrentTest {
 
     // Assert
     Assertions.assertThat(got).get()
-        .extracting(ReadWeaviateObject::properties)
+        .extracting(XWriteWeaviateObject::properties)
         .returns("Dystopia", Song::title)
         .returns(null, Song::album)
         .returns(0, Song::year)

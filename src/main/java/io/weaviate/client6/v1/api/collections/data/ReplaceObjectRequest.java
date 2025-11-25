@@ -8,19 +8,20 @@ import com.google.gson.reflect.TypeToken;
 
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.api.collections.Vectors;
+import io.weaviate.client6.v1.api.collections.XWriteWeaviateObject;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.json.JSON;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 import io.weaviate.client6.v1.internal.rest.Endpoint;
 import io.weaviate.client6.v1.internal.rest.SimpleEndpoint;
 
-public record ReplaceObjectRequest<PropertiesT>(WriteWeaviateObject<PropertiesT> object) {
+public record ReplaceObjectRequest<PropertiesT>(XWriteWeaviateObject<PropertiesT> object) {
 
   static final <PropertiesT> Endpoint<ReplaceObjectRequest<PropertiesT>, Void> endpoint(
       CollectionDescriptor<PropertiesT> collection,
       CollectionHandleDefaults defaults) {
 
-    final var typeToken = TypeToken.getParameterized(WriteWeaviateObject.class, collection.typeToken().getType());
+    final var typeToken = TypeToken.getParameterized(XWriteWeaviateObject.class, collection.typeToken().getType());
 
     return SimpleEndpoint.sideEffect(
         request -> "PUT",
@@ -29,7 +30,7 @@ public record ReplaceObjectRequest<PropertiesT>(WriteWeaviateObject<PropertiesT>
             ? Map.of("consistency_level", defaults.consistencyLevel())
             : Collections.emptyMap(),
         request -> JSON.serialize(
-            new WriteWeaviateObject<>(
+            new XWriteWeaviateObject<>(
                 request.object.uuid(),
                 collection.collectionName(),
                 defaults.tenant(),
@@ -37,6 +38,7 @@ public record ReplaceObjectRequest<PropertiesT>(WriteWeaviateObject<PropertiesT>
                 request.object.vectors(),
                 request.object.createdAt(),
                 request.object.lastUpdatedAt(),
+                null,
                 request.object.references()),
             typeToken));
   }
@@ -52,7 +54,7 @@ public record ReplaceObjectRequest<PropertiesT>(WriteWeaviateObject<PropertiesT>
   }
 
   public static class Builder<PropertiesT> implements ObjectBuilder<ReplaceObjectRequest<PropertiesT>> {
-    private final WriteWeaviateObject.Builder<PropertiesT> object = new WriteWeaviateObject.Builder<>();
+    private final XWriteWeaviateObject.Builder<PropertiesT> object = new XWriteWeaviateObject.Builder<>();
 
     public Builder(String uuid) {
       this.object.uuid(uuid);
