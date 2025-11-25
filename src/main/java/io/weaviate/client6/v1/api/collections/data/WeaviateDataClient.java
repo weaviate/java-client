@@ -6,9 +6,10 @@ import java.util.List;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
-import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClient;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.client6.v1.api.collections.query.FilterOperand;
+import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClient;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
@@ -43,18 +44,18 @@ public class WeaviateDataClient<PropertiesT> {
     this.defaults = defaults;
   }
 
-  public WriteWeaviateObject<PropertiesT> insert(PropertiesT properties) throws IOException {
+  public WeaviateObject<PropertiesT> insert(PropertiesT properties) throws IOException {
     return insert(InsertObjectRequest.of(properties));
   }
 
-  public WriteWeaviateObject<PropertiesT> insert(
+  public WeaviateObject<PropertiesT> insert(
       PropertiesT properties,
-      Function<WriteWeaviateObject.Builder<PropertiesT>, ObjectBuilder<WriteWeaviateObject<PropertiesT>>> fn)
+      Function<WeaviateObject.Builder<PropertiesT>, ObjectBuilder<WeaviateObject<PropertiesT>>> fn)
       throws IOException {
     return insert(InsertObjectRequest.of(properties, fn));
   }
 
-  public WriteWeaviateObject<PropertiesT> insert(InsertObjectRequest<PropertiesT> request)
+  public WeaviateObject<PropertiesT> insert(InsertObjectRequest<PropertiesT> request)
       throws IOException {
     return this.restTransport.performRequest(request, InsertObjectRequest.endpoint(collection, defaults));
   }
@@ -64,12 +65,12 @@ public class WeaviateDataClient<PropertiesT> {
     return insertMany(InsertManyRequest.of(objects));
   }
 
-  public InsertManyResponse insertMany(List<WriteWeaviateObject<PropertiesT>> objects) {
+  public InsertManyResponse insertMany(List<WeaviateObject<PropertiesT>> objects) {
     return insertMany(new InsertManyRequest<>(objects));
   }
 
   @SafeVarargs
-  public final InsertManyResponse insertMany(WriteWeaviateObject<PropertiesT>... objects) {
+  public final InsertManyResponse insertMany(WeaviateObject<PropertiesT>... objects) {
     return insertMany(Arrays.asList(objects));
   }
 
@@ -102,7 +103,8 @@ public class WeaviateDataClient<PropertiesT> {
    * Delete an object by its UUID.
    *
    * @param uuid The UUID of the object to delete.
-   * @return {@code true} if the object was deleted, {@code false} if there was no object to delete.
+   * @return {@code true} if the object was deleted, {@code false} if there was no
+   *         object to delete.
    * @throws IOException in case the request was not sent successfully.
    */
   public boolean deleteById(String uuid) throws IOException {
@@ -130,12 +132,9 @@ public class WeaviateDataClient<PropertiesT> {
     return this.grpcTransport.performRequest(request, DeleteManyRequest.rpc(collection, defaults));
   }
 
-  public void referenceAdd(String fromUuid, String fromProperty, Reference reference) throws IOException {
-    for (var uuid : reference.uuids()) {
-      var singleRef = new Reference(reference.collection(), uuid);
-      this.restTransport.performRequest(new ReferenceAddRequest(fromUuid, fromProperty, singleRef),
-          ReferenceAddRequest.endpoint(collection, defaults));
-    }
+  public void referenceAdd(String fromUuid, String fromProperty, ObjectReference reference) throws IOException {
+    this.restTransport.performRequest(new ReferenceAddRequest(fromUuid, fromProperty, reference),
+        ReferenceAddRequest.endpoint(collection, defaults));
   }
 
   public ReferenceAddManyResponse referenceAddMany(BatchReference... references) throws IOException {
@@ -147,19 +146,13 @@ public class WeaviateDataClient<PropertiesT> {
         ReferenceAddManyRequest.endpoint(references, defaults));
   }
 
-  public void referenceDelete(String fromUuid, String fromProperty, Reference reference) throws IOException {
-    for (var uuid : reference.uuids()) {
-      var singleRef = new Reference(reference.collection(), uuid);
-      this.restTransport.performRequest(new ReferenceDeleteRequest(fromUuid, fromProperty, singleRef),
-          ReferenceDeleteRequest.endpoint(collection, defaults));
-    }
+  public void referenceDelete(String fromUuid, String fromProperty, ObjectReference reference) throws IOException {
+    this.restTransport.performRequest(new ReferenceDeleteRequest(fromUuid, fromProperty, reference),
+        ReferenceDeleteRequest.endpoint(collection, defaults));
   }
 
-  public void referenceReplace(String fromUuid, String fromProperty, Reference reference) throws IOException {
-    for (var uuid : reference.uuids()) {
-      var singleRef = new Reference(reference.collection(), uuid);
-      this.restTransport.performRequest(new ReferenceReplaceRequest(fromUuid, fromProperty, singleRef),
-          ReferenceReplaceRequest.endpoint(collection, defaults));
-    }
+  public void referenceReplace(String fromUuid, String fromProperty, ObjectReference reference) throws IOException {
+    this.restTransport.performRequest(new ReferenceReplaceRequest(fromUuid, fromProperty, reference),
+        ReferenceReplaceRequest.endpoint(collection, defaults));
   }
 }

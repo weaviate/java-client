@@ -21,16 +21,14 @@ import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.ReferenceProperty;
 import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.Vectors;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.BatchReference;
 import io.weaviate.client6.v1.api.collections.data.DeleteManyResponse;
-import io.weaviate.client6.v1.api.collections.data.Reference;
-import io.weaviate.client6.v1.api.collections.data.WriteWeaviateObject;
+import io.weaviate.client6.v1.api.collections.data.ObjectReference;
 import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.client6.v1.api.collections.query.Metadata.MetadataField;
-import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.api.collections.query.QueryReference;
-import io.weaviate.client6.v1.api.collections.query.ReadWeaviateObject;
 import io.weaviate.client6.v1.api.collections.tenants.Tenant;
 import io.weaviate.containers.Container;
 
@@ -66,20 +64,20 @@ public class DataITest extends ConcurrentTest {
     Assertions.assertThat(object)
         .as("object has correct properties").get()
         .satisfies(obj -> {
-          Assertions.assertThat(obj.metadata().uuid())
+          Assertions.assertThat(obj.uuid())
               .as("object id").isEqualTo(id);
 
-          Assertions.assertThat(obj.metadata().vectors().getSingle(VECTOR_INDEX))
+          Assertions.assertThat(obj.vectors().getSingle(VECTOR_INDEX))
               .containsExactly(vector);
 
           Assertions.assertThat(obj.properties())
               .as("has expected properties")
               .containsEntry("name", "john doe");
 
-          Assertions.assertThat(obj.metadata().creationTimeUnix())
-              .as("creationTimeUnix").isNotNull();
-          Assertions.assertThat(obj.metadata().lastUpdateTimeUnix())
-              .as("lastUpdateTimeUnix").isNotNull();
+          Assertions.assertThat(obj.createdAt())
+              .as("createdAt").isNotNull();
+          Assertions.assertThat(obj.lastUpdatedAt())
+              .as("lastUpdatedAt").isNotNull();
         });
 
     var deleted = artists.data.deleteById(id);
@@ -114,7 +112,7 @@ public class DataITest extends ConcurrentTest {
         cat -> cat.returnProperties("img"));
 
     Assertions.assertThat(got).get()
-        .extracting(ReadWeaviateObject::properties, InstanceOfAssertFactories.MAP)
+        .extracting(WeaviateObject::properties, InstanceOfAssertFactories.MAP)
         .extractingByKey("img").isEqualTo(ragdollPng);
   }
 
@@ -153,7 +151,7 @@ public class DataITest extends ConcurrentTest {
     persons.data.referenceAdd(
         john.uuid(),
         "hasFriend",
-        Reference.object(albie));
+        ObjectReference.object(albie));
 
     // Assert
     var johnWithFriends = persons.query.fetchObjectById(john.uuid(),
@@ -163,10 +161,10 @@ public class DataITest extends ConcurrentTest {
 
     Assertions.assertThat(johnWithFriends).get()
         .as("friends after ADD")
-        .extracting(ReadWeaviateObject::references).extracting("hasFriend")
-        .asInstanceOf(InstanceOfAssertFactories.list(ReadWeaviateObject.class))
+        .extracting(WeaviateObject::references).extracting("hasFriend")
+        .asInstanceOf(InstanceOfAssertFactories.list(WeaviateObject.class))
         .hasSize(1)
-        .first().extracting(ReadWeaviateObject::properties, InstanceOfAssertFactories.MAP)
+        .first().extracting(WeaviateObject::properties, InstanceOfAssertFactories.MAP)
         .returns("albie", friend -> friend.get("name"));
 
     // Act: replace reference
@@ -174,7 +172,7 @@ public class DataITest extends ConcurrentTest {
     persons.data.referenceReplace(
         john.uuid(),
         "hasFriend",
-        Reference.object(barbara));
+        ObjectReference.object(barbara));
 
     johnWithFriends = persons.query.fetchObjectById(john.uuid(),
         query -> query.returnReferences(
@@ -183,17 +181,17 @@ public class DataITest extends ConcurrentTest {
 
     Assertions.assertThat(johnWithFriends).get()
         .as("friends after REPLACE")
-        .extracting(ReadWeaviateObject::references).extracting("hasFriend")
-        .asInstanceOf(InstanceOfAssertFactories.list(ReadWeaviateObject.class))
+        .extracting(WeaviateObject::references).extracting("hasFriend")
+        .asInstanceOf(InstanceOfAssertFactories.list(WeaviateObject.class))
         .hasSize(1)
-        .first().extracting(ReadWeaviateObject::properties, InstanceOfAssertFactories.MAP)
+        .first().extracting(WeaviateObject::properties, InstanceOfAssertFactories.MAP)
         .returns("barbara", friend -> friend.get("name"));
 
     // Act: delete reference
     persons.data.referenceDelete(
         john.uuid(),
         "hasFriend",
-        Reference.object(barbara));
+        ObjectReference.object(barbara));
 
     // Assert
     johnWithFriends = persons.query.fetchObjectById(john.uuid(),
@@ -202,8 +200,8 @@ public class DataITest extends ConcurrentTest {
 
     Assertions.assertThat(johnWithFriends).get()
         .as("friends after DELETE")
-        .extracting(ReadWeaviateObject::references).extracting("hasFriend")
-        .asInstanceOf(InstanceOfAssertFactories.list(ReadWeaviateObject.class))
+        .extracting(WeaviateObject::references).extracting("hasFriend")
+        .asInstanceOf(InstanceOfAssertFactories.list(WeaviateObject.class))
         .isEmpty();
   }
 
@@ -229,7 +227,7 @@ public class DataITest extends ConcurrentTest {
 
     Assertions.assertThat(replacedIvanhoe).get()
         .as("has ONLY year property")
-        .extracting(ReadWeaviateObject::properties, InstanceOfAssertFactories.MAP)
+        .extracting(WeaviateObject::properties, InstanceOfAssertFactories.MAP)
         .doesNotContain(Map.entry("title", "ivanhoe"))
         .contains(Map.entry("year", 1819L));
   }
@@ -265,7 +263,7 @@ public class DataITest extends ConcurrentTest {
     books.data.update(ivanhoe.uuid(),
         update -> update
             .properties(Map.of("year", 1819))
-            .reference("writtenBy", Reference.objects(walter))
+            .reference("writtenBy", ObjectReference.objects(walter))
             .vectors(Vectors.of(vector)));
 
     // Assert
@@ -279,21 +277,20 @@ public class DataITest extends ConcurrentTest {
         .satisfies(book -> {
           Assertions.assertThat(book)
               .as("has both year and title property")
-              .extracting(ReadWeaviateObject::properties, InstanceOfAssertFactories.MAP)
+              .extracting(WeaviateObject::properties, InstanceOfAssertFactories.MAP)
               .contains(Map.entry("title", "ivanhoe"), Map.entry("year", 1819L));
 
           Assertions.assertThat(book)
               .as("has reference to Authors")
-              .extracting(ReadWeaviateObject::references, InstanceOfAssertFactories.MAP)
-              .extractingByKey("writtenBy", InstanceOfAssertFactories.list(ReadWeaviateObject.class))
+              .extracting(WeaviateObject::references, InstanceOfAssertFactories.MAP)
+              .extractingByKey("writtenBy", InstanceOfAssertFactories.list(WeaviateObject.class))
               .first()
-              .extracting(ReadWeaviateObject::properties, InstanceOfAssertFactories.MAP)
+              .extracting(WeaviateObject::properties, InstanceOfAssertFactories.MAP)
               .contains(Map.entry("name", "walter scott"));
 
           Assertions.assertThat(book)
               .as("has a vector")
-              .extracting(ReadWeaviateObject::metadata)
-              .extracting(QueryMetadata::vectors)
+              .extracting(WeaviateObject::vectors)
               .returns(vector, Vectors::getDefaultSingle);
         });
   }
@@ -386,7 +383,7 @@ public class DataITest extends ConcurrentTest {
 
     var alpha = airports.data.insert(Map.of()).uuid();
     var goodburg = cities.data.insert(Map.of(), city -> city
-        .reference("hasAirports", Reference.uuids(alpha)));
+        .reference("hasAirports", ObjectReference.uuid(alpha)));
 
     // Act
     var newAirports = airports.data.insertMany(Map.of(), Map.of());
@@ -404,10 +401,10 @@ public class DataITest extends ConcurrentTest {
 
     Assertions.assertThat(goodburgAirports).get()
         .as("Goodburg has 3 airports")
-        .extracting(ReadWeaviateObject::references)
+        .extracting(WeaviateObject::references)
         .extracting(references -> references.get("hasAirports"),
-            InstanceOfAssertFactories.list(ReadWeaviateObject.class))
-        .extracting(ReadWeaviateObject::uuid)
+            InstanceOfAssertFactories.list(WeaviateObject.class))
+        .extracting(WeaviateObject::uuid)
         .contains(alpha, bravo, charlie);
   }
 
@@ -485,7 +482,7 @@ public class DataITest extends ConcurrentTest {
 
     // Assert
     Assertions.assertThat(got).get()
-        .extracting(ReadWeaviateObject::properties)
+        .extracting(WeaviateObject::properties)
         .asInstanceOf(InstanceOfAssertFactories.map(String.class, Object.class))
         // Most of PhoneNumber fields are only present on read and are null on write.
         .usingRecursiveComparison()
@@ -557,6 +554,6 @@ public class DataITest extends ConcurrentTest {
     var inserted = emails.data.insert(Map.of("subject", "McDonald's Xmas Bonanza"));
 
     // Assert
-    Assertions.assertThat(inserted).returns(johndoe, WriteWeaviateObject::tenant);
+    Assertions.assertThat(inserted).returns(johndoe, WeaviateObject::tenant);
   }
 }

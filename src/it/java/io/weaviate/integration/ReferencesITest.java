@@ -13,9 +13,9 @@ import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.ReferenceProperty;
-import io.weaviate.client6.v1.api.collections.data.Reference;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
+import io.weaviate.client6.v1.api.collections.data.ObjectReference;
 import io.weaviate.client6.v1.api.collections.query.QueryReference;
-import io.weaviate.client6.v1.api.collections.query.ReadWeaviateObject;
 import io.weaviate.containers.Container;
 
 /**
@@ -72,9 +72,9 @@ public class ReferencesITest extends ConcurrentTest {
     var alex = artists.data.insert(
         Map.of("name", "Alex"),
         opt -> opt
-            .reference("hasAwards", Reference.uuids(
+            .reference("hasAwards", ObjectReference.uuids(
                 grammy_1.uuid(), oscar_1.uuid()))
-            .reference("hasAwards", Reference.objects(grammy_2, oscar_2)));
+            .reference("hasAwards", ObjectReference.objects(grammy_2, oscar_2)));
 
     // Act: add one more reference
     var nsMovies = ns("Movies");
@@ -99,9 +99,9 @@ public class ReferencesITest extends ConcurrentTest {
         .as("Artists: fetch by id including hasAwards references")
 
         // Cast references to Map<String, List<QueryWeaviateObject>>
-        .extracting(ReadWeaviateObject::references, InstanceOfAssertFactories.map(String.class, List.class))
+        .extracting(WeaviateObject::references, InstanceOfAssertFactories.map(String.class, List.class))
         .as("hasAwards object reference").extractingByKey("hasAwards")
-        .asInstanceOf(InstanceOfAssertFactories.list(ReadWeaviateObject.class))
+        .asInstanceOf(InstanceOfAssertFactories.list(WeaviateObject.class))
 
         .extracting(object -> object.uuid())
         .containsOnly(
@@ -146,12 +146,12 @@ public class ReferencesITest extends ConcurrentTest {
     var musicAcademy = academies.data.insert(Map.of("ceo", "Harvy Mason"));
 
     var grammy_1 = grammies.data.insert(Map.of(),
-        opt -> opt.reference("presentedBy", Reference.objects(musicAcademy)));
+        opt -> opt.reference("presentedBy", ObjectReference.objects(musicAcademy)));
 
     var alex = artists.data.insert(
         Map.of("name", "Alex"),
         opt -> opt
-            .reference("hasAwards", Reference.objects(grammy_1)));
+            .reference("hasAwards", ObjectReference.objects(grammy_1)));
 
     // Assert: fetch nested references
     var gotAlex = artists.query.fetchObjectById(alex.uuid(),
@@ -166,19 +166,19 @@ public class ReferencesITest extends ConcurrentTest {
         .as("Artists: fetch by id including nested references")
 
         // Cast references to Map<String, List<QueryWeaviateObject>>
-        .extracting(ReadWeaviateObject::references, InstanceOfAssertFactories.map(String.class, List.class))
+        .extracting(WeaviateObject::references, InstanceOfAssertFactories.map(String.class, List.class))
         .as("hasAwards object reference").extractingByKey("hasAwards")
-        .asInstanceOf(InstanceOfAssertFactories.list(ReadWeaviateObject.class))
+        .asInstanceOf(InstanceOfAssertFactories.list(WeaviateObject.class))
 
         .hasSize(1).allSatisfy(award -> Assertions.assertThat(award)
             .returns(grammy_1.uuid(), grammy -> grammy.uuid())
 
             // Cast references to Map<String, List<QueryWeaviateObject>>
-            .extracting(ReadWeaviateObject::references, InstanceOfAssertFactories.map(String.class, List.class))
+            .extracting(WeaviateObject::references, InstanceOfAssertFactories.map(String.class, List.class))
             .as("presentedBy object reference").extractingByKey("presentedBy")
-            .asInstanceOf(InstanceOfAssertFactories.list(ReadWeaviateObject.class))
+            .asInstanceOf(InstanceOfAssertFactories.list(WeaviateObject.class))
 
-            .hasSize(1).extracting(ReadWeaviateObject::properties)
+            .hasSize(1).extracting(WeaviateObject::properties)
             .allSatisfy(properties -> Assertions.assertThat(properties)
                 .asInstanceOf(InstanceOfAssertFactories.map(String.class, Object.class))
                 .containsEntry("ceo", "Harvy Mason")));

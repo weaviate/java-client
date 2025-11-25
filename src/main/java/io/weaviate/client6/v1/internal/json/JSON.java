@@ -23,7 +23,7 @@ public final class JSON {
     gsonBuilder.registerTypeAdapterFactory(
         io.weaviate.client6.v1.api.rbac.Role.CustomTypeAdapterFactory.INSTANCE);
     gsonBuilder.registerTypeAdapterFactory(
-        io.weaviate.client6.v1.api.collections.data.WriteWeaviateObject.CustomTypeAdapterFactory.INSTANCE);
+        io.weaviate.client6.v1.api.collections.WeaviateObject.CustomTypeAdapterFactory.INSTANCE);
     gsonBuilder.registerTypeAdapterFactory(
         io.weaviate.client6.v1.api.collections.CollectionConfig.CustomTypeAdapterFactory.INSTANCE);
     gsonBuilder.registerTypeAdapterFactory(
@@ -56,8 +56,11 @@ public final class JSON {
 
     // TypeAdapters -----------------------------------------------------------
     gsonBuilder.registerTypeAdapter(
-        io.weaviate.client6.v1.api.collections.data.Reference.class,
-        io.weaviate.client6.v1.api.collections.data.Reference.TYPE_ADAPTER);
+        io.weaviate.client6.v1.api.collections.data.ObjectReference.class,
+        io.weaviate.client6.v1.api.collections.data.ObjectReference.TYPE_ADAPTER);
+    gsonBuilder.registerTypeAdapter(
+        io.weaviate.client6.v1.api.collections.Reference.class,
+        io.weaviate.client6.v1.api.collections.data.ObjectReference.TYPE_ADAPTER);
     gsonBuilder.registerTypeAdapter(
         io.weaviate.client6.v1.api.collections.data.BatchReference.class,
         io.weaviate.client6.v1.api.collections.data.BatchReference.TYPE_ADAPTER);

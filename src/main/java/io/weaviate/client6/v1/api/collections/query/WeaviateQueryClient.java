@@ -3,12 +3,13 @@ package io.weaviate.client6.v1.api.collections.query;
 import java.util.Optional;
 
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 
 public class WeaviateQueryClient<PropertiesT>
     extends
-    AbstractQueryClient<PropertiesT, Optional<ReadWeaviateObject<PropertiesT>>, QueryResponse<PropertiesT>, QueryResponseGrouped<PropertiesT>> {
+    AbstractQueryClient<PropertiesT, Optional<WeaviateObject<PropertiesT>>, QueryResponse<PropertiesT>, QueryResponseGrouped<PropertiesT>> {
 
   public WeaviateQueryClient(
       CollectionDescriptor<PropertiesT> collection,
@@ -23,7 +24,7 @@ public class WeaviateQueryClient<PropertiesT>
   }
 
   @Override
-  protected Optional<ReadWeaviateObject<PropertiesT>> fetchObjectById(FetchObjectById byId) {
+  protected Optional<WeaviateObject<PropertiesT>> fetchObjectById(FetchObjectById byId) {
     var request = new QueryRequest(byId, null);
     var result = this.grpcTransport.performRequest(request, QueryRequest.rpc(collection, defaults));
     return optionalFirst(result);

@@ -1,6 +1,11 @@
 package io.weaviate.client6.v1.api.collections.query;
 
+import io.weaviate.client6.v1.api.collections.Vectors;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
+
 public record QueryObjectGrouped<PropertiesT>(
+    String uuid,
+    Vectors vectors,
     /** Object properties. */
     PropertiesT properties,
     /** Object metadata. */
@@ -8,8 +13,13 @@ public record QueryObjectGrouped<PropertiesT>(
     /** Name of the group that the object belongs to. */
     String belongsToGroup) {
 
-  QueryObjectGrouped(ReadWeaviateObject<PropertiesT> object,
+  QueryObjectGrouped(WeaviateObject<PropertiesT> object,
       String belongsToGroup) {
-    this(object.properties(), object.metadata(), belongsToGroup);
+    this(
+        object.uuid(),
+        object.vectors(),
+        object.properties(),
+        object.queryMetadata(),
+        belongsToGroup);
   }
 }

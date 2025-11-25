@@ -1,16 +1,16 @@
 package io.weaviate.client6.v1.api.collections.data;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
-import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClientAsync;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.client6.v1.api.collections.query.FilterOperand;
+import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClientAsync;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
@@ -45,17 +45,17 @@ public class WeaviateDataClientAsync<PropertiesT> {
     this.defaults = defaults;
   }
 
-  public CompletableFuture<WriteWeaviateObject<PropertiesT>> insert(PropertiesT properties) {
+  public CompletableFuture<WeaviateObject<PropertiesT>> insert(PropertiesT properties) {
     return insert(InsertObjectRequest.of(properties));
   }
 
-  public CompletableFuture<WriteWeaviateObject<PropertiesT>> insert(
+  public CompletableFuture<WeaviateObject<PropertiesT>> insert(
       PropertiesT properties,
-      Function<WriteWeaviateObject.Builder<PropertiesT>, ObjectBuilder<WriteWeaviateObject<PropertiesT>>> fn) {
+      Function<WeaviateObject.Builder<PropertiesT>, ObjectBuilder<WeaviateObject<PropertiesT>>> fn) {
     return insert(InsertObjectRequest.of(properties, fn));
   }
 
-  public CompletableFuture<WriteWeaviateObject<PropertiesT>> insert(
+  public CompletableFuture<WeaviateObject<PropertiesT>> insert(
       InsertObjectRequest<PropertiesT> request) {
     return this.restTransport.performRequestAsync(request, InsertObjectRequest.endpoint(collection, defaults));
   }
@@ -66,11 +66,11 @@ public class WeaviateDataClientAsync<PropertiesT> {
   }
 
   @SafeVarargs
-  public final CompletableFuture<InsertManyResponse> insertMany(WriteWeaviateObject<PropertiesT>... objects) {
+  public final CompletableFuture<InsertManyResponse> insertMany(WeaviateObject<PropertiesT>... objects) {
     return insertMany(Arrays.asList(objects));
   }
 
-  public CompletableFuture<InsertManyResponse> insertMany(List<WriteWeaviateObject<PropertiesT>> objects) {
+  public CompletableFuture<InsertManyResponse> insertMany(List<WeaviateObject<PropertiesT>> objects) {
     return insertMany(new InsertManyRequest<>(objects));
   }
 
@@ -122,12 +122,9 @@ public class WeaviateDataClientAsync<PropertiesT> {
     return this.grpcTransport.performRequestAsync(request, DeleteManyRequest.rpc(collection, defaults));
   }
 
-  public CompletableFuture<Void> referenceAdd(String fromUuid, String fromProperty, Reference reference) {
-    return forEachAsync(reference.uuids(), uuid -> {
-      var singleRef = new Reference(reference.collection(), (String) uuid);
-      return this.restTransport.performRequestAsync(new ReferenceAddRequest(fromUuid, fromProperty, singleRef),
-          ReferenceAddRequest.endpoint(collection, defaults));
-    });
+  public CompletableFuture<Void> referenceAdd(String fromUuid, String fromProperty, ObjectReference reference) {
+    return this.restTransport.performRequestAsync(new ReferenceAddRequest(fromUuid, fromProperty, reference),
+        ReferenceAddRequest.endpoint(collection, defaults));
   }
 
   public CompletableFuture<ReferenceAddManyResponse> referenceAddMany(BatchReference... references) {
@@ -139,41 +136,13 @@ public class WeaviateDataClientAsync<PropertiesT> {
         ReferenceAddManyRequest.endpoint(references, defaults));
   }
 
-  public CompletableFuture<Void> referenceDelete(String fromUuid, String fromProperty, Reference reference) {
-    return forEachAsync(reference.uuids(), uuid -> {
-      var singleRef = new Reference(reference.collection(), (String) uuid);
-      return this.restTransport.performRequestAsync(new ReferenceDeleteRequest(fromUuid, fromProperty, singleRef),
-          ReferenceDeleteRequest.endpoint(collection, defaults));
-    });
+  public CompletableFuture<Void> referenceDelete(String fromUuid, String fromProperty, ObjectReference reference) {
+    return this.restTransport.performRequestAsync(new ReferenceDeleteRequest(fromUuid, fromProperty, reference),
+        ReferenceDeleteRequest.endpoint(collection, defaults));
   }
 
-  public CompletableFuture<Void> referenceReplace(String fromUuid, String fromProperty, Reference reference) {
-    return forEachAsync(reference.uuids(), uuid -> {
-      var singleRef = new Reference(reference.collection(), (String) uuid);
-      return this.restTransport.performRequestAsync(new ReferenceReplaceRequest(fromUuid, fromProperty, singleRef),
-          ReferenceReplaceRequest.endpoint(collection, defaults));
-    });
-  }
-
-  /**
-   * Spawn execution {@code fn} for each of the {@code elements} and return a
-   * flattened {@link CompletableFuture#allOf}.
-   *
-   * <p>
-   * Usage:
-   *
-   * <pre>{@code
-   *  // With elements immediately available
-   *  forEachAsync(myElements, element -> doNetworkIo(element));
-   *
-   *  // Chain to another CompletableFuture
-   *  fetch(request).thenCompose(elements -> forEachAsync(...));
-   * }</pre>
-   */
-  private static <T> CompletableFuture<Void> forEachAsync(Collection<T> elements,
-      Function<T, CompletableFuture<?>> fn) {
-    var futures = elements.stream().map(el -> fn.apply(el))
-        .toArray(CompletableFuture[]::new);
-    return CompletableFuture.allOf(futures);
+  public CompletableFuture<Void> referenceReplace(String fromUuid, String fromProperty, ObjectReference reference) {
+    return this.restTransport.performRequestAsync(new ReferenceReplaceRequest(fromUuid, fromProperty, reference),
+        ReferenceReplaceRequest.endpoint(collection, defaults));
   }
 }

@@ -3,12 +3,15 @@ package io.weaviate.client6.v1.api.collections.query;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 
 import io.weaviate.client6.v1.api.collections.GeoCoordinates;
 import io.weaviate.client6.v1.api.collections.PhoneNumber;
+import io.weaviate.client6.v1.api.collections.Reference;
 import io.weaviate.client6.v1.api.collections.Vectors;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.internal.DateUtil;
 import io.weaviate.client6.v1.internal.grpc.ByteStringUtil;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoProperties;
@@ -17,7 +20,7 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 import io.weaviate.client6.v1.internal.orm.PropertiesBuilder;
 
 public record QueryResponse<PropertiesT>(
-    List<ReadWeaviateObject<PropertiesT>> objects) {
+    List<WeaviateObject<PropertiesT>> objects) {
 
   static <PropertiesT> QueryResponse<PropertiesT> unmarshal(WeaviateProtoSearchGet.SearchReply reply,
       CollectionDescriptor<PropertiesT> collection) {
@@ -30,20 +33,21 @@ public record QueryResponse<PropertiesT>(
     return new QueryResponse<>(objects);
   }
 
-  public static <PropertiesT> ReadWeaviateObject<PropertiesT> unmarshalResultObject(
+  public static <PropertiesT> WeaviateObject<PropertiesT> unmarshalResultObject(
       WeaviateProtoSearchGet.PropertiesResult propertiesResult,
       WeaviateProtoSearchGet.MetadataResult metadataResult,
       CollectionDescriptor<PropertiesT> collection) {
     var object = unmarshalWithReferences(propertiesResult, metadataResult, collection);
-    var metadata = new QueryMetadata.Builder()
-        .uuid(object.metadata().uuid())
-        .vectors(object.metadata().vectors());
+
+    Long createdAt = null;
+    Long lastUpdatedAt = null;
+    var metadata = new QueryMetadata.Builder();
 
     if (metadataResult.getCreationTimeUnixPresent()) {
-      metadata.creationTimeUnix(metadataResult.getCreationTimeUnix());
+      createdAt = metadataResult.getCreationTimeUnix();
     }
     if (metadataResult.getLastUpdateTimeUnixPresent()) {
-      metadata.lastUpdateTimeUnix(metadataResult.getLastUpdateTimeUnix());
+      lastUpdatedAt = metadataResult.getLastUpdateTimeUnix();
     }
     if (metadataResult.getDistancePresent()) {
       metadata.distance(metadataResult.getDistance());
@@ -57,11 +61,19 @@ public record QueryResponse<PropertiesT>(
     if (metadataResult.getExplainScorePresent()) {
       metadata.explainScore(metadataResult.getExplainScore());
     }
-    return new ReadWeaviateObject<>(collection.collectionName(), object.properties(), object.references(),
-        metadata.build());
+    return new WeaviateObject<>(
+        object.uuid(),
+        collection.collectionName(),
+        null, // tenant is not reeturned in the query
+        object.properties(),
+        object.vectors(),
+        createdAt,
+        lastUpdatedAt,
+        metadata.build(),
+        object.references());
   }
 
-  static <PropertiesT> ReadWeaviateObject<PropertiesT> unmarshalWithReferences(
+  static <PropertiesT> WeaviateObject<PropertiesT> unmarshalWithReferences(
       WeaviateProtoSearchGet.PropertiesResult propertiesResult,
       WeaviateProtoSearchGet.MetadataResult metadataResult,
       CollectionDescriptor<PropertiesT> descriptor) {
@@ -76,18 +88,24 @@ public record QueryResponse<PropertiesT>(
     // I.e. { "ref": A-1 } , { "ref": B-1 } => { "ref": [A-1, B-1] }
     var referenceProperties = propertiesResult.getRefPropsList()
         .stream().reduce(
-            new HashMap<String, List<ReadWeaviateObject<Object>>>(),
+            new HashMap<String, List<Reference>>(),
             (map, ref) -> {
               var refObjects = ref.getPropertiesList().stream()
                   .map(property -> {
                     var reference = unmarshalWithReferences(
                         property, property.getMetadata(),
                         CollectionDescriptor.ofMap(property.getTargetCollection()));
-                    return new ReadWeaviateObject<>(
+                    return (Reference) new WeaviateObject<>(
+                        reference.uuid(),
                         reference.collection(),
-                        (Object) reference.properties(),
-                        reference.references(),
-                        reference.metadata());
+                        // TODO(dyma): we can get tenant from CollectionHandle
+                        null, // tenant is not returned in the query
+                        (Map<String, Object>) reference.properties(),
+                        reference.vectors(),
+                        reference.createdAt(),
+                        reference.lastUpdatedAt(),
+                        reference.queryMetadata(),
+                        reference.references());
                   })
                   .toList();
 
@@ -108,42 +126,51 @@ public record QueryResponse<PropertiesT>(
               return left;
             });
 
+    String uuid = null;
+    Vectors vectors = null;
     QueryMetadata metadata = null;
     if (metadataResult != null) {
-      var metadataBuilder = new QueryMetadata.Builder()
-          .uuid(metadataResult.getId());
+      var metadataBuilder = new QueryMetadata.Builder();
 
-      var vectors = new Vectors[metadataResult.getVectorsList().size()];
-      var i = 0;
-      for (final var vector : metadataResult.getVectorsList()) {
-        var vectorName = vector.getName();
-        var vbytes = vector.getVectorBytes();
-        switch (vector.getType()) {
-          case VECTOR_TYPE_SINGLE_FP32:
-            vectors[i++] = Vectors.of(vectorName, ByteStringUtil.decodeVectorSingle(vbytes));
-            break;
-          case VECTOR_TYPE_MULTI_FP32:
-            vectors[i++] = Vectors.of(vectorName, ByteStringUtil.decodeVectorMulti(vbytes));
-            break;
-          default:
-            continue;
-        }
-      }
-      metadataBuilder.vectors(vectors);
+      uuid = metadataResult.getId();
 
+      // Read legacy (unnamed) vector.
       if (metadataResult.getVectorBytes() != null && !metadataResult.getVectorBytes().isEmpty()) {
         var unnamed = ByteStringUtil.decodeVectorSingle(metadataResult.getVectorBytes());
-        metadataBuilder.vectors(Vectors.of(unnamed));
+        vectors = Vectors.of(unnamed);
+      } else {
+        var namedVectors = new Vectors[metadataResult.getVectorsList().size()];
+        var i = 0;
+        for (final var vector : metadataResult.getVectorsList()) {
+          var vectorName = vector.getName();
+          var vbytes = vector.getVectorBytes();
+          switch (vector.getType()) {
+            case VECTOR_TYPE_SINGLE_FP32:
+              namedVectors[i++] = Vectors.of(vectorName, ByteStringUtil.decodeVectorSingle(vbytes));
+              break;
+            case VECTOR_TYPE_MULTI_FP32:
+              namedVectors[i++] = Vectors.of(vectorName, ByteStringUtil.decodeVectorMulti(vbytes));
+              break;
+            default:
+              continue;
+          }
+        }
+        vectors = new Vectors(namedVectors);
       }
 
       metadata = metadataBuilder.build();
     }
 
-    return new ReadWeaviateObject<>(
+    return new WeaviateObject<>(
+        uuid,
         descriptor.collectionName(),
+        null, // tenant is not returned in the query
         properties.build(),
-        referenceProperties,
-        metadata);
+        vectors,
+        null,
+        null,
+        metadata,
+        referenceProperties);
   }
 
   static <PropertiesT> void setProperty(String property, WeaviateProtoProperties.Value value,
