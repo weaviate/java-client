@@ -8,8 +8,8 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import io.weaviate.client6.v1.api.collections.GeoCoordinates;
-import io.weaviate.client6.v1.api.collections.Reference;
 import io.weaviate.client6.v1.api.collections.PhoneNumber;
+import io.weaviate.client6.v1.api.collections.Reference;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.internal.DateUtil;
@@ -98,6 +98,7 @@ public record QueryResponse<PropertiesT>(
                     return (Reference) new WeaviateObject<>(
                         reference.uuid(),
                         reference.collection(),
+                        // TODO(dyma): we can get tenant from CollectionHandle
                         null, // tenant is not returned in the query
                         (Map<String, Object>) reference.properties(),
                         reference.vectors(),
