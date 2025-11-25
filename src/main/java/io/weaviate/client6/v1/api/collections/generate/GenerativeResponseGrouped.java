@@ -36,6 +36,8 @@ public record GenerativeResponseGrouped<PropertiesT>(
                   object.getMetadata(),
                   collection))
               .map(object -> new QueryObjectGrouped<>(
+                  object.uuid(),
+                  object.vectors(),
                   object.properties(),
                   object.queryMetadata(),
                   groupName))
