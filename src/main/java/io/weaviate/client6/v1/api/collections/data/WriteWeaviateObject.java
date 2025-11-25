@@ -21,8 +21,10 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
+import io.weaviate.client6.v1.api.collections.IReference;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
+import io.weaviate.client6.v1.api.collections.query.QueryMetadata;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record WriteWeaviateObject<PropertiesT>(
@@ -34,7 +36,12 @@ public record WriteWeaviateObject<PropertiesT>(
     @SerializedName("creationTimeUnix") Long createdAt,
     @SerializedName("lastUpdateTimeUnix") Long lastUpdatedAt,
 
-    Map<String, List<Reference>> references) implements WeaviateObject {
+    Map<String, List<IReference>> references) implements WeaviateObject<PropertiesT> {
+
+  @Override
+  public QueryMetadata queryMetadata() {
+    return new QueryMetadata(uuid, vectors, createdAt, lastUpdatedAt, null, null, null, null);
+  }
 
   public static <PropertiesT> WriteWeaviateObject<PropertiesT> of(
       Function<Builder<PropertiesT>, ObjectBuilder<WriteWeaviateObject<PropertiesT>>> fn) {
@@ -64,7 +71,7 @@ public record WriteWeaviateObject<PropertiesT>(
     private String tenant;
     private PropertiesT properties;
     private Vectors vectors;
-    private Map<String, List<Reference>> references = new HashMap<>();
+    private Map<String, List<IReference>> references = new HashMap<>();
 
     public Builder<PropertiesT> uuid(String uuid) {
       this.uuid = uuid;
@@ -85,19 +92,19 @@ public record WriteWeaviateObject<PropertiesT>(
      * Add a reference. Calls to {@link #reference} can be chained
      * to add multiple references.
      */
-    public Builder<PropertiesT> reference(String property, Reference... references) {
+    public Builder<PropertiesT> reference(String property, IReference... references) {
       for (var ref : references) {
         addReference(property, ref);
       }
       return this;
     }
 
-    public Builder<PropertiesT> references(Map<String, List<Reference>> references) {
+    public Builder<PropertiesT> references(Map<String, List<IReference>> references) {
       this.references = references;
       return this;
     }
 
-    private void addReference(String property, Reference reference) {
+    private void addReference(String property, IReference reference) {
       if (!references.containsKey(property)) {
         references.put(property, new ArrayList<>());
       }
@@ -154,7 +161,7 @@ public record WriteWeaviateObject<PropertiesT>(
             for (var refEntry : value.references().entrySet()) {
               var beacons = new JsonArray();
               for (var reference : refEntry.getValue()) {
-                var beacon = referencesAdapter.toJsonTree(reference);
+                var beacon = referencesAdapter.toJsonTree((Reference) reference);
                 beacons.add(beacon);
               }
               properties.add(refEntry.getKey(), beacons);

@@ -3,10 +3,12 @@ package io.weaviate.client6.v1.api.collections.query;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 
 import io.weaviate.client6.v1.api.collections.GeoCoordinates;
+import io.weaviate.client6.v1.api.collections.IReference;
 import io.weaviate.client6.v1.api.collections.PhoneNumber;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.internal.DateUtil;
@@ -36,14 +38,14 @@ public record QueryResponse<PropertiesT>(
       CollectionDescriptor<PropertiesT> collection) {
     var object = unmarshalWithReferences(propertiesResult, metadataResult, collection);
     var metadata = new QueryMetadata.Builder()
-        .uuid(object.metadata().uuid())
-        .vectors(object.metadata().vectors());
+        .uuid(object.queryMetadata().uuid())
+        .vectors(object.queryMetadata().vectors());
 
     if (metadataResult.getCreationTimeUnixPresent()) {
-      metadata.creationTimeUnix(metadataResult.getCreationTimeUnix());
+      metadata.createdAt(metadataResult.getCreationTimeUnix());
     }
     if (metadataResult.getLastUpdateTimeUnixPresent()) {
-      metadata.lastUpdateTimeUnix(metadataResult.getLastUpdateTimeUnix());
+      metadata.lastUpdatedAt(metadataResult.getLastUpdateTimeUnix());
     }
     if (metadataResult.getDistancePresent()) {
       metadata.distance(metadataResult.getDistance());
@@ -76,18 +78,18 @@ public record QueryResponse<PropertiesT>(
     // I.e. { "ref": A-1 } , { "ref": B-1 } => { "ref": [A-1, B-1] }
     var referenceProperties = propertiesResult.getRefPropsList()
         .stream().reduce(
-            new HashMap<String, List<ReadWeaviateObject<Object>>>(),
+            new HashMap<String, List<IReference>>(),
             (map, ref) -> {
               var refObjects = ref.getPropertiesList().stream()
                   .map(property -> {
                     var reference = unmarshalWithReferences(
                         property, property.getMetadata(),
                         CollectionDescriptor.ofMap(property.getTargetCollection()));
-                    return new ReadWeaviateObject<>(
+                    return (IReference) new ReadWeaviateObject<>(
                         reference.collection(),
                         (Object) reference.properties(),
                         reference.references(),
-                        reference.metadata());
+                        reference.queryMetadata());
                   })
                   .toList();
 
@@ -142,7 +144,7 @@ public record QueryResponse<PropertiesT>(
     return new ReadWeaviateObject<>(
         descriptor.collectionName(),
         properties.build(),
-        referenceProperties,
+        (Map<String, List<IReference>>) referenceProperties,
         metadata);
   }
 

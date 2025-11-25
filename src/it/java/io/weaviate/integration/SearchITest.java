@@ -28,8 +28,8 @@ import io.weaviate.client6.v1.api.collections.Reranker;
 import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateMetadata;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import io.weaviate.client6.v1.api.collections.data.Reference;
-import io.weaviate.client6.v1.api.collections.data.WriteWeaviateObject;
 import io.weaviate.client6.v1.api.collections.generate.GenerativeObject;
 import io.weaviate.client6.v1.api.collections.generate.TaskOutput;
 import io.weaviate.client6.v1.api.collections.generative.DummyGenerative;
@@ -91,7 +91,7 @@ public class SearchITest extends ConcurrentTest {
 
     Assertions.assertThat(result.objects()).hasSize(3);
     float maxDistance = Collections.max(result.objects(),
-        Comparator.comparing(obj -> obj.metadata().distance())).metadata().distance();
+        Comparator.comparing(obj -> obj.queryMetadata().distance())).queryMetadata().distance();
     Assertions.assertThat(maxDistance).isLessThanOrEqualTo(2f);
   }
 
@@ -265,7 +265,7 @@ public class SearchITest extends ConcurrentTest {
                     Filter.property("size").lt(6)))));
 
     Assertions.assertThat(got.objects())
-        .extracting(hat -> hat.metadata().uuid())
+        .extracting(hat -> hat.queryMetadata().uuid())
         .containsOnly(
             redHat.uuid(),
             greenHat.uuid(),
@@ -331,7 +331,7 @@ public class SearchITest extends ConcurrentTest {
 
     Assertions.assertThat(dollarWorlds.objects())
         .hasSize(1)
-        .extracting(ReadWeaviateObject::metadata).extracting(QueryMetadata::uuid)
+        .extracting(ReadWeaviateObject::queryMetadata).extracting(QueryMetadata::uuid)
         .containsOnly(want.uuid());
   }
 
@@ -363,7 +363,7 @@ public class SearchITest extends ConcurrentTest {
 
       Assertions.assertThat(dollarWorlds.objects())
           .hasSize(1)
-          .extracting(ReadWeaviateObject::metadata).extracting(QueryMetadata::uuid)
+          .extracting(ReadWeaviateObject::queryMetadata).extracting(QueryMetadata::uuid)
           .containsOnly(want.uuid());
     }
   }
@@ -393,7 +393,7 @@ public class SearchITest extends ConcurrentTest {
     // Assert
     Assertions.assertThat(terrestrial.objects())
         .hasSize(1)
-        .extracting(ReadWeaviateObject::metadata).extracting(WeaviateMetadata::uuid)
+        .extracting(ReadWeaviateObject::queryMetadata).extracting(WeaviateMetadata::uuid)
         .containsOnly(lion.uuid());
   }
 
@@ -420,13 +420,13 @@ public class SearchITest extends ConcurrentTest {
     // Assert
     Assertions.assertThat(winterSport.objects())
         .hasSize(1)
-        .extracting(ReadWeaviateObject::metadata).extracting(WeaviateMetadata::uuid)
+        .extracting(ReadWeaviateObject::queryMetadata).extracting(WeaviateMetadata::uuid)
         .containsOnly(skiing.uuid());
 
     var first = winterSport.objects().get(0);
-    Assertions.assertThat(first.metadata().score())
+    Assertions.assertThat(first.queryMetadata().score())
         .as("metadata::score").isNotNull();
-    Assertions.assertThat(first.metadata().explainScore())
+    Assertions.assertThat(first.queryMetadata().explainScore())
         .as("metadata::explainScore").isNotNull();
   }
 
@@ -519,23 +519,23 @@ public class SearchITest extends ConcurrentTest {
     // Assert
     var metadataHybrid = Assertions.assertThat(gotHybrid.objects())
         .hasSize(1)
-        .extracting(ReadWeaviateObject::metadata)
+        .extracting(ReadWeaviateObject::queryMetadata)
         .first().actual();
 
     Assertions.assertThat(metadataHybrid.uuid()).as("uuid").isNotNull().isEqualTo(frisbee.uuid());
-    Assertions.assertThat(metadataHybrid.creationTimeUnix()).as("creationTimeUnix").isNotNull();
-    Assertions.assertThat(metadataHybrid.lastUpdateTimeUnix()).as("lastUpdateTimeUnix").isNotNull();
+    Assertions.assertThat(metadataHybrid.createdAt()).as("createdAt").isNotNull();
+    Assertions.assertThat(metadataHybrid.lastUpdatedAt()).as("lastUpdateTimeUnix").isNotNull();
     Assertions.assertThat(metadataHybrid.score()).as("score").isNotNull();
     Assertions.assertThat(metadataHybrid.explainScore()).as("explainScore").isNotNull().isNotEqualTo("");
 
     var metadataNearText = Assertions.assertThat(gotNearText.objects())
         .hasSize(1)
-        .extracting(ReadWeaviateObject::metadata)
+        .extracting(ReadWeaviateObject::queryMetadata)
         .first().actual();
 
     Assertions.assertThat(metadataNearText.uuid()).as("uuid").isNotNull().isEqualTo(frisbee.uuid());
-    Assertions.assertThat(metadataNearText.creationTimeUnix()).as("creationTimeUnix").isNotNull();
-    Assertions.assertThat(metadataNearText.lastUpdateTimeUnix()).as("lastUpdateTimeUnix").isNotNull();
+    Assertions.assertThat(metadataNearText.createdAt()).as("createdAt").isNotNull();
+    Assertions.assertThat(metadataNearText.lastUpdatedAt()).as("lastUpdateTimeUnix").isNotNull();
     Assertions.assertThat(metadataNearText.distance()).as("distance").isNotNull();
     Assertions.assertThat(metadataNearText.certainty()).as("certainty").isNotNull();
   }
@@ -558,7 +558,7 @@ public class SearchITest extends ConcurrentTest {
         Vectors.of("v2d", new float[][] { { 1, 2, 3 }, { 1, 2, 3 } })));
 
     var thing456 = things.data.insertMany(List.of(
-        WriteWeaviateObject.of(thing -> thing
+        WeaviateObject.write(thing -> thing
             .vectors(
                 Vectors.of("v1d", new float[] { 4, 5, 6 }),
                 Vectors.of("v2d", new float[][] { { 4, 5, 6 }, { 4, 5, 6 } })))));
@@ -760,7 +760,7 @@ public class SearchITest extends ConcurrentTest {
           .vectorConfig(VectorConfig.selfProvided()));
 
       final var vector = randomVector(5000, -.01f, .01f);
-      final WriteWeaviateObject<Map<String, Object>> hugeObject = WriteWeaviateObject.of(
+      final WeaviateObject<Map<String, Object>> hugeObject = WeaviateObject.write(
           obj -> obj.vectors(Vectors.of(vector)));
 
       Assertions.assertThatThrownBy(() -> {

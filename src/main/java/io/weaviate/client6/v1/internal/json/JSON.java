@@ -59,6 +59,9 @@ public final class JSON {
         io.weaviate.client6.v1.api.collections.data.Reference.class,
         io.weaviate.client6.v1.api.collections.data.Reference.TYPE_ADAPTER);
     gsonBuilder.registerTypeAdapter(
+        io.weaviate.client6.v1.api.collections.IReference.class,
+        io.weaviate.client6.v1.api.collections.data.Reference.TYPE_ADAPTER);
+    gsonBuilder.registerTypeAdapter(
         io.weaviate.client6.v1.api.collections.data.BatchReference.class,
         io.weaviate.client6.v1.api.collections.data.BatchReference.TYPE_ADAPTER);
 
