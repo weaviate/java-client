@@ -18,7 +18,6 @@ public record Multi2VecVoyageAiVectorizer(
     @SerializedName("baseURL") String baseUrl,
     /** Inference model to use. */
     @SerializedName("model") String model,
-    @SerializedName("outputEncoding") String outputEncoding,
     @SerializedName("truncate") Boolean truncate,
     /** BLOB properties included in the embedding. */
     @SerializedName("imageFields") List<String> imageFields,
@@ -71,7 +70,6 @@ public record Multi2VecVoyageAiVectorizer(
   public Multi2VecVoyageAiVectorizer(
       String baseUrl,
       String model,
-      String outputEncoding,
       Boolean truncate,
       List<String> imageFields,
       List<String> textFields,
@@ -82,7 +80,6 @@ public record Multi2VecVoyageAiVectorizer(
     this.vectorizeCollectionName = false;
     this.baseUrl = baseUrl;
     this.model = model;
-    this.outputEncoding = outputEncoding;
     this.truncate = truncate;
     this.imageFields = imageFields;
     this.textFields = textFields;
@@ -95,7 +92,6 @@ public record Multi2VecVoyageAiVectorizer(
     this(
         builder.baseUrl,
         builder.model,
-        builder.outputEncoding,
         builder.truncate,
         builder.imageFields.keySet().stream().toList(),
         builder.textFields.keySet().stream().toList(),
@@ -117,7 +113,6 @@ public record Multi2VecVoyageAiVectorizer(
 
     private String baseUrl;
     private String model;
-    private String outputEncoding;
     private Boolean truncate;
 
     /** Set base URL of the embedding service. */
@@ -128,11 +123,6 @@ public record Multi2VecVoyageAiVectorizer(
 
     public Builder model(String model) {
       this.model = model;
-      return this;
-    }
-
-    public Builder outputEncoding(String outputEncoding) {
-      this.outputEncoding = outputEncoding;
       return this;
     }
 
