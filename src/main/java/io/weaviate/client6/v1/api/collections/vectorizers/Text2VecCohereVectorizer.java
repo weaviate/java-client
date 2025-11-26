@@ -13,7 +13,7 @@ import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Text2VecCohereVectorizer(
-    @SerializedName("baseUrl") String baseUrl,
+    @SerializedName("baseURL") String baseUrl,
     @SerializedName("model") String model,
     @SerializedName("dimensions") Integer dimensions,
     @SerializedName("truncate") Truncate truncate,

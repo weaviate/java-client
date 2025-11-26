@@ -15,6 +15,7 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 public record Text2MultiVecJinaAiVectorizer(
     @SerializedName("model") String model,
     @SerializedName("dimensions") Integer dimensions,
+    @SerializedName("baseURL") String baseURL,
 
     /**
      * Weaviate defaults to {@code true} if the value is not provided.
@@ -54,6 +55,7 @@ public record Text2MultiVecJinaAiVectorizer(
   public Text2MultiVecJinaAiVectorizer(
       String model,
       Integer dimensions,
+      String baseURL,
 
       boolean vectorizeCollectionName,
       List<String> sourceProperties,
@@ -61,6 +63,7 @@ public record Text2MultiVecJinaAiVectorizer(
       Quantization quantization) {
     this.model = model;
     this.dimensions = dimensions;
+    this.baseURL = baseURL;
 
     this.vectorizeCollectionName = false;
     this.sourceProperties = sourceProperties;
@@ -72,6 +75,7 @@ public record Text2MultiVecJinaAiVectorizer(
     this(
         builder.model,
         builder.dimensions,
+        builder.baseURL,
 
         builder.vectorizeCollectionName,
         builder.sourceProperties,
@@ -87,6 +91,7 @@ public record Text2MultiVecJinaAiVectorizer(
 
     private String model;
     private Integer dimensions;
+    private String baseURL;
 
     public Builder model(String model) {
       this.model = model;
@@ -95,6 +100,11 @@ public record Text2MultiVecJinaAiVectorizer(
 
     public Builder dimensions(int dimensions) {
       this.dimensions = dimensions;
+      return this;
+    }
+
+    public Builder baseURL(String baseURL) {
+      this.baseURL = baseURL;
       return this;
     }
 
