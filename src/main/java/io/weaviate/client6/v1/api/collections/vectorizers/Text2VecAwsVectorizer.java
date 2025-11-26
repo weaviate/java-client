@@ -17,6 +17,8 @@ public record Text2VecAwsVectorizer(
     @SerializedName("model") String model,
     @SerializedName("region") String region,
     @SerializedName("service") Service service,
+    @SerializedName("targetModel") String targetModel,
+    @SerializedName("targetVariant") String targetVariant,
 
     /**
      * Weaviate defaults to {@code true} if the value is not provided.
@@ -80,6 +82,8 @@ public record Text2VecAwsVectorizer(
       String model,
       String region,
       Service service,
+      String targetModel,
+      String targetVariant,
 
       boolean vectorizeCollectionName,
       List<String> sourceProperties,
@@ -89,6 +93,8 @@ public record Text2VecAwsVectorizer(
     this.model = model;
     this.region = region;
     this.service = service;
+    this.targetModel = targetModel;
+    this.targetVariant = targetVariant;
 
     this.vectorizeCollectionName = false;
     this.sourceProperties = sourceProperties;
@@ -102,6 +108,8 @@ public record Text2VecAwsVectorizer(
         builder.model,
         builder.region,
         builder.service,
+        builder.targetModel,
+        builder.targetVariant,
 
         builder.vectorizeCollectionName,
         builder.sourceProperties,
@@ -119,6 +127,8 @@ public record Text2VecAwsVectorizer(
     private String endpoint;
     private String model;
     private String region;
+    private String targetModel;
+    private String targetVariant;
 
     protected Builder(Service service) {
       this.service = service;
@@ -138,6 +148,16 @@ public record Text2VecAwsVectorizer(
 
     public Builder region(String region) {
       this.region = region;
+      return this;
+    }
+
+    public Builder targetModel(String targetModel) {
+      this.targetModel = targetModel;
+      return this;
+    }
+
+    public Builder targetVariant(String targetVariant) {
+      this.targetVariant = targetVariant;
       return this;
     }
 

@@ -18,6 +18,7 @@ public record Multi2VecGoogleVectorizer(
     @SerializedName("model") String model,
     @SerializedName("dimensions") Integer dimensions,
     @SerializedName("location") String location,
+    @SerializedName("videoIntervalSeconds") Integer videoIntervalSeconds,
     /** BLOB image properties included in the embedding. */
     @SerializedName("imageFields") List<String> imageFields,
     /** BLOB video properties included in the embedding. */
@@ -80,6 +81,7 @@ public record Multi2VecGoogleVectorizer(
       String model,
       Integer dimensions,
       String location,
+      Integer videoIntervalSeconds,
       List<String> imageFields,
       List<String> videoFields,
       List<String> textFields,
@@ -93,6 +95,7 @@ public record Multi2VecGoogleVectorizer(
     this.model = model;
     this.dimensions = dimensions;
     this.location = location;
+    this.videoIntervalSeconds = videoIntervalSeconds;
     this.imageFields = imageFields;
     this.videoFields = videoFields;
     this.textFields = textFields;
@@ -107,6 +110,7 @@ public record Multi2VecGoogleVectorizer(
         builder.model,
         builder.dimensions,
         builder.location,
+        builder.videoIntervalSeconds,
         builder.imageFields.keySet().stream().toList(),
         builder.videoFields.keySet().stream().toList(),
         builder.textFields.keySet().stream().toList(),
@@ -132,6 +136,7 @@ public record Multi2VecGoogleVectorizer(
     private String model;
     private String location;
     private Integer dimensions;
+    private Integer videoIntervalSeconds;
 
     public Builder(String projectId) {
       this.projectId = projectId;
@@ -149,6 +154,11 @@ public record Multi2VecGoogleVectorizer(
 
     public Builder dimensions(int dimensions) {
       this.dimensions = dimensions;
+      return this;
+    }
+
+    public Builder videoIntervalSeconds(int videoIntervalSeconds) {
+      this.videoIntervalSeconds = videoIntervalSeconds;
       return this;
     }
 
