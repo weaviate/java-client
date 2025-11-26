@@ -20,7 +20,6 @@ public record Multi2VecNvidiaVectorizer(
     @SerializedName("model") String model,
     /** Whether to apply truncation. */
     @SerializedName("truncate") Boolean truncate,
-    @SerializedName("output_encoding") String outputEncoding,
     /** BLOB properties included in the embedding. */
     @SerializedName("imageFields") List<String> imageFields,
     /** TEXT properties included in the embedding. */
@@ -68,7 +67,6 @@ public record Multi2VecNvidiaVectorizer(
         builder.baseUrl,
         builder.model,
         builder.truncate,
-        builder.outputEncoding,
         builder.imageFields.keySet().stream().toList(),
         builder.textFields.keySet().stream().toList(),
         new Weights(
@@ -88,7 +86,6 @@ public record Multi2VecNvidiaVectorizer(
     private String baseUrl;
     private String model;
     private Boolean truncate;
-    private String outputEncoding;
 
     /** Set base URL of the embedding service. */
     public Builder baseUrl(String baseUrl) {
@@ -103,11 +100,6 @@ public record Multi2VecNvidiaVectorizer(
 
     public Builder truncate(Boolean truncate) {
       this.truncate = truncate;
-      return this;
-    }
-
-    public Builder outputEncoding(String outputEncoding) {
-      this.outputEncoding = outputEncoding;
       return this;
     }
 
