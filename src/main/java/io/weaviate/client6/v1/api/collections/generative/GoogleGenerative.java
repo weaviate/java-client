@@ -18,6 +18,9 @@ public record GoogleGenerative(
     @SerializedName("apiEndpoint") String apiEndpoint,
     @SerializedName("modelId") String modelId,
     @SerializedName("projectId") String projectId,
+    @SerializedName("endpointId") String endpointId,
+    @SerializedName("region") String region,
+    @SerializedName("model") String model,
     @SerializedName("maxOutputTokens") Integer maxTokens,
     @SerializedName("topK") Integer topK,
     @SerializedName("topP") Float topP,
@@ -54,6 +57,9 @@ public record GoogleGenerative(
         builder.apiEndpoint,
         builder.modelId,
         builder.projectId,
+        builder.endpointId,
+        builder.region,
+        builder.model,
         builder.maxTokens,
         builder.topK,
         builder.topP,
@@ -65,6 +71,9 @@ public record GoogleGenerative(
     private final String projectId;
 
     private String modelId;
+    private String endpointId;
+    private String region;
+    private String model;
     private Integer maxTokens;
     private Integer topK;
     private Float topP;
@@ -84,6 +93,24 @@ public record GoogleGenerative(
     /** Select generative model. */
     public Builder modelId(String modelId) {
       this.modelId = modelId;
+      return this;
+    }
+
+    /** Endpoint ID for Vertex AI. */
+    public Builder endpointId(String endpointId) {
+      this.endpointId = endpointId;
+      return this;
+    }
+
+    /** Google region. */
+    public Builder region(String region) {
+      this.region = region;
+      return this;
+    }
+
+    /** Generative model. */
+    public Builder model(String model) {
+      this.model = model;
       return this;
     }
 
