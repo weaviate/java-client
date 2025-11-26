@@ -35,7 +35,7 @@ public class OIDCSupportITest extends ConcurrentTest {
    * Supports ResourceOwnerPassword and RefreshToken authentication flows.
    */
   private static final Weaviate wcsContainer = Weaviate.custom()
-      .withOIDC("wcs", "https://auth.wcs.api.weaviate.io/auth/realms/SeMI", "email", "groups")
+      .withOIDC("Peuc12y02UA0eAED1dqSjE5HtGUrpBsx", "https://auth.weaviate.cloud/Peuc12y02UA0eAED1dqSjE5HtGUrpBsx", "email", "roles")
       .build();
 
   private static final String OKTA_CLIENT_ID = "0oa7e9ipdkVZRUcxo5d7";
