@@ -76,7 +76,8 @@ public class OIDCSupportITest extends ConcurrentTest {
     pingWeaviateAsync(wcsContainer, auth);
   }
 
-  @Test
+  // TODO[g-despot] Fix test after release, descope has been deprecated
+  // @Test
   public void test_resourceOwnerPassword() throws Exception {
     Assume.assumeTrue("WCS_DUMMY_CI_PW is not set", WCS_DUMMY_CI_PW != null && !WCS_DUMMY_CI_PW.isBlank());
     Assume.assumeTrue("no internet connection", hasInternetConnection());
