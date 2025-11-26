@@ -15,11 +15,11 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative;
 
 public record OpenAiGenerative(
     @SerializedName("baseURL") String baseUrl,
-    @SerializedName("frequencyPenaltyProperty") Float frequencyPenalty,
-    @SerializedName("presencePenaltyProperty") Float presencePenalty,
-    @SerializedName("maxTokensProperty") Integer maxTokens,
-    @SerializedName("temperatureProperty") Float temperature,
-    @SerializedName("topPProperty") Float topP,
+    @SerializedName("frequencyPenalty") Float frequencyPenalty,
+    @SerializedName("presencePenalty") Float presencePenalty,
+    @SerializedName("maxTokens") Integer maxTokens,
+    @SerializedName("temperature") Float temperature,
+    @SerializedName("topP") Float topP,
 
     @SerializedName("model") String model) implements Generative {
 

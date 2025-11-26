@@ -18,7 +18,15 @@ public record AwsGenerative(
     @SerializedName("region") String region,
     @SerializedName("service") Service service,
     @SerializedName("endpoint") String endpoint,
-    @SerializedName("model") String model) implements Generative {
+    @SerializedName("model") String model,
+    @SerializedName("targetModel") String targetModel,
+    @SerializedName("targetVariant") String targetVariant,
+    @SerializedName("temperature") Float temperature,
+    @SerializedName("maxTokenCount") Integer maxTokenCount,
+    @SerializedName("maxTokensToSample") Integer maxTokensToSample,
+    @SerializedName("topP") Float topP,
+    @SerializedName("topK") Integer topK,
+    @SerializedName("stopSequences") List<String> stopSequences) implements Generative {
 
   @Override
   public Generative.Kind _kind() {
@@ -53,7 +61,15 @@ public record AwsGenerative(
         builder.region,
         builder.service,
         builder.endpoint,
-        builder.model);
+        builder.model,
+        builder.targetModel,
+        builder.targetVariant,
+        builder.temperature,
+        builder.maxTokenCount,
+        builder.maxTokensToSample,
+        builder.topP,
+        builder.topK,
+        builder.stopSequences);
   }
 
   public static class Builder implements ObjectBuilder<AwsGenerative> {
@@ -67,6 +83,14 @@ public record AwsGenerative(
 
     private String endpoint;
     private String model;
+    private String targetModel;
+    private String targetVariant;
+    private Float temperature;
+    private Integer maxTokenCount;
+    private Integer maxTokensToSample;
+    private Float topP;
+    private Integer topK;
+    private final List<String> stopSequences = new ArrayList<>();
 
     /** Base URL of the generative provider. */
     protected Builder endpoint(String endpoint) {
@@ -77,6 +101,59 @@ public record AwsGenerative(
     /** Select generative model. */
     protected Builder model(String model) {
       this.model = model;
+      return this;
+    }
+
+    /** Target model for Sagemaker. */
+    public Builder targetModel(String targetModel) {
+      this.targetModel = targetModel;
+      return this;
+    }
+
+    /** Target variant for Sagemaker. */
+    public Builder targetVariant(String targetVariant) {
+      this.targetVariant = targetVariant;
+      return this;
+    }
+
+    /** Control the randomness of the model's output. */
+    public Builder temperature(Float temperature) {
+      this.temperature = temperature;
+      return this;
+    }
+
+    /** Maximum number of tokens to generate. */
+    public Builder maxTokenCount(Integer maxTokenCount) {
+      this.maxTokenCount = maxTokenCount;
+      return this;
+    }
+
+    /** Maximum number of tokens to sample (for Anthropic models). */
+    public Builder maxTokensToSample(Integer maxTokensToSample) {
+      this.maxTokensToSample = maxTokensToSample;
+      return this;
+    }
+
+    /** Top-p sampling parameter. */
+    public Builder topP(Float topP) {
+      this.topP = topP;
+      return this;
+    }
+
+    /** Top-k sampling parameter. */
+    public Builder topK(Integer topK) {
+      this.topK = topK;
+      return this;
+    }
+
+    /** Stop sequences for the model. */
+    public Builder stopSequences(String... stopSequences) {
+      return stopSequences(Arrays.asList(stopSequences));
+    }
+
+    /** Stop sequences for the model. */
+    public Builder stopSequences(List<String> stopSequences) {
+      this.stopSequences.addAll(stopSequences);
       return this;
     }
 
