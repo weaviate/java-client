@@ -30,7 +30,6 @@ public record CreateBackupRequest(BackupCreate body, String backend) {
 
     private static record Config(
         @SerializedName("CPUPercentage") Integer cpuPercentage,
-        @SerializedName("ChunkSize") Integer chunkSize,
         @SerializedName("CompressionLevel") CompressionLevel compressionLevel,
         @SerializedName("Bucket") String bucket,
         @SerializedName("Path") String path) {
@@ -51,7 +50,6 @@ public record CreateBackupRequest(BackupCreate body, String backend) {
           builder.excludeCollections,
           new Config(
               builder.cpuPercentage,
-              builder.chunkSize,
               builder.compressionLevel,
               builder.bucket,
               builder.path));
@@ -61,7 +59,6 @@ public record CreateBackupRequest(BackupCreate body, String backend) {
       private final String backupId;
 
       private Integer cpuPercentage;
-      private Integer chunkSize;
       private CompressionLevel compressionLevel;
       private String bucket;
       private String path;
@@ -101,16 +98,6 @@ public record CreateBackupRequest(BackupCreate body, String backend) {
        */
       public Builder cpuPercentage(int cpuPercentage) {
         this.cpuPercentage = cpuPercentage;
-        return this;
-      }
-
-      /**
-       * Set the desired chunk size. Defaults to 128MB.
-       *
-       * @param chunkSize Chunk size in MB (2MB to 512 MB).
-       */
-      public Builder chunkSize(int chunkSize) {
-        this.chunkSize = chunkSize;
         return this;
       }
 
