@@ -15,12 +15,12 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative;
 
 public record CohereGenerative(
     @SerializedName("baseURL") String baseUrl,
-    @SerializedName("kProperty") Integer topK,
+    @SerializedName("k") Integer topK,
     @SerializedName("model") String model,
-    @SerializedName("maxTokensProperty") Integer maxTokens,
-    @SerializedName("temperatureProperty") Float temperature,
-    @SerializedName("returnLikelihoodsProperty") String returnLikelihoodsProperty,
-    @SerializedName("stopSequencesProperty") List<String> stopSequences) implements Generative {
+    @SerializedName("maxTokens") Integer maxTokens,
+    @SerializedName("temperature") Float temperature,
+    @SerializedName("returnLikelihoods") String returnLikelihoodsProperty,
+    @SerializedName("stopSequences") List<String> stopSequences) implements Generative {
 
   @Override
   public Kind _kind() {
