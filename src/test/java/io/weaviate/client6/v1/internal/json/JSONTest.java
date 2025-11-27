@@ -1005,12 +1005,12 @@ public class JSONTest {
             """
                 {
                   "generative-cohere": {
-                    "kProperty": 1,
-                    "maxTokensProperty": 2,
-                    "temperatureProperty": 3.0,
+                    "k": 1,
+                    "maxTokens": 2,
+                    "temperature": 3.0,
                     "model": "example-model",
-                    "returnLikelihoodsProperty": "likelihood",
-                    "stopSequencesProperty": ["stop", "halt"]
+                    "returnLikelihoods": "likelihood",
+                    "stopSequences": ["stop", "halt"]
                   }
                 }
                   """,
@@ -1161,11 +1161,11 @@ public class JSONTest {
                 {
                   "generative-openai": {
                     "baseURL": "https://example.com",
-                    "frequencyPenaltyProperty": 1.0,
-                    "presencePenaltyProperty": 2.0,
-                    "temperatureProperty": 3.0,
-                    "topPProperty": 4.0,
-                    "maxTokensProperty": 5,
+                    "frequencyPenalty": 1.0,
+                    "presencePenalty": 2.0,
+                    "temperature": 3.0,
+                    "topP": 4.0,
+                    "maxTokens": 5,
                     "model": "o3-mini"
                   }
                 }
@@ -1187,11 +1187,11 @@ public class JSONTest {
                 {
                   "generative-openai": {
                     "baseURL": "https://example.com",
-                    "frequencyPenaltyProperty": 1.0,
-                    "presencePenaltyProperty": 2.0,
-                    "temperatureProperty": 3.0,
-                    "topPProperty": 4.0,
-                    "maxTokensProperty": 5,
+                    "frequencyPenalty": 1.0,
+                    "presencePenalty": 2.0,
+                    "temperature": 3.0,
+                    "topP": 4.0,
+                    "maxTokens": 5,
                     "resourceName": "azure-resource",
                     "deploymentId": "azure-deployment"
                   }
