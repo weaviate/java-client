@@ -14,12 +14,14 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative;
 
 public record AzureOpenAiGenerative(
+    @SerializedName("apiVersion") String apiVersion,
     @SerializedName("baseURL") String baseUrl,
     @SerializedName("frequencyPenalty") Float frequencyPenalty,
     @SerializedName("presencePenalty") Float presencePenalty,
     @SerializedName("maxTokens") Integer maxTokens,
     @SerializedName("temperature") Float temperature,
     @SerializedName("topP") Float topP,
+    @SerializedName("model") String model,
 
     @SerializedName("resourceName") String resourceName,
     @SerializedName("deploymentId") String deploymentId) implements Generative {
@@ -45,12 +47,14 @@ public record AzureOpenAiGenerative(
 
   public AzureOpenAiGenerative(Builder builder) {
     this(
+        builder.apiVersion,
         builder.baseUrl,
         builder.frequencyPenalty,
         builder.presencePenalty,
         builder.maxTokens,
         builder.temperature,
         builder.topP,
+        builder.model,
         builder.resourceName,
         builder.deploymentId);
   }
@@ -59,21 +63,35 @@ public record AzureOpenAiGenerative(
     private final String resourceName;
     private final String deploymentId;
 
+    private String apiVersion;
     private String baseUrl;
     private Float frequencyPenalty;
     private Float presencePenalty;
     private Integer maxTokens;
     private Float temperature;
     private Float topP;
+    private String model;
 
     public Builder(String resourceName, String deploymentId) {
       this.resourceName = resourceName;
       this.deploymentId = deploymentId;
     }
 
+    /** API version for the generative provider. */
+    public Builder apiVersion(String apiVersion) {
+      this.apiVersion = apiVersion;
+      return this;
+    }
+
     /** Base URL of the generative provider. */
     public Builder baseUrl(String baseUrl) {
       this.baseUrl = baseUrl;
+      return this;
+    }
+
+    /** Select generative model. */
+    public Builder model(String model) {
+      this.model = model;
       return this;
     }
 

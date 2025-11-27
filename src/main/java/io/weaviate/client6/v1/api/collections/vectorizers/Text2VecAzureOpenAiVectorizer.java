@@ -14,6 +14,8 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Text2VecAzureOpenAiVectorizer(
     @SerializedName("baseURL") String baseUrl,
+    @SerializedName("dimensions") Integer dimensions,
+    @SerializedName("model") String model,
     @SerializedName("deploymentId") String deploymentId,
     @SerializedName("resourceName") String resourceName,
 
@@ -54,6 +56,8 @@ public record Text2VecAzureOpenAiVectorizer(
    */
   public Text2VecAzureOpenAiVectorizer(
       String baseUrl,
+      Integer dimensions,
+      String model,
       String deploymentId,
       String resourceName,
 
@@ -62,6 +66,8 @@ public record Text2VecAzureOpenAiVectorizer(
       VectorIndex vectorIndex,
       Quantization quantization) {
     this.baseUrl = baseUrl;
+    this.dimensions = dimensions;
+    this.model = model;
     this.deploymentId = deploymentId;
     this.resourceName = resourceName;
 
@@ -74,6 +80,8 @@ public record Text2VecAzureOpenAiVectorizer(
   public Text2VecAzureOpenAiVectorizer(Builder builder) {
     this(
         builder.baseUrl,
+        builder.dimensions,
+        builder.model,
         builder.deploymentId,
         builder.resourceName,
 
@@ -90,11 +98,25 @@ public record Text2VecAzureOpenAiVectorizer(
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
 
     private String baseUrl;
+    private Integer dimensions;
+    private String model;
     private String deploymentId;
     private String resourceName;
 
     public Builder baseUrl(String baseUrl) {
       this.baseUrl = baseUrl;
+      return this;
+    }
+
+    /** Set the number of dimensions for the vector embeddings. */
+    public Builder dimensions(int dimensions) {
+      this.dimensions = dimensions;
+      return this;
+    }
+
+    /** Select the embedding model. */
+    public Builder model(String model) {
+      this.model = model;
       return this;
     }
 

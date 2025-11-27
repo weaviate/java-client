@@ -14,14 +14,16 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative;
 
 public record OpenAiGenerative(
+    @SerializedName("apiVersion") String apiVersion,
     @SerializedName("baseURL") String baseUrl,
     @SerializedName("frequencyPenalty") Float frequencyPenalty,
     @SerializedName("presencePenalty") Float presencePenalty,
     @SerializedName("maxTokens") Integer maxTokens,
     @SerializedName("temperature") Float temperature,
     @SerializedName("topP") Float topP,
-
-    @SerializedName("model") String model) implements Generative {
+    @SerializedName("model") String model,
+    @SerializedName("reasoningEffort") ReasoningEffort reasoningEffort,
+    @SerializedName("verbosity") Verbosity verbosity) implements Generative {
 
   @Override
   public Kind _kind() {
@@ -43,16 +45,20 @@ public record OpenAiGenerative(
 
   public OpenAiGenerative(Builder builder) {
     this(
+        builder.apiVersion,
         builder.baseUrl,
         builder.frequencyPenalty,
         builder.presencePenalty,
         builder.maxTokens,
         builder.temperature,
         builder.topP,
-        builder.model);
+        builder.model,
+        builder.reasoningEffort,
+        builder.verbosity);
   }
 
   public static class Builder implements ObjectBuilder<OpenAiGenerative> {
+    private String apiVersion;
     private String baseUrl;
     private Float frequencyPenalty;
     private Float presencePenalty;
@@ -60,6 +66,14 @@ public record OpenAiGenerative(
     private Float temperature;
     private Float topP;
     private String model;
+    private ReasoningEffort reasoningEffort;
+    private Verbosity verbosity;
+
+    /** API version for the generative provider. */
+    public Builder apiVersion(String apiVersion) {
+      this.apiVersion = apiVersion;
+      return this;
+    }
 
     /** Base URL of the generative provider. */
     public Builder baseUrl(String baseUrl) {
@@ -70,6 +84,18 @@ public record OpenAiGenerative(
     /** Select generative model. */
     public Builder model(String model) {
       this.model = model;
+      return this;
+    }
+
+    /** Set the reasoning effort level. */
+    public Builder reasoningEffort(ReasoningEffort reasoningEffort) {
+      this.reasoningEffort = reasoningEffort;
+      return this;
+    }
+
+    /** Set the verbosity level. */
+    public Builder verbosity(Verbosity verbosity) {
+      this.verbosity = verbosity;
       return this;
     }
 
@@ -108,6 +134,26 @@ public record OpenAiGenerative(
     public OpenAiGenerative build() {
       return new OpenAiGenerative(this);
     }
+  }
+
+  public enum ReasoningEffort {
+    @SerializedName("minimal")
+    MINIMAL,
+    @SerializedName("low")
+    LOW,
+    @SerializedName("medium")
+    MEDIUM,
+    @SerializedName("high")
+    HIGH;
+  }
+
+  public enum Verbosity {
+    @SerializedName("low")
+    LOW,
+    @SerializedName("medium")
+    MEDIUM,
+    @SerializedName("high")
+    HIGH;
   }
 
   public static record Metadata(ProviderMetadata.Usage usage) implements ProviderMetadata {
