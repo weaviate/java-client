@@ -52,6 +52,7 @@ public record XaiGenerative(
     private String model;
     private Integer maxTokens;
     private Float temperature;
+    private Float topP;
 
     /** Base URL of the generative provider. */
     public Builder baseUrl(String baseUrl) {
