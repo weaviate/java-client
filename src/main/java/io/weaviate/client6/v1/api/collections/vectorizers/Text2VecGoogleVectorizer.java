@@ -88,7 +88,7 @@ public record Text2VecGoogleVectorizer(
   public Text2VecGoogleVectorizer(
       String apiEndpoint,
       String model,
-      Sting modelId,
+      String modelId,
       String titleProperty,
       Integer dimensions,
       TaskType taskType,
