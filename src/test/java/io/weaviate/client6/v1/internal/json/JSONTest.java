@@ -942,6 +942,7 @@ public class JSONTest {
         {
             Generative.class,
             Generative.anthropic(cfg -> cfg
+                .baseUrl("https://example.com")
                 .topK(1)
                 .maxTokens(2)
                 .temperature(3f)
@@ -950,6 +951,7 @@ public class JSONTest {
             """
                 {
                   "generative-anthropic": {
+                    "baseURL": "https://example.com",
                     "topK": 1,
                     "maxTokens": 2,
                     "temperature": 3.0,
@@ -965,13 +967,23 @@ public class JSONTest {
                 "aws-region",
                 "example-model",
                 cfg -> cfg
-                    .model("example-model")),
+                    .model("example-model"),
+                    .temperature(0.7f)
+                    .maxTokenCount(100)
+                    .topK(50)
+                    .topP(0.9f)
+                    .stopSequences("STOP", "END")),
             """
                 {
                   "generative-aws": {
                     "model": "example-model",
                     "region": "aws-region",
-                    "service": "bedrock"
+                    "service": "bedrock",
+                    "temperature": 0.7,
+                    "maxTokenCount": 100,
+                    "topK": 50,
+                    "topP": 0.9,
+                    "stopSequences": ["STOP", "END"]
                   }
                 }
                   """,
@@ -982,13 +994,21 @@ public class JSONTest {
                 "aws-region",
                 "https://example.com",
                 cfg -> cfg
-                    .endpoint("https://example.com")),
+                    .endpoint("https://example.com")
+                    .targetModel("custom-model")
+                    .targetVariant("variant-1")
+                    .maxTokensToSample(200)
+                    .stopSequences("STOP")),
             """
                 {
                   "generative-aws": {
                     "endpoint": "https://example.com",
                     "region": "aws-region",
-                    "service": "sagemaker"
+                    "service": "sagemaker",
+                    "targetModel": "custom-model",
+                    "targetVariant": "variant-1",
+                    "maxTokensToSample": 200,
+                    "stopSequences": ["STOP"]
                   }
                 }
                   """,
@@ -1078,6 +1098,7 @@ public class JSONTest {
                 .baseUrl("https://example.com")
                 .maxTokens(2)
                 .temperature(3f)
+                .topP(0.95f)
                 .model("example-model")),
             """
                 {
@@ -1085,6 +1106,7 @@ public class JSONTest {
                     "baseURL": "https://example.com",
                     "maxTokens": 2,
                     "temperature": 3.0,
+                    "topP": 0.95,
                     "model": "example-model"
                   }
                 }
@@ -1100,17 +1122,23 @@ public class JSONTest {
                     .temperature(3f)
                     .topK(4)
                     .topP(5f)
-                    .modelId("example-model")),
+                    .modelId("example-model")
+                    .endpointId("endpoint-123")
+                    .region("us-central1")
+                    .model("gemini-pro")),
             """
                 {
-                  "generative-palm": {
+                  "generative-google": {
                     "apiEndpoint": "https://example.com",
                     "maxOutputTokens": 2,
                     "temperature": 3.0,
                     "topK": 4,
                     "topP": 5,
                     "projectId": "google-project",
-                    "modelId": "example-model"
+                    "modelId": "example-model",
+                    "endpointId": "endpoint-123",
+                    "region": "us-central1",
+                    "model": "gemini-pro"
                   }
                 }
                   """,
@@ -1135,6 +1163,7 @@ public class JSONTest {
                 .baseUrl("https://example.com")
                 .maxTokens(2)
                 .temperature(3f)
+                .topP(0.9f)
                 .model("example-model")),
             """
                 {
@@ -1142,6 +1171,7 @@ public class JSONTest {
                     "baseURL": "https://example.com",
                     "maxTokens": 2,
                     "temperature": 3.0,
+                    "topP": 0.9,
                     "model": "example-model"
                   }
                 }

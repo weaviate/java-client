@@ -39,7 +39,7 @@ public interface Generative extends TaggedUnion<Generative.Kind, Object> {
     COHERE("generative-cohere"),
     DATABRICKS("generative-databricks"),
     FRIENDLIAI("generative-friendliai"),
-    GOOGLE("generative-palm"),
+    GOOGLE("generative-google"),
     MISTRAL("generative-mistral"),
     NVIDIA("generative-nvidia"),
     OLLAMA("generative-ollama"),
@@ -185,13 +185,13 @@ public interface Generative extends TaggedUnion<Generative.Kind, Object> {
     return FriendliaiGenerative.of(fn);
   }
 
-  /** Configure a default {@code generative-palm} module. */
+  /** Configure a default {@code generative-google} module. */
   public static Generative googleVertex(String projectId) {
     return GoogleGenerative.vertex(projectId);
   }
 
   /**
-   * Configure a {@code generative-palm} module.
+   * Configure a {@code generative-google} module.
    *
    * @param projectId Project ID.
    * @param fn        Lambda expression for optional parameters.
@@ -201,13 +201,13 @@ public interface Generative extends TaggedUnion<Generative.Kind, Object> {
     return GoogleGenerative.vertex(projectId, fn);
   }
 
-  /** Configure a default {@code generative-palm} module. */
+  /** Configure a default {@code generative-google} module. */
   public static Generative googleAiStudio() {
     return GoogleGenerative.aiStudio();
   }
 
   /**
-   * Configure a {@code generative-palm} module.
+   * Configure a {@code generative-google} module.
    *
    * @param fn Lambda expression for optional parameters.
    */
@@ -399,7 +399,7 @@ public interface Generative extends TaggedUnion<Generative.Kind, Object> {
     return _as(Generative.Kind.FRIENDLIAI);
   }
 
-  /** Is this a {@code generative-palm} provider? */
+  /** Is this a {@code generative-google} provider? */
   default boolean isGoogle() {
     return _is(Generative.Kind.GOOGLE);
   }
@@ -408,7 +408,7 @@ public interface Generative extends TaggedUnion<Generative.Kind, Object> {
    * Get as {@link GoogleGenerative} instance.
    *
    * @throws IllegalStateException if the current kind is not
-   *                               {@code generative-palm}.
+   *                               {@code generative-google}.
    */
   default GoogleGenerative asGoogle() {
     return _as(Generative.Kind.GOOGLE);
