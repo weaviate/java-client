@@ -20,7 +20,10 @@ public record CohereGenerative(
     @SerializedName("maxTokens") Integer maxTokens,
     @SerializedName("temperature") Float temperature,
     @SerializedName("returnLikelihoods") String returnLikelihoodsProperty,
-    @SerializedName("stopSequences") List<String> stopSequences) implements Generative {
+    @SerializedName("stopSequences") List<String> stopSequences,
+    @SerializedName("P") Float topP,
+    @SerializedName("presencePenalty") Float presencePenalty,
+    @SerializedName("frequencyPenalty") Float frequencyPenalty) implements Generative {
 
   @Override
   public Kind _kind() {
@@ -48,7 +51,10 @@ public record CohereGenerative(
         builder.maxTokens,
         builder.temperature,
         builder.returnLikelihoodsProperty,
-        builder.stopSequences);
+        builder.stopSequences,
+        builder.topP,
+        builder.presencePenalty,
+        builder.frequencyPenalty);
   }
 
   public static class Builder implements ObjectBuilder<CohereGenerative> {
@@ -58,7 +64,10 @@ public record CohereGenerative(
     private Integer maxTokens;
     private Float temperature;
     private String returnLikelihoodsProperty;
-    private List<String> stopSequences;
+    private final List<String> stopSequences = new ArrayList<>();
+    private Float topP;
+    private Float presencePenalty;
+    private Float frequencyPenalty;
 
     /** Base URL of the generative provider. */
     public Builder baseUrl(String baseUrl) {
@@ -69,6 +78,12 @@ public record CohereGenerative(
     /** Top K value for sampling. */
     public Builder topK(int topK) {
       this.topK = topK;
+      return this;
+    }
+
+    /** Top P value for nucleus sampling. */
+    public Builder topP(float topP) {
+      this.topP = topP;
       return this;
     }
 
@@ -100,9 +115,6 @@ public record CohereGenerative(
      * Set tokens which should signal the model to stop generating further output.
      */
     public Builder stopSequences(List<String> stopSequences) {
-      if (this.stopSequences == null) {
-        this.stopSequences = new ArrayList<>();
-      }
       this.stopSequences.addAll(stopSequences);
       return this;
     }
@@ -113,6 +125,16 @@ public record CohereGenerative(
      */
     public Builder temperature(float temperature) {
       this.temperature = temperature;
+      return this;
+    }
+
+    public Builder presencePenalty(float presencePenalty) {
+      this.presencePenalty = presencePenalty;
+      return this;
+    }
+
+    public Builder frequencyPenalty(float frequencyPenalty) {
+      this.frequencyPenalty = frequencyPenalty;
       return this;
     }
 
@@ -211,7 +233,7 @@ public record CohereGenerative(
       private Float temperature;
       private Float frequencyPenalty;
       private Float presencePenalty;
-      private List<String> stopSequences;
+      private final List<String> stopSequences = new ArrayList<>();
 
       /** Base URL of the generative provider. */
       public Builder baseUrl(String baseUrl) {
@@ -265,9 +287,6 @@ public record CohereGenerative(
        * Set tokens which should signal the model to stop generating further output.
        */
       public Builder stopSequences(List<String> stopSequences) {
-        if (this.stopSequences == null) {
-          this.stopSequences = new ArrayList<>();
-        }
         this.stopSequences.addAll(stopSequences);
         return this;
       }
