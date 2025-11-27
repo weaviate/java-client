@@ -42,6 +42,7 @@ public record AnthropicGenerative(
 
   public AnthropicGenerative(Builder builder) {
     this(
+        builder.baseUrl,
         builder.model,
         builder.maxTokens,
         builder.temperature,
@@ -56,7 +57,14 @@ public record AnthropicGenerative(
     private String model;
     private Integer maxTokens;
     private Float temperature;
+    private String baseUrl;
     private final List<String> stopSequences = new ArrayList<>();
+
+    /** Base URL of the generative provider. */
+    public Builder baseUrl(String baseUrl) {
+      this.baseUrl = baseUrl;
+      return this;
+    }
 
     /** Top K value for sampling. */
     public Builder topK(int topK) {
