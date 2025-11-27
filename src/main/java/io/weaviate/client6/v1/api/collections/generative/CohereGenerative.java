@@ -58,7 +58,7 @@ public record CohereGenerative(
     private Integer maxTokens;
     private Float temperature;
     private String returnLikelihoodsProperty;
-    private List<String> stopSequences = new ArrayList<>();
+    private List<String> stopSequences;
 
     /** Base URL of the generative provider. */
     public Builder baseUrl(String baseUrl) {
@@ -100,7 +100,10 @@ public record CohereGenerative(
      * Set tokens which should signal the model to stop generating further output.
      */
     public Builder stopSequences(List<String> stopSequences) {
-      this.stopSequences = stopSequences;
+      if (this.stopSequences == null) {
+        this.stopSequences = new ArrayList<>();
+      }
+      this.stopSequences.addAll(stopSequences);
       return this;
     }
 
@@ -208,7 +211,7 @@ public record CohereGenerative(
       private Float temperature;
       private Float frequencyPenalty;
       private Float presencePenalty;
-      private final List<String> stopSequences = new ArrayList<>();
+      private List<String> stopSequences;
 
       /** Base URL of the generative provider. */
       public Builder baseUrl(String baseUrl) {
@@ -262,6 +265,9 @@ public record CohereGenerative(
        * Set tokens which should signal the model to stop generating further output.
        */
       public Builder stopSequences(List<String> stopSequences) {
+        if (this.stopSequences == null) {
+          this.stopSequences = new ArrayList<>();
+        }
         this.stopSequences.addAll(stopSequences);
         return this;
       }
