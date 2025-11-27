@@ -58,7 +58,7 @@ public record AnthropicGenerative(
     private Integer maxTokens;
     private Float temperature;
     private String baseUrl;
-    private final List<String> stopSequences = new ArrayList<>();
+    private List<String> stopSequences;
 
     /** Base URL of the generative provider. */
     public Builder baseUrl(String baseUrl) {
@@ -101,6 +101,9 @@ public record AnthropicGenerative(
      * Set tokens which should signal the model to stop generating further output.
      */
     public Builder stopSequences(List<String> stopSequences) {
+      if (this.stopSequences == null) {
+        this.stopSequences = new ArrayList<>();
+      }
       this.stopSequences.addAll(stopSequences);
       return this;
     }
@@ -199,9 +202,9 @@ public record AnthropicGenerative(
       private String model;
       private Integer maxTokens;
       private Float temperature;
-      private final List<String> stopSequences = new ArrayList<>();
-      private final List<String> images = new ArrayList<>();
-      private final List<String> imageProperties = new ArrayList<>();
+      private List<String> stopSequences;
+      private List<String> images;
+      private List<String> imageProperties;
 
       /** Base URL of the generative provider. */
       public Builder baseUrl(String baseUrl) {
@@ -244,6 +247,9 @@ public record AnthropicGenerative(
        * Set tokens which should signal the model to stop generating further output.
        */
       public Builder stopSequences(List<String> stopSequences) {
+        if (this.stopSequences == null) {
+          this.stopSequences = new ArrayList<>();
+        }
         this.stopSequences.addAll(stopSequences);
         return this;
       }
@@ -253,6 +259,9 @@ public record AnthropicGenerative(
       }
 
       public Builder images(List<String> images) {
+        if (this.images == null) {
+          this.images = new ArrayList<>();
+        }
         this.images.addAll(images);
         return this;
       }
@@ -262,6 +271,9 @@ public record AnthropicGenerative(
       }
 
       public Builder imageProperties(List<String> imageProperties) {
+        if (this.imageProperties == null) {
+          this.imageProperties = new ArrayList<>();
+        }
         this.imageProperties.addAll(imageProperties);
         return this;
       }
