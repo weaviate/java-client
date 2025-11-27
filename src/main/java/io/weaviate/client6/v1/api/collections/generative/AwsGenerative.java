@@ -90,7 +90,7 @@ public record AwsGenerative(
     private Integer maxTokensToSample;
     private Float topP;
     private Integer topK;
-    private List<String> stopSequences;
+    private final List<String> stopSequences = new ArrayList<>();
 
     /** Base URL of the generative provider. */
     protected Builder endpoint(String endpoint) {
@@ -153,9 +153,6 @@ public record AwsGenerative(
 
     /** Stop sequences for the model. */
     public Builder stopSequences(List<String> stopSequences) {
-      if (this.stopSequences == null) {
-        this.stopSequences = new ArrayList<>();
-      }
       this.stopSequences.addAll(stopSequences);
       return this;
     }
