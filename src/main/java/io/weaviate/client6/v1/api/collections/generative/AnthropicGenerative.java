@@ -14,6 +14,7 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative;
 
 public record AnthropicGenerative(
+    @SerializedName("baseURL") String baseUrl,
     @SerializedName("model") String model,
     @SerializedName("maxTokens") Integer maxTokens,
     @SerializedName("temperature") Float temperature,
@@ -41,6 +42,7 @@ public record AnthropicGenerative(
 
   public AnthropicGenerative(Builder builder) {
     this(
+        builder.baseUrl,
         builder.model,
         builder.maxTokens,
         builder.temperature,
@@ -55,7 +57,14 @@ public record AnthropicGenerative(
     private String model;
     private Integer maxTokens;
     private Float temperature;
+    private String baseUrl;
     private final List<String> stopSequences = new ArrayList<>();
+
+    /** Base URL of the generative provider. */
+    public Builder baseUrl(String baseUrl) {
+      this.baseUrl = baseUrl;
+      return this;
+    }
 
     /** Top K value for sampling. */
     public Builder topK(int topK) {

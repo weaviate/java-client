@@ -17,6 +17,7 @@ public record Text2VecTransformersVectorizer(
     @SerializedName("passageInferenceUrl") String passageInferenceUrl,
     @SerializedName("queryInferenceUrl") String queryInferenceUrl,
     @SerializedName("poolingStrategy") PoolingStrategy poolingStrategy,
+    @SerializedName("dimensions") Integer dimensions,
 
     /** Properties included in the embedding. */
     @SerializedName("sourceProperties") List<String> sourceProperties,
@@ -57,6 +58,7 @@ public record Text2VecTransformersVectorizer(
         builder.passageInferenceUrl,
         builder.queryInferenceUrl,
         builder.poolingStrategy,
+        builder.dimensions,
         builder.sourceProperties,
         builder.vectorIndex,
         builder.quantization);
@@ -71,6 +73,7 @@ public record Text2VecTransformersVectorizer(
     private String passageInferenceUrl;
     private String queryInferenceUrl;
     private PoolingStrategy poolingStrategy;
+    private Integer dimensions;
 
     public Builder inferenceUrl(String inferenceUrl) {
       this.inferenceUrl = inferenceUrl;
@@ -89,6 +92,11 @@ public record Text2VecTransformersVectorizer(
 
     public Builder poolingStrategy(PoolingStrategy poolingStrategy) {
       this.poolingStrategy = poolingStrategy;
+      return this;
+    }
+
+    public Builder dimensions(int dimensions) {
+      this.dimensions = dimensions;
       return this;
     }
 

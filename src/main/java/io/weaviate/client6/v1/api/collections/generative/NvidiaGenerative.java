@@ -13,7 +13,8 @@ public record NvidiaGenerative(
     @SerializedName("baseURL") String baseUrl,
     @SerializedName("model") String model,
     @SerializedName("maxTokens") Integer maxTokens,
-    @SerializedName("temperature") Float temperature) implements Generative {
+    @SerializedName("temperature") Float temperature,
+    @SerializedName("topP") Float topP) implements Generative {
 
   @Override
   public Kind _kind() {
@@ -38,7 +39,8 @@ public record NvidiaGenerative(
         builder.baseUrl,
         builder.model,
         builder.maxTokens,
-        builder.temperature);
+        builder.temperature,
+        builder.topP);
   }
 
   public static class Builder implements ObjectBuilder<NvidiaGenerative> {
@@ -46,6 +48,7 @@ public record NvidiaGenerative(
     private String model;
     private Integer maxTokens;
     private Float temperature;
+    private Float topP;
 
     /** Base URL of the generative provider. */
     public Builder baseUrl(String baseUrl) {
@@ -71,6 +74,12 @@ public record NvidiaGenerative(
      */
     public Builder temperature(float temperature) {
       this.temperature = temperature;
+      return this;
+    }
+
+    /** Top P value for sampling. */
+    public Builder topP(float topP) {
+      this.topP = topP;
       return this;
     }
 

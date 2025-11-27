@@ -15,6 +15,7 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 public record Text2VecGoogleVectorizer(
     @SerializedName("apiEndpoint") String apiEndpoint,
     @SerializedName("model") String model,
+    @SerializedName("modelId") String modelId,
     @SerializedName("titleProperty") String titleProperty,
     @SerializedName("dimensions") Integer dimensions,
     @SerializedName("taskType") TaskType taskType,
@@ -87,6 +88,7 @@ public record Text2VecGoogleVectorizer(
   public Text2VecGoogleVectorizer(
       String apiEndpoint,
       String model,
+      String modelId,
       String titleProperty,
       Integer dimensions,
       TaskType taskType,
@@ -98,6 +100,7 @@ public record Text2VecGoogleVectorizer(
       Quantization quantization) {
     this.apiEndpoint = apiEndpoint;
     this.model = model;
+    this.modelId = modelId;
     this.titleProperty = titleProperty;
     this.dimensions = dimensions;
     this.projectId = projectId;
@@ -113,6 +116,7 @@ public record Text2VecGoogleVectorizer(
     this(
         builder.apiEndpoint,
         builder.model,
+        builder.modelId,
         builder.titleProperty,
         builder.dimensions,
         builder.taskType,
@@ -136,6 +140,7 @@ public record Text2VecGoogleVectorizer(
     private final String projectId;
 
     private String model;
+    private String modelId;
     private String titleProperty;
     private Integer dimensions;
     private TaskType taskType;
@@ -152,6 +157,11 @@ public record Text2VecGoogleVectorizer(
 
     public Builder model(String model) {
       this.model = model;
+      return this;
+    }
+
+    public Builder modelId(String modelId) {
+      this.modelId = modelId;
       return this;
     }
 

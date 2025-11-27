@@ -11,7 +11,7 @@ public record CohereReranker(
     @SerializedName("model") String model) implements Reranker {
 
   public static final String RERANK_ENGLISH_V2 = "rerank-english-v2.0";
-  public static final String RERANK_MULTILINGUAL_V2 = "rerank-mulilingual-v2.0";
+  public static final String RERANK_MULTILINGUAL_V2 = "rerank-multilingual-v2.0";
 
   @Override
   public Kind _kind() {

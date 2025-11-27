@@ -100,7 +100,7 @@ public interface GenerativeProvider {
   }
 
   /**
-   * Configure {@code generative-palm} as a dynamic provider.
+   * Configure {@code generative-google} as a dynamic provider.
    *
    * @param fn Lambda expression for optional parameters.
    */
@@ -110,7 +110,7 @@ public interface GenerativeProvider {
   }
 
   /**
-   * Configure {@code generative-palm} as a dynamic provider.
+   * Configure {@code generative-google} as a dynamic provider.
    *
    * @param projectId Google project ID.
    * @param fn        Lambda expression for optional parameters.

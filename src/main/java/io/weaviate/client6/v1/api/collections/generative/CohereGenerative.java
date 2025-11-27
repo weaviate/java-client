@@ -15,12 +15,15 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative;
 
 public record CohereGenerative(
     @SerializedName("baseURL") String baseUrl,
-    @SerializedName("kProperty") Integer topK,
+    @SerializedName("k") Integer topK,
     @SerializedName("model") String model,
-    @SerializedName("maxTokensProperty") Integer maxTokens,
-    @SerializedName("temperatureProperty") Float temperature,
-    @SerializedName("returnLikelihoodsProperty") String returnLikelihoodsProperty,
-    @SerializedName("stopSequencesProperty") List<String> stopSequences) implements Generative {
+    @SerializedName("maxTokens") Integer maxTokens,
+    @SerializedName("temperature") Float temperature,
+    @SerializedName("returnLikelihoods") String returnLikelihoodsProperty,
+    @SerializedName("stopSequences") List<String> stopSequences,
+    @SerializedName("P") Float topP,
+    @SerializedName("presencePenalty") Float presencePenalty,
+    @SerializedName("frequencyPenalty") Float frequencyPenalty) implements Generative {
 
   @Override
   public Kind _kind() {
@@ -48,7 +51,10 @@ public record CohereGenerative(
         builder.maxTokens,
         builder.temperature,
         builder.returnLikelihoodsProperty,
-        builder.stopSequences);
+        builder.stopSequences,
+        builder.topP,
+        builder.presencePenalty,
+        builder.frequencyPenalty);
   }
 
   public static class Builder implements ObjectBuilder<CohereGenerative> {
@@ -58,7 +64,10 @@ public record CohereGenerative(
     private Integer maxTokens;
     private Float temperature;
     private String returnLikelihoodsProperty;
-    private List<String> stopSequences = new ArrayList<>();
+    private final List<String> stopSequences = new ArrayList<>();
+    private Float topP;
+    private Float presencePenalty;
+    private Float frequencyPenalty;
 
     /** Base URL of the generative provider. */
     public Builder baseUrl(String baseUrl) {
@@ -69,6 +78,12 @@ public record CohereGenerative(
     /** Top K value for sampling. */
     public Builder topK(int topK) {
       this.topK = topK;
+      return this;
+    }
+
+    /** Top P value for nucleus sampling. */
+    public Builder topP(float topP) {
+      this.topP = topP;
       return this;
     }
 
@@ -100,7 +115,7 @@ public record CohereGenerative(
      * Set tokens which should signal the model to stop generating further output.
      */
     public Builder stopSequences(List<String> stopSequences) {
-      this.stopSequences = stopSequences;
+      this.stopSequences.addAll(stopSequences);
       return this;
     }
 
@@ -110,6 +125,16 @@ public record CohereGenerative(
      */
     public Builder temperature(float temperature) {
       this.temperature = temperature;
+      return this;
+    }
+
+    public Builder presencePenalty(float presencePenalty) {
+      this.presencePenalty = presencePenalty;
+      return this;
+    }
+
+    public Builder frequencyPenalty(float frequencyPenalty) {
+      this.frequencyPenalty = frequencyPenalty;
       return this;
     }
 

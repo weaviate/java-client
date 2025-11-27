@@ -17,7 +17,8 @@ public record XaiGenerative(
     @SerializedName("baseURL") String baseUrl,
     @SerializedName("model") String model,
     @SerializedName("maxTokens") Integer maxTokens,
-    @SerializedName("temperature") Float temperature) implements Generative {
+    @SerializedName("temperature") Float temperature,
+    @SerializedName("topP") Float topP) implements Generative {
 
   @Override
   public Kind _kind() {
@@ -42,7 +43,8 @@ public record XaiGenerative(
         builder.baseUrl,
         builder.model,
         builder.maxTokens,
-        builder.temperature);
+        builder.temperature,
+        builder.topP);
   }
 
   public static class Builder implements ObjectBuilder<XaiGenerative> {
@@ -50,6 +52,7 @@ public record XaiGenerative(
     private String model;
     private Integer maxTokens;
     private Float temperature;
+    private Float topP;
 
     /** Base URL of the generative provider. */
     public Builder baseUrl(String baseUrl) {
@@ -75,6 +78,12 @@ public record XaiGenerative(
      */
     public Builder temperature(float temperature) {
       this.temperature = temperature;
+      return this;
+    }
+
+    /** Top P value for sampling. */
+    public Builder topP(float topP) {
+      this.topP = topP;
       return this;
     }
 
