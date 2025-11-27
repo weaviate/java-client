@@ -13,7 +13,7 @@ public record NvidiaGenerative(
     @SerializedName("baseURL") String baseUrl,
     @SerializedName("model") String model,
     @SerializedName("maxTokens") Integer maxTokens,
-    @SerializedName("temperature") Float temperature
+    @SerializedName("temperature") Float temperature,
     @SerializedName("topP") Float topP) implements Generative {
 
   @Override
