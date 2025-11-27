@@ -966,7 +966,7 @@ public class JSONTest {
                 "aws-region",
                 "example-model",
                 cfg -> cfg
-                    .model("example-model"),
+                    .model("example-model")
                     .temperature(0.7f)
                     .maxTokenCount(100)
                     .topK(50)
