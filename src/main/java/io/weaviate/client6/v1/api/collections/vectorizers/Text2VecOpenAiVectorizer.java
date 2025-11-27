@@ -37,9 +37,9 @@ public record Text2VecOpenAiVectorizer(
     return VectorConfig.Kind.TEXT2VEC_OPENAI;
   }
 
-  public static String TEXT_EMBEDDING_3_SMALL = "text-embeding-3-small";
-  public static String TEXT_EMBEDDING_3_LARGE = "text-embeding-3-large";
-  public static String TEXT_EMBEDDING_ADA_002 = "text-embeding-ada-002";
+  public static String TEXT_EMBEDDING_3_SMALL = "text-embedding-3-small";
+  public static String TEXT_EMBEDDING_3_LARGE = "text-embedding-3-large";
+  public static String TEXT_EMBEDDING_ADA_002 = "text-embedding-ada-002";
 
   @Override
   public Object _self() {
