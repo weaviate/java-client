@@ -1,5 +1,26 @@
 package io.weaviate.client6.v1.internal.json;
 
+import io.weaviate.client6.v1.api.collections.vectorizers.Multi2MultiVecJinaAiVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecAwsVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecCohereVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecGoogleVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecJinaAiVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecNvidiaVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecVoyageAiVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecAwsVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecAzureOpenAiVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecDatabricksVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecGoogleVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecHuggingFaceVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecJinaAiVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecMistralVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecModel2VecVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecMorphVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecNvidiaVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecOllamaVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecOpenAiVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecTransformersVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecVoyageAiVectorizer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -122,12 +143,391 @@ public class JSONTest {
                   "vectorIndexConfig": {},
                   "vectorizer": {
                     "text2vec-cohere": {
-                      "vectorizeClassName": false,
-                      "sourceProperties": []
+                      "vectorizeClassName": false
                     }
                   }
                 }
                     """,
+        },
+        {
+          VectorConfig.class,
+          Text2VecCohereVectorizer.of(
+            v -> v.sourceProperties("a").model("embed-v4.0")
+          ),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "text2vec-cohere": {
+                    "model": "embed-v4.0",
+                    "vectorizeClassName": false,
+                    "properties": ["a"]
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Text2VecAwsVectorizer.bedrock("amazon.titan-embed-text-v2:0"),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "text2vec-aws": {
+                    "service": "bedrock",
+                    "model": "amazon.titan-embed-text-v2:0",
+                    "vectorizeClassName": false
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Text2VecDatabricksVectorizer.of(),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "text2vec-databricks": {
+                    "vectorizeClassName": false
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Text2VecDatabricksVectorizer.of(v -> v.sourceProperties("a")),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "text2vec-databricks": {
+                    "properties": ["a"],
+                    "vectorizeClassName": false
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Text2VecGoogleVectorizer.vertex("projectId", v -> v.sourceProperties("a")),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "text2vec-google": {
+                    "apiEndpoint":"us-central1-aiplatform.googleapis.com",
+                    "projectId": "projectId",
+                    "properties": ["a"],
+                    "vectorizeClassName": false
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Text2VecGoogleVectorizer.aiStudio(v -> v.sourceProperties("a")),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "text2vec-google": {
+                    "apiEndpoint":"generativelanguage.googleapis.com",
+                    "properties": ["a"],
+                    "vectorizeClassName": false
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Text2VecHuggingFaceVectorizer.of(),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "text2vec-huggingface": {
+                    "vectorizeClassName": false
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Text2VecHuggingFaceVectorizer.of(v -> v.sourceProperties("a").model("model")),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "text2vec-huggingface": {
+                    "model": "model",
+                    "properties": ["a"],
+                    "vectorizeClassName": false
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Text2VecJinaAiVectorizer.of(),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "text2vec-jinaai": {
+                    "vectorizeClassName": false
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Text2VecJinaAiVectorizer.of(v -> v.sourceProperties("a").model(Text2VecJinaAiVectorizer.JINA_EMBEDDINGS_V2_BASE_EN)),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "text2vec-jinaai": {
+                    "model": "jina-embeddings-v2-base-en",
+                    "properties": ["a"],
+                    "vectorizeClassName": false
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Text2VecMistralVectorizer.of(),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "text2vec-mistral": {
+                    "vectorizeClassName": false
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Text2VecMistralVectorizer.of(v -> v.sourceProperties("a")),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "text2vec-mistral": {
+                    "properties": ["a"],
+                    "vectorizeClassName": false
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Text2VecModel2VecVectorizer.of(),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "text2vec-model2vec": {
+                    "vectorizeClassName": false
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Text2VecModel2VecVectorizer.of(v -> v.sourceProperties("a")),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "text2vec-model2vec": {
+                    "properties": ["a"],
+                    "vectorizeClassName": false
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Text2VecMorphVectorizer.of(),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "text2vec-morph": {}
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Text2VecMorphVectorizer.of(v -> v.sourceProperties("a")),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "text2vec-morph": {
+                    "properties": ["a"]
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Text2VecNvidiaVectorizer.of(),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "text2vec-nvidia": {
+                    "vectorizeClassName": false
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Text2VecNvidiaVectorizer.of(v -> v.sourceProperties("a")),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "text2vec-nvidia": {
+                    "properties": ["a"],
+                    "vectorizeClassName": false
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Text2VecOllamaVectorizer.of(),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "text2vec-ollama": {
+                    "vectorizeClassName": false
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Text2VecOllamaVectorizer.of(v -> v.sourceProperties("a")),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "text2vec-ollama": {
+                    "properties": ["a"],
+                    "vectorizeClassName": false
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Text2VecOpenAiVectorizer.of(v -> v.sourceProperties("a").model(Text2VecOpenAiVectorizer.TEXT_EMBEDDING_3_LARGE)),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "text2vec-openai": {
+                    "model": "text-embedding-3-large",
+                    "properties": ["a"],
+                    "vectorizeClassName": false
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Text2VecTransformersVectorizer.of(),
+          """
+                {
+                  "vectorIndexType": "hnsw",
+                  "vectorIndexConfig": {},
+                  "vectorizer": {
+                    "text2vec-transformers": {}
+                  }
+                }
+                    """,
+        },
+        {
+          VectorConfig.class,
+          Text2VecVoyageAiVectorizer.of(v -> v.sourceProperties("a").model(Text2VecVoyageAiVectorizer.VOYAGE_3_LARGE)),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "text2vec-voyageai": {
+                    "model": "voyage-3-large",
+                    "properties": ["a"],
+                    "vectorizeClassName":false
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Text2VecTransformersVectorizer.of(v -> v.sourceProperties("a")),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "text2vec-transformers": {
+                    "properties": ["a"]
+                  }
+                }
+              }
+                  """,
         },
         {
             VectorConfig.class,
@@ -143,13 +543,468 @@ public class JSONTest {
                     "text2vec-weaviate": {
                       "baseURL": "http://example.com",
                       "dimensions": 4,
-                      "model": "very-good-model",
-                      "sourceProperties": []
-
+                      "model": "very-good-model"
                     }
                   }
                 }
                     """,
+        },
+        {
+          VectorConfig.class,
+          Text2VecOpenAiVectorizer.of(v -> v.sourceProperties("a", "b")),
+          """
+                  {
+                    "vectorIndexType": "hnsw",
+                    "vectorIndexConfig": {},
+                    "vectorizer": {
+                      "text2vec-openai": {
+                        "vectorizeClassName": false,
+                        "properties": ["a", "b"]
+                      }
+                    }
+                  }
+                      """,
+        },
+        {
+          VectorConfig.class,
+          Text2VecVoyageAiVectorizer.of(v ->
+            v.sourceProperties(List.of("a", "b", "c")).model("voyage-3-large")),
+          """
+                    {
+                      "vectorIndexType": "hnsw",
+                      "vectorIndexConfig": {},
+                      "vectorizer": {
+                        "text2vec-voyageai": {
+                          "model": "voyage-3-large",
+                          "vectorizeClassName": false,
+                          "properties": ["a", "b", "c"]
+                        }
+                      }
+                    }
+                        """,
+        },
+        {
+          VectorConfig.class,
+          Text2VecVoyageAiVectorizer.of(v ->
+            v.dimensions(256).model("voyage-3-large")),
+          """
+                      {
+                        "vectorIndexType": "hnsw",
+                        "vectorIndexConfig": {},
+                        "vectorizer": {
+                          "text2vec-voyageai": {
+                            "model": "voyage-3-large",
+                            "dimensions": 256,
+                            "vectorizeClassName": false
+                          }
+                        }
+                      }
+                          """,
+        },
+        {
+          VectorConfig.class,
+          Img2VecNeuralVectorizer.of(v -> v.imageFields("a", "b")),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "img2vec-neural": {
+                    "imageFields": ["a", "b"]
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Multi2MultiVecJinaAiVectorizer.of(v -> v.imageFields("a", "b").textFields("c")),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "multi2multivec-jinaai": {
+                    "imageFields": ["a", "b"],
+                    "textFields": ["c"]
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Multi2VecClipVectorizer.of(v -> v.imageFields("a", "b").textFields("c")),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "multi2vec-clip": {
+                    "imageFields": ["a", "b"],
+                    "textFields": ["c"]
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Multi2VecClipVectorizer.of(v -> v.imageFields("a")),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "multi2vec-clip": {
+                    "imageFields": ["a"]
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Multi2VecClipVectorizer.of(v -> v.imageField("a", 0.1f).imageField("b", 0.1f).textField("c", 0.8f)),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "multi2vec-clip": {
+                    "imageFields": ["a", "b"],
+                    "textFields": ["c"],
+                    "weights":{
+                      "imageWeights":[0.1,0.1],
+                      "textWeights":[0.8]
+                     }
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Multi2VecAwsVectorizer.of(v -> v.imageFields("a", "b").textFields("c")),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "multi2vec-aws": {
+                    "imageFields": ["a", "b"],
+                    "textFields": ["c"]
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Multi2VecAwsVectorizer.of(v -> v.imageFields("a")),
+          """
+                {
+                  "vectorIndexType": "hnsw",
+                  "vectorIndexConfig": {},
+                  "vectorizer": {
+                    "multi2vec-aws": {
+                      "imageFields": ["a"]
+                    }
+                  }
+                }
+                    """,
+        },
+        {
+          VectorConfig.class,
+          Multi2VecAwsVectorizer.of(v -> v.imageField("a", 0.1f).imageField("b", 0.1f).textField("c", 0.8f)),
+          """
+                {
+                  "vectorIndexType": "hnsw",
+                  "vectorIndexConfig": {},
+                  "vectorizer": {
+                    "multi2vec-aws": {
+                      "imageFields": ["a", "b"],
+                      "textFields": ["c"],
+                      "weights":{
+                        "imageWeights":[0.1,0.1],
+                        "textWeights":[0.8]
+                       }
+                    }
+                  }
+                }
+                    """,
+        },
+        {
+          VectorConfig.class,
+          Multi2VecCohereVectorizer.of(v -> v.imageFields("a", "b").textFields("c")),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "multi2vec-cohere": {
+                    "imageFields": ["a", "b"],
+                    "textFields": ["c"]
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Multi2VecCohereVectorizer.of(v -> v.imageFields("a")),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "multi2vec-cohere": {
+                    "imageFields": ["a"]
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Multi2VecCohereVectorizer.of(v -> v.imageField("a", 0.1f).imageField("b", 0.1f).textField("c", 0.8f)),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "multi2vec-cohere": {
+                    "imageFields": ["a", "b"],
+                    "textFields": ["c"],
+                    "weights":{
+                      "imageWeights":[0.1,0.1],
+                      "textWeights":[0.8]
+                     }
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Multi2VecGoogleVectorizer.of("project-id", "location", v -> v.imageFields("a", "b").textFields("c").videoFields("d")),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "multi2vec-google": {
+                    "projectId": "project-id",
+                    "location": "location",
+                    "imageFields": ["a", "b"],
+                    "textFields": ["c"],
+                    "videoFields": ["d"]
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Multi2VecGoogleVectorizer.of("project-id", "location", v -> v.imageFields("a")),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "multi2vec-google": {
+                    "projectId": "project-id",
+                    "location": "location",
+                    "imageFields": ["a"]
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Multi2VecGoogleVectorizer.of("project-id", "location",v ->
+            v.imageField("a", 0.1f).imageField("b", 0.1f).textField("c", 0.8f).videoField("d", 0.99f)
+          ),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "multi2vec-google": {
+                    "projectId": "project-id",
+                    "location": "location",
+                    "imageFields": ["a", "b"],
+                    "textFields": ["c"],
+                    "videoFields": ["d"],
+                    "weights":{
+                      "imageWeights":[0.1,0.1],
+                      "textWeights":[0.8],
+                      "videoWeights":[0.99]
+                     }
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Multi2VecJinaAiVectorizer.of(v -> v.imageFields("a", "b").textFields("c")),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "multi2vec-jinaai": {
+                    "imageFields": ["a", "b"],
+                    "textFields": ["c"]
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Multi2VecJinaAiVectorizer.of(v -> v.imageFields("a")),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "multi2vec-jinaai": {
+                    "imageFields": ["a"]
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Multi2VecJinaAiVectorizer.of(v ->
+            v.imageField("a", 0.1f).imageField("b", 0.1f).textField("c", 0.8f)
+          ),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "multi2vec-jinaai": {
+                    "imageFields": ["a", "b"],
+                    "textFields": ["c"],
+                    "weights":{
+                      "imageWeights":[0.1,0.1],
+                      "textWeights":[0.8]
+                     }
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Multi2VecNvidiaVectorizer.of(v -> v.imageFields("a", "b").textFields("c")),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "multi2vec-nvidia": {
+                    "imageFields": ["a", "b"],
+                    "textFields": ["c"]
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Multi2VecNvidiaVectorizer.of(v -> v.imageFields("a")),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "multi2vec-nvidia": {
+                    "imageFields": ["a"]
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Multi2VecNvidiaVectorizer.of(v ->
+            v.imageField("a", 0.1f).imageField("b", 0.1f).textField("c", 0.8f)
+          ),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "multi2vec-nvidia": {
+                    "imageFields": ["a", "b"],
+                    "textFields": ["c"],
+                    "weights":{
+                      "imageWeights":[0.1,0.1],
+                      "textWeights":[0.8]
+                     }
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Multi2VecVoyageAiVectorizer.of(v -> v.imageFields("a", "b").textFields("c")),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "multi2vec-voyageai": {
+                    "imageFields": ["a", "b"],
+                    "textFields": ["c"]
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Multi2VecVoyageAiVectorizer.of(v -> v.imageFields("a")),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "multi2vec-voyageai": {
+                    "imageFields": ["a"]
+                  }
+                }
+              }
+                  """,
+        },
+        {
+          VectorConfig.class,
+          Multi2VecVoyageAiVectorizer.of(v ->
+            v.imageField("a", 0.1f).imageField("b", 0.1f).textField("c", 0.8f)
+          ),
+          """
+              {
+                "vectorIndexType": "hnsw",
+                "vectorIndexConfig": {},
+                "vectorizer": {
+                  "multi2vec-voyageai": {
+                    "imageFields": ["a", "b"],
+                    "textFields": ["c"],
+                    "weights":{
+                      "imageWeights":[0.1,0.1],
+                      "textWeights":[0.8]
+                     }
+                  }
+                }
+              }
+                  """,
         },
 
         // VectorIndex.CustomTypeAdapterFactory

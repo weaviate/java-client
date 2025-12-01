@@ -1,8 +1,6 @@
 package io.weaviate.client6.v1.api.collections.vectorizers;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -26,7 +24,7 @@ public record Text2VecVoyageAiVectorizer(
      */
     @Deprecated @SerializedName("vectorizeClassName") boolean vectorizeCollectionName,
     /** Properties included in the embedding. */
-    @SerializedName("sourceProperties") List<String> sourceProperties,
+    @SerializedName("properties") List<String> sourceProperties,
     /** Vector index configuration. */
     VectorIndex vectorIndex,
     /** Vector quantization method. */
@@ -41,6 +39,13 @@ public record Text2VecVoyageAiVectorizer(
   public Object _self() {
     return this;
   }
+
+  public static String  VOYAGE_3_LARGE =  "voyage-3-large";
+  public static String  VOYAGE_3_5 =  "voyage-3.5";
+  public static String  VOYAGE_3_5_lite =  "voyage-3.5-lite";
+  public static String  VOYAGE_3 =  "voyage-3";
+  public static String  VOYAGE_3_LITE =  "voyage-3-lite";
+  public static String  VOYAGE_CONTEXT_3 =  "voyage-context-3";
 
   public static Text2VecVoyageAiVectorizer of() {
     return of(ObjectBuilder.identity());
@@ -70,7 +75,7 @@ public record Text2VecVoyageAiVectorizer(
     this.dimensions = dimensions;
 
     this.vectorizeCollectionName = false;
-    this.sourceProperties = Collections.emptyList();
+    this.sourceProperties = sourceProperties;
     this.vectorIndex = vectorIndex;
     this.quantization = quantization;
   }
@@ -90,7 +95,7 @@ public record Text2VecVoyageAiVectorizer(
   public static class Builder implements ObjectBuilder<Text2VecVoyageAiVectorizer> {
     private final boolean vectorizeCollectionName = false;
     private Quantization quantization;
-    private List<String> sourceProperties = new ArrayList<>();
+    private List<String> sourceProperties;
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
 
     private String model;
@@ -125,7 +130,7 @@ public record Text2VecVoyageAiVectorizer(
 
     /** Add properties to include in the embedding. */
     public Builder sourceProperties(List<String> properties) {
-      this.sourceProperties.addAll(properties);
+      this.sourceProperties = properties;
       return this;
     }
 

@@ -1,6 +1,5 @@
 package io.weaviate.client6.v1.api.collections.vectorizers;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -20,7 +19,7 @@ public record Text2VecWeaviateVectorizer(
     /** Embedding model. */
     @SerializedName("model") String model,
     /** Properties included in the embedding. */
-    @SerializedName("sourceProperties") List<String> sourceProperties,
+    @SerializedName("properties") List<String> sourceProperties,
     /** Vector index configuration. */
     VectorIndex vectorIndex,
     /** Vector quantization method. */
@@ -63,7 +62,7 @@ public record Text2VecWeaviateVectorizer(
     private String baseUrl;
     private Integer dimensions;
     private String model;
-    private List<String> sourceProperties = new ArrayList<>();
+    private List<String> sourceProperties;
 
     /**
      * Base URL for Weaviate Embeddings Service. This can be omitted when connecting
@@ -99,7 +98,7 @@ public record Text2VecWeaviateVectorizer(
 
     /** Add properties to include in the embedding. */
     public Builder sourceProperties(List<String> properties) {
-      this.sourceProperties.addAll(properties);
+      this.sourceProperties = properties;
       return this;
     }
 

@@ -1,6 +1,5 @@
 package io.weaviate.client6.v1.api.collections.vectorizers;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -17,7 +16,7 @@ public record Text2VecMorphVectorizer(
     @SerializedName("model") String model,
 
     /** Properties included in the embedding. */
-    @SerializedName("sourceProperties") List<String> sourceProperties,
+    @SerializedName("properties") List<String> sourceProperties,
     /** Vector index configuration. */
     VectorIndex vectorIndex,
     /** Vector quantization method. */
@@ -53,7 +52,7 @@ public record Text2VecMorphVectorizer(
 
   public static class Builder implements ObjectBuilder<Text2VecMorphVectorizer> {
     private Quantization quantization;
-    private List<String> sourceProperties = new ArrayList<>();
+    private List<String> sourceProperties;
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
 
     private String baseUrl;
@@ -76,7 +75,7 @@ public record Text2VecMorphVectorizer(
 
     /** Add properties to include in the embedding. */
     public Builder sourceProperties(List<String> properties) {
-      this.sourceProperties.addAll(properties);
+      this.sourceProperties = properties;
       return this;
     }
 

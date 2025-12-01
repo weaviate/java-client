@@ -1,6 +1,5 @@
 package io.weaviate.client6.v1.api.collections.vectorizers;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -15,7 +14,6 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 public record Text2VecGoogleVectorizer(
     @SerializedName("apiEndpoint") String apiEndpoint,
     @SerializedName("model") String model,
-    @SerializedName("modelId") String modelId,
     @SerializedName("titleProperty") String titleProperty,
     @SerializedName("dimensions") Integer dimensions,
     @SerializedName("taskType") TaskType taskType,
@@ -30,7 +28,7 @@ public record Text2VecGoogleVectorizer(
      */
     @Deprecated @SerializedName("vectorizeClassName") boolean vectorizeCollectionName,
     /** Properties included in the embedding. */
-    @SerializedName("sourceProperties") List<String> sourceProperties,
+    @SerializedName("properties") List<String> sourceProperties,
     /** Vector index configuration. */
     VectorIndex vectorIndex,
     /** Vector quantization method. */
@@ -88,7 +86,6 @@ public record Text2VecGoogleVectorizer(
   public Text2VecGoogleVectorizer(
       String apiEndpoint,
       String model,
-      String modelId,
       String titleProperty,
       Integer dimensions,
       TaskType taskType,
@@ -100,7 +97,6 @@ public record Text2VecGoogleVectorizer(
       Quantization quantization) {
     this.apiEndpoint = apiEndpoint;
     this.model = model;
-    this.modelId = modelId;
     this.titleProperty = titleProperty;
     this.dimensions = dimensions;
     this.projectId = projectId;
@@ -116,7 +112,6 @@ public record Text2VecGoogleVectorizer(
     this(
         builder.apiEndpoint,
         builder.model,
-        builder.modelId,
         builder.titleProperty,
         builder.dimensions,
         builder.taskType,
@@ -131,7 +126,7 @@ public record Text2VecGoogleVectorizer(
   public abstract static class Builder implements ObjectBuilder<Text2VecGoogleVectorizer> {
     private final boolean vectorizeCollectionName = false;
     private Quantization quantization;
-    private List<String> sourceProperties = new ArrayList<>();
+    private List<String> sourceProperties;
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
 
     /** Embedding service base URL. */
@@ -140,7 +135,6 @@ public record Text2VecGoogleVectorizer(
     private final String projectId;
 
     private String model;
-    private String modelId;
     private String titleProperty;
     private Integer dimensions;
     private TaskType taskType;
@@ -157,11 +151,6 @@ public record Text2VecGoogleVectorizer(
 
     public Builder model(String model) {
       this.model = model;
-      return this;
-    }
-
-    public Builder modelId(String modelId) {
-      this.modelId = modelId;
       return this;
     }
 
@@ -186,7 +175,7 @@ public record Text2VecGoogleVectorizer(
 
     /** Add properties to include in the embedding. */
     public Builder sourceProperties(List<String> properties) {
-      this.sourceProperties.addAll(properties);
+      this.sourceProperties = properties;
       return this;
     }
 
