@@ -2,9 +2,21 @@
 
 A Java native client for Weaviate.
 
-## Usage
+## ⚠️ New Java client version ⚠️
 
-To start using Weaviate Java client add this dependency to `pom.xml`:
+The **Weaviate Java Client v6** is now available and should be used for all new projects:
+
+- **[Switch to v6 branch](https://github.com/weaviate/java-client/tree/v6)** 
+
+**The v5 client is now deprecated** and will not receive updates for new Weaviate features. We strongly recommend migrating to v6 to access the latest capabilities and improvements.
+
+---
+
+## Usage (v5 - Deprecated)
+
+> **Note:** The information below is for the deprecated v5 client. Please use v6 for new projects.
+
+To start using Weaviate Java client v5, add this dependency to `pom.xml`:
 
 ```xml
 
