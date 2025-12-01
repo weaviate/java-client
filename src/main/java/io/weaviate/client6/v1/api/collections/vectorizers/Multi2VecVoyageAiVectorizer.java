@@ -1,9 +1,8 @@
 package io.weaviate.client6.v1.api.collections.vectorizers;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
 import com.google.gson.annotations.SerializedName;
@@ -25,12 +24,6 @@ public record Multi2VecVoyageAiVectorizer(
     @SerializedName("textFields") List<String> textFields,
     /** Weights of the included properties. */
     @SerializedName("weights") Weights weights,
-    /**
-     * Weaviate defaults to {@code true} if the value is not provided.
-     * To avoid that we send "vectorizeClassName": false all the time
-     * and make it impossible to enable this feature, as it is deprecated.
-     */
-    @Deprecated @SerializedName("vectorizeClassName") boolean vectorizeCollectionName,
     /** Vector index configuration. */
     VectorIndex vectorIndex,
     /** Vector quantization method. */
@@ -74,10 +67,8 @@ public record Multi2VecVoyageAiVectorizer(
       List<String> imageFields,
       List<String> textFields,
       Weights weights,
-      boolean vectorizeCollectionName,
       VectorIndex vectorIndex,
       Quantization quantization) {
-    this.vectorizeCollectionName = false;
     this.baseUrl = baseUrl;
     this.model = model;
     this.truncate = truncate;
@@ -93,12 +84,9 @@ public record Multi2VecVoyageAiVectorizer(
         builder.baseUrl,
         builder.model,
         builder.truncate,
-        builder.imageFields.keySet().stream().toList(),
-        builder.textFields.keySet().stream().toList(),
-        new Weights(
-            builder.imageFields.values().stream().toList(),
-            builder.textFields.values().stream().toList()),
-        builder.vectorizeCollectionName,
+        builder.imageFields,
+        builder.textFields,
+        builder.getWeights(),
         builder.vectorIndex,
         builder.quantization);
   }
@@ -108,8 +96,10 @@ public record Multi2VecVoyageAiVectorizer(
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
     private Quantization quantization;
 
-    private Map<String, Float> imageFields = new LinkedHashMap<>();
-    private Map<String, Float> textFields = new LinkedHashMap<>();
+    private List<String> imageFields;
+    private List<Float> imageWeights;
+    private List<String> textFields;
+    private List<Float> textWeights;
 
     private String baseUrl;
     private String model;
@@ -133,7 +123,7 @@ public record Multi2VecVoyageAiVectorizer(
 
     /** Add BLOB properties to include in the embedding. */
     public Builder imageFields(List<String> fields) {
-      fields.forEach(field -> imageFields.put(field, null));
+      this.imageFields = fields;
       return this;
     }
 
@@ -149,13 +139,20 @@ public record Multi2VecVoyageAiVectorizer(
      * @param weight Custom weight between 0.0 and 1.0.
      */
     public Builder imageField(String field, float weight) {
-      imageFields.put(field, weight);
+      if (this.imageFields == null) {
+        this.imageFields = new ArrayList<>();
+      }
+      if (this.imageWeights == null) {
+        this.imageWeights = new ArrayList<>();
+      }
+      this.imageFields.add(field);
+      this.imageWeights.add(weight);
       return this;
     }
 
     /** Add TEXT properties to include in the embedding. */
     public Builder textFields(List<String> fields) {
-      fields.forEach(field -> textFields.put(field, null));
+      this.textFields = fields;
       return this;
     }
 
@@ -171,8 +168,22 @@ public record Multi2VecVoyageAiVectorizer(
      * @param weight Custom weight between 0.0 and 1.0.
      */
     public Builder textField(String field, float weight) {
-      textFields.put(field, weight);
+      if (this.textFields == null) {
+        this.textFields = new ArrayList<>();
+      }
+      if (this.textWeights == null) {
+        this.textWeights = new ArrayList<>();
+      }
+      this.textFields.add(field);
+      this.textWeights.add(weight);
       return this;
+    }
+
+    protected Weights getWeights() {
+      if (this.textWeights != null || this.imageWeights != null) {
+        return new Weights(this.imageWeights, this.textWeights);
+      }
+      return null;
     }
 
     /**

@@ -24,7 +24,7 @@ public record Text2MultiVecJinaAiVectorizer(
      */
     @Deprecated @SerializedName("vectorizeClassName") boolean vectorizeCollectionName,
     /** Properties included in the embedding. */
-    @SerializedName("sourceProperties") List<String> sourceProperties,
+    @SerializedName("properties") List<String> sourceProperties,
     /** Vector index configuration. */
     VectorIndex vectorIndex,
     /** Vector quantization method. */

@@ -1,6 +1,5 @@
 package io.weaviate.client6.v1.api.collections.vectorizers;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -46,7 +45,7 @@ public record Img2VecNeuralVectorizer(
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
     private Quantization quantization;
 
-    private List<String> imageFields = new ArrayList<>();
+    private List<String> imageFields;
 
     /** Add BLOB properties to include in the embedding. */
     public Builder imageFields(List<String> fields) {

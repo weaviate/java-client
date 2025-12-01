@@ -1,6 +1,5 @@
 package io.weaviate.client6.v1.api.collections.vectorizers;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -52,12 +51,12 @@ public record Multi2MultiVecJinaAiVectorizer(
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
     private Quantization quantization;
 
-    private final List<String> imageFields = new ArrayList<>();
-    private final List<String> textFields = new ArrayList<>();
+    private List<String> imageFields;
+    private List<String> textFields;
 
     /** Add BLOB properties to include in the embedding. */
     public Builder imageFields(List<String> fields) {
-      imageFields.addAll(fields);
+      imageFields = fields;
       return this;
     }
 
@@ -68,7 +67,7 @@ public record Multi2MultiVecJinaAiVectorizer(
 
     /** Add TEXT properties to include in the embedding. */
     public Builder textFields(List<String> fields) {
-      textFields.addAll(fields);
+      textFields = fields;
       return this;
     }
 
