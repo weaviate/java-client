@@ -353,8 +353,8 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    *
    * @param location Geographic region the Google Cloud model runs in.
    */
-  public static Map.Entry<String, VectorConfig> multi2vecGoogle(String location) {
-    return multi2vecGoogle(VectorIndex.DEFAULT_VECTOR_NAME, location);
+  public static Map.Entry<String, VectorConfig> multi2vecGoogle(String projectId, String location) {
+    return multi2vecGoogle(VectorIndex.DEFAULT_VECTOR_NAME, projectId, location);
   }
 
   /**
@@ -364,9 +364,10 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * @param fn       Lambda expression for optional parameters.
    */
   public static Map.Entry<String, VectorConfig> multi2vecGoogle(
+      String projectId,
       String location,
       Function<Multi2VecGoogleVectorizer.Builder, ObjectBuilder<Multi2VecGoogleVectorizer>> fn) {
-    return multi2vecGoogle(VectorIndex.DEFAULT_VECTOR_NAME, location, fn);
+    return multi2vecGoogle(VectorIndex.DEFAULT_VECTOR_NAME, projectId, location, fn);
   }
 
   /**
@@ -375,8 +376,8 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * @param vectorName Vector name.
    * @param location   Geographic region the Google Cloud model runs in.
    */
-  public static Map.Entry<String, VectorConfig> multi2vecGoogle(String vectorName, String location) {
-    return Map.entry(vectorName, Multi2VecGoogleVectorizer.of(location));
+  public static Map.Entry<String, VectorConfig> multi2vecGoogle(String vectorName, String projectId, String location) {
+    return Map.entry(vectorName, Multi2VecGoogleVectorizer.of(projectId, location));
   }
 
   /**
@@ -387,9 +388,9 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * @param fn         Lambda expression for optional parameters.
    */
   public static Map.Entry<String, VectorConfig> multi2vecGoogle(String vectorName,
-      String location,
+      String projectId, String location,
       Function<Multi2VecGoogleVectorizer.Builder, ObjectBuilder<Multi2VecGoogleVectorizer>> fn) {
-    return Map.entry(vectorName, Multi2VecGoogleVectorizer.of(location, fn));
+    return Map.entry(vectorName, Multi2VecGoogleVectorizer.of(projectId, location, fn));
   }
 
   /** Create a vector index with an {@code multi2vec-jinaai} vectorizer. */
