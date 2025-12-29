@@ -260,6 +260,15 @@ public class Weaviate extends WeaviateContainer {
       return this;
     }
 
+    /** User default OIDC provider for integration tests. */
+    public Builder withOIDC() {
+      return withOIDC(
+          "Peuc12y02UA0eAED1dqSjE5HtGUrpBsx",
+          "https://auth.weaviate.cloud/Peuc12y02UA0eAED1dqSjE5HtGUrpBsx",
+          "email", "roles");
+
+    }
+
     public Builder withOIDC(String clientId, String issuer, String usernameClaim, String groupsClaim) {
       enableAnonymousAccess(false);
       environment.put("AUTHENTICATION_OIDC_ENABLED", "true");
