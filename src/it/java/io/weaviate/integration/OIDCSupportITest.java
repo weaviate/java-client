@@ -34,9 +34,7 @@ public class OIDCSupportITest extends ConcurrentTest {
    * Weaviate container that uses WCS-backed OIDC provider.
    * Supports ResourceOwnerPassword and RefreshToken authentication flows.
    */
-  private static final Weaviate wcsContainer = Weaviate.custom()
-      .withOIDC("Peuc12y02UA0eAED1dqSjE5HtGUrpBsx", "https://auth.weaviate.cloud/Peuc12y02UA0eAED1dqSjE5HtGUrpBsx", "email", "roles")
-      .build();
+  private static final Weaviate wcsContainer = Weaviate.custom().withOIDC().build();
 
   private static final String OKTA_CLIENT_ID = "0oa7e9ipdkVZRUcxo5d7";
   private static final String OKTA_CLIENT_SECRET = System.getenv("OKTA_CLIENT_SECRET");
@@ -76,8 +74,7 @@ public class OIDCSupportITest extends ConcurrentTest {
     pingWeaviateAsync(wcsContainer, auth);
   }
 
-  // TODO[g-despot] Fix test after release, descope has been deprecated
-  // @Test
+  @Test
   public void test_resourceOwnerPassword() throws Exception {
     Assume.assumeTrue("WCS_DUMMY_CI_PW is not set", WCS_DUMMY_CI_PW != null && !WCS_DUMMY_CI_PW.isBlank());
     Assume.assumeTrue("no internet connection", hasInternetConnection());
