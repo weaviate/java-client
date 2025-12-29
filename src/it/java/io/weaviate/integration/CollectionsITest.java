@@ -280,6 +280,8 @@ public class CollectionsITest extends ConcurrentTest {
 
   @Test
   public void test_objectTtl() throws IOException {
+    Weaviate.Version.V135.orSkip();
+
     // Arrange
     var nsThings = ns("Things");
 
