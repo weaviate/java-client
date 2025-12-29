@@ -41,6 +41,7 @@ public record CollectionConfig(
     @SerializedName("replicationConfig") Replication replication,
     /** Inverted index configuration. */
     @SerializedName("invertedIndexConfig") InvertedIndex invertedIndex,
+    @SerializedName("objectTtlConfig") ObjectTtl objectTtl,
     /** Reranker modules. */
     List<Reranker> rerankerModules,
     /** Generative modules. */
@@ -68,6 +69,7 @@ public record CollectionConfig(
         .sharding(sharding)
         .replication(replication)
         .invertedIndex(invertedIndex)
+        .objectTtl(objectTtl)
         .rerankerModules(rerankerModules != null ? rerankerModules : new ArrayList<>())
         .generativeModule(generativeModule);
   }
@@ -88,6 +90,7 @@ public record CollectionConfig(
         builder.sharding,
         builder.replication,
         builder.invertedIndex,
+        builder.objectTtl,
         builder.rerankerModules,
         builder.generativeModule);
   }
@@ -104,6 +107,7 @@ public record CollectionConfig(
     private Sharding sharding;
     private Replication replication;
     private InvertedIndex invertedIndex;
+    private ObjectTtl objectTtl;
     private List<Reranker> rerankerModules = new ArrayList<>();
     private Generative generativeModule;
 
@@ -188,7 +192,7 @@ public record CollectionConfig(
 
     /** Configure collection's sharding. */
     public Builder sharding(Function<Sharding.Builder, ObjectBuilder<Sharding>> fn) {
-      this.sharding = Sharding.of(fn);
+      this.sharding(Sharding.of(fn));
       return this;
     }
 
@@ -211,7 +215,7 @@ public record CollectionConfig(
 
     /** Configure replication. */
     public Builder replication(Function<Replication.Builder, ObjectBuilder<Replication>> fn) {
-      this.replication = Replication.of(fn);
+      this.replication(Replication.of(fn));
       return this;
     }
 
@@ -223,7 +227,19 @@ public record CollectionConfig(
 
     /** Change inverted index configurations. */
     public Builder invertedIndex(Function<InvertedIndex.Builder, ObjectBuilder<InvertedIndex>> fn) {
-      this.invertedIndex = InvertedIndex.of(fn);
+      this.invertedIndex(InvertedIndex.of(fn));
+      return this;
+    }
+
+    /** Change inverted index configurations. */
+    public Builder objectTtl(ObjectTtl objectTtl) {
+      this.objectTtl = objectTtl;
+      return this;
+    }
+
+    /** Change object TTL configuration. */
+    public Builder objectTtl(Function<ObjectTtl.Builder, ObjectBuilder<ObjectTtl>> fn) {
+      this.objectTtl(ObjectTtl.of(fn));
       return this;
     }
 

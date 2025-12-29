@@ -9,6 +9,7 @@ import io.weaviate.client6.v1.api.collections.CollectionConfig;
 import io.weaviate.client6.v1.api.collections.Generative;
 import io.weaviate.client6.v1.api.collections.InvertedIndex;
 import io.weaviate.client6.v1.api.collections.MultiTenancy;
+import io.weaviate.client6.v1.api.collections.ObjectTtl;
 import io.weaviate.client6.v1.api.collections.Quantization;
 import io.weaviate.client6.v1.api.collections.Replication;
 import io.weaviate.client6.v1.api.collections.Reranker;
@@ -107,6 +108,16 @@ public record UpdateCollectionRequest(CollectionConfig updated, CollectionConfig
 
     public Builder invertedIndex(Function<InvertedIndex.Builder, ObjectBuilder<InvertedIndex>> fn) {
       this.newCollection.invertedIndex(fn);
+      return this;
+    }
+
+    public Builder objectTtl(ObjectTtl objectTtl) {
+      this.newCollection.objectTtl(objectTtl);
+      return this;
+    }
+
+    public Builder objectTtl(Function<ObjectTtl.Builder, ObjectBuilder<ObjectTtl>> fn) {
+      this.newCollection.objectTtl(fn);
       return this;
     }
 
