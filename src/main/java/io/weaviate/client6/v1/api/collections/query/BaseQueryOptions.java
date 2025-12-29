@@ -26,9 +26,9 @@ public record BaseQueryOptions(
     List<Metadata> returnMetadata,
     List<String> includeVectors) {
 
-  static final String ID_PROPERTY = "_id";
-  static final String CREATION_TIME_PROPERTY = "_creationTimeUnix";
-  static final String LAST_UPDATE_TIME_PROPERTY = "_lastUpdateTimeUnix";
+  public static final String ID_PROPERTY = "_id";
+  public static final String CREATION_TIME_PROPERTY = "_creationTimeUnix";
+  public static final String LAST_UPDATE_TIME_PROPERTY = "_lastUpdateTimeUnix";
 
   private <T extends Object> BaseQueryOptions(Builder<? extends Builder<?, T>, T> builder) {
     this(
