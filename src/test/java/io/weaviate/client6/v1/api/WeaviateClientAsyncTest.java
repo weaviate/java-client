@@ -14,6 +14,9 @@ public class WeaviateClientAsyncTest {
 
   @Test(expected = WeaviateConnectException.class)
   public void testFailedConnection_Local() {
+    // You might see a warning from gRPC saying that the channel has been
+    // garbage-collected before it was closed. The stack trace will probably
+    // show that it's related to this test.
     WeaviateClientAsync.connectToLocal(conn -> conn.port(1234));
   }
 
