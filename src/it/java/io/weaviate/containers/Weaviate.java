@@ -26,7 +26,7 @@ import io.weaviate.client6.v1.internal.VersionSupport.SemanticVersion;
 
 public class Weaviate extends WeaviateContainer {
   public static final String DOCKER_IMAGE = "semitechnologies/weaviate";
-  public static final String LATEST_VERSION = Version.V134.semver.toString();
+  public static final String LATEST_VERSION = Version.V135.semver.toString();
   public static final String VERSION;
 
   static {
@@ -38,9 +38,10 @@ public class Weaviate extends WeaviateContainer {
   private final String containerName;
 
   public enum Version {
-    V132(1, 32, 16),
-    V133(1, 33, 4),
-    V134(1, 34, 0);
+    V132(1, 32, 24),
+    V133(1, 33, 11),
+    V134(1, 34, 7),
+    V135(1, 35, 2);
 
     public final SemanticVersion semver;
 
@@ -257,6 +258,15 @@ public class Weaviate extends WeaviateContainer {
     public Builder enableAnonymousAccess(boolean enable) {
       environment.put("AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED", Boolean.toString(enable));
       return this;
+    }
+
+    /** User default OIDC provider for integration tests. */
+    public Builder withOIDC() {
+      return withOIDC(
+          "Peuc12y02UA0eAED1dqSjE5HtGUrpBsx",
+          "https://auth.weaviate.cloud/Peuc12y02UA0eAED1dqSjE5HtGUrpBsx",
+          "email", "roles");
+
     }
 
     public Builder withOIDC(String clientId, String issuer, String usernameClaim, String groupsClaim) {

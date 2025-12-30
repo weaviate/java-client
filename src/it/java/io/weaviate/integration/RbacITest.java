@@ -49,11 +49,7 @@ public class RbacITest extends ConcurrentTest {
       .withAdminUsers(ADMIN_USER)
       .withApiKeys(API_KEY)
       .withRbac()
-      .withOIDC( // Enable OIDC to have Weaviate return different user types (db, db_env, oidc)
-          "wcs",
-          "https://auth.wcs.api.weaviate.io/auth/realms/SeMI",
-          "email",
-          "groups")
+      .withOIDC() // Enable OIDC to have Weaviate return different user types (db, db_env, oidc)
       .build();
 
   private static final WeaviateClient client = container

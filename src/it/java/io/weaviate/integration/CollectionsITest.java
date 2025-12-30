@@ -13,6 +13,7 @@ import io.weaviate.client6.v1.api.collections.CollectionConfig;
 import io.weaviate.client6.v1.api.collections.DataType;
 import io.weaviate.client6.v1.api.collections.Generative;
 import io.weaviate.client6.v1.api.collections.InvertedIndex;
+import io.weaviate.client6.v1.api.collections.ObjectTtl;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.Quantization;
 import io.weaviate.client6.v1.api.collections.ReferenceProperty;
@@ -21,6 +22,7 @@ import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.config.Shard;
 import io.weaviate.client6.v1.api.collections.config.ShardStatus;
 import io.weaviate.client6.v1.api.collections.generative.DummyGenerative;
+import io.weaviate.client6.v1.api.collections.query.BaseQueryOptions;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.api.collections.vectorizers.SelfProvidedVectorizer;
 import io.weaviate.containers.Container;
@@ -274,5 +276,56 @@ public class CollectionsITest extends ConcurrentTest {
     Assertions.assertThat(config).get()
         .extracting(CollectionConfig::generativeModule).isNotNull()
         .returns(Generative.Kind.DUMMY, Generative::_kind);
+  }
+
+  @Test
+  public void test_objectTtl() throws IOException {
+    Weaviate.Version.V135.orSkip();
+
+    // Arrange
+    var nsThings = ns("Things");
+
+    // Act: create collection
+    var things = client.collections.create(nsThings,
+        c -> c.objectTtl(ttl -> ttl
+            .deleteByCreationTime()
+            .defaultTtlSeconds(120)));
+
+    // Assert: correct Object TTL config
+    var created = things.config.get();
+
+    Assertions.assertThat(created).get()
+        .as("created collection")
+        .extracting(CollectionConfig::objectTtl).isNotNull()
+        .returns(true, ObjectTtl::enabled)
+        .returns(BaseQueryOptions.CREATION_TIME_PROPERTY, ObjectTtl::deleteOn)
+        .returns(120, ObjectTtl::defaultTtlSeconds);
+
+    // Act: update TTL config
+    things.config.update(
+        c -> c.objectTtl(ttl -> ttl
+            .deleteByUpdateTime()
+            .defaultTtlSeconds(400)));
+
+    // Assert: correct Object TTL config
+    var updated = things.config.get();
+
+    Assertions.assertThat(updated).get()
+        .as("updated collection")
+        .extracting(CollectionConfig::objectTtl).isNotNull()
+        .returns(true, ObjectTtl::enabled)
+        .returns(BaseQueryOptions.LAST_UPDATE_TIME_PROPERTY, ObjectTtl::deleteOn)
+        .returns(400, ObjectTtl::defaultTtlSeconds);
+
+    // Act: disable TTL config
+    things.config.update(c -> c.objectTtl(ttl -> ttl.enabled(false)));
+
+    // Assert: correct Object TTL config
+    var disabled = things.config.get();
+
+    Assertions.assertThat(disabled).get()
+        .as("disabled object TTL")
+        .extracting(CollectionConfig::objectTtl).isNotNull()
+        .returns(false, ObjectTtl::enabled);
   }
 }
