@@ -21,6 +21,7 @@ public class BuildInfoTest {
     Assertions.assertThat(BuildInfo.BRANCH).as("branch").isEqualTo(BRANCH);
     Assertions.assertThat(BuildInfo.COMMIT_ID).as("commit.full").isEqualTo(COMMIT_ID);
     Assertions.assertThat(COMMIT_ID).as("commit.abbrev").startsWith(BuildInfo.COMMIT_ID_ABBREV);
+    Assertions.assertThat(BuildInfo.VERSION).as("version").isNotEmpty();
   }
 
   /** Get current non-abbreviated Git commit hash. */
