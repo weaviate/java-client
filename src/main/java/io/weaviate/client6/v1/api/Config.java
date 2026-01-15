@@ -10,6 +10,7 @@ import javax.net.ssl.TrustManagerFactory;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.Timeout;
 import io.weaviate.client6.v1.internal.TokenProvider;
+import io.weaviate.client6.v1.internal.ClientVersion;
 import io.weaviate.client6.v1.internal.grpc.GrpcChannelOptions;
 import io.weaviate.client6.v1.internal.rest.RestTransportOptions;
 
@@ -197,6 +198,7 @@ public record Config(
       if (isWeaviateDomain(httpHost) && authentication != null) {
         setHeader(HEADER_X_WEAVIATE_CLUSTER_URL, "https://" + httpHost + ":" + httpPort);
       }
+      setHeader(ClientVersion.HEADER_X_WEAVIATE_CLIENT, ClientVersion.getVersion());
       return new Config(this);
     }
   }
