@@ -3,7 +3,7 @@ package io.weaviate.client6.v1.api;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-public class ClientVersionTest {
+public class ConfigTest {
 
   private static final String HEADER_KEY = "X-Weaviate-Client";
 
