@@ -11,6 +11,7 @@ import org.junit.Test;
 public class BuildInfoTest {
   private static final String BRANCH = gitBranch();
   private static final String COMMIT_ID = gitCommit();
+  private static final String TAGS = gitTags();
 
   @Test
   public void testBuildInfo() throws IOException {
@@ -21,7 +22,7 @@ public class BuildInfoTest {
     Assertions.assertThat(BuildInfo.BRANCH).as("branch").isEqualTo(BRANCH);
     Assertions.assertThat(BuildInfo.COMMIT_ID).as("commit.full").isEqualTo(COMMIT_ID);
     Assertions.assertThat(COMMIT_ID).as("commit.abbrev").startsWith(BuildInfo.COMMIT_ID_ABBREV);
-    Assertions.assertThat(BuildInfo.VERSION).as("version").isNotEmpty();
+    Assertions.assertThat(BuildInfo.TAGS).as("tags").isEqualTo(TAGS);
   }
 
   /** Get current non-abbreviated Git commit hash. */
@@ -32,6 +33,11 @@ public class BuildInfoTest {
   /** Get current git branch. */
   private static String gitBranch() {
     return runCommand("/usr/bin/git", "branch", "--show-current");
+  }
+
+  /** Get current git tags. */
+  private static String gitTags() {
+    return runCommand("/usr/bin/git", "tag", "--points-at", "HEAD");
   }
 
   /** Run shell command and return the output as multi-line string. */
