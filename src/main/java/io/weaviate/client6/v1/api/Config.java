@@ -192,13 +192,9 @@ public record Config(
           lower.contains("weaviate.cloud");
     }
 
-    private static String getVersion() {
-      return "weaviate-client-java/"
-          + ((BuildInfo.TAGS != null && !BuildInfo.TAGS.isBlank() && !BuildInfo.TAGS.equals("null")) ? BuildInfo.TAGS
-              : (BuildInfo.BRANCH + "-" + BuildInfo.COMMIT_ID_ABBREV));
-    }
-
-    private static final String VERSION = getVersion();
+    private static final String VERSION = "weaviate-client-java/"
+          + ((!BuildInfo.TAGS.isBlank() && BuildInfo.TAGS != "unknown") ? BuildInfo.TAGS
+          : (BuildInfo.BRANCH + "-" + BuildInfo.COMMIT_ID_ABBREV));
 
     @Override
     public Config build() {
