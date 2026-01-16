@@ -7,10 +7,10 @@ import java.util.function.Function;
 
 import javax.net.ssl.TrustManagerFactory;
 
+import io.weaviate.client6.v1.internal.BuildInfo;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.Timeout;
 import io.weaviate.client6.v1.internal.TokenProvider;
-import io.weaviate.client6.v1.internal.ClientVersion;
 import io.weaviate.client6.v1.internal.grpc.GrpcChannelOptions;
 import io.weaviate.client6.v1.internal.rest.RestTransportOptions;
 
@@ -179,6 +179,7 @@ public record Config(
      * Service if an appropriate vectorizer is configured for collection.
      */
     private static final String HEADER_X_WEAVIATE_CLUSTER_URL = "X-Weaviate-Cluster-URL";
+    private static final String HEADER_X_WEAVIATE_CLIENT = "X-Weaviate-Client";
 
     /**
      * isWeaviateDomain returns true if the host matches weaviate.io,
@@ -191,6 +192,14 @@ public record Config(
           lower.contains("weaviate.cloud");
     }
 
+    private static String getVersion() {
+      return "weaviate-client-java/"
+          + ((BuildInfo.TAGS != null && !BuildInfo.TAGS.isBlank() && !BuildInfo.TAGS.equals("null")) ? BuildInfo.TAGS
+              : (BuildInfo.BRANCH + "-" + BuildInfo.COMMIT_ID_ABBREV));
+    }
+
+    private static final String VERSION = getVersion();
+
     @Override
     public Config build() {
       // For clusters hosted on Weaviate Cloud, Weaviate Embedding Service
@@ -198,7 +207,7 @@ public record Config(
       if (isWeaviateDomain(httpHost) && authentication != null) {
         setHeader(HEADER_X_WEAVIATE_CLUSTER_URL, "https://" + httpHost + ":" + httpPort);
       }
-      setHeader(ClientVersion.HEADER_X_WEAVIATE_CLIENT, ClientVersion.getVersion());
+      setHeader(HEADER_X_WEAVIATE_CLIENT, VERSION);
       return new Config(this);
     }
   }

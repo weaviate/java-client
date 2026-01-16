@@ -11,7 +11,7 @@ public final class BuildInfo {
   public static final String BRANCH;
   public static final String COMMIT_ID;
   public static final String COMMIT_ID_ABBREV;
-  public static final String VERSION;
+  public static final String TAGS;
 
   static {
     var properties = new Properties();
@@ -27,12 +27,6 @@ public final class BuildInfo {
     BRANCH = String.valueOf(properties.getOrDefault("git.branch", "unknown"));
     COMMIT_ID = String.valueOf(properties.getOrDefault("git.commit.id.full", "unknown"));
     COMMIT_ID_ABBREV = String.valueOf(properties.getOrDefault("git.commit.id.abbrev", "unknown"));
-
-    String tags = (String) properties.get("git.tags");
-    if (tags != null && !tags.isBlank() && !tags.equals("null")) {
-      VERSION = tags;
-    } else {
-      VERSION = COMMIT_ID_ABBREV;
-    }
+    TAGS = String.valueOf(properties.getOrDefault("git.tags", "unknown"));
   }
 }
