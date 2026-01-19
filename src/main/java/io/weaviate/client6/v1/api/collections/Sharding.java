@@ -8,7 +8,7 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Sharding(
     @SerializedName("virtualPerPhysical") Integer virtualPerPhysical,
-    @SerializedName("desiredCound") Integer desiredCount,
+    @SerializedName("desiredCount") Integer desiredCount,
     @SerializedName("desiredVirtualCount") Integer desiredVirtualCount) {
 
   public static Sharding of(Function<Builder, ObjectBuilder<Sharding>> fn) {
