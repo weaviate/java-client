@@ -104,7 +104,7 @@ public class DefaultRestTransport implements RestTransport {
   private <RequestT, ResponseT> ClassicHttpRequest prepareClassicRequest(RequestT request,
       Endpoint<RequestT, ResponseT> endpoint) {
     var method = endpoint.method(request);
-    var uri = endpoint.requestUrl(transportOptions, request);
+    var uri = uri(endpoint, request);
 
     var req = ClassicRequestBuilder.create(method).setUri(uri);
     var body = endpoint.body(request);

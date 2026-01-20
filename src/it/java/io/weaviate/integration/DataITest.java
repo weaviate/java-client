@@ -108,7 +108,7 @@ public class DataITest extends ConcurrentTest {
         "breed", "ragdoll",
         "img", ragdollPng));
 
-    var got = cats.query.fetchObjectById(ragdoll.metadata().uuid(),
+    var got = cats.query.fetchObjectById(ragdoll.uuid(),
         cat -> cat.returnProperties("img"));
 
     Assertions.assertThat(got).get()
@@ -154,7 +154,7 @@ public class DataITest extends ConcurrentTest {
         ObjectReference.object(albie));
 
     // Assert
-    var johnWithFriends = persons.query.fetchObjectById(john.metadata().uuid(),
+    var johnWithFriends = persons.query.fetchObjectById(john.uuid(),
         query -> query.returnReferences(
             QueryReference.single("hasFriend",
                 friend -> friend.returnProperties("name"))));
@@ -174,7 +174,7 @@ public class DataITest extends ConcurrentTest {
         "hasFriend",
         ObjectReference.object(barbara));
 
-    johnWithFriends = persons.query.fetchObjectById(john.metadata().uuid(),
+    johnWithFriends = persons.query.fetchObjectById(john.uuid(),
         query -> query.returnReferences(
             QueryReference.single("hasFriend",
                 friend -> friend.returnProperties("name"))));
@@ -194,7 +194,7 @@ public class DataITest extends ConcurrentTest {
         ObjectReference.object(barbara));
 
     // Assert
-    johnWithFriends = persons.query.fetchObjectById(john.metadata().uuid(),
+    johnWithFriends = persons.query.fetchObjectById(john.uuid(),
         query -> query.returnReferences(
             QueryReference.single("hasFriend")));
 
@@ -223,7 +223,7 @@ public class DataITest extends ConcurrentTest {
         replace -> replace.properties(Map.of("year", 1819)));
 
     // Assert
-    var replacedIvanhoe = books.query.fetchObjectById(ivanhoe.metadata().uuid());
+    var replacedIvanhoe = books.query.fetchObjectById(ivanhoe.uuid());
 
     Assertions.assertThat(replacedIvanhoe).get()
         .as("has ONLY year property")
@@ -268,7 +268,7 @@ public class DataITest extends ConcurrentTest {
 
     // Assert
     var updIvanhoe = books.query.fetchObjectById(
-        ivanhoe.metadata().uuid(),
+        ivanhoe.uuid(),
         query -> query
             .includeVector()
             .returnReferences(QueryReference.single("writtenBy")));
@@ -395,7 +395,7 @@ public class DataITest extends ConcurrentTest {
     // Assert
     Assertions.assertThat(response.errors()).isEmpty();
 
-    var goodburgAirports = cities.query.fetchObjectById(goodburg.metadata().uuid(),
+    var goodburgAirports = cities.query.fetchObjectById(goodburg.uuid(),
         city -> city.returnReferences(
             QueryReference.single("hasAirports")));
 
