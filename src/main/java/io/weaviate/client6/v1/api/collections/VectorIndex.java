@@ -46,8 +46,8 @@ public interface VectorIndex extends TaggedUnion<VectorIndex.Kind, Object> {
   }
 
   /** Is this vector index of type HNSW? */
-  default Hnsw isHnsw() {
-    return _as(VectorIndex.Kind.HNSW);
+  default boolean isHnsw() {
+    return _is(VectorIndex.Kind.HNSW);
   }
 
   /** Get as {@link Hnsw} instance. */
@@ -56,8 +56,8 @@ public interface VectorIndex extends TaggedUnion<VectorIndex.Kind, Object> {
   }
 
   /** Is this vector index of type FLAT? */
-  default Flat isFlat() {
-    return _as(VectorIndex.Kind.FLAT);
+  default boolean isFlat() {
+    return _is(VectorIndex.Kind.FLAT);
   }
 
   /** Get as {@link Flat} instance. */
@@ -66,8 +66,8 @@ public interface VectorIndex extends TaggedUnion<VectorIndex.Kind, Object> {
   }
 
   /** Is this vector index of type DYNAMIC? */
-  default Dynamic isDynamic() {
-    return _as(VectorIndex.Kind.DYNAMIC);
+  default boolean isDynamic() {
+    return _is(VectorIndex.Kind.DYNAMIC);
   }
 
   /** Get as {@link Dynamic} instance. */
