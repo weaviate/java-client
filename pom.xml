@@ -4,7 +4,7 @@
 
   <groupId>io.weaviate</groupId>
   <artifactId>client</artifactId>
-  <version>5.6.0</version>
+  <version>5.6.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Weaviate Java Client</name>
