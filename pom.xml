@@ -4,7 +4,6 @@
 
   <groupId>io.weaviate</groupId>
   <artifactId>client</artifactId>
-  <packaging>jar</packaging>
   <version>5.5.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
@@ -44,8 +43,76 @@
     <tag>5.5.0</tag>
   </scm>
 
-  <relocation>
-    <groupId>io.weaviate</groupId>
-    <artifactId>client6</artifactId>
-  </relocation>
+  <distributionManagement>
+    <relocation>
+      <groupId>io.weaviate</groupId>
+      <artifactId>client6</artifactId>
+    </relocation>
+  </distributionManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>3.2.8</version>
+          <executions>
+            <execution>
+              <id>sign-artifacts</id>
+              <phase>deploy</phase>
+              <goals>
+                <goal>sign</goal>
+              </goals>
+              <configuration>
+                <!-- ${gpg.keyname} is set in settings.xml from settings.tar.gpg archive -->
+                <useAgent>true</useAgent>
+                <bestPractices>true</bestPractices>
+                <gpgArguments>
+                  <arg>--batch</arg>
+                  <arg>--pinentry-mode</arg>
+                  <arg>loopback</arg>
+                </gpgArguments>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <!-- Maven includes maven-deploy-plugin by default, but we want to delegate -->
+        <!-- deployement to a third-party plugin. We add this entry to override <skip> -->
+        <!-- and ensure we dont' accidentaily publish twice. -->
+        <plugin>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>3.0.0-M1</version>
+          <configuration>
+            <skip>true</skip>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.sonatype.central</groupId>
+          <artifactId>central-publishing-maven-plugin</artifactId>
+          <version>0.8.0</version>
+          <extensions>true</extensions>
+          <configuration>
+            <!-- Auto-publishing is disabled by default to prevent accidental deployments. -->
+            <!-- When testing, it is therefore safe to run `mvn deploy` from your local machine, -->
+            <!-- as publishing will require manual action. -->
+            <!-- In CI we override this option to true and waitUtil=published. -->
+            <autoPublish>${central-publishing.autoPublish}</autoPublish>
+            <waitUntil>${central-publishing.waitUntil}</waitUntil>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.sonatype.central</groupId>
+        <artifactId>central-publishing-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 </project>
