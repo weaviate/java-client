@@ -65,13 +65,13 @@
     <logback.version>1.5.18</logback.version>
     <mock-server.version>5.14.0</mock-server.version>
     <jackson.version>2.21</jackson.version>
-    <oauth2-oidc-sdk.version>11.31.1</oauth2-oidc-sdk.version>
+    <oauth2-oidc-sdk.version>11.31</oauth2-oidc-sdk.version>
     <mock-server.version>5.15.0</mock-server.version>
-    <protobuf.java.version>4.33.4</protobuf.java.version>
-    <protobuf.java-util.version>4.33.4</protobuf.java-util.version>
-    <grpc-netty-shaded.version>1.78.0</grpc-netty-shaded.version>
-    <grpc-protobuf.version>1.78.0</grpc-protobuf.version>
-    <grpc-stub.version>1.78.0</grpc-stub.version>
+    <protobuf.java.version>3.25.8</protobuf.java.version>
+    <protobuf.java-util.version>3.25.8</protobuf.java-util.version>
+    <grpc-netty-shaded.version>1.76.2</grpc-netty-shaded.version>
+    <grpc-protobuf.version>1.76.2</grpc-protobuf.version>
+    <grpc-stub.version>1.76.2</grpc-stub.version>
     <annotations-api.version>6.0.53</annotations-api.version>
   </properties>
 
