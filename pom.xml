@@ -54,24 +54,24 @@
     <maven.compiler.release>17</maven.compiler.release>
     <lombok.version>1.18.42</lombok.version>
     <gson.version>2.13.2</gson.version>
-    <httpclient.version>5.5.1</httpclient.version>
+    <httpclient.version>5.6</httpclient.version>
     <lang3.version>3.20.0</lang3.version>
     <junit.version>4.13.2</junit.version>
-    <testcontainers.version>2.0.2</testcontainers.version>
+    <testcontainers.version>2.0.3</testcontainers.version>
     <assertj-core.version>3.27.6</assertj-core.version>
     <jparams.version>1.0.4</jparams.version>
-    <mockito.version>5.20.0</mockito.version>
+    <mockito.version>5.21.0</mockito.version>
     <slf4j.version>2.0.17</slf4j.version>
     <logback.version>1.5.18</logback.version>
     <mock-server.version>5.14.0</mock-server.version>
-    <jackson.version>2.20</jackson.version>
-    <oauth2-oidc-sdk.version>11.30.1</oauth2-oidc-sdk.version>
+    <jackson.version>2.21</jackson.version>
+    <oauth2-oidc-sdk.version>11.31.1</oauth2-oidc-sdk.version>
     <mock-server.version>5.15.0</mock-server.version>
-    <protobuf.java.version>4.33.1</protobuf.java.version>
-    <protobuf.java-util.version>4.33.1</protobuf.java-util.version>
-    <grpc-netty-shaded.version>1.77.0</grpc-netty-shaded.version>
-    <grpc-protobuf.version>1.77.0</grpc-protobuf.version>
-    <grpc-stub.version>1.77.0</grpc-stub.version>
+    <protobuf.java.version>4.33.4</protobuf.java.version>
+    <protobuf.java-util.version>4.33.4</protobuf.java-util.version>
+    <grpc-netty-shaded.version>1.78.0</grpc-netty-shaded.version>
+    <grpc-protobuf.version>1.78.0</grpc-protobuf.version>
+    <grpc-stub.version>1.78.0</grpc-stub.version>
     <annotations-api.version>6.0.53</annotations-api.version>
   </properties>
 
