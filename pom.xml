@@ -4,7 +4,7 @@
 
   <groupId>io.weaviate</groupId>
   <artifactId>client</artifactId>
-  <version>5.5.1-SNAPSHOT</version>
+  <version>5.6.0</version>
   <packaging>pom</packaging>
 
   <name>Weaviate Java Client</name>
@@ -40,7 +40,7 @@
     <connection>scm:git:git://github.com/weaviate/java-client.git</connection>
     <developerConnection>scm:git:ssh://github.com:weaviate/java-client.git</developerConnection>
     <url>https://github.com/weaviate/java-client/tree/v5</url>
-    <tag>5.5.0</tag>
+    <tag>5.6.0</tag>
   </scm>
 
   <distributionManagement>
