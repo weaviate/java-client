@@ -1,0 +1,103 @@
+package io.weaviate.client6.v1.api.collections.vectorizers;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Function;
+
+import com.google.gson.annotations.SerializedName;
+
+import io.weaviate.client6.v1.api.collections.Quantization;
+import io.weaviate.client6.v1.api.collections.VectorConfig;
+import io.weaviate.client6.v1.api.collections.VectorIndex;
+import io.weaviate.client6.v1.internal.ObjectBuilder;
+
+public record Text2VecMorphVectorizer(
+    @SerializedName("baseURL") String baseUrl,
+    @SerializedName("model") String model,
+
+    /** Properties included in the embedding. */
+    @SerializedName("properties") List<String> sourceProperties,
+    /** Vector index configuration. */
+    VectorIndex vectorIndex,
+    /** Vector quantization method. */
+    Quantization quantization) implements VectorConfig {
+
+  @Override
+  public VectorConfig.Kind _kind() {
+    return VectorConfig.Kind.TEXT2VEC_MORPH;
+  }
+
+  @Override
+  public Object _self() {
+    return this;
+  }
+
+  public static Text2VecMorphVectorizer of() {
+    return of(ObjectBuilder.identity());
+  }
+
+  public static Text2VecMorphVectorizer of(
+      Function<Builder, ObjectBuilder<Text2VecMorphVectorizer>> fn) {
+    return fn.apply(new Builder()).build();
+  }
+
+  public Text2VecMorphVectorizer(Builder builder) {
+    this(
+        builder.baseUrl,
+        builder.model,
+        builder.sourceProperties,
+        builder.vectorIndex,
+        builder.quantization);
+  }
+
+  public static class Builder implements ObjectBuilder<Text2VecMorphVectorizer> {
+    private Quantization quantization;
+    private List<String> sourceProperties;
+    private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
+
+    private String baseUrl;
+    private String model;
+
+    public Builder baseUrl(String baseUrl) {
+      this.baseUrl = baseUrl;
+      return this;
+    }
+
+    public Builder model(String model) {
+      this.model = model;
+      return this;
+    }
+
+    /** Add properties to include in the embedding. */
+    public Builder sourceProperties(String... properties) {
+      return sourceProperties(Arrays.asList(properties));
+    }
+
+    /** Add properties to include in the embedding. */
+    public Builder sourceProperties(List<String> properties) {
+      this.sourceProperties = properties;
+      return this;
+    }
+
+    /**
+     * Override default vector index configuration.
+     *
+     * <a href=
+     * "https://docs.weaviate.io/weaviate/config-refs/indexing/vector-index#hnsw-index-parameters">HNSW</a>
+     * is the default vector index.
+     */
+    public Builder vectorIndex(VectorIndex vectorIndex) {
+      this.vectorIndex = vectorIndex;
+      return this;
+    }
+
+    public Builder quantization(Quantization quantization) {
+      this.quantization = quantization;
+      return this;
+    }
+
+    public Text2VecMorphVectorizer build() {
+      return new Text2VecMorphVectorizer(this);
+    }
+  }
+}

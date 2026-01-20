@@ -2,7 +2,7 @@
 Contributing works pretty easy. You can do a pull request or you can commit if you are part of a Weaviate team.
 
 ### Code of Conduct
-Please note that this project is released with a Contributor Code of Conduct. By participating in this project you agree to abide by its terms. 
+Please note that this project is released with a Contributor Code of Conduct. By participating in this project you agree to abide by its terms.
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 
 
@@ -26,6 +26,22 @@ AKA: smart commits
 ### Pull Request
 
 If you create a pull request without smart commits, the pull request will be [squashed into](https://blog.github.com/2016-04-01-squash-your-commits/) one git commit.
+
+### Updating dependencies
+
+It's a good practice to periodically check for possible dependency upgrades. Ideally, we should do it before every release.
+
+```sh
+mvn versions:display-property-updates
+```
+
+If appropriate, update dependency version with this command:
+
+```sh
+mvn versions:update-properties
+```
+
+Commit all version upgrades in a single commit, unless there's a good reason not to.
 
 ### Contributor License Agreement
 

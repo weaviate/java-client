@@ -3,17 +3,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>io.weaviate</groupId>
-  <artifactId>client</artifactId>
-  <version>5.6.1-SNAPSHOT</version>
-  <packaging>pom</packaging>
+  <artifactId>client6</artifactId>
+  <packaging>jar</packaging>
+  <version>6.0.2-SNAPSHOT</version>
 
-  <name>Weaviate Java Client</name>
-  <description>
-    This artifact has been relocated to io.weaviate.client6.
-    The new version includes a number of breaking changes.
-    Please consult our migration guide: https://weaviate.io/blog/weaviate-java-client-v6#migration-guide.
-  </description>
-  <url>https://github.com/weaviate/java-client/tree/v5</url>
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>Official Java client for Weaviate Vector Search Engine</description>
+  <url>https://github.com/weaviate/java-client</url>
 
   <organization>
     <name>Weaviate B.V.</name>
@@ -34,25 +30,376 @@
       <organization>Weaviate B.V.</organization>
       <organizationUrl>https://www.weaviate.io</organizationUrl>
     </developer>
+    <developer>
+      <name>Dyma Solovei</name>
+      <email>dyma@weaviate.io</email>
+      <organization>Weaviate B.V.</organization>
+      <organizationUrl>https://www.weaviate.io</organizationUrl>
+    </developer>
   </developers>
 
   <scm>
     <connection>scm:git:git://github.com/weaviate/java-client.git</connection>
     <developerConnection>scm:git:ssh://github.com:weaviate/java-client.git</developerConnection>
-    <url>https://github.com/weaviate/java-client/tree/v5</url>
-    <tag>5.6.0</tag>
+    <url>https://github.com/weaviate/java-client/tree/main</url>
+    <tag>6.0.1</tag>
   </scm>
 
-  <distributionManagement>
-    <relocation>
-      <groupId>io.weaviate</groupId>
-      <artifactId>client6</artifactId>
-    </relocation>
-  </distributionManagement>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.sourceEncoding>UTF-8</project.reporting.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.release>17</maven.compiler.release>
+    <lombok.version>1.18.42</lombok.version>
+    <gson.version>2.13.2</gson.version>
+    <httpclient.version>5.6</httpclient.version>
+    <lang3.version>3.20.0</lang3.version>
+    <junit.version>4.13.2</junit.version>
+    <testcontainers.version>2.0.3</testcontainers.version>
+    <assertj-core.version>3.27.6</assertj-core.version>
+    <jparams.version>1.0.4</jparams.version>
+    <mockito.version>5.21.0</mockito.version>
+    <slf4j.version>2.0.17</slf4j.version>
+    <logback.version>1.5.18</logback.version>
+    <mock-server.version>5.14.0</mock-server.version>
+    <jackson.version>2.21</jackson.version>
+    <oauth2-oidc-sdk.version>11.31.1</oauth2-oidc-sdk.version>
+    <mock-server.version>5.15.0</mock-server.version>
+    <protobuf.java.version>4.33.4</protobuf.java.version>
+    <protobuf.java-util.version>4.33.4</protobuf.java-util.version>
+    <grpc-netty-shaded.version>1.78.0</grpc-netty-shaded.version>
+    <grpc-protobuf.version>1.78.0</grpc-protobuf.version>
+    <grpc-stub.version>1.78.0</grpc-stub.version>
+    <annotations-api.version>6.0.53</annotations-api.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <version>${protobuf.java.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java-util</artifactId>
+      <version>${protobuf.java-util.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-netty-shaded</artifactId>
+        <version>${grpc-netty-shaded.version}</version>
+      </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-protobuf</artifactId>
+      <version>${grpc-protobuf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-stub</artifactId>
+      <version>${grpc-stub.version}</version>
+    </dependency>
+    <dependency> <!-- necessary for Java 9+ -->
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>annotations-api</artifactId>
+      <version>${annotations-api.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents.client5</groupId>
+      <artifactId>httpclient5</artifactId>
+      <version>${httpclient.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>${lombok.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>${gson.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>${lang3.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.nimbusds</groupId>
+      <artifactId>oauth2-oidc-sdk</artifactId>
+      <version>${oauth2-oidc-sdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers-weaviate</artifactId>
+      <version>${testcontainers.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers-minio</artifactId>
+      <version>${testcontainers.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${assertj-core.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.jparams</groupId>
+      <artifactId>jparams-junit4</artifactId>
+      <version>${jparams.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-nop</artifactId>
+        <version>${slf4j.version}</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mock-server</groupId>
+      <artifactId>mockserver-netty-no-dependencies</artifactId>
+      <version>${mock-server.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>${jackson.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
   <build>
+    <extensions>
+      <extension>
+        <groupId>kr.motd.maven</groupId>
+        <artifactId>os-maven-plugin</artifactId>
+        <version>1.7.1</version>
+      </extension>
+    </extensions>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>org.xolstice.maven.plugins</groupId>
+          <artifactId>protobuf-maven-plugin</artifactId>
+          <version>0.6.1</version>
+          <configuration>
+            <protocArtifact>com.google.protobuf:protoc:3.24.0:exe:${os.detected.classifier}</protocArtifact>
+            <outputDirectory>src/main/java</outputDirectory>
+            <pluginId>grpc-java</pluginId>
+            <pluginArtifact>io.grpc:protoc-gen-grpc-java:1.58.0:exe:${os.detected.classifier}</pluginArtifact>
+            <outputDirectory>src/main/java</outputDirectory>
+            <clearOutputDirectory>false</clearOutputDirectory>
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>compile</goal>
+                <goal>compile-custom</goal>
+                <goal>test-compile</goal>
+                <goal>test-compile-custom</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.2.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.13.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.5.4</version>
+          <configuration>
+            <trimStackTrace>false</trimStackTrace>
+            <parallel>classes</parallel>
+            <forkCount>4</forkCount>
+            <reuseForks>true</reuseForks>
+            <threadCount>1</threadCount>
+            <perCoreThreadCount>true</perCoreThreadCount>
+            <runOrder>balanced</runOrder>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.projectlombok</groupId>
+          <artifactId>lombok-maven-plugin</artifactId>
+          <version>1.18.20.0</version>
+          <executions>
+            <execution>
+              <id>delombok-sources</id>
+              <phase>generate-sources</phase>
+              <goals>
+                <goal>delombok</goal>
+              </goals>
+              <configuration>
+                <sourceDirectory>src/main/java</sourceDirectory>
+                <outputDirectory>${project.build.directory}/delombok</outputDirectory>
+                <addOutputDirectory>false</addOutputDirectory>
+                <encoding>UTF-8</encoding>
+              </configuration>
+            </execution>
+          </executions>
+          <dependencies>
+            <dependency>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <version>${lombok.version}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <version>3.0.0</version>
+          <executions>
+            <execution>
+              <id>generate-delomboked-sources-jar</id>
+              <phase>package</phase>
+              <goals>
+                <goal>run</goal>
+              </goals>
+              <configuration>
+                <target>
+                  <jar destfile="${project.build.directory}/${project.build.finalName}-sources.jar" basedir="${project.build.directory}/delombok"/>
+                </target>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>versions-maven-plugin</artifactId>
+          <version>2.18.0</version>
+          <configuration>
+            <allowSnapshots>false</allowSnapshots>
+            <generateBackupPoms>false</generateBackupPoms>
+            <ruleSet>
+              <ignoreVersions>
+                <ignoreVersion>
+                  <type>regex</type>
+                  <version>(.+-SNAPSHOT|.+-(M|RC|rc)\d|.+-(alpha|beta)\d?)</version>
+                </ignoreVersion>
+              </ignoreVersions>
+            </ruleSet>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>3.2.0</version>
+          <executions>
+            <execution>
+              <id>attach-delomboked-sources-jar</id>
+              <phase>package</phase>
+              <goals>
+                <goal>attach-artifact</goal>
+              </goals>
+              <configuration>
+                <artifacts>
+                  <artifact>
+                    <file>${project.build.directory}/${project.build.finalName}-sources.jar</file>
+                    <type>jar</type>
+                    <classifier>sources</classifier>
+                  </artifact>
+                </artifacts>
+              </configuration>
+            </execution>
+            <execution>
+              <id>add-test-source</id>
+              <phase>generate-test-sources</phase>
+              <goals>
+                <goal>add-test-source</goal>
+              </goals>
+              <configuration>
+                <sources>
+                  <source>${project.basedir}/src/it/java</source>
+                  <source>${project.basedir}/src/it/resources</source>
+                </sources>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>pl.project13.maven</groupId>
+            <artifactId>git-commit-id-plugin</artifactId>
+            <version>4.9.10</version>
+            <executions>
+                <execution>
+                    <id>get-the-git-infos</id>
+                    <goals>
+                        <goal>revision</goal>
+                    </goals>
+                    <phase>initialize</phase>
+                </execution>
+            </executions>
+            <configuration>
+                <useNativeGit>true</useNativeGit>
+                <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                <generateGitPropertiesFilename>${project.build.outputDirectory}/client6-git.properties</generateGitPropertiesFilename>
+                <commitIdGenerationMode>full</commitIdGenerationMode>
+                <failOnNoGitDirectory>false</failOnNoGitDirectory>
+                <failOnUnableToExtractRepoInfo>false</failOnUnableToExtractRepoInfo>
+            </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>3.11.2</version>
+          <executions>
+            <execution>
+              <id>attach-javadocs</id>
+              <phase>package</phase>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <sourcepath>${project.build.directory}/delombok</sourcepath>
+            <!--Disable warnings about missing docstrings.-->
+            <doclint>all,-missing</doclint>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>3.2.1</version>
+          <executions>
+            <execution>
+              <id>attach-sources</id>
+              <phase>package</phase>
+              <goals>
+                <goal>jar-no-fork</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-gpg-plugin</artifactId>
@@ -77,6 +424,15 @@
             </execution>
           </executions>
         </plugin>
+        <plugin>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.2.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>3.0.0-M1</version>
+        </plugin>
+
         <!-- Maven includes maven-deploy-plugin by default, but we want to delegate -->
         <!-- deployement to a third-party plugin. We add this entry to override <skip> -->
         <!-- and ensure we dont' accidentaily publish twice. -->
@@ -102,9 +458,85 @@
             <waitUntil>${central-publishing.waitUntil}</waitUntil>
           </configuration>
         </plugin>
+
+        <plugin>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.9.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-project-info-reports-plugin</artifactId>
+          <version>3.1.1my</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>3.6.0</version>
+          <configuration>
+            <createDependencyReducedPom>false</createDependencyReducedPom>
+            <shadedArtifactAttached>true</shadedArtifactAttached>
+            <shadedClassifierName>all</shadedClassifierName>
+            <transformers>
+              <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+            </transformers>
+            <!-- Common gRPC dependencies may appear in user's project under different, -->
+            <!-- incompatible versions. Relocating them in a shaded version of the package -->
+            <!-- avoids dependency conflicts. -->
+            <relocations>
+              <relocation>
+                <pattern>com.google.protobuf</pattern>
+                <shadedPattern>io.weaviate.shaded.com.google.protobuf</shadedPattern>
+              </relocation>
+              <relocation>
+                <pattern>io.grpc</pattern>
+                <shadedPattern>io.weaviate.shaded.io.grpc</shadedPattern>
+              </relocation>
+              <relocation>
+                <pattern>org.slf4j</pattern>
+                <shadedPattern>io.weaviate.shaded.org.slf4j</shadedPattern>
+              </relocation>
+            </relocations>
+          </configuration>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <goals>
+                <goal>shade</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
+      <plugin>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.xolstice.maven.plugins</groupId>
+        <artifactId>protobuf-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+      <plugin>
+            <groupId>pl.project13.maven</groupId>
+            <artifactId>git-commit-id-plugin</artifactId>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-gpg-plugin</artifactId>

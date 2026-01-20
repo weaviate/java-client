@@ -1,0 +1,793 @@
+package io.weaviate.integration;
+
+import java.io.IOException;
+import java.time.OffsetDateTime;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.ExecutionException;
+
+import org.assertj.core.api.Assertions;
+import org.assertj.core.api.InstanceOfAssertFactories;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.rules.TestRule;
+
+import io.weaviate.ConcurrentTest;
+import io.weaviate.client6.v1.api.WeaviateApiException;
+import io.weaviate.client6.v1.api.WeaviateClient;
+import io.weaviate.client6.v1.api.collections.Generative;
+import io.weaviate.client6.v1.api.collections.Property;
+import io.weaviate.client6.v1.api.collections.ReferenceProperty;
+import io.weaviate.client6.v1.api.collections.Reranker;
+import io.weaviate.client6.v1.api.collections.VectorConfig;
+import io.weaviate.client6.v1.api.collections.Vectors;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
+import io.weaviate.client6.v1.api.collections.data.ObjectReference;
+import io.weaviate.client6.v1.api.collections.generate.GenerativeObject;
+import io.weaviate.client6.v1.api.collections.generate.TaskOutput;
+import io.weaviate.client6.v1.api.collections.generative.DummyGenerative;
+import io.weaviate.client6.v1.api.collections.query.Filter;
+import io.weaviate.client6.v1.api.collections.query.GroupBy;
+import io.weaviate.client6.v1.api.collections.query.Metadata;
+import io.weaviate.client6.v1.api.collections.query.QueryResponseGroup;
+import io.weaviate.client6.v1.api.collections.query.Rerank;
+import io.weaviate.client6.v1.api.collections.query.SortBy;
+import io.weaviate.client6.v1.api.collections.query.Target;
+import io.weaviate.client6.v1.api.collections.rerankers.DummyReranker;
+import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
+import io.weaviate.client6.v1.api.collections.vectorindex.MultiVector;
+import io.weaviate.containers.Container;
+import io.weaviate.containers.Container.ContainerGroup;
+import io.weaviate.containers.Img2VecNeural;
+import io.weaviate.containers.Model2Vec;
+import io.weaviate.containers.Weaviate;
+
+public class SearchITest extends ConcurrentTest {
+  private static final ContainerGroup compose = Container.compose(
+      Weaviate.custom()
+          .withModel2VecUrl(Model2Vec.URL)
+          .withImageInference(Img2VecNeural.URL, Img2VecNeural.MODULE)
+          .addModules(Generative.Kind.DUMMY.jsonValue(), Reranker.Kind.DUMMY.jsonValue())
+          .build(),
+      Container.IMG2VEC_NEURAL,
+      Container.MODEL2VEC);
+  @ClassRule // Bind containers to the lifetime of the test
+  public static final TestRule _rule = compose.asTestRule();
+  private static final WeaviateClient client = compose.getClient();
+
+  private static final String COLLECTION = unique("Things");
+  private static final String VECTOR_INDEX = "bring_your_own";
+  private static final List<String> CATEGORIES = List.of("red", "green");
+
+  /**
+   * One of the inserted vectors which will be used as target vector for search.
+   */
+  private static float[] searchVector;
+
+  @BeforeClass
+  public static void beforeAll() throws IOException {
+    createTestCollection();
+    var created = populateTest(10);
+    searchVector = created.values().iterator().next();
+  }
+
+  @Test
+  public void testNearVector() {
+    var things = client.collections.use(COLLECTION);
+    var result = things.query.nearVector(searchVector,
+        opt -> opt
+            .distance(2f)
+            .limit(3)
+            .returnMetadata(Metadata.DISTANCE));
+
+    Assertions.assertThat(result.objects()).hasSize(3);
+    float maxDistance = Collections.max(result.objects(),
+        Comparator.comparing(obj -> obj.queryMetadata().distance())).queryMetadata().distance();
+    Assertions.assertThat(maxDistance).isLessThanOrEqualTo(2f);
+  }
+
+  @Test
+  public void testNearVector_groupBy() {
+    var things = client.collections.use(COLLECTION);
+    var result = things.query.nearVector(searchVector,
+        opt -> opt.distance(10f),
+        GroupBy.property("category", 2, 5));
+
+    Assertions.assertThat(result.groups())
+        .as("group per category").containsOnlyKeys(CATEGORIES)
+        .hasSizeLessThanOrEqualTo(2)
+        .allSatisfy((category, group) -> {
+          Assertions.assertThat(group)
+              .as("group name").returns(category, QueryResponseGroup::name);
+          Assertions.assertThat(group.numberOfObjects())
+              .as("[%s] has 1+ object", category).isLessThanOrEqualTo(5L);
+        });
+
+    Assertions.assertThat(result.objects())
+        .as("object belongs a group")
+        .allMatch(obj -> result.groups().get(obj.belongsToGroup()).objects().contains(obj));
+  }
+
+  /**
+   * Insert 10 objects with random vectors.
+   *
+   * @return IDs of inserted objects and their corresponding vectors.
+   */
+  private static Map<String, float[]> populateTest(int n) throws IOException {
+    var created = new HashMap<String, float[]>();
+
+    var things = client.collections.use(COLLECTION);
+    for (int i = 0; i < n; i++) {
+      var vector = randomVector(10, -.01f, .001f);
+      var object = things.data.insert(
+          Map.of("category", CATEGORIES.get(i % CATEGORIES.size())),
+          metadata -> metadata
+              .uuid(randomUUID())
+              .vectors(Vectors.of(VECTOR_INDEX, vector)));
+
+      created.put(object.uuid(), vector);
+    }
+
+    return created;
+  }
+
+  /**
+   * Create {@link COLLECTION} with {@link VECTOR_INDEX} vector index.
+   *
+   * @throws IOException
+   */
+  private static void createTestCollection() throws IOException {
+    client.collections.create(COLLECTION, cfg -> cfg
+        .properties(Property.text("category"))
+        .vectorConfig(VectorConfig.selfProvided(VECTOR_INDEX)));
+  }
+
+  @Test
+  public void testNearText() throws IOException {
+    var nsSongs = ns("Songs");
+    client.collections.create(nsSongs,
+        col -> col
+            .properties(Property.text("title"))
+            .vectorConfig(VectorConfig.text2vecModel2Vec()));
+
+    var songs = client.collections.use(nsSongs);
+    var submarine = songs.data.insert(Map.of("title", "Yellow Submarine"));
+    songs.data.insert(Map.of("title", "Run Through The Jungle"));
+    songs.data.insert(Map.of("title", "Welcome To The Jungle"));
+
+    var result = songs.query.nearText("forest",
+        opt -> opt
+            .distance(0.9f)
+            .moveTo(.98f, to -> to.concepts("tropical"))
+            .moveAway(.4f, away -> away.uuids(submarine.uuid()))
+            .returnProperties("title"));
+
+    Assertions.assertThat(result.objects()).hasSize(2)
+        .extracting(WeaviateObject::properties).allSatisfy(
+            properties -> Assertions.assertThat(properties)
+                .allSatisfy((_k, v) -> Assertions.assertThat((String) v).contains("Jungle")));
+  }
+
+  @Test
+  public void testNearText_groupBy() throws IOException {
+    var vectorizer = VectorConfig.text2vecModel2Vec();
+
+    var nsArtists = ns("Artists");
+    client.collections.create(nsArtists,
+        col -> col
+            .properties(Property.text("name"))
+            .vectorConfig(vectorizer));
+
+    var artists = client.collections.use(nsArtists);
+    var beatles = artists.data.insert(Map.of("name", "Beatles"));
+    var ccr = artists.data.insert(Map.of("name", "CCR"));
+
+    var nsSongs = ns("Songs");
+    client.collections.create(nsSongs,
+        col -> col
+            .properties(Property.text("title"))
+            .references(ReferenceProperty.to("performedBy", nsArtists))
+            .vectorConfig(vectorizer));
+
+    var songs = client.collections.use(nsSongs);
+    songs.data.insert(Map.of("title", "Yellow Submarine"),
+        s -> s.reference("performedBy", ObjectReference.objects(beatles)));
+    songs.data.insert(Map.of("title", "Run Through The Jungle"),
+        s -> s.reference("performedBy", ObjectReference.objects(ccr)));
+
+    var result = songs.query.nearText("nature",
+        opt -> opt.returnProperties("title"),
+        GroupBy.property("performedBy", 2, 1));
+
+    Assertions.assertThat(result.groups()).hasSize(2)
+        .containsOnlyKeys(
+            "weaviate://localhost/%s/%s".formatted(nsArtists, beatles.uuid()),
+            "weaviate://localhost/%s/%s".formatted(nsArtists, ccr.uuid()));
+  }
+
+  @Test
+  public void testNearImage() throws IOException {
+    var nsCats = ns("Cats");
+
+    client.collections.create(nsCats,
+        collection -> collection
+            .properties(
+                Property.text("breed"),
+                Property.blob("img"))
+            .vectorConfig(VectorConfig.img2vecNeural(
+                i2v -> i2v.imageFields("img"))));
+
+    var cats = client.collections.use(nsCats);
+    cats.data.insert(Map.of(
+        "breed", "ragdoll",
+        "img", EncodedMedia.IMAGE));
+
+    var got = cats.query.nearImage(EncodedMedia.IMAGE,
+        opt -> opt.returnProperties("breed"));
+
+    Assertions.assertThat(got.objects()).hasSize(1).first()
+        .extracting(WeaviateObject::properties, InstanceOfAssertFactories.MAP)
+        .extractingByKey("breed").isEqualTo("ragdoll");
+  }
+
+  @Test
+  public void testFetchObjectsWithFilters() throws IOException {
+    var nsHats = ns("Hats");
+
+    client.collections.create(nsHats,
+        collection -> collection
+            .properties(
+                Property.text("colour"),
+                Property.integer("size")));
+
+    var hats = client.collections.use(nsHats);
+
+    /* blackHat */ hats.data.insert(Map.of("colour", "black", "size", 6));
+    var redHat = hats.data.insert(Map.of("colour", "red", "size", 5));
+    var greenHat = hats.data.insert(Map.of("colour", "green", "size", 1));
+    var hugeHat = hats.data.insert(Map.of("colour", "orange", "size", 40));
+
+    var got = hats.query.fetchObjects(
+        query -> query.filters(
+            Filter.or(
+                Filter.property("colour").eq("orange"),
+                Filter.and(
+                    Filter.property("size").gte(1),
+                    Filter.property("size").lt(6)))));
+
+    Assertions.assertThat(got.objects())
+        .extracting(WeaviateObject::uuid)
+        .containsOnly(
+            redHat.uuid(),
+            greenHat.uuid(),
+            hugeHat.uuid());
+
+  }
+
+  @Test
+  public void testFetchObjectsWithSort() throws Exception {
+    var nsNumbers = ns("Numbers");
+
+    // Arrange
+    client.collections.create(nsNumbers,
+        c -> c.properties(Property.integer("value")));
+
+    var numbers = client.collections.use(nsNumbers);
+
+    numbers.data.insert(Map.of("value", 1L));
+    numbers.data.insert(Map.of("value", 2L));
+    numbers.data.insert(Map.of("value", 3L));
+
+    // Act: sort ascending
+    var asc = numbers.query.fetchObjects(
+        q -> q.sort(SortBy.property("value")));
+
+    Assertions.assertThat(asc.objects())
+        .as("value asc")
+        .hasSize(3)
+        .extracting(WeaviateObject::properties)
+        .extracting(object -> object.get("value"))
+        .containsExactly(1L, 2L, 3L);
+
+    // Act: sort descending
+    var desc = numbers.query.fetchObjects(
+        q -> q.sort(SortBy.property("value").desc()));
+
+    Assertions.assertThat(desc.objects())
+        .as("value desc")
+        .hasSize(3)
+        .extracting(WeaviateObject::properties)
+        .extracting(object -> object.get("value"))
+        .containsExactly(3L, 2L, 1L);
+  }
+
+  @Test
+  public void testBm25() throws IOException, InterruptedException, ExecutionException {
+    var nsWords = ns("Words");
+
+    client.collections.create(nsWords,
+        collection -> collection
+            .properties(
+                Property.text("relevant"),
+                Property.text("irrelevant")));
+
+    var words = client.collections.use(nsWords);
+
+    /* notWant */ words.data.insert(Map.of("relevant", "elefant", "irrelevant", "dollar bill"));
+    var want = words.data.insert(Map.of("relevant", "a dime a dollar", "irrelevant", "euro"));
+
+    var dollarWorlds = words.query.bm25(
+        "dollar",
+        bm25 -> bm25.queryProperties("relevant"));
+
+    Assertions.assertThat(dollarWorlds.objects())
+        .hasSize(1)
+        .extracting(WeaviateObject::uuid)
+        .containsOnly(want.uuid());
+  }
+
+  /**
+   * Minimal test to verify async functionality works as expected.
+   * We will extend our testing framework at a later stage to automatically
+   * test both sync/async clients.
+   */
+  @Test
+  public void testBm25_async() throws Exception, InterruptedException, ExecutionException {
+    var nsWords = ns("Words");
+
+    try (final var async = client.async()) {
+      async.collections.create(nsWords,
+          collection -> collection
+              .properties(
+                  Property.text("relevant"),
+                  Property.text("irrelevant")))
+          .get();
+
+      var words = async.collections.use(nsWords);
+
+      /* notWant */ words.data.insert(Map.of("relevant", "elefant", "irrelevant", "dollar bill")).get();
+      var want = words.data.insert(Map.of("relevant", "a dime a dollar", "irrelevant", "euro")).get();
+
+      var dollarWorlds = words.query.bm25(
+          "dollar",
+          bm25 -> bm25.queryProperties("relevant")).get();
+
+      Assertions.assertThat(dollarWorlds.objects())
+          .hasSize(1)
+          .extracting(WeaviateObject::uuid)
+          .containsOnly(want.uuid());
+    }
+  }
+
+  @Test
+  public void testNearObject() throws IOException {
+    // Arrange
+    var nsAnimals = ns("Animals");
+
+    client.collections.create(nsAnimals,
+        collection -> collection
+            .properties(Property.text("kind"))
+            .vectorConfig(VectorConfig.text2vecModel2Vec()));
+
+    var animals = client.collections.use(nsAnimals);
+
+    // Terrestrial animals
+    var cat = animals.data.insert(Map.of("kind", "cat"));
+    var lion = animals.data.insert(Map.of("kind", "lion"));
+    // Aquatic animal
+    animals.data.insert(Map.of("kind", "dolphin"));
+
+    // Act
+    var terrestrial = animals.query.nearObject(cat.uuid(),
+        q -> q.excludeSelf().limit(1));
+
+    // Assert
+    Assertions.assertThat(terrestrial.objects())
+        .hasSize(1)
+        .extracting(WeaviateObject::uuid)
+        .containsOnly(lion.uuid());
+  }
+
+  @Test
+  public void testHybrid() throws IOException {
+    // Arrange
+    var nsHobbies = ns("Hobbies");
+
+    client.collections.create(nsHobbies,
+        collection -> collection
+            .properties(Property.text("name"), Property.text("description"))
+            .vectorConfig(VectorConfig.text2vecModel2Vec()));
+
+    var hobbies = client.collections.use(nsHobbies);
+
+    var skiing = hobbies.data.insert(Map.of("name", "skiing", "description", "winter sport"));
+    hobbies.data.insert(Map.of("name", "jetskiing", "description", "water sport"));
+
+    // Act
+    var winterSport = hobbies.query.hybrid("winter",
+        hybrid -> hybrid
+            .returnMetadata(Metadata.SCORE, Metadata.EXPLAIN_SCORE));
+
+    // Assert
+    Assertions.assertThat(winterSport.objects())
+        .hasSize(1)
+        .extracting(WeaviateObject::uuid)
+        .containsOnly(skiing.uuid());
+
+    var first = winterSport.objects().get(0);
+    Assertions.assertThat(first.queryMetadata().score())
+        .as("metadata::score").isNotNull();
+    Assertions.assertThat(first.queryMetadata().explainScore())
+        .as("metadata::explainScore").isNotNull();
+  }
+
+  @Test(expected = WeaviateApiException.class)
+  public void testBadRequest() throws IOException {
+    // Arrange
+    var nsThings = ns("Things");
+
+    client.collections.create(nsThings,
+        collection -> collection
+            .properties(Property.text("name"))
+            .vectorConfig(VectorConfig.text2vecModel2Vec()));
+
+    var things = client.collections.use(nsThings);
+    var balloon = things.data.insert(Map.of("name", "balloon"));
+
+    things.query.nearObject(balloon.uuid(), q -> q.limit(-1));
+  }
+
+  @Test(expected = WeaviateApiException.class)
+  public void testBadRequest_async() throws Throwable {
+    // Arrange
+    var nsThings = ns("Things");
+
+    try (final var async = client.async()) {
+      var things = async.collections.create(nsThings,
+          collection -> collection
+              .properties(Property.text("name"))
+              .vectorConfig(VectorConfig.text2vecModel2Vec()))
+          .join();
+
+      var balloon = things.data.insert(Map.of("name", "balloon")).join();
+
+      try {
+        things.query.nearObject(balloon.uuid(), q -> q.limit(-1)).join();
+      } catch (CompletionException e) {
+        throw e.getCause(); // CompletableFuture exceptions are always wrapped
+      }
+    }
+  }
+
+  @Test
+  public void test_includeVectors() throws IOException {
+    // Arrange
+    var nsThings = ns("Things");
+    var things = client.collections.create(nsThings,
+        c -> c.vectorConfig(
+            VectorConfig.selfProvided("v1"),
+            VectorConfig.selfProvided("v2"),
+            VectorConfig.selfProvided("v3")));
+
+    var thing_1 = things.data.insert(Map.of(), thing -> thing.vectors(
+        Vectors.of("v1", new float[] { 1, 2, 3 }),
+        Vectors.of("v2", new float[] { 4, 5, 6 }),
+        Vectors.of("v3", new float[] { 7, 8, 9 })));
+
+    // Act
+    var got = things.query.fetchObjectById(
+        thing_1.uuid(),
+        q -> q.includeVector("v1", "v2"));
+
+    // Assert
+    Assertions.assertThat(got).get()
+        .extracting(WeaviateObject::vectors)
+        .returns(true, v -> v.contains("v1"))
+        .returns(true, v -> v.contains("v2"))
+        .returns(false, v -> v.contains("v3"));
+  }
+
+  @Test
+  public void testMetadataAll() throws IOException {
+    // Arrange
+    var nsThings = ns("Things");
+    var things = client.collections.create(nsThings,
+        c -> c
+            .properties(Property.text("name"))
+            .vectorConfig(VectorConfig.text2vecModel2Vec(
+                t2v -> t2v.sourceProperties("name"))));
+
+    var frisbee = things.data.insert(Map.of("name", "orange disc"));
+
+    // Act
+    var gotHybrid = things.query.hybrid("orange", q -> q
+        .queryProperties("name")
+        .returnMetadata(Metadata.ALL));
+
+    var gotNearText = things.query.nearText("frisbee", q -> q
+        .returnMetadata(Metadata.ALL));
+
+    // Assert
+    var hybridObject = Assertions.assertThat(gotHybrid.objects())
+        .hasSize(1).first().actual();
+    var hybridMetadata = hybridObject.queryMetadata();
+
+    Assertions.assertThat(hybridObject.uuid()).as("uuid").isNotNull().isEqualTo(frisbee.uuid());
+    Assertions.assertThat(hybridObject.createdAt()).as("createdAt").isNotNull();
+    Assertions.assertThat(hybridObject.lastUpdatedAt()).as("lastUpdateTimeUnix").isNotNull();
+    Assertions.assertThat(hybridMetadata.score()).as("score").isNotNull();
+    Assertions.assertThat(hybridMetadata.explainScore()).as("explainScore").isNotNull().isNotEqualTo("");
+
+    var nearTextObject = Assertions.assertThat(gotNearText.objects())
+        .hasSize(1).first().actual();
+    var metadataNearText = nearTextObject.queryMetadata();
+
+    Assertions.assertThat(nearTextObject.uuid()).as("uuid").isNotNull().isEqualTo(frisbee.uuid());
+    Assertions.assertThat(nearTextObject.createdAt()).as("createdAt").isNotNull();
+    Assertions.assertThat(nearTextObject.lastUpdatedAt()).as("lastUpdateTimeUnix").isNotNull();
+    Assertions.assertThat(metadataNearText.distance()).as("distance").isNotNull();
+    Assertions.assertThat(metadataNearText.certainty()).as("certainty").isNotNull();
+  }
+
+  @Test
+  public void testNearVector_targetVectors() throws IOException {
+    // Arrange
+    var nsThings = ns("Things");
+
+    var things = client.collections.create(nsThings,
+        c -> c.vectorConfig(
+            VectorConfig.selfProvided("v1d"),
+            VectorConfig.selfProvided("v2d",
+                none -> none
+                    .vectorIndex(Hnsw.of(
+                        hnsw -> hnsw.multiVector(MultiVector.of()))))));
+
+    var thing123 = things.data.insert(Map.of(), thing -> thing.vectors(
+        Vectors.of("v1d", new float[] { 1, 2, 3 }),
+        Vectors.of("v2d", new float[][] { { 1, 2, 3 }, { 1, 2, 3 } })));
+
+    var thing456 = things.data.insertMany(List.of(
+        WeaviateObject.of(thing -> thing
+            .vectors(
+                Vectors.of("v1d", new float[] { 4, 5, 6 }),
+                Vectors.of("v2d", new float[][] { { 4, 5, 6 }, { 4, 5, 6 } })))));
+    Assertions.assertThat(thing456.errors()).as("insert many").isEmpty();
+
+    // Act
+    var got123 = things.query.nearVector(
+        Target.vector("v1d", new float[] { 1, 2, 3 }),
+        q -> q.limit(1));
+    Assertions.assertThat(got123.objects())
+        .as("search v1d")
+        .hasSize(1).extracting(WeaviateObject::uuid)
+        .containsExactly(thing123.uuid());
+
+    var got456 = things.query.nearVector(
+        Target.vector("v2d", new float[][] { { 4, 5, 6 }, { 4, 5, 6 } }),
+        q -> q.limit(1));
+    Assertions.assertThat(got456.objects())
+        .as("search v2d")
+        .hasSize(1).extracting(WeaviateObject::uuid)
+        .containsExactly(thing456.uuids().get(0));
+  }
+
+  @Test
+  public void testGenerative_bm25() throws IOException {
+    // Arrange
+    var nsThings = ns("Things");
+
+    var things = client.collections.create(nsThings,
+        c -> c
+            .properties(Property.text("title"))
+            .generativeModule(new DummyGenerative())
+            .vectorConfig(VectorConfig.text2vecModel2Vec(
+                t2v -> t2v.sourceProperties("title"))));
+
+    things.data.insertMany(
+        Map.of("title", "Salad Fork"),
+        Map.of("title", "Dessert Fork"));
+
+    // Act
+    var french = things.generate.bm25(
+        "fork",
+        bm25 -> bm25.queryProperties("title").limit(2).includeVector(),
+        generate -> generate
+            .singlePrompt("translate to French")
+            .groupedTask("count letters R"));
+
+    // Assert
+    Assertions.assertThat(french.objects())
+        .as("individual results")
+        .hasSize(2)
+        .allSatisfy(obj -> {
+          Assertions.assertThat(obj).as("uuid shorthand")
+              .returns(obj.uuid(), GenerativeObject::uuid);
+          Assertions.assertThat(obj).as("vectors shorthand")
+              .returns(obj.vectors(), GenerativeObject::vectors);
+        })
+        .extracting(GenerativeObject::generative)
+        .allSatisfy(generated -> {
+          Assertions.assertThat(generated.text()).isNotBlank();
+        });
+
+    Assertions.assertThat(french.generative())
+        .as("summary")
+        .extracting(TaskOutput::text, InstanceOfAssertFactories.STRING)
+        .isNotBlank();
+  }
+
+  @Test
+  public void testGenerative_bm25_groupBy() throws IOException {
+    // Arrange
+    var nsThings = ns("Things");
+
+    var things = client.collections.create(nsThings,
+        c -> c
+            .properties(Property.text("title"))
+            .generativeModule(new DummyGenerative())
+            .vectorConfig(VectorConfig.text2vecModel2Vec(
+                t2v -> t2v.sourceProperties("title"))));
+
+    things.data.insertMany(
+        Map.of("title", "Salad Fork"),
+        Map.of("title", "Dessert Fork"));
+
+    // Act
+    var french = things.generate.bm25(
+        "fork",
+        bm25 -> bm25.queryProperties("title").limit(2),
+        generate -> generate
+            .singlePrompt("translate to French")
+            .groupedTask("count letters R"),
+        GroupBy.property("title", 5, 5));
+
+    // Assert
+    Assertions.assertThat(french.objects())
+        .as("individual results")
+        .hasSize(2);
+
+    Assertions.assertThat(french.groups())
+        .as("grouped results")
+        .hasSize(2)
+        .allSatisfy((groupName, group) -> {
+          Assertions.assertThat(group.objects())
+              .describedAs("objects in group %s", groupName)
+              .hasSize(1);
+
+          Assertions.assertThat(group.generative())
+              .describedAs("summary group %s", groupName)
+              .extracting(TaskOutput::text, InstanceOfAssertFactories.STRING)
+              .isNotBlank();
+
+        });
+
+    Assertions.assertThat(french.generative())
+        .as("summary")
+        .extracting(TaskOutput::text, InstanceOfAssertFactories.STRING)
+        .isNotBlank();
+  }
+
+  @Test
+  public void test_filterIsNull() throws IOException {
+    // Arrange
+    var nsNulls = ns("Nulls");
+
+    var nulls = client.collections.create(nsNulls,
+        c -> c
+            .invertedIndex(idx -> idx.indexNulls(true))
+            .properties(Property.text("never")));
+
+    var inserted = nulls.data.insertMany(Map.of(), Map.of("never", "notNull"));
+    Assertions.assertThat(inserted.errors()).isEmpty();
+
+    // Act
+    var isNull = nulls.query.fetchObjects(q -> q.filters(Filter.property("never").isNull()));
+    var isNotNull = nulls.query.fetchObjects(q -> q.filters(Filter.property("never").isNotNull()));
+
+    // Assert
+    var isNull_1 = Assertions.assertThat(isNull.objects())
+        .as("objects WHERE never IS NULL")
+        .hasSize(1).first().actual();
+    var isNotNull_1 = Assertions.assertThat(isNotNull.objects())
+        .as("objects WHERE never IS NOT NULL")
+        .hasSize(1).first().actual();
+    Assertions.assertThat(isNull_1).isNotEqualTo(isNotNull_1);
+  }
+
+  @Test
+  public void test_filterCreateUpdateTime() throws IOException {
+    // Arrange
+    var now = OffsetDateTime.now().minusHours(1);
+    var nsCounter = ns("Counter");
+
+    var counter = client.collections.create(nsCounter,
+        c -> c
+            .invertedIndex(idx -> idx.indexTimestamps(true))
+            .properties(Property.integer("count")));
+
+    counter.data.insert(Map.of("count", 0));
+
+    // Act
+    var beforeNow = counter.query.fetchObjects(q -> q.filters(Filter.createdAt().lt(now)));
+    var afterNow = counter.query.fetchObjects(q -> q.filters(Filter.createdAt().gt(now)));
+
+    // Assert
+    Assertions.assertThat(beforeNow.objects()).isEmpty();
+    Assertions.assertThat(afterNow.objects()).hasSize(1);
+  }
+
+  @Test
+  public void teset_filterPropertyLength() throws IOException {
+    // Arrange
+    var nsStrings = ns("Strings");
+
+    var strings = client.collections.create(nsStrings, c -> c
+        .invertedIndex(idx -> idx.indexPropertyLength(true))
+        .properties(Property.text("letters")));
+    strings.data.insertMany(Map.of("letters", "abc"), Map.of("letters", "abcd"), Map.of("letters", "a"));
+
+    // Act
+    var got = strings.query.fetchObjects(q -> q.filters(Filter.propertyLen("letters").gte(3)));
+
+    // Assertions
+    Assertions.assertThat(got.objects()).hasSize(2);
+  }
+
+  /**
+   * Ensure the client respects server's configuration for max gRPC size:
+   * we create a server with 1-byte message size and try to send a large payload
+   * there. If the channel is configured correctly, it will refuse to send it.
+   */
+  @Test
+  @Ignore("Exception thrown by gRPC transport causes a deadlock")
+  public void test_maxGrpcMessageSize() throws Exception {
+    var w = Weaviate.custom().withGrpcMaxMessageSize(1).build();
+    var nsHugeVectors = ns("HugeVectors");
+
+    try (final var _client = w.getClient()) {
+      var huge = _client.collections.create(nsHugeVectors, c -> c
+          .vectorConfig(VectorConfig.selfProvided()));
+
+      final var vector = randomVector(5000, -.01f, .01f);
+      final WeaviateObject<Map<String, Object>> hugeObject = WeaviateObject.of(
+          obj -> obj.vectors(Vectors.of(vector)));
+
+      Assertions.assertThatThrownBy(() -> {
+        // insertMany to route this request through gRPC.
+        huge.data.insertMany(hugeObject);
+      }).isInstanceOf(io.grpc.StatusRuntimeException.class);
+    }
+  }
+
+  @Test
+  public void test_rerankQueries() throws IOException {
+    // Arrange
+    var nsThigns = ns("Things");
+
+    var things = client.collections.create(nsThigns,
+        c -> c
+            .properties(Property.text("title"), Property.integer("price"))
+            .vectorConfig(VectorConfig.text2vecModel2Vec(
+                t2v -> t2v.sourceProperties("title", "price")))
+            .rerankerModules(new DummyReranker()));
+
+    things.data.insertMany(
+        Map.of("title", "Ergonomic chair", "price", 269),
+        Map.of("title", "Height-adjustable desk", "price", 349));
+
+    // Act
+    var got = things.query.nearText(
+        "office supplies",
+        nt -> nt.rerank(Rerank.by("price",
+            rank -> rank.query("cheaper first"))));
+
+    // Assert: ranking not important really, just that the request was valid.
+    Assertions.assertThat(got.objects()).hasSize(2);
+  }
+}

@@ -1,0 +1,142 @@
+package io.weaviate.client6.v1.api.collections;
+
+import java.util.Collection;
+import java.util.function.Function;
+
+import io.weaviate.client6.v1.api.collections.aggregate.WeaviateAggregateClient;
+import io.weaviate.client6.v1.api.collections.config.WeaviateConfigClient;
+import io.weaviate.client6.v1.api.collections.data.WeaviateDataClient;
+import io.weaviate.client6.v1.api.collections.generate.WeaviateGenerateClient;
+import io.weaviate.client6.v1.api.collections.pagination.Paginator;
+import io.weaviate.client6.v1.api.collections.query.ConsistencyLevel;
+import io.weaviate.client6.v1.api.collections.query.WeaviateQueryClient;
+import io.weaviate.client6.v1.api.collections.tenants.WeaviateTenantsClient;
+import io.weaviate.client6.v1.internal.ObjectBuilder;
+import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
+import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
+import io.weaviate.client6.v1.internal.rest.RestTransport;
+
+public class CollectionHandle<PropertiesT> {
+  public final WeaviateConfigClient config;
+  public final WeaviateDataClient<PropertiesT> data;
+  public final WeaviateQueryClient<PropertiesT> query;
+  public final WeaviateAggregateClient aggregate;
+  public final WeaviateGenerateClient<PropertiesT> generate;
+  public final WeaviateTenantsClient tenants;
+
+  private final CollectionHandleDefaults defaults;
+
+  public CollectionHandle(
+      RestTransport restTransport,
+      GrpcTransport grpcTransport,
+      CollectionDescriptor<PropertiesT> collection,
+      CollectionHandleDefaults defaults) {
+    this.config = new WeaviateConfigClient(collection, restTransport, grpcTransport, defaults);
+    this.aggregate = new WeaviateAggregateClient(collection, grpcTransport, defaults);
+    this.query = new WeaviateQueryClient<>(collection, grpcTransport, defaults);
+    this.generate = new WeaviateGenerateClient<>(collection, grpcTransport, defaults);
+    this.data = new WeaviateDataClient<>(collection, restTransport, grpcTransport, defaults);
+    this.defaults = defaults;
+
+    this.tenants = new WeaviateTenantsClient(collection, restTransport, grpcTransport);
+  }
+
+  /** Copy constructor that sets new defaults. */
+  private CollectionHandle(CollectionHandle<PropertiesT> c, CollectionHandleDefaults defaults) {
+    this.config = new WeaviateConfigClient(c.config, defaults);
+    this.aggregate = new WeaviateAggregateClient(c.aggregate, defaults);
+    this.query = new WeaviateQueryClient<>(c.query, defaults);
+    this.generate = new WeaviateGenerateClient<>(c.generate, defaults);
+    this.data = new WeaviateDataClient<>(c.data, defaults);
+    this.defaults = defaults;
+
+    this.tenants = c.tenants;
+  }
+
+  /**
+   * Create a Paginator over the objects in this collection.
+   *
+   * <p>
+   * Usage:
+   *
+   * <pre>
+   * {@code
+   * var things = client.collections.use("Things");
+   *
+   * // In a for-loop:
+   * for (final var thing : things.paginate()) {
+   *   // ... do something for each Thing object
+   * }
+   *
+   * // As a stream
+   * things.paginate().stream()
+   *  .map(...)
+   *  .collect(...);
+   * }</pre>
+   *
+   * @return An {@link Iterable} over this collection's objects.
+   */
+  public Paginator<PropertiesT> paginate() {
+    return Paginator.of(this.query);
+  }
+
+  /**
+   * Create a Paginator over the objects in this collection.
+   *
+   * @param fn Lambda expression for optional parameters.
+   * @return An {@link Iterable} over this collection's objects.
+   */
+  public Paginator<PropertiesT> paginate(
+      Function<Paginator.Builder<PropertiesT>, ObjectBuilder<Paginator<PropertiesT>>> fn) {
+    return Paginator.of(this.query, fn);
+  }
+
+  /**
+   * Get the object count in this collection.
+   *
+   * <p>
+   * While made to resemeble {@link Collection#size}, counting Weaviate collection
+   * objects involves making a network call, making this a blocking operation.
+   * This method also does not define behaviour for cases where the size of the
+   * collection exceeds {@link Long#MAX_VALUE} as this is unlikely to happen.
+   *
+   * <p>
+   * This is a shorthand for:
+   *
+   * <pre>{@code
+   * handle.aggregate.overAll(all -> all.includeTotalCount(true)).totalCount()
+   * }</pre>
+   */
+  public long size() {
+    return this.aggregate.overAll(all -> all.includeTotalCount(true)).totalCount();
+  }
+
+  /** Default consistency level for requests. */
+  public ConsistencyLevel consistencyLevel() {
+    return defaults.consistencyLevel();
+  }
+
+  /** Obtain a collection handle with a different consistency level. */
+  public CollectionHandle<PropertiesT> withConsistencyLevel(ConsistencyLevel consistencyLevel) {
+    return new CollectionHandle<>(this, CollectionHandleDefaults.of(with -> with.consistencyLevel(consistencyLevel)));
+  }
+
+  /** Default tenant for requests. */
+  public String tenant() {
+    return defaults.tenant();
+  }
+
+  /** Obtain a collection handle with a different target tenant. */
+  public CollectionHandle<PropertiesT> withTenant(String tenant) {
+    return new CollectionHandle<>(this, CollectionHandleDefaults.of(with -> with.tenant(tenant)));
+  }
+
+  /**
+   * Obtain a collection handle with different defaults
+   * (consistency level / tenant).
+   */
+  public CollectionHandle<PropertiesT> withDefaults(
+      Function<CollectionHandleDefaults.Builder, ObjectBuilder<CollectionHandleDefaults>> fn) {
+    return new CollectionHandle<>(this, CollectionHandleDefaults.of(fn));
+  }
+}
