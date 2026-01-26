@@ -755,7 +755,7 @@ Backup backup = client.backup.create(
 // Now you can poll backup status to know when it is succeedes (or fails).
 
 Backup status = client.backup.getCreateStatus(backup.id(), backup.backend());
-if (status.status() == BackupStatus.SUCCESSFUL) {
+if (status.status() == BackupStatus.SUCCESS) {
     System.out.println("Yay!");
     System.exit(0);
 }
