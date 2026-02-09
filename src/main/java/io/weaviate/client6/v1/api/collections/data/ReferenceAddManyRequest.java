@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch;
 import io.weaviate.client6.v1.internal.json.JSON;
 import io.weaviate.client6.v1.internal.rest.Endpoint;
 import io.weaviate.client6.v1.internal.rest.SimpleEndpoint;
@@ -32,4 +33,7 @@ public record ReferenceAddManyRequest(List<BatchReference> references) {
         });
   }
 
+  public static WeaviateProtoBatch.BatchReference buildReference(ObjectReference reference) {
+    return null;
+  }
 }

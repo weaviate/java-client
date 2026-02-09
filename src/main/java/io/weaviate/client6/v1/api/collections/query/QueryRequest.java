@@ -40,8 +40,9 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
     if (defaults.tenant() != null) {
       message.setTenant(defaults.tenant());
     }
-    if (defaults.consistencyLevel() != null) {
-      defaults.consistencyLevel().appendTo(message);
+
+    if (defaults.consistencyLevel().isPresent()) {
+      defaults.consistencyLevel().get().appendTo(message);
     }
 
     if (request.groupBy != null) {

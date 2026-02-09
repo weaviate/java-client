@@ -24,7 +24,7 @@ public class CollectionHandleDefaultsTest {
   /** All defaults are {@code null} if none were set. */
   @Test
   public void test_defaults() {
-    Assertions.assertThat(HANDLE_NONE.consistencyLevel()).as("default ConsistencyLevel").isNull();
+    Assertions.assertThat(HANDLE_NONE.consistencyLevel()).as("default ConsistencyLevel").isEmpty();
     Assertions.assertThat(HANDLE_NONE.tenant()).as("default tenant").isNull();
   }
 
@@ -35,8 +35,8 @@ public class CollectionHandleDefaultsTest {
   @Test
   public void test_withConsistencyLevel() {
     var handle = HANDLE_NONE.withConsistencyLevel(ConsistencyLevel.QUORUM);
-    Assertions.assertThat(handle.consistencyLevel()).isEqualTo(ConsistencyLevel.QUORUM);
-    Assertions.assertThat(HANDLE_NONE.consistencyLevel()).isNull();
+    Assertions.assertThat(handle.consistencyLevel()).get().isEqualTo(ConsistencyLevel.QUORUM);
+    Assertions.assertThat(HANDLE_NONE.consistencyLevel()).isEmpty();
   }
 
   /**
@@ -46,8 +46,8 @@ public class CollectionHandleDefaultsTest {
   @Test
   public void test_withConsistencyLevel_async() {
     var handle = HANDLE_NONE_ASYNC.withConsistencyLevel(ConsistencyLevel.QUORUM);
-    Assertions.assertThat(handle.consistencyLevel()).isEqualTo(ConsistencyLevel.QUORUM);
-    Assertions.assertThat(HANDLE_NONE_ASYNC.consistencyLevel()).isNull();
+    Assertions.assertThat(handle.consistencyLevel()).get().isEqualTo(ConsistencyLevel.QUORUM);
+    Assertions.assertThat(HANDLE_NONE_ASYNC.consistencyLevel()).isEmpty();
   }
 
   /**
@@ -58,7 +58,7 @@ public class CollectionHandleDefaultsTest {
   public void test_withTenant() {
     var handle = HANDLE_NONE.withTenant("john_doe");
     Assertions.assertThat(handle.tenant()).isEqualTo("john_doe");
-    Assertions.assertThat(HANDLE_NONE.consistencyLevel()).isNull();
+    Assertions.assertThat(HANDLE_NONE.consistencyLevel()).isEmpty();
   }
 
   /**
@@ -69,6 +69,6 @@ public class CollectionHandleDefaultsTest {
   public void test_withTenant_async() {
     var handle = HANDLE_NONE_ASYNC.withTenant("john_doe");
     Assertions.assertThat(handle.tenant()).isEqualTo("john_doe");
-    Assertions.assertThat(HANDLE_NONE_ASYNC.consistencyLevel()).isNull();
+    Assertions.assertThat(HANDLE_NONE_ASYNC.consistencyLevel()).isEmpty();
   }
 }

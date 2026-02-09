@@ -43,6 +43,10 @@ public enum ConsistencyLevel {
     req.setConsistencyLevel(consistencyLevel);
   }
 
+  public final void appendTo(WeaviateProtoBatch.BatchStreamRequest.Start.Builder req) {
+    req.setConsistencyLevel(consistencyLevel);
+  }
+
   @Override
   public String toString() {
     return queryParameter;

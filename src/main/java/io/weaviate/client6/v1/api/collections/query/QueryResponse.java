@@ -3,7 +3,6 @@ package io.weaviate.client6.v1.api.collections.query;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -92,20 +91,9 @@ public record QueryResponse<PropertiesT>(
             (map, ref) -> {
               var refObjects = ref.getPropertiesList().stream()
                   .map(property -> {
-                    var reference = unmarshalWithReferences(
+                    return (Reference) unmarshalWithReferences(
                         property, property.getMetadata(),
                         CollectionDescriptor.ofMap(property.getTargetCollection()));
-                    return (Reference) new WeaviateObject<>(
-                        reference.uuid(),
-                        reference.collection(),
-                        // TODO(dyma): we can get tenant from CollectionHandle
-                        null, // tenant is not returned in the query
-                        (Map<String, Object>) reference.properties(),
-                        reference.vectors(),
-                        reference.createdAt(),
-                        reference.lastUpdatedAt(),
-                        reference.queryMetadata(),
-                        reference.references());
                   })
                   .toList();
 
