@@ -1,14 +1,17 @@
 package io.weaviate.client6.v1.api.collections;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.query.ConsistencyLevel;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public record CollectionHandleDefaults(ConsistencyLevel consistencyLevel, String tenant) {
+public record CollectionHandleDefaults(Optional<ConsistencyLevel> consistencyLevel, String tenant) {
   /**
    * Set default values for query / aggregation requests.
    *
@@ -28,8 +31,12 @@ public record CollectionHandleDefaults(ConsistencyLevel consistencyLevel, String
     return ObjectBuilder.identity();
   }
 
+  public CollectionHandleDefaults {
+    requireNonNull(consistencyLevel, "consistencyLevel is null");
+  }
+
   public CollectionHandleDefaults(Builder builder) {
-    this(builder.consistencyLevel, builder.tenant);
+    this(Optional.of(builder.consistencyLevel), builder.tenant);
   }
 
   public static final class Builder implements ObjectBuilder<CollectionHandleDefaults> {
@@ -56,12 +63,12 @@ public record CollectionHandleDefaults(ConsistencyLevel consistencyLevel, String
 
   /** Serialize default values to a URL query. */
   public Map<String, Object> queryParameters() {
-    if (consistencyLevel == null && tenant == null) {
+    if (consistencyLevel.isEmpty() && tenant == null) {
       return Collections.emptyMap();
     }
     var query = new HashMap<String, Object>();
-    if (consistencyLevel != null) {
-      query.put("consistency_level", consistencyLevel);
+    if (consistencyLevel.isPresent()) {
+      query.put("consistency_level", consistencyLevel.get());
     }
     if (tenant != null) {
       query.put("tenant", tenant);

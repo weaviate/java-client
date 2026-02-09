@@ -131,10 +131,10 @@ public class CollectionHandleTest {
     rest.assertNext((method, requestUrl, body, query) -> {
       switch (clLoc) {
         case QUERY:
-          Assertions.assertThat(query).containsEntry("consistency_level", defaults.consistencyLevel());
+          Assertions.assertThat(query).containsEntry("consistency_level", defaults.consistencyLevel().get());
           break;
         case BODY:
-          assertJsonHasValue(body, "consistency_level", defaults.consistencyLevel());
+          assertJsonHasValue(body, "consistency_level", defaults.consistencyLevel().get());
       }
 
       switch (tenantLoc) {

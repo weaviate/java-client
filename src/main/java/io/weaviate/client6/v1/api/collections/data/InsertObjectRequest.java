@@ -27,8 +27,8 @@ public record InsertObjectRequest<PropertiesT>(WeaviateObject<PropertiesT> objec
     return new SimpleEndpoint<>(
         request -> "POST",
         request -> "/objects/",
-        request -> defaults.consistencyLevel() != null
-            ? Map.of("consistency_level", defaults.consistencyLevel())
+        request -> defaults.consistencyLevel().isPresent()
+            ? Map.of("consistency_level", defaults.consistencyLevel().get())
             : Collections.emptyMap(),
         request -> JSON.serialize(
             new WeaviateObject<>(

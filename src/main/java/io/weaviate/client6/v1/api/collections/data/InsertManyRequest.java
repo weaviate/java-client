@@ -45,17 +45,16 @@ public record InsertManyRequest<PropertiesT>(List<WeaviateObject<PropertiesT>> o
         request -> {
           var message = WeaviateProtoBatch.BatchObjectsRequest.newBuilder();
 
-          var batch = request.objects.stream().map(obj -> {
-            var batchObject = WeaviateProtoBatch.BatchObject.newBuilder();
-            buildObject(batchObject, obj, collection, defaults);
-            return batchObject.build();
-          }).toList();
-
+          var batch = request.objects.stream()
+              .map(obj -> buildObject(obj, collection, defaults))
+              .toList();
           message.addAllObjects(batch);
 
-          if (defaults.consistencyLevel() != null) {
-            defaults.consistencyLevel().appendTo(message);
+          if (defaults.consistencyLevel().isPresent()) {
+            defaults.consistencyLevel().get().appendTo(message);
           }
+          var m = message.build();
+          m.getSerializedSize();
           return message.build();
         },
         response -> {
@@ -92,10 +91,11 @@ public record InsertManyRequest<PropertiesT>(List<WeaviateObject<PropertiesT>> o
         () -> WeaviateFutureStub::batchObjects);
   }
 
-  public static <T> void buildObject(WeaviateProtoBatch.BatchObject.Builder object,
+  public static <T> WeaviateProtoBatch.BatchObject buildObject(
       WeaviateObject<T> insert,
       CollectionDescriptor<T> collection,
       CollectionHandleDefaults defaults) {
+    var object = WeaviateProtoBatch.BatchObject.newBuilder();
     object.setCollection(collection.collectionName());
 
     if (insert.uuid() != null) {
@@ -158,6 +158,7 @@ public record InsertManyRequest<PropertiesT>(List<WeaviateObject<PropertiesT>> o
       properties.setNonRefProperties(nonRef);
     }
     object.setProperties(properties);
+    return object.build();
   }
 
   @SuppressWarnings("unchecked")
