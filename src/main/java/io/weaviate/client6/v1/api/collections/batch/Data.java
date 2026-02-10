@@ -4,7 +4,6 @@ import static java.util.Objects.requireNonNull;
 
 import javax.annotation.concurrent.Immutable;
 
-import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.GeneratedMessageV3;
 
@@ -14,7 +13,7 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch;
 
 @Immutable
 @SuppressWarnings("deprecation") // protoc uses GeneratedMessageV3
-class Data implements StreamMessage {
+class Data implements Message {
 
   /**
    * Raw input value, as passed by the user.
@@ -48,6 +47,10 @@ class Data implements StreamMessage {
     private Type(int fieldNumber) {
       this.fieldNumber = fieldNumber;
     }
+
+    public int fieldNumber() {
+      return fieldNumber;
+    }
   }
 
   private Data(Object raw, String id, GeneratedMessage.ExtendableMessage<GeneratedMessageV3> message, int sizeBytes) {
@@ -59,11 +62,9 @@ class Data implements StreamMessage {
     this.sizeBytes = sizeBytes;
   }
 
-  static Data ofField(Object raw, String id, GeneratedMessage.ExtendableMessage<GeneratedMessageV3> message,
+  Data(Object raw, String id, GeneratedMessage.ExtendableMessage<GeneratedMessageV3> message,
       Type type) {
-    requireNonNull(type, "type is null");
-    int sizeBytes = CodedOutputStream.computeMessageSize(type.fieldNumber, message);
-    return new Data(raw, id, message, sizeBytes);
+    this(raw, id, message, MessageSizeUtil.ofDataField(message, type));
   }
 
   String id() {
@@ -77,7 +78,8 @@ class Data implements StreamMessage {
 
   @Override
   public void appendTo(WeaviateProtoBatch.BatchStreamRequest.Builder builder) {
-    WeaviateProtoBatch.BatchStreamRequest.Data.Builder data = builder.getDataBuilder();
+    WeaviateProtoBatch.BatchStreamRequest.Data.Builder data = requireNonNull(builder, "builder is null")
+        .getDataBuilder();
     if (message instanceof WeaviateProtoBatch.BatchObject object) {
       data.getObjectsBuilder().addValues(object);
     } else if (message instanceof WeaviateProtoBatch.BatchReference ref) {

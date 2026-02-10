@@ -1,5 +1,7 @@
 package io.weaviate.client6.v1.api.collections.batch;
 
+import static java.util.Objects.requireNonNull;
+
 interface State {
   /**
    * canSend returns a boolean indicating if sending
@@ -24,6 +26,8 @@ interface State {
   abstract class BaseState implements State {
     @Override
     public void onEvent(Event event) {
+      requireNonNull(event, "event is null");
+
       if (event instanceof Event.Acks acks) {
 
       } else if (event instanceof Event.Results results) {

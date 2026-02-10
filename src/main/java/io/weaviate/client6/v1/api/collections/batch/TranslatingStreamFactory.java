@@ -8,10 +8,20 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.grpc.stub.StreamObserver;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply;
 
-class TranslatingStreamFactory implements StreamFactory<StreamMessage, Event> {
+/**
+ * TranslatingStreamFactory is an adaptor for the
+ * {@link WeaviateGrpc.WeaviateStub#batchStream} factory. The returned stream
+ * translates client-side messages into protobuf requests and server-side
+ * replies into events.
+ *
+ * @see Message
+ * @see Event
+ */
+class TranslatingStreamFactory implements StreamFactory<Message, Event> {
   private final StreamFactory<WeaviateProtoBatch.BatchStreamRequest, WeaviateProtoBatch.BatchStreamReply> protoFactory;
 
   TranslatingStreamFactory(
@@ -20,10 +30,17 @@ class TranslatingStreamFactory implements StreamFactory<StreamMessage, Event> {
   }
 
   @Override
-  public StreamObserver<StreamMessage> createStream(StreamObserver<Event> eventObserver) {
-    return new MessageProducer(protoFactory.createStream(new EventHandler(eventObserver)));
+  public StreamObserver<Message> createStream(StreamObserver<Event> recv) {
+    return new Messeger(protoFactory.createStream(new Eventer(recv)));
   }
 
+  /**
+   * DelegatingStreamObserver delegates {@link #onCompleted} and {@link #onError}
+   * to another observer and translates the messages in {@link #onNext}.
+   *
+   * @param <SourceT> the type of the incoming message.
+   * @param <TargetT> the type of the message handed to the delegate.
+   */
   private abstract class DelegatingStreamObserver<SourceT, TargetT> implements StreamObserver<TargetT> {
     protected final StreamObserver<SourceT> delegate;
 
@@ -42,22 +59,31 @@ class TranslatingStreamFactory implements StreamFactory<StreamMessage, Event> {
     }
   }
 
-  private final class MessageProducer
-      extends DelegatingStreamObserver<WeaviateProtoBatch.BatchStreamRequest, StreamMessage> {
-    private MessageProducer(StreamObserver<WeaviateProtoBatch.BatchStreamRequest> delegate) {
+  /**
+   * Messeger translates client's messages into batch stream requests.
+   *
+   * @see Message
+   */
+  private final class Messeger extends DelegatingStreamObserver<WeaviateProtoBatch.BatchStreamRequest, Message> {
+    private Messeger(StreamObserver<WeaviateProtoBatch.BatchStreamRequest> delegate) {
       super(delegate);
     }
 
     @Override
-    public void onNext(StreamMessage message) {
+    public void onNext(Message message) {
       WeaviateProtoBatch.BatchStreamRequest.Builder builder = WeaviateProtoBatch.BatchStreamRequest.newBuilder();
       message.appendTo(builder);
       delegate.onNext(builder.build());
     }
   }
 
-  private final class EventHandler extends DelegatingStreamObserver<Event, WeaviateProtoBatch.BatchStreamReply> {
-    private EventHandler(StreamObserver<Event> delegate) {
+  /**
+   * Eventer translates server replies into events.
+   *
+   * @see Event
+   */
+  private final class Eventer extends DelegatingStreamObserver<Event, WeaviateProtoBatch.BatchStreamReply> {
+    private Eventer(StreamObserver<Event> delegate) {
       super(delegate);
     }
 

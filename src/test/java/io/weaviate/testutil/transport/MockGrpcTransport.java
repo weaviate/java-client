@@ -3,14 +3,18 @@ package io.weaviate.testutil.transport;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.OptionalInt;
 import java.util.concurrent.CompletableFuture;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.MessageOrBuilder;
 import com.google.protobuf.util.JsonFormat;
 
+import io.grpc.stub.StreamObserver;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.grpc.Rpc;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply;
+import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest;
 
 public class MockGrpcTransport implements GrpcTransport {
 
@@ -56,5 +60,17 @@ public class MockGrpcTransport implements GrpcTransport {
 
   @Override
   public void close() throws IOException {
+  }
+
+  @Override
+  public StreamObserver<BatchStreamRequest> createStream(StreamObserver<BatchStreamReply> recv) {
+    // TODO(dyma): implement for tests
+    throw new UnsupportedOperationException("Unimplemented method 'createStream'");
+  }
+
+  @Override
+  public OptionalInt maxMessageSizeBytes() {
+    // TODO(dyma): implement for tests
+    throw new UnsupportedOperationException("Unimplemented method 'maxMessageSizeBytes'");
   }
 }
