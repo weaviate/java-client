@@ -56,12 +56,12 @@ public final class TaskHandle {
 
   /** Constructor for {@link WeaviateObject}. */
   TaskHandle(WeaviateObject<?> object, GeneratedMessage.ExtendableMessage<GeneratedMessageV3> data) {
-    this(Data.ofField(object, object.uuid(), data, Data.Type.OBJECT), 0);
+    this(new Data(object, object.uuid(), data, Data.Type.OBJECT), 0);
   }
 
   /** Constructor for {@link ObjectReference}. */
   TaskHandle(ObjectReference reference, GeneratedMessage.ExtendableMessage<GeneratedMessageV3> data) {
-    this(Data.ofField(reference, reference.beacon(), data, Data.Type.REFERENCE), 0);
+    this(new Data(reference, reference.beacon(), data, Data.Type.REFERENCE), 0);
   }
 
   /**

@@ -29,11 +29,13 @@ import io.weaviate.client6.v1.api.collections.query.ConsistencyLevel;
  *
  * <h2>Cancellation policy</h2>
  *
+ * @param <PropertiesT> the shape of properties for inserted objects.
  */
-public final class BatchContext implements Closeable {
+public final class BatchContext<PropertiesT> implements Closeable {
   private final int DEFAULT_BATCH_SIZE = 1000;
   private final int DEFAULT_QUEUE_SIZE = 100;
 
+  private final StreamFactory<Message, Event> streamFactory;
   private final Optional<ConsistencyLevel> consistencyLevel;
 
   /**
@@ -49,22 +51,22 @@ public final class BatchContext implements Closeable {
   private final BlockingQueue<TaskHandle> queue;
 
   /**
-   * wip stores work-in-progress items.
+   * Work-in-progress items.
    *
    * An item is added to the {@link #wip} map after the Sender successfully
-   * adds it to the {@link #message} and is removed once the server reports
+   * adds it to the {@link #batch} and is removed once the server reports
    * back the result (whether success of failure).
    */
   private final ConcurrentMap<String, TaskHandle> wip = new ConcurrentHashMap<>();
 
   /**
-   * Message buffers batch items before they're sent to the server.
+   * Current batch.
    *
    * <p>
-   * An item is added to the {@link #message} after the Sender pulls it
+   * An item is added to the {@link #batch} after the Sender pulls it
    * from the queue and remains there until it's Ack'ed.
    */
-  private final Message message;
+  private final Batch batch;
 
   /**
    * State encapsulates state-dependent behavior of the {@link BatchContext}.
@@ -77,10 +79,15 @@ public final class BatchContext implements Closeable {
   /** stateChanged notifies threads about a state transition. */
   private final Condition stateChanged = lock.newCondition();
 
-  BatchContext(Optional<ConsistencyLevel> consistencyLevel, int maxSizeBytes) {
+  BatchContext(
+      StreamFactory<Message, Event> streamFactory,
+      int maxSizeBytes,
+      Optional<ConsistencyLevel> consistencyLevel) {
+    this.streamFactory = requireNonNull(streamFactory, "streamFactory is null");
+    this.consistencyLevel = requireNonNull(consistencyLevel, "consistencyLevel is null");
+
     this.queue = new ArrayBlockingQueue<>(DEFAULT_QUEUE_SIZE);
-    this.message = new Message(DEFAULT_QUEUE_SIZE, maxSizeBytes);
-    this.consistencyLevel = consistencyLevel;
+    this.batch = new Batch(DEFAULT_BATCH_SIZE, maxSizeBytes);
   }
 
   void start() {
@@ -92,6 +99,8 @@ public final class BatchContext implements Closeable {
 
   /** Set the new state and notify awaiting threads. */
   void setState(State nextState) {
+    requireNonNull(nextState, "nextState is null");
+
     lock.lock();
     try {
       state = nextState;
@@ -130,9 +139,9 @@ public final class BatchContext implements Closeable {
   }
 
   private final class Sender implements Runnable {
-    private final StreamObserver<StreamMessage> stream;
+    private final StreamObserver<Message> stream;
 
-    private Sender(StreamObserver<StreamMessage> stream) {
+    private Sender(StreamObserver<Message> stream) {
       this.stream = requireNonNull(stream, "stream is null");
     }
 
