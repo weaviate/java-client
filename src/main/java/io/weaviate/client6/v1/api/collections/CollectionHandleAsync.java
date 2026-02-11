@@ -102,7 +102,7 @@ public class CollectionHandleAsync<PropertiesT> {
   }
 
   /** Default tenant for requests. */
-  public String tenant() {
+  public Optional<String> tenant() {
     return defaults.tenant();
   }
 

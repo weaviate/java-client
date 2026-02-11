@@ -33,7 +33,7 @@ public record UpdateObjectRequest<PropertiesT>(WeaviateObject<PropertiesT> objec
             new WeaviateObject<>(
                 request.object.uuid(),
                 collection.collectionName(),
-                defaults.tenant(),
+                defaults.tenant().get(),
                 request.object.properties(),
                 request.object.vectors(),
                 request.object.createdAt(),

@@ -11,7 +11,7 @@ import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.GeneratedMessageV3;
 
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
-import io.weaviate.client6.v1.api.collections.data.ObjectReference;
+import io.weaviate.client6.v1.api.collections.data.BatchReference;
 
 @ThreadSafe
 @SuppressWarnings("deprecation") // protoc uses GeneratedMessageV3
@@ -59,9 +59,9 @@ public final class TaskHandle {
     this(new Data(object, object.uuid(), data, Data.Type.OBJECT), 0);
   }
 
-  /** Constructor for {@link ObjectReference}. */
-  TaskHandle(ObjectReference reference, GeneratedMessage.ExtendableMessage<GeneratedMessageV3> data) {
-    this(new Data(reference, reference.beacon(), data, Data.Type.REFERENCE), 0);
+  /** Constructor for {@link BatchReference}. */
+  TaskHandle(BatchReference reference, GeneratedMessage.ExtendableMessage<GeneratedMessageV3> data) {
+    this(new Data(reference, reference.target().beacon(), data, Data.Type.REFERENCE), 0);
   }
 
   /**
@@ -91,6 +91,10 @@ public final class TaskHandle {
 
   String id() {
     return data.id();
+  }
+
+  Data data() {
+    return data;
   }
 
   /** Set the {@link #acked} flag. */

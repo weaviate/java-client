@@ -6,19 +6,26 @@ import java.util.OptionalInt;
 
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
+import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 
 public class WeaviateBatchClient<PropertiesT> {
   private final CollectionHandleDefaults defaults;
+  private final CollectionDescriptor<PropertiesT> collectionDescriptor;
   private final GrpcTransport grpcTransport;
 
-  public WeaviateBatchClient(GrpcTransport grpcTransport, CollectionHandleDefaults defaults) {
+  public WeaviateBatchClient(
+      GrpcTransport grpcTransport,
+      CollectionDescriptor<PropertiesT> collectionDescriptor,
+      CollectionHandleDefaults defaults) {
     this.defaults = requireNonNull(defaults, "defaults is null");
+    this.collectionDescriptor = requireNonNull(collectionDescriptor, "collectionDescriptor is null");
     this.grpcTransport = requireNonNull(grpcTransport, "grpcTransport is null");
   }
 
   /** Copy constructor with new defaults. */
   public WeaviateBatchClient(WeaviateBatchClient<PropertiesT> c, CollectionHandleDefaults defaults) {
     this.defaults = requireNonNull(defaults, "defaults is null");
+    this.collectionDescriptor = c.collectionDescriptor;
     this.grpcTransport = c.grpcTransport;
   }
 
@@ -28,6 +35,10 @@ public class WeaviateBatchClient<PropertiesT> {
       throw new IllegalStateException("Server must have grpcMaxMessageSize configured to use server-side batching");
     }
     StreamFactory<Message, Event> streamFactory = new TranslatingStreamFactory(grpcTransport::createStream);
-    return new BatchContext<>(streamFactory, maxSizeBytes.getAsInt(), defaults.consistencyLevel());
+    return new BatchContext<>(
+        streamFactory,
+        maxSizeBytes.getAsInt(),
+        collectionDescriptor,
+        defaults);
   }
 }
