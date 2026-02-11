@@ -139,10 +139,10 @@ public class CollectionHandleTest {
 
       switch (tenantLoc) {
         case QUERY:
-          Assertions.assertThat(query).containsEntry("tenant", defaults.tenant());
+          Assertions.assertThat(query).containsEntry("tenant", defaults.tenant().get());
           break;
         case BODY:
-          assertJsonHasValue(body, "tenant", defaults.tenant());
+          assertJsonHasValue(body, "tenant", defaults.tenant().get());
       }
     });
   }
@@ -219,7 +219,7 @@ public class CollectionHandleTest {
 
     // Assert
     rest.assertNext((method, requestUrl, body, query) -> {
-      Assertions.assertThat(query).containsEntry("tenant", defaults.tenant());
+      Assertions.assertThat(query).containsEntry("tenant", defaults.tenant().get());
     });
   }
 

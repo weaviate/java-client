@@ -39,7 +39,7 @@ public class CollectionHandle<PropertiesT> {
     this.query = new WeaviateQueryClient<>(collection, grpcTransport, defaults);
     this.generate = new WeaviateGenerateClient<>(collection, grpcTransport, defaults);
     this.data = new WeaviateDataClient<>(collection, restTransport, grpcTransport, defaults);
-    this.batch = new WeaviateBatchClient<>(grpcTransport, defaults);
+    this.batch = new WeaviateBatchClient<>(grpcTransport, collection, defaults);
     this.defaults = defaults;
 
     this.tenants = new WeaviateTenantsClient(collection, restTransport, grpcTransport);
@@ -127,7 +127,7 @@ public class CollectionHandle<PropertiesT> {
   }
 
   /** Default tenant for requests. */
-  public String tenant() {
+  public Optional<String> tenant() {
     return defaults.tenant();
   }
 
