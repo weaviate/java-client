@@ -18,19 +18,6 @@ import javax.annotation.concurrent.ThreadSafe;
 import io.weaviate.client6.v1.api.collections.batch.Event.Backoff;
 import io.weaviate.client6.v1.internal.grpc.GrpcChannelOptions;
 
-// assert maxSize > 0 : "non-positive maxSize";
-// assert maxSizeBytes > 0 : "non-positive maxSizeBytes";
-// assert sizeBytes >= 0 : "negative sizeBytes";
-// assert buffer.size() <= maxSize : "buffer exceeds maxSize";
-// assert sizeBytes <= maxSizeBytes : "message exceeds maxSizeBytes";
-// if (buffer.size() < maxSize) {
-//   assert backlog.isEmpty() : "backlog not empty when buffer not full";
-// }
-// if (buffer.isEmpty()) {
-//   assert sizeBytes == 0 : "sizeBytes must be 0 when buffer is empty";
-// }
-// assert pendingMaxSize != null : "pending max size is null";
-
 /**
  * Batch can be in either of 2 states:
  * <ul>
