@@ -188,6 +188,8 @@ final class Batch {
         extra.remove();
       }
       // Reverse the backlog to restore the FIFO order.
+      // FIXME(dyma): this assumes setMaxSize is called on an empty backlog,
+      // but that's is simply not true.
       Collections.reverse(backlog);
     } finally {
       checkInvariants();
@@ -197,16 +199,22 @@ final class Batch {
   /**
    * Add a data item to the batch.
    *
+   * <p>
+   * We want to guarantee that, once a work item has been taken from the queue,
+   * it's going to be eventually executed. Because we cannot know if an item
+   * will overflow the batch before it's removed from the queue, the simplest
+   * and safest way to deal with it is to allow {@link Batch} to put
+   * the overflowing item in the {@link #backlog}. The batch is considered
+   * full after that and will not accept any more items until it's cleared.
    *
    * @throws DataTooBigException   If the data exceeds the maximum
    *                               possible batch size.
    * @throws IllegalStateException If called on an "in-flight" batch.
    * @see #prepare
    * @see #inFlight
-   *
-   * @return Boolean indicating if the item has been accepted.
+   * @see #clear
    */
-  synchronized boolean add(Data data) throws IllegalStateException, DataTooBigException {
+  synchronized void add(Data data) throws IllegalStateException, DataTooBigException {
     requireNonNull(data, "data is null");
     checkInvariants();
 
@@ -214,14 +222,23 @@ final class Batch {
       if (inFlight) {
         throw new IllegalStateException("Batch is in-flight");
       }
-      if (data.sizeBytes() > maxSizeBytes - sizeBytes) {
-        if (isEmpty()) {
-          throw new DataTooBigException(data, maxSizeBytes);
-        }
-        return false;
+      long remainingBytes = maxSizeBytes - sizeBytes;
+      if (data.sizeBytes() <= remainingBytes) {
+        addSafe(data);
+        return;
       }
-      addSafe(data);
-      return true;
+      if (isEmpty()) {
+        throw new DataTooBigException(data, maxSizeBytes);
+      }
+      // One of the class's invariants is that the backlog must not contain
+      // any items unless the buffer is full. In case this item overflows
+      // the buffer, we put it in the backlog, but pretend the maxSizeBytes
+      // has been reached to satisfy the invariant.
+      // This doubles as a safeguard to ensure the caller cannot add any
+      // more items to the batch before flushing it.
+      backlog.add(data);
+      sizeBytes += remainingBytes;
+      assert isFull() : "batch must be full after an overflow";
     } finally {
       checkInvariants();
     }

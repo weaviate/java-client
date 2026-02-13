@@ -2,6 +2,7 @@ package io.weaviate.client6.v1.api.collections.batch;
 
 import static java.util.Objects.requireNonNull;
 
+import java.time.Instant;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -46,6 +47,9 @@ public final class TaskHandle {
 
   /** The number of times this task has been retried. */
   private final int retries;
+
+  /** Task creation timestamp. */
+  private final Instant createdAt = Instant.now();
 
   private TaskHandle(Data data, int retries) {
     this.data = requireNonNull(data, "data is null");
@@ -162,5 +166,15 @@ public final class TaskHandle {
    */
   public int timesRetried() {
     return retries;
+  }
+
+  /** Task creation timestamp. Retried tasks have different timestamps. */
+  public Instant createdAt() {
+    return createdAt;
+  }
+
+  @Override
+  public String toString() {
+    return "TaskHandle<id=%s, retried=%d, created=%s>".formatted(id(), timesRetried(), createdAt());
   }
 }

@@ -6,14 +6,16 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import io.grpc.Status;
 import io.weaviate.client6.v1.api.collections.batch.Event.Acks;
 import io.weaviate.client6.v1.api.collections.batch.Event.Backoff;
 import io.weaviate.client6.v1.api.collections.batch.Event.Results;
+import io.weaviate.client6.v1.api.collections.batch.Event.RpcError;
 import io.weaviate.client6.v1.api.collections.batch.Event.Started;
 import io.weaviate.client6.v1.api.collections.batch.Event.TerminationEvent;
 
 sealed interface Event
-    permits Started, Acks, Results, Backoff, TerminationEvent {
+    permits Started, Acks, Results, Backoff, TerminationEvent, RpcError {
 
   final static Event STARTED = new Started();
   final static Event OOM = TerminationEvent.OOM;
@@ -36,6 +38,11 @@ sealed interface Event
     public Acks {
       acked = List.copyOf(requireNonNull(acked, "acked is null"));
     }
+
+    @Override
+    public String toString() {
+      return "Acks";
+    }
   }
 
   /**
@@ -49,6 +56,11 @@ sealed interface Event
     public Results {
       successful = List.copyOf(requireNonNull(successful, "successful is null"));
       errors = Map.copyOf(requireNonNull(errors, "errors is null"));
+    }
+
+    @Override
+    public String toString() {
+      return "Results";
     }
   }
 
@@ -69,6 +81,11 @@ sealed interface Event
    * message limit in a new {@link BatchContext}, but is not required to.
    */
   record Backoff(int maxSize) implements Event {
+
+    @Override
+    public String toString() {
+      return "Backoff";
+    }
   }
 
   enum TerminationEvent implements Event {
@@ -113,4 +130,10 @@ sealed interface Event
     SHUTDOWN;
   }
 
+  record RpcError(Exception exception) implements Event {
+    static RpcError fromThrowable(Throwable t) {
+      Status status = Status.fromThrowable(t);
+      return new RpcError(status.asException());
+    }
+  }
 }
