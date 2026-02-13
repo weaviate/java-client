@@ -1844,115 +1844,639 @@ public final class WeaviateProtoBatch {
 
   }
 
-  public interface BatchSendRequestOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:weaviate.v1.BatchSendRequest)
+  public interface BatchStreamRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:weaviate.v1.BatchStreamRequest)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>string stream_id = 1;</code>
-     * @return The streamId.
+     * <code>.weaviate.v1.BatchStreamRequest.Start start = 1;</code>
+     * @return Whether the start field is set.
      */
-    java.lang.String getStreamId();
+    boolean hasStart();
     /**
-     * <code>string stream_id = 1;</code>
-     * @return The bytes for streamId.
+     * <code>.weaviate.v1.BatchStreamRequest.Start start = 1;</code>
+     * @return The start.
      */
-    com.google.protobuf.ByteString
-        getStreamIdBytes();
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start getStart();
+    /**
+     * <code>.weaviate.v1.BatchStreamRequest.Start start = 1;</code>
+     */
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.StartOrBuilder getStartOrBuilder();
 
     /**
-     * <code>.weaviate.v1.BatchSendRequest.Objects objects = 2;</code>
-     * @return Whether the objects field is set.
+     * <code>.weaviate.v1.BatchStreamRequest.Data data = 2;</code>
+     * @return Whether the data field is set.
      */
-    boolean hasObjects();
+    boolean hasData();
     /**
-     * <code>.weaviate.v1.BatchSendRequest.Objects objects = 2;</code>
-     * @return The objects.
+     * <code>.weaviate.v1.BatchStreamRequest.Data data = 2;</code>
+     * @return The data.
      */
-    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects getObjects();
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data getData();
     /**
-     * <code>.weaviate.v1.BatchSendRequest.Objects objects = 2;</code>
+     * <code>.weaviate.v1.BatchStreamRequest.Data data = 2;</code>
      */
-    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.ObjectsOrBuilder getObjectsOrBuilder();
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.DataOrBuilder getDataOrBuilder();
 
     /**
-     * <code>.weaviate.v1.BatchSendRequest.References references = 3;</code>
-     * @return Whether the references field is set.
-     */
-    boolean hasReferences();
-    /**
-     * <code>.weaviate.v1.BatchSendRequest.References references = 3;</code>
-     * @return The references.
-     */
-    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References getReferences();
-    /**
-     * <code>.weaviate.v1.BatchSendRequest.References references = 3;</code>
-     */
-    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.ReferencesOrBuilder getReferencesOrBuilder();
-
-    /**
-     * <code>.weaviate.v1.BatchSendRequest.Stop stop = 4;</code>
+     * <code>.weaviate.v1.BatchStreamRequest.Stop stop = 3;</code>
      * @return Whether the stop field is set.
      */
     boolean hasStop();
     /**
-     * <code>.weaviate.v1.BatchSendRequest.Stop stop = 4;</code>
+     * <code>.weaviate.v1.BatchStreamRequest.Stop stop = 3;</code>
      * @return The stop.
      */
-    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop getStop();
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop getStop();
     /**
-     * <code>.weaviate.v1.BatchSendRequest.Stop stop = 4;</code>
+     * <code>.weaviate.v1.BatchStreamRequest.Stop stop = 3;</code>
      */
-    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.StopOrBuilder getStopOrBuilder();
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.StopOrBuilder getStopOrBuilder();
 
-    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.MessageCase getMessageCase();
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.MessageCase getMessageCase();
   }
   /**
-   * Protobuf type {@code weaviate.v1.BatchSendRequest}
+   * Protobuf type {@code weaviate.v1.BatchStreamRequest}
    */
-  public static final class BatchSendRequest extends
+  public static final class BatchStreamRequest extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:weaviate.v1.BatchSendRequest)
-      BatchSendRequestOrBuilder {
+      // @@protoc_insertion_point(message_implements:weaviate.v1.BatchStreamRequest)
+      BatchStreamRequestOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use BatchSendRequest.newBuilder() to construct.
-    private BatchSendRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use BatchStreamRequest.newBuilder() to construct.
+    private BatchStreamRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private BatchSendRequest() {
-      streamId_ = "";
+    private BatchStreamRequest() {
     }
 
     @java.lang.Override
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new BatchSendRequest();
+      return new BatchStreamRequest();
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchSendRequest_descriptor;
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchSendRequest_fieldAccessorTable
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Builder.class);
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Builder.class);
+    }
+
+    public interface StartOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:weaviate.v1.BatchStreamRequest.Start)
+        com.google.protobuf.MessageOrBuilder {
+
+      /**
+       * <code>optional .weaviate.v1.ConsistencyLevel consistency_level = 1;</code>
+       * @return Whether the consistencyLevel field is set.
+       */
+      boolean hasConsistencyLevel();
+      /**
+       * <code>optional .weaviate.v1.ConsistencyLevel consistency_level = 1;</code>
+       * @return The enum numeric value on the wire for consistencyLevel.
+       */
+      int getConsistencyLevelValue();
+      /**
+       * <code>optional .weaviate.v1.ConsistencyLevel consistency_level = 1;</code>
+       * @return The consistencyLevel.
+       */
+      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.ConsistencyLevel getConsistencyLevel();
+    }
+    /**
+     * Protobuf type {@code weaviate.v1.BatchStreamRequest.Start}
+     */
+    public static final class Start extends
+        com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:weaviate.v1.BatchStreamRequest.Start)
+        StartOrBuilder {
+    private static final long serialVersionUID = 0L;
+      // Use Start.newBuilder() to construct.
+      private Start(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+        super(builder);
+      }
+      private Start() {
+        consistencyLevel_ = 0;
+      }
+
+      @java.lang.Override
+      @SuppressWarnings({"unused"})
+      protected java.lang.Object newInstance(
+          UnusedPrivateParameter unused) {
+        return new Start();
+      }
+
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_Start_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_Start_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start.Builder.class);
+      }
+
+      private int bitField0_;
+      public static final int CONSISTENCY_LEVEL_FIELD_NUMBER = 1;
+      private int consistencyLevel_ = 0;
+      /**
+       * <code>optional .weaviate.v1.ConsistencyLevel consistency_level = 1;</code>
+       * @return Whether the consistencyLevel field is set.
+       */
+      @java.lang.Override public boolean hasConsistencyLevel() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <code>optional .weaviate.v1.ConsistencyLevel consistency_level = 1;</code>
+       * @return The enum numeric value on the wire for consistencyLevel.
+       */
+      @java.lang.Override public int getConsistencyLevelValue() {
+        return consistencyLevel_;
+      }
+      /**
+       * <code>optional .weaviate.v1.ConsistencyLevel consistency_level = 1;</code>
+       * @return The consistencyLevel.
+       */
+      @java.lang.Override public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.ConsistencyLevel getConsistencyLevel() {
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.ConsistencyLevel result = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.ConsistencyLevel.forNumber(consistencyLevel_);
+        return result == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.ConsistencyLevel.UNRECOGNIZED : result;
+      }
+
+      private byte memoizedIsInitialized = -1;
+      @java.lang.Override
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
+
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      @java.lang.Override
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        if (((bitField0_ & 0x00000001) != 0)) {
+          output.writeEnum(1, consistencyLevel_);
+        }
+        getUnknownFields().writeTo(output);
+      }
+
+      @java.lang.Override
+      public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (((bitField0_ & 0x00000001) != 0)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeEnumSize(1, consistencyLevel_);
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSize = size;
+        return size;
+      }
+
+      @java.lang.Override
+      public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+         return true;
+        }
+        if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start)) {
+          return super.equals(obj);
+        }
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start) obj;
+
+        if (hasConsistencyLevel() != other.hasConsistencyLevel()) return false;
+        if (hasConsistencyLevel()) {
+          if (consistencyLevel_ != other.consistencyLevel_) return false;
+        }
+        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+        return true;
+      }
+
+      @java.lang.Override
+      public int hashCode() {
+        if (memoizedHashCode != 0) {
+          return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        if (hasConsistencyLevel()) {
+          hash = (37 * hash) + CONSISTENCY_LEVEL_FIELD_NUMBER;
+          hash = (53 * hash) + consistencyLevel_;
+        }
+        hash = (29 * hash) + getUnknownFields().hashCode();
+        memoizedHashCode = hash;
+        return hash;
+      }
+
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start parseFrom(
+          java.nio.ByteBuffer data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start parseFrom(
+          java.nio.ByteBuffer data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input);
+      }
+
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+
+      @java.lang.Override
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder() {
+        return DEFAULT_INSTANCE.toBuilder();
+      }
+      public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start prototype) {
+        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      }
+      @java.lang.Override
+      public Builder toBuilder() {
+        return this == DEFAULT_INSTANCE
+            ? new Builder() : new Builder().mergeFrom(this);
+      }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * Protobuf type {@code weaviate.v1.BatchStreamRequest.Start}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:weaviate.v1.BatchStreamRequest.Start)
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.StartOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_Start_descriptor;
+        }
+
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_Start_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start.Builder.class);
+        }
+
+        // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start.newBuilder()
+        private Builder() {
+
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          super(parent);
+
+        }
+        @java.lang.Override
+        public Builder clear() {
+          super.clear();
+          bitField0_ = 0;
+          consistencyLevel_ = 0;
+          return this;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_Start_descriptor;
+        }
+
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start getDefaultInstanceForType() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start.getDefaultInstance();
+        }
+
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start build() {
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start buildPartial() {
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start(this);
+          if (bitField0_ != 0) { buildPartial0(result); }
+          onBuilt();
+          return result;
+        }
+
+        private void buildPartial0(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start result) {
+          int from_bitField0_ = bitField0_;
+          int to_bitField0_ = 0;
+          if (((from_bitField0_ & 0x00000001) != 0)) {
+            result.consistencyLevel_ = consistencyLevel_;
+            to_bitField0_ |= 0x00000001;
+          }
+          result.bitField0_ |= to_bitField0_;
+        }
+
+        @java.lang.Override
+        public Builder clone() {
+          return super.clone();
+        }
+        @java.lang.Override
+        public Builder setField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return super.setField(field, value);
+        }
+        @java.lang.Override
+        public Builder clearField(
+            com.google.protobuf.Descriptors.FieldDescriptor field) {
+          return super.clearField(field);
+        }
+        @java.lang.Override
+        public Builder clearOneof(
+            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          return super.clearOneof(oneof);
+        }
+        @java.lang.Override
+        public Builder setRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            int index, java.lang.Object value) {
+          return super.setRepeatedField(field, index, value);
+        }
+        @java.lang.Override
+        public Builder addRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return super.addRepeatedField(field, value);
+        }
+        @java.lang.Override
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start) {
+            return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start other) {
+          if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start.getDefaultInstance()) return this;
+          if (other.hasConsistencyLevel()) {
+            setConsistencyLevel(other.getConsistencyLevel());
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          onChanged();
+          return this;
+        }
+
+        @java.lang.Override
+        public final boolean isInitialized() {
+          return true;
+        }
+
+        @java.lang.Override
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          if (extensionRegistry == null) {
+            throw new java.lang.NullPointerException();
+          }
+          try {
+            boolean done = false;
+            while (!done) {
+              int tag = input.readTag();
+              switch (tag) {
+                case 0:
+                  done = true;
+                  break;
+                case 8: {
+                  consistencyLevel_ = input.readEnum();
+                  bitField0_ |= 0x00000001;
+                  break;
+                } // case 8
+                default: {
+                  if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                    done = true; // was an endgroup tag
+                  }
+                  break;
+                } // default:
+              } // switch (tag)
+            } // while (!done)
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            throw e.unwrapIOException();
+          } finally {
+            onChanged();
+          } // finally
+          return this;
+        }
+        private int bitField0_;
+
+        private int consistencyLevel_ = 0;
+        /**
+         * <code>optional .weaviate.v1.ConsistencyLevel consistency_level = 1;</code>
+         * @return Whether the consistencyLevel field is set.
+         */
+        @java.lang.Override public boolean hasConsistencyLevel() {
+          return ((bitField0_ & 0x00000001) != 0);
+        }
+        /**
+         * <code>optional .weaviate.v1.ConsistencyLevel consistency_level = 1;</code>
+         * @return The enum numeric value on the wire for consistencyLevel.
+         */
+        @java.lang.Override public int getConsistencyLevelValue() {
+          return consistencyLevel_;
+        }
+        /**
+         * <code>optional .weaviate.v1.ConsistencyLevel consistency_level = 1;</code>
+         * @param value The enum numeric value on the wire for consistencyLevel to set.
+         * @return This builder for chaining.
+         */
+        public Builder setConsistencyLevelValue(int value) {
+          consistencyLevel_ = value;
+          bitField0_ |= 0x00000001;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional .weaviate.v1.ConsistencyLevel consistency_level = 1;</code>
+         * @return The consistencyLevel.
+         */
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.ConsistencyLevel getConsistencyLevel() {
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.ConsistencyLevel result = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.ConsistencyLevel.forNumber(consistencyLevel_);
+          return result == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.ConsistencyLevel.UNRECOGNIZED : result;
+        }
+        /**
+         * <code>optional .weaviate.v1.ConsistencyLevel consistency_level = 1;</code>
+         * @param value The consistencyLevel to set.
+         * @return This builder for chaining.
+         */
+        public Builder setConsistencyLevel(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.ConsistencyLevel value) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          bitField0_ |= 0x00000001;
+          consistencyLevel_ = value.getNumber();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional .weaviate.v1.ConsistencyLevel consistency_level = 1;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearConsistencyLevel() {
+          bitField0_ = (bitField0_ & ~0x00000001);
+          consistencyLevel_ = 0;
+          onChanged();
+          return this;
+        }
+        @java.lang.Override
+        public final Builder setUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.setUnknownFields(unknownFields);
+        }
+
+        @java.lang.Override
+        public final Builder mergeUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.mergeUnknownFields(unknownFields);
+        }
+
+
+        // @@protoc_insertion_point(builder_scope:weaviate.v1.BatchStreamRequest.Start)
+      }
+
+      // @@protoc_insertion_point(class_scope:weaviate.v1.BatchStreamRequest.Start)
+      private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start DEFAULT_INSTANCE;
+      static {
+        DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start();
+      }
+
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+      }
+
+      private static final com.google.protobuf.Parser<Start>
+          PARSER = new com.google.protobuf.AbstractParser<Start>() {
+        @java.lang.Override
+        public Start parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          Builder builder = newBuilder();
+          try {
+            builder.mergeFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            throw e.setUnfinishedMessage(builder.buildPartial());
+          } catch (com.google.protobuf.UninitializedMessageException e) {
+            throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+          } catch (java.io.IOException e) {
+            throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                .setUnfinishedMessage(builder.buildPartial());
+          }
+          return builder.buildPartial();
+        }
+      };
+
+      public static com.google.protobuf.Parser<Start> parser() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<Start> getParserForType() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start getDefaultInstanceForType() {
+        return DEFAULT_INSTANCE;
+      }
+
     }
 
     public interface StopOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:weaviate.v1.BatchSendRequest.Stop)
+        // @@protoc_insertion_point(interface_extends:weaviate.v1.BatchStreamRequest.Stop)
         com.google.protobuf.MessageOrBuilder {
     }
     /**
-     * Protobuf type {@code weaviate.v1.BatchSendRequest.Stop}
+     * Protobuf type {@code weaviate.v1.BatchStreamRequest.Stop}
      */
     public static final class Stop extends
         com.google.protobuf.GeneratedMessageV3 implements
-        // @@protoc_insertion_point(message_implements:weaviate.v1.BatchSendRequest.Stop)
+        // @@protoc_insertion_point(message_implements:weaviate.v1.BatchStreamRequest.Stop)
         StopOrBuilder {
     private static final long serialVersionUID = 0L;
       // Use Stop.newBuilder() to construct.
@@ -1971,15 +2495,15 @@ public final class WeaviateProtoBatch {
 
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchSendRequest_Stop_descriptor;
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_Stop_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchSendRequest_Stop_fieldAccessorTable
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_Stop_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop.Builder.class);
+                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop.Builder.class);
       }
 
       private byte memoizedIsInitialized = -1;
@@ -2015,10 +2539,10 @@ public final class WeaviateProtoBatch {
         if (obj == this) {
          return true;
         }
-        if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop)) {
+        if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop)) {
           return super.equals(obj);
         }
-        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop) obj;
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop) obj;
 
         if (!getUnknownFields().equals(other.getUnknownFields())) return false;
         return true;
@@ -2036,44 +2560,44 @@ public final class WeaviateProtoBatch {
         return hash;
       }
 
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop parseFrom(
           java.nio.ByteBuffer data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop parseFrom(
           java.nio.ByteBuffer data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop parseFrom(
           com.google.protobuf.ByteString data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop parseFrom(
           com.google.protobuf.ByteString data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop parseFrom(byte[] data)
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop parseFrom(byte[] data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop parseFrom(
           byte[] data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop parseFrom(java.io.InputStream input)
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop parseFrom(java.io.InputStream input)
           throws java.io.IOException {
         return com.google.protobuf.GeneratedMessageV3
             .parseWithIOException(PARSER, input);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop parseFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -2081,26 +2605,26 @@ public final class WeaviateProtoBatch {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop parseDelimitedFrom(java.io.InputStream input)
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
         return com.google.protobuf.GeneratedMessageV3
             .parseDelimitedWithIOException(PARSER, input);
       }
 
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop parseDelimitedFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop parseDelimitedFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return com.google.protobuf.GeneratedMessageV3
             .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop parseFrom(
           com.google.protobuf.CodedInputStream input)
           throws java.io.IOException {
         return com.google.protobuf.GeneratedMessageV3
             .parseWithIOException(PARSER, input);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop parseFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -2113,7 +2637,7 @@ public final class WeaviateProtoBatch {
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
       }
-      public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop prototype) {
+      public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
       @java.lang.Override
@@ -2129,26 +2653,26 @@ public final class WeaviateProtoBatch {
         return builder;
       }
       /**
-       * Protobuf type {@code weaviate.v1.BatchSendRequest.Stop}
+       * Protobuf type {@code weaviate.v1.BatchStreamRequest.Stop}
        */
       public static final class Builder extends
           com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-          // @@protoc_insertion_point(builder_implements:weaviate.v1.BatchSendRequest.Stop)
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.StopOrBuilder {
+          // @@protoc_insertion_point(builder_implements:weaviate.v1.BatchStreamRequest.Stop)
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.StopOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchSendRequest_Stop_descriptor;
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_Stop_descriptor;
         }
 
         @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchSendRequest_Stop_fieldAccessorTable
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_Stop_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop.Builder.class);
+                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop.Builder.class);
         }
 
-        // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop.newBuilder()
+        // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop.newBuilder()
         private Builder() {
 
         }
@@ -2167,17 +2691,17 @@ public final class WeaviateProtoBatch {
         @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchSendRequest_Stop_descriptor;
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_Stop_descriptor;
         }
 
         @java.lang.Override
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop getDefaultInstanceForType() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop.getDefaultInstance();
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop getDefaultInstanceForType() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop.getDefaultInstance();
         }
 
         @java.lang.Override
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop build() {
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop result = buildPartial();
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop build() {
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop result = buildPartial();
           if (!result.isInitialized()) {
             throw newUninitializedMessageException(result);
           }
@@ -2185,8 +2709,8 @@ public final class WeaviateProtoBatch {
         }
 
         @java.lang.Override
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop buildPartial() {
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop(this);
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop buildPartial() {
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop(this);
           onBuilt();
           return result;
         }
@@ -2225,16 +2749,16 @@ public final class WeaviateProtoBatch {
         }
         @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop) {
-            return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop)other);
+          if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop) {
+            return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop)other);
           } else {
             super.mergeFrom(other);
             return this;
           }
         }
 
-        public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop other) {
-          if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop.getDefaultInstance()) return this;
+        public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop other) {
+          if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop.getDefaultInstance()) return this;
           this.mergeUnknownFields(other.getUnknownFields());
           onChanged();
           return this;
@@ -2289,16 +2813,16 @@ public final class WeaviateProtoBatch {
         }
 
 
-        // @@protoc_insertion_point(builder_scope:weaviate.v1.BatchSendRequest.Stop)
+        // @@protoc_insertion_point(builder_scope:weaviate.v1.BatchStreamRequest.Stop)
       }
 
-      // @@protoc_insertion_point(class_scope:weaviate.v1.BatchSendRequest.Stop)
-      private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop DEFAULT_INSTANCE;
+      // @@protoc_insertion_point(class_scope:weaviate.v1.BatchStreamRequest.Stop)
+      private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop DEFAULT_INSTANCE;
       static {
-        DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop();
+        DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop();
       }
 
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop getDefaultInstance() {
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop getDefaultInstance() {
         return DEFAULT_INSTANCE;
       }
 
@@ -2334,897 +2858,1696 @@ public final class WeaviateProtoBatch {
       }
 
       @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop getDefaultInstanceForType() {
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
 
     }
 
-    public interface ObjectsOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:weaviate.v1.BatchSendRequest.Objects)
+    public interface DataOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:weaviate.v1.BatchStreamRequest.Data)
         com.google.protobuf.MessageOrBuilder {
 
       /**
-       * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+       * <code>.weaviate.v1.BatchStreamRequest.Data.Objects objects = 1;</code>
+       * @return Whether the objects field is set.
        */
-      java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject> 
-          getValuesList();
+      boolean hasObjects();
       /**
-       * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+       * <code>.weaviate.v1.BatchStreamRequest.Data.Objects objects = 1;</code>
+       * @return The objects.
        */
-      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject getValues(int index);
+      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects getObjects();
       /**
-       * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+       * <code>.weaviate.v1.BatchStreamRequest.Data.Objects objects = 1;</code>
        */
-      int getValuesCount();
+      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.ObjectsOrBuilder getObjectsOrBuilder();
+
       /**
-       * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+       * <code>.weaviate.v1.BatchStreamRequest.Data.References references = 2;</code>
+       * @return Whether the references field is set.
        */
-      java.util.List<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObjectOrBuilder> 
-          getValuesOrBuilderList();
+      boolean hasReferences();
       /**
-       * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+       * <code>.weaviate.v1.BatchStreamRequest.Data.References references = 2;</code>
+       * @return The references.
        */
-      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObjectOrBuilder getValuesOrBuilder(
-          int index);
+      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References getReferences();
+      /**
+       * <code>.weaviate.v1.BatchStreamRequest.Data.References references = 2;</code>
+       */
+      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.ReferencesOrBuilder getReferencesOrBuilder();
     }
     /**
-     * Protobuf type {@code weaviate.v1.BatchSendRequest.Objects}
+     * Protobuf type {@code weaviate.v1.BatchStreamRequest.Data}
      */
-    public static final class Objects extends
+    public static final class Data extends
         com.google.protobuf.GeneratedMessageV3 implements
-        // @@protoc_insertion_point(message_implements:weaviate.v1.BatchSendRequest.Objects)
-        ObjectsOrBuilder {
+        // @@protoc_insertion_point(message_implements:weaviate.v1.BatchStreamRequest.Data)
+        DataOrBuilder {
     private static final long serialVersionUID = 0L;
-      // Use Objects.newBuilder() to construct.
-      private Objects(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      // Use Data.newBuilder() to construct.
+      private Data(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
         super(builder);
       }
-      private Objects() {
-        values_ = java.util.Collections.emptyList();
+      private Data() {
       }
 
       @java.lang.Override
       @SuppressWarnings({"unused"})
       protected java.lang.Object newInstance(
           UnusedPrivateParameter unused) {
-        return new Objects();
+        return new Data();
       }
 
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchSendRequest_Objects_descriptor;
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_Data_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchSendRequest_Objects_fieldAccessorTable
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_Data_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects.Builder.class);
+                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Builder.class);
       }
 
-      public static final int VALUES_FIELD_NUMBER = 1;
-      @SuppressWarnings("serial")
-      private java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject> values_;
-      /**
-       * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
-       */
-      @java.lang.Override
-      public java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject> getValuesList() {
-        return values_;
-      }
-      /**
-       * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
-       */
-      @java.lang.Override
-      public java.util.List<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObjectOrBuilder> 
-          getValuesOrBuilderList() {
-        return values_;
-      }
-      /**
-       * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
-       */
-      @java.lang.Override
-      public int getValuesCount() {
-        return values_.size();
-      }
-      /**
-       * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
-       */
-      @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject getValues(int index) {
-        return values_.get(index);
+      public interface ObjectsOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:weaviate.v1.BatchStreamRequest.Data.Objects)
+          com.google.protobuf.MessageOrBuilder {
+
+        /**
+         * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+         */
+        java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject> 
+            getValuesList();
+        /**
+         * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+         */
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject getValues(int index);
+        /**
+         * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+         */
+        int getValuesCount();
+        /**
+         * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+         */
+        java.util.List<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObjectOrBuilder> 
+            getValuesOrBuilderList();
+        /**
+         * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+         */
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObjectOrBuilder getValuesOrBuilder(
+            int index);
       }
       /**
-       * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+       * Protobuf type {@code weaviate.v1.BatchStreamRequest.Data.Objects}
        */
-      @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObjectOrBuilder getValuesOrBuilder(
-          int index) {
-        return values_.get(index);
-      }
-
-      private byte memoizedIsInitialized = -1;
-      @java.lang.Override
-      public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized == 1) return true;
-        if (isInitialized == 0) return false;
-
-        memoizedIsInitialized = 1;
-        return true;
-      }
-
-      @java.lang.Override
-      public void writeTo(com.google.protobuf.CodedOutputStream output)
-                          throws java.io.IOException {
-        for (int i = 0; i < values_.size(); i++) {
-          output.writeMessage(1, values_.get(i));
+      public static final class Objects extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:weaviate.v1.BatchStreamRequest.Data.Objects)
+          ObjectsOrBuilder {
+      private static final long serialVersionUID = 0L;
+        // Use Objects.newBuilder() to construct.
+        private Objects(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+          super(builder);
         }
-        getUnknownFields().writeTo(output);
-      }
-
-      @java.lang.Override
-      public int getSerializedSize() {
-        int size = memoizedSize;
-        if (size != -1) return size;
-
-        size = 0;
-        for (int i = 0; i < values_.size(); i++) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(1, values_.get(i));
+        private Objects() {
+          values_ = java.util.Collections.emptyList();
         }
-        size += getUnknownFields().getSerializedSize();
-        memoizedSize = size;
-        return size;
-      }
 
-      @java.lang.Override
-      public boolean equals(final java.lang.Object obj) {
-        if (obj == this) {
-         return true;
+        @java.lang.Override
+        @SuppressWarnings({"unused"})
+        protected java.lang.Object newInstance(
+            UnusedPrivateParameter unused) {
+          return new Objects();
         }
-        if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects)) {
-          return super.equals(obj);
-        }
-        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects) obj;
 
-        if (!getValuesList()
-            .equals(other.getValuesList())) return false;
-        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-        return true;
-      }
-
-      @java.lang.Override
-      public int hashCode() {
-        if (memoizedHashCode != 0) {
-          return memoizedHashCode;
-        }
-        int hash = 41;
-        hash = (19 * hash) + getDescriptor().hashCode();
-        if (getValuesCount() > 0) {
-          hash = (37 * hash) + VALUES_FIELD_NUMBER;
-          hash = (53 * hash) + getValuesList().hashCode();
-        }
-        hash = (29 * hash) + getUnknownFields().hashCode();
-        memoizedHashCode = hash;
-        return hash;
-      }
-
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects parseFrom(
-          java.nio.ByteBuffer data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects parseFrom(
-          java.nio.ByteBuffer data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects parseFrom(
-          com.google.protobuf.ByteString data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects parseFrom(
-          com.google.protobuf.ByteString data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects parseFrom(byte[] data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects parseFrom(
-          byte[] data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects parseFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input);
-      }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects parseFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input, extensionRegistry);
-      }
-
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects parseDelimitedFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseDelimitedWithIOException(PARSER, input);
-      }
-
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects parseDelimitedFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-      }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects parseFrom(
-          com.google.protobuf.CodedInputStream input)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input);
-      }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects parseFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input, extensionRegistry);
-      }
-
-      @java.lang.Override
-      public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder() {
-        return DEFAULT_INSTANCE.toBuilder();
-      }
-      public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects prototype) {
-        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-      }
-      @java.lang.Override
-      public Builder toBuilder() {
-        return this == DEFAULT_INSTANCE
-            ? new Builder() : new Builder().mergeFrom(this);
-      }
-
-      @java.lang.Override
-      protected Builder newBuilderForType(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        Builder builder = new Builder(parent);
-        return builder;
-      }
-      /**
-       * Protobuf type {@code weaviate.v1.BatchSendRequest.Objects}
-       */
-      public static final class Builder extends
-          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-          // @@protoc_insertion_point(builder_implements:weaviate.v1.BatchSendRequest.Objects)
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.ObjectsOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchSendRequest_Objects_descriptor;
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_Data_Objects_descriptor;
         }
 
         @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchSendRequest_Objects_fieldAccessorTable
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_Data_Objects_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects.Builder.class);
+                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects.Builder.class);
         }
 
-        // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects.newBuilder()
-        private Builder() {
-
-        }
-
-        private Builder(
-            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-          super(parent);
-
-        }
-        @java.lang.Override
-        public Builder clear() {
-          super.clear();
-          bitField0_ = 0;
-          if (valuesBuilder_ == null) {
-            values_ = java.util.Collections.emptyList();
-          } else {
-            values_ = null;
-            valuesBuilder_.clear();
-          }
-          bitField0_ = (bitField0_ & ~0x00000001);
-          return this;
-        }
-
-        @java.lang.Override
-        public com.google.protobuf.Descriptors.Descriptor
-            getDescriptorForType() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchSendRequest_Objects_descriptor;
-        }
-
-        @java.lang.Override
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects getDefaultInstanceForType() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects.getDefaultInstance();
-        }
-
-        @java.lang.Override
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects build() {
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects result = buildPartial();
-          if (!result.isInitialized()) {
-            throw newUninitializedMessageException(result);
-          }
-          return result;
-        }
-
-        @java.lang.Override
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects buildPartial() {
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects(this);
-          buildPartialRepeatedFields(result);
-          if (bitField0_ != 0) { buildPartial0(result); }
-          onBuilt();
-          return result;
-        }
-
-        private void buildPartialRepeatedFields(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects result) {
-          if (valuesBuilder_ == null) {
-            if (((bitField0_ & 0x00000001) != 0)) {
-              values_ = java.util.Collections.unmodifiableList(values_);
-              bitField0_ = (bitField0_ & ~0x00000001);
-            }
-            result.values_ = values_;
-          } else {
-            result.values_ = valuesBuilder_.build();
-          }
-        }
-
-        private void buildPartial0(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects result) {
-          int from_bitField0_ = bitField0_;
-        }
-
-        @java.lang.Override
-        public Builder clone() {
-          return super.clone();
-        }
-        @java.lang.Override
-        public Builder setField(
-            com.google.protobuf.Descriptors.FieldDescriptor field,
-            java.lang.Object value) {
-          return super.setField(field, value);
-        }
-        @java.lang.Override
-        public Builder clearField(
-            com.google.protobuf.Descriptors.FieldDescriptor field) {
-          return super.clearField(field);
-        }
-        @java.lang.Override
-        public Builder clearOneof(
-            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-          return super.clearOneof(oneof);
-        }
-        @java.lang.Override
-        public Builder setRepeatedField(
-            com.google.protobuf.Descriptors.FieldDescriptor field,
-            int index, java.lang.Object value) {
-          return super.setRepeatedField(field, index, value);
-        }
-        @java.lang.Override
-        public Builder addRepeatedField(
-            com.google.protobuf.Descriptors.FieldDescriptor field,
-            java.lang.Object value) {
-          return super.addRepeatedField(field, value);
-        }
-        @java.lang.Override
-        public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects) {
-            return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects)other);
-          } else {
-            super.mergeFrom(other);
-            return this;
-          }
-        }
-
-        public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects other) {
-          if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects.getDefaultInstance()) return this;
-          if (valuesBuilder_ == null) {
-            if (!other.values_.isEmpty()) {
-              if (values_.isEmpty()) {
-                values_ = other.values_;
-                bitField0_ = (bitField0_ & ~0x00000001);
-              } else {
-                ensureValuesIsMutable();
-                values_.addAll(other.values_);
-              }
-              onChanged();
-            }
-          } else {
-            if (!other.values_.isEmpty()) {
-              if (valuesBuilder_.isEmpty()) {
-                valuesBuilder_.dispose();
-                valuesBuilder_ = null;
-                values_ = other.values_;
-                bitField0_ = (bitField0_ & ~0x00000001);
-                valuesBuilder_ = 
-                  com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                     getValuesFieldBuilder() : null;
-              } else {
-                valuesBuilder_.addAllMessages(other.values_);
-              }
-            }
-          }
-          this.mergeUnknownFields(other.getUnknownFields());
-          onChanged();
-          return this;
-        }
-
-        @java.lang.Override
-        public final boolean isInitialized() {
-          return true;
-        }
-
-        @java.lang.Override
-        public Builder mergeFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-          if (extensionRegistry == null) {
-            throw new java.lang.NullPointerException();
-          }
-          try {
-            boolean done = false;
-            while (!done) {
-              int tag = input.readTag();
-              switch (tag) {
-                case 0:
-                  done = true;
-                  break;
-                case 10: {
-                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject m =
-                      input.readMessage(
-                          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject.parser(),
-                          extensionRegistry);
-                  if (valuesBuilder_ == null) {
-                    ensureValuesIsMutable();
-                    values_.add(m);
-                  } else {
-                    valuesBuilder_.addMessage(m);
-                  }
-                  break;
-                } // case 10
-                default: {
-                  if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                    done = true; // was an endgroup tag
-                  }
-                  break;
-                } // default:
-              } // switch (tag)
-            } // while (!done)
-          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            throw e.unwrapIOException();
-          } finally {
-            onChanged();
-          } // finally
-          return this;
-        }
-        private int bitField0_;
-
-        private java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject> values_ =
-          java.util.Collections.emptyList();
-        private void ensureValuesIsMutable() {
-          if (!((bitField0_ & 0x00000001) != 0)) {
-            values_ = new java.util.ArrayList<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject>(values_);
-            bitField0_ |= 0x00000001;
-           }
-        }
-
-        private com.google.protobuf.RepeatedFieldBuilderV3<
-            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObjectOrBuilder> valuesBuilder_;
-
+        public static final int VALUES_FIELD_NUMBER = 1;
+        @SuppressWarnings("serial")
+        private java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject> values_;
         /**
          * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
          */
+        @java.lang.Override
         public java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject> getValuesList() {
-          if (valuesBuilder_ == null) {
-            return java.util.Collections.unmodifiableList(values_);
-          } else {
-            return valuesBuilder_.getMessageList();
-          }
+          return values_;
         }
         /**
          * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
          */
+        @java.lang.Override
+        public java.util.List<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObjectOrBuilder> 
+            getValuesOrBuilderList() {
+          return values_;
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+         */
+        @java.lang.Override
         public int getValuesCount() {
-          if (valuesBuilder_ == null) {
-            return values_.size();
-          } else {
-            return valuesBuilder_.getCount();
-          }
+          return values_.size();
         }
         /**
          * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
          */
+        @java.lang.Override
         public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject getValues(int index) {
-          if (valuesBuilder_ == null) {
-            return values_.get(index);
-          } else {
-            return valuesBuilder_.getMessage(index);
-          }
+          return values_.get(index);
         }
         /**
          * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
          */
-        public Builder setValues(
-            int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject value) {
-          if (valuesBuilder_ == null) {
-            if (value == null) {
-              throw new NullPointerException();
-            }
-            ensureValuesIsMutable();
-            values_.set(index, value);
-            onChanged();
-          } else {
-            valuesBuilder_.setMessage(index, value);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
-         */
-        public Builder setValues(
-            int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject.Builder builderForValue) {
-          if (valuesBuilder_ == null) {
-            ensureValuesIsMutable();
-            values_.set(index, builderForValue.build());
-            onChanged();
-          } else {
-            valuesBuilder_.setMessage(index, builderForValue.build());
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
-         */
-        public Builder addValues(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject value) {
-          if (valuesBuilder_ == null) {
-            if (value == null) {
-              throw new NullPointerException();
-            }
-            ensureValuesIsMutable();
-            values_.add(value);
-            onChanged();
-          } else {
-            valuesBuilder_.addMessage(value);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
-         */
-        public Builder addValues(
-            int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject value) {
-          if (valuesBuilder_ == null) {
-            if (value == null) {
-              throw new NullPointerException();
-            }
-            ensureValuesIsMutable();
-            values_.add(index, value);
-            onChanged();
-          } else {
-            valuesBuilder_.addMessage(index, value);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
-         */
-        public Builder addValues(
-            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject.Builder builderForValue) {
-          if (valuesBuilder_ == null) {
-            ensureValuesIsMutable();
-            values_.add(builderForValue.build());
-            onChanged();
-          } else {
-            valuesBuilder_.addMessage(builderForValue.build());
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
-         */
-        public Builder addValues(
-            int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject.Builder builderForValue) {
-          if (valuesBuilder_ == null) {
-            ensureValuesIsMutable();
-            values_.add(index, builderForValue.build());
-            onChanged();
-          } else {
-            valuesBuilder_.addMessage(index, builderForValue.build());
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
-         */
-        public Builder addAllValues(
-            java.lang.Iterable<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject> values) {
-          if (valuesBuilder_ == null) {
-            ensureValuesIsMutable();
-            com.google.protobuf.AbstractMessageLite.Builder.addAll(
-                values, values_);
-            onChanged();
-          } else {
-            valuesBuilder_.addAllMessages(values);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
-         */
-        public Builder clearValues() {
-          if (valuesBuilder_ == null) {
-            values_ = java.util.Collections.emptyList();
-            bitField0_ = (bitField0_ & ~0x00000001);
-            onChanged();
-          } else {
-            valuesBuilder_.clear();
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
-         */
-        public Builder removeValues(int index) {
-          if (valuesBuilder_ == null) {
-            ensureValuesIsMutable();
-            values_.remove(index);
-            onChanged();
-          } else {
-            valuesBuilder_.remove(index);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
-         */
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject.Builder getValuesBuilder(
-            int index) {
-          return getValuesFieldBuilder().getBuilder(index);
-        }
-        /**
-         * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
-         */
+        @java.lang.Override
         public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObjectOrBuilder getValuesOrBuilder(
             int index) {
-          if (valuesBuilder_ == null) {
-            return values_.get(index);  } else {
-            return valuesBuilder_.getMessageOrBuilder(index);
-          }
+          return values_.get(index);
         }
-        /**
-         * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
-         */
-        public java.util.List<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObjectOrBuilder> 
-             getValuesOrBuilderList() {
-          if (valuesBuilder_ != null) {
-            return valuesBuilder_.getMessageOrBuilderList();
-          } else {
-            return java.util.Collections.unmodifiableList(values_);
-          }
-        }
-        /**
-         * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
-         */
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject.Builder addValuesBuilder() {
-          return getValuesFieldBuilder().addBuilder(
-              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject.getDefaultInstance());
-        }
-        /**
-         * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
-         */
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject.Builder addValuesBuilder(
-            int index) {
-          return getValuesFieldBuilder().addBuilder(
-              index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject.getDefaultInstance());
-        }
-        /**
-         * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
-         */
-        public java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject.Builder> 
-             getValuesBuilderList() {
-          return getValuesFieldBuilder().getBuilderList();
-        }
-        private com.google.protobuf.RepeatedFieldBuilderV3<
-            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObjectOrBuilder> 
-            getValuesFieldBuilder() {
-          if (valuesBuilder_ == null) {
-            valuesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObjectOrBuilder>(
-                    values_,
-                    ((bitField0_ & 0x00000001) != 0),
-                    getParentForChildren(),
-                    isClean());
-            values_ = null;
-          }
-          return valuesBuilder_;
-        }
+
+        private byte memoizedIsInitialized = -1;
         @java.lang.Override
-        public final Builder setUnknownFields(
-            final com.google.protobuf.UnknownFieldSet unknownFields) {
-          return super.setUnknownFields(unknownFields);
+        public final boolean isInitialized() {
+          byte isInitialized = memoizedIsInitialized;
+          if (isInitialized == 1) return true;
+          if (isInitialized == 0) return false;
+
+          memoizedIsInitialized = 1;
+          return true;
         }
 
         @java.lang.Override
-        public final Builder mergeUnknownFields(
-            final com.google.protobuf.UnknownFieldSet unknownFields) {
-          return super.mergeUnknownFields(unknownFields);
+        public void writeTo(com.google.protobuf.CodedOutputStream output)
+                            throws java.io.IOException {
+          for (int i = 0; i < values_.size(); i++) {
+            output.writeMessage(1, values_.get(i));
+          }
+          getUnknownFields().writeTo(output);
         }
 
-
-        // @@protoc_insertion_point(builder_scope:weaviate.v1.BatchSendRequest.Objects)
-      }
-
-      // @@protoc_insertion_point(class_scope:weaviate.v1.BatchSendRequest.Objects)
-      private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects DEFAULT_INSTANCE;
-      static {
-        DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects();
-      }
-
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-      }
-
-      private static final com.google.protobuf.Parser<Objects>
-          PARSER = new com.google.protobuf.AbstractParser<Objects>() {
         @java.lang.Override
-        public Objects parsePartialFrom(
-            com.google.protobuf.CodedInputStream input,
+        public int getSerializedSize() {
+          int size = memoizedSize;
+          if (size != -1) return size;
+
+          size = 0;
+          for (int i = 0; i < values_.size(); i++) {
+            size += com.google.protobuf.CodedOutputStream
+              .computeMessageSize(1, values_.get(i));
+          }
+          size += getUnknownFields().getSerializedSize();
+          memoizedSize = size;
+          return size;
+        }
+
+        @java.lang.Override
+        public boolean equals(final java.lang.Object obj) {
+          if (obj == this) {
+           return true;
+          }
+          if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects)) {
+            return super.equals(obj);
+          }
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects) obj;
+
+          if (!getValuesList()
+              .equals(other.getValuesList())) return false;
+          if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+          return true;
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+          if (memoizedHashCode != 0) {
+            return memoizedHashCode;
+          }
+          int hash = 41;
+          hash = (19 * hash) + getDescriptor().hashCode();
+          if (getValuesCount() > 0) {
+            hash = (37 * hash) + VALUES_FIELD_NUMBER;
+            hash = (53 * hash) + getValuesList().hashCode();
+          }
+          hash = (29 * hash) + getUnknownFields().hashCode();
+          memoizedHashCode = hash;
+          return hash;
+        }
+
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects parseFrom(
+            java.nio.ByteBuffer data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects parseFrom(
+            java.nio.ByteBuffer data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-          Builder builder = newBuilder();
-          try {
-            builder.mergeFrom(input, extensionRegistry);
-          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            throw e.setUnfinishedMessage(builder.buildPartial());
-          } catch (com.google.protobuf.UninitializedMessageException e) {
-            throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-          } catch (java.io.IOException e) {
-            throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                .setUnfinishedMessage(builder.buildPartial());
-          }
-          return builder.buildPartial();
+          return PARSER.parseFrom(data, extensionRegistry);
         }
-      };
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data, extensionRegistry);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data, extensionRegistry);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+        }
 
-      public static com.google.protobuf.Parser<Objects> parser() {
-        return PARSER;
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
+        }
+
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+        }
+
+        @java.lang.Override
+        public Builder newBuilderForType() { return newBuilder(); }
+        public static Builder newBuilder() {
+          return DEFAULT_INSTANCE.toBuilder();
+        }
+        public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects prototype) {
+          return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+        }
+        @java.lang.Override
+        public Builder toBuilder() {
+          return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+        }
+
+        @java.lang.Override
+        protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          Builder builder = new Builder(parent);
+          return builder;
+        }
+        /**
+         * Protobuf type {@code weaviate.v1.BatchStreamRequest.Data.Objects}
+         */
+        public static final class Builder extends
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:weaviate.v1.BatchStreamRequest.Data.Objects)
+            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.ObjectsOrBuilder {
+          public static final com.google.protobuf.Descriptors.Descriptor
+              getDescriptor() {
+            return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_Data_Objects_descriptor;
+          }
+
+          @java.lang.Override
+          protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+              internalGetFieldAccessorTable() {
+            return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_Data_Objects_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects.Builder.class);
+          }
+
+          // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects.newBuilder()
+          private Builder() {
+
+          }
+
+          private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+            super(parent);
+
+          }
+          @java.lang.Override
+          public Builder clear() {
+            super.clear();
+            bitField0_ = 0;
+            if (valuesBuilder_ == null) {
+              values_ = java.util.Collections.emptyList();
+            } else {
+              values_ = null;
+              valuesBuilder_.clear();
+            }
+            bitField0_ = (bitField0_ & ~0x00000001);
+            return this;
+          }
+
+          @java.lang.Override
+          public com.google.protobuf.Descriptors.Descriptor
+              getDescriptorForType() {
+            return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_Data_Objects_descriptor;
+          }
+
+          @java.lang.Override
+          public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects getDefaultInstanceForType() {
+            return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects.getDefaultInstance();
+          }
+
+          @java.lang.Override
+          public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects build() {
+            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects result = buildPartial();
+            if (!result.isInitialized()) {
+              throw newUninitializedMessageException(result);
+            }
+            return result;
+          }
+
+          @java.lang.Override
+          public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects buildPartial() {
+            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects(this);
+            buildPartialRepeatedFields(result);
+            if (bitField0_ != 0) { buildPartial0(result); }
+            onBuilt();
+            return result;
+          }
+
+          private void buildPartialRepeatedFields(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects result) {
+            if (valuesBuilder_ == null) {
+              if (((bitField0_ & 0x00000001) != 0)) {
+                values_ = java.util.Collections.unmodifiableList(values_);
+                bitField0_ = (bitField0_ & ~0x00000001);
+              }
+              result.values_ = values_;
+            } else {
+              result.values_ = valuesBuilder_.build();
+            }
+          }
+
+          private void buildPartial0(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects result) {
+            int from_bitField0_ = bitField0_;
+          }
+
+          @java.lang.Override
+          public Builder clone() {
+            return super.clone();
+          }
+          @java.lang.Override
+          public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              java.lang.Object value) {
+            return super.setField(field, value);
+          }
+          @java.lang.Override
+          public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+            return super.clearField(field);
+          }
+          @java.lang.Override
+          public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+            return super.clearOneof(oneof);
+          }
+          @java.lang.Override
+          public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, java.lang.Object value) {
+            return super.setRepeatedField(field, index, value);
+          }
+          @java.lang.Override
+          public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              java.lang.Object value) {
+            return super.addRepeatedField(field, value);
+          }
+          @java.lang.Override
+          public Builder mergeFrom(com.google.protobuf.Message other) {
+            if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects) {
+              return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects)other);
+            } else {
+              super.mergeFrom(other);
+              return this;
+            }
+          }
+
+          public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects other) {
+            if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects.getDefaultInstance()) return this;
+            if (valuesBuilder_ == null) {
+              if (!other.values_.isEmpty()) {
+                if (values_.isEmpty()) {
+                  values_ = other.values_;
+                  bitField0_ = (bitField0_ & ~0x00000001);
+                } else {
+                  ensureValuesIsMutable();
+                  values_.addAll(other.values_);
+                }
+                onChanged();
+              }
+            } else {
+              if (!other.values_.isEmpty()) {
+                if (valuesBuilder_.isEmpty()) {
+                  valuesBuilder_.dispose();
+                  valuesBuilder_ = null;
+                  values_ = other.values_;
+                  bitField0_ = (bitField0_ & ~0x00000001);
+                  valuesBuilder_ = 
+                    com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                       getValuesFieldBuilder() : null;
+                } else {
+                  valuesBuilder_.addAllMessages(other.values_);
+                }
+              }
+            }
+            this.mergeUnknownFields(other.getUnknownFields());
+            onChanged();
+            return this;
+          }
+
+          @java.lang.Override
+          public final boolean isInitialized() {
+            return true;
+          }
+
+          @java.lang.Override
+          public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+            if (extensionRegistry == null) {
+              throw new java.lang.NullPointerException();
+            }
+            try {
+              boolean done = false;
+              while (!done) {
+                int tag = input.readTag();
+                switch (tag) {
+                  case 0:
+                    done = true;
+                    break;
+                  case 10: {
+                    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject m =
+                        input.readMessage(
+                            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject.parser(),
+                            extensionRegistry);
+                    if (valuesBuilder_ == null) {
+                      ensureValuesIsMutable();
+                      values_.add(m);
+                    } else {
+                      valuesBuilder_.addMessage(m);
+                    }
+                    break;
+                  } // case 10
+                  default: {
+                    if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                      done = true; // was an endgroup tag
+                    }
+                    break;
+                  } // default:
+                } // switch (tag)
+              } // while (!done)
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+              throw e.unwrapIOException();
+            } finally {
+              onChanged();
+            } // finally
+            return this;
+          }
+          private int bitField0_;
+
+          private java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject> values_ =
+            java.util.Collections.emptyList();
+          private void ensureValuesIsMutable() {
+            if (!((bitField0_ & 0x00000001) != 0)) {
+              values_ = new java.util.ArrayList<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject>(values_);
+              bitField0_ |= 0x00000001;
+             }
+          }
+
+          private com.google.protobuf.RepeatedFieldBuilderV3<
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObjectOrBuilder> valuesBuilder_;
+
+          /**
+           * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+           */
+          public java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject> getValuesList() {
+            if (valuesBuilder_ == null) {
+              return java.util.Collections.unmodifiableList(values_);
+            } else {
+              return valuesBuilder_.getMessageList();
+            }
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+           */
+          public int getValuesCount() {
+            if (valuesBuilder_ == null) {
+              return values_.size();
+            } else {
+              return valuesBuilder_.getCount();
+            }
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+           */
+          public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject getValues(int index) {
+            if (valuesBuilder_ == null) {
+              return values_.get(index);
+            } else {
+              return valuesBuilder_.getMessage(index);
+            }
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+           */
+          public Builder setValues(
+              int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject value) {
+            if (valuesBuilder_ == null) {
+              if (value == null) {
+                throw new NullPointerException();
+              }
+              ensureValuesIsMutable();
+              values_.set(index, value);
+              onChanged();
+            } else {
+              valuesBuilder_.setMessage(index, value);
+            }
+            return this;
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+           */
+          public Builder setValues(
+              int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject.Builder builderForValue) {
+            if (valuesBuilder_ == null) {
+              ensureValuesIsMutable();
+              values_.set(index, builderForValue.build());
+              onChanged();
+            } else {
+              valuesBuilder_.setMessage(index, builderForValue.build());
+            }
+            return this;
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+           */
+          public Builder addValues(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject value) {
+            if (valuesBuilder_ == null) {
+              if (value == null) {
+                throw new NullPointerException();
+              }
+              ensureValuesIsMutable();
+              values_.add(value);
+              onChanged();
+            } else {
+              valuesBuilder_.addMessage(value);
+            }
+            return this;
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+           */
+          public Builder addValues(
+              int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject value) {
+            if (valuesBuilder_ == null) {
+              if (value == null) {
+                throw new NullPointerException();
+              }
+              ensureValuesIsMutable();
+              values_.add(index, value);
+              onChanged();
+            } else {
+              valuesBuilder_.addMessage(index, value);
+            }
+            return this;
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+           */
+          public Builder addValues(
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject.Builder builderForValue) {
+            if (valuesBuilder_ == null) {
+              ensureValuesIsMutable();
+              values_.add(builderForValue.build());
+              onChanged();
+            } else {
+              valuesBuilder_.addMessage(builderForValue.build());
+            }
+            return this;
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+           */
+          public Builder addValues(
+              int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject.Builder builderForValue) {
+            if (valuesBuilder_ == null) {
+              ensureValuesIsMutable();
+              values_.add(index, builderForValue.build());
+              onChanged();
+            } else {
+              valuesBuilder_.addMessage(index, builderForValue.build());
+            }
+            return this;
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+           */
+          public Builder addAllValues(
+              java.lang.Iterable<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject> values) {
+            if (valuesBuilder_ == null) {
+              ensureValuesIsMutable();
+              com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                  values, values_);
+              onChanged();
+            } else {
+              valuesBuilder_.addAllMessages(values);
+            }
+            return this;
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+           */
+          public Builder clearValues() {
+            if (valuesBuilder_ == null) {
+              values_ = java.util.Collections.emptyList();
+              bitField0_ = (bitField0_ & ~0x00000001);
+              onChanged();
+            } else {
+              valuesBuilder_.clear();
+            }
+            return this;
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+           */
+          public Builder removeValues(int index) {
+            if (valuesBuilder_ == null) {
+              ensureValuesIsMutable();
+              values_.remove(index);
+              onChanged();
+            } else {
+              valuesBuilder_.remove(index);
+            }
+            return this;
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+           */
+          public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject.Builder getValuesBuilder(
+              int index) {
+            return getValuesFieldBuilder().getBuilder(index);
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+           */
+          public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObjectOrBuilder getValuesOrBuilder(
+              int index) {
+            if (valuesBuilder_ == null) {
+              return values_.get(index);  } else {
+              return valuesBuilder_.getMessageOrBuilder(index);
+            }
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+           */
+          public java.util.List<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObjectOrBuilder> 
+               getValuesOrBuilderList() {
+            if (valuesBuilder_ != null) {
+              return valuesBuilder_.getMessageOrBuilderList();
+            } else {
+              return java.util.Collections.unmodifiableList(values_);
+            }
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+           */
+          public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject.Builder addValuesBuilder() {
+            return getValuesFieldBuilder().addBuilder(
+                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject.getDefaultInstance());
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+           */
+          public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject.Builder addValuesBuilder(
+              int index) {
+            return getValuesFieldBuilder().addBuilder(
+                index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject.getDefaultInstance());
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchObject values = 1;</code>
+           */
+          public java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject.Builder> 
+               getValuesBuilderList() {
+            return getValuesFieldBuilder().getBuilderList();
+          }
+          private com.google.protobuf.RepeatedFieldBuilderV3<
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObjectOrBuilder> 
+              getValuesFieldBuilder() {
+            if (valuesBuilder_ == null) {
+              valuesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObject.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchObjectOrBuilder>(
+                      values_,
+                      ((bitField0_ & 0x00000001) != 0),
+                      getParentForChildren(),
+                      isClean());
+              values_ = null;
+            }
+            return valuesBuilder_;
+          }
+          @java.lang.Override
+          public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+            return super.setUnknownFields(unknownFields);
+          }
+
+          @java.lang.Override
+          public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+            return super.mergeUnknownFields(unknownFields);
+          }
+
+
+          // @@protoc_insertion_point(builder_scope:weaviate.v1.BatchStreamRequest.Data.Objects)
+        }
+
+        // @@protoc_insertion_point(class_scope:weaviate.v1.BatchStreamRequest.Data.Objects)
+        private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects DEFAULT_INSTANCE;
+        static {
+          DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects();
+        }
+
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects getDefaultInstance() {
+          return DEFAULT_INSTANCE;
+        }
+
+        private static final com.google.protobuf.Parser<Objects>
+            PARSER = new com.google.protobuf.AbstractParser<Objects>() {
+          @java.lang.Override
+          public Objects parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+              builder.mergeFrom(input, extensionRegistry);
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+              throw e.setUnfinishedMessage(builder.buildPartial());
+            } catch (com.google.protobuf.UninitializedMessageException e) {
+              throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+            } catch (java.io.IOException e) {
+              throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                  .setUnfinishedMessage(builder.buildPartial());
+            }
+            return builder.buildPartial();
+          }
+        };
+
+        public static com.google.protobuf.Parser<Objects> parser() {
+          return PARSER;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Parser<Objects> getParserForType() {
+          return PARSER;
+        }
+
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects getDefaultInstanceForType() {
+          return DEFAULT_INSTANCE;
+        }
+
       }
 
+      public interface ReferencesOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:weaviate.v1.BatchStreamRequest.Data.References)
+          com.google.protobuf.MessageOrBuilder {
+
+        /**
+         * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+         */
+        java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference> 
+            getValuesList();
+        /**
+         * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+         */
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference getValues(int index);
+        /**
+         * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+         */
+        int getValuesCount();
+        /**
+         * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+         */
+        java.util.List<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReferenceOrBuilder> 
+            getValuesOrBuilderList();
+        /**
+         * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+         */
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReferenceOrBuilder getValuesOrBuilder(
+            int index);
+      }
+      /**
+       * Protobuf type {@code weaviate.v1.BatchStreamRequest.Data.References}
+       */
+      public static final class References extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:weaviate.v1.BatchStreamRequest.Data.References)
+          ReferencesOrBuilder {
+      private static final long serialVersionUID = 0L;
+        // Use References.newBuilder() to construct.
+        private References(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+          super(builder);
+        }
+        private References() {
+          values_ = java.util.Collections.emptyList();
+        }
+
+        @java.lang.Override
+        @SuppressWarnings({"unused"})
+        protected java.lang.Object newInstance(
+            UnusedPrivateParameter unused) {
+          return new References();
+        }
+
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_Data_References_descriptor;
+        }
+
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_Data_References_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References.Builder.class);
+        }
+
+        public static final int VALUES_FIELD_NUMBER = 1;
+        @SuppressWarnings("serial")
+        private java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference> values_;
+        /**
+         * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+         */
+        @java.lang.Override
+        public java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference> getValuesList() {
+          return values_;
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+         */
+        @java.lang.Override
+        public java.util.List<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReferenceOrBuilder> 
+            getValuesOrBuilderList() {
+          return values_;
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+         */
+        @java.lang.Override
+        public int getValuesCount() {
+          return values_.size();
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+         */
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference getValues(int index) {
+          return values_.get(index);
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+         */
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReferenceOrBuilder getValuesOrBuilder(
+            int index) {
+          return values_.get(index);
+        }
+
+        private byte memoizedIsInitialized = -1;
+        @java.lang.Override
+        public final boolean isInitialized() {
+          byte isInitialized = memoizedIsInitialized;
+          if (isInitialized == 1) return true;
+          if (isInitialized == 0) return false;
+
+          memoizedIsInitialized = 1;
+          return true;
+        }
+
+        @java.lang.Override
+        public void writeTo(com.google.protobuf.CodedOutputStream output)
+                            throws java.io.IOException {
+          for (int i = 0; i < values_.size(); i++) {
+            output.writeMessage(1, values_.get(i));
+          }
+          getUnknownFields().writeTo(output);
+        }
+
+        @java.lang.Override
+        public int getSerializedSize() {
+          int size = memoizedSize;
+          if (size != -1) return size;
+
+          size = 0;
+          for (int i = 0; i < values_.size(); i++) {
+            size += com.google.protobuf.CodedOutputStream
+              .computeMessageSize(1, values_.get(i));
+          }
+          size += getUnknownFields().getSerializedSize();
+          memoizedSize = size;
+          return size;
+        }
+
+        @java.lang.Override
+        public boolean equals(final java.lang.Object obj) {
+          if (obj == this) {
+           return true;
+          }
+          if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References)) {
+            return super.equals(obj);
+          }
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References) obj;
+
+          if (!getValuesList()
+              .equals(other.getValuesList())) return false;
+          if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+          return true;
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+          if (memoizedHashCode != 0) {
+            return memoizedHashCode;
+          }
+          int hash = 41;
+          hash = (19 * hash) + getDescriptor().hashCode();
+          if (getValuesCount() > 0) {
+            hash = (37 * hash) + VALUES_FIELD_NUMBER;
+            hash = (53 * hash) + getValuesList().hashCode();
+          }
+          hash = (29 * hash) + getUnknownFields().hashCode();
+          memoizedHashCode = hash;
+          return hash;
+        }
+
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References parseFrom(
+            java.nio.ByteBuffer data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References parseFrom(
+            java.nio.ByteBuffer data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data, extensionRegistry);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data, extensionRegistry);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data, extensionRegistry);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+        }
+
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
+        }
+
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+        }
+
+        @java.lang.Override
+        public Builder newBuilderForType() { return newBuilder(); }
+        public static Builder newBuilder() {
+          return DEFAULT_INSTANCE.toBuilder();
+        }
+        public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References prototype) {
+          return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+        }
+        @java.lang.Override
+        public Builder toBuilder() {
+          return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+        }
+
+        @java.lang.Override
+        protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          Builder builder = new Builder(parent);
+          return builder;
+        }
+        /**
+         * Protobuf type {@code weaviate.v1.BatchStreamRequest.Data.References}
+         */
+        public static final class Builder extends
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:weaviate.v1.BatchStreamRequest.Data.References)
+            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.ReferencesOrBuilder {
+          public static final com.google.protobuf.Descriptors.Descriptor
+              getDescriptor() {
+            return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_Data_References_descriptor;
+          }
+
+          @java.lang.Override
+          protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+              internalGetFieldAccessorTable() {
+            return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_Data_References_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References.Builder.class);
+          }
+
+          // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References.newBuilder()
+          private Builder() {
+
+          }
+
+          private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+            super(parent);
+
+          }
+          @java.lang.Override
+          public Builder clear() {
+            super.clear();
+            bitField0_ = 0;
+            if (valuesBuilder_ == null) {
+              values_ = java.util.Collections.emptyList();
+            } else {
+              values_ = null;
+              valuesBuilder_.clear();
+            }
+            bitField0_ = (bitField0_ & ~0x00000001);
+            return this;
+          }
+
+          @java.lang.Override
+          public com.google.protobuf.Descriptors.Descriptor
+              getDescriptorForType() {
+            return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_Data_References_descriptor;
+          }
+
+          @java.lang.Override
+          public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References getDefaultInstanceForType() {
+            return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References.getDefaultInstance();
+          }
+
+          @java.lang.Override
+          public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References build() {
+            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References result = buildPartial();
+            if (!result.isInitialized()) {
+              throw newUninitializedMessageException(result);
+            }
+            return result;
+          }
+
+          @java.lang.Override
+          public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References buildPartial() {
+            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References(this);
+            buildPartialRepeatedFields(result);
+            if (bitField0_ != 0) { buildPartial0(result); }
+            onBuilt();
+            return result;
+          }
+
+          private void buildPartialRepeatedFields(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References result) {
+            if (valuesBuilder_ == null) {
+              if (((bitField0_ & 0x00000001) != 0)) {
+                values_ = java.util.Collections.unmodifiableList(values_);
+                bitField0_ = (bitField0_ & ~0x00000001);
+              }
+              result.values_ = values_;
+            } else {
+              result.values_ = valuesBuilder_.build();
+            }
+          }
+
+          private void buildPartial0(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References result) {
+            int from_bitField0_ = bitField0_;
+          }
+
+          @java.lang.Override
+          public Builder clone() {
+            return super.clone();
+          }
+          @java.lang.Override
+          public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              java.lang.Object value) {
+            return super.setField(field, value);
+          }
+          @java.lang.Override
+          public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+            return super.clearField(field);
+          }
+          @java.lang.Override
+          public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+            return super.clearOneof(oneof);
+          }
+          @java.lang.Override
+          public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, java.lang.Object value) {
+            return super.setRepeatedField(field, index, value);
+          }
+          @java.lang.Override
+          public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              java.lang.Object value) {
+            return super.addRepeatedField(field, value);
+          }
+          @java.lang.Override
+          public Builder mergeFrom(com.google.protobuf.Message other) {
+            if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References) {
+              return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References)other);
+            } else {
+              super.mergeFrom(other);
+              return this;
+            }
+          }
+
+          public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References other) {
+            if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References.getDefaultInstance()) return this;
+            if (valuesBuilder_ == null) {
+              if (!other.values_.isEmpty()) {
+                if (values_.isEmpty()) {
+                  values_ = other.values_;
+                  bitField0_ = (bitField0_ & ~0x00000001);
+                } else {
+                  ensureValuesIsMutable();
+                  values_.addAll(other.values_);
+                }
+                onChanged();
+              }
+            } else {
+              if (!other.values_.isEmpty()) {
+                if (valuesBuilder_.isEmpty()) {
+                  valuesBuilder_.dispose();
+                  valuesBuilder_ = null;
+                  values_ = other.values_;
+                  bitField0_ = (bitField0_ & ~0x00000001);
+                  valuesBuilder_ = 
+                    com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                       getValuesFieldBuilder() : null;
+                } else {
+                  valuesBuilder_.addAllMessages(other.values_);
+                }
+              }
+            }
+            this.mergeUnknownFields(other.getUnknownFields());
+            onChanged();
+            return this;
+          }
+
+          @java.lang.Override
+          public final boolean isInitialized() {
+            return true;
+          }
+
+          @java.lang.Override
+          public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+            if (extensionRegistry == null) {
+              throw new java.lang.NullPointerException();
+            }
+            try {
+              boolean done = false;
+              while (!done) {
+                int tag = input.readTag();
+                switch (tag) {
+                  case 0:
+                    done = true;
+                    break;
+                  case 10: {
+                    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference m =
+                        input.readMessage(
+                            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference.parser(),
+                            extensionRegistry);
+                    if (valuesBuilder_ == null) {
+                      ensureValuesIsMutable();
+                      values_.add(m);
+                    } else {
+                      valuesBuilder_.addMessage(m);
+                    }
+                    break;
+                  } // case 10
+                  default: {
+                    if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                      done = true; // was an endgroup tag
+                    }
+                    break;
+                  } // default:
+                } // switch (tag)
+              } // while (!done)
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+              throw e.unwrapIOException();
+            } finally {
+              onChanged();
+            } // finally
+            return this;
+          }
+          private int bitField0_;
+
+          private java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference> values_ =
+            java.util.Collections.emptyList();
+          private void ensureValuesIsMutable() {
+            if (!((bitField0_ & 0x00000001) != 0)) {
+              values_ = new java.util.ArrayList<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference>(values_);
+              bitField0_ |= 0x00000001;
+             }
+          }
+
+          private com.google.protobuf.RepeatedFieldBuilderV3<
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReferenceOrBuilder> valuesBuilder_;
+
+          /**
+           * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+           */
+          public java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference> getValuesList() {
+            if (valuesBuilder_ == null) {
+              return java.util.Collections.unmodifiableList(values_);
+            } else {
+              return valuesBuilder_.getMessageList();
+            }
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+           */
+          public int getValuesCount() {
+            if (valuesBuilder_ == null) {
+              return values_.size();
+            } else {
+              return valuesBuilder_.getCount();
+            }
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+           */
+          public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference getValues(int index) {
+            if (valuesBuilder_ == null) {
+              return values_.get(index);
+            } else {
+              return valuesBuilder_.getMessage(index);
+            }
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+           */
+          public Builder setValues(
+              int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference value) {
+            if (valuesBuilder_ == null) {
+              if (value == null) {
+                throw new NullPointerException();
+              }
+              ensureValuesIsMutable();
+              values_.set(index, value);
+              onChanged();
+            } else {
+              valuesBuilder_.setMessage(index, value);
+            }
+            return this;
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+           */
+          public Builder setValues(
+              int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference.Builder builderForValue) {
+            if (valuesBuilder_ == null) {
+              ensureValuesIsMutable();
+              values_.set(index, builderForValue.build());
+              onChanged();
+            } else {
+              valuesBuilder_.setMessage(index, builderForValue.build());
+            }
+            return this;
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+           */
+          public Builder addValues(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference value) {
+            if (valuesBuilder_ == null) {
+              if (value == null) {
+                throw new NullPointerException();
+              }
+              ensureValuesIsMutable();
+              values_.add(value);
+              onChanged();
+            } else {
+              valuesBuilder_.addMessage(value);
+            }
+            return this;
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+           */
+          public Builder addValues(
+              int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference value) {
+            if (valuesBuilder_ == null) {
+              if (value == null) {
+                throw new NullPointerException();
+              }
+              ensureValuesIsMutable();
+              values_.add(index, value);
+              onChanged();
+            } else {
+              valuesBuilder_.addMessage(index, value);
+            }
+            return this;
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+           */
+          public Builder addValues(
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference.Builder builderForValue) {
+            if (valuesBuilder_ == null) {
+              ensureValuesIsMutable();
+              values_.add(builderForValue.build());
+              onChanged();
+            } else {
+              valuesBuilder_.addMessage(builderForValue.build());
+            }
+            return this;
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+           */
+          public Builder addValues(
+              int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference.Builder builderForValue) {
+            if (valuesBuilder_ == null) {
+              ensureValuesIsMutable();
+              values_.add(index, builderForValue.build());
+              onChanged();
+            } else {
+              valuesBuilder_.addMessage(index, builderForValue.build());
+            }
+            return this;
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+           */
+          public Builder addAllValues(
+              java.lang.Iterable<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference> values) {
+            if (valuesBuilder_ == null) {
+              ensureValuesIsMutable();
+              com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                  values, values_);
+              onChanged();
+            } else {
+              valuesBuilder_.addAllMessages(values);
+            }
+            return this;
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+           */
+          public Builder clearValues() {
+            if (valuesBuilder_ == null) {
+              values_ = java.util.Collections.emptyList();
+              bitField0_ = (bitField0_ & ~0x00000001);
+              onChanged();
+            } else {
+              valuesBuilder_.clear();
+            }
+            return this;
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+           */
+          public Builder removeValues(int index) {
+            if (valuesBuilder_ == null) {
+              ensureValuesIsMutable();
+              values_.remove(index);
+              onChanged();
+            } else {
+              valuesBuilder_.remove(index);
+            }
+            return this;
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+           */
+          public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference.Builder getValuesBuilder(
+              int index) {
+            return getValuesFieldBuilder().getBuilder(index);
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+           */
+          public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReferenceOrBuilder getValuesOrBuilder(
+              int index) {
+            if (valuesBuilder_ == null) {
+              return values_.get(index);  } else {
+              return valuesBuilder_.getMessageOrBuilder(index);
+            }
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+           */
+          public java.util.List<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReferenceOrBuilder> 
+               getValuesOrBuilderList() {
+            if (valuesBuilder_ != null) {
+              return valuesBuilder_.getMessageOrBuilderList();
+            } else {
+              return java.util.Collections.unmodifiableList(values_);
+            }
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+           */
+          public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference.Builder addValuesBuilder() {
+            return getValuesFieldBuilder().addBuilder(
+                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference.getDefaultInstance());
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+           */
+          public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference.Builder addValuesBuilder(
+              int index) {
+            return getValuesFieldBuilder().addBuilder(
+                index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference.getDefaultInstance());
+          }
+          /**
+           * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+           */
+          public java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference.Builder> 
+               getValuesBuilderList() {
+            return getValuesFieldBuilder().getBuilderList();
+          }
+          private com.google.protobuf.RepeatedFieldBuilderV3<
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReferenceOrBuilder> 
+              getValuesFieldBuilder() {
+            if (valuesBuilder_ == null) {
+              valuesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReferenceOrBuilder>(
+                      values_,
+                      ((bitField0_ & 0x00000001) != 0),
+                      getParentForChildren(),
+                      isClean());
+              values_ = null;
+            }
+            return valuesBuilder_;
+          }
+          @java.lang.Override
+          public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+            return super.setUnknownFields(unknownFields);
+          }
+
+          @java.lang.Override
+          public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+            return super.mergeUnknownFields(unknownFields);
+          }
+
+
+          // @@protoc_insertion_point(builder_scope:weaviate.v1.BatchStreamRequest.Data.References)
+        }
+
+        // @@protoc_insertion_point(class_scope:weaviate.v1.BatchStreamRequest.Data.References)
+        private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References DEFAULT_INSTANCE;
+        static {
+          DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References();
+        }
+
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References getDefaultInstance() {
+          return DEFAULT_INSTANCE;
+        }
+
+        private static final com.google.protobuf.Parser<References>
+            PARSER = new com.google.protobuf.AbstractParser<References>() {
+          @java.lang.Override
+          public References parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+              builder.mergeFrom(input, extensionRegistry);
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+              throw e.setUnfinishedMessage(builder.buildPartial());
+            } catch (com.google.protobuf.UninitializedMessageException e) {
+              throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+            } catch (java.io.IOException e) {
+              throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                  .setUnfinishedMessage(builder.buildPartial());
+            }
+            return builder.buildPartial();
+          }
+        };
+
+        public static com.google.protobuf.Parser<References> parser() {
+          return PARSER;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Parser<References> getParserForType() {
+          return PARSER;
+        }
+
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References getDefaultInstanceForType() {
+          return DEFAULT_INSTANCE;
+        }
+
+      }
+
+      private int bitField0_;
+      public static final int OBJECTS_FIELD_NUMBER = 1;
+      private io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects objects_;
+      /**
+       * <code>.weaviate.v1.BatchStreamRequest.Data.Objects objects = 1;</code>
+       * @return Whether the objects field is set.
+       */
       @java.lang.Override
-      public com.google.protobuf.Parser<Objects> getParserForType() {
-        return PARSER;
+      public boolean hasObjects() {
+        return ((bitField0_ & 0x00000001) != 0);
       }
-
-      @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects getDefaultInstanceForType() {
-        return DEFAULT_INSTANCE;
-      }
-
-    }
-
-    public interface ReferencesOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:weaviate.v1.BatchSendRequest.References)
-        com.google.protobuf.MessageOrBuilder {
-
       /**
-       * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
-       */
-      java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference> 
-          getValuesList();
-      /**
-       * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
-       */
-      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference getValues(int index);
-      /**
-       * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
-       */
-      int getValuesCount();
-      /**
-       * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
-       */
-      java.util.List<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReferenceOrBuilder> 
-          getValuesOrBuilderList();
-      /**
-       * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
-       */
-      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReferenceOrBuilder getValuesOrBuilder(
-          int index);
-    }
-    /**
-     * Protobuf type {@code weaviate.v1.BatchSendRequest.References}
-     */
-    public static final class References extends
-        com.google.protobuf.GeneratedMessageV3 implements
-        // @@protoc_insertion_point(message_implements:weaviate.v1.BatchSendRequest.References)
-        ReferencesOrBuilder {
-    private static final long serialVersionUID = 0L;
-      // Use References.newBuilder() to construct.
-      private References(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-        super(builder);
-      }
-      private References() {
-        values_ = java.util.Collections.emptyList();
-      }
-
-      @java.lang.Override
-      @SuppressWarnings({"unused"})
-      protected java.lang.Object newInstance(
-          UnusedPrivateParameter unused) {
-        return new References();
-      }
-
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchSendRequest_References_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchSendRequest_References_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References.Builder.class);
-      }
-
-      public static final int VALUES_FIELD_NUMBER = 1;
-      @SuppressWarnings("serial")
-      private java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference> values_;
-      /**
-       * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+       * <code>.weaviate.v1.BatchStreamRequest.Data.Objects objects = 1;</code>
+       * @return The objects.
        */
       @java.lang.Override
-      public java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference> getValuesList() {
-        return values_;
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects getObjects() {
+        return objects_ == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects.getDefaultInstance() : objects_;
       }
       /**
-       * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+       * <code>.weaviate.v1.BatchStreamRequest.Data.Objects objects = 1;</code>
        */
       @java.lang.Override
-      public java.util.List<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReferenceOrBuilder> 
-          getValuesOrBuilderList() {
-        return values_;
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.ObjectsOrBuilder getObjectsOrBuilder() {
+        return objects_ == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects.getDefaultInstance() : objects_;
+      }
+
+      public static final int REFERENCES_FIELD_NUMBER = 2;
+      private io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References references_;
+      /**
+       * <code>.weaviate.v1.BatchStreamRequest.Data.References references = 2;</code>
+       * @return Whether the references field is set.
+       */
+      @java.lang.Override
+      public boolean hasReferences() {
+        return ((bitField0_ & 0x00000002) != 0);
       }
       /**
-       * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+       * <code>.weaviate.v1.BatchStreamRequest.Data.References references = 2;</code>
+       * @return The references.
        */
       @java.lang.Override
-      public int getValuesCount() {
-        return values_.size();
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References getReferences() {
+        return references_ == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References.getDefaultInstance() : references_;
       }
       /**
-       * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+       * <code>.weaviate.v1.BatchStreamRequest.Data.References references = 2;</code>
        */
       @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference getValues(int index) {
-        return values_.get(index);
-      }
-      /**
-       * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
-       */
-      @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReferenceOrBuilder getValuesOrBuilder(
-          int index) {
-        return values_.get(index);
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.ReferencesOrBuilder getReferencesOrBuilder() {
+        return references_ == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References.getDefaultInstance() : references_;
       }
 
       private byte memoizedIsInitialized = -1;
@@ -3241,8 +4564,11 @@ public final class WeaviateProtoBatch {
       @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
-        for (int i = 0; i < values_.size(); i++) {
-          output.writeMessage(1, values_.get(i));
+        if (((bitField0_ & 0x00000001) != 0)) {
+          output.writeMessage(1, getObjects());
+        }
+        if (((bitField0_ & 0x00000002) != 0)) {
+          output.writeMessage(2, getReferences());
         }
         getUnknownFields().writeTo(output);
       }
@@ -3253,9 +4579,13 @@ public final class WeaviateProtoBatch {
         if (size != -1) return size;
 
         size = 0;
-        for (int i = 0; i < values_.size(); i++) {
+        if (((bitField0_ & 0x00000001) != 0)) {
           size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(1, values_.get(i));
+            .computeMessageSize(1, getObjects());
+        }
+        if (((bitField0_ & 0x00000002) != 0)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(2, getReferences());
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSize = size;
@@ -3267,13 +4597,21 @@ public final class WeaviateProtoBatch {
         if (obj == this) {
          return true;
         }
-        if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References)) {
+        if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data)) {
           return super.equals(obj);
         }
-        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References) obj;
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data) obj;
 
-        if (!getValuesList()
-            .equals(other.getValuesList())) return false;
+        if (hasObjects() != other.hasObjects()) return false;
+        if (hasObjects()) {
+          if (!getObjects()
+              .equals(other.getObjects())) return false;
+        }
+        if (hasReferences() != other.hasReferences()) return false;
+        if (hasReferences()) {
+          if (!getReferences()
+              .equals(other.getReferences())) return false;
+        }
         if (!getUnknownFields().equals(other.getUnknownFields())) return false;
         return true;
       }
@@ -3285,53 +4623,57 @@ public final class WeaviateProtoBatch {
         }
         int hash = 41;
         hash = (19 * hash) + getDescriptor().hashCode();
-        if (getValuesCount() > 0) {
-          hash = (37 * hash) + VALUES_FIELD_NUMBER;
-          hash = (53 * hash) + getValuesList().hashCode();
+        if (hasObjects()) {
+          hash = (37 * hash) + OBJECTS_FIELD_NUMBER;
+          hash = (53 * hash) + getObjects().hashCode();
+        }
+        if (hasReferences()) {
+          hash = (37 * hash) + REFERENCES_FIELD_NUMBER;
+          hash = (53 * hash) + getReferences().hashCode();
         }
         hash = (29 * hash) + getUnknownFields().hashCode();
         memoizedHashCode = hash;
         return hash;
       }
 
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data parseFrom(
           java.nio.ByteBuffer data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data parseFrom(
           java.nio.ByteBuffer data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data parseFrom(
           com.google.protobuf.ByteString data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data parseFrom(
           com.google.protobuf.ByteString data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References parseFrom(byte[] data)
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data parseFrom(byte[] data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data parseFrom(
           byte[] data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References parseFrom(java.io.InputStream input)
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data parseFrom(java.io.InputStream input)
           throws java.io.IOException {
         return com.google.protobuf.GeneratedMessageV3
             .parseWithIOException(PARSER, input);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data parseFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -3339,26 +4681,26 @@ public final class WeaviateProtoBatch {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References parseDelimitedFrom(java.io.InputStream input)
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
         return com.google.protobuf.GeneratedMessageV3
             .parseDelimitedWithIOException(PARSER, input);
       }
 
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References parseDelimitedFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data parseDelimitedFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return com.google.protobuf.GeneratedMessageV3
             .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data parseFrom(
           com.google.protobuf.CodedInputStream input)
           throws java.io.IOException {
         return com.google.protobuf.GeneratedMessageV3
             .parseWithIOException(PARSER, input);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data parseFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -3371,7 +4713,7 @@ public final class WeaviateProtoBatch {
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
       }
-      public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References prototype) {
+      public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
       @java.lang.Override
@@ -3387,63 +4729,73 @@ public final class WeaviateProtoBatch {
         return builder;
       }
       /**
-       * Protobuf type {@code weaviate.v1.BatchSendRequest.References}
+       * Protobuf type {@code weaviate.v1.BatchStreamRequest.Data}
        */
       public static final class Builder extends
           com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-          // @@protoc_insertion_point(builder_implements:weaviate.v1.BatchSendRequest.References)
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.ReferencesOrBuilder {
+          // @@protoc_insertion_point(builder_implements:weaviate.v1.BatchStreamRequest.Data)
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.DataOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchSendRequest_References_descriptor;
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_Data_descriptor;
         }
 
         @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchSendRequest_References_fieldAccessorTable
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_Data_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References.Builder.class);
+                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Builder.class);
         }
 
-        // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References.newBuilder()
+        // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.newBuilder()
         private Builder() {
-
+          maybeForceBuilderInitialization();
         }
 
         private Builder(
             com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
           super(parent);
-
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessageV3
+                  .alwaysUseFieldBuilders) {
+            getObjectsFieldBuilder();
+            getReferencesFieldBuilder();
+          }
         }
         @java.lang.Override
         public Builder clear() {
           super.clear();
           bitField0_ = 0;
-          if (valuesBuilder_ == null) {
-            values_ = java.util.Collections.emptyList();
-          } else {
-            values_ = null;
-            valuesBuilder_.clear();
+          objects_ = null;
+          if (objectsBuilder_ != null) {
+            objectsBuilder_.dispose();
+            objectsBuilder_ = null;
           }
-          bitField0_ = (bitField0_ & ~0x00000001);
+          references_ = null;
+          if (referencesBuilder_ != null) {
+            referencesBuilder_.dispose();
+            referencesBuilder_ = null;
+          }
           return this;
         }
 
         @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchSendRequest_References_descriptor;
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_Data_descriptor;
         }
 
         @java.lang.Override
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References getDefaultInstanceForType() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References.getDefaultInstance();
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data getDefaultInstanceForType() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.getDefaultInstance();
         }
 
         @java.lang.Override
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References build() {
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References result = buildPartial();
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data build() {
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data result = buildPartial();
           if (!result.isInitialized()) {
             throw newUninitializedMessageException(result);
           }
@@ -3451,28 +4803,29 @@ public final class WeaviateProtoBatch {
         }
 
         @java.lang.Override
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References buildPartial() {
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References(this);
-          buildPartialRepeatedFields(result);
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data buildPartial() {
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data(this);
           if (bitField0_ != 0) { buildPartial0(result); }
           onBuilt();
           return result;
         }
 
-        private void buildPartialRepeatedFields(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References result) {
-          if (valuesBuilder_ == null) {
-            if (((bitField0_ & 0x00000001) != 0)) {
-              values_ = java.util.Collections.unmodifiableList(values_);
-              bitField0_ = (bitField0_ & ~0x00000001);
-            }
-            result.values_ = values_;
-          } else {
-            result.values_ = valuesBuilder_.build();
-          }
-        }
-
-        private void buildPartial0(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References result) {
+        private void buildPartial0(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data result) {
           int from_bitField0_ = bitField0_;
+          int to_bitField0_ = 0;
+          if (((from_bitField0_ & 0x00000001) != 0)) {
+            result.objects_ = objectsBuilder_ == null
+                ? objects_
+                : objectsBuilder_.build();
+            to_bitField0_ |= 0x00000001;
+          }
+          if (((from_bitField0_ & 0x00000002) != 0)) {
+            result.references_ = referencesBuilder_ == null
+                ? references_
+                : referencesBuilder_.build();
+            to_bitField0_ |= 0x00000002;
+          }
+          result.bitField0_ |= to_bitField0_;
         }
 
         @java.lang.Override
@@ -3509,41 +4862,21 @@ public final class WeaviateProtoBatch {
         }
         @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References) {
-            return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References)other);
+          if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data) {
+            return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data)other);
           } else {
             super.mergeFrom(other);
             return this;
           }
         }
 
-        public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References other) {
-          if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References.getDefaultInstance()) return this;
-          if (valuesBuilder_ == null) {
-            if (!other.values_.isEmpty()) {
-              if (values_.isEmpty()) {
-                values_ = other.values_;
-                bitField0_ = (bitField0_ & ~0x00000001);
-              } else {
-                ensureValuesIsMutable();
-                values_.addAll(other.values_);
-              }
-              onChanged();
-            }
-          } else {
-            if (!other.values_.isEmpty()) {
-              if (valuesBuilder_.isEmpty()) {
-                valuesBuilder_.dispose();
-                valuesBuilder_ = null;
-                values_ = other.values_;
-                bitField0_ = (bitField0_ & ~0x00000001);
-                valuesBuilder_ = 
-                  com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                     getValuesFieldBuilder() : null;
-              } else {
-                valuesBuilder_.addAllMessages(other.values_);
-              }
-            }
+        public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data other) {
+          if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.getDefaultInstance()) return this;
+          if (other.hasObjects()) {
+            mergeObjects(other.getObjects());
+          }
+          if (other.hasReferences()) {
+            mergeReferences(other.getReferences());
           }
           this.mergeUnknownFields(other.getUnknownFields());
           onChanged();
@@ -3572,18 +4905,19 @@ public final class WeaviateProtoBatch {
                   done = true;
                   break;
                 case 10: {
-                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference m =
-                      input.readMessage(
-                          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference.parser(),
-                          extensionRegistry);
-                  if (valuesBuilder_ == null) {
-                    ensureValuesIsMutable();
-                    values_.add(m);
-                  } else {
-                    valuesBuilder_.addMessage(m);
-                  }
+                  input.readMessage(
+                      getObjectsFieldBuilder().getBuilder(),
+                      extensionRegistry);
+                  bitField0_ |= 0x00000001;
                   break;
                 } // case 10
+                case 18: {
+                  input.readMessage(
+                      getReferencesFieldBuilder().getBuilder(),
+                      extensionRegistry);
+                  bitField0_ |= 0x00000002;
+                  break;
+                } // case 18
                 default: {
                   if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                     done = true; // was an endgroup tag
@@ -3601,244 +4935,246 @@ public final class WeaviateProtoBatch {
         }
         private int bitField0_;
 
-        private java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference> values_ =
-          java.util.Collections.emptyList();
-        private void ensureValuesIsMutable() {
-          if (!((bitField0_ & 0x00000001) != 0)) {
-            values_ = new java.util.ArrayList<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference>(values_);
+        private io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects objects_;
+        private com.google.protobuf.SingleFieldBuilderV3<
+            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.ObjectsOrBuilder> objectsBuilder_;
+        /**
+         * <code>.weaviate.v1.BatchStreamRequest.Data.Objects objects = 1;</code>
+         * @return Whether the objects field is set.
+         */
+        public boolean hasObjects() {
+          return ((bitField0_ & 0x00000001) != 0);
+        }
+        /**
+         * <code>.weaviate.v1.BatchStreamRequest.Data.Objects objects = 1;</code>
+         * @return The objects.
+         */
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects getObjects() {
+          if (objectsBuilder_ == null) {
+            return objects_ == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects.getDefaultInstance() : objects_;
+          } else {
+            return objectsBuilder_.getMessage();
+          }
+        }
+        /**
+         * <code>.weaviate.v1.BatchStreamRequest.Data.Objects objects = 1;</code>
+         */
+        public Builder setObjects(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects value) {
+          if (objectsBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            objects_ = value;
+          } else {
+            objectsBuilder_.setMessage(value);
+          }
+          bitField0_ |= 0x00000001;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>.weaviate.v1.BatchStreamRequest.Data.Objects objects = 1;</code>
+         */
+        public Builder setObjects(
+            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects.Builder builderForValue) {
+          if (objectsBuilder_ == null) {
+            objects_ = builderForValue.build();
+          } else {
+            objectsBuilder_.setMessage(builderForValue.build());
+          }
+          bitField0_ |= 0x00000001;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>.weaviate.v1.BatchStreamRequest.Data.Objects objects = 1;</code>
+         */
+        public Builder mergeObjects(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects value) {
+          if (objectsBuilder_ == null) {
+            if (((bitField0_ & 0x00000001) != 0) &&
+              objects_ != null &&
+              objects_ != io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects.getDefaultInstance()) {
+              getObjectsBuilder().mergeFrom(value);
+            } else {
+              objects_ = value;
+            }
+          } else {
+            objectsBuilder_.mergeFrom(value);
+          }
+          if (objects_ != null) {
             bitField0_ |= 0x00000001;
-           }
-        }
-
-        private com.google.protobuf.RepeatedFieldBuilderV3<
-            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReferenceOrBuilder> valuesBuilder_;
-
-        /**
-         * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
-         */
-        public java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference> getValuesList() {
-          if (valuesBuilder_ == null) {
-            return java.util.Collections.unmodifiableList(values_);
-          } else {
-            return valuesBuilder_.getMessageList();
-          }
-        }
-        /**
-         * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
-         */
-        public int getValuesCount() {
-          if (valuesBuilder_ == null) {
-            return values_.size();
-          } else {
-            return valuesBuilder_.getCount();
-          }
-        }
-        /**
-         * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
-         */
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference getValues(int index) {
-          if (valuesBuilder_ == null) {
-            return values_.get(index);
-          } else {
-            return valuesBuilder_.getMessage(index);
-          }
-        }
-        /**
-         * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
-         */
-        public Builder setValues(
-            int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference value) {
-          if (valuesBuilder_ == null) {
-            if (value == null) {
-              throw new NullPointerException();
-            }
-            ensureValuesIsMutable();
-            values_.set(index, value);
             onChanged();
-          } else {
-            valuesBuilder_.setMessage(index, value);
           }
           return this;
         }
         /**
-         * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+         * <code>.weaviate.v1.BatchStreamRequest.Data.Objects objects = 1;</code>
          */
-        public Builder setValues(
-            int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference.Builder builderForValue) {
-          if (valuesBuilder_ == null) {
-            ensureValuesIsMutable();
-            values_.set(index, builderForValue.build());
-            onChanged();
-          } else {
-            valuesBuilder_.setMessage(index, builderForValue.build());
+        public Builder clearObjects() {
+          bitField0_ = (bitField0_ & ~0x00000001);
+          objects_ = null;
+          if (objectsBuilder_ != null) {
+            objectsBuilder_.dispose();
+            objectsBuilder_ = null;
           }
+          onChanged();
           return this;
         }
         /**
-         * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+         * <code>.weaviate.v1.BatchStreamRequest.Data.Objects objects = 1;</code>
          */
-        public Builder addValues(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference value) {
-          if (valuesBuilder_ == null) {
-            if (value == null) {
-              throw new NullPointerException();
-            }
-            ensureValuesIsMutable();
-            values_.add(value);
-            onChanged();
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects.Builder getObjectsBuilder() {
+          bitField0_ |= 0x00000001;
+          onChanged();
+          return getObjectsFieldBuilder().getBuilder();
+        }
+        /**
+         * <code>.weaviate.v1.BatchStreamRequest.Data.Objects objects = 1;</code>
+         */
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.ObjectsOrBuilder getObjectsOrBuilder() {
+          if (objectsBuilder_ != null) {
+            return objectsBuilder_.getMessageOrBuilder();
           } else {
-            valuesBuilder_.addMessage(value);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
-         */
-        public Builder addValues(
-            int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference value) {
-          if (valuesBuilder_ == null) {
-            if (value == null) {
-              throw new NullPointerException();
-            }
-            ensureValuesIsMutable();
-            values_.add(index, value);
-            onChanged();
-          } else {
-            valuesBuilder_.addMessage(index, value);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
-         */
-        public Builder addValues(
-            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference.Builder builderForValue) {
-          if (valuesBuilder_ == null) {
-            ensureValuesIsMutable();
-            values_.add(builderForValue.build());
-            onChanged();
-          } else {
-            valuesBuilder_.addMessage(builderForValue.build());
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
-         */
-        public Builder addValues(
-            int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference.Builder builderForValue) {
-          if (valuesBuilder_ == null) {
-            ensureValuesIsMutable();
-            values_.add(index, builderForValue.build());
-            onChanged();
-          } else {
-            valuesBuilder_.addMessage(index, builderForValue.build());
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
-         */
-        public Builder addAllValues(
-            java.lang.Iterable<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference> values) {
-          if (valuesBuilder_ == null) {
-            ensureValuesIsMutable();
-            com.google.protobuf.AbstractMessageLite.Builder.addAll(
-                values, values_);
-            onChanged();
-          } else {
-            valuesBuilder_.addAllMessages(values);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
-         */
-        public Builder clearValues() {
-          if (valuesBuilder_ == null) {
-            values_ = java.util.Collections.emptyList();
-            bitField0_ = (bitField0_ & ~0x00000001);
-            onChanged();
-          } else {
-            valuesBuilder_.clear();
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
-         */
-        public Builder removeValues(int index) {
-          if (valuesBuilder_ == null) {
-            ensureValuesIsMutable();
-            values_.remove(index);
-            onChanged();
-          } else {
-            valuesBuilder_.remove(index);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
-         */
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference.Builder getValuesBuilder(
-            int index) {
-          return getValuesFieldBuilder().getBuilder(index);
-        }
-        /**
-         * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
-         */
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReferenceOrBuilder getValuesOrBuilder(
-            int index) {
-          if (valuesBuilder_ == null) {
-            return values_.get(index);  } else {
-            return valuesBuilder_.getMessageOrBuilder(index);
+            return objects_ == null ?
+                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects.getDefaultInstance() : objects_;
           }
         }
         /**
-         * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
+         * <code>.weaviate.v1.BatchStreamRequest.Data.Objects objects = 1;</code>
          */
-        public java.util.List<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReferenceOrBuilder> 
-             getValuesOrBuilderList() {
-          if (valuesBuilder_ != null) {
-            return valuesBuilder_.getMessageOrBuilderList();
-          } else {
-            return java.util.Collections.unmodifiableList(values_);
-          }
-        }
-        /**
-         * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
-         */
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference.Builder addValuesBuilder() {
-          return getValuesFieldBuilder().addBuilder(
-              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference.getDefaultInstance());
-        }
-        /**
-         * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
-         */
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference.Builder addValuesBuilder(
-            int index) {
-          return getValuesFieldBuilder().addBuilder(
-              index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference.getDefaultInstance());
-        }
-        /**
-         * <code>repeated .weaviate.v1.BatchReference values = 1;</code>
-         */
-        public java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference.Builder> 
-             getValuesBuilderList() {
-          return getValuesFieldBuilder().getBuilderList();
-        }
-        private com.google.protobuf.RepeatedFieldBuilderV3<
-            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReferenceOrBuilder> 
-            getValuesFieldBuilder() {
-          if (valuesBuilder_ == null) {
-            valuesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReference.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchReferenceOrBuilder>(
-                    values_,
-                    ((bitField0_ & 0x00000001) != 0),
+        private com.google.protobuf.SingleFieldBuilderV3<
+            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.ObjectsOrBuilder> 
+            getObjectsFieldBuilder() {
+          if (objectsBuilder_ == null) {
+            objectsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Objects.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.ObjectsOrBuilder>(
+                    getObjects(),
                     getParentForChildren(),
                     isClean());
-            values_ = null;
+            objects_ = null;
           }
-          return valuesBuilder_;
+          return objectsBuilder_;
+        }
+
+        private io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References references_;
+        private com.google.protobuf.SingleFieldBuilderV3<
+            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.ReferencesOrBuilder> referencesBuilder_;
+        /**
+         * <code>.weaviate.v1.BatchStreamRequest.Data.References references = 2;</code>
+         * @return Whether the references field is set.
+         */
+        public boolean hasReferences() {
+          return ((bitField0_ & 0x00000002) != 0);
+        }
+        /**
+         * <code>.weaviate.v1.BatchStreamRequest.Data.References references = 2;</code>
+         * @return The references.
+         */
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References getReferences() {
+          if (referencesBuilder_ == null) {
+            return references_ == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References.getDefaultInstance() : references_;
+          } else {
+            return referencesBuilder_.getMessage();
+          }
+        }
+        /**
+         * <code>.weaviate.v1.BatchStreamRequest.Data.References references = 2;</code>
+         */
+        public Builder setReferences(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References value) {
+          if (referencesBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            references_ = value;
+          } else {
+            referencesBuilder_.setMessage(value);
+          }
+          bitField0_ |= 0x00000002;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>.weaviate.v1.BatchStreamRequest.Data.References references = 2;</code>
+         */
+        public Builder setReferences(
+            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References.Builder builderForValue) {
+          if (referencesBuilder_ == null) {
+            references_ = builderForValue.build();
+          } else {
+            referencesBuilder_.setMessage(builderForValue.build());
+          }
+          bitField0_ |= 0x00000002;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>.weaviate.v1.BatchStreamRequest.Data.References references = 2;</code>
+         */
+        public Builder mergeReferences(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References value) {
+          if (referencesBuilder_ == null) {
+            if (((bitField0_ & 0x00000002) != 0) &&
+              references_ != null &&
+              references_ != io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References.getDefaultInstance()) {
+              getReferencesBuilder().mergeFrom(value);
+            } else {
+              references_ = value;
+            }
+          } else {
+            referencesBuilder_.mergeFrom(value);
+          }
+          if (references_ != null) {
+            bitField0_ |= 0x00000002;
+            onChanged();
+          }
+          return this;
+        }
+        /**
+         * <code>.weaviate.v1.BatchStreamRequest.Data.References references = 2;</code>
+         */
+        public Builder clearReferences() {
+          bitField0_ = (bitField0_ & ~0x00000002);
+          references_ = null;
+          if (referencesBuilder_ != null) {
+            referencesBuilder_.dispose();
+            referencesBuilder_ = null;
+          }
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>.weaviate.v1.BatchStreamRequest.Data.References references = 2;</code>
+         */
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References.Builder getReferencesBuilder() {
+          bitField0_ |= 0x00000002;
+          onChanged();
+          return getReferencesFieldBuilder().getBuilder();
+        }
+        /**
+         * <code>.weaviate.v1.BatchStreamRequest.Data.References references = 2;</code>
+         */
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.ReferencesOrBuilder getReferencesOrBuilder() {
+          if (referencesBuilder_ != null) {
+            return referencesBuilder_.getMessageOrBuilder();
+          } else {
+            return references_ == null ?
+                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References.getDefaultInstance() : references_;
+          }
+        }
+        /**
+         * <code>.weaviate.v1.BatchStreamRequest.Data.References references = 2;</code>
+         */
+        private com.google.protobuf.SingleFieldBuilderV3<
+            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.ReferencesOrBuilder> 
+            getReferencesFieldBuilder() {
+          if (referencesBuilder_ == null) {
+            referencesBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.References.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.ReferencesOrBuilder>(
+                    getReferences(),
+                    getParentForChildren(),
+                    isClean());
+            references_ = null;
+          }
+          return referencesBuilder_;
         }
         @java.lang.Override
         public final Builder setUnknownFields(
@@ -3853,23 +5189,23 @@ public final class WeaviateProtoBatch {
         }
 
 
-        // @@protoc_insertion_point(builder_scope:weaviate.v1.BatchSendRequest.References)
+        // @@protoc_insertion_point(builder_scope:weaviate.v1.BatchStreamRequest.Data)
       }
 
-      // @@protoc_insertion_point(class_scope:weaviate.v1.BatchSendRequest.References)
-      private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References DEFAULT_INSTANCE;
+      // @@protoc_insertion_point(class_scope:weaviate.v1.BatchStreamRequest.Data)
+      private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data DEFAULT_INSTANCE;
       static {
-        DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References();
+        DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data();
       }
 
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References getDefaultInstance() {
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data getDefaultInstance() {
         return DEFAULT_INSTANCE;
       }
 
-      private static final com.google.protobuf.Parser<References>
-          PARSER = new com.google.protobuf.AbstractParser<References>() {
+      private static final com.google.protobuf.Parser<Data>
+          PARSER = new com.google.protobuf.AbstractParser<Data>() {
         @java.lang.Override
-        public References parsePartialFrom(
+        public Data parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
@@ -3888,17 +5224,17 @@ public final class WeaviateProtoBatch {
         }
       };
 
-      public static com.google.protobuf.Parser<References> parser() {
+      public static com.google.protobuf.Parser<Data> parser() {
         return PARSER;
       }
 
       @java.lang.Override
-      public com.google.protobuf.Parser<References> getParserForType() {
+      public com.google.protobuf.Parser<Data> getParserForType() {
         return PARSER;
       }
 
       @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References getDefaultInstanceForType() {
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
 
@@ -3910,9 +5246,9 @@ public final class WeaviateProtoBatch {
     public enum MessageCase
         implements com.google.protobuf.Internal.EnumLite,
             com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-      OBJECTS(2),
-      REFERENCES(3),
-      STOP(4),
+      START(1),
+      DATA(2),
+      STOP(3),
       MESSAGE_NOT_SET(0);
       private final int value;
       private MessageCase(int value) {
@@ -3930,9 +5266,9 @@ public final class WeaviateProtoBatch {
 
       public static MessageCase forNumber(int value) {
         switch (value) {
-          case 2: return OBJECTS;
-          case 3: return REFERENCES;
-          case 4: return STOP;
+          case 1: return START;
+          case 2: return DATA;
+          case 3: return STOP;
           case 0: return MESSAGE_NOT_SET;
           default: return null;
         }
@@ -3948,136 +5284,97 @@ public final class WeaviateProtoBatch {
           messageCase_);
     }
 
-    public static final int STREAM_ID_FIELD_NUMBER = 1;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object streamId_ = "";
+    public static final int START_FIELD_NUMBER = 1;
     /**
-     * <code>string stream_id = 1;</code>
-     * @return The streamId.
+     * <code>.weaviate.v1.BatchStreamRequest.Start start = 1;</code>
+     * @return Whether the start field is set.
      */
     @java.lang.Override
-    public java.lang.String getStreamId() {
-      java.lang.Object ref = streamId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        streamId_ = s;
-        return s;
-      }
+    public boolean hasStart() {
+      return messageCase_ == 1;
     }
     /**
-     * <code>string stream_id = 1;</code>
-     * @return The bytes for streamId.
+     * <code>.weaviate.v1.BatchStreamRequest.Start start = 1;</code>
+     * @return The start.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getStreamIdBytes() {
-      java.lang.Object ref = streamId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        streamId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start getStart() {
+      if (messageCase_ == 1) {
+         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start) message_;
       }
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start.getDefaultInstance();
+    }
+    /**
+     * <code>.weaviate.v1.BatchStreamRequest.Start start = 1;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.StartOrBuilder getStartOrBuilder() {
+      if (messageCase_ == 1) {
+         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start) message_;
+      }
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start.getDefaultInstance();
     }
 
-    public static final int OBJECTS_FIELD_NUMBER = 2;
+    public static final int DATA_FIELD_NUMBER = 2;
     /**
-     * <code>.weaviate.v1.BatchSendRequest.Objects objects = 2;</code>
-     * @return Whether the objects field is set.
+     * <code>.weaviate.v1.BatchStreamRequest.Data data = 2;</code>
+     * @return Whether the data field is set.
      */
     @java.lang.Override
-    public boolean hasObjects() {
+    public boolean hasData() {
       return messageCase_ == 2;
     }
     /**
-     * <code>.weaviate.v1.BatchSendRequest.Objects objects = 2;</code>
-     * @return The objects.
+     * <code>.weaviate.v1.BatchStreamRequest.Data data = 2;</code>
+     * @return The data.
      */
     @java.lang.Override
-    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects getObjects() {
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data getData() {
       if (messageCase_ == 2) {
-         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects) message_;
+         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data) message_;
       }
-      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects.getDefaultInstance();
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.getDefaultInstance();
     }
     /**
-     * <code>.weaviate.v1.BatchSendRequest.Objects objects = 2;</code>
+     * <code>.weaviate.v1.BatchStreamRequest.Data data = 2;</code>
      */
     @java.lang.Override
-    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.ObjectsOrBuilder getObjectsOrBuilder() {
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.DataOrBuilder getDataOrBuilder() {
       if (messageCase_ == 2) {
-         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects) message_;
+         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data) message_;
       }
-      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects.getDefaultInstance();
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.getDefaultInstance();
     }
 
-    public static final int REFERENCES_FIELD_NUMBER = 3;
+    public static final int STOP_FIELD_NUMBER = 3;
     /**
-     * <code>.weaviate.v1.BatchSendRequest.References references = 3;</code>
-     * @return Whether the references field is set.
-     */
-    @java.lang.Override
-    public boolean hasReferences() {
-      return messageCase_ == 3;
-    }
-    /**
-     * <code>.weaviate.v1.BatchSendRequest.References references = 3;</code>
-     * @return The references.
-     */
-    @java.lang.Override
-    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References getReferences() {
-      if (messageCase_ == 3) {
-         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References) message_;
-      }
-      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References.getDefaultInstance();
-    }
-    /**
-     * <code>.weaviate.v1.BatchSendRequest.References references = 3;</code>
-     */
-    @java.lang.Override
-    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.ReferencesOrBuilder getReferencesOrBuilder() {
-      if (messageCase_ == 3) {
-         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References) message_;
-      }
-      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References.getDefaultInstance();
-    }
-
-    public static final int STOP_FIELD_NUMBER = 4;
-    /**
-     * <code>.weaviate.v1.BatchSendRequest.Stop stop = 4;</code>
+     * <code>.weaviate.v1.BatchStreamRequest.Stop stop = 3;</code>
      * @return Whether the stop field is set.
      */
     @java.lang.Override
     public boolean hasStop() {
-      return messageCase_ == 4;
+      return messageCase_ == 3;
     }
     /**
-     * <code>.weaviate.v1.BatchSendRequest.Stop stop = 4;</code>
+     * <code>.weaviate.v1.BatchStreamRequest.Stop stop = 3;</code>
      * @return The stop.
      */
     @java.lang.Override
-    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop getStop() {
-      if (messageCase_ == 4) {
-         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop) message_;
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop getStop() {
+      if (messageCase_ == 3) {
+         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop) message_;
       }
-      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop.getDefaultInstance();
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop.getDefaultInstance();
     }
     /**
-     * <code>.weaviate.v1.BatchSendRequest.Stop stop = 4;</code>
+     * <code>.weaviate.v1.BatchStreamRequest.Stop stop = 3;</code>
      */
     @java.lang.Override
-    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.StopOrBuilder getStopOrBuilder() {
-      if (messageCase_ == 4) {
-         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop) message_;
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.StopOrBuilder getStopOrBuilder() {
+      if (messageCase_ == 3) {
+         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop) message_;
       }
-      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop.getDefaultInstance();
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop.getDefaultInstance();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -4094,17 +5391,14 @@ public final class WeaviateProtoBatch {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(streamId_)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, streamId_);
+      if (messageCase_ == 1) {
+        output.writeMessage(1, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start) message_);
       }
       if (messageCase_ == 2) {
-        output.writeMessage(2, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects) message_);
+        output.writeMessage(2, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data) message_);
       }
       if (messageCase_ == 3) {
-        output.writeMessage(3, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References) message_);
-      }
-      if (messageCase_ == 4) {
-        output.writeMessage(4, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop) message_);
+        output.writeMessage(3, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop) message_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -4115,20 +5409,17 @@ public final class WeaviateProtoBatch {
       if (size != -1) return size;
 
       size = 0;
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(streamId_)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, streamId_);
+      if (messageCase_ == 1) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start) message_);
       }
       if (messageCase_ == 2) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects) message_);
+          .computeMessageSize(2, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data) message_);
       }
       if (messageCase_ == 3) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References) message_);
-      }
-      if (messageCase_ == 4) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop) message_);
+          .computeMessageSize(3, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop) message_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -4140,24 +5431,22 @@ public final class WeaviateProtoBatch {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest)) {
+      if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest)) {
         return super.equals(obj);
       }
-      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest) obj;
+      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest) obj;
 
-      if (!getStreamId()
-          .equals(other.getStreamId())) return false;
       if (!getMessageCase().equals(other.getMessageCase())) return false;
       switch (messageCase_) {
+        case 1:
+          if (!getStart()
+              .equals(other.getStart())) return false;
+          break;
         case 2:
-          if (!getObjects()
-              .equals(other.getObjects())) return false;
+          if (!getData()
+              .equals(other.getData())) return false;
           break;
         case 3:
-          if (!getReferences()
-              .equals(other.getReferences())) return false;
-          break;
-        case 4:
           if (!getStop()
               .equals(other.getStop())) return false;
           break;
@@ -4175,1721 +5464,21 @@ public final class WeaviateProtoBatch {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + STREAM_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getStreamId().hashCode();
       switch (messageCase_) {
+        case 1:
+          hash = (37 * hash) + START_FIELD_NUMBER;
+          hash = (53 * hash) + getStart().hashCode();
+          break;
         case 2:
-          hash = (37 * hash) + OBJECTS_FIELD_NUMBER;
-          hash = (53 * hash) + getObjects().hashCode();
+          hash = (37 * hash) + DATA_FIELD_NUMBER;
+          hash = (53 * hash) + getData().hashCode();
           break;
         case 3:
-          hash = (37 * hash) + REFERENCES_FIELD_NUMBER;
-          hash = (53 * hash) + getReferences().hashCode();
-          break;
-        case 4:
           hash = (37 * hash) + STOP_FIELD_NUMBER;
           hash = (53 * hash) + getStop().hashCode();
           break;
         case 0:
         default:
-      }
-      hash = (29 * hash) + getUnknownFields().hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code weaviate.v1.BatchSendRequest}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:weaviate.v1.BatchSendRequest)
-        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequestOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchSendRequest_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchSendRequest_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Builder.class);
-      }
-
-      // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.newBuilder()
-      private Builder() {
-
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        bitField0_ = 0;
-        streamId_ = "";
-        if (objectsBuilder_ != null) {
-          objectsBuilder_.clear();
-        }
-        if (referencesBuilder_ != null) {
-          referencesBuilder_.clear();
-        }
-        if (stopBuilder_ != null) {
-          stopBuilder_.clear();
-        }
-        messageCase_ = 0;
-        message_ = null;
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchSendRequest_descriptor;
-      }
-
-      @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest getDefaultInstanceForType() {
-        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest build() {
-        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest buildPartial() {
-        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest(this);
-        if (bitField0_ != 0) { buildPartial0(result); }
-        buildPartialOneofs(result);
-        onBuilt();
-        return result;
-      }
-
-      private void buildPartial0(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest result) {
-        int from_bitField0_ = bitField0_;
-        if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.streamId_ = streamId_;
-        }
-      }
-
-      private void buildPartialOneofs(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest result) {
-        result.messageCase_ = messageCase_;
-        result.message_ = this.message_;
-        if (messageCase_ == 2 &&
-            objectsBuilder_ != null) {
-          result.message_ = objectsBuilder_.build();
-        }
-        if (messageCase_ == 3 &&
-            referencesBuilder_ != null) {
-          result.message_ = referencesBuilder_.build();
-        }
-        if (messageCase_ == 4 &&
-            stopBuilder_ != null) {
-          result.message_ = stopBuilder_.build();
-        }
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest) {
-          return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest other) {
-        if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.getDefaultInstance()) return this;
-        if (!other.getStreamId().isEmpty()) {
-          streamId_ = other.streamId_;
-          bitField0_ |= 0x00000001;
-          onChanged();
-        }
-        switch (other.getMessageCase()) {
-          case OBJECTS: {
-            mergeObjects(other.getObjects());
-            break;
-          }
-          case REFERENCES: {
-            mergeReferences(other.getReferences());
-            break;
-          }
-          case STOP: {
-            mergeStop(other.getStop());
-            break;
-          }
-          case MESSAGE_NOT_SET: {
-            break;
-          }
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        if (extensionRegistry == null) {
-          throw new java.lang.NullPointerException();
-        }
-        try {
-          boolean done = false;
-          while (!done) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                done = true;
-                break;
-              case 10: {
-                streamId_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000001;
-                break;
-              } // case 10
-              case 18: {
-                input.readMessage(
-                    getObjectsFieldBuilder().getBuilder(),
-                    extensionRegistry);
-                messageCase_ = 2;
-                break;
-              } // case 18
-              case 26: {
-                input.readMessage(
-                    getReferencesFieldBuilder().getBuilder(),
-                    extensionRegistry);
-                messageCase_ = 3;
-                break;
-              } // case 26
-              case 34: {
-                input.readMessage(
-                    getStopFieldBuilder().getBuilder(),
-                    extensionRegistry);
-                messageCase_ = 4;
-                break;
-              } // case 34
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
-            } // switch (tag)
-          } // while (!done)
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.unwrapIOException();
-        } finally {
-          onChanged();
-        } // finally
-        return this;
-      }
-      private int messageCase_ = 0;
-      private java.lang.Object message_;
-      public MessageCase
-          getMessageCase() {
-        return MessageCase.forNumber(
-            messageCase_);
-      }
-
-      public Builder clearMessage() {
-        messageCase_ = 0;
-        message_ = null;
-        onChanged();
-        return this;
-      }
-
-      private int bitField0_;
-
-      private java.lang.Object streamId_ = "";
-      /**
-       * <code>string stream_id = 1;</code>
-       * @return The streamId.
-       */
-      public java.lang.String getStreamId() {
-        java.lang.Object ref = streamId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          streamId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string stream_id = 1;</code>
-       * @return The bytes for streamId.
-       */
-      public com.google.protobuf.ByteString
-          getStreamIdBytes() {
-        java.lang.Object ref = streamId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          streamId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string stream_id = 1;</code>
-       * @param value The streamId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setStreamId(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        streamId_ = value;
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string stream_id = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearStreamId() {
-        streamId_ = getDefaultInstance().getStreamId();
-        bitField0_ = (bitField0_ & ~0x00000001);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string stream_id = 1;</code>
-       * @param value The bytes for streamId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setStreamIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        streamId_ = value;
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-
-      private com.google.protobuf.SingleFieldBuilderV3<
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.ObjectsOrBuilder> objectsBuilder_;
-      /**
-       * <code>.weaviate.v1.BatchSendRequest.Objects objects = 2;</code>
-       * @return Whether the objects field is set.
-       */
-      @java.lang.Override
-      public boolean hasObjects() {
-        return messageCase_ == 2;
-      }
-      /**
-       * <code>.weaviate.v1.BatchSendRequest.Objects objects = 2;</code>
-       * @return The objects.
-       */
-      @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects getObjects() {
-        if (objectsBuilder_ == null) {
-          if (messageCase_ == 2) {
-            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects) message_;
-          }
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects.getDefaultInstance();
-        } else {
-          if (messageCase_ == 2) {
-            return objectsBuilder_.getMessage();
-          }
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects.getDefaultInstance();
-        }
-      }
-      /**
-       * <code>.weaviate.v1.BatchSendRequest.Objects objects = 2;</code>
-       */
-      public Builder setObjects(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects value) {
-        if (objectsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          message_ = value;
-          onChanged();
-        } else {
-          objectsBuilder_.setMessage(value);
-        }
-        messageCase_ = 2;
-        return this;
-      }
-      /**
-       * <code>.weaviate.v1.BatchSendRequest.Objects objects = 2;</code>
-       */
-      public Builder setObjects(
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects.Builder builderForValue) {
-        if (objectsBuilder_ == null) {
-          message_ = builderForValue.build();
-          onChanged();
-        } else {
-          objectsBuilder_.setMessage(builderForValue.build());
-        }
-        messageCase_ = 2;
-        return this;
-      }
-      /**
-       * <code>.weaviate.v1.BatchSendRequest.Objects objects = 2;</code>
-       */
-      public Builder mergeObjects(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects value) {
-        if (objectsBuilder_ == null) {
-          if (messageCase_ == 2 &&
-              message_ != io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects.getDefaultInstance()) {
-            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects.newBuilder((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects) message_)
-                .mergeFrom(value).buildPartial();
-          } else {
-            message_ = value;
-          }
-          onChanged();
-        } else {
-          if (messageCase_ == 2) {
-            objectsBuilder_.mergeFrom(value);
-          } else {
-            objectsBuilder_.setMessage(value);
-          }
-        }
-        messageCase_ = 2;
-        return this;
-      }
-      /**
-       * <code>.weaviate.v1.BatchSendRequest.Objects objects = 2;</code>
-       */
-      public Builder clearObjects() {
-        if (objectsBuilder_ == null) {
-          if (messageCase_ == 2) {
-            messageCase_ = 0;
-            message_ = null;
-            onChanged();
-          }
-        } else {
-          if (messageCase_ == 2) {
-            messageCase_ = 0;
-            message_ = null;
-          }
-          objectsBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>.weaviate.v1.BatchSendRequest.Objects objects = 2;</code>
-       */
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects.Builder getObjectsBuilder() {
-        return getObjectsFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.weaviate.v1.BatchSendRequest.Objects objects = 2;</code>
-       */
-      @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.ObjectsOrBuilder getObjectsOrBuilder() {
-        if ((messageCase_ == 2) && (objectsBuilder_ != null)) {
-          return objectsBuilder_.getMessageOrBuilder();
-        } else {
-          if (messageCase_ == 2) {
-            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects) message_;
-          }
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects.getDefaultInstance();
-        }
-      }
-      /**
-       * <code>.weaviate.v1.BatchSendRequest.Objects objects = 2;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.ObjectsOrBuilder> 
-          getObjectsFieldBuilder() {
-        if (objectsBuilder_ == null) {
-          if (!(messageCase_ == 2)) {
-            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects.getDefaultInstance();
-          }
-          objectsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.ObjectsOrBuilder>(
-                  (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Objects) message_,
-                  getParentForChildren(),
-                  isClean());
-          message_ = null;
-        }
-        messageCase_ = 2;
-        onChanged();
-        return objectsBuilder_;
-      }
-
-      private com.google.protobuf.SingleFieldBuilderV3<
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.ReferencesOrBuilder> referencesBuilder_;
-      /**
-       * <code>.weaviate.v1.BatchSendRequest.References references = 3;</code>
-       * @return Whether the references field is set.
-       */
-      @java.lang.Override
-      public boolean hasReferences() {
-        return messageCase_ == 3;
-      }
-      /**
-       * <code>.weaviate.v1.BatchSendRequest.References references = 3;</code>
-       * @return The references.
-       */
-      @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References getReferences() {
-        if (referencesBuilder_ == null) {
-          if (messageCase_ == 3) {
-            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References) message_;
-          }
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References.getDefaultInstance();
-        } else {
-          if (messageCase_ == 3) {
-            return referencesBuilder_.getMessage();
-          }
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References.getDefaultInstance();
-        }
-      }
-      /**
-       * <code>.weaviate.v1.BatchSendRequest.References references = 3;</code>
-       */
-      public Builder setReferences(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References value) {
-        if (referencesBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          message_ = value;
-          onChanged();
-        } else {
-          referencesBuilder_.setMessage(value);
-        }
-        messageCase_ = 3;
-        return this;
-      }
-      /**
-       * <code>.weaviate.v1.BatchSendRequest.References references = 3;</code>
-       */
-      public Builder setReferences(
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References.Builder builderForValue) {
-        if (referencesBuilder_ == null) {
-          message_ = builderForValue.build();
-          onChanged();
-        } else {
-          referencesBuilder_.setMessage(builderForValue.build());
-        }
-        messageCase_ = 3;
-        return this;
-      }
-      /**
-       * <code>.weaviate.v1.BatchSendRequest.References references = 3;</code>
-       */
-      public Builder mergeReferences(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References value) {
-        if (referencesBuilder_ == null) {
-          if (messageCase_ == 3 &&
-              message_ != io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References.getDefaultInstance()) {
-            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References.newBuilder((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References) message_)
-                .mergeFrom(value).buildPartial();
-          } else {
-            message_ = value;
-          }
-          onChanged();
-        } else {
-          if (messageCase_ == 3) {
-            referencesBuilder_.mergeFrom(value);
-          } else {
-            referencesBuilder_.setMessage(value);
-          }
-        }
-        messageCase_ = 3;
-        return this;
-      }
-      /**
-       * <code>.weaviate.v1.BatchSendRequest.References references = 3;</code>
-       */
-      public Builder clearReferences() {
-        if (referencesBuilder_ == null) {
-          if (messageCase_ == 3) {
-            messageCase_ = 0;
-            message_ = null;
-            onChanged();
-          }
-        } else {
-          if (messageCase_ == 3) {
-            messageCase_ = 0;
-            message_ = null;
-          }
-          referencesBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>.weaviate.v1.BatchSendRequest.References references = 3;</code>
-       */
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References.Builder getReferencesBuilder() {
-        return getReferencesFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.weaviate.v1.BatchSendRequest.References references = 3;</code>
-       */
-      @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.ReferencesOrBuilder getReferencesOrBuilder() {
-        if ((messageCase_ == 3) && (referencesBuilder_ != null)) {
-          return referencesBuilder_.getMessageOrBuilder();
-        } else {
-          if (messageCase_ == 3) {
-            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References) message_;
-          }
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References.getDefaultInstance();
-        }
-      }
-      /**
-       * <code>.weaviate.v1.BatchSendRequest.References references = 3;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.ReferencesOrBuilder> 
-          getReferencesFieldBuilder() {
-        if (referencesBuilder_ == null) {
-          if (!(messageCase_ == 3)) {
-            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References.getDefaultInstance();
-          }
-          referencesBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.ReferencesOrBuilder>(
-                  (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.References) message_,
-                  getParentForChildren(),
-                  isClean());
-          message_ = null;
-        }
-        messageCase_ = 3;
-        onChanged();
-        return referencesBuilder_;
-      }
-
-      private com.google.protobuf.SingleFieldBuilderV3<
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.StopOrBuilder> stopBuilder_;
-      /**
-       * <code>.weaviate.v1.BatchSendRequest.Stop stop = 4;</code>
-       * @return Whether the stop field is set.
-       */
-      @java.lang.Override
-      public boolean hasStop() {
-        return messageCase_ == 4;
-      }
-      /**
-       * <code>.weaviate.v1.BatchSendRequest.Stop stop = 4;</code>
-       * @return The stop.
-       */
-      @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop getStop() {
-        if (stopBuilder_ == null) {
-          if (messageCase_ == 4) {
-            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop) message_;
-          }
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop.getDefaultInstance();
-        } else {
-          if (messageCase_ == 4) {
-            return stopBuilder_.getMessage();
-          }
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop.getDefaultInstance();
-        }
-      }
-      /**
-       * <code>.weaviate.v1.BatchSendRequest.Stop stop = 4;</code>
-       */
-      public Builder setStop(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop value) {
-        if (stopBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          message_ = value;
-          onChanged();
-        } else {
-          stopBuilder_.setMessage(value);
-        }
-        messageCase_ = 4;
-        return this;
-      }
-      /**
-       * <code>.weaviate.v1.BatchSendRequest.Stop stop = 4;</code>
-       */
-      public Builder setStop(
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop.Builder builderForValue) {
-        if (stopBuilder_ == null) {
-          message_ = builderForValue.build();
-          onChanged();
-        } else {
-          stopBuilder_.setMessage(builderForValue.build());
-        }
-        messageCase_ = 4;
-        return this;
-      }
-      /**
-       * <code>.weaviate.v1.BatchSendRequest.Stop stop = 4;</code>
-       */
-      public Builder mergeStop(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop value) {
-        if (stopBuilder_ == null) {
-          if (messageCase_ == 4 &&
-              message_ != io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop.getDefaultInstance()) {
-            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop.newBuilder((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop) message_)
-                .mergeFrom(value).buildPartial();
-          } else {
-            message_ = value;
-          }
-          onChanged();
-        } else {
-          if (messageCase_ == 4) {
-            stopBuilder_.mergeFrom(value);
-          } else {
-            stopBuilder_.setMessage(value);
-          }
-        }
-        messageCase_ = 4;
-        return this;
-      }
-      /**
-       * <code>.weaviate.v1.BatchSendRequest.Stop stop = 4;</code>
-       */
-      public Builder clearStop() {
-        if (stopBuilder_ == null) {
-          if (messageCase_ == 4) {
-            messageCase_ = 0;
-            message_ = null;
-            onChanged();
-          }
-        } else {
-          if (messageCase_ == 4) {
-            messageCase_ = 0;
-            message_ = null;
-          }
-          stopBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>.weaviate.v1.BatchSendRequest.Stop stop = 4;</code>
-       */
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop.Builder getStopBuilder() {
-        return getStopFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.weaviate.v1.BatchSendRequest.Stop stop = 4;</code>
-       */
-      @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.StopOrBuilder getStopOrBuilder() {
-        if ((messageCase_ == 4) && (stopBuilder_ != null)) {
-          return stopBuilder_.getMessageOrBuilder();
-        } else {
-          if (messageCase_ == 4) {
-            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop) message_;
-          }
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop.getDefaultInstance();
-        }
-      }
-      /**
-       * <code>.weaviate.v1.BatchSendRequest.Stop stop = 4;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.StopOrBuilder> 
-          getStopFieldBuilder() {
-        if (stopBuilder_ == null) {
-          if (!(messageCase_ == 4)) {
-            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop.getDefaultInstance();
-          }
-          stopBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.StopOrBuilder>(
-                  (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.Stop) message_,
-                  getParentForChildren(),
-                  isClean());
-          message_ = null;
-        }
-        messageCase_ = 4;
-        onChanged();
-        return stopBuilder_;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:weaviate.v1.BatchSendRequest)
-    }
-
-    // @@protoc_insertion_point(class_scope:weaviate.v1.BatchSendRequest)
-    private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest();
-    }
-
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<BatchSendRequest>
-        PARSER = new com.google.protobuf.AbstractParser<BatchSendRequest>() {
-      @java.lang.Override
-      public BatchSendRequest parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (com.google.protobuf.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new com.google.protobuf.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
-
-    public static com.google.protobuf.Parser<BatchSendRequest> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<BatchSendRequest> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface BatchSendReplyOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:weaviate.v1.BatchSendReply)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>int32 next_batch_size = 1;</code>
-     * @return The nextBatchSize.
-     */
-    int getNextBatchSize();
-
-    /**
-     * <code>float backoff_seconds = 2;</code>
-     * @return The backoffSeconds.
-     */
-    float getBackoffSeconds();
-  }
-  /**
-   * Protobuf type {@code weaviate.v1.BatchSendReply}
-   */
-  public static final class BatchSendReply extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:weaviate.v1.BatchSendReply)
-      BatchSendReplyOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use BatchSendReply.newBuilder() to construct.
-    private BatchSendReply(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private BatchSendReply() {
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new BatchSendReply();
-    }
-
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchSendReply_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchSendReply_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply.Builder.class);
-    }
-
-    public static final int NEXT_BATCH_SIZE_FIELD_NUMBER = 1;
-    private int nextBatchSize_ = 0;
-    /**
-     * <code>int32 next_batch_size = 1;</code>
-     * @return The nextBatchSize.
-     */
-    @java.lang.Override
-    public int getNextBatchSize() {
-      return nextBatchSize_;
-    }
-
-    public static final int BACKOFF_SECONDS_FIELD_NUMBER = 2;
-    private float backoffSeconds_ = 0F;
-    /**
-     * <code>float backoff_seconds = 2;</code>
-     * @return The backoffSeconds.
-     */
-    @java.lang.Override
-    public float getBackoffSeconds() {
-      return backoffSeconds_;
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (nextBatchSize_ != 0) {
-        output.writeInt32(1, nextBatchSize_);
-      }
-      if (java.lang.Float.floatToRawIntBits(backoffSeconds_) != 0) {
-        output.writeFloat(2, backoffSeconds_);
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (nextBatchSize_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, nextBatchSize_);
-      }
-      if (java.lang.Float.floatToRawIntBits(backoffSeconds_) != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeFloatSize(2, backoffSeconds_);
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply)) {
-        return super.equals(obj);
-      }
-      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply) obj;
-
-      if (getNextBatchSize()
-          != other.getNextBatchSize()) return false;
-      if (java.lang.Float.floatToIntBits(getBackoffSeconds())
-          != java.lang.Float.floatToIntBits(
-              other.getBackoffSeconds())) return false;
-      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + NEXT_BATCH_SIZE_FIELD_NUMBER;
-      hash = (53 * hash) + getNextBatchSize();
-      hash = (37 * hash) + BACKOFF_SECONDS_FIELD_NUMBER;
-      hash = (53 * hash) + java.lang.Float.floatToIntBits(
-          getBackoffSeconds());
-      hash = (29 * hash) + getUnknownFields().hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code weaviate.v1.BatchSendReply}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:weaviate.v1.BatchSendReply)
-        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReplyOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchSendReply_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchSendReply_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply.Builder.class);
-      }
-
-      // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply.newBuilder()
-      private Builder() {
-
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        bitField0_ = 0;
-        nextBatchSize_ = 0;
-        backoffSeconds_ = 0F;
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchSendReply_descriptor;
-      }
-
-      @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply getDefaultInstanceForType() {
-        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply build() {
-        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply buildPartial() {
-        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply(this);
-        if (bitField0_ != 0) { buildPartial0(result); }
-        onBuilt();
-        return result;
-      }
-
-      private void buildPartial0(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply result) {
-        int from_bitField0_ = bitField0_;
-        if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.nextBatchSize_ = nextBatchSize_;
-        }
-        if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.backoffSeconds_ = backoffSeconds_;
-        }
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply) {
-          return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply other) {
-        if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply.getDefaultInstance()) return this;
-        if (other.getNextBatchSize() != 0) {
-          setNextBatchSize(other.getNextBatchSize());
-        }
-        if (other.getBackoffSeconds() != 0F) {
-          setBackoffSeconds(other.getBackoffSeconds());
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        if (extensionRegistry == null) {
-          throw new java.lang.NullPointerException();
-        }
-        try {
-          boolean done = false;
-          while (!done) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                done = true;
-                break;
-              case 8: {
-                nextBatchSize_ = input.readInt32();
-                bitField0_ |= 0x00000001;
-                break;
-              } // case 8
-              case 21: {
-                backoffSeconds_ = input.readFloat();
-                bitField0_ |= 0x00000002;
-                break;
-              } // case 21
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
-            } // switch (tag)
-          } // while (!done)
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.unwrapIOException();
-        } finally {
-          onChanged();
-        } // finally
-        return this;
-      }
-      private int bitField0_;
-
-      private int nextBatchSize_ ;
-      /**
-       * <code>int32 next_batch_size = 1;</code>
-       * @return The nextBatchSize.
-       */
-      @java.lang.Override
-      public int getNextBatchSize() {
-        return nextBatchSize_;
-      }
-      /**
-       * <code>int32 next_batch_size = 1;</code>
-       * @param value The nextBatchSize to set.
-       * @return This builder for chaining.
-       */
-      public Builder setNextBatchSize(int value) {
-
-        nextBatchSize_ = value;
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>int32 next_batch_size = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearNextBatchSize() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        nextBatchSize_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private float backoffSeconds_ ;
-      /**
-       * <code>float backoff_seconds = 2;</code>
-       * @return The backoffSeconds.
-       */
-      @java.lang.Override
-      public float getBackoffSeconds() {
-        return backoffSeconds_;
-      }
-      /**
-       * <code>float backoff_seconds = 2;</code>
-       * @param value The backoffSeconds to set.
-       * @return This builder for chaining.
-       */
-      public Builder setBackoffSeconds(float value) {
-
-        backoffSeconds_ = value;
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>float backoff_seconds = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearBackoffSeconds() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        backoffSeconds_ = 0F;
-        onChanged();
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:weaviate.v1.BatchSendReply)
-    }
-
-    // @@protoc_insertion_point(class_scope:weaviate.v1.BatchSendReply)
-    private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply();
-    }
-
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<BatchSendReply>
-        PARSER = new com.google.protobuf.AbstractParser<BatchSendReply>() {
-      @java.lang.Override
-      public BatchSendReply parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (com.google.protobuf.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new com.google.protobuf.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
-
-    public static com.google.protobuf.Parser<BatchSendReply> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<BatchSendReply> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface BatchStreamRequestOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:weaviate.v1.BatchStreamRequest)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>optional .weaviate.v1.ConsistencyLevel consistency_level = 1;</code>
-     * @return Whether the consistencyLevel field is set.
-     */
-    boolean hasConsistencyLevel();
-    /**
-     * <code>optional .weaviate.v1.ConsistencyLevel consistency_level = 1;</code>
-     * @return The enum numeric value on the wire for consistencyLevel.
-     */
-    int getConsistencyLevelValue();
-    /**
-     * <code>optional .weaviate.v1.ConsistencyLevel consistency_level = 1;</code>
-     * @return The consistencyLevel.
-     */
-    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.ConsistencyLevel getConsistencyLevel();
-
-    /**
-     * <code>optional int32 object_index = 2;</code>
-     * @return Whether the objectIndex field is set.
-     */
-    boolean hasObjectIndex();
-    /**
-     * <code>optional int32 object_index = 2;</code>
-     * @return The objectIndex.
-     */
-    int getObjectIndex();
-
-    /**
-     * <code>optional int32 reference_index = 3;</code>
-     * @return Whether the referenceIndex field is set.
-     */
-    boolean hasReferenceIndex();
-    /**
-     * <code>optional int32 reference_index = 3;</code>
-     * @return The referenceIndex.
-     */
-    int getReferenceIndex();
-  }
-  /**
-   * Protobuf type {@code weaviate.v1.BatchStreamRequest}
-   */
-  public static final class BatchStreamRequest extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:weaviate.v1.BatchStreamRequest)
-      BatchStreamRequestOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use BatchStreamRequest.newBuilder() to construct.
-    private BatchStreamRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private BatchStreamRequest() {
-      consistencyLevel_ = 0;
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new BatchStreamRequest();
-    }
-
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamRequest_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Builder.class);
-    }
-
-    private int bitField0_;
-    public static final int CONSISTENCY_LEVEL_FIELD_NUMBER = 1;
-    private int consistencyLevel_ = 0;
-    /**
-     * <code>optional .weaviate.v1.ConsistencyLevel consistency_level = 1;</code>
-     * @return Whether the consistencyLevel field is set.
-     */
-    @java.lang.Override public boolean hasConsistencyLevel() {
-      return ((bitField0_ & 0x00000001) != 0);
-    }
-    /**
-     * <code>optional .weaviate.v1.ConsistencyLevel consistency_level = 1;</code>
-     * @return The enum numeric value on the wire for consistencyLevel.
-     */
-    @java.lang.Override public int getConsistencyLevelValue() {
-      return consistencyLevel_;
-    }
-    /**
-     * <code>optional .weaviate.v1.ConsistencyLevel consistency_level = 1;</code>
-     * @return The consistencyLevel.
-     */
-    @java.lang.Override public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.ConsistencyLevel getConsistencyLevel() {
-      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.ConsistencyLevel result = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.ConsistencyLevel.forNumber(consistencyLevel_);
-      return result == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.ConsistencyLevel.UNRECOGNIZED : result;
-    }
-
-    public static final int OBJECT_INDEX_FIELD_NUMBER = 2;
-    private int objectIndex_ = 0;
-    /**
-     * <code>optional int32 object_index = 2;</code>
-     * @return Whether the objectIndex field is set.
-     */
-    @java.lang.Override
-    public boolean hasObjectIndex() {
-      return ((bitField0_ & 0x00000002) != 0);
-    }
-    /**
-     * <code>optional int32 object_index = 2;</code>
-     * @return The objectIndex.
-     */
-    @java.lang.Override
-    public int getObjectIndex() {
-      return objectIndex_;
-    }
-
-    public static final int REFERENCE_INDEX_FIELD_NUMBER = 3;
-    private int referenceIndex_ = 0;
-    /**
-     * <code>optional int32 reference_index = 3;</code>
-     * @return Whether the referenceIndex field is set.
-     */
-    @java.lang.Override
-    public boolean hasReferenceIndex() {
-      return ((bitField0_ & 0x00000004) != 0);
-    }
-    /**
-     * <code>optional int32 reference_index = 3;</code>
-     * @return The referenceIndex.
-     */
-    @java.lang.Override
-    public int getReferenceIndex() {
-      return referenceIndex_;
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) != 0)) {
-        output.writeEnum(1, consistencyLevel_);
-      }
-      if (((bitField0_ & 0x00000002) != 0)) {
-        output.writeInt32(2, objectIndex_);
-      }
-      if (((bitField0_ & 0x00000004) != 0)) {
-        output.writeInt32(3, referenceIndex_);
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (((bitField0_ & 0x00000001) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(1, consistencyLevel_);
-      }
-      if (((bitField0_ & 0x00000002) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, objectIndex_);
-      }
-      if (((bitField0_ & 0x00000004) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, referenceIndex_);
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest)) {
-        return super.equals(obj);
-      }
-      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest) obj;
-
-      if (hasConsistencyLevel() != other.hasConsistencyLevel()) return false;
-      if (hasConsistencyLevel()) {
-        if (consistencyLevel_ != other.consistencyLevel_) return false;
-      }
-      if (hasObjectIndex() != other.hasObjectIndex()) return false;
-      if (hasObjectIndex()) {
-        if (getObjectIndex()
-            != other.getObjectIndex()) return false;
-      }
-      if (hasReferenceIndex() != other.hasReferenceIndex()) return false;
-      if (hasReferenceIndex()) {
-        if (getReferenceIndex()
-            != other.getReferenceIndex()) return false;
-      }
-      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      if (hasConsistencyLevel()) {
-        hash = (37 * hash) + CONSISTENCY_LEVEL_FIELD_NUMBER;
-        hash = (53 * hash) + consistencyLevel_;
-      }
-      if (hasObjectIndex()) {
-        hash = (37 * hash) + OBJECT_INDEX_FIELD_NUMBER;
-        hash = (53 * hash) + getObjectIndex();
-      }
-      if (hasReferenceIndex()) {
-        hash = (37 * hash) + REFERENCE_INDEX_FIELD_NUMBER;
-        hash = (53 * hash) + getReferenceIndex();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -6022,9 +5611,17 @@ public final class WeaviateProtoBatch {
       public Builder clear() {
         super.clear();
         bitField0_ = 0;
-        consistencyLevel_ = 0;
-        objectIndex_ = 0;
-        referenceIndex_ = 0;
+        if (startBuilder_ != null) {
+          startBuilder_.clear();
+        }
+        if (dataBuilder_ != null) {
+          dataBuilder_.clear();
+        }
+        if (stopBuilder_ != null) {
+          stopBuilder_.clear();
+        }
+        messageCase_ = 0;
+        message_ = null;
         return this;
       }
 
@@ -6052,26 +5649,30 @@ public final class WeaviateProtoBatch {
       public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest buildPartial() {
         io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest(this);
         if (bitField0_ != 0) { buildPartial0(result); }
+        buildPartialOneofs(result);
         onBuilt();
         return result;
       }
 
       private void buildPartial0(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest result) {
         int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.consistencyLevel_ = consistencyLevel_;
-          to_bitField0_ |= 0x00000001;
+      }
+
+      private void buildPartialOneofs(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest result) {
+        result.messageCase_ = messageCase_;
+        result.message_ = this.message_;
+        if (messageCase_ == 1 &&
+            startBuilder_ != null) {
+          result.message_ = startBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.objectIndex_ = objectIndex_;
-          to_bitField0_ |= 0x00000002;
+        if (messageCase_ == 2 &&
+            dataBuilder_ != null) {
+          result.message_ = dataBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000004) != 0)) {
-          result.referenceIndex_ = referenceIndex_;
-          to_bitField0_ |= 0x00000004;
+        if (messageCase_ == 3 &&
+            stopBuilder_ != null) {
+          result.message_ = stopBuilder_.build();
         }
-        result.bitField0_ |= to_bitField0_;
       }
 
       @java.lang.Override
@@ -6118,14 +5719,22 @@ public final class WeaviateProtoBatch {
 
       public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest other) {
         if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.getDefaultInstance()) return this;
-        if (other.hasConsistencyLevel()) {
-          setConsistencyLevel(other.getConsistencyLevel());
-        }
-        if (other.hasObjectIndex()) {
-          setObjectIndex(other.getObjectIndex());
-        }
-        if (other.hasReferenceIndex()) {
-          setReferenceIndex(other.getReferenceIndex());
+        switch (other.getMessageCase()) {
+          case START: {
+            mergeStart(other.getStart());
+            break;
+          }
+          case DATA: {
+            mergeData(other.getData());
+            break;
+          }
+          case STOP: {
+            mergeStop(other.getStop());
+            break;
+          }
+          case MESSAGE_NOT_SET: {
+            break;
+          }
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -6153,21 +5762,27 @@ public final class WeaviateProtoBatch {
               case 0:
                 done = true;
                 break;
-              case 8: {
-                consistencyLevel_ = input.readEnum();
-                bitField0_ |= 0x00000001;
+              case 10: {
+                input.readMessage(
+                    getStartFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                messageCase_ = 1;
                 break;
-              } // case 8
-              case 16: {
-                objectIndex_ = input.readInt32();
-                bitField0_ |= 0x00000002;
+              } // case 10
+              case 18: {
+                input.readMessage(
+                    getDataFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                messageCase_ = 2;
                 break;
-              } // case 16
-              case 24: {
-                referenceIndex_ = input.readInt32();
-                bitField0_ |= 0x00000004;
+              } // case 18
+              case 26: {
+                input.readMessage(
+                    getStopFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                messageCase_ = 3;
                 break;
-              } // case 24
+              } // case 26
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -6183,146 +5798,447 @@ public final class WeaviateProtoBatch {
         } // finally
         return this;
       }
+      private int messageCase_ = 0;
+      private java.lang.Object message_;
+      public MessageCase
+          getMessageCase() {
+        return MessageCase.forNumber(
+            messageCase_);
+      }
+
+      public Builder clearMessage() {
+        messageCase_ = 0;
+        message_ = null;
+        onChanged();
+        return this;
+      }
+
       private int bitField0_;
 
-      private int consistencyLevel_ = 0;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.StartOrBuilder> startBuilder_;
       /**
-       * <code>optional .weaviate.v1.ConsistencyLevel consistency_level = 1;</code>
-       * @return Whether the consistencyLevel field is set.
-       */
-      @java.lang.Override public boolean hasConsistencyLevel() {
-        return ((bitField0_ & 0x00000001) != 0);
-      }
-      /**
-       * <code>optional .weaviate.v1.ConsistencyLevel consistency_level = 1;</code>
-       * @return The enum numeric value on the wire for consistencyLevel.
-       */
-      @java.lang.Override public int getConsistencyLevelValue() {
-        return consistencyLevel_;
-      }
-      /**
-       * <code>optional .weaviate.v1.ConsistencyLevel consistency_level = 1;</code>
-       * @param value The enum numeric value on the wire for consistencyLevel to set.
-       * @return This builder for chaining.
-       */
-      public Builder setConsistencyLevelValue(int value) {
-        consistencyLevel_ = value;
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .weaviate.v1.ConsistencyLevel consistency_level = 1;</code>
-       * @return The consistencyLevel.
+       * <code>.weaviate.v1.BatchStreamRequest.Start start = 1;</code>
+       * @return Whether the start field is set.
        */
       @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.ConsistencyLevel getConsistencyLevel() {
-        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.ConsistencyLevel result = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.ConsistencyLevel.forNumber(consistencyLevel_);
-        return result == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.ConsistencyLevel.UNRECOGNIZED : result;
+      public boolean hasStart() {
+        return messageCase_ == 1;
       }
       /**
-       * <code>optional .weaviate.v1.ConsistencyLevel consistency_level = 1;</code>
-       * @param value The consistencyLevel to set.
-       * @return This builder for chaining.
+       * <code>.weaviate.v1.BatchStreamRequest.Start start = 1;</code>
+       * @return The start.
        */
-      public Builder setConsistencyLevel(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.ConsistencyLevel value) {
-        if (value == null) {
-          throw new NullPointerException();
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start getStart() {
+        if (startBuilder_ == null) {
+          if (messageCase_ == 1) {
+            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start) message_;
+          }
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start.getDefaultInstance();
+        } else {
+          if (messageCase_ == 1) {
+            return startBuilder_.getMessage();
+          }
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start.getDefaultInstance();
         }
-        bitField0_ |= 0x00000001;
-        consistencyLevel_ = value.getNumber();
-        onChanged();
-        return this;
       }
       /**
-       * <code>optional .weaviate.v1.ConsistencyLevel consistency_level = 1;</code>
-       * @return This builder for chaining.
+       * <code>.weaviate.v1.BatchStreamRequest.Start start = 1;</code>
        */
-      public Builder clearConsistencyLevel() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        consistencyLevel_ = 0;
-        onChanged();
+      public Builder setStart(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start value) {
+        if (startBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          message_ = value;
+          onChanged();
+        } else {
+          startBuilder_.setMessage(value);
+        }
+        messageCase_ = 1;
         return this;
       }
-
-      private int objectIndex_ ;
       /**
-       * <code>optional int32 object_index = 2;</code>
-       * @return Whether the objectIndex field is set.
+       * <code>.weaviate.v1.BatchStreamRequest.Start start = 1;</code>
+       */
+      public Builder setStart(
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start.Builder builderForValue) {
+        if (startBuilder_ == null) {
+          message_ = builderForValue.build();
+          onChanged();
+        } else {
+          startBuilder_.setMessage(builderForValue.build());
+        }
+        messageCase_ = 1;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamRequest.Start start = 1;</code>
+       */
+      public Builder mergeStart(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start value) {
+        if (startBuilder_ == null) {
+          if (messageCase_ == 1 &&
+              message_ != io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start.getDefaultInstance()) {
+            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start.newBuilder((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start) message_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            message_ = value;
+          }
+          onChanged();
+        } else {
+          if (messageCase_ == 1) {
+            startBuilder_.mergeFrom(value);
+          } else {
+            startBuilder_.setMessage(value);
+          }
+        }
+        messageCase_ = 1;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamRequest.Start start = 1;</code>
+       */
+      public Builder clearStart() {
+        if (startBuilder_ == null) {
+          if (messageCase_ == 1) {
+            messageCase_ = 0;
+            message_ = null;
+            onChanged();
+          }
+        } else {
+          if (messageCase_ == 1) {
+            messageCase_ = 0;
+            message_ = null;
+          }
+          startBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamRequest.Start start = 1;</code>
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start.Builder getStartBuilder() {
+        return getStartFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamRequest.Start start = 1;</code>
        */
       @java.lang.Override
-      public boolean hasObjectIndex() {
-        return ((bitField0_ & 0x00000002) != 0);
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.StartOrBuilder getStartOrBuilder() {
+        if ((messageCase_ == 1) && (startBuilder_ != null)) {
+          return startBuilder_.getMessageOrBuilder();
+        } else {
+          if (messageCase_ == 1) {
+            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start) message_;
+          }
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start.getDefaultInstance();
+        }
       }
       /**
-       * <code>optional int32 object_index = 2;</code>
-       * @return The objectIndex.
+       * <code>.weaviate.v1.BatchStreamRequest.Start start = 1;</code>
        */
-      @java.lang.Override
-      public int getObjectIndex() {
-        return objectIndex_;
-      }
-      /**
-       * <code>optional int32 object_index = 2;</code>
-       * @param value The objectIndex to set.
-       * @return This builder for chaining.
-       */
-      public Builder setObjectIndex(int value) {
-
-        objectIndex_ = value;
-        bitField0_ |= 0x00000002;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.StartOrBuilder> 
+          getStartFieldBuilder() {
+        if (startBuilder_ == null) {
+          if (!(messageCase_ == 1)) {
+            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start.getDefaultInstance();
+          }
+          startBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.StartOrBuilder>(
+                  (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Start) message_,
+                  getParentForChildren(),
+                  isClean());
+          message_ = null;
+        }
+        messageCase_ = 1;
         onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 object_index = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearObjectIndex() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        objectIndex_ = 0;
-        onChanged();
-        return this;
+        return startBuilder_;
       }
 
-      private int referenceIndex_ ;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.DataOrBuilder> dataBuilder_;
       /**
-       * <code>optional int32 reference_index = 3;</code>
-       * @return Whether the referenceIndex field is set.
+       * <code>.weaviate.v1.BatchStreamRequest.Data data = 2;</code>
+       * @return Whether the data field is set.
        */
       @java.lang.Override
-      public boolean hasReferenceIndex() {
-        return ((bitField0_ & 0x00000004) != 0);
+      public boolean hasData() {
+        return messageCase_ == 2;
       }
       /**
-       * <code>optional int32 reference_index = 3;</code>
-       * @return The referenceIndex.
+       * <code>.weaviate.v1.BatchStreamRequest.Data data = 2;</code>
+       * @return The data.
        */
       @java.lang.Override
-      public int getReferenceIndex() {
-        return referenceIndex_;
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data getData() {
+        if (dataBuilder_ == null) {
+          if (messageCase_ == 2) {
+            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data) message_;
+          }
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.getDefaultInstance();
+        } else {
+          if (messageCase_ == 2) {
+            return dataBuilder_.getMessage();
+          }
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.getDefaultInstance();
+        }
       }
       /**
-       * <code>optional int32 reference_index = 3;</code>
-       * @param value The referenceIndex to set.
-       * @return This builder for chaining.
+       * <code>.weaviate.v1.BatchStreamRequest.Data data = 2;</code>
        */
-      public Builder setReferenceIndex(int value) {
+      public Builder setData(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data value) {
+        if (dataBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          message_ = value;
+          onChanged();
+        } else {
+          dataBuilder_.setMessage(value);
+        }
+        messageCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamRequest.Data data = 2;</code>
+       */
+      public Builder setData(
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Builder builderForValue) {
+        if (dataBuilder_ == null) {
+          message_ = builderForValue.build();
+          onChanged();
+        } else {
+          dataBuilder_.setMessage(builderForValue.build());
+        }
+        messageCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamRequest.Data data = 2;</code>
+       */
+      public Builder mergeData(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data value) {
+        if (dataBuilder_ == null) {
+          if (messageCase_ == 2 &&
+              message_ != io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.getDefaultInstance()) {
+            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.newBuilder((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data) message_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            message_ = value;
+          }
+          onChanged();
+        } else {
+          if (messageCase_ == 2) {
+            dataBuilder_.mergeFrom(value);
+          } else {
+            dataBuilder_.setMessage(value);
+          }
+        }
+        messageCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamRequest.Data data = 2;</code>
+       */
+      public Builder clearData() {
+        if (dataBuilder_ == null) {
+          if (messageCase_ == 2) {
+            messageCase_ = 0;
+            message_ = null;
+            onChanged();
+          }
+        } else {
+          if (messageCase_ == 2) {
+            messageCase_ = 0;
+            message_ = null;
+          }
+          dataBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamRequest.Data data = 2;</code>
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Builder getDataBuilder() {
+        return getDataFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamRequest.Data data = 2;</code>
+       */
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.DataOrBuilder getDataOrBuilder() {
+        if ((messageCase_ == 2) && (dataBuilder_ != null)) {
+          return dataBuilder_.getMessageOrBuilder();
+        } else {
+          if (messageCase_ == 2) {
+            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data) message_;
+          }
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamRequest.Data data = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.DataOrBuilder> 
+          getDataFieldBuilder() {
+        if (dataBuilder_ == null) {
+          if (!(messageCase_ == 2)) {
+            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.getDefaultInstance();
+          }
+          dataBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.DataOrBuilder>(
+                  (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Data) message_,
+                  getParentForChildren(),
+                  isClean());
+          message_ = null;
+        }
+        messageCase_ = 2;
+        onChanged();
+        return dataBuilder_;
+      }
 
-        referenceIndex_ = value;
-        bitField0_ |= 0x00000004;
-        onChanged();
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.StopOrBuilder> stopBuilder_;
+      /**
+       * <code>.weaviate.v1.BatchStreamRequest.Stop stop = 3;</code>
+       * @return Whether the stop field is set.
+       */
+      @java.lang.Override
+      public boolean hasStop() {
+        return messageCase_ == 3;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamRequest.Stop stop = 3;</code>
+       * @return The stop.
+       */
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop getStop() {
+        if (stopBuilder_ == null) {
+          if (messageCase_ == 3) {
+            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop) message_;
+          }
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop.getDefaultInstance();
+        } else {
+          if (messageCase_ == 3) {
+            return stopBuilder_.getMessage();
+          }
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamRequest.Stop stop = 3;</code>
+       */
+      public Builder setStop(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop value) {
+        if (stopBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          message_ = value;
+          onChanged();
+        } else {
+          stopBuilder_.setMessage(value);
+        }
+        messageCase_ = 3;
         return this;
       }
       /**
-       * <code>optional int32 reference_index = 3;</code>
-       * @return This builder for chaining.
+       * <code>.weaviate.v1.BatchStreamRequest.Stop stop = 3;</code>
        */
-      public Builder clearReferenceIndex() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        referenceIndex_ = 0;
-        onChanged();
+      public Builder setStop(
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop.Builder builderForValue) {
+        if (stopBuilder_ == null) {
+          message_ = builderForValue.build();
+          onChanged();
+        } else {
+          stopBuilder_.setMessage(builderForValue.build());
+        }
+        messageCase_ = 3;
         return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamRequest.Stop stop = 3;</code>
+       */
+      public Builder mergeStop(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop value) {
+        if (stopBuilder_ == null) {
+          if (messageCase_ == 3 &&
+              message_ != io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop.getDefaultInstance()) {
+            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop.newBuilder((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop) message_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            message_ = value;
+          }
+          onChanged();
+        } else {
+          if (messageCase_ == 3) {
+            stopBuilder_.mergeFrom(value);
+          } else {
+            stopBuilder_.setMessage(value);
+          }
+        }
+        messageCase_ = 3;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamRequest.Stop stop = 3;</code>
+       */
+      public Builder clearStop() {
+        if (stopBuilder_ == null) {
+          if (messageCase_ == 3) {
+            messageCase_ = 0;
+            message_ = null;
+            onChanged();
+          }
+        } else {
+          if (messageCase_ == 3) {
+            messageCase_ = 0;
+            message_ = null;
+          }
+          stopBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamRequest.Stop stop = 3;</code>
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop.Builder getStopBuilder() {
+        return getStopFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamRequest.Stop stop = 3;</code>
+       */
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.StopOrBuilder getStopOrBuilder() {
+        if ((messageCase_ == 3) && (stopBuilder_ != null)) {
+          return stopBuilder_.getMessageOrBuilder();
+        } else {
+          if (messageCase_ == 3) {
+            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop) message_;
+          }
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamRequest.Stop stop = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.StopOrBuilder> 
+          getStopFieldBuilder() {
+        if (stopBuilder_ == null) {
+          if (!(messageCase_ == 3)) {
+            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop.getDefaultInstance();
+          }
+          stopBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.StopOrBuilder>(
+                  (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.Stop) message_,
+                  getParentForChildren(),
+                  isClean());
+          message_ = null;
+        }
+        messageCase_ = 3;
+        onChanged();
+        return stopBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -6388,172 +6304,189 @@ public final class WeaviateProtoBatch {
 
   }
 
-  public interface BatchStreamMessageOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:weaviate.v1.BatchStreamMessage)
+  public interface BatchStreamReplyOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:weaviate.v1.BatchStreamReply)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>string stream_id = 1;</code>
-     * @return The streamId.
+     * <code>.weaviate.v1.BatchStreamReply.Results results = 1;</code>
+     * @return Whether the results field is set.
      */
-    java.lang.String getStreamId();
+    boolean hasResults();
     /**
-     * <code>string stream_id = 1;</code>
-     * @return The bytes for streamId.
+     * <code>.weaviate.v1.BatchStreamReply.Results results = 1;</code>
+     * @return The results.
      */
-    com.google.protobuf.ByteString
-        getStreamIdBytes();
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results getResults();
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.Results results = 1;</code>
+     */
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ResultsOrBuilder getResultsOrBuilder();
 
     /**
-     * <code>.weaviate.v1.BatchStreamMessage.Error error = 2;</code>
-     * @return Whether the error field is set.
-     */
-    boolean hasError();
-    /**
-     * <code>.weaviate.v1.BatchStreamMessage.Error error = 2;</code>
-     * @return The error.
-     */
-    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error getError();
-    /**
-     * <code>.weaviate.v1.BatchStreamMessage.Error error = 2;</code>
-     */
-    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ErrorOrBuilder getErrorOrBuilder();
-
-    /**
-     * <code>.weaviate.v1.BatchStreamMessage.Start start = 3;</code>
-     * @return Whether the start field is set.
-     */
-    boolean hasStart();
-    /**
-     * <code>.weaviate.v1.BatchStreamMessage.Start start = 3;</code>
-     * @return The start.
-     */
-    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start getStart();
-    /**
-     * <code>.weaviate.v1.BatchStreamMessage.Start start = 3;</code>
-     */
-    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.StartOrBuilder getStartOrBuilder();
-
-    /**
-     * <code>.weaviate.v1.BatchStreamMessage.Stop stop = 4;</code>
-     * @return Whether the stop field is set.
-     */
-    boolean hasStop();
-    /**
-     * <code>.weaviate.v1.BatchStreamMessage.Stop stop = 4;</code>
-     * @return The stop.
-     */
-    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop getStop();
-    /**
-     * <code>.weaviate.v1.BatchStreamMessage.Stop stop = 4;</code>
-     */
-    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.StopOrBuilder getStopOrBuilder();
-
-    /**
-     * <code>.weaviate.v1.BatchStreamMessage.Shutdown shutdown = 5;</code>
-     * @return Whether the shutdown field is set.
-     */
-    boolean hasShutdown();
-    /**
-     * <code>.weaviate.v1.BatchStreamMessage.Shutdown shutdown = 5;</code>
-     * @return The shutdown.
-     */
-    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown getShutdown();
-    /**
-     * <code>.weaviate.v1.BatchStreamMessage.Shutdown shutdown = 5;</code>
-     */
-    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShutdownOrBuilder getShutdownOrBuilder();
-
-    /**
-     * <code>.weaviate.v1.BatchStreamMessage.ShuttingDown shutting_down = 6;</code>
+     * <code>.weaviate.v1.BatchStreamReply.ShuttingDown shutting_down = 2;</code>
      * @return Whether the shuttingDown field is set.
      */
     boolean hasShuttingDown();
     /**
-     * <code>.weaviate.v1.BatchStreamMessage.ShuttingDown shutting_down = 6;</code>
+     * <code>.weaviate.v1.BatchStreamReply.ShuttingDown shutting_down = 2;</code>
      * @return The shuttingDown.
      */
-    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown getShuttingDown();
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown getShuttingDown();
     /**
-     * <code>.weaviate.v1.BatchStreamMessage.ShuttingDown shutting_down = 6;</code>
+     * <code>.weaviate.v1.BatchStreamReply.ShuttingDown shutting_down = 2;</code>
      */
-    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDownOrBuilder getShuttingDownOrBuilder();
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDownOrBuilder getShuttingDownOrBuilder();
 
-    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.MessageCase getMessageCase();
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.Shutdown shutdown = 3;</code>
+     * @return Whether the shutdown field is set.
+     */
+    boolean hasShutdown();
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.Shutdown shutdown = 3;</code>
+     * @return The shutdown.
+     */
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown getShutdown();
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.Shutdown shutdown = 3;</code>
+     */
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShutdownOrBuilder getShutdownOrBuilder();
+
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.Started started = 4;</code>
+     * @return Whether the started field is set.
+     */
+    boolean hasStarted();
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.Started started = 4;</code>
+     * @return The started.
+     */
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started getStarted();
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.Started started = 4;</code>
+     */
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.StartedOrBuilder getStartedOrBuilder();
+
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.Backoff backoff = 5;</code>
+     * @return Whether the backoff field is set.
+     */
+    boolean hasBackoff();
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.Backoff backoff = 5;</code>
+     * @return The backoff.
+     */
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff getBackoff();
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.Backoff backoff = 5;</code>
+     */
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.BackoffOrBuilder getBackoffOrBuilder();
+
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.Acks acks = 6;</code>
+     * @return Whether the acks field is set.
+     */
+    boolean hasAcks();
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.Acks acks = 6;</code>
+     * @return The acks.
+     */
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks getAcks();
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.Acks acks = 6;</code>
+     */
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.AcksOrBuilder getAcksOrBuilder();
+
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.OutOfMemory out_of_memory = 7;</code>
+     * @return Whether the outOfMemory field is set.
+     */
+    boolean hasOutOfMemory();
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.OutOfMemory out_of_memory = 7;</code>
+     * @return The outOfMemory.
+     */
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory getOutOfMemory();
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.OutOfMemory out_of_memory = 7;</code>
+     */
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemoryOrBuilder getOutOfMemoryOrBuilder();
+
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.MessageCase getMessageCase();
   }
   /**
-   * Protobuf type {@code weaviate.v1.BatchStreamMessage}
+   * Protobuf type {@code weaviate.v1.BatchStreamReply}
    */
-  public static final class BatchStreamMessage extends
+  public static final class BatchStreamReply extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:weaviate.v1.BatchStreamMessage)
-      BatchStreamMessageOrBuilder {
+      // @@protoc_insertion_point(message_implements:weaviate.v1.BatchStreamReply)
+      BatchStreamReplyOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use BatchStreamMessage.newBuilder() to construct.
-    private BatchStreamMessage(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use BatchStreamReply.newBuilder() to construct.
+    private BatchStreamReply(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private BatchStreamMessage() {
-      streamId_ = "";
+    private BatchStreamReply() {
     }
 
     @java.lang.Override
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new BatchStreamMessage();
+      return new BatchStreamReply();
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_descriptor;
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_fieldAccessorTable
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Builder.class);
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Builder.class);
     }
 
-    public interface StartOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:weaviate.v1.BatchStreamMessage.Start)
+    public interface StartedOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:weaviate.v1.BatchStreamReply.Started)
         com.google.protobuf.MessageOrBuilder {
     }
     /**
-     * Protobuf type {@code weaviate.v1.BatchStreamMessage.Start}
+     * Protobuf type {@code weaviate.v1.BatchStreamReply.Started}
      */
-    public static final class Start extends
+    public static final class Started extends
         com.google.protobuf.GeneratedMessageV3 implements
-        // @@protoc_insertion_point(message_implements:weaviate.v1.BatchStreamMessage.Start)
-        StartOrBuilder {
+        // @@protoc_insertion_point(message_implements:weaviate.v1.BatchStreamReply.Started)
+        StartedOrBuilder {
     private static final long serialVersionUID = 0L;
-      // Use Start.newBuilder() to construct.
-      private Start(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      // Use Started.newBuilder() to construct.
+      private Started(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
         super(builder);
       }
-      private Start() {
+      private Started() {
       }
 
       @java.lang.Override
       @SuppressWarnings({"unused"})
       protected java.lang.Object newInstance(
           UnusedPrivateParameter unused) {
-        return new Start();
+        return new Started();
       }
 
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_Start_descriptor;
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Started_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_Start_fieldAccessorTable
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Started_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start.Builder.class);
+                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started.Builder.class);
       }
 
       private byte memoizedIsInitialized = -1;
@@ -6589,10 +6522,10 @@ public final class WeaviateProtoBatch {
         if (obj == this) {
          return true;
         }
-        if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start)) {
+        if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started)) {
           return super.equals(obj);
         }
-        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start) obj;
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started) obj;
 
         if (!getUnknownFields().equals(other.getUnknownFields())) return false;
         return true;
@@ -6610,44 +6543,44 @@ public final class WeaviateProtoBatch {
         return hash;
       }
 
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started parseFrom(
           java.nio.ByteBuffer data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started parseFrom(
           java.nio.ByteBuffer data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started parseFrom(
           com.google.protobuf.ByteString data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started parseFrom(
           com.google.protobuf.ByteString data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start parseFrom(byte[] data)
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started parseFrom(byte[] data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started parseFrom(
           byte[] data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start parseFrom(java.io.InputStream input)
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started parseFrom(java.io.InputStream input)
           throws java.io.IOException {
         return com.google.protobuf.GeneratedMessageV3
             .parseWithIOException(PARSER, input);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started parseFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -6655,26 +6588,26 @@ public final class WeaviateProtoBatch {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start parseDelimitedFrom(java.io.InputStream input)
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
         return com.google.protobuf.GeneratedMessageV3
             .parseDelimitedWithIOException(PARSER, input);
       }
 
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start parseDelimitedFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started parseDelimitedFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return com.google.protobuf.GeneratedMessageV3
             .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started parseFrom(
           com.google.protobuf.CodedInputStream input)
           throws java.io.IOException {
         return com.google.protobuf.GeneratedMessageV3
             .parseWithIOException(PARSER, input);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started parseFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -6687,7 +6620,7 @@ public final class WeaviateProtoBatch {
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
       }
-      public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start prototype) {
+      public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
       @java.lang.Override
@@ -6703,26 +6636,26 @@ public final class WeaviateProtoBatch {
         return builder;
       }
       /**
-       * Protobuf type {@code weaviate.v1.BatchStreamMessage.Start}
+       * Protobuf type {@code weaviate.v1.BatchStreamReply.Started}
        */
       public static final class Builder extends
           com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-          // @@protoc_insertion_point(builder_implements:weaviate.v1.BatchStreamMessage.Start)
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.StartOrBuilder {
+          // @@protoc_insertion_point(builder_implements:weaviate.v1.BatchStreamReply.Started)
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.StartedOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_Start_descriptor;
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Started_descriptor;
         }
 
         @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_Start_fieldAccessorTable
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Started_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start.Builder.class);
+                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started.Builder.class);
         }
 
-        // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start.newBuilder()
+        // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started.newBuilder()
         private Builder() {
 
         }
@@ -6741,17 +6674,17 @@ public final class WeaviateProtoBatch {
         @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_Start_descriptor;
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Started_descriptor;
         }
 
         @java.lang.Override
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start getDefaultInstanceForType() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start.getDefaultInstance();
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started getDefaultInstanceForType() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started.getDefaultInstance();
         }
 
         @java.lang.Override
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start build() {
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start result = buildPartial();
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started build() {
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started result = buildPartial();
           if (!result.isInitialized()) {
             throw newUninitializedMessageException(result);
           }
@@ -6759,8 +6692,8 @@ public final class WeaviateProtoBatch {
         }
 
         @java.lang.Override
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start buildPartial() {
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start(this);
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started buildPartial() {
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started(this);
           onBuilt();
           return result;
         }
@@ -6799,16 +6732,16 @@ public final class WeaviateProtoBatch {
         }
         @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start) {
-            return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start)other);
+          if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started) {
+            return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started)other);
           } else {
             super.mergeFrom(other);
             return this;
           }
         }
 
-        public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start other) {
-          if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start.getDefaultInstance()) return this;
+        public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started other) {
+          if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started.getDefaultInstance()) return this;
           this.mergeUnknownFields(other.getUnknownFields());
           onChanged();
           return this;
@@ -6863,23 +6796,23 @@ public final class WeaviateProtoBatch {
         }
 
 
-        // @@protoc_insertion_point(builder_scope:weaviate.v1.BatchStreamMessage.Start)
+        // @@protoc_insertion_point(builder_scope:weaviate.v1.BatchStreamReply.Started)
       }
 
-      // @@protoc_insertion_point(class_scope:weaviate.v1.BatchStreamMessage.Start)
-      private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start DEFAULT_INSTANCE;
+      // @@protoc_insertion_point(class_scope:weaviate.v1.BatchStreamReply.Started)
+      private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started DEFAULT_INSTANCE;
       static {
-        DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start();
+        DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started();
       }
 
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start getDefaultInstance() {
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started getDefaultInstance() {
         return DEFAULT_INSTANCE;
       }
 
-      private static final com.google.protobuf.Parser<Start>
-          PARSER = new com.google.protobuf.AbstractParser<Start>() {
+      private static final com.google.protobuf.Parser<Started>
+          PARSER = new com.google.protobuf.AbstractParser<Started>() {
         @java.lang.Override
-        public Start parsePartialFrom(
+        public Started parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
@@ -6898,826 +6831,32 @@ public final class WeaviateProtoBatch {
         }
       };
 
-      public static com.google.protobuf.Parser<Start> parser() {
+      public static com.google.protobuf.Parser<Started> parser() {
         return PARSER;
       }
 
       @java.lang.Override
-      public com.google.protobuf.Parser<Start> getParserForType() {
+      public com.google.protobuf.Parser<Started> getParserForType() {
         return PARSER;
       }
 
       @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start getDefaultInstanceForType() {
-        return DEFAULT_INSTANCE;
-      }
-
-    }
-
-    public interface StopOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:weaviate.v1.BatchStreamMessage.Stop)
-        com.google.protobuf.MessageOrBuilder {
-    }
-    /**
-     * Protobuf type {@code weaviate.v1.BatchStreamMessage.Stop}
-     */
-    public static final class Stop extends
-        com.google.protobuf.GeneratedMessageV3 implements
-        // @@protoc_insertion_point(message_implements:weaviate.v1.BatchStreamMessage.Stop)
-        StopOrBuilder {
-    private static final long serialVersionUID = 0L;
-      // Use Stop.newBuilder() to construct.
-      private Stop(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-        super(builder);
-      }
-      private Stop() {
-      }
-
-      @java.lang.Override
-      @SuppressWarnings({"unused"})
-      protected java.lang.Object newInstance(
-          UnusedPrivateParameter unused) {
-        return new Stop();
-      }
-
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_Stop_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_Stop_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop.Builder.class);
-      }
-
-      private byte memoizedIsInitialized = -1;
-      @java.lang.Override
-      public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized == 1) return true;
-        if (isInitialized == 0) return false;
-
-        memoizedIsInitialized = 1;
-        return true;
-      }
-
-      @java.lang.Override
-      public void writeTo(com.google.protobuf.CodedOutputStream output)
-                          throws java.io.IOException {
-        getUnknownFields().writeTo(output);
-      }
-
-      @java.lang.Override
-      public int getSerializedSize() {
-        int size = memoizedSize;
-        if (size != -1) return size;
-
-        size = 0;
-        size += getUnknownFields().getSerializedSize();
-        memoizedSize = size;
-        return size;
-      }
-
-      @java.lang.Override
-      public boolean equals(final java.lang.Object obj) {
-        if (obj == this) {
-         return true;
-        }
-        if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop)) {
-          return super.equals(obj);
-        }
-        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop) obj;
-
-        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-        return true;
-      }
-
-      @java.lang.Override
-      public int hashCode() {
-        if (memoizedHashCode != 0) {
-          return memoizedHashCode;
-        }
-        int hash = 41;
-        hash = (19 * hash) + getDescriptor().hashCode();
-        hash = (29 * hash) + getUnknownFields().hashCode();
-        memoizedHashCode = hash;
-        return hash;
-      }
-
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop parseFrom(
-          java.nio.ByteBuffer data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop parseFrom(
-          java.nio.ByteBuffer data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop parseFrom(
-          com.google.protobuf.ByteString data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop parseFrom(
-          com.google.protobuf.ByteString data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop parseFrom(byte[] data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop parseFrom(
-          byte[] data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop parseFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input);
-      }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop parseFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input, extensionRegistry);
-      }
-
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop parseDelimitedFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseDelimitedWithIOException(PARSER, input);
-      }
-
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop parseDelimitedFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-      }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop parseFrom(
-          com.google.protobuf.CodedInputStream input)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input);
-      }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop parseFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input, extensionRegistry);
-      }
-
-      @java.lang.Override
-      public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder() {
-        return DEFAULT_INSTANCE.toBuilder();
-      }
-      public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop prototype) {
-        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-      }
-      @java.lang.Override
-      public Builder toBuilder() {
-        return this == DEFAULT_INSTANCE
-            ? new Builder() : new Builder().mergeFrom(this);
-      }
-
-      @java.lang.Override
-      protected Builder newBuilderForType(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        Builder builder = new Builder(parent);
-        return builder;
-      }
-      /**
-       * Protobuf type {@code weaviate.v1.BatchStreamMessage.Stop}
-       */
-      public static final class Builder extends
-          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-          // @@protoc_insertion_point(builder_implements:weaviate.v1.BatchStreamMessage.Stop)
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.StopOrBuilder {
-        public static final com.google.protobuf.Descriptors.Descriptor
-            getDescriptor() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_Stop_descriptor;
-        }
-
-        @java.lang.Override
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internalGetFieldAccessorTable() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_Stop_fieldAccessorTable
-              .ensureFieldAccessorsInitialized(
-                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop.Builder.class);
-        }
-
-        // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop.newBuilder()
-        private Builder() {
-
-        }
-
-        private Builder(
-            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-          super(parent);
-
-        }
-        @java.lang.Override
-        public Builder clear() {
-          super.clear();
-          return this;
-        }
-
-        @java.lang.Override
-        public com.google.protobuf.Descriptors.Descriptor
-            getDescriptorForType() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_Stop_descriptor;
-        }
-
-        @java.lang.Override
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop getDefaultInstanceForType() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop.getDefaultInstance();
-        }
-
-        @java.lang.Override
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop build() {
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop result = buildPartial();
-          if (!result.isInitialized()) {
-            throw newUninitializedMessageException(result);
-          }
-          return result;
-        }
-
-        @java.lang.Override
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop buildPartial() {
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop(this);
-          onBuilt();
-          return result;
-        }
-
-        @java.lang.Override
-        public Builder clone() {
-          return super.clone();
-        }
-        @java.lang.Override
-        public Builder setField(
-            com.google.protobuf.Descriptors.FieldDescriptor field,
-            java.lang.Object value) {
-          return super.setField(field, value);
-        }
-        @java.lang.Override
-        public Builder clearField(
-            com.google.protobuf.Descriptors.FieldDescriptor field) {
-          return super.clearField(field);
-        }
-        @java.lang.Override
-        public Builder clearOneof(
-            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-          return super.clearOneof(oneof);
-        }
-        @java.lang.Override
-        public Builder setRepeatedField(
-            com.google.protobuf.Descriptors.FieldDescriptor field,
-            int index, java.lang.Object value) {
-          return super.setRepeatedField(field, index, value);
-        }
-        @java.lang.Override
-        public Builder addRepeatedField(
-            com.google.protobuf.Descriptors.FieldDescriptor field,
-            java.lang.Object value) {
-          return super.addRepeatedField(field, value);
-        }
-        @java.lang.Override
-        public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop) {
-            return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop)other);
-          } else {
-            super.mergeFrom(other);
-            return this;
-          }
-        }
-
-        public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop other) {
-          if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop.getDefaultInstance()) return this;
-          this.mergeUnknownFields(other.getUnknownFields());
-          onChanged();
-          return this;
-        }
-
-        @java.lang.Override
-        public final boolean isInitialized() {
-          return true;
-        }
-
-        @java.lang.Override
-        public Builder mergeFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-          if (extensionRegistry == null) {
-            throw new java.lang.NullPointerException();
-          }
-          try {
-            boolean done = false;
-            while (!done) {
-              int tag = input.readTag();
-              switch (tag) {
-                case 0:
-                  done = true;
-                  break;
-                default: {
-                  if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                    done = true; // was an endgroup tag
-                  }
-                  break;
-                } // default:
-              } // switch (tag)
-            } // while (!done)
-          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            throw e.unwrapIOException();
-          } finally {
-            onChanged();
-          } // finally
-          return this;
-        }
-        @java.lang.Override
-        public final Builder setUnknownFields(
-            final com.google.protobuf.UnknownFieldSet unknownFields) {
-          return super.setUnknownFields(unknownFields);
-        }
-
-        @java.lang.Override
-        public final Builder mergeUnknownFields(
-            final com.google.protobuf.UnknownFieldSet unknownFields) {
-          return super.mergeUnknownFields(unknownFields);
-        }
-
-
-        // @@protoc_insertion_point(builder_scope:weaviate.v1.BatchStreamMessage.Stop)
-      }
-
-      // @@protoc_insertion_point(class_scope:weaviate.v1.BatchStreamMessage.Stop)
-      private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop DEFAULT_INSTANCE;
-      static {
-        DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop();
-      }
-
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-      }
-
-      private static final com.google.protobuf.Parser<Stop>
-          PARSER = new com.google.protobuf.AbstractParser<Stop>() {
-        @java.lang.Override
-        public Stop parsePartialFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-          Builder builder = newBuilder();
-          try {
-            builder.mergeFrom(input, extensionRegistry);
-          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            throw e.setUnfinishedMessage(builder.buildPartial());
-          } catch (com.google.protobuf.UninitializedMessageException e) {
-            throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-          } catch (java.io.IOException e) {
-            throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                .setUnfinishedMessage(builder.buildPartial());
-          }
-          return builder.buildPartial();
-        }
-      };
-
-      public static com.google.protobuf.Parser<Stop> parser() {
-        return PARSER;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Parser<Stop> getParserForType() {
-        return PARSER;
-      }
-
-      @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop getDefaultInstanceForType() {
-        return DEFAULT_INSTANCE;
-      }
-
-    }
-
-    public interface ShutdownOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:weaviate.v1.BatchStreamMessage.Shutdown)
-        com.google.protobuf.MessageOrBuilder {
-    }
-    /**
-     * Protobuf type {@code weaviate.v1.BatchStreamMessage.Shutdown}
-     */
-    public static final class Shutdown extends
-        com.google.protobuf.GeneratedMessageV3 implements
-        // @@protoc_insertion_point(message_implements:weaviate.v1.BatchStreamMessage.Shutdown)
-        ShutdownOrBuilder {
-    private static final long serialVersionUID = 0L;
-      // Use Shutdown.newBuilder() to construct.
-      private Shutdown(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-        super(builder);
-      }
-      private Shutdown() {
-      }
-
-      @java.lang.Override
-      @SuppressWarnings({"unused"})
-      protected java.lang.Object newInstance(
-          UnusedPrivateParameter unused) {
-        return new Shutdown();
-      }
-
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_Shutdown_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_Shutdown_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown.Builder.class);
-      }
-
-      private byte memoizedIsInitialized = -1;
-      @java.lang.Override
-      public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized == 1) return true;
-        if (isInitialized == 0) return false;
-
-        memoizedIsInitialized = 1;
-        return true;
-      }
-
-      @java.lang.Override
-      public void writeTo(com.google.protobuf.CodedOutputStream output)
-                          throws java.io.IOException {
-        getUnknownFields().writeTo(output);
-      }
-
-      @java.lang.Override
-      public int getSerializedSize() {
-        int size = memoizedSize;
-        if (size != -1) return size;
-
-        size = 0;
-        size += getUnknownFields().getSerializedSize();
-        memoizedSize = size;
-        return size;
-      }
-
-      @java.lang.Override
-      public boolean equals(final java.lang.Object obj) {
-        if (obj == this) {
-         return true;
-        }
-        if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown)) {
-          return super.equals(obj);
-        }
-        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown) obj;
-
-        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-        return true;
-      }
-
-      @java.lang.Override
-      public int hashCode() {
-        if (memoizedHashCode != 0) {
-          return memoizedHashCode;
-        }
-        int hash = 41;
-        hash = (19 * hash) + getDescriptor().hashCode();
-        hash = (29 * hash) + getUnknownFields().hashCode();
-        memoizedHashCode = hash;
-        return hash;
-      }
-
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown parseFrom(
-          java.nio.ByteBuffer data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown parseFrom(
-          java.nio.ByteBuffer data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown parseFrom(
-          com.google.protobuf.ByteString data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown parseFrom(
-          com.google.protobuf.ByteString data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown parseFrom(byte[] data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown parseFrom(
-          byte[] data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown parseFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input);
-      }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown parseFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input, extensionRegistry);
-      }
-
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown parseDelimitedFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseDelimitedWithIOException(PARSER, input);
-      }
-
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown parseDelimitedFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-      }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown parseFrom(
-          com.google.protobuf.CodedInputStream input)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input);
-      }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown parseFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input, extensionRegistry);
-      }
-
-      @java.lang.Override
-      public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder() {
-        return DEFAULT_INSTANCE.toBuilder();
-      }
-      public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown prototype) {
-        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-      }
-      @java.lang.Override
-      public Builder toBuilder() {
-        return this == DEFAULT_INSTANCE
-            ? new Builder() : new Builder().mergeFrom(this);
-      }
-
-      @java.lang.Override
-      protected Builder newBuilderForType(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        Builder builder = new Builder(parent);
-        return builder;
-      }
-      /**
-       * Protobuf type {@code weaviate.v1.BatchStreamMessage.Shutdown}
-       */
-      public static final class Builder extends
-          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-          // @@protoc_insertion_point(builder_implements:weaviate.v1.BatchStreamMessage.Shutdown)
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShutdownOrBuilder {
-        public static final com.google.protobuf.Descriptors.Descriptor
-            getDescriptor() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_Shutdown_descriptor;
-        }
-
-        @java.lang.Override
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internalGetFieldAccessorTable() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_Shutdown_fieldAccessorTable
-              .ensureFieldAccessorsInitialized(
-                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown.Builder.class);
-        }
-
-        // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown.newBuilder()
-        private Builder() {
-
-        }
-
-        private Builder(
-            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-          super(parent);
-
-        }
-        @java.lang.Override
-        public Builder clear() {
-          super.clear();
-          return this;
-        }
-
-        @java.lang.Override
-        public com.google.protobuf.Descriptors.Descriptor
-            getDescriptorForType() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_Shutdown_descriptor;
-        }
-
-        @java.lang.Override
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown getDefaultInstanceForType() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown.getDefaultInstance();
-        }
-
-        @java.lang.Override
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown build() {
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown result = buildPartial();
-          if (!result.isInitialized()) {
-            throw newUninitializedMessageException(result);
-          }
-          return result;
-        }
-
-        @java.lang.Override
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown buildPartial() {
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown(this);
-          onBuilt();
-          return result;
-        }
-
-        @java.lang.Override
-        public Builder clone() {
-          return super.clone();
-        }
-        @java.lang.Override
-        public Builder setField(
-            com.google.protobuf.Descriptors.FieldDescriptor field,
-            java.lang.Object value) {
-          return super.setField(field, value);
-        }
-        @java.lang.Override
-        public Builder clearField(
-            com.google.protobuf.Descriptors.FieldDescriptor field) {
-          return super.clearField(field);
-        }
-        @java.lang.Override
-        public Builder clearOneof(
-            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-          return super.clearOneof(oneof);
-        }
-        @java.lang.Override
-        public Builder setRepeatedField(
-            com.google.protobuf.Descriptors.FieldDescriptor field,
-            int index, java.lang.Object value) {
-          return super.setRepeatedField(field, index, value);
-        }
-        @java.lang.Override
-        public Builder addRepeatedField(
-            com.google.protobuf.Descriptors.FieldDescriptor field,
-            java.lang.Object value) {
-          return super.addRepeatedField(field, value);
-        }
-        @java.lang.Override
-        public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown) {
-            return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown)other);
-          } else {
-            super.mergeFrom(other);
-            return this;
-          }
-        }
-
-        public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown other) {
-          if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown.getDefaultInstance()) return this;
-          this.mergeUnknownFields(other.getUnknownFields());
-          onChanged();
-          return this;
-        }
-
-        @java.lang.Override
-        public final boolean isInitialized() {
-          return true;
-        }
-
-        @java.lang.Override
-        public Builder mergeFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-          if (extensionRegistry == null) {
-            throw new java.lang.NullPointerException();
-          }
-          try {
-            boolean done = false;
-            while (!done) {
-              int tag = input.readTag();
-              switch (tag) {
-                case 0:
-                  done = true;
-                  break;
-                default: {
-                  if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                    done = true; // was an endgroup tag
-                  }
-                  break;
-                } // default:
-              } // switch (tag)
-            } // while (!done)
-          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            throw e.unwrapIOException();
-          } finally {
-            onChanged();
-          } // finally
-          return this;
-        }
-        @java.lang.Override
-        public final Builder setUnknownFields(
-            final com.google.protobuf.UnknownFieldSet unknownFields) {
-          return super.setUnknownFields(unknownFields);
-        }
-
-        @java.lang.Override
-        public final Builder mergeUnknownFields(
-            final com.google.protobuf.UnknownFieldSet unknownFields) {
-          return super.mergeUnknownFields(unknownFields);
-        }
-
-
-        // @@protoc_insertion_point(builder_scope:weaviate.v1.BatchStreamMessage.Shutdown)
-      }
-
-      // @@protoc_insertion_point(class_scope:weaviate.v1.BatchStreamMessage.Shutdown)
-      private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown DEFAULT_INSTANCE;
-      static {
-        DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown();
-      }
-
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-      }
-
-      private static final com.google.protobuf.Parser<Shutdown>
-          PARSER = new com.google.protobuf.AbstractParser<Shutdown>() {
-        @java.lang.Override
-        public Shutdown parsePartialFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-          Builder builder = newBuilder();
-          try {
-            builder.mergeFrom(input, extensionRegistry);
-          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            throw e.setUnfinishedMessage(builder.buildPartial());
-          } catch (com.google.protobuf.UninitializedMessageException e) {
-            throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-          } catch (java.io.IOException e) {
-            throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                .setUnfinishedMessage(builder.buildPartial());
-          }
-          return builder.buildPartial();
-        }
-      };
-
-      public static com.google.protobuf.Parser<Shutdown> parser() {
-        return PARSER;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Parser<Shutdown> getParserForType() {
-        return PARSER;
-      }
-
-      @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown getDefaultInstanceForType() {
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
 
     }
 
     public interface ShuttingDownOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:weaviate.v1.BatchStreamMessage.ShuttingDown)
+        // @@protoc_insertion_point(interface_extends:weaviate.v1.BatchStreamReply.ShuttingDown)
         com.google.protobuf.MessageOrBuilder {
     }
     /**
-     * Protobuf type {@code weaviate.v1.BatchStreamMessage.ShuttingDown}
+     * Protobuf type {@code weaviate.v1.BatchStreamReply.ShuttingDown}
      */
     public static final class ShuttingDown extends
         com.google.protobuf.GeneratedMessageV3 implements
-        // @@protoc_insertion_point(message_implements:weaviate.v1.BatchStreamMessage.ShuttingDown)
+        // @@protoc_insertion_point(message_implements:weaviate.v1.BatchStreamReply.ShuttingDown)
         ShuttingDownOrBuilder {
     private static final long serialVersionUID = 0L;
       // Use ShuttingDown.newBuilder() to construct.
@@ -7736,15 +6875,15 @@ public final class WeaviateProtoBatch {
 
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_ShuttingDown_descriptor;
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_ShuttingDown_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_ShuttingDown_fieldAccessorTable
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_ShuttingDown_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown.Builder.class);
+                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown.Builder.class);
       }
 
       private byte memoizedIsInitialized = -1;
@@ -7780,10 +6919,10 @@ public final class WeaviateProtoBatch {
         if (obj == this) {
          return true;
         }
-        if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown)) {
+        if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown)) {
           return super.equals(obj);
         }
-        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown) obj;
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown) obj;
 
         if (!getUnknownFields().equals(other.getUnknownFields())) return false;
         return true;
@@ -7801,44 +6940,44 @@ public final class WeaviateProtoBatch {
         return hash;
       }
 
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown parseFrom(
           java.nio.ByteBuffer data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown parseFrom(
           java.nio.ByteBuffer data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown parseFrom(
           com.google.protobuf.ByteString data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown parseFrom(
           com.google.protobuf.ByteString data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown parseFrom(byte[] data)
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown parseFrom(byte[] data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown parseFrom(
           byte[] data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown parseFrom(java.io.InputStream input)
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown parseFrom(java.io.InputStream input)
           throws java.io.IOException {
         return com.google.protobuf.GeneratedMessageV3
             .parseWithIOException(PARSER, input);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown parseFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -7846,26 +6985,26 @@ public final class WeaviateProtoBatch {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown parseDelimitedFrom(java.io.InputStream input)
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
         return com.google.protobuf.GeneratedMessageV3
             .parseDelimitedWithIOException(PARSER, input);
       }
 
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown parseDelimitedFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown parseDelimitedFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return com.google.protobuf.GeneratedMessageV3
             .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown parseFrom(
           com.google.protobuf.CodedInputStream input)
           throws java.io.IOException {
         return com.google.protobuf.GeneratedMessageV3
             .parseWithIOException(PARSER, input);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown parseFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -7878,7 +7017,7 @@ public final class WeaviateProtoBatch {
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
       }
-      public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown prototype) {
+      public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
       @java.lang.Override
@@ -7894,26 +7033,26 @@ public final class WeaviateProtoBatch {
         return builder;
       }
       /**
-       * Protobuf type {@code weaviate.v1.BatchStreamMessage.ShuttingDown}
+       * Protobuf type {@code weaviate.v1.BatchStreamReply.ShuttingDown}
        */
       public static final class Builder extends
           com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-          // @@protoc_insertion_point(builder_implements:weaviate.v1.BatchStreamMessage.ShuttingDown)
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDownOrBuilder {
+          // @@protoc_insertion_point(builder_implements:weaviate.v1.BatchStreamReply.ShuttingDown)
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDownOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_ShuttingDown_descriptor;
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_ShuttingDown_descriptor;
         }
 
         @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_ShuttingDown_fieldAccessorTable
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_ShuttingDown_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown.Builder.class);
+                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown.Builder.class);
         }
 
-        // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown.newBuilder()
+        // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown.newBuilder()
         private Builder() {
 
         }
@@ -7932,17 +7071,17 @@ public final class WeaviateProtoBatch {
         @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_ShuttingDown_descriptor;
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_ShuttingDown_descriptor;
         }
 
         @java.lang.Override
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown getDefaultInstanceForType() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown.getDefaultInstance();
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown getDefaultInstanceForType() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown.getDefaultInstance();
         }
 
         @java.lang.Override
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown build() {
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown result = buildPartial();
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown build() {
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown result = buildPartial();
           if (!result.isInitialized()) {
             throw newUninitializedMessageException(result);
           }
@@ -7950,8 +7089,8 @@ public final class WeaviateProtoBatch {
         }
 
         @java.lang.Override
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown buildPartial() {
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown(this);
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown buildPartial() {
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown(this);
           onBuilt();
           return result;
         }
@@ -7990,16 +7129,16 @@ public final class WeaviateProtoBatch {
         }
         @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown) {
-            return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown)other);
+          if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown) {
+            return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown)other);
           } else {
             super.mergeFrom(other);
             return this;
           }
         }
 
-        public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown other) {
-          if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown.getDefaultInstance()) return this;
+        public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown other) {
+          if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown.getDefaultInstance()) return this;
           this.mergeUnknownFields(other.getUnknownFields());
           onChanged();
           return this;
@@ -8054,16 +7193,16 @@ public final class WeaviateProtoBatch {
         }
 
 
-        // @@protoc_insertion_point(builder_scope:weaviate.v1.BatchStreamMessage.ShuttingDown)
+        // @@protoc_insertion_point(builder_scope:weaviate.v1.BatchStreamReply.ShuttingDown)
       }
 
-      // @@protoc_insertion_point(class_scope:weaviate.v1.BatchStreamMessage.ShuttingDown)
-      private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown DEFAULT_INSTANCE;
+      // @@protoc_insertion_point(class_scope:weaviate.v1.BatchStreamReply.ShuttingDown)
+      private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown DEFAULT_INSTANCE;
       static {
-        DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown();
+        DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown();
       }
 
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown getDefaultInstance() {
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown getDefaultInstance() {
         return DEFAULT_INSTANCE;
       }
 
@@ -8099,169 +7238,49 @@ public final class WeaviateProtoBatch {
       }
 
       @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown getDefaultInstanceForType() {
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
 
     }
 
-    public interface ErrorOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:weaviate.v1.BatchStreamMessage.Error)
+    public interface ShutdownOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:weaviate.v1.BatchStreamReply.Shutdown)
         com.google.protobuf.MessageOrBuilder {
-
-      /**
-       * <code>string error = 1;</code>
-       * @return The error.
-       */
-      java.lang.String getError();
-      /**
-       * <code>string error = 1;</code>
-       * @return The bytes for error.
-       */
-      com.google.protobuf.ByteString
-          getErrorBytes();
-
-      /**
-       * <code>int32 index = 2;</code>
-       * @return The index.
-       */
-      int getIndex();
-
-      /**
-       * <code>bool is_retriable = 3;</code>
-       * @return The isRetriable.
-       */
-      boolean getIsRetriable();
-
-      /**
-       * <code>bool is_object = 4;</code>
-       * @return The isObject.
-       */
-      boolean getIsObject();
-
-      /**
-       * <code>bool is_reference = 5;</code>
-       * @return The isReference.
-       */
-      boolean getIsReference();
     }
     /**
-     * Protobuf type {@code weaviate.v1.BatchStreamMessage.Error}
+     * Protobuf type {@code weaviate.v1.BatchStreamReply.Shutdown}
      */
-    public static final class Error extends
+    public static final class Shutdown extends
         com.google.protobuf.GeneratedMessageV3 implements
-        // @@protoc_insertion_point(message_implements:weaviate.v1.BatchStreamMessage.Error)
-        ErrorOrBuilder {
+        // @@protoc_insertion_point(message_implements:weaviate.v1.BatchStreamReply.Shutdown)
+        ShutdownOrBuilder {
     private static final long serialVersionUID = 0L;
-      // Use Error.newBuilder() to construct.
-      private Error(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      // Use Shutdown.newBuilder() to construct.
+      private Shutdown(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
         super(builder);
       }
-      private Error() {
-        error_ = "";
+      private Shutdown() {
       }
 
       @java.lang.Override
       @SuppressWarnings({"unused"})
       protected java.lang.Object newInstance(
           UnusedPrivateParameter unused) {
-        return new Error();
+        return new Shutdown();
       }
 
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_Error_descriptor;
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Shutdown_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_Error_fieldAccessorTable
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Shutdown_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error.Builder.class);
-      }
-
-      public static final int ERROR_FIELD_NUMBER = 1;
-      @SuppressWarnings("serial")
-      private volatile java.lang.Object error_ = "";
-      /**
-       * <code>string error = 1;</code>
-       * @return The error.
-       */
-      @java.lang.Override
-      public java.lang.String getError() {
-        java.lang.Object ref = error_;
-        if (ref instanceof java.lang.String) {
-          return (java.lang.String) ref;
-        } else {
-          com.google.protobuf.ByteString bs = 
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          error_ = s;
-          return s;
-        }
-      }
-      /**
-       * <code>string error = 1;</code>
-       * @return The bytes for error.
-       */
-      @java.lang.Override
-      public com.google.protobuf.ByteString
-          getErrorBytes() {
-        java.lang.Object ref = error_;
-        if (ref instanceof java.lang.String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          error_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-
-      public static final int INDEX_FIELD_NUMBER = 2;
-      private int index_ = 0;
-      /**
-       * <code>int32 index = 2;</code>
-       * @return The index.
-       */
-      @java.lang.Override
-      public int getIndex() {
-        return index_;
-      }
-
-      public static final int IS_RETRIABLE_FIELD_NUMBER = 3;
-      private boolean isRetriable_ = false;
-      /**
-       * <code>bool is_retriable = 3;</code>
-       * @return The isRetriable.
-       */
-      @java.lang.Override
-      public boolean getIsRetriable() {
-        return isRetriable_;
-      }
-
-      public static final int IS_OBJECT_FIELD_NUMBER = 4;
-      private boolean isObject_ = false;
-      /**
-       * <code>bool is_object = 4;</code>
-       * @return The isObject.
-       */
-      @java.lang.Override
-      public boolean getIsObject() {
-        return isObject_;
-      }
-
-      public static final int IS_REFERENCE_FIELD_NUMBER = 5;
-      private boolean isReference_ = false;
-      /**
-       * <code>bool is_reference = 5;</code>
-       * @return The isReference.
-       */
-      @java.lang.Override
-      public boolean getIsReference() {
-        return isReference_;
+                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown.Builder.class);
       }
 
       private byte memoizedIsInitialized = -1;
@@ -8278,21 +7297,6 @@ public final class WeaviateProtoBatch {
       @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(error_)) {
-          com.google.protobuf.GeneratedMessageV3.writeString(output, 1, error_);
-        }
-        if (index_ != 0) {
-          output.writeInt32(2, index_);
-        }
-        if (isRetriable_ != false) {
-          output.writeBool(3, isRetriable_);
-        }
-        if (isObject_ != false) {
-          output.writeBool(4, isObject_);
-        }
-        if (isReference_ != false) {
-          output.writeBool(5, isReference_);
-        }
         getUnknownFields().writeTo(output);
       }
 
@@ -8302,25 +7306,6 @@ public final class WeaviateProtoBatch {
         if (size != -1) return size;
 
         size = 0;
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(error_)) {
-          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, error_);
-        }
-        if (index_ != 0) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeInt32Size(2, index_);
-        }
-        if (isRetriable_ != false) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeBoolSize(3, isRetriable_);
-        }
-        if (isObject_ != false) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeBoolSize(4, isObject_);
-        }
-        if (isReference_ != false) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeBoolSize(5, isReference_);
-        }
         size += getUnknownFields().getSerializedSize();
         memoizedSize = size;
         return size;
@@ -8331,21 +7316,11 @@ public final class WeaviateProtoBatch {
         if (obj == this) {
          return true;
         }
-        if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error)) {
+        if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown)) {
           return super.equals(obj);
         }
-        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error) obj;
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown) obj;
 
-        if (!getError()
-            .equals(other.getError())) return false;
-        if (getIndex()
-            != other.getIndex()) return false;
-        if (getIsRetriable()
-            != other.getIsRetriable()) return false;
-        if (getIsObject()
-            != other.getIsObject()) return false;
-        if (getIsReference()
-            != other.getIsReference()) return false;
         if (!getUnknownFields().equals(other.getUnknownFields())) return false;
         return true;
       }
@@ -8357,62 +7332,49 @@ public final class WeaviateProtoBatch {
         }
         int hash = 41;
         hash = (19 * hash) + getDescriptor().hashCode();
-        hash = (37 * hash) + ERROR_FIELD_NUMBER;
-        hash = (53 * hash) + getError().hashCode();
-        hash = (37 * hash) + INDEX_FIELD_NUMBER;
-        hash = (53 * hash) + getIndex();
-        hash = (37 * hash) + IS_RETRIABLE_FIELD_NUMBER;
-        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-            getIsRetriable());
-        hash = (37 * hash) + IS_OBJECT_FIELD_NUMBER;
-        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-            getIsObject());
-        hash = (37 * hash) + IS_REFERENCE_FIELD_NUMBER;
-        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-            getIsReference());
         hash = (29 * hash) + getUnknownFields().hashCode();
         memoizedHashCode = hash;
         return hash;
       }
 
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown parseFrom(
           java.nio.ByteBuffer data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown parseFrom(
           java.nio.ByteBuffer data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown parseFrom(
           com.google.protobuf.ByteString data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown parseFrom(
           com.google.protobuf.ByteString data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error parseFrom(byte[] data)
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown parseFrom(byte[] data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown parseFrom(
           byte[] data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error parseFrom(java.io.InputStream input)
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown parseFrom(java.io.InputStream input)
           throws java.io.IOException {
         return com.google.protobuf.GeneratedMessageV3
             .parseWithIOException(PARSER, input);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown parseFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -8420,26 +7382,26 @@ public final class WeaviateProtoBatch {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error parseDelimitedFrom(java.io.InputStream input)
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
         return com.google.protobuf.GeneratedMessageV3
             .parseDelimitedWithIOException(PARSER, input);
       }
 
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error parseDelimitedFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown parseDelimitedFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return com.google.protobuf.GeneratedMessageV3
             .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown parseFrom(
           com.google.protobuf.CodedInputStream input)
           throws java.io.IOException {
         return com.google.protobuf.GeneratedMessageV3
             .parseWithIOException(PARSER, input);
       }
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error parseFrom(
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown parseFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -8452,7 +7414,7 @@ public final class WeaviateProtoBatch {
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
       }
-      public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error prototype) {
+      public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
       @java.lang.Override
@@ -8468,26 +7430,585 @@ public final class WeaviateProtoBatch {
         return builder;
       }
       /**
-       * Protobuf type {@code weaviate.v1.BatchStreamMessage.Error}
+       * Protobuf type {@code weaviate.v1.BatchStreamReply.Shutdown}
        */
       public static final class Builder extends
           com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-          // @@protoc_insertion_point(builder_implements:weaviate.v1.BatchStreamMessage.Error)
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ErrorOrBuilder {
+          // @@protoc_insertion_point(builder_implements:weaviate.v1.BatchStreamReply.Shutdown)
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShutdownOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_Error_descriptor;
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Shutdown_descriptor;
         }
 
         @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_Error_fieldAccessorTable
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Shutdown_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error.Builder.class);
+                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown.Builder.class);
         }
 
-        // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error.newBuilder()
+        // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown.newBuilder()
+        private Builder() {
+
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          super(parent);
+
+        }
+        @java.lang.Override
+        public Builder clear() {
+          super.clear();
+          return this;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Shutdown_descriptor;
+        }
+
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown getDefaultInstanceForType() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown.getDefaultInstance();
+        }
+
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown build() {
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown buildPartial() {
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown(this);
+          onBuilt();
+          return result;
+        }
+
+        @java.lang.Override
+        public Builder clone() {
+          return super.clone();
+        }
+        @java.lang.Override
+        public Builder setField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return super.setField(field, value);
+        }
+        @java.lang.Override
+        public Builder clearField(
+            com.google.protobuf.Descriptors.FieldDescriptor field) {
+          return super.clearField(field);
+        }
+        @java.lang.Override
+        public Builder clearOneof(
+            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          return super.clearOneof(oneof);
+        }
+        @java.lang.Override
+        public Builder setRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            int index, java.lang.Object value) {
+          return super.setRepeatedField(field, index, value);
+        }
+        @java.lang.Override
+        public Builder addRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return super.addRepeatedField(field, value);
+        }
+        @java.lang.Override
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown) {
+            return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown other) {
+          if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown.getDefaultInstance()) return this;
+          this.mergeUnknownFields(other.getUnknownFields());
+          onChanged();
+          return this;
+        }
+
+        @java.lang.Override
+        public final boolean isInitialized() {
+          return true;
+        }
+
+        @java.lang.Override
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          if (extensionRegistry == null) {
+            throw new java.lang.NullPointerException();
+          }
+          try {
+            boolean done = false;
+            while (!done) {
+              int tag = input.readTag();
+              switch (tag) {
+                case 0:
+                  done = true;
+                  break;
+                default: {
+                  if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                    done = true; // was an endgroup tag
+                  }
+                  break;
+                } // default:
+              } // switch (tag)
+            } // while (!done)
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            throw e.unwrapIOException();
+          } finally {
+            onChanged();
+          } // finally
+          return this;
+        }
+        @java.lang.Override
+        public final Builder setUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.setUnknownFields(unknownFields);
+        }
+
+        @java.lang.Override
+        public final Builder mergeUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.mergeUnknownFields(unknownFields);
+        }
+
+
+        // @@protoc_insertion_point(builder_scope:weaviate.v1.BatchStreamReply.Shutdown)
+      }
+
+      // @@protoc_insertion_point(class_scope:weaviate.v1.BatchStreamReply.Shutdown)
+      private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown DEFAULT_INSTANCE;
+      static {
+        DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown();
+      }
+
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+      }
+
+      private static final com.google.protobuf.Parser<Shutdown>
+          PARSER = new com.google.protobuf.AbstractParser<Shutdown>() {
+        @java.lang.Override
+        public Shutdown parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          Builder builder = newBuilder();
+          try {
+            builder.mergeFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            throw e.setUnfinishedMessage(builder.buildPartial());
+          } catch (com.google.protobuf.UninitializedMessageException e) {
+            throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+          } catch (java.io.IOException e) {
+            throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                .setUnfinishedMessage(builder.buildPartial());
+          }
+          return builder.buildPartial();
+        }
+      };
+
+      public static com.google.protobuf.Parser<Shutdown> parser() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<Shutdown> getParserForType() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown getDefaultInstanceForType() {
+        return DEFAULT_INSTANCE;
+      }
+
+    }
+
+    public interface OutOfMemoryOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:weaviate.v1.BatchStreamReply.OutOfMemory)
+        com.google.protobuf.MessageOrBuilder {
+
+      /**
+       * <code>repeated string uuids = 1;</code>
+       * @return A list containing the uuids.
+       */
+      java.util.List<java.lang.String>
+          getUuidsList();
+      /**
+       * <code>repeated string uuids = 1;</code>
+       * @return The count of uuids.
+       */
+      int getUuidsCount();
+      /**
+       * <code>repeated string uuids = 1;</code>
+       * @param index The index of the element to return.
+       * @return The uuids at the given index.
+       */
+      java.lang.String getUuids(int index);
+      /**
+       * <code>repeated string uuids = 1;</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the uuids at the given index.
+       */
+      com.google.protobuf.ByteString
+          getUuidsBytes(int index);
+
+      /**
+       * <code>repeated string beacons = 2;</code>
+       * @return A list containing the beacons.
+       */
+      java.util.List<java.lang.String>
+          getBeaconsList();
+      /**
+       * <code>repeated string beacons = 2;</code>
+       * @return The count of beacons.
+       */
+      int getBeaconsCount();
+      /**
+       * <code>repeated string beacons = 2;</code>
+       * @param index The index of the element to return.
+       * @return The beacons at the given index.
+       */
+      java.lang.String getBeacons(int index);
+      /**
+       * <code>repeated string beacons = 2;</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the beacons at the given index.
+       */
+      com.google.protobuf.ByteString
+          getBeaconsBytes(int index);
+    }
+    /**
+     * Protobuf type {@code weaviate.v1.BatchStreamReply.OutOfMemory}
+     */
+    public static final class OutOfMemory extends
+        com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:weaviate.v1.BatchStreamReply.OutOfMemory)
+        OutOfMemoryOrBuilder {
+    private static final long serialVersionUID = 0L;
+      // Use OutOfMemory.newBuilder() to construct.
+      private OutOfMemory(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+        super(builder);
+      }
+      private OutOfMemory() {
+        uuids_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+        beacons_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+      }
+
+      @java.lang.Override
+      @SuppressWarnings({"unused"})
+      protected java.lang.Object newInstance(
+          UnusedPrivateParameter unused) {
+        return new OutOfMemory();
+      }
+
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_OutOfMemory_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_OutOfMemory_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory.Builder.class);
+      }
+
+      public static final int UUIDS_FIELD_NUMBER = 1;
+      @SuppressWarnings("serial")
+      private com.google.protobuf.LazyStringArrayList uuids_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      /**
+       * <code>repeated string uuids = 1;</code>
+       * @return A list containing the uuids.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getUuidsList() {
+        return uuids_;
+      }
+      /**
+       * <code>repeated string uuids = 1;</code>
+       * @return The count of uuids.
+       */
+      public int getUuidsCount() {
+        return uuids_.size();
+      }
+      /**
+       * <code>repeated string uuids = 1;</code>
+       * @param index The index of the element to return.
+       * @return The uuids at the given index.
+       */
+      public java.lang.String getUuids(int index) {
+        return uuids_.get(index);
+      }
+      /**
+       * <code>repeated string uuids = 1;</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the uuids at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getUuidsBytes(int index) {
+        return uuids_.getByteString(index);
+      }
+
+      public static final int BEACONS_FIELD_NUMBER = 2;
+      @SuppressWarnings("serial")
+      private com.google.protobuf.LazyStringArrayList beacons_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      /**
+       * <code>repeated string beacons = 2;</code>
+       * @return A list containing the beacons.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getBeaconsList() {
+        return beacons_;
+      }
+      /**
+       * <code>repeated string beacons = 2;</code>
+       * @return The count of beacons.
+       */
+      public int getBeaconsCount() {
+        return beacons_.size();
+      }
+      /**
+       * <code>repeated string beacons = 2;</code>
+       * @param index The index of the element to return.
+       * @return The beacons at the given index.
+       */
+      public java.lang.String getBeacons(int index) {
+        return beacons_.get(index);
+      }
+      /**
+       * <code>repeated string beacons = 2;</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the beacons at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getBeaconsBytes(int index) {
+        return beacons_.getByteString(index);
+      }
+
+      private byte memoizedIsInitialized = -1;
+      @java.lang.Override
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
+
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      @java.lang.Override
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        for (int i = 0; i < uuids_.size(); i++) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 1, uuids_.getRaw(i));
+        }
+        for (int i = 0; i < beacons_.size(); i++) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 2, beacons_.getRaw(i));
+        }
+        getUnknownFields().writeTo(output);
+      }
+
+      @java.lang.Override
+      public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        {
+          int dataSize = 0;
+          for (int i = 0; i < uuids_.size(); i++) {
+            dataSize += computeStringSizeNoTag(uuids_.getRaw(i));
+          }
+          size += dataSize;
+          size += 1 * getUuidsList().size();
+        }
+        {
+          int dataSize = 0;
+          for (int i = 0; i < beacons_.size(); i++) {
+            dataSize += computeStringSizeNoTag(beacons_.getRaw(i));
+          }
+          size += dataSize;
+          size += 1 * getBeaconsList().size();
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSize = size;
+        return size;
+      }
+
+      @java.lang.Override
+      public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+         return true;
+        }
+        if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory)) {
+          return super.equals(obj);
+        }
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory) obj;
+
+        if (!getUuidsList()
+            .equals(other.getUuidsList())) return false;
+        if (!getBeaconsList()
+            .equals(other.getBeaconsList())) return false;
+        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+        return true;
+      }
+
+      @java.lang.Override
+      public int hashCode() {
+        if (memoizedHashCode != 0) {
+          return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        if (getUuidsCount() > 0) {
+          hash = (37 * hash) + UUIDS_FIELD_NUMBER;
+          hash = (53 * hash) + getUuidsList().hashCode();
+        }
+        if (getBeaconsCount() > 0) {
+          hash = (37 * hash) + BEACONS_FIELD_NUMBER;
+          hash = (53 * hash) + getBeaconsList().hashCode();
+        }
+        hash = (29 * hash) + getUnknownFields().hashCode();
+        memoizedHashCode = hash;
+        return hash;
+      }
+
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory parseFrom(
+          java.nio.ByteBuffer data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory parseFrom(
+          java.nio.ByteBuffer data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input);
+      }
+
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+
+      @java.lang.Override
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder() {
+        return DEFAULT_INSTANCE.toBuilder();
+      }
+      public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory prototype) {
+        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      }
+      @java.lang.Override
+      public Builder toBuilder() {
+        return this == DEFAULT_INSTANCE
+            ? new Builder() : new Builder().mergeFrom(this);
+      }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * Protobuf type {@code weaviate.v1.BatchStreamReply.OutOfMemory}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:weaviate.v1.BatchStreamReply.OutOfMemory)
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemoryOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_OutOfMemory_descriptor;
+        }
+
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_OutOfMemory_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory.Builder.class);
+        }
+
+        // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory.newBuilder()
         private Builder() {
 
         }
@@ -8501,28 +8022,27 @@ public final class WeaviateProtoBatch {
         public Builder clear() {
           super.clear();
           bitField0_ = 0;
-          error_ = "";
-          index_ = 0;
-          isRetriable_ = false;
-          isObject_ = false;
-          isReference_ = false;
+          uuids_ =
+              com.google.protobuf.LazyStringArrayList.emptyList();
+          beacons_ =
+              com.google.protobuf.LazyStringArrayList.emptyList();
           return this;
         }
 
         @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_Error_descriptor;
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_OutOfMemory_descriptor;
         }
 
         @java.lang.Override
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error getDefaultInstanceForType() {
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error.getDefaultInstance();
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory getDefaultInstanceForType() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory.getDefaultInstance();
         }
 
         @java.lang.Override
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error build() {
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error result = buildPartial();
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory build() {
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory result = buildPartial();
           if (!result.isInitialized()) {
             throw newUninitializedMessageException(result);
           }
@@ -8530,29 +8050,22 @@ public final class WeaviateProtoBatch {
         }
 
         @java.lang.Override
-        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error buildPartial() {
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error(this);
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory buildPartial() {
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory(this);
           if (bitField0_ != 0) { buildPartial0(result); }
           onBuilt();
           return result;
         }
 
-        private void buildPartial0(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error result) {
+        private void buildPartial0(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory result) {
           int from_bitField0_ = bitField0_;
           if (((from_bitField0_ & 0x00000001) != 0)) {
-            result.error_ = error_;
+            uuids_.makeImmutable();
+            result.uuids_ = uuids_;
           }
           if (((from_bitField0_ & 0x00000002) != 0)) {
-            result.index_ = index_;
-          }
-          if (((from_bitField0_ & 0x00000004) != 0)) {
-            result.isRetriable_ = isRetriable_;
-          }
-          if (((from_bitField0_ & 0x00000008) != 0)) {
-            result.isObject_ = isObject_;
-          }
-          if (((from_bitField0_ & 0x00000010) != 0)) {
-            result.isReference_ = isReference_;
+            beacons_.makeImmutable();
+            result.beacons_ = beacons_;
           }
         }
 
@@ -8590,32 +8103,35 @@ public final class WeaviateProtoBatch {
         }
         @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error) {
-            return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error)other);
+          if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory) {
+            return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory)other);
           } else {
             super.mergeFrom(other);
             return this;
           }
         }
 
-        public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error other) {
-          if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error.getDefaultInstance()) return this;
-          if (!other.getError().isEmpty()) {
-            error_ = other.error_;
-            bitField0_ |= 0x00000001;
+        public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory other) {
+          if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory.getDefaultInstance()) return this;
+          if (!other.uuids_.isEmpty()) {
+            if (uuids_.isEmpty()) {
+              uuids_ = other.uuids_;
+              bitField0_ |= 0x00000001;
+            } else {
+              ensureUuidsIsMutable();
+              uuids_.addAll(other.uuids_);
+            }
             onChanged();
           }
-          if (other.getIndex() != 0) {
-            setIndex(other.getIndex());
-          }
-          if (other.getIsRetriable() != false) {
-            setIsRetriable(other.getIsRetriable());
-          }
-          if (other.getIsObject() != false) {
-            setIsObject(other.getIsObject());
-          }
-          if (other.getIsReference() != false) {
-            setIsReference(other.getIsReference());
+          if (!other.beacons_.isEmpty()) {
+            if (beacons_.isEmpty()) {
+              beacons_ = other.beacons_;
+              bitField0_ |= 0x00000002;
+            } else {
+              ensureBeaconsIsMutable();
+              beacons_.addAll(other.beacons_);
+            }
+            onChanged();
           }
           this.mergeUnknownFields(other.getUnknownFields());
           onChanged();
@@ -8644,30 +8160,17 @@ public final class WeaviateProtoBatch {
                   done = true;
                   break;
                 case 10: {
-                  error_ = input.readStringRequireUtf8();
-                  bitField0_ |= 0x00000001;
+                  java.lang.String s = input.readStringRequireUtf8();
+                  ensureUuidsIsMutable();
+                  uuids_.add(s);
                   break;
                 } // case 10
-                case 16: {
-                  index_ = input.readInt32();
-                  bitField0_ |= 0x00000002;
+                case 18: {
+                  java.lang.String s = input.readStringRequireUtf8();
+                  ensureBeaconsIsMutable();
+                  beacons_.add(s);
                   break;
-                } // case 16
-                case 24: {
-                  isRetriable_ = input.readBool();
-                  bitField0_ |= 0x00000004;
-                  break;
-                } // case 24
-                case 32: {
-                  isObject_ = input.readBool();
-                  bitField0_ |= 0x00000008;
-                  break;
-                } // case 32
-                case 40: {
-                  isReference_ = input.readBool();
-                  bitField0_ |= 0x00000010;
-                  break;
-                } // case 40
+                } // case 18
                 default: {
                   if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                     done = true; // was an endgroup tag
@@ -8685,202 +8188,224 @@ public final class WeaviateProtoBatch {
         }
         private int bitField0_;
 
-        private java.lang.Object error_ = "";
-        /**
-         * <code>string error = 1;</code>
-         * @return The error.
-         */
-        public java.lang.String getError() {
-          java.lang.Object ref = error_;
-          if (!(ref instanceof java.lang.String)) {
-            com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-            java.lang.String s = bs.toStringUtf8();
-            error_ = s;
-            return s;
-          } else {
-            return (java.lang.String) ref;
+        private com.google.protobuf.LazyStringArrayList uuids_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+        private void ensureUuidsIsMutable() {
+          if (!uuids_.isModifiable()) {
+            uuids_ = new com.google.protobuf.LazyStringArrayList(uuids_);
           }
+          bitField0_ |= 0x00000001;
         }
         /**
-         * <code>string error = 1;</code>
-         * @return The bytes for error.
+         * <code>repeated string uuids = 1;</code>
+         * @return A list containing the uuids.
+         */
+        public com.google.protobuf.ProtocolStringList
+            getUuidsList() {
+          uuids_.makeImmutable();
+          return uuids_;
+        }
+        /**
+         * <code>repeated string uuids = 1;</code>
+         * @return The count of uuids.
+         */
+        public int getUuidsCount() {
+          return uuids_.size();
+        }
+        /**
+         * <code>repeated string uuids = 1;</code>
+         * @param index The index of the element to return.
+         * @return The uuids at the given index.
+         */
+        public java.lang.String getUuids(int index) {
+          return uuids_.get(index);
+        }
+        /**
+         * <code>repeated string uuids = 1;</code>
+         * @param index The index of the value to return.
+         * @return The bytes of the uuids at the given index.
          */
         public com.google.protobuf.ByteString
-            getErrorBytes() {
-          java.lang.Object ref = error_;
-          if (ref instanceof String) {
-            com.google.protobuf.ByteString b = 
-                com.google.protobuf.ByteString.copyFromUtf8(
-                    (java.lang.String) ref);
-            error_ = b;
-            return b;
-          } else {
-            return (com.google.protobuf.ByteString) ref;
-          }
+            getUuidsBytes(int index) {
+          return uuids_.getByteString(index);
         }
         /**
-         * <code>string error = 1;</code>
-         * @param value The error to set.
+         * <code>repeated string uuids = 1;</code>
+         * @param index The index to set the value at.
+         * @param value The uuids to set.
          * @return This builder for chaining.
          */
-        public Builder setError(
-            java.lang.String value) {
+        public Builder setUuids(
+            int index, java.lang.String value) {
           if (value == null) { throw new NullPointerException(); }
-          error_ = value;
+          ensureUuidsIsMutable();
+          uuids_.set(index, value);
           bitField0_ |= 0x00000001;
           onChanged();
           return this;
         }
         /**
-         * <code>string error = 1;</code>
+         * <code>repeated string uuids = 1;</code>
+         * @param value The uuids to add.
          * @return This builder for chaining.
          */
-        public Builder clearError() {
-          error_ = getDefaultInstance().getError();
-          bitField0_ = (bitField0_ & ~0x00000001);
+        public Builder addUuids(
+            java.lang.String value) {
+          if (value == null) { throw new NullPointerException(); }
+          ensureUuidsIsMutable();
+          uuids_.add(value);
+          bitField0_ |= 0x00000001;
           onChanged();
           return this;
         }
         /**
-         * <code>string error = 1;</code>
-         * @param value The bytes for error to set.
+         * <code>repeated string uuids = 1;</code>
+         * @param values The uuids to add.
          * @return This builder for chaining.
          */
-        public Builder setErrorBytes(
+        public Builder addAllUuids(
+            java.lang.Iterable<java.lang.String> values) {
+          ensureUuidsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, uuids_);
+          bitField0_ |= 0x00000001;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string uuids = 1;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearUuids() {
+          uuids_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string uuids = 1;</code>
+         * @param value The bytes of the uuids to add.
+         * @return This builder for chaining.
+         */
+        public Builder addUuidsBytes(
             com.google.protobuf.ByteString value) {
           if (value == null) { throw new NullPointerException(); }
           checkByteStringIsUtf8(value);
-          error_ = value;
+          ensureUuidsIsMutable();
+          uuids_.add(value);
           bitField0_ |= 0x00000001;
           onChanged();
           return this;
         }
 
-        private int index_ ;
-        /**
-         * <code>int32 index = 2;</code>
-         * @return The index.
-         */
-        @java.lang.Override
-        public int getIndex() {
-          return index_;
+        private com.google.protobuf.LazyStringArrayList beacons_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+        private void ensureBeaconsIsMutable() {
+          if (!beacons_.isModifiable()) {
+            beacons_ = new com.google.protobuf.LazyStringArrayList(beacons_);
+          }
+          bitField0_ |= 0x00000002;
         }
         /**
-         * <code>int32 index = 2;</code>
-         * @param value The index to set.
+         * <code>repeated string beacons = 2;</code>
+         * @return A list containing the beacons.
+         */
+        public com.google.protobuf.ProtocolStringList
+            getBeaconsList() {
+          beacons_.makeImmutable();
+          return beacons_;
+        }
+        /**
+         * <code>repeated string beacons = 2;</code>
+         * @return The count of beacons.
+         */
+        public int getBeaconsCount() {
+          return beacons_.size();
+        }
+        /**
+         * <code>repeated string beacons = 2;</code>
+         * @param index The index of the element to return.
+         * @return The beacons at the given index.
+         */
+        public java.lang.String getBeacons(int index) {
+          return beacons_.get(index);
+        }
+        /**
+         * <code>repeated string beacons = 2;</code>
+         * @param index The index of the value to return.
+         * @return The bytes of the beacons at the given index.
+         */
+        public com.google.protobuf.ByteString
+            getBeaconsBytes(int index) {
+          return beacons_.getByteString(index);
+        }
+        /**
+         * <code>repeated string beacons = 2;</code>
+         * @param index The index to set the value at.
+         * @param value The beacons to set.
          * @return This builder for chaining.
          */
-        public Builder setIndex(int value) {
-
-          index_ = value;
+        public Builder setBeacons(
+            int index, java.lang.String value) {
+          if (value == null) { throw new NullPointerException(); }
+          ensureBeaconsIsMutable();
+          beacons_.set(index, value);
           bitField0_ |= 0x00000002;
           onChanged();
           return this;
         }
         /**
-         * <code>int32 index = 2;</code>
+         * <code>repeated string beacons = 2;</code>
+         * @param value The beacons to add.
          * @return This builder for chaining.
          */
-        public Builder clearIndex() {
-          bitField0_ = (bitField0_ & ~0x00000002);
-          index_ = 0;
-          onChanged();
-          return this;
-        }
-
-        private boolean isRetriable_ ;
-        /**
-         * <code>bool is_retriable = 3;</code>
-         * @return The isRetriable.
-         */
-        @java.lang.Override
-        public boolean getIsRetriable() {
-          return isRetriable_;
-        }
-        /**
-         * <code>bool is_retriable = 3;</code>
-         * @param value The isRetriable to set.
-         * @return This builder for chaining.
-         */
-        public Builder setIsRetriable(boolean value) {
-
-          isRetriable_ = value;
-          bitField0_ |= 0x00000004;
+        public Builder addBeacons(
+            java.lang.String value) {
+          if (value == null) { throw new NullPointerException(); }
+          ensureBeaconsIsMutable();
+          beacons_.add(value);
+          bitField0_ |= 0x00000002;
           onChanged();
           return this;
         }
         /**
-         * <code>bool is_retriable = 3;</code>
+         * <code>repeated string beacons = 2;</code>
+         * @param values The beacons to add.
          * @return This builder for chaining.
          */
-        public Builder clearIsRetriable() {
-          bitField0_ = (bitField0_ & ~0x00000004);
-          isRetriable_ = false;
-          onChanged();
-          return this;
-        }
-
-        private boolean isObject_ ;
-        /**
-         * <code>bool is_object = 4;</code>
-         * @return The isObject.
-         */
-        @java.lang.Override
-        public boolean getIsObject() {
-          return isObject_;
-        }
-        /**
-         * <code>bool is_object = 4;</code>
-         * @param value The isObject to set.
-         * @return This builder for chaining.
-         */
-        public Builder setIsObject(boolean value) {
-
-          isObject_ = value;
-          bitField0_ |= 0x00000008;
+        public Builder addAllBeacons(
+            java.lang.Iterable<java.lang.String> values) {
+          ensureBeaconsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, beacons_);
+          bitField0_ |= 0x00000002;
           onChanged();
           return this;
         }
         /**
-         * <code>bool is_object = 4;</code>
+         * <code>repeated string beacons = 2;</code>
          * @return This builder for chaining.
          */
-        public Builder clearIsObject() {
-          bitField0_ = (bitField0_ & ~0x00000008);
-          isObject_ = false;
-          onChanged();
-          return this;
-        }
-
-        private boolean isReference_ ;
-        /**
-         * <code>bool is_reference = 5;</code>
-         * @return The isReference.
-         */
-        @java.lang.Override
-        public boolean getIsReference() {
-          return isReference_;
-        }
-        /**
-         * <code>bool is_reference = 5;</code>
-         * @param value The isReference to set.
-         * @return This builder for chaining.
-         */
-        public Builder setIsReference(boolean value) {
-
-          isReference_ = value;
-          bitField0_ |= 0x00000010;
+        public Builder clearBeacons() {
+          beacons_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);;
           onChanged();
           return this;
         }
         /**
-         * <code>bool is_reference = 5;</code>
+         * <code>repeated string beacons = 2;</code>
+         * @param value The bytes of the beacons to add.
          * @return This builder for chaining.
          */
-        public Builder clearIsReference() {
-          bitField0_ = (bitField0_ & ~0x00000010);
-          isReference_ = false;
+        public Builder addBeaconsBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) { throw new NullPointerException(); }
+          checkByteStringIsUtf8(value);
+          ensureBeaconsIsMutable();
+          beacons_.add(value);
+          bitField0_ |= 0x00000002;
           onChanged();
           return this;
         }
@@ -8897,23 +8422,23 @@ public final class WeaviateProtoBatch {
         }
 
 
-        // @@protoc_insertion_point(builder_scope:weaviate.v1.BatchStreamMessage.Error)
+        // @@protoc_insertion_point(builder_scope:weaviate.v1.BatchStreamReply.OutOfMemory)
       }
 
-      // @@protoc_insertion_point(class_scope:weaviate.v1.BatchStreamMessage.Error)
-      private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error DEFAULT_INSTANCE;
+      // @@protoc_insertion_point(class_scope:weaviate.v1.BatchStreamReply.OutOfMemory)
+      private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory DEFAULT_INSTANCE;
       static {
-        DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error();
+        DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory();
       }
 
-      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error getDefaultInstance() {
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory getDefaultInstance() {
         return DEFAULT_INSTANCE;
       }
 
-      private static final com.google.protobuf.Parser<Error>
-          PARSER = new com.google.protobuf.AbstractParser<Error>() {
+      private static final com.google.protobuf.Parser<OutOfMemory>
+          PARSER = new com.google.protobuf.AbstractParser<OutOfMemory>() {
         @java.lang.Override
-        public Error parsePartialFrom(
+        public OutOfMemory parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
@@ -8932,17 +8457,4351 @@ public final class WeaviateProtoBatch {
         }
       };
 
-      public static com.google.protobuf.Parser<Error> parser() {
+      public static com.google.protobuf.Parser<OutOfMemory> parser() {
         return PARSER;
       }
 
       @java.lang.Override
-      public com.google.protobuf.Parser<Error> getParserForType() {
+      public com.google.protobuf.Parser<OutOfMemory> getParserForType() {
         return PARSER;
       }
 
       @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error getDefaultInstanceForType() {
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory getDefaultInstanceForType() {
+        return DEFAULT_INSTANCE;
+      }
+
+    }
+
+    public interface BackoffOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:weaviate.v1.BatchStreamReply.Backoff)
+        com.google.protobuf.MessageOrBuilder {
+
+      /**
+       * <code>int32 batch_size = 1;</code>
+       * @return The batchSize.
+       */
+      int getBatchSize();
+    }
+    /**
+     * Protobuf type {@code weaviate.v1.BatchStreamReply.Backoff}
+     */
+    public static final class Backoff extends
+        com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:weaviate.v1.BatchStreamReply.Backoff)
+        BackoffOrBuilder {
+    private static final long serialVersionUID = 0L;
+      // Use Backoff.newBuilder() to construct.
+      private Backoff(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+        super(builder);
+      }
+      private Backoff() {
+      }
+
+      @java.lang.Override
+      @SuppressWarnings({"unused"})
+      protected java.lang.Object newInstance(
+          UnusedPrivateParameter unused) {
+        return new Backoff();
+      }
+
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Backoff_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Backoff_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff.Builder.class);
+      }
+
+      public static final int BATCH_SIZE_FIELD_NUMBER = 1;
+      private int batchSize_ = 0;
+      /**
+       * <code>int32 batch_size = 1;</code>
+       * @return The batchSize.
+       */
+      @java.lang.Override
+      public int getBatchSize() {
+        return batchSize_;
+      }
+
+      private byte memoizedIsInitialized = -1;
+      @java.lang.Override
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
+
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      @java.lang.Override
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        if (batchSize_ != 0) {
+          output.writeInt32(1, batchSize_);
+        }
+        getUnknownFields().writeTo(output);
+      }
+
+      @java.lang.Override
+      public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (batchSize_ != 0) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt32Size(1, batchSize_);
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSize = size;
+        return size;
+      }
+
+      @java.lang.Override
+      public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+         return true;
+        }
+        if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff)) {
+          return super.equals(obj);
+        }
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff) obj;
+
+        if (getBatchSize()
+            != other.getBatchSize()) return false;
+        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+        return true;
+      }
+
+      @java.lang.Override
+      public int hashCode() {
+        if (memoizedHashCode != 0) {
+          return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (37 * hash) + BATCH_SIZE_FIELD_NUMBER;
+        hash = (53 * hash) + getBatchSize();
+        hash = (29 * hash) + getUnknownFields().hashCode();
+        memoizedHashCode = hash;
+        return hash;
+      }
+
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff parseFrom(
+          java.nio.ByteBuffer data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff parseFrom(
+          java.nio.ByteBuffer data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input);
+      }
+
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+
+      @java.lang.Override
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder() {
+        return DEFAULT_INSTANCE.toBuilder();
+      }
+      public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff prototype) {
+        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      }
+      @java.lang.Override
+      public Builder toBuilder() {
+        return this == DEFAULT_INSTANCE
+            ? new Builder() : new Builder().mergeFrom(this);
+      }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * Protobuf type {@code weaviate.v1.BatchStreamReply.Backoff}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:weaviate.v1.BatchStreamReply.Backoff)
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.BackoffOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Backoff_descriptor;
+        }
+
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Backoff_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff.Builder.class);
+        }
+
+        // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff.newBuilder()
+        private Builder() {
+
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          super(parent);
+
+        }
+        @java.lang.Override
+        public Builder clear() {
+          super.clear();
+          bitField0_ = 0;
+          batchSize_ = 0;
+          return this;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Backoff_descriptor;
+        }
+
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff getDefaultInstanceForType() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff.getDefaultInstance();
+        }
+
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff build() {
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff buildPartial() {
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff(this);
+          if (bitField0_ != 0) { buildPartial0(result); }
+          onBuilt();
+          return result;
+        }
+
+        private void buildPartial0(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff result) {
+          int from_bitField0_ = bitField0_;
+          if (((from_bitField0_ & 0x00000001) != 0)) {
+            result.batchSize_ = batchSize_;
+          }
+        }
+
+        @java.lang.Override
+        public Builder clone() {
+          return super.clone();
+        }
+        @java.lang.Override
+        public Builder setField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return super.setField(field, value);
+        }
+        @java.lang.Override
+        public Builder clearField(
+            com.google.protobuf.Descriptors.FieldDescriptor field) {
+          return super.clearField(field);
+        }
+        @java.lang.Override
+        public Builder clearOneof(
+            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          return super.clearOneof(oneof);
+        }
+        @java.lang.Override
+        public Builder setRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            int index, java.lang.Object value) {
+          return super.setRepeatedField(field, index, value);
+        }
+        @java.lang.Override
+        public Builder addRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return super.addRepeatedField(field, value);
+        }
+        @java.lang.Override
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff) {
+            return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff other) {
+          if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff.getDefaultInstance()) return this;
+          if (other.getBatchSize() != 0) {
+            setBatchSize(other.getBatchSize());
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          onChanged();
+          return this;
+        }
+
+        @java.lang.Override
+        public final boolean isInitialized() {
+          return true;
+        }
+
+        @java.lang.Override
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          if (extensionRegistry == null) {
+            throw new java.lang.NullPointerException();
+          }
+          try {
+            boolean done = false;
+            while (!done) {
+              int tag = input.readTag();
+              switch (tag) {
+                case 0:
+                  done = true;
+                  break;
+                case 8: {
+                  batchSize_ = input.readInt32();
+                  bitField0_ |= 0x00000001;
+                  break;
+                } // case 8
+                default: {
+                  if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                    done = true; // was an endgroup tag
+                  }
+                  break;
+                } // default:
+              } // switch (tag)
+            } // while (!done)
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            throw e.unwrapIOException();
+          } finally {
+            onChanged();
+          } // finally
+          return this;
+        }
+        private int bitField0_;
+
+        private int batchSize_ ;
+        /**
+         * <code>int32 batch_size = 1;</code>
+         * @return The batchSize.
+         */
+        @java.lang.Override
+        public int getBatchSize() {
+          return batchSize_;
+        }
+        /**
+         * <code>int32 batch_size = 1;</code>
+         * @param value The batchSize to set.
+         * @return This builder for chaining.
+         */
+        public Builder setBatchSize(int value) {
+
+          batchSize_ = value;
+          bitField0_ |= 0x00000001;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>int32 batch_size = 1;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearBatchSize() {
+          bitField0_ = (bitField0_ & ~0x00000001);
+          batchSize_ = 0;
+          onChanged();
+          return this;
+        }
+        @java.lang.Override
+        public final Builder setUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.setUnknownFields(unknownFields);
+        }
+
+        @java.lang.Override
+        public final Builder mergeUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.mergeUnknownFields(unknownFields);
+        }
+
+
+        // @@protoc_insertion_point(builder_scope:weaviate.v1.BatchStreamReply.Backoff)
+      }
+
+      // @@protoc_insertion_point(class_scope:weaviate.v1.BatchStreamReply.Backoff)
+      private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff DEFAULT_INSTANCE;
+      static {
+        DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff();
+      }
+
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+      }
+
+      private static final com.google.protobuf.Parser<Backoff>
+          PARSER = new com.google.protobuf.AbstractParser<Backoff>() {
+        @java.lang.Override
+        public Backoff parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          Builder builder = newBuilder();
+          try {
+            builder.mergeFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            throw e.setUnfinishedMessage(builder.buildPartial());
+          } catch (com.google.protobuf.UninitializedMessageException e) {
+            throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+          } catch (java.io.IOException e) {
+            throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                .setUnfinishedMessage(builder.buildPartial());
+          }
+          return builder.buildPartial();
+        }
+      };
+
+      public static com.google.protobuf.Parser<Backoff> parser() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<Backoff> getParserForType() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff getDefaultInstanceForType() {
+        return DEFAULT_INSTANCE;
+      }
+
+    }
+
+    public interface AcksOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:weaviate.v1.BatchStreamReply.Acks)
+        com.google.protobuf.MessageOrBuilder {
+
+      /**
+       * <code>repeated string uuids = 1;</code>
+       * @return A list containing the uuids.
+       */
+      java.util.List<java.lang.String>
+          getUuidsList();
+      /**
+       * <code>repeated string uuids = 1;</code>
+       * @return The count of uuids.
+       */
+      int getUuidsCount();
+      /**
+       * <code>repeated string uuids = 1;</code>
+       * @param index The index of the element to return.
+       * @return The uuids at the given index.
+       */
+      java.lang.String getUuids(int index);
+      /**
+       * <code>repeated string uuids = 1;</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the uuids at the given index.
+       */
+      com.google.protobuf.ByteString
+          getUuidsBytes(int index);
+
+      /**
+       * <code>repeated string beacons = 2;</code>
+       * @return A list containing the beacons.
+       */
+      java.util.List<java.lang.String>
+          getBeaconsList();
+      /**
+       * <code>repeated string beacons = 2;</code>
+       * @return The count of beacons.
+       */
+      int getBeaconsCount();
+      /**
+       * <code>repeated string beacons = 2;</code>
+       * @param index The index of the element to return.
+       * @return The beacons at the given index.
+       */
+      java.lang.String getBeacons(int index);
+      /**
+       * <code>repeated string beacons = 2;</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the beacons at the given index.
+       */
+      com.google.protobuf.ByteString
+          getBeaconsBytes(int index);
+    }
+    /**
+     * Protobuf type {@code weaviate.v1.BatchStreamReply.Acks}
+     */
+    public static final class Acks extends
+        com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:weaviate.v1.BatchStreamReply.Acks)
+        AcksOrBuilder {
+    private static final long serialVersionUID = 0L;
+      // Use Acks.newBuilder() to construct.
+      private Acks(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+        super(builder);
+      }
+      private Acks() {
+        uuids_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+        beacons_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+      }
+
+      @java.lang.Override
+      @SuppressWarnings({"unused"})
+      protected java.lang.Object newInstance(
+          UnusedPrivateParameter unused) {
+        return new Acks();
+      }
+
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Acks_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Acks_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks.Builder.class);
+      }
+
+      public static final int UUIDS_FIELD_NUMBER = 1;
+      @SuppressWarnings("serial")
+      private com.google.protobuf.LazyStringArrayList uuids_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      /**
+       * <code>repeated string uuids = 1;</code>
+       * @return A list containing the uuids.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getUuidsList() {
+        return uuids_;
+      }
+      /**
+       * <code>repeated string uuids = 1;</code>
+       * @return The count of uuids.
+       */
+      public int getUuidsCount() {
+        return uuids_.size();
+      }
+      /**
+       * <code>repeated string uuids = 1;</code>
+       * @param index The index of the element to return.
+       * @return The uuids at the given index.
+       */
+      public java.lang.String getUuids(int index) {
+        return uuids_.get(index);
+      }
+      /**
+       * <code>repeated string uuids = 1;</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the uuids at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getUuidsBytes(int index) {
+        return uuids_.getByteString(index);
+      }
+
+      public static final int BEACONS_FIELD_NUMBER = 2;
+      @SuppressWarnings("serial")
+      private com.google.protobuf.LazyStringArrayList beacons_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      /**
+       * <code>repeated string beacons = 2;</code>
+       * @return A list containing the beacons.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getBeaconsList() {
+        return beacons_;
+      }
+      /**
+       * <code>repeated string beacons = 2;</code>
+       * @return The count of beacons.
+       */
+      public int getBeaconsCount() {
+        return beacons_.size();
+      }
+      /**
+       * <code>repeated string beacons = 2;</code>
+       * @param index The index of the element to return.
+       * @return The beacons at the given index.
+       */
+      public java.lang.String getBeacons(int index) {
+        return beacons_.get(index);
+      }
+      /**
+       * <code>repeated string beacons = 2;</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the beacons at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getBeaconsBytes(int index) {
+        return beacons_.getByteString(index);
+      }
+
+      private byte memoizedIsInitialized = -1;
+      @java.lang.Override
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
+
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      @java.lang.Override
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        for (int i = 0; i < uuids_.size(); i++) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 1, uuids_.getRaw(i));
+        }
+        for (int i = 0; i < beacons_.size(); i++) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 2, beacons_.getRaw(i));
+        }
+        getUnknownFields().writeTo(output);
+      }
+
+      @java.lang.Override
+      public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        {
+          int dataSize = 0;
+          for (int i = 0; i < uuids_.size(); i++) {
+            dataSize += computeStringSizeNoTag(uuids_.getRaw(i));
+          }
+          size += dataSize;
+          size += 1 * getUuidsList().size();
+        }
+        {
+          int dataSize = 0;
+          for (int i = 0; i < beacons_.size(); i++) {
+            dataSize += computeStringSizeNoTag(beacons_.getRaw(i));
+          }
+          size += dataSize;
+          size += 1 * getBeaconsList().size();
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSize = size;
+        return size;
+      }
+
+      @java.lang.Override
+      public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+         return true;
+        }
+        if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks)) {
+          return super.equals(obj);
+        }
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks) obj;
+
+        if (!getUuidsList()
+            .equals(other.getUuidsList())) return false;
+        if (!getBeaconsList()
+            .equals(other.getBeaconsList())) return false;
+        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+        return true;
+      }
+
+      @java.lang.Override
+      public int hashCode() {
+        if (memoizedHashCode != 0) {
+          return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        if (getUuidsCount() > 0) {
+          hash = (37 * hash) + UUIDS_FIELD_NUMBER;
+          hash = (53 * hash) + getUuidsList().hashCode();
+        }
+        if (getBeaconsCount() > 0) {
+          hash = (37 * hash) + BEACONS_FIELD_NUMBER;
+          hash = (53 * hash) + getBeaconsList().hashCode();
+        }
+        hash = (29 * hash) + getUnknownFields().hashCode();
+        memoizedHashCode = hash;
+        return hash;
+      }
+
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks parseFrom(
+          java.nio.ByteBuffer data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks parseFrom(
+          java.nio.ByteBuffer data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input);
+      }
+
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+
+      @java.lang.Override
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder() {
+        return DEFAULT_INSTANCE.toBuilder();
+      }
+      public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks prototype) {
+        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      }
+      @java.lang.Override
+      public Builder toBuilder() {
+        return this == DEFAULT_INSTANCE
+            ? new Builder() : new Builder().mergeFrom(this);
+      }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * Protobuf type {@code weaviate.v1.BatchStreamReply.Acks}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:weaviate.v1.BatchStreamReply.Acks)
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.AcksOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Acks_descriptor;
+        }
+
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Acks_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks.Builder.class);
+        }
+
+        // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks.newBuilder()
+        private Builder() {
+
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          super(parent);
+
+        }
+        @java.lang.Override
+        public Builder clear() {
+          super.clear();
+          bitField0_ = 0;
+          uuids_ =
+              com.google.protobuf.LazyStringArrayList.emptyList();
+          beacons_ =
+              com.google.protobuf.LazyStringArrayList.emptyList();
+          return this;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Acks_descriptor;
+        }
+
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks getDefaultInstanceForType() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks.getDefaultInstance();
+        }
+
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks build() {
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks buildPartial() {
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks(this);
+          if (bitField0_ != 0) { buildPartial0(result); }
+          onBuilt();
+          return result;
+        }
+
+        private void buildPartial0(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks result) {
+          int from_bitField0_ = bitField0_;
+          if (((from_bitField0_ & 0x00000001) != 0)) {
+            uuids_.makeImmutable();
+            result.uuids_ = uuids_;
+          }
+          if (((from_bitField0_ & 0x00000002) != 0)) {
+            beacons_.makeImmutable();
+            result.beacons_ = beacons_;
+          }
+        }
+
+        @java.lang.Override
+        public Builder clone() {
+          return super.clone();
+        }
+        @java.lang.Override
+        public Builder setField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return super.setField(field, value);
+        }
+        @java.lang.Override
+        public Builder clearField(
+            com.google.protobuf.Descriptors.FieldDescriptor field) {
+          return super.clearField(field);
+        }
+        @java.lang.Override
+        public Builder clearOneof(
+            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          return super.clearOneof(oneof);
+        }
+        @java.lang.Override
+        public Builder setRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            int index, java.lang.Object value) {
+          return super.setRepeatedField(field, index, value);
+        }
+        @java.lang.Override
+        public Builder addRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return super.addRepeatedField(field, value);
+        }
+        @java.lang.Override
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks) {
+            return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks other) {
+          if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks.getDefaultInstance()) return this;
+          if (!other.uuids_.isEmpty()) {
+            if (uuids_.isEmpty()) {
+              uuids_ = other.uuids_;
+              bitField0_ |= 0x00000001;
+            } else {
+              ensureUuidsIsMutable();
+              uuids_.addAll(other.uuids_);
+            }
+            onChanged();
+          }
+          if (!other.beacons_.isEmpty()) {
+            if (beacons_.isEmpty()) {
+              beacons_ = other.beacons_;
+              bitField0_ |= 0x00000002;
+            } else {
+              ensureBeaconsIsMutable();
+              beacons_.addAll(other.beacons_);
+            }
+            onChanged();
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          onChanged();
+          return this;
+        }
+
+        @java.lang.Override
+        public final boolean isInitialized() {
+          return true;
+        }
+
+        @java.lang.Override
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          if (extensionRegistry == null) {
+            throw new java.lang.NullPointerException();
+          }
+          try {
+            boolean done = false;
+            while (!done) {
+              int tag = input.readTag();
+              switch (tag) {
+                case 0:
+                  done = true;
+                  break;
+                case 10: {
+                  java.lang.String s = input.readStringRequireUtf8();
+                  ensureUuidsIsMutable();
+                  uuids_.add(s);
+                  break;
+                } // case 10
+                case 18: {
+                  java.lang.String s = input.readStringRequireUtf8();
+                  ensureBeaconsIsMutable();
+                  beacons_.add(s);
+                  break;
+                } // case 18
+                default: {
+                  if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                    done = true; // was an endgroup tag
+                  }
+                  break;
+                } // default:
+              } // switch (tag)
+            } // while (!done)
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            throw e.unwrapIOException();
+          } finally {
+            onChanged();
+          } // finally
+          return this;
+        }
+        private int bitField0_;
+
+        private com.google.protobuf.LazyStringArrayList uuids_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+        private void ensureUuidsIsMutable() {
+          if (!uuids_.isModifiable()) {
+            uuids_ = new com.google.protobuf.LazyStringArrayList(uuids_);
+          }
+          bitField0_ |= 0x00000001;
+        }
+        /**
+         * <code>repeated string uuids = 1;</code>
+         * @return A list containing the uuids.
+         */
+        public com.google.protobuf.ProtocolStringList
+            getUuidsList() {
+          uuids_.makeImmutable();
+          return uuids_;
+        }
+        /**
+         * <code>repeated string uuids = 1;</code>
+         * @return The count of uuids.
+         */
+        public int getUuidsCount() {
+          return uuids_.size();
+        }
+        /**
+         * <code>repeated string uuids = 1;</code>
+         * @param index The index of the element to return.
+         * @return The uuids at the given index.
+         */
+        public java.lang.String getUuids(int index) {
+          return uuids_.get(index);
+        }
+        /**
+         * <code>repeated string uuids = 1;</code>
+         * @param index The index of the value to return.
+         * @return The bytes of the uuids at the given index.
+         */
+        public com.google.protobuf.ByteString
+            getUuidsBytes(int index) {
+          return uuids_.getByteString(index);
+        }
+        /**
+         * <code>repeated string uuids = 1;</code>
+         * @param index The index to set the value at.
+         * @param value The uuids to set.
+         * @return This builder for chaining.
+         */
+        public Builder setUuids(
+            int index, java.lang.String value) {
+          if (value == null) { throw new NullPointerException(); }
+          ensureUuidsIsMutable();
+          uuids_.set(index, value);
+          bitField0_ |= 0x00000001;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string uuids = 1;</code>
+         * @param value The uuids to add.
+         * @return This builder for chaining.
+         */
+        public Builder addUuids(
+            java.lang.String value) {
+          if (value == null) { throw new NullPointerException(); }
+          ensureUuidsIsMutable();
+          uuids_.add(value);
+          bitField0_ |= 0x00000001;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string uuids = 1;</code>
+         * @param values The uuids to add.
+         * @return This builder for chaining.
+         */
+        public Builder addAllUuids(
+            java.lang.Iterable<java.lang.String> values) {
+          ensureUuidsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, uuids_);
+          bitField0_ |= 0x00000001;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string uuids = 1;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearUuids() {
+          uuids_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string uuids = 1;</code>
+         * @param value The bytes of the uuids to add.
+         * @return This builder for chaining.
+         */
+        public Builder addUuidsBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) { throw new NullPointerException(); }
+          checkByteStringIsUtf8(value);
+          ensureUuidsIsMutable();
+          uuids_.add(value);
+          bitField0_ |= 0x00000001;
+          onChanged();
+          return this;
+        }
+
+        private com.google.protobuf.LazyStringArrayList beacons_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+        private void ensureBeaconsIsMutable() {
+          if (!beacons_.isModifiable()) {
+            beacons_ = new com.google.protobuf.LazyStringArrayList(beacons_);
+          }
+          bitField0_ |= 0x00000002;
+        }
+        /**
+         * <code>repeated string beacons = 2;</code>
+         * @return A list containing the beacons.
+         */
+        public com.google.protobuf.ProtocolStringList
+            getBeaconsList() {
+          beacons_.makeImmutable();
+          return beacons_;
+        }
+        /**
+         * <code>repeated string beacons = 2;</code>
+         * @return The count of beacons.
+         */
+        public int getBeaconsCount() {
+          return beacons_.size();
+        }
+        /**
+         * <code>repeated string beacons = 2;</code>
+         * @param index The index of the element to return.
+         * @return The beacons at the given index.
+         */
+        public java.lang.String getBeacons(int index) {
+          return beacons_.get(index);
+        }
+        /**
+         * <code>repeated string beacons = 2;</code>
+         * @param index The index of the value to return.
+         * @return The bytes of the beacons at the given index.
+         */
+        public com.google.protobuf.ByteString
+            getBeaconsBytes(int index) {
+          return beacons_.getByteString(index);
+        }
+        /**
+         * <code>repeated string beacons = 2;</code>
+         * @param index The index to set the value at.
+         * @param value The beacons to set.
+         * @return This builder for chaining.
+         */
+        public Builder setBeacons(
+            int index, java.lang.String value) {
+          if (value == null) { throw new NullPointerException(); }
+          ensureBeaconsIsMutable();
+          beacons_.set(index, value);
+          bitField0_ |= 0x00000002;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string beacons = 2;</code>
+         * @param value The beacons to add.
+         * @return This builder for chaining.
+         */
+        public Builder addBeacons(
+            java.lang.String value) {
+          if (value == null) { throw new NullPointerException(); }
+          ensureBeaconsIsMutable();
+          beacons_.add(value);
+          bitField0_ |= 0x00000002;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string beacons = 2;</code>
+         * @param values The beacons to add.
+         * @return This builder for chaining.
+         */
+        public Builder addAllBeacons(
+            java.lang.Iterable<java.lang.String> values) {
+          ensureBeaconsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, beacons_);
+          bitField0_ |= 0x00000002;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string beacons = 2;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearBeacons() {
+          beacons_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string beacons = 2;</code>
+         * @param value The bytes of the beacons to add.
+         * @return This builder for chaining.
+         */
+        public Builder addBeaconsBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) { throw new NullPointerException(); }
+          checkByteStringIsUtf8(value);
+          ensureBeaconsIsMutable();
+          beacons_.add(value);
+          bitField0_ |= 0x00000002;
+          onChanged();
+          return this;
+        }
+        @java.lang.Override
+        public final Builder setUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.setUnknownFields(unknownFields);
+        }
+
+        @java.lang.Override
+        public final Builder mergeUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.mergeUnknownFields(unknownFields);
+        }
+
+
+        // @@protoc_insertion_point(builder_scope:weaviate.v1.BatchStreamReply.Acks)
+      }
+
+      // @@protoc_insertion_point(class_scope:weaviate.v1.BatchStreamReply.Acks)
+      private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks DEFAULT_INSTANCE;
+      static {
+        DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks();
+      }
+
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+      }
+
+      private static final com.google.protobuf.Parser<Acks>
+          PARSER = new com.google.protobuf.AbstractParser<Acks>() {
+        @java.lang.Override
+        public Acks parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          Builder builder = newBuilder();
+          try {
+            builder.mergeFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            throw e.setUnfinishedMessage(builder.buildPartial());
+          } catch (com.google.protobuf.UninitializedMessageException e) {
+            throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+          } catch (java.io.IOException e) {
+            throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                .setUnfinishedMessage(builder.buildPartial());
+          }
+          return builder.buildPartial();
+        }
+      };
+
+      public static com.google.protobuf.Parser<Acks> parser() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<Acks> getParserForType() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks getDefaultInstanceForType() {
+        return DEFAULT_INSTANCE;
+      }
+
+    }
+
+    public interface ResultsOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:weaviate.v1.BatchStreamReply.Results)
+        com.google.protobuf.MessageOrBuilder {
+
+      /**
+       * <code>repeated .weaviate.v1.BatchStreamReply.Results.Error errors = 1;</code>
+       */
+      java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error> 
+          getErrorsList();
+      /**
+       * <code>repeated .weaviate.v1.BatchStreamReply.Results.Error errors = 1;</code>
+       */
+      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error getErrors(int index);
+      /**
+       * <code>repeated .weaviate.v1.BatchStreamReply.Results.Error errors = 1;</code>
+       */
+      int getErrorsCount();
+      /**
+       * <code>repeated .weaviate.v1.BatchStreamReply.Results.Error errors = 1;</code>
+       */
+      java.util.List<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.ErrorOrBuilder> 
+          getErrorsOrBuilderList();
+      /**
+       * <code>repeated .weaviate.v1.BatchStreamReply.Results.Error errors = 1;</code>
+       */
+      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.ErrorOrBuilder getErrorsOrBuilder(
+          int index);
+
+      /**
+       * <code>repeated .weaviate.v1.BatchStreamReply.Results.Success successes = 2;</code>
+       */
+      java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success> 
+          getSuccessesList();
+      /**
+       * <code>repeated .weaviate.v1.BatchStreamReply.Results.Success successes = 2;</code>
+       */
+      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success getSuccesses(int index);
+      /**
+       * <code>repeated .weaviate.v1.BatchStreamReply.Results.Success successes = 2;</code>
+       */
+      int getSuccessesCount();
+      /**
+       * <code>repeated .weaviate.v1.BatchStreamReply.Results.Success successes = 2;</code>
+       */
+      java.util.List<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.SuccessOrBuilder> 
+          getSuccessesOrBuilderList();
+      /**
+       * <code>repeated .weaviate.v1.BatchStreamReply.Results.Success successes = 2;</code>
+       */
+      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.SuccessOrBuilder getSuccessesOrBuilder(
+          int index);
+    }
+    /**
+     * Protobuf type {@code weaviate.v1.BatchStreamReply.Results}
+     */
+    public static final class Results extends
+        com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:weaviate.v1.BatchStreamReply.Results)
+        ResultsOrBuilder {
+    private static final long serialVersionUID = 0L;
+      // Use Results.newBuilder() to construct.
+      private Results(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+        super(builder);
+      }
+      private Results() {
+        errors_ = java.util.Collections.emptyList();
+        successes_ = java.util.Collections.emptyList();
+      }
+
+      @java.lang.Override
+      @SuppressWarnings({"unused"})
+      protected java.lang.Object newInstance(
+          UnusedPrivateParameter unused) {
+        return new Results();
+      }
+
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Results_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Results_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Builder.class);
+      }
+
+      public interface ErrorOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:weaviate.v1.BatchStreamReply.Results.Error)
+          com.google.protobuf.MessageOrBuilder {
+
+        /**
+         * <code>string error = 1;</code>
+         * @return The error.
+         */
+        java.lang.String getError();
+        /**
+         * <code>string error = 1;</code>
+         * @return The bytes for error.
+         */
+        com.google.protobuf.ByteString
+            getErrorBytes();
+
+        /**
+         * <code>string uuid = 2;</code>
+         * @return Whether the uuid field is set.
+         */
+        boolean hasUuid();
+        /**
+         * <code>string uuid = 2;</code>
+         * @return The uuid.
+         */
+        java.lang.String getUuid();
+        /**
+         * <code>string uuid = 2;</code>
+         * @return The bytes for uuid.
+         */
+        com.google.protobuf.ByteString
+            getUuidBytes();
+
+        /**
+         * <code>string beacon = 3;</code>
+         * @return Whether the beacon field is set.
+         */
+        boolean hasBeacon();
+        /**
+         * <code>string beacon = 3;</code>
+         * @return The beacon.
+         */
+        java.lang.String getBeacon();
+        /**
+         * <code>string beacon = 3;</code>
+         * @return The bytes for beacon.
+         */
+        com.google.protobuf.ByteString
+            getBeaconBytes();
+
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error.DetailCase getDetailCase();
+      }
+      /**
+       * Protobuf type {@code weaviate.v1.BatchStreamReply.Results.Error}
+       */
+      public static final class Error extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:weaviate.v1.BatchStreamReply.Results.Error)
+          ErrorOrBuilder {
+      private static final long serialVersionUID = 0L;
+        // Use Error.newBuilder() to construct.
+        private Error(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+          super(builder);
+        }
+        private Error() {
+          error_ = "";
+        }
+
+        @java.lang.Override
+        @SuppressWarnings({"unused"})
+        protected java.lang.Object newInstance(
+            UnusedPrivateParameter unused) {
+          return new Error();
+        }
+
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Results_Error_descriptor;
+        }
+
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Results_Error_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error.Builder.class);
+        }
+
+        private int detailCase_ = 0;
+        @SuppressWarnings("serial")
+        private java.lang.Object detail_;
+        public enum DetailCase
+            implements com.google.protobuf.Internal.EnumLite,
+                com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+          UUID(2),
+          BEACON(3),
+          DETAIL_NOT_SET(0);
+          private final int value;
+          private DetailCase(int value) {
+            this.value = value;
+          }
+          /**
+           * @param value The number of the enum to look for.
+           * @return The enum associated with the given number.
+           * @deprecated Use {@link #forNumber(int)} instead.
+           */
+          @java.lang.Deprecated
+          public static DetailCase valueOf(int value) {
+            return forNumber(value);
+          }
+
+          public static DetailCase forNumber(int value) {
+            switch (value) {
+              case 2: return UUID;
+              case 3: return BEACON;
+              case 0: return DETAIL_NOT_SET;
+              default: return null;
+            }
+          }
+          public int getNumber() {
+            return this.value;
+          }
+        };
+
+        public DetailCase
+        getDetailCase() {
+          return DetailCase.forNumber(
+              detailCase_);
+        }
+
+        public static final int ERROR_FIELD_NUMBER = 1;
+        @SuppressWarnings("serial")
+        private volatile java.lang.Object error_ = "";
+        /**
+         * <code>string error = 1;</code>
+         * @return The error.
+         */
+        @java.lang.Override
+        public java.lang.String getError() {
+          java.lang.Object ref = error_;
+          if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+          } else {
+            com.google.protobuf.ByteString bs = 
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            error_ = s;
+            return s;
+          }
+        }
+        /**
+         * <code>string error = 1;</code>
+         * @return The bytes for error.
+         */
+        @java.lang.Override
+        public com.google.protobuf.ByteString
+            getErrorBytes() {
+          java.lang.Object ref = error_;
+          if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            error_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+
+        public static final int UUID_FIELD_NUMBER = 2;
+        /**
+         * <code>string uuid = 2;</code>
+         * @return Whether the uuid field is set.
+         */
+        public boolean hasUuid() {
+          return detailCase_ == 2;
+        }
+        /**
+         * <code>string uuid = 2;</code>
+         * @return The uuid.
+         */
+        public java.lang.String getUuid() {
+          java.lang.Object ref = "";
+          if (detailCase_ == 2) {
+            ref = detail_;
+          }
+          if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+          } else {
+            com.google.protobuf.ByteString bs = 
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (detailCase_ == 2) {
+              detail_ = s;
+            }
+            return s;
+          }
+        }
+        /**
+         * <code>string uuid = 2;</code>
+         * @return The bytes for uuid.
+         */
+        public com.google.protobuf.ByteString
+            getUuidBytes() {
+          java.lang.Object ref = "";
+          if (detailCase_ == 2) {
+            ref = detail_;
+          }
+          if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            if (detailCase_ == 2) {
+              detail_ = b;
+            }
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+
+        public static final int BEACON_FIELD_NUMBER = 3;
+        /**
+         * <code>string beacon = 3;</code>
+         * @return Whether the beacon field is set.
+         */
+        public boolean hasBeacon() {
+          return detailCase_ == 3;
+        }
+        /**
+         * <code>string beacon = 3;</code>
+         * @return The beacon.
+         */
+        public java.lang.String getBeacon() {
+          java.lang.Object ref = "";
+          if (detailCase_ == 3) {
+            ref = detail_;
+          }
+          if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+          } else {
+            com.google.protobuf.ByteString bs = 
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (detailCase_ == 3) {
+              detail_ = s;
+            }
+            return s;
+          }
+        }
+        /**
+         * <code>string beacon = 3;</code>
+         * @return The bytes for beacon.
+         */
+        public com.google.protobuf.ByteString
+            getBeaconBytes() {
+          java.lang.Object ref = "";
+          if (detailCase_ == 3) {
+            ref = detail_;
+          }
+          if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            if (detailCase_ == 3) {
+              detail_ = b;
+            }
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+
+        private byte memoizedIsInitialized = -1;
+        @java.lang.Override
+        public final boolean isInitialized() {
+          byte isInitialized = memoizedIsInitialized;
+          if (isInitialized == 1) return true;
+          if (isInitialized == 0) return false;
+
+          memoizedIsInitialized = 1;
+          return true;
+        }
+
+        @java.lang.Override
+        public void writeTo(com.google.protobuf.CodedOutputStream output)
+                            throws java.io.IOException {
+          if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(error_)) {
+            com.google.protobuf.GeneratedMessageV3.writeString(output, 1, error_);
+          }
+          if (detailCase_ == 2) {
+            com.google.protobuf.GeneratedMessageV3.writeString(output, 2, detail_);
+          }
+          if (detailCase_ == 3) {
+            com.google.protobuf.GeneratedMessageV3.writeString(output, 3, detail_);
+          }
+          getUnknownFields().writeTo(output);
+        }
+
+        @java.lang.Override
+        public int getSerializedSize() {
+          int size = memoizedSize;
+          if (size != -1) return size;
+
+          size = 0;
+          if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(error_)) {
+            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, error_);
+          }
+          if (detailCase_ == 2) {
+            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, detail_);
+          }
+          if (detailCase_ == 3) {
+            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, detail_);
+          }
+          size += getUnknownFields().getSerializedSize();
+          memoizedSize = size;
+          return size;
+        }
+
+        @java.lang.Override
+        public boolean equals(final java.lang.Object obj) {
+          if (obj == this) {
+           return true;
+          }
+          if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error)) {
+            return super.equals(obj);
+          }
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error) obj;
+
+          if (!getError()
+              .equals(other.getError())) return false;
+          if (!getDetailCase().equals(other.getDetailCase())) return false;
+          switch (detailCase_) {
+            case 2:
+              if (!getUuid()
+                  .equals(other.getUuid())) return false;
+              break;
+            case 3:
+              if (!getBeacon()
+                  .equals(other.getBeacon())) return false;
+              break;
+            case 0:
+            default:
+          }
+          if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+          return true;
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+          if (memoizedHashCode != 0) {
+            return memoizedHashCode;
+          }
+          int hash = 41;
+          hash = (19 * hash) + getDescriptor().hashCode();
+          hash = (37 * hash) + ERROR_FIELD_NUMBER;
+          hash = (53 * hash) + getError().hashCode();
+          switch (detailCase_) {
+            case 2:
+              hash = (37 * hash) + UUID_FIELD_NUMBER;
+              hash = (53 * hash) + getUuid().hashCode();
+              break;
+            case 3:
+              hash = (37 * hash) + BEACON_FIELD_NUMBER;
+              hash = (53 * hash) + getBeacon().hashCode();
+              break;
+            case 0:
+            default:
+          }
+          hash = (29 * hash) + getUnknownFields().hashCode();
+          memoizedHashCode = hash;
+          return hash;
+        }
+
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error parseFrom(
+            java.nio.ByteBuffer data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error parseFrom(
+            java.nio.ByteBuffer data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data, extensionRegistry);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data, extensionRegistry);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data, extensionRegistry);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+        }
+
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
+        }
+
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+        }
+
+        @java.lang.Override
+        public Builder newBuilderForType() { return newBuilder(); }
+        public static Builder newBuilder() {
+          return DEFAULT_INSTANCE.toBuilder();
+        }
+        public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error prototype) {
+          return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+        }
+        @java.lang.Override
+        public Builder toBuilder() {
+          return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+        }
+
+        @java.lang.Override
+        protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          Builder builder = new Builder(parent);
+          return builder;
+        }
+        /**
+         * Protobuf type {@code weaviate.v1.BatchStreamReply.Results.Error}
+         */
+        public static final class Builder extends
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:weaviate.v1.BatchStreamReply.Results.Error)
+            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.ErrorOrBuilder {
+          public static final com.google.protobuf.Descriptors.Descriptor
+              getDescriptor() {
+            return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Results_Error_descriptor;
+          }
+
+          @java.lang.Override
+          protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+              internalGetFieldAccessorTable() {
+            return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Results_Error_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error.Builder.class);
+          }
+
+          // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error.newBuilder()
+          private Builder() {
+
+          }
+
+          private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+            super(parent);
+
+          }
+          @java.lang.Override
+          public Builder clear() {
+            super.clear();
+            bitField0_ = 0;
+            error_ = "";
+            detailCase_ = 0;
+            detail_ = null;
+            return this;
+          }
+
+          @java.lang.Override
+          public com.google.protobuf.Descriptors.Descriptor
+              getDescriptorForType() {
+            return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Results_Error_descriptor;
+          }
+
+          @java.lang.Override
+          public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error getDefaultInstanceForType() {
+            return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error.getDefaultInstance();
+          }
+
+          @java.lang.Override
+          public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error build() {
+            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error result = buildPartial();
+            if (!result.isInitialized()) {
+              throw newUninitializedMessageException(result);
+            }
+            return result;
+          }
+
+          @java.lang.Override
+          public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error buildPartial() {
+            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error(this);
+            if (bitField0_ != 0) { buildPartial0(result); }
+            buildPartialOneofs(result);
+            onBuilt();
+            return result;
+          }
+
+          private void buildPartial0(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error result) {
+            int from_bitField0_ = bitField0_;
+            if (((from_bitField0_ & 0x00000001) != 0)) {
+              result.error_ = error_;
+            }
+          }
+
+          private void buildPartialOneofs(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error result) {
+            result.detailCase_ = detailCase_;
+            result.detail_ = this.detail_;
+          }
+
+          @java.lang.Override
+          public Builder clone() {
+            return super.clone();
+          }
+          @java.lang.Override
+          public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              java.lang.Object value) {
+            return super.setField(field, value);
+          }
+          @java.lang.Override
+          public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+            return super.clearField(field);
+          }
+          @java.lang.Override
+          public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+            return super.clearOneof(oneof);
+          }
+          @java.lang.Override
+          public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, java.lang.Object value) {
+            return super.setRepeatedField(field, index, value);
+          }
+          @java.lang.Override
+          public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              java.lang.Object value) {
+            return super.addRepeatedField(field, value);
+          }
+          @java.lang.Override
+          public Builder mergeFrom(com.google.protobuf.Message other) {
+            if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error) {
+              return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error)other);
+            } else {
+              super.mergeFrom(other);
+              return this;
+            }
+          }
+
+          public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error other) {
+            if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error.getDefaultInstance()) return this;
+            if (!other.getError().isEmpty()) {
+              error_ = other.error_;
+              bitField0_ |= 0x00000001;
+              onChanged();
+            }
+            switch (other.getDetailCase()) {
+              case UUID: {
+                detailCase_ = 2;
+                detail_ = other.detail_;
+                onChanged();
+                break;
+              }
+              case BEACON: {
+                detailCase_ = 3;
+                detail_ = other.detail_;
+                onChanged();
+                break;
+              }
+              case DETAIL_NOT_SET: {
+                break;
+              }
+            }
+            this.mergeUnknownFields(other.getUnknownFields());
+            onChanged();
+            return this;
+          }
+
+          @java.lang.Override
+          public final boolean isInitialized() {
+            return true;
+          }
+
+          @java.lang.Override
+          public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+            if (extensionRegistry == null) {
+              throw new java.lang.NullPointerException();
+            }
+            try {
+              boolean done = false;
+              while (!done) {
+                int tag = input.readTag();
+                switch (tag) {
+                  case 0:
+                    done = true;
+                    break;
+                  case 10: {
+                    error_ = input.readStringRequireUtf8();
+                    bitField0_ |= 0x00000001;
+                    break;
+                  } // case 10
+                  case 18: {
+                    java.lang.String s = input.readStringRequireUtf8();
+                    detailCase_ = 2;
+                    detail_ = s;
+                    break;
+                  } // case 18
+                  case 26: {
+                    java.lang.String s = input.readStringRequireUtf8();
+                    detailCase_ = 3;
+                    detail_ = s;
+                    break;
+                  } // case 26
+                  default: {
+                    if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                      done = true; // was an endgroup tag
+                    }
+                    break;
+                  } // default:
+                } // switch (tag)
+              } // while (!done)
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+              throw e.unwrapIOException();
+            } finally {
+              onChanged();
+            } // finally
+            return this;
+          }
+          private int detailCase_ = 0;
+          private java.lang.Object detail_;
+          public DetailCase
+              getDetailCase() {
+            return DetailCase.forNumber(
+                detailCase_);
+          }
+
+          public Builder clearDetail() {
+            detailCase_ = 0;
+            detail_ = null;
+            onChanged();
+            return this;
+          }
+
+          private int bitField0_;
+
+          private java.lang.Object error_ = "";
+          /**
+           * <code>string error = 1;</code>
+           * @return The error.
+           */
+          public java.lang.String getError() {
+            java.lang.Object ref = error_;
+            if (!(ref instanceof java.lang.String)) {
+              com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+              java.lang.String s = bs.toStringUtf8();
+              error_ = s;
+              return s;
+            } else {
+              return (java.lang.String) ref;
+            }
+          }
+          /**
+           * <code>string error = 1;</code>
+           * @return The bytes for error.
+           */
+          public com.google.protobuf.ByteString
+              getErrorBytes() {
+            java.lang.Object ref = error_;
+            if (ref instanceof String) {
+              com.google.protobuf.ByteString b = 
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                      (java.lang.String) ref);
+              error_ = b;
+              return b;
+            } else {
+              return (com.google.protobuf.ByteString) ref;
+            }
+          }
+          /**
+           * <code>string error = 1;</code>
+           * @param value The error to set.
+           * @return This builder for chaining.
+           */
+          public Builder setError(
+              java.lang.String value) {
+            if (value == null) { throw new NullPointerException(); }
+            error_ = value;
+            bitField0_ |= 0x00000001;
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>string error = 1;</code>
+           * @return This builder for chaining.
+           */
+          public Builder clearError() {
+            error_ = getDefaultInstance().getError();
+            bitField0_ = (bitField0_ & ~0x00000001);
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>string error = 1;</code>
+           * @param value The bytes for error to set.
+           * @return This builder for chaining.
+           */
+          public Builder setErrorBytes(
+              com.google.protobuf.ByteString value) {
+            if (value == null) { throw new NullPointerException(); }
+            checkByteStringIsUtf8(value);
+            error_ = value;
+            bitField0_ |= 0x00000001;
+            onChanged();
+            return this;
+          }
+
+          /**
+           * <code>string uuid = 2;</code>
+           * @return Whether the uuid field is set.
+           */
+          @java.lang.Override
+          public boolean hasUuid() {
+            return detailCase_ == 2;
+          }
+          /**
+           * <code>string uuid = 2;</code>
+           * @return The uuid.
+           */
+          @java.lang.Override
+          public java.lang.String getUuid() {
+            java.lang.Object ref = "";
+            if (detailCase_ == 2) {
+              ref = detail_;
+            }
+            if (!(ref instanceof java.lang.String)) {
+              com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+              java.lang.String s = bs.toStringUtf8();
+              if (detailCase_ == 2) {
+                detail_ = s;
+              }
+              return s;
+            } else {
+              return (java.lang.String) ref;
+            }
+          }
+          /**
+           * <code>string uuid = 2;</code>
+           * @return The bytes for uuid.
+           */
+          @java.lang.Override
+          public com.google.protobuf.ByteString
+              getUuidBytes() {
+            java.lang.Object ref = "";
+            if (detailCase_ == 2) {
+              ref = detail_;
+            }
+            if (ref instanceof String) {
+              com.google.protobuf.ByteString b = 
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                      (java.lang.String) ref);
+              if (detailCase_ == 2) {
+                detail_ = b;
+              }
+              return b;
+            } else {
+              return (com.google.protobuf.ByteString) ref;
+            }
+          }
+          /**
+           * <code>string uuid = 2;</code>
+           * @param value The uuid to set.
+           * @return This builder for chaining.
+           */
+          public Builder setUuid(
+              java.lang.String value) {
+            if (value == null) { throw new NullPointerException(); }
+            detailCase_ = 2;
+            detail_ = value;
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>string uuid = 2;</code>
+           * @return This builder for chaining.
+           */
+          public Builder clearUuid() {
+            if (detailCase_ == 2) {
+              detailCase_ = 0;
+              detail_ = null;
+              onChanged();
+            }
+            return this;
+          }
+          /**
+           * <code>string uuid = 2;</code>
+           * @param value The bytes for uuid to set.
+           * @return This builder for chaining.
+           */
+          public Builder setUuidBytes(
+              com.google.protobuf.ByteString value) {
+            if (value == null) { throw new NullPointerException(); }
+            checkByteStringIsUtf8(value);
+            detailCase_ = 2;
+            detail_ = value;
+            onChanged();
+            return this;
+          }
+
+          /**
+           * <code>string beacon = 3;</code>
+           * @return Whether the beacon field is set.
+           */
+          @java.lang.Override
+          public boolean hasBeacon() {
+            return detailCase_ == 3;
+          }
+          /**
+           * <code>string beacon = 3;</code>
+           * @return The beacon.
+           */
+          @java.lang.Override
+          public java.lang.String getBeacon() {
+            java.lang.Object ref = "";
+            if (detailCase_ == 3) {
+              ref = detail_;
+            }
+            if (!(ref instanceof java.lang.String)) {
+              com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+              java.lang.String s = bs.toStringUtf8();
+              if (detailCase_ == 3) {
+                detail_ = s;
+              }
+              return s;
+            } else {
+              return (java.lang.String) ref;
+            }
+          }
+          /**
+           * <code>string beacon = 3;</code>
+           * @return The bytes for beacon.
+           */
+          @java.lang.Override
+          public com.google.protobuf.ByteString
+              getBeaconBytes() {
+            java.lang.Object ref = "";
+            if (detailCase_ == 3) {
+              ref = detail_;
+            }
+            if (ref instanceof String) {
+              com.google.protobuf.ByteString b = 
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                      (java.lang.String) ref);
+              if (detailCase_ == 3) {
+                detail_ = b;
+              }
+              return b;
+            } else {
+              return (com.google.protobuf.ByteString) ref;
+            }
+          }
+          /**
+           * <code>string beacon = 3;</code>
+           * @param value The beacon to set.
+           * @return This builder for chaining.
+           */
+          public Builder setBeacon(
+              java.lang.String value) {
+            if (value == null) { throw new NullPointerException(); }
+            detailCase_ = 3;
+            detail_ = value;
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>string beacon = 3;</code>
+           * @return This builder for chaining.
+           */
+          public Builder clearBeacon() {
+            if (detailCase_ == 3) {
+              detailCase_ = 0;
+              detail_ = null;
+              onChanged();
+            }
+            return this;
+          }
+          /**
+           * <code>string beacon = 3;</code>
+           * @param value The bytes for beacon to set.
+           * @return This builder for chaining.
+           */
+          public Builder setBeaconBytes(
+              com.google.protobuf.ByteString value) {
+            if (value == null) { throw new NullPointerException(); }
+            checkByteStringIsUtf8(value);
+            detailCase_ = 3;
+            detail_ = value;
+            onChanged();
+            return this;
+          }
+          @java.lang.Override
+          public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+            return super.setUnknownFields(unknownFields);
+          }
+
+          @java.lang.Override
+          public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+            return super.mergeUnknownFields(unknownFields);
+          }
+
+
+          // @@protoc_insertion_point(builder_scope:weaviate.v1.BatchStreamReply.Results.Error)
+        }
+
+        // @@protoc_insertion_point(class_scope:weaviate.v1.BatchStreamReply.Results.Error)
+        private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error DEFAULT_INSTANCE;
+        static {
+          DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error();
+        }
+
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error getDefaultInstance() {
+          return DEFAULT_INSTANCE;
+        }
+
+        private static final com.google.protobuf.Parser<Error>
+            PARSER = new com.google.protobuf.AbstractParser<Error>() {
+          @java.lang.Override
+          public Error parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+              builder.mergeFrom(input, extensionRegistry);
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+              throw e.setUnfinishedMessage(builder.buildPartial());
+            } catch (com.google.protobuf.UninitializedMessageException e) {
+              throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+            } catch (java.io.IOException e) {
+              throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                  .setUnfinishedMessage(builder.buildPartial());
+            }
+            return builder.buildPartial();
+          }
+        };
+
+        public static com.google.protobuf.Parser<Error> parser() {
+          return PARSER;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Parser<Error> getParserForType() {
+          return PARSER;
+        }
+
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error getDefaultInstanceForType() {
+          return DEFAULT_INSTANCE;
+        }
+
+      }
+
+      public interface SuccessOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:weaviate.v1.BatchStreamReply.Results.Success)
+          com.google.protobuf.MessageOrBuilder {
+
+        /**
+         * <code>string uuid = 2;</code>
+         * @return Whether the uuid field is set.
+         */
+        boolean hasUuid();
+        /**
+         * <code>string uuid = 2;</code>
+         * @return The uuid.
+         */
+        java.lang.String getUuid();
+        /**
+         * <code>string uuid = 2;</code>
+         * @return The bytes for uuid.
+         */
+        com.google.protobuf.ByteString
+            getUuidBytes();
+
+        /**
+         * <code>string beacon = 3;</code>
+         * @return Whether the beacon field is set.
+         */
+        boolean hasBeacon();
+        /**
+         * <code>string beacon = 3;</code>
+         * @return The beacon.
+         */
+        java.lang.String getBeacon();
+        /**
+         * <code>string beacon = 3;</code>
+         * @return The bytes for beacon.
+         */
+        com.google.protobuf.ByteString
+            getBeaconBytes();
+
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success.DetailCase getDetailCase();
+      }
+      /**
+       * Protobuf type {@code weaviate.v1.BatchStreamReply.Results.Success}
+       */
+      public static final class Success extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:weaviate.v1.BatchStreamReply.Results.Success)
+          SuccessOrBuilder {
+      private static final long serialVersionUID = 0L;
+        // Use Success.newBuilder() to construct.
+        private Success(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+          super(builder);
+        }
+        private Success() {
+        }
+
+        @java.lang.Override
+        @SuppressWarnings({"unused"})
+        protected java.lang.Object newInstance(
+            UnusedPrivateParameter unused) {
+          return new Success();
+        }
+
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Results_Success_descriptor;
+        }
+
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Results_Success_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success.Builder.class);
+        }
+
+        private int detailCase_ = 0;
+        @SuppressWarnings("serial")
+        private java.lang.Object detail_;
+        public enum DetailCase
+            implements com.google.protobuf.Internal.EnumLite,
+                com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+          UUID(2),
+          BEACON(3),
+          DETAIL_NOT_SET(0);
+          private final int value;
+          private DetailCase(int value) {
+            this.value = value;
+          }
+          /**
+           * @param value The number of the enum to look for.
+           * @return The enum associated with the given number.
+           * @deprecated Use {@link #forNumber(int)} instead.
+           */
+          @java.lang.Deprecated
+          public static DetailCase valueOf(int value) {
+            return forNumber(value);
+          }
+
+          public static DetailCase forNumber(int value) {
+            switch (value) {
+              case 2: return UUID;
+              case 3: return BEACON;
+              case 0: return DETAIL_NOT_SET;
+              default: return null;
+            }
+          }
+          public int getNumber() {
+            return this.value;
+          }
+        };
+
+        public DetailCase
+        getDetailCase() {
+          return DetailCase.forNumber(
+              detailCase_);
+        }
+
+        public static final int UUID_FIELD_NUMBER = 2;
+        /**
+         * <code>string uuid = 2;</code>
+         * @return Whether the uuid field is set.
+         */
+        public boolean hasUuid() {
+          return detailCase_ == 2;
+        }
+        /**
+         * <code>string uuid = 2;</code>
+         * @return The uuid.
+         */
+        public java.lang.String getUuid() {
+          java.lang.Object ref = "";
+          if (detailCase_ == 2) {
+            ref = detail_;
+          }
+          if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+          } else {
+            com.google.protobuf.ByteString bs = 
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (detailCase_ == 2) {
+              detail_ = s;
+            }
+            return s;
+          }
+        }
+        /**
+         * <code>string uuid = 2;</code>
+         * @return The bytes for uuid.
+         */
+        public com.google.protobuf.ByteString
+            getUuidBytes() {
+          java.lang.Object ref = "";
+          if (detailCase_ == 2) {
+            ref = detail_;
+          }
+          if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            if (detailCase_ == 2) {
+              detail_ = b;
+            }
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+
+        public static final int BEACON_FIELD_NUMBER = 3;
+        /**
+         * <code>string beacon = 3;</code>
+         * @return Whether the beacon field is set.
+         */
+        public boolean hasBeacon() {
+          return detailCase_ == 3;
+        }
+        /**
+         * <code>string beacon = 3;</code>
+         * @return The beacon.
+         */
+        public java.lang.String getBeacon() {
+          java.lang.Object ref = "";
+          if (detailCase_ == 3) {
+            ref = detail_;
+          }
+          if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+          } else {
+            com.google.protobuf.ByteString bs = 
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (detailCase_ == 3) {
+              detail_ = s;
+            }
+            return s;
+          }
+        }
+        /**
+         * <code>string beacon = 3;</code>
+         * @return The bytes for beacon.
+         */
+        public com.google.protobuf.ByteString
+            getBeaconBytes() {
+          java.lang.Object ref = "";
+          if (detailCase_ == 3) {
+            ref = detail_;
+          }
+          if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            if (detailCase_ == 3) {
+              detail_ = b;
+            }
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+
+        private byte memoizedIsInitialized = -1;
+        @java.lang.Override
+        public final boolean isInitialized() {
+          byte isInitialized = memoizedIsInitialized;
+          if (isInitialized == 1) return true;
+          if (isInitialized == 0) return false;
+
+          memoizedIsInitialized = 1;
+          return true;
+        }
+
+        @java.lang.Override
+        public void writeTo(com.google.protobuf.CodedOutputStream output)
+                            throws java.io.IOException {
+          if (detailCase_ == 2) {
+            com.google.protobuf.GeneratedMessageV3.writeString(output, 2, detail_);
+          }
+          if (detailCase_ == 3) {
+            com.google.protobuf.GeneratedMessageV3.writeString(output, 3, detail_);
+          }
+          getUnknownFields().writeTo(output);
+        }
+
+        @java.lang.Override
+        public int getSerializedSize() {
+          int size = memoizedSize;
+          if (size != -1) return size;
+
+          size = 0;
+          if (detailCase_ == 2) {
+            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, detail_);
+          }
+          if (detailCase_ == 3) {
+            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, detail_);
+          }
+          size += getUnknownFields().getSerializedSize();
+          memoizedSize = size;
+          return size;
+        }
+
+        @java.lang.Override
+        public boolean equals(final java.lang.Object obj) {
+          if (obj == this) {
+           return true;
+          }
+          if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success)) {
+            return super.equals(obj);
+          }
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success) obj;
+
+          if (!getDetailCase().equals(other.getDetailCase())) return false;
+          switch (detailCase_) {
+            case 2:
+              if (!getUuid()
+                  .equals(other.getUuid())) return false;
+              break;
+            case 3:
+              if (!getBeacon()
+                  .equals(other.getBeacon())) return false;
+              break;
+            case 0:
+            default:
+          }
+          if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+          return true;
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+          if (memoizedHashCode != 0) {
+            return memoizedHashCode;
+          }
+          int hash = 41;
+          hash = (19 * hash) + getDescriptor().hashCode();
+          switch (detailCase_) {
+            case 2:
+              hash = (37 * hash) + UUID_FIELD_NUMBER;
+              hash = (53 * hash) + getUuid().hashCode();
+              break;
+            case 3:
+              hash = (37 * hash) + BEACON_FIELD_NUMBER;
+              hash = (53 * hash) + getBeacon().hashCode();
+              break;
+            case 0:
+            default:
+          }
+          hash = (29 * hash) + getUnknownFields().hashCode();
+          memoizedHashCode = hash;
+          return hash;
+        }
+
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success parseFrom(
+            java.nio.ByteBuffer data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success parseFrom(
+            java.nio.ByteBuffer data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data, extensionRegistry);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data, extensionRegistry);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data, extensionRegistry);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+        }
+
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
+        }
+
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+        }
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+        }
+
+        @java.lang.Override
+        public Builder newBuilderForType() { return newBuilder(); }
+        public static Builder newBuilder() {
+          return DEFAULT_INSTANCE.toBuilder();
+        }
+        public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success prototype) {
+          return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+        }
+        @java.lang.Override
+        public Builder toBuilder() {
+          return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+        }
+
+        @java.lang.Override
+        protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          Builder builder = new Builder(parent);
+          return builder;
+        }
+        /**
+         * Protobuf type {@code weaviate.v1.BatchStreamReply.Results.Success}
+         */
+        public static final class Builder extends
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:weaviate.v1.BatchStreamReply.Results.Success)
+            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.SuccessOrBuilder {
+          public static final com.google.protobuf.Descriptors.Descriptor
+              getDescriptor() {
+            return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Results_Success_descriptor;
+          }
+
+          @java.lang.Override
+          protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+              internalGetFieldAccessorTable() {
+            return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Results_Success_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success.Builder.class);
+          }
+
+          // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success.newBuilder()
+          private Builder() {
+
+          }
+
+          private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+            super(parent);
+
+          }
+          @java.lang.Override
+          public Builder clear() {
+            super.clear();
+            bitField0_ = 0;
+            detailCase_ = 0;
+            detail_ = null;
+            return this;
+          }
+
+          @java.lang.Override
+          public com.google.protobuf.Descriptors.Descriptor
+              getDescriptorForType() {
+            return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Results_Success_descriptor;
+          }
+
+          @java.lang.Override
+          public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success getDefaultInstanceForType() {
+            return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success.getDefaultInstance();
+          }
+
+          @java.lang.Override
+          public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success build() {
+            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success result = buildPartial();
+            if (!result.isInitialized()) {
+              throw newUninitializedMessageException(result);
+            }
+            return result;
+          }
+
+          @java.lang.Override
+          public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success buildPartial() {
+            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success(this);
+            if (bitField0_ != 0) { buildPartial0(result); }
+            buildPartialOneofs(result);
+            onBuilt();
+            return result;
+          }
+
+          private void buildPartial0(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success result) {
+            int from_bitField0_ = bitField0_;
+          }
+
+          private void buildPartialOneofs(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success result) {
+            result.detailCase_ = detailCase_;
+            result.detail_ = this.detail_;
+          }
+
+          @java.lang.Override
+          public Builder clone() {
+            return super.clone();
+          }
+          @java.lang.Override
+          public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              java.lang.Object value) {
+            return super.setField(field, value);
+          }
+          @java.lang.Override
+          public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+            return super.clearField(field);
+          }
+          @java.lang.Override
+          public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+            return super.clearOneof(oneof);
+          }
+          @java.lang.Override
+          public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, java.lang.Object value) {
+            return super.setRepeatedField(field, index, value);
+          }
+          @java.lang.Override
+          public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              java.lang.Object value) {
+            return super.addRepeatedField(field, value);
+          }
+          @java.lang.Override
+          public Builder mergeFrom(com.google.protobuf.Message other) {
+            if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success) {
+              return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success)other);
+            } else {
+              super.mergeFrom(other);
+              return this;
+            }
+          }
+
+          public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success other) {
+            if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success.getDefaultInstance()) return this;
+            switch (other.getDetailCase()) {
+              case UUID: {
+                detailCase_ = 2;
+                detail_ = other.detail_;
+                onChanged();
+                break;
+              }
+              case BEACON: {
+                detailCase_ = 3;
+                detail_ = other.detail_;
+                onChanged();
+                break;
+              }
+              case DETAIL_NOT_SET: {
+                break;
+              }
+            }
+            this.mergeUnknownFields(other.getUnknownFields());
+            onChanged();
+            return this;
+          }
+
+          @java.lang.Override
+          public final boolean isInitialized() {
+            return true;
+          }
+
+          @java.lang.Override
+          public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+            if (extensionRegistry == null) {
+              throw new java.lang.NullPointerException();
+            }
+            try {
+              boolean done = false;
+              while (!done) {
+                int tag = input.readTag();
+                switch (tag) {
+                  case 0:
+                    done = true;
+                    break;
+                  case 18: {
+                    java.lang.String s = input.readStringRequireUtf8();
+                    detailCase_ = 2;
+                    detail_ = s;
+                    break;
+                  } // case 18
+                  case 26: {
+                    java.lang.String s = input.readStringRequireUtf8();
+                    detailCase_ = 3;
+                    detail_ = s;
+                    break;
+                  } // case 26
+                  default: {
+                    if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                      done = true; // was an endgroup tag
+                    }
+                    break;
+                  } // default:
+                } // switch (tag)
+              } // while (!done)
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+              throw e.unwrapIOException();
+            } finally {
+              onChanged();
+            } // finally
+            return this;
+          }
+          private int detailCase_ = 0;
+          private java.lang.Object detail_;
+          public DetailCase
+              getDetailCase() {
+            return DetailCase.forNumber(
+                detailCase_);
+          }
+
+          public Builder clearDetail() {
+            detailCase_ = 0;
+            detail_ = null;
+            onChanged();
+            return this;
+          }
+
+          private int bitField0_;
+
+          /**
+           * <code>string uuid = 2;</code>
+           * @return Whether the uuid field is set.
+           */
+          @java.lang.Override
+          public boolean hasUuid() {
+            return detailCase_ == 2;
+          }
+          /**
+           * <code>string uuid = 2;</code>
+           * @return The uuid.
+           */
+          @java.lang.Override
+          public java.lang.String getUuid() {
+            java.lang.Object ref = "";
+            if (detailCase_ == 2) {
+              ref = detail_;
+            }
+            if (!(ref instanceof java.lang.String)) {
+              com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+              java.lang.String s = bs.toStringUtf8();
+              if (detailCase_ == 2) {
+                detail_ = s;
+              }
+              return s;
+            } else {
+              return (java.lang.String) ref;
+            }
+          }
+          /**
+           * <code>string uuid = 2;</code>
+           * @return The bytes for uuid.
+           */
+          @java.lang.Override
+          public com.google.protobuf.ByteString
+              getUuidBytes() {
+            java.lang.Object ref = "";
+            if (detailCase_ == 2) {
+              ref = detail_;
+            }
+            if (ref instanceof String) {
+              com.google.protobuf.ByteString b = 
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                      (java.lang.String) ref);
+              if (detailCase_ == 2) {
+                detail_ = b;
+              }
+              return b;
+            } else {
+              return (com.google.protobuf.ByteString) ref;
+            }
+          }
+          /**
+           * <code>string uuid = 2;</code>
+           * @param value The uuid to set.
+           * @return This builder for chaining.
+           */
+          public Builder setUuid(
+              java.lang.String value) {
+            if (value == null) { throw new NullPointerException(); }
+            detailCase_ = 2;
+            detail_ = value;
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>string uuid = 2;</code>
+           * @return This builder for chaining.
+           */
+          public Builder clearUuid() {
+            if (detailCase_ == 2) {
+              detailCase_ = 0;
+              detail_ = null;
+              onChanged();
+            }
+            return this;
+          }
+          /**
+           * <code>string uuid = 2;</code>
+           * @param value The bytes for uuid to set.
+           * @return This builder for chaining.
+           */
+          public Builder setUuidBytes(
+              com.google.protobuf.ByteString value) {
+            if (value == null) { throw new NullPointerException(); }
+            checkByteStringIsUtf8(value);
+            detailCase_ = 2;
+            detail_ = value;
+            onChanged();
+            return this;
+          }
+
+          /**
+           * <code>string beacon = 3;</code>
+           * @return Whether the beacon field is set.
+           */
+          @java.lang.Override
+          public boolean hasBeacon() {
+            return detailCase_ == 3;
+          }
+          /**
+           * <code>string beacon = 3;</code>
+           * @return The beacon.
+           */
+          @java.lang.Override
+          public java.lang.String getBeacon() {
+            java.lang.Object ref = "";
+            if (detailCase_ == 3) {
+              ref = detail_;
+            }
+            if (!(ref instanceof java.lang.String)) {
+              com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+              java.lang.String s = bs.toStringUtf8();
+              if (detailCase_ == 3) {
+                detail_ = s;
+              }
+              return s;
+            } else {
+              return (java.lang.String) ref;
+            }
+          }
+          /**
+           * <code>string beacon = 3;</code>
+           * @return The bytes for beacon.
+           */
+          @java.lang.Override
+          public com.google.protobuf.ByteString
+              getBeaconBytes() {
+            java.lang.Object ref = "";
+            if (detailCase_ == 3) {
+              ref = detail_;
+            }
+            if (ref instanceof String) {
+              com.google.protobuf.ByteString b = 
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                      (java.lang.String) ref);
+              if (detailCase_ == 3) {
+                detail_ = b;
+              }
+              return b;
+            } else {
+              return (com.google.protobuf.ByteString) ref;
+            }
+          }
+          /**
+           * <code>string beacon = 3;</code>
+           * @param value The beacon to set.
+           * @return This builder for chaining.
+           */
+          public Builder setBeacon(
+              java.lang.String value) {
+            if (value == null) { throw new NullPointerException(); }
+            detailCase_ = 3;
+            detail_ = value;
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>string beacon = 3;</code>
+           * @return This builder for chaining.
+           */
+          public Builder clearBeacon() {
+            if (detailCase_ == 3) {
+              detailCase_ = 0;
+              detail_ = null;
+              onChanged();
+            }
+            return this;
+          }
+          /**
+           * <code>string beacon = 3;</code>
+           * @param value The bytes for beacon to set.
+           * @return This builder for chaining.
+           */
+          public Builder setBeaconBytes(
+              com.google.protobuf.ByteString value) {
+            if (value == null) { throw new NullPointerException(); }
+            checkByteStringIsUtf8(value);
+            detailCase_ = 3;
+            detail_ = value;
+            onChanged();
+            return this;
+          }
+          @java.lang.Override
+          public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+            return super.setUnknownFields(unknownFields);
+          }
+
+          @java.lang.Override
+          public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+            return super.mergeUnknownFields(unknownFields);
+          }
+
+
+          // @@protoc_insertion_point(builder_scope:weaviate.v1.BatchStreamReply.Results.Success)
+        }
+
+        // @@protoc_insertion_point(class_scope:weaviate.v1.BatchStreamReply.Results.Success)
+        private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success DEFAULT_INSTANCE;
+        static {
+          DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success();
+        }
+
+        public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success getDefaultInstance() {
+          return DEFAULT_INSTANCE;
+        }
+
+        private static final com.google.protobuf.Parser<Success>
+            PARSER = new com.google.protobuf.AbstractParser<Success>() {
+          @java.lang.Override
+          public Success parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+              builder.mergeFrom(input, extensionRegistry);
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+              throw e.setUnfinishedMessage(builder.buildPartial());
+            } catch (com.google.protobuf.UninitializedMessageException e) {
+              throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+            } catch (java.io.IOException e) {
+              throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                  .setUnfinishedMessage(builder.buildPartial());
+            }
+            return builder.buildPartial();
+          }
+        };
+
+        public static com.google.protobuf.Parser<Success> parser() {
+          return PARSER;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Parser<Success> getParserForType() {
+          return PARSER;
+        }
+
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success getDefaultInstanceForType() {
+          return DEFAULT_INSTANCE;
+        }
+
+      }
+
+      public static final int ERRORS_FIELD_NUMBER = 1;
+      @SuppressWarnings("serial")
+      private java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error> errors_;
+      /**
+       * <code>repeated .weaviate.v1.BatchStreamReply.Results.Error errors = 1;</code>
+       */
+      @java.lang.Override
+      public java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error> getErrorsList() {
+        return errors_;
+      }
+      /**
+       * <code>repeated .weaviate.v1.BatchStreamReply.Results.Error errors = 1;</code>
+       */
+      @java.lang.Override
+      public java.util.List<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.ErrorOrBuilder> 
+          getErrorsOrBuilderList() {
+        return errors_;
+      }
+      /**
+       * <code>repeated .weaviate.v1.BatchStreamReply.Results.Error errors = 1;</code>
+       */
+      @java.lang.Override
+      public int getErrorsCount() {
+        return errors_.size();
+      }
+      /**
+       * <code>repeated .weaviate.v1.BatchStreamReply.Results.Error errors = 1;</code>
+       */
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error getErrors(int index) {
+        return errors_.get(index);
+      }
+      /**
+       * <code>repeated .weaviate.v1.BatchStreamReply.Results.Error errors = 1;</code>
+       */
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.ErrorOrBuilder getErrorsOrBuilder(
+          int index) {
+        return errors_.get(index);
+      }
+
+      public static final int SUCCESSES_FIELD_NUMBER = 2;
+      @SuppressWarnings("serial")
+      private java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success> successes_;
+      /**
+       * <code>repeated .weaviate.v1.BatchStreamReply.Results.Success successes = 2;</code>
+       */
+      @java.lang.Override
+      public java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success> getSuccessesList() {
+        return successes_;
+      }
+      /**
+       * <code>repeated .weaviate.v1.BatchStreamReply.Results.Success successes = 2;</code>
+       */
+      @java.lang.Override
+      public java.util.List<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.SuccessOrBuilder> 
+          getSuccessesOrBuilderList() {
+        return successes_;
+      }
+      /**
+       * <code>repeated .weaviate.v1.BatchStreamReply.Results.Success successes = 2;</code>
+       */
+      @java.lang.Override
+      public int getSuccessesCount() {
+        return successes_.size();
+      }
+      /**
+       * <code>repeated .weaviate.v1.BatchStreamReply.Results.Success successes = 2;</code>
+       */
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success getSuccesses(int index) {
+        return successes_.get(index);
+      }
+      /**
+       * <code>repeated .weaviate.v1.BatchStreamReply.Results.Success successes = 2;</code>
+       */
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.SuccessOrBuilder getSuccessesOrBuilder(
+          int index) {
+        return successes_.get(index);
+      }
+
+      private byte memoizedIsInitialized = -1;
+      @java.lang.Override
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
+
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      @java.lang.Override
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        for (int i = 0; i < errors_.size(); i++) {
+          output.writeMessage(1, errors_.get(i));
+        }
+        for (int i = 0; i < successes_.size(); i++) {
+          output.writeMessage(2, successes_.get(i));
+        }
+        getUnknownFields().writeTo(output);
+      }
+
+      @java.lang.Override
+      public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        for (int i = 0; i < errors_.size(); i++) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(1, errors_.get(i));
+        }
+        for (int i = 0; i < successes_.size(); i++) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(2, successes_.get(i));
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSize = size;
+        return size;
+      }
+
+      @java.lang.Override
+      public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+         return true;
+        }
+        if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results)) {
+          return super.equals(obj);
+        }
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results) obj;
+
+        if (!getErrorsList()
+            .equals(other.getErrorsList())) return false;
+        if (!getSuccessesList()
+            .equals(other.getSuccessesList())) return false;
+        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+        return true;
+      }
+
+      @java.lang.Override
+      public int hashCode() {
+        if (memoizedHashCode != 0) {
+          return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        if (getErrorsCount() > 0) {
+          hash = (37 * hash) + ERRORS_FIELD_NUMBER;
+          hash = (53 * hash) + getErrorsList().hashCode();
+        }
+        if (getSuccessesCount() > 0) {
+          hash = (37 * hash) + SUCCESSES_FIELD_NUMBER;
+          hash = (53 * hash) + getSuccessesList().hashCode();
+        }
+        hash = (29 * hash) + getUnknownFields().hashCode();
+        memoizedHashCode = hash;
+        return hash;
+      }
+
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results parseFrom(
+          java.nio.ByteBuffer data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results parseFrom(
+          java.nio.ByteBuffer data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input);
+      }
+
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+
+      @java.lang.Override
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder() {
+        return DEFAULT_INSTANCE.toBuilder();
+      }
+      public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results prototype) {
+        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      }
+      @java.lang.Override
+      public Builder toBuilder() {
+        return this == DEFAULT_INSTANCE
+            ? new Builder() : new Builder().mergeFrom(this);
+      }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * Protobuf type {@code weaviate.v1.BatchStreamReply.Results}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:weaviate.v1.BatchStreamReply.Results)
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ResultsOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Results_descriptor;
+        }
+
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Results_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Builder.class);
+        }
+
+        // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.newBuilder()
+        private Builder() {
+
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          super(parent);
+
+        }
+        @java.lang.Override
+        public Builder clear() {
+          super.clear();
+          bitField0_ = 0;
+          if (errorsBuilder_ == null) {
+            errors_ = java.util.Collections.emptyList();
+          } else {
+            errors_ = null;
+            errorsBuilder_.clear();
+          }
+          bitField0_ = (bitField0_ & ~0x00000001);
+          if (successesBuilder_ == null) {
+            successes_ = java.util.Collections.emptyList();
+          } else {
+            successes_ = null;
+            successesBuilder_.clear();
+          }
+          bitField0_ = (bitField0_ & ~0x00000002);
+          return this;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_Results_descriptor;
+        }
+
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results getDefaultInstanceForType() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.getDefaultInstance();
+        }
+
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results build() {
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results buildPartial() {
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results(this);
+          buildPartialRepeatedFields(result);
+          if (bitField0_ != 0) { buildPartial0(result); }
+          onBuilt();
+          return result;
+        }
+
+        private void buildPartialRepeatedFields(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results result) {
+          if (errorsBuilder_ == null) {
+            if (((bitField0_ & 0x00000001) != 0)) {
+              errors_ = java.util.Collections.unmodifiableList(errors_);
+              bitField0_ = (bitField0_ & ~0x00000001);
+            }
+            result.errors_ = errors_;
+          } else {
+            result.errors_ = errorsBuilder_.build();
+          }
+          if (successesBuilder_ == null) {
+            if (((bitField0_ & 0x00000002) != 0)) {
+              successes_ = java.util.Collections.unmodifiableList(successes_);
+              bitField0_ = (bitField0_ & ~0x00000002);
+            }
+            result.successes_ = successes_;
+          } else {
+            result.successes_ = successesBuilder_.build();
+          }
+        }
+
+        private void buildPartial0(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results result) {
+          int from_bitField0_ = bitField0_;
+        }
+
+        @java.lang.Override
+        public Builder clone() {
+          return super.clone();
+        }
+        @java.lang.Override
+        public Builder setField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return super.setField(field, value);
+        }
+        @java.lang.Override
+        public Builder clearField(
+            com.google.protobuf.Descriptors.FieldDescriptor field) {
+          return super.clearField(field);
+        }
+        @java.lang.Override
+        public Builder clearOneof(
+            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          return super.clearOneof(oneof);
+        }
+        @java.lang.Override
+        public Builder setRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            int index, java.lang.Object value) {
+          return super.setRepeatedField(field, index, value);
+        }
+        @java.lang.Override
+        public Builder addRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return super.addRepeatedField(field, value);
+        }
+        @java.lang.Override
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results) {
+            return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results other) {
+          if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.getDefaultInstance()) return this;
+          if (errorsBuilder_ == null) {
+            if (!other.errors_.isEmpty()) {
+              if (errors_.isEmpty()) {
+                errors_ = other.errors_;
+                bitField0_ = (bitField0_ & ~0x00000001);
+              } else {
+                ensureErrorsIsMutable();
+                errors_.addAll(other.errors_);
+              }
+              onChanged();
+            }
+          } else {
+            if (!other.errors_.isEmpty()) {
+              if (errorsBuilder_.isEmpty()) {
+                errorsBuilder_.dispose();
+                errorsBuilder_ = null;
+                errors_ = other.errors_;
+                bitField0_ = (bitField0_ & ~0x00000001);
+                errorsBuilder_ = 
+                  com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                     getErrorsFieldBuilder() : null;
+              } else {
+                errorsBuilder_.addAllMessages(other.errors_);
+              }
+            }
+          }
+          if (successesBuilder_ == null) {
+            if (!other.successes_.isEmpty()) {
+              if (successes_.isEmpty()) {
+                successes_ = other.successes_;
+                bitField0_ = (bitField0_ & ~0x00000002);
+              } else {
+                ensureSuccessesIsMutable();
+                successes_.addAll(other.successes_);
+              }
+              onChanged();
+            }
+          } else {
+            if (!other.successes_.isEmpty()) {
+              if (successesBuilder_.isEmpty()) {
+                successesBuilder_.dispose();
+                successesBuilder_ = null;
+                successes_ = other.successes_;
+                bitField0_ = (bitField0_ & ~0x00000002);
+                successesBuilder_ = 
+                  com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                     getSuccessesFieldBuilder() : null;
+              } else {
+                successesBuilder_.addAllMessages(other.successes_);
+              }
+            }
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          onChanged();
+          return this;
+        }
+
+        @java.lang.Override
+        public final boolean isInitialized() {
+          return true;
+        }
+
+        @java.lang.Override
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          if (extensionRegistry == null) {
+            throw new java.lang.NullPointerException();
+          }
+          try {
+            boolean done = false;
+            while (!done) {
+              int tag = input.readTag();
+              switch (tag) {
+                case 0:
+                  done = true;
+                  break;
+                case 10: {
+                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error m =
+                      input.readMessage(
+                          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error.parser(),
+                          extensionRegistry);
+                  if (errorsBuilder_ == null) {
+                    ensureErrorsIsMutable();
+                    errors_.add(m);
+                  } else {
+                    errorsBuilder_.addMessage(m);
+                  }
+                  break;
+                } // case 10
+                case 18: {
+                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success m =
+                      input.readMessage(
+                          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success.parser(),
+                          extensionRegistry);
+                  if (successesBuilder_ == null) {
+                    ensureSuccessesIsMutable();
+                    successes_.add(m);
+                  } else {
+                    successesBuilder_.addMessage(m);
+                  }
+                  break;
+                } // case 18
+                default: {
+                  if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                    done = true; // was an endgroup tag
+                  }
+                  break;
+                } // default:
+              } // switch (tag)
+            } // while (!done)
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            throw e.unwrapIOException();
+          } finally {
+            onChanged();
+          } // finally
+          return this;
+        }
+        private int bitField0_;
+
+        private java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error> errors_ =
+          java.util.Collections.emptyList();
+        private void ensureErrorsIsMutable() {
+          if (!((bitField0_ & 0x00000001) != 0)) {
+            errors_ = new java.util.ArrayList<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error>(errors_);
+            bitField0_ |= 0x00000001;
+           }
+        }
+
+        private com.google.protobuf.RepeatedFieldBuilderV3<
+            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.ErrorOrBuilder> errorsBuilder_;
+
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Error errors = 1;</code>
+         */
+        public java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error> getErrorsList() {
+          if (errorsBuilder_ == null) {
+            return java.util.Collections.unmodifiableList(errors_);
+          } else {
+            return errorsBuilder_.getMessageList();
+          }
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Error errors = 1;</code>
+         */
+        public int getErrorsCount() {
+          if (errorsBuilder_ == null) {
+            return errors_.size();
+          } else {
+            return errorsBuilder_.getCount();
+          }
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Error errors = 1;</code>
+         */
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error getErrors(int index) {
+          if (errorsBuilder_ == null) {
+            return errors_.get(index);
+          } else {
+            return errorsBuilder_.getMessage(index);
+          }
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Error errors = 1;</code>
+         */
+        public Builder setErrors(
+            int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error value) {
+          if (errorsBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            ensureErrorsIsMutable();
+            errors_.set(index, value);
+            onChanged();
+          } else {
+            errorsBuilder_.setMessage(index, value);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Error errors = 1;</code>
+         */
+        public Builder setErrors(
+            int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error.Builder builderForValue) {
+          if (errorsBuilder_ == null) {
+            ensureErrorsIsMutable();
+            errors_.set(index, builderForValue.build());
+            onChanged();
+          } else {
+            errorsBuilder_.setMessage(index, builderForValue.build());
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Error errors = 1;</code>
+         */
+        public Builder addErrors(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error value) {
+          if (errorsBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            ensureErrorsIsMutable();
+            errors_.add(value);
+            onChanged();
+          } else {
+            errorsBuilder_.addMessage(value);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Error errors = 1;</code>
+         */
+        public Builder addErrors(
+            int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error value) {
+          if (errorsBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            ensureErrorsIsMutable();
+            errors_.add(index, value);
+            onChanged();
+          } else {
+            errorsBuilder_.addMessage(index, value);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Error errors = 1;</code>
+         */
+        public Builder addErrors(
+            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error.Builder builderForValue) {
+          if (errorsBuilder_ == null) {
+            ensureErrorsIsMutable();
+            errors_.add(builderForValue.build());
+            onChanged();
+          } else {
+            errorsBuilder_.addMessage(builderForValue.build());
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Error errors = 1;</code>
+         */
+        public Builder addErrors(
+            int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error.Builder builderForValue) {
+          if (errorsBuilder_ == null) {
+            ensureErrorsIsMutable();
+            errors_.add(index, builderForValue.build());
+            onChanged();
+          } else {
+            errorsBuilder_.addMessage(index, builderForValue.build());
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Error errors = 1;</code>
+         */
+        public Builder addAllErrors(
+            java.lang.Iterable<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error> values) {
+          if (errorsBuilder_ == null) {
+            ensureErrorsIsMutable();
+            com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                values, errors_);
+            onChanged();
+          } else {
+            errorsBuilder_.addAllMessages(values);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Error errors = 1;</code>
+         */
+        public Builder clearErrors() {
+          if (errorsBuilder_ == null) {
+            errors_ = java.util.Collections.emptyList();
+            bitField0_ = (bitField0_ & ~0x00000001);
+            onChanged();
+          } else {
+            errorsBuilder_.clear();
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Error errors = 1;</code>
+         */
+        public Builder removeErrors(int index) {
+          if (errorsBuilder_ == null) {
+            ensureErrorsIsMutable();
+            errors_.remove(index);
+            onChanged();
+          } else {
+            errorsBuilder_.remove(index);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Error errors = 1;</code>
+         */
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error.Builder getErrorsBuilder(
+            int index) {
+          return getErrorsFieldBuilder().getBuilder(index);
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Error errors = 1;</code>
+         */
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.ErrorOrBuilder getErrorsOrBuilder(
+            int index) {
+          if (errorsBuilder_ == null) {
+            return errors_.get(index);  } else {
+            return errorsBuilder_.getMessageOrBuilder(index);
+          }
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Error errors = 1;</code>
+         */
+        public java.util.List<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.ErrorOrBuilder> 
+             getErrorsOrBuilderList() {
+          if (errorsBuilder_ != null) {
+            return errorsBuilder_.getMessageOrBuilderList();
+          } else {
+            return java.util.Collections.unmodifiableList(errors_);
+          }
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Error errors = 1;</code>
+         */
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error.Builder addErrorsBuilder() {
+          return getErrorsFieldBuilder().addBuilder(
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error.getDefaultInstance());
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Error errors = 1;</code>
+         */
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error.Builder addErrorsBuilder(
+            int index) {
+          return getErrorsFieldBuilder().addBuilder(
+              index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error.getDefaultInstance());
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Error errors = 1;</code>
+         */
+        public java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error.Builder> 
+             getErrorsBuilderList() {
+          return getErrorsFieldBuilder().getBuilderList();
+        }
+        private com.google.protobuf.RepeatedFieldBuilderV3<
+            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.ErrorOrBuilder> 
+            getErrorsFieldBuilder() {
+          if (errorsBuilder_ == null) {
+            errorsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Error.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.ErrorOrBuilder>(
+                    errors_,
+                    ((bitField0_ & 0x00000001) != 0),
+                    getParentForChildren(),
+                    isClean());
+            errors_ = null;
+          }
+          return errorsBuilder_;
+        }
+
+        private java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success> successes_ =
+          java.util.Collections.emptyList();
+        private void ensureSuccessesIsMutable() {
+          if (!((bitField0_ & 0x00000002) != 0)) {
+            successes_ = new java.util.ArrayList<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success>(successes_);
+            bitField0_ |= 0x00000002;
+           }
+        }
+
+        private com.google.protobuf.RepeatedFieldBuilderV3<
+            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.SuccessOrBuilder> successesBuilder_;
+
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Success successes = 2;</code>
+         */
+        public java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success> getSuccessesList() {
+          if (successesBuilder_ == null) {
+            return java.util.Collections.unmodifiableList(successes_);
+          } else {
+            return successesBuilder_.getMessageList();
+          }
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Success successes = 2;</code>
+         */
+        public int getSuccessesCount() {
+          if (successesBuilder_ == null) {
+            return successes_.size();
+          } else {
+            return successesBuilder_.getCount();
+          }
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Success successes = 2;</code>
+         */
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success getSuccesses(int index) {
+          if (successesBuilder_ == null) {
+            return successes_.get(index);
+          } else {
+            return successesBuilder_.getMessage(index);
+          }
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Success successes = 2;</code>
+         */
+        public Builder setSuccesses(
+            int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success value) {
+          if (successesBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            ensureSuccessesIsMutable();
+            successes_.set(index, value);
+            onChanged();
+          } else {
+            successesBuilder_.setMessage(index, value);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Success successes = 2;</code>
+         */
+        public Builder setSuccesses(
+            int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success.Builder builderForValue) {
+          if (successesBuilder_ == null) {
+            ensureSuccessesIsMutable();
+            successes_.set(index, builderForValue.build());
+            onChanged();
+          } else {
+            successesBuilder_.setMessage(index, builderForValue.build());
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Success successes = 2;</code>
+         */
+        public Builder addSuccesses(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success value) {
+          if (successesBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            ensureSuccessesIsMutable();
+            successes_.add(value);
+            onChanged();
+          } else {
+            successesBuilder_.addMessage(value);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Success successes = 2;</code>
+         */
+        public Builder addSuccesses(
+            int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success value) {
+          if (successesBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            ensureSuccessesIsMutable();
+            successes_.add(index, value);
+            onChanged();
+          } else {
+            successesBuilder_.addMessage(index, value);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Success successes = 2;</code>
+         */
+        public Builder addSuccesses(
+            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success.Builder builderForValue) {
+          if (successesBuilder_ == null) {
+            ensureSuccessesIsMutable();
+            successes_.add(builderForValue.build());
+            onChanged();
+          } else {
+            successesBuilder_.addMessage(builderForValue.build());
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Success successes = 2;</code>
+         */
+        public Builder addSuccesses(
+            int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success.Builder builderForValue) {
+          if (successesBuilder_ == null) {
+            ensureSuccessesIsMutable();
+            successes_.add(index, builderForValue.build());
+            onChanged();
+          } else {
+            successesBuilder_.addMessage(index, builderForValue.build());
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Success successes = 2;</code>
+         */
+        public Builder addAllSuccesses(
+            java.lang.Iterable<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success> values) {
+          if (successesBuilder_ == null) {
+            ensureSuccessesIsMutable();
+            com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                values, successes_);
+            onChanged();
+          } else {
+            successesBuilder_.addAllMessages(values);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Success successes = 2;</code>
+         */
+        public Builder clearSuccesses() {
+          if (successesBuilder_ == null) {
+            successes_ = java.util.Collections.emptyList();
+            bitField0_ = (bitField0_ & ~0x00000002);
+            onChanged();
+          } else {
+            successesBuilder_.clear();
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Success successes = 2;</code>
+         */
+        public Builder removeSuccesses(int index) {
+          if (successesBuilder_ == null) {
+            ensureSuccessesIsMutable();
+            successes_.remove(index);
+            onChanged();
+          } else {
+            successesBuilder_.remove(index);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Success successes = 2;</code>
+         */
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success.Builder getSuccessesBuilder(
+            int index) {
+          return getSuccessesFieldBuilder().getBuilder(index);
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Success successes = 2;</code>
+         */
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.SuccessOrBuilder getSuccessesOrBuilder(
+            int index) {
+          if (successesBuilder_ == null) {
+            return successes_.get(index);  } else {
+            return successesBuilder_.getMessageOrBuilder(index);
+          }
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Success successes = 2;</code>
+         */
+        public java.util.List<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.SuccessOrBuilder> 
+             getSuccessesOrBuilderList() {
+          if (successesBuilder_ != null) {
+            return successesBuilder_.getMessageOrBuilderList();
+          } else {
+            return java.util.Collections.unmodifiableList(successes_);
+          }
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Success successes = 2;</code>
+         */
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success.Builder addSuccessesBuilder() {
+          return getSuccessesFieldBuilder().addBuilder(
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success.getDefaultInstance());
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Success successes = 2;</code>
+         */
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success.Builder addSuccessesBuilder(
+            int index) {
+          return getSuccessesFieldBuilder().addBuilder(
+              index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success.getDefaultInstance());
+        }
+        /**
+         * <code>repeated .weaviate.v1.BatchStreamReply.Results.Success successes = 2;</code>
+         */
+        public java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success.Builder> 
+             getSuccessesBuilderList() {
+          return getSuccessesFieldBuilder().getBuilderList();
+        }
+        private com.google.protobuf.RepeatedFieldBuilderV3<
+            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.SuccessOrBuilder> 
+            getSuccessesFieldBuilder() {
+          if (successesBuilder_ == null) {
+            successesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Success.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.SuccessOrBuilder>(
+                    successes_,
+                    ((bitField0_ & 0x00000002) != 0),
+                    getParentForChildren(),
+                    isClean());
+            successes_ = null;
+          }
+          return successesBuilder_;
+        }
+        @java.lang.Override
+        public final Builder setUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.setUnknownFields(unknownFields);
+        }
+
+        @java.lang.Override
+        public final Builder mergeUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.mergeUnknownFields(unknownFields);
+        }
+
+
+        // @@protoc_insertion_point(builder_scope:weaviate.v1.BatchStreamReply.Results)
+      }
+
+      // @@protoc_insertion_point(class_scope:weaviate.v1.BatchStreamReply.Results)
+      private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results DEFAULT_INSTANCE;
+      static {
+        DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results();
+      }
+
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+      }
+
+      private static final com.google.protobuf.Parser<Results>
+          PARSER = new com.google.protobuf.AbstractParser<Results>() {
+        @java.lang.Override
+        public Results parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          Builder builder = newBuilder();
+          try {
+            builder.mergeFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            throw e.setUnfinishedMessage(builder.buildPartial());
+          } catch (com.google.protobuf.UninitializedMessageException e) {
+            throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+          } catch (java.io.IOException e) {
+            throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                .setUnfinishedMessage(builder.buildPartial());
+          }
+          return builder.buildPartial();
+        }
+      };
+
+      public static com.google.protobuf.Parser<Results> parser() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<Results> getParserForType() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
 
@@ -8954,11 +12813,13 @@ public final class WeaviateProtoBatch {
     public enum MessageCase
         implements com.google.protobuf.Internal.EnumLite,
             com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-      ERROR(2),
-      START(3),
-      STOP(4),
-      SHUTDOWN(5),
-      SHUTTING_DOWN(6),
+      RESULTS(1),
+      SHUTTING_DOWN(2),
+      SHUTDOWN(3),
+      STARTED(4),
+      BACKOFF(5),
+      ACKS(6),
+      OUT_OF_MEMORY(7),
       MESSAGE_NOT_SET(0);
       private final int value;
       private MessageCase(int value) {
@@ -8976,11 +12837,13 @@ public final class WeaviateProtoBatch {
 
       public static MessageCase forNumber(int value) {
         switch (value) {
-          case 2: return ERROR;
-          case 3: return START;
-          case 4: return STOP;
-          case 5: return SHUTDOWN;
-          case 6: return SHUTTING_DOWN;
+          case 1: return RESULTS;
+          case 2: return SHUTTING_DOWN;
+          case 3: return SHUTDOWN;
+          case 4: return STARTED;
+          case 5: return BACKOFF;
+          case 6: return ACKS;
+          case 7: return OUT_OF_MEMORY;
           case 0: return MESSAGE_NOT_SET;
           default: return null;
         }
@@ -8996,198 +12859,221 @@ public final class WeaviateProtoBatch {
           messageCase_);
     }
 
-    public static final int STREAM_ID_FIELD_NUMBER = 1;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object streamId_ = "";
+    public static final int RESULTS_FIELD_NUMBER = 1;
     /**
-     * <code>string stream_id = 1;</code>
-     * @return The streamId.
+     * <code>.weaviate.v1.BatchStreamReply.Results results = 1;</code>
+     * @return Whether the results field is set.
      */
     @java.lang.Override
-    public java.lang.String getStreamId() {
-      java.lang.Object ref = streamId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        streamId_ = s;
-        return s;
-      }
+    public boolean hasResults() {
+      return messageCase_ == 1;
     }
     /**
-     * <code>string stream_id = 1;</code>
-     * @return The bytes for streamId.
+     * <code>.weaviate.v1.BatchStreamReply.Results results = 1;</code>
+     * @return The results.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getStreamIdBytes() {
-      java.lang.Object ref = streamId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        streamId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results getResults() {
+      if (messageCase_ == 1) {
+         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results) message_;
       }
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.getDefaultInstance();
+    }
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.Results results = 1;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ResultsOrBuilder getResultsOrBuilder() {
+      if (messageCase_ == 1) {
+         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results) message_;
+      }
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.getDefaultInstance();
     }
 
-    public static final int ERROR_FIELD_NUMBER = 2;
+    public static final int SHUTTING_DOWN_FIELD_NUMBER = 2;
     /**
-     * <code>.weaviate.v1.BatchStreamMessage.Error error = 2;</code>
-     * @return Whether the error field is set.
-     */
-    @java.lang.Override
-    public boolean hasError() {
-      return messageCase_ == 2;
-    }
-    /**
-     * <code>.weaviate.v1.BatchStreamMessage.Error error = 2;</code>
-     * @return The error.
-     */
-    @java.lang.Override
-    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error getError() {
-      if (messageCase_ == 2) {
-         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error) message_;
-      }
-      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error.getDefaultInstance();
-    }
-    /**
-     * <code>.weaviate.v1.BatchStreamMessage.Error error = 2;</code>
-     */
-    @java.lang.Override
-    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ErrorOrBuilder getErrorOrBuilder() {
-      if (messageCase_ == 2) {
-         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error) message_;
-      }
-      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error.getDefaultInstance();
-    }
-
-    public static final int START_FIELD_NUMBER = 3;
-    /**
-     * <code>.weaviate.v1.BatchStreamMessage.Start start = 3;</code>
-     * @return Whether the start field is set.
-     */
-    @java.lang.Override
-    public boolean hasStart() {
-      return messageCase_ == 3;
-    }
-    /**
-     * <code>.weaviate.v1.BatchStreamMessage.Start start = 3;</code>
-     * @return The start.
-     */
-    @java.lang.Override
-    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start getStart() {
-      if (messageCase_ == 3) {
-         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start) message_;
-      }
-      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start.getDefaultInstance();
-    }
-    /**
-     * <code>.weaviate.v1.BatchStreamMessage.Start start = 3;</code>
-     */
-    @java.lang.Override
-    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.StartOrBuilder getStartOrBuilder() {
-      if (messageCase_ == 3) {
-         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start) message_;
-      }
-      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start.getDefaultInstance();
-    }
-
-    public static final int STOP_FIELD_NUMBER = 4;
-    /**
-     * <code>.weaviate.v1.BatchStreamMessage.Stop stop = 4;</code>
-     * @return Whether the stop field is set.
-     */
-    @java.lang.Override
-    public boolean hasStop() {
-      return messageCase_ == 4;
-    }
-    /**
-     * <code>.weaviate.v1.BatchStreamMessage.Stop stop = 4;</code>
-     * @return The stop.
-     */
-    @java.lang.Override
-    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop getStop() {
-      if (messageCase_ == 4) {
-         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop) message_;
-      }
-      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop.getDefaultInstance();
-    }
-    /**
-     * <code>.weaviate.v1.BatchStreamMessage.Stop stop = 4;</code>
-     */
-    @java.lang.Override
-    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.StopOrBuilder getStopOrBuilder() {
-      if (messageCase_ == 4) {
-         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop) message_;
-      }
-      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop.getDefaultInstance();
-    }
-
-    public static final int SHUTDOWN_FIELD_NUMBER = 5;
-    /**
-     * <code>.weaviate.v1.BatchStreamMessage.Shutdown shutdown = 5;</code>
-     * @return Whether the shutdown field is set.
-     */
-    @java.lang.Override
-    public boolean hasShutdown() {
-      return messageCase_ == 5;
-    }
-    /**
-     * <code>.weaviate.v1.BatchStreamMessage.Shutdown shutdown = 5;</code>
-     * @return The shutdown.
-     */
-    @java.lang.Override
-    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown getShutdown() {
-      if (messageCase_ == 5) {
-         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown) message_;
-      }
-      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown.getDefaultInstance();
-    }
-    /**
-     * <code>.weaviate.v1.BatchStreamMessage.Shutdown shutdown = 5;</code>
-     */
-    @java.lang.Override
-    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShutdownOrBuilder getShutdownOrBuilder() {
-      if (messageCase_ == 5) {
-         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown) message_;
-      }
-      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown.getDefaultInstance();
-    }
-
-    public static final int SHUTTING_DOWN_FIELD_NUMBER = 6;
-    /**
-     * <code>.weaviate.v1.BatchStreamMessage.ShuttingDown shutting_down = 6;</code>
+     * <code>.weaviate.v1.BatchStreamReply.ShuttingDown shutting_down = 2;</code>
      * @return Whether the shuttingDown field is set.
      */
     @java.lang.Override
     public boolean hasShuttingDown() {
-      return messageCase_ == 6;
+      return messageCase_ == 2;
     }
     /**
-     * <code>.weaviate.v1.BatchStreamMessage.ShuttingDown shutting_down = 6;</code>
+     * <code>.weaviate.v1.BatchStreamReply.ShuttingDown shutting_down = 2;</code>
      * @return The shuttingDown.
      */
     @java.lang.Override
-    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown getShuttingDown() {
-      if (messageCase_ == 6) {
-         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown) message_;
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown getShuttingDown() {
+      if (messageCase_ == 2) {
+         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown) message_;
       }
-      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown.getDefaultInstance();
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown.getDefaultInstance();
     }
     /**
-     * <code>.weaviate.v1.BatchStreamMessage.ShuttingDown shutting_down = 6;</code>
+     * <code>.weaviate.v1.BatchStreamReply.ShuttingDown shutting_down = 2;</code>
      */
     @java.lang.Override
-    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDownOrBuilder getShuttingDownOrBuilder() {
-      if (messageCase_ == 6) {
-         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown) message_;
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDownOrBuilder getShuttingDownOrBuilder() {
+      if (messageCase_ == 2) {
+         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown) message_;
       }
-      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown.getDefaultInstance();
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown.getDefaultInstance();
+    }
+
+    public static final int SHUTDOWN_FIELD_NUMBER = 3;
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.Shutdown shutdown = 3;</code>
+     * @return Whether the shutdown field is set.
+     */
+    @java.lang.Override
+    public boolean hasShutdown() {
+      return messageCase_ == 3;
+    }
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.Shutdown shutdown = 3;</code>
+     * @return The shutdown.
+     */
+    @java.lang.Override
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown getShutdown() {
+      if (messageCase_ == 3) {
+         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown) message_;
+      }
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown.getDefaultInstance();
+    }
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.Shutdown shutdown = 3;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShutdownOrBuilder getShutdownOrBuilder() {
+      if (messageCase_ == 3) {
+         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown) message_;
+      }
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown.getDefaultInstance();
+    }
+
+    public static final int STARTED_FIELD_NUMBER = 4;
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.Started started = 4;</code>
+     * @return Whether the started field is set.
+     */
+    @java.lang.Override
+    public boolean hasStarted() {
+      return messageCase_ == 4;
+    }
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.Started started = 4;</code>
+     * @return The started.
+     */
+    @java.lang.Override
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started getStarted() {
+      if (messageCase_ == 4) {
+         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started) message_;
+      }
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started.getDefaultInstance();
+    }
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.Started started = 4;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.StartedOrBuilder getStartedOrBuilder() {
+      if (messageCase_ == 4) {
+         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started) message_;
+      }
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started.getDefaultInstance();
+    }
+
+    public static final int BACKOFF_FIELD_NUMBER = 5;
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.Backoff backoff = 5;</code>
+     * @return Whether the backoff field is set.
+     */
+    @java.lang.Override
+    public boolean hasBackoff() {
+      return messageCase_ == 5;
+    }
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.Backoff backoff = 5;</code>
+     * @return The backoff.
+     */
+    @java.lang.Override
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff getBackoff() {
+      if (messageCase_ == 5) {
+         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff) message_;
+      }
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff.getDefaultInstance();
+    }
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.Backoff backoff = 5;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.BackoffOrBuilder getBackoffOrBuilder() {
+      if (messageCase_ == 5) {
+         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff) message_;
+      }
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff.getDefaultInstance();
+    }
+
+    public static final int ACKS_FIELD_NUMBER = 6;
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.Acks acks = 6;</code>
+     * @return Whether the acks field is set.
+     */
+    @java.lang.Override
+    public boolean hasAcks() {
+      return messageCase_ == 6;
+    }
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.Acks acks = 6;</code>
+     * @return The acks.
+     */
+    @java.lang.Override
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks getAcks() {
+      if (messageCase_ == 6) {
+         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks) message_;
+      }
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks.getDefaultInstance();
+    }
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.Acks acks = 6;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.AcksOrBuilder getAcksOrBuilder() {
+      if (messageCase_ == 6) {
+         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks) message_;
+      }
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks.getDefaultInstance();
+    }
+
+    public static final int OUT_OF_MEMORY_FIELD_NUMBER = 7;
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.OutOfMemory out_of_memory = 7;</code>
+     * @return Whether the outOfMemory field is set.
+     */
+    @java.lang.Override
+    public boolean hasOutOfMemory() {
+      return messageCase_ == 7;
+    }
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.OutOfMemory out_of_memory = 7;</code>
+     * @return The outOfMemory.
+     */
+    @java.lang.Override
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory getOutOfMemory() {
+      if (messageCase_ == 7) {
+         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory) message_;
+      }
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory.getDefaultInstance();
+    }
+    /**
+     * <code>.weaviate.v1.BatchStreamReply.OutOfMemory out_of_memory = 7;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemoryOrBuilder getOutOfMemoryOrBuilder() {
+      if (messageCase_ == 7) {
+         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory) message_;
+      }
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory.getDefaultInstance();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -9204,23 +13090,26 @@ public final class WeaviateProtoBatch {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(streamId_)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, streamId_);
+      if (messageCase_ == 1) {
+        output.writeMessage(1, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results) message_);
       }
       if (messageCase_ == 2) {
-        output.writeMessage(2, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error) message_);
+        output.writeMessage(2, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown) message_);
       }
       if (messageCase_ == 3) {
-        output.writeMessage(3, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start) message_);
+        output.writeMessage(3, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown) message_);
       }
       if (messageCase_ == 4) {
-        output.writeMessage(4, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop) message_);
+        output.writeMessage(4, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started) message_);
       }
       if (messageCase_ == 5) {
-        output.writeMessage(5, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown) message_);
+        output.writeMessage(5, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff) message_);
       }
       if (messageCase_ == 6) {
-        output.writeMessage(6, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown) message_);
+        output.writeMessage(6, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks) message_);
+      }
+      if (messageCase_ == 7) {
+        output.writeMessage(7, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory) message_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -9231,28 +13120,33 @@ public final class WeaviateProtoBatch {
       if (size != -1) return size;
 
       size = 0;
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(streamId_)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, streamId_);
+      if (messageCase_ == 1) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results) message_);
       }
       if (messageCase_ == 2) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error) message_);
+          .computeMessageSize(2, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown) message_);
       }
       if (messageCase_ == 3) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start) message_);
+          .computeMessageSize(3, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown) message_);
       }
       if (messageCase_ == 4) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop) message_);
+          .computeMessageSize(4, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started) message_);
       }
       if (messageCase_ == 5) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown) message_);
+          .computeMessageSize(5, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff) message_);
       }
       if (messageCase_ == 6) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(6, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown) message_);
+          .computeMessageSize(6, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks) message_);
+      }
+      if (messageCase_ == 7) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(7, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory) message_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -9264,34 +13158,40 @@ public final class WeaviateProtoBatch {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage)) {
+      if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply)) {
         return super.equals(obj);
       }
-      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage) obj;
+      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply) obj;
 
-      if (!getStreamId()
-          .equals(other.getStreamId())) return false;
       if (!getMessageCase().equals(other.getMessageCase())) return false;
       switch (messageCase_) {
+        case 1:
+          if (!getResults()
+              .equals(other.getResults())) return false;
+          break;
         case 2:
-          if (!getError()
-              .equals(other.getError())) return false;
+          if (!getShuttingDown()
+              .equals(other.getShuttingDown())) return false;
           break;
         case 3:
-          if (!getStart()
-              .equals(other.getStart())) return false;
-          break;
-        case 4:
-          if (!getStop()
-              .equals(other.getStop())) return false;
-          break;
-        case 5:
           if (!getShutdown()
               .equals(other.getShutdown())) return false;
           break;
+        case 4:
+          if (!getStarted()
+              .equals(other.getStarted())) return false;
+          break;
+        case 5:
+          if (!getBackoff()
+              .equals(other.getBackoff())) return false;
+          break;
         case 6:
-          if (!getShuttingDown()
-              .equals(other.getShuttingDown())) return false;
+          if (!getAcks()
+              .equals(other.getAcks())) return false;
+          break;
+        case 7:
+          if (!getOutOfMemory()
+              .equals(other.getOutOfMemory())) return false;
           break;
         case 0:
         default:
@@ -9307,28 +13207,34 @@ public final class WeaviateProtoBatch {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + STREAM_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getStreamId().hashCode();
       switch (messageCase_) {
+        case 1:
+          hash = (37 * hash) + RESULTS_FIELD_NUMBER;
+          hash = (53 * hash) + getResults().hashCode();
+          break;
         case 2:
-          hash = (37 * hash) + ERROR_FIELD_NUMBER;
-          hash = (53 * hash) + getError().hashCode();
+          hash = (37 * hash) + SHUTTING_DOWN_FIELD_NUMBER;
+          hash = (53 * hash) + getShuttingDown().hashCode();
           break;
         case 3:
-          hash = (37 * hash) + START_FIELD_NUMBER;
-          hash = (53 * hash) + getStart().hashCode();
-          break;
-        case 4:
-          hash = (37 * hash) + STOP_FIELD_NUMBER;
-          hash = (53 * hash) + getStop().hashCode();
-          break;
-        case 5:
           hash = (37 * hash) + SHUTDOWN_FIELD_NUMBER;
           hash = (53 * hash) + getShutdown().hashCode();
           break;
+        case 4:
+          hash = (37 * hash) + STARTED_FIELD_NUMBER;
+          hash = (53 * hash) + getStarted().hashCode();
+          break;
+        case 5:
+          hash = (37 * hash) + BACKOFF_FIELD_NUMBER;
+          hash = (53 * hash) + getBackoff().hashCode();
+          break;
         case 6:
-          hash = (37 * hash) + SHUTTING_DOWN_FIELD_NUMBER;
-          hash = (53 * hash) + getShuttingDown().hashCode();
+          hash = (37 * hash) + ACKS_FIELD_NUMBER;
+          hash = (53 * hash) + getAcks().hashCode();
+          break;
+        case 7:
+          hash = (37 * hash) + OUT_OF_MEMORY_FIELD_NUMBER;
+          hash = (53 * hash) + getOutOfMemory().hashCode();
           break;
         case 0:
         default:
@@ -9338,44 +13244,44 @@ public final class WeaviateProtoBatch {
       return hash;
     }
 
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage parseFrom(
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage parseFrom(
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage parseFrom(
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage parseFrom(
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage parseFrom(byte[] data)
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage parseFrom(
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage parseFrom(java.io.InputStream input)
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage parseFrom(
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -9383,26 +13289,26 @@ public final class WeaviateProtoBatch {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage parseDelimitedFrom(java.io.InputStream input)
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
 
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage parseDelimitedFrom(
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage parseFrom(
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage parseFrom(
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -9415,7 +13321,7 @@ public final class WeaviateProtoBatch {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage prototype) {
+    public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -9431,26 +13337,26 @@ public final class WeaviateProtoBatch {
       return builder;
     }
     /**
-     * Protobuf type {@code weaviate.v1.BatchStreamMessage}
+     * Protobuf type {@code weaviate.v1.BatchStreamReply}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:weaviate.v1.BatchStreamMessage)
-        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessageOrBuilder {
+        // @@protoc_insertion_point(builder_implements:weaviate.v1.BatchStreamReply)
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReplyOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_descriptor;
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_fieldAccessorTable
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Builder.class);
+                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Builder.class);
       }
 
-      // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.newBuilder()
+      // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.newBuilder()
       private Builder() {
 
       }
@@ -9464,21 +13370,26 @@ public final class WeaviateProtoBatch {
       public Builder clear() {
         super.clear();
         bitField0_ = 0;
-        streamId_ = "";
-        if (errorBuilder_ != null) {
-          errorBuilder_.clear();
+        if (resultsBuilder_ != null) {
+          resultsBuilder_.clear();
         }
-        if (startBuilder_ != null) {
-          startBuilder_.clear();
-        }
-        if (stopBuilder_ != null) {
-          stopBuilder_.clear();
+        if (shuttingDownBuilder_ != null) {
+          shuttingDownBuilder_.clear();
         }
         if (shutdownBuilder_ != null) {
           shutdownBuilder_.clear();
         }
-        if (shuttingDownBuilder_ != null) {
-          shuttingDownBuilder_.clear();
+        if (startedBuilder_ != null) {
+          startedBuilder_.clear();
+        }
+        if (backoffBuilder_ != null) {
+          backoffBuilder_.clear();
+        }
+        if (acksBuilder_ != null) {
+          acksBuilder_.clear();
+        }
+        if (outOfMemoryBuilder_ != null) {
+          outOfMemoryBuilder_.clear();
         }
         messageCase_ = 0;
         message_ = null;
@@ -9488,17 +13399,17 @@ public final class WeaviateProtoBatch {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamMessage_descriptor;
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.internal_static_weaviate_v1_BatchStreamReply_descriptor;
       }
 
       @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage getDefaultInstanceForType() {
-        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.getDefaultInstance();
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply getDefaultInstanceForType() {
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.getDefaultInstance();
       }
 
       @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage build() {
-        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage result = buildPartial();
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply build() {
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -9506,43 +13417,48 @@ public final class WeaviateProtoBatch {
       }
 
       @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage buildPartial() {
-        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage(this);
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply buildPartial() {
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply(this);
         if (bitField0_ != 0) { buildPartial0(result); }
         buildPartialOneofs(result);
         onBuilt();
         return result;
       }
 
-      private void buildPartial0(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage result) {
+      private void buildPartial0(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply result) {
         int from_bitField0_ = bitField0_;
-        if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.streamId_ = streamId_;
-        }
       }
 
-      private void buildPartialOneofs(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage result) {
+      private void buildPartialOneofs(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply result) {
         result.messageCase_ = messageCase_;
         result.message_ = this.message_;
+        if (messageCase_ == 1 &&
+            resultsBuilder_ != null) {
+          result.message_ = resultsBuilder_.build();
+        }
         if (messageCase_ == 2 &&
-            errorBuilder_ != null) {
-          result.message_ = errorBuilder_.build();
+            shuttingDownBuilder_ != null) {
+          result.message_ = shuttingDownBuilder_.build();
         }
         if (messageCase_ == 3 &&
-            startBuilder_ != null) {
-          result.message_ = startBuilder_.build();
-        }
-        if (messageCase_ == 4 &&
-            stopBuilder_ != null) {
-          result.message_ = stopBuilder_.build();
-        }
-        if (messageCase_ == 5 &&
             shutdownBuilder_ != null) {
           result.message_ = shutdownBuilder_.build();
         }
+        if (messageCase_ == 4 &&
+            startedBuilder_ != null) {
+          result.message_ = startedBuilder_.build();
+        }
+        if (messageCase_ == 5 &&
+            backoffBuilder_ != null) {
+          result.message_ = backoffBuilder_.build();
+        }
         if (messageCase_ == 6 &&
-            shuttingDownBuilder_ != null) {
-          result.message_ = shuttingDownBuilder_.build();
+            acksBuilder_ != null) {
+          result.message_ = acksBuilder_.build();
+        }
+        if (messageCase_ == 7 &&
+            outOfMemoryBuilder_ != null) {
+          result.message_ = outOfMemoryBuilder_.build();
         }
       }
 
@@ -9580,40 +13496,43 @@ public final class WeaviateProtoBatch {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage) {
-          return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage)other);
+        if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply) {
+          return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage other) {
-        if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.getDefaultInstance()) return this;
-        if (!other.getStreamId().isEmpty()) {
-          streamId_ = other.streamId_;
-          bitField0_ |= 0x00000001;
-          onChanged();
-        }
+      public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply other) {
+        if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.getDefaultInstance()) return this;
         switch (other.getMessageCase()) {
-          case ERROR: {
-            mergeError(other.getError());
+          case RESULTS: {
+            mergeResults(other.getResults());
             break;
           }
-          case START: {
-            mergeStart(other.getStart());
-            break;
-          }
-          case STOP: {
-            mergeStop(other.getStop());
+          case SHUTTING_DOWN: {
+            mergeShuttingDown(other.getShuttingDown());
             break;
           }
           case SHUTDOWN: {
             mergeShutdown(other.getShutdown());
             break;
           }
-          case SHUTTING_DOWN: {
-            mergeShuttingDown(other.getShuttingDown());
+          case STARTED: {
+            mergeStarted(other.getStarted());
+            break;
+          }
+          case BACKOFF: {
+            mergeBackoff(other.getBackoff());
+            break;
+          }
+          case ACKS: {
+            mergeAcks(other.getAcks());
+            break;
+          }
+          case OUT_OF_MEMORY: {
+            mergeOutOfMemory(other.getOutOfMemory());
             break;
           }
           case MESSAGE_NOT_SET: {
@@ -9647,45 +13566,54 @@ public final class WeaviateProtoBatch {
                 done = true;
                 break;
               case 10: {
-                streamId_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000001;
+                input.readMessage(
+                    getResultsFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                messageCase_ = 1;
                 break;
               } // case 10
               case 18: {
                 input.readMessage(
-                    getErrorFieldBuilder().getBuilder(),
+                    getShuttingDownFieldBuilder().getBuilder(),
                     extensionRegistry);
                 messageCase_ = 2;
                 break;
               } // case 18
               case 26: {
                 input.readMessage(
-                    getStartFieldBuilder().getBuilder(),
+                    getShutdownFieldBuilder().getBuilder(),
                     extensionRegistry);
                 messageCase_ = 3;
                 break;
               } // case 26
               case 34: {
                 input.readMessage(
-                    getStopFieldBuilder().getBuilder(),
+                    getStartedFieldBuilder().getBuilder(),
                     extensionRegistry);
                 messageCase_ = 4;
                 break;
               } // case 34
               case 42: {
                 input.readMessage(
-                    getShutdownFieldBuilder().getBuilder(),
+                    getBackoffFieldBuilder().getBuilder(),
                     extensionRegistry);
                 messageCase_ = 5;
                 break;
               } // case 42
               case 50: {
                 input.readMessage(
-                    getShuttingDownFieldBuilder().getBuilder(),
+                    getAcksFieldBuilder().getBuilder(),
                     extensionRegistry);
                 messageCase_ = 6;
                 break;
               } // case 50
+              case 58: {
+                input.readMessage(
+                    getOutOfMemoryFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                messageCase_ = 7;
+                break;
+              } // case 58
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -9718,678 +13646,180 @@ public final class WeaviateProtoBatch {
 
       private int bitField0_;
 
-      private java.lang.Object streamId_ = "";
-      /**
-       * <code>string stream_id = 1;</code>
-       * @return The streamId.
-       */
-      public java.lang.String getStreamId() {
-        java.lang.Object ref = streamId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          streamId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string stream_id = 1;</code>
-       * @return The bytes for streamId.
-       */
-      public com.google.protobuf.ByteString
-          getStreamIdBytes() {
-        java.lang.Object ref = streamId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          streamId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string stream_id = 1;</code>
-       * @param value The streamId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setStreamId(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        streamId_ = value;
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string stream_id = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearStreamId() {
-        streamId_ = getDefaultInstance().getStreamId();
-        bitField0_ = (bitField0_ & ~0x00000001);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string stream_id = 1;</code>
-       * @param value The bytes for streamId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setStreamIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        streamId_ = value;
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ErrorOrBuilder> errorBuilder_;
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ResultsOrBuilder> resultsBuilder_;
       /**
-       * <code>.weaviate.v1.BatchStreamMessage.Error error = 2;</code>
-       * @return Whether the error field is set.
+       * <code>.weaviate.v1.BatchStreamReply.Results results = 1;</code>
+       * @return Whether the results field is set.
        */
       @java.lang.Override
-      public boolean hasError() {
-        return messageCase_ == 2;
+      public boolean hasResults() {
+        return messageCase_ == 1;
       }
       /**
-       * <code>.weaviate.v1.BatchStreamMessage.Error error = 2;</code>
-       * @return The error.
+       * <code>.weaviate.v1.BatchStreamReply.Results results = 1;</code>
+       * @return The results.
        */
       @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error getError() {
-        if (errorBuilder_ == null) {
-          if (messageCase_ == 2) {
-            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error) message_;
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results getResults() {
+        if (resultsBuilder_ == null) {
+          if (messageCase_ == 1) {
+            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results) message_;
           }
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error.getDefaultInstance();
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.getDefaultInstance();
         } else {
-          if (messageCase_ == 2) {
-            return errorBuilder_.getMessage();
+          if (messageCase_ == 1) {
+            return resultsBuilder_.getMessage();
           }
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error.getDefaultInstance();
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.getDefaultInstance();
         }
       }
       /**
-       * <code>.weaviate.v1.BatchStreamMessage.Error error = 2;</code>
+       * <code>.weaviate.v1.BatchStreamReply.Results results = 1;</code>
        */
-      public Builder setError(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error value) {
-        if (errorBuilder_ == null) {
+      public Builder setResults(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results value) {
+        if (resultsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
           message_ = value;
           onChanged();
         } else {
-          errorBuilder_.setMessage(value);
+          resultsBuilder_.setMessage(value);
         }
-        messageCase_ = 2;
+        messageCase_ = 1;
         return this;
       }
       /**
-       * <code>.weaviate.v1.BatchStreamMessage.Error error = 2;</code>
+       * <code>.weaviate.v1.BatchStreamReply.Results results = 1;</code>
        */
-      public Builder setError(
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error.Builder builderForValue) {
-        if (errorBuilder_ == null) {
+      public Builder setResults(
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Builder builderForValue) {
+        if (resultsBuilder_ == null) {
           message_ = builderForValue.build();
           onChanged();
         } else {
-          errorBuilder_.setMessage(builderForValue.build());
+          resultsBuilder_.setMessage(builderForValue.build());
         }
-        messageCase_ = 2;
+        messageCase_ = 1;
         return this;
       }
       /**
-       * <code>.weaviate.v1.BatchStreamMessage.Error error = 2;</code>
+       * <code>.weaviate.v1.BatchStreamReply.Results results = 1;</code>
        */
-      public Builder mergeError(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error value) {
-        if (errorBuilder_ == null) {
-          if (messageCase_ == 2 &&
-              message_ != io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error.getDefaultInstance()) {
-            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error.newBuilder((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error) message_)
+      public Builder mergeResults(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results value) {
+        if (resultsBuilder_ == null) {
+          if (messageCase_ == 1 &&
+              message_ != io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.getDefaultInstance()) {
+            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.newBuilder((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results) message_)
                 .mergeFrom(value).buildPartial();
           } else {
             message_ = value;
           }
           onChanged();
         } else {
-          if (messageCase_ == 2) {
-            errorBuilder_.mergeFrom(value);
+          if (messageCase_ == 1) {
+            resultsBuilder_.mergeFrom(value);
           } else {
-            errorBuilder_.setMessage(value);
+            resultsBuilder_.setMessage(value);
           }
         }
-        messageCase_ = 2;
+        messageCase_ = 1;
         return this;
       }
       /**
-       * <code>.weaviate.v1.BatchStreamMessage.Error error = 2;</code>
+       * <code>.weaviate.v1.BatchStreamReply.Results results = 1;</code>
        */
-      public Builder clearError() {
-        if (errorBuilder_ == null) {
-          if (messageCase_ == 2) {
+      public Builder clearResults() {
+        if (resultsBuilder_ == null) {
+          if (messageCase_ == 1) {
             messageCase_ = 0;
             message_ = null;
             onChanged();
           }
         } else {
-          if (messageCase_ == 2) {
+          if (messageCase_ == 1) {
             messageCase_ = 0;
             message_ = null;
           }
-          errorBuilder_.clear();
+          resultsBuilder_.clear();
         }
         return this;
       }
       /**
-       * <code>.weaviate.v1.BatchStreamMessage.Error error = 2;</code>
+       * <code>.weaviate.v1.BatchStreamReply.Results results = 1;</code>
        */
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error.Builder getErrorBuilder() {
-        return getErrorFieldBuilder().getBuilder();
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Builder getResultsBuilder() {
+        return getResultsFieldBuilder().getBuilder();
       }
       /**
-       * <code>.weaviate.v1.BatchStreamMessage.Error error = 2;</code>
+       * <code>.weaviate.v1.BatchStreamReply.Results results = 1;</code>
        */
       @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ErrorOrBuilder getErrorOrBuilder() {
-        if ((messageCase_ == 2) && (errorBuilder_ != null)) {
-          return errorBuilder_.getMessageOrBuilder();
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ResultsOrBuilder getResultsOrBuilder() {
+        if ((messageCase_ == 1) && (resultsBuilder_ != null)) {
+          return resultsBuilder_.getMessageOrBuilder();
         } else {
-          if (messageCase_ == 2) {
-            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error) message_;
+          if (messageCase_ == 1) {
+            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results) message_;
           }
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error.getDefaultInstance();
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.getDefaultInstance();
         }
       }
       /**
-       * <code>.weaviate.v1.BatchStreamMessage.Error error = 2;</code>
+       * <code>.weaviate.v1.BatchStreamReply.Results results = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ErrorOrBuilder> 
-          getErrorFieldBuilder() {
-        if (errorBuilder_ == null) {
-          if (!(messageCase_ == 2)) {
-            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error.getDefaultInstance();
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ResultsOrBuilder> 
+          getResultsFieldBuilder() {
+        if (resultsBuilder_ == null) {
+          if (!(messageCase_ == 1)) {
+            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.getDefaultInstance();
           }
-          errorBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ErrorOrBuilder>(
-                  (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Error) message_,
+          resultsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ResultsOrBuilder>(
+                  (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Results) message_,
                   getParentForChildren(),
                   isClean());
           message_ = null;
         }
-        messageCase_ = 2;
+        messageCase_ = 1;
         onChanged();
-        return errorBuilder_;
+        return resultsBuilder_;
       }
 
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.StartOrBuilder> startBuilder_;
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDownOrBuilder> shuttingDownBuilder_;
       /**
-       * <code>.weaviate.v1.BatchStreamMessage.Start start = 3;</code>
-       * @return Whether the start field is set.
-       */
-      @java.lang.Override
-      public boolean hasStart() {
-        return messageCase_ == 3;
-      }
-      /**
-       * <code>.weaviate.v1.BatchStreamMessage.Start start = 3;</code>
-       * @return The start.
-       */
-      @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start getStart() {
-        if (startBuilder_ == null) {
-          if (messageCase_ == 3) {
-            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start) message_;
-          }
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start.getDefaultInstance();
-        } else {
-          if (messageCase_ == 3) {
-            return startBuilder_.getMessage();
-          }
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start.getDefaultInstance();
-        }
-      }
-      /**
-       * <code>.weaviate.v1.BatchStreamMessage.Start start = 3;</code>
-       */
-      public Builder setStart(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start value) {
-        if (startBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          message_ = value;
-          onChanged();
-        } else {
-          startBuilder_.setMessage(value);
-        }
-        messageCase_ = 3;
-        return this;
-      }
-      /**
-       * <code>.weaviate.v1.BatchStreamMessage.Start start = 3;</code>
-       */
-      public Builder setStart(
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start.Builder builderForValue) {
-        if (startBuilder_ == null) {
-          message_ = builderForValue.build();
-          onChanged();
-        } else {
-          startBuilder_.setMessage(builderForValue.build());
-        }
-        messageCase_ = 3;
-        return this;
-      }
-      /**
-       * <code>.weaviate.v1.BatchStreamMessage.Start start = 3;</code>
-       */
-      public Builder mergeStart(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start value) {
-        if (startBuilder_ == null) {
-          if (messageCase_ == 3 &&
-              message_ != io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start.getDefaultInstance()) {
-            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start.newBuilder((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start) message_)
-                .mergeFrom(value).buildPartial();
-          } else {
-            message_ = value;
-          }
-          onChanged();
-        } else {
-          if (messageCase_ == 3) {
-            startBuilder_.mergeFrom(value);
-          } else {
-            startBuilder_.setMessage(value);
-          }
-        }
-        messageCase_ = 3;
-        return this;
-      }
-      /**
-       * <code>.weaviate.v1.BatchStreamMessage.Start start = 3;</code>
-       */
-      public Builder clearStart() {
-        if (startBuilder_ == null) {
-          if (messageCase_ == 3) {
-            messageCase_ = 0;
-            message_ = null;
-            onChanged();
-          }
-        } else {
-          if (messageCase_ == 3) {
-            messageCase_ = 0;
-            message_ = null;
-          }
-          startBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>.weaviate.v1.BatchStreamMessage.Start start = 3;</code>
-       */
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start.Builder getStartBuilder() {
-        return getStartFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.weaviate.v1.BatchStreamMessage.Start start = 3;</code>
-       */
-      @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.StartOrBuilder getStartOrBuilder() {
-        if ((messageCase_ == 3) && (startBuilder_ != null)) {
-          return startBuilder_.getMessageOrBuilder();
-        } else {
-          if (messageCase_ == 3) {
-            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start) message_;
-          }
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start.getDefaultInstance();
-        }
-      }
-      /**
-       * <code>.weaviate.v1.BatchStreamMessage.Start start = 3;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.StartOrBuilder> 
-          getStartFieldBuilder() {
-        if (startBuilder_ == null) {
-          if (!(messageCase_ == 3)) {
-            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start.getDefaultInstance();
-          }
-          startBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.StartOrBuilder>(
-                  (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Start) message_,
-                  getParentForChildren(),
-                  isClean());
-          message_ = null;
-        }
-        messageCase_ = 3;
-        onChanged();
-        return startBuilder_;
-      }
-
-      private com.google.protobuf.SingleFieldBuilderV3<
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.StopOrBuilder> stopBuilder_;
-      /**
-       * <code>.weaviate.v1.BatchStreamMessage.Stop stop = 4;</code>
-       * @return Whether the stop field is set.
-       */
-      @java.lang.Override
-      public boolean hasStop() {
-        return messageCase_ == 4;
-      }
-      /**
-       * <code>.weaviate.v1.BatchStreamMessage.Stop stop = 4;</code>
-       * @return The stop.
-       */
-      @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop getStop() {
-        if (stopBuilder_ == null) {
-          if (messageCase_ == 4) {
-            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop) message_;
-          }
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop.getDefaultInstance();
-        } else {
-          if (messageCase_ == 4) {
-            return stopBuilder_.getMessage();
-          }
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop.getDefaultInstance();
-        }
-      }
-      /**
-       * <code>.weaviate.v1.BatchStreamMessage.Stop stop = 4;</code>
-       */
-      public Builder setStop(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop value) {
-        if (stopBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          message_ = value;
-          onChanged();
-        } else {
-          stopBuilder_.setMessage(value);
-        }
-        messageCase_ = 4;
-        return this;
-      }
-      /**
-       * <code>.weaviate.v1.BatchStreamMessage.Stop stop = 4;</code>
-       */
-      public Builder setStop(
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop.Builder builderForValue) {
-        if (stopBuilder_ == null) {
-          message_ = builderForValue.build();
-          onChanged();
-        } else {
-          stopBuilder_.setMessage(builderForValue.build());
-        }
-        messageCase_ = 4;
-        return this;
-      }
-      /**
-       * <code>.weaviate.v1.BatchStreamMessage.Stop stop = 4;</code>
-       */
-      public Builder mergeStop(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop value) {
-        if (stopBuilder_ == null) {
-          if (messageCase_ == 4 &&
-              message_ != io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop.getDefaultInstance()) {
-            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop.newBuilder((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop) message_)
-                .mergeFrom(value).buildPartial();
-          } else {
-            message_ = value;
-          }
-          onChanged();
-        } else {
-          if (messageCase_ == 4) {
-            stopBuilder_.mergeFrom(value);
-          } else {
-            stopBuilder_.setMessage(value);
-          }
-        }
-        messageCase_ = 4;
-        return this;
-      }
-      /**
-       * <code>.weaviate.v1.BatchStreamMessage.Stop stop = 4;</code>
-       */
-      public Builder clearStop() {
-        if (stopBuilder_ == null) {
-          if (messageCase_ == 4) {
-            messageCase_ = 0;
-            message_ = null;
-            onChanged();
-          }
-        } else {
-          if (messageCase_ == 4) {
-            messageCase_ = 0;
-            message_ = null;
-          }
-          stopBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>.weaviate.v1.BatchStreamMessage.Stop stop = 4;</code>
-       */
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop.Builder getStopBuilder() {
-        return getStopFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.weaviate.v1.BatchStreamMessage.Stop stop = 4;</code>
-       */
-      @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.StopOrBuilder getStopOrBuilder() {
-        if ((messageCase_ == 4) && (stopBuilder_ != null)) {
-          return stopBuilder_.getMessageOrBuilder();
-        } else {
-          if (messageCase_ == 4) {
-            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop) message_;
-          }
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop.getDefaultInstance();
-        }
-      }
-      /**
-       * <code>.weaviate.v1.BatchStreamMessage.Stop stop = 4;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.StopOrBuilder> 
-          getStopFieldBuilder() {
-        if (stopBuilder_ == null) {
-          if (!(messageCase_ == 4)) {
-            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop.getDefaultInstance();
-          }
-          stopBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.StopOrBuilder>(
-                  (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Stop) message_,
-                  getParentForChildren(),
-                  isClean());
-          message_ = null;
-        }
-        messageCase_ = 4;
-        onChanged();
-        return stopBuilder_;
-      }
-
-      private com.google.protobuf.SingleFieldBuilderV3<
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShutdownOrBuilder> shutdownBuilder_;
-      /**
-       * <code>.weaviate.v1.BatchStreamMessage.Shutdown shutdown = 5;</code>
-       * @return Whether the shutdown field is set.
-       */
-      @java.lang.Override
-      public boolean hasShutdown() {
-        return messageCase_ == 5;
-      }
-      /**
-       * <code>.weaviate.v1.BatchStreamMessage.Shutdown shutdown = 5;</code>
-       * @return The shutdown.
-       */
-      @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown getShutdown() {
-        if (shutdownBuilder_ == null) {
-          if (messageCase_ == 5) {
-            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown) message_;
-          }
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown.getDefaultInstance();
-        } else {
-          if (messageCase_ == 5) {
-            return shutdownBuilder_.getMessage();
-          }
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown.getDefaultInstance();
-        }
-      }
-      /**
-       * <code>.weaviate.v1.BatchStreamMessage.Shutdown shutdown = 5;</code>
-       */
-      public Builder setShutdown(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown value) {
-        if (shutdownBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          message_ = value;
-          onChanged();
-        } else {
-          shutdownBuilder_.setMessage(value);
-        }
-        messageCase_ = 5;
-        return this;
-      }
-      /**
-       * <code>.weaviate.v1.BatchStreamMessage.Shutdown shutdown = 5;</code>
-       */
-      public Builder setShutdown(
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown.Builder builderForValue) {
-        if (shutdownBuilder_ == null) {
-          message_ = builderForValue.build();
-          onChanged();
-        } else {
-          shutdownBuilder_.setMessage(builderForValue.build());
-        }
-        messageCase_ = 5;
-        return this;
-      }
-      /**
-       * <code>.weaviate.v1.BatchStreamMessage.Shutdown shutdown = 5;</code>
-       */
-      public Builder mergeShutdown(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown value) {
-        if (shutdownBuilder_ == null) {
-          if (messageCase_ == 5 &&
-              message_ != io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown.getDefaultInstance()) {
-            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown.newBuilder((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown) message_)
-                .mergeFrom(value).buildPartial();
-          } else {
-            message_ = value;
-          }
-          onChanged();
-        } else {
-          if (messageCase_ == 5) {
-            shutdownBuilder_.mergeFrom(value);
-          } else {
-            shutdownBuilder_.setMessage(value);
-          }
-        }
-        messageCase_ = 5;
-        return this;
-      }
-      /**
-       * <code>.weaviate.v1.BatchStreamMessage.Shutdown shutdown = 5;</code>
-       */
-      public Builder clearShutdown() {
-        if (shutdownBuilder_ == null) {
-          if (messageCase_ == 5) {
-            messageCase_ = 0;
-            message_ = null;
-            onChanged();
-          }
-        } else {
-          if (messageCase_ == 5) {
-            messageCase_ = 0;
-            message_ = null;
-          }
-          shutdownBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>.weaviate.v1.BatchStreamMessage.Shutdown shutdown = 5;</code>
-       */
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown.Builder getShutdownBuilder() {
-        return getShutdownFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.weaviate.v1.BatchStreamMessage.Shutdown shutdown = 5;</code>
-       */
-      @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShutdownOrBuilder getShutdownOrBuilder() {
-        if ((messageCase_ == 5) && (shutdownBuilder_ != null)) {
-          return shutdownBuilder_.getMessageOrBuilder();
-        } else {
-          if (messageCase_ == 5) {
-            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown) message_;
-          }
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown.getDefaultInstance();
-        }
-      }
-      /**
-       * <code>.weaviate.v1.BatchStreamMessage.Shutdown shutdown = 5;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShutdownOrBuilder> 
-          getShutdownFieldBuilder() {
-        if (shutdownBuilder_ == null) {
-          if (!(messageCase_ == 5)) {
-            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown.getDefaultInstance();
-          }
-          shutdownBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShutdownOrBuilder>(
-                  (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.Shutdown) message_,
-                  getParentForChildren(),
-                  isClean());
-          message_ = null;
-        }
-        messageCase_ = 5;
-        onChanged();
-        return shutdownBuilder_;
-      }
-
-      private com.google.protobuf.SingleFieldBuilderV3<
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDownOrBuilder> shuttingDownBuilder_;
-      /**
-       * <code>.weaviate.v1.BatchStreamMessage.ShuttingDown shutting_down = 6;</code>
+       * <code>.weaviate.v1.BatchStreamReply.ShuttingDown shutting_down = 2;</code>
        * @return Whether the shuttingDown field is set.
        */
       @java.lang.Override
       public boolean hasShuttingDown() {
-        return messageCase_ == 6;
+        return messageCase_ == 2;
       }
       /**
-       * <code>.weaviate.v1.BatchStreamMessage.ShuttingDown shutting_down = 6;</code>
+       * <code>.weaviate.v1.BatchStreamReply.ShuttingDown shutting_down = 2;</code>
        * @return The shuttingDown.
        */
       @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown getShuttingDown() {
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown getShuttingDown() {
         if (shuttingDownBuilder_ == null) {
-          if (messageCase_ == 6) {
-            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown) message_;
+          if (messageCase_ == 2) {
+            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown) message_;
           }
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown.getDefaultInstance();
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown.getDefaultInstance();
         } else {
-          if (messageCase_ == 6) {
+          if (messageCase_ == 2) {
             return shuttingDownBuilder_.getMessage();
           }
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown.getDefaultInstance();
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown.getDefaultInstance();
         }
       }
       /**
-       * <code>.weaviate.v1.BatchStreamMessage.ShuttingDown shutting_down = 6;</code>
+       * <code>.weaviate.v1.BatchStreamReply.ShuttingDown shutting_down = 2;</code>
        */
-      public Builder setShuttingDown(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown value) {
+      public Builder setShuttingDown(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown value) {
         if (shuttingDownBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -10399,31 +13829,599 @@ public final class WeaviateProtoBatch {
         } else {
           shuttingDownBuilder_.setMessage(value);
         }
-        messageCase_ = 6;
+        messageCase_ = 2;
         return this;
       }
       /**
-       * <code>.weaviate.v1.BatchStreamMessage.ShuttingDown shutting_down = 6;</code>
+       * <code>.weaviate.v1.BatchStreamReply.ShuttingDown shutting_down = 2;</code>
        */
       public Builder setShuttingDown(
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown.Builder builderForValue) {
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown.Builder builderForValue) {
         if (shuttingDownBuilder_ == null) {
           message_ = builderForValue.build();
           onChanged();
         } else {
           shuttingDownBuilder_.setMessage(builderForValue.build());
         }
+        messageCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.ShuttingDown shutting_down = 2;</code>
+       */
+      public Builder mergeShuttingDown(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown value) {
+        if (shuttingDownBuilder_ == null) {
+          if (messageCase_ == 2 &&
+              message_ != io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown.getDefaultInstance()) {
+            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown.newBuilder((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown) message_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            message_ = value;
+          }
+          onChanged();
+        } else {
+          if (messageCase_ == 2) {
+            shuttingDownBuilder_.mergeFrom(value);
+          } else {
+            shuttingDownBuilder_.setMessage(value);
+          }
+        }
+        messageCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.ShuttingDown shutting_down = 2;</code>
+       */
+      public Builder clearShuttingDown() {
+        if (shuttingDownBuilder_ == null) {
+          if (messageCase_ == 2) {
+            messageCase_ = 0;
+            message_ = null;
+            onChanged();
+          }
+        } else {
+          if (messageCase_ == 2) {
+            messageCase_ = 0;
+            message_ = null;
+          }
+          shuttingDownBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.ShuttingDown shutting_down = 2;</code>
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown.Builder getShuttingDownBuilder() {
+        return getShuttingDownFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.ShuttingDown shutting_down = 2;</code>
+       */
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDownOrBuilder getShuttingDownOrBuilder() {
+        if ((messageCase_ == 2) && (shuttingDownBuilder_ != null)) {
+          return shuttingDownBuilder_.getMessageOrBuilder();
+        } else {
+          if (messageCase_ == 2) {
+            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown) message_;
+          }
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.ShuttingDown shutting_down = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDownOrBuilder> 
+          getShuttingDownFieldBuilder() {
+        if (shuttingDownBuilder_ == null) {
+          if (!(messageCase_ == 2)) {
+            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown.getDefaultInstance();
+          }
+          shuttingDownBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDownOrBuilder>(
+                  (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShuttingDown) message_,
+                  getParentForChildren(),
+                  isClean());
+          message_ = null;
+        }
+        messageCase_ = 2;
+        onChanged();
+        return shuttingDownBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShutdownOrBuilder> shutdownBuilder_;
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Shutdown shutdown = 3;</code>
+       * @return Whether the shutdown field is set.
+       */
+      @java.lang.Override
+      public boolean hasShutdown() {
+        return messageCase_ == 3;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Shutdown shutdown = 3;</code>
+       * @return The shutdown.
+       */
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown getShutdown() {
+        if (shutdownBuilder_ == null) {
+          if (messageCase_ == 3) {
+            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown) message_;
+          }
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown.getDefaultInstance();
+        } else {
+          if (messageCase_ == 3) {
+            return shutdownBuilder_.getMessage();
+          }
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Shutdown shutdown = 3;</code>
+       */
+      public Builder setShutdown(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown value) {
+        if (shutdownBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          message_ = value;
+          onChanged();
+        } else {
+          shutdownBuilder_.setMessage(value);
+        }
+        messageCase_ = 3;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Shutdown shutdown = 3;</code>
+       */
+      public Builder setShutdown(
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown.Builder builderForValue) {
+        if (shutdownBuilder_ == null) {
+          message_ = builderForValue.build();
+          onChanged();
+        } else {
+          shutdownBuilder_.setMessage(builderForValue.build());
+        }
+        messageCase_ = 3;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Shutdown shutdown = 3;</code>
+       */
+      public Builder mergeShutdown(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown value) {
+        if (shutdownBuilder_ == null) {
+          if (messageCase_ == 3 &&
+              message_ != io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown.getDefaultInstance()) {
+            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown.newBuilder((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown) message_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            message_ = value;
+          }
+          onChanged();
+        } else {
+          if (messageCase_ == 3) {
+            shutdownBuilder_.mergeFrom(value);
+          } else {
+            shutdownBuilder_.setMessage(value);
+          }
+        }
+        messageCase_ = 3;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Shutdown shutdown = 3;</code>
+       */
+      public Builder clearShutdown() {
+        if (shutdownBuilder_ == null) {
+          if (messageCase_ == 3) {
+            messageCase_ = 0;
+            message_ = null;
+            onChanged();
+          }
+        } else {
+          if (messageCase_ == 3) {
+            messageCase_ = 0;
+            message_ = null;
+          }
+          shutdownBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Shutdown shutdown = 3;</code>
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown.Builder getShutdownBuilder() {
+        return getShutdownFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Shutdown shutdown = 3;</code>
+       */
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShutdownOrBuilder getShutdownOrBuilder() {
+        if ((messageCase_ == 3) && (shutdownBuilder_ != null)) {
+          return shutdownBuilder_.getMessageOrBuilder();
+        } else {
+          if (messageCase_ == 3) {
+            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown) message_;
+          }
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Shutdown shutdown = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShutdownOrBuilder> 
+          getShutdownFieldBuilder() {
+        if (shutdownBuilder_ == null) {
+          if (!(messageCase_ == 3)) {
+            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown.getDefaultInstance();
+          }
+          shutdownBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.ShutdownOrBuilder>(
+                  (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Shutdown) message_,
+                  getParentForChildren(),
+                  isClean());
+          message_ = null;
+        }
+        messageCase_ = 3;
+        onChanged();
+        return shutdownBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.StartedOrBuilder> startedBuilder_;
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Started started = 4;</code>
+       * @return Whether the started field is set.
+       */
+      @java.lang.Override
+      public boolean hasStarted() {
+        return messageCase_ == 4;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Started started = 4;</code>
+       * @return The started.
+       */
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started getStarted() {
+        if (startedBuilder_ == null) {
+          if (messageCase_ == 4) {
+            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started) message_;
+          }
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started.getDefaultInstance();
+        } else {
+          if (messageCase_ == 4) {
+            return startedBuilder_.getMessage();
+          }
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Started started = 4;</code>
+       */
+      public Builder setStarted(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started value) {
+        if (startedBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          message_ = value;
+          onChanged();
+        } else {
+          startedBuilder_.setMessage(value);
+        }
+        messageCase_ = 4;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Started started = 4;</code>
+       */
+      public Builder setStarted(
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started.Builder builderForValue) {
+        if (startedBuilder_ == null) {
+          message_ = builderForValue.build();
+          onChanged();
+        } else {
+          startedBuilder_.setMessage(builderForValue.build());
+        }
+        messageCase_ = 4;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Started started = 4;</code>
+       */
+      public Builder mergeStarted(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started value) {
+        if (startedBuilder_ == null) {
+          if (messageCase_ == 4 &&
+              message_ != io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started.getDefaultInstance()) {
+            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started.newBuilder((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started) message_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            message_ = value;
+          }
+          onChanged();
+        } else {
+          if (messageCase_ == 4) {
+            startedBuilder_.mergeFrom(value);
+          } else {
+            startedBuilder_.setMessage(value);
+          }
+        }
+        messageCase_ = 4;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Started started = 4;</code>
+       */
+      public Builder clearStarted() {
+        if (startedBuilder_ == null) {
+          if (messageCase_ == 4) {
+            messageCase_ = 0;
+            message_ = null;
+            onChanged();
+          }
+        } else {
+          if (messageCase_ == 4) {
+            messageCase_ = 0;
+            message_ = null;
+          }
+          startedBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Started started = 4;</code>
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started.Builder getStartedBuilder() {
+        return getStartedFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Started started = 4;</code>
+       */
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.StartedOrBuilder getStartedOrBuilder() {
+        if ((messageCase_ == 4) && (startedBuilder_ != null)) {
+          return startedBuilder_.getMessageOrBuilder();
+        } else {
+          if (messageCase_ == 4) {
+            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started) message_;
+          }
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Started started = 4;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.StartedOrBuilder> 
+          getStartedFieldBuilder() {
+        if (startedBuilder_ == null) {
+          if (!(messageCase_ == 4)) {
+            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started.getDefaultInstance();
+          }
+          startedBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.StartedOrBuilder>(
+                  (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Started) message_,
+                  getParentForChildren(),
+                  isClean());
+          message_ = null;
+        }
+        messageCase_ = 4;
+        onChanged();
+        return startedBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.BackoffOrBuilder> backoffBuilder_;
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Backoff backoff = 5;</code>
+       * @return Whether the backoff field is set.
+       */
+      @java.lang.Override
+      public boolean hasBackoff() {
+        return messageCase_ == 5;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Backoff backoff = 5;</code>
+       * @return The backoff.
+       */
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff getBackoff() {
+        if (backoffBuilder_ == null) {
+          if (messageCase_ == 5) {
+            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff) message_;
+          }
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff.getDefaultInstance();
+        } else {
+          if (messageCase_ == 5) {
+            return backoffBuilder_.getMessage();
+          }
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Backoff backoff = 5;</code>
+       */
+      public Builder setBackoff(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff value) {
+        if (backoffBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          message_ = value;
+          onChanged();
+        } else {
+          backoffBuilder_.setMessage(value);
+        }
+        messageCase_ = 5;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Backoff backoff = 5;</code>
+       */
+      public Builder setBackoff(
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff.Builder builderForValue) {
+        if (backoffBuilder_ == null) {
+          message_ = builderForValue.build();
+          onChanged();
+        } else {
+          backoffBuilder_.setMessage(builderForValue.build());
+        }
+        messageCase_ = 5;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Backoff backoff = 5;</code>
+       */
+      public Builder mergeBackoff(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff value) {
+        if (backoffBuilder_ == null) {
+          if (messageCase_ == 5 &&
+              message_ != io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff.getDefaultInstance()) {
+            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff.newBuilder((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff) message_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            message_ = value;
+          }
+          onChanged();
+        } else {
+          if (messageCase_ == 5) {
+            backoffBuilder_.mergeFrom(value);
+          } else {
+            backoffBuilder_.setMessage(value);
+          }
+        }
+        messageCase_ = 5;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Backoff backoff = 5;</code>
+       */
+      public Builder clearBackoff() {
+        if (backoffBuilder_ == null) {
+          if (messageCase_ == 5) {
+            messageCase_ = 0;
+            message_ = null;
+            onChanged();
+          }
+        } else {
+          if (messageCase_ == 5) {
+            messageCase_ = 0;
+            message_ = null;
+          }
+          backoffBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Backoff backoff = 5;</code>
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff.Builder getBackoffBuilder() {
+        return getBackoffFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Backoff backoff = 5;</code>
+       */
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.BackoffOrBuilder getBackoffOrBuilder() {
+        if ((messageCase_ == 5) && (backoffBuilder_ != null)) {
+          return backoffBuilder_.getMessageOrBuilder();
+        } else {
+          if (messageCase_ == 5) {
+            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff) message_;
+          }
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Backoff backoff = 5;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.BackoffOrBuilder> 
+          getBackoffFieldBuilder() {
+        if (backoffBuilder_ == null) {
+          if (!(messageCase_ == 5)) {
+            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff.getDefaultInstance();
+          }
+          backoffBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.BackoffOrBuilder>(
+                  (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Backoff) message_,
+                  getParentForChildren(),
+                  isClean());
+          message_ = null;
+        }
+        messageCase_ = 5;
+        onChanged();
+        return backoffBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.AcksOrBuilder> acksBuilder_;
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Acks acks = 6;</code>
+       * @return Whether the acks field is set.
+       */
+      @java.lang.Override
+      public boolean hasAcks() {
+        return messageCase_ == 6;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Acks acks = 6;</code>
+       * @return The acks.
+       */
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks getAcks() {
+        if (acksBuilder_ == null) {
+          if (messageCase_ == 6) {
+            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks) message_;
+          }
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks.getDefaultInstance();
+        } else {
+          if (messageCase_ == 6) {
+            return acksBuilder_.getMessage();
+          }
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Acks acks = 6;</code>
+       */
+      public Builder setAcks(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks value) {
+        if (acksBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          message_ = value;
+          onChanged();
+        } else {
+          acksBuilder_.setMessage(value);
+        }
         messageCase_ = 6;
         return this;
       }
       /**
-       * <code>.weaviate.v1.BatchStreamMessage.ShuttingDown shutting_down = 6;</code>
+       * <code>.weaviate.v1.BatchStreamReply.Acks acks = 6;</code>
        */
-      public Builder mergeShuttingDown(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown value) {
-        if (shuttingDownBuilder_ == null) {
+      public Builder setAcks(
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks.Builder builderForValue) {
+        if (acksBuilder_ == null) {
+          message_ = builderForValue.build();
+          onChanged();
+        } else {
+          acksBuilder_.setMessage(builderForValue.build());
+        }
+        messageCase_ = 6;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.Acks acks = 6;</code>
+       */
+      public Builder mergeAcks(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks value) {
+        if (acksBuilder_ == null) {
           if (messageCase_ == 6 &&
-              message_ != io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown.getDefaultInstance()) {
-            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown.newBuilder((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown) message_)
+              message_ != io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks.getDefaultInstance()) {
+            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks.newBuilder((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks) message_)
                 .mergeFrom(value).buildPartial();
           } else {
             message_ = value;
@@ -10431,19 +14429,19 @@ public final class WeaviateProtoBatch {
           onChanged();
         } else {
           if (messageCase_ == 6) {
-            shuttingDownBuilder_.mergeFrom(value);
+            acksBuilder_.mergeFrom(value);
           } else {
-            shuttingDownBuilder_.setMessage(value);
+            acksBuilder_.setMessage(value);
           }
         }
         messageCase_ = 6;
         return this;
       }
       /**
-       * <code>.weaviate.v1.BatchStreamMessage.ShuttingDown shutting_down = 6;</code>
+       * <code>.weaviate.v1.BatchStreamReply.Acks acks = 6;</code>
        */
-      public Builder clearShuttingDown() {
-        if (shuttingDownBuilder_ == null) {
+      public Builder clearAcks() {
+        if (acksBuilder_ == null) {
           if (messageCase_ == 6) {
             messageCase_ = 0;
             message_ = null;
@@ -10454,50 +14452,192 @@ public final class WeaviateProtoBatch {
             messageCase_ = 0;
             message_ = null;
           }
-          shuttingDownBuilder_.clear();
+          acksBuilder_.clear();
         }
         return this;
       }
       /**
-       * <code>.weaviate.v1.BatchStreamMessage.ShuttingDown shutting_down = 6;</code>
+       * <code>.weaviate.v1.BatchStreamReply.Acks acks = 6;</code>
        */
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown.Builder getShuttingDownBuilder() {
-        return getShuttingDownFieldBuilder().getBuilder();
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks.Builder getAcksBuilder() {
+        return getAcksFieldBuilder().getBuilder();
       }
       /**
-       * <code>.weaviate.v1.BatchStreamMessage.ShuttingDown shutting_down = 6;</code>
+       * <code>.weaviate.v1.BatchStreamReply.Acks acks = 6;</code>
        */
       @java.lang.Override
-      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDownOrBuilder getShuttingDownOrBuilder() {
-        if ((messageCase_ == 6) && (shuttingDownBuilder_ != null)) {
-          return shuttingDownBuilder_.getMessageOrBuilder();
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.AcksOrBuilder getAcksOrBuilder() {
+        if ((messageCase_ == 6) && (acksBuilder_ != null)) {
+          return acksBuilder_.getMessageOrBuilder();
         } else {
           if (messageCase_ == 6) {
-            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown) message_;
+            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks) message_;
           }
-          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown.getDefaultInstance();
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks.getDefaultInstance();
         }
       }
       /**
-       * <code>.weaviate.v1.BatchStreamMessage.ShuttingDown shutting_down = 6;</code>
+       * <code>.weaviate.v1.BatchStreamReply.Acks acks = 6;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDownOrBuilder> 
-          getShuttingDownFieldBuilder() {
-        if (shuttingDownBuilder_ == null) {
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.AcksOrBuilder> 
+          getAcksFieldBuilder() {
+        if (acksBuilder_ == null) {
           if (!(messageCase_ == 6)) {
-            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown.getDefaultInstance();
+            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks.getDefaultInstance();
           }
-          shuttingDownBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDownOrBuilder>(
-                  (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.ShuttingDown) message_,
+          acksBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.AcksOrBuilder>(
+                  (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.Acks) message_,
                   getParentForChildren(),
                   isClean());
           message_ = null;
         }
         messageCase_ = 6;
         onChanged();
-        return shuttingDownBuilder_;
+        return acksBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemoryOrBuilder> outOfMemoryBuilder_;
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.OutOfMemory out_of_memory = 7;</code>
+       * @return Whether the outOfMemory field is set.
+       */
+      @java.lang.Override
+      public boolean hasOutOfMemory() {
+        return messageCase_ == 7;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.OutOfMemory out_of_memory = 7;</code>
+       * @return The outOfMemory.
+       */
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory getOutOfMemory() {
+        if (outOfMemoryBuilder_ == null) {
+          if (messageCase_ == 7) {
+            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory) message_;
+          }
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory.getDefaultInstance();
+        } else {
+          if (messageCase_ == 7) {
+            return outOfMemoryBuilder_.getMessage();
+          }
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.OutOfMemory out_of_memory = 7;</code>
+       */
+      public Builder setOutOfMemory(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory value) {
+        if (outOfMemoryBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          message_ = value;
+          onChanged();
+        } else {
+          outOfMemoryBuilder_.setMessage(value);
+        }
+        messageCase_ = 7;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.OutOfMemory out_of_memory = 7;</code>
+       */
+      public Builder setOutOfMemory(
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory.Builder builderForValue) {
+        if (outOfMemoryBuilder_ == null) {
+          message_ = builderForValue.build();
+          onChanged();
+        } else {
+          outOfMemoryBuilder_.setMessage(builderForValue.build());
+        }
+        messageCase_ = 7;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.OutOfMemory out_of_memory = 7;</code>
+       */
+      public Builder mergeOutOfMemory(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory value) {
+        if (outOfMemoryBuilder_ == null) {
+          if (messageCase_ == 7 &&
+              message_ != io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory.getDefaultInstance()) {
+            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory.newBuilder((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory) message_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            message_ = value;
+          }
+          onChanged();
+        } else {
+          if (messageCase_ == 7) {
+            outOfMemoryBuilder_.mergeFrom(value);
+          } else {
+            outOfMemoryBuilder_.setMessage(value);
+          }
+        }
+        messageCase_ = 7;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.OutOfMemory out_of_memory = 7;</code>
+       */
+      public Builder clearOutOfMemory() {
+        if (outOfMemoryBuilder_ == null) {
+          if (messageCase_ == 7) {
+            messageCase_ = 0;
+            message_ = null;
+            onChanged();
+          }
+        } else {
+          if (messageCase_ == 7) {
+            messageCase_ = 0;
+            message_ = null;
+          }
+          outOfMemoryBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.OutOfMemory out_of_memory = 7;</code>
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory.Builder getOutOfMemoryBuilder() {
+        return getOutOfMemoryFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.OutOfMemory out_of_memory = 7;</code>
+       */
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemoryOrBuilder getOutOfMemoryOrBuilder() {
+        if ((messageCase_ == 7) && (outOfMemoryBuilder_ != null)) {
+          return outOfMemoryBuilder_.getMessageOrBuilder();
+        } else {
+          if (messageCase_ == 7) {
+            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory) message_;
+          }
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.BatchStreamReply.OutOfMemory out_of_memory = 7;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemoryOrBuilder> 
+          getOutOfMemoryFieldBuilder() {
+        if (outOfMemoryBuilder_ == null) {
+          if (!(messageCase_ == 7)) {
+            message_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory.getDefaultInstance();
+          }
+          outOfMemoryBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemoryOrBuilder>(
+                  (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.OutOfMemory) message_,
+                  getParentForChildren(),
+                  isClean());
+          message_ = null;
+        }
+        messageCase_ = 7;
+        onChanged();
+        return outOfMemoryBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -10512,23 +14652,23 @@ public final class WeaviateProtoBatch {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:weaviate.v1.BatchStreamMessage)
+      // @@protoc_insertion_point(builder_scope:weaviate.v1.BatchStreamReply)
     }
 
-    // @@protoc_insertion_point(class_scope:weaviate.v1.BatchStreamMessage)
-    private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:weaviate.v1.BatchStreamReply)
+    private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage();
+      DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply();
     }
 
-    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage getDefaultInstance() {
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<BatchStreamMessage>
-        PARSER = new com.google.protobuf.AbstractParser<BatchStreamMessage>() {
+    private static final com.google.protobuf.Parser<BatchStreamReply>
+        PARSER = new com.google.protobuf.AbstractParser<BatchStreamReply>() {
       @java.lang.Override
-      public BatchStreamMessage parsePartialFrom(
+      public BatchStreamReply parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -10547,17 +14687,17 @@ public final class WeaviateProtoBatch {
       }
     };
 
-    public static com.google.protobuf.Parser<BatchStreamMessage> parser() {
+    public static com.google.protobuf.Parser<BatchStreamReply> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<BatchStreamMessage> getParserForType() {
+    public com.google.protobuf.Parser<BatchStreamReply> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage getDefaultInstanceForType() {
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -10586,7 +14726,7 @@ public final class WeaviateProtoBatch {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.BatchObject.vector is deprecated.
-     *     See v1/batch.proto;l=103
+     *     See v1/batch.proto;l=118
      * @return A list containing the vector.
      */
     @java.lang.Deprecated java.util.List<java.lang.Float> getVectorList();
@@ -10597,7 +14737,7 @@ public final class WeaviateProtoBatch {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.BatchObject.vector is deprecated.
-     *     See v1/batch.proto;l=103
+     *     See v1/batch.proto;l=118
      * @return The count of vector.
      */
     @java.lang.Deprecated int getVectorCount();
@@ -10608,7 +14748,7 @@ public final class WeaviateProtoBatch {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.BatchObject.vector is deprecated.
-     *     See v1/batch.proto;l=103
+     *     See v1/batch.proto;l=118
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
@@ -16390,7 +20530,7 @@ public final class WeaviateProtoBatch {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.BatchObject.vector is deprecated.
-     *     See v1/batch.proto;l=103
+     *     See v1/batch.proto;l=118
      * @return A list containing the vector.
      */
     @java.lang.Override
@@ -16405,7 +20545,7 @@ public final class WeaviateProtoBatch {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.BatchObject.vector is deprecated.
-     *     See v1/batch.proto;l=103
+     *     See v1/batch.proto;l=118
      * @return The count of vector.
      */
     @java.lang.Deprecated public int getVectorCount() {
@@ -16418,7 +20558,7 @@ public final class WeaviateProtoBatch {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.BatchObject.vector is deprecated.
-     *     See v1/batch.proto;l=103
+     *     See v1/batch.proto;l=118
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
@@ -17268,7 +21408,7 @@ public final class WeaviateProtoBatch {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.BatchObject.vector is deprecated.
-       *     See v1/batch.proto;l=103
+       *     See v1/batch.proto;l=118
        * @return A list containing the vector.
        */
       @java.lang.Deprecated public java.util.List<java.lang.Float>
@@ -17283,7 +21423,7 @@ public final class WeaviateProtoBatch {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.BatchObject.vector is deprecated.
-       *     See v1/batch.proto;l=103
+       *     See v1/batch.proto;l=118
        * @return The count of vector.
        */
       @java.lang.Deprecated public int getVectorCount() {
@@ -17296,7 +21436,7 @@ public final class WeaviateProtoBatch {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.BatchObject.vector is deprecated.
-       *     See v1/batch.proto;l=103
+       *     See v1/batch.proto;l=118
        * @param index The index of the element to return.
        * @return The vector at the given index.
        */
@@ -17310,7 +21450,7 @@ public final class WeaviateProtoBatch {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.BatchObject.vector is deprecated.
-       *     See v1/batch.proto;l=103
+       *     See v1/batch.proto;l=118
        * @param index The index to set the value at.
        * @param value The vector to set.
        * @return This builder for chaining.
@@ -17331,7 +21471,7 @@ public final class WeaviateProtoBatch {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.BatchObject.vector is deprecated.
-       *     See v1/batch.proto;l=103
+       *     See v1/batch.proto;l=118
        * @param value The vector to add.
        * @return This builder for chaining.
        */
@@ -17350,7 +21490,7 @@ public final class WeaviateProtoBatch {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.BatchObject.vector is deprecated.
-       *     See v1/batch.proto;l=103
+       *     See v1/batch.proto;l=118
        * @param values The vector to add.
        * @return This builder for chaining.
        */
@@ -17370,7 +21510,7 @@ public final class WeaviateProtoBatch {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.BatchObject.vector is deprecated.
-       *     See v1/batch.proto;l=103
+       *     See v1/batch.proto;l=118
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearVector() {
@@ -22344,65 +26484,85 @@ public final class WeaviateProtoBatch {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_weaviate_v1_BatchReferencesRequest_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_weaviate_v1_BatchSendRequest_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_weaviate_v1_BatchSendRequest_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_weaviate_v1_BatchSendRequest_Stop_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_weaviate_v1_BatchSendRequest_Stop_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_weaviate_v1_BatchSendRequest_Objects_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_weaviate_v1_BatchSendRequest_Objects_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_weaviate_v1_BatchSendRequest_References_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_weaviate_v1_BatchSendRequest_References_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_weaviate_v1_BatchSendReply_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_weaviate_v1_BatchSendReply_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_weaviate_v1_BatchStreamRequest_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_weaviate_v1_BatchStreamRequest_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_weaviate_v1_BatchStreamMessage_descriptor;
+    internal_static_weaviate_v1_BatchStreamRequest_Start_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_weaviate_v1_BatchStreamMessage_fieldAccessorTable;
+      internal_static_weaviate_v1_BatchStreamRequest_Start_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_weaviate_v1_BatchStreamMessage_Start_descriptor;
+    internal_static_weaviate_v1_BatchStreamRequest_Stop_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_weaviate_v1_BatchStreamMessage_Start_fieldAccessorTable;
+      internal_static_weaviate_v1_BatchStreamRequest_Stop_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_weaviate_v1_BatchStreamMessage_Stop_descriptor;
+    internal_static_weaviate_v1_BatchStreamRequest_Data_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_weaviate_v1_BatchStreamMessage_Stop_fieldAccessorTable;
+      internal_static_weaviate_v1_BatchStreamRequest_Data_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_weaviate_v1_BatchStreamMessage_Shutdown_descriptor;
+    internal_static_weaviate_v1_BatchStreamRequest_Data_Objects_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_weaviate_v1_BatchStreamMessage_Shutdown_fieldAccessorTable;
+      internal_static_weaviate_v1_BatchStreamRequest_Data_Objects_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_weaviate_v1_BatchStreamMessage_ShuttingDown_descriptor;
+    internal_static_weaviate_v1_BatchStreamRequest_Data_References_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_weaviate_v1_BatchStreamMessage_ShuttingDown_fieldAccessorTable;
+      internal_static_weaviate_v1_BatchStreamRequest_Data_References_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_weaviate_v1_BatchStreamMessage_Error_descriptor;
+    internal_static_weaviate_v1_BatchStreamReply_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_weaviate_v1_BatchStreamMessage_Error_fieldAccessorTable;
+      internal_static_weaviate_v1_BatchStreamReply_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_weaviate_v1_BatchStreamReply_Started_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_weaviate_v1_BatchStreamReply_Started_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_weaviate_v1_BatchStreamReply_ShuttingDown_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_weaviate_v1_BatchStreamReply_ShuttingDown_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_weaviate_v1_BatchStreamReply_Shutdown_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_weaviate_v1_BatchStreamReply_Shutdown_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_weaviate_v1_BatchStreamReply_OutOfMemory_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_weaviate_v1_BatchStreamReply_OutOfMemory_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_weaviate_v1_BatchStreamReply_Backoff_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_weaviate_v1_BatchStreamReply_Backoff_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_weaviate_v1_BatchStreamReply_Acks_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_weaviate_v1_BatchStreamReply_Acks_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_weaviate_v1_BatchStreamReply_Results_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_weaviate_v1_BatchStreamReply_Results_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_weaviate_v1_BatchStreamReply_Results_Error_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_weaviate_v1_BatchStreamReply_Results_Error_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_weaviate_v1_BatchStreamReply_Results_Success_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_weaviate_v1_BatchStreamReply_Results_Success_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_weaviate_v1_BatchObject_descriptor;
   private static final 
@@ -22466,73 +26626,81 @@ public final class WeaviateProtoBatch {
       "rencesRequest\022/\n\nreferences\030\001 \003(\0132\033.weav" +
       "iate.v1.BatchReference\022=\n\021consistency_le" +
       "vel\030\002 \001(\0162\035.weaviate.v1.ConsistencyLevel" +
-      "H\000\210\001\001B\024\n\022_consistency_level\"\326\002\n\020BatchSen" +
-      "dRequest\022\021\n\tstream_id\030\001 \001(\t\0228\n\007objects\030\002" +
-      " \001(\0132%.weaviate.v1.BatchSendRequest.Obje" +
-      "ctsH\000\022>\n\nreferences\030\003 \001(\0132(.weaviate.v1." +
-      "BatchSendRequest.ReferencesH\000\0222\n\004stop\030\004 " +
-      "\001(\0132\".weaviate.v1.BatchSendRequest.StopH" +
-      "\000\032\006\n\004Stop\0323\n\007Objects\022(\n\006values\030\001 \003(\0132\030.w" +
-      "eaviate.v1.BatchObject\0329\n\nReferences\022+\n\006" +
-      "values\030\001 \003(\0132\033.weaviate.v1.BatchReferenc" +
-      "eB\t\n\007message\"B\n\016BatchSendReply\022\027\n\017next_b" +
-      "atch_size\030\001 \001(\005\022\027\n\017backoff_seconds\030\002 \001(\002" +
-      "\"\307\001\n\022BatchStreamRequest\022=\n\021consistency_l" +
+      "H\000\210\001\001B\024\n\022_consistency_level\"\246\004\n\022BatchStr" +
+      "eamRequest\0226\n\005start\030\001 \001(\0132%.weaviate.v1." +
+      "BatchStreamRequest.StartH\000\0224\n\004data\030\002 \001(\013" +
+      "2$.weaviate.v1.BatchStreamRequest.DataH\000" +
+      "\0224\n\004stop\030\003 \001(\0132$.weaviate.v1.BatchStream" +
+      "Request.StopH\000\032\\\n\005Start\022=\n\021consistency_l" +
       "evel\030\001 \001(\0162\035.weaviate.v1.ConsistencyLeve" +
-      "lH\000\210\001\001\022\031\n\014object_index\030\002 \001(\005H\001\210\001\001\022\034\n\017ref" +
-      "erence_index\030\003 \001(\005H\002\210\001\001B\024\n\022_consistency_" +
-      "levelB\017\n\r_object_indexB\022\n\020_reference_ind" +
-      "ex\"\360\003\n\022BatchStreamMessage\022\021\n\tstream_id\030\001" +
-      " \001(\t\0226\n\005error\030\002 \001(\0132%.weaviate.v1.BatchS" +
-      "treamMessage.ErrorH\000\0226\n\005start\030\003 \001(\0132%.we" +
-      "aviate.v1.BatchStreamMessage.StartH\000\0224\n\004" +
-      "stop\030\004 \001(\0132$.weaviate.v1.BatchStreamMess" +
-      "age.StopH\000\022<\n\010shutdown\030\005 \001(\0132(.weaviate." +
-      "v1.BatchStreamMessage.ShutdownH\000\022E\n\rshut" +
-      "ting_down\030\006 \001(\0132,.weaviate.v1.BatchStrea" +
-      "mMessage.ShuttingDownH\000\032\007\n\005Start\032\006\n\004Stop" +
-      "\032\n\n\010Shutdown\032\016\n\014ShuttingDown\032d\n\005Error\022\r\n" +
-      "\005error\030\001 \001(\t\022\r\n\005index\030\002 \001(\005\022\024\n\014is_retria" +
-      "ble\030\003 \001(\010\022\021\n\tis_object\030\004 \001(\010\022\024\n\014is_refer" +
-      "ence\030\005 \001(\010B\t\n\007message\"\336\007\n\013BatchObject\022\014\n" +
-      "\004uuid\030\001 \001(\t\022\022\n\006vector\030\002 \003(\002B\002\030\001\0227\n\nprope" +
-      "rties\030\003 \001(\0132#.weaviate.v1.BatchObject.Pr" +
-      "operties\022\022\n\ncollection\030\004 \001(\t\022\016\n\006tenant\030\005" +
-      " \001(\t\022\024\n\014vector_bytes\030\006 \001(\014\022%\n\007vectors\030\027 " +
-      "\003(\0132\024.weaviate.v1.Vectors\032\204\005\n\nProperties" +
-      "\0223\n\022non_ref_properties\030\001 \001(\0132\027.google.pr" +
-      "otobuf.Struct\022N\n\027single_target_ref_props" +
-      "\030\002 \003(\0132-.weaviate.v1.BatchObject.SingleT" +
-      "argetRefProps\022L\n\026multi_target_ref_props\030" +
-      "\003 \003(\0132,.weaviate.v1.BatchObject.MultiTar" +
-      "getRefProps\022C\n\027number_array_properties\030\004" +
-      " \003(\0132\".weaviate.v1.NumberArrayProperties" +
-      "\022=\n\024int_array_properties\030\005 \003(\0132\037.weaviat" +
-      "e.v1.IntArrayProperties\022?\n\025text_array_pr" +
-      "operties\030\006 \003(\0132 .weaviate.v1.TextArrayPr" +
-      "operties\022E\n\030boolean_array_properties\030\007 \003" +
-      "(\0132#.weaviate.v1.BooleanArrayProperties\022" +
-      "8\n\021object_properties\030\010 \003(\0132\035.weaviate.v1" +
-      ".ObjectProperties\022C\n\027object_array_proper" +
-      "ties\030\t \003(\0132\".weaviate.v1.ObjectArrayProp" +
-      "erties\022\030\n\020empty_list_props\030\n \003(\t\0328\n\024Sing" +
-      "leTargetRefProps\022\r\n\005uuids\030\001 \003(\t\022\021\n\tprop_" +
-      "name\030\002 \001(\t\032R\n\023MultiTargetRefProps\022\r\n\005uui" +
-      "ds\030\001 \003(\t\022\021\n\tprop_name\030\002 \001(\t\022\031\n\021target_co" +
-      "llection\030\003 \001(\t\"\231\001\n\016BatchReference\022\014\n\004nam" +
-      "e\030\001 \001(\t\022\027\n\017from_collection\030\002 \001(\t\022\021\n\tfrom" +
-      "_uuid\030\003 \001(\t\022\032\n\rto_collection\030\004 \001(\tH\000\210\001\001\022" +
-      "\017\n\007to_uuid\030\005 \001(\t\022\016\n\006tenant\030\006 \001(\tB\020\n\016_to_" +
-      "collection\"\210\001\n\021BatchObjectsReply\022\014\n\004took" +
-      "\030\001 \001(\002\0229\n\006errors\030\002 \003(\0132).weaviate.v1.Bat" +
-      "chObjectsReply.BatchError\032*\n\nBatchError\022" +
-      "\r\n\005index\030\001 \001(\005\022\r\n\005error\030\002 \001(\t\"\216\001\n\024BatchR" +
-      "eferencesReply\022\014\n\004took\030\001 \001(\002\022<\n\006errors\030\002" +
-      " \003(\0132,.weaviate.v1.BatchReferencesReply." +
-      "BatchError\032*\n\nBatchError\022\r\n\005index\030\001 \001(\005\022" +
-      "\r\n\005error\030\002 \001(\tBC\n-io.weaviate.client6.v1" +
-      ".internal.grpc.protocolB\022WeaviateProtoBa" +
-      "tchb\006proto3"
+      "lH\000\210\001\001B\024\n\022_consistency_level\032\006\n\004Stop\032\372\001\n" +
+      "\004Data\022=\n\007objects\030\001 \001(\0132,.weaviate.v1.Bat" +
+      "chStreamRequest.Data.Objects\022C\n\nreferenc" +
+      "es\030\002 \001(\0132/.weaviate.v1.BatchStreamReques" +
+      "t.Data.References\0323\n\007Objects\022(\n\006values\030\001" +
+      " \003(\0132\030.weaviate.v1.BatchObject\0329\n\nRefere" +
+      "nces\022+\n\006values\030\001 \003(\0132\033.weaviate.v1.Batch" +
+      "ReferenceB\t\n\007message\"\347\006\n\020BatchStreamRepl" +
+      "y\0228\n\007results\030\001 \001(\0132%.weaviate.v1.BatchSt" +
+      "reamReply.ResultsH\000\022C\n\rshutting_down\030\002 \001" +
+      "(\0132*.weaviate.v1.BatchStreamReply.Shutti" +
+      "ngDownH\000\022:\n\010shutdown\030\003 \001(\0132&.weaviate.v1" +
+      ".BatchStreamReply.ShutdownH\000\0228\n\007started\030" +
+      "\004 \001(\0132%.weaviate.v1.BatchStreamReply.Sta" +
+      "rtedH\000\0228\n\007backoff\030\005 \001(\0132%.weaviate.v1.Ba" +
+      "tchStreamReply.BackoffH\000\0222\n\004acks\030\006 \001(\0132\"" +
+      ".weaviate.v1.BatchStreamReply.AcksH\000\022B\n\r" +
+      "out_of_memory\030\007 \001(\0132).weaviate.v1.BatchS" +
+      "treamReply.OutOfMemoryH\000\032\t\n\007Started\032\016\n\014S" +
+      "huttingDown\032\n\n\010Shutdown\032-\n\013OutOfMemory\022\r" +
+      "\n\005uuids\030\001 \003(\t\022\017\n\007beacons\030\002 \003(\t\032\035\n\007Backof" +
+      "f\022\022\n\nbatch_size\030\001 \001(\005\032&\n\004Acks\022\r\n\005uuids\030\001" +
+      " \003(\t\022\017\n\007beacons\030\002 \003(\t\032\203\002\n\007Results\022;\n\006err" +
+      "ors\030\001 \003(\0132+.weaviate.v1.BatchStreamReply" +
+      ".Results.Error\022@\n\tsuccesses\030\002 \003(\0132-.weav" +
+      "iate.v1.BatchStreamReply.Results.Success" +
+      "\032B\n\005Error\022\r\n\005error\030\001 \001(\t\022\016\n\004uuid\030\002 \001(\tH\000" +
+      "\022\020\n\006beacon\030\003 \001(\tH\000B\010\n\006detail\0325\n\007Success\022" +
+      "\016\n\004uuid\030\002 \001(\tH\000\022\020\n\006beacon\030\003 \001(\tH\000B\010\n\006det" +
+      "ailB\t\n\007message\"\336\007\n\013BatchObject\022\014\n\004uuid\030\001" +
+      " \001(\t\022\022\n\006vector\030\002 \003(\002B\002\030\001\0227\n\nproperties\030\003" +
+      " \001(\0132#.weaviate.v1.BatchObject.Propertie" +
+      "s\022\022\n\ncollection\030\004 \001(\t\022\016\n\006tenant\030\005 \001(\t\022\024\n" +
+      "\014vector_bytes\030\006 \001(\014\022%\n\007vectors\030\027 \003(\0132\024.w" +
+      "eaviate.v1.Vectors\032\204\005\n\nProperties\0223\n\022non" +
+      "_ref_properties\030\001 \001(\0132\027.google.protobuf." +
+      "Struct\022N\n\027single_target_ref_props\030\002 \003(\0132" +
+      "-.weaviate.v1.BatchObject.SingleTargetRe" +
+      "fProps\022L\n\026multi_target_ref_props\030\003 \003(\0132," +
+      ".weaviate.v1.BatchObject.MultiTargetRefP" +
+      "rops\022C\n\027number_array_properties\030\004 \003(\0132\"." +
+      "weaviate.v1.NumberArrayProperties\022=\n\024int" +
+      "_array_properties\030\005 \003(\0132\037.weaviate.v1.In" +
+      "tArrayProperties\022?\n\025text_array_propertie" +
+      "s\030\006 \003(\0132 .weaviate.v1.TextArrayPropertie" +
+      "s\022E\n\030boolean_array_properties\030\007 \003(\0132#.we" +
+      "aviate.v1.BooleanArrayProperties\0228\n\021obje" +
+      "ct_properties\030\010 \003(\0132\035.weaviate.v1.Object" +
+      "Properties\022C\n\027object_array_properties\030\t " +
+      "\003(\0132\".weaviate.v1.ObjectArrayProperties\022" +
+      "\030\n\020empty_list_props\030\n \003(\t\0328\n\024SingleTarge" +
+      "tRefProps\022\r\n\005uuids\030\001 \003(\t\022\021\n\tprop_name\030\002 " +
+      "\001(\t\032R\n\023MultiTargetRefProps\022\r\n\005uuids\030\001 \003(" +
+      "\t\022\021\n\tprop_name\030\002 \001(\t\022\031\n\021target_collectio" +
+      "n\030\003 \001(\t\"\231\001\n\016BatchReference\022\014\n\004name\030\001 \001(\t" +
+      "\022\027\n\017from_collection\030\002 \001(\t\022\021\n\tfrom_uuid\030\003" +
+      " \001(\t\022\032\n\rto_collection\030\004 \001(\tH\000\210\001\001\022\017\n\007to_u" +
+      "uid\030\005 \001(\t\022\016\n\006tenant\030\006 \001(\tB\020\n\016_to_collect" +
+      "ion\"\210\001\n\021BatchObjectsReply\022\014\n\004took\030\001 \001(\002\022" +
+      "9\n\006errors\030\002 \003(\0132).weaviate.v1.BatchObjec" +
+      "tsReply.BatchError\032*\n\nBatchError\022\r\n\005inde" +
+      "x\030\001 \001(\005\022\r\n\005error\030\002 \001(\t\"\216\001\n\024BatchReferenc" +
+      "esReply\022\014\n\004took\030\001 \001(\002\022<\n\006errors\030\002 \003(\0132,." +
+      "weaviate.v1.BatchReferencesReply.BatchEr" +
+      "ror\032*\n\nBatchError\022\r\n\005index\030\001 \001(\005\022\r\n\005erro" +
+      "r\030\002 \001(\tBC\n-io.weaviate.client6.v1.intern" +
+      "al.grpc.protocolB\022WeaviateProtoBatchb\006pr" +
+      "oto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -22552,80 +26720,104 @@ public final class WeaviateProtoBatch {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_BatchReferencesRequest_descriptor,
         new java.lang.String[] { "References", "ConsistencyLevel", "ConsistencyLevel", });
-    internal_static_weaviate_v1_BatchSendRequest_descriptor =
-      getDescriptor().getMessageTypes().get(2);
-    internal_static_weaviate_v1_BatchSendRequest_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_weaviate_v1_BatchSendRequest_descriptor,
-        new java.lang.String[] { "StreamId", "Objects", "References", "Stop", "Message", });
-    internal_static_weaviate_v1_BatchSendRequest_Stop_descriptor =
-      internal_static_weaviate_v1_BatchSendRequest_descriptor.getNestedTypes().get(0);
-    internal_static_weaviate_v1_BatchSendRequest_Stop_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_weaviate_v1_BatchSendRequest_Stop_descriptor,
-        new java.lang.String[] { });
-    internal_static_weaviate_v1_BatchSendRequest_Objects_descriptor =
-      internal_static_weaviate_v1_BatchSendRequest_descriptor.getNestedTypes().get(1);
-    internal_static_weaviate_v1_BatchSendRequest_Objects_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_weaviate_v1_BatchSendRequest_Objects_descriptor,
-        new java.lang.String[] { "Values", });
-    internal_static_weaviate_v1_BatchSendRequest_References_descriptor =
-      internal_static_weaviate_v1_BatchSendRequest_descriptor.getNestedTypes().get(2);
-    internal_static_weaviate_v1_BatchSendRequest_References_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_weaviate_v1_BatchSendRequest_References_descriptor,
-        new java.lang.String[] { "Values", });
-    internal_static_weaviate_v1_BatchSendReply_descriptor =
-      getDescriptor().getMessageTypes().get(3);
-    internal_static_weaviate_v1_BatchSendReply_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_weaviate_v1_BatchSendReply_descriptor,
-        new java.lang.String[] { "NextBatchSize", "BackoffSeconds", });
     internal_static_weaviate_v1_BatchStreamRequest_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(2);
     internal_static_weaviate_v1_BatchStreamRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_BatchStreamRequest_descriptor,
-        new java.lang.String[] { "ConsistencyLevel", "ObjectIndex", "ReferenceIndex", "ConsistencyLevel", "ObjectIndex", "ReferenceIndex", });
-    internal_static_weaviate_v1_BatchStreamMessage_descriptor =
-      getDescriptor().getMessageTypes().get(5);
-    internal_static_weaviate_v1_BatchStreamMessage_fieldAccessorTable = new
+        new java.lang.String[] { "Start", "Data", "Stop", "Message", });
+    internal_static_weaviate_v1_BatchStreamRequest_Start_descriptor =
+      internal_static_weaviate_v1_BatchStreamRequest_descriptor.getNestedTypes().get(0);
+    internal_static_weaviate_v1_BatchStreamRequest_Start_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_weaviate_v1_BatchStreamMessage_descriptor,
-        new java.lang.String[] { "StreamId", "Error", "Start", "Stop", "Shutdown", "ShuttingDown", "Message", });
-    internal_static_weaviate_v1_BatchStreamMessage_Start_descriptor =
-      internal_static_weaviate_v1_BatchStreamMessage_descriptor.getNestedTypes().get(0);
-    internal_static_weaviate_v1_BatchStreamMessage_Start_fieldAccessorTable = new
+        internal_static_weaviate_v1_BatchStreamRequest_Start_descriptor,
+        new java.lang.String[] { "ConsistencyLevel", "ConsistencyLevel", });
+    internal_static_weaviate_v1_BatchStreamRequest_Stop_descriptor =
+      internal_static_weaviate_v1_BatchStreamRequest_descriptor.getNestedTypes().get(1);
+    internal_static_weaviate_v1_BatchStreamRequest_Stop_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_weaviate_v1_BatchStreamMessage_Start_descriptor,
+        internal_static_weaviate_v1_BatchStreamRequest_Stop_descriptor,
         new java.lang.String[] { });
-    internal_static_weaviate_v1_BatchStreamMessage_Stop_descriptor =
-      internal_static_weaviate_v1_BatchStreamMessage_descriptor.getNestedTypes().get(1);
-    internal_static_weaviate_v1_BatchStreamMessage_Stop_fieldAccessorTable = new
+    internal_static_weaviate_v1_BatchStreamRequest_Data_descriptor =
+      internal_static_weaviate_v1_BatchStreamRequest_descriptor.getNestedTypes().get(2);
+    internal_static_weaviate_v1_BatchStreamRequest_Data_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_weaviate_v1_BatchStreamMessage_Stop_descriptor,
+        internal_static_weaviate_v1_BatchStreamRequest_Data_descriptor,
+        new java.lang.String[] { "Objects", "References", });
+    internal_static_weaviate_v1_BatchStreamRequest_Data_Objects_descriptor =
+      internal_static_weaviate_v1_BatchStreamRequest_Data_descriptor.getNestedTypes().get(0);
+    internal_static_weaviate_v1_BatchStreamRequest_Data_Objects_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_weaviate_v1_BatchStreamRequest_Data_Objects_descriptor,
+        new java.lang.String[] { "Values", });
+    internal_static_weaviate_v1_BatchStreamRequest_Data_References_descriptor =
+      internal_static_weaviate_v1_BatchStreamRequest_Data_descriptor.getNestedTypes().get(1);
+    internal_static_weaviate_v1_BatchStreamRequest_Data_References_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_weaviate_v1_BatchStreamRequest_Data_References_descriptor,
+        new java.lang.String[] { "Values", });
+    internal_static_weaviate_v1_BatchStreamReply_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_weaviate_v1_BatchStreamReply_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_weaviate_v1_BatchStreamReply_descriptor,
+        new java.lang.String[] { "Results", "ShuttingDown", "Shutdown", "Started", "Backoff", "Acks", "OutOfMemory", "Message", });
+    internal_static_weaviate_v1_BatchStreamReply_Started_descriptor =
+      internal_static_weaviate_v1_BatchStreamReply_descriptor.getNestedTypes().get(0);
+    internal_static_weaviate_v1_BatchStreamReply_Started_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_weaviate_v1_BatchStreamReply_Started_descriptor,
         new java.lang.String[] { });
-    internal_static_weaviate_v1_BatchStreamMessage_Shutdown_descriptor =
-      internal_static_weaviate_v1_BatchStreamMessage_descriptor.getNestedTypes().get(2);
-    internal_static_weaviate_v1_BatchStreamMessage_Shutdown_fieldAccessorTable = new
+    internal_static_weaviate_v1_BatchStreamReply_ShuttingDown_descriptor =
+      internal_static_weaviate_v1_BatchStreamReply_descriptor.getNestedTypes().get(1);
+    internal_static_weaviate_v1_BatchStreamReply_ShuttingDown_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_weaviate_v1_BatchStreamMessage_Shutdown_descriptor,
+        internal_static_weaviate_v1_BatchStreamReply_ShuttingDown_descriptor,
         new java.lang.String[] { });
-    internal_static_weaviate_v1_BatchStreamMessage_ShuttingDown_descriptor =
-      internal_static_weaviate_v1_BatchStreamMessage_descriptor.getNestedTypes().get(3);
-    internal_static_weaviate_v1_BatchStreamMessage_ShuttingDown_fieldAccessorTable = new
+    internal_static_weaviate_v1_BatchStreamReply_Shutdown_descriptor =
+      internal_static_weaviate_v1_BatchStreamReply_descriptor.getNestedTypes().get(2);
+    internal_static_weaviate_v1_BatchStreamReply_Shutdown_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_weaviate_v1_BatchStreamMessage_ShuttingDown_descriptor,
+        internal_static_weaviate_v1_BatchStreamReply_Shutdown_descriptor,
         new java.lang.String[] { });
-    internal_static_weaviate_v1_BatchStreamMessage_Error_descriptor =
-      internal_static_weaviate_v1_BatchStreamMessage_descriptor.getNestedTypes().get(4);
-    internal_static_weaviate_v1_BatchStreamMessage_Error_fieldAccessorTable = new
+    internal_static_weaviate_v1_BatchStreamReply_OutOfMemory_descriptor =
+      internal_static_weaviate_v1_BatchStreamReply_descriptor.getNestedTypes().get(3);
+    internal_static_weaviate_v1_BatchStreamReply_OutOfMemory_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_weaviate_v1_BatchStreamMessage_Error_descriptor,
-        new java.lang.String[] { "Error", "Index", "IsRetriable", "IsObject", "IsReference", });
+        internal_static_weaviate_v1_BatchStreamReply_OutOfMemory_descriptor,
+        new java.lang.String[] { "Uuids", "Beacons", });
+    internal_static_weaviate_v1_BatchStreamReply_Backoff_descriptor =
+      internal_static_weaviate_v1_BatchStreamReply_descriptor.getNestedTypes().get(4);
+    internal_static_weaviate_v1_BatchStreamReply_Backoff_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_weaviate_v1_BatchStreamReply_Backoff_descriptor,
+        new java.lang.String[] { "BatchSize", });
+    internal_static_weaviate_v1_BatchStreamReply_Acks_descriptor =
+      internal_static_weaviate_v1_BatchStreamReply_descriptor.getNestedTypes().get(5);
+    internal_static_weaviate_v1_BatchStreamReply_Acks_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_weaviate_v1_BatchStreamReply_Acks_descriptor,
+        new java.lang.String[] { "Uuids", "Beacons", });
+    internal_static_weaviate_v1_BatchStreamReply_Results_descriptor =
+      internal_static_weaviate_v1_BatchStreamReply_descriptor.getNestedTypes().get(6);
+    internal_static_weaviate_v1_BatchStreamReply_Results_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_weaviate_v1_BatchStreamReply_Results_descriptor,
+        new java.lang.String[] { "Errors", "Successes", });
+    internal_static_weaviate_v1_BatchStreamReply_Results_Error_descriptor =
+      internal_static_weaviate_v1_BatchStreamReply_Results_descriptor.getNestedTypes().get(0);
+    internal_static_weaviate_v1_BatchStreamReply_Results_Error_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_weaviate_v1_BatchStreamReply_Results_Error_descriptor,
+        new java.lang.String[] { "Error", "Uuid", "Beacon", "Detail", });
+    internal_static_weaviate_v1_BatchStreamReply_Results_Success_descriptor =
+      internal_static_weaviate_v1_BatchStreamReply_Results_descriptor.getNestedTypes().get(1);
+    internal_static_weaviate_v1_BatchStreamReply_Results_Success_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_weaviate_v1_BatchStreamReply_Results_Success_descriptor,
+        new java.lang.String[] { "Uuid", "Beacon", "Detail", });
     internal_static_weaviate_v1_BatchObject_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(4);
     internal_static_weaviate_v1_BatchObject_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_BatchObject_descriptor,
@@ -22649,13 +26841,13 @@ public final class WeaviateProtoBatch {
         internal_static_weaviate_v1_BatchObject_MultiTargetRefProps_descriptor,
         new java.lang.String[] { "Uuids", "PropName", "TargetCollection", });
     internal_static_weaviate_v1_BatchReference_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(5);
     internal_static_weaviate_v1_BatchReference_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_BatchReference_descriptor,
         new java.lang.String[] { "Name", "FromCollection", "FromUuid", "ToCollection", "ToUuid", "Tenant", "ToCollection", });
     internal_static_weaviate_v1_BatchObjectsReply_descriptor =
-      getDescriptor().getMessageTypes().get(8);
+      getDescriptor().getMessageTypes().get(6);
     internal_static_weaviate_v1_BatchObjectsReply_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_BatchObjectsReply_descriptor,
@@ -22667,7 +26859,7 @@ public final class WeaviateProtoBatch {
         internal_static_weaviate_v1_BatchObjectsReply_BatchError_descriptor,
         new java.lang.String[] { "Index", "Error", });
     internal_static_weaviate_v1_BatchReferencesReply_descriptor =
-      getDescriptor().getMessageTypes().get(9);
+      getDescriptor().getMessageTypes().get(7);
     internal_static_weaviate_v1_BatchReferencesReply_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_BatchReferencesReply_descriptor,

@@ -201,60 +201,29 @@ public final class WeaviateGrpc {
     return getAggregateMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest,
-      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply> getBatchSendMethod;
-
-  @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "BatchSend",
-      requestType = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.class,
-      responseType = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply.class,
-      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest,
-      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply> getBatchSendMethod() {
-    io.grpc.MethodDescriptor<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply> getBatchSendMethod;
-    if ((getBatchSendMethod = WeaviateGrpc.getBatchSendMethod) == null) {
-      synchronized (WeaviateGrpc.class) {
-        if ((getBatchSendMethod = WeaviateGrpc.getBatchSendMethod) == null) {
-          WeaviateGrpc.getBatchSendMethod = getBatchSendMethod =
-              io.grpc.MethodDescriptor.<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply>newBuilder()
-              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "BatchSend"))
-              .setSampledToLocalTracing(true)
-              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest.getDefaultInstance()))
-              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply.getDefaultInstance()))
-              .setSchemaDescriptor(new WeaviateMethodDescriptorSupplier("BatchSend"))
-              .build();
-        }
-      }
-    }
-    return getBatchSendMethod;
-  }
-
   private static volatile io.grpc.MethodDescriptor<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest,
-      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage> getBatchStreamMethod;
+      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply> getBatchStreamMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "BatchStream",
       requestType = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.class,
-      responseType = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.class,
-      methodType = io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
+      responseType = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING)
   public static io.grpc.MethodDescriptor<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest,
-      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage> getBatchStreamMethod() {
-    io.grpc.MethodDescriptor<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage> getBatchStreamMethod;
+      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply> getBatchStreamMethod() {
+    io.grpc.MethodDescriptor<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply> getBatchStreamMethod;
     if ((getBatchStreamMethod = WeaviateGrpc.getBatchStreamMethod) == null) {
       synchronized (WeaviateGrpc.class) {
         if ((getBatchStreamMethod = WeaviateGrpc.getBatchStreamMethod) == null) {
           WeaviateGrpc.getBatchStreamMethod = getBatchStreamMethod =
-              io.grpc.MethodDescriptor.<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage>newBuilder()
-              .setType(io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
+              io.grpc.MethodDescriptor.<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "BatchStream"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage.getDefaultInstance()))
+                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply.getDefaultInstance()))
               .setSchemaDescriptor(new WeaviateMethodDescriptorSupplier("BatchStream"))
               .build();
         }
@@ -355,16 +324,9 @@ public final class WeaviateGrpc {
 
     /**
      */
-    default void batchSend(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest request,
-        io.grpc.stub.StreamObserver<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getBatchSendMethod(), responseObserver);
-    }
-
-    /**
-     */
-    default void batchStream(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest request,
-        io.grpc.stub.StreamObserver<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getBatchStreamMethod(), responseObserver);
+    default io.grpc.stub.StreamObserver<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest> batchStream(
+        io.grpc.stub.StreamObserver<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply> responseObserver) {
+      return io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall(getBatchStreamMethod(), responseObserver);
     }
   }
 
@@ -445,18 +407,10 @@ public final class WeaviateGrpc {
 
     /**
      */
-    public void batchSend(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest request,
-        io.grpc.stub.StreamObserver<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply> responseObserver) {
-      io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getBatchSendMethod(), getCallOptions()), request, responseObserver);
-    }
-
-    /**
-     */
-    public void batchStream(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest request,
-        io.grpc.stub.StreamObserver<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage> responseObserver) {
-      io.grpc.stub.ClientCalls.asyncServerStreamingCall(
-          getChannel().newCall(getBatchStreamMethod(), getCallOptions()), request, responseObserver);
+    public io.grpc.stub.StreamObserver<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest> batchStream(
+        io.grpc.stub.StreamObserver<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply> responseObserver) {
+      return io.grpc.stub.ClientCalls.asyncBidiStreamingCall(
+          getChannel().newCall(getBatchStreamMethod(), getCallOptions()), responseObserver);
     }
   }
 
@@ -516,21 +470,6 @@ public final class WeaviateGrpc {
     public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate.AggregateReply aggregate(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate.AggregateRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getAggregateMethod(), getCallOptions(), request);
-    }
-
-    /**
-     */
-    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply batchSend(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest request) {
-      return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getBatchSendMethod(), getCallOptions(), request);
-    }
-
-    /**
-     */
-    public java.util.Iterator<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage> batchStream(
-        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest request) {
-      return io.grpc.stub.ClientCalls.blockingServerStreamingCall(
-          getChannel(), getBatchStreamMethod(), getCallOptions(), request);
     }
   }
 
@@ -597,14 +536,6 @@ public final class WeaviateGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getAggregateMethod(), getCallOptions()), request);
     }
-
-    /**
-     */
-    public com.google.common.util.concurrent.ListenableFuture<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply> batchSend(
-        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest request) {
-      return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getBatchSendMethod(), getCallOptions()), request);
-    }
   }
 
   private static final int METHODID_SEARCH = 0;
@@ -613,8 +544,7 @@ public final class WeaviateGrpc {
   private static final int METHODID_BATCH_DELETE = 3;
   private static final int METHODID_TENANTS_GET = 4;
   private static final int METHODID_AGGREGATE = 5;
-  private static final int METHODID_BATCH_SEND = 6;
-  private static final int METHODID_BATCH_STREAM = 7;
+  private static final int METHODID_BATCH_STREAM = 6;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -657,14 +587,6 @@ public final class WeaviateGrpc {
           serviceImpl.aggregate((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate.AggregateRequest) request,
               (io.grpc.stub.StreamObserver<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate.AggregateReply>) responseObserver);
           break;
-        case METHODID_BATCH_SEND:
-          serviceImpl.batchSend((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest) request,
-              (io.grpc.stub.StreamObserver<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply>) responseObserver);
-          break;
-        case METHODID_BATCH_STREAM:
-          serviceImpl.batchStream((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest) request,
-              (io.grpc.stub.StreamObserver<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage>) responseObserver);
-          break;
         default:
           throw new AssertionError();
       }
@@ -675,6 +597,9 @@ public final class WeaviateGrpc {
     public io.grpc.stub.StreamObserver<Req> invoke(
         io.grpc.stub.StreamObserver<Resp> responseObserver) {
       switch (methodId) {
+        case METHODID_BATCH_STREAM:
+          return (io.grpc.stub.StreamObserver<Req>) serviceImpl.batchStream(
+              (io.grpc.stub.StreamObserver<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply>) responseObserver);
         default:
           throw new AssertionError();
       }
@@ -726,18 +651,11 @@ public final class WeaviateGrpc {
               io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate.AggregateReply>(
                 service, METHODID_AGGREGATE)))
         .addMethod(
-          getBatchSendMethod(),
-          io.grpc.stub.ServerCalls.asyncUnaryCall(
-            new MethodHandlers<
-              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendRequest,
-              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchSendReply>(
-                service, METHODID_BATCH_SEND)))
-        .addMethod(
           getBatchStreamMethod(),
-          io.grpc.stub.ServerCalls.asyncServerStreamingCall(
+          io.grpc.stub.ServerCalls.asyncBidiStreamingCall(
             new MethodHandlers<
               io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest,
-              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamMessage>(
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply>(
                 service, METHODID_BATCH_STREAM)))
         .build();
   }
@@ -793,7 +711,6 @@ public final class WeaviateGrpc {
               .addMethod(getBatchDeleteMethod())
               .addMethod(getTenantsGetMethod())
               .addMethod(getAggregateMethod())
-              .addMethod(getBatchSendMethod())
               .addMethod(getBatchStreamMethod())
               .build();
         }
