@@ -7,10 +7,15 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -19,12 +24,15 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.BiConsumer;
 
 import javax.annotation.concurrent.GuardedBy;
 
+import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
+import io.weaviate.client6.v1.api.collections.batch.Event.RpcError;
 import io.weaviate.client6.v1.api.collections.data.BatchReference;
 import io.weaviate.client6.v1.api.collections.data.InsertManyRequest;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
@@ -96,19 +104,49 @@ public final class BatchContext<PropertiesT> implements Closeable {
    * Internal execution service. It's lifecycle is bound to that of the
    * BatchContext: it's started when the context is initialized
    * and shutdown on {@link #close}.
+   *
+   * <p>
+   * In the event of abrupt stream termination ({@link Recv#onError} is called),
+   * the "recv" thread MAY shutdown this service in order to interrupt the "send"
+   * thread; the latter may be blocked on {@link Send#awaitCanSend} or
+   * {@link Send#awaitCanPrepareNext}.
    */
-  private final ExecutorService exec = Executors.newSingleThreadExecutor();
-
-  /** Service thread pool for OOM timer. */
-  private final ScheduledExecutorService scheduledExec = Executors.newScheduledThreadPool(1);
+  private final ExecutorService sendExec = Executors.newSingleThreadExecutor();
 
   /**
-   * Currently open stream. This will be created on {@link #start}.
+   * Scheduled thread pool for OOM timer.
+   *
+   * @see Oom
+   */
+  private final ScheduledExecutorService scheduledExec = Executors.newScheduledThreadPool(1);
+
+  /** Service executor for polling {@link #workers} status before closing. */
+  private final ExecutorService closeExec = Executors.newSingleThreadExecutor();
+
+  /**
+   * Client-side part of the current stream, created on {@link #start}.
    * Other threads MAY use stream but MUST NOT update this field on their own.
    */
   private volatile StreamObserver<Message> messages;
 
+  /**
+   * Server-side part of the current stream, created on {@link #start}.
+   * Other threads MAY use stream but MUST NOT update this field on their own.
+   */
   private volatile StreamObserver<Event> events;
+
+  /**
+   * Latch reaches zero once both "send" (client side) and "recv" (server side)
+   * parts of the stream have closed. After a {@link reconnect}, the latch is
+   * reset.
+   */
+  private volatile CountDownLatch workers;
+
+  /** done completes the stream. */
+  private final CompletableFuture<Void> closed = new CompletableFuture<>();
+
+  /** Thread which created the BatchContext. */
+  private final Thread parent = Thread.currentThread();
 
   BatchContext(
       StreamFactory<Message, Event> streamFactory,
@@ -140,15 +178,19 @@ public final class BatchContext<PropertiesT> implements Closeable {
   }
 
   void start() {
+    workers = new CountDownLatch(2);
+
     Recv recv = new Recv();
     messages = streamFactory.createStream(recv);
     events = recv;
 
     Send send = new Send();
-    exec.execute(send);
+    sendExec.execute(send);
   }
 
-  void reconnect() {
+  void reconnect() throws InterruptedException {
+    workers.await();
+    start();
   }
 
   /**
@@ -163,10 +205,59 @@ public final class BatchContext<PropertiesT> implements Closeable {
     return add(taskHandle.retry());
   }
 
+  /**
+   * Interrupt all subprocesses, notify the server, de-allocate resources,
+   * and abort the stream.
+   *
+   * @apiNote This is not a normal shutdown process. It is an abrupt termination
+   *          triggered by an exception.
+   */
+  private void abort(Throwable t) {
+    messages.onError(Status.INTERNAL.withCause(t).asRuntimeException());
+    closed.completeExceptionally(t);
+    parent.interrupt();
+    sendExec.shutdown();
+  }
+
   @Override
   public void close() throws IOException {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'close'");
+    closeExec.execute(() -> {
+      try {
+        queue.put(TaskHandle.POISON);
+        workers.await();
+        closed.complete(null);
+      } catch (Exception e) {
+        closed.completeExceptionally(e);
+      }
+    });
+
+    try {
+      closed.get();
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    } catch (ExecutionException e) {
+      throw new IOException(e.getCause());
+    } finally {
+      shutdownExecutors();
+    }
+  }
+
+  private void shutdownExecutors() {
+    BiConsumer<String, List<Runnable>> assertEmpty = (name, pending) -> {
+      assert pending.isEmpty() : "'%s' service had %d tasks awaiting execution"
+          .formatted(pending.size(), name);
+    };
+
+    List<Runnable> pending;
+
+    pending = sendExec.shutdownNow();
+    assertEmpty.accept("send", pending);
+
+    pending = scheduledExec.shutdownNow();
+    assertEmpty.accept("oom", pending);
+
+    pending = closeExec.shutdownNow();
+    assertEmpty.accept("close", pending);
   }
 
   /** Set the new state and notify awaiting threads. */
@@ -175,7 +266,9 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
     lock.lock();
     try {
+      State prev = state;
       state = nextState;
+      state.onEnter(prev);
       stateChanged.signal();
     } finally {
       lock.unlock();
@@ -193,42 +286,45 @@ public final class BatchContext<PropertiesT> implements Closeable {
   }
 
   private TaskHandle add(final TaskHandle taskHandle) throws InterruptedException {
-    // TODO(dyma): check that we haven't closed the stream on our end yet
-    // probably with some state.isClosed() or something
-    // TODO(dyma): check that wip doesn't have that ID yet, otherwise
-    // we can lose some data (results)
+    if (closed.isDone()) {
+      throw new IllegalStateException("BatchContext is closed");
+    }
+
+    TaskHandle existing = wip.get(taskHandle.id());
+    if (existing != null) {
+      throw new DuplicateTaskException(taskHandle, existing);
+    }
+
+    existing = wip.put(taskHandle.id(), taskHandle);
+    assert existing == null : "duplicate tasks in progress, id=" + existing.id();
+
     queue.put(taskHandle);
     return taskHandle;
   }
 
   private final class Send implements Runnable {
+
     @Override
     public void run() {
       try {
-        // trySend exists normally
         trySend();
-        messages.onCompleted();
-        return;
-      } catch (InterruptedException ignored) {
-        // TODO(dyma): interrupted (whether through the exception
-        // by breaking the while loop. Restore the interrupted status
-        // and update the state
+      } catch (Exception e) {
+        messages.onError(e);
+      } finally {
+        workers.countDown();
       }
     }
 
-    private void trySend() throws InterruptedException {
+    /**
+     * trySend consumes {@link #queue} tasks and sends them in batches until it
+     * encounters a {@link TaskHandle#POISON}.
+     *
+     * <p>
+     * If the method returns normally, it means the queue's been drained.
+     */
+    private void trySend() throws DataTooBigException {
       try {
         while (!Thread.currentThread().isInterrupted()) {
-          // if batch is full:
-          // -> if the stream is closed / status is error (error) return
-          // else send and await ack
-          //
-          // take the next item in the queue
-          // -> if POISON: drain the batch, call onComplete, return
-          //
-          // add to batch
-
-          // TODO(dyma): check that the batch is
           if (batch.isFull()) {
             send();
           }
@@ -241,47 +337,40 @@ public final class BatchContext<PropertiesT> implements Closeable {
           }
 
           Data data = task.data();
-          if (!batch.add(data)) {
-            // FIXME(dyma): once we've removed a task from the queue, we must
-            // ensure that it makes it's way to the batch, otherwise we lose
-            // that task. Here, for example, send() can be interrupted in which
-            // case the task is lost.
-            // How do we fix this? We cannot ignore the interrupt, because
-            // interrupted send() means the batch was not acked, so it will
-            // not accept any new items.
-            //
-            // Maybe! batch.add should put the data in the backlog if it couldn't
-            // fit it in the buffer!!!
-            // Yes!!!!!!! The backlog is not limited is size, so it will fit any
-            // data that does not exceed maxGrpcMessageSize. We wouldn't need to
-            // do a second pass ourselves.
-            send();
-            boolean ok = batch.add(data);
-            assert ok : "batch.add must succeed after send";
-          }
+          batch.add(data);
 
-          // TODO(dyma): check that the previous is null,
-          // we should've checked for that upstream in add().
           TaskHandle existing = wip.put(task.id(), task);
           assert existing == null : "duplicate tasks in progress, id=" + existing.id();
         }
-      } catch (DataTooBigException e) {
-        // TODO(dyma): fail
+      } catch (InterruptedException ignored) {
+        messages.onNext(Message.stop());
+        messages.onCompleted();
+        Thread.currentThread().interrupt();
       }
     }
 
+    /**
+     * Send the current portion of batch items. After this method returns, the batch
+     * is guaranteed to have space for at least one the next item (not full).
+     */
     private void send() throws InterruptedException {
-      // This will stop sending as soon as we get the batch not a "not full" state.
-      // The reason we do that is to account for the backlog, which might re-fill
-      // the batch's buffer after .clear().
+      // Continue flushing until we get the batch to not a "not full" state.
+      // This is to account for the backlog, which might re-fill the batch
+      // after .clear().
       while (batch.isFull()) {
         flush();
       }
       assert !batch.isFull() : "batch is full after send";
     }
 
+    /**
+     * Send all remaining items in the batch. After this method returns, the batch
+     * is guaranteed to be empty.
+     */
     private void drain() throws InterruptedException {
-      // This will send until ALL items in the batch have been sent.
+      // To correctly drain the batch, we flush repeatedly
+      // until the batch becomes empty, as clearing a batch
+      // after an ACK might re-populate it from its internal backlog.
       while (!batch.isEmpty()) {
         flush();
       }
@@ -289,23 +378,18 @@ public final class BatchContext<PropertiesT> implements Closeable {
     }
 
     private void flush() throws InterruptedException {
-      // TODO(dyma): if we're in OOM / ServerShuttingDown state, then we known there
-      // isn't any reason to keep waiting for the acks. However, we cannot exit
-      // without taking a poison pill from the queue, because this risks blocking the
-      // producer thread.
-      // So we patiently wait, relying purely on the 2 booleans: canSend and
-      // "isAcked". maybe not "isAcked" but "canAdd" / "canAccept"?
-
-      // FIXME(dyma): draining the batch is not a good idea because the backlog
-      // is likely smaller that the maxSize, so we'd sending half-empty batches.
-
       awaitCanSend();
       messages.onNext(batch.prepare());
-      setState(AWAIT_ACKS);
-      awaitAcked(); // TODO(dyma): rename canTake into something like awaitAcked();
-      // the method can be called boolean isInFlight();
+      setState(IN_FLIGHT);
+
+      // When we get into OOM / ServerShuttingDown state, then we can be certain that
+      // there isn't any reason to keep waiting for the ACKs. However, we should not
+      // exit without either taking a poison pill from the queue,
+      // or being interrupted, as this risks blocking the producer (main) thread.
+      awaitCanPrepareNext();
     }
 
+    /** Block until the current state allows {@link State#canSend}. */
     private void awaitCanSend() throws InterruptedException {
       lock.lock();
       try {
@@ -317,17 +401,22 @@ public final class BatchContext<PropertiesT> implements Closeable {
       }
     }
 
-    // TODO(dyma): the semantics of "canTake" is rather "can I put more data in the
-    // batch", even more precisely -- "is the batch still in-flight or is it open?"
-    private void awaitAcked() throws InterruptedException {
+    /**
+     * Block until the current state allows {@link State#canPrepareNext}.
+     *
+     * <p>
+     * Depending on the BatchContext lifecycle, the semantics of
+     * "await can prepare next" can be one of "message is ACK'ed"
+     * "the stream has started", or, more generally,
+     * "it is safe to take a next item from the queue and add it to the batch".
+     */
+    private void awaitCanPrepareNext() throws InterruptedException {
       lock.lock();
       try {
-        while (!state.canTake()) {
+        while (!state.canPrepareNext()) {
           stateChanged.await();
         }
       } finally {
-        // Not a good assertion: batch could've been re-populated from the backlog.
-        // assert !batch.isFull() : "take allowed with full batch";
         lock.unlock();
       }
     }
@@ -338,32 +427,50 @@ public final class BatchContext<PropertiesT> implements Closeable {
     @Override
     public void onNext(Event event) {
       try {
-        BatchContext.this.onEvent(event);
+        onEvent(event);
       } catch (InterruptedException e) {
-        // TODO(dyma): cancel the RPC (req.onError())
-      } catch (Exception e) {
-        // TODO(dyma): cancel with
+        // Recv is running on a thread from gRPC's internal thread pool,
+        // so, while onEvent allows InterruptedException to stay responsive,
+        // in practice this thread will only be interrupted by the thread pool,
+        // which already knows it's being shut down.
       }
     }
 
+    /**
+     * EOF for the server-side stream.
+     * By the time this is called, the client-side of the stream had been closed
+     * and the "send" thread has either exited or is on its way there.
+     */
     @Override
     public void onCompleted() {
-      // TODO(dyma): server closed its side of the stream successfully
-      // Maybe log, but there's nothing that we need to do here
-      // This is the EOF that the protocol document is talking about
+      workers.countDown();
+
+      // boolean stillStuffToDo = true;
+      // if (stillStuffToDo) {
+      // reconnect();
+      // }
     }
 
+    /** An exception occurred either on our end or in the channel internals. */
     @Override
-    public void onError(Throwable arg0) {
-      // TODO(dyma): if we did req.onError(), then the error can be ignored
-      // The exception should be set somewhere so all threads can observe it
+    public void onError(Throwable t) {
+      try {
+        onEvent(Event.RpcError.fromThrowable(t));
+      } catch (InterruptedException ignored) {
+        // Recv is running on a thread from gRPC's internal thread pool,
+        // so, while onEvent allows InterruptedException to stay responsive,
+        // in practice this thread will only be interrupted by the thread pool,
+        // which already knows it's being shut down.
+      } finally {
+        workers.countDown();
+      }
     }
   }
 
-  final State CLOSED = new BaseState();
-  final State AWAIT_STARTED = new BaseState(BaseState.Action.TAKE) {
+  final State CLOSED = new BaseState("CLOSED");
+  final State AWAIT_STARTED = new BaseState("AWAIT_STARTED", BaseState.Action.PREPARE_NEXT) {
     @Override
-    public void onEvent(Event event) {
+    public void onEvent(Event event) throws InterruptedException {
       if (requireNonNull(event, "event is null") == Event.STARTED) {
         setState(ACTIVE);
         return;
@@ -371,20 +478,23 @@ public final class BatchContext<PropertiesT> implements Closeable {
       super.onEvent(event);
     }
   };
-  final State ACTIVE = new BaseState(BaseState.Action.TAKE, BaseState.Action.SEND);
-  final State AWAIT_ACKS = new BaseState() {
+  final State ACTIVE = new BaseState("ACTIVE", BaseState.Action.PREPARE_NEXT, BaseState.Action.SEND);
+  final State IN_FLIGHT = new BaseState("IN_FLIGHT") {
     @Override
-    public void onEvent(Event event) {
+    public void onEvent(Event event) throws InterruptedException {
       requireNonNull(event, "event is null");
 
       if (event instanceof Event.Acks acks) {
         Collection<String> remaining = batch.clear();
         if (!remaining.isEmpty()) {
-          // TODO(dyma): throw an exception -- this is bad
+          throw ProtocolViolationException.incompleteAcks(List.copyOf(remaining));
         }
-        // TODO(dyma): should we check if wip contains ID?
-        // TODO(dyma): do we need to synchronize here? I don't think so...
-        acks.acked().forEach(ack -> wip.get(ack).setAcked());
+        acks.acked().forEach(id -> {
+          TaskHandle task = wip.get(id);
+          if (task != null) {
+            task.setAcked();
+          }
+        });
         setState(ACTIVE);
       } else if (event == Event.OOM) {
         int delaySeconds = 300;
@@ -396,14 +506,20 @@ public final class BatchContext<PropertiesT> implements Closeable {
   };
 
   private class BaseState implements State {
+    private final String name;
     private final EnumSet<Action> permitted;
 
     enum Action {
-      TAKE, SEND;
+      PREPARE_NEXT, SEND;
     }
 
-    protected BaseState(Action... actions) {
+    protected BaseState(String name, Action... actions) {
+      this.name = name;
       this.permitted = EnumSet.copyOf(Arrays.asList(requireNonNull(actions, "actions is null")));
+    }
+
+    @Override
+    public void onEnter(State prev) {
     }
 
     @Override
@@ -412,12 +528,12 @@ public final class BatchContext<PropertiesT> implements Closeable {
     }
 
     @Override
-    public boolean canTake() {
-      return permitted.contains(Action.TAKE);
+    public boolean canPrepareNext() {
+      return permitted.contains(Action.PREPARE_NEXT);
     }
 
     @Override
-    public void onEvent(Event event) {
+    public void onEvent(Event event) throws InterruptedException {
       requireNonNull(event, "event is null");
 
       if (event instanceof Event.Results results) {
@@ -427,20 +543,38 @@ public final class BatchContext<PropertiesT> implements Closeable {
         batch.setMaxSize(backoff.maxSize());
       } else if (event == Event.SHUTTING_DOWN) {
         setState(new ServerShuttingDown(this));
+      } else if (event instanceof Event.RpcError error) {
+        setState(new StreamAborted(error.exception()));
       } else {
-        throw new IllegalStateException("cannot handle " + event.getClass());
+        throw ProtocolViolationException.illegalStateTransition(this, event);
       }
+    }
+
+    @Override
+    public String toString() {
+      return name;
     }
   }
 
-  private class Oom extends BaseState {
-    private final ScheduledFuture<?> shutdown;
+  /**
+   * Oom waits for {@link Event#SHUTTING_DOWN} up to a specified amount of time,
+   * after which it will force stream termiation by imitating server shutdown.
+   */
+  private final class Oom extends BaseState {
+    private final long delaySeconds;
+    private ScheduledFuture<?> shutdown;
 
     private Oom(long delaySeconds) {
-      super();
-      this.shutdown = scheduledExec.schedule(this::initiateShutdown, delaySeconds, TimeUnit.SECONDS);
+      super("OOM");
+      this.delaySeconds = delaySeconds;
     }
 
+    @Override
+    public void onEnter(State prev) {
+      shutdown = scheduledExec.schedule(this::initiateShutdown, delaySeconds, TimeUnit.SECONDS);
+    }
+
+    /** Imitate server shutdown sequence. */
     private void initiateShutdown() {
       if (Thread.currentThread().isInterrupted()) {
         return;
@@ -450,26 +584,38 @@ public final class BatchContext<PropertiesT> implements Closeable {
     }
 
     @Override
-    public void onEvent(Event event) {
-      if (requireNonNull(event, "event is null") != Event.SHUTTING_DOWN) {
-        throw new IllegalStateException("Expected OOM to be followed by ShuttingDown");
+    public void onEvent(Event event) throws InterruptedException {
+      requireNonNull(event, "event");
+      if (event == Event.SHUTTING_DOWN || event instanceof RpcError) {
+        shutdown.cancel(true);
+        try {
+          shutdown.get();
+        } catch (CancellationException ignored) {
+        } catch (ExecutionException e) {
+          throw new RuntimeException(e);
+        }
       }
-
-      shutdown.cancel(true);
-      setState(new ServerShuttingDown(this));
+      super.onEvent(event);
     }
   }
 
-  private class ServerShuttingDown implements State {
-    private final boolean canTake;
+  /**
+   * ServerShuttingDown allows preparing the next batch
+   * unless the server's OOM'ed on the previous one.
+   * Once set, the state will shutdown {@link BatchContext#sendExec}
+   * to instruct the "send" thread to close our part of the stream.
+   */
+  private final class ServerShuttingDown extends BaseState {
+    private final boolean canPrepareNext;
 
     private ServerShuttingDown(State previous) {
-      this.canTake = requireNonNull(previous, "previous is null").getClass() == Oom.class;
+      super("SERVER_SHUTTING_DOWN");
+      this.canPrepareNext = requireNonNull(previous, "previous is null").getClass() != Oom.class;
     }
 
     @Override
-    public boolean canTake() {
-      return canTake;
+    public boolean canPrepareNext() {
+      return canPrepareNext;
     }
 
     @Override
@@ -478,11 +624,43 @@ public final class BatchContext<PropertiesT> implements Closeable {
     }
 
     @Override
+    public void onEnter(State prev) {
+      sendExec.shutdown();
+    }
+
+    // TODO(dyma): if we agree to retire Shutdown, then ServerShuttingDown
+    // should not override onEvent and let it fallthough to
+    // ProtocolViolationException on any event.
+    @Override
     public void onEvent(Event event) throws InterruptedException {
-      if (requireNonNull(event, "event is null") != Event.SHUTDOWN) {
-        throw new IllegalStateException("Expected ShuttingDown to be followed by Shutdown");
+      if (requireNonNull(event, "event is null") == Event.SHUTDOWN) {
+        return;
       }
-      setState(CLOSED);
+      super.onEvent(event);
+    }
+  }
+
+  /**
+   * StreamAborted means the RPC is "dead": the {@link messages} stream is closed
+   * and using it will result in an {@link IllegalStateException}.
+   */
+  private final class StreamAborted extends BaseState {
+    private final Throwable t;
+
+    protected StreamAborted(Throwable t) {
+      super("STREAM_ABORTED");
+      this.t = t;
+    }
+
+    @Override
+    public void onEnter(State prev) {
+      abort(t);
+    }
+
+    @Override
+    public void onEvent(Event event) {
+      // StreamAborted cannot transition into another state. It is terminal --
+      // BatchContext MUST terminate its subprocesses and close exceptionally.
     }
   }
 }
