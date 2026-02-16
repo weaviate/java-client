@@ -38,5 +38,5 @@ interface State {
    * different state via {@link BatchContext#setState(State)}, or start
    * a separate process, e.g. the OOM timer.
    */
-  void onEvent(Event event) throws InterruptedException;
+  void onEvent(Event event);
 }

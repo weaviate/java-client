@@ -130,19 +130,13 @@ public final class BatchContext<PropertiesT> implements Closeable {
   private volatile StreamObserver<Message> messages;
 
   /**
-   * Server-side part of the current stream, created on {@link #start}.
-   * Other threads MAY use stream but MUST NOT update this field on their own.
-   */
-  private volatile StreamObserver<Event> events;
-
-  /**
    * Latch reaches zero once both "send" (client side) and "recv" (server side)
    * parts of the stream have closed. After a {@link reconnect}, the latch is
    * reset.
    */
   private volatile CountDownLatch workers;
 
-  /** done completes the stream. */
+  /** closed completes the stream. */
   private final CompletableFuture<Void> closed = new CompletableFuture<>();
 
   /** Thread which created the BatchContext. */
@@ -182,7 +176,6 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
     Recv recv = new Recv();
     messages = streamFactory.createStream(recv);
-    events = recv;
 
     Send send = new Send();
     sendExec.execute(send);
@@ -275,8 +268,8 @@ public final class BatchContext<PropertiesT> implements Closeable {
     }
   }
 
-  /** onEvent delegates event handling to {@link #state} */
-  void onEvent(Event event) throws InterruptedException {
+  /** onEvent delegates event handling to {@link #state}. */
+  void onEvent(Event event) {
     lock.lock();
     try {
       state.onEvent(event);
@@ -295,9 +288,6 @@ public final class BatchContext<PropertiesT> implements Closeable {
       throw new DuplicateTaskException(taskHandle, existing);
     }
 
-    existing = wip.put(taskHandle.id(), taskHandle);
-    assert existing == null : "duplicate tasks in progress, id=" + existing.id();
-
     queue.put(taskHandle);
     return taskHandle;
   }
@@ -308,8 +298,6 @@ public final class BatchContext<PropertiesT> implements Closeable {
     public void run() {
       try {
         trySend();
-      } catch (Exception e) {
-        messages.onError(e);
       } finally {
         workers.countDown();
       }
@@ -317,12 +305,9 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
     /**
      * trySend consumes {@link #queue} tasks and sends them in batches until it
-     * encounters a {@link TaskHandle#POISON}.
-     *
-     * <p>
-     * If the method returns normally, it means the queue's been drained.
+     * encounters a {@link TaskHandle#POISON} or is otherwise interrupted.
      */
-    private void trySend() throws DataTooBigException {
+    private void trySend() {
       try {
         while (!Thread.currentThread().isInterrupted()) {
           if (batch.isFull()) {
@@ -343,10 +328,15 @@ public final class BatchContext<PropertiesT> implements Closeable {
           assert existing == null : "duplicate tasks in progress, id=" + existing.id();
         }
       } catch (InterruptedException ignored) {
-        messages.onNext(Message.stop());
-        messages.onCompleted();
-        Thread.currentThread().interrupt();
+        // Allow this method to exit normally to close our end of the stream.
+      } catch (Exception e) {
+        onEvent(new Event.RpcError(e));
+        messages.onError(e);
+        return;
       }
+
+      messages.onNext(Message.stop());
+      messages.onCompleted();
     }
 
     /**
@@ -426,14 +416,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
     @Override
     public void onNext(Event event) {
-      try {
-        onEvent(event);
-      } catch (InterruptedException e) {
-        // Recv is running on a thread from gRPC's internal thread pool,
-        // so, while onEvent allows InterruptedException to stay responsive,
-        // in practice this thread will only be interrupted by the thread pool,
-        // which already knows it's being shut down.
-      }
+      onEvent(event);
     }
 
     /**
@@ -445,22 +428,39 @@ public final class BatchContext<PropertiesT> implements Closeable {
     public void onCompleted() {
       workers.countDown();
 
-      // boolean stillStuffToDo = true;
-      // if (stillStuffToDo) {
-      // reconnect();
-      // }
-    }
+      // TODO(dyma): I'm not sure if there isn't a race here.
+      // Can wip be empty but there still be more work to do?
+      // wip can be cleared after Results message for the last
+      // batch arrives. This can only happen in ACTIVE stage,
+      // because OOM and SERVER_SHUTTING_DOWN imply the last batch
+      // was not acked.
+      // Should we double-check that queue.isEmpty()? Can it still
+      // contain a POISON at this time? If it's a normal shutdown
+      // after #close, then we've already taken the POISON and sent Stop.
+      // If it happends after SERVER_SHUTTING_DOWN, same.
+      if (wip.isEmpty()) {
+        return;
+      }
 
-    /** An exception occurred either on our end or in the channel internals. */
-    @Override
-    public void onError(Throwable t) {
       try {
-        onEvent(Event.RpcError.fromThrowable(t));
+        reconnect();
       } catch (InterruptedException ignored) {
         // Recv is running on a thread from gRPC's internal thread pool,
         // so, while onEvent allows InterruptedException to stay responsive,
         // in practice this thread will only be interrupted by the thread pool,
         // which already knows it's being shut down.
+      }
+    }
+
+    /** An exception occurred either on our end or in the channel internals. */
+    @Override
+    public void onError(Throwable t) {
+      // TODO(dyma): treat this as a StreamHangup
+      // After re-connecting, we need to re-submit all WIP tasks, which aren't
+      // in the queue. Maybe this means we should only add to WIP once we add it
+      // to the batch? Need to muse on that.
+      try {
+        onEvent(Event.RpcError.fromThrowable(t));
       } finally {
         workers.countDown();
       }
@@ -470,7 +470,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
   final State CLOSED = new BaseState("CLOSED");
   final State AWAIT_STARTED = new BaseState("AWAIT_STARTED", BaseState.Action.PREPARE_NEXT) {
     @Override
-    public void onEvent(Event event) throws InterruptedException {
+    public void onEvent(Event event) {
       if (requireNonNull(event, "event is null") == Event.STARTED) {
         setState(ACTIVE);
         return;
@@ -481,7 +481,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
   final State ACTIVE = new BaseState("ACTIVE", BaseState.Action.PREPARE_NEXT, BaseState.Action.SEND);
   final State IN_FLIGHT = new BaseState("IN_FLIGHT") {
     @Override
-    public void onEvent(Event event) throws InterruptedException {
+    public void onEvent(Event event) {
       requireNonNull(event, "event is null");
 
       if (event instanceof Event.Acks acks) {
@@ -533,7 +533,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
     }
 
     @Override
-    public void onEvent(Event event) throws InterruptedException {
+    public void onEvent(Event event) {
       requireNonNull(event, "event is null");
 
       if (event instanceof Event.Results results) {
@@ -579,18 +579,23 @@ public final class BatchContext<PropertiesT> implements Closeable {
       if (Thread.currentThread().isInterrupted()) {
         return;
       }
-      events.onNext(Event.SHUTTING_DOWN);
-      events.onNext(Event.SHUTDOWN);
+      onEvent(Event.SHUTTING_DOWN);
+      onEvent(Event.SHUTDOWN);
     }
 
     @Override
-    public void onEvent(Event event) throws InterruptedException {
+    public void onEvent(Event event) {
       requireNonNull(event, "event");
       if (event == Event.SHUTTING_DOWN || event instanceof RpcError) {
         shutdown.cancel(true);
         try {
           shutdown.get();
         } catch (CancellationException ignored) {
+        } catch (InterruptedException ignored) {
+          // Recv is running on a thread from gRPC's internal thread pool,
+          // so, while onEvent allows InterruptedException to stay responsive,
+          // in practice this thread will only be interrupted by the thread pool,
+          // which already knows it's being shut down.
         } catch (ExecutionException e) {
           throw new RuntimeException(e);
         }
@@ -625,6 +630,13 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
     @Override
     public void onEnter(State prev) {
+      // FIXME(dyma): we should have an orderly shutdown with a poison pill here!
+      // After the reconnect we would want to continue the execution like before.
+      // Remember, "reconnect" after a normal shutdown should only affect the
+      // `messages` stream and re-create Recv. The rest of the state is preserved.
+      //
+      // If we #shutdown the service it won't be able to execute
+      // the next Send routine.
       sendExec.shutdown();
     }
 
@@ -632,7 +644,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
     // should not override onEvent and let it fallthough to
     // ProtocolViolationException on any event.
     @Override
-    public void onEvent(Event event) throws InterruptedException {
+    public void onEvent(Event event) {
       if (requireNonNull(event, "event is null") == Event.SHUTDOWN) {
         return;
       }
@@ -654,6 +666,13 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
     @Override
     public void onEnter(State prev) {
+      // FIXME(dyma): we need to differentiate between "ABORT" the stream
+      // and "RECONNECT" on server hangup.
+      // ABORT should be for sender errors, where we cannot fix something
+      // by reconnecting. This should be called InternalError state.
+      //
+      // RECONNECT deals with StreamHangup event (from Recv#onError).
+      // We should just reconnect and re-submit all WIP items.
       abort(t);
     }
 
