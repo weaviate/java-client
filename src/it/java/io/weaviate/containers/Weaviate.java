@@ -26,7 +26,7 @@ import io.weaviate.client6.v1.internal.VersionSupport.SemanticVersion;
 
 public class Weaviate extends WeaviateContainer {
   public static final String DOCKER_IMAGE = "semitechnologies/weaviate";
-  public static final String LATEST_VERSION = Version.V135.semver.toString();
+  public static final String LATEST_VERSION = Version.latest().semver.toString();
   public static final String VERSION;
 
   static {
@@ -41,7 +41,8 @@ public class Weaviate extends WeaviateContainer {
     V132(1, 32, 24),
     V133(1, 33, 11),
     V134(1, 34, 7),
-    V135(1, 35, 2);
+    V135(1, 35, 2),
+    V136(1, 36, "0-rc.0");
 
     public final SemanticVersion semver;
 
@@ -49,8 +50,20 @@ public class Weaviate extends WeaviateContainer {
       this.semver = new SemanticVersion(major, minor, patch);
     }
 
+    private Version(int major, int minor, String patch) {
+      this.semver = new SemanticVersion(major, minor, patch);
+    }
+
     public void orSkip() {
       ConcurrentTest.requireAtLeast(this);
+    }
+
+    public static Version latest() {
+      Version[] versions = Version.class.getEnumConstants();
+      if (versions == null) {
+        throw new IllegalStateException("No versions are defined");
+      }
+      return versions[versions.length - 1];
     }
   }
 
