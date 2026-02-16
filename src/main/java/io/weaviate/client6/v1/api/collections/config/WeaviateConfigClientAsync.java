@@ -53,6 +53,12 @@ public class WeaviateConfigClientAsync {
         AddPropertyRequest._ENDPOINT);
   }
 
+  public CompletableFuture<Void> dropPropertyIndex(String propertyName, PropertyIndexType indexType) {
+    return this.restTransport.performRequestAsync(
+        new DeletePropertyIndexRequest(collection.collectionName(), propertyName, indexType),
+        DeletePropertyIndexRequest._ENDPOINT);
+  }
+
   public CompletableFuture<Void> addReference(String name, String... dataTypes) throws IOException {
     return this.addProperty(ReferenceProperty.to(name, dataTypes).toProperty());
   }
