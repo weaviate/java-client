@@ -11,8 +11,8 @@ public enum BackupStatus {
   TRANSFERRING,
   /**
    * Cancellation has been claimed by a coordinator.
-   * Used as a distributed lock to prevent race conditions when multiple coordinators
-   * attempt to cancel the same restore.
+   * Used as a distributed lock to prevent race conditions when multiple
+   * coordinators attempt to cancel the same restore.
    */
   @SerializedName("CANCELLING")
   CANCELLING,
@@ -28,10 +28,7 @@ public enum BackupStatus {
   /** Backup creation / restoration failed. */
   @SerializedName("FAILED")
   FAILED,
-  /**
-   * Backup creation canceled.
-   * This status is never returned for backup restorations.
-   */
+  /** Backup creation canceled. */
   @SerializedName("CANCELED")
   CANCELED;
 }
