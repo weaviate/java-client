@@ -126,10 +126,37 @@ public abstract class ConcurrentTest {
         .isGreaterThanOrEqualTo(required.semver);
   }
 
+  @FunctionalInterface
+  public interface ThrowingRunnable {
+    void run() throws Exception;
+  }
+
+  /**
+   * Run a block of code only if the server version is recent enough.
+   *
+   * @param required Minimal required version.
+   * @param r        Runnable.
+   */
   public static void requireAtLeast(Weaviate.Version required, Runnable r) {
     var actual = SemanticVersion.of(Weaviate.VERSION);
     if (actual.compareTo(required.semver) >= 0) {
       r.run();
     }
+  }
+
+  /**
+   * Wraps a {@link ThrowingRunnable} as {@link Runnable} that
+   * re-throws all exceptions as {@link RuntimeException}.
+   *
+   * @param tr Runnable which may throw a checked exception.
+   */
+  public static Runnable throwing(ThrowingRunnable tr) {
+    return () -> {
+      try {
+        tr.run();
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    };
   }
 }
