@@ -179,8 +179,23 @@ public class WeaviateBackupClient {
   /**
    * Cancel in-progress backup.
    *
-   * <p>
-   * This method cannot be called cancel backup restore.
+   * @param backupId Backup ID.
+   * @param backend  Backup storage backend.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @throws IOException          in case the request was not sent successfully
+   *                              due to a malformed request, a networking error
+   *                              or the server being unavailable.
+   * @deprecated This method forwards to {@link #cancelCreate}. Prefer using the
+   *             latter, as it is less ambiguous.
+   */
+  @Deprecated
+  public void cancel(String backupId, String backend) throws IOException {
+    cancelCreate(backupId, backend);
+  }
+
+  /**
+   * Cancel in-progress backup creation.
    *
    * @param backupId Backup ID.
    * @param backend  Backup storage backend.
@@ -190,7 +205,23 @@ public class WeaviateBackupClient {
    *                              due to a malformed request, a networking error
    *                              or the server being unavailable.
    */
-  public void cancel(String backupId, String backend) throws IOException {
+  public void cancelCreate(String backupId, String backend) throws IOException {
     this.restTransport.performRequest(new CancelBackupRequest(backupId, backend), CancelBackupRequest._ENDPOINT);
+  }
+
+  /**
+   * Cancel in-progress backup restore.
+   *
+   * @param backupId Backup ID.
+   * @param backend  Backup storage backend.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @throws IOException          in case the request was not sent successfully
+   *                              due to a malformed request, a networking error
+   *                              or the server being unavailable.
+   */
+  public void cancelRestore(String backupId, String backend) throws IOException {
+    this.restTransport.performRequest(new CancelBackupRestoreRequest(backupId, backend),
+        CancelBackupRestoreRequest._ENDPOINT);
   }
 }
