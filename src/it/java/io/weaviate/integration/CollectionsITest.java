@@ -19,6 +19,7 @@ import io.weaviate.client6.v1.api.collections.Quantization;
 import io.weaviate.client6.v1.api.collections.ReferenceProperty;
 import io.weaviate.client6.v1.api.collections.Replication;
 import io.weaviate.client6.v1.api.collections.VectorConfig;
+import io.weaviate.client6.v1.api.collections.config.PropertyIndexType;
 import io.weaviate.client6.v1.api.collections.config.Shard;
 import io.weaviate.client6.v1.api.collections.config.ShardStatus;
 import io.weaviate.client6.v1.api.collections.generative.DummyGenerative;
@@ -327,5 +328,45 @@ public class CollectionsITest extends ConcurrentTest {
         .as("disabled object TTL")
         .extracting(CollectionConfig::objectTtl).isNotNull()
         .returns(false, ObjectTtl::enabled);
+  }
+
+  @Test
+  public void test_dropPropertyIndex() throws IOException {
+    Weaviate.Version.V136.orSkip();
+
+    // Arrange
+    var nsThings = ns("Things");
+    var things = client.collections.create(nsThings,
+        c -> c.properties(
+            Property.text("title", p -> p
+                .indexFilterable(true)
+                .indexSearchable(true)),
+            Property.integer("size", p -> p
+                .indexRangeFilters(true))));
+
+    var config = things.config.get();
+    Assertions.assertThat(config).get()
+        .extracting(CollectionConfig::properties, InstanceOfAssertFactories.list(Property.class))
+        .allSatisfy(property -> {
+          boolean isNumeric = property.dataTypes().contains(DataType.INT);
+
+          Assertions.assertThat(property)
+              .returns(true, Property::indexFilterable)
+              .returns(!isNumeric, Property::indexSearchable)
+              .returns(isNumeric, Property::indexRangeFilters);
+        });
+
+    things.config.dropPropertyIndex("title", PropertyIndexType.FILTERABLE);
+    things.config.dropPropertyIndex("title", PropertyIndexType.SEARCHABLE);
+
+    things.config.dropPropertyIndex("size", PropertyIndexType.FILTERABLE);
+    things.config.dropPropertyIndex("size", PropertyIndexType.RANGE_FILTERS);
+
+    Assertions.assertThat(config).get()
+        .extracting(CollectionConfig::properties, InstanceOfAssertFactories.list(Property.class))
+        .allSatisfy(property -> Assertions.assertThat(property)
+            .returns(false, Property::indexFilterable)
+            .returns(false, Property::indexSearchable)
+            .returns(false, Property::indexRangeFilters));
   }
 }
