@@ -14,6 +14,8 @@ import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.Test;
 
+import com.sun.nio.sctp.IllegalUnbindException;
+
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.backup.Backup;
@@ -113,12 +115,21 @@ public class BackupITest extends ConcurrentTest {
     // Act: delete data and restore backup #1
     client.collections.delete(nsA);
     var restoreMe = client.backup.restore(backup_1, backend, restore -> restore.includeCollections(nsA));
-    restoreMe.waitForCompletion(client);
 
     // Assert: object inserted in the beginning of the test is present
+    restoreMe = restoreMe.waitForCompletion(client);
     Assertions.assertThat(restoreMe).as("restore backup #1")
         .returns(BackupStatus.SUCCESS, Backup::status);
     Assertions.assertThat(collectionA.size()).as("after restore backup #1").isEqualTo(1);
+
+    // Act: restore and cancel
+    requireAtLeast(Weaviate.Version.V136, throwing(() -> {
+      var restore_2 = client.backup.restore(backup_2, backend);
+      client.backup.cancelRestore(backup_2, backend);
+      var canceledRestore = restore_2.waitForStatus(client, BackupStatus.CANCELED);
+      Assertions.assertThat(canceledRestore).as("cancel backup restore #2")
+          .returns(BackupStatus.CANCELED, Backup::status);
+    }));
   }
 
   @Test
@@ -214,13 +225,11 @@ public class BackupITest extends ConcurrentTest {
 
       // Act: delete data and restore backup #1
       async.collections.delete(nsA).join();
-      var restore_1 = async.backup.restore(backup_1, backend, restore -> restore.includeCollections(nsA)).join();
+      var restoreMe = async.backup.restore(backup_1, backend, restore -> restore.includeCollections(nsA)).join();
 
       // Assert: object inserted in the beginning of the test is present
-      restore_1 = async.backup.getRestoreStatus(backup_1, backend)
-          .thenCompose(bak -> bak.orElseThrow().waitForCompletion(async))
-          .join();
-      Assertions.assertThat(restore_1).as("restore backup #1")
+      restoreMe = restoreMe.waitForCompletion(async).join();
+      Assertions.assertThat(restoreMe).as("restore backup #1")
           .returns(BackupStatus.SUCCESS, Backup::status);
       Assertions.assertThat(collectionA.size().join()).as("after restore backup #1").isEqualTo(1);
     }
