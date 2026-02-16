@@ -112,12 +112,11 @@ public class BackupITest extends ConcurrentTest {
 
     // Act: delete data and restore backup #1
     client.collections.delete(nsA);
-    client.backup.restore(backup_1, backend, restore -> restore.includeCollections(nsA));
+    var restoreMe = client.backup.restore(backup_1, backend, restore -> restore.includeCollections(nsA));
+    restoreMe.waitForCompletion(client);
 
     // Assert: object inserted in the beginning of the test is present
-    var restore_1 = client.backup.getRestoreStatus(backup_1, backend)
-        .orElseThrow().waitForCompletion(client);
-    Assertions.assertThat(restore_1).as("restore backup #1")
+    Assertions.assertThat(restoreMe).as("restore backup #1")
         .returns(BackupStatus.SUCCESS, Backup::status);
     Assertions.assertThat(collectionA.size()).as("after restore backup #1").isEqualTo(1);
   }
@@ -215,10 +214,10 @@ public class BackupITest extends ConcurrentTest {
 
       // Act: delete data and restore backup #1
       async.collections.delete(nsA).join();
-      async.backup.restore(backup_1, backend, restore -> restore.includeCollections(nsA)).join();
+      var restore_1 = async.backup.restore(backup_1, backend, restore -> restore.includeCollections(nsA)).join();
 
       // Assert: object inserted in the beginning of the test is present
-      var restore_1 = async.backup.getRestoreStatus(backup_1, backend)
+      restore_1 = async.backup.getRestoreStatus(backup_1, backend)
           .thenCompose(bak -> bak.orElseThrow().waitForCompletion(async))
           .join();
       Assertions.assertThat(restore_1).as("restore backup #1")
