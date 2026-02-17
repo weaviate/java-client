@@ -168,13 +168,8 @@ public final class TaskHandle {
     return retries;
   }
 
-  /** Task creation timestamp. Retried tasks have different timestamps. */
-  public Instant createdAt() {
-    return createdAt;
-  }
-
   @Override
   public String toString() {
-    return "TaskHandle<id=%s, retried=%d, created=%s>".formatted(id(), timesRetried(), createdAt());
+    return "TaskHandle<id=%s, retried=%d, created=%s>".formatted(id(), retries, createdAt);
   }
 }

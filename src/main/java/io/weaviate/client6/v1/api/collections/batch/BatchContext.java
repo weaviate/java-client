@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CancellationException;
@@ -18,6 +19,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -32,7 +34,8 @@ import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
-import io.weaviate.client6.v1.api.collections.batch.Event.RpcError;
+import io.weaviate.client6.v1.api.collections.batch.Event.ClientError;
+import io.weaviate.client6.v1.api.collections.batch.Event.StreamHangup;
 import io.weaviate.client6.v1.api.collections.data.BatchReference;
 import io.weaviate.client6.v1.api.collections.data.InsertManyRequest;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
@@ -52,9 +55,31 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 public final class BatchContext<PropertiesT> implements Closeable {
   private final int DEFAULT_BATCH_SIZE = 1000;
   private final int DEFAULT_QUEUE_SIZE = 100;
+  private final int MAX_RECONNECT_RETRIES = 5;
 
   private final CollectionDescriptor<PropertiesT> collectionDescriptor;
   private final CollectionHandleDefaults collectionHandleDefaults;
+
+  /**
+   * Internal execution service. It's lifecycle is bound to that of the
+   * BatchContext: it's started when the context is initialized
+   * and shutdown on {@link #close}.
+   *
+   * <p>
+   * In the event of abrupt stream termination ({@link Recv#onError} is called),
+   * the "recv" thread MAY shutdown this service in order to interrupt the "send"
+   * thread; the latter may be blocked on {@link Send#awaitCanSend} or
+   * {@link Send#awaitCanPrepareNext}.
+   */
+  private final ExecutorService sendExec = Executors.newSingleThreadExecutor();
+
+  /**
+   * Scheduled thread pool for delayed tasks.
+   *
+   * @see Oom
+   * @see Reconnecting
+   */
+  private final ScheduledExecutorService scheduledExec = Executors.newScheduledThreadPool(1);
 
   /** Stream factory creates new streams. */
   private final StreamFactory<Message, Event> streamFactory;
@@ -101,33 +126,13 @@ public final class BatchContext<PropertiesT> implements Closeable {
   private final Condition stateChanged = lock.newCondition();
 
   /**
-   * Internal execution service. It's lifecycle is bound to that of the
-   * BatchContext: it's started when the context is initialized
-   * and shutdown on {@link #close}.
-   *
-   * <p>
-   * In the event of abrupt stream termination ({@link Recv#onError} is called),
-   * the "recv" thread MAY shutdown this service in order to interrupt the "send"
-   * thread; the latter may be blocked on {@link Send#awaitCanSend} or
-   * {@link Send#awaitCanPrepareNext}.
-   */
-  private final ExecutorService sendExec = Executors.newSingleThreadExecutor();
-
-  /**
-   * Scheduled thread pool for OOM timer.
-   *
-   * @see Oom
-   */
-  private final ScheduledExecutorService scheduledExec = Executors.newScheduledThreadPool(1);
-
-  /** Service executor for polling {@link #workers} status before closing. */
-  private final ExecutorService closeExec = Executors.newSingleThreadExecutor();
-
-  /**
    * Client-side part of the current stream, created on {@link #start}.
    * Other threads MAY use stream but MUST NOT update this field on their own.
    */
   private volatile StreamObserver<Message> messages;
+
+  /** Handle for the "send" thread. Use {@link Future#cancel} to interrupt it. */
+  private volatile Future<?> send;
 
   /**
    * Latch reaches zero once both "send" (client side) and "recv" (server side)
@@ -136,11 +141,23 @@ public final class BatchContext<PropertiesT> implements Closeable {
    */
   private volatile CountDownLatch workers;
 
-  /** closed completes the stream. */
-  private final CompletableFuture<Void> closed = new CompletableFuture<>();
+  /** Lightway check to ensure users cannot send on a closed context. */
+  private volatile boolean closed;
 
-  /** Thread which created the BatchContext. */
-  private final Thread parent = Thread.currentThread();
+  /** Closing state. */
+  private volatile Closing closing;
+
+  void setClosing(Exception ex) {
+    if (closing == null) {
+      synchronized (Closing.class) {
+        if (closing == null) {
+          closing = new Closing(ex);
+        }
+      }
+    }
+
+    setState(closing);
+  }
 
   BatchContext(
       StreamFactory<Message, Event> streamFactory,
@@ -153,6 +170,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
     this.queue = new ArrayBlockingQueue<>(DEFAULT_QUEUE_SIZE);
     this.batch = new Batch(DEFAULT_BATCH_SIZE, maxSizeBytes);
+    setState(CLOSED);
   }
 
   /** Add {@link WeaviateObject} to the batch. */
@@ -174,15 +192,20 @@ public final class BatchContext<PropertiesT> implements Closeable {
   void start() {
     workers = new CountDownLatch(2);
 
-    Recv recv = new Recv();
-    messages = streamFactory.createStream(recv);
+    messages = streamFactory.createStream(new Recv());
+    send = sendExec.submit(new Send());
 
-    Send send = new Send();
-    sendExec.execute(send);
+    messages.onNext(Message.start(collectionHandleDefaults.consistencyLevel()));
+    setState(AWAIT_STARTED);
   }
 
-  void reconnect() throws InterruptedException {
+  /**
+   * Reconnect waits for "send" and "recv" streams to exit
+   * and restarts the process with a new stream.
+   */
+  void reconnect() throws InterruptedException, ExecutionException {
     workers.await();
+    send.get();
     start();
   }
 
@@ -198,40 +221,19 @@ public final class BatchContext<PropertiesT> implements Closeable {
     return add(taskHandle.retry());
   }
 
-  /**
-   * Interrupt all subprocesses, notify the server, de-allocate resources,
-   * and abort the stream.
-   *
-   * @apiNote This is not a normal shutdown process. It is an abrupt termination
-   *          triggered by an exception.
-   */
-  private void abort(Throwable t) {
-    messages.onError(Status.INTERNAL.withCause(t).asRuntimeException());
-    closed.completeExceptionally(t);
-    parent.interrupt();
-    sendExec.shutdown();
-  }
-
   @Override
   public void close() throws IOException {
-    closeExec.execute(() -> {
-      try {
-        queue.put(TaskHandle.POISON);
-        workers.await();
-        closed.complete(null);
-      } catch (Exception e) {
-        closed.completeExceptionally(e);
-      }
-    });
+    setClosing(null);
 
     try {
-      closed.get();
+      closing.await();
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
     } catch (ExecutionException e) {
       throw new IOException(e.getCause());
     } finally {
       shutdownExecutors();
+      setState(CLOSED);
     }
   }
 
@@ -249,7 +251,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
     pending = scheduledExec.shutdownNow();
     assertEmpty.accept("oom", pending);
 
-    pending = closeExec.shutdownNow();
+    pending = closing.shutdownNow();
     assertEmpty.accept("close", pending);
   }
 
@@ -269,7 +271,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
   }
 
   /** onEvent delegates event handling to {@link #state}. */
-  void onEvent(Event event) {
+  private void onEvent(Event event) {
     lock.lock();
     try {
       state.onEvent(event);
@@ -279,7 +281,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
   }
 
   private TaskHandle add(final TaskHandle taskHandle) throws InterruptedException {
-    if (closed.isDone()) {
+    if (closed) {
       throw new IllegalStateException("BatchContext is closed");
     }
 
@@ -309,6 +311,8 @@ public final class BatchContext<PropertiesT> implements Closeable {
      */
     private void trySend() {
       try {
+        awaitCanPrepareNext();
+
         while (!Thread.currentThread().isInterrupted()) {
           if (batch.isFull()) {
             send();
@@ -328,10 +332,12 @@ public final class BatchContext<PropertiesT> implements Closeable {
           assert existing == null : "duplicate tasks in progress, id=" + existing.id();
         }
       } catch (InterruptedException ignored) {
-        // Allow this method to exit normally to close our end of the stream.
+        // This thread is only interrupted in the RECONNECTING state, not by
+        // the user's code. Allow this method to exit normally to close our
+        // end of the stream.
+        Thread.currentThread().interrupt();
       } catch (Exception e) {
-        onEvent(new Event.RpcError(e));
-        messages.onError(e);
+        onEvent(new Event.ClientError(e));
         return;
       }
 
@@ -426,56 +432,32 @@ public final class BatchContext<PropertiesT> implements Closeable {
      */
     @Override
     public void onCompleted() {
-      workers.countDown();
-
-      // TODO(dyma): I'm not sure if there isn't a race here.
-      // Can wip be empty but there still be more work to do?
-      // wip can be cleared after Results message for the last
-      // batch arrives. This can only happen in ACTIVE stage,
-      // because OOM and SERVER_SHUTTING_DOWN imply the last batch
-      // was not acked.
-      // Should we double-check that queue.isEmpty()? Can it still
-      // contain a POISON at this time? If it's a normal shutdown
-      // after #close, then we've already taken the POISON and sent Stop.
-      // If it happends after SERVER_SHUTTING_DOWN, same.
-      if (wip.isEmpty()) {
-        return;
-      }
-
       try {
-        reconnect();
-      } catch (InterruptedException ignored) {
-        // Recv is running on a thread from gRPC's internal thread pool,
-        // so, while onEvent allows InterruptedException to stay responsive,
-        // in practice this thread will only be interrupted by the thread pool,
-        // which already knows it's being shut down.
+        onEvent(Event.EOF);
+      } finally {
+        workers.countDown();
       }
     }
 
     /** An exception occurred either on our end or in the channel internals. */
     @Override
     public void onError(Throwable t) {
-      // TODO(dyma): treat this as a StreamHangup
-      // After re-connecting, we need to re-submit all WIP tasks, which aren't
-      // in the queue. Maybe this means we should only add to WIP once we add it
-      // to the batch? Need to muse on that.
       try {
-        onEvent(Event.RpcError.fromThrowable(t));
+        onEvent(Event.StreamHangup.fromThrowable(t));
       } finally {
         workers.countDown();
       }
     }
   }
 
-  final State CLOSED = new BaseState("CLOSED");
   final State AWAIT_STARTED = new BaseState("AWAIT_STARTED", BaseState.Action.PREPARE_NEXT) {
     @Override
     public void onEvent(Event event) {
       if (requireNonNull(event, "event is null") == Event.STARTED) {
         setState(ACTIVE);
-        return;
+      } else {
+        super.onEvent(event);
       }
-      super.onEvent(event);
     }
   };
   final State ACTIVE = new BaseState("ACTIVE", BaseState.Action.PREPARE_NEXT, BaseState.Action.SEND);
@@ -496,9 +478,8 @@ public final class BatchContext<PropertiesT> implements Closeable {
           }
         });
         setState(ACTIVE);
-      } else if (event == Event.OOM) {
-        int delaySeconds = 300;
-        setState(new Oom(delaySeconds));
+      } else if (event instanceof Event.Oom oom) {
+        setState(new Oom(oom.delaySeconds()));
       } else {
         super.onEvent(event);
       }
@@ -532,22 +513,62 @@ public final class BatchContext<PropertiesT> implements Closeable {
       return permitted.contains(Action.PREPARE_NEXT);
     }
 
+    /**
+     * Handle events which may arrive at any moment without violating the protocol.
+     *
+     * <ul>
+     * <li>{@link Event.Results} -- update tasks in {@link wip} and remove them.
+     * <li>{@link Event.Backoff} -- adjust batch size.
+     * <li>{@link Event#SHUTTING_DOWN} -- transition into
+     * {@link ServerShuttingDown}.
+     * <li>{@link Event.StreamHangup -- transition into {@link Reconnecting} state.
+     * <li>{@link Event.ClientError -- transition into {@link Closing} state with
+     * exception.
+     * </ul>
+     *
+     * @throws ProtocolViolationException If event cannot be handled in this state.
+     */
     @Override
     public void onEvent(Event event) {
       requireNonNull(event, "event is null");
 
       if (event instanceof Event.Results results) {
-        results.successful().forEach(id -> wip.get(id).setSuccess());
-        results.errors().forEach((id, error) -> wip.get(id).setError(error));
+        onResults(results);
       } else if (event instanceof Event.Backoff backoff) {
-        batch.setMaxSize(backoff.maxSize());
+        onBackoff(backoff);
       } else if (event == Event.SHUTTING_DOWN) {
-        setState(new ServerShuttingDown(this));
-      } else if (event instanceof Event.RpcError error) {
-        setState(new StreamAborted(error.exception()));
+        onShuttingDown();
+      } else if (event instanceof Event.StreamHangup || event == Event.EOF) {
+        onStreamClosed(event);
+      } else if (event instanceof Event.ClientError error) {
+        onClientError(error);
       } else {
         throw ProtocolViolationException.illegalStateTransition(this, event);
       }
+    }
+
+    private final void onResults(Event.Results results) {
+      results.successful().forEach(id -> wip.remove(id).setSuccess());
+      results.errors().forEach((id, error) -> wip.remove(id).setError(error));
+    }
+
+    private final void onBackoff(Event.Backoff backoff) {
+      batch.setMaxSize(backoff.maxSize());
+    }
+
+    private final void onShuttingDown() {
+      setState(new ServerShuttingDown(this));
+    }
+
+    private final void onStreamClosed(Event event) {
+      if (event instanceof Event.StreamHangup hangup) {
+        // TODO(dyma): log error?
+      }
+      setState(new Reconnecting(MAX_RECONNECT_RETRIES));
+    }
+
+    private final void onClientError(Event.ClientError error) {
+      setClosing(error.exception());
     }
 
     @Override
@@ -580,13 +601,15 @@ public final class BatchContext<PropertiesT> implements Closeable {
         return;
       }
       onEvent(Event.SHUTTING_DOWN);
-      onEvent(Event.SHUTDOWN);
+      onEvent(Event.EOF);
     }
 
     @Override
     public void onEvent(Event event) {
       requireNonNull(event, "event");
-      if (event == Event.SHUTTING_DOWN || event instanceof RpcError) {
+      if (event == Event.SHUTTING_DOWN ||
+          event instanceof StreamHangup ||
+          event instanceof ClientError) {
         shutdown.cancel(true);
         try {
           shutdown.get();
@@ -630,56 +653,135 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
     @Override
     public void onEnter(State prev) {
-      // FIXME(dyma): we should have an orderly shutdown with a poison pill here!
-      // After the reconnect we would want to continue the execution like before.
-      // Remember, "reconnect" after a normal shutdown should only affect the
-      // `messages` stream and re-create Recv. The rest of the state is preserved.
-      //
-      // If we #shutdown the service it won't be able to execute
-      // the next Send routine.
-      sendExec.shutdown();
-    }
-
-    // TODO(dyma): if we agree to retire Shutdown, then ServerShuttingDown
-    // should not override onEvent and let it fallthough to
-    // ProtocolViolationException on any event.
-    @Override
-    public void onEvent(Event event) {
-      if (requireNonNull(event, "event is null") == Event.SHUTDOWN) {
-        return;
-      }
-      super.onEvent(event);
+      send.cancel(true);
     }
   }
 
-  /**
-   * StreamAborted means the RPC is "dead": the {@link messages} stream is closed
-   * and using it will result in an {@link IllegalStateException}.
-   */
-  private final class StreamAborted extends BaseState {
-    private final Throwable t;
+  private final class Reconnecting extends BaseState {
+    private final int maxRetries;
+    private int retries = 0;
 
-    protected StreamAborted(Throwable t) {
-      super("STREAM_ABORTED");
-      this.t = t;
+    private Reconnecting(int maxRetries) {
+      super("RECONNECTING", Action.PREPARE_NEXT);
+      this.maxRetries = maxRetries;
     }
 
     @Override
     public void onEnter(State prev) {
-      // FIXME(dyma): we need to differentiate between "ABORT" the stream
-      // and "RECONNECT" on server hangup.
-      // ABORT should be for sender errors, where we cannot fix something
-      // by reconnecting. This should be called InternalError state.
-      //
-      // RECONNECT deals with StreamHangup event (from Recv#onError).
-      // We should just reconnect and re-submit all WIP items.
-      abort(t);
+      send.cancel(true);
+
+      if (prev.getClass() != ServerShuttingDown.class) {
+        // This is NOT an orderly shutdown, we're reconnecting after a stream hangup.
+        // Assume all WIP items have been lost and re-submit everything.
+        // All items in the batch are contained in WIP, so it is safe to discard the
+        // batch entirely and re-populate from WIP.
+        while (!batch.isEmpty()) {
+          batch.clear();
+        }
+
+        // Unlike during normal operation, we will not stop when batch.isFull().
+        // Batch#add guarantees that data will not be discarded in the event of
+        // an overflow -- all extra items are placed into the backlog, which is
+        // unbounded.
+        wip.values().forEach(task -> batch.add(task.data()));
+      }
+
+      reconnectNow();
     }
 
     @Override
     public void onEvent(Event event) {
-      // StreamAborted cannot transition into another state. It is terminal --
-      // BatchContext MUST terminate its subprocesses and close exceptionally.
+      assert retries <= maxRetries : "maxRetries exceeded";
+
+      if (event == Event.STARTED) {
+        setState(ACTIVE);
+      } else if (event instanceof Event.StreamHangup) {
+        if (retries == maxRetries) {
+          onEvent(new ClientError(new IOException("Server unavailable")));
+        } else {
+          reconnectAfter(1 * 2 ^ retries);
+        }
+      }
+
+      assert retries <= maxRetries : "maxRetries exceeded";
+    }
+
+    private void reconnectNow() {
+      reconnectAfter(0);
+    }
+
+    private void reconnectAfter(long delaySeconds) {
+      retries++;
+
+      scheduledExec.schedule(() -> {
+        try {
+          reconnect();
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+        } catch (ExecutionException e) {
+          onEvent(new Event.ClientError(e));
+        }
+
+      }, delaySeconds, TimeUnit.SECONDS);
     }
   }
+
+  private final class Closing extends BaseState {
+    /** Service executor for polling {@link #workers} status before closing. */
+    private final ExecutorService exec = Executors.newSingleThreadExecutor();
+
+    /** closed completes the stream. */
+    private final CompletableFuture<Void> future = new CompletableFuture<>();
+
+    private final Optional<Exception> ex;
+
+    private Closing(Exception ex) {
+      super("CLOSING");
+      this.ex = Optional.ofNullable(ex);
+    }
+
+    @Override
+    public void onEnter(State prev) {
+      exec.execute(() -> {
+        try {
+          stopSend();
+          workers.await();
+          future.complete(null);
+        } catch (Exception e) {
+          future.completeExceptionally(e);
+        }
+      });
+    }
+
+    @Override
+    public void onEvent(Event event) {
+      if (event != Event.EOF) {
+        super.onEvent(event); // falthrough
+      }
+    }
+
+    private void stopSend() throws InterruptedException {
+      if (ex.isEmpty()) {
+        queue.put(TaskHandle.POISON);
+      } else {
+        messages.onError(Status.INTERNAL.withCause(ex.get()).asRuntimeException());
+        send.cancel(true);
+      }
+    }
+
+    void await() throws InterruptedException, ExecutionException {
+      future.get();
+    }
+
+    List<Runnable> shutdownNow() {
+      return exec.shutdownNow();
+    }
+  }
+
+  final State CLOSED = new BaseState("CLOSED") {
+    @Override
+    public void onEnter(State prev) {
+      closed = true;
+    }
+  };
 }
