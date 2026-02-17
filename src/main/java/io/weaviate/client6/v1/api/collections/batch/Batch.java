@@ -2,15 +2,15 @@ package io.weaviate.client6.v1.api.collections.batch;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.ArrayList;
+import java.time.Instant;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.OptionalInt;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
@@ -49,7 +49,7 @@ import io.weaviate.client6.v1.internal.grpc.GrpcChannelOptions;
 @ThreadSafe
 final class Batch {
   /** Backlog MUST be confined to the "receiver" thread. */
-  private final List<Data> backlog = new ArrayList<>();
+  private final TreeSet<BacklogItem> backlog = new TreeSet<>(BacklogItem.comparator());
 
   /**
    * Items stored in this batch.
@@ -175,22 +175,17 @@ final class Batch {
         return;
       }
 
-      // Buffer exceeds the new limit.
-      // Move extra items to the backlog in LIFO order.
+      // Buffer exceeds the new limit. Move extra items to the backlog (LIFO).
       Iterator<Map.Entry<String, Data>> extra = buffer.reversed()
           .entrySet().stream()
           .limit(buffer.size() - maxSize)
           .iterator();
 
       while (extra.hasNext()) {
-        Map.Entry<String, Data> next = extra.next();
-        backlog.add(next.getValue());
+        Data data = extra.next().getValue();
+        addBacklog(data);
         extra.remove();
       }
-      // Reverse the backlog to restore the FIFO order.
-      // FIXME(dyma): this assumes setMaxSize is called on an empty backlog,
-      // but that's is simply not true.
-      Collections.reverse(backlog);
     } finally {
       checkInvariants();
     }
@@ -205,7 +200,7 @@ final class Batch {
    * will overflow the batch before it's removed from the queue, the simplest
    * and safest way to deal with it is to allow {@link Batch} to put
    * the overflowing item in the {@link #backlog}. The batch is considered
-   * full after that and will not accept any more items until it's cleared.
+   * full after that.
    *
    * @throws DataTooBigException   If the data exceeds the maximum
    *                               possible batch size.
@@ -236,7 +231,7 @@ final class Batch {
       // has been reached to satisfy the invariant.
       // This doubles as a safeguard to ensure the caller cannot add any
       // more items to the batch before flushing it.
-      backlog.add(data);
+      addBacklog(data);
       sizeBytes += remainingBytes;
       assert isFull() : "batch must be full after an overflow";
     } finally {
@@ -253,6 +248,11 @@ final class Batch {
   private synchronized void addSafe(Data data) {
     buffer.put(data.id(), data);
     sizeBytes += data.sizeBytes();
+  }
+
+  /** Add a data item to the {@link #backlog}. */
+  private synchronized void addBacklog(Data data) {
+    backlog.add(new BacklogItem(data));
   }
 
   /**
@@ -285,11 +285,52 @@ final class Batch {
       // exceed maxSizeBytes.
       backlog.stream()
           .takeWhile(__ -> !isFull())
+          .map(BacklogItem::data)
           .forEach(this::addSafe);
 
       return removed;
     } finally {
       checkInvariants();
+    }
+  }
+
+  private static record BacklogItem(Data data, Instant createdAt) {
+    public BacklogItem {
+      requireNonNull(data, "data is null");
+      requireNonNull(createdAt, "createdAt is null");
+    }
+
+    /**
+     * This constructor sets {@link #createdAt} automatically.
+     * It is not important that this timestamp is different from
+     * the one in {@link TaskHandle}, as longs as the order is correct.
+     */
+    public BacklogItem(Data data) {
+      this(data, Instant.now());
+    }
+
+    /** Comparator sorts BacklogItems by their creation time. */
+    private static Comparator<BacklogItem> comparator() {
+      return new Comparator<BacklogItem>() {
+
+        @Override
+        public int compare(BacklogItem a, BacklogItem b) {
+          if (a.equals(b)) {
+            return 0;
+          }
+
+          int cmpInstant = a.createdAt.compareTo(b.createdAt);
+          boolean sameInstant = cmpInstant == 0;
+          if (sameInstant) {
+            // We cannot return 0 for two items with different
+            // contents, as it may result in data loss.
+            // If they were somehow created in the same instant,
+            // let them be sorted lexicographically.
+            return a.data.id().compareTo(b.data.id());
+          }
+          return cmpInstant;
+        }
+      };
     }
   }
 

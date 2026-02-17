@@ -9,18 +9,20 @@ import java.util.Map;
 import io.grpc.Status;
 import io.weaviate.client6.v1.api.collections.batch.Event.Acks;
 import io.weaviate.client6.v1.api.collections.batch.Event.Backoff;
+import io.weaviate.client6.v1.api.collections.batch.Event.ClientError;
+import io.weaviate.client6.v1.api.collections.batch.Event.Oom;
 import io.weaviate.client6.v1.api.collections.batch.Event.Results;
-import io.weaviate.client6.v1.api.collections.batch.Event.RpcError;
 import io.weaviate.client6.v1.api.collections.batch.Event.Started;
+import io.weaviate.client6.v1.api.collections.batch.Event.StreamHangup;
 import io.weaviate.client6.v1.api.collections.batch.Event.TerminationEvent;
 
 sealed interface Event
-    permits Started, Acks, Results, Backoff, TerminationEvent, RpcError {
+    permits Started, Acks, Results, Backoff, Oom, TerminationEvent, StreamHangup, ClientError {
 
   final static Event STARTED = new Started();
   final static Event OOM = TerminationEvent.OOM;
   final static Event SHUTTING_DOWN = TerminationEvent.SHUTTING_DOWN;
-  final static Event SHUTDOWN = TerminationEvent.SHUTDOWN;
+  final static Event EOF = TerminationEvent.EOF;
 
   /** */
   record Started() implements Event {
@@ -88,23 +90,25 @@ sealed interface Event
     }
   }
 
-  enum TerminationEvent implements Event {
-    /**
-     * <strong>Out-Of-Memory</strong>.
-     *
-     * <p>
-     * Items sent in the previous request cannot be accepted,
-     * as inserting them may exhaust server's available disk space.
-     * On receiving this message, the client MUST stop producing
-     * messages immediately and await {@link #SHUTTING_DOWN} event.
-     *
-     * <p>
-     * {@link #OOM} is the sibling of {@link Acks} with the opposite effect.
-     * The protocol guarantees that the server will respond with either of
-     * the two, but never both.
-     */
-    OOM,
+  /**
+   * <strong>Out-Of-Memory</strong>.
+   *
+   * <p>
+   * Items sent in the previous request cannot be accepted,
+   * as inserting them may exhaust server's available disk space.
+   * On receiving this message, the client MUST stop producing
+   * messages immediately and await {@link #SHUTTING_DOWN} event.
+   *
+   * <p>
+   * Oom is the sibling of {@link Acks} with the opposite effect.
+   * The protocol guarantees that the server will respond with either of
+   * the two, but never both.
+   */
+  record Oom(int delaySeconds) implements Event {
+  }
 
+  /** Events that are part of the server's graceful shutdown strategy. */
+  enum TerminationEvent implements Event {
     /**
      * <strong>Server shutdown in progress.</stong>
      *
@@ -113,27 +117,45 @@ sealed interface Event
      * scale-up event (if it previously reported {@link #OOM}) or
      * some other external event.
      * On receiving this message, the client MUST stop producing
-     * messages immediately and close it's side of the stream.
+     * messages immediately, close it's side of the stream, and
+     * continue readings server's messages until {@link #EOF}.
      */
     SHUTTING_DOWN,
 
     /**
-     * <strong>Server is shutdown.</stong>
+     * <strong>Stream EOF.</stong>
      *
      * <p>
-     * The server has finished the shutdown process and will not
-     * receive any messages. On receiving this message, the client
-     * MUST continue reading messages in the stream until the server
-     * closes it on its end, then re-connect to another instance
+     * The server has will not receive any messages. If the client
+     * has more data to send, it SHOULD re-connect to another instance
      * by re-opening the stream and continue processing the batch.
+     * If the client has previously sent {@link Message#STOP}, it can
+     * safely exit.
      */
-    SHUTDOWN;
+    EOF;
   }
 
-  record RpcError(Exception exception) implements Event {
-    static RpcError fromThrowable(Throwable t) {
+  /**
+   * StreamHangup means the RPC is "dead": the stream is closed
+   * and using it will result in an {@link IllegalStateException}.
+   */
+  record StreamHangup(Exception exception) implements Event {
+    static StreamHangup fromThrowable(Throwable t) {
       Status status = Status.fromThrowable(t);
-      return new RpcError(status.asException());
+      return new StreamHangup(status.asException());
     }
+  }
+
+  /**
+   * ClientError means a client-side exception has happened,
+   * and is meant primarily for the "send" thread to propagate
+   * any exception it might catch.
+   *
+   * <p>
+   * This MUST be treated as an irrecoverable condition, because
+   * it is likely caused by an internal issue (an NPE) or a bad
+   * input ({@link DataTooBigException}).
+   */
+  record ClientError(Exception exception) implements Event {
   }
 }
