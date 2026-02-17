@@ -31,7 +31,7 @@ class TranslatingStreamFactory implements StreamFactory<Message, Event> {
 
   @Override
   public StreamObserver<Message> createStream(StreamObserver<Event> recv) {
-    return new Messeger(protoFactory.createStream(new Eventer(recv)));
+    return new Messenger(protoFactory.createStream(new Eventer(recv)));
   }
 
   /**
@@ -64,8 +64,8 @@ class TranslatingStreamFactory implements StreamFactory<Message, Event> {
    *
    * @see Message
    */
-  private final class Messeger extends DelegatingStreamObserver<WeaviateProtoBatch.BatchStreamRequest, Message> {
-    private Messeger(StreamObserver<WeaviateProtoBatch.BatchStreamRequest> delegate) {
+  private final class Messenger extends DelegatingStreamObserver<WeaviateProtoBatch.BatchStreamRequest, Message> {
+    private Messenger(StreamObserver<WeaviateProtoBatch.BatchStreamRequest> delegate) {
       super(delegate);
     }
 
