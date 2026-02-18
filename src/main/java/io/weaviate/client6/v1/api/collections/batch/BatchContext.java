@@ -531,7 +531,9 @@ public final class BatchContext<PropertiesT> implements Closeable {
      */
     protected BaseState(String name, Action... permitted) {
       this.name = name;
-      this.permitted = EnumSet.copyOf(Arrays.asList(requireNonNull(permitted, "actions is null")));
+      this.permitted = requireNonNull(permitted, "actions is null").length == 0
+          ? EnumSet.noneOf(Action.class)
+          : EnumSet.copyOf(Arrays.asList(permitted));
     }
 
     @Override
