@@ -174,6 +174,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
     this.queue = new ArrayBlockingQueue<>(DEFAULT_QUEUE_SIZE);
     this.batch = new Batch(DEFAULT_BATCH_SIZE, maxSizeBytes);
     setState(CLOSED);
+
   }
 
   /** Add {@link WeaviateObject} to the batch. */
@@ -701,9 +702,6 @@ public final class BatchContext<PropertiesT> implements Closeable {
    * Reconnecting state is entererd either by the server finishing a shutdown
    * and closing it's end of the stream or an unexpected stream hangup.
    *
-   * <p>
-   *
-   *
    * @see Recv#onCompleted graceful server shutdown
    * @see Recv#onError stream hangup
    */
@@ -781,7 +779,6 @@ public final class BatchContext<PropertiesT> implements Closeable {
         } catch (ExecutionException e) {
           onEvent(new Event.ClientError(e));
         }
-
       }, delaySeconds, TimeUnit.SECONDS);
     }
   }
@@ -844,4 +841,32 @@ public final class BatchContext<PropertiesT> implements Closeable {
       closed = true;
     }
   };
+
+  // --------------------------------------------------------------------------
+
+  private final ScheduledExecutorService reconnectExec = Executors.newScheduledThreadPool(1);
+
+  void scheduleReconnect(int reconnectIntervalSeconds) {
+    reconnectExec.scheduleWithFixedDelay(() -> {
+      if (Thread.currentThread().isInterrupted()) {
+        onEvent(Event.SHUTTING_DOWN);
+      }
+      if (Thread.currentThread().isInterrupted()) {
+        onEvent(Event.EOF);
+      }
+
+      // We want to count down from the moment we re-opened the stream,
+      // not from the moment we initialited the sequence.
+      lock.lock();
+      try {
+        while (state != ACTIVE) {
+          stateChanged.await();
+        }
+      } catch (InterruptedException ignored) {
+        // Let the process exit normally.
+      } finally {
+        lock.unlock();
+      }
+    }, reconnectIntervalSeconds, reconnectIntervalSeconds, TimeUnit.SECONDS);
+  }
 }
