@@ -5,9 +5,8 @@ import static java.util.Objects.requireNonNull;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ListIterator;
 import java.util.OptionalInt;
 import java.util.Set;
 import java.util.TreeSet;
@@ -176,15 +175,9 @@ final class Batch {
       }
 
       // Buffer exceeds the new limit. Move extra items to the backlog (LIFO).
-      Iterator<Map.Entry<String, Data>> extra = buffer.reversed()
-          .entrySet().stream()
-          .limit(buffer.size() - maxSize)
-          .iterator();
-
-      while (extra.hasNext()) {
-        Data data = extra.next().getValue();
-        addBacklog(data);
-        extra.remove();
+      ListIterator<String> extra = buffer.keySet().stream().toList().listIterator();
+      while (extra.hasPrevious() && buffer.size() > maxSize) {
+        addBacklog(buffer.remove(extra.previous()));
       }
     } finally {
       checkInvariants();
