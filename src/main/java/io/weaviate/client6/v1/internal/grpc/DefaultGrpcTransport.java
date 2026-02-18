@@ -177,4 +177,9 @@ public final class DefaultGrpcTransport implements GrpcTransport {
       callCredentials.close();
     }
   }
+
+  @Override
+  public String host() {
+    return transportOptions.host();
+  }
 }

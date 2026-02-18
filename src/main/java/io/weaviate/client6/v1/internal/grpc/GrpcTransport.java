@@ -23,6 +23,8 @@ public interface GrpcTransport extends AutoCloseable {
   StreamObserver<WeaviateProtoBatch.BatchStreamRequest> createStream(
       StreamObserver<WeaviateProtoBatch.BatchStreamReply> recv);
 
+  String host();
+
   /**
    * Maximum inbound/outbound message size supported by the underlying channel.
    */
