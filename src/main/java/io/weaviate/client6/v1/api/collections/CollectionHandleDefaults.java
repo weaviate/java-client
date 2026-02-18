@@ -36,7 +36,7 @@ public record CollectionHandleDefaults(Optional<ConsistencyLevel> consistencyLev
   }
 
   public CollectionHandleDefaults(Builder builder) {
-    this(Optional.of(builder.consistencyLevel), Optional.of(builder.tenant));
+    this(Optional.ofNullable(builder.consistencyLevel), Optional.ofNullable(builder.tenant));
   }
 
   public static final class Builder implements ObjectBuilder<CollectionHandleDefaults> {
