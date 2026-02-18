@@ -147,16 +147,19 @@ public final class BatchContext<PropertiesT> implements Closeable {
   /** Closing state. */
   private volatile Closing closing;
 
+  /**
+   * setClosing trasitions BatchContext to {@link Closing} state exactly once.
+   * Once this method returns, the caller can call {@code closing.await()}.
+   */
   void setClosing(Exception ex) {
     if (closing == null) {
       synchronized (Closing.class) {
         if (closing == null) {
           closing = new Closing(ex);
+          setState(closing);
         }
       }
     }
-
-    setState(closing);
   }
 
   BatchContext(
@@ -221,9 +224,18 @@ public final class BatchContext<PropertiesT> implements Closeable {
     return add(taskHandle.retry());
   }
 
+  /**
+   * Close attempts to drain the queue and send all remaining items.
+   * Calling any of BatchContext's public methods afterwards will
+   * result in an {@link IllegalStateException}.
+   *
+   * @throws IOException Propagates an exception
+   *                     if one has occurred in the meantime.
+   */
   @Override
   public void close() throws IOException {
     setClosing(null);
+    assert closing != null : "closing state not set";
 
     try {
       closing.await();
@@ -270,7 +282,16 @@ public final class BatchContext<PropertiesT> implements Closeable {
     }
   }
 
-  /** onEvent delegates event handling to {@link #state}. */
+  /**
+   * onEvent delegates event handling to {@link #state}.
+   *
+   * <p>
+   * Be mindful that most of the time this callback will run in a hot path
+   * on a gRPC thread. {@link State} implementations SHOULD offload any
+   * blocking operations to one of the provided executors.
+   *
+   * @see #scheduledExec
+   */
   private void onEvent(Event event) {
     lock.lock();
     try {
@@ -487,16 +508,29 @@ public final class BatchContext<PropertiesT> implements Closeable {
   };
 
   private class BaseState implements State {
+    /** State's display name for logging. */
     private final String name;
+    /** Actions permitted in this state. */
     private final EnumSet<Action> permitted;
 
     enum Action {
-      PREPARE_NEXT, SEND;
+      /**
+       * Thy system is allowed to accept new items from the user
+       * and populate the next batch.
+       */
+      PREPARE_NEXT,
+
+      /** The system is allowed to send the next batch once it's ready. */
+      SEND;
     }
 
-    protected BaseState(String name, Action... actions) {
+    /**
+     * @param name      Display name.
+     * @param permitted Actions permitted in this state.
+     */
+    protected BaseState(String name, Action... permitted) {
       this.name = name;
-      this.permitted = EnumSet.copyOf(Arrays.asList(requireNonNull(actions, "actions is null")));
+      this.permitted = EnumSet.copyOf(Arrays.asList(requireNonNull(permitted, "actions is null")));
     }
 
     @Override
@@ -517,7 +551,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
      * Handle events which may arrive at any moment without violating the protocol.
      *
      * <ul>
-     * <li>{@link Event.Results} -- update tasks in {@link wip} and remove them.
+     * <li>{@link Event.Results} -- update tasks in {@link #wip} and remove them.
      * <li>{@link Event.Backoff} -- adjust batch size.
      * <li>{@link Event#SHUTTING_DOWN} -- transition into
      * {@link ServerShuttingDown}.
@@ -597,11 +631,17 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
     /** Imitate server shutdown sequence. */
     private void initiateShutdown() {
+      // We cannot route event handling via normal BatchContext#onEvent, because
+      // it delegates to the current state, which is Oom. If Oom#onEvent were to
+      // receive an Event.SHUTTING_DOWN, it would cancel this execution of this
+      // very sequence. Instead, we delegate to our parent BaseState which normally
+      // handles these events.
       if (Thread.currentThread().isInterrupted()) {
-        return;
+        super.onEvent(Event.SHUTTING_DOWN);
       }
-      onEvent(Event.SHUTTING_DOWN);
-      onEvent(Event.EOF);
+      if (Thread.currentThread().isInterrupted()) {
+        super.onEvent(Event.EOF);
+      }
     }
 
     @Override
@@ -657,6 +697,16 @@ public final class BatchContext<PropertiesT> implements Closeable {
     }
   }
 
+  /**
+   * Reconnecting state is entererd either by the server finishing a shutdown
+   * and closing it's end of the stream or an unexpected stream hangup.
+   *
+   * <p>
+   *
+   *
+   * @see Recv#onCompleted graceful server shutdown
+   * @see Recv#onError stream hangup
+   */
   private final class Reconnecting extends BaseState {
     private final int maxRetries;
     private int retries = 0;
@@ -706,10 +756,20 @@ public final class BatchContext<PropertiesT> implements Closeable {
       assert retries <= maxRetries : "maxRetries exceeded";
     }
 
+    /** Reconnect with no delay. */
     private void reconnectNow() {
       reconnectAfter(0);
     }
 
+    /**
+     * Schedule a task to {@link #reconnect} after a delay.
+     *
+     * @param delaySeconds Delay in seconds.
+     *
+     * @apiNote The task is scheduled on {@link #scheduledExec} even if
+     *          {@code delaySeconds == 0} to avoid blocking gRPC worker thread,
+     *          where the {@link BatchContext#onEvent} callback runs.
+     */
     private void reconnectAfter(long delaySeconds) {
       retries++;
 
