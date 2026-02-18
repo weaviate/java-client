@@ -173,7 +173,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
     this.queue = new ArrayBlockingQueue<>(DEFAULT_QUEUE_SIZE);
     this.batch = new Batch(DEFAULT_BATCH_SIZE, maxSizeBytes);
-    setState(CLOSED);
+    setState(OPENED);
 
   }
 
@@ -834,6 +834,13 @@ public final class BatchContext<PropertiesT> implements Closeable {
       return exec.shutdownNow();
     }
   }
+
+  final State OPENED = new BaseState("OPENED") {
+    @Override
+    public void onEnter(State prev) {
+      closed = false;
+    }
+  };
 
   final State CLOSED = new BaseState("CLOSED") {
     @Override
