@@ -47,6 +47,7 @@ public class WeaviateBatchClient<PropertiesT> {
       context.scheduleReconnect(GCP_RECONNECT_INTERVAL_SECONDS);
     }
 
+    context.start();
     return context;
   }
 
