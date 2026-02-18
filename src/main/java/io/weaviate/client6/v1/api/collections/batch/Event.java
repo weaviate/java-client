@@ -5,7 +5,6 @@ import static java.util.Objects.requireNonNull;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.OptionalInt;
 
 import io.grpc.Status;
 import io.weaviate.client6.v1.api.collections.batch.Event.Acks;
@@ -26,11 +25,8 @@ sealed interface Event
 
   /**
    * The server has acknowledged our Start message and is ready to receive data.
-   *
-   * @param reconnectAfterSeconds Delay in seconds after which
-   *                              the stream should be renewed.
    */
-  record Started(OptionalInt reconnectAfterSeconds) implements Event {
+  record Started() implements Event {
   }
 
   /**
