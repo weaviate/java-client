@@ -134,6 +134,7 @@ public final class TaskHandle {
    */
   private void setResult(Result result) {
     if (!acked.isDone()) {
+      // TODO(dyma): can this happen due to us?
       throw new IllegalStateException("Result can only be set for an ack'ed task");
     }
     this.result.complete(result);

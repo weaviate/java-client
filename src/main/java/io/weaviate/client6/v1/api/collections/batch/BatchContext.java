@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CancellationException;
@@ -53,7 +52,7 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
  * @param <PropertiesT> the shape of properties for inserted objects.
  */
 public final class BatchContext<PropertiesT> implements Closeable {
-  private final int DEFAULT_BATCH_SIZE = 1000;
+  private final int DEFAULT_BATCH_SIZE = 1_000;
   private final int DEFAULT_QUEUE_SIZE = 100;
   private final int MAX_RECONNECT_RETRIES = 5;
 
@@ -80,6 +79,9 @@ public final class BatchContext<PropertiesT> implements Closeable {
    * @see Reconnecting
    */
   private final ScheduledExecutorService scheduledExec = Executors.newScheduledThreadPool(1);
+
+  /** The thread that created the context. */
+  private final Thread parent = Thread.currentThread();
 
   /** Stream factory creates new streams. */
   private final StreamFactory<Message, Event> streamFactory;
@@ -141,26 +143,32 @@ public final class BatchContext<PropertiesT> implements Closeable {
    */
   private volatile CountDownLatch workers;
 
+  /** closing completes the stream. */
+  private final CompletableFuture<Void> closing = new CompletableFuture<>();
+
+  /** Executor for performing the shutdown sequence. */
+  private final ExecutorService shutdownExec = Executors.newSingleThreadExecutor();
+
   /** Lightway check to ensure users cannot send on a closed context. */
   private volatile boolean closed;
 
-  /** Closing state. */
-  private volatile Closing closing;
+  // /** Closing state. */
+  // private volatile Closing closing;
 
-  /**
-   * setClosing trasitions BatchContext to {@link Closing} state exactly once.
-   * Once this method returns, the caller can call {@code closing.await()}.
-   */
-  void setClosing(Exception ex) {
-    if (closing == null) {
-      synchronized (Closing.class) {
-        if (closing == null) {
-          closing = new Closing(ex);
-          setState(closing);
-        }
-      }
-    }
-  }
+  // /**
+  // * setClosing trasitions BatchContext to {@link Closing} state exactly once.
+  // * Once this method returns, the caller can call {@code closing.await()}.
+  // */
+  // void setClosing(Exception ex) {
+  // if (closing == null) {
+  // synchronized (Closing.class) {
+  // if (closing == null) {
+  // closing = new Closing(ex);
+  // setState(closing);
+  // }
+  // }
+  // }
+  // }
 
   BatchContext(
       StreamFactory<Message, Event> streamFactory,
@@ -173,8 +181,6 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
     this.queue = new ArrayBlockingQueue<>(DEFAULT_QUEUE_SIZE);
     this.batch = new Batch(DEFAULT_BATCH_SIZE, maxSizeBytes);
-    setState(OPENED);
-
   }
 
   /** Add {@link WeaviateObject} to the batch. */
@@ -194,23 +200,32 @@ public final class BatchContext<PropertiesT> implements Closeable {
   }
 
   void start() {
+    start(AWAIT_STARTED);
+  }
+
+  void start(State nextState) {
     workers = new CountDownLatch(2);
 
     messages = streamFactory.createStream(new Recv());
-    send = sendExec.submit(new Send());
 
+    // Start the stream and await Started message.
     messages.onNext(Message.start(collectionHandleDefaults.consistencyLevel()));
-    setState(AWAIT_STARTED);
+    setState(nextState);
+
+    // "send" routine must start after the nextState has been set.
+    send = sendExec.submit(new Send());
   }
 
   /**
    * Reconnect waits for "send" and "recv" streams to exit
    * and restarts the process with a new stream.
+   *
+   * @param reconnecting Reconnecting instance that called reconnect.
    */
-  void reconnect() throws InterruptedException, ExecutionException {
+  void reconnect(Reconnecting reconnecting) throws InterruptedException, ExecutionException {
     workers.await();
     send.get();
-    start();
+    start(reconnecting);
   }
 
   /**
@@ -235,19 +250,70 @@ public final class BatchContext<PropertiesT> implements Closeable {
    */
   @Override
   public void close() throws IOException {
-    setClosing(null);
-    assert closing != null : "closing state not set";
+    closed = true;
 
     try {
-      closing.await();
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-    } catch (ExecutionException e) {
+      shutdown();
+    } catch (InterruptedException | ExecutionException e) {
+      if (e instanceof InterruptedException ||
+          e.getCause() instanceof InterruptedException) {
+        Thread.currentThread().interrupt();
+      }
       throw new IOException(e.getCause());
     } finally {
       shutdownExecutors();
-      setState(CLOSED);
     }
+  }
+
+  private void shutdown() throws InterruptedException, ExecutionException {
+    CompletableFuture<Void> gracefulShutdown = CompletableFuture.runAsync(() -> {
+      try {
+        // Poison the queue -- this will signal "send" to drain the remaing
+        // items in the batch and in the backlog and exit.
+        //
+        // If shutdownNow has been called previously and the "send" routine
+        // has been interrupted, this may block indefinitely.
+        // However, shutdownNow ensures that `closing` future is resolved.
+        queue.put(TaskHandle.POISON);
+
+        // Wait for the send to exit before closing our end of the stream.
+        send.get();
+        messages.onNext(Message.stop());
+        messages.onCompleted();
+
+        // Wait for both "send" and "recv" to exit.
+        workers.await();
+        closing.complete(null);
+      } catch (Exception e) {
+        closing.completeExceptionally(e);
+      }
+
+    }, shutdownExec);
+
+    // Complete shutdown as soon as one of these futures are completed.
+    // - gracefulShutdown completes if we managed to shutdown normally.
+    // - closing may complete sooner if shutdownNow is called.
+    CompletableFuture.anyOf(closing, gracefulShutdown).get();
+  }
+
+  private void shutdownNow(Exception ex) {
+    // Terminate the "send" routine and wait for it to exit.
+    // Since we're already in the error state we do not care
+    // much if it throws or not.
+    send.cancel(true);
+    try {
+      send.get();
+    } catch (Exception e) {
+    }
+
+    // Now report this error to the server and close the stream.
+    closing.completeExceptionally(ex);
+    messages.onError(Status.INTERNAL.withCause(ex).asRuntimeException());
+
+    // Since shutdownNow is never triggerred by the "main" thread,
+    // it may be blocked on trying to add to the queue. While batch
+    // context is active, we own this thread and may interrupt it.
+    parent.interrupt();
   }
 
   private void shutdownExecutors() {
@@ -264,8 +330,8 @@ public final class BatchContext<PropertiesT> implements Closeable {
     pending = scheduledExec.shutdownNow();
     assertEmpty.accept("oom", pending);
 
-    pending = closing.shutdownNow();
-    assertEmpty.accept("close", pending);
+    pending = shutdownExec.shutdownNow();
+    assertEmpty.accept("shutdown", pending);
   }
 
   /** Set the new state and notify awaiting threads. */
@@ -273,6 +339,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
     requireNonNull(nextState, "nextState is null");
 
     lock.lock();
+    System.out.println("setState " + state + " => " + nextState);
     try {
       State prev = state;
       state = nextState;
@@ -296,6 +363,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
   private void onEvent(Event event) {
     lock.lock();
     try {
+      System.out.println("onEvent " + event);
       state.onEvent(event);
     } finally {
       lock.unlock();
@@ -337,12 +405,14 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
         while (!Thread.currentThread().isInterrupted()) {
           if (batch.isFull()) {
+            System.out.println("==[send batch]==>");
             send();
           }
 
           TaskHandle task = queue.take();
 
           if (task == TaskHandle.POISON) {
+            System.out.println("took POISON");
             drain();
             return;
           }
@@ -354,17 +424,11 @@ public final class BatchContext<PropertiesT> implements Closeable {
           assert existing == null : "duplicate tasks in progress, id=" + existing.id();
         }
       } catch (InterruptedException ignored) {
-        // This thread is only interrupted in the RECONNECTING state, not by
-        // the user's code. Allow this method to exit normally to close our
-        // end of the stream.
         Thread.currentThread().interrupt();
       } catch (Exception e) {
         onEvent(new Event.ClientError(e));
         return;
       }
-
-      messages.onNext(Message.stop());
-      messages.onCompleted();
     }
 
     /**
@@ -489,9 +553,9 @@ public final class BatchContext<PropertiesT> implements Closeable {
       requireNonNull(event, "event is null");
 
       if (event instanceof Event.Acks acks) {
-        Collection<String> remaining = batch.clear();
-        if (!remaining.isEmpty()) {
-          throw ProtocolViolationException.incompleteAcks(List.copyOf(remaining));
+        Collection<String> removed = batch.clear();
+        if (!acks.acked().containsAll(removed)) {
+          throw ProtocolViolationException.incompleteAcks(List.copyOf(removed));
         }
         acks.acked().forEach(id -> {
           TaskHandle task = wip.get(id);
@@ -559,11 +623,11 @@ public final class BatchContext<PropertiesT> implements Closeable {
      * <li>{@link Event#SHUTTING_DOWN} -- transition into
      * {@link ServerShuttingDown}.
      * <li>{@link Event.StreamHangup -- transition into {@link Reconnecting} state.
-     * <li>{@link Event.ClientError -- transition into {@link Closing} state with
-     * exception.
+     * <li>{@link Event.ClientError -- shutdown the service immediately.
      * </ul>
      *
      * @throws ProtocolViolationException If event cannot be handled in this state.
+     * @see BatchContext#shutdownNow
      */
     @Override
     public void onEvent(Event event) {
@@ -590,6 +654,9 @@ public final class BatchContext<PropertiesT> implements Closeable {
     }
 
     private final void onBackoff(Event.Backoff backoff) {
+      System.out.print("========== BACKOFF ==============");
+      System.out.print(backoff.maxSize());
+      System.out.print("=================================");
       batch.setMaxSize(backoff.maxSize());
     }
 
@@ -599,13 +666,15 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
     private final void onStreamClosed(Event event) {
       if (event instanceof Event.StreamHangup hangup) {
-        // TODO(dyma): log error?
+        hangup.exception().printStackTrace();
       }
-      setState(new Reconnecting(MAX_RECONNECT_RETRIES));
+      if (!send.isDone()) {
+        setState(new Reconnecting(MAX_RECONNECT_RETRIES));
+      }
     }
 
     private final void onClientError(Event.ClientError error) {
-      setClosing(error.exception());
+      shutdownNow(error.exception());
     }
 
     @Override
@@ -662,8 +731,8 @@ public final class BatchContext<PropertiesT> implements Closeable {
           // so, while onEvent allows InterruptedException to stay responsive,
           // in practice this thread will only be interrupted by the thread pool,
           // which already knows it's being shut down.
-        } catch (ExecutionException e) {
-          throw new RuntimeException(e);
+        } catch (ExecutionException ex) {
+          onEvent(new Event.ClientError(ex));
         }
       }
       super.onEvent(event);
@@ -718,6 +787,13 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
     @Override
     public void onEnter(State prev) {
+      // The reconnected state is re-set every time the stream restarts.
+      // This ensures that onEnter hook is only called the first
+      // time we enter Reconnecting state.
+      if (prev == this) {
+        return;
+      }
+
       send.cancel(true);
 
       if (prev.getClass() != ServerShuttingDown.class) {
@@ -747,7 +823,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
         setState(ACTIVE);
       } else if (event instanceof Event.StreamHangup) {
         if (retries == maxRetries) {
-          onEvent(new ClientError(new IOException("Server unavailable")));
+          onEvent(new Event.ClientError(new IOException("Server unavailable")));
         } else {
           reconnectAfter(1 * 2 ^ retries);
         }
@@ -775,7 +851,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
       scheduledExec.schedule(() -> {
         try {
-          reconnect();
+          reconnect(this);
         } catch (InterruptedException e) {
           Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
@@ -784,72 +860,6 @@ public final class BatchContext<PropertiesT> implements Closeable {
       }, delaySeconds, TimeUnit.SECONDS);
     }
   }
-
-  private final class Closing extends BaseState {
-    /** Service executor for polling {@link #workers} status before closing. */
-    private final ExecutorService exec = Executors.newSingleThreadExecutor();
-
-    /** closed completes the stream. */
-    private final CompletableFuture<Void> future = new CompletableFuture<>();
-
-    private final Optional<Exception> ex;
-
-    private Closing(Exception ex) {
-      super("CLOSING");
-      this.ex = Optional.ofNullable(ex);
-    }
-
-    @Override
-    public void onEnter(State prev) {
-      exec.execute(() -> {
-        try {
-          stopSend();
-          workers.await();
-          future.complete(null);
-        } catch (Exception e) {
-          future.completeExceptionally(e);
-        }
-      });
-    }
-
-    @Override
-    public void onEvent(Event event) {
-      if (event != Event.EOF) {
-        super.onEvent(event); // falthrough
-      }
-    }
-
-    private void stopSend() throws InterruptedException {
-      if (ex.isEmpty()) {
-        queue.put(TaskHandle.POISON);
-      } else {
-        messages.onError(Status.INTERNAL.withCause(ex.get()).asRuntimeException());
-        send.cancel(true);
-      }
-    }
-
-    void await() throws InterruptedException, ExecutionException {
-      future.get();
-    }
-
-    List<Runnable> shutdownNow() {
-      return exec.shutdownNow();
-    }
-  }
-
-  final State OPENED = new BaseState("OPENED") {
-    @Override
-    public void onEnter(State prev) {
-      closed = false;
-    }
-  };
-
-  final State CLOSED = new BaseState("CLOSED") {
-    @Override
-    public void onEnter(State prev) {
-      closed = true;
-    }
-  };
 
   // --------------------------------------------------------------------------
 

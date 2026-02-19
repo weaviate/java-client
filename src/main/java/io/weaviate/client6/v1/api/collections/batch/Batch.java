@@ -267,6 +267,7 @@ final class Batch {
 
       Set<String> removed = Set.copyOf(buffer.keySet());
       buffer.clear();
+      sizeBytes = 0;
 
       if (pendingMaxSize.isPresent()) {
         setMaxSize(pendingMaxSize.getAsInt());
