@@ -93,19 +93,25 @@ class TranslatingStreamFactory implements StreamFactory<Message, Event> {
       switch (reply.getMessageCase()) {
         case STARTED:
           event = Event.STARTED;
+          break;
         case SHUTTING_DOWN:
           event = Event.SHUTTING_DOWN;
+          break;
         case SHUTDOWN:
           event = Event.EOF;
+          break;
         case OUT_OF_MEMORY:
           // TODO(dyma): read this value from the message
           event = new Event.Oom(300);
+          break;
         case BACKOFF:
           event = new Event.Backoff(reply.getBackoff().getBatchSize());
+          break;
         case ACKS:
           Stream<String> uuids = reply.getAcks().getUuidsList().stream();
           Stream<String> beacons = reply.getAcks().getBeaconsList().stream();
           event = new Event.Acks(Stream.concat(uuids, beacons).toList());
+          break;
         case RESULTS:
           List<String> successful = reply.getResults().getSuccessesList().stream()
               .map(detail -> {
@@ -130,8 +136,9 @@ class TranslatingStreamFactory implements StreamFactory<Message, Event> {
               })
               .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
           event = new Event.Results(successful, errors);
+          break;
         case MESSAGE_NOT_SET:
-          throw new IllegalArgumentException("Message not set");
+          throw new ProtocolViolationException("Message not set");
       }
 
       delegate.onNext(event);
