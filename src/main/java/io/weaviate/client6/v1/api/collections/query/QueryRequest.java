@@ -37,11 +37,9 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
     }
     request.operator.appendTo(message);
 
-    if (defaults.tenant() != null) {
-      message.setTenant(defaults.tenant());
-    }
-    if (defaults.consistencyLevel() != null) {
-      defaults.consistencyLevel().appendTo(message);
+    defaults.tenant().ifPresent(message::setTenant);
+    if (defaults.consistencyLevel().isPresent()) {
+      defaults.consistencyLevel().get().appendTo(message);
     }
 
     if (request.groupBy != null) {

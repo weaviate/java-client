@@ -1,9 +1,11 @@
 package io.weaviate.client6.v1.api.collections;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.aggregate.WeaviateAggregateClient;
+import io.weaviate.client6.v1.api.collections.batch.WeaviateBatchClient;
 import io.weaviate.client6.v1.api.collections.config.WeaviateConfigClient;
 import io.weaviate.client6.v1.api.collections.data.WeaviateDataClient;
 import io.weaviate.client6.v1.api.collections.generate.WeaviateGenerateClient;
@@ -23,6 +25,7 @@ public class CollectionHandle<PropertiesT> {
   public final WeaviateAggregateClient aggregate;
   public final WeaviateGenerateClient<PropertiesT> generate;
   public final WeaviateTenantsClient tenants;
+  public final WeaviateBatchClient<PropertiesT> batch;
 
   private final CollectionHandleDefaults defaults;
 
@@ -36,6 +39,7 @@ public class CollectionHandle<PropertiesT> {
     this.query = new WeaviateQueryClient<>(collection, grpcTransport, defaults);
     this.generate = new WeaviateGenerateClient<>(collection, grpcTransport, defaults);
     this.data = new WeaviateDataClient<>(collection, restTransport, grpcTransport, defaults);
+    this.batch = new WeaviateBatchClient<>(grpcTransport, collection, defaults);
     this.defaults = defaults;
 
     this.tenants = new WeaviateTenantsClient(collection, restTransport, grpcTransport);
@@ -48,6 +52,7 @@ public class CollectionHandle<PropertiesT> {
     this.query = new WeaviateQueryClient<>(c.query, defaults);
     this.generate = new WeaviateGenerateClient<>(c.generate, defaults);
     this.data = new WeaviateDataClient<>(c.data, defaults);
+    this.batch = new WeaviateBatchClient<>(c.batch, defaults);
     this.defaults = defaults;
 
     this.tenants = c.tenants;
@@ -112,7 +117,7 @@ public class CollectionHandle<PropertiesT> {
   }
 
   /** Default consistency level for requests. */
-  public ConsistencyLevel consistencyLevel() {
+  public Optional<ConsistencyLevel> consistencyLevel() {
     return defaults.consistencyLevel();
   }
 
@@ -122,7 +127,7 @@ public class CollectionHandle<PropertiesT> {
   }
 
   /** Default tenant for requests. */
-  public String tenant() {
+  public Optional<String> tenant() {
     return defaults.tenant();
   }
 

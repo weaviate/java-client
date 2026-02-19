@@ -131,18 +131,18 @@ public class CollectionHandleTest {
     rest.assertNext((method, requestUrl, body, query) -> {
       switch (clLoc) {
         case QUERY:
-          Assertions.assertThat(query).containsEntry("consistency_level", defaults.consistencyLevel());
+          Assertions.assertThat(query).containsEntry("consistency_level", defaults.consistencyLevel().get());
           break;
         case BODY:
-          assertJsonHasValue(body, "consistency_level", defaults.consistencyLevel());
+          assertJsonHasValue(body, "consistency_level", defaults.consistencyLevel().get());
       }
 
       switch (tenantLoc) {
         case QUERY:
-          Assertions.assertThat(query).containsEntry("tenant", defaults.tenant());
+          Assertions.assertThat(query).containsEntry("tenant", defaults.tenant().get());
           break;
         case BODY:
-          assertJsonHasValue(body, "tenant", defaults.tenant());
+          assertJsonHasValue(body, "tenant", defaults.tenant().get());
       }
     });
   }
@@ -219,7 +219,7 @@ public class CollectionHandleTest {
 
     // Assert
     rest.assertNext((method, requestUrl, body, query) -> {
-      Assertions.assertThat(query).containsEntry("tenant", defaults.tenant());
+      Assertions.assertThat(query).containsEntry("tenant", defaults.tenant().get());
     });
   }
 

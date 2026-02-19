@@ -26,14 +26,14 @@ public record ReplaceObjectRequest<PropertiesT>(WeaviateObject<PropertiesT> obje
     return SimpleEndpoint.sideEffect(
         request -> "PUT",
         request -> "/objects/" + collection.collectionName() + "/" + request.object.uuid(),
-        request -> defaults.consistencyLevel() != null
-            ? Map.of("consistency_level", defaults.consistencyLevel())
+        request -> defaults.consistencyLevel().isPresent()
+            ? Map.of("consistency_level", defaults.consistencyLevel().get())
             : Collections.emptyMap(),
         request -> JSON.serialize(
             new WeaviateObject<>(
                 request.object.uuid(),
                 collection.collectionName(),
-                defaults.tenant(),
+                defaults.tenant().get(),
                 request.object.properties(),
                 request.object.vectors(),
                 request.object.createdAt(),

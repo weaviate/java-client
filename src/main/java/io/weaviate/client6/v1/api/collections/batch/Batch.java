@@ -1,0 +1,350 @@
+package io.weaviate.client6.v1.api.collections.batch;
+
+import static java.util.Objects.requireNonNull;
+
+import java.time.Instant;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.ListIterator;
+import java.util.OptionalInt;
+import java.util.Set;
+import java.util.TreeSet;
+
+import javax.annotation.concurrent.GuardedBy;
+import javax.annotation.concurrent.ThreadSafe;
+
+import io.weaviate.client6.v1.api.collections.batch.Event.Backoff;
+import io.weaviate.client6.v1.internal.grpc.GrpcChannelOptions;
+
+/**
+ * Batch can be in either of 2 states:
+ * <ul>
+ * <li><strong>Open</strong> batch accepts new items and can be resized.
+ * <li><strong>In-flight</strong> batch is sealed: it rejects new items and
+ * avoids otherwise modifying the {@link #buffer} until it's cleared.
+ * </ul>
+ *
+ * <h2>Class invariants</h2>
+ *
+ * {@link #maxSize} and {@link #maxSizeBytes} MUST be positive.
+ * A batch with {@code cap=0} is not useful. <br>
+ * {@link #buffer} size and {@link #sizeBytes} MUST be non-negative. <br>
+ * {@link #buffer} size MUST NOT exceed {@link #maxSize}. <br>
+ * {@link #sizeBytes} MUST NOT exceed {@link #maxSize}. <br>
+ * {@link #sizeBytes} MUST be 0 if the buffer is full. <br>
+ * {@link #backlog} MAY only contain items when {@link #buffer} is full. In the
+ * {@link #pendingMaxSize} is empty for an open batch. <br>
+ * edge-case
+ *
+ *
+ * <h2>Synchronization policy</h2>
+ *
+ * @see #inFlight
+ * @see #isFull
+ * @see #clear
+ * @see #checkInvariants
+ */
+@ThreadSafe
+final class Batch {
+  /** Backlog MUST be confined to the "receiver" thread. */
+  private final TreeSet<BacklogItem> backlog = new TreeSet<>(BacklogItem.comparator());
+
+  /**
+   * Items stored in this batch.
+   */
+  @GuardedBy("this")
+  private final LinkedHashMap<String, Data> buffer;
+
+  /**
+   * Maximum number of items that can be added to the request.
+   * Must be greater that zero.
+   *
+   * <p>
+   * This is determined by the server's {@link Backoff} instruction.
+   */
+  @GuardedBy("this")
+  private int maxSize;
+
+  /**
+   * Maximum size of the serialized message in bytes.
+   * Must be greater that zero.
+   *
+   * <p>
+   * This is determined by the {@link GrpcChannelOptions#maxMessageSize}.
+   */
+  @GuardedBy("this")
+  private final long maxSizeBytes;
+
+  /** Total serialized size of the items in the {@link #buffer}. */
+  @GuardedBy("this")
+  private long sizeBytes;
+
+  /** An in-flight batch is unmodifiable. */
+  @GuardedBy("this")
+  private boolean inFlight = false;
+
+  /**
+   * Pending update to the {@link #maxSize}.
+   *
+   * The value is non-empty when {@link #setMaxSize} is called
+   * while the batch is {@link #inFlight}.
+   */
+  @GuardedBy("this")
+  private OptionalInt pendingMaxSize = OptionalInt.empty();
+
+  Batch(int maxSize, int maxSizeBytes) {
+    assert maxSize > 0 : "non-positive maxSize";
+
+    this.maxSizeBytes = MessageSizeUtil.maxSizeBytes(maxSizeBytes);
+    this.maxSize = maxSize;
+    this.buffer = new LinkedHashMap<>(maxSize); // LinkedHashMap preserves insertion order.
+
+    checkInvariants();
+  }
+
+  /**
+   * Returns true if batch has reached its capacity, either in terms
+   * of the item count or the batch's estimated size in bytes.
+   */
+  synchronized boolean isFull() {
+    return buffer.size() == maxSize || sizeBytes == maxSizeBytes;
+  }
+
+  /**
+   * Returns true if the batch's internal buffer is empty.
+   * If it's primary buffer is empty, its backlog is guaranteed
+   * to be empty as well.
+   */
+  synchronized boolean isEmpty() {
+    return buffer.isEmpty(); // sizeBytes == 0 is guaranteed by class invariant.
+  }
+
+  /**
+   * Prepare a request to be sent. After calling this method, this batch becomes
+   * "in-flight": an attempt to {@link #add} more items to it will be rejected
+   * with an exception.
+   */
+  synchronized Message prepare() {
+    checkInvariants();
+
+    inFlight = true;
+    return builder -> {
+      buffer.forEach((__, data) -> {
+        data.appendTo(builder);
+      });
+    };
+  }
+
+  /**
+   * Set the new {@link #maxSize} for this buffer.
+   *
+   * <p>
+   * How the size is applied depends of the buffer's current state:
+   * <ul>
+   * <li>When the batch is in-flight, the new limit is stored in
+   * {@link #pendingMaxSize} and will be applied once the batch is cleared.
+   * <li>While the batch is still open, the new limit is applied immediately and
+   * the {@link #pendingMaxSize} is set back to {@link OptionalInt#empty}. If
+   * the current buffer size exceeds the new limit, the overflow items are moved
+   * to the {@link #backlog}.
+   * </ul>
+   *
+   * @param maxSizeNew New batch size limit.
+   *
+   * @see #clear
+   */
+  synchronized void setMaxSize(int maxSizeNew) {
+    checkInvariants();
+
+    try {
+      // In-flight batch cannot be modified.
+      // Store the requested maxSize for later;
+      // it will be applied on the next ack.
+      if (inFlight) {
+        pendingMaxSize = OptionalInt.of(maxSizeNew);
+        return;
+      }
+
+      maxSize = maxSizeNew;
+      pendingMaxSize = OptionalInt.empty();
+
+      // Buffer still fits under the new limit.
+      if (buffer.size() <= maxSize) {
+        return;
+      }
+
+      // Buffer exceeds the new limit. Move extra items to the backlog (LIFO).
+      ListIterator<String> extra = buffer.keySet().stream().toList().listIterator();
+      while (extra.hasPrevious() && buffer.size() > maxSize) {
+        addBacklog(buffer.remove(extra.previous()));
+      }
+    } finally {
+      checkInvariants();
+    }
+  }
+
+  /**
+   * Add a data item to the batch.
+   *
+   * <p>
+   * We want to guarantee that, once a work item has been taken from the queue,
+   * it's going to be eventually executed. Because we cannot know if an item
+   * will overflow the batch before it's removed from the queue, the simplest
+   * and safest way to deal with it is to allow {@link Batch} to put
+   * the overflowing item in the {@link #backlog}. The batch is considered
+   * full after that.
+   *
+   * @throws DataTooBigException   If the data exceeds the maximum
+   *                               possible batch size.
+   * @throws IllegalStateException If called on an "in-flight" batch.
+   * @see #prepare
+   * @see #inFlight
+   * @see #clear
+   */
+  synchronized void add(Data data) throws IllegalStateException, DataTooBigException {
+    requireNonNull(data, "data is null");
+    checkInvariants();
+
+    try {
+      if (inFlight) {
+        throw new IllegalStateException("Batch is in-flight");
+      }
+      long remainingBytes = maxSizeBytes - sizeBytes;
+      if (data.sizeBytes() <= remainingBytes) {
+        addSafe(data);
+        return;
+      }
+      if (isEmpty()) {
+        throw new DataTooBigException(data, maxSizeBytes);
+      }
+      // One of the class's invariants is that the backlog must not contain
+      // any items unless the buffer is full. In case this item overflows
+      // the buffer, we put it in the backlog, but pretend the maxSizeBytes
+      // has been reached to satisfy the invariant.
+      // This doubles as a safeguard to ensure the caller cannot add any
+      // more items to the batch before flushing it.
+      addBacklog(data);
+      sizeBytes += remainingBytes;
+      assert isFull() : "batch must be full after an overflow";
+    } finally {
+      checkInvariants();
+    }
+  }
+
+  /**
+   * Add a data item to the batch.
+   *
+   * This method does not check {@link Data#sizeBytes}, so the caller
+   * must ensure that this item will not overflow the batch.
+   */
+  private synchronized void addSafe(Data data) {
+    buffer.put(data.id(), data);
+    sizeBytes += data.sizeBytes();
+  }
+
+  /** Add a data item to the {@link #backlog}. */
+  private synchronized void addBacklog(Data data) {
+    backlog.add(new BacklogItem(data));
+  }
+
+  /**
+   * Clear this batch's internal buffer.
+   *
+   * <p>
+   * Once the buffer is pruned, it is re-populated from the backlog
+   * until the former is full or the latter is exhaused.
+   * If {@link #pendingMaxSize} is not empty, it is applied
+   * before re-populating the buffer.
+   *
+   * @return IDs removed from the buffer.
+   */
+  synchronized Collection<String> clear() {
+    checkInvariants();
+
+    try {
+      inFlight = false;
+
+      Set<String> removed = Set.copyOf(buffer.keySet());
+      buffer.clear();
+      sizeBytes = 0;
+
+      if (pendingMaxSize.isPresent()) {
+        setMaxSize(pendingMaxSize.getAsInt());
+      }
+
+      // Populate internal buffer from the backlog.
+      // We don't need to check the return value of .add(),
+      // as all items in the backlog are guaranteed to not
+      // exceed maxSizeBytes.
+      backlog.stream()
+          .takeWhile(__ -> !isFull())
+          .map(BacklogItem::data)
+          .forEach(this::addSafe);
+
+      return removed;
+    } finally {
+      checkInvariants();
+    }
+  }
+
+  private static record BacklogItem(Data data, Instant createdAt) {
+    public BacklogItem {
+      requireNonNull(data, "data is null");
+      requireNonNull(createdAt, "createdAt is null");
+    }
+
+    /**
+     * This constructor sets {@link #createdAt} automatically.
+     * It is not important that this timestamp is different from
+     * the one in {@link TaskHandle}, as longs as the order is correct.
+     */
+    public BacklogItem(Data data) {
+      this(data, Instant.now());
+    }
+
+    /** Comparator sorts BacklogItems by their creation time. */
+    private static Comparator<BacklogItem> comparator() {
+      return new Comparator<BacklogItem>() {
+
+        @Override
+        public int compare(BacklogItem a, BacklogItem b) {
+          if (a.equals(b)) {
+            return 0;
+          }
+
+          int cmpInstant = a.createdAt.compareTo(b.createdAt);
+          boolean sameInstant = cmpInstant == 0;
+          if (sameInstant) {
+            // We cannot return 0 for two items with different
+            // contents, as it may result in data loss.
+            // If they were somehow created in the same instant,
+            // let them be sorted lexicographically.
+            return a.data.id().compareTo(b.data.id());
+          }
+          return cmpInstant;
+        }
+      };
+    }
+  }
+
+  /** Asserts the invariants of this class. */
+  private synchronized void checkInvariants() {
+    assert maxSize > 0 : "non-positive maxSize";
+    assert maxSizeBytes > 0 : "non-positive maxSizeBytes";
+    assert sizeBytes >= 0 : "negative sizeBytes";
+    assert buffer.size() <= maxSize : "buffer exceeds maxSize";
+    assert sizeBytes <= maxSizeBytes : "message exceeds maxSizeBytes";
+    if (!isFull()) {
+      assert backlog.isEmpty() : "backlog not empty when buffer not full";
+    }
+    if (buffer.isEmpty()) {
+      assert sizeBytes == 0 : "sizeBytes must be 0 when buffer is empty";
+    }
+
+    requireNonNull(pendingMaxSize, "pendingMaxSize is null");
+    if (!inFlight) {
+      assert pendingMaxSize.isEmpty() : "open batch has pending maxSize";
+    }
+  }
+}

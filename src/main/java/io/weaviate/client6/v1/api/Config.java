@@ -11,6 +11,7 @@ import io.weaviate.client6.v1.internal.BuildInfo;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.Timeout;
 import io.weaviate.client6.v1.internal.TokenProvider;
+import io.weaviate.client6.v1.internal.TransportOptions;
 import io.weaviate.client6.v1.internal.grpc.GrpcChannelOptions;
 import io.weaviate.client6.v1.internal.rest.RestTransportOptions;
 
@@ -181,26 +182,15 @@ public record Config(
     private static final String HEADER_X_WEAVIATE_CLUSTER_URL = "X-Weaviate-Cluster-URL";
     private static final String HEADER_X_WEAVIATE_CLIENT = "X-Weaviate-Client";
 
-    /**
-     * isWeaviateDomain returns true if the host matches weaviate.io,
-     * semi.technology, or weaviate.cloud domain.
-     */
-    private static boolean isWeaviateDomain(String host) {
-      var lower = host.toLowerCase();
-      return lower.contains("weaviate.io") ||
-          lower.contains("semi.technology") ||
-          lower.contains("weaviate.cloud");
-    }
-
     private static final String VERSION = "weaviate-client-java/"
-          + ((!BuildInfo.TAGS.isBlank() && BuildInfo.TAGS != "unknown") ? BuildInfo.TAGS
-          : (BuildInfo.BRANCH + "-" + BuildInfo.COMMIT_ID_ABBREV));
+        + ((!BuildInfo.TAGS.isBlank() && BuildInfo.TAGS != "unknown") ? BuildInfo.TAGS
+            : (BuildInfo.BRANCH + "-" + BuildInfo.COMMIT_ID_ABBREV));
 
     @Override
     public Config build() {
       // For clusters hosted on Weaviate Cloud, Weaviate Embedding Service
       // will be available under the same domain.
-      if (isWeaviateDomain(httpHost) && authentication != null) {
+      if (TransportOptions.isWeaviateDomain(httpHost) && authentication != null) {
         setHeader(HEADER_X_WEAVIATE_CLUSTER_URL, "https://" + httpHost + ":" + httpPort);
       }
       setHeader(HEADER_X_WEAVIATE_CLIENT, VERSION);

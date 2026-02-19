@@ -29,11 +29,9 @@ public record DeleteManyRequest(Filter filters, Boolean verbose, Boolean dryRun)
           if (request.dryRun != null) {
             message.setDryRun(request.dryRun);
           }
-          if (defaults.tenant() != null) {
-            message.setTenant(defaults.tenant());
-          }
-          if (defaults.consistencyLevel() != null) {
-            defaults.consistencyLevel().appendTo(message);
+          defaults.tenant().ifPresent(message::setTenant);
+          if (defaults.consistencyLevel().isPresent()) {
+            defaults.consistencyLevel().get().appendTo(message);
           }
 
           var filters = WeaviateProtoBase.Filters.newBuilder();

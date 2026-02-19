@@ -21,8 +21,8 @@ public record GetShardsRequest() {
     return SimpleEndpoint.noBody(
         request -> "GET",
         request -> "/schema/" + collection.collectionName() + "/shards",
-        request -> defaults.tenant() != null
-            ? Map.of("tenant", defaults.tenant())
+        request -> defaults.tenant().isPresent()
+            ? Map.of("tenant", defaults.tenant().get())
             : Collections.emptyMap(),
         (statusCode, response) -> (List<Shard>) JSON.deserialize(response, TypeToken.getParameterized(
             List.class, Shard.class)));

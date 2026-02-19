@@ -25,9 +25,7 @@ public record AggregateRequest(Aggregation aggregation, GroupBy groupBy) {
           if (request.groupBy != null) {
             request.groupBy.appendTo(message, collection.collectionName());
           }
-          if (defaults.tenant() != null) {
-            message.setTenant(defaults.tenant());
-          }
+          defaults.tenant().ifPresent(message::setTenant);
           return message.build();
         },
         reply -> {

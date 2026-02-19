@@ -1,6 +1,7 @@
 package io.weaviate.client6.v1.api.collections;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
@@ -90,7 +91,7 @@ public class CollectionHandleAsync<PropertiesT> {
   }
 
   /** Default consistency level for requests. */
-  public ConsistencyLevel consistencyLevel() {
+  public Optional<ConsistencyLevel> consistencyLevel() {
     return defaults.consistencyLevel();
   }
 
@@ -101,7 +102,7 @@ public class CollectionHandleAsync<PropertiesT> {
   }
 
   /** Default tenant for requests. */
-  public String tenant() {
+  public Optional<String> tenant() {
     return defaults.tenant();
   }
 

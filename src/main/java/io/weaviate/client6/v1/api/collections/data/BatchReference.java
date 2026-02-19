@@ -1,5 +1,7 @@
 package io.weaviate.client6.v1.api.collections.data;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -9,7 +11,14 @@ import com.google.gson.stream.JsonWriter;
 
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
 
-public record BatchReference(String fromCollection, String fromProperty, String fromUuid, ObjectReference reference) {
+public record BatchReference(String fromCollection, String fromProperty, String fromUuid, ObjectReference target) {
+
+  public BatchReference {
+    requireNonNull(fromCollection, "fromCollection is null");
+    requireNonNull(fromProperty, "fromProperty is null");
+    requireNonNull(fromUuid, "fromUuid is null");
+    requireNonNull(target, "target is null");
+  }
 
   public static BatchReference[] objects(WeaviateObject<?> fromObject, String fromProperty,
       WeaviateObject<?>... toObjects) {
@@ -39,7 +48,7 @@ public record BatchReference(String fromCollection, String fromProperty, String 
       out.value(ObjectReference.toBeacon(value.fromCollection, value.fromProperty, value.fromUuid));
 
       out.name("to");
-      out.value(ObjectReference.toBeacon(value.reference.collection(), value.reference.uuid()));
+      out.value(ObjectReference.toBeacon(value.target.collection(), value.target.uuid()));
 
       out.endObject();
     }
