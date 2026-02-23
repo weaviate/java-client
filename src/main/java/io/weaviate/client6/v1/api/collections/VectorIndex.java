@@ -15,6 +15,7 @@ import com.google.gson.stream.JsonWriter;
 
 import io.weaviate.client6.v1.api.collections.vectorindex.Dynamic;
 import io.weaviate.client6.v1.api.collections.vectorindex.Flat;
+import io.weaviate.client6.v1.api.collections.vectorindex.Hfresh;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.internal.TaggedUnion;
 import io.weaviate.client6.v1.internal.json.JsonEnum;
@@ -26,7 +27,8 @@ public interface VectorIndex extends TaggedUnion<VectorIndex.Kind, Object> {
   enum Kind implements JsonEnum<Kind> {
     HNSW("hnsw"),
     FLAT("flat"),
-    DYNAMIC("dynamic");
+    DYNAMIC("dynamic"),
+    HFRESH("hfresh");
 
     private static final Map<String, Kind> jsonValueMap = JsonEnum.collectNames(Kind.values());
     private final String jsonValue;
@@ -75,6 +77,16 @@ public interface VectorIndex extends TaggedUnion<VectorIndex.Kind, Object> {
     return _as(VectorIndex.Kind.DYNAMIC);
   }
 
+  /** Is this vector index of type HFRESH? */
+  default boolean isHfresh() {
+    return _is(VectorIndex.Kind.HFRESH);
+  }
+
+  /** Get as {@link Hfresh} instance. */
+  default Hfresh asHfresh() {
+    return _as(VectorIndex.Kind.HFRESH);
+  }
+
   static enum CustomTypeAdapterFactory implements TypeAdapterFactory {
     INSTANCE;
 
@@ -89,6 +101,7 @@ public interface VectorIndex extends TaggedUnion<VectorIndex.Kind, Object> {
       addAdapter(gson, VectorIndex.Kind.HNSW, Hnsw.class);
       addAdapter(gson, VectorIndex.Kind.FLAT, Flat.class);
       addAdapter(gson, VectorIndex.Kind.DYNAMIC, Dynamic.class);
+      addAdapter(gson, VectorIndex.Kind.HFRESH, Hfresh.class);
     }
 
     @SuppressWarnings("unchecked")
