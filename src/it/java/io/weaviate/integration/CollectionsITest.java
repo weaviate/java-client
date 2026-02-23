@@ -362,6 +362,7 @@ public class CollectionsITest extends ConcurrentTest {
     things.config.dropPropertyIndex("size", PropertyIndexType.FILTERABLE);
     things.config.dropPropertyIndex("size", PropertyIndexType.RANGE_FILTERS);
 
+    config = things.config.get();
     Assertions.assertThat(config).get()
         .extracting(CollectionConfig::properties, InstanceOfAssertFactories.list(Property.class))
         .allSatisfy(property -> Assertions.assertThat(property)
