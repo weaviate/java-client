@@ -35,11 +35,11 @@ public record Replication(
 
   public static record AsyncReplicationConfig(
       @SerializedName("hashtreeHeight") Integer hashTreeHeight,
-      @SerializedName("maxWorkers") Integer replicationConcurrency,
-      @SerializedName("frequency") Integer replicationFrequencyMillis,
-      @SerializedName("frequencyWhilePropagating") Integer replicationFrequencyMillisWhilePropagating,
-      @SerializedName("aliveNodesCheckingFrequency") Integer nodePingFrequencyMillis,
-      @SerializedName("loggingFrequency") Integer loggingFrequencyMillis,
+      @SerializedName("maxWorkers") Integer maxWorkers,
+      @SerializedName("frequency") Integer frequencyMillis,
+      @SerializedName("frequencyWhilePropagating") Integer frequencyMillisWhilePropagating,
+      @SerializedName("aliveNodesCheckingFrequency") Integer aliveNodesCheckingFrequencyMillis,
+      @SerializedName("loggingFrequency") Integer loggingFrequencySeconds,
       @SerializedName("diffBatchSize") Integer diffBatchSize,
       @SerializedName("diffPerNodeTimeout") Integer diffPerNodeTimeoutSeconds,
       @SerializedName("prePropagationTimeout") Integer prePropagationTimeoutSeconds,
@@ -52,11 +52,11 @@ public record Replication(
     public AsyncReplicationConfig(Builder builder) {
       this(
           builder.hashTreeHeight,
-          builder.replicationConcurrency,
-          builder.replicationFrequencyMillis,
-          builder.replicationFrequencyMillisWhilePropagating,
-          builder.nodePingFrequencyMillis,
-          builder.loggingFrequencyMillis,
+          builder.maxWorkers,
+          builder.frequencyMillis,
+          builder.frequencyMillisWhilePropagating,
+          builder.aliveNodesCheckingFrequencyMillis,
+          builder.loggingFrequencySeconds,
           builder.diffBatchSize,
           builder.diffPerNodeTimeoutSeconds,
           builder.prePropagationTimeoutSeconds,
@@ -73,11 +73,11 @@ public record Replication(
 
     public static class Builder implements ObjectBuilder<AsyncReplicationConfig> {
       private Integer hashTreeHeight;
-      private Integer replicationConcurrency;
-      private Integer replicationFrequencyMillis;
-      private Integer replicationFrequencyMillisWhilePropagating;
-      private Integer nodePingFrequencyMillis;
-      private Integer loggingFrequencyMillis;
+      private Integer maxWorkers;
+      private Integer frequencyMillis;
+      private Integer frequencyMillisWhilePropagating;
+      private Integer aliveNodesCheckingFrequencyMillis;
+      private Integer loggingFrequencySeconds;
       private Integer diffBatchSize;
       private Integer diffPerNodeTimeoutSeconds;
       private Integer prePropagationTimeoutSeconds;
@@ -94,8 +94,8 @@ public record Replication(
       }
 
       /** Maximum number of async replication workers. */
-      public Builder replicationConcurrency(int replicationConcurrency) {
-        this.replicationConcurrency = replicationConcurrency;
+      public Builder maxWorkers(int maxWorkers) {
+        this.maxWorkers = maxWorkers;
         return this;
       }
 
@@ -103,8 +103,8 @@ public record Replication(
        * Base frequency in milliseconds at which async replication
        * runs diff calculations.
        */
-      public Builder replicationFrequencyMillis(int replicationFrequencyMillis) {
-        this.replicationFrequencyMillis = replicationFrequencyMillis;
+      public Builder frequencyMillis(int frequencyMillis) {
+        this.frequencyMillis = frequencyMillis;
         return this;
       }
 
@@ -112,20 +112,20 @@ public record Replication(
        * Frequency in milliseconds at which async replication runs
        * while propagation is active.
        */
-      public Builder replicationFrequencyMillisWhilePropagating(int replicationFrequencyMillisWhilePropagating) {
-        this.replicationFrequencyMillisWhilePropagating = replicationFrequencyMillisWhilePropagating;
+      public Builder frequencyMillisWhilePropagating(int frequencyMillisWhilePropagating) {
+        this.frequencyMillisWhilePropagating = frequencyMillisWhilePropagating;
         return this;
       }
 
       /** Interval in milliseconds at which liveness of target nodes is checked." */
-      public Builder nodePingFrequencyMillis(int nodePingFrequencyMillis) {
-        this.nodePingFrequencyMillis = nodePingFrequencyMillis;
+      public Builder aliveNodesCheckingFrequencyMillis(int aliveNodesCheckingFrequencyMillis) {
+        this.aliveNodesCheckingFrequencyMillis = aliveNodesCheckingFrequencyMillis;
         return this;
       }
 
       /** Interval in seconds at which async replication logs its status. */
-      public Builder loggingFrequencyMillis(int loggingFrequencyMillis) {
-        this.loggingFrequencyMillis = loggingFrequencyMillis;
+      public Builder loggingFrequencySeconds(int loggingFrequencySeconds) {
+        this.loggingFrequencySeconds = loggingFrequencySeconds;
         return this;
       }
 
