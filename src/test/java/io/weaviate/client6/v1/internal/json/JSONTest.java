@@ -34,7 +34,7 @@ import io.weaviate.client6.v1.api.collections.rerankers.CohereReranker;
 import io.weaviate.client6.v1.api.collections.vectorindex.Distance;
 import io.weaviate.client6.v1.api.collections.vectorindex.Dynamic;
 import io.weaviate.client6.v1.api.collections.vectorindex.Flat;
-import io.weaviate.client6.v1.api.collections.vectorindex.Hfresh;
+import io.weaviate.client6.v1.api.collections.vectorindex.HFresh;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.api.collections.vectorindex.MultiVector;
 import io.weaviate.client6.v1.api.collections.vectorindex.MultiVector.Aggregation;
@@ -1144,7 +1144,7 @@ public class JSONTest {
         {
             VectorConfig.class,
             SelfProvidedVectorizer.of(none -> none
-                .vectorIndex(Hfresh.of(hfresh -> hfresh
+                .vectorIndex(HFresh.of(hfresh -> hfresh
                     .distance(Distance.DOT)
                     .maxPostingSizeKb(1)
                     .replicaCount(2)

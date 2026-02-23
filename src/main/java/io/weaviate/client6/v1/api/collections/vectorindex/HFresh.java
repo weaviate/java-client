@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
-public record Hfresh(
+public record HFresh(
     @SerializedName("distance") Distance distance,
     @SerializedName("maxPostingSizeKB") Integer maxPostingSizeKb,
     @SerializedName("replicas") Integer replicaCount,
@@ -23,15 +23,15 @@ public record Hfresh(
     return this;
   }
 
-  public static Hfresh of() {
+  public static HFresh of() {
     return of(ObjectBuilder.identity());
   }
 
-  public static Hfresh of(Function<Builder, ObjectBuilder<Hfresh>> fn) {
+  public static HFresh of(Function<Builder, ObjectBuilder<HFresh>> fn) {
     return fn.apply(new Builder()).build();
   }
 
-  public Hfresh(Builder builder) {
+  public HFresh(Builder builder) {
     this(
         builder.distance,
         builder.maxPostingSizeKb,
@@ -39,7 +39,7 @@ public record Hfresh(
         builder.searchProbe);
   }
 
-  public static class Builder implements ObjectBuilder<Hfresh> {
+  public static class Builder implements ObjectBuilder<HFresh> {
     private Distance distance;
     private Integer maxPostingSizeKb;
     private Integer replicaCount;
@@ -66,8 +66,8 @@ public record Hfresh(
     }
 
     @Override
-    public Hfresh build() {
-      return new Hfresh(this);
+    public HFresh build() {
+      return new HFresh(this);
     }
   }
 }
