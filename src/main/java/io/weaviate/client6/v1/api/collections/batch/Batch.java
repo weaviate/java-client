@@ -74,7 +74,7 @@ final class Batch {
    * This is determined by the {@link GrpcChannelOptions#maxMessageSize}.
    */
   @GuardedBy("this")
-  private final long maxSizeBytes;
+  private final int maxSizeBytes;
 
   /** Total serialized size of the items in the {@link #buffer}. */
   @GuardedBy("this")

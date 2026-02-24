@@ -9,8 +9,11 @@ import com.google.protobuf.GeneratedMessageV3;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch;
 
 final class MessageSizeUtil {
-  private static int DATA_TAG_SIZE = CodedOutputStream
-      .computeTagSize(WeaviateProtoBatch.BatchStreamRequest.DATA_FIELD_NUMBER);
+  /**
+   * Safety margin of 1KB to allow for the overhead of surrounding Data field tags
+   * and the encoded length of the final payload.
+   */
+  private static int SAFETY_MARGIN = 1024;
 
   private MessageSizeUtil() {
   }
@@ -24,11 +27,11 @@ final class MessageSizeUtil {
    * so to estimate the batch size correctly we must account for "tag"
    * and "length", not just the raw payload.
    */
-  static long maxSizeBytes(long maxSizeBytes) {
-    if (maxSizeBytes <= DATA_TAG_SIZE) {
-      throw new IllegalArgumentException("Maximum batch size must be at least %dB".formatted(DATA_TAG_SIZE));
+  static int maxSizeBytes(int maxSizeBytes) {
+    if (maxSizeBytes <= SAFETY_MARGIN) {
+      throw new IllegalArgumentException("Maximum batch size must be at least %dB".formatted(SAFETY_MARGIN));
     }
-    return maxSizeBytes - DATA_TAG_SIZE;
+    return maxSizeBytes - SAFETY_MARGIN;
   }
 
   /**
