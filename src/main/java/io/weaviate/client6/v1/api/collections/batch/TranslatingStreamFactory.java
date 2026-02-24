@@ -97,12 +97,8 @@ class TranslatingStreamFactory implements StreamFactory<Message, Event> {
         case SHUTTING_DOWN:
           event = Event.SHUTTING_DOWN;
           break;
-        case SHUTDOWN:
-          event = Event.EOF;
-          break;
         case OUT_OF_MEMORY:
-          // TODO(dyma): read this value from the message
-          event = new Event.Oom(300);
+          event = new Event.Oom(reply.getOutOfMemory().getWaitTime());
           break;
         case BACKOFF:
           event = new Event.Backoff(reply.getBackoff().getBatchSize());

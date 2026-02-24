@@ -119,9 +119,10 @@ public class TranslatingStreamFactoryTest {
 
   @Test
   public void testEventer_onNext_oom() {
-    // TODO(dyma): update to read seconds
     RECV.onNext(WeaviateProtoBatch.BatchStreamReply.newBuilder()
-        .setOutOfMemory(WeaviateProtoBatch.BatchStreamReply.OutOfMemory.newBuilder()).build());
+        .setOutOfMemory(WeaviateProtoBatch.BatchStreamReply.OutOfMemory.newBuilder()
+            .setWaitTime(300))
+        .build());
 
     Assertions.assertThat(SPY_RECV.getLast())
         .asInstanceOf(InstanceOfAssertFactories.type(Event.Oom.class))
