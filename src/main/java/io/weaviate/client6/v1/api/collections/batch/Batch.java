@@ -5,7 +5,9 @@ import static java.util.Objects.requireNonNull;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.OptionalInt;
 import java.util.Set;
@@ -175,7 +177,7 @@ final class Batch {
       }
 
       // Buffer exceeds the new limit. Move extra items to the backlog (LIFO).
-      ListIterator<String> extra = buffer.keySet().stream().toList().listIterator();
+      ListIterator<String> extra = List.copyOf(buffer.keySet()).listIterator(buffer.size());
       while (extra.hasPrevious() && buffer.size() > maxSize) {
         addBacklog(buffer.remove(extra.previous()));
       }
@@ -210,13 +212,14 @@ final class Batch {
       if (inFlight) {
         throw new IllegalStateException("Batch is in-flight");
       }
+      if (data.sizeBytes() > maxSizeBytes) {
+        throw new DataTooBigException(data, maxSizeBytes);
+      }
+
       long remainingBytes = maxSizeBytes - sizeBytes;
-      if (data.sizeBytes() <= remainingBytes) {
+      if (data.sizeBytes() <= remainingBytes && buffer.size() < maxSize) {
         addSafe(data);
         return;
-      }
-      if (isEmpty()) {
-        throw new DataTooBigException(data, maxSizeBytes);
       }
       // One of the class's invariants is that the backlog must not contain
       // any items unless the buffer is full. In case this item overflows
@@ -277,10 +280,11 @@ final class Batch {
       // We don't need to check the return value of .add(),
       // as all items in the backlog are guaranteed to not
       // exceed maxSizeBytes.
-      backlog.stream()
-          .takeWhile(__ -> !isFull())
-          .map(BacklogItem::data)
-          .forEach(this::addSafe);
+      Iterator<BacklogItem> backlogIterator = backlog.iterator();
+      while (backlogIterator.hasNext() && !isFull()) {
+        addSafe(backlogIterator.next().data());
+        backlogIterator.remove();
+      }
 
       return removed;
     } finally {

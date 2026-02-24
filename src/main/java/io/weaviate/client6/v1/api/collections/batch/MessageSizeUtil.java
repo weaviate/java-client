@@ -12,8 +12,10 @@ final class MessageSizeUtil {
   /**
    * Safety margin of 1KB to allow for the overhead of surrounding Data field tags
    * and the encoded length of the final payload.
+   *
+   * @apiNote Package-private for testing.
    */
-  private static int SAFETY_MARGIN = 1024;
+  static final int SAFETY_MARGIN = 1024;
 
   private MessageSizeUtil() {
   }

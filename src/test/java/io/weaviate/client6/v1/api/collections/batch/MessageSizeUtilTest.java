@@ -8,9 +8,6 @@ import org.junit.Test;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch;
 
 public class MessageSizeUtilTest {
-  /** Derive the value of {@code SAFETY_MARGIN} from the public API. */
-  private static int DERIVED_SAFETY_MARGIN = 4096 - MessageSizeUtil.maxSizeBytes(4096);
-
   private static WeaviateProtoBatch.BatchObject OBJECT = WeaviateProtoBatch.BatchObject.newBuilder()
       .setUuid(UUID.randomUUID().toString())
       .setCollection("Test")
@@ -45,19 +42,19 @@ public class MessageSizeUtilTest {
 
     int want = request.getSerializedSize();
     Assertions.assertThat(got).isLessThan(want);
-    Assertions.assertThat(want - got).isLessThan(DERIVED_SAFETY_MARGIN);
+    Assertions.assertThat(want - got).isLessThan(MessageSizeUtil.SAFETY_MARGIN);
   }
 
   @Test
   public void test_maxSizeBytes_legal() {
     int sizeBytes = 4096;
-    int want = sizeBytes - DERIVED_SAFETY_MARGIN;
+    int want = sizeBytes - MessageSizeUtil.SAFETY_MARGIN;
     int got = MessageSizeUtil.maxSizeBytes(sizeBytes);
     Assertions.assertThat(got).isEqualTo(want);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void test_maxSizeBytes_illegal() {
-    MessageSizeUtil.maxSizeBytes(DERIVED_SAFETY_MARGIN);
+    MessageSizeUtil.maxSizeBytes(MessageSizeUtil.SAFETY_MARGIN);
   }
 }
