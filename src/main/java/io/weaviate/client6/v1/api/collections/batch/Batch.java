@@ -157,7 +157,9 @@ final class Batch {
    * @see #clear
    */
   synchronized void setMaxSize(int maxSizeNew) {
-    checkInvariants();
+    // We do not checkInvariants() here, because setMaxSize may
+    // be called from clear() at the time when the batch is already
+    // open but before pendingMaxSize is set to OptionalInt.empty().
 
     try {
       // In-flight batch cannot be modified.

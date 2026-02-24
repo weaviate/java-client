@@ -192,6 +192,17 @@ public class BatchTest {
     Assertions.assertThat(batch.isFull())
         .as("batch is full after in-flight resizing")
         .isFalse();
+
+    batch.clear();
+
+    // After clear, the new limit is applied and the batch
+    // should be full after accepting 10 objects.
+    for (int i = 0; i < 10; i++) {
+      addObject(batch);
+    }
+    Assertions.assertThat(batch.isFull())
+        .as("batch is full after applying pendingMaxSize")
+        .isTrue();
   }
 
   /**
