@@ -37,6 +37,7 @@ import io.weaviate.client6.v1.api.collections.batch.Event.ClientError;
 import io.weaviate.client6.v1.api.collections.batch.Event.StreamHangup;
 import io.weaviate.client6.v1.api.collections.data.BatchReference;
 import io.weaviate.client6.v1.api.collections.data.InsertManyRequest;
+import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 
 /**
@@ -52,9 +53,7 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
  * @param <PropertiesT> the shape of properties for inserted objects.
  */
 public final class BatchContext<PropertiesT> implements Closeable {
-  private final int DEFAULT_BATCH_SIZE = 1_000;
-  private final int DEFAULT_QUEUE_SIZE = 100;
-  private final int MAX_RECONNECT_RETRIES = 5;
+  private final int maxReconnectRetries = 5;
 
   private final CollectionDescriptor<PropertiesT> collectionDescriptor;
   private final CollectionHandleDefaults collectionHandleDefaults;
@@ -88,7 +87,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
   /**
    * Queue publishes insert tasks from the main thread to the "sender".
-   * It has a maximum capacity of {@link #DEFAULT_QUEUE_SIZE}.
+   * It has a maximum capacity of {@link #queueSize}.
    *
    * Send {@link TaskHandle#POISON} to gracefully shutdown the "sender"
    * thread. The same queue may be re-used with a different "sender",
@@ -156,13 +155,27 @@ public final class BatchContext<PropertiesT> implements Closeable {
       StreamFactory<Message, Event> streamFactory,
       int maxSizeBytes,
       CollectionDescriptor<PropertiesT> collectionDescriptor,
-      CollectionHandleDefaults collectionHandleDefaults) {
+      CollectionHandleDefaults collectionHandleDefaults,
+      int batchSize,
+      int queueSize,
+      int maxReconnectRetries) {
     this.streamFactory = requireNonNull(streamFactory, "streamFactory is null");
     this.collectionDescriptor = requireNonNull(collectionDescriptor, "collectionDescriptor is null");
     this.collectionHandleDefaults = requireNonNull(collectionHandleDefaults, "collectionHandleDefaults is null");
 
-    this.queue = new ArrayBlockingQueue<>(DEFAULT_QUEUE_SIZE);
-    this.batch = new Batch(DEFAULT_BATCH_SIZE, maxSizeBytes);
+    this.queue = new ArrayBlockingQueue<>(queueSize);
+    this.batch = new Batch(batchSize, maxSizeBytes);
+  }
+
+  private BatchContext(Builder<PropertiesT> builder) {
+    this(
+        builder.streamFactory,
+        builder.maxSizeBytes,
+        builder.collectionDescriptor,
+        builder.collectionHandleDefaults,
+        builder.batchSize,
+        builder.queueSize,
+        builder.maxReconnectRetries);
   }
 
   /** Add {@link WeaviateObject} to the batch. */
@@ -189,7 +202,6 @@ public final class BatchContext<PropertiesT> implements Closeable {
     workers = new CountDownLatch(2);
 
     messages = streamFactory.createStream(new Recv());
-    System.out.println("create stream");
 
     // Start the stream and await Started message.
     messages.onNext(Message.start(collectionHandleDefaults.consistencyLevel()));
@@ -233,10 +245,15 @@ public final class BatchContext<PropertiesT> implements Closeable {
    */
   @Override
   public void close() throws IOException {
+    boolean closedBefore = closed;
     closed = true;
 
-    try {
+    if (!closedBefore) {
       shutdown();
+    }
+
+    try {
+      closing.get();
     } catch (InterruptedException | ExecutionException e) {
       if (e instanceof InterruptedException ||
           e.getCause() instanceof InterruptedException) {
@@ -248,8 +265,8 @@ public final class BatchContext<PropertiesT> implements Closeable {
     }
   }
 
-  private void shutdown() throws InterruptedException, ExecutionException {
-    CompletableFuture<Void> gracefulShutdown = CompletableFuture.runAsync(() -> {
+  private void shutdown() {
+    CompletableFuture.runAsync(() -> {
       try {
         // Poison the queue -- this will signal "send" to drain the remaing
         // items in the batch and in the backlog and exit.
@@ -270,13 +287,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
       } catch (Exception e) {
         closing.completeExceptionally(e);
       }
-
     }, shutdownExec);
-
-    // Complete shutdown as soon as one of these futures are completed.
-    // - gracefulShutdown completes if we managed to shutdown normally.
-    // - closing may complete sooner if shutdownNow is called.
-    CompletableFuture.anyOf(closing, gracefulShutdown).get();
   }
 
   private void shutdownNow(Exception ex) {
@@ -328,6 +339,26 @@ public final class BatchContext<PropertiesT> implements Closeable {
       state = nextState;
       state.onEnter(prev);
       stateChanged.signal();
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  /** Returns true if the next batch can be sent. */
+  boolean canSend() {
+    lock.lock();
+    try {
+      return state.canSend();
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  /** Returns true if the next batch can be assembled from the queued items. */
+  boolean canPrepareNext() {
+    lock.lock();
+    try {
+      return state.canPrepareNext();
     } finally {
       lock.unlock();
     }
@@ -458,7 +489,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
     private void awaitCanSend() throws InterruptedException {
       lock.lock();
       try {
-        while (!state.canSend()) {
+        while (!canSend()) {
           stateChanged.await();
         }
       } finally {
@@ -478,7 +509,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
     private void awaitCanPrepareNext() throws InterruptedException {
       lock.lock();
       try {
-        while (!state.canPrepareNext()) {
+        while (!canPrepareNext()) {
           stateChanged.await();
         }
       } finally {
@@ -649,7 +680,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
         hangup.exception().printStackTrace();
       }
       if (!send.isDone()) {
-        setState(new Reconnecting(MAX_RECONNECT_RETRIES));
+        setState(new Reconnecting(maxReconnectRetries));
       }
     }
 
@@ -869,5 +900,47 @@ public final class BatchContext<PropertiesT> implements Closeable {
         lock.unlock();
       }
     }, reconnectIntervalSeconds, reconnectIntervalSeconds, TimeUnit.SECONDS);
+  }
+
+  public static class Builder<PropertiesT> implements ObjectBuilder<BatchContext<PropertiesT>> {
+    private final StreamFactory<Message, Event> streamFactory;
+    private final int maxSizeBytes;
+    private final CollectionDescriptor<PropertiesT> collectionDescriptor;
+    private final CollectionHandleDefaults collectionHandleDefaults;
+
+    Builder(
+        StreamFactory<Message, Event> streamFactory,
+        int maxSizeBytes,
+        CollectionDescriptor<PropertiesT> collectionDescriptor,
+        CollectionHandleDefaults collectionHandleDefaults) {
+      this.streamFactory = streamFactory;
+      this.maxSizeBytes = maxSizeBytes;
+      this.collectionDescriptor = collectionDescriptor;
+      this.collectionHandleDefaults = collectionHandleDefaults;
+    }
+
+    private int batchSize = 1_000;
+    private int queueSize = 1_000;
+    private int maxReconnectRetries = 5;
+
+    public Builder<PropertiesT> batchSize(int batchSize) {
+      this.batchSize = batchSize;
+      return this;
+    }
+
+    public Builder<PropertiesT> queueSize(int queueSize) {
+      this.queueSize = queueSize;
+      return this;
+    }
+
+    public Builder<PropertiesT> maxReconnectRetries(int maxReconnectRetries) {
+      this.maxReconnectRetries = maxReconnectRetries;
+      return this;
+    }
+
+    @Override
+    public BatchContext<PropertiesT> build() {
+      return new BatchContext<>(this);
+    }
   }
 }

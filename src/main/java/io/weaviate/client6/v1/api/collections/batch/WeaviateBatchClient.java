@@ -3,8 +3,10 @@ package io.weaviate.client6.v1.api.collections.batch;
 import static java.util.Objects.requireNonNull;
 
 import java.util.OptionalInt;
+import java.util.function.Function;
 
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
+import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.TransportOptions;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
@@ -30,6 +32,26 @@ public class WeaviateBatchClient<PropertiesT> {
     this.grpcTransport = c.grpcTransport;
   }
 
+  public BatchContext<PropertiesT> start(
+      Function<BatchContext.Builder<PropertiesT>, ObjectBuilder<BatchContext<PropertiesT>>> fn) {
+    OptionalInt maxSizeBytes = grpcTransport.maxMessageSizeBytes();
+    if (maxSizeBytes.isEmpty()) {
+      throw new IllegalStateException("Server must have grpcMaxMessageSize configured to use server-side batching");
+    }
+
+    StreamFactory<Message, Event> streamFactory = new TranslatingStreamFactory(grpcTransport::createStream);
+    BatchContext.Builder<PropertiesT> builder = new BatchContext.Builder<>(
+        streamFactory, maxSizeBytes.getAsInt(), collectionDescriptor, defaults);
+    BatchContext<PropertiesT> context = fn.apply(builder).build();
+
+    if (isWeaviateCloudOnGoogleCloud(grpcTransport.host())) {
+      context.scheduleReconnect(GCP_RECONNECT_INTERVAL_SECONDS);
+    }
+
+    context.start();
+    return context;
+  }
+
   public BatchContext<PropertiesT> start() {
     OptionalInt maxSizeBytes = grpcTransport.maxMessageSizeBytes();
     if (maxSizeBytes.isEmpty()) {
@@ -37,11 +59,11 @@ public class WeaviateBatchClient<PropertiesT> {
     }
 
     StreamFactory<Message, Event> streamFactory = new TranslatingStreamFactory(grpcTransport::createStream);
-    BatchContext<PropertiesT> context = new BatchContext<>(
+    BatchContext<PropertiesT> context = new BatchContext.Builder<>(
         streamFactory,
         maxSizeBytes.getAsInt(),
         collectionDescriptor,
-        defaults);
+        defaults).build();
 
     if (isWeaviateCloudOnGoogleCloud(grpcTransport.host())) {
       context.scheduleReconnect(GCP_RECONNECT_INTERVAL_SECONDS);
