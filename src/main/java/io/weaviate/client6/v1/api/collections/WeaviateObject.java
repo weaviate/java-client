@@ -43,6 +43,10 @@ public record WeaviateObject<PropertiesT>(
     return (WeaviateObject<Map<String, Object>>) this;
   }
 
+  public static <PropertiesT> WeaviateObject<PropertiesT> of() {
+    return of(ObjectBuilder.identity());
+  }
+
   public static <PropertiesT> WeaviateObject<PropertiesT> of(
       Function<Builder<PropertiesT>, ObjectBuilder<WeaviateObject<PropertiesT>>> fn) {
     return fn.apply(new Builder<>()).build();
