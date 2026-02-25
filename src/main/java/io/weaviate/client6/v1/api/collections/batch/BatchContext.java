@@ -152,24 +152,6 @@ public final class BatchContext<PropertiesT> implements Closeable {
   /** Lightway check to ensure users cannot send on a closed context. */
   private volatile boolean closed;
 
-  // /** Closing state. */
-  // private volatile Closing closing;
-
-  // /**
-  // * setClosing trasitions BatchContext to {@link Closing} state exactly once.
-  // * Once this method returns, the caller can call {@code closing.await()}.
-  // */
-  // void setClosing(Exception ex) {
-  // if (closing == null) {
-  // synchronized (Closing.class) {
-  // if (closing == null) {
-  // closing = new Closing(ex);
-  // setState(closing);
-  // }
-  // }
-  // }
-  // }
-
   BatchContext(
       StreamFactory<Message, Event> streamFactory,
       int maxSizeBytes,
@@ -207,6 +189,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
     workers = new CountDownLatch(2);
 
     messages = streamFactory.createStream(new Recv());
+    System.out.println("create stream");
 
     // Start the stream and await Started message.
     messages.onNext(Message.start(collectionHandleDefaults.consistencyLevel()));
@@ -654,9 +637,6 @@ public final class BatchContext<PropertiesT> implements Closeable {
     }
 
     private final void onBackoff(Event.Backoff backoff) {
-      System.out.print("========== BACKOFF ==============");
-      System.out.print(backoff.maxSize());
-      System.out.print("=================================");
       batch.setMaxSize(backoff.maxSize());
     }
 
@@ -840,11 +820,13 @@ public final class BatchContext<PropertiesT> implements Closeable {
     /**
      * Schedule a task to {@link #reconnect} after a delay.
      *
-     * @param delaySeconds Delay in seconds.
+     * <h3>API Note</h3>
+     * The task is scheduled on {@link #scheduledExec} even if
+     * {@code delaySeconds == 0} to avoid blocking gRPC worker
+     * thread,
+     * where the {@link BatchContext#onEvent} callback runs.
      *
-     * @apiNote The task is scheduled on {@link #scheduledExec} even if
-     *          {@code delaySeconds == 0} to avoid blocking gRPC worker thread,
-     *          where the {@link BatchContext#onEvent} callback runs.
+     * @param delaySeconds Delay in seconds.
      */
     private void reconnectAfter(long delaySeconds) {
       retries++;

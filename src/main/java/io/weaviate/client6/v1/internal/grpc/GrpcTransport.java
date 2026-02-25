@@ -16,9 +16,10 @@ public interface GrpcTransport extends AutoCloseable {
   /**
    * Create stream for batch insertion.
    *
-   * @apiNote Batch insertion is presently the only operation performed over a
-   *          StreamStream connection, which is why we do not parametrize this
-   *          method.
+   * <h3>API Note</h3>
+   * Batch insertion is presently the only operation performed over a
+   * StreamStream connection, which is why we do not parametrize this
+   * method.
    */
   StreamObserver<WeaviateProtoBatch.BatchStreamRequest> createStream(
       StreamObserver<WeaviateProtoBatch.BatchStreamReply> recv);
