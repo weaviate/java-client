@@ -210,7 +210,7 @@ public class BatchTest {
    * The size of the serialized object is always {@link OBJECT_SIZE_BYTES}.
    */
   private static void addObject(Batch batch) {
-    WeaviateObject<Map<String, Object>> object = WeaviateObject.of(o -> o.uuid(UUID.randomUUID().toString()));
+    WeaviateObject<Map<String, Object>> object = WeaviateObject.of();
     batch.add(new Data(object, object.uuid(), newBatchObject(object), Data.Type.OBJECT));
   }
 
@@ -221,9 +221,8 @@ public class BatchTest {
 
   private static WeaviateProtoBatch.BatchObject bigBatchObject(int sizeBytes) {
     Random random = new Random();
-    Function<Vectors, WeaviateProtoBatch.BatchObject> object = vectors -> newBatchObject(WeaviateObject.of(
-        o -> o.uuid(UUID.randomUUID().toString())
-            .vectors(vectors)));
+    Function<Vectors, WeaviateProtoBatch.BatchObject> object = vectors -> newBatchObject(
+        WeaviateObject.of(o -> o.vectors(vectors)));
 
     // Keep adding vectors to the object until we've hit the right size.
     WeaviateProtoBatch.BatchObject out = null;
