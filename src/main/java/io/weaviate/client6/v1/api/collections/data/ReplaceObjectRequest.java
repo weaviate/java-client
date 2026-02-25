@@ -33,7 +33,7 @@ public record ReplaceObjectRequest<PropertiesT>(WeaviateObject<PropertiesT> obje
             new WeaviateObject<>(
                 request.object.uuid(),
                 collection.collectionName(),
-                defaults.tenant().get(),
+                defaults.tenant().orElse(null),
                 request.object.properties(),
                 request.object.vectors(),
                 request.object.createdAt(),
