@@ -16,7 +16,7 @@ public interface GrpcTransport extends AutoCloseable {
   /**
    * Create stream for batch insertion.
    *
-   * <h3>API Note</h3>
+   * <p>
    * Batch insertion is presently the only operation performed over a
    * StreamStream connection, which is why we do not parametrize this
    * method.

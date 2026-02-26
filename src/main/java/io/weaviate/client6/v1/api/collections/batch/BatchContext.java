@@ -864,7 +864,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
     /**
      * Schedule a task to {@link #reconnect} after a delay.
      *
-     * <h3>API Note</h3>
+     * <p>
      * The task is scheduled on {@link #scheduledExec} even if
      * {@code delaySeconds == 0} to avoid blocking gRPC worker
      * thread,
