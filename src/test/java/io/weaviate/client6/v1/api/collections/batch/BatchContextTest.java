@@ -31,7 +31,7 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 
 public class BatchContextTest {
-  private static Thread TEST_THREAD = Thread.currentThread();
+  private static final Thread TEST_THREAD = Thread.currentThread();
 
   private static final CollectionDescriptor<Map<String, Object>> DESCRIPTOR = CollectionDescriptor
       .ofMap("BatchContextTest");
@@ -119,12 +119,13 @@ public class BatchContextTest {
     Assertions.assertThat(tasks)
         .extracting(TaskHandle::isAcked).allMatch(CompletableFuture::isDone);
 
-    server.emitEvent(new Event.Results(received, Collections.emptyMap()));
+    Future<?> results = server.emitEvent(new Event.Results(received, Collections.emptyMap()));
 
     // Since MockServer runs in the same thread as this test,
     // the context will be updated before the last emitEvent returns.
     context.close();
 
+    results.get(); // Wait until the Results event has been processed.
     Assertions.assertThat(tasks).extracting(TaskHandle::result)
         .allMatch(CompletableFuture::isDone)
         .extracting(CompletableFuture::get).extracting(TaskHandle.Result::error)
@@ -152,9 +153,12 @@ public class BatchContextTest {
         Assertions.assertThat(tasks)
             .extracting(TaskHandle::isAcked).allMatch(CompletableFuture::isDone);
 
-        server.emitEvent(new Event.Results(received, Collections.emptyMap()));
-      } catch (InterruptedException e) {
-        throw new RuntimeException("mock server interrupted", e);
+        // Wait until the Results event's been processed to guarantee
+        // that the tasks' futures are completed before asserting.
+        Future<?> results = server.emitEvent(new Event.Results(received, Collections.emptyMap()));
+        results.get();
+      } catch (Exception e) {
+        throw new RuntimeException(e);
       }
     });
 
@@ -342,33 +346,28 @@ public class BatchContextTest {
 
     // Ack the latest batch, but now Before sending back the results
     // for either one, hang up the stream.
+    // On hangup, client should re-populate the batch from the WIP buffer.
+    // Add one more item to overflow, so that there are now 3 pending batches.
     ack();
     server.hangup();
-
-    // On hangup, client should re-populate the batch from the WIP buffer.
-    // Add one more item to trigger the flush.
     tasks.add(context.add(WeaviateObject.of()));
 
-    // The client should try to reconnect, because the context is still open.
-    // Once the server starts accepting connections again, the client will
-    // flush the 2 full batches and pause, waiting for the next event.
+    // The client will try to reconnect, because the context is still open.
+    // When the server starts accepting connections again, the client should
+    // drain the remaining BATCH_SIZE+1 objects as we close the context.
     server.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
     server.emitEvent(Event.STARTED);
-
-    List<String> ids = ack();
-    server.emitEvent(new Event.Results(ids, Collections.emptyMap()));
-
-    ids = ack();
-    server.emitEvent(new Event.Results(ids, Collections.emptyMap()));
-
-    // There is now 1 item remaining in the batch.
-    // On context close, the client will drain it.
     Future<?> backgroundAcks = EXEC.submit(() -> {
       try {
-        List<String> id = ack();
-        Assertions.assertThat(id).as("drained item").hasSize(1);
-        Future<?> applied = server.emitEvent(new Event.Results(id, Collections.emptyMap()));
-        // applied.get();
+        List<String> ids = ack();
+        server.emitEvent(new Event.Results(ids, Collections.emptyMap()));
+
+        ids = ack();
+        server.emitEvent(new Event.Results(ids, Collections.emptyMap()));
+
+        ids = ack();
+        Future<?> lastEvent = server.emitEvent(new Event.Results(ids, Collections.emptyMap()));
+        lastEvent.get();
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
@@ -398,7 +397,10 @@ public class BatchContextTest {
     context.add(WeaviateObject.of(o -> o.properties(Map.of())));
   }
 
-  /** Read the next Data message from the stream and ACK it. */
+  /**
+   * Read the next Data message from the stream and ACK it.
+   * This method does not wait for the server to process the Acks.
+   */
   private List<String> ack() throws InterruptedException {
     WeaviateProtoBatch.BatchStreamRequest.Data data = server
         .expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.DATA)
