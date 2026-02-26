@@ -73,7 +73,7 @@ final class Batch {
    * Must be greater that zero.
    *
    * <p>
-   * This is determined by the {@link GrpcChannelOptions#maxMessageSize}.
+   * This is determined by the {@link GrpcChannelOptions#maxMessageSize()}.
    */
   @GuardedBy("this")
   private final int maxSizeBytes;
@@ -142,7 +142,7 @@ final class Batch {
    * Set the new {@link #maxSize} for this buffer.
    *
    * <p>
-   * How the size is applied depends of the buffer's current state:
+   * How the size is applied depends on the buffer's current state:
    * <ul>
    * <li>When the batch is in-flight, the new limit is stored in
    * {@link #pendingMaxSize} and will be applied once the batch is cleared.
@@ -240,7 +240,7 @@ final class Batch {
   /**
    * Add a data item to the batch.
    *
-   * This method does not check {@link Data#sizeBytes}, so the caller
+   * This method does not check {@link Data#sizeBytes()}, so the caller
    * must ensure that this item will not overflow the batch.
    */
   private synchronized void addSafe(Data data) {
@@ -258,7 +258,7 @@ final class Batch {
    *
    * <p>
    * Once the buffer is pruned, it is re-populated from the backlog
-   * until the former is full or the latter is exhaused.
+   * until the former is full or the latter is exhausted.
    * If {@link #pendingMaxSize} is not empty, it is applied
    * before re-populating the buffer.
    *

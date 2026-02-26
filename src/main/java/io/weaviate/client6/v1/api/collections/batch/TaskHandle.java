@@ -23,14 +23,14 @@ public final class TaskHandle {
    * Input value as passed by the user.
    *
    * <p>
-   * Changes in the {@link #raw}'s underlying value will not be reflected
+   * Changes in the {@link Data}'s underlying value will not be reflected
    * in the {@link TaskHandle} (e.g. the serialized version is not updated),
    * so users SHOULD treat items passed to and retrieved from {@link TaskHandle}
-   * as effectively ummodifiable.
+   * as effectively unmodifiable.
    */
   private final Data data;
 
-  /** Flag indicatig the task has been ack'ed. */
+  /** Flag indicating the task has been ack'ed. */
   private final CompletableFuture<Void> acked = new CompletableFuture<>();
 
   public final record Result(Optional<String> error) {
@@ -119,7 +119,7 @@ public final class TaskHandle {
    * {@link #setSuccess} afterwards will have no effect.
    *
    * @param error Error message. Null values are tolerated, but are only expected
-   *              to occurr due to a server's mistake.
+   *              to occur due to a server's mistake.
    *              Do not use {@code setError(null)} if the server reports success
    *              status for the task; prefer {@link #setSuccess} in that case.
    */
