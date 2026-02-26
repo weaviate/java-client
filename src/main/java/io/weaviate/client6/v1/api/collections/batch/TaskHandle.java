@@ -83,8 +83,8 @@ public final class TaskHandle {
   }
 
   /**
-   * Creates a new task containing the same data as this task and {@link retries}
-   * counter incremented by 1. The {@link acked} and {@link result} futures
+   * Creates a new task containing the same data as this task and {@link #retries}
+   * counter incremented by 1. The {@link #acked} and {@link #result} futures
    * are not copied to the returned task.
    *
    * @return Task handle.
@@ -163,7 +163,7 @@ public final class TaskHandle {
    * Number of times this task has been retried. Since {@link TaskHandle} is
    * immutable, this value does not change, but retrying a task via
    * {@link BatchContext#retry} is reflected in the returned handle's
-   * {@link #timesRetried}.
+   * timesRetried.
    */
   public int timesRetried() {
     return retries;
@@ -171,6 +171,9 @@ public final class TaskHandle {
 
   @Override
   public String toString() {
+    if (this == POISON) {
+      return "TaskHandle<POISON>";
+    }
     return "TaskHandle<id=%s, retried=%d, created=%s>".formatted(id(), retries, createdAt);
   }
 }

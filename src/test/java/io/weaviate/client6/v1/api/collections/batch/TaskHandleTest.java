@@ -33,7 +33,7 @@ public class TaskHandleTest {
           CollectionHandleDefaults.of(CollectionHandleDefaults.none()));
 
   @Test
-  public void testTaskHandle_WeaviateObject_success() {
+  public void test_newTaskHandle_WeaviateObject_success() {
     TaskHandle taskHandle = new TaskHandle(OBJECT, OBJECT_PROTO);
 
     Assertions.assertThat(taskHandle)
@@ -58,7 +58,7 @@ public class TaskHandleTest {
   }
 
   @Test
-  public void testTaskHandle_WeaviateObject_error() {
+  public void test_newTaskHandle_WeaviateObject_error() {
     TaskHandle taskHandle = new TaskHandle(OBJECT, OBJECT_PROTO);
 
     Assertions.assertThat(taskHandle)
@@ -83,7 +83,7 @@ public class TaskHandleTest {
   }
 
   @Test
-  public void testTaskHandle_BatchReference_success() {
+  public void test_newTaskHandle_BatchReference_success() {
     TaskHandle taskHandle = new TaskHandle(REFERENCE, REFERENCE_PROTO);
 
     Assertions.assertThat(taskHandle)
@@ -108,7 +108,7 @@ public class TaskHandleTest {
   }
 
   @Test
-  public void testTaskHandle_BatchReference_error() {
+  public void test_newTaskHandle_BatchReference_error() {
     TaskHandle taskHandle = new TaskHandle(REFERENCE, REFERENCE_PROTO);
 
     Assertions.assertThat(taskHandle)
@@ -133,7 +133,7 @@ public class TaskHandleTest {
   }
 
   @Test
-  public void testTaskHandle_retry() {
+  public void test_retry() {
     TaskHandle taskHandle = new TaskHandle(OBJECT, OBJECT_PROTO);
     Assertions.assertThat(taskHandle).returns(0, TaskHandle::timesRetried);
 
@@ -145,6 +145,12 @@ public class TaskHandleTest {
     Assertions.assertThat(retried = retried.retry())
         .returns(2, TaskHandle::timesRetried)
         .extracting(TaskHandle::data).isEqualTo(taskHandle.data());
+  }
+
+  @Test
+  public void test_toString_POISON() {
+    Assertions.assertThat(TaskHandle.POISON.toString())
+        .isEqualTo("TaskHandle<POISON>");
   }
 
   private void assertAcked(TaskHandle taskHandle, boolean expect) {
