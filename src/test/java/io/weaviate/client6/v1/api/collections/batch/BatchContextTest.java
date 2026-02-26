@@ -11,7 +11,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -20,6 +19,7 @@ import java.util.stream.Stream;
 
 import org.assertj.core.api.Assertions;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -40,15 +40,24 @@ public class BatchContextTest {
       Optional.of(ConsistencyLevel.ONE), Optional.of("john_doe"));
 
   /**
+   * Dedicated executor for emitting events
+   * while the context is shutting down.
+   *
+   * @see BatchContext#close()
+   */
+  private static final ExecutorService EXEC = Executors.newSingleThreadExecutor();
+
+  /**
    * Maximum gRPC message size of 2KB .
    * 1KB is {@link MessageSizeUtil#SAFETY_MARGIN}.
    */
   private static final int MAX_SIZE_BYTES = 2 * 1024;
   private static final int BATCH_SIZE = 10;
   private static final int QUEUE_SIZE = 1;
+  private static final int MAX_RECONNECT_RETRIES = 2;
 
   private CompletableStreamFactory factory;
-  private MockServer stream;
+  private MockServer server;
   private BatchContext<Map<String, Object>> context;
 
   /**
@@ -61,9 +70,10 @@ public class BatchContextTest {
     context = new BatchContext.Builder<>(factory, MAX_SIZE_BYTES, DESCRIPTOR, DEFAULTS)
         .batchSize(BATCH_SIZE)
         .queueSize(QUEUE_SIZE)
+        .maxReconnectRetries(MAX_RECONNECT_RETRIES)
         .build();
     context.start();
-    stream = factory.serverStream.get();
+    server = factory.serverStream.get();
   }
 
   @After
@@ -78,13 +88,20 @@ public class BatchContextTest {
       factory.close();
       factory = null;
     }
-    stream = null;
+    server = null;
+  }
+
+  @AfterClass
+  public static void closeExecutor() throws Exception {
+    EXEC.shutdown();
+    boolean terminated = EXEC.awaitTermination(5, TimeUnit.SECONDS);
+    assert terminated : "EXEC did not terminate after 5s";
   }
 
   @Test
   public void test_sendOneBatch() throws Exception {
-    expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
-    stream.emitEvent(Event.STARTED);
+    server.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    server.emitEvent(Event.STARTED);
 
     List<TaskHandle> tasks = new ArrayList<>();
     for (int i = 0; i < BATCH_SIZE; i++) {
@@ -99,7 +116,7 @@ public class BatchContextTest {
     Assertions.assertThat(tasks)
         .extracting(TaskHandle::isAcked).allMatch(CompletableFuture::isDone);
 
-    stream.emitEvent(new Event.Results(received, Collections.emptyMap()));
+    server.emitEvent(new Event.Results(received, Collections.emptyMap()));
 
     // Since MockServer runs in the same thread as this test,
     // the context will be updated before the last emitEvent returns.
@@ -113,8 +130,8 @@ public class BatchContextTest {
 
   @Test
   public void test_drainOnClose() throws Exception {
-    expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
-    stream.emitEvent(Event.STARTED);
+    server.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    server.emitEvent(Event.STARTED);
 
     List<TaskHandle> tasks = new ArrayList<>();
     for (int i = 0; i < BATCH_SIZE - 2; i++) {
@@ -124,8 +141,7 @@ public class BatchContextTest {
     // Contrary the test above, we expect the objects to be sent
     // only after context.close(), as the half-empty batch will
     // be drained. Similarly, we want to ack everything as it arrives.
-    ExecutorService exec = Executors.newSingleThreadExecutor();
-    Future<?> mockServer = exec.submit(() -> {
+    Future<?> mockServer = EXEC.submit(() -> {
       try {
         List<String> received = ack();
         Assertions.assertThat(tasks)
@@ -133,7 +149,7 @@ public class BatchContextTest {
         Assertions.assertThat(tasks)
             .extracting(TaskHandle::isAcked).allMatch(CompletableFuture::isDone);
 
-        stream.emitEvent(new Event.Results(received, Collections.emptyMap()));
+        server.emitEvent(new Event.Results(received, Collections.emptyMap()));
       } catch (InterruptedException e) {
         throw new RuntimeException("mock server interrupted", e);
       }
@@ -150,10 +166,10 @@ public class BatchContextTest {
 
   @Test
   public void test_backoff() throws Exception {
-    expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
-    stream.emitEvent(Event.STARTED);
+    server.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    server.emitEvent(Event.STARTED);
 
-    stream.emitEvent(new Event.Backoff(BATCH_SIZE / 2));
+    server.emitEvent(new Event.Backoff(BATCH_SIZE / 2));
 
     List<TaskHandle> tasks = new ArrayList<>();
     ExecutorService exec = Executors.newSingleThreadExecutor();
@@ -171,7 +187,7 @@ public class BatchContextTest {
     // set by the Backoff message, i.e. BATCH_SIZE / 2.
     List<String> received = ack();
     Assertions.assertThat(received).hasSize(BATCH_SIZE / 2);
-    stream.emitEvent(new Event.Results(received, Collections.emptyMap()));
+    server.emitEvent(new Event.Results(received, Collections.emptyMap()));
 
     testUser.get(); // Finish populating batch context.
 
@@ -179,7 +195,7 @@ public class BatchContextTest {
     // we should expect there to be exactly 2 batches.
     received = ack();
     Assertions.assertThat(received).hasSize(BATCH_SIZE / 2);
-    stream.emitEvent(new Event.Results(received, Collections.emptyMap()));
+    server.emitEvent(new Event.Results(received, Collections.emptyMap()));
 
     context.close();
 
@@ -191,8 +207,8 @@ public class BatchContextTest {
 
   @Test
   public void test_backoffBacklog() throws Exception {
-    expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
-    stream.emitEvent(Event.STARTED);
+    server.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    server.emitEvent(Event.STARTED);
 
     // Pre-fill the batch without triggering a flush (n-1).
     List<TaskHandle> tasks = new ArrayList<>();
@@ -203,7 +219,7 @@ public class BatchContextTest {
     int batchSizeNew = BATCH_SIZE / 2;
 
     // Force the last BATCH_SIZE / 2 - 1 items to be transferred to the backlog.
-    stream.emitEvent(new Event.Backoff(batchSizeNew));
+    server.emitEvent(new Event.Backoff(batchSizeNew));
 
     // The next item will go on the backlog and the trigger a flush,
     // which will continue to send batches and re-populate the from
@@ -213,10 +229,10 @@ public class BatchContextTest {
     tasks.add(context.add(WeaviateObject.of()));
 
     Assertions.assertThat(received = ack()).hasSize(batchSizeNew);
-    stream.emitEvent(new Event.Results(received, Collections.emptyMap()));
+    server.emitEvent(new Event.Results(received, Collections.emptyMap()));
 
     Assertions.assertThat(received = ack()).hasSize(batchSizeNew);
-    stream.emitEvent(new Event.Results(received, Collections.emptyMap()));
+    server.emitEvent(new Event.Results(received, Collections.emptyMap()));
 
     context.close();
 
@@ -228,24 +244,24 @@ public class BatchContextTest {
 
   @Test
   public void test_reconnect_onShutdown() throws Exception {
-    expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
-    stream.emitEvent(Event.STARTED);
+    server.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    server.emitEvent(Event.STARTED);
 
-    stream.emitEvent(Event.SHUTTING_DOWN);
-    expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.STOP);
+    server.emitEvent(Event.SHUTTING_DOWN);
+    server.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.STOP);
 
     // stream.eof();
-    expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    server.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
 
     // Not strictly necessary -- we can close the context
     // before a new connection is established.
-    stream.emitEvent(Event.STARTED);
+    server.emitEvent(Event.STARTED);
   }
 
   @Test
   public void test_reconnect_onOom() throws Exception {
-    expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
-    stream.emitEvent(Event.STARTED);
+    server.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    server.emitEvent(Event.STARTED);
 
     // OOM is the opposite of Ack -- trigger a flush first.
     for (int i = 0; i < BATCH_SIZE; i++) {
@@ -253,22 +269,22 @@ public class BatchContextTest {
     }
 
     // Respond with OOM and wait for the client to close its end of the stream.
-    expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.DATA);
-    stream.emitEvent(new Event.Oom(0));
+    server.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.DATA);
+    server.emitEvent(new Event.Oom(0));
 
     // Close the server's end of the stream.
-    expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.STOP);
+    server.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.STOP);
 
     // Allow the client to reconnect to another "instance" and Ack the batch.
-    expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
-    stream.emitEvent(Event.STARTED);
+    server.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    server.emitEvent(Event.STARTED);
     ack();
   }
 
   @Test
   public void test_reconnect_onStreamHangup() throws Exception {
-    expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
-    stream.emitEvent(Event.STARTED);
+    server.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    server.emitEvent(Event.STARTED);
 
     // Trigger a flush.
     for (int i = 0; i < BATCH_SIZE; i++) {
@@ -276,28 +292,29 @@ public class BatchContextTest {
     }
 
     // Expect a new batch to arrive. Hangup the stream before sending the Acks.
-    expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.DATA);
+    server.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.DATA);
     System.out.println("hangup the first time");
-    stream.hangup();
+    server.hangup();
 
     // The client should try to reconnect, because the context is still open.
-    expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
-    stream.emitEvent(Event.STARTED);
+    server.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    server.emitEvent(Event.STARTED);
 
-    // The previous batch hasn't been acked, so we should expect to receive it again.
+    // The previous batch hasn't been acked, so we should expect to receive it
+    // again.
     ack();
 
     // After the last batch has been acked, the Sender waits to take the next
     // item from the queue. Hangup the stream again, and add put another object
     // in the queue to wake the sender up.
-    stream.hangup();
-    expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
-    stream.emitEvent(Event.STARTED);
+    server.hangup();
+    server.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    server.emitEvent(Event.STARTED);
     context.add(WeaviateObject.of());
     ack();
 
     // Now fill up the rest of the batch to trigger a flush. Ack the incoming batch.
-    for (int i = 0; i < BATCH_SIZE-1; i++) {
+    for (int i = 0; i < BATCH_SIZE - 1; i++) {
       context.add(WeaviateObject.of());
     }
     ack();
@@ -306,8 +323,8 @@ public class BatchContextTest {
   @Ignore
   @Test
   public void test_reconnect_DrainAfterStreamHangup() throws Exception {
-    expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
-    stream.emitEvent(Event.STARTED);
+    server.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    server.emitEvent(Event.STARTED);
 
     // Trigger a flush.
     for (int i = 0; i < BATCH_SIZE; i++) {
@@ -315,50 +332,40 @@ public class BatchContextTest {
     }
 
     // Expect a new batch to arrive. Hangup the stream before sending the Acks.
-    expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.DATA);
-    stream.hangup();
+    server.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.DATA);
+    server.hangup();
 
     // The client should try to reconnect, because the context is still open.
-    expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
-    stream.emitEvent(Event.STARTED);
+    server.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    server.emitEvent(Event.STARTED);
 
-    // The previous batch hasn't been acked, so we should expect to receive it again.
-    ack();
   }
 
   @Test
   public void test_closeAfterStreamHangup() throws Exception {
-    expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
-    stream.emitEvent(Event.STARTED);
+    server.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    server.emitEvent(Event.STARTED);
 
-    stream.hangup();
+    server.hangup();
   }
 
   @Test(expected = IllegalStateException.class)
   public void test_add_closed() throws Exception {
-    expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    server.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
     context.close();
     context.add(WeaviateObject.of(o -> o.properties(Map.of())));
   }
 
-  /** Consume the next message and assert its type. */
-  private WeaviateProtoBatch.BatchStreamRequest expectMessage(
-      WeaviateProtoBatch.BatchStreamRequest.MessageCase messageCase) throws InterruptedException {
-    WeaviateProtoBatch.BatchStreamRequest actual = stream.recv();
-    Assertions.assertThat(actual)
-        .extracting(WeaviateProtoBatch.BatchStreamRequest::getMessageCase)
-        .isEqualTo(messageCase);
-    return actual;
-  }
-
+  /** Read the next Data message from the stream and ACK it. */
   private List<String> ack() throws InterruptedException {
-    WeaviateProtoBatch.BatchStreamRequest req = expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.DATA);
-    WeaviateProtoBatch.BatchStreamRequest.Data data = req.getData();
+    WeaviateProtoBatch.BatchStreamRequest.Data data = server
+        .expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.DATA)
+        .getData();
     List<String> ids = Stream.concat(
         data.getObjects().getValuesList().stream().map(WeaviateProtoBatch.BatchObject::getUuid),
         data.getReferences().getValuesList().stream().map(MockServer::getBeacon))
         .toList();
-    stream.emitEvent(new Event.Acks(ids));
+    server.emitEvent(new Event.Acks(ids));
     return ids;
   }
 
@@ -369,35 +376,35 @@ public class BatchContextTest {
      * same queue, which "survives" reconnects, meaning the test code can
      * listen on the same "stream" even if the batch client "recreates" it.
      */
-    private final BlockingQueue<WeaviateProtoBatch.BatchStreamRequest> BACKING_QUEUE = new ArrayBlockingQueue<>(
+    private final BlockingQueue<WeaviateProtoBatch.BatchStreamRequest> backingQueue = new ArrayBlockingQueue<>(
         1);
 
     /**
      * Server-side events are emitted from a dedicated thread, to avoid deadlocks
      * between the test code and the client side effects it expects to take place.
      */
-    private final ExecutorService EVENT_THREAD = Executors.newSingleThreadExecutor();
+    private final ExecutorService eventThread = Executors.newSingleThreadExecutor();
 
     /** Server-side part of the stream. */
     final CompletableFuture<MockServer> serverStream = new CompletableFuture<>();
 
     @Override
     public StreamObserver<Message> createStream(StreamObserver<Event> recv) {
-      MockServer stream = new MockServer(recv, EVENT_THREAD, BACKING_QUEUE);
+      MockServer stream = new MockServer(recv, eventThread, backingQueue);
       serverStream.complete(stream);
       return stream;
     }
 
     @Override
     public void close() throws Exception {
-      EVENT_THREAD.shutdown();
-      boolean terminated = EVENT_THREAD.awaitTermination(5, TimeUnit.SECONDS);
-      assert terminated : "event thread did not terminate after 5s";
+      eventThread.shutdown();
+      boolean terminated = eventThread.awaitTermination(5, TimeUnit.SECONDS);
+      assert terminated : "EVENT_THREAD did not terminate after 5s";
     }
   }
 
   private static class MockServer implements StreamObserver<Message> {
-    private final BlockingQueue<WeaviateProtoBatch.BatchStreamRequest> requestQueue;
+    /** Server-side part of the stream */
     private final StreamObserver<Event> eventStream;
     /**
      * Dedicated executor allows closing the server-side part of the stream
@@ -405,6 +412,8 @@ public class BatchContextTest {
      * that uses client-side stream.
      */
     private final ExecutorService eventExecutor;
+
+    private final BlockingQueue<WeaviateProtoBatch.BatchStreamRequest> requestQueue;
 
     public MockServer(
         StreamObserver<Event> eventStream,
@@ -438,9 +447,24 @@ public class BatchContextTest {
       });
     }
 
-    // Terminate the server-side of the stream abruptly.
+    /** Terminate the server-side of the stream abruptly. */
     void hangup() {
       emitEvent(new Event.StreamHangup(new RuntimeException("whaam!")));
+    }
+
+    /**
+     * Block until the next message arrives on the stream.
+     * When it does, assert it's of the expected type.
+     *
+     * @see WeaviateProtoBatch.BatchStreamRequest.MessageCase
+     */
+    WeaviateProtoBatch.BatchStreamRequest expectMessage(
+        WeaviateProtoBatch.BatchStreamRequest.MessageCase messageCase) throws InterruptedException {
+      WeaviateProtoBatch.BatchStreamRequest actual = requestQueue.take();
+      Assertions.assertThat(actual)
+          .extracting(WeaviateProtoBatch.BatchStreamRequest::getMessageCase)
+          .isEqualTo(messageCase);
+      return actual;
     }
 
     @Override

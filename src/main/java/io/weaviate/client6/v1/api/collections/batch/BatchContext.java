@@ -53,7 +53,7 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
  * @param <PropertiesT> the shape of properties for inserted objects.
  */
 public final class BatchContext<PropertiesT> implements Closeable {
-  private final int maxReconnectRetries = 5;
+  private final int maxReconnectRetries;
 
   private final CollectionDescriptor<PropertiesT> collectionDescriptor;
   private final CollectionHandleDefaults collectionHandleDefaults;
@@ -164,6 +164,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
     this.queue = new ArrayBlockingQueue<>(queueSize);
     this.batch = new Batch(batchSize, maxSizeBytes);
+    this.maxReconnectRetries = maxReconnectRetries;
   }
 
   private BatchContext(Builder<PropertiesT> builder) {
