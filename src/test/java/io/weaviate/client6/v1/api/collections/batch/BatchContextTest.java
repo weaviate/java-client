@@ -21,7 +21,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import io.grpc.stub.StreamObserver;
@@ -40,10 +39,14 @@ public class BatchContextTest {
       Optional.of(ConsistencyLevel.ONE), Optional.of("john_doe"));
 
   /**
-   * Dedicated executor for emitting events
-   * while the context is shutting down.
+   * Dedicated executor for occasional asynchrony.
    *
-   * @see BatchContext#close()
+   * <p>
+   * Most of the time the "server", the "user", the "test" processes
+   * will run on the main thread, one at a time, when the logic permits.
+   * In some cases it is useful to put at least one of those processes
+   * onto a separate thread. E.g. when the batch is being drained, but
+   * the main thread is blocked by {@link BatchContext#close}.
    */
   private static final ExecutorService EXEC = Executors.newSingleThreadExecutor();
 
@@ -141,7 +144,7 @@ public class BatchContextTest {
     // Contrary the test above, we expect the objects to be sent
     // only after context.close(), as the half-empty batch will
     // be drained. Similarly, we want to ack everything as it arrives.
-    Future<?> mockServer = EXEC.submit(() -> {
+    Future<?> backgroundAcks = EXEC.submit(() -> {
       try {
         List<String> received = ack();
         Assertions.assertThat(tasks)
@@ -156,7 +159,7 @@ public class BatchContextTest {
     });
 
     context.close();
-    mockServer.get(); // Wait for the "mock server" to process the data message.
+    backgroundAcks.get(); // Wait for the "mock server" to process the data message.
 
     Assertions.assertThat(tasks).extracting(TaskHandle::result)
         .allMatch(CompletableFuture::isDone)
@@ -172,8 +175,7 @@ public class BatchContextTest {
     server.emitEvent(new Event.Backoff(BATCH_SIZE / 2));
 
     List<TaskHandle> tasks = new ArrayList<>();
-    ExecutorService exec = Executors.newSingleThreadExecutor();
-    Future<?> testUser = exec.submit(() -> {
+    Future<?> backgroundAdd = EXEC.submit(() -> {
       try {
         for (int i = 0; i < BATCH_SIZE; i++) {
           tasks.add(context.add(WeaviateObject.of()));
@@ -189,7 +191,7 @@ public class BatchContextTest {
     Assertions.assertThat(received).hasSize(BATCH_SIZE / 2);
     server.emitEvent(new Event.Results(received, Collections.emptyMap()));
 
-    testUser.get(); // Finish populating batch context.
+    backgroundAdd.get(); // Finish populating batch context.
 
     // Since testUser will try and add BATCH_SIZE no. objects,
     // we should expect there to be exactly 2 batches.
@@ -222,7 +224,7 @@ public class BatchContextTest {
     server.emitEvent(new Event.Backoff(batchSizeNew));
 
     // The next item will go on the backlog and the trigger a flush,
-    // which will continue to send batches and re-populate the from
+    // which will continue to send batches and re-populate from
     // the backlog as long as the batch is full, so we should expect
     // to see 2 batches of size BATCH_SIZE / 2 each.
     List<String> received;
@@ -320,25 +322,65 @@ public class BatchContextTest {
     ack();
   }
 
-  @Ignore
   @Test
   public void test_reconnect_DrainAfterStreamHangup() throws Exception {
     server.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
     server.emitEvent(Event.STARTED);
 
+    List<TaskHandle> tasks = new ArrayList<>();
+
     // Trigger a flush.
     for (int i = 0; i < BATCH_SIZE; i++) {
-      context.add(WeaviateObject.of());
+      tasks.add(context.add(WeaviateObject.of()));
     }
 
-    // Expect a new batch to arrive. Hangup the stream before sending the Acks.
-    server.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.DATA);
+    // Expect a new batch to arrive. Ack the batch, and trigger another flush.
+    ack();
+    for (int i = 0; i < BATCH_SIZE; i++) {
+      tasks.add(context.add(WeaviateObject.of()));
+    }
+
+    // Ack the latest batch, but now Before sending back the results
+    // for either one, hang up the stream.
+    ack();
     server.hangup();
 
+    // On hangup, client should re-populate the batch from the WIP buffer.
+    // Add one more item to trigger the flush.
+    tasks.add(context.add(WeaviateObject.of()));
+
     // The client should try to reconnect, because the context is still open.
+    // Once the server starts accepting connections again, the client will
+    // flush the 2 full batches and pause, waiting for the next event.
     server.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
     server.emitEvent(Event.STARTED);
 
+    List<String> ids = ack();
+    server.emitEvent(new Event.Results(ids, Collections.emptyMap()));
+
+    ids = ack();
+    server.emitEvent(new Event.Results(ids, Collections.emptyMap()));
+
+    // There is now 1 item remaining in the batch.
+    // On context close, the client will drain it.
+    Future<?> backgroundAcks = EXEC.submit(() -> {
+      try {
+        List<String> id = ack();
+        Assertions.assertThat(id).as("drained item").hasSize(1);
+        Future<?> applied = server.emitEvent(new Event.Results(id, Collections.emptyMap()));
+        // applied.get();
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    });
+
+    context.close();
+    backgroundAcks.get();
+
+    Assertions.assertThat(tasks).extracting(TaskHandle::result)
+        .allMatch(CompletableFuture::isDone)
+        .extracting(CompletableFuture::get).extracting(TaskHandle.Result::error)
+        .allMatch(Optional::isEmpty);
   }
 
   @Test
@@ -429,12 +471,12 @@ public class BatchContextTest {
       return requestQueue.take();
     }
 
-    void emitEvent(Event event) {
+    Future<?> emitEvent(Event event) {
       if (event == Event.EOF) {
         assert Thread.currentThread() != TEST_THREAD : "test MUST NOT close/terminate the the stream";
       }
 
-      eventExecutor.execute(() -> {
+      return eventExecutor.submit(() -> {
         System.out.println("emit " + event);
         if (event == Event.EOF) {
           eventStream.onCompleted();
