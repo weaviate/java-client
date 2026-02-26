@@ -18,6 +18,7 @@ import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.Quantization;
 import io.weaviate.client6.v1.api.collections.ReferenceProperty;
 import io.weaviate.client6.v1.api.collections.Replication;
+import io.weaviate.client6.v1.api.collections.Replication.AsyncReplicationConfig;
 import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.config.PropertyIndexType;
 import io.weaviate.client6.v1.api.collections.config.Shard;
@@ -369,5 +370,54 @@ public class CollectionsITest extends ConcurrentTest {
             .returns(false, Property::indexFilterable)
             .returns(false, Property::indexSearchable)
             .returns(false, Property::indexRangeFilters));
+    }
+ 
+  @Test
+  public void test_asyncReplicationConfig() throws IOException {
+    Weaviate.Version.latest().orSkip();
+
+    // Arrange
+    var nsThings = ns("Things");
+
+    // Act
+    var things = client.collections.create(nsThings,
+        c -> c.replication(Replication.of(
+            repl -> repl
+                .asyncEnabled(true)
+                .asyncReplication(AsyncReplicationConfig.of(
+                    async -> async
+                        .hashTreeHeight(1)
+                        .maxWorkers(2)
+                        .frequencyMillis(3)
+                        .frequencyMillisWhilePropagating(4)
+                        .aliveNodesCheckingFrequencyMillis(5)
+                        .loggingFrequencySeconds(6)
+                        .diffBatchSize(7)
+                        .diffPerNodeTimeoutSeconds(8)
+                        .prePropagationTimeoutSeconds(9)
+                        .propagationTimeoutSeconds(10)
+                        .propagationDelayMillis(11)
+                        .propagationLimit(12)
+                        .propagationConcurrency(13)
+                        .propagationBatchSize(14))))));
+
+    // Assert
+    Assertions.assertThat(things.config.get()).get()
+        .extracting(CollectionConfig::replication)
+        .extracting(Replication::asyncReplicationConfig)
+        .returns(1, AsyncReplicationConfig::hashTreeHeight)
+        .returns(2, AsyncReplicationConfig::maxWorkers)
+        .returns(3, AsyncReplicationConfig::frequencyMillis)
+        .returns(4, AsyncReplicationConfig::frequencyMillisWhilePropagating)
+        .returns(5, AsyncReplicationConfig::aliveNodesCheckingFrequencyMillis)
+        .returns(6, AsyncReplicationConfig::loggingFrequencySeconds)
+        .returns(7, AsyncReplicationConfig::diffBatchSize)
+        .returns(8, AsyncReplicationConfig::diffPerNodeTimeoutSeconds)
+        .returns(9, AsyncReplicationConfig::prePropagationTimeoutSeconds)
+        .returns(10, AsyncReplicationConfig::propagationTimeoutSeconds)
+        .returns(11, AsyncReplicationConfig::propagationDelayMillis)
+        .returns(12, AsyncReplicationConfig::propagationLimit)
+        .returns(13, AsyncReplicationConfig::propagationConcurrency)
+        .returns(14, AsyncReplicationConfig::propagationBatchSize);
   }
 }

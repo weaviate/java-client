@@ -74,7 +74,7 @@ public record InvertedIndex(
     }
   }
 
-  public record Stopwords(
+  public static record Stopwords(
       /** Selected preset. */
       @SerializedName("preset") String preset,
       /** Custom words added to the selected preset. */

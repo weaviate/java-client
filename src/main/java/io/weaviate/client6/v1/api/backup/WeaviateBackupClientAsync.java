@@ -124,16 +124,37 @@ public class WeaviateBackupClientAsync {
   }
 
   /**
-   * Cancel in-progress backup.
+   * Cancel in-progress backup creation.
    *
-   * <p>
-   * This method cannot be called cancel backup restore.
+   * @param backupId Backup ID.
+   * @param backend  Backup storage backend.
+   * @deprecated This method forwards to {@link #cancelCreate}. Prefer using the
+   *             latter, as it is less ambiguous.
+   */
+  @Deprecated
+  public CompletableFuture<Void> cancel(String backupId, String backend) {
+    return cancelCreate(backupId, backend);
+  }
+
+  /**
+   * Cancel in-progress backup creation.
    *
    * @param backupId Backup ID.
    * @param backend  Backup storage backend.
    */
-  public CompletableFuture<Void> cancel(String backupId, String backend) {
+  public CompletableFuture<Void> cancelCreate(String backupId, String backend) {
     return this.restTransport.performRequestAsync(new CancelBackupRequest(backupId, backend),
         CancelBackupRequest._ENDPOINT);
+  }
+
+  /**
+   * Cancel in-progress backup restore.
+   *
+   * @param backupId Backup ID.
+   * @param backend  Backup storage backend.
+   */
+  public CompletableFuture<Void> cancelRestore(String backupId, String backend) {
+    return this.restTransport.performRequestAsync(new CancelBackupRestoreRequest(backupId, backend),
+        CancelBackupRestoreRequest._ENDPOINT);
   }
 }
