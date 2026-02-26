@@ -195,7 +195,6 @@ public final class BatchContext<PropertiesT> implements Closeable {
   }
 
   void start() {
-    System.out.println("RESET COUNTDOWN LATCH to [2]");
     workers = new CountDownLatch(2);
 
     messages = streamFactory.createStream(new Recv());
@@ -216,7 +215,6 @@ public final class BatchContext<PropertiesT> implements Closeable {
    * is reached.
    */
   void reconnect() throws InterruptedException, ExecutionException {
-    System.out.println("RESET COUNTDOWN LATCH to [1]");
     workers = new CountDownLatch(2);
 
     messages = streamFactory.createStream(new Recv());
@@ -296,6 +294,10 @@ public final class BatchContext<PropertiesT> implements Closeable {
   }
 
   private void shutdownNow(Exception ex) {
+    // Now report this error to the server and close the stream.
+    closing.completeExceptionally(ex);
+    messages.onError(Status.INTERNAL.withCause(ex).asRuntimeException());
+
     // Terminate the "send" routine and wait for it to exit.
     // Since we're already in the error state we do not care
     // much if it throws or not.
@@ -305,11 +307,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
     } catch (Exception e) {
     }
 
-    // Now report this error to the server and close the stream.
-    closing.completeExceptionally(ex);
-    messages.onError(Status.INTERNAL.withCause(ex).asRuntimeException());
-
-    // Since shutdownNow is never triggerred by the "main" thread,
+    // Since shutdownNow is never triggered by the "main" thread,
     // it may be blocked on trying to add to the queue. While batch
     // context is active, we own this thread and may interrupt it.
     parent.interrupt();
@@ -434,7 +432,10 @@ public final class BatchContext<PropertiesT> implements Closeable {
           if (task == TaskHandle.POISON) {
             System.out.println("took POISON");
             drain();
-            break;
+
+            messages.onNext(Message.stop());
+            messages.onCompleted();
+            return;
           }
 
           Data data = task.data();
@@ -447,11 +448,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
         Thread.currentThread().interrupt();
       } catch (Exception e) {
         onEvent(new Event.ClientError(e));
-        return;
       }
-
-      messages.onNext(Message.stop());
-      messages.onCompleted();
     }
 
     /**
@@ -816,8 +813,6 @@ public final class BatchContext<PropertiesT> implements Closeable {
       if (prev == this) {
         return;
       }
-
-      // send.cancel(true);
 
       if (!ServerShuttingDown.class.isAssignableFrom(prev.getClass())) {
         // This is NOT an orderly shutdown, we're reconnecting after a stream hangup.

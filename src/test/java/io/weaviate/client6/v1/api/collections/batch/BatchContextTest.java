@@ -2,6 +2,7 @@ package io.weaviate.client6.v1.api.collections.batch;
 
 import static java.util.Objects.requireNonNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -57,7 +58,7 @@ public class BatchContextTest {
   private static final int MAX_SIZE_BYTES = 2 * 1024;
   private static final int BATCH_SIZE = 10;
   private static final int QUEUE_SIZE = 1;
-  private static final int MAX_RECONNECT_RETRIES = 2;
+  private static final int MAX_RECONNECT_RETRIES = 1;
 
   private CompletableStreamFactory factory;
   private MockServer server;
@@ -390,6 +391,41 @@ public class BatchContextTest {
     server.hangup();
   }
 
+  @Test
+  public void test_maxReconnectRetries() throws Exception {
+    server.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+
+    // Drop the connection several times until the client exhausts its reconnect attempts.
+    int retries = 0;
+    while (retries < MAX_RECONNECT_RETRIES) {
+      server.hangup();
+      server.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+      retries++;
+    }
+
+    Future<?> fatalHangup = server.hangup();
+    try {
+      fatalHangup.get();
+    } catch (InterruptedException ignored) {
+      // BatchContext#shutdownNow might interrupt the parent thread.
+    }
+
+    Assertions.assertThatThrownBy(() -> context.close())
+        .isInstanceOf(IOException.class)
+        .hasMessageContaining("Server unavailable");
+
+    // Cleanup: unset the context and factory to prevent test teardown code
+    // from tripping on it while trying to close the context.
+    context = null;
+
+    try {
+      factory.close();
+    } catch (InterruptedException ignored) {
+    } finally {
+    factory = null;
+    }
+  }
+
   @Test(expected = IllegalStateException.class)
   public void test_add_closed() throws Exception {
     server.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
@@ -465,12 +501,7 @@ public class BatchContextTest {
         BlockingQueue<WeaviateProtoBatch.BatchStreamRequest> requestQueue) {
       this.eventStream = requireNonNull(eventStream, "eventStream is null");
       this.requestQueue = requireNonNull(requestQueue, "requestQueue is null");
-      this.eventExecutor = eventExecutor;
-    }
-
-    /** Wait until the next request arrives. */
-    WeaviateProtoBatch.BatchStreamRequest recv() throws InterruptedException {
-      return requestQueue.take();
+      this.eventExecutor = requireNonNull(eventExecutor, "eventExecutor is null");
     }
 
     Future<?> emitEvent(Event event) {
@@ -492,8 +523,8 @@ public class BatchContextTest {
     }
 
     /** Terminate the server-side of the stream abruptly. */
-    void hangup() {
-      emitEvent(new Event.StreamHangup(new RuntimeException("whaam!")));
+    Future<?> hangup() {
+      return emitEvent(new Event.StreamHangup(new RuntimeException("whaam!")));
     }
 
     /**
