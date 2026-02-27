@@ -81,7 +81,7 @@ public class OIDCSupportITest extends ConcurrentTest {
     Assume.assumeTrue("WCS_DUMMY_CI_PW is not set", WCS_DUMMY_CI_PW != null && !WCS_DUMMY_CI_PW.isBlank());
     Assume.assumeTrue("no internet connection", hasInternetConnection());
 
-    // Check norwal resource owner password flow works.
+    // Check normal resource owner password flow works.
     var password = Authentication.resourceOwnerPassword(WCS_DUMMY_CI_USERNAME, WCS_DUMMY_CI_PW, List.of());
     var auth = SpyTokenProvider.spyOn(password);
     pingWeaviate(wcsContainer, auth);

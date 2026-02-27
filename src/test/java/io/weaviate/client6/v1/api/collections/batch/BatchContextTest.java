@@ -2,6 +2,7 @@ package io.weaviate.client6.v1.api.collections.batch;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -171,25 +172,21 @@ public class BatchContextTest {
     // Contrary the test above, we expect the objects to be sent
     // only after context.close(), as the half-empty batch will
     // be drained. Similarly, we want to ack everything as it arrives.
-    Future<?> backgroundAcks = BACKGROUND.submit(() -> {
+    BACKGROUND.submit(() -> {
       try {
         List<String> received = recvDataAndAck();
         Assertions.assertThat(tasks)
             .extracting(TaskHandle::id).containsExactlyInAnyOrderElementsOf(received);
         Assertions.assertThat(tasks)
             .extracting(TaskHandle::isAcked).allMatch(CompletableFuture::isDone);
-
-        // Wait until the Results event's been processed to guarantee
-        // that the tasks' futures are completed before asserting.
-        Future<?> results = out.emitEvent(new Event.Results(received, Collections.emptyMap()));
-        results.get();
+        out.emitEvent(new Event.Results(received, Collections.emptyMap()));
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
     });
 
     context.close();
-    backgroundAcks.get(); // Wait for the "mock server" to process the data message.
+    awaitResults(tasks);
 
     Assertions.assertThat(tasks).extracting(TaskHandle::result)
         .allMatch(CompletableFuture::isDone)
@@ -267,6 +264,13 @@ public class BatchContextTest {
     out.emitEvent(new Event.Results(received, Collections.emptyMap()));
 
     context.close();
+
+    // Wait until the Results event's been processed to guarantee
+    // that the tasks' futures are completed before asserting.
+    CompletableFuture.allOf(
+        tasks.stream().map(TaskHandle::result)
+            .toArray(CompletableFuture[]::new))
+        .get(100, TimeUnit.MILLISECONDS);
 
     Assertions.assertThat(tasks).extracting(TaskHandle::result)
         .allMatch(CompletableFuture::isDone)
@@ -462,6 +466,15 @@ public class BatchContextTest {
         .toList();
     out.emitEvent(new Event.Acks(ids));
     return ids;
+  }
+
+  private void awaitResults(Collection<TaskHandle> tasks) throws Exception {
+    // Wait until the Results event's been processed to guarantee
+    // that the tasks' futures are completed before asserting.
+    CompletableFuture.allOf(
+        tasks.stream().map(TaskHandle::result)
+            .toArray(CompletableFuture[]::new))
+        .get(100, TimeUnit.MILLISECONDS);
   }
 
   static String getBeacon(WeaviateProtoBatch.BatchReference reference) {
