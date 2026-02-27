@@ -294,7 +294,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
   }
 
   private void shutdownNow(Exception ex) {
-    // Now report this error to the server and close the stream.
+    // Now report this error to the server and terminate the stream.
     closing.completeExceptionally(ex);
     messages.onError(Status.INTERNAL.withCause(ex).asRuntimeException());
 
@@ -307,10 +307,12 @@ public final class BatchContext<PropertiesT> implements Closeable {
     } catch (Exception e) {
     }
 
-    // Since shutdownNow is never triggered by the "main" thread,
-    // it may be blocked on trying to add to the queue. While batch
-    // context is active, we own this thread and may interrupt it.
-    parent.interrupt();
+    if (!closed) {
+      // Since shutdownNow is never triggered by the "main" thread,
+      // it may be blocked on trying to add to the queue. While batch
+      // context is active, we own this thread and may interrupt it.
+      parent.interrupt();
+    }
   }
 
   private void shutdownExecutors() {
