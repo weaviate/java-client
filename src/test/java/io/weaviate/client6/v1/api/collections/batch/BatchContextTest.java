@@ -128,9 +128,13 @@ public class BatchContextTest {
     assert terminated : "EXEC did not terminate after 5s";
   }
 
+  private static final WeaviateProtoBatch.BatchStreamRequest.MessageCase START = WeaviateProtoBatch.BatchStreamRequest.MessageCase.START;
+  private static final WeaviateProtoBatch.BatchStreamRequest.MessageCase STOP = WeaviateProtoBatch.BatchStreamRequest.MessageCase.STOP;
+  private static final WeaviateProtoBatch.BatchStreamRequest.MessageCase DATA = WeaviateProtoBatch.BatchStreamRequest.MessageCase.DATA;
+
   @Test
   public void test_sendOneBatch() throws Exception {
-    in.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    in.expectMessage(START);
     out.emitEvent(Event.STARTED);
 
     List<TaskHandle> tasks = new ArrayList<>();
@@ -161,7 +165,7 @@ public class BatchContextTest {
 
   @Test
   public void test_drainOnClose() throws Exception {
-    in.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    in.expectMessage(START);
     out.emitEvent(Event.STARTED);
 
     List<TaskHandle> tasks = new ArrayList<>();
@@ -196,7 +200,7 @@ public class BatchContextTest {
 
   @Test
   public void test_backoff() throws Exception {
-    in.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    in.expectMessage(START);
     out.emitEvent(Event.STARTED);
 
     out.emitEvent(new Event.Backoff(BATCH_SIZE / 2));
@@ -236,7 +240,7 @@ public class BatchContextTest {
 
   @Test
   public void test_backoffBacklog() throws Exception {
-    in.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    in.expectMessage(START);
     out.emitEvent(Event.STARTED);
 
     // Pre-fill the batch without triggering a flush (n-1).
@@ -280,14 +284,12 @@ public class BatchContextTest {
 
   @Test
   public void test_reconnect_onShutdown() throws Exception {
-    in.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    in.expectMessage(START);
     out.emitEvent(Event.STARTED);
 
     out.emitEvent(Event.SHUTTING_DOWN);
-    in.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.STOP);
-
-    // stream.eof();
-    in.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    in.expectMessage(STOP);
+    in.expectMessage(START);
 
     // Not strictly necessary -- we can close the context
     // before a new connection is established.
@@ -296,7 +298,7 @@ public class BatchContextTest {
 
   @Test
   public void test_reconnect_onOom() throws Exception {
-    in.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    in.expectMessage(START);
     out.emitEvent(Event.STARTED);
 
     // OOM is the opposite of Ack -- trigger a flush first.
@@ -305,21 +307,21 @@ public class BatchContextTest {
     }
 
     // Respond with OOM and wait for the client to close its end of the stream.
-    in.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.DATA);
+    in.expectMessage(DATA);
     out.emitEvent(new Event.Oom(0));
 
     // Close the server's end of the stream.
-    in.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.STOP);
+    in.expectMessage(STOP);
 
     // Allow the client to reconnect to another "instance" and Ack the batch.
-    in.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    in.expectMessage(START);
     out.emitEvent(Event.STARTED);
     recvDataAndAck();
   }
 
   @Test
   public void test_reconnect_onStreamHangup() throws Exception {
-    in.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    in.expectMessage(START);
     out.emitEvent(Event.STARTED);
 
     // Trigger a flush.
@@ -328,12 +330,12 @@ public class BatchContextTest {
     }
 
     // Expect a new batch to arrive. Hangup the stream before sending the Acks.
-    in.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.DATA);
+    in.expectMessage(DATA);
     System.out.println("hangup the first time");
     out.hangup();
 
     // The client should try to reconnect, because the context is still open.
-    in.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    in.expectMessage(START);
     out.emitEvent(Event.STARTED);
 
     // The previous batch hasn't been acked, so we should expect to receive it
@@ -344,7 +346,7 @@ public class BatchContextTest {
     // item from the queue. Hangup the stream again, and add put another object
     // in the queue to wake the sender up.
     out.hangup();
-    in.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    in.expectMessage(START);
     out.emitEvent(Event.STARTED);
     context.add(WeaviateObject.of());
     recvDataAndAck();
@@ -358,7 +360,7 @@ public class BatchContextTest {
 
   @Test
   public void test_reconnect_DrainAfterStreamHangup() throws Exception {
-    in.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    in.expectMessage(START);
     out.emitEvent(Event.STARTED);
 
     List<TaskHandle> tasks = new ArrayList<>();
@@ -385,7 +387,7 @@ public class BatchContextTest {
     // The client will try to reconnect, because the context is still open.
     // When the server starts accepting connections again, the client should
     // drain the remaining BATCH_SIZE+1 objects as we close the context.
-    in.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    in.expectMessage(START);
     out.emitEvent(Event.STARTED);
     Future<?> backgroundAcks = BACKGROUND.submit(() -> {
       try {
@@ -414,7 +416,7 @@ public class BatchContextTest {
 
   @Test
   public void test_closeAfterStreamHangup() throws Exception {
-    in.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    in.expectMessage(START);
     out.emitEvent(Event.STARTED);
 
     out.hangup();
@@ -422,14 +424,14 @@ public class BatchContextTest {
 
   @Test
   public void test_maxReconnectRetries() throws Exception {
-    in.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    in.expectMessage(START);
 
     // Drop the connection several times until the client
     // exhausts its reconnect attempts.
     int retries = 0;
     while (retries < MAX_RECONNECT_RETRIES) {
       out.hangup();
-      in.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+      in.expectMessage(START);
       retries++;
     }
 
@@ -447,14 +449,14 @@ public class BatchContextTest {
 
   @Test(expected = IllegalStateException.class)
   public void test_add_closed() throws Exception {
-    in.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    in.expectMessage(START);
     context.close();
     context.add(WeaviateObject.of(o -> o.properties(Map.of())));
   }
 
   @Test(expected = IllegalStateException.class)
   public void test_startAfterClose() throws Exception {
-    in.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    in.expectMessage(START);
     context.close();
     context.start();
   }
@@ -464,15 +466,18 @@ public class BatchContextTest {
    * This method does not wait for the server to process the Acks.
    */
   private List<String> recvDataAndAck() throws InterruptedException {
-    WeaviateProtoBatch.BatchStreamRequest.Data data = in
-        .expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.DATA)
-        .getData();
-    List<String> ids = Stream.concat(
+    List<String> received = recvData();
+    out.emitEvent(new Event.Acks(received));
+    return received;
+  }
+
+  /** Read the next Data message from the stream. */
+  private List<String> recvData() throws InterruptedException {
+    WeaviateProtoBatch.BatchStreamRequest.Data data = in.expectMessage(DATA).getData();
+    return Stream.concat(
         data.getObjects().getValuesList().stream().map(WeaviateProtoBatch.BatchObject::getUuid),
         data.getReferences().getValuesList().stream().map(BatchContextTest::getBeacon))
         .toList();
-    out.emitEvent(new Event.Acks(ids));
-    return ids;
   }
 
   private void awaitResults(Collection<TaskHandle> tasks) throws Exception {
@@ -489,7 +494,7 @@ public class BatchContextTest {
   }
 
   /** OutboundStream is a mock which dispatches server-side events. */
-  private final class OutboundStream {
+  private static final class OutboundStream {
     private final StreamObserver<Event> stream;
 
     OutboundStream(StreamObserver<Event> stream) {
@@ -515,7 +520,7 @@ public class BatchContextTest {
   }
 
   /** InboundStream is a spy which collects incoming messages in a queue. */
-  private final class InboundStream implements StreamObserver<Message> {
+  private static final class InboundStream implements StreamObserver<Message> {
     /**
      * Block until the next message arrives on the stream.
      * When it does, assert it's of the expected type.

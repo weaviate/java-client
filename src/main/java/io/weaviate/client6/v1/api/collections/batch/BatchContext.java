@@ -222,7 +222,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
   /** Executor for performing graceful shutdown sequence. */
   private final ExecutorService shutdownService = Executors.newSingleThreadExecutor();
 
-  /** Lightway check to ensure users cannot send on a closed context. */
+  /** Lightweight check to ensure users cannot send on a closed context. */
   private volatile boolean closed;
 
   BatchContext(
@@ -494,11 +494,14 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
     @Override
     public void run() {
+      String threadName = Thread.currentThread().getName();
+      Thread.currentThread().setName("sender");
       try {
         trySend();
       } finally {
         System.out.println("sender countDown");
         workers.countDown();
+        Thread.currentThread().setName(threadName);
       }
     }
 
@@ -521,6 +524,10 @@ public final class BatchContext<PropertiesT> implements Closeable {
           if (task == TaskHandle.POISON) {
             System.out.println("took POISON");
             drain();
+
+            // FIXME(dyma): we should wait until the WIP is empty
+            // and only then exit, in case the server restarts
+            // after ack'ing the last batch.
 
             messages.onNext(Message.stop());
             messages.onCompleted();
@@ -970,10 +977,10 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
   void scheduleReconnect(int reconnectIntervalSeconds) {
     reconnectExec.scheduleWithFixedDelay(() -> {
-      if (Thread.currentThread().isInterrupted()) {
+      if (!Thread.currentThread().isInterrupted()) {
         onEvent(Event.SHUTTING_DOWN);
       }
-      if (Thread.currentThread().isInterrupted()) {
+      if (!Thread.currentThread().isInterrupted()) {
         onEvent(Event.EOF);
       }
 
