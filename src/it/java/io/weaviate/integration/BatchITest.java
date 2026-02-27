@@ -9,6 +9,7 @@ import org.junit.Test;
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
+import io.weaviate.client6.v1.api.collections.batch.BatchContext;
 import io.weaviate.containers.Container;
 import io.weaviate.containers.Weaviate;
 
@@ -27,7 +28,7 @@ public class BatchITest extends ConcurrentTest {
     var things = client.collections.create(nsThings);
 
     // Act
-    try (var batch = things.batch.start()) {
+    try (BatchContext<?> batch = things.batch.start()) {
       for (int i = 0; i < 10_000; i++) {
         batch.add(WeaviateObject.of());
       }
