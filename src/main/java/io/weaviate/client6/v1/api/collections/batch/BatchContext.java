@@ -14,11 +14,9 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -64,8 +62,8 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
  * of the operations to its parent BatchContext.
  *
  * <p>
- * Collectively, "sender" and "recv" are referred to as "workers".
- * After both "workers" exit the {@link #workers} count is expected to be 0.
+ * {@link #send} and {@link #recv} futures track completion of the "sender"
+ * and "recv" routines.
  *
  * <h2>State</h2>
  *
@@ -206,15 +204,19 @@ public final class BatchContext<PropertiesT> implements Closeable {
    */
   private volatile StreamObserver<Message> messages;
 
-  /** Handle for the "send" thread. Use {@link Future#cancel} to interrupt it. */
-  private volatile Future<?> send;
+  /**
+   * Handle for the "sender" routine.
+   * Cancel this future to interrupt the "sender".
+   *
+   * @see Send#cancel
+   */
+  private final Send send = new Send();
 
   /**
-   * Latch reaches zero once both "send" (client side) and "recv" (server side)
-   * parts of the stream have closed. After a {@link #reconnect}, the latch is
-   * reset.
+   * Indicates completion of the "recv" routine.
+   * Canceling this future will have no effect.
    */
-  private volatile CountDownLatch workers;
+  private volatile Recv recv;
 
   /** closing completes the stream. */
   private final CompletableFuture<Void> closing = new CompletableFuture<>();
@@ -274,18 +276,16 @@ public final class BatchContext<PropertiesT> implements Closeable {
       throw new IllegalStateException("context is closed");
     }
 
-    workers = new CountDownLatch(2);
-
-    messages = streamFactory.createStream(new Recv());
+    messages = streamFactory.createStream(recv = new Recv());
     messages.onNext(Message.start(collectionHandleDefaults.consistencyLevel()));
 
     // "send" routine must start after the nextState has been set.
     setState(AWAIT_STARTED);
-    send = sendService.submit(new Send());
+    sendService.execute((Runnable) send);
   }
 
   /**
-   * Reconnect resets {@link #workers} latch and re-creates the stream.
+   * Reconnect re-creates the stream and renews the {@link #recv} future.
    *
    * <p>
    * Unlike {@link #start} it does not trigger a state transition, and
@@ -294,16 +294,14 @@ public final class BatchContext<PropertiesT> implements Closeable {
    * is reached.
    */
   void reconnect() throws InterruptedException, ExecutionException {
-    // We do not need to wait for the current latch to be "opened".
     // The "sender" survives reconnects and will not call countDown
     // until it's interrupted or the context is closed.
     // The "recv" thread is guaranteed to have already exited, because
     // the context can only transition into the Reconnecting state
     // after the server half of the stream is closed (EOF or hangup).
-    assert workers.getCount() == 1 : "recv must exit before reconnect";
-    workers = new CountDownLatch(2);
+    recv.get();
 
-    messages = streamFactory.createStream(new Recv());
+    messages = streamFactory.createStream(recv = new Recv());
     messages.onNext(Message.start(collectionHandleDefaults.consistencyLevel()));
   }
 
@@ -363,15 +361,8 @@ public final class BatchContext<PropertiesT> implements Closeable {
         // Luckily, shutdownNow resolves the `closing` future as well.
         queue.put(TaskHandle.POISON);
 
-        // Wait for the send to exit before closing our end of the stream.
-        try {
-          send.get();
-        } catch (CancellationException ignored) {
-          // "sender" can be cancelled due to a reconnect or an internal error.
-        }
-
         // Wait for both "send" and "recv" to exit.
-        workers.await();
+        CompletableFuture.allOf(send, recv).get();
         closing.complete(null);
       } catch (Exception e) {
         closing.completeExceptionally(e);
@@ -490,7 +481,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
     return taskHandle;
   }
 
-  private final class Send implements Runnable {
+  private final class Send extends CompletableFuture<Void> implements Runnable {
 
     @Override
     public void run() {
@@ -499,10 +490,17 @@ public final class BatchContext<PropertiesT> implements Closeable {
       try {
         trySend();
       } finally {
-        System.out.println("sender countDown");
-        workers.countDown();
         Thread.currentThread().setName(threadName);
+        complete(null);
       }
+    }
+
+    @Override
+    public boolean cancel(boolean mayInterruptIfRunning) {
+      if (mayInterruptIfRunning) {
+        Thread.currentThread().interrupt();
+      }
+      return mayInterruptIfRunning;
     }
 
     /**
@@ -620,7 +618,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
     }
   }
 
-  private final class Recv implements StreamObserver<Event> {
+  private final class Recv extends CompletableFuture<Void> implements StreamObserver<Event> {
 
     @Override
     public void onNext(Event event) {
@@ -634,15 +632,21 @@ public final class BatchContext<PropertiesT> implements Closeable {
      */
     @Override
     public void onCompleted() {
-      workers.countDown();
-      onEvent(Event.EOF);
+      try {
+        onEvent(Event.EOF);
+      } finally {
+        complete(null);
+      }
     }
 
     /** An exception occurred either on our end or in the channel internals. */
     @Override
     public void onError(Throwable t) {
-      workers.countDown();
-      onEvent(Event.StreamHangup.fromThrowable(t));
+      try {
+        onEvent(Event.StreamHangup.fromThrowable(t));
+      } finally {
+        complete(null);
+      }
     }
   }
 
