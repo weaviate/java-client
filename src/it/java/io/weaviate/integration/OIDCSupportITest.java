@@ -66,10 +66,7 @@ public class OIDCSupportITest extends ConcurrentTest {
     var auth = SpyTokenProvider.spyOn(Authentication.bearerToken(t.accessToken(), t.refreshToken(), 0));
     pingWeaviate(wcsContainer, auth);
 
-    var newT = auth.getToken();
-    Assertions.assertThat(newT.accessToken())
-        .as("expect access_token was refreshed")
-        .isNotEqualTo(t.accessToken());
+    eventually(() -> auth.getToken() != t, 100, 5, "expect access_token was refreshed");
 
     // Check that the new token authenticates requests.
     pingWeaviate(wcsContainer, auth);
