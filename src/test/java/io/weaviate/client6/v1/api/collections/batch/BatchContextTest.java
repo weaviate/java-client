@@ -2,7 +2,7 @@ package io.weaviate.client6.v1.api.collections.batch;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -150,13 +150,12 @@ public class BatchContextTest {
     Assertions.assertThat(tasks)
         .extracting(TaskHandle::isAcked).allMatch(CompletableFuture::isDone);
 
-    Future<?> results = out.emitEvent(new Event.Results(received, Collections.emptyMap()));
+    out.beforeEof(new Event.Results(received, Collections.emptyMap()));
 
     // Since MockServer runs in the same thread as this test,
     // the context will be updated before the last emitEvent returns.
     context.close();
 
-    results.get(); // Wait until the Results event has been processed.
     Assertions.assertThat(tasks).extracting(TaskHandle::result)
         .allMatch(CompletableFuture::isDone)
         .extracting(CompletableFuture::get).extracting(TaskHandle.Result::error)
@@ -179,18 +178,19 @@ public class BatchContextTest {
     BACKGROUND.submit(() -> {
       try {
         List<String> received = recvDataAndAck();
-        Assertions.assertThat(tasks)
-            .extracting(TaskHandle::id).containsExactlyInAnyOrderElementsOf(received);
-        Assertions.assertThat(tasks)
-            .extracting(TaskHandle::isAcked).allMatch(CompletableFuture::isDone);
-        out.emitEvent(new Event.Results(received, Collections.emptyMap()));
+        Assertions.assertThat(tasks).extracting(TaskHandle::id)
+            .containsExactlyInAnyOrderElementsOf(received);
+        Assertions.assertThat(tasks).extracting(TaskHandle::isAcked)
+            .allMatch(CompletableFuture::isDone);
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
     });
 
+    List<String> submitted = tasks.stream().map(TaskHandle::id).toList();
+    out.beforeEof(new Event.Results(submitted, Collections.emptyMap()));
+
     context.close();
-    awaitResults(tasks);
 
     Assertions.assertThat(tasks).extracting(TaskHandle::result)
         .allMatch(CompletableFuture::isDone)
@@ -220,7 +220,7 @@ public class BatchContextTest {
     // set by the Backoff message, i.e. BATCH_SIZE / 2.
     List<String> received = recvDataAndAck();
     Assertions.assertThat(received).hasSize(BATCH_SIZE / 2);
-    out.emitEvent(new Event.Results(received, Collections.emptyMap()));
+    out.beforeEof(new Event.Results(received, Collections.emptyMap()));
 
     backgroundAdd.get(); // Finish populating batch context.
 
@@ -228,7 +228,7 @@ public class BatchContextTest {
     // we should expect there to be exactly 2 batches.
     received = recvDataAndAck();
     Assertions.assertThat(received).hasSize(BATCH_SIZE / 2);
-    out.emitEvent(new Event.Results(received, Collections.emptyMap()));
+    out.beforeEof(new Event.Results(received, Collections.emptyMap()));
 
     context.close();
 
@@ -262,19 +262,12 @@ public class BatchContextTest {
     tasks.add(context.add(WeaviateObject.of()));
 
     Assertions.assertThat(received = recvDataAndAck()).hasSize(batchSizeNew);
-    out.emitEvent(new Event.Results(received, Collections.emptyMap()));
+    out.beforeEof(new Event.Results(received, Collections.emptyMap()));
 
     Assertions.assertThat(received = recvDataAndAck()).hasSize(batchSizeNew);
-    out.emitEvent(new Event.Results(received, Collections.emptyMap()));
+    out.beforeEof(new Event.Results(received, Collections.emptyMap()));
 
     context.close();
-
-    // Wait until the Results event's been processed to guarantee
-    // that the tasks' futures are completed before asserting.
-    CompletableFuture.allOf(
-        tasks.stream().map(TaskHandle::result)
-            .toArray(CompletableFuture[]::new))
-        .get(100, TimeUnit.MILLISECONDS);
 
     Assertions.assertThat(tasks).extracting(TaskHandle::result)
         .allMatch(CompletableFuture::isDone)
@@ -301,9 +294,11 @@ public class BatchContextTest {
     in.expectMessage(START);
     out.emitEvent(Event.STARTED);
 
+    List<TaskHandle> tasks = new ArrayList<>();
+
     // OOM is the opposite of Ack -- trigger a flush first.
     for (int i = 0; i < BATCH_SIZE; i++) {
-      context.add(WeaviateObject.of());
+      tasks.add(context.add(WeaviateObject.of()));
     }
 
     // Respond with OOM and wait for the client to close its end of the stream.
@@ -317,6 +312,9 @@ public class BatchContextTest {
     in.expectMessage(START);
     out.emitEvent(Event.STARTED);
     recvDataAndAck();
+
+    List<String> submitted = tasks.stream().map(TaskHandle::id).toList();
+    out.beforeEof(new Event.Results(submitted, Collections.emptyMap()));
   }
 
   @Test
@@ -324,9 +322,10 @@ public class BatchContextTest {
     in.expectMessage(START);
     out.emitEvent(Event.STARTED);
 
+    List<TaskHandle> tasks = new ArrayList<>();
     // Trigger a flush.
     for (int i = 0; i < BATCH_SIZE; i++) {
-      context.add(WeaviateObject.of());
+      tasks.add(context.add(WeaviateObject.of()));
     }
 
     // Expect a new batch to arrive. Hangup the stream before sending the Acks.
@@ -348,14 +347,17 @@ public class BatchContextTest {
     out.hangup();
     in.expectMessage(START);
     out.emitEvent(Event.STARTED);
-    context.add(WeaviateObject.of());
+    tasks.add(context.add(WeaviateObject.of()));
     recvDataAndAck();
 
     // Now fill up the rest of the batch to trigger a flush. Ack the incoming batch.
     for (int i = 0; i < BATCH_SIZE - 1; i++) {
-      context.add(WeaviateObject.of());
+      tasks.add(context.add(WeaviateObject.of()));
     }
     recvDataAndAck();
+
+    List<String> submitted = tasks.stream().map(TaskHandle::id).toList();
+    out.beforeEof(new Event.Results(submitted, Collections.emptyMap()));
   }
 
   @Test
@@ -391,19 +393,16 @@ public class BatchContextTest {
     out.emitEvent(Event.STARTED);
     Future<?> backgroundAcks = BACKGROUND.submit(() -> {
       try {
-        List<String> ids = recvDataAndAck();
-        out.emitEvent(new Event.Results(ids, Collections.emptyMap()));
-
-        ids = recvDataAndAck();
-        out.emitEvent(new Event.Results(ids, Collections.emptyMap()));
-
-        ids = recvDataAndAck();
-        Future<?> lastEvent = out.emitEvent(new Event.Results(ids, Collections.emptyMap()));
-        lastEvent.get();
+        recvDataAndAck();
+        recvDataAndAck();
+        recvDataAndAck();
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
     });
+
+    List<String> submitted = tasks.stream().map(TaskHandle::id).toList();
+    out.beforeEof(new Event.Results(submitted, Collections.emptyMap()));
 
     context.close();
     backgroundAcks.get();
@@ -480,15 +479,6 @@ public class BatchContextTest {
         .toList();
   }
 
-  private void awaitResults(Collection<TaskHandle> tasks) throws Exception {
-    // Wait until the Results event's been processed to guarantee
-    // that the tasks' futures are completed before asserting.
-    CompletableFuture.allOf(
-        tasks.stream().map(TaskHandle::result)
-            .toArray(CompletableFuture[]::new))
-        .get(100, TimeUnit.MILLISECONDS);
-  }
-
   static String getBeacon(WeaviateProtoBatch.BatchReference reference) {
     return "weaviate://localhost/" + reference.getToCollection() + "/" + reference.getToUuid();
   }
@@ -496,6 +486,7 @@ public class BatchContextTest {
   /** OutboundStream is a mock which dispatches server-side events. */
   private static final class OutboundStream {
     private final StreamObserver<Event> stream;
+    private List<Event> beforeEof = new ArrayList<>();
 
     OutboundStream(StreamObserver<Event> stream) {
       this.stream = stream;
@@ -508,13 +499,22 @@ public class BatchContextTest {
       return EVENT_THREAD.submit(() -> stream.onNext(event));
     }
 
-    /** Terminate the server-side of the stream abruptly. */
+    /** Terminate the server half of the stream abruptly. */
+
     Future<?> hangup() {
       return EVENT_THREAD.submit(() -> stream.onError(new RuntimeException("whaam!")));
     }
 
-    void eof() {
+    /** Emit events before closing the server half of the stream. */
+    void beforeEof(Event... events) {
+      this.beforeEof.addAll(Arrays.asList(events));
+    }
+
+    void eof(boolean ok) {
       assert Thread.currentThread() != TEST_THREAD : "test MUST NOT close/terminate the the stream";
+      if (ok) {
+        beforeEof.forEach(this::emitEvent);
+      }
       EVENT_THREAD.submit(stream::onCompleted);
     }
   }
@@ -548,13 +548,13 @@ public class BatchContextTest {
     @Override
     public void onCompleted() {
       done.complete(null);
-      outbound.eof();
+      outbound.eof(true);
     }
 
     @Override
     public void onError(Throwable t) {
       done.completeExceptionally(t);
-      outbound.eof();
+      outbound.eof(false);
     }
 
     @Override

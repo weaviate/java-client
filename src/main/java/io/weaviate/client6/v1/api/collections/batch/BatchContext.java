@@ -23,7 +23,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.BiConsumer;
 
 import javax.annotation.concurrent.GuardedBy;
 
@@ -276,7 +275,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
       throw new IllegalStateException("context is closed");
     }
 
-    messages = streamFactory.createStream(recv = new Recv());
+    messages = streamFactory.createStream(recv = new Recv(this));
     messages.onNext(Message.start(collectionHandleDefaults.consistencyLevel()));
 
     // "send" routine must start after the nextState has been set.
@@ -301,7 +300,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
     // after the server half of the stream is closed (EOF or hangup).
     recv.get();
 
-    messages = streamFactory.createStream(recv = new Recv());
+    messages = streamFactory.createStream(recv = new Recv(this));
     messages.onNext(Message.start(collectionHandleDefaults.consistencyLevel()));
   }
 
@@ -345,7 +344,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
       }
       throw new IOException(e.getCause());
     } finally {
-      shutdownExecutionServices();
+      shutdownExecutors();
     }
   }
 
@@ -393,22 +392,10 @@ public final class BatchContext<PropertiesT> implements Closeable {
     }
   }
 
-  private void shutdownExecutionServices() {
-    BiConsumer<String, List<Runnable>> assertEmpty = (name, pending) -> {
-      assert pending.isEmpty() : "'%s' service had %d tasks awaiting execution"
-          .formatted(pending.size(), name);
-    };
-
-    List<Runnable> pending;
-
-    pending = sendService.shutdownNow();
-    assertEmpty.accept("send", pending);
-
-    pending = scheduledService.shutdownNow();
-    assertEmpty.accept("oom", pending);
-
-    pending = shutdownService.shutdownNow();
-    assertEmpty.accept("shutdown", pending);
+  private void shutdownExecutors() {
+    sendService.shutdown();
+    scheduledService.shutdown();
+    shutdownService.shutdown();
   }
 
   /** Set the new state and notify awaiting threads. */
@@ -523,13 +510,30 @@ public final class BatchContext<PropertiesT> implements Closeable {
             System.out.println("took POISON");
             drain();
 
-            // FIXME(dyma): we should wait until the WIP is empty
-            // and only then exit, in case the server restarts
-            // after ack'ing the last batch.
-
+            // Close our end of the stream and exit.
             messages.onNext(Message.stop());
             messages.onCompleted();
-            return;
+
+            // The SSB protocol requires the client to continue reading the stream
+            // until EOF. In the happy case, the server will close its half having
+            // processed all previous requests; the WIP buffer is empty in that case.
+            //
+            // It is possible that the server will be restarted or the stream will be
+            // hungup before client receives all Results, in which case we might need
+            // to re-submit the items remaining in the WIP buffer.
+            recv.get();
+
+            assert closed : "queue poisoned when context not closed";
+            if (wip.isEmpty()) {
+              return;
+            }
+
+            // Server closed the stream before reporting all expected Results.
+            // Return the poison to the queue and go another round -- if the
+            // client tried to reconnect the batch may've been filled again.
+            assert queue.isEmpty() : "queue must be empty after poison";
+            queue.add(task);
+            continue;
           }
 
           Data data = task.data();
@@ -618,11 +622,20 @@ public final class BatchContext<PropertiesT> implements Closeable {
     }
   }
 
-  private final class Recv extends CompletableFuture<Void> implements StreamObserver<Event> {
+  private static final class Recv extends CompletableFuture<Void> implements StreamObserver<Event> {
+    private final BatchContext<?> context;
+
+    private Recv(BatchContext<?> context) {
+      this.context = context;
+    }
 
     @Override
     public void onNext(Event event) {
-      onEvent(event);
+      try {
+        context.onEvent(event);
+      } catch (Exception e) {
+        context.onEvent(Event.StreamHangup.fromThrowable(e));
+      }
     }
 
     /**
@@ -633,7 +646,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
     @Override
     public void onCompleted() {
       try {
-        onEvent(Event.EOF);
+        context.onEvent(Event.EOF);
       } finally {
         complete(null);
       }
@@ -643,7 +656,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
     @Override
     public void onError(Throwable t) {
       try {
-        onEvent(Event.StreamHangup.fromThrowable(t));
+        context.onEvent(Event.StreamHangup.fromThrowable(t));
       } finally {
         complete(null);
       }
