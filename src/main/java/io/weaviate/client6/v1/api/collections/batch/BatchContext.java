@@ -125,7 +125,6 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
  * @author Dyma Solovei
  */
 public final class BatchContext<PropertiesT> implements Closeable {
-  private final int maxReconnectRetries;
 
   private final CollectionDescriptor<PropertiesT> collectionDescriptor;
   private final CollectionHandleDefaults collectionHandleDefaults;
@@ -216,6 +215,12 @@ public final class BatchContext<PropertiesT> implements Closeable {
    * Canceling this future will have no effect.
    */
   private volatile Recv recv;
+
+  /**
+   * Maximum number of times the client will attempt to re-open the stream
+   * before terminating the context.
+   */
+  private final int maxReconnectRetries;
 
   /** closing completes the stream. */
   private final CompletableFuture<Void> closing = new CompletableFuture<>();
@@ -510,7 +515,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
             System.out.println("took POISON");
             drain();
 
-            // Close our end of the stream and exit.
+            // Close the client half of the stream.
             messages.onNext(Message.stop());
             messages.onCompleted();
 
