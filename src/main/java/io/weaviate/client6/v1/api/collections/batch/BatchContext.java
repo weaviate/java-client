@@ -44,13 +44,36 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
  * BatchContext stores the state of an active batch process
  * and controls its lifecycle.
  *
- * <h2>State</h2>
- *
  * <h2>Lifecycle</h2>
+ *
+ * The SSB implementation is based on gRPC bidi-streams, which are modeled as a
+ * pair of "observers" that define callbacks for inbound and outbound messages.
+ * We'll refer to them as "sender" (sending messages to the server) and "recv"
+ * (receiving and handing server-side events).
+ *
+ * <p>
+ * When the context is started, the client exchanges a "recv" for a "sender",
+ * then stores in {@link #messages}. A {@link Send} process is started in the
+ * {@link #sendService} -- it will continue to run until the context is closed
+ * either gracefully via {@link #close} or abruptly via {@link #shutdownNow}.
+ *
+ * <p>
+ * A "recv" always runs on some internal gRPC thread. The "recv" process is
+ * expected to exit whenever server closes its half of the stream, and will
+ * be re-created if the stream is re-opened. {@link Recv} delegates most
+ * of the operations to its parent BatchContext.
+ *
+ * <p>
+ * Collectively, "sender" and "recv" are referred to as "workers".
+ * After both "workers" exit the {@link #workers} count is expected to be 0.
+ *
+ * <h2>State</h2>
  *
  * <h2>Cancellation policy</h2>
  *
  * @param <PropertiesT> the shape of properties for inserted objects.
+ *
+ * @see StreamObserver
  */
 public final class BatchContext<PropertiesT> implements Closeable {
   private final int maxReconnectRetries;
@@ -69,7 +92,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
    * thread; the latter may be blocked on {@link Send#awaitCanSend} or
    * {@link Send#awaitCanPrepareNext}.
    */
-  private final ExecutorService sendExec = Executors.newSingleThreadExecutor();
+  private final ExecutorService sendService = Executors.newSingleThreadExecutor();
 
   /**
    * Scheduled thread pool for delayed tasks.
@@ -77,7 +100,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
    * @see Oom
    * @see Reconnecting
    */
-  private final ScheduledExecutorService scheduledExec = Executors.newScheduledThreadPool(1);
+  private final ScheduledExecutorService scheduledService = Executors.newScheduledThreadPool(1);
 
   /** The thread that created the context. */
   private final Thread parent = Thread.currentThread();
@@ -99,7 +122,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
   /**
    * Work-in-progress items.
    *
-   * An item is added to the wip map after the Sender successfully
+   * An item is added to the wip map after the "sender" successfully
    * adds it to the {@link #batch} and is removed once the server reports
    * back the result (whether success of failure).
    */
@@ -109,7 +132,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
    * Current batch.
    *
    * <p>
-   * An item is added to the batch after the Sender pulls it
+   * An item is added to the batch after the "sender" pulls it
    * from the queue and remains there until it's Ack'ed.
    */
   private final Batch batch;
@@ -144,8 +167,8 @@ public final class BatchContext<PropertiesT> implements Closeable {
   /** closing completes the stream. */
   private final CompletableFuture<Void> closing = new CompletableFuture<>();
 
-  /** Executor for performing the shutdown sequence. */
-  private final ExecutorService shutdownExec = Executors.newSingleThreadExecutor();
+  /** Executor for performing graceful shutdown sequence. */
+  private final ExecutorService shutdownService = Executors.newSingleThreadExecutor();
 
   /** Lightway check to ensure users cannot send on a closed context. */
   private volatile boolean closed;
@@ -202,7 +225,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
     // "send" routine must start after the nextState has been set.
     setState(AWAIT_STARTED);
-    send = sendExec.submit(new Send());
+    send = sendService.submit(new Send());
   }
 
   /**
@@ -261,12 +284,13 @@ public final class BatchContext<PropertiesT> implements Closeable {
       }
       throw new IOException(e.getCause());
     } finally {
-      shutdownExecutors();
+      shutdownExecutionServices();
     }
   }
 
+  /** Start a graceful context shutdown. */
   private void shutdown() {
-    CompletableFuture.runAsync(() -> {
+    shutdownService.execute(() -> {
       try {
         // Poison the queue -- this will signal "send" to drain the remaining
         // items in the batch and in the backlog and exit.
@@ -274,14 +298,13 @@ public final class BatchContext<PropertiesT> implements Closeable {
         // If shutdownNow has been called previously and the "send" routine
         // has been interrupted, this would block indefinitely.
         // Luckily, shutdownNow resolves the `closing` future as well.
-        System.out.println("POISON THE QUEUE");
         queue.put(TaskHandle.POISON);
 
         // Wait for the send to exit before closing our end of the stream.
         try {
           send.get();
         } catch (CancellationException ignored) {
-          // Send task can be cancelled due to a reconnect or an internal error.
+          // "sender" can be cancelled due to a reconnect or an internal error.
         }
 
         // Wait for both "send" and "recv" to exit.
@@ -290,9 +313,10 @@ public final class BatchContext<PropertiesT> implements Closeable {
       } catch (Exception e) {
         closing.completeExceptionally(e);
       }
-    }, shutdownExec);
+    });
   }
 
+  /** Terminate context abruptly. */
   private void shutdownNow(Exception ex) {
     // Now report this error to the server and terminate the stream.
     closing.completeExceptionally(ex);
@@ -315,7 +339,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
     }
   }
 
-  private void shutdownExecutors() {
+  private void shutdownExecutionServices() {
     BiConsumer<String, List<Runnable>> assertEmpty = (name, pending) -> {
       assert pending.isEmpty() : "'%s' service had %d tasks awaiting execution"
           .formatted(pending.size(), name);
@@ -323,13 +347,13 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
     List<Runnable> pending;
 
-    pending = sendExec.shutdownNow();
+    pending = sendService.shutdownNow();
     assertEmpty.accept("send", pending);
 
-    pending = scheduledExec.shutdownNow();
+    pending = scheduledService.shutdownNow();
     assertEmpty.accept("oom", pending);
 
-    pending = shutdownExec.shutdownNow();
+    pending = shutdownService.shutdownNow();
     assertEmpty.accept("shutdown", pending);
   }
 
@@ -377,7 +401,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
    * on a gRPC thread. {@link State} implementations SHOULD offload any
    * blocking operations to one of the provided executors.
    *
-   * @see #scheduledExec
+   * @see #scheduledService
    */
   private void onEvent(Event event) {
     lock.lock();
@@ -719,7 +743,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
     @Override
     public void onEnter(State prev) {
-      shutdown = scheduledExec.schedule(this::initiateShutdown, delaySeconds, TimeUnit.SECONDS);
+      shutdown = scheduledService.schedule(this::initiateShutdown, delaySeconds, TimeUnit.SECONDS);
     }
 
     /** Imitate server shutdown sequence. */
@@ -748,7 +772,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
           shutdown.get();
         } catch (CancellationException ignored) {
         } catch (InterruptedException ignored) {
-          // Recv is running on a thread from gRPC's internal thread pool,
+          // "recv" is running on a thread from gRPC's internal thread pool,
           // so, while onEvent allows InterruptedException to stay responsive,
           // in practice this thread will only be interrupted by the thread pool,
           // which already knows it's being shut down.
@@ -763,7 +787,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
   /**
    * ServerShuttingDown allows preparing the next batch
    * unless the server's OOM'ed on the previous one.
-   * Once set, the state will shutdown {@link BatchContext#sendExec}
+   * Once set, the state will shutdown {@link BatchContext#sendService}
    * to instruct the "send" thread to close our part of the stream.
    */
   private final class ServerShuttingDown extends BaseState {
@@ -863,7 +887,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
      * Schedule a task to {@link #reconnect} after a delay.
      *
      * <p>
-     * The task is scheduled on {@link #scheduledExec} even if
+     * The task is scheduled on {@link #scheduledService} even if
      * {@code delaySeconds == 0} to avoid blocking gRPC worker
      * thread,
      * where the {@link BatchContext#onEvent} callback runs.
@@ -873,7 +897,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
     private void reconnectAfter(long delaySeconds) {
       retries++;
 
-      scheduledExec.schedule(() -> {
+      scheduledService.schedule(() -> {
         try {
           reconnect();
         } catch (InterruptedException e) {
