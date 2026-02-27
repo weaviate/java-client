@@ -300,6 +300,9 @@ public class Weaviate extends WeaviateContainer {
         c.withEnv("ENABLE_MODULES", String.join(",", enableModules));
       }
 
+      // Required in v1.36.1, but we'll just set it by default.
+      c.withEnv("OBJECTS_TTL_DELETE_SCHEDULE", "@hourly");
+
       var apiKeyUsers = new HashSet<String>();
       apiKeyUsers.addAll(adminUsers);
       apiKeyUsers.addAll(viewerUsers);
