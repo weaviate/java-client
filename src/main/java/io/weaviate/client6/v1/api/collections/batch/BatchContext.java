@@ -111,7 +111,7 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
  * re-throw the causing exception as {@link IOException}. The stream can be
  * terminated at any time, including during a graceful shutdown.
  * In case the context if terminated <i>before</i> a graceful shutdown begins,
- * the parent thread is also interrupted to prevent {@link #add()} from blocking
+ * the parent thread is also interrupted to prevent {@link #add} from blocking
  * indefinitely, "sender" will not be there to pop items from the task queue).
  *
  * <p>
@@ -122,7 +122,7 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
  *
  * @see StreamObserver
  * @see State
- * @see shutdownNow
+ * @see #shutdownNow
  * @see TaskHandle#result()
  *
  * @author Dyma Solovei
@@ -294,6 +294,13 @@ public final class BatchContext<PropertiesT> implements Closeable {
    * is reached.
    */
   void reconnect() throws InterruptedException, ExecutionException {
+    // We do not need to wait for the current latch to be "opened".
+    // The "sender" survives reconnects and will not call countDown
+    // until it's interrupted or the context is closed.
+    // The "recv" thread is guaranteed to have already exited, because
+    // the context can only transition into the Reconnecting state
+    // after the server half of the stream is closed (EOF or hangup).
+    assert workers.getCount() == 1 : "recv must exit before reconnect";
     workers = new CountDownLatch(2);
 
     messages = streamFactory.createStream(new Recv());
@@ -620,23 +627,15 @@ public final class BatchContext<PropertiesT> implements Closeable {
      */
     @Override
     public void onCompleted() {
-      try {
-        onEvent(Event.EOF);
-      } finally {
-        System.out.println("recv countDown (onCompleted)");
-        workers.countDown();
-      }
+      workers.countDown();
+      onEvent(Event.EOF);
     }
 
     /** An exception occurred either on our end or in the channel internals. */
     @Override
     public void onError(Throwable t) {
-      try {
-        onEvent(Event.StreamHangup.fromThrowable(t));
-      } finally {
-        System.out.println("recv countDown (onError)");
-        workers.countDown();
-      }
+      workers.countDown();
+      onEvent(Event.StreamHangup.fromThrowable(t));
     }
   }
 
