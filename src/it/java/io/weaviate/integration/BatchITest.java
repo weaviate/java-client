@@ -24,7 +24,7 @@ public class BatchITest extends ConcurrentTest {
   }
 
   @Test
-  public void test() throws IOException {
+  public void test10_000Objects() throws IOException {
     var nsThings = ns("Things");
 
     var things = client.collections.create(
