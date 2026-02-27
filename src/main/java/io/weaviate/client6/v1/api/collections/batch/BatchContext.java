@@ -69,11 +69,63 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
  *
  * <h2>State</h2>
  *
+ * BatchContext organized client-side work using the
+ * <a href= "https://refactoring.guru/design-patterns/state">State</a>
+ * pattern. These states are defined:
+ *
+ * <ul>
+ * <li>{@code null} -- context hasn't been {@link #start}ed yet. The context
+ * SHOULD NOT be used in this state, as it will likely result in an NPE.
+ * <li>AwaitStarted -- client's opened the stream, sent Start,
+ * and is now awaiting for the server to respond with Started.
+ * <li>Active -- the server is ready to accept the next Data message.
+ * <li>InFlight -- the latest batch has been sent, awaiting Acks.
+ * <li>OOM -- server has OOM'ed and will not accept any more data.
+ * <li>ServerShuttingDown -- server's begun a graceful shutdown.
+ * <li>Reconnecting -- server's closed it's half of the stream; the client
+ * will try to reconnect to another instance up to {@link #maxReconnectRetries}
+ * times.
+ * </ul>
+ *
  * <h2>Cancellation policy</h2>
+ * BatchContext does not rely on timing heuristics advance its state.
+ * Threads coordinate via {@link #stateChanged} conditional variable
+ * and interrupts, when appropriate.
+ *
+ * <h3>Graceful shutdown</h3>
+ * When {@link #close()} is called, the context will stop accepting
+ * new items and start draining the remaining items in the {@link #queue}
+ * and {@link #batch} backlog. The client will then continue processing
+ * server-side events until stream's EOF. By the time context is closed
+ * all submitted tasks are expected to be completed successfully or otherwise.
+ *
+ * <br>
+ * N.B.: This may take an arbitrarily long amount time, as the client will
+ * continue to re-connect to other instances and re-submit WIP tasks in
+ * case the current stream is hung up or the server shuts down prematurely.
+ *
+ * <h3>Abrupt termination</h3>
+ * In the event of an internal client error (e.g. in the "sender" or "recv"
+ * threads), the client's half of the stream is closed immediately, and the
+ * "sender" processed is cancelled. A subsequent call to {@link #close()} will
+ * re-throw the causing exception as {@link IOException}. The stream can be
+ * terminated at any time, including during a graceful shutdown.
+ * In case the context if terminated <i>before</i> a graceful shutdown begins,
+ * the parent thread is also interrupted to prevent {@link #add()} from blocking
+ * indefinitely, "sender" will not be there to pop items from the task queue).
+ *
+ * <p>
+ * To prevent data loss, re-submit all incomplete tasks
+ * to the next batch context.
  *
  * @param <PropertiesT> the shape of properties for inserted objects.
  *
  * @see StreamObserver
+ * @see State
+ * @see shutdownNow
+ * @see TaskHandle#result()
+ *
+ * @author Dyma Solovei
  */
 public final class BatchContext<PropertiesT> implements Closeable {
   private final int maxReconnectRetries;
@@ -218,6 +270,10 @@ public final class BatchContext<PropertiesT> implements Closeable {
   }
 
   void start() {
+    if (closed) {
+      throw new IllegalStateException("context is closed");
+    }
+
     workers = new CountDownLatch(2);
 
     messages = streamFactory.createStream(new Recv());
@@ -415,7 +471,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
   private TaskHandle add(final TaskHandle taskHandle) throws InterruptedException {
     if (closed) {
-      throw new IllegalStateException("BatchContext is closed");
+      throw new IllegalStateException("context is closed");
     }
 
     TaskHandle existing = wip.get(taskHandle.id());

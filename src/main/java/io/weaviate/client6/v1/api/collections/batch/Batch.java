@@ -40,8 +40,6 @@ import io.weaviate.client6.v1.internal.grpc.GrpcChannelOptions;
  * edge-case
  *
  *
- * <h2>Synchronization policy</h2>
- *
  * @see #inFlight
  * @see #isFull
  * @see #clear

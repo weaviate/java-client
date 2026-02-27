@@ -452,6 +452,13 @@ public class BatchContextTest {
     context.add(WeaviateObject.of(o -> o.properties(Map.of())));
   }
 
+  @Test(expected = IllegalStateException.class)
+  public void test_startAfterClose() throws Exception {
+    in.expectMessage(WeaviateProtoBatch.BatchStreamRequest.MessageCase.START);
+    context.close();
+    context.start();
+  }
+
   /**
    * Read the next Data message from the stream and ACK it.
    * This method does not wait for the server to process the Acks.
