@@ -42,7 +42,7 @@ public class Weaviate extends WeaviateContainer {
     V133(1, 33, 11),
     V134(1, 34, 7),
     V135(1, 35, 2),
-    V136(1, 36, "0-rc.0");
+    V136(1, 36, 1);
 
     public final SemanticVersion semver;
 
@@ -299,6 +299,9 @@ public class Weaviate extends WeaviateContainer {
         c.withEnv("ENABLE_API_BASED_MODULES", Boolean.TRUE.toString());
         c.withEnv("ENABLE_MODULES", String.join(",", enableModules));
       }
+
+      // Required in v1.36.1, but we'll just set it by default.
+      c.withEnv("OBJECTS_TTL_DELETE_SCHEDULE", "@hourly");
 
       var apiKeyUsers = new HashSet<String>();
       apiKeyUsers.addAll(adminUsers);
