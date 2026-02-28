@@ -10,7 +10,6 @@ import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -93,7 +92,7 @@ public class BatchContextTest {
    * descriptor, and collection handle defaults.
    */
   @Before
-  public void setupContext() throws InterruptedException, ExecutionException {
+  public void startContext() {
     context = new BatchContext.Builder<>(this::createStream, MAX_SIZE_BYTES, DESCRIPTOR, DEFAULTS)
         .batchSize(BATCH_SIZE)
         .queueSize(QUEUE_SIZE)
@@ -103,7 +102,7 @@ public class BatchContextTest {
   }
 
   @After
-  public void closeContext() throws Exception {
+  public void reset() throws Exception {
     if (context != null) {
       // Some of the tests may close the context, so this
       // implicitly tests that closing it multiple times is OK.
@@ -559,8 +558,10 @@ public class BatchContextTest {
 
     @Override
     public void onNext(Message message) {
-      boolean accepted = stream.offer(asRequest(message));
-      assert accepted : "message rejected by the client stream";
+      WeaviateProtoBatch.BatchStreamRequest req = asRequest(message);
+      boolean accepted = stream.offer(req);
+      assert accepted : "message %s delivered before %q was consumed".formatted(
+          req.getMessageCase(), stream.peek().getMessageCase());
     }
 
     private static WeaviateProtoBatch.BatchStreamRequest asRequest(Message message) {
