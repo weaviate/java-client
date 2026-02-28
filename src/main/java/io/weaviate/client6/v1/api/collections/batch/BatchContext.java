@@ -17,12 +17,14 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Predicate;
 
 import javax.annotation.concurrent.GuardedBy;
 
@@ -159,6 +161,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
   /**
    * Queue publishes insert tasks from the main thread to the "sender".
    *
+   * <p>
    * Send {@link TaskHandle#POISON} to gracefully shut down the "sender"
    * thread. The same queue may be re-used with a different "sender",
    * e.g. after {@link #reconnect}, but only when the new thread is known
@@ -170,6 +173,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
   /**
    * Work-in-progress items.
    *
+   * <p>
    * An item is added to the wip map after the "sender" successfully
    * adds it to the {@link #batch} and is removed once the server reports
    * back the result (whether success of failure).
@@ -205,16 +209,14 @@ public final class BatchContext<PropertiesT> implements Closeable {
   /**
    * Handle for the "sender" routine.
    * Cancel this future to interrupt the "sender".
-   *
-   * @see Send#cancel
    */
-  private final Send send = new Send();
+  private volatile Future<?> send;
 
   /**
    * Indicates completion of the "recv" routine.
    * Canceling this future will have no effect.
    */
-  private volatile Recv recv;
+  private volatile CompletableFuture<?> recv;
 
   /**
    * Maximum number of times the client will attempt to re-open the stream
@@ -246,6 +248,8 @@ public final class BatchContext<PropertiesT> implements Closeable {
     this.queue = new ArrayBlockingQueue<>(queueSize);
     this.batch = new Batch(batchSize, maxSizeBytes);
     this.maxReconnectRetries = maxReconnectRetries;
+
+    setState(AWAIT_STARTED);
   }
 
   private BatchContext(Builder<PropertiesT> builder) {
@@ -279,13 +283,8 @@ public final class BatchContext<PropertiesT> implements Closeable {
     if (closed) {
       throw new IllegalStateException("context is closed");
     }
-
-    messages = streamFactory.createStream(recv = new Recv(this));
-    messages.onNext(Message.start(collectionHandleDefaults.consistencyLevel()));
-
-    // "send" routine must start after the nextState has been set.
-    setState(AWAIT_STARTED);
-    sendService.execute((Runnable) send);
+    openStream();
+    send = sendService.submit(new Send());
   }
 
   /**
@@ -304,9 +303,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
     // the context can only transition into the Reconnecting state
     // after the server half of the stream is closed (EOF or hangup).
     recv.get();
-
-    messages = streamFactory.createStream(recv = new Recv(this));
-    messages.onNext(Message.start(collectionHandleDefaults.consistencyLevel()));
+    openStream();
   }
 
   /**
@@ -365,8 +362,8 @@ public final class BatchContext<PropertiesT> implements Closeable {
         // Luckily, shutdownNow resolves the `closing` future as well.
         queue.put(TaskHandle.POISON);
 
-        // Wait for both "send" and "recv" to exit.
-        CompletableFuture.allOf(send, recv).get();
+        // Wait for both "send" to exit; "send" will not exit until "recv" completes.
+        send.get();
         closing.complete(null);
       } catch (Exception e) {
         closing.completeExceptionally(e);
@@ -380,14 +377,8 @@ public final class BatchContext<PropertiesT> implements Closeable {
     closing.completeExceptionally(ex);
     messages.onError(Status.INTERNAL.withCause(ex).asRuntimeException());
 
-    // Terminate the "send" routine and wait for it to exit.
-    // Since we're already in the error state we do not care
-    // much if it throws or not.
+    // Terminate the "send" routine.
     send.cancel(true);
-    try {
-      send.get();
-    } catch (Exception e) {
-    }
 
     if (!closed) {
       // Since shutdownNow is never triggered by the "main" thread,
@@ -419,24 +410,32 @@ public final class BatchContext<PropertiesT> implements Closeable {
     }
   }
 
-  /** Returns true if the next batch can be sent. */
-  boolean canSend() {
+  /** Blocks until a change in {@link #state} causes the predicate to be true. */
+  void awaitState(Predicate<State> predicate) throws InterruptedException {
+    requireNonNull(predicate, "predicate is null");
+
     lock.lock();
     try {
-      return state.canSend();
+      while (!predicate.test(state)) {
+        stateChanged.await();
+      }
     } finally {
       lock.unlock();
     }
   }
 
-  /** Returns true if the next batch can be assembled from the queued items. */
-  boolean canPrepareNext() {
-    lock.lock();
-    try {
-      return state.canPrepareNext();
-    } finally {
-      lock.unlock();
-    }
+  /** Open a new batching stream. */
+  void openStream() {
+    Recv events = new Recv(this);
+    recv = events;
+    messages = streamFactory.createStream(events);
+    messages.onNext(Message.start(collectionHandleDefaults.consistencyLevel()));
+  }
+
+  /** Close the client half of the stream. */
+  void closeStream() {
+    messages.onNext(Message.stop());
+    messages.onCompleted();
   }
 
   /**
@@ -450,6 +449,8 @@ public final class BatchContext<PropertiesT> implements Closeable {
    * @see #scheduledService
    */
   private void onEvent(Event event) {
+    requireNonNull(event, "event is null");
+
     lock.lock();
     try {
       System.out.println("onEvent " + event);
@@ -463,6 +464,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
     if (closed) {
       throw new IllegalStateException("context is closed");
     }
+    requireNonNull(taskHandle, "taskHandle is null");
 
     TaskHandle existing = wip.get(taskHandle.id());
     if (existing != null) {
@@ -473,7 +475,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
     return taskHandle;
   }
 
-  private final class Send extends CompletableFuture<Void> implements Runnable {
+  private final class Send implements Runnable {
 
     @Override
     public void run() {
@@ -483,16 +485,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
         trySend();
       } finally {
         Thread.currentThread().setName(threadName);
-        complete(null);
       }
-    }
-
-    @Override
-    public boolean cancel(boolean mayInterruptIfRunning) {
-      if (mayInterruptIfRunning) {
-        Thread.currentThread().interrupt();
-      }
-      return mayInterruptIfRunning;
     }
 
     /**
@@ -501,7 +494,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
      */
     private void trySend() {
       try {
-        awaitCanPrepareNext();
+        awaitState(State::canPrepareNext);
 
         while (!Thread.currentThread().isInterrupted()) {
           if (batch.isFull()) {
@@ -515,9 +508,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
             System.out.println("took POISON");
             drain();
 
-            // Close the client half of the stream.
-            messages.onNext(Message.stop());
-            messages.onCompleted();
+            closeStream();
 
             // The SSB protocol requires the client to continue reading the stream
             // until EOF. In the happy case, the server will close its half having
@@ -582,49 +573,27 @@ public final class BatchContext<PropertiesT> implements Closeable {
       assert batch.isEmpty() : "batch not empty after drain";
     }
 
-    private void flush() throws InterruptedException {
-      awaitCanSend();
-      messages.onNext(batch.prepare());
-      setState(IN_FLIGHT);
-
-      // When we get into OOM / ServerShuttingDown state, then we can be certain that
-      // there isn't any reason to keep waiting for the ACKs. However, we should not
-      // exit without either taking a poison pill from the queue,
-      // or being interrupted, as this risks blocking the producer (main) thread.
-      awaitCanPrepareNext();
-    }
-
-    /** Block until the current state allows {@link State#canSend}. */
-    private void awaitCanSend() throws InterruptedException {
-      lock.lock();
-      try {
-        while (!canSend()) {
-          stateChanged.await();
-        }
-      } finally {
-        lock.unlock();
-      }
-    }
-
     /**
+     * Block until the current state allows {@link State#canSend},
+     * then prepare the batch, send it, and set InFlight state.
      * Block until the current state allows {@link State#canPrepareNext}.
      *
-     * <p>
+     * <br>
      * Depending on the BatchContext lifecycle, the semantics of
      * "await can prepare next" can be one of "message is ACK'ed"
      * "the stream has started", or, more generally,
      * "it is safe to take a next item from the queue and add it to the batch".
+     *
+     * @see Batch#prepare
+     * @see #IN_FLIGHT
      */
-    private void awaitCanPrepareNext() throws InterruptedException {
-      lock.lock();
-      try {
-        while (!canPrepareNext()) {
-          stateChanged.await();
-        }
-      } finally {
-        lock.unlock();
-      }
+    private void flush() throws InterruptedException {
+      awaitState(State::canSend);
+      messages.onNext(batch.prepare());
+      setState(IN_FLIGHT);
+      awaitState(State::canPrepareNext);
     }
+
   }
 
   private static final class Recv extends CompletableFuture<Void> implements StreamObserver<Event> {
@@ -639,7 +608,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
       try {
         context.onEvent(event);
       } catch (Exception e) {
-        context.onEvent(Event.StreamHangup.fromThrowable(e));
+        context.onEvent(new Event.ClientError(e));
       }
     }
 
@@ -668,22 +637,20 @@ public final class BatchContext<PropertiesT> implements Closeable {
     }
   }
 
-  final State AWAIT_STARTED = new BaseState("AWAIT_STARTED", BaseState.Action.PREPARE_NEXT) {
+  private final State AWAIT_STARTED = new BaseState("AWAIT_STARTED", BaseState.Action.PREPARE_NEXT) {
     @Override
     public void onEvent(Event event) {
-      if (requireNonNull(event, "event is null") == Event.STARTED) {
+      if (event == Event.STARTED) {
         setState(ACTIVE);
       } else {
         super.onEvent(event);
       }
     }
   };
-  final State ACTIVE = new BaseState("ACTIVE", BaseState.Action.PREPARE_NEXT, BaseState.Action.SEND);
-  final State IN_FLIGHT = new BaseState("IN_FLIGHT") {
+  private final State ACTIVE = new BaseState("ACTIVE", BaseState.Action.PREPARE_NEXT, BaseState.Action.SEND);
+  private final State IN_FLIGHT = new BaseState("IN_FLIGHT") {
     @Override
     public void onEvent(Event event) {
-      requireNonNull(event, "event is null");
-
       if (event instanceof Event.Acks acks) {
         Collection<String> removed = batch.clear();
         if (!acks.acked().containsAll(removed)) {
@@ -763,8 +730,6 @@ public final class BatchContext<PropertiesT> implements Closeable {
      */
     @Override
     public void onEvent(Event event) {
-      requireNonNull(event, "event is null");
-
       if (event instanceof Event.Results results) {
         onResults(results);
       } else if (event instanceof Event.Backoff backoff) {
@@ -847,7 +812,6 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
     @Override
     public void onEvent(Event event) {
-      requireNonNull(event, "event");
       if (event == Event.SHUTTING_DOWN ||
           event instanceof StreamHangup ||
           event instanceof ClientError) {
@@ -894,8 +858,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
     @Override
     public void onEnter(State prev) {
-      messages.onNext(Message.stop());
-      messages.onCompleted();
+      closeStream();
     }
   }
 
