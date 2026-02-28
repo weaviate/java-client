@@ -1,7 +1,9 @@
 package io.weaviate.containers;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -19,6 +21,7 @@ public class Container {
   public static final MinIo MINIO = MinIo.createDefault();
 
   public static ContainerGroup compose(Weaviate weaviate, GenericContainer<?>... containers) {
+    assert weaviate != WEAVIATE : "cannot compose with static WEAVIATE contaier";
     return new ContainerGroup(weaviate, containers);
   }
 
@@ -50,7 +53,9 @@ public class Container {
     @Override
     public void stop() {
       weaviate.stop();
-      containers.forEach(GenericContainer::stop);
+      containers.stream()
+          .dropWhile(c -> c == MODEL2VEC || c == IMG2VEC_NEURAL || c == MINIO)
+          .forEach(GenericContainer::stop);
     }
 
     private void setSharedNetwork() {

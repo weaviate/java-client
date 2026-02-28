@@ -4,9 +4,7 @@ import java.io.IOException;
 
 import org.assertj.core.api.Assertions;
 import org.junit.AfterClass;
-import org.junit.ClassRule;
 import org.junit.Test;
-import org.junit.rules.TestRule;
 
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
@@ -16,7 +14,6 @@ import io.weaviate.client6.v1.api.cluster.ShardingState;
 import io.weaviate.client6.v1.api.cluster.replication.Replication;
 import io.weaviate.client6.v1.api.cluster.replication.ReplicationState;
 import io.weaviate.client6.v1.api.cluster.replication.ReplicationType;
-import io.weaviate.containers.Container;
 import io.weaviate.containers.Weaviate;
 import io.weaviate.containers.Weaviate.Version;
 
