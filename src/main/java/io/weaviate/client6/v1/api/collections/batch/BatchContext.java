@@ -363,7 +363,9 @@ public final class BatchContext<PropertiesT> implements Closeable {
         queue.put(TaskHandle.POISON);
 
         // Wait for both "send" to exit; "send" will not exit until "recv" completes.
-        send.get();
+        if (send != null) {
+          send.get();
+        }
         closing.complete(null);
       } catch (Exception e) {
         closing.completeExceptionally(e);
@@ -378,7 +380,9 @@ public final class BatchContext<PropertiesT> implements Closeable {
     messages.onError(Status.INTERNAL.withCause(ex).asRuntimeException());
 
     // Terminate the "send" routine.
-    send.cancel(true);
+    if (send != null) {
+      send.cancel(true);
+    }
 
     if (!closed) {
       // Since shutdownNow is never triggered by the "main" thread,

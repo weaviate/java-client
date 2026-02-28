@@ -16,6 +16,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
+import javax.annotation.concurrent.GuardedBy;
+
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -75,6 +77,7 @@ public class BatchContextTest {
       1);
 
   /** Batch context for the current test case. */
+  @GuardedBy("this")
   private BatchContext<Map<String, Object>> context;
   /** Server half of the stream. */
   private volatile OutboundStream out;
@@ -92,7 +95,8 @@ public class BatchContextTest {
    * descriptor, and collection handle defaults.
    */
   @Before
-  public void startContext() {
+  public synchronized void startContext() {
+    assert context == null;
     context = new BatchContext.Builder<>(this::createStream, MAX_SIZE_BYTES, DESCRIPTOR, DEFAULTS)
         .batchSize(BATCH_SIZE)
         .queueSize(QUEUE_SIZE)
@@ -102,7 +106,7 @@ public class BatchContextTest {
   }
 
   @After
-  public void reset() throws Exception {
+  public synchronized void reset() throws Exception {
     if (context != null) {
       // Some of the tests may close the context, so this
       // implicitly tests that closing it multiple times is OK.
