@@ -10,7 +10,6 @@ import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.assertj.core.api.recursive.comparison.RecursiveComparisonConfiguration;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
@@ -25,7 +24,6 @@ import io.weaviate.client6.v1.api.collections.data.InsertManyResponse.InsertObje
 import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.containers.Container;
 
-@Ignore
 public class OrmITest extends ConcurrentTest {
   private static final WeaviateClient client = Container.WEAVIATE.getClient();
 
