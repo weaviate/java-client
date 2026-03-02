@@ -1,9 +1,7 @@
 package io.weaviate.containers;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
