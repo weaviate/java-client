@@ -393,9 +393,10 @@ public final class BatchContext<PropertiesT> implements Closeable {
   }
 
   private void shutdownExecutors() {
-    sendService.shutdown();
-    scheduledService.shutdown();
-    shutdownService.shutdown();
+    sendService.shutdownNow();
+    scheduledService.shutdownNow();
+    shutdownService.shutdownNow();
+    scheduledReconnectService.shutdownNow();
   }
 
   /** Set the new state and notify awaiting threads. */
@@ -960,10 +961,10 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
   // --------------------------------------------------------------------------
 
-  private final ScheduledExecutorService reconnectExec = Executors.newScheduledThreadPool(1);
+  private final ScheduledExecutorService scheduledReconnectService = Executors.newScheduledThreadPool(1);
 
   void scheduleReconnect(int reconnectIntervalSeconds) {
-    reconnectExec.scheduleWithFixedDelay(() -> {
+    scheduledReconnectService.scheduleWithFixedDelay(() -> {
       if (!Thread.currentThread().isInterrupted()) {
         onEvent(Event.SHUTTING_DOWN);
       }
