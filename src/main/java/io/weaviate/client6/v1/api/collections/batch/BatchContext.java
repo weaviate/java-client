@@ -519,7 +519,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
             // processed all previous requests; the WIP buffer is empty in that case.
             //
             // It is possible that the server will be restarted or the stream will be
-            // hungup before client receives all Results, in which case we might need
+            // hung up before client receives all Results, in which case we might need
             // to re-submit the items remaining in the WIP buffer.
             recv.get();
 
@@ -610,7 +610,12 @@ public final class BatchContext<PropertiesT> implements Closeable {
     @Override
     public void onNext(Event event) {
       try {
-        context.onEvent(event);
+        if (event == Event.EOF) {
+          // Handle synthetic EOF which the Oom state can send to initiate a shutdown.
+          onCompleted();
+        } else {
+          context.onEvent(event);
+        }
       } catch (Exception e) {
         context.onEvent(new Event.ClientError(e));
       }
@@ -748,11 +753,17 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
     private void onStreamClosed(Event event) {
       if (event instanceof Event.StreamHangup hangup) {
+        // TODO(dyma): impprove logging
         hangup.exception().printStackTrace();
       }
-      if (!send.isDone()) {
-        setState(new Reconnecting(maxReconnectRetries));
+
+      // The only time we should not try to reconnect is if the context
+      // is gracefully shutting down after a call to close() and the server
+      // has returned Results for all previous batches.
+      if (closed && wip.isEmpty()) {
+        return;
       }
+      setState(new Reconnecting(maxReconnectRetries));
     }
 
     private void onClientError(Event.ClientError error) {
@@ -790,11 +801,12 @@ public final class BatchContext<PropertiesT> implements Closeable {
       // receive an Event.SHUTTING_DOWN, it would cancel this execution of this
       // very sequence. Instead, we delegate to our parent BaseState which normally
       // handles these events.
+      final Recv events = (Recv) recv;
       if (!Thread.currentThread().isInterrupted()) {
-        BatchContext.this.onEvent(Event.SHUTTING_DOWN);
+        events.onNext(Event.SHUTTING_DOWN);
       }
       if (!Thread.currentThread().isInterrupted()) {
-        BatchContext.this.onEvent(Event.EOF);
+        events.onNext(Event.EOF);
       }
     }
 
@@ -905,7 +917,10 @@ public final class BatchContext<PropertiesT> implements Closeable {
         } else {
           reconnectAfter(2 ^ retries);
         }
+      } else if (event == Event.EOF) {
+        throw ProtocolViolationException.illegalStateTransition(this, event);
       } else {
+        System.out.println("Event while reconnecting " + event);
         super.onEvent(event);
       }
 
