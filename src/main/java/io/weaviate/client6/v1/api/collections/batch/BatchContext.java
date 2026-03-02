@@ -800,8 +800,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
     @Override
     public void onEvent(Event event) {
-      if (event == Event.SHUTTING_DOWN ||
-          event instanceof StreamHangup ||
+      if (event instanceof StreamHangup ||
           event instanceof ClientError) {
         shutdown.cancel(true);
         try {

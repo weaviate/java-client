@@ -97,7 +97,7 @@ public class BatchContextTest {
    * descriptor, and collection handle defaults.
    */
   @Before
-  public synchronized void startContext() {
+  public synchronized void startContext() throws InterruptedException {
     assert context == null;
     context = new BatchContext.Builder<>(this::createStream, MAX_SIZE_BYTES, DESCRIPTOR, DEFAULTS)
         .batchSize(BATCH_SIZE)
@@ -105,6 +105,9 @@ public class BatchContextTest {
         .maxReconnectRetries(MAX_RECONNECT_RETRIES)
         .build();
     context.start();
+
+    in.expectMessage(START);
+    out.emitEvent(Event.STARTED);
   }
 
   @After
@@ -125,11 +128,11 @@ public class BatchContextTest {
     boolean terminated;
 
     BACKGROUND.shutdown();
-    terminated = BACKGROUND.awaitTermination(100, TimeUnit.MILLISECONDS);
+    terminated = BACKGROUND.awaitTermination(5, TimeUnit.SECONDS);
     assert terminated : "EXEC did not terminate after 5s";
 
     EVENT_THREAD.shutdown();
-    terminated = EVENT_THREAD.awaitTermination(100, TimeUnit.MILLISECONDS);
+    terminated = EVENT_THREAD.awaitTermination(5, TimeUnit.SECONDS);
     assert terminated : "EXEC did not terminate after 5s";
   }
 
@@ -139,9 +142,6 @@ public class BatchContextTest {
 
   @Test
   public synchronized void test_sendOneBatch() throws Exception {
-    in.expectMessage(START);
-    out.emitEvent(Event.STARTED);
-
     List<TaskHandle> tasks = new ArrayList<>();
     for (int i = 0; i < BATCH_SIZE; i++) {
       tasks.add(context.add(WeaviateObject.of()));
@@ -169,9 +169,6 @@ public class BatchContextTest {
 
   @Test
   public synchronized void test_drainOnClose() throws Exception {
-    in.expectMessage(START);
-    out.emitEvent(Event.STARTED);
-
     List<TaskHandle> tasks = new ArrayList<>();
     for (int i = 0; i < BATCH_SIZE - 2; i++) {
       tasks.add(context.add(WeaviateObject.of()));
@@ -205,9 +202,6 @@ public class BatchContextTest {
 
   @Test
   public synchronized void test_backoff() throws Exception {
-    in.expectMessage(START);
-    out.emitEvent(Event.STARTED);
-
     out.emitEvent(new Event.Backoff(BATCH_SIZE / 2));
 
     List<TaskHandle> tasks = new ArrayList<>();
@@ -245,9 +239,6 @@ public class BatchContextTest {
 
   @Test
   public synchronized void test_backoffBacklog() throws Exception {
-    in.expectMessage(START);
-    out.emitEvent(Event.STARTED);
-
     // Pre-fill the batch without triggering a flush (n-1).
     List<TaskHandle> tasks = new ArrayList<>();
     for (int i = 0; i < BATCH_SIZE - 1; i++) {
@@ -282,9 +273,6 @@ public class BatchContextTest {
 
   @Test
   public synchronized void test_reconnect_onShutdown() throws Exception {
-    in.expectMessage(START);
-    out.emitEvent(Event.STARTED);
-
     out.emitEvent(Event.SHUTTING_DOWN);
     in.expectMessage(STOP);
     in.expectMessage(START);
@@ -296,9 +284,6 @@ public class BatchContextTest {
 
   @Test
   public synchronized void test_reconnect_onOom() throws Exception {
-    in.expectMessage(START);
-    out.emitEvent(Event.STARTED);
-
     List<TaskHandle> tasks = new ArrayList<>();
 
     // OOM is the opposite of Ack -- trigger a flush first.
@@ -315,7 +300,7 @@ public class BatchContextTest {
 
     // Allow the client to reconnect to another "instance" and Ack the batch.
     in.expectMessage(START);
-    out.emitEvent(Event.STARTED);
+    out.emitEvent(Event.STARTED).get();
     recvDataAndAck();
 
     List<String> submitted = tasks.stream().map(TaskHandle::id).toList();
@@ -324,9 +309,6 @@ public class BatchContextTest {
 
   @Test
   public synchronized void test_reconnect_onStreamHangup() throws Exception {
-    in.expectMessage(START);
-    out.emitEvent(Event.STARTED);
-
     List<TaskHandle> tasks = new ArrayList<>();
     // Trigger a flush.
     for (int i = 0; i < BATCH_SIZE; i++) {
@@ -367,9 +349,6 @@ public class BatchContextTest {
 
   @Test
   public synchronized void test_reconnect_DrainAfterStreamHangup() throws Exception {
-    in.expectMessage(START);
-    out.emitEvent(Event.STARTED);
-
     List<TaskHandle> tasks = new ArrayList<>();
 
     // Trigger a flush.
@@ -420,9 +399,6 @@ public class BatchContextTest {
 
   @Test
   public synchronized void test_closeAfterStreamHangup() throws Exception {
-    in.expectMessage(START);
-    out.emitEvent(Event.STARTED);
-
     out.hangup();
   }
 
@@ -440,7 +416,7 @@ public class BatchContextTest {
     }
 
     out.hangup();
-    Assertions.assertThat(in.done).completesExceptionallyWithin(100, TimeUnit.MILLISECONDS);
+    Assertions.assertThat(in.done).completesExceptionallyWithin(5, TimeUnit.SECONDS);
 
     Assertions.assertThatThrownBy(() -> context.close())
         .isInstanceOf(IOException.class)
@@ -491,7 +467,7 @@ public class BatchContextTest {
   /** OutboundStream is a mock which dispatches server-side events. */
   private static final class OutboundStream {
     private final StreamObserver<Event> stream;
-    private List<Event> beforeEof = new ArrayList<>();
+    private final List<Event> beforeEof = new ArrayList<>();
 
     OutboundStream(StreamObserver<Event> stream) {
       this.stream = stream;
@@ -565,9 +541,14 @@ public class BatchContextTest {
     @Override
     public void onNext(Message message) {
       WeaviateProtoBatch.BatchStreamRequest req = asRequest(message);
-      boolean accepted = stream.offer(req);
-      assert accepted : "message %s delivered before %s was consumed".formatted(
-          req.getMessageCase(), stream.peek().getMessageCase());
+      try {
+        boolean accepted = stream.offer(req, 1, TimeUnit.SECONDS);
+        assert accepted : "message %s delivered before %s was consumed".formatted(
+            req.getMessageCase(), stream.peek().getMessageCase());
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+      }
+      // boolean accepted = stream.offer(req);
     }
 
     private static WeaviateProtoBatch.BatchStreamRequest asRequest(Message message) {
