@@ -119,7 +119,7 @@ public class BatchContextTest {
   }
 
   @AfterClass
-  public static void closeExecutor() throws Exception {
+  public static void shutdownExecutors() throws Exception {
     boolean terminated;
 
     BACKGROUND.shutdown();
@@ -136,7 +136,7 @@ public class BatchContextTest {
   private static final WeaviateProtoBatch.BatchStreamRequest.MessageCase DATA = WeaviateProtoBatch.BatchStreamRequest.MessageCase.DATA;
 
   @Test
-  public void test_sendOneBatch() throws Exception {
+  public synchronized void test_sendOneBatch() throws Exception {
     in.expectMessage(START);
     out.emitEvent(Event.STARTED);
 
@@ -166,7 +166,7 @@ public class BatchContextTest {
   }
 
   @Test
-  public void test_drainOnClose() throws Exception {
+  public synchronized void test_drainOnClose() throws Exception {
     in.expectMessage(START);
     out.emitEvent(Event.STARTED);
 
@@ -202,7 +202,7 @@ public class BatchContextTest {
   }
 
   @Test
-  public void test_backoff() throws Exception {
+  public synchronized void test_backoff() throws Exception {
     in.expectMessage(START);
     out.emitEvent(Event.STARTED);
 
@@ -242,7 +242,7 @@ public class BatchContextTest {
   }
 
   @Test
-  public void test_backoffBacklog() throws Exception {
+  public synchronized void test_backoffBacklog() throws Exception {
     in.expectMessage(START);
     out.emitEvent(Event.STARTED);
 
@@ -279,7 +279,7 @@ public class BatchContextTest {
   }
 
   @Test
-  public void test_reconnect_onShutdown() throws Exception {
+  public synchronized void test_reconnect_onShutdown() throws Exception {
     in.expectMessage(START);
     out.emitEvent(Event.STARTED);
 
@@ -293,7 +293,7 @@ public class BatchContextTest {
   }
 
   @Test
-  public void test_reconnect_onOom() throws Exception {
+  public synchronized void test_reconnect_onOom() throws Exception {
     in.expectMessage(START);
     out.emitEvent(Event.STARTED);
 
@@ -321,7 +321,7 @@ public class BatchContextTest {
   }
 
   @Test
-  public void test_reconnect_onStreamHangup() throws Exception {
+  public synchronized void test_reconnect_onStreamHangup() throws Exception {
     in.expectMessage(START);
     out.emitEvent(Event.STARTED);
 
@@ -364,7 +364,7 @@ public class BatchContextTest {
   }
 
   @Test
-  public void test_reconnect_DrainAfterStreamHangup() throws Exception {
+  public synchronized void test_reconnect_DrainAfterStreamHangup() throws Exception {
     in.expectMessage(START);
     out.emitEvent(Event.STARTED);
 
@@ -417,7 +417,7 @@ public class BatchContextTest {
   }
 
   @Test
-  public void test_closeAfterStreamHangup() throws Exception {
+  public synchronized void test_closeAfterStreamHangup() throws Exception {
     in.expectMessage(START);
     out.emitEvent(Event.STARTED);
 
@@ -425,7 +425,7 @@ public class BatchContextTest {
   }
 
   @Test
-  public void test_maxReconnectRetries() throws Exception {
+  public synchronized void test_maxReconnectRetries() throws Exception {
     in.expectMessage(START);
 
     // Drop the connection several times until the client
@@ -450,14 +450,14 @@ public class BatchContextTest {
   }
 
   @Test(expected = IllegalStateException.class)
-  public void test_add_closed() throws Exception {
+  public synchronized void test_add_closed() throws Exception {
     in.expectMessage(START);
     context.close();
     context.add(WeaviateObject.of(o -> o.properties(Map.of())));
   }
 
   @Test(expected = IllegalStateException.class)
-  public void test_startAfterClose() throws Exception {
+  public synchronized void test_startAfterClose() throws Exception {
     in.expectMessage(START);
     context.close();
     context.start();

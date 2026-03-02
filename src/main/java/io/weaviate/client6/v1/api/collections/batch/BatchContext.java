@@ -641,40 +641,11 @@ public final class BatchContext<PropertiesT> implements Closeable {
     }
   }
 
-  private final State AWAIT_STARTED = new BaseState("AWAIT_STARTED", BaseState.Action.PREPARE_NEXT) {
-    @Override
-    public void onEvent(Event event) {
-      if (event == Event.STARTED) {
-        setState(ACTIVE);
-      } else {
-        super.onEvent(event);
-      }
-    }
-  };
+  private final State AWAIT_STARTED = new BaseState("AWAIT_STARTED", BaseState.Action.PREPARE_NEXT);
   private final State ACTIVE = new BaseState("ACTIVE", BaseState.Action.PREPARE_NEXT, BaseState.Action.SEND);
-  private final State IN_FLIGHT = new BaseState("IN_FLIGHT") {
-    @Override
-    public void onEvent(Event event) {
-      if (event instanceof Event.Acks acks) {
-        Collection<String> removed = batch.clear();
-        if (!acks.acked().containsAll(removed)) {
-          throw ProtocolViolationException.incompleteAcks(List.copyOf(removed));
-        }
-        acks.acked().forEach(id -> {
-          TaskHandle task = wip.get(id);
-          if (task != null) {
-            task.setAcked();
-          }
-        });
-        setState(ACTIVE);
-      } else if (event instanceof Event.Oom oom) {
-        setState(new Oom(oom.delaySeconds()));
-      } else {
-        super.onEvent(event);
-      }
-    }
-  };
+  private final State IN_FLIGHT = new BaseState("IN_FLIGHT");
 
+  /** BaseState implements default handlers for all {@link Event} subclasses. */
   private class BaseState implements State {
     /** State's display name for logging. */
     private final String name;
@@ -717,24 +688,15 @@ public final class BatchContext<PropertiesT> implements Closeable {
       return permitted.contains(Action.PREPARE_NEXT);
     }
 
-    /**
-     * Handle events which may arrive at any moment without violating the protocol.
-     *
-     * <ul>
-     * <li>{@link Event.Results} -- update tasks in {@link #wip} and remove them.
-     * <li>{@link Event.Backoff} -- adjust batch size.
-     * <li>{@link Event#SHUTTING_DOWN} -- transition into
-     * {@link ServerShuttingDown}.
-     * <li>{@link Event.StreamHangup -- transition into {@link Reconnecting} state.
-     * <li>{@link Event.ClientError -- shutdown the service immediately.
-     * </ul>
-     *
-     * @throws ProtocolViolationException If event cannot be handled in this state.
-     * @see BatchContext#shutdownNow
-     */
     @Override
     public void onEvent(Event event) {
-      if (event instanceof Event.Results results) {
+      if (event == Event.STARTED) {
+        onStarted();
+      } else if (event instanceof Event.Acks acks) {
+        onAcks(acks);
+      } else if (event instanceof Event.Oom oom) {
+        onOom(oom);
+      } else if (event instanceof Event.Results results) {
         onResults(results);
       } else if (event instanceof Event.Backoff backoff) {
         onBackoff(backoff);
@@ -745,8 +707,26 @@ public final class BatchContext<PropertiesT> implements Closeable {
       } else if (event instanceof Event.ClientError error) {
         onClientError(error);
       } else {
-        throw ProtocolViolationException.illegalStateTransition(this, event);
+        throw new AssertionError("unreachable with event " + event);
       }
+    }
+
+    private void onStarted() {
+      setState(ACTIVE);
+    }
+
+    private void onAcks(Event.Acks acks) {
+      Collection<String> removed = batch.clear();
+      if (!acks.acked().containsAll(removed)) {
+        throw ProtocolViolationException.incompleteAcks(List.copyOf(removed));
+      }
+      acks.acked().forEach(id -> {
+        TaskHandle task = wip.get(id);
+        if (task != null) {
+          task.setAcked();
+        }
+      });
+      setState(ACTIVE);
     }
 
     private void onResults(Event.Results results) {
@@ -756,6 +736,10 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
     private void onBackoff(Event.Backoff backoff) {
       batch.setMaxSize(backoff.maxSize());
+    }
+
+    private void onOom(Event.Oom oom) {
+      setState(new Oom(oom.delaySeconds()));
     }
 
     private void onShuttingDown() {
