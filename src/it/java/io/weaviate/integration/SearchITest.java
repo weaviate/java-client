@@ -49,7 +49,6 @@ import io.weaviate.containers.Img2VecNeural;
 import io.weaviate.containers.Model2Vec;
 import io.weaviate.containers.Weaviate;
 
-@Ignore
 public class SearchITest extends ConcurrentTest {
   private static final ContainerGroup compose = Container.compose(
       Weaviate.custom()

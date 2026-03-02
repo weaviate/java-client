@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactories;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
@@ -33,7 +32,6 @@ import io.weaviate.client6.v1.api.rbac.users.User;
 import io.weaviate.client6.v1.api.rbac.users.UserType;
 import io.weaviate.containers.Weaviate;
 
-@Ignore
 public class RbacITest extends ConcurrentTest {
   private static final String ADMIN_USER = "admin-alex";
   private static final String API_KEY = "admin-alex-secret";

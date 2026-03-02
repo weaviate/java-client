@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactories;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
@@ -28,7 +27,6 @@ import io.weaviate.containers.Container;
  * <li>search by reference (nested) properties</li>
  * </ul>
  */
-@Ignore
 public class ReferencesITest extends ConcurrentTest {
   private static final WeaviateClient client = Container.WEAVIATE.getClient();
 

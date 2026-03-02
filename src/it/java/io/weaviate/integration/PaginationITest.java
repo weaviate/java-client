@@ -12,7 +12,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Assume;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
@@ -24,7 +23,6 @@ import io.weaviate.client6.v1.api.collections.pagination.PaginationException;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
 import io.weaviate.containers.Container;
 
-@Ignore
 public class PaginationITest extends ConcurrentTest {
   private static final WeaviateClient client = Container.WEAVIATE.getClient();
 

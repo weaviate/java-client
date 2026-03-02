@@ -1,7 +1,6 @@
 package io.weaviate.integration;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
@@ -12,7 +11,6 @@ import io.weaviate.containers.Container.ContainerGroup;
 import io.weaviate.containers.MinIo;
 import io.weaviate.containers.Weaviate;
 
-@Ignore
 public class TenantsITest extends ConcurrentTest {
   private static final ContainerGroup compose = Container.compose(
       Weaviate.custom()
