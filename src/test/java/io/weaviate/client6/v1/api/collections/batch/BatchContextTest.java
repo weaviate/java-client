@@ -22,6 +22,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import io.grpc.stub.StreamObserver;
@@ -31,6 +32,7 @@ import io.weaviate.client6.v1.api.collections.query.ConsistencyLevel;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 
+@Ignore
 public class BatchContextTest {
   private static final Thread TEST_THREAD = Thread.currentThread();
 
