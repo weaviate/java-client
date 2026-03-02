@@ -9,7 +9,6 @@ import java.util.function.Supplier;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
@@ -25,7 +24,6 @@ import io.weaviate.client6.v1.api.collections.aggregate.GroupedBy;
 import io.weaviate.client6.v1.api.collections.aggregate.IntegerAggregation;
 import io.weaviate.containers.Container;
 
-@Ignore
 public class AggregationITest extends ConcurrentTest {
   private static WeaviateClient client = Container.WEAVIATE.getClient();
   private static final String COLLECTION = unique("Things");

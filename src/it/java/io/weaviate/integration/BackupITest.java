@@ -12,7 +12,6 @@ import java.util.stream.IntStream;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactories;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
@@ -23,7 +22,6 @@ import io.weaviate.client6.v1.api.backup.CompressionLevel;
 import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.containers.Weaviate;
 
-@Ignore
 public class BackupITest extends ConcurrentTest {
   private static final WeaviateClient client = Weaviate.custom()
       .withFilesystemBackup("/tmp/backups").build()

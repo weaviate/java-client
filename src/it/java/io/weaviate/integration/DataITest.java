@@ -32,7 +32,6 @@ import io.weaviate.client6.v1.api.collections.query.QueryReference;
 import io.weaviate.client6.v1.api.collections.tenants.Tenant;
 import io.weaviate.containers.Container;
 
-@Ignore
 public class DataITest extends ConcurrentTest {
   private static final WeaviateClient client = Container.WEAVIATE.getClient();
   private static final String COLLECTION = unique("Artists");
