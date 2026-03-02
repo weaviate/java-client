@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Assume;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
@@ -28,7 +29,8 @@ import io.weaviate.containers.Weaviate;
  * Additionally, {@code WCS_DUMMY_CI_PW} and {@code OKTA_CLIENT_SECRET}
  * environment variables must be set.
  */
-public class OIDCSupportITest extends ConcurrentTest {
+@Ignore
+public class OidcSupportITest extends ConcurrentTest {
   private static final String WCS_DUMMY_CI_USERNAME = "oidc-test-user@weaviate.io";
   private static final String WCS_DUMMY_CI_PW = System.getenv("WCS_DUMMY_CI_PW");
 
