@@ -118,4 +118,4 @@ jobs:
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
           OPENAI_APIKEY: ${{ secrets.OPENAI_APIKEY }}
           WEAVIATE_VERSION: ${{ matrix.WEAVIATE_VERSION }}
-        run: mvn verify -Dtest=BatchContextTest -Dgpg.skip
+        run: mvn verify -Dtest=OidcSupportITest -Dgpg.skip
