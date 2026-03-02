@@ -564,7 +564,7 @@ public class BatchContextTest {
     public void onNext(Message message) {
       WeaviateProtoBatch.BatchStreamRequest req = asRequest(message);
       boolean accepted = stream.offer(req);
-      assert accepted : "message %s delivered before %q was consumed".formatted(
+      assert accepted : "message %s delivered before %s was consumed".formatted(
           req.getMessageCase(), stream.peek().getMessageCase());
     }
 
