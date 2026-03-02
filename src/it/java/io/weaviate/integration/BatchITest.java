@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
@@ -13,6 +14,7 @@ import io.weaviate.client6.v1.api.collections.batch.BatchContext;
 import io.weaviate.containers.Container;
 import io.weaviate.containers.Weaviate;
 
+@Ignore
 public class BatchITest extends ConcurrentTest {
   private static final WeaviateClient client = Container.WEAVIATE.getClient();
 

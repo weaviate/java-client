@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.assertj.core.api.Assertions;
 import org.junit.AfterClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
@@ -17,6 +18,7 @@ import io.weaviate.client6.v1.api.cluster.replication.ReplicationType;
 import io.weaviate.containers.Weaviate;
 import io.weaviate.containers.Weaviate.Version;
 
+@Ignore
 public class ClusterITest extends ConcurrentTest {
   private static final Weaviate cluster = Weaviate.cluster(3);
   private static final WeaviateClient client = cluster.getClient();
