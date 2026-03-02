@@ -31,7 +31,6 @@ import io.weaviate.client6.v1.api.collections.query.ConsistencyLevel;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 
-@Ignore
 public class BatchContextTest {
   private static final CollectionDescriptor<Map<String, Object>> DESCRIPTOR = CollectionDescriptor
       .ofMap("BatchContextTest");
