@@ -18,6 +18,7 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStr
 
 public class MockGrpcTransport implements GrpcTransport {
   private final String host = "example.com";
+  private final static int maxMessageSizeBytes = 10240; // 10KB
 
   @FunctionalInterface
   public interface AssertFunction {
@@ -65,14 +66,12 @@ public class MockGrpcTransport implements GrpcTransport {
 
   @Override
   public StreamObserver<BatchStreamRequest> createStream(StreamObserver<BatchStreamReply> recv) {
-    // TODO(dyma): implement for tests
     throw new UnsupportedOperationException("Unimplemented method 'createStream'");
   }
 
   @Override
   public OptionalInt maxMessageSizeBytes() {
-    // TODO(dyma): implement for tests
-    throw new UnsupportedOperationException("Unimplemented method 'maxMessageSizeBytes'");
+    return OptionalInt.of(maxMessageSizeBytes);
   }
 
   @Override
