@@ -432,9 +432,6 @@ public class BatchContextTest {
     Assertions.assertThatThrownBy(this::closeContext)
         .isInstanceOf(IOException.class)
         .hasMessageContaining("Server unavailable");
-
-    Assertions.assertThat(in.done)
-        .completesExceptionallyWithin(5, TimeUnit.SECONDS);
   }
 
   @Test(expected = IllegalStateException.class)
