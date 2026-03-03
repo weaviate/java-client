@@ -29,7 +29,6 @@ import io.weaviate.containers.Weaviate;
  * Additionally, {@code WCS_DUMMY_CI_PW} and {@code OKTA_CLIENT_SECRET}
  * environment variables must be set.
  */
-@Ignore
 public class OidcSupportITest extends ConcurrentTest {
   private static final String WCS_DUMMY_CI_USERNAME = "oidc-test-user@weaviate.io";
   private static final String WCS_DUMMY_CI_PW = System.getenv("WCS_DUMMY_CI_PW");
@@ -56,7 +55,6 @@ public class OidcSupportITest extends ConcurrentTest {
    * and authenticate with it.
    */
   @Test
-  @Ignore("flaky")
   public void test_bearerToken() throws Exception {
     Assume.assumeTrue("WCS_DUMMY_CI_PW is not set", WCS_DUMMY_CI_PW != null && !WCS_DUMMY_CI_PW.isBlank());
     Assume.assumeTrue("no internet connection", hasInternetConnection());
@@ -69,10 +67,7 @@ public class OidcSupportITest extends ConcurrentTest {
     var auth = SpyTokenProvider.spyOn(Authentication.bearerToken(t.accessToken(), t.refreshToken(), 0));
     pingWeaviate(wcsContainer, auth);
 
-    Token newT = auth.getToken();
-    Assertions.assertThat(newT.accessToken())
-        .as("expect access_token was refreshed")
-        .isNotEqualTo(t.accessToken());
+    eventually(() -> auth.getToken() != t, 100, 5, "expect access_token was refreshed");
 
     // Check that the new token authenticates requests.
     pingWeaviate(wcsContainer, auth);
