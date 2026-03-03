@@ -124,8 +124,14 @@ public class BatchContextTest {
     in = null;
     out = null;
 
+    // This resets the interrupted flag, allowing use to await the executors.
+    Thread.interrupted();
+
     backgroundThread.shutdownNow();
+    backgroundThread.awaitTermination(10, TimeUnit.SECONDS);
+
     eventThread.shutdownNow();
+    eventThread.awaitTermination(10, TimeUnit.SECONDS);
 
     REQUEST_QUEUE.clear();
   }
@@ -428,7 +434,6 @@ public class BatchContextTest {
     }
 
     out.hangup();
-
     Assertions.assertThatThrownBy(this::closeContext)
         .isInstanceOf(IOException.class)
         .hasMessageContaining("Server unavailable");
