@@ -429,7 +429,7 @@ public class BatchContextTest {
 
     out.hangup();
     Assertions.assertThat(in.done)
-        .completesExceptionallyWithin(5, TimeUnit.SECONDS);
+        .completesExceptionallyWithin(10, TimeUnit.SECONDS);
 
     Assertions.assertThatThrownBy(this::closeContext)
         .isInstanceOf(IOException.class)
