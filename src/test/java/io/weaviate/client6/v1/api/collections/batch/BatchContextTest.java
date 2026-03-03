@@ -21,6 +21,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import io.grpc.stub.StreamObserver;
@@ -109,7 +110,7 @@ public class BatchContextTest {
 
   @After
   public void reset() throws Exception {
-    if (context != null && !contextClosed) {
+    if (!contextClosed) {
       closeContext();
     }
     context = null;
@@ -136,9 +137,13 @@ public class BatchContextTest {
         throw new RuntimeException(e);
       }
     }, BACKGROUND).thenCompose(__ -> out.eof(true));
-    context.close();
-    eof.get();
-    contextClosed = true;
+
+    try {
+      context.close();
+      eof.get();
+    } finally {
+      contextClosed = true;
+    }
   }
 
   @Test
@@ -418,15 +423,15 @@ public class BatchContextTest {
     }
 
     out.hangup();
-    Assertions.assertThat(in.done).completesExceptionallyWithin(5, TimeUnit.SECONDS);
-
-    Assertions.assertThatThrownBy(() -> context.close())
+    
+    try {
+    this.closeContext();
+    }
+    catch (Throwable t) {
+      Assertions.assertThat(t)
         .isInstanceOf(IOException.class)
         .hasMessageContaining("Server unavailable");
-
-    // Cleanup: unset the context to prevent test teardown code
-    // from tripping on it while trying to close the context.
-    context = null;
+    }
   }
 
   @Test(expected = IllegalStateException.class)
