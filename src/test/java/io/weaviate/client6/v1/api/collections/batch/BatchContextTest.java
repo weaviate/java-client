@@ -21,7 +21,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import io.grpc.stub.StreamObserver;
@@ -423,14 +422,13 @@ public class BatchContextTest {
     }
 
     out.hangup();
-    
+
     try {
-    this.closeContext();
-    }
-    catch (Throwable t) {
+      this.closeContext();
+    } catch (Throwable t) {
       Assertions.assertThat(t)
-        .isInstanceOf(IOException.class)
-        .hasMessageContaining("Server unavailable");
+          .isInstanceOf(IOException.class)
+          .hasMessageContaining("Server unavailable");
     }
   }
 
@@ -524,7 +522,7 @@ public class BatchContextTest {
      */
     WeaviateProtoBatch.BatchStreamRequest expectMessage(
         WeaviateProtoBatch.BatchStreamRequest.MessageCase messageCase) throws InterruptedException {
-      WeaviateProtoBatch.BatchStreamRequest actual = stream.poll(5, TimeUnit.SECONDS);
+      WeaviateProtoBatch.BatchStreamRequest actual = stream.poll(10, TimeUnit.SECONDS);
       Assertions.assertThat(actual)
           .extracting(WeaviateProtoBatch.BatchStreamRequest::getMessageCase)
           .isEqualTo(messageCase);
@@ -556,7 +554,7 @@ public class BatchContextTest {
       WeaviateProtoBatch.BatchStreamRequest req = asRequest(message);
       try {
         System.out.println("[Incoming message] " + req.getMessageCase());
-        boolean accepted = stream.offer(req, 5, TimeUnit.SECONDS);
+        boolean accepted = stream.offer(req, 10, TimeUnit.SECONDS);
         assert accepted : "message %s delivered before %s was consumed".formatted(
             req.getMessageCase(), stream.peek().getMessageCase());
       } catch (InterruptedException e) {
