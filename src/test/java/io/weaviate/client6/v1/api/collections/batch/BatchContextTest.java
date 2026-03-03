@@ -1,5 +1,6 @@
 package io.weaviate.client6.v1.api.collections.batch;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -49,7 +50,7 @@ public class BatchContextTest {
    * which "survives" reconnects. The test code can listen on the same stream
    * even if the batch client re-creates it.
    */
-  private static final BlockingQueue<WeaviateProtoBatch.BatchStreamRequest> REQUEST_QUEUE = new ArrayBlockingQueue<>(1);
+  private final BlockingQueue<WeaviateProtoBatch.BatchStreamRequest> REQUEST_QUEUE = new ArrayBlockingQueue<>(1);
 
   /**
    * Dedicated executor for occasional asynchrony.
@@ -70,10 +71,15 @@ public class BatchContextTest {
    */
   private ExecutorService eventThread;
 
-  /** Batch context for the current test case. */
-  private BatchContext<Map<String, Object>> context;
+  /**
+   * Batch context for the current test case.
+   * Only {@link #startContext()} should assign to context.
+   */
+  private volatile BatchContext<Map<String, Object>> context;
+
   /** Track if the context has already been closed inside of the test. */
   private boolean contextClosed;
+
   /** Server half of the stream. */
   private volatile OutboundStream out;
   /** Client half of the stream. */
@@ -422,14 +428,12 @@ public class BatchContextTest {
     }
 
     out.hangup();
+    Assertions.assertThat(in.done)
+        .completesExceptionallyWithin(5, TimeUnit.SECONDS);
 
-    try {
-      closeContext();
-    } catch (Throwable t) {
-      // Assertions.assertThat(t)
-      // .isInstanceOf(IOException.class)
-      // .hasMessageContaining("Server unavailable");
-    }
+    Assertions.assertThatThrownBy(this::closeContext)
+        .isInstanceOf(IOException.class)
+        .hasMessageContaining("Server unavailable");
   }
 
   @Test(expected = IllegalStateException.class)
