@@ -10,7 +10,7 @@ public class DuplicateTaskException extends WeaviateException {
   private final TaskHandle existing;
 
   DuplicateTaskException(TaskHandle duplicate, TaskHandle existing) {
-    super("%s cannot be added to the batch while another task with the same ID is in progress");
+    super(duplicate + " cannot be added to the batch while another task with the same ID is in progress");
     this.existing = existing;
   }
 

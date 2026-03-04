@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CancellationException;
@@ -409,7 +410,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
       State prev = state;
       state = nextState;
       state.onEnter(prev);
-      stateChanged.signal();
+      stateChanged.signalAll();
     } finally {
       lock.unlock();
     }
@@ -726,18 +727,21 @@ public final class BatchContext<PropertiesT> implements Closeable {
       if (!acks.acked().containsAll(removed)) {
         throw ProtocolViolationException.incompleteAcks(List.copyOf(removed));
       }
-      acks.acked().forEach(id -> {
-        TaskHandle task = wip.get(id);
-        if (task != null) {
-          task.setAcked();
-        }
-      });
+      acks.acked().stream()
+          .map(wip::get).filter(Objects::nonNull)
+          .forEach(TaskHandle::setAcked);
+
       setState(ACTIVE);
     }
 
     private void onResults(Event.Results results) {
-      results.successful().forEach(id -> wip.remove(id).setSuccess());
-      results.errors().forEach((id, error) -> wip.remove(id).setError(error));
+      results.successful().stream()
+          .map(wip::remove).filter(Objects::nonNull)
+          .forEach(TaskHandle::setSuccess);
+
+      results.errors().keySet().stream()
+          .map(wip::remove).filter(Objects::nonNull)
+          .forEach(taskHandle -> taskHandle.setError(results.errors().get(taskHandle.id())));
     }
 
     private void onBackoff(Event.Backoff backoff) {
@@ -916,7 +920,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
         if (retries == maxRetries) {
           onEvent(new Event.ClientError(new IOException("Server unavailable")));
         } else {
-          reconnectAfter(2 ^ retries);
+          reconnectAfter((long) Math.pow(2, retries));
         }
       } else if (event == Event.EOF) {
         throw ProtocolViolationException.illegalStateTransition(this, event);

@@ -43,6 +43,5 @@ public class ProtocolViolationException extends WeaviateException {
     requireNonNull(remaining, "remaining is null");
     return new ProtocolViolationException("IDs from previous Data message missing in Acks: '%s', ... (%d more)"
         .formatted(remaining.get(0), remaining.size() - 1));
-
   }
 }
