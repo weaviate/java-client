@@ -416,7 +416,15 @@ public final class BatchContext<PropertiesT> implements Closeable {
     }
   }
 
-  /** Blocks until a change in {@link #state} causes the predicate to be true. */
+  /**
+   * Blocks until a change in {@link #state} causes the predicate to be true.
+   *
+   * <p>
+   * It is safe to acquire {@link #lock} before calling awaitState.
+   * If a state that satisfies the predicate need to be awaited,
+   * the {@link #stateChanged} will release the lock to let another
+   * thread update the state.
+   */
   void awaitState(Predicate<State> predicate) throws InterruptedException {
     requireNonNull(predicate, "predicate is null");
 
@@ -450,7 +458,9 @@ public final class BatchContext<PropertiesT> implements Closeable {
    * <p>
    * Be mindful that most of the time this callback will run in a hot path
    * on a gRPC thread. {@link State} implementations SHOULD offload any
-   * blocking operations to one of the provided executors.
+   * blocking operations to one of the provided executors. Because onEvent
+   * will hold the {@link #lock}, no state changes are guaranteed to happen
+   * until {@link State#onEvent} returns.
    *
    * @see #scheduledService
    */
@@ -594,9 +604,23 @@ public final class BatchContext<PropertiesT> implements Closeable {
      * @see #IN_FLIGHT
      */
     private void flush() throws InterruptedException {
-      awaitState(State::canSend);
-      messages.onNext(batch.prepare());
-      setState(IN_FLIGHT);
+      lock.lock();
+      try {
+        awaitState(State::canSend);
+
+        // Send and transition to IN_FLIGHT MUST be done atomically.
+        //
+        // Without synchronization, there's a potential race
+        // where the server Acks the next batch _before_ IN_FLIGHT state
+        // is set, so when finally set it may block forever. This will most
+        // likely only manifest in tests, where batches are acked instantly,
+        // but it's good to have the extra safety layer.
+        messages.onNext(batch.prepare());
+        setState(IN_FLIGHT);
+      } finally {
+        lock.unlock();
+      }
+
       awaitState(State::canPrepareNext);
     }
 
