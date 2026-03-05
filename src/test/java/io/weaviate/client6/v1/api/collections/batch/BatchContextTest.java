@@ -32,7 +32,7 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 
 public class BatchContextTest {
-  private static final Logger log = LoggerFactory.getLogger(BatchContext.class);
+  private static final Logger log = LoggerFactory.getLogger(BatchContextTest.class);
 
   private static final CollectionDescriptor<Map<String, Object>> DESCRIPTOR = CollectionDescriptor
       .ofMap("BatchContextTest");
@@ -141,7 +141,7 @@ public class BatchContextTest {
 
     REQUEST_QUEUE.clear();
 
-    log.debug("==================================================");
+    log.debug("===================closeContext==================");
   }
 
   private static final WeaviateProtoBatch.BatchStreamRequest.MessageCase START = WeaviateProtoBatch.BatchStreamRequest.MessageCase.START;

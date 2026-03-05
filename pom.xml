@@ -235,6 +235,13 @@
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>3.5.4</version>
+          <configuration>
+            <systemPropertyVariables>
+              <java.util.logging.config.file>
+                ${project.basedir}/src/test/resources/logging.properties
+              </java.util.logging.config.file>
+            </systemPropertyVariables>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.projectlombok</groupId>
@@ -537,12 +544,4 @@
       </plugin>
     </plugins>
     </build>
-    <profiles>
-      <profile>
-        <id>debug</id>
-        <properties>
-          <argLine>-Djava.util.logging.config.file=src/test/resources/logging.properties</argLine>
-        </properties>
-      </profile>
-    </profiles>
 </project>

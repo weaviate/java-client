@@ -826,7 +826,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
       log.atInfo()
           .addKeyValue("count_acks", acks.acked().size())
           .addKeyValue("wip_tasks", wip::size)
-          .log("Received Results");
+          .log("Received Acks");
 
       Collection<String> removed = batch.clear();
       if (!acks.acked().containsAll(removed)) {
@@ -865,6 +865,10 @@ public final class BatchContext<PropertiesT> implements Closeable {
     }
 
     private void onOom(Event.Oom oom) {
+      log.atInfo()
+          .addKeyValue("wip_tasks", wip::size)
+          .log("Server is out of memory");
+
       setState(new Oom(oom.delaySeconds()));
     }
 
@@ -915,22 +919,26 @@ public final class BatchContext<PropertiesT> implements Closeable {
    * after which it will force stream termination by imitating server shutdown.
    */
   private final class Oom extends BaseState {
-    private final long delaySeconds;
+    private final long shutdownAfterSeconds;
     private ScheduledFuture<?> shutdown;
 
-    private Oom(long delaySeconds) {
+    private Oom(long shutdownAfterSeconds) {
       super("OOM");
-      this.delaySeconds = delaySeconds;
+      this.shutdownAfterSeconds = shutdownAfterSeconds;
+
+      log.atDebug()
+          .addKeyValue("grace_period", shutdownAfterSeconds)
+          .log("Server is out of memory");
     }
 
     @Override
     public void onEnter(State prev) {
-      shutdown = scheduledService.schedule(this::initiateShutdown, delaySeconds, TimeUnit.SECONDS);
+      shutdown = scheduledService.schedule(this::initiateShutdown, shutdownAfterSeconds, TimeUnit.SECONDS);
     }
 
     /** Imitate server shutdown sequence. */
     private void initiateShutdown() {
-      log.info("No update from the server after {}s, context will be forcibly restarted", delaySeconds);
+      log.info("No update from the server after {}s, context will be forcibly restarted", shutdownAfterSeconds);
 
       // We cannot route event handling via normal BatchContext#onEvent, because
       // it delegates to the current state, which is Oom. If Oom#onEvent were to
@@ -985,7 +993,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
       log.atDebug()
           .addKeyValue("prev_state", prev)
           .addKeyValue("can_prepare_next", canPrepareNext)
-          .log("Server shutting down");
+          .log("Server is shutting down");
     }
 
     @Override
@@ -1051,9 +1059,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
       assert retries <= maxRetries : "maxRetries exceeded";
 
       if (event == Event.STARTED) {
-        log.atInfo()
-            .addArgument(retries)
-            .log("Reconnected after {} retries");
+        log.info("Reconnected after {} retries", retries);
 
         setState(ACTIVE);
       } else if (event instanceof Event.StreamHangup) {
