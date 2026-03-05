@@ -23,9 +23,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
-import org.slf4j.helpers.BasicMarker;
-import org.slf4j.helpers.BasicMarkerFactory;
 
 import io.grpc.stub.StreamObserver;
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
@@ -104,6 +101,8 @@ public class BatchContextTest {
    */
   @Before
   public void startContext() throws InterruptedException {
+    log.debug("===================startContext==================");
+
     assert !Thread.currentThread().isInterrupted() : "main thread interrupted";
     assert REQUEST_QUEUE.isEmpty() : "stream contains incoming message " + REQUEST_QUEUE.peek();
 
@@ -141,6 +140,8 @@ public class BatchContextTest {
     eventThread.awaitTermination(10, TimeUnit.SECONDS);
 
     REQUEST_QUEUE.clear();
+
+    log.debug("==================================================");
   }
 
   private static final WeaviateProtoBatch.BatchStreamRequest.MessageCase START = WeaviateProtoBatch.BatchStreamRequest.MessageCase.START;
