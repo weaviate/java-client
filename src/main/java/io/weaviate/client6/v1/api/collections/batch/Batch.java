@@ -332,6 +332,24 @@ final class Batch {
     }
   }
 
+  /** Get total number of items in the batch. */
+  synchronized int size() {
+    return buffer.size() + backlog.size();
+  }
+
+  /** Get current size of the batch in bytes. */
+  synchronized long sizeBytes() {
+    return sizeBytes;
+  }
+
+  synchronized int maxSizeBytes() {
+    return maxSizeBytes;
+  }
+
+  synchronized int maxSize() {
+    return maxSize;
+  }
+
   /** Asserts the invariants of this class. */
   private synchronized void checkInvariants() {
     assert maxSize > 0 : "non-positive maxSize";

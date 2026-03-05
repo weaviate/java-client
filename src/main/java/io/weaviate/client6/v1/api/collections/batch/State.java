@@ -5,7 +5,7 @@ interface State {
    * canSend returns a boolean indicating if sending
    * an "insert" message is allowed in this state.
    */
-  boolean canSend();
+  boolean canSendNext();
 
   /**
    * canPrepareNext returns a boolean indicating if accepting

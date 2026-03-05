@@ -170,9 +170,8 @@
     </dependency>
     <dependency>
         <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-nop</artifactId>
+        <artifactId>slf4j-api</artifactId>
         <version>${slf4j.version}</version>
-        <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mock-server</groupId>
@@ -537,5 +536,13 @@
         <artifactId>central-publishing-maven-plugin</artifactId>
       </plugin>
     </plugins>
-  </build>
+    </build>
+    <profiles>
+      <profile>
+        <id>debug</id>
+        <properties>
+          <argLine>-Djava.util.logging.config.file=src/test/resources/logging.properties</argLine>
+        </properties>
+      </profile>
+    </profiles>
 </project>

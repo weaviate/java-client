@@ -21,6 +21,11 @@ import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.helpers.BasicMarker;
+import org.slf4j.helpers.BasicMarkerFactory;
 
 import io.grpc.stub.StreamObserver;
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
@@ -30,6 +35,8 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 
 public class BatchContextTest {
+  private static final Logger log = LoggerFactory.getLogger(BatchContext.class);
+
   private static final CollectionDescriptor<Map<String, Object>> DESCRIPTOR = CollectionDescriptor
       .ofMap("BatchContextTest");
   private static final CollectionHandleDefaults DEFAULTS = new CollectionHandleDefaults(
@@ -335,7 +342,6 @@ public class BatchContextTest {
 
     // Expect a new batch to arrive. Hangup the stream before sending the Acks.
     in.expectMessage(DATA);
-    System.out.println("hangup the first time");
     out.hangup();
 
     // The client should try to reconnect, because the context is still open.
@@ -495,6 +501,8 @@ public class BatchContextTest {
     /** Terminate the server half of the stream abruptly. */
 
     CompletableFuture<Void> hangup() {
+      log.debug("Hang up server half of the stream");
+
       return CompletableFuture.runAsync(() -> stream.onError(new RuntimeException("whaam!")), eventThread);
     }
 
@@ -560,11 +568,13 @@ public class BatchContextTest {
     public void onNext(Message message) {
       WeaviateProtoBatch.BatchStreamRequest req = asRequest(message);
       try {
-        System.out.println("[Incoming message] " + req.getMessageCase());
+        log.debug("Incoming message: {}", req.getMessageCase());
+
         boolean accepted = stream.offer(req, 5, TimeUnit.SECONDS);
         assert accepted : "message %s delivered before %s was consumed".formatted(
             req.getMessageCase(), stream.peek().getMessageCase());
       } catch (InterruptedException e) {
+        log.debug("Interrupted");
         Thread.currentThread().interrupt();
       }
     }
