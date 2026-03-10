@@ -787,14 +787,19 @@ public class JSONTest {
         },
         {
             VectorConfig.class,
-            Multi2VecGoogleVectorizer.of("project-id", "location",
-                v -> v.imageFields("a", "b").textFields("c").videoFields("d")),
+            Multi2VecGoogleVectorizer.vertex("project-id", "location",
+                m2v -> m2v
+                    .apiEndpoint("example.com")
+                    .imageFields("a", "b")
+                    .textFields("c")
+                    .videoFields("d")),
             """
                 {
                   "vectorIndexType": "hnsw",
                   "vectorIndexConfig": {},
                   "vectorizer": {
                     "multi2vec-google": {
+                      "apiEndpoint": "example.com",
                       "projectId": "project-id",
                       "location": "location",
                       "imageFields": ["a", "b"],
@@ -807,13 +812,17 @@ public class JSONTest {
         },
         {
             VectorConfig.class,
-            Multi2VecGoogleVectorizer.of("project-id", "location", v -> v.imageFields("a")),
+            Multi2VecGoogleVectorizer.vertex("project-id", "location",
+                m2v -> m2v
+                    .apiEndpoint("example.com")
+                    .imageFields("a")),
             """
                 {
                   "vectorIndexType": "hnsw",
                   "vectorIndexConfig": {},
                   "vectorizer": {
                     "multi2vec-google": {
+                      "apiEndpoint": "example.com",
                       "projectId": "project-id",
                       "location": "location",
                       "imageFields": ["a"]
@@ -824,14 +833,20 @@ public class JSONTest {
         },
         {
             VectorConfig.class,
-            Multi2VecGoogleVectorizer.of("project-id", "location",
-                v -> v.imageField("a", 0.1f).imageField("b", 0.1f).textField("c", 0.8f).videoField("d", 0.99f)),
+            Multi2VecGoogleVectorizer.vertex("project-id", "location",
+                m2v -> m2v
+                    .apiEndpoint("example.com")
+                    .imageField("a", 0.1f)
+                    .imageField("b", 0.1f)
+                    .textField("c", 0.8f)
+                    .videoField("d", 0.99f)),
             """
                 {
                   "vectorIndexType": "hnsw",
                   "vectorIndexConfig": {},
                   "vectorizer": {
                     "multi2vec-google": {
+                      "apiEndpoint": "example.com",
                       "projectId": "project-id",
                       "location": "location",
                       "imageFields": ["a", "b"],
@@ -842,6 +857,37 @@ public class JSONTest {
                         "textWeights":[0.8],
                         "videoWeights":[0.99]
                        }
+                    }
+                  }
+                }
+                    """,
+        },
+        {
+            VectorConfig.class,
+            Multi2VecGoogleVectorizer.gemini(),
+            """
+                {
+                  "vectorIndexType": "hnsw",
+                  "vectorIndexConfig": {},
+                  "vectorizer": {
+                    "multi2vec-google": {
+                      "apiEndpoint": "generativelanguage.googleapis.com"
+                    }
+                  }
+                }
+                    """,
+        },
+        {
+            VectorConfig.class,
+            Multi2VecGoogleVectorizer.gemini(m2v -> m2v.dimensions(768)),
+            """
+                {
+                  "vectorIndexType": "hnsw",
+                  "vectorIndexConfig": {},
+                  "vectorizer": {
+                    "multi2vec-google": {
+                      "apiEndpoint": "generativelanguage.googleapis.com",
+                      "dimensions": 768
                     }
                   }
                 }
