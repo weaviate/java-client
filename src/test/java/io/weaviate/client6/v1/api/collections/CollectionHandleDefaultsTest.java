@@ -7,25 +7,32 @@ import org.junit.Test;
 
 import io.weaviate.client6.v1.api.collections.query.ConsistencyLevel;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
+import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
+import io.weaviate.client6.v1.internal.rest.RestTransport;
+import io.weaviate.testutil.transport.MockGrpcTransport;
+import io.weaviate.testutil.transport.MockRestTransport;
 
 public class CollectionHandleDefaultsTest {
   private static final CollectionDescriptor<Map<String, Object>> DESCRIPTOR = CollectionDescriptor.ofMap("Things");
   private static final CollectionHandleDefaults NONE_DEFAULTS = CollectionHandleDefaults.of(ObjectBuilder.identity());
 
+  private static final RestTransport REST = new MockRestTransport();
+  private static final GrpcTransport GRPC = new MockGrpcTransport();
+
   /** CollectionHandle with no defaults. */
   private static final CollectionHandle<Map<String, Object>> HANDLE_NONE = new CollectionHandle<>(
-      null, null, DESCRIPTOR, NONE_DEFAULTS);
+      REST, GRPC, DESCRIPTOR, NONE_DEFAULTS);
 
   /** CollectionHandleAsync with no defaults. */
   private static final CollectionHandleAsync<Map<String, Object>> HANDLE_NONE_ASYNC = new CollectionHandleAsync<>(
-      null, null, DESCRIPTOR, NONE_DEFAULTS);
+      REST, GRPC, DESCRIPTOR, NONE_DEFAULTS);
 
   /** All defaults are {@code null} if none were set. */
   @Test
   public void test_defaults() {
-    Assertions.assertThat(HANDLE_NONE.consistencyLevel()).as("default ConsistencyLevel").isNull();
-    Assertions.assertThat(HANDLE_NONE.tenant()).as("default tenant").isNull();
+    Assertions.assertThat(HANDLE_NONE.consistencyLevel()).as("default ConsistencyLevel").isEmpty();
+    Assertions.assertThat(HANDLE_NONE.tenant()).as("default tenant").isEmpty();
   }
 
   /**
@@ -35,8 +42,8 @@ public class CollectionHandleDefaultsTest {
   @Test
   public void test_withConsistencyLevel() {
     var handle = HANDLE_NONE.withConsistencyLevel(ConsistencyLevel.QUORUM);
-    Assertions.assertThat(handle.consistencyLevel()).isEqualTo(ConsistencyLevel.QUORUM);
-    Assertions.assertThat(HANDLE_NONE.consistencyLevel()).isNull();
+    Assertions.assertThat(handle.consistencyLevel()).get().isEqualTo(ConsistencyLevel.QUORUM);
+    Assertions.assertThat(HANDLE_NONE.consistencyLevel()).isEmpty();
   }
 
   /**
@@ -46,8 +53,8 @@ public class CollectionHandleDefaultsTest {
   @Test
   public void test_withConsistencyLevel_async() {
     var handle = HANDLE_NONE_ASYNC.withConsistencyLevel(ConsistencyLevel.QUORUM);
-    Assertions.assertThat(handle.consistencyLevel()).isEqualTo(ConsistencyLevel.QUORUM);
-    Assertions.assertThat(HANDLE_NONE_ASYNC.consistencyLevel()).isNull();
+    Assertions.assertThat(handle.consistencyLevel()).get().isEqualTo(ConsistencyLevel.QUORUM);
+    Assertions.assertThat(HANDLE_NONE_ASYNC.consistencyLevel()).isEmpty();
   }
 
   /**
@@ -57,8 +64,8 @@ public class CollectionHandleDefaultsTest {
   @Test
   public void test_withTenant() {
     var handle = HANDLE_NONE.withTenant("john_doe");
-    Assertions.assertThat(handle.tenant()).isEqualTo("john_doe");
-    Assertions.assertThat(HANDLE_NONE.consistencyLevel()).isNull();
+    Assertions.assertThat(handle.tenant()).get().isEqualTo("john_doe");
+    Assertions.assertThat(HANDLE_NONE.consistencyLevel()).isEmpty();
   }
 
   /**
@@ -68,7 +75,7 @@ public class CollectionHandleDefaultsTest {
   @Test
   public void test_withTenant_async() {
     var handle = HANDLE_NONE_ASYNC.withTenant("john_doe");
-    Assertions.assertThat(handle.tenant()).isEqualTo("john_doe");
-    Assertions.assertThat(HANDLE_NONE_ASYNC.consistencyLevel()).isNull();
+    Assertions.assertThat(handle.tenant()).get().isEqualTo("john_doe");
+    Assertions.assertThat(HANDLE_NONE_ASYNC.consistencyLevel()).isEmpty();
   }
 }

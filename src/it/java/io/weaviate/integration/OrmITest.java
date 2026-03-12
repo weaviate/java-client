@@ -24,7 +24,7 @@ import io.weaviate.client6.v1.api.collections.data.InsertManyResponse.InsertObje
 import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.containers.Container;
 
-public class ORMITest extends ConcurrentTest {
+public class OrmITest extends ConcurrentTest {
   private static final WeaviateClient client = Container.WEAVIATE.getClient();
 
   @Collection("ORMITestThings")
@@ -166,7 +166,7 @@ public class ORMITest extends ConcurrentTest {
       // so we'll just always return true here.
       .withComparatorForFields((a, b) -> 0, "floatBoxedList")
       .withComparatorForType((a, b) -> Double.compare(a.doubleValue(), b.doubleValue()), Number.class)
-      .withComparatorForType(ORMITest::comparePhoneNumbers, PhoneNumber.class)
+      .withComparatorForType(OrmITest::comparePhoneNumbers, PhoneNumber.class)
       .build();
 
   @Test

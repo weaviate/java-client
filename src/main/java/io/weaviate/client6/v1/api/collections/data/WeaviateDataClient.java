@@ -35,7 +35,7 @@ public class WeaviateDataClient<PropertiesT> {
     this.defaults = defaults;
   }
 
-  /** Copy constructor that updates the {@link #query} to use new defaults. */
+  /** Copy constructor with new defaults. */
   public WeaviateDataClient(WeaviateDataClient<PropertiesT> c, CollectionHandleDefaults defaults) {
     this.restTransport = c.restTransport;
     this.grpcTransport = c.grpcTransport;

@@ -352,9 +352,35 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * Create a vector index with an {@code multi2vec-google} vectorizer.
    *
    * @param location Geographic region the Google Cloud model runs in.
+   * @deprecated Use {@link #multi2vecGoogleVertex}.
    */
+  @Deprecated(forRemoval = true)
   public static Map.Entry<String, VectorConfig> multi2vecGoogle(String projectId, String location) {
-    return multi2vecGoogle(VectorIndex.DEFAULT_VECTOR_NAME, projectId, location);
+    return multi2vecGoogleVertex(projectId, location);
+  }
+
+  /**
+   * Create a vector index with an {@code multi2vec-google} vectorizer.
+   *
+   * @param location Geographic region the Google Cloud model runs in.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecGoogleVertex(String projectId, String location) {
+    return multi2vecGoogleVertex(VectorIndex.DEFAULT_VECTOR_NAME, projectId, location);
+  }
+
+  /**
+   * Create a vector index with an {@code multi2vec-google} vectorizer.
+   *
+   * @param location Geographic region the Google Cloud model runs in.
+   * @param fn       Lambda expression for optional parameters.
+   * @deprecated Use {@link #multi2vecGoogleVertex}.
+   */
+  @Deprecated(forRemoval = true)
+  public static Map.Entry<String, VectorConfig> multi2vecGoogle(
+      String projectId,
+      String location,
+      Function<Multi2VecGoogleVectorizer.VertexBuilder, ObjectBuilder<Multi2VecGoogleVectorizer>> fn) {
+    return multi2vecGoogleVertex(projectId, location, fn);
   }
 
   /**
@@ -363,11 +389,23 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * @param location Geographic region the Google Cloud model runs in.
    * @param fn       Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> multi2vecGoogle(
+  public static Map.Entry<String, VectorConfig> multi2vecGoogleVertex(
       String projectId,
       String location,
-      Function<Multi2VecGoogleVectorizer.Builder, ObjectBuilder<Multi2VecGoogleVectorizer>> fn) {
-    return multi2vecGoogle(VectorIndex.DEFAULT_VECTOR_NAME, projectId, location, fn);
+      Function<Multi2VecGoogleVectorizer.VertexBuilder, ObjectBuilder<Multi2VecGoogleVectorizer>> fn) {
+    return multi2vecGoogleVertex(VectorIndex.DEFAULT_VECTOR_NAME, projectId, location, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code multi2vec-google} vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param location   Geographic region the Google Cloud model runs in.
+   * @deprecated Use {@link #multi2vecGoogleVertex}.
+   */
+  @Deprecated(forRemoval = true)
+  public static Map.Entry<String, VectorConfig> multi2vecGoogle(String vectorName, String projectId, String location) {
+    return multi2vecGoogleVertex(vectorName, projectId, location);
   }
 
   /**
@@ -376,8 +414,24 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * @param vectorName Vector name.
    * @param location   Geographic region the Google Cloud model runs in.
    */
-  public static Map.Entry<String, VectorConfig> multi2vecGoogle(String vectorName, String projectId, String location) {
-    return Map.entry(vectorName, Multi2VecGoogleVectorizer.of(projectId, location));
+  public static Map.Entry<String, VectorConfig> multi2vecGoogleVertex(String vectorName, String projectId,
+      String location) {
+    return Map.entry(vectorName, Multi2VecGoogleVectorizer.vertex(projectId, location));
+  }
+
+  /**
+   * Create a named vector index with an {@code multi2vec-google} vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param location   Geographic region the Google Cloud model runs in.
+   * @param fn         Lambda expression for optional parameters.
+   * @deprecated Use {@link #multi2vecGoogleVertex}.
+   */
+  @Deprecated(forRemoval = true)
+  public static Map.Entry<String, VectorConfig> multi2vecGoogle(String vectorName,
+      String projectId, String location,
+      Function<Multi2VecGoogleVectorizer.VertexBuilder, ObjectBuilder<Multi2VecGoogleVectorizer>> fn) {
+    return multi2vecGoogleVertex(vectorName, projectId, location, fn);
   }
 
   /**
@@ -387,10 +441,47 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
    * @param location   Geographic region the Google Cloud model runs in.
    * @param fn         Lambda expression for optional parameters.
    */
-  public static Map.Entry<String, VectorConfig> multi2vecGoogle(String vectorName,
+  public static Map.Entry<String, VectorConfig> multi2vecGoogleVertex(String vectorName,
       String projectId, String location,
-      Function<Multi2VecGoogleVectorizer.Builder, ObjectBuilder<Multi2VecGoogleVectorizer>> fn) {
-    return Map.entry(vectorName, Multi2VecGoogleVectorizer.of(projectId, location, fn));
+      Function<Multi2VecGoogleVectorizer.VertexBuilder, ObjectBuilder<Multi2VecGoogleVectorizer>> fn) {
+    return Map.entry(vectorName, Multi2VecGoogleVectorizer.vertex(projectId, location, fn));
+  }
+
+  /**
+   * Create a vector index with an {@code multi2vec-google} vectorizer.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecGoogleGemini() {
+    return multi2vecGoogleGemini(VectorIndex.DEFAULT_VECTOR_NAME);
+  }
+
+  /**
+   * Create a vector index with an {@code multi2vec-google} vectorizer.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecGoogleGemini(
+      Function<Multi2VecGoogleVectorizer.GeminiBuilder, ObjectBuilder<Multi2VecGoogleVectorizer>> fn) {
+    return multi2vecGoogleGemini(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code multi2vec-google} vectorizer.
+   *
+   * @param vectorName Vector name.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecGoogleGemini(String vectorName) {
+    return Map.entry(vectorName, Multi2VecGoogleVectorizer.gemini());
+  }
+
+  /**
+   * Create a named vector index with an {@code multi2vec-google} vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecGoogleGemini(String vectorName,
+      Function<Multi2VecGoogleVectorizer.GeminiBuilder, ObjectBuilder<Multi2VecGoogleVectorizer>> fn) {
+    return Map.entry(vectorName, Multi2VecGoogleVectorizer.gemini(fn));
   }
 
   /** Create a vector index with an {@code multi2vec-jinaai} vectorizer. */

@@ -3,6 +3,7 @@ package io.weaviate.integration;
 import java.io.IOException;
 
 import org.assertj.core.api.Assertions;
+import org.junit.AfterClass;
 import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
@@ -17,7 +18,13 @@ import io.weaviate.containers.Weaviate;
 import io.weaviate.containers.Weaviate.Version;
 
 public class ClusterITest extends ConcurrentTest {
-  private static final WeaviateClient client = Weaviate.cluster(3).getClient();
+  private static final Weaviate cluster = Weaviate.cluster(3);
+  private static final WeaviateClient client = cluster.getClient();
+
+  @AfterClass
+  public static void tearDown() {
+    cluster.stop();
+  }
 
   @Test
   public void test_shardingState() throws IOException {

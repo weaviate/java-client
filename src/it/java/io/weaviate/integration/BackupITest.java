@@ -7,14 +7,15 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.IntStream;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactories;
+import org.junit.AfterClass;
 import org.junit.Test;
-
-import com.sun.nio.sctp.IllegalUnbindException;
 
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
@@ -25,9 +26,15 @@ import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.containers.Weaviate;
 
 public class BackupITest extends ConcurrentTest {
+  private static final ExecutorService EXEC = Executors.newSingleThreadExecutor();
   private static final WeaviateClient client = Weaviate.custom()
       .withFilesystemBackup("/tmp/backups").build()
       .getClient();
+
+  @AfterClass
+  public static void tearDown() {
+    EXEC.shutdownNow();
+  }
 
   @Test
   public void test_lifecycle() throws IOException, TimeoutException {
@@ -258,6 +265,6 @@ public class BackupITest extends ConcurrentTest {
         throw new CompletionException(e);
       }
       return null;
-    });
+    }, EXEC);
   }
 }
