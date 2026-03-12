@@ -151,7 +151,7 @@ public final class DefaultGrpcTransport implements GrpcTransport {
 
     if (transportOptions.proxy() != null) {
       Proxy proxy = transportOptions.proxy();
-      if ("http".equals(proxy.scheme())) {
+      if ("http".equals(proxy.scheme()) || "https".equals(proxy.scheme())) {
         final SocketAddress proxyAddress = new InetSocketAddress(proxy.host(), proxy.port());
         channel.proxyDetector(targetAddress -> {
           if (targetAddress instanceof InetSocketAddress) {
