@@ -1,17 +1,15 @@
 package io.weaviate.client6.v1.internal.oidc;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-
 import com.google.gson.annotations.SerializedName;
-
 import io.weaviate.client6.v1.api.WeaviateOAuthException;
-import io.weaviate.client6.v1.internal.rest.DefaultRestTransport;
 import io.weaviate.client6.v1.internal.rest.Endpoint;
 import io.weaviate.client6.v1.internal.rest.ExternalEndpoint;
 import io.weaviate.client6.v1.internal.rest.RestTransport;
 import io.weaviate.client6.v1.internal.rest.SimpleEndpoint;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 public final class OidcUtils {
   /** Prevents public initialization. */
@@ -55,10 +53,6 @@ public final class OidcUtils {
       throw new WeaviateOAuthException("fetch provider metadata", e);
     }
 
-    OidcConfig.OidcProxy proxy = transport.getProxy() != null
-        ? new OidcConfig.OidcProxy(transport.getProxy())
-        : null;
-
-    return new OidcConfig(openid.clientId(), providerMetadata, openid.scopes(), proxy);
+    return new OidcConfig(openid.clientId(), providerMetadata, openid.scopes(), transport.getProxy());
   }
 }
