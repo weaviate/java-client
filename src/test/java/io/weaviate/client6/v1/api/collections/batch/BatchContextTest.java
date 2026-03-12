@@ -159,7 +159,7 @@ public class BatchContextTest {
 
     try {
       context.close();
-      eof.get();
+      eof.get(5, TimeUnit.SECONDS);
     } finally {
       contextClosed = true;
     }
@@ -177,8 +177,11 @@ public class BatchContextTest {
     List<String> received = recvDataAndAck();
     Assertions.assertThat(tasks)
         .extracting(TaskHandle::id).containsExactlyInAnyOrderElementsOf(received);
-    Assertions.assertThat(tasks)
-        .extracting(TaskHandle::isAcked).allMatch(CompletableFuture::isDone);
+
+    CompletableFuture<?>[] tasksAcked = tasks.stream()
+        .map(TaskHandle::isAcked).toArray(CompletableFuture[]::new);
+    Assertions.assertThat(CompletableFuture.allOf(tasksAcked))
+        .succeedsWithin(5, TimeUnit.SECONDS);
 
     out.beforeEof(new Event.Results(received, Collections.emptyMap()));
 
@@ -186,6 +189,7 @@ public class BatchContextTest {
     // the context will be updated before the last emitEvent returns.
     closeContext();
 
+    // By the time context.close() returns all tasks MUST have results set.
     Assertions.assertThat(tasks).extracting(TaskHandle::result)
         .allMatch(CompletableFuture::isDone)
         .extracting(CompletableFuture::get).extracting(TaskHandle.Result::error)
@@ -207,8 +211,11 @@ public class BatchContextTest {
         List<String> received = recvDataAndAck();
         Assertions.assertThat(tasks).extracting(TaskHandle::id)
             .containsExactlyInAnyOrderElementsOf(received);
-        Assertions.assertThat(tasks).extracting(TaskHandle::isAcked)
-            .allMatch(CompletableFuture::isDone);
+
+        CompletableFuture<?>[] tasksAcked = tasks.stream()
+            .map(TaskHandle::isAcked).toArray(CompletableFuture[]::new);
+        Assertions.assertThat(CompletableFuture.allOf(tasksAcked))
+            .succeedsWithin(5, TimeUnit.SECONDS);
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
