@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import io.weaviate.client6.v1.internal.Proxy;
 import io.weaviate.client6.v1.internal.rest.BooleanEndpoint;
 import io.weaviate.client6.v1.internal.rest.Endpoint;
 import io.weaviate.client6.v1.internal.rest.RestTransport;
@@ -25,7 +26,7 @@ public class MockRestTransport implements RestTransport {
     void apply(String method, String requestUrl, String body, Map<String, Object> queryParameters);
   }
 
-  private List<Request<?>> requests = new ArrayList<>();
+  private final List<Request<?>> requests = new ArrayList<>();
 
   public void assertNext(AssertFunction... assertions) {
     var assertN = Math.min(assertions.length, requests.size());
@@ -59,5 +60,10 @@ public class MockRestTransport implements RestTransport {
 
   @Override
   public void close() throws IOException {
+  }
+
+  @Override
+  public Proxy getProxy() {
+    return null;
   }
 }

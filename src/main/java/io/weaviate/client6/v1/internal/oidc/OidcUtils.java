@@ -7,6 +7,7 @@ import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
 import io.weaviate.client6.v1.api.WeaviateOAuthException;
+import io.weaviate.client6.v1.internal.rest.DefaultRestTransport;
 import io.weaviate.client6.v1.internal.rest.Endpoint;
 import io.weaviate.client6.v1.internal.rest.ExternalEndpoint;
 import io.weaviate.client6.v1.internal.rest.RestTransport;
@@ -28,7 +29,7 @@ public final class OidcUtils {
   private static final Endpoint<String, String> GET_PROVIDER_METADATA_ENDPOINT = new ExternalEndpoint<>(
       request -> "GET",
       request -> request, // URL is the request body.
-      requesf -> Collections.emptyMap(),
+      request -> Collections.emptyMap(),
       request -> null,
       (__, response) -> response);
 
@@ -54,6 +55,10 @@ public final class OidcUtils {
       throw new WeaviateOAuthException("fetch provider metadata", e);
     }
 
-    return new OidcConfig(openid.clientId(), providerMetadata, openid.scopes());
+    OidcConfig.OidcProxy proxy = transport.getProxy() != null
+        ? new OidcConfig.OidcProxy(transport.getProxy())
+        : null;
+
+    return new OidcConfig(openid.clientId(), providerMetadata, openid.scopes(), proxy);
   }
 }

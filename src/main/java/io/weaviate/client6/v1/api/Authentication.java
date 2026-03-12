@@ -57,6 +57,26 @@ public interface Authentication {
   }
 
   /**
+   * Authenticate using Resource Owner Password Credentials authorization grant.
+   *
+   * @param clientSecret Client secret.
+   * @param username     Resource owner username.
+   * @param password     Resource owner password.
+   * @param scopes       Client scopes.
+   *
+   * @return Authentication provider.
+   * @throws WeaviateOAuthException if an error occurred at any point of the token
+   *                                exchange process.
+   */
+  public static Authentication resourceOwnerPasswordCredentials(String clientSecret, String username, String password,
+                                                                List<String> scopes) {
+    return transport -> {
+      OidcConfig oidc = OidcUtils.getConfig(transport).withScopes(scopes).withScopes("offline_access");
+      return TokenProvider.resourceOwnerPasswordCredentials(oidc, clientSecret, username, password);
+    };
+  }
+
+  /**
    * Authenticate using Client Credentials authorization grant.
    *
    * @param clientSecret Client secret.
