@@ -1,6 +1,7 @@
 package io.weaviate.client6.v1.internal.oidc.nimbus;
 
 import java.io.IOException;
+import java.net.Proxy;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
@@ -8,7 +9,7 @@ import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.Scope;
 import com.nimbusds.oauth2.sdk.TokenRequest;
 import com.nimbusds.oauth2.sdk.id.ClientID;
-import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+import com.nimbusds.oauth2.sdk.as.AuthorizationServerMetadata;
 import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
 
 import io.weaviate.client6.v1.api.WeaviateOAuthException;
@@ -17,10 +18,11 @@ import io.weaviate.client6.v1.internal.oidc.OidcConfig;
 
 @NotThreadSafe
 public final class NimbusTokenProvider implements TokenProvider {
-  private final OIDCProviderMetadata metadata;
+  private final AuthorizationServerMetadata metadata;
   private final ClientID clientId;
   private final Scope scope;
   private final Flow flow;
+  private Proxy proxy;
 
   /**
    * Create a TokenProvider that uses Refresh Token authorization grant.
@@ -52,6 +54,23 @@ public final class NimbusTokenProvider implements TokenProvider {
   }
 
   /**
+   * Create a TokenProvider that uses Resource Owner Password Credentials authorization grant.
+   *
+   * @param oidc         OIDC config.
+   * @param clientSecret Client secret.
+   * @param username     Resource owner username.
+   * @param password     Resource owner password.
+   *
+   * @return A new instance of NimbusTokenProvider. Instances are never cached.
+   * @throws WeaviateOAuthException if an error occured at any point of the
+   *                                exchange process.
+   */
+  public static NimbusTokenProvider resouceOwnerPasswordCredentials(OidcConfig oidc, String clientSecret, String username,
+                                                                    String password) {
+    return new NimbusTokenProvider(oidc, Flow.resourceOwnerPasswordCredentials(oidc.clientId(), clientSecret, username, password));
+  }
+
+  /**
    * Create a TokenProvider that uses Client Credentials authorization grant.
    *
    * @param oidc         OIDC config.
@@ -70,6 +89,10 @@ public final class NimbusTokenProvider implements TokenProvider {
     this.clientId = new ClientID(oidc.clientId());
     this.scope = new Scope(oidc.scopes().toArray(String[]::new));
     this.flow = flow;
+    var proxy = oidc.proxy();
+    if (proxy != null) {
+      this.proxy = new java.net.Proxy(java.net.Proxy.Type.HTTP, new java.net.InetSocketAddress(proxy.host(), proxy.port()));
+    }
   }
 
   @Override
@@ -82,6 +105,10 @@ public final class NimbusTokenProvider implements TokenProvider {
         ? new TokenRequest(uri, clientId, grant, scope)
         : new TokenRequest(uri, clientAuth, grant, scope);
     var request = tokenRequest.toHTTPRequest();
+
+    if (proxy != null) {
+      request.setProxy(proxy);
+    }
 
     OIDCTokens tokens;
     try {
@@ -116,9 +143,9 @@ public final class NimbusTokenProvider implements TokenProvider {
     return new ProviderMetadata(metadata.getTokenEndpointURI());
   }
 
-  private static OIDCProviderMetadata _parseProviderMetadata(String providerMetadata) {
+  private static AuthorizationServerMetadata _parseProviderMetadata(String providerMetadata) {
     try {
-      return OIDCProviderMetadata.parse(providerMetadata);
+      return AuthorizationServerMetadata.parse(providerMetadata);
     } catch (ParseException ex) {
       throw new WeaviateOAuthException("parse provider metadata: ", ex);
     }
