@@ -10,26 +10,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.Objects.requireNonNull;
-
 public record OidcConfig(
     String clientId,
     String providerMetadata,
     Set<String> scopes,
-    OidcProxy proxy) {
+    Proxy proxy) {
 
-  public record OidcProxy(
-      String scheme,
-      String host,
-      int port) {
-    
-    public OidcProxy(Proxy proxy) {
-      this(requireNonNull(proxy, "proxy is null").scheme(), proxy.host(), proxy.port());
-    }
-
-  }
-
-  public OidcConfig(String clientId, String providerMetadata, Set<String> scopes, OidcProxy proxy) {
+  public OidcConfig(String clientId, String providerMetadata, Set<String> scopes, Proxy proxy) {
     this.clientId = clientId;
     this.providerMetadata = providerMetadata;
     this.scopes = scopes != null ? Set.copyOf(scopes) : Collections.emptySet();
@@ -44,7 +31,7 @@ public record OidcConfig(
     this(clientId, providerMetadata, scopes == null ? null : new HashSet<>(scopes), null);
   }
 
-  public OidcConfig(String clientId, String providerMetadata, List<String> scopes, OidcProxy proxy) {
+  public OidcConfig(String clientId, String providerMetadata, List<String> scopes, Proxy proxy) {
     this(clientId, providerMetadata, scopes == null ? null : new HashSet<>(scopes), proxy);
   }
 
