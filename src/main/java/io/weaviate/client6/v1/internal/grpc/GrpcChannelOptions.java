@@ -20,7 +20,7 @@ public class GrpcChannelOptions extends TransportOptions<Metadata> {
   }
 
   private GrpcChannelOptions(String scheme, String host, int port, Metadata headers,
-      TokenProvider tokenProvider, TrustManagerFactory tmf, OptionalInt maxMessageSize, Timeout timeout) {
+      TokenProvider tokenProvider, TrustManagerFactory tmf, OptionalInt maxMessageSize, Timeout timeout, Proxy proxy) {
     super(scheme, host, port, headers, tokenProvider, tmf, timeout, proxy);
     this.maxMessageSize = maxMessageSize;
   }
