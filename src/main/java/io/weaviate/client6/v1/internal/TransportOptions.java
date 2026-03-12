@@ -57,4 +57,20 @@ public abstract class TransportOptions<H> {
   public TrustManagerFactory trustManagerFactory() {
     return this.trustManagerFactory;
   }
+
+  /**
+   * isWeaviateDomain returns true if the host matches weaviate.io,
+   * semi.technology, or weaviate.cloud domain.
+   */
+  public static boolean isWeaviateDomain(String host) {
+    var lower = host.toLowerCase();
+    return lower.contains("weaviate.io") ||
+        lower.contains("semi.technology") ||
+        lower.contains("weaviate.cloud");
+  }
+
+  public static boolean isGoogleCloudDomain(String host) {
+    var lower = host.toLowerCase();
+    return lower.contains("gcp");
+  }
 }

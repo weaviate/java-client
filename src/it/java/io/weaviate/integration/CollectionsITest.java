@@ -370,8 +370,8 @@ public class CollectionsITest extends ConcurrentTest {
             .returns(false, Property::indexFilterable)
             .returns(false, Property::indexSearchable)
             .returns(false, Property::indexRangeFilters));
-    }
- 
+  }
+
   @Test
   public void test_asyncReplicationConfig() throws IOException {
     Weaviate.Version.latest().orSkip();

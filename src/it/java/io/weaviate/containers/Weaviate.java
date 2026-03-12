@@ -28,9 +28,11 @@ public class Weaviate extends WeaviateContainer {
   public static final String DOCKER_IMAGE = "semitechnologies/weaviate";
   public static final String LATEST_VERSION = Version.latest().semver.toString();
   public static final String VERSION;
+  private static final boolean DEBUG;
 
   static {
     VERSION = System.getenv().getOrDefault("WEAVIATE_VERSION", LATEST_VERSION);
+    DEBUG = System.getenv("DEBUG") != null;
   }
   public static String OIDC_ISSUER = "https://auth.wcs.api.weaviate.io/auth/realms/SeMI";
 
@@ -93,6 +95,9 @@ public class Weaviate extends WeaviateContainer {
   public WeaviateClient getClient() {
     if (!isRunning()) {
       start();
+      if (DEBUG) {
+        followOutput(frame -> System.out.println(frame.getUtf8String()));
+      }
     }
     if (clientInstance != null) {
       return clientInstance;

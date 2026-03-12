@@ -1,6 +1,7 @@
 package io.weaviate.client6.v1.internal.grpc;
 
 import java.util.Map;
+import java.util.OptionalInt;
 
 import javax.net.ssl.TrustManagerFactory;
 
@@ -10,7 +11,7 @@ import io.weaviate.client6.v1.internal.TokenProvider;
 import io.weaviate.client6.v1.internal.TransportOptions;
 
 public class GrpcChannelOptions extends TransportOptions<Metadata> {
-  private final Integer maxMessageSize;
+  private final OptionalInt maxMessageSize;
 
   public GrpcChannelOptions(String scheme, String host, int port, Map<String, String> headers,
       TokenProvider tokenProvider, TrustManagerFactory tmf, Timeout timeout) {
@@ -18,17 +19,18 @@ public class GrpcChannelOptions extends TransportOptions<Metadata> {
   }
 
   private GrpcChannelOptions(String scheme, String host, int port, Metadata headers,
-      TokenProvider tokenProvider, TrustManagerFactory tmf, Integer maxMessageSize, Timeout timeout) {
+      TokenProvider tokenProvider, TrustManagerFactory tmf, OptionalInt maxMessageSize, Timeout timeout) {
     super(scheme, host, port, headers, tokenProvider, tmf, timeout);
     this.maxMessageSize = maxMessageSize;
   }
 
   public GrpcChannelOptions withMaxMessageSize(int maxMessageSize) {
-    return new GrpcChannelOptions(scheme, host, port, headers, tokenProvider, trustManagerFactory, maxMessageSize,
+    return new GrpcChannelOptions(scheme, host, port, headers, tokenProvider, trustManagerFactory,
+        OptionalInt.of(maxMessageSize),
         timeout);
   }
 
-  public Integer maxMessageSize() {
+  public OptionalInt maxMessageSize() {
     return maxMessageSize;
   }
 
