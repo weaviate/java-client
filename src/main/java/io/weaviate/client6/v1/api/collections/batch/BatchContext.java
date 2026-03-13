@@ -335,7 +335,21 @@ public final class BatchContext<PropertiesT> implements Closeable {
   @Override
   public void close() throws IOException {
     boolean closedBefore = closed;
-    closed = true;
+
+    // Update the value atomically to make sure shutdownNow
+    // does not unnecessarily interrupt this thread.
+    synchronized (this) {
+      closed = true;
+    }
+
+    // If we'd been interrupted by shutdownNow, closing would've been
+    // completed exceptionally prior to that. If that's not the case
+    // but the current thread is interrupted, then we must propagate
+    // the interrupt. But first, we should dispose of the services.
+    if (Thread.interrupted() && !closing.isCompletedExceptionally()) {
+      shutdownExecutors();
+      Thread.currentThread().interrupt();
+    }
 
     log.atDebug()
         .addKeyValue("closed_before", closedBefore)
@@ -409,16 +423,26 @@ public final class BatchContext<PropertiesT> implements Closeable {
       send.cancel(true);
     }
 
-    if (!closed) {
-      // Since shutdownNow is never triggered by the "main" thread,
-      // it may be blocked on trying to add to the queue. While batch
-      // context is active, we own this thread and may interrupt it.
-      log.atDebug()
-          .addKeyValue("thread", Thread::currentThread)
-          .addKeyValue("closed", closed)
-          .log("Interrupt parent thread");
-      parent.interrupt();
+    // Since shutdownNow is never triggered by the "main" thread,
+    // it may be blocked on trying to add to the queue. While batch
+    // context is active, we own this thread and may interrupt it.
+    // We must be able to guarantee that shutdownNow never interrupts
+    // an in-progress close and we also don't want to potentially block
+    // the gRPC thread on which shutdownNow may be executing; we use
+    // the doubly-checked locking pattern to helps us achieve that.
+    if (closed) {
+      return;
     }
+    synchronized (this) {
+      if (!closed) {
+        log.atDebug()
+            .addKeyValue("thread", Thread::currentThread)
+            .addKeyValue("closed", closed)
+            .log("Interrupt parent thread");
+        parent.interrupt();
+      }
+    }
+
   }
 
   private void shutdownExecutors() {

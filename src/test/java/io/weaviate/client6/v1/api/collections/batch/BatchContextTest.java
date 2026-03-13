@@ -160,11 +160,14 @@ public class BatchContextTest {
     // This resets the interrupted flag, allowing use to await the executors.
     Thread.interrupted();
 
-    backgroundThread.shutdownNow();
-    backgroundThread.awaitTermination(10, TimeUnit.SECONDS);
+    try {
+      backgroundThread.shutdownNow();
+      backgroundThread.awaitTermination(10, TimeUnit.SECONDS);
 
-    eventThread.shutdownNow();
-    eventThread.awaitTermination(10, TimeUnit.SECONDS);
+      eventThread.shutdownNow();
+      eventThread.awaitTermination(10, TimeUnit.SECONDS);
+    } catch (InterruptedException ignored) {
+    }
 
     REQUEST_QUEUE.clear();
 
