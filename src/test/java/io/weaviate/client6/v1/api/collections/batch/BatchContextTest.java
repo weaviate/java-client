@@ -135,11 +135,16 @@ public class BatchContextTest {
     context.start();
 
     in.expectMessage(START);
-    out.emitEvent(Event.STARTED);
+    out.emitEventAsync(Event.STARTED);
   }
 
   @After
   public void reset() throws Exception {
+    log.atDebug()
+        .addKeyValue("contextClosed", contextClosed)
+        .addKeyValue("testFailed", testFailed)
+        .log("Begin test cleanup");
+
     // Do not attempt to close the context if it has been previously closed
     // by the test or the test has failed. In the latter case closing the
     // context may lead to a deadlock if the case hasn't scheduled Results
@@ -302,6 +307,7 @@ public class BatchContextTest {
     int batchSizeNew = BATCH_SIZE / 2;
 
     // Force the last BATCH_SIZE / 2 - 1 items to be transferred to the backlog.
+    // Await for this event to be processed before moving forward.
     out.emitEvent(new Event.Backoff(batchSizeNew));
 
     // The next item will go on the backlog and the trigger a flush,
@@ -327,14 +333,14 @@ public class BatchContextTest {
 
   @Test
   public void test_reconnect_onShutdown() throws Exception {
-    out.emitEvent(Event.SHUTTING_DOWN);
+    out.emitEventAsync(Event.SHUTTING_DOWN);
     in.expectMessage(STOP);
     out.eof(true);
     in.expectMessage(START);
 
     // Not strictly necessary -- we can close the context
     // before a new connection is established.
-    out.emitEvent(Event.STARTED);
+    out.emitEventAsync(Event.STARTED);
   }
 
   @Test
@@ -348,18 +354,18 @@ public class BatchContextTest {
 
     // Respond with OOM and wait for the client to close its end of the stream.
     in.expectMessage(DATA);
-    out.emitEvent(new Event.Oom(0));
+    out.emitEventAsync(new Event.Oom(0));
 
     // Close the server's end of the stream.
     in.expectMessage(STOP);
 
     // Allow the client to reconnect to another "instance" and Ack the batch.
     in.expectMessage(START);
-    out.emitEvent(Event.STARTED);
+    out.emitEventAsync(Event.STARTED);
     recvDataAndAck();
 
     List<String> submitted = tasks.stream().map(TaskHandle::id).toList();
-    out.emitEvent(new Event.Results(submitted, Collections.emptyMap()));
+    out.emitEventAsync(new Event.Results(submitted, Collections.emptyMap()));
   }
 
   @Test
@@ -376,7 +382,7 @@ public class BatchContextTest {
 
     // The client should try to reconnect, because the context is still open.
     in.expectMessage(START);
-    out.emitEvent(Event.STARTED);
+    out.emitEventAsync(Event.STARTED);
 
     // The previous batch hasn't been acked, so we should expect to receive it
     // again.
@@ -387,7 +393,7 @@ public class BatchContextTest {
     // in the queue to wake the sender up.
     out.hangup();
     in.expectMessage(START);
-    out.emitEvent(Event.STARTED);
+    out.emitEventAsync(Event.STARTED);
     tasks.add(context.add(WeaviateObject.of()));
     recvDataAndAck();
 
@@ -428,7 +434,7 @@ public class BatchContextTest {
     // When the server starts accepting connections again, the client should
     // drain the remaining BATCH_SIZE+1 objects as we close the context.
     in.expectMessage(START);
-    out.emitEvent(Event.STARTED);
+    out.emitEventAsync(Event.STARTED);
     Future<?> backgroundAcks = backgroundThread.submit(() -> {
       try {
         recvDataAndAck();
@@ -455,7 +461,7 @@ public class BatchContextTest {
   public void test_closeAfterStreamHangup() throws Exception {
     out.hangup();
     in.expectMessage(START);
-    out.emitEvent(Event.STARTED);
+    out.emitEventAsync(Event.STARTED);
   }
 
   @Test
@@ -493,7 +499,7 @@ public class BatchContextTest {
    */
   private List<String> recvDataAndAck() throws InterruptedException {
     List<String> received = recvData();
-    out.emitEvent(new Event.Acks(received));
+    out.emitEventAsync(new Event.Acks(received));
     return received;
   }
 
@@ -521,7 +527,16 @@ public class BatchContextTest {
       this.eventThread = eventThread;
     }
 
-    CompletableFuture<Void> emitEvent(Event event) {
+    /** Emit event on the current thread. */
+    void emitEvent(Event event) {
+      assert event != Event.EOF : "must not use synthetic EOF event";
+      assert !(event instanceof Event.StreamHangup) : "must not use synthetic StreamHangup event";
+
+      stream.onNext(event);
+    }
+
+    /** Emit event on the {@link #eventThread}. */
+    CompletableFuture<Void> emitEventAsync(Event event) {
       assert event != Event.EOF : "must not use synthetic EOF event";
       assert !(event instanceof Event.StreamHangup) : "must not use synthetic StreamHangup event";
 
@@ -551,7 +566,7 @@ public class BatchContextTest {
       if (ok) {
         // These are guaranteed to finish before onCompleted,
         // as eventThread is just 1 thread.
-        pendingEvents.forEach(this::emitEvent);
+        pendingEvents.forEach(this::emitEventAsync);
       }
       return CompletableFuture.runAsync(stream::onCompleted, eventThread);
     }
