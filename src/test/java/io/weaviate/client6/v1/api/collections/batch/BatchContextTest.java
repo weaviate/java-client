@@ -20,7 +20,11 @@ import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,6 +99,19 @@ public class BatchContextTest {
     return in;
   }
 
+  @Rule
+  public TestName currentTest = new TestName();
+
+  private boolean testFailed;
+
+  @Rule
+  public TestWatcher __ = new TestWatcher() {
+    @Override
+    protected void failed(Throwable e, Description description) {
+      testFailed = true;
+    }
+  };
+
   /**
    * Create new unstarted context with default maxSizeBytes, collection
    * descriptor, and collection handle defaults.
@@ -102,6 +119,7 @@ public class BatchContextTest {
   @Before
   public void startContext() throws InterruptedException {
     log.debug("===================startContext==================");
+    log.debug(currentTest.getMethodName());
 
     assert !Thread.currentThread().isInterrupted() : "main thread interrupted";
     assert REQUEST_QUEUE.isEmpty() : "stream contains incoming message " + REQUEST_QUEUE.peek();
@@ -122,7 +140,11 @@ public class BatchContextTest {
 
   @After
   public void reset() throws Exception {
-    if (!contextClosed) {
+    // Do not attempt to close the context if it has been previously closed
+    // by the test or the test has failed. In the latter case closing the
+    // context may lead to a deadlock if the case hasn't scheduled Results
+    // for all submitted messages.
+    if (!contextClosed && !testFailed) {
       closeContext();
     }
 
@@ -175,6 +197,8 @@ public class BatchContextTest {
     // BatchContext should flush the current batch once it hits its limit.
     // We will ack all items in the batch and send successful result for each one.
     List<String> received = recvDataAndAck();
+    out.beforeEof(new Event.Results(received, Collections.emptyMap()));
+
     Assertions.assertThat(tasks)
         .extracting(TaskHandle::id).containsExactlyInAnyOrderElementsOf(received);
 
@@ -182,8 +206,6 @@ public class BatchContextTest {
         .map(TaskHandle::isAcked).toArray(CompletableFuture[]::new);
     Assertions.assertThat(CompletableFuture.allOf(tasksAcked))
         .succeedsWithin(5, TimeUnit.SECONDS);
-
-    out.beforeEof(new Event.Results(received, Collections.emptyMap()));
 
     // Since MockServer runs in the same thread as this test,
     // the context will be updated before the last emitEvent returns.
