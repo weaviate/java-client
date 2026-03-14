@@ -31,6 +31,12 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateFuture
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest;
 
+import javax.net.ssl.SSLException;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+
 public final class DefaultGrpcTransport implements GrpcTransport {
   /**
    * ListenableFuture callbacks are executed

@@ -60,6 +60,11 @@ public abstract class TransportOptions<H> {
     return this.trustManagerFactory;
   }
 
+  @Nullable
+  public Proxy proxy() {
+    return this.proxy;
+  }
+  
   /**
    * isWeaviateDomain returns true if the host matches weaviate.io,
    * semi.technology, or weaviate.cloud domain.
