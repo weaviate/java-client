@@ -1,5 +1,7 @@
 package io.weaviate.client6.v1.internal.oidc;
 
+import io.weaviate.client6.v1.internal.Proxy;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -11,16 +13,26 @@ import java.util.stream.Stream;
 public record OidcConfig(
     String clientId,
     String providerMetadata,
-    Set<String> scopes) {
+    Set<String> scopes,
+    Proxy proxy) {
 
-  public OidcConfig(String clientId, String providerMetadata, Set<String> scopes) {
+  public OidcConfig(String clientId, String providerMetadata, Set<String> scopes, Proxy proxy) {
     this.clientId = clientId;
     this.providerMetadata = providerMetadata;
     this.scopes = scopes != null ? Set.copyOf(scopes) : Collections.emptySet();
+    this.proxy = proxy;
+  }
+
+  public OidcConfig(String clientId, String providerMetadata, Set<String> scopes) {
+    this(clientId, providerMetadata, scopes, null);
   }
 
   public OidcConfig(String clientId, String providerMetadata, List<String> scopes) {
-    this(clientId, providerMetadata, scopes == null ? null : new HashSet<>(scopes));
+    this(clientId, providerMetadata, scopes == null ? null : new HashSet<>(scopes), null);
+  }
+
+  public OidcConfig(String clientId, String providerMetadata, List<String> scopes, Proxy proxy) {
+    this(clientId, providerMetadata, scopes == null ? null : new HashSet<>(scopes), proxy);
   }
 
   /** Create a new OIDC config with extended scopes. */
@@ -31,6 +43,6 @@ public record OidcConfig(
   /** Create a new OIDC config with extended scopes. */
   public OidcConfig withScopes(List<String> scopes) {
     var newScopes = Stream.concat(this.scopes.stream(), scopes.stream()).collect(Collectors.toSet());
-    return new OidcConfig(clientId, providerMetadata, newScopes);
+    return new OidcConfig(clientId, providerMetadata, newScopes, proxy);
   }
 }

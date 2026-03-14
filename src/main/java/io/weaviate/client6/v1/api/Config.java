@@ -9,6 +9,7 @@ import javax.net.ssl.TrustManagerFactory;
 
 import io.weaviate.client6.v1.internal.BuildInfo;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
+import io.weaviate.client6.v1.internal.Proxy;
 import io.weaviate.client6.v1.internal.Timeout;
 import io.weaviate.client6.v1.internal.TokenProvider;
 import io.weaviate.client6.v1.internal.TransportOptions;
@@ -24,7 +25,8 @@ public record Config(
     Map<String, String> headers,
     Authentication authentication,
     TrustManagerFactory trustManagerFactory,
-    Timeout timeout) {
+    Timeout timeout,
+    Proxy proxy) {
 
   public static Config of(Function<Custom, ObjectBuilder<Config>> fn) {
     return fn.apply(new Custom()).build();
@@ -40,7 +42,8 @@ public record Config(
         builder.headers,
         builder.authentication,
         builder.trustManagerFactory,
-        builder.timeout);
+        builder.timeout,
+        builder.proxy);
   }
 
   RestTransportOptions restTransportOptions() {
@@ -48,7 +51,7 @@ public record Config(
   }
 
   RestTransportOptions restTransportOptions(TokenProvider tokenProvider) {
-    return new RestTransportOptions(scheme, httpHost, httpPort, headers, tokenProvider, trustManagerFactory, timeout);
+    return new RestTransportOptions(scheme, httpHost, httpPort, headers, tokenProvider, trustManagerFactory, timeout, proxy);
   }
 
   GrpcChannelOptions grpcTransportOptions() {
@@ -56,7 +59,7 @@ public record Config(
   }
 
   GrpcChannelOptions grpcTransportOptions(TokenProvider tokenProvider) {
-    return new GrpcChannelOptions(scheme, grpcHost, grpcPort, headers, tokenProvider, trustManagerFactory, timeout);
+    return new GrpcChannelOptions(scheme, grpcHost, grpcPort, headers, tokenProvider, trustManagerFactory, timeout, proxy);
   }
 
   private abstract static class Builder<SelfT extends Builder<SelfT>> implements ObjectBuilder<Config> {
@@ -70,6 +73,7 @@ public record Config(
     protected TrustManagerFactory trustManagerFactory;
     protected Timeout timeout = new Timeout();
     protected Map<String, String> headers = new HashMap<>();
+    protected Proxy proxy;
 
     /**
      * Set URL scheme. Subclasses may increase the visibility of this method to
@@ -172,6 +176,15 @@ public record Config(
     @SuppressWarnings("unchecked")
     public SelfT timeout(int initSeconds, int querySeconds, int insertSeconds) {
       this.timeout = new Timeout(initSeconds, querySeconds, insertSeconds);
+      return (SelfT) this;
+    }
+
+    /**
+     * Set proxy for all requests.
+     */
+    @SuppressWarnings("unchecked")
+    public SelfT proxy(Proxy proxy) {
+      this.proxy = proxy;
       return (SelfT) this;
     }
 

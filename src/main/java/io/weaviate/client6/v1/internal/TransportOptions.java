@@ -11,9 +11,10 @@ public abstract class TransportOptions<H> {
   protected final H headers;
   protected final TrustManagerFactory trustManagerFactory;
   protected final Timeout timeout;
+  protected final Proxy proxy;
 
   protected TransportOptions(String scheme, String host, int port, H headers, TokenProvider tokenProvider,
-      TrustManagerFactory tmf, Timeout timeout) {
+      TrustManagerFactory tmf, Timeout timeout, Proxy proxy) {
     this.scheme = scheme;
     this.host = host;
     this.port = port;
@@ -21,6 +22,7 @@ public abstract class TransportOptions<H> {
     this.headers = headers;
     this.timeout = timeout;
     this.trustManagerFactory = tmf;
+    this.proxy = proxy;
   }
 
   public boolean isSecure() {
@@ -58,6 +60,11 @@ public abstract class TransportOptions<H> {
     return this.trustManagerFactory;
   }
 
+  @Nullable
+  public Proxy proxy() {
+    return this.proxy;
+  }
+  
   /**
    * isWeaviateDomain returns true if the host matches weaviate.io,
    * semi.technology, or weaviate.cloud domain.
@@ -72,5 +79,10 @@ public abstract class TransportOptions<H> {
   public static boolean isGoogleCloudDomain(String host) {
     var lower = host.toLowerCase();
     return lower.contains("gcp");
+  }
+
+  @Nullable
+  public Proxy proxy() {
+    return this.proxy;
   }
 }

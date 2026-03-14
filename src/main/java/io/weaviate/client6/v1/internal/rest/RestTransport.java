@@ -3,6 +3,8 @@ package io.weaviate.client6.v1.internal.rest;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
+import io.weaviate.client6.v1.internal.Proxy;
+
 public interface RestTransport extends AutoCloseable {
   <RequestT, ResponseT, ExceptionT> ResponseT performRequest(RequestT request,
       Endpoint<RequestT, ResponseT> endpoint)
@@ -10,4 +12,6 @@ public interface RestTransport extends AutoCloseable {
 
   <RequestT, ResponseT, ExceptionT> CompletableFuture<ResponseT> performRequestAsync(RequestT request,
       Endpoint<RequestT, ResponseT> endpoint);
+
+  Proxy getProxy();
 }

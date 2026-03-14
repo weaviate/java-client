@@ -63,14 +63,13 @@ public class WeaviateClient implements AutoCloseable {
   public final WeaviateClusterClient cluster;
 
   public WeaviateClient(Config config) {
-    RestTransportOptions restOpt;
+    RestTransportOptions restOpt = config.restTransportOptions();
     GrpcChannelOptions grpcOpt;
     if (config.authentication() == null) {
-      restOpt = config.restTransportOptions();
       grpcOpt = config.grpcTransportOptions();
     } else {
       TokenProvider tokenProvider;
-      try (final var noAuthRest = new DefaultRestTransport(config.restTransportOptions())) {
+      try (final var noAuthRest = new DefaultRestTransport(restOpt)) {
         tokenProvider = config.authentication().getTokenProvider(noAuthRest);
       } catch (Exception e) {
         // Generally exceptions are caught in TokenProvider internals.
@@ -124,6 +123,10 @@ public class WeaviateClient implements AutoCloseable {
     this.users = new WeaviateUsersClient(restTransport);
     this.cluster = new WeaviateClusterClient(restTransport);
     this.config = config;
+  }
+
+  public Config getConfig() {
+    return config;
   }
 
   /**

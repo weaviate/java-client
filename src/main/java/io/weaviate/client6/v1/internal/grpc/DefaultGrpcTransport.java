@@ -2,6 +2,8 @@ package io.weaviate.client6.v1.internal.grpc;
 
 import static java.util.Objects.requireNonNull;
 
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.OptionalInt;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -12,7 +14,7 @@ import javax.net.ssl.SSLException;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-
+import io.grpc.HttpConnectProxiedSocketAddress;
 import io.grpc.ManagedChannel;
 import io.grpc.StatusRuntimeException;
 import io.grpc.netty.shaded.io.grpc.netty.GrpcSslContexts;
@@ -22,11 +24,18 @@ import io.grpc.stub.AbstractStub;
 import io.grpc.stub.MetadataUtils;
 import io.grpc.stub.StreamObserver;
 import io.weaviate.client6.v1.api.WeaviateApiException;
+import io.weaviate.client6.v1.internal.Proxy;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateBlockingStub;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateFutureStub;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest;
+
+import javax.net.ssl.SSLException;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 public final class DefaultGrpcTransport implements GrpcTransport {
   /**
@@ -92,7 +101,7 @@ public final class DefaultGrpcTransport implements GrpcTransport {
     var method = rpc.methodAsync();
     var stub = applyTimeout(futureStub, rpc);
     var reply = method.apply(stub, message);
-    return toCompletableFuture(reply).thenApply(r -> rpc.unmarshal(r));
+    return toCompletableFuture(reply).thenApply(rpc::unmarshal);
   }
 
   /**
@@ -144,6 +153,27 @@ public final class DefaultGrpcTransport implements GrpcTransport {
         throw new RuntimeException("create grpc transport", e);
       }
       channel.sslContext(sslCtx);
+    }
+
+    if (transportOptions.proxy() != null) {
+      Proxy proxy = transportOptions.proxy();
+      if ("http".equals(proxy.scheme()) || "https".equals(proxy.scheme())) {
+        final SocketAddress proxyAddress = new InetSocketAddress(proxy.host(), proxy.port());
+        channel.proxyDetector(targetAddress -> {
+          if (targetAddress instanceof InetSocketAddress) {
+            HttpConnectProxiedSocketAddress.Builder builder = HttpConnectProxiedSocketAddress.newBuilder()
+                .setProxyAddress(proxyAddress)
+                .setTargetAddress((InetSocketAddress) targetAddress);
+
+            if (proxy.username() != null && proxy.password() != null) {
+              builder.setUsername(proxy.username());
+              builder.setPassword(proxy.password());
+            }
+            return builder.build();
+          }
+          return null;
+        });
+      }
     }
 
     channel.intercept(MetadataUtils.newAttachHeadersInterceptor(transportOptions.headers()));

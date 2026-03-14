@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
 
+import org.apache.hc.core5.http.HttpHost;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import org.apache.hc.client5.http.config.RequestConfig;
@@ -31,6 +32,7 @@ import org.apache.hc.core5.io.CloseMode;
 
 import io.weaviate.client6.v1.api.WeaviateApiException;
 import io.weaviate.client6.v1.api.WeaviateTransportException;
+import io.weaviate.client6.v1.internal.Proxy;
 
 public class DefaultRestTransport implements RestTransport {
   private final CloseableHttpClient httpClient;
@@ -43,9 +45,9 @@ public class DefaultRestTransport implements RestTransport {
     this.transportOptions = transportOptions;
 
     // TODO: doesn't make sense to spin up both?
-    var httpClient = HttpClients.custom()
+    var httpClient = HttpClients.custom().useSystemProperties()
         .setDefaultHeaders(transportOptions.headers());
-    var httpClientAsync = HttpAsyncClients.custom()
+    var httpClientAsync = HttpAsyncClients.custom().useSystemProperties()
         .setDefaultHeaders(transportOptions.headers());
 
     // Apply custom SSL context
@@ -66,6 +68,13 @@ public class DefaultRestTransport implements RestTransport {
 
       httpClient.setConnectionManager(syncManager);
       httpClientAsync.setConnectionManager(asyncManager);
+    }
+
+    if (transportOptions.proxy() != null) {
+      Proxy proxy = transportOptions.proxy();
+      HttpHost proxyHost = new HttpHost(proxy.scheme(), proxy.host(), proxy.port());
+      httpClient.setProxy(proxyHost);
+      httpClientAsync.setProxy(proxyHost);
     }
 
     if (transportOptions.timeout() != null) {
@@ -110,8 +119,6 @@ public class DefaultRestTransport implements RestTransport {
     var body = endpoint.body(request);
     if (body != null) {
       req.setEntity(body, ContentType.APPLICATION_JSON);
-    }
-    if (true) {
     }
     return req.build();
   }
@@ -194,6 +201,10 @@ public class DefaultRestTransport implements RestTransport {
     }
 
     throw new WeaviateTransportException("Unhandled endpoint type " + endpoint.getClass().getSimpleName());
+  }
+
+  public Proxy getProxy() {
+    return transportOptions.proxy();
   }
 
   @Override
