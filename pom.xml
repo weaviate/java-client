@@ -170,9 +170,8 @@
     </dependency>
     <dependency>
         <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-nop</artifactId>
+        <artifactId>slf4j-api</artifactId>
         <version>${slf4j.version}</version>
-        <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mock-server</groupId>
@@ -237,13 +236,11 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>3.5.4</version>
           <configuration>
-            <trimStackTrace>false</trimStackTrace>
-            <parallel>classes</parallel>
-            <forkCount>4</forkCount>
-            <reuseForks>true</reuseForks>
-            <threadCount>1</threadCount>
-            <perCoreThreadCount>true</perCoreThreadCount>
-            <runOrder>balanced</runOrder>
+            <systemPropertyVariables>
+              <java.util.logging.config.file>
+                ${project.basedir}/src/test/resources/logging.properties
+              </java.util.logging.config.file>
+            </systemPropertyVariables>
           </configuration>
         </plugin>
         <plugin>
@@ -546,5 +543,5 @@
         <artifactId>central-publishing-maven-plugin</artifactId>
       </plugin>
     </plugins>
-  </build>
+    </build>
 </project>
