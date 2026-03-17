@@ -32,6 +32,7 @@ import io.weaviate.client6.v1.api.collections.data.ObjectReference;
 import io.weaviate.client6.v1.api.collections.generate.GenerativeObject;
 import io.weaviate.client6.v1.api.collections.generate.TaskOutput;
 import io.weaviate.client6.v1.api.collections.generative.DummyGenerative;
+import io.weaviate.client6.v1.api.collections.query.FetchObjectById;
 import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.client6.v1.api.collections.query.GroupBy;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
@@ -789,5 +790,53 @@ public class SearchITest extends ConcurrentTest {
 
     // Assert: ranking not important really, just that the request was valid.
     Assertions.assertThat(got.objects()).hasSize(2);
+  }
+
+  @Test
+  public void testVectorizerModel2VecPropeties() throws IOException {
+    var collectionName = ns("Books");
+    client.collections.create(collectionName,
+        col -> col
+            .properties(Property.text("title"), Property.text("author"))
+            .vectorConfig(
+                VectorConfig.text2vecModel2Vec("title_vec", v -> v.sourceProperties("title")),
+                VectorConfig.text2vecModel2Vec("author_vec", v -> v.sourceProperties("author"))));
+
+    var books = client.collections.use(collectionName);
+    Assertions.assertThat(books).isNotNull();
+
+    WeaviateObject<Map<String, Object>> dune = WeaviateObject.of(
+        o -> o.properties(Map.of(
+            "title", "Dune",
+            "author", "Frank Herbert")));
+    WeaviateObject<Map<String, Object>> abc = WeaviateObject.of(
+        o -> o.properties(Map.of(
+            "title", "ABC",
+            "author", "ABC")));
+
+    var resp = books.data.insertMany(dune, abc);
+    Assertions.assertThat(resp).isNotNull().satisfies(s -> {
+      Assertions.assertThat(s.errors()).isEmpty();
+    });
+
+    // Assert that for Dune we have generated 2 different vectors
+    var gotDune = books.query.fetchObjectById(dune.uuid(), FetchObjectById.Builder::includeVector);
+    Assertions.assertThat(gotDune).get()
+        .extracting(WeaviateObject::vectors)
+        .satisfies(v -> {
+          Assertions.assertThat(v.getSingle("title_vec")).isNotEmpty();
+          Assertions.assertThat(v.getSingle("author_vec")).isNotEmpty();
+          Assertions.assertThat(v.getSingle("title_vec")).isNotEqualTo(v.getSingle("author_vec"));
+        });
+
+    // Assert that for ABC we have generated same vectors
+    var gotAbc = books.query.fetchObjectById(abc.uuid(), FetchObjectById.Builder::includeVector);
+    Assertions.assertThat(gotAbc).get()
+        .extracting(WeaviateObject::vectors)
+        .satisfies(v -> {
+          Assertions.assertThat(v.getSingle("title_vec")).isNotEmpty();
+          Assertions.assertThat(v.getSingle("author_vec")).isNotEmpty();
+          Assertions.assertThat(v.getSingle("title_vec")).isEqualTo(v.getSingle("author_vec"));
+        });
   }
 }

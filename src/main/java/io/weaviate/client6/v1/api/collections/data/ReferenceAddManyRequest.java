@@ -31,5 +31,4 @@ public record ReferenceAddManyRequest(List<BatchReference> references) {
           return new ReferenceAddManyResponse(errors);
         });
   }
-
 }

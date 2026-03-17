@@ -15,6 +15,7 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 public record Multi2VecGoogleVectorizer(
     @SerializedName("projectId") String projectId,
     @SerializedName("model") String model,
+    @SerializedName("apiEndpoint") String apiEndpoint,
     @SerializedName("dimensions") Integer dimensions,
     @SerializedName("location") String location,
     @SerializedName("videoIntervalSeconds") Integer videoIntervalSeconds,
@@ -59,20 +60,42 @@ public record Multi2VecGoogleVectorizer(
     return this;
   }
 
+  @Deprecated(forRemoval = true)
   public static Multi2VecGoogleVectorizer of(String projectId, String location) {
     return of(projectId, location, ObjectBuilder.identity());
   }
 
+  @Deprecated(forRemoval = true)
   public static Multi2VecGoogleVectorizer of(
       String projectId,
       String location,
       Function<Builder, ObjectBuilder<Multi2VecGoogleVectorizer>> fn) {
-    return fn.apply(new Builder(projectId, location)).build();
+    return fn.apply(new VertexBuilder(projectId, location)).build();
+  }
+
+  public static Multi2VecGoogleVectorizer vertex(String projectId, String location) {
+    return vertex(projectId, location, ObjectBuilder.identity());
+  }
+
+  public static Multi2VecGoogleVectorizer vertex(
+      String projectId,
+      String location,
+      Function<VertexBuilder, ObjectBuilder<Multi2VecGoogleVectorizer>> fn) {
+    return fn.apply(new VertexBuilder(projectId, location)).build();
+  }
+
+  public static Multi2VecGoogleVectorizer gemini() {
+    return gemini(ObjectBuilder.identity());
+  }
+
+  public static Multi2VecGoogleVectorizer gemini(Function<GeminiBuilder, ObjectBuilder<Multi2VecGoogleVectorizer>> fn) {
+    return fn.apply(new GeminiBuilder()).build();
   }
 
   public Multi2VecGoogleVectorizer(
       String projectId,
       String model,
+      String apiEndpoint,
       Integer dimensions,
       String location,
       Integer videoIntervalSeconds,
@@ -84,6 +107,7 @@ public record Multi2VecGoogleVectorizer(
       Quantization quantization) {
 
     this.projectId = projectId;
+    this.apiEndpoint = apiEndpoint;
     this.model = model;
     this.dimensions = dimensions;
     this.location = location;
@@ -100,6 +124,7 @@ public record Multi2VecGoogleVectorizer(
     this(
         builder.projectId,
         builder.model,
+        builder.apiEndpoint,
         builder.dimensions,
         builder.location,
         builder.videoIntervalSeconds,
@@ -122,19 +147,30 @@ public record Multi2VecGoogleVectorizer(
     private List<String> textFields;
     private List<Float> textWeights;
 
-    private final String projectId;
+    private String projectId;
+    private String apiEndpoint;
     private String model;
     private String location;
     private Integer dimensions;
     private Integer videoIntervalSeconds;
 
+    @Deprecated(forRemoval = true)
     public Builder(String projectId, String location) {
       this.projectId = projectId;
       this.location = location;
     }
 
+    protected Builder(String apiEndpoint) {
+      this.apiEndpoint = apiEndpoint;
+    }
+
     public Builder model(String model) {
       this.model = model;
+      return this;
+    }
+
+    protected Builder apiEndpoint(String apiEndpoint) {
+      this.apiEndpoint = apiEndpoint;
       return this;
     }
 
@@ -262,6 +298,26 @@ public record Multi2VecGoogleVectorizer(
     @Override
     public Multi2VecGoogleVectorizer build() {
       return new Multi2VecGoogleVectorizer(this);
+    }
+  }
+
+  public static class GeminiBuilder extends Builder {
+    public static final String BASE_URL = "generativelanguage.googleapis.com";
+
+    public GeminiBuilder() {
+      super(BASE_URL);
+    }
+  }
+
+  public static class VertexBuilder extends Builder {
+
+    public VertexBuilder(String projectId, String location) {
+      super(projectId, location);
+    }
+
+    public VertexBuilder apiEndpoint(String apiEndpoint) {
+      super.apiEndpoint(apiEndpoint);
+      return this;
     }
   }
 }

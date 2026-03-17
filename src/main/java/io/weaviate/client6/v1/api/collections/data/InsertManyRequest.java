@@ -1,10 +1,13 @@
 package io.weaviate.client6.v1.api.collections.data;
 
+import static java.util.Objects.requireNonNull;
+
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
@@ -45,17 +48,16 @@ public record InsertManyRequest<PropertiesT>(List<WeaviateObject<PropertiesT>> o
         request -> {
           var message = WeaviateProtoBatch.BatchObjectsRequest.newBuilder();
 
-          var batch = request.objects.stream().map(obj -> {
-            var batchObject = WeaviateProtoBatch.BatchObject.newBuilder();
-            buildObject(batchObject, obj, collection, defaults);
-            return batchObject.build();
-          }).toList();
-
+          var batch = request.objects.stream()
+              .map(obj -> buildObject(obj, collection, defaults))
+              .toList();
           message.addAllObjects(batch);
 
-          if (defaults.consistencyLevel() != null) {
-            defaults.consistencyLevel().appendTo(message);
+          if (defaults.consistencyLevel().isPresent()) {
+            defaults.consistencyLevel().get().appendTo(message);
           }
+          var m = message.build();
+          m.getSerializedSize();
           return message.build();
         },
         response -> {
@@ -92,10 +94,11 @@ public record InsertManyRequest<PropertiesT>(List<WeaviateObject<PropertiesT>> o
         () -> WeaviateFutureStub::batchObjects);
   }
 
-  public static <T> void buildObject(WeaviateProtoBatch.BatchObject.Builder object,
+  public static <T> WeaviateProtoBatch.BatchObject buildObject(
       WeaviateObject<T> insert,
       CollectionDescriptor<T> collection,
       CollectionHandleDefaults defaults) {
+    var object = WeaviateProtoBatch.BatchObject.newBuilder();
     object.setCollection(collection.collectionName());
 
     if (insert.uuid() != null) {
@@ -121,9 +124,7 @@ public record InsertManyRequest<PropertiesT>(List<WeaviateObject<PropertiesT>> o
           }).toList();
       object.addAllVectors(vectors);
     }
-    if (defaults.tenant() != null) {
-      object.setTenant(defaults.tenant());
-    }
+    defaults.tenant().ifPresent(object::setTenant);
 
     var singleRef = new ArrayList<WeaviateProtoBatch.BatchObject.SingleTargetRefProps>();
     var multiRef = new ArrayList<WeaviateProtoBatch.BatchObject.MultiTargetRefProps>();
@@ -158,6 +159,7 @@ public record InsertManyRequest<PropertiesT>(List<WeaviateObject<PropertiesT>> o
       properties.setNonRefProperties(nonRef);
     }
     object.setProperties(properties);
+    return object.build();
   }
 
   @SuppressWarnings("unchecked")
@@ -329,5 +331,21 @@ public record InsertManyRequest<PropertiesT>(List<WeaviateObject<PropertiesT>> o
           struct.putFields((String) entry.getKey(), nestedValue);
         });
     return struct.build();
+  }
+
+  public static WeaviateProtoBatch.BatchReference buildReference(BatchReference reference, Optional<String> tenant) {
+    requireNonNull(reference, "reference is null");
+    WeaviateProtoBatch.BatchReference.Builder builder = WeaviateProtoBatch.BatchReference.newBuilder();
+    builder
+        .setName(reference.fromProperty())
+        .setFromCollection(reference.fromCollection())
+        .setFromUuid(reference.fromUuid())
+        .setToUuid(reference.target().uuid());
+
+    if (reference.target().collection() != null) {
+      builder.setToCollection(reference.target().collection());
+    }
+    tenant.ifPresent(t -> builder.setTenant(t));
+    return builder.build();
   }
 }

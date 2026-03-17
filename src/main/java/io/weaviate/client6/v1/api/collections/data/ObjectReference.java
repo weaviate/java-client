@@ -67,6 +67,10 @@ public record ObjectReference(String collection, String uuid) implements Referen
         .toArray(ObjectReference[]::new);
   }
 
+  public String beacon() {
+    return toBeacon(collection, uuid);
+  }
+
   public static String toBeacon(String collection, String uuid) {
     return toBeacon(collection, null, uuid);
   }

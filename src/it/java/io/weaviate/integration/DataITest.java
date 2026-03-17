@@ -486,7 +486,7 @@ public class DataITest extends ConcurrentTest {
         .asInstanceOf(InstanceOfAssertFactories.map(String.class, Object.class))
         // Most of PhoneNumber fields are only present on read and are null on write.
         .usingRecursiveComparison()
-        .withComparatorForType(ORMITest::comparePhoneNumbers, PhoneNumber.class)
+        .withComparatorForType(OrmITest::comparePhoneNumbers, PhoneNumber.class)
         .isEqualTo(want);
   }
 

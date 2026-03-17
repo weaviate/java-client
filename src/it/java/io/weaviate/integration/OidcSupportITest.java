@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Assume;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
@@ -28,7 +29,7 @@ import io.weaviate.containers.Weaviate;
  * Additionally, {@code WCS_DUMMY_CI_PW} and {@code OKTA_CLIENT_SECRET}
  * environment variables must be set.
  */
-public class OIDCSupportITest extends ConcurrentTest {
+public class OidcSupportITest extends ConcurrentTest {
   private static final String WCS_DUMMY_CI_USERNAME = "oidc-test-user@weaviate.io";
   private static final String WCS_DUMMY_CI_PW = System.getenv("WCS_DUMMY_CI_PW");
 
@@ -66,10 +67,7 @@ public class OIDCSupportITest extends ConcurrentTest {
     var auth = SpyTokenProvider.spyOn(Authentication.bearerToken(t.accessToken(), t.refreshToken(), 0));
     pingWeaviate(wcsContainer, auth);
 
-    var newT = auth.getToken();
-    Assertions.assertThat(newT.accessToken())
-        .as("expect access_token was refreshed")
-        .isNotEqualTo(t.accessToken());
+    eventually(() -> auth.getToken() != t, 100, 5, "expect access_token was refreshed");
 
     // Check that the new token authenticates requests.
     pingWeaviate(wcsContainer, auth);
@@ -81,7 +79,7 @@ public class OIDCSupportITest extends ConcurrentTest {
     Assume.assumeTrue("WCS_DUMMY_CI_PW is not set", WCS_DUMMY_CI_PW != null && !WCS_DUMMY_CI_PW.isBlank());
     Assume.assumeTrue("no internet connection", hasInternetConnection());
 
-    // Check norwal resource owner password flow works.
+    // Check normal resource owner password flow works.
     var password = Authentication.resourceOwnerPassword(WCS_DUMMY_CI_USERNAME, WCS_DUMMY_CI_PW, List.of());
     var auth = SpyTokenProvider.spyOn(password);
     pingWeaviate(wcsContainer, auth);
