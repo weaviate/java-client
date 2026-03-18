@@ -792,7 +792,8 @@ public class JSONTest {
                     .apiEndpoint("example.com")
                     .imageFields("a", "b")
                     .textFields("c")
-                    .videoFields("d")),
+                    .videoFields("d")
+                    .audioFields("f")),
             """
                 {
                   "vectorIndexType": "hnsw",
@@ -804,7 +805,8 @@ public class JSONTest {
                       "location": "location",
                       "imageFields": ["a", "b"],
                       "textFields": ["c"],
-                      "videoFields": ["d"]
+                      "videoFields": ["d"],
+                      "audioFields": ["f"]
                     }
                   }
                 }
