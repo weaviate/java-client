@@ -142,6 +142,24 @@ public interface TokenProvider extends AutoCloseable {
   }
 
   /**
+   * Create a TokenProvider that uses Resource Owner Password Credentials authorization grant.
+   *
+   * @param oidc         OIDC config.
+   * @param clientSecret Client secret.
+   * @param username     Resource owner username.
+   * @param password     Resource owner password.
+   *
+   * @return Internal TokenProvider implementation.
+   * @throws WeaviateOAuthException if an error occurred at any point of the token
+   *                                exchange process.
+   */
+  public static TokenProvider resourceOwnerPasswordCredentials(OidcConfig oidc, String clientSecret, String username,
+                                                               String password) {
+    final var passwordGrant = NimbusTokenProvider.resouceOwnerPasswordCredentials(oidc, clientSecret, username, password);
+    return background(reuse(null, exchange(oidc, passwordGrant), DEFAULT_EARLY_EXPIRY));
+  }
+
+  /**
    * Create a TokenProvider that uses Client Credentials authorization grant.
    *
    * @param oidc         OIDC config.

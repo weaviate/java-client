@@ -84,15 +84,6 @@ public class RbacITest extends ConcurrentTest {
           Permission.groups("my-group", GroupType.OIDC, GroupsPermission.Action.READ));
     });
 
-    requireAtLeast(Weaviate.Version.V132, () -> {
-      permissions.add(
-          Permission.aliases("ThingsAlias", myCollection, AliasesPermission.Action.CREATE));
-    });
-    requireAtLeast(Weaviate.Version.V133, () -> {
-      permissions.add(
-          Permission.groups("my-group", GroupType.OIDC, GroupsPermission.Action.READ));
-    });
-
     // Act: create role
     client.roles.create(nsRole, permissions);
 

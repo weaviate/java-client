@@ -27,6 +27,21 @@ interface Flow {
     return () -> grant; // Reuse cached authorization grant
   }
 
+  static Flow resourceOwnerPasswordCredentials(String clientId, String clientSecret, String username, String password) {
+    return new Flow() {   
+      private final AuthorizationGrant GRANT = new ResourceOwnerPasswordCredentialsGrant(username, new Secret(password));
+      @Override
+      public AuthorizationGrant getAuthorizationGrant() {
+        return GRANT;
+      }
+
+      @Override
+      public ClientAuthentication getClientAuthentication() {
+        return new ClientSecretPost(new ClientID(clientId), new Secret(clientSecret));
+      }
+    };
+  }
+
   static Flow clientCredentials(String clientId, String clientSecret) {
     return new Flow() {
       private static final AuthorizationGrant GRANT = new ClientCredentialsGrant();
