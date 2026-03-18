@@ -16,7 +16,7 @@ public class GrpcChannelOptions extends TransportOptions<Metadata> {
 
   public GrpcChannelOptions(String scheme, String host, int port, Map<String, String> headers,
       TokenProvider tokenProvider, TrustManagerFactory tmf, Timeout timeout, Proxy proxy) {
-    this(scheme, host, port, buildMetadata(headers), tokenProvider, tmf, null, timeout, proxy);
+    this(scheme, host, port, buildMetadata(headers), tokenProvider, tmf, OptionalInt.empty(), timeout, proxy);
   }
 
   private GrpcChannelOptions(String scheme, String host, int port, Metadata headers,
