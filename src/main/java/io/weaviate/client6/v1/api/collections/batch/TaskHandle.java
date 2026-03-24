@@ -33,17 +33,11 @@ public final class TaskHandle {
   /** Flag indicating the task has been ack'ed. */
   private final CompletableFuture<Void> acked = new CompletableFuture<>();
 
-  public final record Result(Optional<String> error) {
-    public Result {
-      requireNonNull(error, "error is null");
-    }
-  }
-
   /**
    * Task result completes when the client receives {@link Event.Results}
    * containing this handle's {@link #id}.
    */
-  private final CompletableFuture<Result> result = new CompletableFuture<>();
+  private final CompletableFuture<Void> done = new CompletableFuture<>();
 
   /** The number of times this task has been retried. */
   private final int retries;
@@ -84,7 +78,7 @@ public final class TaskHandle {
 
   /**
    * Creates a new task containing the same data as this task and {@link #retries}
-   * counter incremented by 1. The {@link #acked} and {@link #result} futures
+   * counter incremented by 1. The {@link #acked} and {@link #done} futures
    * are not copied to the returned task.
    *
    * @return Task handle.
@@ -111,7 +105,7 @@ public final class TaskHandle {
    * {@link #setError} afterwards will have no effect.
    */
   void setSuccess() {
-    setResult(new Result(Optional.empty()));
+    setResult(null);
   }
 
   /**
@@ -124,7 +118,7 @@ public final class TaskHandle {
    *              status for the task; prefer {@link #setSuccess} in that case.
    */
   void setError(String error) {
-    setResult(new Result(Optional.ofNullable(error)));
+    setResult(error);
   }
 
   /**
@@ -132,12 +126,16 @@ public final class TaskHandle {
    *
    * @throws IllegalStateException if the task has not been ack'ed.
    */
-  private void setResult(Result result) {
+  private void setResult(String error) {
     if (!acked.isDone()) {
       // TODO(dyma): can this happen due to us?
       throw new IllegalStateException("Result can only be set for an ack'ed task");
     }
-    this.result.complete(result);
+    if (error == null) {
+      this.done.complete(null);
+    } else {
+      this.done.completeExceptionally(new BatchServerException(error));
+    }
   }
 
   /**
@@ -155,8 +153,8 @@ public final class TaskHandle {
    * @return A future which completes when the server
    *         has reported the result for this task.
    */
-  public CompletableFuture<Result> result() {
-    return result;
+  public CompletableFuture<Void> done() {
+    return done;
   }
 
   /**

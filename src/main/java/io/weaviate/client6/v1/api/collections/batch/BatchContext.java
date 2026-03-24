@@ -126,7 +126,7 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
  * @see StreamObserver
  * @see State
  * @see #shutdownNow
- * @see TaskHandle#result()
+ * @see TaskHandle#done()
  *
  * @author Dyma Solovei
  */

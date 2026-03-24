@@ -220,10 +220,9 @@ public class BatchContextTest {
     closeContext();
 
     // By the time context.close() returns all tasks MUST have results set.
-    Assertions.assertThat(tasks).extracting(TaskHandle::result)
+    Assertions.assertThat(tasks).extracting(TaskHandle::done)
         .allMatch(CompletableFuture::isDone)
-        .extracting(CompletableFuture::get).extracting(TaskHandle.Result::error)
-        .allMatch(Optional::isEmpty);
+        .noneMatch(CompletableFuture::isCompletedExceptionally);
   }
 
   @Test
@@ -256,10 +255,9 @@ public class BatchContextTest {
 
     closeContext();
 
-    Assertions.assertThat(tasks).extracting(TaskHandle::result)
+    Assertions.assertThat(tasks).extracting(TaskHandle::done)
         .allMatch(CompletableFuture::isDone)
-        .extracting(CompletableFuture::get).extracting(TaskHandle.Result::error)
-        .allMatch(Optional::isEmpty);
+        .noneMatch(CompletableFuture::isCompletedExceptionally);
   }
 
   @Test
@@ -293,10 +291,9 @@ public class BatchContextTest {
 
     closeContext();
 
-    Assertions.assertThat(tasks).extracting(TaskHandle::result)
+    Assertions.assertThat(tasks).extracting(TaskHandle::done)
         .allMatch(CompletableFuture::isDone)
-        .extracting(CompletableFuture::get).extracting(TaskHandle.Result::error)
-        .allMatch(Optional::isEmpty);
+        .noneMatch(CompletableFuture::isCompletedExceptionally);
   }
 
   @Test
@@ -328,10 +325,9 @@ public class BatchContextTest {
 
     closeContext();
 
-    Assertions.assertThat(tasks).extracting(TaskHandle::result)
+    Assertions.assertThat(tasks).extracting(TaskHandle::done)
         .allMatch(CompletableFuture::isDone)
-        .extracting(CompletableFuture::get).extracting(TaskHandle.Result::error)
-        .allMatch(Optional::isEmpty);
+        .noneMatch(CompletableFuture::isCompletedExceptionally);
   }
 
   @Test
@@ -454,10 +450,9 @@ public class BatchContextTest {
     closeContext();
     backgroundAcks.get();
 
-    Assertions.assertThat(tasks).extracting(TaskHandle::result)
+    Assertions.assertThat(tasks).extracting(TaskHandle::done)
         .allMatch(CompletableFuture::isDone)
-        .extracting(CompletableFuture::get).extracting(TaskHandle.Result::error)
-        .allMatch(Optional::isEmpty);
+        .noneMatch(CompletableFuture::isCompletedExceptionally);
   }
 
   @Test

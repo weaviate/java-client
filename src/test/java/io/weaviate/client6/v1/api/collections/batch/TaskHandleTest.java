@@ -6,7 +6,6 @@ import java.util.concurrent.CompletableFuture;
 
 import org.assertj.core.api.AbstractObjectAssert;
 import org.assertj.core.api.Assertions;
-import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.Test;
 
 import com.google.protobuf.GeneratedMessage;
@@ -51,10 +50,8 @@ public class TaskHandleTest {
     taskHandle.setSuccess();
 
     assertAcked(taskHandle, true);
-    assertHasResult(taskHandle, true)
-        .extracting(future -> future.getNow(null)).isNotNull()
-        .extracting(TaskHandle.Result::error, InstanceOfAssertFactories.optional(String.class))
-        .isEmpty();
+    Assertions.assertThat(taskHandle.done())
+        .isNotCompletedExceptionally();
   }
 
   @Test
@@ -76,10 +73,9 @@ public class TaskHandleTest {
     taskHandle.setError("Whaam!");
 
     assertAcked(taskHandle, true);
-    assertHasResult(taskHandle, true)
-        .extracting(future -> future.getNow(null)).isNotNull()
-        .extracting(TaskHandle.Result::error, InstanceOfAssertFactories.optional(String.class))
-        .get().isEqualTo("Whaam!");
+    Assertions.assertThat(taskHandle.done())
+        .isCompletedExceptionally()
+        .withFailMessage("Whaam!");
   }
 
   @Test
@@ -101,10 +97,8 @@ public class TaskHandleTest {
     taskHandle.setSuccess();
 
     assertAcked(taskHandle, true);
-    assertHasResult(taskHandle, true)
-        .extracting(future -> future.getNow(null)).isNotNull()
-        .extracting(TaskHandle.Result::error, InstanceOfAssertFactories.optional(String.class))
-        .isEmpty();
+    Assertions.assertThat(taskHandle.done())
+        .isNotCompletedExceptionally();
   }
 
   @Test
@@ -126,10 +120,9 @@ public class TaskHandleTest {
     taskHandle.setError("Whaam!");
 
     assertAcked(taskHandle, true);
-    assertHasResult(taskHandle, true)
-        .extracting(future -> future.getNow(null)).isNotNull()
-        .extracting(TaskHandle.Result::error, InstanceOfAssertFactories.optional(String.class))
-        .get().isEqualTo("Whaam!");
+    Assertions.assertThat(taskHandle.done())
+        .isCompletedExceptionally()
+        .withFailMessage("Whaam!");
   }
 
   @Test
@@ -160,10 +153,10 @@ public class TaskHandleTest {
         .returns(expect, CompletableFuture::isDone);
   }
 
-  private AbstractObjectAssert<?, CompletableFuture<TaskHandle.Result>> assertHasResult(TaskHandle taskHandle,
+  private AbstractObjectAssert<?, CompletableFuture<Void>> assertHasResult(TaskHandle taskHandle,
       boolean expect) {
     return Assertions.assertThat(taskHandle)
-        .extracting(TaskHandle::result)
+        .extracting(TaskHandle::done)
         .as("expect has result")
         .returns(expect, CompletableFuture::isDone);
   }
