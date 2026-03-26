@@ -643,10 +643,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
         awaitState(State::canPrepareNext, "can prepare next");
 
         while (!Thread.currentThread().isInterrupted()) {
-          // TODO(dyma): this check is redundant, send will only send while batch is full;
-          if (batch.isFull()) {
-            send();
-          }
+          send(); // Only sends if the batch is full.
 
           TaskHandle task = queue.take();
 
