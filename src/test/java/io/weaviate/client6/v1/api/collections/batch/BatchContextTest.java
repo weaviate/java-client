@@ -204,7 +204,7 @@ public class BatchContextTest {
     // BatchContext should flush the current batch once it hits its limit.
     // We will ack all items in the batch and send successful result for each one.
     List<String> received = recvDataAndAck();
-    out.beforeEof(new Event.Results(received, Collections.emptyMap()));
+    out.emitEventAsync(new Event.Results(received, Collections.emptyMap()));
 
     Assertions.assertThat(tasks)
         .extracting(TaskHandle::id).containsExactlyInAnyOrderElementsOf(received);
@@ -240,7 +240,7 @@ public class BatchContextTest {
     });
 
     List<String> submitted = tasks.stream().map(TaskHandle::id).toList();
-    out.beforeEof(new Event.Results(submitted, Collections.emptyMap()));
+    out.emitEventAsync(new Event.Results(submitted, Collections.emptyMap()));
 
     closeContext();
 
@@ -268,7 +268,7 @@ public class BatchContextTest {
     // set by the Backoff message, i.e. BATCH_SIZE / 2.
     List<String> received = recvDataAndAck();
     Assertions.assertThat(received).hasSize(BATCH_SIZE / 2);
-    out.beforeEof(new Event.Results(received, Collections.emptyMap()));
+    out.emitEventAsync(new Event.Results(received, Collections.emptyMap()));
 
     backgroundAdd.get(); // Finish populating batch context.
 
@@ -276,7 +276,7 @@ public class BatchContextTest {
     // we should expect there to be exactly 2 batches.
     received = recvDataAndAck();
     Assertions.assertThat(received).hasSize(BATCH_SIZE / 2);
-    out.beforeEof(new Event.Results(received, Collections.emptyMap()));
+    out.emitEventAsync(new Event.Results(received, Collections.emptyMap()));
 
     closeContext();
 
@@ -307,10 +307,10 @@ public class BatchContextTest {
     tasks.add(context.add(WeaviateObject.of()));
 
     Assertions.assertThat(received = recvDataAndAck()).hasSize(batchSizeNew);
-    out.beforeEof(new Event.Results(received, Collections.emptyMap()));
+    out.emitEventAsync(new Event.Results(received, Collections.emptyMap()));
 
     Assertions.assertThat(received = recvDataAndAck()).hasSize(batchSizeNew);
-    out.beforeEof(new Event.Results(received, Collections.emptyMap()));
+    out.emitEventAsync(new Event.Results(received, Collections.emptyMap()));
 
     closeContext();
 
@@ -393,7 +393,7 @@ public class BatchContextTest {
 
     List<String> submitted = tasks.stream().map(TaskHandle::id).toList();
     log.info("Will send results for {} items before EOF", submitted.size());
-    out.beforeEof(new Event.Results(submitted, Collections.emptyMap()));
+    out.emitEventAsync(new Event.Results(submitted, Collections.emptyMap()));
   }
 
   @Test
@@ -435,7 +435,7 @@ public class BatchContextTest {
     });
 
     List<String> submitted = tasks.stream().map(TaskHandle::id).toList();
-    out.beforeEof(new Event.Results(submitted, Collections.emptyMap()));
+    out.emitEventAsync(new Event.Results(submitted, Collections.emptyMap()));
 
     closeContext();
     backgroundAcks.get();
@@ -539,14 +539,6 @@ public class BatchContextTest {
       return CompletableFuture.runAsync(() -> stream.onError(new RuntimeException("whaam!")), eventThread);
     }
 
-    /** Emit events before closing the server half of the stream. */
-    void beforeEof(Event... events) {
-      for (var e : events) {
-        emitEventAsync(e);
-      }
-      // this.pendingEvents.addAll(Arrays.asList(events));
-    }
-
     /**
      * Close server half of the stream.
      *
@@ -554,12 +546,6 @@ public class BatchContextTest {
      *           stream is being hungup by the client, not by us.
      */
     CompletableFuture<Void> eof(boolean ok) {
-      if (ok) {
-        // These are guaranteed to finish before onCompleted,
-        // as eventThread is just 1 thread.
-        log.info("before_eof: emit {} events", pendingEvents.size());
-        // pendingEvents.forEach(this::emitEventAsync);
-      }
       return CompletableFuture.runAsync(stream::onCompleted, eventThread);
     }
   }
