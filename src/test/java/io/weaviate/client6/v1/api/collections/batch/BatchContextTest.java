@@ -210,11 +210,6 @@ public class BatchContextTest {
     Assertions.assertThat(tasks)
         .extracting(TaskHandle::id).containsExactlyInAnyOrderElementsOf(received);
 
-    CompletableFuture<?>[] tasksAcked = tasks.stream()
-        .map(TaskHandle::isAcked).toArray(CompletableFuture[]::new);
-    Assertions.assertThat(CompletableFuture.allOf(tasksAcked))
-        .succeedsWithin(5, TimeUnit.SECONDS);
-
     // Since MockServer runs in the same thread as this test,
     // the context will be updated before the last emitEvent returns.
     closeContext();
@@ -240,11 +235,6 @@ public class BatchContextTest {
         List<String> received = recvDataAndAck();
         Assertions.assertThat(tasks).extracting(TaskHandle::id)
             .containsExactlyInAnyOrderElementsOf(received);
-
-        CompletableFuture<?>[] tasksAcked = tasks.stream()
-            .map(TaskHandle::isAcked).toArray(CompletableFuture[]::new);
-        Assertions.assertThat(CompletableFuture.allOf(tasksAcked))
-            .succeedsWithin(5, TimeUnit.SECONDS);
       } catch (Exception e) {
         throw new RuntimeException(e);
       }

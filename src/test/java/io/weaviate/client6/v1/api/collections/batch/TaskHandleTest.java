@@ -30,127 +30,87 @@ public class TaskHandleTest {
       .buildObject(OBJECT,
           CollectionDescriptor.ofMap("Songs"),
           CollectionHandleDefaults.of(CollectionHandleDefaults.none()));
+  private static final RetryPolicy RETRY_POLICY = RetryPolicy.never();
 
   @Test
-  public void test_newTaskHandle_WeaviateObject_success() {
-    TaskHandle taskHandle = new TaskHandle(OBJECT, OBJECT_PROTO);
+  public void test_success() {
+    RetriableTask task = new RetriableTask("ok", RetryPolicy.never(), AssertionError::new) {
+    };
+    Assertions.assertThat(task.done()).isNotCompleted();
 
-    Assertions.assertThat(taskHandle)
-        .returns(OBJECT.uuid(), TaskHandle::id)
-        .returns(0, TaskHandle::timesRetried);
-
-    assertAcked(taskHandle, false);
-    assertHasResult(taskHandle, false);
-
-    taskHandle.setAcked();
-
-    assertAcked(taskHandle, true);
-    assertHasResult(taskHandle, false);
-
-    taskHandle.setSuccess();
-
-    assertAcked(taskHandle, true);
-    Assertions.assertThat(taskHandle.done())
-        .isNotCompletedExceptionally();
+    task.setSuccess();
+    Assertions.assertThat(task.done()).isCompleted();
   }
 
   @Test
-  public void test_newTaskHandle_WeaviateObject_error() {
-    TaskHandle taskHandle = new TaskHandle(OBJECT, OBJECT_PROTO);
+  public void test_error() {
+    RetriableTask task = new RetriableTask("failed", RetryPolicy.never(), AssertionError::new) {
+    };
+    Assertions.assertThat(task.done()).isNotCompleted();
 
-    Assertions.assertThat(taskHandle)
-        .returns(OBJECT.uuid(), TaskHandle::id)
-        .returns(0, TaskHandle::timesRetried);
-
-    assertAcked(taskHandle, false);
-    assertHasResult(taskHandle, false);
-
-    taskHandle.setAcked();
-
-    assertAcked(taskHandle, true);
-    assertHasResult(taskHandle, false);
-
-    taskHandle.setError("Whaam!");
-
-    assertAcked(taskHandle, true);
-    Assertions.assertThat(taskHandle.done())
+    task.setError(new ServerException("Whaam!"));
+    Assertions.assertThat(task.done())
         .isCompletedExceptionally()
         .withFailMessage("Whaam!");
   }
 
   @Test
-  public void test_newTaskHandle_BatchReference_success() {
-    TaskHandle taskHandle = new TaskHandle(REFERENCE, REFERENCE_PROTO);
+  public void test_retryAndSucceed() {
+    RetryPolicy retryOnce = new RetryPolicy(1);
+    RetriableTask task = new RetriableTask(
+        "retry_me",
+        retryOnce,
+        id -> Assertions.assertThat(id).isEqualTo("retry_me")) {
+    };
+    Assertions.assertThat(task.done()).isNotCompleted();
 
-    Assertions.assertThat(taskHandle)
-        .returns(REFERENCE.target().beacon(), TaskHandle::id)
-        .returns(0, TaskHandle::timesRetried);
+    task.setError(new ServerException("Whaam!"));
+    Assertions.assertThat(task.done()).isNotCompleted();
+    Assertions.assertThat(task.done()).isNotCompletedExceptionally();
+    Assertions.assertThat(task.timesRetried()).isEqualTo(1);
 
-    assertAcked(taskHandle, false);
-    assertHasResult(taskHandle, false);
-
-    taskHandle.setAcked();
-
-    assertAcked(taskHandle, true);
-    assertHasResult(taskHandle, false);
-
-    taskHandle.setSuccess();
-
-    assertAcked(taskHandle, true);
-    Assertions.assertThat(taskHandle.done())
-        .isNotCompletedExceptionally();
+    task.setSuccess();
+    Assertions.assertThat(task.done()).isCompleted();
   }
 
   @Test
-  public void test_newTaskHandle_BatchReference_error() {
-    TaskHandle taskHandle = new TaskHandle(REFERENCE, REFERENCE_PROTO);
+  public void test_retryAndFail() {
+    RetryPolicy retryOnce = new RetryPolicy(1);
+    RetriableTask task = new RetriableTask(
+        "retry_me",
+        retryOnce,
+        id -> Assertions.assertThat(id).isEqualTo("retry_me")) {
+    };
+    Assertions.assertThat(task.done()).isNotCompleted();
 
-    Assertions.assertThat(taskHandle)
-        .returns(REFERENCE.target().beacon(), TaskHandle::id)
-        .returns(0, TaskHandle::timesRetried);
+    task.setError(new ServerException("Whaam-1!"));
+    Assertions.assertThat(task.done()).isNotCompleted();
+    Assertions.assertThat(task.done()).isNotCompletedExceptionally();
+    Assertions.assertThat(task.timesRetried()).isEqualTo(1);
 
-    assertAcked(taskHandle, false);
-    assertHasResult(taskHandle, false);
-
-    taskHandle.setAcked();
-
-    assertAcked(taskHandle, true);
-    assertHasResult(taskHandle, false);
-
-    taskHandle.setError("Whaam!");
-
-    assertAcked(taskHandle, true);
-    Assertions.assertThat(taskHandle.done())
+    task.setError(new ServerException("Whaam-2!"));
+    Assertions.assertThat(task.timesRetried()).isEqualTo(1);
+    Assertions.assertThat(task.done())
         .isCompletedExceptionally()
-        .withFailMessage("Whaam!");
+        .withFailMessage("Whaam-2!");
   }
 
   @Test
-  public void test_retry() {
-    TaskHandle taskHandle = new TaskHandle(OBJECT, OBJECT_PROTO);
-    Assertions.assertThat(taskHandle).returns(0, TaskHandle::timesRetried);
+  public void test_newTaskHandle_WeaviateObject() {
+    TaskHandle taskHandle = new TaskHandle(OBJECT, OBJECT_PROTO, RETRY_POLICY, AssertionError::new);
+    Assertions.assertThat(taskHandle).returns(OBJECT.uuid(), TaskHandle::id);
+  }
 
-    TaskHandle retried;
-    Assertions.assertThat(retried = taskHandle.retry())
-        .returns(1, TaskHandle::timesRetried)
-        .extracting(TaskHandle::data).isEqualTo(taskHandle.data());
-
-    Assertions.assertThat(retried = retried.retry())
-        .returns(2, TaskHandle::timesRetried)
-        .extracting(TaskHandle::data).isEqualTo(taskHandle.data());
+  @Test
+  public void test_newTaskHandle_BatchReference() {
+    TaskHandle taskHandle = new TaskHandle(REFERENCE, REFERENCE_PROTO, RETRY_POLICY, AssertionError::new);
+    Assertions.assertThat(taskHandle).returns(REFERENCE.target().beacon(), TaskHandle::id);
   }
 
   @Test
   public void test_toString_POISON() {
     Assertions.assertThat(TaskHandle.POISON.toString())
         .isEqualTo("TaskHandle<POISON>");
-  }
-
-  private void assertAcked(TaskHandle taskHandle, boolean expect) {
-    Assertions.assertThat(taskHandle)
-        .extracting(TaskHandle::isAcked)
-        .as("expect is acked")
-        .returns(expect, CompletableFuture::isDone);
   }
 
   private AbstractObjectAssert<?, CompletableFuture<Void>> assertHasResult(TaskHandle taskHandle,

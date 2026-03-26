@@ -3,8 +3,7 @@ package io.weaviate.client6.v1.api.collections.batch;
 import static java.util.Objects.requireNonNull;
 
 import java.time.Instant;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -16,7 +15,7 @@ import io.weaviate.client6.v1.api.collections.data.BatchReference;
 
 @ThreadSafe
 @SuppressWarnings("deprecation") // protoc uses GeneratedMessageV3
-public final class TaskHandle {
+public final class TaskHandle extends RetriableTask {
   static final TaskHandle POISON = new TaskHandle();
 
   /**
@@ -30,36 +29,30 @@ public final class TaskHandle {
    */
   private final Data data;
 
-  /** Flag indicating the task has been ack'ed. */
-  private final CompletableFuture<Void> acked = new CompletableFuture<>();
-
-  /**
-   * Task result completes when the client receives {@link Event.Results}
-   * containing this handle's {@link #id}.
-   */
-  private final CompletableFuture<Void> done = new CompletableFuture<>();
-
-  /** The number of times this task has been retried. */
-  private final int retries;
-
   /** Task creation timestamp. */
   private final Instant createdAt = Instant.now();
 
-  private TaskHandle(Data data, int retries) {
-    this.data = requireNonNull(data, "data is null");
-
-    assert retries >= 0 : "negative retries";
-    this.retries = retries;
-  }
-
   /** Constructor for {@link WeaviateObject}. */
-  TaskHandle(WeaviateObject<?> object, GeneratedMessage.ExtendableMessage<GeneratedMessageV3> data) {
-    this(new Data(object, object.uuid(), data, Data.Type.OBJECT), 0);
+  TaskHandle(
+      WeaviateObject<?> object,
+      GeneratedMessage.ExtendableMessage<GeneratedMessageV3> data,
+      RetryPolicy retryPolicy, Consumer<String> onRetry) {
+    this(new Data(object, object.uuid(), data, Data.Type.OBJECT),
+        retryPolicy, onRetry);
   }
 
   /** Constructor for {@link BatchReference}. */
-  TaskHandle(BatchReference reference, GeneratedMessage.ExtendableMessage<GeneratedMessageV3> data) {
-    this(new Data(reference, reference.target().beacon(), data, Data.Type.REFERENCE), 0);
+  TaskHandle(
+      BatchReference reference,
+      GeneratedMessage.ExtendableMessage<GeneratedMessageV3> data,
+      RetryPolicy retryPolicy, Consumer<String> onRetry) {
+    this(new Data(reference, reference.target().beacon(), data, Data.Type.REFERENCE),
+        retryPolicy, onRetry);
+  }
+
+  private TaskHandle(Data data, RetryPolicy retryPolicy, Consumer<String> onRetry) {
+    super(requireNonNull(data, "data is null").id(), retryPolicy, onRetry);
+    this.data = requireNonNull(data, "data is null");
   }
 
   /**
@@ -72,99 +65,13 @@ public final class TaskHandle {
    * {@link NullPointerException} being thrown.
    */
   private TaskHandle() {
+    super("POISON", RetryPolicy.never(), __ -> {
+    });
     this.data = null;
-    this.retries = 0;
-  }
-
-  /**
-   * Creates a new task containing the same data as this task and {@link #retries}
-   * counter incremented by 1. The {@link #acked} and {@link #done} futures
-   * are not copied to the returned task.
-   *
-   * @return Task handle.
-   */
-  TaskHandle retry() {
-    return new TaskHandle(data, retries + 1);
-  }
-
-  String id() {
-    return data.id();
   }
 
   Data data() {
     return data;
-  }
-
-  /** Set the {@link #acked} flag. */
-  void setAcked() {
-    acked.complete(null);
-  }
-
-  /**
-   * Mark the task successful. This status cannot be changed, so calling
-   * {@link #setError} afterwards will have no effect.
-   */
-  void setSuccess() {
-    setResult(null);
-  }
-
-  /**
-   * Mark the task failed. This status cannot be changed, so calling
-   * {@link #setSuccess} afterwards will have no effect.
-   *
-   * @param error Error message. Null values are tolerated, but are only expected
-   *              to occur due to a server's mistake.
-   *              Do not use {@code setError(null)} if the server reports success
-   *              status for the task; prefer {@link #setSuccess} in that case.
-   */
-  void setError(String error) {
-    setResult(error);
-  }
-
-  /**
-   * Set result for this task.
-   *
-   * @throws IllegalStateException if the task has not been ack'ed.
-   */
-  private void setResult(String error) {
-    if (!acked.isDone()) {
-      // TODO(dyma): can this happen due to us?
-      throw new IllegalStateException("Result can only be set for an ack'ed task");
-    }
-    if (error == null) {
-      this.done.complete(null);
-    } else {
-      this.done.completeExceptionally(new BatchServerException(error));
-    }
-  }
-
-  /**
-   * Check if the task has been accepted.
-   *
-   * @return A future which completes when the server has accepted the task.
-   */
-  public CompletableFuture<Void> isAcked() {
-    return acked;
-  }
-
-  /**
-   * Retrieve the result for this task.
-   *
-   * @return A future which completes when the server
-   *         has reported the result for this task.
-   */
-  public CompletableFuture<Void> done() {
-    return done;
-  }
-
-  /**
-   * Number of times this task has been retried. Since {@link TaskHandle} is
-   * immutable, this value does not change, but retrying a task via
-   * {@link BatchContext#retry} is reflected in the returned handle's
-   * timesRetried.
-   */
-  public int timesRetried() {
-    return retries;
   }
 
   @Override
@@ -172,6 +79,6 @@ public final class TaskHandle {
     if (this == POISON) {
       return "TaskHandle<POISON>";
     }
-    return "TaskHandle<id=%s, retried=%d, created=%s>".formatted(id(), retries, createdAt);
+    return "TaskHandle<id=%s, retried=%d, created=%s>".formatted(id(), timesRetried(), createdAt);
   }
 }

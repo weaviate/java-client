@@ -224,6 +224,12 @@ public final class BatchContext<PropertiesT> implements Closeable {
   private volatile CompletableFuture<?> recv;
 
   /**
+   * Retry policy controls if and how many times
+   * a {@link RetriableTask} can be retried.
+   */
+  private final RetryPolicy retryPolicy;
+
+  /**
    * Maximum number of times the client will attempt to re-open the stream
    * before terminating the context.
    */
@@ -243,12 +249,14 @@ public final class BatchContext<PropertiesT> implements Closeable {
       int maxSizeBytes,
       CollectionDescriptor<PropertiesT> collectionDescriptor,
       CollectionHandleDefaults collectionHandleDefaults,
+      RetryPolicy retryPolicy,
       int batchSize,
       int queueSize,
       int maxReconnectRetries) {
-    this.streamFactory = requireNonNull(streamFactory, "streamFactory is null");
     this.collectionDescriptor = requireNonNull(collectionDescriptor, "collectionDescriptor is null");
     this.collectionHandleDefaults = requireNonNull(collectionHandleDefaults, "collectionHandleDefaults is null");
+    this.retryPolicy = requireNonNull(retryPolicy, "retryPolicy is null");
+    this.streamFactory = requireNonNull(streamFactory, "streamFactory is null");
 
     this.queue = new ArrayBlockingQueue<>(queueSize);
     this.batch = new Batch(batchSize, maxSizeBytes);
@@ -263,6 +271,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
         builder.maxSizeBytes,
         builder.collectionDescriptor,
         builder.collectionHandleDefaults,
+        builder.retryPolicy,
         builder.batchSize,
         builder.queueSize,
         builder.maxReconnectRetries);
@@ -272,7 +281,8 @@ public final class BatchContext<PropertiesT> implements Closeable {
   public TaskHandle add(WeaviateObject<PropertiesT> object) throws InterruptedException {
     TaskHandle handle = new TaskHandle(
         object,
-        InsertManyRequest.buildObject(object, collectionDescriptor, collectionHandleDefaults));
+        InsertManyRequest.buildObject(object, collectionDescriptor, collectionHandleDefaults),
+        retryPolicy, this::retry);
     return add(handle);
   }
 
@@ -280,8 +290,24 @@ public final class BatchContext<PropertiesT> implements Closeable {
   public TaskHandle add(BatchReference reference) throws InterruptedException {
     TaskHandle handle = new TaskHandle(
         reference,
-        InsertManyRequest.buildReference(reference, collectionHandleDefaults.tenant()));
+        InsertManyRequest.buildReference(reference, collectionHandleDefaults.tenant()),
+        retryPolicy, this::retry);
     return add(handle);
+  }
+
+  private TaskHandle add(final TaskHandle taskHandle) throws InterruptedException {
+    if (closed) {
+      throw new IllegalStateException("context is closed");
+    }
+    requireNonNull(taskHandle, "taskHandle is null");
+
+    TaskHandle existing = wip.get(taskHandle.id());
+    if (existing != null) {
+      throw new DuplicateTaskException(taskHandle, existing);
+    }
+
+    queue.put(taskHandle);
+    return taskHandle;
   }
 
   void start() {
@@ -316,12 +342,28 @@ public final class BatchContext<PropertiesT> implements Closeable {
    *
    * <p>
    * BatchContext does not impose any limit on the number of times a task can
-   * be retried -- it is up to the user to implement an appropriate retry policy.
+   * be retried -- it is up to the user to select an appropriate retry policy.
    *
    * @see TaskHandle#timesRetried
+   * @see RetryPolicy
    */
-  public TaskHandle retry(TaskHandle taskHandle) throws InterruptedException {
-    return add(taskHandle.retry());
+  private void retry(String id) {
+    try {
+      requireNonNull(id, "id is null");
+
+      TaskHandle taskHandle = wip.get(id);
+      assert taskHandle != null : taskHandle + " is not wip";
+
+      // Put the handle back on the queue directly, circumventing
+      // the checks closed- and duplicate items checks we do for
+      // public methods. The retried task is guaranteed to be present
+      // in the WIP list and may be retried well after the context
+      // is closed to the user.
+      queue.put(taskHandle);
+    } catch (InterruptedException e) {
+      // Preserve interrupted state without throwing the exception.
+      Thread.currentThread().interrupt();
+    }
   }
 
   /**
@@ -560,21 +602,6 @@ public final class BatchContext<PropertiesT> implements Closeable {
     } finally {
       lock.unlock();
     }
-  }
-
-  private TaskHandle add(final TaskHandle taskHandle) throws InterruptedException {
-    if (closed) {
-      throw new IllegalStateException("context is closed");
-    }
-    requireNonNull(taskHandle, "taskHandle is null");
-
-    TaskHandle existing = wip.get(taskHandle.id());
-    if (existing != null) {
-      throw new DuplicateTaskException(taskHandle, existing);
-    }
-
-    queue.put(taskHandle);
-    return taskHandle;
   }
 
   private final class Send implements Runnable {
@@ -856,10 +883,6 @@ public final class BatchContext<PropertiesT> implements Closeable {
       if (!acks.acked().containsAll(removed)) {
         throwInternal(ProtocolViolationException.incompleteAcks(List.copyOf(removed)));
       }
-      acks.acked().stream()
-          .map(wip::get).filter(Objects::nonNull)
-          .forEach(TaskHandle::setAcked);
-
       setState(ACTIVE);
     }
 
@@ -870,13 +893,18 @@ public final class BatchContext<PropertiesT> implements Closeable {
           .addKeyValue("wip_tasks", wip::size)
           .log("Received Results");
 
+      // Remove successfully completed tasks from the WIP list and mark them done.
       results.successful().stream()
           .map(wip::remove).filter(Objects::nonNull)
           .forEach(TaskHandle::setSuccess);
 
+      // Report errors for failed tasks. Do NOT remove them from the WIP list.
       results.errors().keySet().stream()
-          .map(wip::remove).filter(Objects::nonNull)
-          .forEach(taskHandle -> taskHandle.setError(results.errors().get(taskHandle.id())));
+          .map(wip::get).filter(Objects::nonNull)
+          .forEach(taskHandle -> taskHandle.setError(
+              new ServerException(results.errors().get(taskHandle.id()))));
+
+      // TODO(dyma): notify receivedResults
     }
 
     private void onBackoff(Event.Backoff backoff) {
@@ -1194,9 +1222,15 @@ public final class BatchContext<PropertiesT> implements Closeable {
       this.collectionHandleDefaults = collectionHandleDefaults;
     }
 
+    private RetryPolicy retryPolicy = RetryPolicy.never();
     private int batchSize = 1_000;
     private int queueSize = 1_000;
     private int maxReconnectRetries = 5;
+
+    public Builder<PropertiesT> retryPolicy(RetryPolicy retryPolicy) {
+      this.retryPolicy = retryPolicy;
+      return this;
+    }
 
     public Builder<PropertiesT> batchSize(int batchSize) {
       this.batchSize = batchSize;
