@@ -21,6 +21,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -200,10 +201,26 @@ public final class BatchContext<PropertiesT> implements Closeable {
    */
   @GuardedBy("lock")
   private State state;
+
   /** lock synchronizes access to {@link #state}. */
   private final Lock lock = new ReentrantLock();
+
   /** stateChanged notifies threads about a state transition. */
   private final Condition stateChanged = lock.newCondition();
+
+  /**
+   * Releasing a permit notifies the "sender" about an incoming
+   * {@link Event.Results} batch. Acquire a permit to await the next batch.
+   *
+   * <p>
+   * A semaphore provides signal semantics, similar to a {@link Condition},
+   * but without being associated with a predicate. This comes handy when
+   * {@link wip} is being drained after the context is closed, and the "sender"
+   * needs to be notified about incoming {@link Event.Results}; a separate
+   * condition is not necessary, as we can simply probe the {@link queue} to
+   * find out if any new items have been added to it.
+   */
+  private final Semaphore awaitResults = new Semaphore(0);
 
   /**
    * Client-side part of the current stream, created on {@link #start}.
@@ -626,6 +643,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
         awaitState(State::canPrepareNext, "can prepare next");
 
         while (!Thread.currentThread().isInterrupted()) {
+          // TODO(dyma): this check is redundant, send will only send while batch is full;
           if (batch.isFull()) {
             send();
           }
@@ -633,9 +651,13 @@ public final class BatchContext<PropertiesT> implements Closeable {
           TaskHandle task = queue.take();
 
           if (task == TaskHandle.POISON) {
+            assert closed : "queue poisoned before the context is closed";
+
             log.debug("Took poison");
 
-            drain();
+            drainWip();
+            assert wip.isEmpty() : "wip is not empty after drainWip";
+
             closeStream();
 
             // The SSB protocol requires the client to continue reading the stream
@@ -645,27 +667,20 @@ public final class BatchContext<PropertiesT> implements Closeable {
             // It is possible that the server will be restarted or the stream will be
             // hung up before client receives all Results, in which case we might need
             // to re-submit the items remaining in the WIP buffer.
+            //
+            // N.B.: By its nature, drainWip ensures that we've received all results.
+            // Awaiting recv is a show of good faith and ensures correct shutdown sequence.
             recv.get();
 
-            assert closed : "queue poisoned when context not closed";
-            if (wip.isEmpty()) {
-              log.info("All tasks completed, no more data to send");
-              return;
-            }
-
-            // Server closed the stream before reporting all expected Results.
-            // Return the poison to the queue and go another round -- if the
-            // client tried to reconnect the batch may've been filled again.
-            assert queue.isEmpty() : "queue must be empty after poison";
-            queue.add(task);
-            continue;
+            log.info("All tasks completed, no more data to send");
+            return;
           }
 
           Data data = task.data();
           batch.add(data);
 
-          TaskHandle existing = wip.put(task.id(), task);
-          assert existing == null : "duplicate tasks in progress, id=" + existing.id();
+          // Retred tasks already exist in the WIP list, replacing them is redundant.
+          wip.putIfAbsent(task.id(), task);
         }
       } catch (InterruptedException ignored) {
         Thread.currentThread().interrupt();
@@ -677,6 +692,10 @@ public final class BatchContext<PropertiesT> implements Closeable {
     /**
      * Send the current portion of batch items. After this method returns, the batch
      * is guaranteed to have space for at least one the next item (not full).
+     *
+     * <p>
+     * Calling this on a non-full batch is a no-op; the side-effect of the condition
+     * in the while-loop is that nothing is sent <i>unless</i> the batch is full.
      */
     private void send() throws InterruptedException {
       log.atInfo()
@@ -693,6 +712,50 @@ public final class BatchContext<PropertiesT> implements Closeable {
     }
 
     /**
+     * Send all remainign items in the batch. Then continue processing any
+     * retried tasks until {@link #wip} is empty.
+     */
+    private void drainWip() throws InterruptedException {
+      drain();
+      assert batch.isEmpty() : "batch not empty after drain";
+
+      // At this point we are certain that the queue will only be populated
+      // by failed items from previous batches scheduled for retry. Unlike
+      // user-supplied items, these will arrive in batches, as the server
+      // returns results for the previously sent items, i.e. via Event.Results.
+      //
+      // A single Results message might not have enough failed items to fill up
+      // the entire batch. To avoid sending half-empty batches, we will continue
+      // accumulating items until the batch is full or the WIP list is empty.
+      while (!wip.isEmpty()) {
+        log.atTrace()
+            .addKeyValue("batch_size_total_items", batch::size)
+            .addKeyValue("wip_tasks", wip::size)
+            .log("Await Results");
+        awaitResults.acquire();
+
+        TaskHandle task;
+        while ((task = queue.poll()) != null) {
+          Data data = task.data();
+          batch.add(data);
+        }
+
+        assert batch.size() <= wip.size() : "batch has more items than wip";
+
+        if (batch.size() == wip.size()) {
+          // This means the batch already contains all items in WIP,
+          // and no more tasks will be added to the queue until the
+          // current ones are send.
+          drain();
+        } else {
+          // Only sends if the batch is full. If the batch is not full,
+          // the we can keep accumulating items from the failed tasks.
+          send();
+        }
+      }
+    }
+
+    /**
      * Send all remaining items in the batch. After this method returns, the batch
      * is guaranteed to be empty.
      */
@@ -701,7 +764,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
           .addKeyValue("batch_size_total_items", batch::size)
           .addKeyValue("message_size_max_items", batch::maxSize)
           .addKeyValue("message_size_max_bytes", batch::maxSizeBytes)
-          .log("Drain remaining items");
+          .log("Flush remaining items");
 
       // To correctly drain the batch, we flush repeatedly
       // until the batch becomes empty, as clearing a batch
@@ -904,7 +967,13 @@ public final class BatchContext<PropertiesT> implements Closeable {
           .forEach(taskHandle -> taskHandle.setError(
               new ServerException(results.errors().get(taskHandle.id()))));
 
-      // TODO(dyma): notify receivedResults
+      log.atDebug()
+          .addKeyValue("count_success", results.errors().size())
+          .addKeyValue("count_errors", results.successful().size())
+          .log("Received results");
+
+      awaitResults.release();
+      assert awaitResults.availablePermits() == 1;
     }
 
     private void onBackoff(Event.Backoff backoff) {

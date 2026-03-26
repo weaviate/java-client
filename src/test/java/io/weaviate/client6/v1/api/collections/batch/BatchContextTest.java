@@ -2,7 +2,6 @@ package io.weaviate.client6.v1.api.collections.batch;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -393,6 +392,7 @@ public class BatchContextTest {
     recvDataAndAck();
 
     List<String> submitted = tasks.stream().map(TaskHandle::id).toList();
+    log.info("Will send results for {} items before EOF", submitted.size());
     out.beforeEof(new Event.Results(submitted, Collections.emptyMap()));
   }
 
@@ -541,7 +541,10 @@ public class BatchContextTest {
 
     /** Emit events before closing the server half of the stream. */
     void beforeEof(Event... events) {
-      this.pendingEvents.addAll(Arrays.asList(events));
+      for (var e : events) {
+        emitEventAsync(e);
+      }
+      // this.pendingEvents.addAll(Arrays.asList(events));
     }
 
     /**
@@ -554,7 +557,8 @@ public class BatchContextTest {
       if (ok) {
         // These are guaranteed to finish before onCompleted,
         // as eventThread is just 1 thread.
-        pendingEvents.forEach(this::emitEventAsync);
+        log.info("before_eof: emit {} events", pendingEvents.size());
+        // pendingEvents.forEach(this::emitEventAsync);
       }
       return CompletableFuture.runAsync(stream::onCompleted, eventThread);
     }
