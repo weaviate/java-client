@@ -58,10 +58,10 @@ abstract class RetriableTask {
    * Mark the task failed. This status cannot be changed, so calling
    * {@link #setSuccess} afterwards will have no effect.
    *
-   * @param error Error message. Null values are tolerated, but are only expected
-   *              to occur due to a server's mistake.
-   *              Do not use {@code setError(null)} if the server reports success
-   *              status for the task; prefer {@link #setSuccess} in that case.
+   * @param t Error message. Null values are tolerated, but are only expected
+   *          to occur due to a server's mistake.
+   *          Do not use {@code setError(null)} if the server reports success
+   *          status for the task; prefer {@link #setSuccess} in that case.
    */
   public final boolean setError(Throwable t) {
     return current.completeExceptionally(t);

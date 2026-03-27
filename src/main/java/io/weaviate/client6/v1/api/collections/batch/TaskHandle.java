@@ -16,7 +16,17 @@ import io.weaviate.client6.v1.api.collections.data.BatchReference;
 @ThreadSafe
 @SuppressWarnings("deprecation") // protoc uses GeneratedMessageV3
 public final class TaskHandle extends RetriableTask {
-  static final TaskHandle POISON = new TaskHandle();
+  /**
+   * Poison pill informs the "sender" that the batch is closed
+   * and no more user-supplied items will be incoming.
+   */
+  static final TaskHandle POISON = new TaskHandle("POISON");
+  /**
+   * Break pill informs the "sender" that the event handler has finished
+   * processing an incoming {@link Event.Results} message and no more retry items
+   * will be added to the queue until the next message arrives.
+   */
+  static final TaskHandle END_RESULTS = new TaskHandle("END_RESULTS");
 
   /**
    * Input value as passed by the user.
@@ -56,7 +66,7 @@ public final class TaskHandle extends RetriableTask {
   }
 
   /**
-   * Poison pill constructor.
+   * Poison / Break pill constructor.
    *
    * <p>
    * A handle created with this constructor should not be
@@ -64,8 +74,8 @@ public final class TaskHandle extends RetriableTask {
    * calling any method on a poison pill is likely to result in a
    * {@link NullPointerException} being thrown.
    */
-  private TaskHandle() {
-    super("POISON", RetryPolicy.never(), __ -> {
+  private TaskHandle(String name) {
+    super(name, RetryPolicy.never(), __ -> {
     });
     this.data = null;
   }
@@ -76,8 +86,8 @@ public final class TaskHandle extends RetriableTask {
 
   @Override
   public String toString() {
-    if (this == POISON) {
-      return "TaskHandle<POISON>";
+    if (this == POISON || this == END_RESULTS) {
+      return "TaskHandle<%s>".formatted(id());
     }
     return "TaskHandle<id=%s, retried=%d, created=%s>".formatted(id(), timesRetried(), createdAt);
   }

@@ -14,6 +14,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.assertj.core.api.Assertions;
@@ -50,6 +52,7 @@ public class BatchContextTest {
   private static final int BATCH_SIZE = 10;
   private static final int QUEUE_SIZE = 1;
   private static final int MAX_RECONNECT_RETRIES = 1;
+  private static final RetryPolicy RETRY_POLICY = new RetryPolicy(1);
 
   /**
    * This test models the client-side part of the stream as a blocking queue.
@@ -130,6 +133,7 @@ public class BatchContextTest {
         .batchSize(BATCH_SIZE)
         .queueSize(QUEUE_SIZE)
         .maxReconnectRetries(MAX_RECONNECT_RETRIES)
+        .retryPolicy(RETRY_POLICY)
         .build();
     context.start();
 
@@ -446,6 +450,64 @@ public class BatchContextTest {
   }
 
   @Test
+  public void test_retryPolicy() throws Exception {
+    List<TaskHandle> tasks = new ArrayList<>();
+
+    // Trigger a flush.
+    for (int i = 0; i < BATCH_SIZE; i++) {
+      tasks.add(context.add(WeaviateObject.of()));
+    }
+
+    // Expect a new batch to arrive. Ack the batch, and add BATCH_SIZE - 1 items.
+    recvDataAndAck();
+    for (int i = 0; i < BATCH_SIZE - 1; i++) {
+      tasks.add(context.add(WeaviateObject.of()));
+    }
+
+    // These will be arriving after the context starts to close.
+    backgroundThread.execute(() -> {
+      Assertions.assertThatCode(() -> {
+        // Expect the (BATCH_SIZE - 1) batch to arrive.
+        recvDataAndAck();
+
+        // Return success for the first (BATCH_SIZE - 1) items
+        // and errors for the next (BATCH_SIZE - 1) items.
+        List<String> successful = tasks.subList(0, BATCH_SIZE - 1).stream()
+            .map(TaskHandle::id).toList();
+        Map<String, String> errors = tasks.subList(BATCH_SIZE - 1, (BATCH_SIZE - 1) * 2).stream()
+            .collect(Collectors.toMap(TaskHandle::id, __ -> "Whaam!"));
+        out.emitEventAsync(new Event.Results(successful, errors));
+
+        // Now WIP should contain exactly (BATCH_SIZE - 2) items
+        // and the batch (BATCH_SIZE - 1) retried items.
+        // Return another error an await a full batch of retried items to arrive.
+        TaskHandle lastTask = tasks.get(tasks.size() - 1);
+        out.emitEventAsync(new Event.Results(Collections.emptyList(), Map.of(lastTask.id(), "Whaam!")));
+
+        List<String> retried = recvDataAndAck();
+
+        // Fail all retried tasks. After this context.close() should unblock.
+        errors = retried.stream().collect(Collectors.toMap(Function.identity(), __ -> "Whaam!"));
+        out.emitEventAsync(new Event.Results(Collections.emptyList(), errors));
+      }).doesNotThrowAnyException();
+    });
+
+    // Close the context.
+    closeContext();
+
+    Assertions.assertThat(tasks.subList(0, BATCH_SIZE - 1))
+        .as("first %d tasks succeeded", BATCH_SIZE - 1)
+        .extracting(TaskHandle::done)
+        .allMatch(CompletableFuture::isDone)
+        .noneMatch(CompletableFuture::isCompletedExceptionally);
+
+    Assertions.assertThat(tasks.subList(BATCH_SIZE - 1, BATCH_SIZE))
+        .as("last %d tasks succeeded", BATCH_SIZE)
+        .extracting(TaskHandle::done)
+        .allMatch(CompletableFuture::isCompletedExceptionally);
+  }
+
+  @Test
   public void test_closeAfterStreamHangup() throws Exception {
     out.hangup();
     in.expectMessage(START);
@@ -523,20 +585,24 @@ public class BatchContextTest {
       stream.onNext(event);
     }
 
-    /** Emit event on the {@link #eventThread}. */
-    CompletableFuture<Void> emitEventAsync(Event event) {
+    /**
+     * Emit event on the {@link #eventThread}.
+     */
+    void emitEventAsync(Event event) {
       assert event != Event.EOF : "must not use synthetic EOF event";
       assert !(event instanceof Event.StreamHangup) : "must not use synthetic StreamHangup event";
 
-      return CompletableFuture.runAsync(() -> stream.onNext(event), eventThread);
+      CompletableFuture.runAsync(() -> stream.onNext(event), eventThread);
     }
 
-    /** Terminate the server half of the stream abruptly. */
+    /**
+     * Terminate the server half of the stream abruptly.
+     */
 
-    CompletableFuture<Void> hangup() {
+    void hangup() {
       log.debug("Hang up server half of the stream");
 
-      return CompletableFuture.runAsync(() -> stream.onError(new RuntimeException("whaam!")), eventThread);
+      CompletableFuture.runAsync(() -> stream.onError(new RuntimeException("whaam!")), eventThread);
     }
 
     /**
@@ -560,7 +626,7 @@ public class BatchContextTest {
      */
     WeaviateProtoBatch.BatchStreamRequest expectMessage(
         WeaviateProtoBatch.BatchStreamRequest.MessageCase messageCase) throws InterruptedException {
-      WeaviateProtoBatch.BatchStreamRequest actual = stream.poll(5, TimeUnit.SECONDS);
+      WeaviateProtoBatch.BatchStreamRequest actual = stream.take();
       Assertions.assertThat(actual)
           .extracting(WeaviateProtoBatch.BatchStreamRequest::getMessageCase)
           .isEqualTo(messageCase);

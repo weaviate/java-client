@@ -21,7 +21,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -81,7 +80,7 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
  * <li>{@code null} -- context hasn't been {@link #start}ed yet. The context
  * SHOULD NOT be used in this state, as it will likely result in an NPE.
  * <li>AwaitStarted -- client's opened the stream, sent Start,
- * and is now awaiting for the server to respond with Started.
+ * and is now awaiting the server to respond with Started.
  * <li>Active -- the server is ready to accept the next Data message.
  * <li>InFlight -- the latest batch has been sent, awaiting Acks.
  * <li>OOM -- server has OOM'ed and will not accept any more data.
@@ -145,8 +144,8 @@ public final class BatchContext<PropertiesT> implements Closeable {
    * <p>
    * In the event of abrupt stream termination ({@link Recv#onError} is called),
    * the "recv" thread MAY shutdown this service in order to interrupt the "send"
-   * thread; the latter may be blocked on {@link Send#awaitCanSend} or
-   * {@link Send#awaitCanPrepareNext}.
+   * thread; the latter may be blocked on {@link State#awaitCanSend} or
+   * {@link State#awaitCanPrepareNext}.
    */
   private final ExecutorService sendService = Executors.newSingleThreadExecutor();
 
@@ -157,6 +156,9 @@ public final class BatchContext<PropertiesT> implements Closeable {
    * @see Reconnecting
    */
   private final ScheduledExecutorService scheduledService = Executors.newScheduledThreadPool(1);
+
+  /** Executor for processing {@link Event.Results} and enqueing retried items. */
+  private final ExecutorService retryService = Executors.newSingleThreadExecutor();
 
   /** The thread that created the context. */
   private final Thread parent = Thread.currentThread();
@@ -207,20 +209,6 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
   /** stateChanged notifies threads about a state transition. */
   private final Condition stateChanged = lock.newCondition();
-
-  /**
-   * Releasing a permit notifies the "sender" about an incoming
-   * {@link Event.Results} batch. Acquire a permit to await the next batch.
-   *
-   * <p>
-   * A semaphore provides signal semantics, similar to a {@link Condition},
-   * but without being associated with a predicate. This comes handy when
-   * {@link wip} is being drained after the context is closed, and the "sender"
-   * needs to be notified about incoming {@link Event.Results}; a separate
-   * condition is not necessary, as we can simply probe the {@link queue} to
-   * find out if any new items have been added to it.
-   */
-  private final Semaphore awaitResults = new Semaphore(0);
 
   /**
    * Client-side part of the current stream, created on {@link #start}.
@@ -322,6 +310,11 @@ public final class BatchContext<PropertiesT> implements Closeable {
     if (existing != null) {
       throw new DuplicateTaskException(taskHandle, existing);
     }
+
+    // Remove the task from the WIP list as soon as it completes,
+    // successfully or otherwise. Note, that TaskHandle::done future
+    // only completes exceptionally after all retries have been exhausted.
+    taskHandle.done().whenComplete((__, t) -> wip.remove(taskHandle.id()));
 
     queue.put(taskHandle);
     return taskHandle;
@@ -507,6 +500,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
   private void shutdownExecutors() {
     sendService.shutdownNow();
     scheduledService.shutdownNow();
+    retryService.shutdownNow();
     shutdownService.shutdownNow();
     scheduledReconnectService.shutdownNow();
   }
@@ -647,7 +641,11 @@ public final class BatchContext<PropertiesT> implements Closeable {
 
           TaskHandle task = queue.take();
 
-          if (task == TaskHandle.POISON) {
+          if (task == TaskHandle.END_RESULTS) {
+            // This marker is only relevant when sent after POISON,
+            // as we process retried items in drainWip.
+            continue;
+          } else if (task == TaskHandle.POISON) {
             assert closed : "queue poisoned before the context is closed";
 
             log.debug("Took poison");
@@ -673,10 +671,9 @@ public final class BatchContext<PropertiesT> implements Closeable {
             return;
           }
 
-          Data data = task.data();
-          batch.add(data);
+          batch.add(task.data());
 
-          // Retred tasks already exist in the WIP list, replacing them is redundant.
+          // Retried tasks already exist in the WIP list, replacing them is redundant.
           wip.putIfAbsent(task.id(), task);
         }
       } catch (InterruptedException ignored) {
@@ -695,14 +692,14 @@ public final class BatchContext<PropertiesT> implements Closeable {
      * in the while-loop is that nothing is sent <i>unless</i> the batch is full.
      */
     private void send() throws InterruptedException {
-      log.atInfo()
-          .addKeyValue("batch_size_total_bytes", batch::sizeBytes)
-          .log("Send next batch");
-
       // Continue flushing until we get the batch to not a "not full" state.
       // This is to account for the backlog, which might re-fill the batch
       // after .clear().
       while (batch.isFull()) {
+        log.atInfo()
+            .addKeyValue("batch_size_items", batch::size)
+            .addKeyValue("batch_size_total_bytes", batch::sizeBytes)
+            .log("Send next batch");
         flush();
       }
       assert !batch.isFull() : "batch is full after send";
@@ -729,12 +726,10 @@ public final class BatchContext<PropertiesT> implements Closeable {
             .addKeyValue("batch_size_total_items", batch::size)
             .addKeyValue("wip_tasks", wip::size)
             .log("Await Results");
-        awaitResults.acquire();
 
         TaskHandle task;
-        while ((task = queue.poll()) != null) {
-          Data data = task.data();
-          batch.add(data);
+        while ((task = queue.take()) != TaskHandle.END_RESULTS) {
+          batch.add(task.data());
         }
 
         assert batch.size() <= wip.size() : "batch has more items than wip";
@@ -742,11 +737,11 @@ public final class BatchContext<PropertiesT> implements Closeable {
         if (batch.size() == wip.size()) {
           // This means the batch already contains all items in WIP,
           // and no more tasks will be added to the queue until the
-          // current ones are send.
+          // current ones are sent.
           drain();
         } else {
           // Only sends if the batch is full. If the batch is not full,
-          // the we can keep accumulating items from the failed tasks.
+          // then we can keep accumulating items from the failed tasks.
           send();
         }
       }
@@ -773,7 +768,7 @@ public final class BatchContext<PropertiesT> implements Closeable {
     }
 
     /**
-     * Block until the current state allows {@link State#canSend},
+     * Block until the current state allows {@link State#canSendNext},
      * then prepare the batch, send it, and set InFlight state.
      * Block until the current state allows {@link State#canPrepareNext}.
      *
@@ -953,24 +948,28 @@ public final class BatchContext<PropertiesT> implements Closeable {
           .addKeyValue("wip_tasks", wip::size)
           .log("Received Results");
 
-      // Remove successfully completed tasks from the WIP list and mark them done.
-      results.successful().stream()
-          .map(wip::remove).filter(Objects::nonNull)
-          .forEach(TaskHandle::setSuccess);
+      // Scheduling items to be retried may block temporarily if the queue is not
+      // adequately sized. Offload the next step to a different thread to avoid
+      // blocking the internal gRPC thread on which this callback is running.
+      retryService.execute(() -> {
+        // Mark successfully completed tasks in the WIP list.
+        // The whenComplete hook added in .add() will remove them from WIP.
+        results.successful().stream()
+            .map(wip::get).filter(Objects::nonNull)
+            .forEach(TaskHandle::setSuccess);
 
-      // Report errors for failed tasks. Do NOT remove them from the WIP list.
-      results.errors().keySet().stream()
-          .map(wip::get).filter(Objects::nonNull)
-          .forEach(taskHandle -> taskHandle.setError(
-              new ServerException(results.errors().get(taskHandle.id()))));
+        // Report errors for failed tasks. Do NOT remove them from the WIP list.
+        results.errors().keySet().stream()
+            .map(wip::get).filter(Objects::nonNull)
+            .forEach(taskHandle -> taskHandle.setError(
+                new ServerException(results.errors().get(taskHandle.id()))));
 
-      log.atDebug()
-          .addKeyValue("count_success", results.errors().size())
-          .addKeyValue("count_errors", results.successful().size())
-          .log("Received results");
-
-      awaitResults.release();
-      assert awaitResults.availablePermits() == 1;
+        try {
+          queue.put(TaskHandle.END_RESULTS);
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+        }
+      });
     }
 
     private void onBackoff(Event.Backoff backoff) {
