@@ -136,6 +136,11 @@ public final class BatchContext<PropertiesT> implements Closeable {
   private final CollectionDescriptor<PropertiesT> collectionDescriptor;
   private final CollectionHandleDefaults collectionHandleDefaults;
 
+  /**
+   * Tally of the failed items. This value is only written to from
+   * {@link #retryService} thread, which processes the incoming
+   * {@link Event.Results}; making it {@code volatile} is sufficient.
+   */
   private volatile int numberOfErrors;
 
   /**
