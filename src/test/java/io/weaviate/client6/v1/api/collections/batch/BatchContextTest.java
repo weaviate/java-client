@@ -430,16 +430,17 @@ public class BatchContextTest {
     out.emitEventAsync(Event.STARTED);
     Future<?> backgroundAcks = backgroundThread.submit(() -> {
       try {
-        recvDataAndAck();
-        recvDataAndAck();
-        recvDataAndAck();
+        List<String> received = new ArrayList<>();
+
+        received.addAll(recvDataAndAck());
+        received.addAll(recvDataAndAck());
+        received.addAll(recvDataAndAck());
+
+        out.emitEvent(new Event.Results(received, Collections.emptyMap()));
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
     });
-
-    List<String> submitted = tasks.stream().map(TaskHandle::id).toList();
-    out.emitEventAsync(new Event.Results(submitted, Collections.emptyMap()));
 
     closeContext();
     backgroundAcks.get();
@@ -546,6 +547,8 @@ public class BatchContextTest {
   /**
    * Read the next Data message from the stream and ACK it.
    * This method does not wait for the server to process the Acks.
+   *
+   * @return IDs of tasks that were received.
    */
   private List<String> recvDataAndAck() throws InterruptedException {
     List<String> received = recvData();
@@ -553,7 +556,11 @@ public class BatchContextTest {
     return received;
   }
 
-  /** Read the next Data message from the stream. */
+  /**
+   * Read the next Data message from the stream.
+   *
+   * @return IDs of tasks that were received.
+   */
   private List<String> recvData() throws InterruptedException {
     WeaviateProtoBatch.BatchStreamRequest.Data data = in.expectMessage(DATA).getData();
     return Stream.concat(
