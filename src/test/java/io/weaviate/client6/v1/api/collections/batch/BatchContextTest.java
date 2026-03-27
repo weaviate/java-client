@@ -549,7 +549,7 @@ public class BatchContextTest {
    */
   private List<String> recvDataAndAck() throws InterruptedException {
     List<String> received = recvData();
-    out.emitEvent(new Event.Acks(received));
+    out.emitEventAsync(new Event.Acks(received));
     return received;
   }
 
