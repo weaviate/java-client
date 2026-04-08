@@ -7314,6 +7314,17 @@ public final class WeaviateProtoSearchGet {
      */
     com.google.protobuf.ByteString
         getVectorsBytes(int index);
+
+    /**
+     * <pre>
+     * query_profile enables per-shard query profiling. When true, the response includes
+     * timing breakdowns for each shard and search type.
+     * </pre>
+     *
+     * <code>bool query_profile = 11;</code>
+     * @return The queryProfile.
+     */
+    boolean getQueryProfile();
   }
   /**
    * Protobuf type {@code weaviate.v1.MetadataRequest}
@@ -7488,6 +7499,22 @@ public final class WeaviateProtoSearchGet {
       return vectors_.getByteString(index);
     }
 
+    public static final int QUERY_PROFILE_FIELD_NUMBER = 11;
+    private boolean queryProfile_ = false;
+    /**
+     * <pre>
+     * query_profile enables per-shard query profiling. When true, the response includes
+     * timing breakdowns for each shard and search type.
+     * </pre>
+     *
+     * <code>bool query_profile = 11;</code>
+     * @return The queryProfile.
+     */
+    @java.lang.Override
+    public boolean getQueryProfile() {
+      return queryProfile_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -7531,6 +7558,9 @@ public final class WeaviateProtoSearchGet {
       }
       for (int i = 0; i < vectors_.size(); i++) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 10, vectors_.getRaw(i));
+      }
+      if (queryProfile_ != false) {
+        output.writeBool(11, queryProfile_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -7585,6 +7615,10 @@ public final class WeaviateProtoSearchGet {
         size += dataSize;
         size += 1 * getVectorsList().size();
       }
+      if (queryProfile_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(11, queryProfile_);
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
@@ -7620,6 +7654,8 @@ public final class WeaviateProtoSearchGet {
           != other.getIsConsistent()) return false;
       if (!getVectorsList()
           .equals(other.getVectorsList())) return false;
+      if (getQueryProfile()
+          != other.getQueryProfile()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -7662,6 +7698,9 @@ public final class WeaviateProtoSearchGet {
         hash = (37 * hash) + VECTORS_FIELD_NUMBER;
         hash = (53 * hash) + getVectorsList().hashCode();
       }
+      hash = (37 * hash) + QUERY_PROFILE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getQueryProfile());
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -7804,6 +7843,7 @@ public final class WeaviateProtoSearchGet {
         isConsistent_ = false;
         vectors_ =
             com.google.protobuf.LazyStringArrayList.emptyList();
+        queryProfile_ = false;
         return this;
       }
 
@@ -7867,6 +7907,9 @@ public final class WeaviateProtoSearchGet {
         if (((from_bitField0_ & 0x00000200) != 0)) {
           vectors_.makeImmutable();
           result.vectors_ = vectors_;
+        }
+        if (((from_bitField0_ & 0x00000400) != 0)) {
+          result.queryProfile_ = queryProfile_;
         }
       }
 
@@ -7951,6 +7994,9 @@ public final class WeaviateProtoSearchGet {
           }
           onChanged();
         }
+        if (other.getQueryProfile() != false) {
+          setQueryProfile(other.getQueryProfile());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -8028,6 +8074,11 @@ public final class WeaviateProtoSearchGet {
                 vectors_.add(s);
                 break;
               } // case 82
+              case 88: {
+                queryProfile_ = input.readBool();
+                bitField0_ |= 0x00000400;
+                break;
+              } // case 88
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -8440,6 +8491,53 @@ public final class WeaviateProtoSearchGet {
         ensureVectorsIsMutable();
         vectors_.add(value);
         bitField0_ |= 0x00000200;
+        onChanged();
+        return this;
+      }
+
+      private boolean queryProfile_ ;
+      /**
+       * <pre>
+       * query_profile enables per-shard query profiling. When true, the response includes
+       * timing breakdowns for each shard and search type.
+       * </pre>
+       *
+       * <code>bool query_profile = 11;</code>
+       * @return The queryProfile.
+       */
+      @java.lang.Override
+      public boolean getQueryProfile() {
+        return queryProfile_;
+      }
+      /**
+       * <pre>
+       * query_profile enables per-shard query profiling. When true, the response includes
+       * timing breakdowns for each shard and search type.
+       * </pre>
+       *
+       * <code>bool query_profile = 11;</code>
+       * @param value The queryProfile to set.
+       * @return This builder for chaining.
+       */
+      public Builder setQueryProfile(boolean value) {
+
+        queryProfile_ = value;
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * query_profile enables per-shard query profiling. When true, the response includes
+       * timing breakdowns for each shard and search type.
+       * </pre>
+       *
+       * <code>bool query_profile = 11;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearQueryProfile() {
+        bitField0_ = (bitField0_ & ~0x00000400);
+        queryProfile_ = false;
         onChanged();
         return this;
       }
@@ -12968,21 +13066,21 @@ public final class WeaviateProtoSearchGet {
     /**
      * <code>optional string generative_grouped_result = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.SearchReply.generative_grouped_result is deprecated.
-     *     See v1/search_get.proto;l=114
+     *     See v1/search_get.proto;l=117
      * @return Whether the generativeGroupedResult field is set.
      */
     @java.lang.Deprecated boolean hasGenerativeGroupedResult();
     /**
      * <code>optional string generative_grouped_result = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.SearchReply.generative_grouped_result is deprecated.
-     *     See v1/search_get.proto;l=114
+     *     See v1/search_get.proto;l=117
      * @return The generativeGroupedResult.
      */
     @java.lang.Deprecated java.lang.String getGenerativeGroupedResult();
     /**
      * <code>optional string generative_grouped_result = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.SearchReply.generative_grouped_result is deprecated.
-     *     See v1/search_get.proto;l=114
+     *     See v1/search_get.proto;l=117
      * @return The bytes for generativeGroupedResult.
      */
     @java.lang.Deprecated com.google.protobuf.ByteString
@@ -13026,6 +13124,21 @@ public final class WeaviateProtoSearchGet {
      * <code>optional .weaviate.v1.GenerativeResult generative_grouped_results = 5;</code>
      */
     io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeResultOrBuilder getGenerativeGroupedResultsOrBuilder();
+
+    /**
+     * <code>optional .weaviate.v1.QueryProfile query_profile = 6;</code>
+     * @return Whether the queryProfile field is set.
+     */
+    boolean hasQueryProfile();
+    /**
+     * <code>optional .weaviate.v1.QueryProfile query_profile = 6;</code>
+     * @return The queryProfile.
+     */
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile getQueryProfile();
+    /**
+     * <code>optional .weaviate.v1.QueryProfile query_profile = 6;</code>
+     */
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfileOrBuilder getQueryProfileOrBuilder();
   }
   /**
    * Protobuf type {@code weaviate.v1.SearchReply}
@@ -13124,7 +13237,7 @@ public final class WeaviateProtoSearchGet {
     /**
      * <code>optional string generative_grouped_result = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.SearchReply.generative_grouped_result is deprecated.
-     *     See v1/search_get.proto;l=114
+     *     See v1/search_get.proto;l=117
      * @return Whether the generativeGroupedResult field is set.
      */
     @java.lang.Override
@@ -13134,7 +13247,7 @@ public final class WeaviateProtoSearchGet {
     /**
      * <code>optional string generative_grouped_result = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.SearchReply.generative_grouped_result is deprecated.
-     *     See v1/search_get.proto;l=114
+     *     See v1/search_get.proto;l=117
      * @return The generativeGroupedResult.
      */
     @java.lang.Override
@@ -13153,7 +13266,7 @@ public final class WeaviateProtoSearchGet {
     /**
      * <code>optional string generative_grouped_result = 3 [deprecated = true];</code>
      * @deprecated weaviate.v1.SearchReply.generative_grouped_result is deprecated.
-     *     See v1/search_get.proto;l=114
+     *     See v1/search_get.proto;l=117
      * @return The bytes for generativeGroupedResult.
      */
     @java.lang.Override
@@ -13238,6 +13351,32 @@ public final class WeaviateProtoSearchGet {
       return generativeGroupedResults_ == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeResult.getDefaultInstance() : generativeGroupedResults_;
     }
 
+    public static final int QUERY_PROFILE_FIELD_NUMBER = 6;
+    private io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile queryProfile_;
+    /**
+     * <code>optional .weaviate.v1.QueryProfile query_profile = 6;</code>
+     * @return Whether the queryProfile field is set.
+     */
+    @java.lang.Override
+    public boolean hasQueryProfile() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <code>optional .weaviate.v1.QueryProfile query_profile = 6;</code>
+     * @return The queryProfile.
+     */
+    @java.lang.Override
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile getQueryProfile() {
+      return queryProfile_ == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.getDefaultInstance() : queryProfile_;
+    }
+    /**
+     * <code>optional .weaviate.v1.QueryProfile query_profile = 6;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfileOrBuilder getQueryProfileOrBuilder() {
+      return queryProfile_ == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.getDefaultInstance() : queryProfile_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -13267,6 +13406,9 @@ public final class WeaviateProtoSearchGet {
       if (((bitField0_ & 0x00000002) != 0)) {
         output.writeMessage(5, getGenerativeGroupedResults());
       }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        output.writeMessage(6, getQueryProfile());
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -13294,6 +13436,10 @@ public final class WeaviateProtoSearchGet {
       if (((bitField0_ & 0x00000002) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(5, getGenerativeGroupedResults());
+      }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(6, getQueryProfile());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -13327,6 +13473,11 @@ public final class WeaviateProtoSearchGet {
         if (!getGenerativeGroupedResults()
             .equals(other.getGenerativeGroupedResults())) return false;
       }
+      if (hasQueryProfile() != other.hasQueryProfile()) return false;
+      if (hasQueryProfile()) {
+        if (!getQueryProfile()
+            .equals(other.getQueryProfile())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -13356,6 +13507,10 @@ public final class WeaviateProtoSearchGet {
       if (hasGenerativeGroupedResults()) {
         hash = (37 * hash) + GENERATIVE_GROUPED_RESULTS_FIELD_NUMBER;
         hash = (53 * hash) + getGenerativeGroupedResults().hashCode();
+      }
+      if (hasQueryProfile()) {
+        hash = (37 * hash) + QUERY_PROFILE_FIELD_NUMBER;
+        hash = (53 * hash) + getQueryProfile().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -13490,6 +13645,7 @@ public final class WeaviateProtoSearchGet {
           getResultsFieldBuilder();
           getGroupByResultsFieldBuilder();
           getGenerativeGroupedResultsFieldBuilder();
+          getQueryProfileFieldBuilder();
         }
       }
       @java.lang.Override
@@ -13516,6 +13672,11 @@ public final class WeaviateProtoSearchGet {
         if (generativeGroupedResultsBuilder_ != null) {
           generativeGroupedResultsBuilder_.dispose();
           generativeGroupedResultsBuilder_ = null;
+        }
+        queryProfile_ = null;
+        if (queryProfileBuilder_ != null) {
+          queryProfileBuilder_.dispose();
+          queryProfileBuilder_ = null;
         }
         return this;
       }
@@ -13585,6 +13746,12 @@ public final class WeaviateProtoSearchGet {
               ? generativeGroupedResults_
               : generativeGroupedResultsBuilder_.build();
           to_bitField0_ |= 0x00000002;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.queryProfile_ = queryProfileBuilder_ == null
+              ? queryProfile_
+              : queryProfileBuilder_.build();
+          to_bitField0_ |= 0x00000004;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -13696,6 +13863,9 @@ public final class WeaviateProtoSearchGet {
         if (other.hasGenerativeGroupedResults()) {
           mergeGenerativeGroupedResults(other.getGenerativeGroupedResults());
         }
+        if (other.hasQueryProfile()) {
+          mergeQueryProfile(other.getQueryProfile());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -13765,6 +13935,13 @@ public final class WeaviateProtoSearchGet {
                 bitField0_ |= 0x00000010;
                 break;
               } // case 42
+              case 50: {
+                input.readMessage(
+                    getQueryProfileFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 50
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -14058,7 +14235,7 @@ public final class WeaviateProtoSearchGet {
       /**
        * <code>optional string generative_grouped_result = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.SearchReply.generative_grouped_result is deprecated.
-       *     See v1/search_get.proto;l=114
+       *     See v1/search_get.proto;l=117
        * @return Whether the generativeGroupedResult field is set.
        */
       @java.lang.Deprecated public boolean hasGenerativeGroupedResult() {
@@ -14067,7 +14244,7 @@ public final class WeaviateProtoSearchGet {
       /**
        * <code>optional string generative_grouped_result = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.SearchReply.generative_grouped_result is deprecated.
-       *     See v1/search_get.proto;l=114
+       *     See v1/search_get.proto;l=117
        * @return The generativeGroupedResult.
        */
       @java.lang.Deprecated public java.lang.String getGenerativeGroupedResult() {
@@ -14085,7 +14262,7 @@ public final class WeaviateProtoSearchGet {
       /**
        * <code>optional string generative_grouped_result = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.SearchReply.generative_grouped_result is deprecated.
-       *     See v1/search_get.proto;l=114
+       *     See v1/search_get.proto;l=117
        * @return The bytes for generativeGroupedResult.
        */
       @java.lang.Deprecated public com.google.protobuf.ByteString
@@ -14104,7 +14281,7 @@ public final class WeaviateProtoSearchGet {
       /**
        * <code>optional string generative_grouped_result = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.SearchReply.generative_grouped_result is deprecated.
-       *     See v1/search_get.proto;l=114
+       *     See v1/search_get.proto;l=117
        * @param value The generativeGroupedResult to set.
        * @return This builder for chaining.
        */
@@ -14119,7 +14296,7 @@ public final class WeaviateProtoSearchGet {
       /**
        * <code>optional string generative_grouped_result = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.SearchReply.generative_grouped_result is deprecated.
-       *     See v1/search_get.proto;l=114
+       *     See v1/search_get.proto;l=117
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearGenerativeGroupedResult() {
@@ -14131,7 +14308,7 @@ public final class WeaviateProtoSearchGet {
       /**
        * <code>optional string generative_grouped_result = 3 [deprecated = true];</code>
        * @deprecated weaviate.v1.SearchReply.generative_grouped_result is deprecated.
-       *     See v1/search_get.proto;l=114
+       *     See v1/search_get.proto;l=117
        * @param value The bytes for generativeGroupedResult to set.
        * @return This builder for chaining.
        */
@@ -14505,6 +14682,127 @@ public final class WeaviateProtoSearchGet {
         }
         return generativeGroupedResultsBuilder_;
       }
+
+      private io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile queryProfile_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfileOrBuilder> queryProfileBuilder_;
+      /**
+       * <code>optional .weaviate.v1.QueryProfile query_profile = 6;</code>
+       * @return Whether the queryProfile field is set.
+       */
+      public boolean hasQueryProfile() {
+        return ((bitField0_ & 0x00000020) != 0);
+      }
+      /**
+       * <code>optional .weaviate.v1.QueryProfile query_profile = 6;</code>
+       * @return The queryProfile.
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile getQueryProfile() {
+        if (queryProfileBuilder_ == null) {
+          return queryProfile_ == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.getDefaultInstance() : queryProfile_;
+        } else {
+          return queryProfileBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .weaviate.v1.QueryProfile query_profile = 6;</code>
+       */
+      public Builder setQueryProfile(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile value) {
+        if (queryProfileBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          queryProfile_ = value;
+        } else {
+          queryProfileBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.QueryProfile query_profile = 6;</code>
+       */
+      public Builder setQueryProfile(
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.Builder builderForValue) {
+        if (queryProfileBuilder_ == null) {
+          queryProfile_ = builderForValue.build();
+        } else {
+          queryProfileBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.QueryProfile query_profile = 6;</code>
+       */
+      public Builder mergeQueryProfile(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile value) {
+        if (queryProfileBuilder_ == null) {
+          if (((bitField0_ & 0x00000020) != 0) &&
+            queryProfile_ != null &&
+            queryProfile_ != io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.getDefaultInstance()) {
+            getQueryProfileBuilder().mergeFrom(value);
+          } else {
+            queryProfile_ = value;
+          }
+        } else {
+          queryProfileBuilder_.mergeFrom(value);
+        }
+        if (queryProfile_ != null) {
+          bitField0_ |= 0x00000020;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.QueryProfile query_profile = 6;</code>
+       */
+      public Builder clearQueryProfile() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        queryProfile_ = null;
+        if (queryProfileBuilder_ != null) {
+          queryProfileBuilder_.dispose();
+          queryProfileBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.QueryProfile query_profile = 6;</code>
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.Builder getQueryProfileBuilder() {
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return getQueryProfileFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .weaviate.v1.QueryProfile query_profile = 6;</code>
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfileOrBuilder getQueryProfileOrBuilder() {
+        if (queryProfileBuilder_ != null) {
+          return queryProfileBuilder_.getMessageOrBuilder();
+        } else {
+          return queryProfile_ == null ?
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.getDefaultInstance() : queryProfile_;
+        }
+      }
+      /**
+       * <code>optional .weaviate.v1.QueryProfile query_profile = 6;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfileOrBuilder> 
+          getQueryProfileFieldBuilder() {
+        if (queryProfileBuilder_ == null) {
+          queryProfileBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfileOrBuilder>(
+                  getQueryProfile(),
+                  getParentForChildren(),
+                  isClean());
+          queryProfile_ = null;
+        }
+        return queryProfileBuilder_;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -14564,6 +14862,2744 @@ public final class WeaviateProtoSearchGet {
 
     @java.lang.Override
     public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.SearchReply getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface QueryProfileOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:weaviate.v1.QueryProfile)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated .weaviate.v1.QueryProfile.ShardProfile shards = 1;</code>
+     */
+    java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile> 
+        getShardsList();
+    /**
+     * <code>repeated .weaviate.v1.QueryProfile.ShardProfile shards = 1;</code>
+     */
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile getShards(int index);
+    /**
+     * <code>repeated .weaviate.v1.QueryProfile.ShardProfile shards = 1;</code>
+     */
+    int getShardsCount();
+    /**
+     * <code>repeated .weaviate.v1.QueryProfile.ShardProfile shards = 1;</code>
+     */
+    java.util.List<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfileOrBuilder> 
+        getShardsOrBuilderList();
+    /**
+     * <code>repeated .weaviate.v1.QueryProfile.ShardProfile shards = 1;</code>
+     */
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfileOrBuilder getShardsOrBuilder(
+        int index);
+  }
+  /**
+   * <pre>
+   * QueryProfile contains per-shard profiling data for a search query.
+   * Only populated when MetadataRequest.profile is true.
+   * </pre>
+   *
+   * Protobuf type {@code weaviate.v1.QueryProfile}
+   */
+  public static final class QueryProfile extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:weaviate.v1.QueryProfile)
+      QueryProfileOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use QueryProfile.newBuilder() to construct.
+    private QueryProfile(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private QueryProfile() {
+      shards_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new QueryProfile();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.internal_static_weaviate_v1_QueryProfile_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.internal_static_weaviate_v1_QueryProfile_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.Builder.class);
+    }
+
+    public interface SearchProfileOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:weaviate.v1.QueryProfile.SearchProfile)
+        com.google.protobuf.MessageOrBuilder {
+
+      /**
+       * <pre>
+       * details contains human-readable profiling metrics keyed by metric name.
+       * </pre>
+       *
+       * <code>map&lt;string, string&gt; details = 1;</code>
+       */
+      int getDetailsCount();
+      /**
+       * <pre>
+       * details contains human-readable profiling metrics keyed by metric name.
+       * </pre>
+       *
+       * <code>map&lt;string, string&gt; details = 1;</code>
+       */
+      boolean containsDetails(
+          java.lang.String key);
+      /**
+       * Use {@link #getDetailsMap()} instead.
+       */
+      @java.lang.Deprecated
+      java.util.Map<java.lang.String, java.lang.String>
+      getDetails();
+      /**
+       * <pre>
+       * details contains human-readable profiling metrics keyed by metric name.
+       * </pre>
+       *
+       * <code>map&lt;string, string&gt; details = 1;</code>
+       */
+      java.util.Map<java.lang.String, java.lang.String>
+      getDetailsMap();
+      /**
+       * <pre>
+       * details contains human-readable profiling metrics keyed by metric name.
+       * </pre>
+       *
+       * <code>map&lt;string, string&gt; details = 1;</code>
+       */
+      /* nullable */
+java.lang.String getDetailsOrDefault(
+          java.lang.String key,
+          /* nullable */
+java.lang.String defaultValue);
+      /**
+       * <pre>
+       * details contains human-readable profiling metrics keyed by metric name.
+       * </pre>
+       *
+       * <code>map&lt;string, string&gt; details = 1;</code>
+       */
+      java.lang.String getDetailsOrThrow(
+          java.lang.String key);
+    }
+    /**
+     * <pre>
+     * SearchProfile holds the profiling details for a single search type within a shard.
+     * </pre>
+     *
+     * Protobuf type {@code weaviate.v1.QueryProfile.SearchProfile}
+     */
+    public static final class SearchProfile extends
+        com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:weaviate.v1.QueryProfile.SearchProfile)
+        SearchProfileOrBuilder {
+    private static final long serialVersionUID = 0L;
+      // Use SearchProfile.newBuilder() to construct.
+      private SearchProfile(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+        super(builder);
+      }
+      private SearchProfile() {
+      }
+
+      @java.lang.Override
+      @SuppressWarnings({"unused"})
+      protected java.lang.Object newInstance(
+          UnusedPrivateParameter unused) {
+        return new SearchProfile();
+      }
+
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.internal_static_weaviate_v1_QueryProfile_SearchProfile_descriptor;
+      }
+
+      @SuppressWarnings({"rawtypes"})
+      @java.lang.Override
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 1:
+            return internalGetDetails();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.internal_static_weaviate_v1_QueryProfile_SearchProfile_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile.Builder.class);
+      }
+
+      public static final int DETAILS_FIELD_NUMBER = 1;
+      private static final class DetailsDefaultEntryHolder {
+        static final com.google.protobuf.MapEntry<
+            java.lang.String, java.lang.String> defaultEntry =
+                com.google.protobuf.MapEntry
+                .<java.lang.String, java.lang.String>newDefaultInstance(
+                    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.internal_static_weaviate_v1_QueryProfile_SearchProfile_DetailsEntry_descriptor, 
+                    com.google.protobuf.WireFormat.FieldType.STRING,
+                    "",
+                    com.google.protobuf.WireFormat.FieldType.STRING,
+                    "");
+      }
+      @SuppressWarnings("serial")
+      private com.google.protobuf.MapField<
+          java.lang.String, java.lang.String> details_;
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetDetails() {
+        if (details_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              DetailsDefaultEntryHolder.defaultEntry);
+        }
+        return details_;
+      }
+      public int getDetailsCount() {
+        return internalGetDetails().getMap().size();
+      }
+      /**
+       * <pre>
+       * details contains human-readable profiling metrics keyed by metric name.
+       * </pre>
+       *
+       * <code>map&lt;string, string&gt; details = 1;</code>
+       */
+      @java.lang.Override
+      public boolean containsDetails(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        return internalGetDetails().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getDetailsMap()} instead.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String> getDetails() {
+        return getDetailsMap();
+      }
+      /**
+       * <pre>
+       * details contains human-readable profiling metrics keyed by metric name.
+       * </pre>
+       *
+       * <code>map&lt;string, string&gt; details = 1;</code>
+       */
+      @java.lang.Override
+      public java.util.Map<java.lang.String, java.lang.String> getDetailsMap() {
+        return internalGetDetails().getMap();
+      }
+      /**
+       * <pre>
+       * details contains human-readable profiling metrics keyed by metric name.
+       * </pre>
+       *
+       * <code>map&lt;string, string&gt; details = 1;</code>
+       */
+      @java.lang.Override
+      public /* nullable */
+java.lang.String getDetailsOrDefault(
+          java.lang.String key,
+          /* nullable */
+java.lang.String defaultValue) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetDetails().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <pre>
+       * details contains human-readable profiling metrics keyed by metric name.
+       * </pre>
+       *
+       * <code>map&lt;string, string&gt; details = 1;</code>
+       */
+      @java.lang.Override
+      public java.lang.String getDetailsOrThrow(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetDetails().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      private byte memoizedIsInitialized = -1;
+      @java.lang.Override
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
+
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      @java.lang.Override
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        com.google.protobuf.GeneratedMessageV3
+          .serializeStringMapTo(
+            output,
+            internalGetDetails(),
+            DetailsDefaultEntryHolder.defaultEntry,
+            1);
+        getUnknownFields().writeTo(output);
+      }
+
+      @java.lang.Override
+      public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
+             : internalGetDetails().getMap().entrySet()) {
+          com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+          details__ = DetailsDefaultEntryHolder.defaultEntry.newBuilderForType()
+              .setKey(entry.getKey())
+              .setValue(entry.getValue())
+              .build();
+          size += com.google.protobuf.CodedOutputStream
+              .computeMessageSize(1, details__);
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSize = size;
+        return size;
+      }
+
+      @java.lang.Override
+      public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+         return true;
+        }
+        if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile)) {
+          return super.equals(obj);
+        }
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile) obj;
+
+        if (!internalGetDetails().equals(
+            other.internalGetDetails())) return false;
+        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+        return true;
+      }
+
+      @java.lang.Override
+      public int hashCode() {
+        if (memoizedHashCode != 0) {
+          return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        if (!internalGetDetails().getMap().isEmpty()) {
+          hash = (37 * hash) + DETAILS_FIELD_NUMBER;
+          hash = (53 * hash) + internalGetDetails().hashCode();
+        }
+        hash = (29 * hash) + getUnknownFields().hashCode();
+        memoizedHashCode = hash;
+        return hash;
+      }
+
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile parseFrom(
+          java.nio.ByteBuffer data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile parseFrom(
+          java.nio.ByteBuffer data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input);
+      }
+
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+
+      @java.lang.Override
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder() {
+        return DEFAULT_INSTANCE.toBuilder();
+      }
+      public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile prototype) {
+        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      }
+      @java.lang.Override
+      public Builder toBuilder() {
+        return this == DEFAULT_INSTANCE
+            ? new Builder() : new Builder().mergeFrom(this);
+      }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * <pre>
+       * SearchProfile holds the profiling details for a single search type within a shard.
+       * </pre>
+       *
+       * Protobuf type {@code weaviate.v1.QueryProfile.SearchProfile}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:weaviate.v1.QueryProfile.SearchProfile)
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfileOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.internal_static_weaviate_v1_QueryProfile_SearchProfile_descriptor;
+        }
+
+        @SuppressWarnings({"rawtypes"})
+        protected com.google.protobuf.MapField internalGetMapField(
+            int number) {
+          switch (number) {
+            case 1:
+              return internalGetDetails();
+            default:
+              throw new RuntimeException(
+                  "Invalid map field number: " + number);
+          }
+        }
+        @SuppressWarnings({"rawtypes"})
+        protected com.google.protobuf.MapField internalGetMutableMapField(
+            int number) {
+          switch (number) {
+            case 1:
+              return internalGetMutableDetails();
+            default:
+              throw new RuntimeException(
+                  "Invalid map field number: " + number);
+          }
+        }
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.internal_static_weaviate_v1_QueryProfile_SearchProfile_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile.Builder.class);
+        }
+
+        // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile.newBuilder()
+        private Builder() {
+
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          super(parent);
+
+        }
+        @java.lang.Override
+        public Builder clear() {
+          super.clear();
+          bitField0_ = 0;
+          internalGetMutableDetails().clear();
+          return this;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.internal_static_weaviate_v1_QueryProfile_SearchProfile_descriptor;
+        }
+
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile getDefaultInstanceForType() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile.getDefaultInstance();
+        }
+
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile build() {
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile buildPartial() {
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile(this);
+          if (bitField0_ != 0) { buildPartial0(result); }
+          onBuilt();
+          return result;
+        }
+
+        private void buildPartial0(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile result) {
+          int from_bitField0_ = bitField0_;
+          if (((from_bitField0_ & 0x00000001) != 0)) {
+            result.details_ = internalGetDetails();
+            result.details_.makeImmutable();
+          }
+        }
+
+        @java.lang.Override
+        public Builder clone() {
+          return super.clone();
+        }
+        @java.lang.Override
+        public Builder setField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return super.setField(field, value);
+        }
+        @java.lang.Override
+        public Builder clearField(
+            com.google.protobuf.Descriptors.FieldDescriptor field) {
+          return super.clearField(field);
+        }
+        @java.lang.Override
+        public Builder clearOneof(
+            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          return super.clearOneof(oneof);
+        }
+        @java.lang.Override
+        public Builder setRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            int index, java.lang.Object value) {
+          return super.setRepeatedField(field, index, value);
+        }
+        @java.lang.Override
+        public Builder addRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return super.addRepeatedField(field, value);
+        }
+        @java.lang.Override
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile) {
+            return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile other) {
+          if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile.getDefaultInstance()) return this;
+          internalGetMutableDetails().mergeFrom(
+              other.internalGetDetails());
+          bitField0_ |= 0x00000001;
+          this.mergeUnknownFields(other.getUnknownFields());
+          onChanged();
+          return this;
+        }
+
+        @java.lang.Override
+        public final boolean isInitialized() {
+          return true;
+        }
+
+        @java.lang.Override
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          if (extensionRegistry == null) {
+            throw new java.lang.NullPointerException();
+          }
+          try {
+            boolean done = false;
+            while (!done) {
+              int tag = input.readTag();
+              switch (tag) {
+                case 0:
+                  done = true;
+                  break;
+                case 10: {
+                  com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+                  details__ = input.readMessage(
+                      DetailsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+                  internalGetMutableDetails().getMutableMap().put(
+                      details__.getKey(), details__.getValue());
+                  bitField0_ |= 0x00000001;
+                  break;
+                } // case 10
+                default: {
+                  if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                    done = true; // was an endgroup tag
+                  }
+                  break;
+                } // default:
+              } // switch (tag)
+            } // while (!done)
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            throw e.unwrapIOException();
+          } finally {
+            onChanged();
+          } // finally
+          return this;
+        }
+        private int bitField0_;
+
+        private com.google.protobuf.MapField<
+            java.lang.String, java.lang.String> details_;
+        private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+            internalGetDetails() {
+          if (details_ == null) {
+            return com.google.protobuf.MapField.emptyMapField(
+                DetailsDefaultEntryHolder.defaultEntry);
+          }
+          return details_;
+        }
+        private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+            internalGetMutableDetails() {
+          if (details_ == null) {
+            details_ = com.google.protobuf.MapField.newMapField(
+                DetailsDefaultEntryHolder.defaultEntry);
+          }
+          if (!details_.isMutable()) {
+            details_ = details_.copy();
+          }
+          bitField0_ |= 0x00000001;
+          onChanged();
+          return details_;
+        }
+        public int getDetailsCount() {
+          return internalGetDetails().getMap().size();
+        }
+        /**
+         * <pre>
+         * details contains human-readable profiling metrics keyed by metric name.
+         * </pre>
+         *
+         * <code>map&lt;string, string&gt; details = 1;</code>
+         */
+        @java.lang.Override
+        public boolean containsDetails(
+            java.lang.String key) {
+          if (key == null) { throw new NullPointerException("map key"); }
+          return internalGetDetails().getMap().containsKey(key);
+        }
+        /**
+         * Use {@link #getDetailsMap()} instead.
+         */
+        @java.lang.Override
+        @java.lang.Deprecated
+        public java.util.Map<java.lang.String, java.lang.String> getDetails() {
+          return getDetailsMap();
+        }
+        /**
+         * <pre>
+         * details contains human-readable profiling metrics keyed by metric name.
+         * </pre>
+         *
+         * <code>map&lt;string, string&gt; details = 1;</code>
+         */
+        @java.lang.Override
+        public java.util.Map<java.lang.String, java.lang.String> getDetailsMap() {
+          return internalGetDetails().getMap();
+        }
+        /**
+         * <pre>
+         * details contains human-readable profiling metrics keyed by metric name.
+         * </pre>
+         *
+         * <code>map&lt;string, string&gt; details = 1;</code>
+         */
+        @java.lang.Override
+        public /* nullable */
+java.lang.String getDetailsOrDefault(
+            java.lang.String key,
+            /* nullable */
+java.lang.String defaultValue) {
+          if (key == null) { throw new NullPointerException("map key"); }
+          java.util.Map<java.lang.String, java.lang.String> map =
+              internalGetDetails().getMap();
+          return map.containsKey(key) ? map.get(key) : defaultValue;
+        }
+        /**
+         * <pre>
+         * details contains human-readable profiling metrics keyed by metric name.
+         * </pre>
+         *
+         * <code>map&lt;string, string&gt; details = 1;</code>
+         */
+        @java.lang.Override
+        public java.lang.String getDetailsOrThrow(
+            java.lang.String key) {
+          if (key == null) { throw new NullPointerException("map key"); }
+          java.util.Map<java.lang.String, java.lang.String> map =
+              internalGetDetails().getMap();
+          if (!map.containsKey(key)) {
+            throw new java.lang.IllegalArgumentException();
+          }
+          return map.get(key);
+        }
+        public Builder clearDetails() {
+          bitField0_ = (bitField0_ & ~0x00000001);
+          internalGetMutableDetails().getMutableMap()
+              .clear();
+          return this;
+        }
+        /**
+         * <pre>
+         * details contains human-readable profiling metrics keyed by metric name.
+         * </pre>
+         *
+         * <code>map&lt;string, string&gt; details = 1;</code>
+         */
+        public Builder removeDetails(
+            java.lang.String key) {
+          if (key == null) { throw new NullPointerException("map key"); }
+          internalGetMutableDetails().getMutableMap()
+              .remove(key);
+          return this;
+        }
+        /**
+         * Use alternate mutation accessors instead.
+         */
+        @java.lang.Deprecated
+        public java.util.Map<java.lang.String, java.lang.String>
+            getMutableDetails() {
+          bitField0_ |= 0x00000001;
+          return internalGetMutableDetails().getMutableMap();
+        }
+        /**
+         * <pre>
+         * details contains human-readable profiling metrics keyed by metric name.
+         * </pre>
+         *
+         * <code>map&lt;string, string&gt; details = 1;</code>
+         */
+        public Builder putDetails(
+            java.lang.String key,
+            java.lang.String value) {
+          if (key == null) { throw new NullPointerException("map key"); }
+          if (value == null) { throw new NullPointerException("map value"); }
+          internalGetMutableDetails().getMutableMap()
+              .put(key, value);
+          bitField0_ |= 0x00000001;
+          return this;
+        }
+        /**
+         * <pre>
+         * details contains human-readable profiling metrics keyed by metric name.
+         * </pre>
+         *
+         * <code>map&lt;string, string&gt; details = 1;</code>
+         */
+        public Builder putAllDetails(
+            java.util.Map<java.lang.String, java.lang.String> values) {
+          internalGetMutableDetails().getMutableMap()
+              .putAll(values);
+          bitField0_ |= 0x00000001;
+          return this;
+        }
+        @java.lang.Override
+        public final Builder setUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.setUnknownFields(unknownFields);
+        }
+
+        @java.lang.Override
+        public final Builder mergeUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.mergeUnknownFields(unknownFields);
+        }
+
+
+        // @@protoc_insertion_point(builder_scope:weaviate.v1.QueryProfile.SearchProfile)
+      }
+
+      // @@protoc_insertion_point(class_scope:weaviate.v1.QueryProfile.SearchProfile)
+      private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile DEFAULT_INSTANCE;
+      static {
+        DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile();
+      }
+
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+      }
+
+      private static final com.google.protobuf.Parser<SearchProfile>
+          PARSER = new com.google.protobuf.AbstractParser<SearchProfile>() {
+        @java.lang.Override
+        public SearchProfile parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          Builder builder = newBuilder();
+          try {
+            builder.mergeFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            throw e.setUnfinishedMessage(builder.buildPartial());
+          } catch (com.google.protobuf.UninitializedMessageException e) {
+            throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+          } catch (java.io.IOException e) {
+            throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                .setUnfinishedMessage(builder.buildPartial());
+          }
+          return builder.buildPartial();
+        }
+      };
+
+      public static com.google.protobuf.Parser<SearchProfile> parser() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<SearchProfile> getParserForType() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile getDefaultInstanceForType() {
+        return DEFAULT_INSTANCE;
+      }
+
+    }
+
+    public interface ShardProfileOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:weaviate.v1.QueryProfile.ShardProfile)
+        com.google.protobuf.MessageOrBuilder {
+
+      /**
+       * <pre>
+       * name is the identifier of the shard that was searched.
+       * </pre>
+       *
+       * <code>string name = 1;</code>
+       * @return The name.
+       */
+      java.lang.String getName();
+      /**
+       * <pre>
+       * name is the identifier of the shard that was searched.
+       * </pre>
+       *
+       * <code>string name = 1;</code>
+       * @return The bytes for name.
+       */
+      com.google.protobuf.ByteString
+          getNameBytes();
+
+      /**
+       * <pre>
+       * node is the name of the cluster node that executed this shard search.
+       * </pre>
+       *
+       * <code>string node = 2;</code>
+       * @return The node.
+       */
+      java.lang.String getNode();
+      /**
+       * <pre>
+       * node is the name of the cluster node that executed this shard search.
+       * </pre>
+       *
+       * <code>string node = 2;</code>
+       * @return The bytes for node.
+       */
+      com.google.protobuf.ByteString
+          getNodeBytes();
+
+      /**
+       * <pre>
+       * searches maps search type (e.g., "vector", "keyword") to its profiling details.
+       * </pre>
+       *
+       * <code>map&lt;string, .weaviate.v1.QueryProfile.SearchProfile&gt; searches = 3;</code>
+       */
+      int getSearchesCount();
+      /**
+       * <pre>
+       * searches maps search type (e.g., "vector", "keyword") to its profiling details.
+       * </pre>
+       *
+       * <code>map&lt;string, .weaviate.v1.QueryProfile.SearchProfile&gt; searches = 3;</code>
+       */
+      boolean containsSearches(
+          java.lang.String key);
+      /**
+       * Use {@link #getSearchesMap()} instead.
+       */
+      @java.lang.Deprecated
+      java.util.Map<java.lang.String, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile>
+      getSearches();
+      /**
+       * <pre>
+       * searches maps search type (e.g., "vector", "keyword") to its profiling details.
+       * </pre>
+       *
+       * <code>map&lt;string, .weaviate.v1.QueryProfile.SearchProfile&gt; searches = 3;</code>
+       */
+      java.util.Map<java.lang.String, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile>
+      getSearchesMap();
+      /**
+       * <pre>
+       * searches maps search type (e.g., "vector", "keyword") to its profiling details.
+       * </pre>
+       *
+       * <code>map&lt;string, .weaviate.v1.QueryProfile.SearchProfile&gt; searches = 3;</code>
+       */
+      /* nullable */
+io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile getSearchesOrDefault(
+          java.lang.String key,
+          /* nullable */
+io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile defaultValue);
+      /**
+       * <pre>
+       * searches maps search type (e.g., "vector", "keyword") to its profiling details.
+       * </pre>
+       *
+       * <code>map&lt;string, .weaviate.v1.QueryProfile.SearchProfile&gt; searches = 3;</code>
+       */
+      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile getSearchesOrThrow(
+          java.lang.String key);
+    }
+    /**
+     * <pre>
+     * ShardProfile holds profiling data for a single shard's contribution to a search query.
+     * </pre>
+     *
+     * Protobuf type {@code weaviate.v1.QueryProfile.ShardProfile}
+     */
+    public static final class ShardProfile extends
+        com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:weaviate.v1.QueryProfile.ShardProfile)
+        ShardProfileOrBuilder {
+    private static final long serialVersionUID = 0L;
+      // Use ShardProfile.newBuilder() to construct.
+      private ShardProfile(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+        super(builder);
+      }
+      private ShardProfile() {
+        name_ = "";
+        node_ = "";
+      }
+
+      @java.lang.Override
+      @SuppressWarnings({"unused"})
+      protected java.lang.Object newInstance(
+          UnusedPrivateParameter unused) {
+        return new ShardProfile();
+      }
+
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.internal_static_weaviate_v1_QueryProfile_ShardProfile_descriptor;
+      }
+
+      @SuppressWarnings({"rawtypes"})
+      @java.lang.Override
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 3:
+            return internalGetSearches();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.internal_static_weaviate_v1_QueryProfile_ShardProfile_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile.Builder.class);
+      }
+
+      public static final int NAME_FIELD_NUMBER = 1;
+      @SuppressWarnings("serial")
+      private volatile java.lang.Object name_ = "";
+      /**
+       * <pre>
+       * name is the identifier of the shard that was searched.
+       * </pre>
+       *
+       * <code>string name = 1;</code>
+       * @return The name.
+       */
+      @java.lang.Override
+      public java.lang.String getName() {
+        java.lang.Object ref = name_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          name_ = s;
+          return s;
+        }
+      }
+      /**
+       * <pre>
+       * name is the identifier of the shard that was searched.
+       * </pre>
+       *
+       * <code>string name = 1;</code>
+       * @return The bytes for name.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getNameBytes() {
+        java.lang.Object ref = name_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          name_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      public static final int NODE_FIELD_NUMBER = 2;
+      @SuppressWarnings("serial")
+      private volatile java.lang.Object node_ = "";
+      /**
+       * <pre>
+       * node is the name of the cluster node that executed this shard search.
+       * </pre>
+       *
+       * <code>string node = 2;</code>
+       * @return The node.
+       */
+      @java.lang.Override
+      public java.lang.String getNode() {
+        java.lang.Object ref = node_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          node_ = s;
+          return s;
+        }
+      }
+      /**
+       * <pre>
+       * node is the name of the cluster node that executed this shard search.
+       * </pre>
+       *
+       * <code>string node = 2;</code>
+       * @return The bytes for node.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getNodeBytes() {
+        java.lang.Object ref = node_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          node_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      public static final int SEARCHES_FIELD_NUMBER = 3;
+      private static final class SearchesDefaultEntryHolder {
+        static final com.google.protobuf.MapEntry<
+            java.lang.String, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile> defaultEntry =
+                com.google.protobuf.MapEntry
+                .<java.lang.String, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile>newDefaultInstance(
+                    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.internal_static_weaviate_v1_QueryProfile_ShardProfile_SearchesEntry_descriptor, 
+                    com.google.protobuf.WireFormat.FieldType.STRING,
+                    "",
+                    com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile.getDefaultInstance());
+      }
+      @SuppressWarnings("serial")
+      private com.google.protobuf.MapField<
+          java.lang.String, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile> searches_;
+      private com.google.protobuf.MapField<java.lang.String, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile>
+      internalGetSearches() {
+        if (searches_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              SearchesDefaultEntryHolder.defaultEntry);
+        }
+        return searches_;
+      }
+      public int getSearchesCount() {
+        return internalGetSearches().getMap().size();
+      }
+      /**
+       * <pre>
+       * searches maps search type (e.g., "vector", "keyword") to its profiling details.
+       * </pre>
+       *
+       * <code>map&lt;string, .weaviate.v1.QueryProfile.SearchProfile&gt; searches = 3;</code>
+       */
+      @java.lang.Override
+      public boolean containsSearches(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        return internalGetSearches().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getSearchesMap()} instead.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile> getSearches() {
+        return getSearchesMap();
+      }
+      /**
+       * <pre>
+       * searches maps search type (e.g., "vector", "keyword") to its profiling details.
+       * </pre>
+       *
+       * <code>map&lt;string, .weaviate.v1.QueryProfile.SearchProfile&gt; searches = 3;</code>
+       */
+      @java.lang.Override
+      public java.util.Map<java.lang.String, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile> getSearchesMap() {
+        return internalGetSearches().getMap();
+      }
+      /**
+       * <pre>
+       * searches maps search type (e.g., "vector", "keyword") to its profiling details.
+       * </pre>
+       *
+       * <code>map&lt;string, .weaviate.v1.QueryProfile.SearchProfile&gt; searches = 3;</code>
+       */
+      @java.lang.Override
+      public /* nullable */
+io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile getSearchesOrDefault(
+          java.lang.String key,
+          /* nullable */
+io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile defaultValue) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile> map =
+            internalGetSearches().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <pre>
+       * searches maps search type (e.g., "vector", "keyword") to its profiling details.
+       * </pre>
+       *
+       * <code>map&lt;string, .weaviate.v1.QueryProfile.SearchProfile&gt; searches = 3;</code>
+       */
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile getSearchesOrThrow(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile> map =
+            internalGetSearches().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      private byte memoizedIsInitialized = -1;
+      @java.lang.Override
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
+
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      @java.lang.Override
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
+        }
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(node_)) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 2, node_);
+        }
+        com.google.protobuf.GeneratedMessageV3
+          .serializeStringMapTo(
+            output,
+            internalGetSearches(),
+            SearchesDefaultEntryHolder.defaultEntry,
+            3);
+        getUnknownFields().writeTo(output);
+      }
+
+      @java.lang.Override
+      public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
+        }
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(node_)) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, node_);
+        }
+        for (java.util.Map.Entry<java.lang.String, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile> entry
+             : internalGetSearches().getMap().entrySet()) {
+          com.google.protobuf.MapEntry<java.lang.String, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile>
+          searches__ = SearchesDefaultEntryHolder.defaultEntry.newBuilderForType()
+              .setKey(entry.getKey())
+              .setValue(entry.getValue())
+              .build();
+          size += com.google.protobuf.CodedOutputStream
+              .computeMessageSize(3, searches__);
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSize = size;
+        return size;
+      }
+
+      @java.lang.Override
+      public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+         return true;
+        }
+        if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile)) {
+          return super.equals(obj);
+        }
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile) obj;
+
+        if (!getName()
+            .equals(other.getName())) return false;
+        if (!getNode()
+            .equals(other.getNode())) return false;
+        if (!internalGetSearches().equals(
+            other.internalGetSearches())) return false;
+        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+        return true;
+      }
+
+      @java.lang.Override
+      public int hashCode() {
+        if (memoizedHashCode != 0) {
+          return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (37 * hash) + NAME_FIELD_NUMBER;
+        hash = (53 * hash) + getName().hashCode();
+        hash = (37 * hash) + NODE_FIELD_NUMBER;
+        hash = (53 * hash) + getNode().hashCode();
+        if (!internalGetSearches().getMap().isEmpty()) {
+          hash = (37 * hash) + SEARCHES_FIELD_NUMBER;
+          hash = (53 * hash) + internalGetSearches().hashCode();
+        }
+        hash = (29 * hash) + getUnknownFields().hashCode();
+        memoizedHashCode = hash;
+        return hash;
+      }
+
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile parseFrom(
+          java.nio.ByteBuffer data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile parseFrom(
+          java.nio.ByteBuffer data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input);
+      }
+
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+
+      @java.lang.Override
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder() {
+        return DEFAULT_INSTANCE.toBuilder();
+      }
+      public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile prototype) {
+        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      }
+      @java.lang.Override
+      public Builder toBuilder() {
+        return this == DEFAULT_INSTANCE
+            ? new Builder() : new Builder().mergeFrom(this);
+      }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * <pre>
+       * ShardProfile holds profiling data for a single shard's contribution to a search query.
+       * </pre>
+       *
+       * Protobuf type {@code weaviate.v1.QueryProfile.ShardProfile}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:weaviate.v1.QueryProfile.ShardProfile)
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfileOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.internal_static_weaviate_v1_QueryProfile_ShardProfile_descriptor;
+        }
+
+        @SuppressWarnings({"rawtypes"})
+        protected com.google.protobuf.MapField internalGetMapField(
+            int number) {
+          switch (number) {
+            case 3:
+              return internalGetSearches();
+            default:
+              throw new RuntimeException(
+                  "Invalid map field number: " + number);
+          }
+        }
+        @SuppressWarnings({"rawtypes"})
+        protected com.google.protobuf.MapField internalGetMutableMapField(
+            int number) {
+          switch (number) {
+            case 3:
+              return internalGetMutableSearches();
+            default:
+              throw new RuntimeException(
+                  "Invalid map field number: " + number);
+          }
+        }
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.internal_static_weaviate_v1_QueryProfile_ShardProfile_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile.Builder.class);
+        }
+
+        // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile.newBuilder()
+        private Builder() {
+
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          super(parent);
+
+        }
+        @java.lang.Override
+        public Builder clear() {
+          super.clear();
+          bitField0_ = 0;
+          name_ = "";
+          node_ = "";
+          internalGetMutableSearches().clear();
+          return this;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.internal_static_weaviate_v1_QueryProfile_ShardProfile_descriptor;
+        }
+
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile getDefaultInstanceForType() {
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile.getDefaultInstance();
+        }
+
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile build() {
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile buildPartial() {
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile(this);
+          if (bitField0_ != 0) { buildPartial0(result); }
+          onBuilt();
+          return result;
+        }
+
+        private void buildPartial0(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile result) {
+          int from_bitField0_ = bitField0_;
+          if (((from_bitField0_ & 0x00000001) != 0)) {
+            result.name_ = name_;
+          }
+          if (((from_bitField0_ & 0x00000002) != 0)) {
+            result.node_ = node_;
+          }
+          if (((from_bitField0_ & 0x00000004) != 0)) {
+            result.searches_ = internalGetSearches();
+            result.searches_.makeImmutable();
+          }
+        }
+
+        @java.lang.Override
+        public Builder clone() {
+          return super.clone();
+        }
+        @java.lang.Override
+        public Builder setField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return super.setField(field, value);
+        }
+        @java.lang.Override
+        public Builder clearField(
+            com.google.protobuf.Descriptors.FieldDescriptor field) {
+          return super.clearField(field);
+        }
+        @java.lang.Override
+        public Builder clearOneof(
+            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          return super.clearOneof(oneof);
+        }
+        @java.lang.Override
+        public Builder setRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            int index, java.lang.Object value) {
+          return super.setRepeatedField(field, index, value);
+        }
+        @java.lang.Override
+        public Builder addRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return super.addRepeatedField(field, value);
+        }
+        @java.lang.Override
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile) {
+            return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile other) {
+          if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile.getDefaultInstance()) return this;
+          if (!other.getName().isEmpty()) {
+            name_ = other.name_;
+            bitField0_ |= 0x00000001;
+            onChanged();
+          }
+          if (!other.getNode().isEmpty()) {
+            node_ = other.node_;
+            bitField0_ |= 0x00000002;
+            onChanged();
+          }
+          internalGetMutableSearches().mergeFrom(
+              other.internalGetSearches());
+          bitField0_ |= 0x00000004;
+          this.mergeUnknownFields(other.getUnknownFields());
+          onChanged();
+          return this;
+        }
+
+        @java.lang.Override
+        public final boolean isInitialized() {
+          return true;
+        }
+
+        @java.lang.Override
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          if (extensionRegistry == null) {
+            throw new java.lang.NullPointerException();
+          }
+          try {
+            boolean done = false;
+            while (!done) {
+              int tag = input.readTag();
+              switch (tag) {
+                case 0:
+                  done = true;
+                  break;
+                case 10: {
+                  name_ = input.readStringRequireUtf8();
+                  bitField0_ |= 0x00000001;
+                  break;
+                } // case 10
+                case 18: {
+                  node_ = input.readStringRequireUtf8();
+                  bitField0_ |= 0x00000002;
+                  break;
+                } // case 18
+                case 26: {
+                  com.google.protobuf.MapEntry<java.lang.String, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile>
+                  searches__ = input.readMessage(
+                      SearchesDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+                  internalGetMutableSearches().getMutableMap().put(
+                      searches__.getKey(), searches__.getValue());
+                  bitField0_ |= 0x00000004;
+                  break;
+                } // case 26
+                default: {
+                  if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                    done = true; // was an endgroup tag
+                  }
+                  break;
+                } // default:
+              } // switch (tag)
+            } // while (!done)
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            throw e.unwrapIOException();
+          } finally {
+            onChanged();
+          } // finally
+          return this;
+        }
+        private int bitField0_;
+
+        private java.lang.Object name_ = "";
+        /**
+         * <pre>
+         * name is the identifier of the shard that was searched.
+         * </pre>
+         *
+         * <code>string name = 1;</code>
+         * @return The name.
+         */
+        public java.lang.String getName() {
+          java.lang.Object ref = name_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            name_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <pre>
+         * name is the identifier of the shard that was searched.
+         * </pre>
+         *
+         * <code>string name = 1;</code>
+         * @return The bytes for name.
+         */
+        public com.google.protobuf.ByteString
+            getNameBytes() {
+          java.lang.Object ref = name_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            name_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <pre>
+         * name is the identifier of the shard that was searched.
+         * </pre>
+         *
+         * <code>string name = 1;</code>
+         * @param value The name to set.
+         * @return This builder for chaining.
+         */
+        public Builder setName(
+            java.lang.String value) {
+          if (value == null) { throw new NullPointerException(); }
+          name_ = value;
+          bitField0_ |= 0x00000001;
+          onChanged();
+          return this;
+        }
+        /**
+         * <pre>
+         * name is the identifier of the shard that was searched.
+         * </pre>
+         *
+         * <code>string name = 1;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearName() {
+          name_ = getDefaultInstance().getName();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+          return this;
+        }
+        /**
+         * <pre>
+         * name is the identifier of the shard that was searched.
+         * </pre>
+         *
+         * <code>string name = 1;</code>
+         * @param value The bytes for name to set.
+         * @return This builder for chaining.
+         */
+        public Builder setNameBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) { throw new NullPointerException(); }
+          checkByteStringIsUtf8(value);
+          name_ = value;
+          bitField0_ |= 0x00000001;
+          onChanged();
+          return this;
+        }
+
+        private java.lang.Object node_ = "";
+        /**
+         * <pre>
+         * node is the name of the cluster node that executed this shard search.
+         * </pre>
+         *
+         * <code>string node = 2;</code>
+         * @return The node.
+         */
+        public java.lang.String getNode() {
+          java.lang.Object ref = node_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            node_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <pre>
+         * node is the name of the cluster node that executed this shard search.
+         * </pre>
+         *
+         * <code>string node = 2;</code>
+         * @return The bytes for node.
+         */
+        public com.google.protobuf.ByteString
+            getNodeBytes() {
+          java.lang.Object ref = node_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            node_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <pre>
+         * node is the name of the cluster node that executed this shard search.
+         * </pre>
+         *
+         * <code>string node = 2;</code>
+         * @param value The node to set.
+         * @return This builder for chaining.
+         */
+        public Builder setNode(
+            java.lang.String value) {
+          if (value == null) { throw new NullPointerException(); }
+          node_ = value;
+          bitField0_ |= 0x00000002;
+          onChanged();
+          return this;
+        }
+        /**
+         * <pre>
+         * node is the name of the cluster node that executed this shard search.
+         * </pre>
+         *
+         * <code>string node = 2;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearNode() {
+          node_ = getDefaultInstance().getNode();
+          bitField0_ = (bitField0_ & ~0x00000002);
+          onChanged();
+          return this;
+        }
+        /**
+         * <pre>
+         * node is the name of the cluster node that executed this shard search.
+         * </pre>
+         *
+         * <code>string node = 2;</code>
+         * @param value The bytes for node to set.
+         * @return This builder for chaining.
+         */
+        public Builder setNodeBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) { throw new NullPointerException(); }
+          checkByteStringIsUtf8(value);
+          node_ = value;
+          bitField0_ |= 0x00000002;
+          onChanged();
+          return this;
+        }
+
+        private com.google.protobuf.MapField<
+            java.lang.String, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile> searches_;
+        private com.google.protobuf.MapField<java.lang.String, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile>
+            internalGetSearches() {
+          if (searches_ == null) {
+            return com.google.protobuf.MapField.emptyMapField(
+                SearchesDefaultEntryHolder.defaultEntry);
+          }
+          return searches_;
+        }
+        private com.google.protobuf.MapField<java.lang.String, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile>
+            internalGetMutableSearches() {
+          if (searches_ == null) {
+            searches_ = com.google.protobuf.MapField.newMapField(
+                SearchesDefaultEntryHolder.defaultEntry);
+          }
+          if (!searches_.isMutable()) {
+            searches_ = searches_.copy();
+          }
+          bitField0_ |= 0x00000004;
+          onChanged();
+          return searches_;
+        }
+        public int getSearchesCount() {
+          return internalGetSearches().getMap().size();
+        }
+        /**
+         * <pre>
+         * searches maps search type (e.g., "vector", "keyword") to its profiling details.
+         * </pre>
+         *
+         * <code>map&lt;string, .weaviate.v1.QueryProfile.SearchProfile&gt; searches = 3;</code>
+         */
+        @java.lang.Override
+        public boolean containsSearches(
+            java.lang.String key) {
+          if (key == null) { throw new NullPointerException("map key"); }
+          return internalGetSearches().getMap().containsKey(key);
+        }
+        /**
+         * Use {@link #getSearchesMap()} instead.
+         */
+        @java.lang.Override
+        @java.lang.Deprecated
+        public java.util.Map<java.lang.String, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile> getSearches() {
+          return getSearchesMap();
+        }
+        /**
+         * <pre>
+         * searches maps search type (e.g., "vector", "keyword") to its profiling details.
+         * </pre>
+         *
+         * <code>map&lt;string, .weaviate.v1.QueryProfile.SearchProfile&gt; searches = 3;</code>
+         */
+        @java.lang.Override
+        public java.util.Map<java.lang.String, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile> getSearchesMap() {
+          return internalGetSearches().getMap();
+        }
+        /**
+         * <pre>
+         * searches maps search type (e.g., "vector", "keyword") to its profiling details.
+         * </pre>
+         *
+         * <code>map&lt;string, .weaviate.v1.QueryProfile.SearchProfile&gt; searches = 3;</code>
+         */
+        @java.lang.Override
+        public /* nullable */
+io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile getSearchesOrDefault(
+            java.lang.String key,
+            /* nullable */
+io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile defaultValue) {
+          if (key == null) { throw new NullPointerException("map key"); }
+          java.util.Map<java.lang.String, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile> map =
+              internalGetSearches().getMap();
+          return map.containsKey(key) ? map.get(key) : defaultValue;
+        }
+        /**
+         * <pre>
+         * searches maps search type (e.g., "vector", "keyword") to its profiling details.
+         * </pre>
+         *
+         * <code>map&lt;string, .weaviate.v1.QueryProfile.SearchProfile&gt; searches = 3;</code>
+         */
+        @java.lang.Override
+        public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile getSearchesOrThrow(
+            java.lang.String key) {
+          if (key == null) { throw new NullPointerException("map key"); }
+          java.util.Map<java.lang.String, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile> map =
+              internalGetSearches().getMap();
+          if (!map.containsKey(key)) {
+            throw new java.lang.IllegalArgumentException();
+          }
+          return map.get(key);
+        }
+        public Builder clearSearches() {
+          bitField0_ = (bitField0_ & ~0x00000004);
+          internalGetMutableSearches().getMutableMap()
+              .clear();
+          return this;
+        }
+        /**
+         * <pre>
+         * searches maps search type (e.g., "vector", "keyword") to its profiling details.
+         * </pre>
+         *
+         * <code>map&lt;string, .weaviate.v1.QueryProfile.SearchProfile&gt; searches = 3;</code>
+         */
+        public Builder removeSearches(
+            java.lang.String key) {
+          if (key == null) { throw new NullPointerException("map key"); }
+          internalGetMutableSearches().getMutableMap()
+              .remove(key);
+          return this;
+        }
+        /**
+         * Use alternate mutation accessors instead.
+         */
+        @java.lang.Deprecated
+        public java.util.Map<java.lang.String, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile>
+            getMutableSearches() {
+          bitField0_ |= 0x00000004;
+          return internalGetMutableSearches().getMutableMap();
+        }
+        /**
+         * <pre>
+         * searches maps search type (e.g., "vector", "keyword") to its profiling details.
+         * </pre>
+         *
+         * <code>map&lt;string, .weaviate.v1.QueryProfile.SearchProfile&gt; searches = 3;</code>
+         */
+        public Builder putSearches(
+            java.lang.String key,
+            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile value) {
+          if (key == null) { throw new NullPointerException("map key"); }
+          if (value == null) { throw new NullPointerException("map value"); }
+          internalGetMutableSearches().getMutableMap()
+              .put(key, value);
+          bitField0_ |= 0x00000004;
+          return this;
+        }
+        /**
+         * <pre>
+         * searches maps search type (e.g., "vector", "keyword") to its profiling details.
+         * </pre>
+         *
+         * <code>map&lt;string, .weaviate.v1.QueryProfile.SearchProfile&gt; searches = 3;</code>
+         */
+        public Builder putAllSearches(
+            java.util.Map<java.lang.String, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.SearchProfile> values) {
+          internalGetMutableSearches().getMutableMap()
+              .putAll(values);
+          bitField0_ |= 0x00000004;
+          return this;
+        }
+        @java.lang.Override
+        public final Builder setUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.setUnknownFields(unknownFields);
+        }
+
+        @java.lang.Override
+        public final Builder mergeUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.mergeUnknownFields(unknownFields);
+        }
+
+
+        // @@protoc_insertion_point(builder_scope:weaviate.v1.QueryProfile.ShardProfile)
+      }
+
+      // @@protoc_insertion_point(class_scope:weaviate.v1.QueryProfile.ShardProfile)
+      private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile DEFAULT_INSTANCE;
+      static {
+        DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile();
+      }
+
+      public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+      }
+
+      private static final com.google.protobuf.Parser<ShardProfile>
+          PARSER = new com.google.protobuf.AbstractParser<ShardProfile>() {
+        @java.lang.Override
+        public ShardProfile parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          Builder builder = newBuilder();
+          try {
+            builder.mergeFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            throw e.setUnfinishedMessage(builder.buildPartial());
+          } catch (com.google.protobuf.UninitializedMessageException e) {
+            throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+          } catch (java.io.IOException e) {
+            throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                .setUnfinishedMessage(builder.buildPartial());
+          }
+          return builder.buildPartial();
+        }
+      };
+
+      public static com.google.protobuf.Parser<ShardProfile> parser() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<ShardProfile> getParserForType() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile getDefaultInstanceForType() {
+        return DEFAULT_INSTANCE;
+      }
+
+    }
+
+    public static final int SHARDS_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile> shards_;
+    /**
+     * <code>repeated .weaviate.v1.QueryProfile.ShardProfile shards = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile> getShardsList() {
+      return shards_;
+    }
+    /**
+     * <code>repeated .weaviate.v1.QueryProfile.ShardProfile shards = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfileOrBuilder> 
+        getShardsOrBuilderList() {
+      return shards_;
+    }
+    /**
+     * <code>repeated .weaviate.v1.QueryProfile.ShardProfile shards = 1;</code>
+     */
+    @java.lang.Override
+    public int getShardsCount() {
+      return shards_.size();
+    }
+    /**
+     * <code>repeated .weaviate.v1.QueryProfile.ShardProfile shards = 1;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile getShards(int index) {
+      return shards_.get(index);
+    }
+    /**
+     * <code>repeated .weaviate.v1.QueryProfile.ShardProfile shards = 1;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfileOrBuilder getShardsOrBuilder(
+        int index) {
+      return shards_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < shards_.size(); i++) {
+        output.writeMessage(1, shards_.get(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < shards_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, shards_.get(i));
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile)) {
+        return super.equals(obj);
+      }
+      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile) obj;
+
+      if (!getShardsList()
+          .equals(other.getShardsList())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getShardsCount() > 0) {
+        hash = (37 * hash) + SHARDS_FIELD_NUMBER;
+        hash = (53 * hash) + getShardsList().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * QueryProfile contains per-shard profiling data for a search query.
+     * Only populated when MetadataRequest.profile is true.
+     * </pre>
+     *
+     * Protobuf type {@code weaviate.v1.QueryProfile}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:weaviate.v1.QueryProfile)
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfileOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.internal_static_weaviate_v1_QueryProfile_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.internal_static_weaviate_v1_QueryProfile_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.Builder.class);
+      }
+
+      // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        if (shardsBuilder_ == null) {
+          shards_ = java.util.Collections.emptyList();
+        } else {
+          shards_ = null;
+          shardsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.internal_static_weaviate_v1_QueryProfile_descriptor;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile getDefaultInstanceForType() {
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile build() {
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile buildPartial() {
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile(this);
+        buildPartialRepeatedFields(result);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartialRepeatedFields(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile result) {
+        if (shardsBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            shards_ = java.util.Collections.unmodifiableList(shards_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.shards_ = shards_;
+        } else {
+          result.shards_ = shardsBuilder_.build();
+        }
+      }
+
+      private void buildPartial0(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile result) {
+        int from_bitField0_ = bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile) {
+          return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile other) {
+        if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.getDefaultInstance()) return this;
+        if (shardsBuilder_ == null) {
+          if (!other.shards_.isEmpty()) {
+            if (shards_.isEmpty()) {
+              shards_ = other.shards_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureShardsIsMutable();
+              shards_.addAll(other.shards_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.shards_.isEmpty()) {
+            if (shardsBuilder_.isEmpty()) {
+              shardsBuilder_.dispose();
+              shardsBuilder_ = null;
+              shards_ = other.shards_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              shardsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getShardsFieldBuilder() : null;
+            } else {
+              shardsBuilder_.addAllMessages(other.shards_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile m =
+                    input.readMessage(
+                        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile.parser(),
+                        extensionRegistry);
+                if (shardsBuilder_ == null) {
+                  ensureShardsIsMutable();
+                  shards_.add(m);
+                } else {
+                  shardsBuilder_.addMessage(m);
+                }
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile> shards_ =
+        java.util.Collections.emptyList();
+      private void ensureShardsIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          shards_ = new java.util.ArrayList<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile>(shards_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfileOrBuilder> shardsBuilder_;
+
+      /**
+       * <code>repeated .weaviate.v1.QueryProfile.ShardProfile shards = 1;</code>
+       */
+      public java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile> getShardsList() {
+        if (shardsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(shards_);
+        } else {
+          return shardsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .weaviate.v1.QueryProfile.ShardProfile shards = 1;</code>
+       */
+      public int getShardsCount() {
+        if (shardsBuilder_ == null) {
+          return shards_.size();
+        } else {
+          return shardsBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .weaviate.v1.QueryProfile.ShardProfile shards = 1;</code>
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile getShards(int index) {
+        if (shardsBuilder_ == null) {
+          return shards_.get(index);
+        } else {
+          return shardsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .weaviate.v1.QueryProfile.ShardProfile shards = 1;</code>
+       */
+      public Builder setShards(
+          int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile value) {
+        if (shardsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureShardsIsMutable();
+          shards_.set(index, value);
+          onChanged();
+        } else {
+          shardsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.QueryProfile.ShardProfile shards = 1;</code>
+       */
+      public Builder setShards(
+          int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile.Builder builderForValue) {
+        if (shardsBuilder_ == null) {
+          ensureShardsIsMutable();
+          shards_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          shardsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.QueryProfile.ShardProfile shards = 1;</code>
+       */
+      public Builder addShards(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile value) {
+        if (shardsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureShardsIsMutable();
+          shards_.add(value);
+          onChanged();
+        } else {
+          shardsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.QueryProfile.ShardProfile shards = 1;</code>
+       */
+      public Builder addShards(
+          int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile value) {
+        if (shardsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureShardsIsMutable();
+          shards_.add(index, value);
+          onChanged();
+        } else {
+          shardsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.QueryProfile.ShardProfile shards = 1;</code>
+       */
+      public Builder addShards(
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile.Builder builderForValue) {
+        if (shardsBuilder_ == null) {
+          ensureShardsIsMutable();
+          shards_.add(builderForValue.build());
+          onChanged();
+        } else {
+          shardsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.QueryProfile.ShardProfile shards = 1;</code>
+       */
+      public Builder addShards(
+          int index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile.Builder builderForValue) {
+        if (shardsBuilder_ == null) {
+          ensureShardsIsMutable();
+          shards_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          shardsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.QueryProfile.ShardProfile shards = 1;</code>
+       */
+      public Builder addAllShards(
+          java.lang.Iterable<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile> values) {
+        if (shardsBuilder_ == null) {
+          ensureShardsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, shards_);
+          onChanged();
+        } else {
+          shardsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.QueryProfile.ShardProfile shards = 1;</code>
+       */
+      public Builder clearShards() {
+        if (shardsBuilder_ == null) {
+          shards_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          shardsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.QueryProfile.ShardProfile shards = 1;</code>
+       */
+      public Builder removeShards(int index) {
+        if (shardsBuilder_ == null) {
+          ensureShardsIsMutable();
+          shards_.remove(index);
+          onChanged();
+        } else {
+          shardsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .weaviate.v1.QueryProfile.ShardProfile shards = 1;</code>
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile.Builder getShardsBuilder(
+          int index) {
+        return getShardsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .weaviate.v1.QueryProfile.ShardProfile shards = 1;</code>
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfileOrBuilder getShardsOrBuilder(
+          int index) {
+        if (shardsBuilder_ == null) {
+          return shards_.get(index);  } else {
+          return shardsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .weaviate.v1.QueryProfile.ShardProfile shards = 1;</code>
+       */
+      public java.util.List<? extends io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfileOrBuilder> 
+           getShardsOrBuilderList() {
+        if (shardsBuilder_ != null) {
+          return shardsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(shards_);
+        }
+      }
+      /**
+       * <code>repeated .weaviate.v1.QueryProfile.ShardProfile shards = 1;</code>
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile.Builder addShardsBuilder() {
+        return getShardsFieldBuilder().addBuilder(
+            io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .weaviate.v1.QueryProfile.ShardProfile shards = 1;</code>
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile.Builder addShardsBuilder(
+          int index) {
+        return getShardsFieldBuilder().addBuilder(
+            index, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .weaviate.v1.QueryProfile.ShardProfile shards = 1;</code>
+       */
+      public java.util.List<io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile.Builder> 
+           getShardsBuilderList() {
+        return getShardsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfileOrBuilder> 
+          getShardsFieldBuilder() {
+        if (shardsBuilder_ == null) {
+          shardsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfile.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile.ShardProfileOrBuilder>(
+                  shards_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          shards_ = null;
+        }
+        return shardsBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:weaviate.v1.QueryProfile)
+    }
+
+    // @@protoc_insertion_point(class_scope:weaviate.v1.QueryProfile)
+    private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile();
+    }
+
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QueryProfile>
+        PARSER = new com.google.protobuf.AbstractParser<QueryProfile>() {
+      @java.lang.Override
+      public QueryProfile parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<QueryProfile> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QueryProfile> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet.QueryProfile getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -15123,14 +18159,14 @@ public final class WeaviateProtoSearchGet {
     /**
      * <code>optional .weaviate.v1.GenerativeReply generative = 7 [deprecated = true];</code>
      * @deprecated weaviate.v1.GroupByResult.generative is deprecated.
-     *     See v1/search_get.proto;l=130
+     *     See v1/search_get.proto;l=156
      * @return Whether the generative field is set.
      */
     @java.lang.Deprecated boolean hasGenerative();
     /**
      * <code>optional .weaviate.v1.GenerativeReply generative = 7 [deprecated = true];</code>
      * @deprecated weaviate.v1.GroupByResult.generative is deprecated.
-     *     See v1/search_get.proto;l=130
+     *     See v1/search_get.proto;l=156
      * @return The generative.
      */
     @java.lang.Deprecated io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeReply getGenerative();
@@ -15336,7 +18372,7 @@ public final class WeaviateProtoSearchGet {
     /**
      * <code>optional .weaviate.v1.GenerativeReply generative = 7 [deprecated = true];</code>
      * @deprecated weaviate.v1.GroupByResult.generative is deprecated.
-     *     See v1/search_get.proto;l=130
+     *     See v1/search_get.proto;l=156
      * @return Whether the generative field is set.
      */
     @java.lang.Override
@@ -15346,7 +18382,7 @@ public final class WeaviateProtoSearchGet {
     /**
      * <code>optional .weaviate.v1.GenerativeReply generative = 7 [deprecated = true];</code>
      * @deprecated weaviate.v1.GroupByResult.generative is deprecated.
-     *     See v1/search_get.proto;l=130
+     *     See v1/search_get.proto;l=156
      * @return The generative.
      */
     @java.lang.Override
@@ -16516,7 +19552,7 @@ public final class WeaviateProtoSearchGet {
       /**
        * <code>optional .weaviate.v1.GenerativeReply generative = 7 [deprecated = true];</code>
        * @deprecated weaviate.v1.GroupByResult.generative is deprecated.
-       *     See v1/search_get.proto;l=130
+       *     See v1/search_get.proto;l=156
        * @return Whether the generative field is set.
        */
       @java.lang.Deprecated public boolean hasGenerative() {
@@ -16525,7 +19561,7 @@ public final class WeaviateProtoSearchGet {
       /**
        * <code>optional .weaviate.v1.GenerativeReply generative = 7 [deprecated = true];</code>
        * @deprecated weaviate.v1.GroupByResult.generative is deprecated.
-       *     See v1/search_get.proto;l=130
+       *     See v1/search_get.proto;l=156
        * @return The generative.
        */
       @java.lang.Deprecated public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeReply getGenerative() {
@@ -17854,7 +20890,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-     *     See v1/search_get.proto;l=144
+     *     See v1/search_get.proto;l=170
      * @return A list containing the vector.
      */
     @java.lang.Deprecated java.util.List<java.lang.Float> getVectorList();
@@ -17865,7 +20901,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-     *     See v1/search_get.proto;l=144
+     *     See v1/search_get.proto;l=170
      * @return The count of vector.
      */
     @java.lang.Deprecated int getVectorCount();
@@ -17876,7 +20912,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-     *     See v1/search_get.proto;l=144
+     *     See v1/search_get.proto;l=170
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
@@ -17974,14 +21010,14 @@ public final class WeaviateProtoSearchGet {
     /**
      * <code>string generative = 16 [deprecated = true];</code>
      * @deprecated weaviate.v1.MetadataResult.generative is deprecated.
-     *     See v1/search_get.proto;l=158
+     *     See v1/search_get.proto;l=184
      * @return The generative.
      */
     @java.lang.Deprecated java.lang.String getGenerative();
     /**
      * <code>string generative = 16 [deprecated = true];</code>
      * @deprecated weaviate.v1.MetadataResult.generative is deprecated.
-     *     See v1/search_get.proto;l=158
+     *     See v1/search_get.proto;l=184
      * @return The bytes for generative.
      */
     @java.lang.Deprecated com.google.protobuf.ByteString
@@ -17990,7 +21026,7 @@ public final class WeaviateProtoSearchGet {
     /**
      * <code>bool generative_present = 17 [deprecated = true];</code>
      * @deprecated weaviate.v1.MetadataResult.generative_present is deprecated.
-     *     See v1/search_get.proto;l=159
+     *     See v1/search_get.proto;l=185
      * @return The generativePresent.
      */
     @java.lang.Deprecated boolean getGenerativePresent();
@@ -18142,7 +21178,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-     *     See v1/search_get.proto;l=144
+     *     See v1/search_get.proto;l=170
      * @return A list containing the vector.
      */
     @java.lang.Override
@@ -18157,7 +21193,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-     *     See v1/search_get.proto;l=144
+     *     See v1/search_get.proto;l=170
      * @return The count of vector.
      */
     @java.lang.Deprecated public int getVectorCount() {
@@ -18170,7 +21206,7 @@ public final class WeaviateProtoSearchGet {
      *
      * <code>repeated float vector = 2 [deprecated = true];</code>
      * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-     *     See v1/search_get.proto;l=144
+     *     See v1/search_get.proto;l=170
      * @param index The index of the element to return.
      * @return The vector at the given index.
      */
@@ -18364,7 +21400,7 @@ public final class WeaviateProtoSearchGet {
     /**
      * <code>string generative = 16 [deprecated = true];</code>
      * @deprecated weaviate.v1.MetadataResult.generative is deprecated.
-     *     See v1/search_get.proto;l=158
+     *     See v1/search_get.proto;l=184
      * @return The generative.
      */
     @java.lang.Override
@@ -18383,7 +21419,7 @@ public final class WeaviateProtoSearchGet {
     /**
      * <code>string generative = 16 [deprecated = true];</code>
      * @deprecated weaviate.v1.MetadataResult.generative is deprecated.
-     *     See v1/search_get.proto;l=158
+     *     See v1/search_get.proto;l=184
      * @return The bytes for generative.
      */
     @java.lang.Override
@@ -18406,7 +21442,7 @@ public final class WeaviateProtoSearchGet {
     /**
      * <code>bool generative_present = 17 [deprecated = true];</code>
      * @deprecated weaviate.v1.MetadataResult.generative_present is deprecated.
-     *     See v1/search_get.proto;l=159
+     *     See v1/search_get.proto;l=185
      * @return The generativePresent.
      */
     @java.lang.Override
@@ -19548,7 +22584,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-       *     See v1/search_get.proto;l=144
+       *     See v1/search_get.proto;l=170
        * @return A list containing the vector.
        */
       @java.lang.Deprecated public java.util.List<java.lang.Float>
@@ -19563,7 +22599,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-       *     See v1/search_get.proto;l=144
+       *     See v1/search_get.proto;l=170
        * @return The count of vector.
        */
       @java.lang.Deprecated public int getVectorCount() {
@@ -19576,7 +22612,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-       *     See v1/search_get.proto;l=144
+       *     See v1/search_get.proto;l=170
        * @param index The index of the element to return.
        * @return The vector at the given index.
        */
@@ -19590,7 +22626,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-       *     See v1/search_get.proto;l=144
+       *     See v1/search_get.proto;l=170
        * @param index The index to set the value at.
        * @param value The vector to set.
        * @return This builder for chaining.
@@ -19611,7 +22647,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-       *     See v1/search_get.proto;l=144
+       *     See v1/search_get.proto;l=170
        * @param value The vector to add.
        * @return This builder for chaining.
        */
@@ -19630,7 +22666,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-       *     See v1/search_get.proto;l=144
+       *     See v1/search_get.proto;l=170
        * @param values The vector to add.
        * @return This builder for chaining.
        */
@@ -19650,7 +22686,7 @@ public final class WeaviateProtoSearchGet {
        *
        * <code>repeated float vector = 2 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.vector is deprecated.
-       *     See v1/search_get.proto;l=144
+       *     See v1/search_get.proto;l=170
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearVector() {
@@ -20128,7 +23164,7 @@ public final class WeaviateProtoSearchGet {
       /**
        * <code>string generative = 16 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.generative is deprecated.
-       *     See v1/search_get.proto;l=158
+       *     See v1/search_get.proto;l=184
        * @return The generative.
        */
       @java.lang.Deprecated public java.lang.String getGenerative() {
@@ -20146,7 +23182,7 @@ public final class WeaviateProtoSearchGet {
       /**
        * <code>string generative = 16 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.generative is deprecated.
-       *     See v1/search_get.proto;l=158
+       *     See v1/search_get.proto;l=184
        * @return The bytes for generative.
        */
       @java.lang.Deprecated public com.google.protobuf.ByteString
@@ -20165,7 +23201,7 @@ public final class WeaviateProtoSearchGet {
       /**
        * <code>string generative = 16 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.generative is deprecated.
-       *     See v1/search_get.proto;l=158
+       *     See v1/search_get.proto;l=184
        * @param value The generative to set.
        * @return This builder for chaining.
        */
@@ -20180,7 +23216,7 @@ public final class WeaviateProtoSearchGet {
       /**
        * <code>string generative = 16 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.generative is deprecated.
-       *     See v1/search_get.proto;l=158
+       *     See v1/search_get.proto;l=184
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearGenerative() {
@@ -20192,7 +23228,7 @@ public final class WeaviateProtoSearchGet {
       /**
        * <code>string generative = 16 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.generative is deprecated.
-       *     See v1/search_get.proto;l=158
+       *     See v1/search_get.proto;l=184
        * @param value The bytes for generative to set.
        * @return This builder for chaining.
        */
@@ -20210,7 +23246,7 @@ public final class WeaviateProtoSearchGet {
       /**
        * <code>bool generative_present = 17 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.generative_present is deprecated.
-       *     See v1/search_get.proto;l=159
+       *     See v1/search_get.proto;l=185
        * @return The generativePresent.
        */
       @java.lang.Override
@@ -20220,7 +23256,7 @@ public final class WeaviateProtoSearchGet {
       /**
        * <code>bool generative_present = 17 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.generative_present is deprecated.
-       *     See v1/search_get.proto;l=159
+       *     See v1/search_get.proto;l=185
        * @param value The generativePresent to set.
        * @return This builder for chaining.
        */
@@ -20234,7 +23270,7 @@ public final class WeaviateProtoSearchGet {
       /**
        * <code>bool generative_present = 17 [deprecated = true];</code>
        * @deprecated weaviate.v1.MetadataResult.generative_present is deprecated.
-       *     See v1/search_get.proto;l=159
+       *     See v1/search_get.proto;l=185
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearGenerativePresent() {
@@ -23095,6 +26131,31 @@ public final class WeaviateProtoSearchGet {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_weaviate_v1_SearchReply_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_weaviate_v1_QueryProfile_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_weaviate_v1_QueryProfile_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_weaviate_v1_QueryProfile_SearchProfile_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_weaviate_v1_QueryProfile_SearchProfile_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_weaviate_v1_QueryProfile_SearchProfile_DetailsEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_weaviate_v1_QueryProfile_SearchProfile_DetailsEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_weaviate_v1_QueryProfile_ShardProfile_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_weaviate_v1_QueryProfile_ShardProfile_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_weaviate_v1_QueryProfile_ShardProfile_SearchesEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_weaviate_v1_QueryProfile_ShardProfile_SearchesEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_weaviate_v1_RerankReply_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -23174,77 +26235,90 @@ public final class WeaviateProtoSearchGet {
       "ar_imuB\r\n\013_generativeB\t\n\007_rerank\"L\n\007Grou" +
       "pBy\022\014\n\004path\030\001 \003(\t\022\030\n\020number_of_groups\030\002 " +
       "\001(\005\022\031\n\021objects_per_group\030\003 \001(\005\")\n\006SortBy" +
-      "\022\021\n\tascending\030\001 \001(\010\022\014\n\004path\030\002 \003(\t\"\335\001\n\017Me" +
+      "\022\021\n\tascending\030\001 \001(\010\022\014\n\004path\030\002 \003(\t\"\364\001\n\017Me" +
       "tadataRequest\022\014\n\004uuid\030\001 \001(\010\022\016\n\006vector\030\002 " +
       "\001(\010\022\032\n\022creation_time_unix\030\003 \001(\010\022\035\n\025last_" +
       "update_time_unix\030\004 \001(\010\022\020\n\010distance\030\005 \001(\010" +
       "\022\021\n\tcertainty\030\006 \001(\010\022\r\n\005score\030\007 \001(\010\022\025\n\rex" +
       "plain_score\030\010 \001(\010\022\025\n\ris_consistent\030\t \001(\010" +
-      "\022\017\n\007vectors\030\n \003(\t\"\321\001\n\021PropertiesRequest\022" +
-      "\032\n\022non_ref_properties\030\001 \003(\t\0229\n\016ref_prope" +
-      "rties\030\002 \003(\0132!.weaviate.v1.RefPropertiesR" +
-      "equest\022?\n\021object_properties\030\003 \003(\0132$.weav" +
-      "iate.v1.ObjectPropertiesRequest\022$\n\034retur" +
-      "n_all_nonref_properties\030\013 \001(\010\"\213\001\n\027Object" +
-      "PropertiesRequest\022\021\n\tprop_name\030\001 \001(\t\022\034\n\024" +
-      "primitive_properties\030\002 \003(\t\022?\n\021object_pro" +
-      "perties\030\003 \003(\0132$.weaviate.v1.ObjectProper" +
-      "tiesRequest\"\261\001\n\024RefPropertiesRequest\022\032\n\022" +
-      "reference_property\030\001 \001(\t\0222\n\nproperties\030\002" +
-      " \001(\0132\036.weaviate.v1.PropertiesRequest\022.\n\010" +
-      "metadata\030\003 \001(\0132\034.weaviate.v1.MetadataReq" +
-      "uest\022\031\n\021target_collection\030\004 \001(\t\"8\n\006Reran" +
-      "k\022\020\n\010property\030\001 \001(\t\022\022\n\005query\030\002 \001(\tH\000\210\001\001B" +
-      "\010\n\006_query\"\256\002\n\013SearchReply\022\014\n\004took\030\001 \001(\002\022" +
-      "*\n\007results\030\002 \003(\0132\031.weaviate.v1.SearchRes" +
-      "ult\022*\n\031generative_grouped_result\030\003 \001(\tB\002" +
-      "\030\001H\000\210\001\001\0224\n\020group_by_results\030\004 \003(\0132\032.weav" +
-      "iate.v1.GroupByResult\022F\n\032generative_grou" +
-      "ped_results\030\005 \001(\0132\035.weaviate.v1.Generati" +
-      "veResultH\001\210\001\001B\034\n\032_generative_grouped_res" +
-      "ultB\035\n\033_generative_grouped_results\"\034\n\013Re" +
-      "rankReply\022\r\n\005score\030\001 \001(\001\"\351\002\n\rGroupByResu" +
-      "lt\022\014\n\004name\030\001 \001(\t\022\024\n\014min_distance\030\002 \001(\002\022\024" +
-      "\n\014max_distance\030\003 \001(\002\022\031\n\021number_of_object" +
-      "s\030\004 \001(\003\022*\n\007objects\030\005 \003(\0132\031.weaviate.v1.S" +
-      "earchResult\022-\n\006rerank\030\006 \001(\0132\030.weaviate.v" +
-      "1.RerankReplyH\000\210\001\001\0229\n\ngenerative\030\007 \001(\0132\034" +
-      ".weaviate.v1.GenerativeReplyB\002\030\001H\001\210\001\001\022=\n" +
-      "\021generative_result\030\010 \001(\0132\035.weaviate.v1.G" +
-      "enerativeResultH\002\210\001\001B\t\n\007_rerankB\r\n\013_gene" +
-      "rativeB\024\n\022_generative_result\"\267\001\n\014SearchR" +
-      "esult\0221\n\nproperties\030\001 \001(\0132\035.weaviate.v1." +
-      "PropertiesResult\022-\n\010metadata\030\002 \001(\0132\033.wea" +
-      "viate.v1.MetadataResult\0226\n\ngenerative\030\003 " +
-      "\001(\0132\035.weaviate.v1.GenerativeResultH\000\210\001\001B" +
-      "\r\n\013_generative\"\367\004\n\016MetadataResult\022\n\n\002id\030" +
-      "\001 \001(\t\022\022\n\006vector\030\002 \003(\002B\002\030\001\022\032\n\022creation_ti" +
-      "me_unix\030\003 \001(\003\022\"\n\032creation_time_unix_pres" +
-      "ent\030\004 \001(\010\022\035\n\025last_update_time_unix\030\005 \001(\003" +
-      "\022%\n\035last_update_time_unix_present\030\006 \001(\010\022" +
-      "\020\n\010distance\030\007 \001(\002\022\030\n\020distance_present\030\010 " +
-      "\001(\010\022\021\n\tcertainty\030\t \001(\002\022\031\n\021certainty_pres" +
-      "ent\030\n \001(\010\022\r\n\005score\030\013 \001(\002\022\025\n\rscore_presen" +
-      "t\030\014 \001(\010\022\025\n\rexplain_score\030\r \001(\t\022\035\n\025explai" +
-      "n_score_present\030\016 \001(\010\022\032\n\ris_consistent\030\017" +
-      " \001(\010H\000\210\001\001\022\026\n\ngenerative\030\020 \001(\tB\002\030\001\022\036\n\022gen" +
-      "erative_present\030\021 \001(\010B\002\030\001\022\035\n\025is_consiste" +
-      "nt_present\030\022 \001(\010\022\024\n\014vector_bytes\030\023 \001(\014\022\023" +
-      "\n\013id_as_bytes\030\024 \001(\014\022\024\n\014rerank_score\030\025 \001(" +
-      "\001\022\034\n\024rerank_score_present\030\026 \001(\010\022%\n\007vecto" +
-      "rs\030\027 \003(\0132\024.weaviate.v1.VectorsB\020\n\016_is_co" +
-      "nsistent\"\210\002\n\020PropertiesResult\0223\n\tref_pro" +
-      "ps\030\002 \003(\0132 .weaviate.v1.RefPropertiesResu" +
-      "lt\022\031\n\021target_collection\030\003 \001(\t\022-\n\010metadat" +
-      "a\030\004 \001(\0132\033.weaviate.v1.MetadataResult\022.\n\r" +
-      "non_ref_props\030\013 \001(\0132\027.weaviate.v1.Proper" +
-      "ties\022\033\n\023ref_props_requested\030\014 \001(\010J\004\010\001\020\002J" +
-      "\004\010\005\020\006J\004\010\006\020\007J\004\010\007\020\010J\004\010\010\020\tJ\004\010\t\020\nJ\004\010\n\020\013\"[\n\023R" +
-      "efPropertiesResult\0221\n\nproperties\030\001 \003(\0132\035" +
-      ".weaviate.v1.PropertiesResult\022\021\n\tprop_na" +
-      "me\030\002 \001(\tBG\n-io.weaviate.client6.v1.inter" +
-      "nal.grpc.protocolB\026WeaviateProtoSearchGe" +
-      "tb\006proto3"
+      "\022\017\n\007vectors\030\n \003(\t\022\025\n\rquery_profile\030\013 \001(\010" +
+      "\"\321\001\n\021PropertiesRequest\022\032\n\022non_ref_proper" +
+      "ties\030\001 \003(\t\0229\n\016ref_properties\030\002 \003(\0132!.wea" +
+      "viate.v1.RefPropertiesRequest\022?\n\021object_" +
+      "properties\030\003 \003(\0132$.weaviate.v1.ObjectPro" +
+      "pertiesRequest\022$\n\034return_all_nonref_prop" +
+      "erties\030\013 \001(\010\"\213\001\n\027ObjectPropertiesRequest" +
+      "\022\021\n\tprop_name\030\001 \001(\t\022\034\n\024primitive_propert" +
+      "ies\030\002 \003(\t\022?\n\021object_properties\030\003 \003(\0132$.w" +
+      "eaviate.v1.ObjectPropertiesRequest\"\261\001\n\024R" +
+      "efPropertiesRequest\022\032\n\022reference_propert" +
+      "y\030\001 \001(\t\0222\n\nproperties\030\002 \001(\0132\036.weaviate.v" +
+      "1.PropertiesRequest\022.\n\010metadata\030\003 \001(\0132\034." +
+      "weaviate.v1.MetadataRequest\022\031\n\021target_co" +
+      "llection\030\004 \001(\t\"8\n\006Rerank\022\020\n\010property\030\001 \001" +
+      "(\t\022\022\n\005query\030\002 \001(\tH\000\210\001\001B\010\n\006_query\"\367\002\n\013Sea" +
+      "rchReply\022\014\n\004took\030\001 \001(\002\022*\n\007results\030\002 \003(\0132" +
+      "\031.weaviate.v1.SearchResult\022*\n\031generative" +
+      "_grouped_result\030\003 \001(\tB\002\030\001H\000\210\001\001\0224\n\020group_" +
+      "by_results\030\004 \003(\0132\032.weaviate.v1.GroupByRe" +
+      "sult\022F\n\032generative_grouped_results\030\005 \001(\013" +
+      "2\035.weaviate.v1.GenerativeResultH\001\210\001\001\0225\n\r" +
+      "query_profile\030\006 \001(\0132\031.weaviate.v1.QueryP" +
+      "rofileH\002\210\001\001B\034\n\032_generative_grouped_resul" +
+      "tB\035\n\033_generative_grouped_resultsB\020\n\016_que" +
+      "ry_profile\"\236\003\n\014QueryProfile\0226\n\006shards\030\001 " +
+      "\003(\0132&.weaviate.v1.QueryProfile.ShardProf" +
+      "ile\032\206\001\n\rSearchProfile\022E\n\007details\030\001 \003(\01324" +
+      ".weaviate.v1.QueryProfile.SearchProfile." +
+      "DetailsEntry\032.\n\014DetailsEntry\022\013\n\003key\030\001 \001(" +
+      "\t\022\r\n\005value\030\002 \001(\t:\0028\001\032\314\001\n\014ShardProfile\022\014\n" +
+      "\004name\030\001 \001(\t\022\014\n\004node\030\002 \001(\t\022F\n\010searches\030\003 " +
+      "\003(\01324.weaviate.v1.QueryProfile.ShardProf" +
+      "ile.SearchesEntry\032X\n\rSearchesEntry\022\013\n\003ke" +
+      "y\030\001 \001(\t\0226\n\005value\030\002 \001(\0132\'.weaviate.v1.Que" +
+      "ryProfile.SearchProfile:\0028\001\"\034\n\013RerankRep" +
+      "ly\022\r\n\005score\030\001 \001(\001\"\351\002\n\rGroupByResult\022\014\n\004n" +
+      "ame\030\001 \001(\t\022\024\n\014min_distance\030\002 \001(\002\022\024\n\014max_d" +
+      "istance\030\003 \001(\002\022\031\n\021number_of_objects\030\004 \001(\003" +
+      "\022*\n\007objects\030\005 \003(\0132\031.weaviate.v1.SearchRe" +
+      "sult\022-\n\006rerank\030\006 \001(\0132\030.weaviate.v1.Reran" +
+      "kReplyH\000\210\001\001\0229\n\ngenerative\030\007 \001(\0132\034.weavia" +
+      "te.v1.GenerativeReplyB\002\030\001H\001\210\001\001\022=\n\021genera" +
+      "tive_result\030\010 \001(\0132\035.weaviate.v1.Generati" +
+      "veResultH\002\210\001\001B\t\n\007_rerankB\r\n\013_generativeB" +
+      "\024\n\022_generative_result\"\267\001\n\014SearchResult\0221" +
+      "\n\nproperties\030\001 \001(\0132\035.weaviate.v1.Propert" +
+      "iesResult\022-\n\010metadata\030\002 \001(\0132\033.weaviate.v" +
+      "1.MetadataResult\0226\n\ngenerative\030\003 \001(\0132\035.w" +
+      "eaviate.v1.GenerativeResultH\000\210\001\001B\r\n\013_gen" +
+      "erative\"\367\004\n\016MetadataResult\022\n\n\002id\030\001 \001(\t\022\022" +
+      "\n\006vector\030\002 \003(\002B\002\030\001\022\032\n\022creation_time_unix" +
+      "\030\003 \001(\003\022\"\n\032creation_time_unix_present\030\004 \001" +
+      "(\010\022\035\n\025last_update_time_unix\030\005 \001(\003\022%\n\035las" +
+      "t_update_time_unix_present\030\006 \001(\010\022\020\n\010dist" +
+      "ance\030\007 \001(\002\022\030\n\020distance_present\030\010 \001(\010\022\021\n\t" +
+      "certainty\030\t \001(\002\022\031\n\021certainty_present\030\n \001" +
+      "(\010\022\r\n\005score\030\013 \001(\002\022\025\n\rscore_present\030\014 \001(\010" +
+      "\022\025\n\rexplain_score\030\r \001(\t\022\035\n\025explain_score" +
+      "_present\030\016 \001(\010\022\032\n\ris_consistent\030\017 \001(\010H\000\210" +
+      "\001\001\022\026\n\ngenerative\030\020 \001(\tB\002\030\001\022\036\n\022generative" +
+      "_present\030\021 \001(\010B\002\030\001\022\035\n\025is_consistent_pres" +
+      "ent\030\022 \001(\010\022\024\n\014vector_bytes\030\023 \001(\014\022\023\n\013id_as" +
+      "_bytes\030\024 \001(\014\022\024\n\014rerank_score\030\025 \001(\001\022\034\n\024re" +
+      "rank_score_present\030\026 \001(\010\022%\n\007vectors\030\027 \003(" +
+      "\0132\024.weaviate.v1.VectorsB\020\n\016_is_consisten" +
+      "t\"\210\002\n\020PropertiesResult\0223\n\tref_props\030\002 \003(" +
+      "\0132 .weaviate.v1.RefPropertiesResult\022\031\n\021t" +
+      "arget_collection\030\003 \001(\t\022-\n\010metadata\030\004 \001(\013" +
+      "2\033.weaviate.v1.MetadataResult\022.\n\rnon_ref" +
+      "_props\030\013 \001(\0132\027.weaviate.v1.Properties\022\033\n" +
+      "\023ref_props_requested\030\014 \001(\010J\004\010\001\020\002J\004\010\005\020\006J\004" +
+      "\010\006\020\007J\004\010\007\020\010J\004\010\010\020\tJ\004\010\t\020\nJ\004\010\n\020\013\"[\n\023RefPrope" +
+      "rtiesResult\0221\n\nproperties\030\001 \003(\0132\035.weavia" +
+      "te.v1.PropertiesResult\022\021\n\tprop_name\030\002 \001(" +
+      "\tBG\n-io.weaviate.client6.v1.internal.grp" +
+      "c.protocolB\026WeaviateProtoSearchGetb\006prot" +
+      "o3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -23277,7 +26351,7 @@ public final class WeaviateProtoSearchGet {
     internal_static_weaviate_v1_MetadataRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_MetadataRequest_descriptor,
-        new java.lang.String[] { "Uuid", "Vector", "CreationTimeUnix", "LastUpdateTimeUnix", "Distance", "Certainty", "Score", "ExplainScore", "IsConsistent", "Vectors", });
+        new java.lang.String[] { "Uuid", "Vector", "CreationTimeUnix", "LastUpdateTimeUnix", "Distance", "Certainty", "Score", "ExplainScore", "IsConsistent", "Vectors", "QueryProfile", });
     internal_static_weaviate_v1_PropertiesRequest_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_weaviate_v1_PropertiesRequest_fieldAccessorTable = new
@@ -23307,39 +26381,69 @@ public final class WeaviateProtoSearchGet {
     internal_static_weaviate_v1_SearchReply_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_SearchReply_descriptor,
-        new java.lang.String[] { "Took", "Results", "GenerativeGroupedResult", "GroupByResults", "GenerativeGroupedResults", "GenerativeGroupedResult", "GenerativeGroupedResults", });
-    internal_static_weaviate_v1_RerankReply_descriptor =
+        new java.lang.String[] { "Took", "Results", "GenerativeGroupedResult", "GroupByResults", "GenerativeGroupedResults", "QueryProfile", "GenerativeGroupedResult", "GenerativeGroupedResults", "QueryProfile", });
+    internal_static_weaviate_v1_QueryProfile_descriptor =
       getDescriptor().getMessageTypes().get(9);
+    internal_static_weaviate_v1_QueryProfile_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_weaviate_v1_QueryProfile_descriptor,
+        new java.lang.String[] { "Shards", });
+    internal_static_weaviate_v1_QueryProfile_SearchProfile_descriptor =
+      internal_static_weaviate_v1_QueryProfile_descriptor.getNestedTypes().get(0);
+    internal_static_weaviate_v1_QueryProfile_SearchProfile_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_weaviate_v1_QueryProfile_SearchProfile_descriptor,
+        new java.lang.String[] { "Details", });
+    internal_static_weaviate_v1_QueryProfile_SearchProfile_DetailsEntry_descriptor =
+      internal_static_weaviate_v1_QueryProfile_SearchProfile_descriptor.getNestedTypes().get(0);
+    internal_static_weaviate_v1_QueryProfile_SearchProfile_DetailsEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_weaviate_v1_QueryProfile_SearchProfile_DetailsEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+    internal_static_weaviate_v1_QueryProfile_ShardProfile_descriptor =
+      internal_static_weaviate_v1_QueryProfile_descriptor.getNestedTypes().get(1);
+    internal_static_weaviate_v1_QueryProfile_ShardProfile_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_weaviate_v1_QueryProfile_ShardProfile_descriptor,
+        new java.lang.String[] { "Name", "Node", "Searches", });
+    internal_static_weaviate_v1_QueryProfile_ShardProfile_SearchesEntry_descriptor =
+      internal_static_weaviate_v1_QueryProfile_ShardProfile_descriptor.getNestedTypes().get(0);
+    internal_static_weaviate_v1_QueryProfile_ShardProfile_SearchesEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_weaviate_v1_QueryProfile_ShardProfile_SearchesEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+    internal_static_weaviate_v1_RerankReply_descriptor =
+      getDescriptor().getMessageTypes().get(10);
     internal_static_weaviate_v1_RerankReply_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_RerankReply_descriptor,
         new java.lang.String[] { "Score", });
     internal_static_weaviate_v1_GroupByResult_descriptor =
-      getDescriptor().getMessageTypes().get(10);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_weaviate_v1_GroupByResult_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_GroupByResult_descriptor,
         new java.lang.String[] { "Name", "MinDistance", "MaxDistance", "NumberOfObjects", "Objects", "Rerank", "Generative", "GenerativeResult", "Rerank", "Generative", "GenerativeResult", });
     internal_static_weaviate_v1_SearchResult_descriptor =
-      getDescriptor().getMessageTypes().get(11);
+      getDescriptor().getMessageTypes().get(12);
     internal_static_weaviate_v1_SearchResult_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_SearchResult_descriptor,
         new java.lang.String[] { "Properties", "Metadata", "Generative", "Generative", });
     internal_static_weaviate_v1_MetadataResult_descriptor =
-      getDescriptor().getMessageTypes().get(12);
+      getDescriptor().getMessageTypes().get(13);
     internal_static_weaviate_v1_MetadataResult_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_MetadataResult_descriptor,
         new java.lang.String[] { "Id", "Vector", "CreationTimeUnix", "CreationTimeUnixPresent", "LastUpdateTimeUnix", "LastUpdateTimeUnixPresent", "Distance", "DistancePresent", "Certainty", "CertaintyPresent", "Score", "ScorePresent", "ExplainScore", "ExplainScorePresent", "IsConsistent", "Generative", "GenerativePresent", "IsConsistentPresent", "VectorBytes", "IdAsBytes", "RerankScore", "RerankScorePresent", "Vectors", "IsConsistent", });
     internal_static_weaviate_v1_PropertiesResult_descriptor =
-      getDescriptor().getMessageTypes().get(13);
+      getDescriptor().getMessageTypes().get(14);
     internal_static_weaviate_v1_PropertiesResult_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_PropertiesResult_descriptor,
         new java.lang.String[] { "RefProps", "TargetCollection", "Metadata", "NonRefProps", "RefPropsRequested", });
     internal_static_weaviate_v1_RefPropertiesResult_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_weaviate_v1_RefPropertiesResult_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_RefPropertiesResult_descriptor,

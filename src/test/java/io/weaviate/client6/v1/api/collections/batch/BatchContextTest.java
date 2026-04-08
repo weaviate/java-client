@@ -503,9 +503,13 @@ public class BatchContextTest {
         .noneMatch(CompletableFuture::isCompletedExceptionally);
 
     Assertions.assertThat(tasks.subList(BATCH_SIZE - 1, BATCH_SIZE))
-        .as("last %d tasks succeeded", BATCH_SIZE)
+        .as("last %d tasks failed", BATCH_SIZE)
         .extracting(TaskHandle::done)
         .allMatch(CompletableFuture::isCompletedExceptionally);
+
+    Assertions.assertThat(context.numberOfErrors())
+        .as("number of errors")
+        .isEqualTo(BATCH_SIZE);
   }
 
   @Test
@@ -577,7 +581,6 @@ public class BatchContextTest {
   private static final class OutboundStream {
     private final StreamObserver<Event> stream;
     private final Executor eventThread;
-    private final List<Event> pendingEvents = new ArrayList<>();
 
     OutboundStream(StreamObserver<Event> stream, Executor eventThread) {
       this.stream = stream;
