@@ -1362,10 +1362,12 @@ public class JSONTest {
         {
             Reranker.class,
             Reranker.cohere(rerank -> rerank
+                .baseUrl("example.com")
                 .model(CohereReranker.RERANK_ENGLISH_V2)),
             """
                 {
                   "reranker-cohere": {
+                    "baseURL": "example.com",
                     "model": "rerank-english-v2.0"
                   }
                 }
