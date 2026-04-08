@@ -137,6 +137,13 @@ public final class BatchContext<PropertiesT> implements Closeable {
   private final CollectionHandleDefaults collectionHandleDefaults;
 
   /**
+   * Tally of the failed items. This value is only written to from
+   * {@link #retryService} thread, which processes the incoming
+   * {@link Event.Results}; making it {@code volatile} is sufficient.
+   */
+  private volatile int numberOfErrors;
+
+  /**
    * Internal execution service. Its lifecycle is bound to that of the
    * BatchContext: it's started when the context is initialized
    * and shutdown on {@link #close}.
@@ -314,10 +321,23 @@ public final class BatchContext<PropertiesT> implements Closeable {
     // Remove the task from the WIP list as soon as it completes,
     // successfully or otherwise. Note, that TaskHandle::done future
     // only completes exceptionally after all retries have been exhausted.
-    taskHandle.done().whenComplete((__, t) -> wip.remove(taskHandle.id()));
+    taskHandle.done().whenComplete((__, t) -> {
+      if (t != null) {
+        numberOfErrors++;
+      }
+      wip.remove(taskHandle.id());
+    });
 
     queue.put(taskHandle);
     return taskHandle;
+  }
+
+  /**
+   * Get the current tally of failed tasks.
+   * An object is only considered failed if it can no longer be retried.
+   */
+  public int numberOfErrors() {
+    return numberOfErrors;
   }
 
   void start() {
